@@ -1,0 +1,2 @@
+_HiStOrY_V2_
+DB::transaction(function\040()\040{\012\040\040\040DB::update('update\040ep_types\040set\040name\040=\040"beans"\040where\040id\040=\04022');\012})
