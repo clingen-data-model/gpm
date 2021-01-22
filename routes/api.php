@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\Api\ApplicationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ApplicationController;
+use App\Http\Controllers\Api\ApplicationContactController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +21,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('/application', [ApplicationController::class, 'store']);
+
+Route::post('/application/{uuid}/contacts', [ApplicationContactController::class, 'store']);
+Route::get('/application/{uuid}/contacts', [ApplicationContactController::class, 'index']);
