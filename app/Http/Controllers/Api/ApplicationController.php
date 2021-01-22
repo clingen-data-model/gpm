@@ -3,20 +3,22 @@
 namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
-use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Str;
+use App\Models\Cdwg;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Infrastructure\Service\MessageBusInterface;
-use App\Domain\Application\Commands\InitiateApplication;
+use Illuminate\Contracts\Bus\Dispatcher;
+use App\Domain\Application\Jobs\InitiateApplication;
+use App\Domain\Application\Models\Application;
+use App\Http\Requests\InitiateApplicationRequest;
+use App\Domain\Application\Jobs\AddContact;
 
 class ApplicationController extends Controller
 {
-    private $messageBus;
+    private $dispatcher;
 
-    public function __construct(MessageBusInterface $messageBus)
+    public function __construct(Dispatcher $dispatcher)
     {
-        $this->messageBus = $messageBus;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -33,21 +35,17 @@ class ApplicationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(InitiateApplicationRequest $request)
     {
-        $requestParams = [];
-        foreach ($request->all() as $key => $value) {
-            $requestParams[Str::camel($key)] = $value;
-        }
-        $requestParams['aggregateId'] = Uuid::uuid4();
-        $requestParams['dateInitiated'] = Carbon::parse($requestParams['dateInitiated']);
+        $data = $request->except('contacts');
+        $data['cdwg_id'] = (int)$request->cdwg_id;
+        $data['date_initiated'] = $request->date_initiated ? Carbon::parse($request->date_initiated) : null;
+        $job = new InitiateApplication(...$data);
+        $this->dispatcher->dispatchNow($job);
 
-        $command = new InitiateApplication(...$requestParams);
-
-        $this->messageBus->handle($command);
-
+        $application = Application::findByUuid($request->uuid);
         
-
+        return $application;
     }
 
     /**

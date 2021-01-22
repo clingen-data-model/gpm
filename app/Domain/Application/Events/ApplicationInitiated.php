@@ -3,16 +3,29 @@
 namespace App\Domain\Application\Events;
 
 use DateTime;
-use Infrastructure\Domain\Event;
+use Illuminate\Queue\SerializesModels;
+use App\Domain\Application\Models\Application;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
 
-class ApplicationInitiated extends Event
+class ApplicationInitiated extends ApplicationEvent
 {
+    use Dispatchable, InteractsWithSockets, SerializesModels;
+
     public function __construct(
-        public string $aggregateId, 
-        public string $workingName, 
-        public string $cdwgUuid, 
-        public int $epTypeId,
-        public DateTime $dateInitiated
+        public Application $application
     )
     {}
+
+    public function getProperties():array
+    {
+        return $this->application->getAttributes();
+    }
+
+    public function getLogEntry():string
+    {
+        return 'Application initiated';
+    }
+    
+    
 }

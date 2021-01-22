@@ -17,16 +17,18 @@ class CreateApplicationsTable extends Migration
             $table->id();
             $table->uuid('uuid');
             $table->string('working_name');
-            $table->foreign('ep_type_id')->references('id')->on('ep_types');
-            $table->integer('current_step');
-            $table->unsignedBigInteger('expert_panel_id');
-            $table->foreign('expert_panel_id')->references('id')->on('expert_panels');
-            $table->unsignedBigInteger('cdwg_id');
-            $table->foreign('cdwg_id')->references('id')->on('cdwgs');
             $table->unsignedBigInteger('ep_type_id');
-            $table->string('survey_monkey_url')->unique();
+            $table->integer('current_step')->default(1);
+            $table->unsignedBigInteger('expert_panel_id')->nullable();
+            $table->unsignedBigInteger('cdwg_id')->nullable();
+            $table->string('survey_monkey_url')->unique()->nullable(); // can be nullable b/c we're going to asyncronously get a new data collector from SurveyMonkey
             $table->date('date_initiated')->nullable();
             $table->timestamps();
+            
+            $table->foreign('ep_type_id')->references('id')->on('ep_types');
+            $table->foreign('expert_panel_id')->references('id')->on('expert_panels');
+            $table->foreign('cdwg_id')->references('id')->on('cdwgs');
+            
         });
     }
 

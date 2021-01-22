@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Cdwg;
 use Illuminate\Database\Seeder;
 
 class CdwgsTableSeeder extends Seeder
@@ -13,6 +14,6 @@ class CdwgsTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Cdwg::class, 10)->make([]);
+        Cdwg::factory(2)->create();
     }
 }

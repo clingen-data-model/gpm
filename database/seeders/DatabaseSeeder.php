@@ -16,11 +16,13 @@ class DatabaseSeeder extends Seeder
         $seederClasses = [
             EpTypesTableSeeder::class,
         ];
+        if (app()->environment('testing')) {
+            $seederClasses[] = CdwgsTableSeeder::class;
+        }
 
         foreach ($seederClasses as $seederClass) {
             $seeder = new $seederClass();
             $seeder->run();
-            echo $seederClass." complete\n";
         }
     }
 }
