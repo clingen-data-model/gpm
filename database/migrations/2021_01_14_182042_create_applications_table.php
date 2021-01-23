@@ -23,6 +23,7 @@ class CreateApplicationsTable extends Migration
             $table->unsignedBigInteger('cdwg_id')->nullable();
             $table->string('survey_monkey_url')->unique()->nullable(); // can be nullable b/c we're going to asyncronously get a new data collector from SurveyMonkey
             $table->date('date_initiated')->nullable();
+            $table->json('approval_dates')->nullable();
             $table->timestamps();
             
             $table->foreign('ep_type_id')->references('id')->on('ep_types');

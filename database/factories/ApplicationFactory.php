@@ -30,7 +30,8 @@ class ApplicationFactory extends Factory
             'working_name' => uniqid().' Application',
             'cdwg_id' => $cdwg->id,
             'ep_type_id' => 1,
-            'date_initiated' => Carbon::now()
+            'date_initiated' => Carbon::now(),
+            'current_step' => 1
         ];
     }
 }

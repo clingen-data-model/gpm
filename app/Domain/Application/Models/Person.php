@@ -23,6 +23,14 @@ class Person extends Model
         return static::where('email', $email)->first();
     }
 
+    // Accessors
+    public function getNameAttribute()
+    {
+        return $this->first_name.' '.$this->last_name;
+    }
+    
+
+    // Factory
     static protected function newFactory()
     {
         return new PersonFactory();

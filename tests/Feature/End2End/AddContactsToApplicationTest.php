@@ -65,8 +65,6 @@ class AddContactsToApplicationTest extends TestCase
         $response = $this->json('GET', '/api/application/'.$this->application->uuid.'/contacts');
         $response->assertStatus(200);
         $response->assertJson($contacts->toArray());
-
-        
     }
     
 }

@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApplicationController;
+use App\Http\Controllers\Api\ApplicationStepController;
 use App\Http\Controllers\Api\ApplicationContactController;
 
 /*
@@ -24,3 +25,5 @@ Route::post('/application', [ApplicationController::class, 'store']);
 
 Route::post('/application/{uuid}/contacts', [ApplicationContactController::class, 'store']);
 Route::get('/application/{uuid}/contacts', [ApplicationContactController::class, 'index']);
+
+Route::post('/applications/{uuid}/current-step/approve', [ApplicationStepController::class, 'approve']);

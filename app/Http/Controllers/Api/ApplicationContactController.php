@@ -26,9 +26,6 @@ class ApplicationContactController extends Controller
     public function store($uuid, ApplicationContactRequest $request)
     {
         $application = Application::findByUuidOrFail($uuid);
-        if (!$application) {
-            throw new ModelNotFoundException();
-        }
 
         $person = Person::firstOrCreate(
             ['email' => $request->email],
