@@ -5,6 +5,7 @@ namespace Tests\Feature\End2End;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\User;
+use Ramsey\Uuid\Uuid;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Domain\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -42,6 +43,37 @@ class ApproveApplicationStep1Test extends TestCase
                 'step 1' => $approvalData['date_approved'],
             ]),
         ]);
+    }
+    
+    /**
+     * @test
+     */
+    public function returns_404_if_application_not_found()
+    {
+        $approvalData = [
+            'date_approved' => Carbon::now(),
+        ];
+
+        $badUuid = Uuid::uuid4();
+
+        $this->actingAs($this->user)
+            ->json('POST', '/api/applications/'.$badUuid.'/current-step/approve', $approvalData)
+            ->assertStatus(404);
+    }
+    
+    /**
+     * @test
+     */
+    public function validates_date_approved()
+    {
+        $approvalData = [
+            'date_approved' => 'Carbon::now()',
+        ];
+
+        $this->actingAs($this->user)
+            ->json('POST', '/api/applications/'.$this->application->uuid.'/current-step/approve', $approvalData)
+            ->assertStatus(422)
+            ->assertJsonFragment(['date_approved' => ['The date approved is not a valid date.']]);
     }
     
     

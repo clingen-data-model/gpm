@@ -25,10 +25,19 @@ class InitiateApplicationRequest extends FormRequest
     {
         return [
             'uuid' => 'required|uuid',
-            'working_name' => 'required|max:256',
+            'working_name' => 'required|max:256|min:3',
             'date_initiated' => 'nullable|date',
             'cdwg_id' => 'required|exists:cdwgs,id',
             'ep_type_id' => 'required|exists:ep_types,id',
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'cdwg_id.exists' => 'The selected cdwg is invalid.',
+            'ep_type_id.exists' => 'The selected expert panel type is invalid.',
+        ];
+    }
+    
 }

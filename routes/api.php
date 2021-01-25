@@ -21,9 +21,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/application', [ApplicationController::class, 'store']);
+Route::post('/applications', [ApplicationController::class, 'store']);
 
-Route::post('/application/{uuid}/contacts', [ApplicationContactController::class, 'store']);
-Route::get('/application/{uuid}/contacts', [ApplicationContactController::class, 'index']);
+Route::post('/applications/{uuid}/contacts', [ApplicationContactController::class, 'store']);
+Route::get('/applications/{uuid}/contacts', [ApplicationContactController::class, 'index']);
 
 Route::post('/applications/{uuid}/current-step/approve', [ApplicationStepController::class, 'approve']);

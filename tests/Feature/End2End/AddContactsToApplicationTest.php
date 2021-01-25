@@ -28,7 +28,7 @@ class AddContactsToApplicationTest extends TestCase
     {
         $contacts = $this->makeContactData();
 
-        $response = $this->json('POST', '/api/application/'.$this->application->uuid.'/contacts', $contacts[0]);
+        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', $contacts[0]);
         $response->assertStatus(201);
         $response->assertJson($contacts[0]);
     }
@@ -42,7 +42,7 @@ class AddContactsToApplicationTest extends TestCase
 
         $person = Person::create($contacts[0]);
 
-        $response = $this->json('POST', '/api/application/'.$this->application->uuid.'/contacts', $contacts[0]);
+        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', $contacts[0]);
         $response->assertStatus(200);
         
         $this->assertEquals($response->original['email'], $contacts[0]['email']);
@@ -50,6 +50,48 @@ class AddContactsToApplicationTest extends TestCase
 
         $this->assertEquals(Person::count(), 1);
     }
+
+    /**
+     * @test
+     */
+    public function validates_new_contact_data()
+    {
+        $data = [];
+        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', $data);
+
+        $response->assertStatus(422);
+
+        $response->assertJson([
+            'message' => 'The given data was invalid.',
+            'errors' => [
+                'first_name' => ['The first name field is required.'],
+                'last_name' => ['The last name field is required.'],
+                'email' => ['The email field is required.'],
+                'phone' => ['The phone field is required.'],
+            ]
+        ]);
+
+
+        $data = [
+            'first_name' => 'Aliqua anim et excepteur amet exercitation. Consequat duis fugiat qui labore laborum culpa amet. Exercitation eiusmod id velit excepteur incididunt minim magna cupidatat. Excepteur ullamco culpa ut labore exercitation laborum veniam. Cupidatat ex laborum di',
+            'last_name' => 'Aliqua anim et excepteur amet exercitation. Consequat duis fugiat qui labore laborum culpa amet. Exercitation eiusmod id velit excepteur incididunt minim magna cupidatat. Excepteur ullamco culpa ut labore exercitation laborum veniam. Cupidatat ex laborum di',
+            'email' => 'bob\'s your uncle'
+        ];
+
+        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', $data);
+
+        $response->assertStatus(422);
+
+        $response->assertJson([
+            'message' => 'The given data was invalid.',
+            'errors' => [
+                'first_name' => ['The first name may not be greater than 256 characters.'],
+                'last_name' => ['The last name may not be greater than 256 characters.'],
+                'email' => ['The email must be a valid email address.'],
+            ]
+        ]);
+    }
+    
 
     /**
      * @test
@@ -62,7 +104,7 @@ class AddContactsToApplicationTest extends TestCase
             AddContact::dispatchNow($this->application, $contact);
         });
 
-        $response = $this->json('GET', '/api/application/'.$this->application->uuid.'/contacts');
+        $response = $this->json('GET', '/api/applications/'.$this->application->uuid.'/contacts');
         $response->assertStatus(200);
         $response->assertJson($contacts->toArray());
     }

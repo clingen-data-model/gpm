@@ -24,7 +24,10 @@ class ApplicationContactRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'first_name' => 'required|max:256',
+            'last_name' => 'required|max:256',
+            'email' => 'required|email',
+            'phone' => 'required'
         ];
     }
 }
