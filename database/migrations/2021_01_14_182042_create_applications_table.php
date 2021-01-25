@@ -25,6 +25,7 @@ class CreateApplicationsTable extends Migration
             $table->date('date_initiated')->nullable();
             $table->json('approval_dates')->nullable();
             $table->timestamps();
+            $table->softDeletes();
             
             $table->foreign('ep_type_id')->references('id')->on('ep_types');
             $table->foreign('expert_panel_id')->references('id')->on('expert_panels');

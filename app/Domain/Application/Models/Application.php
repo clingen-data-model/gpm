@@ -4,11 +4,15 @@ namespace App\Domain\Application\Models;
 
 use DateTime;
 use Carbon\Carbon;
+use App\Models\Document;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Database\Eloquent\Model;
+use App\Domain\Application\Models\HasUuid;
 use Database\Factories\ApplicationFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Domain\Application\Events\ContactAdded;
 use App\Domain\Application\Events\StepApproved;
+use App\Domain\Application\Events\DocumentAdded;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Domain\Application\Events\ApplicationInitiated;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
@@ -18,6 +22,8 @@ class Application extends Model
 {
     use HasFactory;
     use HasTimestamps;
+    use SoftDeletes;
+    use HasUuid;
 
     protected $fillable = [
         'uuid',
@@ -62,6 +68,18 @@ class Application extends Model
         Event::dispatch(new ContactAdded($this, $contact));
     }
 
+    public function addDocument(Document $document)
+    {
+        $this->documents()->save($document);
+
+        $event = new DocumentAdded(
+            application: $this,
+            document: $document
+        );
+        Event::dispatch($event);
+    }
+    
+
     public function approveCurrentStep(Carbon $dateApproved)
     {
         $approvedStep = $this->current_step;
@@ -85,30 +103,21 @@ class Application extends Model
         $this->approval_dates = $approvalDates;
     }
 
-    // Queries
-    static public function findByUuid($uuid)
-    {
-        return static::where('uuid', $uuid)->first();
-    }
-
-    static public function findByUuidOrFail($uuid)
-    {
-        $application = static::where('uuid', $uuid)->first();
-        if (is_null($application)) {
-            throw new ModelNotFoundException();
-        }
-
-        return $application;
-        
-    }
-
     // Relationships
     public function contacts()
     {
         return $this->belongsToMany(Person::class);
     }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
     
 
+
+
+    // Factory support
     static protected function newFactory()
     {
         return new ApplicationFactory();

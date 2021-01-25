@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         $seederClasses = [
             EpTypesTableSeeder::class,
+            DocumentCategoriesTableSeeder::class,
         ];
         if (app()->environment('testing')) {
             $seederClasses[] = CdwgsTableSeeder::class;

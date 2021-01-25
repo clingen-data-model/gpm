@@ -5,12 +5,14 @@ namespace Tests\Feature\Integration\Domain\Application\Models;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\Document;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use App\Domain\Application\Models\Person;
 use App\Domain\Application\Models\Application;
 use App\Domain\Application\Events\ContactAdded;
 use App\Domain\Application\Events\StepApproved;
+use App\Domain\Application\Events\DocumentAdded;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Domain\Application\Events\ApplicationInitiated;
 
@@ -21,7 +23,8 @@ class ApplicationTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();        
+        $this->seed();
+        Carbon::setTestNow('2021-01-01');   
     }
     
 
@@ -115,26 +118,63 @@ class ApplicationTest extends TestCase
         $this->assertLoggedActivity($application, 'Step 1 approved', ['date_approved' => $dateApproved]);
     }
 
-    
+    /**
+     * @test
+     */
+    public function fires_DocumentAdded_event_fired()
+    {
+        $application = Application::factory()->create();
+        $document = Document::factory()->make(['document_category_id'=>config('documents.categories.scope.id')]);
+
+        Event::fake();
+        $application->addDocument($document);
+
+        Event::assertDispatched(DocumentAdded::class, function($event) use ($application, $document) {
+            return $event->application->uuid == $application->uuid
+                && $event->document->uuid == $document->uuid;
+        });
+    }
+
+    /**
+     * @test
+     */
+    public function DocumentAdded_activity_logged_when_dispatched()
+    {
+        $application = Application::factory()->create();
+        $document = Document::factory()->make(['document_category_id'=>config('documents.categories.scope.id')]);
+
+        $application->addDocument($document);
+
+        $this->assertLoggedActivity(
+            $application, 
+            description: 'Added version 1 of scope and membership application.'
+        );
+    }    
+
     
 
     private function assertLoggedActivity(
         $application, 
         $description, 
-        $properties, 
+        $properties = null, 
         $causer_type = null, 
         $causer_id = null
     )
     {
-        $this->assertDatabaseHas('activity_log', [
+
+        $data = [
             'log_name' => 'applications',
             'description' => $description,
             'subject_type' => Application::class,
             'subject_id' => (string)$application->id,
-            'properties' => json_encode($properties),
             'causer_type' => $causer_type,
             'causer_id' => $causer_id
-        ]);
+        ];
+
+        if ($properties) {
+            $data['properties'] = json_encode($properties);
+        }
+        $this->assertDatabaseHas('activity_log', $data);
     }
     
 }

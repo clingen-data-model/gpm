@@ -26,6 +26,7 @@ class CreateExpertPanelsTable extends Migration
             $table->foreign('ep_type_id')->references('id')->on('ep_types');
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

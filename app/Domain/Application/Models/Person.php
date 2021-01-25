@@ -3,12 +3,16 @@
 namespace App\Domain\Application\Models;
 
 use Database\Factories\PersonFactory;
+use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Person extends Model
 {
     use HasFactory;
+    use SoftDeletes;
+    use HasTimestamps;
 
     protected $fillable = [
         'first_name',

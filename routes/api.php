@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\ApplicationStepController;
 use App\Http\Controllers\Api\ApplicationContactController;
+use App\Http\Controllers\Api\ApplicationDocumentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,3 +28,5 @@ Route::post('/applications/{uuid}/contacts', [ApplicationContactController::clas
 Route::get('/applications/{uuid}/contacts', [ApplicationContactController::class, 'index']);
 
 Route::post('/applications/{uuid}/current-step/approve', [ApplicationStepController::class, 'approve']);
+
+Route::post('/applications/{uuid}/documents', [ApplicationDocumentController::class, 'store']);
