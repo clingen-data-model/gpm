@@ -18,7 +18,7 @@ class AddApplicationDocument
      */
     public function __construct(
         private Application $application,
-        private ?int $step_number = null,
+        private ?int $step = null,
         private string $uuid,
         private string $filename,
         private string $storage_path,
@@ -40,7 +40,6 @@ class AddApplicationDocument
      */
     public function handle()
     {
-        // dump($this->step_number);
 
         $document = Document::make([
             'uuid' => $this->uuid,
@@ -50,7 +49,7 @@ class AddApplicationDocument
             'date_received' => $this->date_received,
             'date_reviewed' => $this->date_reviewed,
             'metadata' => $this->metadata,
-            'step_number' => $this->step_number
+            'step' => $this->step
         ]);
         
         $this->application->addDocument($document);
