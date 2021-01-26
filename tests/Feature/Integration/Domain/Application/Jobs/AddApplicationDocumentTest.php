@@ -38,7 +38,7 @@ class AddApplicationDocumentTest extends TestCase
             filename: 'testfile.doc',
             storage_path: $this->faker->file(base_path('tests/files')),
             document_category_id: 1,
-            step_number: 1,
+            step: 1,
             uuid: $docUuid
         );
 
@@ -48,7 +48,7 @@ class AddApplicationDocumentTest extends TestCase
         $this->assertDatabaseHas('documents', [
             'uuid' => $docUuid,
             'document_category_id' => 1,
-            'step_number' => 1,
+            'step' => 1,
             'date_received' => Carbon::now()->format('Y-m-d H:i:s'),
             'date_reviewed' => null,
             'version' => 1,

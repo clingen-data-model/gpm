@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\End2End;
+namespace Tests\Feature\End2End\Applications\Contacts;
 
 use App\Domain\Application\Jobs\AddContact;
 use Tests\TestCase;
@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Domain\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class AddContactsToApplicationTest extends TestCase
+class AddContactsTest extends TestCase
 {
     use RefreshDatabase;
 

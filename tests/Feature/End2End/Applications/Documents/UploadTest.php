@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\End2End;
+namespace Tests\Feature\End2End\Applications\Documents;
 
 use Carbon\Carbon;
 use Tests\TestCase;
@@ -13,7 +13,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Domain\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ApplicationDocumentUploadTest extends TestCase
+class UploadTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -139,7 +139,7 @@ class ApplicationDocumentUploadTest extends TestCase
             ]);
     }
     
-    private function makeRequestData($documentCategoryId = 1, $dateReceived = null, $dateReviewed = null)
+    private function makeRequestData($documentCategoryId = 1, $dateReceived = null, $dateReviewed = null, $step = null)
     {
         Storage::fake();
         $file = UploadedFile::fake()->create(name: 'Test Scope Document.docx', mimeType: 'docx');
@@ -150,6 +150,7 @@ class ApplicationDocumentUploadTest extends TestCase
             'document_category_id' => $documentCategoryId,
             'date_received' => $dateReceived,
             'date_reviewed' => $dateReviewed,
+            'step' => $step
         ];
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\End2End;
+namespace Tests\Feature\End2End\Applications;
 
 use App\Domain\Application\Models\Person;
 use App\Models\Cdwg;
@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
-class ApplicationInitiationTest extends TestCase
+class InitiationTest extends TestCase
 {
     use WithFaker;
     use RefreshDatabase;

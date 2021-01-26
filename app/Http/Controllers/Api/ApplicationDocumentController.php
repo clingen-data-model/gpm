@@ -9,8 +9,10 @@ use Illuminate\Bus\Dispatcher;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Event;
 use App\Domain\Application\Models\Application;
+use App\Domain\Application\Jobs\MarkDocumentReviewed;
 use App\Http\Requests\ApplicationDocumentStoreRequest;
 use App\Domain\Application\Jobs\AddApplicationDocument;
+use App\Http\Requests\Applications\MarkDocumentReviewedRequest;
 
 class ApplicationDocumentController extends Controller
 {
@@ -23,8 +25,8 @@ class ApplicationDocumentController extends Controller
     {
         $application = Application::findByUuidOrFail($applicationUuid);
 
-        $path = $request->file('file')->store('documents');
         $file = $request->file('file');
+        $path = $file->store('documents');
 
         $data = $request->only([
             'uuid', 
@@ -32,6 +34,7 @@ class ApplicationDocumentController extends Controller
             'date_received', 
             'date_reviewed', 
             'metadata', 
+            'step'
         ]);
 
         $data['storage_path'] = $path;
@@ -45,6 +48,16 @@ class ApplicationDocumentController extends Controller
         $newDocument = Document::findByUuid($request->uuid);
 
         return $newDocument;
+    }
+
+    public function markReviewed($appUuid, $docUuid, MarkDocumentReviewedRequest $request)
+    {
+        $job = new MarkDocumentReviewed($appUuid, $docUuid, Carbon::parse($request->date_reviewed));
+        $this->dispatcher->dispatch($job);
+
+        $updatedDocument = Document::findByUuid($docUuid);
+
+        return $updatedDocument;
     }
     
 }
