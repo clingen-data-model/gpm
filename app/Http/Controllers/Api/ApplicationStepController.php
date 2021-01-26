@@ -18,14 +18,12 @@ class ApplicationStepController extends Controller
 
     public function approve($uuid, ApplicationApprovalRequest $request)
     {
-        $application = Application::findByUuidOrFail($uuid);
-
         try {
-            $dateApproved = $request->date_approved ? Carbon::parse($request->date_approved) :  Carbon::now();
-            $job = new ApproveStep($application, dateApproved: $dateApproved);
+            $job = new ApproveStep(applicationUuid: $uuid, dateApproved: $request->date_approved);
             $this->dispatcher->dispatch($job);
 
-            return $application->fresh();
+            return Application::findByUuidOrFail($uuid);
+
         } catch (UnmetStepRequirementsException $e) {
             return response([
                 'message' => $e->getMessage(),

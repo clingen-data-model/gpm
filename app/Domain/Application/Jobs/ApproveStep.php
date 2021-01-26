@@ -12,16 +12,21 @@ class ApproveStep
 {
     use Dispatchable;
 
+    private Application $application;
+    private Carbon $dateApproved;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
     public function __construct(
-        private Application $application, 
-        private Carbon $dateApproved, 
+        string $applicationUuid, 
+        string $dateApproved, 
     )
     {
+        $this->application = Application::findByUuidOrFail($applicationUuid);
+        $this->dateApproved = $dateApproved ? Carbon::parse($dateApproved) : Carbon::now();
     }
 
     /**

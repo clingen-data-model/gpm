@@ -5,6 +5,7 @@ namespace App\Domain\Application\Models;
 use DateTime;
 use Carbon\Carbon;
 use App\Models\Document;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Database\Eloquent\Model;
 use App\Domain\Application\Models\HasUuid;
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Domain\Application\Events\ContactAdded;
 use App\Domain\Application\Events\StepApproved;
 use App\Domain\Application\Events\DocumentAdded;
+use App\Domain\Application\Events\DocumentReviewed;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Domain\Application\Events\ApplicationInitiated;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
@@ -81,7 +83,17 @@ class Application extends Model
         );
         Event::dispatch($event);
     }
-    
+        
+    public function markDocumentReviewed(Document $document, Carbon $dateReviewed)
+    {
+        if (! is_null($document->date_reviewed)) {
+            Log::warning('Applicaiton::markDocumentReviewed attempted on document already marked reviewed');
+            return;
+        }
+
+        $document->update(['date_reviewed' => $dateReviewed]);
+        Event::dispatch(new DocumentReviewed(application: $this, document: $document));
+    }
 
     public function approveCurrentStep(Carbon $dateApproved)
     {
@@ -97,7 +109,6 @@ class Application extends Model
 
         Event::dispatch(new StepApproved(application: $this, step: $approvedStep, dateApproved: $dateApproved));
     }
-    
 
     private function addApprovalDate(int $step, Carbon $date)
     {
