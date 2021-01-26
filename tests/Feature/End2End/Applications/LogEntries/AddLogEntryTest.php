@@ -32,8 +32,8 @@ class AddLogEntryTest extends TestCase
         $this->actingAs($this->user, 'api')
             ->json('POST', $this->baseUrl, [
                 'step' => $this->application->current_step,
-                'created_at' => '2021-01-01',
-                'description' => 'A log entry description',
+                'log_date' => '2021-01-01',
+                'entry' => 'A log entry description',
             ])
             ->assertStatus(200)
             ->assertJson([
@@ -59,8 +59,8 @@ class AddLogEntryTest extends TestCase
             ->json('POST', $this->baseUrl, [])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'description' => ['The description field is required.'],
-                'created_at' => ['The created at field is required.'],
+                'entry' => ['The entry field is required.'],
+                'log_date' => ['The log date field is required.'],
             ]);
     }
 
@@ -71,13 +71,13 @@ class AddLogEntryTest extends TestCase
     {
         $this->actingAs($this->user, 'api')
             ->json('POST', $this->baseUrl, [
-                'created_at' => 'bob\'s yer uncle',
+                'log_date' => 'bob\'s yer uncle',
                 'step' => 'four'
             ])
             ->assertStatus(422)
             ->assertJsonFragment([
                 'step' => ['The step must be a number.'],
-                'created_at' => ['The created at is not a valid date.'],
+                'log_date' => ['The log date is not a valid date.'],
             ]);
     }
     

@@ -6,13 +6,16 @@ use DateTime;
 use Carbon\Carbon;
 use App\Models\Document;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Models\Activity;
 use App\Domain\Application\Models\HasUuid;
 use Database\Factories\ApplicationFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Domain\Application\Events\ContactAdded;
 use App\Domain\Application\Events\StepApproved;
+use Illuminate\Support\Carbon as LaravelCarbon;
 use App\Domain\Application\Events\DocumentAdded;
 use App\Domain\Application\Events\DocumentReviewed;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -67,6 +70,7 @@ class Application extends Model
     public function addContact(Person $contact)
     {
         $this->contacts()->attach($contact);
+        $this->touch();
         Event::dispatch(new ContactAdded($this, $contact));
     }
 
@@ -76,6 +80,7 @@ class Application extends Model
         $document->version = $lastDocumentVersion+1;
 
         $this->documents()->save($document);
+        $this->touch();
 
         $event = new DocumentAdded(
             application: $this,
@@ -92,7 +97,22 @@ class Application extends Model
         }
 
         $document->update(['date_reviewed' => $dateReviewed]);
+        $this->touch();
         Event::dispatch(new DocumentReviewed(application: $this, document: $document));
+    }
+
+    public function addLogEntry(string $entry, string $logDate, ?int $step)
+    {
+        $logEntry = activity('applications')
+            ->performedOn($this)
+            ->createdAt(LaravelCarbon::parse($logDate))
+            ->causedBy(Auth::user())
+            ->withProperties([
+                'entry' => $entry,
+                'log_date' => $logDate,
+                'step' => $step
+            ])->log($entry);
+        $this->touch();
     }
 
     public function approveCurrentStep(Carbon $dateApproved)
@@ -127,7 +147,21 @@ class Application extends Model
     {
         return $this->hasMany(Document::class);
     }
-    
+
+    public function logEntries()
+    {
+        return $this->morphMany(Activity::class, 'subject');
+    }
+
+    public function latestLogEntry()
+    {
+        return $this->logEntries()->orderBy('id', 'desc')->first();
+    }
+
+    static public function latestLogEntryForUuid($uuid)
+    {
+        return static::findByUuid($uuid)->latestLogEntry();
+    }
 
     private function getLatestVersionForDocument($documentCategoryId)
     {
