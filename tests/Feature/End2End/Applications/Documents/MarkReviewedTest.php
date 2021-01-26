@@ -33,11 +33,11 @@ class MarkReviewedTest extends TestCase
     public function responds_with_404_if_application_or_document_not_found()
     {
         $this->actingAs($this->user, 'api')
-            ->json('POST', '/api/applications/bobs-yer-uncle/documents/'.$this->document->uuid)
+            ->json('POST', '/api/applications/bobs-yer-uncle/documents/'.$this->document->uuid.'/review', ['date_reviewed' => Carbon::today()])
             ->assertStatus(404);
 
         $this->actingAs($this->user, 'api')
-            ->json('POST', '/api/applications/'.$this->application->uuid.'/documents/bobs-yer-uncle')
+            ->json('POST', '/api/applications/'.$this->application->uuid.'/documents/bobs-yer-uncle/review', ['date_reviewed' => Carbon::today()])
             ->assertStatus(404);
     }
     

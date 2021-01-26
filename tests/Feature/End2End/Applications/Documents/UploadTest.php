@@ -88,7 +88,7 @@ class UploadTest extends TestCase
         $this->application->addDocument(Document::factory()->make(['document_category_id' => 1]));
 
         $data = $this->makeRequestData();
-        $response = $this->actingAs($this->user)
+        $response = $this->actingAs($this->user, 'api')
             ->json('POST', '/api/applications/'.$this->application->uuid.'/documents', $data);
 
             $response->assertStatus(200);
@@ -104,7 +104,7 @@ class UploadTest extends TestCase
      */
     public function validates_required_fields()
     {
-        $response = $this->actingAs($this->user)
+        $response = $this->actingAs($this->user, 'api')
             ->json('POST', '/api/applications/'.$this->application->uuid.'/documents', [])
             ->assertStatus(422)
             ->assertJsonFragment([
@@ -127,7 +127,7 @@ class UploadTest extends TestCase
             'date_reviewed' => 'or destroy the brain'
         ];
 
-        $response = $this->actingAs($this->user)
+        $response = $this->actingAs($this->user, 'api')
             ->json('POST', '/api/applications/'.$this->application->uuid.'/documents', $data)
             ->assertStatus(422)
             ->assertJsonFragment([
