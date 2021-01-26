@@ -38,7 +38,7 @@ class DocumentAdded extends ApplicationEvent
 
     public function getProperties(): array
     {
-        return $this->document->toArray();
+        return ['document' => $this->document->toArray()];
     }
     
 
