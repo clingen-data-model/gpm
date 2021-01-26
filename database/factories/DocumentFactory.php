@@ -27,12 +27,12 @@ class DocumentFactory extends Factory
             'uuid' => Uuid::uuid4(),
             'filename' => uniqid(),
             'storage_path' => $this->faker->file(base_path('tests/files')),
-            'step_number' => $this->faker->randomElement(range(1,4)),
+            'step' => $this->faker->randomElement(range(1,4)),
             'metadata' => null,
             'document_category_id' => $this->faker->randomElement(config('documents.categories'))['id'],
             'version' => 1,
             'date_received' => Carbon::now(),
-            'date_reviewed' => Carbon::now()
+            'date_reviewed' => null
         ];
     }
 }

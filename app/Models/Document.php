@@ -19,7 +19,7 @@ class Document extends Model
         'uuid',
         'filename',
         'storage_path',
-        'step_number',
+        'step',
         'metadata',
         'version',
         'date_received',

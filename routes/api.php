@@ -30,3 +30,4 @@ Route::get('/applications/{uuid}/contacts', [ApplicationContactController::class
 Route::post('/applications/{uuid}/current-step/approve', [ApplicationStepController::class, 'approve']);
 
 Route::post('/applications/{uuid}/documents', [ApplicationDocumentController::class, 'store']);
+Route::post('/applications/{app_uuid}/documents/{doc_uuid}/review', [ApplicationDocumentController::class, 'markReviewed']);

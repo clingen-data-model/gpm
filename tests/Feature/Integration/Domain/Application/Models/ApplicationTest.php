@@ -14,6 +14,7 @@ use App\Domain\Application\Events\ContactAdded;
 use App\Domain\Application\Events\StepApproved;
 use App\Domain\Application\Events\DocumentAdded;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Domain\Application\Events\DocumentReviewed;
 use App\Domain\Application\Events\ApplicationInitiated;
 
 class ApplicationTest extends TestCase
@@ -168,6 +169,77 @@ class ApplicationTest extends TestCase
 
     }
 
+    /**
+     * @test
+     */
+    public function marks_document_reviewed()
+    {
+        $application = Application::factory()->create();
+
+        $document = Document::factory()->make(['date_reviewed' => null]);
+        $application->addDocument($document);
+
+        $dateReviewed = Carbon::parse('2021-01-20');
+        $application->markDocumentReviewed($document, $dateReviewed);
+
+        $this->assertEquals($document->date_reviewed, $dateReviewed);
+    }
+    
+    /**
+     * @test
+     */
+    public function does_not_update_reviewed_date_when_marking_reviewed()
+    {
+        $application = Application::factory()->create();
+
+        $document = Document::factory()->make(['date_reviewed' => '2020-01-01']);
+        $application->addDocument($document);
+
+        $dateReviewed = Carbon::parse('2021-01-20');
+        $application->markDocumentReviewed($document, $dateReviewed);
+
+        $this->assertEquals($document->date_reviewed, Carbon::parse('2020-01-01'));
+    }
+
+    /**
+     * @test
+     */
+    public function raises_document_reviewed_event()
+    {
+        $application = Application::factory()->create();
+
+        $document = Document::factory()->make(['date_reviewed' => null]);
+        $application->addDocument($document);
+
+        $dateReviewed = Carbon::parse('2021-01-20');
+
+        Event::fake();
+        $application->markDocumentReviewed($document, $dateReviewed);
+
+        Event::assertDispatched(DocumentReviewed::class);
+    }
+
+    /**
+     * @test
+     */
+    public function document_reviewed_logged()
+    {
+        $application = Application::factory()->create();
+
+        $document = Document::factory()->make(['date_reviewed' => null, 'document_category_id' => 1]);
+        $application->addDocument($document);
+
+        $dateReviewed = Carbon::parse('2021-01-20');
+
+        $application->markDocumentReviewed($document, $dateReviewed);
+
+        $this->assertDatabaseHas('activity_log', [
+            'description' => 'Reviewed '.$document->category->long_name.' version '.$document->version.'.',
+            'subject_id' => $application->id
+        ]);
+    }
+    
+    
     
 
     private function assertLoggedActivity(

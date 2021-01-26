@@ -19,7 +19,7 @@ class CreateDocumentsTable extends Migration
             $table->string('filename');
             $table->string('storage_path')->unique();
             $table->unsignedBigInteger('application_id');
-            $table->integer('step_number')->nullable();
+            $table->integer('step')->nullable();
             $table->json('metadata')->nullable();
             $table->unsignedBigInteger('document_category_id');
             $table->integer('version')->default(1);
