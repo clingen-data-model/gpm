@@ -34,7 +34,7 @@ class AddApplicationDocumentTest extends TestCase
         Carbon::setTestNow('2021-01-01');
 
         $job = new AddApplicationDocument(
-            application: $this->application,
+            applicationUuid: $this->application->uuid,
             filename: 'testfile.doc',
             storage_path: $this->faker->file(base_path('tests/files')),
             document_category_id: 1,

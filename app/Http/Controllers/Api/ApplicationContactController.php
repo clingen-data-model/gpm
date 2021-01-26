@@ -16,30 +16,27 @@ class ApplicationContactController extends Controller
     public function __construct(private Dispatcher $dispatcher)
     {}
 
-    public function index($uuid)
+    public function index($applicationUuid)
     {
-        $application = Application::findByUuidOrFail($uuid);
+        $application = Application::findByUuidOrFail($applicationUuid);
 
         return $application->contacts;
     }
 
-    public function store($uuid, ApplicationContactRequest $request)
+    public function store($applicationUuid, ApplicationContactRequest $request)
     {
-        $application = Application::findByUuidOrFail($uuid);
-
-        $person = Person::firstOrCreate(
-            ['email' => $request->email],
-            [
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'email' => $request->email,
-                'phone' => $request->phone
-            ]);
-
-        $job = new AddContact(application: $application, person: $person);
+        $job = new AddContact(
+            applicationUuid: $applicationUuid, 
+            first_name: $request->first_name,
+            last_name: $request->last_name,
+            email: $request->email,
+            phone: $request->phone,
+        );
 
         $this->dispatcher->dispatchNow($job);
-        
+       
+        $person = Application::findByUuid($applicationUuid)->contacts()->orderBy('created_at', 'desc')->first();
+
         return $person;
     }
     

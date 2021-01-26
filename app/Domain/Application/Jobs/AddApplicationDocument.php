@@ -11,26 +11,30 @@ class AddApplicationDocument
 {
     use Dispatchable;
 
+    private Application $application;
+    private Carbon $dateReceived;
+    private ?Carbon $dateReviewed;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
     public function __construct(
-        private Application $application,
+        private string $applicationUuid,
         private ?int $step = null,
         private string $uuid,
         private string $filename,
         private string $storage_path,
         private int $document_category_id,
-        private ?Carbon $date_received = null,
-        private ?Carbon $date_reviewed = null,
+        private ?string $date_received = null,
+        private ?string $date_reviewed = null,
         private ?array $metadata = null,
     )
     {
-        if (is_null($this->date_received)) {
-            $this->date_received = Carbon::now();
-        }
+        $this->application = Application::findByUuidOrFail($applicationUuid);
+        $this->dateReceived = $date_received ? Carbon::parse($date_received) : Carbon::now();
+        $this->dateReviewed = $date_reviewed ? Carbon::parse($date_reviewed) : null;
     }
 
     /**
@@ -46,8 +50,8 @@ class AddApplicationDocument
             'filename' => $this->filename,
             'storage_path' => $this->storage_path,
             'document_category_id' => $this->document_category_id,
-            'date_received' => $this->date_received,
-            'date_reviewed' => $this->date_reviewed,
+            'date_received' => $this->dateReceived,
+            'date_reviewed' => $this->dateReviewed,
             'metadata' => $this->metadata,
             'step' => $this->step
         ]);

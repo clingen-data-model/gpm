@@ -15,16 +15,30 @@ class AddContact implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+
+    private Application $application;
+    private Person $person;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
     public function __construct(
-        private Application $application, 
-        private Person $person
+        string $applicationUuid, 
+        string $first_name,
+        string $last_name,
+        string $email,
+        string $phone,
     )
     {
+        $this->application = Application::findByUuidOrFail($applicationUuid);
+        $this->person = Person::firstOrCreate(['email' => $email],[
+            'first_name' => $first_name, 
+            'last_name' => $last_name,
+            'email' => $email,
+            'phone' => $phone,
+        ]);
     }
 
     /**

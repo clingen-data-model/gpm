@@ -8,6 +8,7 @@ use App\Domain\Application\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Domain\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Bus;
 
 class AddContactsTest extends TestCase
 {
@@ -29,7 +30,7 @@ class AddContactsTest extends TestCase
         $contacts = $this->makeContactData();
 
         $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', $contacts[0]);
-        $response->assertStatus(201);
+        $response->assertStatus(200);
         $response->assertJson($contacts[0]);
     }
 
@@ -98,10 +99,17 @@ class AddContactsTest extends TestCase
      */
     public function can_retrieve_contacts_for_an_application()
     {
-        $contacts = Person::factory(2)->create();
+        $contacts = Person::factory(2)->make();
 
         $contacts->each(function ($contact) {
-            AddContact::dispatchNow($this->application, $contact);
+            $job = new AddContact(
+                applicationUuid: $this->application->uuid, 
+                first_name: $contact->first_name,
+                last_name: $contact->last_name,
+                email: $contact->email,
+                phone: $contact->phone,
+            );
+            Bus::dispatch($job);
         });
 
         $response = $this->json('GET', '/api/applications/'.$this->application->uuid.'/contacts');

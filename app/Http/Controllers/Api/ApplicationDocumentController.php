@@ -39,10 +39,8 @@ class ApplicationDocumentController extends Controller
 
         $data['storage_path'] = $path;
         $data['filename'] = $file->name;
-        $data['date_received'] = $data['date_received'] ? Carbon::parse($data['date_received']) : null;
-        $data['date_reviewed'] = $data['date_reviewed'] ? Carbon::parse($data['date_reviewed']) : null;
 
-        $command = new AddApplicationDocument($application, ...$data);
+        $command = new AddApplicationDocument($applicationUuid, ...$data);
         $this->dispatcher->dispatch($command);
 
         $newDocument = Document::findByUuid($request->uuid);
