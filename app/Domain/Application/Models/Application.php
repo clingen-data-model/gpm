@@ -70,6 +70,9 @@ class Application extends Model
 
     public function addDocument(Document $document)
     {
+        $lastDocumentVersion = $this->getLatestVersionForDocument($document->document_category_id);
+        $document->version = $lastDocumentVersion+1;
+
         $this->documents()->save($document);
 
         $event = new DocumentAdded(
@@ -115,6 +118,20 @@ class Application extends Model
     }
     
 
+    private function getLatestVersionForDocument($documentCategoryId)
+    {
+        $results = $this->documents()
+            ->where('document_category_id', $documentCategoryId)
+            ->selectRaw('max(version) as max_version')
+            ->first();
+
+        if (is_null($results) || is_null($results->max_version)) {
+            return 0;
+        }
+
+        return $results->max_version;
+    }
+    
 
 
     // Factory support

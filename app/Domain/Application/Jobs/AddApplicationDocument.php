@@ -23,7 +23,6 @@ class AddApplicationDocument
         private string $filename,
         private string $storage_path,
         private int $document_category_id,
-        private int $version = 1,
         private ?Carbon $date_received = null,
         private ?Carbon $date_reviewed = null,
         private ?array $metadata = null,
@@ -45,7 +44,6 @@ class AddApplicationDocument
 
         $document = Document::make([
             'uuid' => $this->uuid,
-            'version' => 1,
             'filename' => $this->filename,
             'storage_path' => $this->storage_path,
             'document_category_id' => $this->document_category_id,

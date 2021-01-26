@@ -24,6 +24,11 @@ class ApplicationDocumentStoreRequest extends FormRequest
     public function rules()
     {
         return [
+            'uuid' => 'required|uuid',
+            'document_category_id' => 'required|exists:document_categories,id',
+            'file' => 'required|file',
+            'date_received' => 'nullable|date',
+            'date_reviewed' => 'nullable|date',
         ];
     }
 }

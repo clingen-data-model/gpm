@@ -151,6 +151,23 @@ class ApplicationTest extends TestCase
         );
     }    
 
+    /**
+     * @test
+     */
+    public function sets_version_based_existing_versions()
+    {
+        $application = Application::factory()->create();
+
+        $application->addDocument(Document::factory()->make(['document_category_id' => 1]));
+
+        $this->assertEquals($application->documents->first()->version, 1);
+
+        $application->addDocument(Document::factory()->make(['document_category_id' => 1]));
+
+        $this->assertEquals($application->fresh()->documents()->count(), 2);
+
+    }
+
     
 
     private function assertLoggedActivity(
@@ -176,5 +193,6 @@ class ApplicationTest extends TestCase
         }
         $this->assertDatabaseHas('activity_log', $data);
     }
+ 
     
 }
