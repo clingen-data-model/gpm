@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Domain\Application\Events\ContactAdded;
 use App\Domain\Application\Events\StepApproved;
 use App\Domain\Application\Events\DocumentAdded;
+use App\Domain\Application\Events\ContactRemoved;
 use App\Domain\Application\Events\NextActionAdded;
 use App\Domain\Application\Events\DocumentReviewed;
 use App\Domain\Application\Events\NextActionCompleted;
@@ -24,6 +25,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Domain\Application\Events\ApplicationInitiated;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Application\Exceptions\PersonNotContactException;
 
 class Application extends Model
 {
@@ -75,6 +77,18 @@ class Application extends Model
         $this->touch();
         Event::dispatch(new ContactAdded($this, $contact));
     }
+
+    public function removeContact(Person $contact)
+    {
+        if (! $this->contacts->pluck('uuid')->contains($contact->uuid)) {
+            throw new PersonNotContactException($this, $contact);
+        }
+
+        $this->contacts()->detach($contact);
+        $this->touch();
+        Event::dispatch(new ContactRemoved($this, $contact));
+    }
+    
 
     public function addDocument(Document $document)
     {

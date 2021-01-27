@@ -9,6 +9,7 @@ use Illuminate\Auth\Events\Registered;
 use App\Domain\Application\Events\ContactAdded;
 use App\Domain\Application\Events\StepApproved;
 use App\Domain\Application\Events\DocumentAdded;
+use App\Domain\Application\Events\ContactRemoved;
 use App\Domain\Application\Events\NextActionAdded;
 use App\Domain\Application\Events\DocumentReviewed;
 use App\Domain\Application\Events\NextActionCompleted;
@@ -28,6 +29,9 @@ class EventServiceProvider extends ServiceProvider
             RecordEvent::class,
         ],
         ContactAdded::class => [
+            RecordEvent::class,
+        ],
+        ContactRemoved::class => [
             RecordEvent::class,
         ],
         DocumentAdded::class => [

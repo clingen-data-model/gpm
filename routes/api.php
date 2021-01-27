@@ -28,6 +28,7 @@ Route::post('/applications', [ApplicationController::class, 'store']);
 
 Route::post('/applications/{app_uuid}/contacts', [ApplicationContactController::class, 'store']);
 Route::get('/applications/{app_uuid}/contacts', [ApplicationContactController::class, 'index']);
+Route::delete('/applications/{app_uuid}/contacts/{person_uuid}', [ApplicationContactController::class, 'remove']);
 
 Route::post('/applications/{app_uuid}/current-step/approve', [ApplicationStepController::class, 'approve']);
 

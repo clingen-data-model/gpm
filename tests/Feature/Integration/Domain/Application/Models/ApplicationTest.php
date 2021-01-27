@@ -18,6 +18,7 @@ use App\Domain\Application\Events\NextActionAdded;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Domain\Application\Events\DocumentReviewed;
 use App\Domain\Application\Events\ApplicationInitiated;
+use App\Domain\Application\Events\ContactRemoved;
 use App\Domain\Application\Events\NextActionCompleted;
 
 class ApplicationTest extends TestCase
@@ -306,6 +307,43 @@ class ApplicationTest extends TestCase
         ]);
     }
     
+
+    /**
+     * @test
+     */
+    public function dispatches_ContactRemovedEvent()
+    {
+        $application = Application::factory()->create();
+        $person = Person::factory()->create();
+        $application->addContact($person);
+
+        Event::fake();
+        $application->removeContact($person);
+
+        Event::assertDispatched(ContactRemoved::class);
+    }
+    
+
+    /**
+     * @test
+     */
+    public function logs_contact_removed()
+    {
+        $application = Application::factory()->create();
+        $person = Person::factory()->create();
+        $application->addContact($person);
+
+        $application->removeContact($person);
+
+        $this->assertDatabaseHas('activity_log', [
+            'subject_id' => $application->id,
+            'description' => 'Removed contact '.$person->name
+        ]);
+
+    }
+    
+
+    // Helpers
     /**
      * @test
      */
