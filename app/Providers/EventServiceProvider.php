@@ -9,7 +9,9 @@ use Illuminate\Auth\Events\Registered;
 use App\Domain\Application\Events\ContactAdded;
 use App\Domain\Application\Events\StepApproved;
 use App\Domain\Application\Events\DocumentAdded;
+use App\Domain\Application\Events\NextActionAdded;
 use App\Domain\Application\Events\DocumentReviewed;
+use App\Domain\Application\Events\NextActionCompleted;
 use App\Domain\Application\Events\ApplicationInitiated;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -35,6 +37,12 @@ class EventServiceProvider extends ServiceProvider
             RecordEvent::class,
         ],
         StepApproved::class => [
+            RecordEvent::class,
+        ],
+        NextActionAdded::class => [
+            RecordEvent::class,
+        ],
+        NextActionCompleted::class => [
             RecordEvent::class,
         ]
     ];
