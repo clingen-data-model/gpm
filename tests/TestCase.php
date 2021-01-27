@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use App\Models\Cdwg;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Foundation\Testing\WithFaker;
