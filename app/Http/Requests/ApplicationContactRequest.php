@@ -24,6 +24,7 @@ class ApplicationContactRequest extends FormRequest
     public function rules()
     {
         return [
+            'uuid' => 'required|uuid',
             'first_name' => 'required|max:256',
             'last_name' => 'required|max:256',
             'email' => 'required|email',

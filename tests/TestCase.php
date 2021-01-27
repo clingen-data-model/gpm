@@ -37,6 +37,7 @@ abstract class TestCase extends BaseTestCase
         $contacts = [];
         for ($i=0; $i < $number; $i++) { 
             $contacts[] = [
+                'uuid' => Uuid::uuid4(),
                 'first_name' => $this->faker()->firstName,
                 'last_name' => $this->faker()->lastName,
                 'email' => $this->faker()->email,

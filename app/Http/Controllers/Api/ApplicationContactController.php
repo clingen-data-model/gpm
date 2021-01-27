@@ -26,7 +26,8 @@ class ApplicationContactController extends Controller
     public function store($applicationUuid, ApplicationContactRequest $request)
     {
         $job = new AddContact(
-            applicationUuid: $applicationUuid, 
+            applicationUuid: $applicationUuid,
+            uuid: $request->uuid,
             first_name: $request->first_name,
             last_name: $request->last_name,
             email: $request->email,
@@ -35,7 +36,7 @@ class ApplicationContactController extends Controller
 
         $this->dispatcher->dispatchNow($job);
        
-        $person = Application::findByUuid($applicationUuid)->contacts()->orderBy('created_at', 'desc')->first();
+        $person = Application::findByUuid($applicationUuid)->contacts()->where('uuid', $request->uuid)->sole();
 
         return $person;
     }

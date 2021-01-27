@@ -16,29 +16,20 @@ class AddContact implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
 
-    private Application $application;
-    private Person $person;
-
     /**
      * Create a new job instance.
      *
      * @return void
      */
     public function __construct(
-        string $applicationUuid, 
-        string $first_name,
-        string $last_name,
-        string $email,
-        string $phone,
+        private string $applicationUuid,
+        private string $uuid,
+        private string $first_name,
+        private string $last_name,
+        private string $email,
+        private string $phone,
     )
     {
-        $this->application = Application::findByUuidOrFail($applicationUuid);
-        $this->person = Person::firstOrCreate(['email' => $email],[
-            'first_name' => $first_name, 
-            'last_name' => $last_name,
-            'email' => $email,
-            'phone' => $phone,
-        ]);
     }
 
     /**
@@ -48,6 +39,15 @@ class AddContact implements ShouldQueue
      */
     public function handle()
     {        
-        $this->application->addContact($this->person);
+        $application = Application::findByUuidOrFail($this->applicationUuid);
+        
+        $person = Person::firstOrCreate(['uuid' => $this->uuid], [
+            'first_name' => $this->first_name, 
+            'last_name' => $this->last_name,
+            'email' => $this->email,
+            'phone' => $this->phone,
+        ]);
+
+        $application->addContact($person);
     }
 }

@@ -8,6 +8,12 @@ namespace App\Domain\Application\Models;
 trait HasUuid
 {
     // Queries
+    public function scopeHasUuid($query, $uuid)
+    {
+        return $query->where('uuid', $uuid);
+    }
+    
+
     static public function findByUuid($uuid)
     {
         return static::where('uuid', $uuid)->first();

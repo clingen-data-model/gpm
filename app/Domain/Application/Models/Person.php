@@ -13,8 +13,10 @@ class Person extends Model
     use HasFactory;
     use SoftDeletes;
     use HasTimestamps;
+    use HasUuid;
 
     protected $fillable = [
+        'uuid',
         'first_name',
         'last_name',
         'email',
