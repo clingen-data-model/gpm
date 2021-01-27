@@ -3,8 +3,9 @@
 namespace App\Domain\Application\Models;
 
 use DateTime;
-use Carbon\Carbon;
 use App\Models\Document;
+use App\Models\NextAction;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
@@ -15,9 +16,10 @@ use Database\Factories\ApplicationFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Domain\Application\Events\ContactAdded;
 use App\Domain\Application\Events\StepApproved;
-use Illuminate\Support\Carbon as LaravelCarbon;
 use App\Domain\Application\Events\DocumentAdded;
+use App\Domain\Application\Events\NextActionAdded;
 use App\Domain\Application\Events\DocumentReviewed;
+use App\Domain\Application\Events\NextActionCompleted;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Domain\Application\Events\ApplicationInitiated;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
@@ -105,7 +107,7 @@ class Application extends Model
     {
         $logEntry = activity('applications')
             ->performedOn($this)
-            ->createdAt(LaravelCarbon::parse($logDate))
+            ->createdAt(Carbon::parse($logDate))
             ->causedBy(Auth::user())
             ->withProperties([
                 'entry' => $entry,
@@ -113,6 +115,20 @@ class Application extends Model
                 'step' => $step
             ])->log($entry);
         $this->touch();
+    }
+
+    public function addNextAction(NextAction $nextAction)
+    {
+        $this->nextActions()->save($nextAction);
+        
+        Event::dispatch(new NextActionAdded($this, $nextAction));
+    }
+
+    public function completeNextAction(NextAction $nextAction, string $dateCompleted)
+    {
+        $nextAction->update(['date_completed' => $dateCompleted]);
+
+        Event::dispatch(new NextActionCompleted(application: $this, nextAction: $nextAction));
     }
 
     public function approveCurrentStep(Carbon $dateApproved)
@@ -158,6 +174,12 @@ class Application extends Model
         return $this->logEntries()->orderBy('id', 'desc')->first();
     }
 
+    public function nextActions()
+    {
+        return $this->hasMany(NextAction::class);
+    }
+
+    // Access methods
     static public function latestLogEntryForUuid($uuid)
     {
         return static::findByUuid($uuid)->latestLogEntry();
@@ -176,14 +198,10 @@ class Application extends Model
 
         return $results->max_version;
     }
-    
-
 
     // Factory support
     static protected function newFactory()
     {
         return new ApplicationFactory();
     }
-
-
 }

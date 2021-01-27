@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Integration\Domain\Application\Jobs;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Event;

@@ -12,6 +12,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use App\Domain\Application\Events\ApplicationEvent;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Support\Carbon;
 
 class DocumentAdded extends ApplicationEvent
 {
@@ -40,17 +41,19 @@ class DocumentAdded extends ApplicationEvent
     {
         return ['document' => $this->document->toArray()];
     }
+
+    public function getLogDate():Carbon
+    {
+        return $this->document->date_received;
+    }
     
-
-
-
     /**
      * Get the channels the event should broadcast on.
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function broadcastOn()
-    {
-        return new PrivateChannel('channel-name');
-    }
+    // public function broadcastOn()
+    // {
+    //     return new PrivateChannel('channel-name');
+    // }
 }

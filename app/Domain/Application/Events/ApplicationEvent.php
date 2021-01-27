@@ -9,6 +9,7 @@ use App\Events\RecordableEvent;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class ApplicationEvent extends RecordableEvent
 {
@@ -31,6 +32,11 @@ class ApplicationEvent extends RecordableEvent
     public function getSubject():Model
     {
         return $this->application;
+    }
+
+    public function getLogDate():Carbon
+    {
+        return Carbon::now();
     }
     
     

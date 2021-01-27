@@ -7,6 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Domain\Application\Models\Application;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Support\Carbon;
 
 class ApplicationInitiated extends ApplicationEvent
 {
@@ -27,5 +28,9 @@ class ApplicationInitiated extends ApplicationEvent
         return 'Application initiated';
     }
     
+    public function getLogDate():Carbon
+    {
+        return $this->application->date_initiated;
+    }
     
 }

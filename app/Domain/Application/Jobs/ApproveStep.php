@@ -2,11 +2,11 @@
 
 namespace App\Domain\Application\Jobs;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Domain\Application\Exceptions\UnmetStepRequirementsException;
 use App\Domain\Application\Models\Application;
 use App\Domain\Application\Service\StepManagerFactory;
+use App\Domain\Application\Exceptions\UnmetStepRequirementsException;
 
 class ApproveStep
 {

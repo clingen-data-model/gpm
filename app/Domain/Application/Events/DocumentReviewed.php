@@ -11,6 +11,7 @@ use App\Domain\Application\Models\Application;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Support\Carbon;
 
 class DocumentReviewed extends ApplicationEvent
 {
@@ -35,6 +36,10 @@ class DocumentReviewed extends ApplicationEvent
         return ['document' => $this->document->toArray()];
     }
     
+    public function getLogDate():Carbon
+    {
+        return $this->document->date_reviewed;
+    }
     
 
     /**
@@ -42,8 +47,8 @@ class DocumentReviewed extends ApplicationEvent
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function broadcastOn()
-    {
-        return new PrivateChannel('channel-name');
-    }
+    // public function broadcastOn()
+    // {
+    //     return new PrivateChannel('channel-name');
+    // }
 }

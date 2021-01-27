@@ -45,6 +45,8 @@ class RecordEvent
             $logger->withProperties($properties);
         }
 
+        $logger->createdAt($event->getLogDate());
+
         $logger->log($event->getLogEntry());
 
     }

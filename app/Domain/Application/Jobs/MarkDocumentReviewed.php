@@ -2,10 +2,10 @@
 
 namespace App\Domain\Application\Jobs;
 
+use App\Models\Document;
+use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Domain\Application\Models\Application;
-use App\Models\Document;
-use Carbon\Carbon;
 
 class MarkDocumentReviewed
 {

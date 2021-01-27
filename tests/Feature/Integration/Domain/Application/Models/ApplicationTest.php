@@ -2,10 +2,11 @@
 
 namespace Tests\Feature\Integration\Domain\Application\Models;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Document;
+use App\Models\NextAction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use App\Domain\Application\Models\Person;
@@ -13,9 +14,11 @@ use App\Domain\Application\Models\Application;
 use App\Domain\Application\Events\ContactAdded;
 use App\Domain\Application\Events\StepApproved;
 use App\Domain\Application\Events\DocumentAdded;
+use App\Domain\Application\Events\NextActionAdded;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Domain\Application\Events\DocumentReviewed;
 use App\Domain\Application\Events\ApplicationInitiated;
+use App\Domain\Application\Events\NextActionCompleted;
 
 class ApplicationTest extends TestCase
 {
@@ -238,6 +241,74 @@ class ApplicationTest extends TestCase
             'subject_id' => $application->id
         ]);
     }
+
+    /**
+     * @test
+     */
+    public function raises_NextActionCompleted_event()
+    {
+        $application = Application::factory()->create();
+        $nextAction = NextAction::factory()->make();
+        $application->addNextAction($nextAction);
+
+        Event::fake();
+        $application->completeNextAction($nextAction, '2021-02-01');
+
+        Event::assertDispatched(NextActionCompleted::class);
+    }
+    
+    /**
+     * @test
+     */
+    public function NextActionCompleted_logged()
+    {
+        $application = Application::factory()->create();
+        $nextAction = NextAction::factory()->make();
+        $application->addNextAction($nextAction);
+
+        $application->completeNextAction($nextAction, '2021-02-01');
+
+        $this->assertDatabaseHas('activity_log', [
+            'subject_id' => $application->id,
+            'description' => 'Next action completed: '.$nextAction->entry
+        ]);
+    }
+    
+
+    
+    /**
+     * @test
+     */
+    public function raises_NextActionAdded_event()
+    {
+        $app = Application::factory()->create();
+        $nextAction = NextAction::factory()->make();
+
+        Event::fake();
+        $app->addNextAction($nextAction);
+
+        Event::assertDispatched(NextActionAdded::class);
+    }
+
+    /**
+     * @test
+     */
+    public function logs_next_action_added()
+    {
+        $app = Application::factory()->create();
+        $nextAction = NextAction::factory()->make();
+
+        $app->addNextAction($nextAction);
+
+        $this->assertDatabaseHas('activity_log', [
+            'subject_id' => $app->id,
+            'description' => 'Added next action: '.$nextAction->entry
+        ]);
+    }
+    
+    /**
+     * @test
+     */
     
     
     

@@ -2,13 +2,14 @@
 
 namespace App\Domain\Application\Events;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\PresenceChannel;
 use App\Domain\Application\Models\Application;
-use Carbon\Carbon;
 use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Support\Carbon as SupportCarbon;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
@@ -38,14 +39,19 @@ class StepApproved extends ApplicationEvent
         return 'Step '.$this->step.' approved';
     }
     
+    public function getLogDate():Carbon
+    {
+        return $this->dateApproved;
+    }
+    
 
     /**
      * Get the channels the event should broadcast on.
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function broadcastOn()
-    {
-        return new PrivateChannel('channel-name');
-    }
+    // public function broadcastOn()
+    // {
+    //     return new PrivateChannel('channel-name');
+    // }
 }

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\End2End\Appiclications\Documents;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Document;

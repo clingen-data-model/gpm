@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use App\Models\Cdwg;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

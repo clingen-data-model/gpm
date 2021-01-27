@@ -3,7 +3,7 @@
 namespace App\Domain\Application\Jobs;
 
 use DateTime;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Domain\Application\Models\Application;
 

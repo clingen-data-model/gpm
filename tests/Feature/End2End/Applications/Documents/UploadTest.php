@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\End2End\Applications\Documents;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 use App\Models\User;
 use Ramsey\Uuid\Uuid;

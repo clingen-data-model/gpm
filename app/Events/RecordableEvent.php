@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use Exception;
+use Illuminate\Support\Carbon;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -33,6 +34,11 @@ class RecordableEvent
     }
 
     public function getProperties():array
+    {
+        throw new Exception('Not implemented');
+    }
+
+    public function getLogDate():Carbon
     {
         throw new Exception('Not implemented');
     }
