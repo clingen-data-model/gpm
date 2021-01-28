@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\End2End\Applications;
+namespace Tests\Feature\End2End\Applications\Contacts;
 
 use Tests\TestCase;
 use App\Models\User;
