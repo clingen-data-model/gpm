@@ -14,6 +14,4 @@ abstract class AbstractStepManager implements StepManagerInterface
     abstract public function isCurrentStep():bool;
     abstract public function meetsAllRequirements():bool;
     abstract public function getUnmetRequirements():array;
-
-
 }
