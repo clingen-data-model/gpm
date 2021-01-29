@@ -25,6 +25,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('/applications', [ApplicationController::class, 'store']);
+Route::put('/applications/{app_uuid}', [ApplicationController::class, 'update']);
 
 Route::post('/applications/{app_uuid}/contacts', [ApplicationContactController::class, 'store']);
 Route::get('/applications/{app_uuid}/contacts', [ApplicationContactController::class, 'index']);

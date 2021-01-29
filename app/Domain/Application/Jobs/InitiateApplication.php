@@ -32,7 +32,6 @@ class InitiateApplication
     public function handle(): void
     {
         $application = Application::initiate(...get_object_vars($this));
-        $application->save();
     }
 
 }

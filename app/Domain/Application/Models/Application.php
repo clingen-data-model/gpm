@@ -3,6 +3,17 @@
 namespace App\Domain\Application\Models;
 
 use DateTime;
+use App\Models\Document;
+use App\Models\NextAction;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Models\Activity;
+use App\Domain\Application\Models\HasUuid;
+use Database\Factories\ApplicationFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Domain\Application\Events\ContactAdded;
 use App\Domain\Application\Events\StepApproved;
 use App\Domain\Application\Events\DocumentAdded;
@@ -12,22 +23,12 @@ use App\Domain\Application\Events\DocumentReviewed;
 use App\Domain\Application\Events\NextActionCompleted;
 use App\Domain\Application\Events\ApplicationCompleted;
 use App\Domain\Application\Events\ApplicationInitiated;
+use App\Domain\Application\Events\ExpertPanelAttributesUpdated;
 use App\Domain\Application\Exceptions\PersonNotContactException;
 use App\Domain\Application\Exceptions\UnmetStepRequirementsException;
-use App\Domain\Application\Models\HasUuid;
 use App\Domain\Application\Service\StepManagerFactory;
-use App\Models\Document;
-use App\Models\NextAction;
-use Database\Factories\ApplicationFactory;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
-use Spatie\Activitylog\Models\Activity;
 
 class Application extends Model
 {
@@ -37,17 +38,11 @@ class Application extends Model
     use HasUuid;
 
     protected $fillable = [
-        'uuid',
         'working_name',
         'long_base_name',
         'short_base_name',
         'affiliation_id',
         'cdwg_id',
-        'ep_type_id',
-        'date_initiated',
-        'date_completed',
-        'current_step',
-        'survey_monkey_url',
     ];
 
     protected $dates = [
@@ -62,17 +57,21 @@ class Application extends Model
         'approval_dates'=> 'json'
     ];
 
+    protected $appends = [
+        'clingen_url'
+    ];
+
     // Domain methods
     public static function initiate(string $uuid, string $working_name, int $cdwg_id, int $ep_type_id, DateTime $date_initiated)
     {
-        $application = static::create([
-            'uuid' => $uuid,
-            'working_name' => $working_name,
-            'cdwg_id' => $cdwg_id,
-            'ep_type_id' => $ep_type_id,
-            'date_initiated' => $date_initiated,
-        ]);
-
+        $application = new static();
+        $application->uuid = $uuid;
+        $application->working_name = $working_name;
+        $application->cdwg_id = $cdwg_id;
+        $application->ep_type_id = $ep_type_id;
+        $application->date_initiated = $date_initiated;
+        $application->save();
+    
         Event::dispatch(new ApplicationInitiated($application));
 
         return $application;
@@ -140,13 +139,16 @@ class Application extends Model
     public function addNextAction(NextAction $nextAction)
     {
         $this->nextActions()->save($nextAction);
+        $this->touch();
         
         Event::dispatch(new NextActionAdded($this, $nextAction));
     }
 
     public function completeNextAction(NextAction $nextAction, string $dateCompleted)
     {
-        $nextAction->update(['date_completed' => $dateCompleted]);
+        $nextAction->date_completed = $dateCompleted;
+        $nextAction->save();
+        $this->touch();
 
         Event::dispatch(new NextActionCompleted(application: $this, nextAction: $nextAction));
     }
@@ -186,6 +188,16 @@ class Application extends Model
         Event::dispatch(new ApplicationCompleted($this));
     }
 
+    public function setExpertPanelAttributes(array $attributes)
+    {
+        $this->fill($attributes);
+        if ($this->isDirty()) {
+            $this->save();
+            Event::dispatch(new ExpertPanelAttributesUpdated($this, $attributes));
+        }
+    }
+    
+    
     private function addApprovalDate(int $step, Carbon $date)
     {
         if (is_null($this->approval_dates)) {
@@ -241,6 +253,16 @@ class Application extends Model
 
         return $results->max_version;
     }
+
+    public function getClingenUrlAttribute()
+    {
+        if (is_null($this->affiliation_id)) {
+            return null;
+        }
+
+        return 'https://clinicalgenome.org/affiliation/'.$this->affiliation_id;
+    }
+    
 
     // Factory support
     static protected function newFactory()

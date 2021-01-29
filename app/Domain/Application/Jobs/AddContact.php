@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Domain\Application\Models\Application;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Validation\ValidationException;
 
 class AddContact implements ShouldQueue
 {

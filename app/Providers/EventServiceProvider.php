@@ -15,6 +15,7 @@ use App\Domain\Application\Events\DocumentReviewed;
 use App\Domain\Application\Events\NextActionCompleted;
 use App\Domain\Application\Events\ApplicationCompleted;
 use App\Domain\Application\Events\ApplicationInitiated;
+use App\Domain\Application\Events\ExpertPanelAttributesUpdated;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -30,6 +31,9 @@ class EventServiceProvider extends ServiceProvider
             RecordEvent::class,
         ],
         ApplicationCompleted::class => [
+            RecordEvent::class,
+        ],
+        ExpertPanelAttributesUpdated::class => [
             RecordEvent::class,
         ],
         ContactAdded::class => [

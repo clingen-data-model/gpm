@@ -21,6 +21,7 @@ use App\Domain\Application\Events\DocumentReviewed;
 use App\Domain\Application\Events\NextActionCompleted;
 use App\Domain\Application\Events\ApplicationCompleted;
 use App\Domain\Application\Events\ApplicationInitiated;
+use App\Domain\Application\Events\ExpertPanelAttributesUpdated;
 
 class ApplicationTest extends TestCase
 {
@@ -370,7 +371,48 @@ class ApplicationTest extends TestCase
         $application->completeApplication(Carbon::parse('2020-01-01'));
         $this->assertLoggedActivity($application, 'Application completed.');
     }
+
+    /**
+     * @test
+     */
+    public function raises_ExpertPanelAttributesUpdated_event()
+    {
+        $application = Application::factory()->gcep()->create();
     
+        Event::fake();
+        $application->setExpertPanelAttributes([
+            'working_name' => 'test'
+        ]);
+    
+        Event::assertDispatched(ExpertPanelAttributesUpdated::class);
+    }
+
+    /**
+     * @test
+     */
+    public function logs_ExpertPanelAttributesUpdated()
+    {
+        $application = Application::factory()->gcep()->create();
+    
+        $application->setExpertPanelAttributes([
+            'working_name' => 'test'
+        ]);
+        $this->assertLoggedActivity($application, 'Attributes updated: working_name = test');
+    }
+    
+    /**
+     * @test
+     */
+    public function appends_clingen_url_based_on_affiliation_id()
+    {
+        $application = Application::factory()->make();
+
+        $this->assertNull($application->clingen_url);
+
+        $application->affiliation_id = '4000123';
+
+        $this->assertEquals('https://clinicalgenome.org/affiliation/4000123', $application->clingen_url);
+    }
     
     
 

@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Support\Carbon;
 use App\Models\Cdwg;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Bus\Dispatcher;
-use App\Domain\Application\Jobs\InitiateApplication;
+use App\Domain\Application\Jobs\AddContact;
 use App\Domain\Application\Models\Application;
 use App\Http\Requests\InitiateApplicationRequest;
-use App\Domain\Application\Jobs\AddContact;
+use App\Domain\Application\Jobs\InitiateApplication;
+use App\Domain\Application\Jobs\UpdateExpertPanelAttributes;
+use App\Http\Requests\Applications\UpdateExpertPanelAttributesRequest;
 
 class ApplicationController extends Controller
 {
@@ -60,25 +62,19 @@ class ApplicationController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param int $id
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateExpertPanelAttributesRequest $request, $uuid)
     {
+        $this->dispatcher->dispatch(new UpdateExpertPanelAttributes(uuid: $uuid, attributes: $request->all()));
+
+        $application = Application::findByUuidOrFail($uuid);
+
+        return $application;
     }
 
     /**
