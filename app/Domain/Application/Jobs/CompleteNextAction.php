@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Applications\Jobs;
+namespace App\Domain\Application\Jobs;
 
 use App\Models\NextAction;
 use Illuminate\Foundation\Bus\Dispatchable;
