@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Integration\Domain\Application\Models;
 
-use Illuminate\Support\Carbon;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Document;
 use App\Models\NextAction;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use App\Domain\Application\Models\Person;
@@ -14,12 +14,13 @@ use App\Domain\Application\Models\Application;
 use App\Domain\Application\Events\ContactAdded;
 use App\Domain\Application\Events\StepApproved;
 use App\Domain\Application\Events\DocumentAdded;
+use App\Domain\Application\Events\ContactRemoved;
 use App\Domain\Application\Events\NextActionAdded;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Domain\Application\Events\DocumentReviewed;
-use App\Domain\Application\Events\ApplicationInitiated;
-use App\Domain\Application\Events\ContactRemoved;
 use App\Domain\Application\Events\NextActionCompleted;
+use App\Domain\Application\Events\ApplicationCompleted;
+use App\Domain\Application\Events\ApplicationInitiated;
 
 class ApplicationTest extends TestCase
 {
@@ -341,6 +342,36 @@ class ApplicationTest extends TestCase
         ]);
 
     }
+
+    /**
+     * @test
+     */
+    public function raises_ApplicationCompleted_event()
+    {
+        $application = Application::factory()->gcep()->create([
+            'current_step' => 1
+        ]);
+    
+        Event::fake();
+        $application->completeApplication(Carbon::parse('2020-01-01'));
+    
+        Event::assertDispatched(ApplicationCompleted::class);
+    }
+
+    /**
+     * @test
+     */
+    public function logs_Application_completed()
+    {
+        $application = Application::factory()->gcep()->create([
+            'current_step' => 1
+        ]);
+    
+        $application->completeApplication(Carbon::parse('2020-01-01'));
+        $this->assertLoggedActivity($application, 'Application completed.');
+    }
+    
+    
     
 
     // Helpers
@@ -366,7 +397,7 @@ class ApplicationTest extends TestCase
             'subject_type' => Application::class,
             'subject_id' => (string)$application->id,
             'causer_type' => $causer_type,
-            'causer_id' => $causer_id
+            'causer_id' => $causer_id,
         ];
 
         if ($properties) {

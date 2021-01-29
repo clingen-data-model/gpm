@@ -13,7 +13,7 @@ class VcepFinalizeStepManager extends AbstractStepManager
     public function isCurrentStep():bool
     {
         return $this->application->ep_type_id == config('expert_panels.types.vcep.id')
-            && $this->application->current_step == 3;
+            && $this->application->current_step == 4;
     }
 
     public function meetsAllRequirements():bool
@@ -26,7 +26,7 @@ class VcepFinalizeStepManager extends AbstractStepManager
         return [];
     }
 
-    public function isFinalStep():bool
+    public function isLastStep():bool
     {
         return true;
     }

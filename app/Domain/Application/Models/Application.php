@@ -3,17 +3,6 @@
 namespace App\Domain\Application\Models;
 
 use DateTime;
-use App\Models\Document;
-use App\Models\NextAction;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\Models\Activity;
-use App\Domain\Application\Models\HasUuid;
-use Database\Factories\ApplicationFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Domain\Application\Events\ContactAdded;
 use App\Domain\Application\Events\StepApproved;
 use App\Domain\Application\Events\DocumentAdded;
@@ -21,13 +10,24 @@ use App\Domain\Application\Events\ContactRemoved;
 use App\Domain\Application\Events\NextActionAdded;
 use App\Domain\Application\Events\DocumentReviewed;
 use App\Domain\Application\Events\NextActionCompleted;
-use App\Domain\Application\Service\StepManagerFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Domain\Application\Events\ApplicationCompleted;
 use App\Domain\Application\Events\ApplicationInitiated;
-use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Domain\Application\Exceptions\PersonNotContactException;
 use App\Domain\Application\Exceptions\UnmetStepRequirementsException;
+use App\Domain\Application\Models\HasUuid;
+use App\Domain\Application\Service\StepManagerFactory;
+use App\Models\Document;
+use App\Models\NextAction;
+use Database\Factories\ApplicationFactory;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
+use Spatie\Activitylog\Models\Activity;
 
 class Application extends Model
 {
@@ -96,7 +96,6 @@ class Application extends Model
         Event::dispatch(new ContactRemoved($this, $contact));
     }
     
-
     public function addDocument(Document $document)
     {
         $lastDocumentVersion = $this->getLatestVersionForDocument($document->document_category_id);
@@ -160,30 +159,38 @@ class Application extends Model
             throw new UnmetStepRequirementsException($this, $stepManager->getUnmetRequirements());
         }
 
+        $wasLastStep = $stepManager->isLastStep();
         $approvedStep = $this->current_step;
+        $this->addApprovalDate($approvedStep, $dateApproved);
 
-        if (!$stepManager->isLastStep()) {
+        if (!$wasLastStep) {
             $this->current_step = $this->current_step+1;
         }
-
-        if (is_null($this->approval_dates)) {
-            $this->approval_dates = [];
-        }
-
-        $this->addApprovalDate($approvedStep, $dateApproved);
         
         $this->save();
 
         Event::dispatch(new StepApproved(application: $this, step: $approvedStep, dateApproved: $dateApproved));
+        if ($wasLastStep) {
+            $this->completeApplication($dateApproved);
+        }
     }
 
     public function completeApplication(Carbon $dateCompleted)
     {
+        $stepManager = app()->make(StepManagerFactory::class)($this);
+        if ($stepManager->isLastStep()) {
+            $this->date_completed = $dateCompleted;
+            $this->save();
+        }
 
+        Event::dispatch(new ApplicationCompleted($this));
     }
 
     private function addApprovalDate(int $step, Carbon $date)
     {
+        if (is_null($this->approval_dates)) {
+            $this->approval_dates = [];
+        }
         $approvalDates = $this->approval_dates;
         $approvalDates['step '.$step] = $date;
         $this->approval_dates = $approvalDates;

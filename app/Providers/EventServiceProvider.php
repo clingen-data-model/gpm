@@ -13,6 +13,7 @@ use App\Domain\Application\Events\ContactRemoved;
 use App\Domain\Application\Events\NextActionAdded;
 use App\Domain\Application\Events\DocumentReviewed;
 use App\Domain\Application\Events\NextActionCompleted;
+use App\Domain\Application\Events\ApplicationCompleted;
 use App\Domain\Application\Events\ApplicationInitiated;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -26,6 +27,9 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         ApplicationInitiated::class => [
+            RecordEvent::class,
+        ],
+        ApplicationCompleted::class => [
             RecordEvent::class,
         ],
         ContactAdded::class => [
