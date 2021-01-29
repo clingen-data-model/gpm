@@ -1,8 +1,6 @@
 <?php
 
-namespace App\Domain\Application\Models;
-
-use Illuminate\Database\Eloquent\Collection;
+namespace App\Domain\Application\Service\Steps;
 
 interface StepManagerInterface
 {
@@ -10,6 +8,7 @@ interface StepManagerInterface
     public function getUnmetRequirements():array;
     public function meetsAllRequirements():bool;
     public function isCurrentStep():bool;
+    public function isLastStep():bool;
 
     // public function getDocuments():Collection;
     // public function getLogEntries():Collection;

@@ -1,30 +1,13 @@
 <?php
 
-namespace App\Domain\Application\Models;
+namespace App\Domain\Application\Service\Steps;
 
 use App\Domain\Application\Models\Application;
-use App\Domain\Application\Models\AbstractStepManager;
 
 class VcepDefinitionStepManager extends AbstractStepManager
 {
     public function __construct(private Application $application)
     {
-    }
-    
-
-
-    public function canApprove():bool
-    {
-        if (! $this->isCurrentStep() ) {
-            throw new \Exception('Application\'s current step does not match loaded step.');
-        }
-
-        if (! $this->meetsAllRequirements() ) {
-            return false;
-        }
-
-        return true;
-
     }
 
     public function isCurrentStep():bool
