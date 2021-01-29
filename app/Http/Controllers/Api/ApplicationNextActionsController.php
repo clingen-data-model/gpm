@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Bus\Dispatcher;
 use App\Domain\Application\Jobs\CreateNextAction;
-use App\Domain\Applications\Jobs\CompleteNextAction;
+use App\Domain\Application\Jobs\CompleteNextAction;
 use App\Http\Requests\Applications\CreateNextActionRequest;
 use App\Http\Requests\Applications\CompleteNextActionRequest;
 
@@ -50,8 +50,5 @@ class ApplicationNextActionsController extends Controller
         $nextAction = NextAction::findByUuid($nextActionUuid);
 
         return $nextAction;
-    }
-    
-    
-    
+    }    
 }
