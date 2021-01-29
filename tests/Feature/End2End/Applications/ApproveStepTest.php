@@ -18,7 +18,7 @@ class ApproveApplicationStep1Test extends TestCase
     {
         parent::setup();
         $this->seed();
-        $this->application = Application::factory()->create(['ep_type_id'=>config('expert_panels.types.vcep.id')]);
+        $this->application = Application::factory()->vcep()->create();
         $this->user = User::factory()->create();
     }
 

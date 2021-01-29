@@ -34,4 +34,23 @@ class ApplicationFactory extends Factory
             'current_step' => 1
         ];
     }
+
+    public function gcep()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'ep_type_id' => config('expert_panels.types.gcep.id')
+            ];
+        });
+    }
+    
+    public function vcep()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'ep_type_id' => config('expert_panels.types.vcep.id')
+            ];
+        });
+    }
+    
 }

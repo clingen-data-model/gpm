@@ -34,14 +34,8 @@ class ApproveStep
      *
      * @return void
      */
-    public function handle(StepManagerFactory $stepManagerFactory)
+    public function handle()
     {
-        $stepManager = $stepManagerFactory($this->application);
-        
-        if (! $stepManager->canApprove()) {
-            throw new UnmetStepRequirementsException($this->application, $stepManager->getUnmetRequirements());
-        }
-
         $this->application->approveCurrentStep($this->dateApproved);
     }
 }

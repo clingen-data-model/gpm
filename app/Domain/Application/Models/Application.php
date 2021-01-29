@@ -21,11 +21,13 @@ use App\Domain\Application\Events\ContactRemoved;
 use App\Domain\Application\Events\NextActionAdded;
 use App\Domain\Application\Events\DocumentReviewed;
 use App\Domain\Application\Events\NextActionCompleted;
+use App\Domain\Application\Service\StepManagerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Domain\Application\Events\ApplicationInitiated;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Domain\Application\Exceptions\PersonNotContactException;
+use App\Domain\Application\Exceptions\UnmetStepRequirementsException;
 
 class Application extends Model
 {
@@ -37,15 +39,20 @@ class Application extends Model
     protected $fillable = [
         'uuid',
         'working_name',
+        'long_base_name',
+        'short_base_name',
+        'affiliation_id',
         'cdwg_id',
         'ep_type_id',
         'date_initiated',
+        'date_completed',
         'current_step',
         'survey_monkey_url',
     ];
 
     protected $dates = [
-        'date_initiated'
+        'date_initiated',
+        'date_completed'
     ];
 
     protected $casts = [
@@ -147,8 +154,18 @@ class Application extends Model
 
     public function approveCurrentStep(Carbon $dateApproved)
     {
+        $stepManager = app()->make(StepManagerFactory::class)($this);
+        
+        if (! $stepManager->canApprove()) {
+            throw new UnmetStepRequirementsException($this, $stepManager->getUnmetRequirements());
+        }
+
         $approvedStep = $this->current_step;
-        $this->current_step = $this->current_step+1;
+
+        if (!$stepManager->isLastStep()) {
+            $this->current_step = $this->current_step+1;
+        }
+
         if (is_null($this->approval_dates)) {
             $this->approval_dates = [];
         }
@@ -158,6 +175,11 @@ class Application extends Model
         $this->save();
 
         Event::dispatch(new StepApproved(application: $this, step: $approvedStep, dateApproved: $dateApproved));
+    }
+
+    public function completeApplication(Carbon $dateCompleted)
+    {
+
     }
 
     private function addApprovalDate(int $step, Carbon $date)
