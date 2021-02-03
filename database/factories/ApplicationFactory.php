@@ -26,7 +26,7 @@ class ApplicationFactory extends Factory
     {
         $cdwg = Cdwg::all()->random();
         return [
-            'uuid' => Uuid::uuid4(),
+            'uuid' => Uuid::uuid4()->toString(),
             'working_name' => uniqid().' Application',
             'cdwg_id' => $cdwg->id,
             'ep_type_id' => 1,
@@ -49,6 +49,15 @@ class ApplicationFactory extends Factory
         return $this->state(function (array $attributes) {
             return [
                 'ep_type_id' => config('expert_panels.types.vcep.id')
+            ];
+        });
+    }
+
+    public function randomStep()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'current_step' => $this->faker->randomElement(range(1,4))
             ];
         });
     }
