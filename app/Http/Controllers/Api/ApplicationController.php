@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Cdwg;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Bus\Dispatcher;
 use App\Domain\Application\Jobs\AddContact;
@@ -28,8 +29,46 @@ class ApplicationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        // dd($request->sort);
+        $query = Application::query()->select('applications.*')->with('cdwg', 'logEntries');
+        if ($request->has('sort')) {
+            $field = $request->sort['field'];
+            // dd($field);
+            $dir = $request->sort['dir'] ?? 'asc';
+
+            if ($field == 'cdwg.name') {
+                $query->leftJoin('cdwgs', 'applications.cdwg_id', '=', 'cdwgs.id');
+                $query->orderBy('cdwgs.name', $dir);
+            }
+            
+            elseif ($field == 'latestLogEntry.created_at') {
+                $subQuery = DB::table('activity_log')
+                                ->select('subject_id', DB::raw('MAX(created_at) as latest_activity_at'))
+                                ->where('subject_type', Application::class)
+                                ->groupBy('subject_id');
+
+                $query->leftJoinSub($subQuery, 'latest_activity', function ($join) {
+                    $join->on('latest_activity.subject_id', '=', 'applications.id');
+                })
+                ->addSelect('latest_activity.latest_activity_at as latest_activity_at')
+                ->orderBy('latest_activity_at', $dir);
+            }
+            
+            else {
+                $query->orderBy($field, $dir);
+            }
+
+        }
+        // if ($request->has('where')) {
+        //     foreach ($request->where as $key => $value) {
+        //         $query->where()
+        //     }
+        // }
+        $applications = $query->paginate(20);
+
+        return $applications;
     }
 
     /**

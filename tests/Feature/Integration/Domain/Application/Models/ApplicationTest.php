@@ -34,6 +34,27 @@ class ApplicationTest extends TestCase
         Carbon::setTestNow('2021-01-01');   
     }
     
+    /**
+     * @test
+     */
+    public function name_is_working_name_if_short_base_name_is_null()
+    {
+        $application = Application::factory()->create(['short_base_name' => null]);
+
+        $this->assertEquals($application->name, $application->working_name);
+    }
+
+    /**
+     * @test
+     */
+    public function name_is_short_base_name_if_not_null()
+    {
+        $application = Application::factory()->create(['short_base_name' => 'Beans']);
+
+        $this->assertEquals($application->name, $application->short_base_name);
+    }
+    
+    
 
     /**
      * @test

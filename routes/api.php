@@ -24,6 +24,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/applications', [ApplicationController::class, 'index']);
 Route::post('/applications', [ApplicationController::class, 'store']);
 Route::put('/applications/{app_uuid}', [ApplicationController::class, 'update']);
 
