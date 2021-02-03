@@ -3,6 +3,7 @@
 namespace App\Domain\Application\Models;
 
 use DateTime;
+use App\Models\Cdwg;
 use App\Models\Document;
 use App\Models\NextAction;
 use Illuminate\Support\Carbon;
@@ -21,14 +22,14 @@ use App\Domain\Application\Events\ContactRemoved;
 use App\Domain\Application\Events\NextActionAdded;
 use App\Domain\Application\Events\DocumentReviewed;
 use App\Domain\Application\Events\NextActionCompleted;
+use App\Domain\Application\Service\StepManagerFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Domain\Application\Events\ApplicationCompleted;
 use App\Domain\Application\Events\ApplicationInitiated;
+use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use App\Domain\Application\Events\ExpertPanelAttributesUpdated;
 use App\Domain\Application\Exceptions\PersonNotContactException;
 use App\Domain\Application\Exceptions\UnmetStepRequirementsException;
-use App\Domain\Application\Service\StepManagerFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 
 class Application extends Model
 {
@@ -58,7 +59,8 @@ class Application extends Model
     ];
 
     protected $appends = [
-        'clingen_url'
+        'clingen_url',
+        'name'
     ];
 
     // Domain methods
@@ -226,7 +228,7 @@ class Application extends Model
 
     public function latestLogEntry()
     {
-        return $this->logEntries()->orderBy('id', 'desc')->first();
+        return $this->logEntries()->orderBy('id', 'desc')->limit(1);
     }
 
     public function nextActions()
@@ -234,10 +236,15 @@ class Application extends Model
         return $this->hasMany(NextAction::class);
     }
 
+    public function cdwg()
+    {
+        return $this->belongsTo(Cdwg::class);
+    }
+
     // Access methods
     static public function latestLogEntryForUuid($uuid)
     {
-        return static::findByUuid($uuid)->latestLogEntry();
+        return static::findByUuid($uuid)->latestLogEntry;
     }
 
     private function getLatestVersionForDocument($documentCategoryId)
@@ -252,6 +259,16 @@ class Application extends Model
         }
 
         return $results->max_version;
+    }
+
+    public function getNameAttribute()
+    {
+        return $this->short_base_name ?? $this->working_name;
+    }
+
+    public function getLatestLogEntryAttribute()
+    {
+        return $this->latestLogEntry()->sole();
     }
 
     public function getClingenUrlAttribute()
