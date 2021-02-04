@@ -3,19 +3,30 @@ import ApplicationsIndex from '../views/ApplicationsIndex.vue'
 import GcepsList from '../views/indexes/GcepsList.vue'
 import VcepsList from '../views/indexes/VcepsList.vue'
 import ApplicationDetail from '../views/applications/ApplicationDetail'
+import CreateApplicationForm from '../components/applications/CreateApplicationForm'
 
 const routes = [{
         path: '/',
+        redirect: '/vceps',
         name: 'Index',
-        component: ApplicationsIndex,
+        components: {
+            default: ApplicationsIndex,
+            modal: CreateApplicationForm,
+        },
         children: [{
                 path: "gceps",
-                component: GcepsList,
+                components: {
+                    default: GcepsList,
+                    modal: CreateApplicationForm
+                }
             },
             {
                 path: "vceps",
-                component: VcepsList
-            }
+                components: {
+                    default: VcepsList,
+                    modal: CreateApplicationForm
+                }
+            },
         ]
     },
     {

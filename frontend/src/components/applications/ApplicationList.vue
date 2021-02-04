@@ -1,5 +1,6 @@
 <template>
     <div>
+        <data-table class="mb-4"></data-table>
         <ul>
             <li v-for="application in applications" :key="application.uuid">
                 <router-link :to="`/applications/${application.uuid}`">{{application.workingName}} - {{application.uuid}}</router-link>

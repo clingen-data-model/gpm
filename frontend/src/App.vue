@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="nav" class="border-b">
+    <div id="nav" class="border-b bg-gray-100">
       <div class="container mx-auto py-3 flex">
         <div id="main-menu" class="flex-grow">
           <div class="inline-block pr-3">
