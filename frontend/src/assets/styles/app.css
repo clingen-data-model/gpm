@@ -15,6 +15,12 @@ textarea {
     @apply border border-gray-300 px-2 py-1 rounded
 }
 
+input.sm,
+select.sm,
+textarea.sm {
+    @apply px-1 py-0.5 text-sm;
+}
+
 .tabs {
     @apply flex space-x-2;
 }
