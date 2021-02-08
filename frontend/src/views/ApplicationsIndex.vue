@@ -16,7 +16,7 @@
 
 
       <modal-dialog v-model="showModal" size='md'>
-        <router-view name="modal" @canceled="showModal = !showModal"></router-view>
+        <router-view name="modal" @canceled="showModal = false" @saved="showModal = false"></router-view>
       </modal-dialog>
   </div>
 </template>
@@ -27,7 +27,35 @@ export default {
   name: 'ApplicationsIndex',
   data() {
     return {
-      showModal: false
+      // showModal: false
+    }
+  },
+  watch: {
+    'this.$route.hash': function (to, from) {
+      console.log('to, from', [to, from]);
+    }
+  },
+  computed: {
+    showModal: {
+      set (value) {
+        const currentHash = this.$route.hash == '' ? '#' : this.$route.hash;
+        const hashSet = new Set(currentHash.substr(1).split('&').filter(i => i));
+        if (value) {
+          hashSet.add('initiate');
+        } else {
+          hashSet.delete('initiate');
+        }
+        console.log(hashSet);
+        console.log([...hashSet]);
+
+        const newHash = hashSet.size > 0 ? '#'+[...hashSet].join('&') : ''
+
+        this.$router.replace({path: this.$route.path, query: this.$route.query, hash: newHash});
+      },
+      get () {
+        return this.$route.hash.includes('initiate');
+      },
+      immediate: true
     }
   }
 }
