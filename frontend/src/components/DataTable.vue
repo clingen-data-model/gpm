@@ -40,84 +40,61 @@
 export default {
     name: 'DataTable',
     props: {
-        
+        data: {
+            required: false,
+            type: Array
+        },
+        fields: {
+            required: true,
+            type: Array
+        },
+        filterTerm: {
+            required: false,
+            type: String
+        },
+        filter: {
+            required: false,
+            type: Function
+        },
+
     },
     data() {
         return {
-            fields: [
-                {
-                    name: 'id',
-                    label: 'ID',
-                    type: Number,
-                    sortable: true
-                },
-                {
-                    name: 'name',
-                    label: 'Name',
-                    type: String,
-                    sortable: true
-                },
-                {
-                    name: 'email',
-                    label: 'email',
-                    type: String,
-                    sortable: true
-                },
-                {
-                    name: 'birthday',
-                    label: 'DOB',
-                    type: Date,
-                    sortable: false
-                }
-            ],
-            data: [
-                {
-                    id: 1,
-                    name: 'Elenor',
-                    email: 'elenor@medplace.com',
-                    birthday: '1987-01-01'
-                },
-                {
-                    id: 2,
-                    name: 'Chidi',
-                    email: 'chidi@ethics.org',
-                    birthday: '1984-02-01'
-                },
-                {
-                    id: 3,
-                    name: 'Tehani',
-                    email: 'tehani@namedrop.com',
-                    birthday: '1990-02-01'
-                },
-                {
-                    id: 4,
-                    name: 'Jason',
-                    email: 'jason@stupidnickswinghut.com',
-                    birthday: '1992-02-01'
-                }
-            ],
             sort: {
                 field: 'id',
                 desc: false
-            },
-            filter: null
+            }
         }
     },
     computed: {
-        sortedFilteredData() {
-            let data = JSON.parse(JSON.stringify(this.data))
-            const sortType = this.fields.find(element => element.name == this.sort.field).type;
-            switch (sortType) {
-                case String:
-                case Number:
-                    return data.sort(this.textAndNumbeSort)
-                case Date:
-                    return data.sort(this.dateSort)
-                default:
-                    console.error('unsupported column type');
-                    break;
+        filterFunction () {
+            return this.filter ? this.filter : this.defaultFilter;
+        },
+        filteredData() {
+            if (!this.filterTerm) {
+                return this.data;
             }
-            return this.data
+            return this.data.filter(i => (i !== null))
+                    .filter(this.filterFunction);
+        },
+        sortedFilteredData() {
+            if (this.data) {
+                let data = this.filteredData;//JSON.parse(JSON.stringify(this.data))
+                const sortType = this.fields.find(element => element.name == this.sort.field).type;
+                switch (sortType) {
+                    case String:
+                    case Number:
+                        return data.sort(this.textAndNumbeSort)
+                    case Date:
+                        return data.sort(this.dateSort)
+                    default:
+                        console.error('unsupported column type');
+                        break;
+                }                
+            } else {
+                console.log('no data');
+            }
+            return []
         }
     },
     methods: {
@@ -148,6 +125,16 @@ export default {
                 return 0;
             }
             return coefficient * ((aVal > bVal) ? 1 : -1);
+        },
+        defaultFilter(item) {
+            const fuckers = Object.values(item)
+            for (let i in fuckers) {
+                const val = fuckers[i].toString().toLowerCase();
+                if (val.includes(this.filterTerm.toLowerCase())) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
