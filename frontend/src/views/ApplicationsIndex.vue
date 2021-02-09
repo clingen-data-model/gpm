@@ -1,7 +1,6 @@
 <template>
   <div class="home">
 
-    <!-- <create-application-model></create-application-model> -->
     <button @click="showModal = true" class="bg-blue-500 rounded text-white px-2 py-1">Initiate Application</button>
 
     <div class="mb-2 mt-4">
@@ -15,18 +14,24 @@
     </div>
 
 
-      <modal-dialog v-model="showModal" size='md'>
-        <router-view name="modal" @canceled="showModal = false" @saved="showModal = false"></router-view>
+      <modal-dialog v-model="showModal" size='md' @closed="$refs.initiateform.initForm()">
+        <create-application-form name="modal" @canceled="showModal = false" @saved="showModal = false" ref="initiateform"></create-application-form>
       </modal-dialog>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
+import CreateApplicationForm from '../components/applications/CreateApplicationForm'
+
 export default {
   name: 'ApplicationsIndex',
+  components: {
+    CreateApplicationForm
+  },
   data() {
     return {
+      showModal: false
     }
   },
   watch: {
@@ -35,26 +40,27 @@ export default {
     }
   },
   computed: {
-    showModal: {
-      set (value) {
-        const currentHash = this.$route.hash == '' ? '#' : this.$route.hash;
-        const hashSet = new Set(currentHash.substr(1).split('&').filter(i => i));
-        if (value) {
-          hashSet.add('initiate');
-        } else {
-          hashSet.delete('initiate');
-        }
+    // TODO: figure out why hash isn't being correctly read to open the creation dialog
+    // showModal: {
+    //   set (value) {
+    //     const currentHash = this.$route.hash == '' ? '#' : this.$route.hash;
+    //     const hashSet = new Set(currentHash.substr(1).split('&').filter(i => i));
+    //     if (value) {
+    //       hashSet.add('initiate');
+    //     } else {
+    //       hashSet.delete('initiate');
+    //     }
 
-        const newHash = hashSet.size > 0 ? '#'+[...hashSet].join('&') : ''
+    //     const newHash = hashSet.size > 0 ? '#'+[...hashSet].join('&') : ''
 
-        this.$router.replace({path: this.$route.path, query: this.$route.query, hash: newHash});
-      },
-      get () {
-        console.log(this.$route.hash);
-        return this.$route.hash.includes('initiate');
-      },
-      immediate: true
-    }
+    //     this.$router.replace({path: this.$route.path, query: this.$route.query, hash: newHash});
+    //   },
+    //   get () {
+    //     console.log(this.$route.hash);
+    //     return this.$route.hash.includes('initiate');
+    //   },
+    //   immediate: true
+    // }
   }
 }
 </script>
