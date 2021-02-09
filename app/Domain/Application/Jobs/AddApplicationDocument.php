@@ -22,11 +22,11 @@ class AddApplicationDocument
      */
     public function __construct(
         private string $applicationUuid,
-        private ?int $step = null,
         private string $uuid,
         private string $filename,
         private string $storage_path,
         private int $document_category_id,
+        private ?int $step = null,
         private ?string $date_received = null,
         private ?string $date_reviewed = null,
         private ?array $metadata = null,
