@@ -1,4 +1,5 @@
 import queryStringFromParams from '../http/query_string_from_params'
+import { v4 as uuid4 } from 'uuid';
 
 const { default: axios } = require("axios");
 
@@ -14,8 +15,6 @@ function mergeParams(obj1, obj2) {
     }
     return merged;
 }
-
-
 
 async function all(params) {
     const data = await axios.get(baseUrl + queryStringFromParams(params))
@@ -34,7 +33,10 @@ async function allGceps(params) {
 }
 
 async function initiate(data) {
-    const response = await axios.post(baseUrl, data)
+    if (!data.uuid) {
+        data.uuid = uuid4()
+    }
+    return await axios.post(baseUrl, data)
         .then(response => {
             return response.data
         })

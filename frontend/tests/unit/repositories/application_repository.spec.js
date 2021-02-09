@@ -1,0 +1,1 @@
+import AppRepo from "@adapters/application_repository.js"

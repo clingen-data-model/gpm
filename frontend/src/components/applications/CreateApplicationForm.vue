@@ -1,16 +1,16 @@
 <template>
     <div>
         <h4 class="text-xl font-semibold pb-2 border-b mb-4">Initiate Application</h4>
-        <input-row label="Working Name">
+        <input-row label="Working Name" :errors="errors.working_name">
             <input type="text" v-model="this.app.working_name" placeholder="A recognizable name">
         </input-row>
-        <input-row label="CDWG">
+        <input-row label="CDWG" :errors="errors.cdwg_id">
             <select v-model="app.cdwg_id">
                 <option :value="null">Select...</option>
                 <option v-for="cdwg in cdwgs" :key="cdwg.id" :value="cdwg.id">{{cdwg.name}}</option>
             </select>
         </input-row>
-        <input-row label="EP Type">
+        <input-row label="EP Type" :errors="errors.ep_type_id">
             <div>
                 <div
                     v-for="epType in epTypes" 
@@ -27,7 +27,7 @@
                 </div>
             </div>
         </input-row>
-        <input-row>
+        <input-row :errors="errors.date_initiated">
             <div>
                 <div>
                     <input type="checkbox" v-model="showInitiationDate" id="show-initiation-checkbox">
@@ -46,6 +46,8 @@
     </div>
 </template>
 <script>
+import {initiate} from '../../adapters/application_repository'
+
 export default {
     name: 'CreateApplicationForm',
     props: {
@@ -72,19 +74,36 @@ export default {
             epTypes: [
                 {name: 'GCEP', id: 1},
                 {name: 'VCEP', id: 2}
-            ]
+            ],
+            errors: {}
         }
     },
     computed: {
+        hasErrors() {
+            return Object.keys(this.errors).length > 0;
+        }
     },
     methods: {
         cancel() {
-            this.initAppData();
+            this.initForm();
             this.$emit('canceled');
         },
-        save() {
+        async save() {
+            try {
+                const responseData = await initiate(this.app);
+                this.initForm();
+                this.$emit('saved', responseData);
+            } catch (error) {
+                if (error.response && error.response.status == 422 && error.response.data.errors) {
+                    this.errors = error.response.data.errors
+                    return;
+                }
+                console.error(error)
+            }
+        },
+        initForm() {
+            this.initErrors();
             this.initAppData();
-            this.$emit('saved');
         },
         initAppData() {
             this.app = {
@@ -93,6 +112,9 @@ export default {
                 ep_type_id: null,
                 date_initiated: new Date()
             };
+        },
+        initErrors() {
+            this.errors = {}
         }
     }
 }

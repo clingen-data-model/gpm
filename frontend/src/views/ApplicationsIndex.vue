@@ -27,7 +27,6 @@ export default {
   name: 'ApplicationsIndex',
   data() {
     return {
-      // showModal: false
     }
   },
   watch: {
@@ -45,14 +44,13 @@ export default {
         } else {
           hashSet.delete('initiate');
         }
-        console.log(hashSet);
-        console.log([...hashSet]);
 
         const newHash = hashSet.size > 0 ? '#'+[...hashSet].join('&') : ''
 
         this.$router.replace({path: this.$route.path, query: this.$route.query, hash: newHash});
       },
       get () {
+        console.log(this.$route.hash);
         return this.$route.hash.includes('initiate');
       },
       immediate: true
