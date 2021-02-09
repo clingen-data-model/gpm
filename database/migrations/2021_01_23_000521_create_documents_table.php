@@ -28,7 +28,7 @@ class CreateDocumentsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('application_id')->references('id')->on('applications');
+            $table->foreign('application_id')->references('id')->on('applications')->onDelete('cascade');
             $table->foreign('document_category_id')->references('id')->on('document_categories');
         });
     }
