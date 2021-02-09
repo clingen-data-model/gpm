@@ -61,12 +61,19 @@ class ApplicationController extends Controller
             }
 
         }
-        // if ($request->has('where')) {
-        //     foreach ($request->where as $key => $value) {
-        //         $query->where()
-        //     }
-        // }
-        $applications = $query->paginate(20);
+
+        if ($request->has('with')) {
+            $realRelationships = [];
+            $query->with($request->with);
+        }
+
+        if ($request->has('where')) {
+            foreach ($request->where as $key => $value) {
+                $query->where($key, $value);
+            }
+        }
+        $applications = $query->paginate(200);
+        // $applications = $query->get();
 
         return $applications;
     }
