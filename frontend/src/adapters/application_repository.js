@@ -4,13 +4,40 @@ const { default: axios } = require("axios");
 
 const baseUrl = '/api/applications';
 
+function mergeParams(obj1, obj2) {
+    const merged = {...obj1, ...obj2 };
+    if (obj1.with && obj2.with) {
+        merged.with = [...obj1.with, ...obj2.with]
+    }
+    if (obj1.where && obj2.where) {
+        merged.where = {...obj1.where, ...obj2.where }
+    }
+    return merged;
+}
+
+
+
 async function all(params) {
-    console.log('before')
     const data = await axios.get(baseUrl + queryStringFromParams(params))
         .then(response => response.data.data);
-    console.log('after')
-    console.log(data)
     return data
 }
 
-export { all };
+async function allVceps(params) {
+    const mergedParams = mergeParams(params, { where: { ep_type_id: 2 } });
+    return await all(mergedParams)
+}
+
+async function allGceps(params) {
+    const mergedParams = mergeParams(params, { where: { ep_type_id: 1 } });
+    return await all(mergedParams)
+}
+
+async function initiate(data) {
+    const response = await axios.post(baseUrl, data)
+        .then(response => {
+            return response.data
+        })
+}
+
+export { all, allVceps, allGceps, initiate };
