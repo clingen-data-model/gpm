@@ -124,7 +124,7 @@ class Application extends Model
         Event::dispatch(new DocumentReviewed(application: $this, document: $document));
     }
 
-    public function addLogEntry(string $entry, string $logDate, ?int $step)
+    public function addLogEntry(string $entry, string $logDate, ?int $step = 1)
     {
         $logEntry = activity('applications')
             ->performedOn($this)
@@ -228,12 +228,21 @@ class Application extends Model
 
     public function latestLogEntry()
     {
-        return $this->logEntries()->orderBy('id', 'desc')->limit(1);
+        return $this->morphOne(Activity::class, 'subject')
+                ->orderBy('created_at', 'desc')
+                ;
     }
 
     public function nextActions()
     {
         return $this->hasMany(NextAction::class);
+    }
+
+    public function latestPendingNextAction()
+    {
+        return $this->hasOne(NextAction::class)
+                ->pending()
+                ->orderBy('created_at', 'desc');
     }
 
     public function cdwg()
@@ -264,11 +273,6 @@ class Application extends Model
     public function getNameAttribute()
     {
         return $this->short_base_name ?? $this->working_name;
-    }
-
-    public function getLatestLogEntryAttribute()
-    {
-        return $this->latestLogEntry()->sole();
     }
 
     public function getClingenUrlAttribute()
