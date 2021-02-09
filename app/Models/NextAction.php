@@ -30,4 +30,10 @@ class NextAction extends Model
         'date_completed',
         'target_date'
     ];
+
+    public function scopePending($query)
+    {
+        return $query->whereNull('date_completed');
+    }
+    
 }
