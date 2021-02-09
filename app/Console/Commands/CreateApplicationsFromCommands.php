@@ -20,7 +20,7 @@ class CreateApplicationsFromCommands extends Command
      *
      * @var string
      */
-    protected $signature = 'applications:create-from-commands {--count=1 : count}';
+    protected $signature = 'applications:create-from-commands {--count=1 : count} {--last-approval=null : step at which to stop running approvals} {--type=null : type of ep to create}';
 
     /**
      * The console command description.
@@ -49,10 +49,12 @@ class CreateApplicationsFromCommands extends Command
         $faker = \Faker\Factory::create();
         $cdwgs = Cdwg::all();
         $count = $this->option('count', 1);
+        $type = $this->option('type', null);
+        
 
         for ($i=0; $i < $count; $i++) { 
             $uuid = Uuid::uuid4()->toString();
-            $epTypeId = $faker->randomElement([1,2]);
+            $epTypeId = $type ? $type : $faker->randomElement([1,2]);
             $cdwgId = $faker->randomElement($cdwgs->pluck('id')->toArray());
             $this->createApplicationFromCommands($uuid, $epTypeId, $cdwgId);
         }
@@ -61,6 +63,7 @@ class CreateApplicationsFromCommands extends Command
     function createApplicationFromCommands($uuid, $epTypeId, $cdwgId)
     {
         $faker = \Faker\Factory::create();
+        $lastApprovedStep = $this->option('last-approval', null);
         $application = Application::initiate(...[
             'uuid' => $uuid,
             'working_name' => ucwords(join(' ', $faker->words(4))),
@@ -70,8 +73,6 @@ class CreateApplicationsFromCommands extends Command
         ]);
         $application->save();
 
-        dump($application->uuid);
-
         $cmdSequence = $this->makeCommandSequence($uuid);
         $commandCount = ($epTypeId == 1) ? 2 : $faker->randomElement(range(1, count($cmdSequence)));
         $this->info('building application '.$uuid.' through '.$commandCount.' commands');
@@ -80,6 +81,12 @@ class CreateApplicationsFromCommands extends Command
             $cmd = $cmdSequence[$i];
             $class = $cmd['class'];
             $args = $cmd['args'];
+
+            dump($lastApprovedStep." ?= ".$cmd['step'].' for '.$class);
+            if (!is_null($lastApprovedStep) && $class == ApproveStep::class && (int)$cmd['step'] > (int)$lastApprovedStep) {
+                $this->info('Stop building b/c last-approval set to '.$lastApprovedStep);
+                break;
+            }
 
             $this->info('running '.$class.' for '.$uuid);
             $job = new $class(...$args);
