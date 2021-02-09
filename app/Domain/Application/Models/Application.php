@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use App\Domain\Application\Events\ExpertPanelAttributesUpdated;
 use App\Domain\Application\Exceptions\PersonNotContactException;
 use App\Domain\Application\Exceptions\UnmetStepRequirementsException;
+use App\Models\EpType;
 
 class Application extends Model
 {
@@ -211,6 +212,16 @@ class Application extends Model
     }
 
     // Relationships
+    public function epType()
+    {
+        return $this->belongsTo(EpType::class);
+    }
+
+    public function type()
+    {
+        return $this->epType();
+    }
+
     public function contacts()
     {
         return $this->belongsToMany(Person::class);
