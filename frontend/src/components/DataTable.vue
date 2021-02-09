@@ -12,7 +12,7 @@
                             @click="field.sortable && updateSort(field.name)"
                         >
                             <slot :name="`header-${field.name}`" :item="{field}">
-                                {{field.name}}
+                                {{field.label ? field.label : field.name}}
                             </slot>
                             <span v-if="sort.field == field.name">
                                 {{this.sort.desc ? '-' : '+'}}
@@ -24,11 +24,13 @@
             </thead>
             <tbody>
                 <tr v-for="item in sortedFilteredData" :key="item.id" class="odd:bg-gray-100">
-                    <td v-for="field in fields" :key="field.name"
+                    <td 
+                        v-for="field in fields" 
+                        :key="field.name"
                         class="text-left p-1 px-3 border"
                     >
-                        <slot name="`cell-${field.name}`">
-                            {{item[field.name]}}
+                        <slot name="`cell-${field.name}`" :item="item" :field="field" :value="resolveAttribute(item, field.name)">
+                            {{resolveAttribute(item, field.name)}}
                         </slot>
                     </td>
                 </tr>
@@ -98,6 +100,22 @@ export default {
         }
     },
     methods: {
+        resolveAttribute (item, attr) {
+            console.log(attr);
+            if (attr && typeof attr != 'undefined' && attr.includes('.')) {
+                const pathParts = attr.split('.');
+                let val = JSON.parse(JSON.stringify(item));
+                for(const i in pathParts) {
+                    val = val[pathParts[i]]
+                    if (!val) {
+                        return null;
+                    }
+                }
+                console.info('val', val);
+                return val
+            }
+            return item[attr]
+        },
         updateSort(field) {
             const oldField = this.sort.field;
             this.sort.field = field
@@ -127,13 +145,25 @@ export default {
             return coefficient * ((aVal > bVal) ? 1 : -1);
         },
         defaultFilter(item) {
-            const fuckers = Object.values(item)
-            for (let i in fuckers) {
-                const val = fuckers[i].toString().toLowerCase();
-                if (val.includes(this.filterTerm.toLowerCase())) {
+            console.info('item', item);
+            // TODO: filter on values shown
+            const lowerTerm = this.filterTerm.toLowerCase();
+            const attributes = this.fields.map(field => field.name);
+
+            for (let j in attributes) {
+                const attr = attributes[j]
+                console.log(attr)
+                let itemAttr = this.resolveAttribute(item, attr);
+                if (itemAttr === null || typeof itemAttr === 'undefined') {
+                    continue;
+                }
+                console.log(itemAttr)
+                itemAttr = itemAttr.toString().toLowerCase();
+                if (itemAttr && itemAttr.includes(lowerTerm)) {
                     return true;
                 }
             }
+            
             return false;
         }
     }
