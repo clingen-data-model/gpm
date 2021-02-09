@@ -1,3 +1,12 @@
+<style lang="postcss" module>
+    table {
+        @apply w-full;
+    }
+    tbody tr {
+        @apply odd:bg-gray-100 hover:bg-blue-100
+    }
+</style>
+
 <template>
     <div>
         <table>
@@ -6,6 +15,7 @@
                 <tr class="bg-gray-200">
                     <th v-for="field in fields" :key="field.name"
                         class="text-left border border-gray-300"
+                        :title="field.sortable ? `Click to sort` : ``"
                     >
                         <div class="block p-1 px-3 border-0"
                             :class="{'cursor-pointer underline hover:bg-gray-300': field.sortable}"
@@ -23,7 +33,7 @@
                 </slot>
             </thead>
             <tbody>
-                <tr v-for="item in sortedFilteredData" :key="item.id" class="odd:bg-gray-100">
+                <tr v-for="item in sortedFilteredData" :key="item.id" class="" @click="handleRowClick(item)">
                     <td 
                         v-for="field in fields" 
                         :key="field.name"
@@ -58,7 +68,10 @@ export default {
             required: false,
             type: Function
         },
-
+        rowClickHandler: {
+            required: false,
+            type: Function
+        }
     },
     data() {
         return {
@@ -77,7 +90,7 @@ export default {
                 return this.data;
             }
             return this.data.filter(i => (i !== null))
-                    .filter(this.filterFunction);
+                    .filter(item => this.filterFunction(item, this.filterTerm.trim()));
         },
         sortedFilteredData() {
             if (this.data) {
@@ -101,7 +114,6 @@ export default {
     },
     methods: {
         resolveAttribute (item, attr) {
-            console.log(attr);
             if (attr && typeof attr != 'undefined' && attr.includes('.')) {
                 const pathParts = attr.split('.');
                 let val = JSON.parse(JSON.stringify(item));
@@ -111,7 +123,6 @@ export default {
                         return null;
                     }
                 }
-                console.info('val', val);
                 return val
             }
             return item[attr]
@@ -144,20 +155,16 @@ export default {
             }
             return coefficient * ((aVal > bVal) ? 1 : -1);
         },
-        defaultFilter(item) {
-            console.info('item', item);
-            // TODO: filter on values shown
-            const lowerTerm = this.filterTerm.toLowerCase();
+        defaultFilter(item, term) {
+            const lowerTerm = term.toLowerCase();
             const attributes = this.fields.map(field => field.name);
 
             for (let j in attributes) {
                 const attr = attributes[j]
-                console.log(attr)
                 let itemAttr = this.resolveAttribute(item, attr);
                 if (itemAttr === null || typeof itemAttr === 'undefined') {
                     continue;
                 }
-                console.log(itemAttr)
                 itemAttr = itemAttr.toString().toLowerCase();
                 if (itemAttr && itemAttr.includes(lowerTerm)) {
                     return true;
@@ -165,6 +172,11 @@ export default {
             }
             
             return false;
+        },
+        handleRowClick(item) {
+            if (this.rowClickHandler) {
+                this.rowClickHandler(item);
+            }
         }
     }
 }
