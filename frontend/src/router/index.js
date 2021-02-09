@@ -30,6 +30,7 @@ const routes = [{
         ]
     },
     {
+        name: 'ApplicationDetail',
         path: '/applications/:uuid',
         component: ApplicationDetail,
         props: true
