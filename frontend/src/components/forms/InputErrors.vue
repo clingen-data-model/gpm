@@ -10,17 +10,6 @@ export default {
             type: Array,
             required: true 
         }
-    },
-    data() {
-        return {
-            
-        }
-    },
-    computed: {
-
-    },
-    methods: {
-
     }
 }
 </script>

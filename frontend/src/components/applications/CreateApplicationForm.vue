@@ -2,7 +2,10 @@
     <div>
         <h4 class="text-xl font-semibold pb-2 border-b mb-4">Initiate Application</h4>
         <input-row label="Working Name" :errors="errors.working_name">
-            <input type="text" v-model="this.app.working_name" placeholder="A recognizable name">
+            <input type="text" 
+                v-model="this.app.working_name" 
+                placeholder="A recognizable name"
+            >
         </input-row>
         <input-row label="CDWG" :errors="errors.cdwg_id">
             <select v-model="app.cdwg_id">
@@ -83,6 +86,17 @@ export default {
             return Object.keys(this.errors).length > 0;
         }
     },
+    watch: {
+        'app.working_name': function () {
+            this.clearErrors('working_name')
+        },
+        'app.cdwg_id': function () {
+            this.clearErrors('cdwg_id')
+        },
+        'app.ep_type_id': function () {
+            this.clearErrors('ep_type_id')
+        }
+    },
     methods: {
         cancel() {
             this.initForm();
@@ -112,6 +126,15 @@ export default {
                 ep_type_id: null,
                 date_initiated: new Date()
             };
+        },
+        clearErrors(fieldName) {
+            console.info('clearErrors for ',fieldName)
+            if (fieldName) {
+                delete this.errors[fieldName];
+                return;
+            }
+
+            this.initErrors();
         },
         initErrors() {
             this.errors = {}
