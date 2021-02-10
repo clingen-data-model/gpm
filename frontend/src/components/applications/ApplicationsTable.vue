@@ -13,6 +13,7 @@
             :filter-term="filter" 
             class="width-full"
             :row-click-handler="goToApplication"
+            row-class="cursor-pointer"
         >
             <template v-slot:latest_activity_log="props">
                 <pre>{{props.value.description}}</pre>
@@ -22,6 +23,7 @@
 </template>
 <script>
 import { all as getAllApplications } from '../../adapters/application_repository'
+import { formatDate } from '../../date_utils'
 
 export default {
     components: {
@@ -60,9 +62,20 @@ export default {
                     sortable: true
                 },
                 {
+                    name: 'latest_log_entry.created_at',
+                    label: 'Last Activity',
+                    type: String,
+                    sortable: true,
+                    resolveValue (item) {
+                        return formatDate(item.latest_log_entry.created_at);
+                    },
+                    colspan: 2
+                },
+                {
                     name: 'latest_log_entry.description',
                     label: 'Last Activity',
-                    type: Date,
+                    type: String,
+                    hideHeader: true
                 },
                 {
                     name: 'latest_pending_next_action.entry',

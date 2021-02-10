@@ -16,11 +16,12 @@
             <thead>
                 <slot name="thead">
                 <tr class="bg-gray-200">
-                    <th v-for="field in fields" :key="field.name"
+                    <th v-for="field in fields.filter(f => !f.hideHeader)" :key="field.name"
                         class="text-left border border-gray-300 px-3"
                         :title="field.sortable ? `Click to sort` : ``"
-                        :class="{'cursor-pointer underline hover:bg-gray-300': field.sortable, 'sorted': sort.field == field.name}"
-                        @click="field.sortable && updateSort(field.name)"
+                        :class="{'cursor-pointer underline hover:bg-gray-300': field.sortable, 'sorted': sort.field == field}"
+                        @click="field.sortable && updateSort(field)"
+                        :colspan="(field.colspan ? field.colspan : 1)"
                     >
                         <div class="block py-1 flex justify-between place-items-center">
                             <div>
@@ -31,13 +32,13 @@
                             <div>
                                 <div v-if="field.sortable">
                                     <icon-cheveron-up icon-color="#ccc" 
-                                        v-if="sort.field != field.name"
+                                        v-if="sort.field != field"
                                     ></icon-cheveron-up>
                                     <icon-cheveron-up icon-color="#333" 
-                                        v-if="sort.field == field.name && !sort.desc"
+                                        v-if="sort.field == field && !sort.desc"
                                     ></icon-cheveron-up>
                                     <icon-cheveron-down icon-color="#333" 
-                                        v-if="sort.field == field.name && sort.desc"
+                                        v-if="sort.field == field && sort.desc"
                                     ></icon-cheveron-down>
                                 </div>
                             </div>
@@ -47,14 +48,14 @@
                 </slot>
             </thead>
             <tbody>
-                <tr v-for="item in sortedFilteredData" :key="item.id" class="" @click="handleRowClick(item)">
+                <tr v-for="item in sortedFilteredData" :key="item.id" :class="rowClass" @click="handleRowClick(item)">
                     <td 
                         v-for="field in fields" 
                         :key="field.name"
                         class="text-left p-1 px-3 border"
                     >
-                        <slot name="`cell-${field.name}`" :item="item" :field="field" :value="resolveAttribute(item, field.name)">
-                            {{resolveAttribute(item, field.name)}}
+                        <slot name="`cell-${field.name}`" :item="item" :field="field" :value="resolveAttribute(item, field)">
+                            {{resolveAttribute(item, field)}}
                         </slot>
                     </td>
                 </tr>
@@ -92,12 +93,17 @@ export default {
         rowClickHandler: {
             required: false,
             type: Function
+        },
+        rowClass: {
+            required: false,
+            type: [String,null],
+            default: null
         }
     },
     data() {
         return {
             sort: {
-                field: 'id',
+                field: this.fields[0],
                 desc: false
             }
         }
@@ -116,7 +122,7 @@ export default {
         sortedFilteredData() {
             if (this.data) {
                 let data = this.filteredData;//JSON.parse(JSON.stringify(this.data))
-                const sortType = this.fields.find(element => element.name == this.sort.field).type;
+                const sortType = this.sort.field.type;
                 switch (sortType) {
                     case String:
                     case Number:
@@ -124,7 +130,7 @@ export default {
                     case Date:
                         return data.sort(this.dateSort)
                     default:
-                        console.error('unsupported column type');
+                        console.error('unsupported column type: '+sortType);
                         break;
                 }                
             } else {
@@ -134,7 +140,12 @@ export default {
         }
     },
     methods: {
-        resolveAttribute (item, attr) {
+        resolveAttribute (item, field) {
+            if (field.resolveValue) {
+                return field.resolveValue(item);
+            }
+
+            const attr = field.name;
             if (attr && typeof attr != 'undefined' && attr.includes('.')) {
                 const pathParts = attr.split('.');
                 let val = JSON.parse(JSON.stringify(item));
@@ -149,6 +160,7 @@ export default {
             return item[attr]
         },
         updateSort(field) {
+            console.log(field);
             const oldField = this.sort.field;
             this.sort.field = field
             this.sort.desc = !this.sort.desc
@@ -160,8 +172,8 @@ export default {
         },
         textAndNumbeSort(a, b) {
             const coefficient = this.sort.desc ? -1 : 1;
-            const aVal = a[this.sort.field];
-            const bVal = b[this.sort.field];
+            const aVal = this.resolveAttribute(a, this.sort.field);
+            const bVal = this.resolveAttribute(b, this.sort.field);
             if (aVal == bVal) {
                 return 0;
             }
@@ -169,20 +181,19 @@ export default {
         },
         dateSort(a, b) {
             const coefficient = this.sort.desc ? -1 : 1;
-            const aVal = Date.parse(a[this.sort.field]);
-            const bVal = Date.parse(b[this.sort.field]);
+            const aVal = new Date(a[this.sort.field]);
+            const bVal = new Date(b[this.sort.field]);
             if (aVal == bVal) {
+                console.log('dates equal')
                 return 0;
             }
             return coefficient * ((aVal > bVal) ? 1 : -1);
         },
         defaultFilter(item, term) {
             const lowerTerm = term.toLowerCase();
-            const attributes = this.fields.map(field => field.name);
 
-            for (let j in attributes) {
-                const attr = attributes[j]
-                let itemAttr = this.resolveAttribute(item, attr);
+            for (let f in this.fields) {
+                let itemAttr = this.resolveAttribute(item, this.fields[f]);
                 if (itemAttr === null || typeof itemAttr === 'undefined') {
                     continue;
                 }
