@@ -20,7 +20,7 @@ class CreateApplicationsFromCommands extends Command
      *
      * @var string
      */
-    protected $signature = 'applications:create-from-commands {--count=1 : count} {--last-approval=null : step at which to stop running approvals} {--type=null : type of ep to create}';
+    protected $signature = 'applications:create-from-commands {--count=1 : count} {--last-approval= : step at which to stop running approvals} {--type= : type of ep to create}';
 
     /**
      * The console command description.
@@ -49,12 +49,12 @@ class CreateApplicationsFromCommands extends Command
         $faker = \Faker\Factory::create();
         $cdwgs = Cdwg::all();
         $count = $this->option('count', 1);
-        $type = $this->option('type', null);
+        $type = $this->option('type');
         
 
         for ($i=0; $i < $count; $i++) { 
             $uuid = Uuid::uuid4()->toString();
-            $epTypeId = $type ? $type : $faker->randomElement([1,2]);
+            $epTypeId = ($type) ? $type : $faker->randomElement([1,2]);
             $cdwgId = $faker->randomElement($cdwgs->pluck('id')->toArray());
             $this->createApplicationFromCommands($uuid, $epTypeId, $cdwgId);
         }
@@ -82,7 +82,6 @@ class CreateApplicationsFromCommands extends Command
             $class = $cmd['class'];
             $args = $cmd['args'];
 
-            dump($lastApprovedStep." ?= ".$cmd['step'].' for '.$class);
             if (!is_null($lastApprovedStep) && $class == ApproveStep::class && (int)$cmd['step'] > (int)$lastApprovedStep) {
                 $this->info('Stop building b/c last-approval set to '.$lastApprovedStep);
                 break;
