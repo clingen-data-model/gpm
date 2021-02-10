@@ -5,6 +5,9 @@ import router from './router'
 import store from './store'
 
 const app = createApp(App)
+import IconBase from './components/icons/IconBase'
+app.component('icon-base', IconBase);
+
 import DataTable from './components/DataTable'
 app.component('data-table', DataTable);
 
