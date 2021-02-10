@@ -5,6 +5,9 @@
     tbody tr {
         @apply odd:bg-gray-100 hover:bg-blue-100
     }
+    th.sorted, td.sorted  {
+        @apply bg-blue-100 hover:bg-blue-100
+    }
 </style>
 
 <template>
@@ -14,19 +17,30 @@
                 <slot name="thead">
                 <tr class="bg-gray-200">
                     <th v-for="field in fields" :key="field.name"
-                        class="text-left border border-gray-300"
+                        class="text-left border border-gray-300 px-3"
                         :title="field.sortable ? `Click to sort` : ``"
+                        :class="{'cursor-pointer underline hover:bg-gray-300': field.sortable, 'sorted': sort.field == field.name}"
+                        @click="field.sortable && updateSort(field.name)"
                     >
-                        <div class="block p-1 px-3 border-0"
-                            :class="{'cursor-pointer underline hover:bg-gray-300': field.sortable}"
-                            @click="field.sortable && updateSort(field.name)"
-                        >
-                            <slot :name="`header-${field.name}`" :item="{field}">
-                                {{field.label ? field.label : field.name}}
-                            </slot>
-                            <span v-if="sort.field == field.name">
-                                {{this.sort.desc ? '-' : '+'}}
-                            </span>
+                        <div class="block py-1 flex justify-between place-items-center">
+                            <div>
+                                <slot :name="`header-${field.name}`" :item="{field}">
+                                    {{field.label ? field.label : field.name}}
+                                </slot>
+                            </div>
+                            <div>
+                                <div v-if="field.sortable">
+                                    <icon-cheveron-up icon-color="#ccc" 
+                                        v-if="sort.field != field.name"
+                                    ></icon-cheveron-up>
+                                    <icon-cheveron-up icon-color="#333" 
+                                        v-if="sort.field == field.name && !sort.desc"
+                                    ></icon-cheveron-up>
+                                    <icon-cheveron-down icon-color="#333" 
+                                        v-if="sort.field == field.name && sort.desc"
+                                    ></icon-cheveron-down>
+                                </div>
+                            </div>
                         </div>
                     </th>
                 </tr>
@@ -49,8 +63,15 @@
     </div>
 </template>
 <script>
+import IconCheveronDown from '../components/icons/IconCheveronDown'
+import IconCheveronUp from '../components/icons/IconCheveronUp'
+
 export default {
     name: 'DataTable',
+    components: {
+        IconCheveronDown,
+        IconCheveronUp
+    },
     props: {
         data: {
             required: false,
