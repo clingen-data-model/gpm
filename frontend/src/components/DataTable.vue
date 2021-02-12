@@ -48,7 +48,7 @@
                 </slot>
             </thead>
             <tbody>
-                <tr v-for="item in sortedFilteredData" :key="item.id" :class="rowClass" @click="handleRowClick(item)">
+                <tr v-for="item in sortedFilteredData" :key="item.uuid" :class="rowClass" @click="handleRowClick(item)">
                     <td 
                         v-for="field in fields" 
                         :key="field.name"
@@ -168,7 +168,7 @@ export default {
             if (oldField != field) {
                 this.sort.desc = false
             }
-            this.$emit('sort', this.sort);
+            this.$emit('sorted', this.sort);
         },
         textAndNumbeSort(a, b) {
             const coefficient = this.sort.desc ? -1 : 1;
