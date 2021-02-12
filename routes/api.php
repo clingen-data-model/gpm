@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\CdwgController;
 use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\ApplicationLogController;
 use App\Http\Controllers\Api\ApplicationStepController;
@@ -26,6 +27,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('/applications', [ApplicationController::class, 'index']);
 Route::post('/applications', [ApplicationController::class, 'store']);
+Route::get('/applications/{app_uuid}', [ApplicationController::class, 'show']);
 Route::put('/applications/{app_uuid}', [ApplicationController::class, 'update']);
 
 Route::post('/applications/{app_uuid}/contacts', [ApplicationContactController::class, 'store']);
@@ -39,3 +41,5 @@ Route::post('/applications/{app_uuid}/documents/{doc_uuid}/review', [Application
 Route::post('/applications/{app_uuid}/log-entries', [ApplicationLogController::class, 'store']);
 Route::post('/applications/{app_uuid}/next-actions', [ApplicationNextActionsController::class, 'store']);
 Route::post('/applications/{app_uuid}/next-actions/{action_uuid}/complete', [ApplicationNextActionsController::class, 'complete']);
+
+Route::get('/cdwgs', [CdwgController::class, 'index']);
