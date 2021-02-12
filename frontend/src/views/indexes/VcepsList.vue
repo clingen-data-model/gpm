@@ -10,12 +10,5 @@ export default {
     components: {
         ApplicationsTable
     },
-    props: {
-        
-    },
-    data() {
-        return {
-        }
-    },
 }
 </script>
