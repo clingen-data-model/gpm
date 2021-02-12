@@ -14,6 +14,7 @@
             class="width-full"
             :row-click-handler="goToApplication"
             row-class="cursor-pointer"
+            @sorted="handleSorted"
         >
             <template v-slot:latest_activity_log="props">
                 <pre>{{props.value.description}}</pre>
@@ -22,7 +23,6 @@
     </div>
 </template>
 <script>
-import { all as getAllApplications } from '../../adapters/application_repository'
 import { formatDate } from '../../date_utils'
 
 export default {
@@ -67,7 +67,10 @@ export default {
                     type: String,
                     sortable: true,
                     resolveValue (item) {
-                        return formatDate(item.latest_log_entry.created_at);
+                        if (item && item.latest_log_entry) {
+                            return formatDate(item.latest_log_entry.created_at);
+                        }
+                        return null
                     },
                     colspan: 2
                 },
@@ -85,10 +88,13 @@ export default {
 
                 }
             ],
-            data: [],
+            // data: [],
         }
     },
     computed: {
+        data() {
+            return this.$store.state.applications.items.filter(i => i.ep_type_id == this.epTypeId)
+        },
         filteredData() {
             return this.data.filter(item => {
                 if (!this.showCompleted) {
@@ -139,7 +145,8 @@ export default {
         }
     },
     methods: {
-        async getApplications () {
+
+        getApplications () {
             const params = {
                 with: [
                     'latestLogEntry',
@@ -150,19 +157,21 @@ export default {
 
             const where = {};
 
-            if (this.epTypeId) {
-                where.ep_type_id = this.epTypeId;
-            }
-
             if (Object.keys(where).length > 0) {
                 params.where = where;
             }
 
-            this.data = await getAllApplications(params)
+            this.$store.dispatch('getApplications', params);
         },
         goToApplication (item) {
             // console.info('go to application!!', item)
             this.$router.push({name: 'ApplicationDetail', params: {uuid: item.uuid}})
+        },
+        handleSorted(evt) {
+            const newQuery = {...this.$route.query, ...{'sort-field': evt.field.name, 'sort-desc': evt.desc ? 1 : 0}};
+            console.log(newQuery)
+            this.$router.replace({path: this.$route.path, query: newQuery})
+            // this.$emit('sorted', evt.field)
         }
     },
     mounted () {

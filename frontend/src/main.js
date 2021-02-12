@@ -17,4 +17,11 @@ app.component('modal-dialog', ModalDialog);
 import InputRow from './components/forms/InputRow'
 app.component('input-row', InputRow);
 
+import TabsContainer from './components/TabsContainer'
+app.component('tabs-container', TabsContainer);
+
+import TabItem from './components/TabItem'
+app.component('tab-item', TabItem);
+
+
 app.use(store).use(router).mount('#app')

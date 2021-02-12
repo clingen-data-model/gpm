@@ -4,6 +4,8 @@ import GcepsList from '../views/indexes/GcepsList.vue'
 import VcepsList from '../views/indexes/VcepsList.vue'
 import ApplicationDetail from '../views/applications/ApplicationDetail'
 import CreateApplicationForm from '../components/applications/CreateApplicationForm'
+import NextActionForm from '../components/next_actions/NextActionForm'
+import LogEntryForm from '../components/log_entries/LogEntryForm'
 
 const routes = [{
         path: '/',
@@ -33,7 +35,26 @@ const routes = [{
         name: 'ApplicationDetail',
         path: '/applications/:uuid',
         component: ApplicationDetail,
-        props: true
+        props: true,
+        children: [{
+                name: 'NextAction',
+                path: 'next-action',
+                component: NextActionForm,
+                meta: {
+                    showModal: true
+                },
+                props: true,
+            },
+            {
+                name: 'LogEntry',
+                path: 'log-entry',
+                component: LogEntryForm,
+                meta: {
+                    showModal: true
+                },
+                props: true,
+            }
+        ]
     },
     {
         path: '/about',

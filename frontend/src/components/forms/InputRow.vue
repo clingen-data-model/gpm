@@ -7,7 +7,14 @@
                     <label :class="{'text-red-800': hasErrors}">{{label}}:</label>
                 </slot>
             </div>
-            <slot></slot>
+            <slot>
+                <input 
+                    :type="type" 
+                    :value="modelValue" 
+                    @input="$emit('update:modelValue', $event.target.value)"
+                    :placeholder="placeholder"
+                >
+            </slot>
         </div>
     </div>
 </template>
@@ -27,8 +34,24 @@ export default {
         label: {
             type: String,
             required: false
+        },
+        type: {
+            type: String,
+            required: false,
+            default: 'text'
+        },
+        modelValue: {
+            required: false,
+            default: null
+        },
+        placeholder: {
+            required: false,
+            value: null
         }
     },
+    emits: [
+        'update:modelValue'
+    ],
     computed: {
         hasErrors () {
             return this.errors.length > 0;
