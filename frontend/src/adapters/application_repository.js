@@ -22,6 +22,15 @@ async function all(params) {
     return data
 }
 
+async function find(uuid, params) {
+    const data = await axios.get(baseUrl + '/' + uuid)
+            .then(response => {
+                // console.log(response.data)
+                return response.data
+            })
+    return data
+}
+
 async function allVceps(params) {
     const mergedParams = mergeParams(params, { where: { ep_type_id: 2 } });
     return await all(mergedParams)
@@ -42,4 +51,19 @@ async function initiate(data) {
         })
 }
 
-export { all, allVceps, allGceps, initiate };
+async function addNextAction(application, nextActionData) {
+    if (!application.uuid) {
+        throw new Error('application must have a uuid to save a next action.')
+    }
+
+    if (!nextActionData.uuid) {
+        nextActionData.uuid = uuid4();
+    }
+
+    return await axios.post(`${baseUrl}/${application.uuid}/next-action`, nextActionData)
+        .then(response => {
+            return response.data;
+        });
+}
+
+export { all, find, allVceps, allGceps, initiate, addNextAction };
