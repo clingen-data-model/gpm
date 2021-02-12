@@ -1,7 +1,7 @@
 <template>
   <div class="home">
 
-    <button @click="showModal = true" class="bg-blue-500 rounded text-white px-2 py-1">Initiate Application</button>
+    <button @click="showModal = true" class="btn blue">Initiate Application</button>
 
     <div class="mb-2 mt-4">
       <div class="tabs">
@@ -40,27 +40,6 @@ export default {
     }
   },
   computed: {
-    // TODO: figure out why hash isn't being correctly read to open the creation dialog
-    // showModal: {
-    //   set (value) {
-    //     const currentHash = this.$route.hash == '' ? '#' : this.$route.hash;
-    //     const hashSet = new Set(currentHash.substr(1).split('&').filter(i => i));
-    //     if (value) {
-    //       hashSet.add('initiate');
-    //     } else {
-    //       hashSet.delete('initiate');
-    //     }
-
-    //     const newHash = hashSet.size > 0 ? '#'+[...hashSet].join('&') : ''
-
-    //     this.$router.replace({path: this.$route.path, query: this.$route.query, hash: newHash});
-    //   },
-    //   get () {
-    //     console.log(this.$route.hash);
-    //     return this.$route.hash.includes('initiate');
-    //   },
-    //   immediate: true
-    // }
   }
 }
 </script>
