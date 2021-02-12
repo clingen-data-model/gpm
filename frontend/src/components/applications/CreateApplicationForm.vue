@@ -50,6 +50,7 @@
 </template>
 <script>
 import {initiate} from '../../adapters/application_repository'
+import { formatDate } from '../../date_utils'
 
 export default {
     name: 'CreateApplicationForm',
@@ -68,7 +69,7 @@ export default {
                 working_name: null,
                 cdwg_id: null,
                 ep_type_id: null,
-                date_initiated: new Date()
+                date_initiated: formatDate(new Date())
             },
             cdwgs: [
                 { name: 'test', id: 1},
@@ -104,9 +105,8 @@ export default {
         },
         async save() {
             try {
-                const responseData = await initiate(this.app);
-                this.initForm();
-                this.$emit('saved', responseData);
+                await this.$store.dispatch('initiateApplication', this.app)
+                this.$emit('saved');
             } catch (error) {
                 if (error.response && error.response.status == 422 && error.response.data.errors) {
                     this.errors = error.response.data.errors
@@ -124,7 +124,7 @@ export default {
                 working_name: null,
                 cdwg_id: null,
                 ep_type_id: null,
-                date_initiated: new Date()
+                date_initiated: formatDate(new Date())
             };
         },
         clearErrors(fieldName) {
