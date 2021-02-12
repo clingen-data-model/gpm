@@ -9,7 +9,7 @@
             @click="close"
         ></div>
         <div class="bg-white p-4 border border-gray-500 opacity-100 min-h-1/4 relative mt-24 mb-auto rounded-lg shadow-md" :class="width">
-            <button @click="close" class="border px-2 py-0 bg-gray-200 text-gray-500 hover:bg-gray-300 float-right rounded">x</button>
+            <button @click="close" class="btn btn-xs gray float-right">X</button>
             <header>
                 <slot name="header">
                     <h4>{{title}}</h4>
@@ -44,7 +44,7 @@ export default {
     },
     watch: {
         modelValue(to) {
-            this.isVisible = JSON.parse(JSON.stringify(to));
+            this.isVisible = Boolean(to);
         }
     },
     computed: {
@@ -74,9 +74,6 @@ export default {
             this.$emit('closed');
             this.$emit('update:modelValue', this.isVisible);
         }
-    },
-    mounted() {
-        console.log('mounted modal-dialog')
     }
 }
 </script>
