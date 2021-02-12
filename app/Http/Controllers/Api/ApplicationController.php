@@ -31,7 +31,6 @@ class ApplicationController extends Controller
      */
     public function index(Request $request)
     {
-        // dd($request->sort);
         $query = Application::query()->select('applications.*')->with('cdwg', 'logEntries');
         if ($request->has('sort')) {
             $field = $request->sort['field'];
@@ -69,6 +68,10 @@ class ApplicationController extends Controller
 
         if ($request->has('where')) {
             foreach ($request->where as $key => $value) {
+                if ($key == 'since') {
+                    $query->where('updated_at', '>', Carbon::parse($value));
+                    continue;
+                }
                 $query->where($key, $value);
             }
         }
@@ -103,8 +106,11 @@ class ApplicationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($uuid, Request $request)
     {
+        $application = Application::findByUuidOrFail($uuid);
+        $application->load(['latestLogEntry', 'cdwg', 'type', 'contacts', 'latestPendingNextAction']);
+        return $application;
     }
 
     /**
