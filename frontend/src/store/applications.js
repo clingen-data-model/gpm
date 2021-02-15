@@ -1,5 +1,6 @@
 import store from ".";
 import { all as getAllApplications, initiate, addNextAction, find as findApplication} from '../adapters/application_repository';
+import axios from 'axios';
 
 export default {
     state: () => ({
@@ -78,10 +79,16 @@ export default {
                     commit('addApplication', item)
                 });
         },
-        async addNextAction({ commit }, application, nextActionData) {
+        async addNextAction({ commit }, { application, nextActionData }) {
             await addNextAction(application, nextActionData)
                 .then( response => {
-                    commit('')
+                    store.dispatch('getApplication', application.uuid)
+                })
+        },
+        async completeNextAction({ commit }, {application, nextAction, dateCompleted }) {
+            const url = `/api/applications/${application.uuid}/next-actions/${nextAction.uuid}/complete`
+            await axios.post(url, {date_completed: dateCompleted})
+                .then (() => {
                     store.dispatch('getApplication', application.uuid)
                 })
         }

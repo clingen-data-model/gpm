@@ -32,6 +32,7 @@
 <script>
 import {formatDate} from '../../date_utils'
 import StepInput from '../forms/StepInput'
+import { v4 as uuid4 } from 'uuid';
 
 export default {
     name: 'NextActionForm',
@@ -44,6 +45,11 @@ export default {
             type: String
         }
     },
+    emits: [
+        'saved',
+        'closed',
+        'formCleard'
+    ],
     data() {
         return {
             errors: {},
@@ -66,21 +72,29 @@ export default {
         }
     },
     methods: {
-        save() {
+        async save() {
             try {
-                this.$store.dispatch('addNextEntry', {application: this.application, nextActionData: this.newAction})
+                await this.$store.dispatch('addNextAction', {application: this.application, nextActionData: this.newAction})
+                this.$emit('saved')
+                this.clearForm();
             } catch (error) {
-                if (error.response && error.response.status == 422 && error.response.data.errors) { 
+                if (error.response && error.response.status == 422 && error.response.data.errors) {
                     this.errors = error.response.data.errors
+                    return;
                 }
             }
         },
+        cancel () {
+            this.clearForm();
+            this.$emit('canceled');
+        },
         clearForm() {
-            console.log('NextActionForm.clearForm')
+            this.initNewAction();
+            this.$emit('formCleard')
         },
         initNewAction () {
             this.newAction = {
-                uuid: this.uuid,
+                // uuid: this.uuid,
                 date_created: formatDate(new Date()),
                 step: null,
                 target_date: null,

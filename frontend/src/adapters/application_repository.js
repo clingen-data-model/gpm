@@ -60,7 +60,7 @@ async function addNextAction(application, nextActionData) {
         nextActionData.uuid = uuid4();
     }
 
-    return await axios.post(`${baseUrl}/${application.uuid}/next-action`, nextActionData)
+    return await axios.post(`${baseUrl}/${application.uuid}/next-actions`, nextActionData)
         .then(response => {
             return response.data;
         });

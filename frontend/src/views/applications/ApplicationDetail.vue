@@ -9,7 +9,7 @@
                 </div>
             </div>
             <div class="bg-white border border-t-0 border-gray-300 rounded-b  px-4 py-3 ">
-                <next-action-banner :next-action="application.latest_pending_next_action" v-if="hasPendingNextAction">
+                <next-action-banner :application="application" :next-action="application.latest_pending_next_action" v-if="hasPendingNextAction">
                 </next-action-banner>
 
                 <ep-attributes-form :application="application"></ep-attributes-form>
@@ -43,7 +43,7 @@
         
 
         <modal-dialog v-model="showModal" @closed="handleModalClosed">
-            <router-view ref="modalView"></router-view>
+            <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
         </modal-dialog>
     </div>
 </template>
@@ -96,6 +96,9 @@ export default {
         }
     },
     methods: {
+        hideModal (evt) {
+            this.$router.replace({name: 'ApplicationDetail', params: {uuid: this.uuid}});
+        },
         handleModalClosed (evt) {
             this.clearModalForm(evt);
             this.$router.push({name: 'ApplicationDetail', params: {uuid: this.uuid}});

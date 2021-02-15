@@ -39,6 +39,7 @@ Route::post('/applications/{app_uuid}/current-step/approve', [ApplicationStepCon
 Route::post('/applications/{app_uuid}/documents', [ApplicationDocumentController::class, 'store']);
 Route::post('/applications/{app_uuid}/documents/{doc_uuid}/review', [ApplicationDocumentController::class, 'markReviewed']);
 Route::post('/applications/{app_uuid}/log-entries', [ApplicationLogController::class, 'store']);
+
 Route::post('/applications/{app_uuid}/next-actions', [ApplicationNextActionsController::class, 'store']);
 Route::post('/applications/{app_uuid}/next-actions/{action_uuid}/complete', [ApplicationNextActionsController::class, 'complete']);
 
