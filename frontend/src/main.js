@@ -18,10 +18,18 @@ import InputRow from './components/forms/InputRow'
 app.component('input-row', InputRow);
 
 import TabsContainer from './components/TabsContainer'
-app.component('tabs-container', TabsContainer);
-
 import TabItem from './components/TabItem'
+app.component('tabs-container', TabsContainer);
 app.component('tab-item', TabItem);
+
+import DictionaryRow from './components/DictionaryRow'
+app.component('dictionary-row', DictionaryRow)
+app.component('dict-row', DictionaryRow)
+
+import ObjectDictionary from './components/ObjectDictionary'
+app.component('object-dictionary', ObjectDictionary)
+app.component('object-dict', ObjectDictionary)
+
 
 
 app.use(store).use(router).mount('#app')
