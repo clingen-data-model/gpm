@@ -14,6 +14,7 @@
             class="width-full"
             :row-click-handler="goToApplication"
             row-class="cursor-pointer"
+            v-model:sort="sort"
             @sorted="handleSorted"
         >
             <template v-slot:latest_activity_log="props">
@@ -88,10 +89,45 @@ export default {
 
                 }
             ],
+            // sort: {
+            //     field: {
+            //         name: 'name',
+            //         label: 'Name',
+            //         type: String,
+            //         sortable: true
+            //     },
+            //     desc: false
+            // }
             // data: [],
         }
     },
     computed: {
+        sort: {
+            immediate: true,
+            get() {
+                console.log(this.$route.query['sort-field'], this.$route.query['sort-desc']);
+                if (Object.keys(this.$route.query).includes('sort-field')) {
+                    return {
+                        field: this.fields.find(i => i.name == this.$route.query['sort-field']),
+                        desc: Boolean(parseInt(this.$route.query['sort-desc']))
+                    }
+                }
+                return {
+                    field: this.fields.find(i => i.name == 'name'),
+                    desc: false
+                }
+            },
+            set(sortObj) {
+                const newSortQuery = {'sort-field': sortObj.field.name, 'sort-desc': sortObj.desc ? 1 : 0}
+
+                const newQuery = {
+                    ...this.$route.query, 
+                    ...newSortQuery
+                };
+ 
+                this.$router.replace({path: this.$route.path, query: newQuery})
+            }
+        },
         data() {
             return this.$store.state.applications.items.filter(i => i.ep_type_id == this.epTypeId)
         },
@@ -168,9 +204,6 @@ export default {
             this.$router.push({name: 'ApplicationDetail', params: {uuid: item.uuid}})
         },
         handleSorted(evt) {
-            const newQuery = {...this.$route.query, ...{'sort-field': evt.field.name, 'sort-desc': evt.desc ? 1 : 0}};
-            console.log(newQuery)
-            this.$router.replace({path: this.$route.path, query: newQuery})
             // this.$emit('sorted', evt.field)
         }
     },
