@@ -110,6 +110,9 @@ class ApplicationController extends Controller
     {
         $application = Application::findByUuidOrFail($uuid);
         $application->load(['latestLogEntry', 'cdwg', 'type', 'contacts', 'latestPendingNextAction']);
+        if ($request->has('with')) {
+            $application->load($request->with);
+        }
         return $application;
     }
 
