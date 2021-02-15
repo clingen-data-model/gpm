@@ -42,6 +42,7 @@ textarea.sm {
 .btn {
     @apply px-3 py-1 rounded border border-gray-300;
     @apply bg-gradient-to-b from-white to-gray-50 hover:to-gray-100;
+    @apply disabled:opacity-50;
 
 }
 

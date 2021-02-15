@@ -19,7 +19,8 @@ module.exports = {
     },
     variants: {
         extend: {
-            backgroundColor: ['even', 'odd']
+            backgroundColor: ['even', 'odd'],
+            opacity: ['disabled']
         },
     },
     plugins: [],
