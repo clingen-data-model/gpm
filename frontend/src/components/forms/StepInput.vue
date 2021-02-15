@@ -1,6 +1,6 @@
 <template>
     <input-row :label="label" :errors="errors">
-        <select :value="modelValue" @input="$emit('update:modalValue', $event.target.value)">
+        <select :value="modelValue" @input="$emit('update:modelValue', $event.target.value)">
             <option :value="null">No specific step</option>
             <option v-for="step in steps" :key="step" :value="step">{{step}}</option>
         </select>
