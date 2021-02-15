@@ -1,4 +1,4 @@
-import store from ".";
+// import store from ".";
 import axios from 'axios'
 
 export default {

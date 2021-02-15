@@ -1,15 +1,15 @@
 <template>
     <div>
-        <div v-if="logEntries.length == 0">
+        <div v-if="!hasLogEntries">
             No log entries
         </div>
-        <data-table :fields="fields" :data="logEntries" v-model:sort="sort" v-else>
+        <data-table :fields="fields" :data="application.log_entries" v-model:sort="sort" v-else>
         </data-table>
     </div>
 </template>
 <script>
-import axios from 'axios'
-import {formatDate} from '../../date_utils'
+import {mapGetters} from 'vuex';
+import {formatDate} from '../../date_utils';
 
 const fields = [
                 {
@@ -35,10 +35,6 @@ const fields = [
 
 export default {
     props: {
-        uuid: {
-            required: true,
-            type: String
-        },
         steps: {
             required: false,
             type: [Number,Array],
@@ -57,16 +53,25 @@ export default {
             }
         }
     },
+    computed: {
+        ...mapGetters({
+            application: 'currentItem'
+        }),
+        hasLogEntries(){
+            if (this.application && this.application.log_entries) {
+                return this.application.log_entries.length > 0;
+            }
+            return false;
+
+        }
+    },
     methods: {
         async getLogEntries() {
-            axios.get(`/api/applications/${this.uuid}/log-entries`)
-                .then(response => {
-                    this.logEntries = response.data
-                })
+            await this.$store.dispatch('getApplicationWithLogEntries', this.application.uuid)
         }
     },
     mounted() {
-        this.getLogEntries();
+        this.getLogEntries()
     }
 }
 </script>

@@ -8,6 +8,7 @@ export default {
         items: [],
         lastFetch: null,
         lastParams: {},
+        currentItem: null
     }),
     mutations: {
         addApplication(state, application) {
@@ -29,7 +30,10 @@ export default {
         },
         setLastParams(state, params) {
             state.lastParams = params;
-        }
+        },
+        setCurrentItem(state, application) {
+            state.currentItem = application
+        },
     },
     actions: {
         async getApplications({ commit, state }, params, fresh = false) {
@@ -74,30 +78,41 @@ export default {
                 })
         },
         async getApplication({ commit }, appUuid) {
+            console.log('store.applications.getApplication')
             await findApplication(appUuid)
                 .then(item => {
                     commit('addApplication', item)
+                    commit('setCurrentItem', item)
                 });
         },
-        async getApplicationLogEntries({ commit }, uuid) {
+        async getApplicationWithLogEntries({ commit }, uuid) {
+            console.log('store.applications.getApplicationWithLogEntries')
             const url = `/api/applications/${uuid}?with[]=logEntries`;
             await axios.get(url)
-                    .then( item => {
-                        store.commit('addApplication', item);
-                        console.log('action complete');
+                    .then( response => {
+                        commit('addApplication', response.data);
+                        commit('setCurrentItem', response.data)
                     })
         },
         async addNextAction({ commit }, { application, nextActionData }) {
             await addNextAction(application, nextActionData)
                 .then( response => {
-                    store.dispatch('getApplication', application.uuid)
+                    store.dispatch('getApplicationWithLogEntries', application.uuid)
                 })
         },
         async completeNextAction({ commit }, {application, nextAction, dateCompleted }) {
             const url = `/api/applications/${application.uuid}/next-actions/${nextAction.uuid}/complete`;
             await axios.post(url, {date_completed: dateCompleted})
                 .then (() => {
-                    store.dispatch('getApplication', application.uuid)
+                    store.dispatch('getApplicationWithLogEntries', application.uuid)
+                })
+        },
+        async addLogEntry ({commit}, { application, logEntryData }) {
+            console.log(application.uuid)
+            const url = `/api/applications/${application.uuid}/log-entries`
+            await axios.post(url, logEntryData)
+                .then( () => {
+                    store.dispatch('getApplicationWithLogEntries', application.uuid);
                 })
         }
     },
@@ -114,10 +129,13 @@ export default {
         vceps: state => {
             return state.items.filter(app => app.ep_type_id == 2);
         },
+        currentItem: state => {
+            return (state.currentItem) ? state.currentItem : {}
+        },
         getApplicationByUuid: (state) => (uuid) => {
             // return uuid
             return state.items.find(app => app.uuid == uuid);
-        }
+        },
         // lastUpdate: (state) {}
     }
 }

@@ -32,9 +32,7 @@
 
                 </tabs-container>
 
-            </div>
-
-            
+            </div>    
         </div>
         
 
@@ -44,6 +42,7 @@
     </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import ApplicationLog from '../../components/applications/ApplicationLog'
 import EpAttributesForm from '../../components/applications/EpAttributesForm'
 import NextActionBanner from '../../components/next_actions/NextActionBanner'
@@ -72,15 +71,15 @@ export default {
     },
     watch: {
         $route() {
-                this.showModal = this.$route.meta.showModal ? Boolean(this.$route.meta.showModal) : false;
-                this.$store.dispatch('getApplication', this.uuid);
+                this.showModal = this.$route.meta.showModal 
+                                    ? Boolean(this.$route.meta.showModal) 
+                                    : false;
         }
     },
     computed: {
-        application () {
-            const application = this.$store.getters.getApplicationByUuid(this.uuid)
-            return (application) ? application : {};
-        },
+        ...mapGetters({
+            application: 'currentItem'
+        }),
         hasPendingNextAction () {
             if (typeof this.application == 'undefined') {
                 console.log('this.application is undefined')
@@ -91,7 +90,7 @@ export default {
         }
     },
     methods: {
-        hideModal (evt) {
+        hideModal () {
             this.$router.replace({name: 'ApplicationDetail', params: {uuid: this.uuid}});
         },
         handleModalClosed (evt) {

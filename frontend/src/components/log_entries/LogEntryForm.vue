@@ -13,18 +13,13 @@
     </div>
 </template>
 <script>
+import {mapGetters} from 'vuex'
 import { formatDate } from '../../date_utils'
 import StepInput from '../forms/StepInput'
 
 export default {
     components: {
         StepInput
-    },
-    props: {
-        uuid: {
-            required: true,
-            type: String
-        }
     },
     data() {
         return {
@@ -37,9 +32,9 @@ export default {
         }
     },
     computed: {
-        application () {
-            return this.$store.getters.getApplicationByUuid(this.uuid) || {};
-        }
+        ...mapGetters({
+            application: 'currentItem'
+        })
     },
     methods: {
         initNewEntry () {
@@ -53,10 +48,17 @@ export default {
             this.initNewEntry();
             this.$emit('canceled');
         },
-        save() {
-            console.error('Not implemented');
-            this.initNewEntry();
-            this.$emit('saved');
+        async save() {
+            try {
+                await this.$store.dispatch('addLogEntry', {application: this.application, logEntryData: this.newEntry})
+                this.initNewEntry();
+                this.$emit('saved');
+            } catch (error) {
+                if (error.response && error.response.status == 422 && error.response.data.errors) {
+                    this.errors = error.response.data.errors
+                    return;
+                }
+            }
         }
     }
 }

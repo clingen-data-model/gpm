@@ -41,6 +41,7 @@ const routes = [{
                 path: 'next-action',
                 component: NextActionForm,
                 meta: {
+                    default: ApplicationDetail,
                     showModal: true
                 },
                 props: true,
