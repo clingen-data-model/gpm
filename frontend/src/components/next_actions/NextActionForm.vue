@@ -32,7 +32,6 @@
 <script>
 import {formatDate} from '../../date_utils'
 import StepInput from '../forms/StepInput'
-import { v4 as uuid4 } from 'uuid';
 
 export default {
     name: 'NextActionForm',

@@ -13,7 +13,6 @@
     </div>
 </template>
 <script>
-import { formatDate } from '../../date_utils'
 import ProgressStep from './ProgressStep'
 
 export default {

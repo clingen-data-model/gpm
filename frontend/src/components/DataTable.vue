@@ -151,7 +151,6 @@ export default {
                         return data.sort(this.dateSort)
                     default:
                         return data.sort(this.textAndNumberSort)
-                        break;
                 }                
             } else {
                 console.log('no data');

@@ -1,10 +1,4 @@
-<!-- <template>
-    <div>
-        <slot />
-    </div>
-</template> -->
 <script>
-import {h} from 'vue'
 
 export default {
     name: 'TabsContainer',

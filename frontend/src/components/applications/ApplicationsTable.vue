@@ -200,12 +200,8 @@ export default {
             this.$store.dispatch('getApplications', params);
         },
         goToApplication (item) {
-            // console.info('go to application!!', item)
             this.$router.push({name: 'ApplicationDetail', params: {uuid: item.uuid}})
         },
-        handleSorted(evt) {
-            // this.$emit('sorted', evt.field)
-        }
     },
     mounted () {
         this.getApplications()

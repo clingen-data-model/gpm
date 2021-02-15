@@ -49,7 +49,6 @@
     </div>
 </template>
 <script>
-import {initiate} from '../../adapters/application_repository'
 import { formatDate } from '../../date_utils'
 
 export default {
