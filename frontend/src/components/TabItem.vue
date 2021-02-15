@@ -1,9 +1,3 @@
-<!-- <template>
-    <div>
-        {{label}}
-        <slot />
-    </div>
-</template> -->
 <script>
 export default {
     props: {
@@ -14,7 +8,7 @@ export default {
     },
     data() {
         return {
-            
+            active: false   
         }
     },
     computed: {
@@ -23,19 +17,20 @@ export default {
         }
     },
     methods: {
-    },
-    beforeCreate() {
-        console.log('beforeCrate TabItem')
-    },
-    created() {
-        console.log('created TabItem')
-    },
-    beforeMount() {
-        console.log('beforeMount TabItem')
+        isActive() {
+            return this.active;
+        }
     },
     mounted() {
-        console.log('tabItem mounted. add tab to parent');
         this.$parent.addTab(this)
+    },
+    render() {
+        if (this.isActive()) {
+            return (
+                <section>{this.$slots.default()}</section>
+            )
+        }
+        return null;
     }
 }
 </script>
