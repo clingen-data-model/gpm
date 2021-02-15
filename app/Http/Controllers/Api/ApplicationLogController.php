@@ -7,15 +7,26 @@ use Illuminate\Bus\Dispatcher;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\Models\Activity;
 use App\Domain\Application\Jobs\AddLogEntry;
 use App\Domain\Application\Models\Application;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use App\Http\Requests\Applications\CreateApplicationLogEntryRequest;
-use Spatie\Activitylog\Models\Activity;
 
 class ApplicationLogController extends Controller
 {
     public function __construct(private Dispatcher $dispatcher)
     {
+    }
+
+    public function index($applicationUuid, Request $request)
+    {
+        $application = Application::findByUuidOrFail($applicationUuid);
+        return $application->logEntries()->with([
+            'causer' => function (MorphTo $morphTo) {
+                $morphTo;
+            }
+        ])->get();
     }
     
 
