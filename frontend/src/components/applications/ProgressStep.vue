@@ -42,7 +42,6 @@ export default {
             return formatDate(this.application.date_initiated)
         },
         approvalDate() {
-            console.log(this.application.approval_dates)
             return formatDate(this.application.approval_dates['step '+this.step])
         },
         displayClass () {
@@ -58,7 +57,6 @@ export default {
             if (this.isLastStep) {
                 classes.push('rounded-r')
             }
-            console.info(`step ${this.step} classes: `, classes)
             return classes.join(' ');
         },
         isCurrentStep () {
