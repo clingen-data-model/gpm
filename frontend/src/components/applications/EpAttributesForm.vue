@@ -32,8 +32,8 @@
             </div>
         </input-row>
         <div class="py-1 flex space-x-2">
-            <button class="btn white" @click="resetClone" :disabled="isClean">Reset</button>
-            <button class="btn blue" @click="saveChanges" :disabled="isClean">Save Changes</button>
+            <button class="btn white btn-xs" @click="resetClone" :disabled="isClean">Reset</button>
+            <button class="btn blue btn-xs" @click="saveChanges" :disabled="isClean">Save Changes</button>
         </div>
     </div>
 </template>
@@ -84,8 +84,9 @@ export default {
             const epAttrs = ['long_base_name', 'short_base_name', 'cdwg_id', 'affiliation_id'];
             for (let idx in epAttrs) {
                 const attr = epAttrs[idx]
-                // console.log(attr);
-                console.info(this.application[attr], this.appClone[attr])
+                if (this.application[attr] == null && this.appClone[attr] == '') {
+                    continue;
+                }
                 if (this.application[attr] != this.appClone[attr]) {
                     return true;
                 }
