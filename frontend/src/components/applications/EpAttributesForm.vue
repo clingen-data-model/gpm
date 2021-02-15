@@ -1,9 +1,24 @@
 <template>
     <div>
-        <input-row label="Long Base Name" v-model="appClone.long_base_name" placeholder="Long base name"></input-row>
-        <input-row label="Short Base Name" v-model="appClone.short_base_name" placeholder="Short base name"></input-row>
-        <input-row label="Affiliation ID" v-model="appClone.affiliation_id" :placeholder="affiliationIdPlaceholder"></input-row>
-        <input-row label="CDWG">
+        <input-row 
+            label="Long Base Name" 
+            v-model="appClone.long_base_name" 
+            placeholder="Long base name"
+            :errors="errors.long_base_name"
+        ></input-row>
+        <input-row 
+            label="Short Base Name" 
+            v-model="appClone.short_base_name" 
+            placeholder="Short base name"
+            :errors="errors.short_base_name"
+        ></input-row>
+        <input-row 
+            label="Affiliation ID" 
+            v-model="appClone.affiliation_id" 
+            :placeholder="affiliationIdPlaceholder"
+            :errors="errors.affiliation_id"
+        ></input-row>
+        <input-row label="CDWG" :errors="errors.cdwg_id">
             <select name="" id="" v-model="appClone.cdwg_id">
                 <option :value="cdwg.id" v-for="cdwg in cdwgs" :key="cdwg.id">{{cdwg.name}}</option>
             </select>
@@ -37,7 +52,8 @@ export default {
     },
     data() {
         return {
-            appClone: {...this.application}
+            appClone: {...this.application},
+            errors: {}
         }
     },
     watch: {
@@ -66,7 +82,27 @@ export default {
         }
     },
     methods: {
-        
+        async saveChanges() {
+            try {
+                console.info('appClone', this.appClone)
+                this.clearErrors();
+                await this.$store.dispatch('updateEpAttributes', this.appClone);
+                this.resetClone();
+            } catch (error) {
+                if (error.response && error.response.status == 422 && error.response.data.errors) {
+                    this.errors = error.response.data.errors
+                    return;
+                }
+                console.error(error)
+            }
+            
+        },
+        resetClone() {
+            this.appClone = {...this.application}
+        },
+        clearErrors() {
+            this.errors = {};
+        }
     },
     mounted () {
         this.$store.dispatch('getCdwgs');

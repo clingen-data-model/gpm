@@ -125,7 +125,12 @@ class ApplicationController extends Controller
      */
     public function update(UpdateExpertPanelAttributesRequest $request, $uuid)
     {
-        $this->dispatcher->dispatch(new UpdateExpertPanelAttributes(uuid: $uuid, attributes: $request->all()));
+        $this->dispatcher->dispatch(
+            new UpdateExpertPanelAttributes(
+                uuid: $uuid, 
+                attributes: $request->only('long_base_name', 'short_base_name', 'affiliation_id', 'cdwg_id')
+            )
+        );
 
         $application = Application::findByUuidOrFail($uuid);
 

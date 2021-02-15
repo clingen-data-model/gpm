@@ -23,7 +23,7 @@ async function all(params) {
 }
 
 async function find(uuid, params) {
-    const data = await axios.get(baseUrl + '/' + uuid)
+    const data = await axios.get(baseUrl + '/' + uuid+queryStringFromParams(params))
             .then(response => {
                 // console.log(response.data)
                 return response.data
@@ -66,6 +66,21 @@ async function addNextAction(application, nextActionData) {
         });
 }
 
+async function updateEpAttributes(application) {
+    if (!application.uuid) {
+        throw new Error('application must have a uuid to save a next action.')
+    }
 
+    console.log(application.short_base_name)
+    const {working_name, long_base_name, short_base_name, affiliation_id, cdwg_id} = application;
+    const data = {working_name, long_base_name, short_base_name, affiliation_id, cdwg_id};
+    console.log(data);
+    
 
-export { all, find, allVceps, allGceps, initiate, addNextAction };
+    return await axios.put(`${baseUrl}/${application.uuid}`, data)
+        .then(response => {
+            return response.data
+        })
+}
+
+export { all, find, allVceps, allGceps, initiate, addNextAction, updateEpAttributes };

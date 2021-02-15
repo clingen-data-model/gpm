@@ -1,5 +1,5 @@
 import store from ".";
-import { all as getAllApplications, initiate, addNextAction, find as findApplication} from '../adapters/application_repository';
+import { all as getAllApplications, initiate, addNextAction, find as findApplication, updateEpAttributes} from '../adapters/application_repository';
 import axios from 'axios';
 
 export default {
@@ -94,12 +94,22 @@ export default {
                         commit('setCurrentItem', response.data)
                     })
         },
+        // eslint-disable-next-line
+        async updateEpAttributes( {commit}, application) {
+            console.log(application);
+            await updateEpAttributes(application)
+                .then( () => {
+                    store.dispatch('getApplicationWithLogEntries', application.uuid);
+                });
+        },
+        // eslint-disable-next-line
         async addNextAction({ commit }, { application, nextActionData }) {
             await addNextAction(application, nextActionData)
-                .then( response => {
+                .then( () => {
                     store.dispatch('getApplicationWithLogEntries', application.uuid)
                 })
         },
+        // eslint-disable-next-line
         async completeNextAction({ commit }, {application, nextAction, dateCompleted }) {
             const url = `/api/applications/${application.uuid}/next-actions/${nextAction.uuid}/complete`;
             await axios.post(url, {date_completed: dateCompleted})
@@ -107,6 +117,7 @@ export default {
                     store.dispatch('getApplicationWithLogEntries', application.uuid)
                 })
         },
+        // eslint-disable-next-line
         async addLogEntry ({commit}, { application, logEntryData }) {
             console.log(application.uuid)
             const url = `/api/applications/${application.uuid}/log-entries`
