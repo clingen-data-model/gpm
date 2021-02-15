@@ -4,8 +4,8 @@
             <div class="bg-gray-200 px-4 py-2 flex justify-between border border-gray-300 rounded-t-xl">
                 <h3 class="text-lg">{{application.name}}</h3>
                 <div class="flex space-x-2">
-                    <router-link :to="{name: 'NextAction'}" class="btn">Add Next Action</router-link>
-                    <router-link :to="{name: 'LogEntry'}" class="btn">Add Log Entry</router-link>
+                    <router-link :to="{name: 'NextAction'}" class="btn btn-sm">Add Next Action</router-link>
+                    <router-link :to="{name: 'LogEntry'}" class="btn btn-sm">Add Log Entry</router-link>
                 </div>
             </div>
             <div class="bg-white border border-t-0 border-gray-300 rounded-b  px-4 py-3 ">
@@ -20,21 +20,17 @@
 
                 <hr class="my-3">
 
-                <!-- <tabs-container>
-                    <tab-item label="test 1">Test content</tab-item>
-                    <tab-item label="beans">Test content</tab-item>
-                    <tab-item label="Farts">Test content</tab-item>
-                </tabs-container> -->
+                <tabs-container>
+                    
+                    <tab-item label="Application">
+                        <step-tabs :application="application"></step-tabs>
+                    </tab-item>
 
-                <div class="mb-2 mt-4">
-                    <div class="tabs">
-                        <router-link to="/application-info" class="tab">Application</router-link>
-                        <router-link to="/application-log" class="tab">Application Log</router-link>
-                    </div>
-                    <div class="p-4 border rounded-tr-lg rounded-b-lg bg-white">
-                        <!-- <router-view></router-view> -->
-                    </div>
-                </div>
+                    <tab-item label="Application Log">
+                        <application-log :uuid="application.uuid" :steps="[1,4]"></application-log>
+                    </tab-item>
+
+                </tabs-container>
 
             </div>
 
@@ -77,7 +73,6 @@ export default {
     watch: {
         $route() {
                 this.showModal = this.$route.meta.showModal ? Boolean(this.$route.meta.showModal) : false;
-                console.info('this.showModal: '+this.showModal);
                 this.$store.dispatch('getApplication', this.uuid);
         }
     },

@@ -79,6 +79,14 @@ export default {
                     commit('addApplication', item)
                 });
         },
+        async getApplicationLogEntries({ commit }, uuid) {
+            const url = `/api/applications/${uuid}?with[]=logEntries`;
+            await axios.get(url)
+                    .then( item => {
+                        store.commit('addApplication', item);
+                        console.log('action complete');
+                    })
+        },
         async addNextAction({ commit }, { application, nextActionData }) {
             await addNextAction(application, nextActionData)
                 .then( response => {
@@ -86,7 +94,7 @@ export default {
                 })
         },
         async completeNextAction({ commit }, {application, nextAction, dateCompleted }) {
-            const url = `/api/applications/${application.uuid}/next-actions/${nextAction.uuid}/complete`
+            const url = `/api/applications/${application.uuid}/next-actions/${nextAction.uuid}/complete`;
             await axios.post(url, {date_completed: dateCompleted})
                 .then (() => {
                     store.dispatch('getApplication', application.uuid)
