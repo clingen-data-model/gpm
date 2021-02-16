@@ -19,8 +19,10 @@ module.exports = {
     },
     variants: {
         extend: {
-            backgroundColor: ['even', 'odd'],
-            opacity: ['disabled']
+            backgroundColor: ['even', 'odd', 'active'],
+            opacity: ['disabled'],
+            cursor: ['disabled'],
+            gradientColorStops: ['active']
         },
     },
     plugins: [],

@@ -42,9 +42,9 @@
                 </input-row>
             </div>
         </input-row>
-        <div class="mt-4 border-t pt-2 flex justify-between">
-            <button class="bg-white text-black rounded border px-2 py-1" @click="cancel">Cancel</button>
-            <button class="bg-blue-500 text-white rounded px-2 py-1 mr-2" @click="save">Initiate Application</button>
+        <div class="btn-row">
+            <button class="btn" @click="cancel">Cancel</button>
+            <button class="btn blue" @click="save">Initiate Application</button>
         </div>
     </div>
 </template>
