@@ -94,10 +94,12 @@ class ApplicationTest extends TestCase
         $data = $this->makeApplicationData();
         $application = Application::initiate(...$data);
 
+        $properties = array_merge($application->getAttributes(), ['step' => 1]);
+        // dd($properties);
         $this->assertLoggedActivity(
             $application, 
             'Application initiated', 
-            $application->getAttributes(), 
+            $properties, 
             get_class($user), $user->id
         );
     }
@@ -464,6 +466,9 @@ class ApplicationTest extends TestCase
         ];
 
         if ($properties) {
+            if (!isset($properties['step'])) {
+                $properties['step'] = $application->current_step;
+            }
             $data['properties'] = json_encode($properties);
         }
         $this->assertDatabaseHas('activity_log', $data);
