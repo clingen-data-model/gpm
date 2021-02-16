@@ -2,7 +2,7 @@
     <div>
         <div>
             <div class="bg-gray-200 px-4 py-2 flex justify-between border border-gray-300 rounded-t-xl">
-                <h3 class="text-lg">{{application.name}}</h3>
+                <h3 class="text-lg">{{application.name}} - Current Step: {{application.current_step}}</h3>
                 <div class="flex space-x-2">
                     <router-link :to="{name: 'NextAction'}" class="btn btn-sm">Add Next Action</router-link>
                     <router-link :to="{name: 'LogEntry'}" class="btn btn-sm">Add Log Entry</router-link>
@@ -27,7 +27,7 @@
                     </tab-item>
 
                     <tab-item label="Application Log">
-                        <application-log :uuid="application.uuid" :steps="[1,4]"></application-log>
+                        <application-log :uuid="application.uuid"></application-log>
                     </tab-item>
 
                 </tabs-container>
@@ -108,7 +108,7 @@ export default {
         }
     },
     mounted() {
-        this.$store.dispatch('getApplication', this.uuid);
+        this.$store.dispatch('getApplicationWithLogEntries', this.uuid);
         this.showModal = Boolean(this.$route.meta.showModal)
     }
 }
