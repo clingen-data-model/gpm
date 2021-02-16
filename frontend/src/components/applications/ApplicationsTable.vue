@@ -15,7 +15,6 @@
             :row-click-handler="goToApplication"
             row-class="cursor-pointer"
             v-model:sort="sort"
-            @sorted="handleSorted"
         >
             <template v-slot:latest_activity_log="props">
                 <pre>{{props.value.description}}</pre>
@@ -105,7 +104,6 @@ export default {
         sort: {
             immediate: true,
             get() {
-                console.log(this.$route.query['sort-field'], this.$route.query['sort-desc']);
                 if (Object.keys(this.$route.query).includes('sort-field')) {
                     return {
                         field: this.fields.find(i => i.name == this.$route.query['sort-field']),
