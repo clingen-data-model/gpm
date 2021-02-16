@@ -1,9 +1,9 @@
 <template>
     <div>
-        <div v-if="!hasLogEntries">
-            No log entries
+        <div class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200" v-if="!hasLogEntries">
+            {{noResultsMessage}}
         </div>
-        <data-table :fields="fields" :data="application.log_entries" v-model:sort="sort" v-else>
+        <data-table :fields="fields" :data="filteredLogEntries" v-model:sort="sort" v-else>
         </data-table>
     </div>
 </template>
@@ -30,17 +30,13 @@ const fields = [
                     label: 'User',
                     sortable: true
                 }
-                
             ];
 
 export default {
     props: {
-        steps: {
+        step: {
             required: false,
-            type: [Number,Array],
-            default: function () {
-                return [1,2,3,4]
-            }
+            type: Number,
         }
     },
     data() {
@@ -58,11 +54,20 @@ export default {
             application: 'currentItem'
         }),
         hasLogEntries(){
-            if (this.application && this.application.log_entries) {
-                return this.application.log_entries.length > 0;
+            return this.filteredLogEntries.length > 0;
+        },
+        filteredLogEntries() {
+            if(this.step && this.application && this.application.log_entries) {
+                return this.application.log_entries.filter(entry => entry.properties.step == this.step);
             }
-            return false;
+            return [];
+        },
+        noResultsMessage() {
+            if (typeof this.step == 'number') {
+                return `No progress log entries have been entered for step ${this.step}`;
+            }
 
+            return 'There are no log entries for this application';
         }
     },
     methods: {
@@ -71,7 +76,7 @@ export default {
         }
     },
     mounted() {
-        this.getLogEntries()
+        // this.getLogEntries()
     }
 }
 </script>
