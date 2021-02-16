@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Domain\Application\Events\ApplicationEvent;
 use App\Domain\Application\Events\ApplicationInitiated;
 use App\Events\RecordableEvent;
 use Illuminate\Support\Facades\Auth;
@@ -42,6 +43,11 @@ class RecordEvent
 
         $properties = $event->getProperties();
         if ($properties) {
+
+            if ($event instanceof ApplicationEvent && !isset($properties['step'])) {
+                $properties['step'] = $event->getStep();
+            }
+            
             $logger->withProperties($properties);
         }
 

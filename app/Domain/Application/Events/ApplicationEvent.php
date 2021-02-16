@@ -10,6 +10,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Ramsey\Uuid\Type\Integer;
 
 class ApplicationEvent extends RecordableEvent
 {
@@ -37,6 +38,11 @@ class ApplicationEvent extends RecordableEvent
     public function getLogDate():Carbon
     {
         return Carbon::now();
+    }
+
+    public function getStep()
+    {
+        return $this->application->current_step;
     }
     
     

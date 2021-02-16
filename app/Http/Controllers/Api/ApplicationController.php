@@ -128,7 +128,7 @@ class ApplicationController extends Controller
         $this->dispatcher->dispatch(
             new UpdateExpertPanelAttributes(
                 uuid: $uuid, 
-                attributes: $request->only('long_base_name', 'short_base_name', 'affiliation_id', 'cdwg_id')
+                attributes: $request->only('working_name', 'long_base_name', 'short_base_name', 'affiliation_id', 'cdwg_id')
             )
         );
 

@@ -32,5 +32,10 @@ class ApplicationInitiated extends ApplicationEvent
     {
         return $this->application->date_initiated;
     }
+
+    public function getStep()
+    {
+        return 1;
+    }
     
 }

@@ -44,6 +44,10 @@ class StepApproved extends ApplicationEvent
         return $this->dateApproved;
     }
     
+    public function getStep()
+    {
+        return max(($this->application->current_step - 1), 1);
+    }
 
     /**
      * Get the channels the event should broadcast on.
