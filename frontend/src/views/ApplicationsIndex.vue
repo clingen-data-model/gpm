@@ -43,3 +43,19 @@ export default {
   }
 }
 </script>
+
+<style lang="postcss" scoped>
+.tabs {
+    @apply flex space-x-2;
+}
+
+.tabs .tab {
+    @apply border border-b-0 px-4 py-1 rounded-t-lg bg-gray-200 -mb-px;
+}
+
+.tabs .tab.router-link-active,
+.tabs .tab.active {
+    @apply bg-white no-underline;
+}
+
+</style>
