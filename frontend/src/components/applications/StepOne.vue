@@ -12,14 +12,12 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import DocumentManager from './DocumentManager'
 import BaseStep from './BaseStep'
 import CoiLog from './COILog'
 
 export default {
     name: 'StepOne',
     components: {
-        DocumentManager,
         BaseStep,
         CoiLog,
     },

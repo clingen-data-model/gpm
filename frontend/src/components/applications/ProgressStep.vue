@@ -13,7 +13,7 @@
     <div class="flex-1">
         <div class="progress-step" :class="displayClass"></div>
         <div class="flex flex-row-reverse justify-between bg-transparent mt-1">
-            <div v-if="isApproved" :class="{'-mr-10': !isLastStep}">{{approvalDate}}</div>
+            <div :class="{'-mr-10': !isLastStep}">{{approvalDate}}</div>
             <div v-if="isFirstStep">{{dateInitiated}}</div>
         </div>
     </div>
@@ -42,6 +42,9 @@ export default {
             return formatDate(this.application.date_initiated)
         },
         approvalDate() {
+            if (!this.application.approval_dates || !this.application.approval_dates['step '+this.step]) {
+                return ' '
+            }
             return formatDate(this.application.approval_dates['step '+this.step])
         },
         displayClass () {

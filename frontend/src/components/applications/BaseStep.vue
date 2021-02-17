@@ -7,6 +7,7 @@
                     :application="application"
                     :document-type-id="documentType"
                     :getsReviewd="documentGetsReviewed"
+                    :step="step"
                 ></document-manager>
             </div>
         </slot>
@@ -26,7 +27,7 @@
         <div class="mb-6">
             <h4 class="text-md font-bold mb-2">Step {{step}} Progress Log</h4>
             <application-log :step="step"></application-log>
-        </div>a
+        </div>
         </slot>
     </div>
 </template>
