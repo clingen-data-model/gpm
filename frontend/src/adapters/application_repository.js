@@ -71,11 +71,8 @@ async function updateEpAttributes(application) {
         throw new Error('application must have a uuid to save a next action.')
     }
 
-    console.log(application.short_base_name)
     const {working_name, long_base_name, short_base_name, affiliation_id, cdwg_id} = application;
     const data = {working_name, long_base_name, short_base_name, affiliation_id, cdwg_id};
-    console.log(data);
-    
 
     return await axios.put(`${baseUrl}/${application.uuid}`, data)
         .then(response => {
@@ -83,4 +80,49 @@ async function updateEpAttributes(application) {
         })
 }
 
-export { all, find, allVceps, allGceps, initiate, addNextAction, updateEpAttributes };
+async function addDocument(application, documentData) {
+    console.log('application_repository: addDocument');
+    if (!application.uuid) {
+        throw new Error('application must have a uuid to save a next action.')
+    }
+
+    console.log('applicaiton has uuid')
+
+    if (!documentData.has('uuid')) {
+        documentData.append('uuid', uuid4())
+    }
+
+    console.log('about to print info');
+
+    console.info('application: ',application)
+    console.info('documentData: ',documentData)
+
+    const url = `${baseUrl}/${application.uuid}/documents`;
+    return await axios.post(url, documentData)
+        .then(response => {
+            return response.data;
+        });
+
+}
+
+export { 
+    all, 
+    find, 
+    allVceps, 
+    allGceps, 
+    initiate, 
+    addNextAction, 
+    updateEpAttributes, 
+    addDocument 
+}
+
+export default { 
+    all, 
+    find, 
+    allVceps, 
+    allGceps, 
+    initiate, 
+    addNextAction, 
+    updateEpAttributes, 
+    addDocument 
+};

@@ -1,5 +1,5 @@
 import store from ".";
-import { all as getAllApplications, initiate, addNextAction, find as findApplication, updateEpAttributes} from '../adapters/application_repository';
+import appRepo from '../adapters/application_repository';
 import axios from 'axios';
 
 export default {
@@ -39,7 +39,7 @@ export default {
         async getApplications({ commit, state }, params, fresh = false) {
             if (fresh || state.lastFetch === null) {
                 commit('setLastParams', params);
-                await getAllApplications(params)
+                await appRepo.all(params)
                     .then(data => {
                         data.forEach(item => {
                             commit('addApplication', item)
@@ -51,6 +51,7 @@ export default {
 
             store.dispatch('getUpdatesSinceLastFetch', params);
         },
+
         async getUpdatesSinceLastFetch({ commit, state }, params=null) 
         {
             if (params === null) {
@@ -62,7 +63,7 @@ export default {
             }
             params.where.since = state.lastFetch.toISOString()
 
-            await getAllApplications(params)
+            await appRepo.all(params)
                 .then(data => {
                     data.forEach(item => {
                         commit('addApplication', item)
@@ -70,8 +71,9 @@ export default {
                     })
                 })
         },
+
         async initiateApplication({ commit }, appData) {
-            await initiate(appData)
+            await appRepo.initiate(appData)
                 .then(item => {
                     commit('addApplication', item);
                     store.dispatch('getUpdatesSinceLastFetch')
@@ -79,7 +81,7 @@ export default {
         },
         async getApplication({ commit }, appUuid) {
             console.log('store.applications.getApplication')
-            await findApplication(appUuid)
+            await appRepo.find(appUuid, {with: ['logEntries', 'documents']})
                 .then(item => {
                     commit('addApplication', item)
                     commit('setCurrentItem', item)
@@ -87,24 +89,24 @@ export default {
         },
         async getApplicationWithLogEntries({ commit }, uuid) {
             console.log('store.applications.getApplicationWithLogEntries')
-            const url = `/api/applications/${uuid}?with[]=logEntries`;
-            await axios.get(url)
-                    .then( response => {
-                        commit('addApplication', response.data);
-                        commit('setCurrentItem', response.data)
+            const params = {with: ['logEntries', 'documents']};
+            await appRepo.find(uuid, params)
+                    .then( item => {
+                        commit('addApplication', item);
+                        commit('setCurrentItem', item)
                     })
         },
         // eslint-disable-next-line
         async updateEpAttributes( {commit}, application) {
             console.log(application);
-            await updateEpAttributes(application)
+            await appRepo.updateEpAttributes(application)
                 .then( () => {
                     store.dispatch('getApplicationWithLogEntries', application.uuid);
                 });
         },
         // eslint-disable-next-line
         async addNextAction({ commit }, { application, nextActionData }) {
-            await addNextAction(application, nextActionData)
+            await appRepo.addNextAction(application, nextActionData)
                 .then( () => {
                     store.dispatch('getApplicationWithLogEntries', application.uuid)
                 })
@@ -119,11 +121,19 @@ export default {
         },
         // eslint-disable-next-line
         async addLogEntry ({commit}, { application, logEntryData }) {
-            console.log(application.uuid)
             const url = `/api/applications/${application.uuid}/log-entries`
             await axios.post(url, logEntryData)
                 .then( () => {
                     store.dispatch('getApplicationWithLogEntries', application.uuid);
+                })
+        },
+        
+        // eslint-disable-next-line
+        async addDocument ({commit}, {application, documentData}) {
+            console.log('application store: addDocument')
+            await appRepo.addDocument(application, documentData)
+                .then(() => {
+                    store.dispatch('getApplication', application.uuid)
                 })
         }
     },

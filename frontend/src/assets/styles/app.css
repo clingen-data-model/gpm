@@ -10,6 +10,10 @@ body {
     font-size: .9rem;
 }
 
+input[type=file]{
+    @apply border-none p-0;
+}
+
 input,
 select,
 textarea {

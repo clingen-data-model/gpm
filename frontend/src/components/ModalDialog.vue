@@ -1,11 +1,11 @@
 <template>
-    <div class="absolute top-0 left-0 right-0 bottom-0 flex justify-center content-center" 
+    <div class="fixed top-0 left-0 right-0 bottom-0 flex justify-center content-center" 
         @keyup.esc="close"
         v-show="isVisible"
     >
         <div 
             id="modal-backdrop" 
-            class="absolute top-0 left-0 right-0 bottom-0 bg-black opacity-50" 
+            class="fixed top-0 left-0 right-0 bottom-0 bg-black opacity-50" 
             @click="close"
         ></div>
         <div class="bg-white p-4 border border-gray-500 opacity-100 min-h-1/4 relative mt-24 mb-auto rounded-lg shadow-md" :class="width">
