@@ -57,10 +57,15 @@ export default {
             return this.filteredLogEntries.length > 0;
         },
         filteredLogEntries() {
-            if(this.step && this.application && this.application.log_entries) {
+            if(this.application && this.application.log_entries && this.step) {
                 return this.application.log_entries.filter(entry => entry.properties.step == this.step);
             }
-            return [];
+
+            if (this.application && this.application.log_entries) {
+                return this.application.log_entries;
+            }
+
+            return []
         },
         noResultsMessage() {
             if (typeof this.step == 'number') {
