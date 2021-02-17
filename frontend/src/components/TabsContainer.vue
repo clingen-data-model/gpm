@@ -43,30 +43,45 @@ export default {
             required: false,
             type: String,
             default: 'top'
+        },
+        modelValue: {
+            required: false,
+            type: Number,
+            default: 0
         }
     },
     data() {
         return {
             tabs: [],
-            selectedTab: 0
         }
     },
-    computed: {
-
+    watch: {
+        modelValue: function (newValue) {
+            this.activateTab(newValue)
+        }
     },
     methods: {
         activateTab (idx) {
             this.tabs.forEach(t => t.active = false)
             this.tabs[idx].active = true
+            this.$emit('update:modelValue', idx);
         },
-        setDefaultActiveTab () {
-            if (this.tabs.findIndex(t => t.active) < 0) {
-                this.tabs[0].active = true;
+
+        setActiveIndex () {
+            if (this.tabs.length > 0 && !this.modelValue) {
+                this.tabs[0].active = true
             }
+            if (this.modelValue && this.tabs.length > this.modelValue) {
+                this.activateTab(this.modelValue);
+            }
+
+            // if (this.tabs.length > 0 && this.tabs.findIndex(t => t.active) < 0) {
+            //     this.tabs[this.modelValue].active = true;
+            // }
         },
         addTab (tab) {
             this.tabs.push(tab);
-            this.setDefaultActiveTab();
+            this.setActiveIndex();
         },
         renderTabs () {
             return this.tabs.map((tab, idx) => {

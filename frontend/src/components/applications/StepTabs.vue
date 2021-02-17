@@ -1,6 +1,6 @@
 <template>
     <div>
-        <tabs-container tab-location="right">
+        <tabs-container tab-location="right" v-model="activeIndex">
             <tab-item label="Step 1 - Define">
                 <step-one></step-one>
             </tab-item>
@@ -18,6 +18,7 @@
     </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import StepOne from './StepOne'
 import StepTwo from './StepTwo'
 import StepThree from './StepThree'
@@ -32,14 +33,28 @@ export default {
     },
     data() {
         return {
-            
+            activeStep: 1
         }
     },
     computed: {
-
+        ...mapGetters({
+            application: 'currentItem'
+        }),
+        activeIndex: {
+            deep: true,
+            get() {
+                console.info('activeIndex: ', this.application)
+                return (this.application && this.application.current_step) ? this.application.current_step - 1 : 0
+            }
+        } 
     },
-    methods: {
-
-    }
+    // watch: {
+    //     application: {
+    //         deep: true,
+    //         handler: function () {
+    //             this.activeStep = this.application.current_step
+    //         }
+    //     }
+    // }
 }
 </script>
