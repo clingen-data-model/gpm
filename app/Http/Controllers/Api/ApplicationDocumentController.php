@@ -38,7 +38,7 @@ class ApplicationDocumentController extends Controller
         ]);
 
         $data['storage_path'] = $path;
-        $data['filename'] = $file->name;
+        $data['filename'] = $file->getClientOriginalName();
 
         $command = new AddApplicationDocument($applicationUuid, ...$data);
         $this->dispatcher->dispatch($command);
