@@ -5,6 +5,12 @@ const { default: axios } = require("axios");
 
 const baseUrl = '/api/applications';
 
+function entityHasUuid(entity) { 
+    if (!entity.uuid) {
+        throw new Error('Entity must have a uuid to complete the transaction.')
+    }
+}
+
 function mergeParams(obj1, obj2) {
     const merged = {...obj1, ...obj2 };
     if (obj1.with && obj2.with) {
@@ -52,9 +58,7 @@ async function initiate(data) {
 }
 
 async function addNextAction(application, nextActionData) {
-    if (!application.uuid) {
-        throw new Error('application must have a uuid to save a next action.')
-    }
+    entityHasUuid(application);
 
     if (!nextActionData.uuid) {
         nextActionData.uuid = uuid4();
@@ -67,10 +71,8 @@ async function addNextAction(application, nextActionData) {
 }
 
 async function updateEpAttributes(application) {
-    if (!application.uuid) {
-        throw new Error('application must have a uuid to save a next action.')
-    }
-
+    entityHasUuid(application);
+    
     const {working_name, long_base_name, short_base_name, affiliation_id, cdwg_id} = application;
     const data = {working_name, long_base_name, short_base_name, affiliation_id, cdwg_id};
 
@@ -81,28 +83,28 @@ async function updateEpAttributes(application) {
 }
 
 async function addDocument(application, documentData) {
-    console.log('application_repository: addDocument');
-    if (!application.uuid) {
-        throw new Error('application must have a uuid to save a next action.')
-    }
-
-    console.log('applicaiton has uuid')
+    entityHasUuid(application);
 
     if (!documentData.has('uuid')) {
         documentData.append('uuid', uuid4())
     }
-
-    console.log('about to print info');
-
-    console.info('application: ',application)
-    console.info('documentData: ',documentData)
 
     const url = `${baseUrl}/${application.uuid}/documents`;
     return await axios.post(url, documentData)
         .then(response => {
             return response.data;
         });
+}
 
+async function markDocumentReviewed(application, document, dateReviewed) {
+    entityHasUuid(application);
+    entityHasUuid(document);
+
+    const url = `${baseUrl}/${application.uuid}/documents/${document.uuid}/review`
+    return await axios.post(url, {date_reviewed: dateReviewed})
+        .then(response => {
+            return response.data;
+        })
 }
 
 export { 
@@ -113,7 +115,8 @@ export {
     initiate, 
     addNextAction, 
     updateEpAttributes, 
-    addDocument 
+    addDocument,
+    markDocumentReviewed 
 }
 
 export default { 
@@ -124,5 +127,6 @@ export default {
     initiate, 
     addNextAction, 
     updateEpAttributes, 
-    addDocument 
+    addDocument,
+    markDocumentReviewed
 };

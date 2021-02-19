@@ -130,8 +130,16 @@ export default {
         
         // eslint-disable-next-line
         async addDocument ({commit}, {application, documentData}) {
-            console.log('application store: addDocument')
             await appRepo.addDocument(application, documentData)
+                .then(() => {
+                    store.dispatch('getApplication', application.uuid)
+                })
+        },
+
+        // eslint-disable-next-line
+        async markDocumentReviewed ({commit}, {application, document, dateReviewed}) {
+            console.log('application store: addDocument')
+            await appRepo.markDocumentReviewed(application, document, dateReviewed)
                 .then(() => {
                     store.dispatch('getApplication', application.uuid)
                 })

@@ -1,14 +1,17 @@
 <template>
     <div>
-        <button class="btn mb-2" @click="showModal = true">Upload a new version</button>
+        <button class="btn mb-2" @click="showUploadForm = true">Upload a new version</button>
         
         <data-table :fields="filteredFields" :data="filteredDocuments" :sort="{field: fields[0], desc: true}">
-            <template v-slot:date_reviewed="item">
-                <pre>{{item}}</pre>
+            <template v-slot:cell-date_reviewed="item">
+                <div class="text-center">
+                    <span v-if="item.value">{{item.value}}</span>
+                    <button v-else class="btn btn-xs" @click="showMarkReviewed(item.item)">Mark reviewed</button>
+                </div>
             </template>
         </data-table>
 
-        <modal-dialog v-model="showModal" @closed="$refs.uploadform.clearForm()">
+        <modal-dialog v-model="showUploadForm" @closed="$refs.uploadform.clearForm()">
             <document-upload-form 
                 :application="application" 
                 :document-type-id="documentTypeId" 
@@ -19,16 +22,22 @@
             >
             </document-upload-form>
         </modal-dialog>
+
+        <modal-dialog v-model="showReviewedForm">
+            <document-reviewed-form :document="activeDocument" :application="application" @canceled="hideReviewedForm" @saved="hideReviewedForm"></document-reviewed-form>
+        </modal-dialog>
     </div>
 </template>
 <script>
 import {formatDate} from '../../date_utils'
 import DocumentUploadForm from './DocumentUploadForm'
+import DocumentReviewedForm from './DocumentReviewedForm'
 
 export default {
     name: 'DocumentManager',
     components: {
-        DocumentUploadForm
+        DocumentUploadForm,
+        DocumentReviewedForm
     },
     props: {
         application: {
@@ -52,7 +61,9 @@ export default {
     },
     data() {
         return {
-            showModal: false,
+            showUploadForm: false,
+            showReviewedForm: false,
+            activeDocument: {},
             fields: [
                 {
                     name: 'version',
@@ -91,8 +102,15 @@ export default {
         }
     },
     methods: {
+        showMarkReviewed (item) {
+            this.activeDocument = item;
+            this.showReviewedForm = true;
+        },
+        hideReviewedForm () {
+            this.showReviewedForm = false;
+        },
         closeDialog(){
-            this.showModal = false;
+            this.showUploadForm = false;
         }
     }
 }
