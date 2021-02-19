@@ -16,9 +16,6 @@
             row-class="cursor-pointer"
             v-model:sort="sort"
         >
-            <template v-slot:latest_activity_log="props">
-                <pre>{{props.value.description}}</pre>
-            </template>
         </data-table>
     </div>
 </template>
