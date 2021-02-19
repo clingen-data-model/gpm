@@ -1,6 +1,10 @@
 <template>
     <div>
-        <tabs-container tab-location="right" v-model="activeIndex">
+        <div v-if="this.application.ep_type_id == 1">
+            <step-one></step-one>
+        </div>
+        
+        <tabs-container tab-location="right" v-model="activeIndex" v-if="this.application.ep_type_id == 2">
             <tab-item label="Step 1 - Define">
                 <step-one></step-one>
             </tab-item>
