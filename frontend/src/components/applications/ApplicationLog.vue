@@ -15,9 +15,9 @@ const fields = [
                 {
                     name: 'created_at',
                     label: 'Created',
+                    sortName: 'created_at',
                     sortable: true,
-                    type: String,
-                    resolveValue: (item) => formatDate(item.created_at)
+                    type: Date,
                 },
                 {
                     name: 'description',

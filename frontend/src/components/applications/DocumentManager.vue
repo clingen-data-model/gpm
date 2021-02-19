@@ -64,24 +64,11 @@ export default {
                 },
                 {
                     name: 'date_received',
-                    type: String,
-                    resolveValue (item) {
-                        if (item.date_received) {
-                            return formatDate(new Date(Date.parse(item.date_received)))
-                        }
-
-                        return null
-                    }
+                    type: Date,
                 },
                 {
                     name: 'date_reviewed',
                     type: Date,
-                    resolveValue (item) {
-                        if (item.date_reviewed) {
-                            return formatDate(new Date(Date.parse(item.date_reviewed)))
-                        }
-                        return null;
-                    }
                 }
             ],
         }
