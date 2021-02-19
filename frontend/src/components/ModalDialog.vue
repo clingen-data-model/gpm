@@ -8,7 +8,7 @@
             class="fixed top-0 left-0 right-0 bottom-0 bg-black opacity-50" 
             @click="close"
         ></div>
-        <div class="bg-white p-4 border border-gray-500 opacity-100 min-h-1/4 relative mt-24 mb-auto rounded-lg shadow-md" :class="width">
+        <div class="bg-white p-4 border border-gray-500 opacity-100 relative mt-24 mb-auto rounded-lg shadow-md" :class="width">
             <button @click="close" class="btn btn-xs gray float-right">X</button>
             <header>
                 <slot name="header">
