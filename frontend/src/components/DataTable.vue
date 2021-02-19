@@ -57,7 +57,7 @@
                         :key="field.name"
                         class="text-left p-1 px-3 border"
                     >
-                        <slot name="`cell-${field.name}`" :item="item" :field="field" :value="resolveDisplayAttribute(item, field)">
+                        <slot :name="`cell-${field.name}`" :item="item" :field="field" :value="resolveDisplayAttribute(item, field)">
                             {{resolveDisplayAttribute(item, field)}}
                         </slot>
                     </td>
@@ -265,8 +265,6 @@ export default {
             const aVal = new Date(Date.parse(a[this.sortField.name])).getTime();
             const bVal = new Date(Date.parse(b[this.sortField.name])).getTime();
             if (aVal == bVal) {
-                console.info('aVal == bVal', [aVal, bVal]);
-
                 if (a.id > b.id) {
                     return 1*coefficient;
                 }
