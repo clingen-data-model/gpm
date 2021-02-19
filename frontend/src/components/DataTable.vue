@@ -57,8 +57,8 @@
                         :key="field.name"
                         class="text-left p-1 px-3 border"
                     >
-                        <slot name="`cell-${field.name}`" :item="item" :field="field" :value="resolveAttribute(item, field)">
-                            {{resolveAttribute(item, field)}}
+                        <slot name="`cell-${field.name}`" :item="item" :field="field" :value="resolveDisplayAttribute(item, field)">
+                            {{resolveDisplayAttribute(item, field)}}
                         </slot>
                     </td>
                 </tr>
@@ -67,9 +67,13 @@
     </div>
 </template>
 <script>
+import { formatDate } from '../date_utils'
 import IconCheveronDown from '../components/icons/IconCheveronDown'
 import IconCheveronUp from '../components/icons/IconCheveronUp'
 
+/**
+ * 
+ */
 export default {
     name: 'DataTable',
     components: {
@@ -81,9 +85,21 @@ export default {
             required: false,
             type: Array
         },
+        /**
+         * An array of field objects with the following structure:
+         * {
+         *      name: <String>attribute_name // defines the field in the item object that will be used to get value
+         *      type: <Type> // Number, String, Object, Date, etc. Determines sort default behavior and default display,
+         *      sortable: <Boolean> // True: column can be sorted; False: can't be sorted. Default: false
+         *      sortName: <String>item_attribute_name // Item's attribute on which to sort. Default: null - uses 'name'
+         *      resolveValue: <Function> // custom function to resolve item's value for this column. 
+         *                                  Effects sort if no 'sortName' provided.
+         *      sortFunction: <Function>(a, b) => -1|0|1 // Used to sort column instead of default stort algorithm.
+         * }
+         */
         fields: {
             required: true,
-            type: Array
+            type: Array,
         },
         filterTerm: {
             required: false,
@@ -144,8 +160,13 @@ export default {
         },
         sortedFilteredData() {
             if (this.data) {
-                let data = this.filteredData;//JSON.parse(JSON.stringify(this.data))
+                let data = this.filteredData;
                 const sortType = this.sortClone.field.type;
+
+                if (this.sortClone.field.sorfFunction) {
+                    return data.sort(this.sortClone.field.sortFunction)
+                }
+                
                 switch (sortType) {
                     case Date:
                         return data.sort(this.dateSort)
@@ -156,15 +177,22 @@ export default {
                 console.log('no data');
             }
             return []
+        },
+        sortField() {
+            return this.sortClone.field;
+        },
+        sortFieldName() {
+            if (this.sortClone.field.sortName) {
+                return this.sortClone.field.sortName
+            }
+            return this.sortClone.field.Name;
         }
     },
     methods: {
-        resolveAttribute (item, field) {
-            if (field.resolveValue) {
-                return field.resolveValue(item);
-            }
-
-            const attr = field.name;
+        findFieldByName(name) {
+            return this.fields.find(i => i.name == name)
+        },
+        getAttributeValue (item, attr) {
             if (attr && typeof attr != 'undefined' && attr.includes('.')) {
                 const pathParts = attr.split('.');
                 let val = JSON.parse(JSON.stringify(item));
@@ -176,8 +204,33 @@ export default {
                 }
                 return val
             }
-            return item[attr]
+            return item[attr];
         },
+        resolveDisplayAttribute (item, field) {
+            if (field.resolveValue) {
+                return field.resolveValue(item);
+            }
+
+            const value = this.getAttributeValue(item, field.name);
+
+            if (field.type == Date) {
+                return (value) ? formatDate(value) : null;
+            }
+            return value;
+        },
+        
+        resolveSortAttribute (item, field){
+            if (field.resolveSort) {
+                return field.resolveSort(item);
+            }
+
+            if (field.sortName) {
+                return this.getAttributeValue(item, field.sortName);
+            }
+
+            return this.resolveDisplayAttribute(item, field)
+        },
+        
         updateSort(field) {
             const oldField = this.sortClone.field;
             const newSort = {
@@ -193,24 +246,31 @@ export default {
         },
         textAndNumberSort(a, b) {
             const coefficient = this.sortClone.desc ? -1 : 1;
-            let aVal = this.resolveAttribute(a, this.sortClone.field);
-            let bVal = this.resolveAttribute(b, this.sortClone.field);
+            let aVal = this.resolveSortAttribute(a, this.sortField);
+            let bVal = this.resolveSortAttribute(b, this.sortField);
             if (this.sortClone.field.type == String) {
                 aVal = aVal.toLowerCase();
                 bVal = bVal.toLowerCase();
             }
             if (aVal == bVal) {
-                return 0;
+                if (a.id > b.id) {
+                    return 1*coefficient;
+                }
+                return -1*coefficient;
             }
             return coefficient*((aVal > bVal) ? 1 : -1);
         },
         dateSort(a, b) {
             const coefficient = this.sortClone.desc ? -1 : 1;
-            const aVal = new Date(a[this.sortClone.field]);
-            const bVal = new Date(b[this.sortClone.field]);
+            const aVal = new Date(Date.parse(a[this.sortField.name])).getTime();
+            const bVal = new Date(Date.parse(b[this.sortField.name])).getTime();
             if (aVal == bVal) {
-                console.log('dates equal')
-                return 0;
+                console.info('aVal == bVal', [aVal, bVal]);
+
+                if (a.id > b.id) {
+                    return 1*coefficient;
+                }
+                return -1*coefficient;
             }
             return coefficient * ((aVal > bVal) ? 1 : -1);
         },
@@ -218,7 +278,7 @@ export default {
             const lowerTerm = term.toLowerCase();
 
             for (let f in this.fields) {
-                let itemAttr = this.resolveAttribute(item, this.fields[f]);
+                let itemAttr = this.resolveDisplayAttribute(item, this.fields[f]);
                 if (itemAttr === null || typeof itemAttr === 'undefined') {
                     continue;
                 }
