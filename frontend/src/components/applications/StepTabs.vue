@@ -46,9 +46,12 @@ export default {
         activeIndex: {
             deep: true,
             get() {
-                console.info('activeIndex: ', this.application)
                 return (this.application && this.application.current_step) ? this.application.current_step - 1 : 0
+            },
+            set(value) {
+                this.activeStep = value+1
             }
+
         } 
     },
     // watch: {
