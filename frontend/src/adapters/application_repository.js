@@ -37,24 +37,20 @@ async function find(uuid, params) {
     return data
 }
 
-async function allVceps(params) {
-    const mergedParams = mergeParams(params, { where: { ep_type_id: 2 } });
-    return await all(mergedParams)
-}
-
-async function allGceps(params) {
-    const mergedParams = mergeParams(params, { where: { ep_type_id: 1 } });
-    return await all(mergedParams)
-}
-
 async function initiate(data) {
     if (!data.uuid) {
         data.uuid = uuid4()
     }
     return await axios.post(baseUrl, data)
-        .then(response => {
-            return response.data
-        })
+        .then(response => response.data)
+}
+
+async function approveCurrentStep(application, dateApproved){
+    entityHasUuid(application)
+
+    const url = `${baseUrl}/${application.uuid}/current-step/approve`
+    return await axios.post(url, {date_approved: dateApproved})
+                    .then(response => response.data)
 }
 
 async function addNextAction(application, nextActionData) {
@@ -65,9 +61,7 @@ async function addNextAction(application, nextActionData) {
     }
 
     return await axios.post(`${baseUrl}/${application.uuid}/next-actions`, nextActionData)
-        .then(response => {
-            return response.data;
-        });
+        .then(response => response.data);
 }
 
 async function updateEpAttributes(application) {
@@ -77,9 +71,7 @@ async function updateEpAttributes(application) {
     const data = {working_name, long_base_name, short_base_name, affiliation_id, cdwg_id};
 
     return await axios.put(`${baseUrl}/${application.uuid}`, data)
-        .then(response => {
-            return response.data
-        })
+        .then(response => response.data)
 }
 
 async function addDocument(application, documentData) {
@@ -91,9 +83,7 @@ async function addDocument(application, documentData) {
 
     const url = `${baseUrl}/${application.uuid}/documents`;
     return await axios.post(url, documentData)
-        .then(response => {
-            return response.data;
-        });
+        .then(response => response.data);
 }
 
 async function markDocumentReviewed(application, document, dateReviewed) {
@@ -102,17 +92,14 @@ async function markDocumentReviewed(application, document, dateReviewed) {
 
     const url = `${baseUrl}/${application.uuid}/documents/${document.uuid}/review`
     return await axios.post(url, {date_reviewed: dateReviewed})
-        .then(response => {
-            return response.data;
-        })
+        .then(response => response.data)
 }
 
 export { 
     all, 
     find, 
-    allVceps, 
-    allGceps, 
     initiate, 
+    approveCurrentStep,
     addNextAction, 
     updateEpAttributes, 
     addDocument,
@@ -122,9 +109,8 @@ export {
 export default { 
     all, 
     find, 
-    allVceps, 
-    allGceps, 
     initiate, 
+    approveCurrentStep,
     addNextAction, 
     updateEpAttributes, 
     addDocument,
