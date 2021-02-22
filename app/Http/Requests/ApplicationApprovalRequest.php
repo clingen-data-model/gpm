@@ -24,7 +24,7 @@ class ApplicationApprovalRequest extends FormRequest
     public function rules()
     {
         return [
-            'date_approved' => 'nullable|date'
+            'date_approved' => 'required|date'
         ];
     }
 }
