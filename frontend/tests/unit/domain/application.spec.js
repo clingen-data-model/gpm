@@ -129,4 +129,16 @@ describe('application entity', () => {
         expect(app.approvalDateForStep(2)).toEqual(new Date(Date.parse('2021-02-01')));
         expect(app.approvalDateForStep(3)).toEqual(null);
     });
+
+    test('it can clone itself', () => {
+        const app = new Application({working_name: 'turts'});
+        const clone = app.clone();
+
+        expect(clone.working_name).toBe('turts');
+
+        clone.working_name = 'tewtles';
+
+        expect(app.working_name).toBe('turts');
+        expect(clone.working_name).toBe('tewtles')
+    })
 })

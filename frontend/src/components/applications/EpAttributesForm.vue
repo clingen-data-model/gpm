@@ -52,7 +52,7 @@ export default {
     },
     data() {
         return {
-            appClone: {...this.application},
+            appClone: this.application.clone(),
             errors: {}
         }
     },
@@ -60,7 +60,7 @@ export default {
         application: {
             immediate: true,
             handler() {
-                this.appClone = {...this.application}
+                this.appClone = this.application.clone()
             }
         }
     },
@@ -114,7 +114,7 @@ export default {
             
         },
         resetClone() {
-            this.appClone = {...this.application}
+            this.appClone = this.application.clone()
         },
         clearErrors() {
             this.errors = {};

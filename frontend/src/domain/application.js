@@ -147,6 +147,10 @@ class Application {
 
         return typeDocs[(typeDocs.length-1)] || {}
     }
+
+    clone() {
+        return new Application(this.attributes);
+    }
 }
 
 export default Application
