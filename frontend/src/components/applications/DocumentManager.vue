@@ -1,6 +1,10 @@
 <template>
     <div>
-        <button class="btn mb-2" @click="showUploadForm = true">Upload a new version</button>
+        <button class="btn mb-2" 
+            @click="showUploadForm = true"
+        >
+            Upload a new version
+        </button>
         
         <data-table :fields="filteredFields" :data="filteredDocuments" :sort="{field: fields[0], desc: true}">
             <template v-slot:cell-date_reviewed="item">
@@ -29,7 +33,6 @@
     </div>
 </template>
 <script>
-import {formatDate} from '../../date_utils'
 import DocumentUploadForm from './DocumentUploadForm'
 import DocumentReviewedForm from './DocumentReviewedForm'
 
