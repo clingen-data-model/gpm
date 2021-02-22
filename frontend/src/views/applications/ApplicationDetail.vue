@@ -112,7 +112,7 @@ export default {
         }
     },
     mounted() {
-        this.$store.dispatch('getApplicationWithLogEntries', this.uuid);
+        this.$store.dispatch('getApplication', this.uuid);
         this.showModal = Boolean(this.$route.meta.showModal)
     }
 }
