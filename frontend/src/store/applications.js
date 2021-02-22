@@ -138,12 +138,23 @@ export default {
 
         // eslint-disable-next-line
         async markDocumentReviewed ({commit}, {application, document, dateReviewed}) {
-            console.log('application store: addDocument')
             await appRepo.markDocumentReviewed(application, document, dateReviewed)
-                .then(() => {
+            .then(() => {
+                store.dispatch('getApplication', application.uuid)
+            })
+        },
+
+        // eslint-disable-next-line
+        async approveCurrentStep ({commit}, {application, dateApproved}) {
+            console.log('approveCurrentStep')
+            await appRepo.approveCurrentStep(application, dateApproved)
+                .then( () => {
+                    console.log('approved current step')
                     store.dispatch('getApplication', application.uuid)
-                })
+                });
         }
+
+
     },
     getters: {
         requestCount: state => {

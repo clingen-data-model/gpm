@@ -12,14 +12,21 @@
             </div>
         </slot>
 
-        <slot name="approve-button">
-            <hr class="my-6 text">
+        <hr class="my-6 text">
 
-            <button class="btn btn-lg w-full" @click="approveStep">{{approveButtonLabel}}</button>
+        <button 
+            class="btn btn-lg w-full" 
+            @click="startApproveStep"
+            :disabled="!isCurrentStep"
+            :title="isCurrentStep ? 'Approve this step' : 'You can only approve the application\'s current step'"
+        >
+            {{approveButtonLabel}}
+        </button>
+        <modal-dialog v-model="showApproveForm">
+            <approve-step-form @saved="hideApproveForm" @canceled="hideApproveForm"></approve-step-form>
+        </modal-dialog>
 
-            <hr class="my-6 text">
-        </slot>
-
+        <hr class="my-6 text">
 
         <slot></slot>
 
@@ -35,11 +42,13 @@
 import { mapGetters } from 'vuex'
 import ApplicationLog from './ApplicationLog'
 import DocumentManager from './DocumentManager'
+import ApproveStepForm from './ApproveStepForm'
 
 export default {
     components: {
         ApplicationLog,
-        DocumentManager
+        DocumentManager,
+        ApproveStepForm
     },
     props: {
         step: {
@@ -68,14 +77,28 @@ export default {
         }
     },
     emits: ['documentUploaded', 'stepApproved'],
+    data() {
+        return {
+            showApproveForm: false
+        }
+    },
     computed: {
         ...mapGetters({
             application: 'currentItem'
-        })
+        }),
+        isCurrentStep () {
+            return this.step == this.application.current_step
+        }
     },
     methods: {
+        startApproveStep () {
+            this.showApproveForm = true;
+        },
         approveStep () {
-            throw Error('not implemented')
+            this.$store.dispatch('approveCurrentStep', {application: this.application, step: this.step})
+        },
+        hideApproveForm () {
+            this.showApproveForm = false;
         }
     }
 }
