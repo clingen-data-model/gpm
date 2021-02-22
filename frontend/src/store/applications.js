@@ -1,4 +1,5 @@
 import store from ".";
+import Application from '@/domain/application'
 import appRepo from '../adapters/application_repository';
 import axios from 'axios';
 
@@ -8,19 +9,18 @@ export default {
         items: [],
         lastFetch: null,
         lastParams: {},
-        currentItem: null
+        currentItemIdx: null
     }),
     mutations: {
         addApplication(state, application) {
+            const appModel = new Application(application)
             const idx = state.items.findIndex(item => item.uuid == application.uuid);
             if (idx > -1) {
-                state.items.splice(idx, 1, application)
+                state.items.splice(idx, 1, appModel)
                 return;
             }
 
-
-            state.items.push(application);
-            // console.log(state.items);
+            state.items.push(appModel);
         },
         clearApplications(state) {
             state.items = [];
@@ -31,8 +31,9 @@ export default {
         setLastParams(state, params) {
             state.lastParams = params;
         },
-        setCurrentItem(state, application) {
-            state.currentItem = application
+        setCurrentItemIdx(state, application) {
+            const idx = state.items.findIndex(i => i.uuid == application.uuid);
+            state.currentItemIdx = idx;
         },
     },
     actions: {
@@ -84,17 +85,11 @@ export default {
             await appRepo.find(appUuid, {with: ['logEntries', 'documents']})
                 .then(item => {
                     commit('addApplication', item)
-                    commit('setCurrentItem', item)
+                    commit('setCurrentItemIdx', item)
                 });
         },
         async getApplicationWithLogEntries({ commit }, uuid) {
-            console.log('store.applications.getApplicationWithLogEntries')
-            const params = {with: ['logEntries', 'documents']};
-            await appRepo.find(uuid, params)
-                    .then( item => {
-                        commit('addApplication', item);
-                        commit('setCurrentItem', item)
-                    })
+            store.dispatch('getApplication', uuid)
         },
         // eslint-disable-next-line
         async updateEpAttributes( {commit}, application) {
@@ -157,6 +152,7 @@ export default {
 
     },
     getters: {
+        applications: state => state.items,
         requestCount: state => {
             return state.requests.length;
         },
@@ -170,7 +166,11 @@ export default {
             return state.items.filter(app => app.ep_type_id == 2);
         },
         currentItem: state => {
-            return (state.currentItem) ? state.currentItem : {}
+            if (state.currentItemIdx === null) {
+                return new Application();
+            }
+
+            return state.items[state.currentItemIdx]
         },
         getApplicationByUuid: (state) => (uuid) => {
             // return uuid
