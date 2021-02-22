@@ -20,6 +20,7 @@
     </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import { formatDate } from '../../date_utils'
 
 export default {
@@ -85,19 +86,12 @@ export default {
 
                 }
             ],
-            // sort: {
-            //     field: {
-            //         name: 'name',
-            //         label: 'Name',
-            //         type: String,
-            //         sortable: true
-            //     },
-            //     desc: false
-            // }
-            // data: [],
         }
     },
     computed: {
+        ...mapGetters({
+            applications: 'applications'
+        }),
         sort: {
             immediate: true,
             get() {
@@ -123,11 +117,8 @@ export default {
                 this.$router.replace({path: this.$route.path, query: newQuery})
             }
         },
-        data() {
-            return this.$store.state.applications.items.filter(i => i.ep_type_id == this.epTypeId)
-        },
         filteredData() {
-            return this.data.filter(item => {
+            return this.applications.filter(item => {
                 if (!this.showCompleted) {
                     return item.date_completed == null;
                 }
