@@ -6,7 +6,12 @@
             Upload a new version
         </button>
         
-        <data-table :fields="filteredFields" :data="filteredDocuments" :sort="{field: fields[0], desc: true}">
+        <data-table 
+            :fields="filteredFields" 
+            :data="filteredDocuments" 
+            :sort="{field: fields[0], desc: true}"
+            v-if="filteredDocuments.length > 0"
+        >
             <template v-slot:cell-date_reviewed="item">
                 <div class="text-center">
                     <span v-if="item.value">{{item.value}}</span>
