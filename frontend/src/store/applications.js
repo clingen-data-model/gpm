@@ -88,22 +88,19 @@ export default {
                     commit('setCurrentItemIdx', item)
                 });
         },
-        async getApplicationWithLogEntries({ commit }, uuid) {
-            store.dispatch('getApplication', uuid)
-        },
         // eslint-disable-next-line
         async updateEpAttributes( {commit}, application) {
             console.log(application);
             await appRepo.updateEpAttributes(application)
                 .then( () => {
-                    store.dispatch('getApplicationWithLogEntries', application.uuid);
+                    store.dispatch('getApplication', application.uuid);
                 });
         },
         // eslint-disable-next-line
         async addNextAction({ commit }, { application, nextActionData }) {
             await appRepo.addNextAction(application, nextActionData)
                 .then( () => {
-                    store.dispatch('getApplicationWithLogEntries', application.uuid)
+                    store.dispatch('getApplication', application.uuid)
                 })
         },
         // eslint-disable-next-line
@@ -111,7 +108,7 @@ export default {
             const url = `/api/applications/${application.uuid}/next-actions/${nextAction.uuid}/complete`;
             await axios.post(url, {date_completed: dateCompleted})
                 .then (() => {
-                    store.dispatch('getApplicationWithLogEntries', application.uuid)
+                    store.dispatch('getApplication', application.uuid)
                 })
         },
         // eslint-disable-next-line
@@ -119,7 +116,7 @@ export default {
             const url = `/api/applications/${application.uuid}/log-entries`
             await axios.post(url, logEntryData)
                 .then( () => {
-                    store.dispatch('getApplicationWithLogEntries', application.uuid);
+                    store.dispatch('getApplication', application.uuid);
                 })
         },
         

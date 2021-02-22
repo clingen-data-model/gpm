@@ -77,7 +77,7 @@ export default {
     },
     methods: {
         async getLogEntries() {
-            await this.$store.dispatch('getApplicationWithLogEntries', this.application.uuid)
+            await this.$store.dispatch('getApplication', this.application.uuid)
         }
     },
     mounted() {
