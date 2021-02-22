@@ -195,7 +195,7 @@ export default {
         getAttributeValue (item, attr) {
             if (attr && typeof attr != 'undefined' && attr.includes('.')) {
                 const pathParts = attr.split('.');
-                let val = JSON.parse(JSON.stringify(item));
+                let val = item;
                 for(const i in pathParts) {
                     val = val[pathParts[i]]
                     if (!val) {
