@@ -118,12 +118,14 @@ export default {
             }
         },
         filteredData() {
-            return this.applications.filter(item => {
-                if (!this.showCompleted) {
-                    return item.date_completed == null;
-                }
-                return true;
-            })
+            return this.applications
+                .filter(item => !this.epTypeId || item.ep_type_id == this.epTypeId)
+                .filter(item => {
+                    if (!this.showCompleted) {
+                        return item.date_completed == null;
+                    }
+                    return true;
+                })
         },
         showCompleted: {
             set(value) {
