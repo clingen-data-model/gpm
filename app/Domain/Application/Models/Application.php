@@ -200,8 +200,9 @@ class Application extends Model
     {
         $this->fill($attributes);
         if ($this->isDirty()) {
+            $updatedAttributes = $this->getDirty();
             $this->save();
-            Event::dispatch(new ExpertPanelAttributesUpdated($this, $attributes));
+            Event::dispatch(new ExpertPanelAttributesUpdated($this, $updatedAttributes));
         }
     }
     

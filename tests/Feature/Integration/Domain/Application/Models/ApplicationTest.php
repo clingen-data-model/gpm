@@ -415,12 +415,20 @@ class ApplicationTest extends TestCase
      */
     public function logs_ExpertPanelAttributesUpdated()
     {
-        $application = Application::factory()->gcep()->create();
+        $application = Application::factory()->gcep()->create(['long_base_name'=>'aabb']);
     
         $application->setExpertPanelAttributes([
-            'working_name' => 'test'
+            'working_name' => 'test',
+            'long_base_name' => 'aabb',
         ]);
         $this->assertLoggedActivity($application, 'Attributes updated: working_name = test');
+
+        // $this->assertDatabaseHas('activity_log', [
+        //     'log_name' => 'applications',
+        //     'subject_type' => Application::class,
+        //     'subject_id' => (string)$application->id,
+        //     'properties' => json_encode(['working_name' => 'test', "step" => 1])
+        // ]);
     }
     
     /**
@@ -439,14 +447,7 @@ class ApplicationTest extends TestCase
     
     
 
-    // Helpers
-    /**
-     * @test
-     */
-    
-    
-    
-
+    // Helpers    
     private function assertLoggedActivity(
         $application, 
         $description, 
@@ -471,6 +472,7 @@ class ApplicationTest extends TestCase
             }
             $data['properties'] = json_encode($properties);
         }
+
         $this->assertDatabaseHas('activity_log', $data);
     }
  
