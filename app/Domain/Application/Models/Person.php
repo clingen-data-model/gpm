@@ -23,6 +23,10 @@ class Person extends Model
         'phone'
     ];
 
+    protected $appends = [
+        'name',
+    ];
+
     // Queries
     static public function findByEmail($email)
     {
