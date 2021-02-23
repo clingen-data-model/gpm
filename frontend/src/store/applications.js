@@ -81,8 +81,7 @@ export default {
                 })
         },
         async getApplication({ commit }, appUuid) {
-            console.log('store.applications.getApplication')
-            await appRepo.find(appUuid, {with: ['logEntries', 'documents']})
+            await appRepo.find(appUuid, {with: ['logEntries', 'documents', 'contacts']})
                 .then(item => {
                     commit('addApplication', item)
                     commit('setCurrentItemIdx', item)
@@ -138,12 +137,18 @@ export default {
 
         // eslint-disable-next-line
         async approveCurrentStep ({commit}, {application, dateApproved}) {
-            console.log('approveCurrentStep')
             await appRepo.approveCurrentStep(application, dateApproved)
                 .then( () => {
-                    console.log('approved current step')
                     store.dispatch('getApplication', application.uuid)
                 });
+        },
+
+        // eslint-disable-next-line
+        async addContact ( { commit }, {application, contactData} ) {
+            await appRepo.addContact(application, contactData)
+                .then( () => {
+                    this.store.dispatch('getApplication');
+                })
         }
 
 

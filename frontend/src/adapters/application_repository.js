@@ -95,6 +95,17 @@ async function markDocumentReviewed(application, document, dateReviewed) {
         .then(response => response.data)
 }
 
+async function addContact(application, contactData) {
+    entityHasUuid(application);
+    if (!contactData.uuid) {
+        contactData.uuid = uuid4()
+    }
+
+    const url = `${baseUrl}/${application.uuid}/contacts`
+    return await axios.post(url, contactData)
+                    .then(response => response.data)
+}
+
 export { 
     all, 
     find, 
@@ -103,7 +114,8 @@ export {
     addNextAction, 
     updateEpAttributes, 
     addDocument,
-    markDocumentReviewed 
+    markDocumentReviewed,
+    addContact
 }
 
 export default { 
@@ -114,5 +126,6 @@ export default {
     addNextAction, 
     updateEpAttributes, 
     addDocument,
-    markDocumentReviewed
+    markDocumentReviewed,
+    addContact
 };

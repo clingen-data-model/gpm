@@ -100,7 +100,6 @@ export default {
     methods: {
         async saveChanges() {
             try {
-                console.info('appClone', this.appClone)
                 this.clearErrors();
                 await this.$store.dispatch('updateEpAttributes', this.appClone);
                 this.resetClone();
