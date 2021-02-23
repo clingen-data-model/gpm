@@ -147,8 +147,18 @@ export default {
         async addContact ( { commit }, {application, contactData} ) {
             await appRepo.addContact(application, contactData)
                 .then( () => {
-                    this.store.dispatch('getApplication');
+                    console.log('added contact')
+                    store.dispatch('getApplication', application.uuid);
                 })
+        },
+
+        // eslint-disable-next-line
+        async removeContact({ commit }, {application, contact}) {
+            await appRepo.removeContact(application, contact)
+                .then( () => {
+                    console.log('removed contact')
+                    store.dispatch('getApplication', application.uuid);
+                });
         }
 
 

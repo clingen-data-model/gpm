@@ -18,12 +18,30 @@
         -
         {{contact.phone}}
         
-        <button class="btn-delete">
-            <icon-close @click="destroy" :height="8" :width="8"></icon-close>
+        <button class="btn-delete" @click="confirmRemove">
+            <icon-close :height="8" :width="8"></icon-close>
         </button>
+
+        <modal-dialog v-model="showRemoveConfirmation">
+            <h4 class="text-lg mb-3 border-b pb-1">Confirm Contact Removal</h4>
+            You are about the remove <strong>{{contact.name}}</strong> as a contact for this application.  Do you want to continue?
+
+            <ul class="bg-red-200 bg-text-900 border-red-900 p-2" v-if="errors">
+                <li v-for="(errors, field) in errors" :key="field">
+                    {{field}}: {{errors.join(', ')}}
+                </li>
+            </ul>
+
+            <div class="btn-row">
+                <div class="btn" @click="cancel">Cancel</div>
+                <div class="btn blue" @click="save">Yes, remove contact</div>
+            </div>
+        </modal-dialog>
     </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
+import is_validation_error from '../../http/is_validation_error'
 import IconClose from '../icons/IconClose'
 
 export default {
@@ -37,20 +55,46 @@ export default {
         }
     },
     emits: [
+        'saved',
+        'canceled',
+        'done',
         'deleted'
     ],
     data() {
         return {
-            
+            showRemoveConfirmation: false,
+            errors: null
         }
     },
     computed: {
-
+        ...mapGetters({
+            application: 'currentItem'
+        })
     },
     methods: {
-        destroy () {
-            if(confirm('Do you really want to delete this contact?')) {
-                console.log('delete contact!!!')
+        confirmRemove () {
+            this.showRemoveConfirmation = true
+        },
+        cancel () {
+            this.showRemoveConfirmation = false;
+            this.$emit('canceled');
+            this.$emit('done');
+        },
+        async save () {
+            console.log('removeConact save')
+            try {
+                await this.$store.dispatch('removeContact', {application: this.application, contact: this.contact})
+                console.log('now do this stuff')
+                this.showRemoveConfirmation = false;
+                this.$emit('saved');
+                this.$emit('deleted');
+                this.$emit('done');
+            } catch (error) {
+                if (is_validation_error(error)) {
+                    alert(error.response.data.errors)
+                    return;
+                }
+                throw error
             }
         }
     }

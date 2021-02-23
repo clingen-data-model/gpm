@@ -24,7 +24,7 @@
             </select>
         </input-row>
         <input-row label="Contacts">
-            <application-contact-form></application-contact-form>
+            <application-contacts></application-contacts>
         </input-row>
         <input-row label="Expert Panel URL">
             <div :class="{'text-gray-400': !hasAffiliationId}">
@@ -38,11 +38,11 @@
     </div>
 </template>
 <script>
-import ApplicationContactForm from '../contacts/ApplicationContactForm'
+import ApplicationContacts from '../contacts/ApplicationContacts'
 
 export default {
     components: {
-        ApplicationContactForm
+        ApplicationContacts
     },
     props: {
         application: {

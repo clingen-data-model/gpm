@@ -89,7 +89,7 @@ export default {
         },
         clearForm() {
             this.initNewAction();
-            this.$emit('formCleard')
+            this.$emit('formCleared')
         },
         initNewAction () {
             this.newAction = {

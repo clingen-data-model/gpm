@@ -1,5 +1,5 @@
 <template>
-    <div class="fixed top-0 left-0 right-0 bottom-0 flex justify-center content-center" 
+    <div class="fixed top-0 left-0 right-0 bottom-0 flex justify-center content-center z-50" 
         @keyup.esc="close"
         v-show="isVisible"
     >

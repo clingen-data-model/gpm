@@ -106,6 +106,16 @@ async function addContact(application, contactData) {
                     .then(response => response.data)
 }
 
+async function removeContact(application, contact) {
+    console.info('removeContact', [application, contact])
+    entityHasUuid(application);
+    entityHasUuid(contact);
+    
+    const url = `${baseUrl}/${application.uuid}/contacts/${contact.uuid}`
+    return await axios.delete(url)
+                .then(response => response.data);
+}
+
 export { 
     all, 
     find, 
@@ -115,7 +125,8 @@ export {
     updateEpAttributes, 
     addDocument,
     markDocumentReviewed,
-    addContact
+    addContact,
+    removeContact
 }
 
 export default { 
@@ -127,5 +138,6 @@ export default {
     updateEpAttributes, 
     addDocument,
     markDocumentReviewed,
-    addContact
+    addContact,
+    removeContact
 };
