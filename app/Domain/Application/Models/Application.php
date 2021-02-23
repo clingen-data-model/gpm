@@ -82,6 +82,11 @@ class Application extends Model
 
     public function addContact(Person $contact)
     {
+        // We don't want to add the same contact twice.
+        if ($this->contacts()->get()->contains($contact)) {
+            return;
+        }
+
         $this->contacts()->attach($contact);
         $this->touch();
         Event::dispatch(new ContactAdded($this, $contact));

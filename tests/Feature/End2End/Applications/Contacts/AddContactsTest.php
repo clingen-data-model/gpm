@@ -7,6 +7,7 @@ use Tests\TestCase;
 use App\Domain\Application\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Domain\Application\Models\Application;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Ramsey\Uuid\Uuid;
@@ -20,6 +21,7 @@ class AddContactsTest extends TestCase
         parent::setup();
         $this->seed();    
         $this->application = Application::factory()->create();    
+        $this->user = User::factory()->create();
     }
     
 
@@ -52,6 +54,26 @@ class AddContactsTest extends TestCase
 
         $this->assertEquals(Person::count(), 1);
     }
+
+    /**
+     * @test
+     */
+    public function does_not_try_to_add_the_same_contact_twice()
+    {
+        $contacts = $this->makeContactData();
+
+        $this->actingAs($this->user, 'api')
+            ->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', $contacts[0])
+            ->assertStatus(200);
+        
+        $this->actingAs($this->user, 'api')
+            ->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', $contacts[0])
+            ->assertStatus(200);
+
+        $this->assertEquals(Person::count(), 1);
+        
+    }
+    
 
     /**
      * @test
