@@ -18,6 +18,7 @@
 </template>
 <script>
 import {formatDate} from '../../date_utils'
+import is_validation_error from '../../http/is_validation_error';
 
 export default {
     props: {
@@ -70,11 +71,10 @@ export default {
                 this.clearForm();
                 this.$emit('saved');
             } catch (error) {
-                if (error.response && error.response.status == 422 && error.response.data.errors) {
+                if (is_validation_error(error)) {
                     this.errors = error.response.data.errors
                     return;
                 }
-                // console.error(error)
             }
 
         },
