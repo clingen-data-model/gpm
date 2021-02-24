@@ -30,8 +30,9 @@ Route::post('/applications', [ApplicationController::class, 'store']);
 Route::get('/applications/{app_uuid}', [ApplicationController::class, 'show']);
 Route::put('/applications/{app_uuid}', [ApplicationController::class, 'update']);
 
-Route::post('/applications/{app_uuid}/contacts', [ApplicationContactController::class, 'store']);
 Route::get('/applications/{app_uuid}/contacts', [ApplicationContactController::class, 'index']);
+Route::post('/applications/{app_uuid}/contacts', [ApplicationContactController::class, 'store']);
+// Route::put('/applications/{app_uuid}/contacts', [ApplicationContactController::class, 'update']);
 Route::delete('/applications/{app_uuid}/contacts/{person_uuid}', [ApplicationContactController::class, 'remove']);
 
 Route::post('/applications/{app_uuid}/current-step/approve', [ApplicationStepController::class, 'approve']);

@@ -27,8 +27,16 @@ class ApplicationContactRequest extends FormRequest
             'uuid' => 'required|uuid',
             'first_name' => 'required|max:256',
             'last_name' => 'required|max:256',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:people,email',
             'phone' => 'required'
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'email.unique' => 'This email address is already associated with a person in the system.'
+        ];
+    }
+    
 }

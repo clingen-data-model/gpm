@@ -40,44 +40,6 @@ class AddContactsTest extends TestCase
     /**
      * @test
      */
-    public function adds_existing_contact_if_email_matches_existing()
-    {
-        $contacts = $this->makeContactData();
-
-        $person = Person::create($contacts[0]);
-
-        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', $contacts[0]);
-        $response->assertStatus(200);
-        
-        $this->assertEquals($response->original['email'], $contacts[0]['email']);
-        $this->assertEquals($response->original['id'], $person->id);
-
-        $this->assertEquals(Person::count(), 1);
-    }
-
-    /**
-     * @test
-     */
-    public function does_not_try_to_add_the_same_contact_twice()
-    {
-        $contacts = $this->makeContactData();
-
-        $this->actingAs($this->user, 'api')
-            ->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', $contacts[0])
-            ->assertStatus(200);
-        
-        $this->actingAs($this->user, 'api')
-            ->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', $contacts[0])
-            ->assertStatus(200);
-
-        $this->assertEquals(Person::count(), 1);
-        
-    }
-    
-
-    /**
-     * @test
-     */
     public function validates_new_contact_data()
     {
         $data = [];
@@ -117,8 +79,64 @@ class AddContactsTest extends TestCase
                 'email' => ['The email must be a valid email address.'],
             ]
         ]);
+
+
+        $person = Person::factory()->create();
+
+        $existingPersonData = array_merge($data, ['email' => $person->email]);
+
+        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', $existingPersonData);
+
+        $response->assertStatus(422);
+
+        $response->assertJson([
+            'message' => 'The given data was invalid.',
+            'errors' => [
+                'uuid' => ['The uuid must be a valid UUID.'],
+                'first_name' => ['The first name may not be greater than 256 characters.'],
+                'last_name' => ['The last name may not be greater than 256 characters.'],
+                'email' => ['This email address is already associated with a person in the system.'],
+            ]
+        ]);
+
     }
     
+    /**
+     * @test
+     */
+    public function can_add_an_existing_person_as_contact()
+    {
+        $person = Person::factory()->create();
+
+        $this->actingAs($this->user, 'api')
+            ->json('PUT', '/api/applications/'.$this->application->uuid.'/contacts/', [
+                'person_uuid' => $person->uuid
+            ])
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('application_person', [
+            'application_id' => $this->application->id,
+            'person_id' => $person->id
+        ]);
+    }
+    
+
+    /**
+     * @test
+     */
+    // public function does_not_try_to_add_the_same_contact_twice_but_does_()
+    // {
+    //     $person = Person::factory()->create();
+
+    //     $this->actingAs($this->user, 'api')
+    //         ->json('PUT', '/api/applications/'.$this->application->uuid.'/contacts', ['person_uuid' => $person->uuid])
+    //         ->assertStatus(200);
+        
+    //     $this->assertEquals($this->application->contacts->count(), 1);    
+    // }
+    
+
+
 
     /**
      * @test
@@ -144,5 +162,4 @@ class AddContactsTest extends TestCase
         $response->assertStatus(200);
         $response->assertJson($contacts->toArray());
     }
-    
 }
