@@ -23,10 +23,10 @@
             <input type="date" v-model="newAction.date_completed">
         </input-row>
 
-        <div class="btn-row">
+        <button-row>
             <button class="btn" @click="cancel">Cancel</button>
             <button class="btn blue" @click="save">Save</button>
-        </div>
+        </button-row>
     </div>
 </template>
 <script>

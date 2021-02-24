@@ -42,10 +42,10 @@
                 </input-row>
             </div>
         </input-row>
-        <div class="btn-row">
+        <button-row>
             <button class="btn" @click="cancel">Cancel</button>
             <button class="btn blue" @click="save">Initiate Application</button>
-        </div>
+        </button-row>
     </div>
 </template>
 <script>

@@ -30,10 +30,10 @@
                 placeholder="1-555-867-5309" 
                 label="Phone"
             ></input-row>
-            <div class="btn-row">
+            <button-row>
                 <button class="btn" @click="cancel">Cancel</button>
                 <button class="btn blue" @click="save">Save</button>
-            </div>
+            </button-row>
         </div>
     </div>
 </template>

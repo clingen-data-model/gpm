@@ -6,10 +6,10 @@
         <input-row label="Entry" :errors="errors.entry">
             <textarea cols="30" rows="10" v-model="newEntry.entry"></textarea>
         </input-row>
-        <div class="btn-row">
+        <button-row>
             <button class="btn" @click="cancel">Cancel</button>
             <button class="btn blue" @click="save">Save</button>
-        </div>
+        </button-row>
     </div>
 </template>
 <script>

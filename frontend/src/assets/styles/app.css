@@ -26,10 +26,6 @@ textarea.sm {
     @apply px-1 py-0.5 text-sm;
 }
 
-.btn-row {
-    @apply border-t pt-3 mb-1 mt-3 flex space-x-3
-}
-
 .btn {
     @apply px-3 py-1 rounded border border-gray-300 focus:outline-none;
     @apply bg-gradient-to-b from-white to-gray-100 hover:to-gray-200;

@@ -10,10 +10,10 @@
         
         <input-row label="Date Reviewed" type="date" v-model="newDocument.date_reviewed" :errors="errors.date_reviewed"></input-row>
         
-        <div class="btn-row">
+        <button-row>
             <button class="btn white" @click="cancel">Cancel</button>
             <button class="btn blue" @click="saveDocument">Save</button>
-        </div>
+        </button-row>
     </div>
 </template>
 <script>

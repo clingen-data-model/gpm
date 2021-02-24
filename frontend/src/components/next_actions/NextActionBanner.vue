@@ -17,10 +17,10 @@
 
             <input-row  label="Date Completed" v-model="dateCompleted" type="date" :errors="errors.date_completed"></input-row>
             
-            <div class="btn-row">
+            <button-row>
                 <button class="btn white" @click="cancel">Cancel</button
                 ><button class="btn blue" @click="markComplete">Mark Complete</button>
-            </div>
+            </button-row>
         </modal-dialog>
 
     </div>

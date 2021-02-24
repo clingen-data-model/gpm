@@ -4,10 +4,10 @@
         
         <input-row v-model="dateApproved" type="date" :errors="errors.date_approved" label="Date Approved"></input-row>
 
-        <div class="btn-row">
+        <button-row>
             <button class="btn" @click="cancel">Cancel</button>
             <button class="btn blue" @click="save">Approve step {{application.current_step}}</button>
-        </div>
+        </button-row>
     </div>
 </template>
 <script>

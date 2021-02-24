@@ -16,6 +16,8 @@ app.component('modal-dialog', ModalDialog);
 
 import InputRow from './components/forms/InputRow'
 app.component('input-row', InputRow);
+import ButtonRow from './components/forms/ButtonRow'
+app.component('button-row', ButtonRow);
 
 import TabsContainer from './components/TabsContainer'
 import TabItem from './components/TabItem'

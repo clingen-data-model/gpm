@@ -3,10 +3,10 @@
         <h3 class="text-lg border-b pb-1 mb-3">Mark Document Reviewed</h3>
 
         <input-row v-model="dateReviewed" label="Date Reviewed" :errors="errors.date_reviewed" type="date"></input-row>
-        <div class="btn-row">
+        <button-row>
             <button class="btn" @click="cancel">Cancel</button>
             <button class="btn blue" @click="saveDateReviewed">Mark Reviewed</button>
-        </div>
+        </button-row>
     </div>
 </template>
 <script>

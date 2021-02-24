@@ -32,10 +32,10 @@
                 </li>
             </ul>
 
-            <div class="btn-row">
+            <button-row>
                 <div class="btn" @click="cancel">Cancel</div>
                 <div class="btn blue" @click="save">Yes, remove contact</div>
-            </div>
+            </button-row>
         </modal-dialog>
     </div>
 </template>
