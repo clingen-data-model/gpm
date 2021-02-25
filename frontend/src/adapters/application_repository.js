@@ -95,15 +95,12 @@ async function markDocumentReviewed(application, document, dateReviewed) {
         .then(response => response.data)
 }
 
-async function addContact(application, contactData) {
+async function addContact(application, person) {
     entityHasUuid(application);
-    if (!contactData.uuid) {
-        contactData.uuid = uuid4()
-    }
-
+    entityHasUuid(person)
     const url = `${baseUrl}/${application.uuid}/contacts`
-    return await axios.post(url, contactData)
-                    .then(response => response.data)
+    return await axios.post(url, {person_uuid: person.uuid})
+        .then(response => response.data)
 }
 
 async function removeContact(application, contact) {

@@ -1,74 +1,31 @@
-class Application {
+import Entity from './entity'
+class Application extends Entity{
+    static dates = [
+        'date_completed',
+        'date_initiated',
+        'created_at', 
+        'updated_at',
+        'deleted_at'
+    ];
 
-    constructor(attributes = {}) {
-        this.dates = [
-            'date_completed',
-            'date_initiated',
-            'created_at', 
-            'updated_at',
-            'deleted_at'
-        ];
-
-        const defaults = {
-            working_name: null,
-            ep_type_id: null,
-            cdwg_id: null,
-            id: null,
-            uuid: null,
-            name: null,
-            documents: [],
-            approval_dates: {},
-            date_completed: null,
-            date_initiated: null,
-            cdwg: {},
-            latest_log_entry: {},
-            latest_pending_next_action: null,
-            log_entries: [],
-            type: {},
-            contacts: []
-        };
-
-        this.attributes = {...defaults, ...attributes}
-
-        for (let attr in this.attributes) {
-            this.defineAttributeGettersAndSetters(attr)
-        }
-    }
-
-    defineAttributeGettersAndSetters(attr) 
-    {
-        let setter = (value) => {
-            this.attributes[attr] = value
-        }
-
-        let getter = () => {
-            return this.attributes[attr]
-        }
-
-        if (this.dates.includes(attr)) {
-            getter = () => (this.attributes[attr]) ? new Date(Date.parse(this.attributes[attr])) : null;
-            setter = (value) => {
-                this.attributes[attr] = (value) ? new Date(Date.parse(value)) : null;
-            }
-        }
-
-        Object.defineProperty(
-            this, 
-            attr, 
-            { 
-                get: getter, 
-                set: setter
-            }
-        );
-    }
-
-    setAttribute(attr, value=null) {
-        if (typeof Object.getOwnPropertyDescriptor(this, attr) == 'undefined') {
-            this.defineAttributeGettersAndSetters(attr);
-        }
-
-        this[attr] = value;
-    }
+    static defaults = {
+        working_name: null,
+        ep_type_id: null,
+        cdwg_id: null,
+        id: null,
+        uuid: null,
+        name: null,
+        documents: [],
+        approval_dates: {},
+        date_completed: null,
+        date_initiated: null,
+        cdwg: {},
+        latest_log_entry: {},
+        latest_pending_next_action: null,
+        log_entries: [],
+        type: {},
+        contacts: []
+    };
 
     get isCompleted() {
         if (this.attributes.date_completed) {
@@ -146,10 +103,6 @@ class Application {
                             });
 
         return typeDocs[(typeDocs.length-1)] || {}
-    }
-
-    clone() {
-        return new Application(this.attributes);
     }
 }
 

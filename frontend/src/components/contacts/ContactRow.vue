@@ -14,7 +14,7 @@
     <div>
         {{contact.name}}
         -
-        <a :href="`mailto:${contact.email}`">{{contact.email}}</a>
+        <a class="text-blue-500 underline" :href="`mailto:${contact.email}`">{{contact.email}}</a>
         -
         {{contact.phone}}
         

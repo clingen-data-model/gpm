@@ -50,10 +50,10 @@ export default {
                 return;
             }
 
-            store.dispatch('getUpdatesSinceLastFetch', params);
+            store.dispatch('getApplicationsSinceLastFetch', params);
         },
 
-        async getUpdatesSinceLastFetch({ commit, state }, params=null) 
+        async getApplicationsSinceLastFetch({ commit, state }, params=null) 
         {
             if (params === null) {
                 params = state.lastParams
@@ -77,7 +77,7 @@ export default {
             await appRepo.initiate(appData)
                 .then(item => {
                     commit('addApplication', item);
-                    store.dispatch('getUpdatesSinceLastFetch')
+                    store.dispatch('getApplications')
                 })
         },
         async getApplication({ commit }, appUuid) {
@@ -144,10 +144,9 @@ export default {
         },
 
         // eslint-disable-next-line
-        async addContact ( { commit }, {application, contactData} ) {
-            await appRepo.addContact(application, contactData)
+        async addContact ( { commit }, {application, contact} ) {
+            await appRepo.addContact(application, contact)
                 .then( () => {
-                    console.log('added contact')
                     store.dispatch('getApplication', application.uuid);
                 })
         },
