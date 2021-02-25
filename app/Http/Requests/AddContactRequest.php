@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ApplicationContactRequest extends FormRequest
+class AddContactRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,19 +24,14 @@ class ApplicationContactRequest extends FormRequest
     public function rules()
     {
         return [
-            'uuid' => 'required|uuid',
-            'first_name' => 'required|max:256',
-            'last_name' => 'required|max:256',
-            'email' => 'required|email|unique:people,email',
-            'phone' => 'required'
+            'person_uuid' => 'required|uuid|exists:people,uuid',
         ];
     }
 
     public function messages()
     {
         return [
-            'email.unique' => 'This email address is already associated with a person in the system.'
+            'person_uuid.exists' => 'The person must already exist in the database.'
         ];
     }
-    
 }

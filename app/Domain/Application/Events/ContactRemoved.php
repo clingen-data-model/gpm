@@ -5,7 +5,7 @@ namespace App\Domain\Application\Events;
 use Illuminate\Support\Carbon;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
-use App\Domain\Application\Models\Person;
+use App\Domain\Person\Models\Person;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\PresenceChannel;
 use App\Domain\Application\Models\Application;

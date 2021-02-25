@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\End2End\Applications;
 
-use App\Domain\Application\Models\Person;
+use App\Domain\Person\Models\Person;
 use App\Models\Cdwg;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;

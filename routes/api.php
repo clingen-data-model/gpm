@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\CdwgController;
+use App\Http\Controllers\Api\PeopleController;
 use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\ApplicationLogController;
 use App\Http\Controllers\Api\ApplicationStepController;
@@ -45,5 +46,8 @@ Route::post('/applications/{app_uuid}/log-entries', [ApplicationLogController::c
 
 Route::post('/applications/{app_uuid}/next-actions', [ApplicationNextActionsController::class, 'store']);
 Route::post('/applications/{app_uuid}/next-actions/{action_uuid}/complete', [ApplicationNextActionsController::class, 'complete']);
+
+Route::get('/people', [PeopleController::class, 'index']);
+Route::post('/people', [PeopleController::class, 'store']);
 
 Route::get('/cdwgs', [CdwgController::class, 'index']);

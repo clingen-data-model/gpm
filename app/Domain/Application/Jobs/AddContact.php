@@ -5,7 +5,7 @@ namespace App\Domain\Application\Jobs;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
-use App\Domain\Application\Models\Person;
+use App\Domain\Person\Models\Person;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Domain\Application\Models\Application;
@@ -24,11 +24,7 @@ class AddContact implements ShouldQueue
      */
     public function __construct(
         private string $applicationUuid,
-        private string $uuid,
-        private string $first_name,
-        private string $last_name,
-        private string $email,
-        private string $phone,
+        private string $uuid
     )
     {
     }
@@ -42,12 +38,7 @@ class AddContact implements ShouldQueue
     {        
         $application = Application::findByUuidOrFail($this->applicationUuid);
         
-        $person = Person::firstOrCreate(['uuid' => $this->uuid], [
-            'first_name' => $this->first_name, 
-            'last_name' => $this->last_name,
-            'email' => $this->email,
-            'phone' => $this->phone,
-        ]);
+        $person = Person::findByUuidOrFail($this->uuid);
 
         $application->addContact($person);
     }

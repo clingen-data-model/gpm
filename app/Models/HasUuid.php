@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Application\Models;
+namespace App\Models;
 
 /**
  * Adds functions to support models that have a uuid.

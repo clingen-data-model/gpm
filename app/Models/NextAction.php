@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Domain\Application\Models\HasUuid;
+use App\Models\HasUuid;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AddContactRequest;
 use Illuminate\Contracts\Bus\Dispatcher;
-use App\Domain\Application\Models\Person;
+use App\Domain\Person\Models\Person;
 use App\Domain\Application\Jobs\AddContact;
 use App\Domain\Application\Jobs\RemoveContact;
 use App\Domain\Application\Models\Application;
@@ -26,20 +27,16 @@ class ApplicationContactController extends Controller
         return $application->contacts;
     }
 
-    public function store($applicationUuid, ApplicationContactRequest $request)
+    public function store($applicationUuid, AddContactRequest $request)
     {
         $job = new AddContact(
             applicationUuid: $applicationUuid,
-            uuid: $request->uuid,
-            first_name: $request->first_name,
-            last_name: $request->last_name,
-            email: $request->email,
-            phone: $request->phone,
+            uuid: $request->person_uuid,
         );
 
         $this->dispatcher->dispatchNow($job);
        
-        $person = Application::findByUuid($applicationUuid)->contacts()->where('uuid', $request->uuid)->sole();
+        $person = Application::findByUuid($applicationUuid)->contacts()->where('uuid', $request->person_uuid)->sole();
 
         return $person;
     }

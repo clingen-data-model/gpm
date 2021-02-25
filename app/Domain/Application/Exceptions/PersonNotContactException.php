@@ -2,7 +2,7 @@
 
 namespace App\Domain\Application\Exceptions;
 
-use App\Domain\Application\Models\Person;
+use App\Domain\Person\Models\Person;
 use App\Domain\Application\Models\Application;
 
 class PersonNotContactException extends \Exception

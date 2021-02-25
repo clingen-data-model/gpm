@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Domain\Application\Models\Person;
+use App\Domain\Person\Models\Person;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PersonFactory extends Factory

@@ -3,7 +3,7 @@
 namespace App\Domain\Application\Jobs;
 
 use App\Domain\Application\Exceptions\PersonNotContactException;
-use App\Domain\Application\Models\Person;
+use App\Domain\Person\Models\Person;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Domain\Application\Models\Application;
 

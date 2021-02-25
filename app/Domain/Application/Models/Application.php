@@ -4,15 +4,17 @@ namespace App\Domain\Application\Models;
 
 use DateTime;
 use App\Models\Cdwg;
+use App\Models\EpType;
+use App\Models\HasUuid;
 use App\Models\Document;
 use App\Models\NextAction;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
+use App\Domain\Person\Models\Person;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Models\Activity;
-use App\Domain\Application\Models\HasUuid;
 use Database\Factories\ApplicationFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Domain\Application\Events\ContactAdded;
@@ -30,7 +32,6 @@ use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use App\Domain\Application\Events\ExpertPanelAttributesUpdated;
 use App\Domain\Application\Exceptions\PersonNotContactException;
 use App\Domain\Application\Exceptions\UnmetStepRequirementsException;
-use App\Models\EpType;
 
 class Application extends Model
 {
@@ -82,6 +83,7 @@ class Application extends Model
 
     public function addContact(Person $contact)
     {
+
         // We don't want to add the same contact twice.
         if ($this->contacts()->get()->contains($contact)) {
             return;
@@ -230,7 +232,7 @@ class Application extends Model
 
     public function contacts()
     {
-        return $this->belongsToMany(Person::class);
+        return $this->belongsToMany(Person::class)->withTimestamps();
     }
 
     public function documents()

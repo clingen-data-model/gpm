@@ -5,7 +5,7 @@ namespace Tests\Feature\End2End\Applications\Contacts;
 use Tests\TestCase;
 use App\Models\User;
 use Ramsey\Uuid\Uuid;
-use App\Domain\Application\Models\Person;
+use App\Domain\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Domain\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;

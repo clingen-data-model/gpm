@@ -4,7 +4,7 @@ namespace Tests\Feature\End2End\Applications\Contacts;
 
 use App\Domain\Application\Jobs\AddContact;
 use Tests\TestCase;
-use App\Domain\Application\Models\Person;
+use App\Domain\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Domain\Application\Models\Application;
 use App\Models\User;
@@ -28,13 +28,20 @@ class AddContactsTest extends TestCase
     /**
      * @test
      */
-    public function adds_a_contact_to_an_application()
+    public function adds_a_person_as_a_contact_to_an_application()
     {
-        $contacts = $this->makeContactData();
+        $person = Person::factory()->create();
 
-        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', $contacts[0]);
+        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', ['person_uuid' => $person->uuid]);
         $response->assertStatus(200);
-        $response->assertJson($contacts[0]);
+        $response->assertJson([
+            'email' => $person->email,
+            'uuid' => $person->uuid
+        ]);
+        $this->assertDatabaseHas('application_person', [
+            'application_id' => $this->application->id,
+            'person_id' => $person->id
+        ]);
     }
 
     /**
@@ -50,94 +57,75 @@ class AddContactsTest extends TestCase
         $response->assertJson([
             'message' => 'The given data was invalid.',
             'errors' => [
-                'uuid' => ['The uuid field is required.'],
-                'first_name' => ['The first name field is required.'],
-                'last_name' => ['The last name field is required.'],
-                'email' => ['The email field is required.'],
-                'phone' => ['The phone field is required.'],
+                'person_uuid' => ['The person uuid field is required.'],
             ]
         ]);
 
+        // $response->assertJson([
+        //     'message' => 'The given data was invalid.',
+        //     'errors' => [
+        //         'uuid' => ['The uuid field is required.'],
+        //         'first_name' => ['The first name field is required.'],
+        //         'last_name' => ['The last name field is required.'],
+        //         'email' => ['The email field is required.'],
+        //         'phone' => ['The phone field is required.'],
+        //     ]
+        // ]);
 
-        $data = [
-            'uuid' => 'test-this-is-not-uuid',
-            'first_name' => 'Aliqua anim et excepteur amet exercitation. Consequat duis fugiat qui labore laborum culpa amet. Exercitation eiusmod id velit excepteur incididunt minim magna cupidatat. Excepteur ullamco culpa ut labore exercitation laborum veniam. Cupidatat ex laborum di',
-            'last_name' => 'Aliqua anim et excepteur amet exercitation. Consequat duis fugiat qui labore laborum culpa amet. Exercitation eiusmod id velit excepteur incididunt minim magna cupidatat. Excepteur ullamco culpa ut labore exercitation laborum veniam. Cupidatat ex laborum di',
-            'email' => 'bob\'s your uncle'
-        ];
 
-        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', $data);
+        // $data = [
+        //     'uuid' => 'test-this-is-not-uuid',
+        //     'first_name' => 'Aliqua anim et excepteur amet exercitation. Consequat duis fugiat qui labore laborum culpa amet. Exercitation eiusmod id velit excepteur incididunt minim magna cupidatat. Excepteur ullamco culpa ut labore exercitation laborum veniam. Cupidatat ex laborum di',
+        //     'last_name' => 'Aliqua anim et excepteur amet exercitation. Consequat duis fugiat qui labore laborum culpa amet. Exercitation eiusmod id velit excepteur incididunt minim magna cupidatat. Excepteur ullamco culpa ut labore exercitation laborum veniam. Cupidatat ex laborum di',
+        //     'email' => 'bob\'s your uncle'
+        // ];
+
+        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', ['person_uuid'=>'this-is-not-a-uuid']);
 
         $response->assertStatus(422);
 
         $response->assertJson([
             'message' => 'The given data was invalid.',
             'errors' => [
-                'uuid' => ['The uuid must be a valid UUID.'],
-                'first_name' => ['The first name may not be greater than 256 characters.'],
-                'last_name' => ['The last name may not be greater than 256 characters.'],
-                'email' => ['The email must be a valid email address.'],
+                'person_uuid' => ['The person uuid must be a valid UUID.'],
             ]
         ]);
 
+        // $response->assertJson([
+        //     'message' => 'The given data was invalid.',
+        //     'errors' => [
+        //         'uuid' => ['The uuid must be a valid UUID.'],
+        //         'first_name' => ['The first name may not be greater than 256 characters.'],
+        //         'last_name' => ['The last name may not be greater than 256 characters.'],
+        //         'email' => ['The email must be a valid email address.'],
+        //     ]
+        // ]);
 
-        $person = Person::factory()->create();
 
-        $existingPersonData = array_merge($data, ['email' => $person->email]);
+        $uuid = Uuid::uuid4()->toString();
 
-        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', $existingPersonData);
+        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', ['person_uuid' => $uuid]);
 
         $response->assertStatus(422);
 
         $response->assertJson([
             'message' => 'The given data was invalid.',
             'errors' => [
-                'uuid' => ['The uuid must be a valid UUID.'],
-                'first_name' => ['The first name may not be greater than 256 characters.'],
-                'last_name' => ['The last name may not be greater than 256 characters.'],
-                'email' => ['This email address is already associated with a person in the system.'],
+                'person_uuid' => ['The person must already exist in the database.'],
             ]
         ]);
+        // $response->assertJson([
+        //     'message' => 'The given data was invalid.',
+        //     'errors' => [
+        //         'uuid' => ['The uuid must be a valid UUID.'],
+        //         'first_name' => ['The first name may not be greater than 256 characters.'],
+        //         'last_name' => ['The last name may not be greater than 256 characters.'],
+        //         'email' => ['This email address is already associated with a person in the system.'],
+        //     ]
+        // ]);
 
     }
     
-    /**
-     * @test
-     */
-    public function can_add_an_existing_person_as_contact()
-    {
-        $person = Person::factory()->create();
-
-        $this->actingAs($this->user, 'api')
-            ->json('PUT', '/api/applications/'.$this->application->uuid.'/contacts/', [
-                'person_uuid' => $person->uuid
-            ])
-            ->assertStatus(200);
-
-        $this->assertDatabaseHas('application_person', [
-            'application_id' => $this->application->id,
-            'person_id' => $person->id
-        ]);
-    }
-    
-
-    /**
-     * @test
-     */
-    // public function does_not_try_to_add_the_same_contact_twice_but_does_()
-    // {
-    //     $person = Person::factory()->create();
-
-    //     $this->actingAs($this->user, 'api')
-    //         ->json('PUT', '/api/applications/'.$this->application->uuid.'/contacts', ['person_uuid' => $person->uuid])
-    //         ->assertStatus(200);
-        
-    //     $this->assertEquals($this->application->contacts->count(), 1);    
-    // }
-    
-
-
-
     /**
      * @test
      */

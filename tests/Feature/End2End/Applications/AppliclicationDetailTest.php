@@ -15,6 +15,7 @@ use App\Domain\Application\Jobs\CreateNextAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Domain\Application\Jobs\InitiateApplication;
 use App\Domain\Application\Jobs\AddApplicationDocument;
+use App\Domain\Person\Models\Person;
 
 class AppliclicationDetailTest extends TestCase
 {
@@ -59,14 +60,13 @@ class AppliclicationDetailTest extends TestCase
                 logDate: Carbon::now()->addDays(1)->toJson()
             )
         );
+
+        $person = Person::factory()->create();
+
         Bus::dispatch(
             new AddContact(
                 applicationUuid: $this->uuid,
-                uuid: Uuid::uuid4(),
-                first_name: 'test',
-                last_name: 'testerson',
-                email: 'test@test.com',
-                phone: '123-123-1234',
+                uuid: $person->uuid,
             )
         );
 

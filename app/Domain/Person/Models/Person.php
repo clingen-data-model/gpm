@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Domain\Application\Models;
+namespace App\Domain\Person\Models;
 
+use App\Models\HasUuid;
 use Database\Factories\PersonFactory;
-use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 
 class Person extends Model
 {

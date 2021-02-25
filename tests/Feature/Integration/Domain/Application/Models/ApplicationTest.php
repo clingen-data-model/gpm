@@ -9,7 +9,7 @@ use App\Models\NextAction;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
-use App\Domain\Application\Models\Person;
+use App\Domain\Person\Models\Person;
 use App\Domain\Application\Models\Application;
 use App\Domain\Application\Events\ContactAdded;
 use App\Domain\Application\Events\StepApproved;
