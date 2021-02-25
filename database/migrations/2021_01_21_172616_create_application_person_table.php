@@ -19,6 +19,8 @@ class CreateApplicationPersonTable extends Migration
             $table->timestamps();
 
             $table->primary(['application_id', 'person_id']);
+            $table->foreign('person_id')->references('id')->on('people')->onDelete('cascade');
+            $table->foreign('application_id')->references('id')->on('applications')->onDelete('cascade');
         });
     }
 
