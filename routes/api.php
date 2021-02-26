@@ -22,32 +22,38 @@ use App\Http\Controllers\Api\ApplicationNextActionsController;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/applications', [ApplicationController::class, 'index']);
-Route::post('/applications', [ApplicationController::class, 'store']);
-Route::get('/applications/{app_uuid}', [ApplicationController::class, 'show']);
-Route::put('/applications/{app_uuid}', [ApplicationController::class, 'update']);
+Route::middleware('auth:sanctum')->get('/current-user', function (Request $request) {
+    return $request->user();
+});
 
-Route::get('/applications/{app_uuid}/contacts', [ApplicationContactController::class, 'index']);
-Route::post('/applications/{app_uuid}/contacts', [ApplicationContactController::class, 'store']);
-// Route::put('/applications/{app_uuid}/contacts', [ApplicationContactController::class, 'update']);
-Route::delete('/applications/{app_uuid}/contacts/{person_uuid}', [ApplicationContactController::class, 'remove']);
-
-Route::post('/applications/{app_uuid}/current-step/approve', [ApplicationStepController::class, 'approve']);
-
-Route::post('/applications/{app_uuid}/documents', [ApplicationDocumentController::class, 'store']);
-Route::post('/applications/{app_uuid}/documents/{doc_uuid}/review', [ApplicationDocumentController::class, 'markReviewed']);
-
-Route::get('/applications/{app_uuid}/log-entries', [ApplicationLogController::class, 'index']);
-Route::post('/applications/{app_uuid}/log-entries', [ApplicationLogController::class, 'store']);
-
-Route::post('/applications/{app_uuid}/next-actions', [ApplicationNextActionsController::class, 'store']);
-Route::post('/applications/{app_uuid}/next-actions/{action_uuid}/complete', [ApplicationNextActionsController::class, 'complete']);
-
-Route::get('/people', [PeopleController::class, 'index']);
-Route::post('/people', [PeopleController::class, 'store']);
-
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('/applications', [ApplicationController::class, 'index']);
+    Route::post('/applications', [ApplicationController::class, 'store']);
+    Route::get('/applications/{app_uuid}', [ApplicationController::class, 'show']);
+    Route::put('/applications/{app_uuid}', [ApplicationController::class, 'update']);
+    
+    Route::get('/applications/{app_uuid}/contacts', [ApplicationContactController::class, 'index']);
+    Route::post('/applications/{app_uuid}/contacts', [ApplicationContactController::class, 'store']);
+    // Route::put('/applications/{app_uuid}/contacts', [ApplicationContactController::class, 'update']);
+    Route::delete('/applications/{app_uuid}/contacts/{person_uuid}', [ApplicationContactController::class, 'remove']);
+    
+    Route::post('/applications/{app_uuid}/current-step/approve', [ApplicationStepController::class, 'approve']);
+    
+    Route::post('/applications/{app_uuid}/documents', [ApplicationDocumentController::class, 'store']);
+    Route::post('/applications/{app_uuid}/documents/{doc_uuid}/review', [ApplicationDocumentController::class, 'markReviewed']);
+    
+    Route::get('/applications/{app_uuid}/log-entries', [ApplicationLogController::class, 'index']);
+    Route::post('/applications/{app_uuid}/log-entries', [ApplicationLogController::class, 'store']);
+    
+    Route::post('/applications/{app_uuid}/next-actions', [ApplicationNextActionsController::class, 'store']);
+    Route::post('/applications/{app_uuid}/next-actions/{action_uuid}/complete', [ApplicationNextActionsController::class, 'complete']);
+    
+    Route::get('/people', [PeopleController::class, 'index']);
+    Route::post('/people', [PeopleController::class, 'store']);
+    
+});
 Route::get('/cdwgs', [CdwgController::class, 'index']);
