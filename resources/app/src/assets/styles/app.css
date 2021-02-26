@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.router-link-active {
+    @apply text-gray-500 underline
+}
+
+body {
+    @apply bg-gray-50;
+    font-size: .9rem;
+}
+
+input[type=file]{
+    @apply border-none p-0;
+}
+
+input,
+select,
+textarea {
+    @apply border border-gray-300 px-2 py-1 rounded
+}
+
+input.sm,
+select.sm,
+textarea.sm {
+    @apply px-1 py-0.5 text-sm;
+}
+
+.btn {
+    @apply px-3 py-1 rounded border border-gray-300 focus:outline-none cursor-pointer;
+    @apply bg-gradient-to-b from-white to-gray-100 hover:to-gray-200;
+    @apply active:from-gray-200 active:to-gray-100;
+    @apply disabled:opacity-60 disabled:cursor-not-allowed;
+
+}
+
+.btn-sm {
+    @apply text-sm
+}
+
+.btn-lg {
+    @apply text-lg
+}
+
+.btn-xs {
+    @apply text-xs px-2;
+}
+
+.btn.gray {
+    @apply text-gray-500 hover:text-gray-700;
+    @apply border-gray-400;
+    @apply bg-gradient-to-b from-gray-200 to-gray-300 hover:to-gray-400;
+    @apply active:from-gray-300 active:to-gray-200;
+}
+
+.btn.blue {
+    /* @apply bg-blue-500 text-white hover:bg-blue-600; */
+    @apply text-white;
+    @apply bg-gradient-to-b from-blue-500 to-blue-600 hover:to-blue-700;
+    @apply active:from-blue-600 to-blue-500;
+    @apply border-blue-600;
+}
+
+/* Transitions */
+
+.slide-fade-enter-active {
+    transition: all 0.3s ease-out;
+}
+  
+.slide-fade-leave-active {
+    transition: all 0.3s ease-out;
+}
+  
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+    transform: translateX(20px);
+    opacity: 0;
+}
+
+.slide-fade-down-enter-active {
+    transition: all 0.3s ease-out;
+}
+  
+.slide-fade-down-leave-active {
+    transition: all 0.3s ease-out;
+}
+  
+.slide-fade-down-enter-from,
+.slide-fade-down-leave-to {
+    transform: translateY(-20px);
+    opacity: 0;
+}
