@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $seederClasses = [
+            UsersTableSeeder::class,
             EpTypesTableSeeder::class,
             DocumentCategoriesTableSeeder::class,
         ];
