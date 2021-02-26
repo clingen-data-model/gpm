@@ -1,7 +1,7 @@
 import queryStringFromParams from '../http/query_string_from_params'
 import { v4 as uuid4 } from 'uuid';
 
-const { default: axios } = require("axios");
+import axios from '@/http/api'
 
 const baseUrl = '/api/applications';
 

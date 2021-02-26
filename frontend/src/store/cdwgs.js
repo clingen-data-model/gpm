@@ -1,5 +1,5 @@
 // import store from ".";
-import axios from 'axios'
+import axios from '@/http/api'
 
 export default {
     state: () => ({

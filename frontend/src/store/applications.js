@@ -1,7 +1,7 @@
 import store from ".";
 import Application from '@/domain/application'
 import appRepo from '../adapters/application_repository';
-import axios from 'axios';
+import axios from '@/http/api';
 
 export default {
     state: () => ({

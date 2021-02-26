@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '@/http/api';
 import store from '.';
 import Person from '@/domain/person'
 import { v4 as uuid4 } from 'uuid';
@@ -46,7 +46,7 @@ export default {
         async getPeople({ commit, state }, params, fresh = false) {
             if (fresh || state.lastFetch === null) {
                 commit('setLastParams', params);
-                await axios.get(baseUrl+ queryStringFromParams(params))
+                await axios.get(baseUrl+queryStringFromParams(params))
                     .then(response => {
                         response.data.forEach(item => {
                             commit('addPerson', item)
@@ -64,7 +64,7 @@ export default {
                 params = state.lastParams
             }
 
-            if (!params || !params.where) {
+            if (typeof params == 'undefined' || !params.where) {
                 params.where = {}
             }
             params.where.since = state.lastFetch.toISOString()

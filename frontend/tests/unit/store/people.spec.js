@@ -1,7 +1,7 @@
 // eslint-disable-next-line
 import store from '@/store/index'
 import people from '@/store/people'
-import axios from 'axios'
+import axios from '@/http/api'
 import Person from '../../../src/domain/person';
 
 jest.mock("axios");
