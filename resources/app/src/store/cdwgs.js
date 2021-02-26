@@ -6,6 +6,9 @@ export default {
     state: () => ({
         items: []
     }),
+    getters: {
+        all: state => state.items
+    },
     mutations: {
         addItem (state, item) {
             const idx = state.items.findIndex(i => i.id == item.id);
@@ -18,7 +21,7 @@ export default {
         }
     },
     actions: {
-        async getCdwgs({ commit }) {
+        async getAll({ commit }) {
             await axios.get('/api/cdwgs')
                 .then(response => {
                     response.data.forEach(item => {

@@ -49,6 +49,7 @@
     </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import { formatDate } from '../../date_utils'
 
 export default {
@@ -70,10 +71,6 @@ export default {
                 ep_type_id: null,
                 date_initiated: formatDate(new Date())
             },
-            cdwgs: [
-                { name: 'test', id: 1},
-                { name: 'beans', id: 2},
-            ],
             epTypes: [
                 {name: 'GCEP', id: 1},
                 {name: 'VCEP', id: 2}
@@ -82,6 +79,9 @@ export default {
         }
     },
     computed: {
+        ...mapGetters({
+            cdwgs: 'cdwgs/all'
+        }),
         hasErrors() {
             return Object.keys(this.errors).length > 0;
         }

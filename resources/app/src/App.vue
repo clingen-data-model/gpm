@@ -32,6 +32,14 @@ import UserMenu from './components/UserMenu'
 export default {
   components: {
     UserMenu
+  },
+  methods: {
+    getLookupResources() {
+      this.$store.dispatch('cdwgs/getAll');
+    }
+  },
+  mounted() {
+    this.getLookupResources()
   }
 }
 </script>
