@@ -1,4 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import store from '../store/index'
+
+console.log(store);
 
 const NextActionForm = () => import (/* next-action-form */ '../components/next_actions/NextActionForm')
 const LogEntryForm = () => import (/* log-entry-form */ '../components/log_entries/LogEntryForm')
@@ -79,9 +82,19 @@ const routes = [{
     },
     {
         path: '/about',
-        name: 'About',
+        name: 'about',
         component: () =>
             import ( /* webpackChunkName: "about" */ '../views/About.vue')
+    },
+    {
+        path: '/login',
+        name: 'login',
+        component: () => import ( '../views/Login'),
+    },
+    {
+        path: '/me',
+        name: 'me',
+        component: () => import ('../views/Me.vue'),
     }
 ]
 

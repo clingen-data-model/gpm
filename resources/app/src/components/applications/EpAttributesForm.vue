@@ -120,7 +120,7 @@ export default {
         }
     },
     mounted () {
-        this.$store.dispatch('cdwgs/getCdwgs');
+        this.$store.dispatch('cdwgs/getAll');
     }
 }
 </script>

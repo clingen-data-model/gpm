@@ -2,7 +2,7 @@
   <div>
     <div id="nav" class="border-b bg-gray-100">
       <div class="container mx-auto py-3 flex">
-        <div id="main-menu" class="flex-grow">
+        <div id="main-menu" class="flex-grow" v-if="$store.getters.authed">
           <div class="inline-block pr-3">
             <router-link to="/" class="text-black hover:text-black"> EPAM</router-link>
           </div>
@@ -40,6 +40,7 @@ export default {
   },
   mounted() {
     this.getLookupResources()
+    this.$store.dispatch('getCurrentUser');
   }
 }
 </script>

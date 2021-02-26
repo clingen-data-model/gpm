@@ -11,17 +11,17 @@
                 <div class="absolute right-0 -top-3 pt-11 bg-white border w-48 z-10 shadow" v-if="menuOpen">
                     <ul>
                         <li class="p-3 hover:bg-blue-100 cursor-pointer border-b border-t">
-                            menu item 1
+                            <router-link to="me">My info</router-link>
                         </li>
-                        <li class="p-3 hover:bg-blue-100 cursor-pointer">
-                            menu item 2
+                        <li class="p-3 hover:bg-blue-100 cursor-pointer border-t-2 border-gray-400">
+                            <button class="text-blue-500 cursor-pointer" @click="logout">Log out</button>
                         </li>
                     </ul>
                 </div>
             </transition>
         </div>
         <div v-else>
-            Log in
+            <router-link to="/login">Login</router-link>
         </div>
     </div>
 </template>
@@ -52,6 +52,16 @@ export default {
     methods: {
         toggleMenu () {
             this.menuOpen = !this.menuOpen
+        },
+        logout () {
+            try{
+                this.$store.dispatch('logout')
+                    .then( () => {
+                        this.$router.push('/login')
+                    })
+            } catch (error) {
+                alert(error)
+            }
         }
     }
 }

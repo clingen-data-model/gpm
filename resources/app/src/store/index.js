@@ -5,21 +5,28 @@ import CdwgStore from './cdwgs.js'
 import axios from '@/http/api'
 import isAuthError from './../http/is_auth_error'
 
+const nullUser = {
+    id: null,
+    name: null,
+    email: null,
+};
+
+
 export default createStore({
     state: {
-        user: {
-            id: null,
-            name: null,
-            email: null,
-        },
+        user: {...nullUser},
         openRequests: [],
     },
     getters: {
         currentUser: (state) => state.user,
+        authed: (state) => Boolean(state.user.id)
     },  
     mutations: {
         setCurrentUser(state, user) {
             state.user = user
+        },
+        clearCurrentUser(state) {
+            state.user = {...nullUser}
         }
     },
     actions: {
@@ -27,11 +34,27 @@ export default createStore({
             try {
                 await axios.get('/api/current-user')
                     .then(response => {
-                        commit(response.data)
+                        commit('setCurrentUser', response.data)
                     })
             } catch (error) {
                 if (isAuthError(error)) {
                     console.error('implement auth error handling')
+                }
+            }
+        },
+        async login({commit}, {email, password}) {
+            await axios.get('/sanctum/csrf-cookie')
+            await axios.post('/api/login', {email: email, password: password});
+        },
+        async logout({commit}) {
+            try {
+                await axios.post('/api/logout')
+                    .then(response => {
+                        commit('clearCurrentUser')
+                    });
+            } catch (error) {
+                if (isAuthError(error)) {
+                    alert('You cannot log out because you are not logged in');
                 }
             }
         }
