@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Domain\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ApproveApplicationStep1Test extends TestCase
+class ApproveStepTest extends TestCase
 {
     use RefreshDatabase;
 
