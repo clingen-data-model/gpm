@@ -76,3 +76,17 @@ textarea.sm {
     transform: translateX(20px);
     opacity: 0;
 }
+
+.slide-fade-down-enter-active {
+    transition: all 0.3s ease-out;
+}
+  
+.slide-fade-down-leave-active {
+    transition: all 0.3s ease-out;
+}
+  
+.slide-fade-down-enter-from,
+.slide-fade-down-leave-to {
+    transform: translateY(-20px);
+    opacity: 0;
+}

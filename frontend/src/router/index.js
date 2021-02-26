@@ -6,6 +6,8 @@ import ApplicationDetail from '../views/applications/ApplicationDetail'
 import CreateApplicationForm from '../components/applications/CreateApplicationForm'
 import NextActionForm from '../components/next_actions/NextActionForm'
 import LogEntryForm from '../components/log_entries/LogEntryForm'
+import PersonDetail from '../components/people/PersonDetail'
+import PeopleIndex from '../views/PeopleIndex'
 
 const routes = [{
         path: '/',
@@ -56,6 +58,19 @@ const routes = [{
                 props: true,
             }
         ]
+    },
+    {
+            name: 'people-index',
+            path: '/people',
+            component: PeopleIndex,
+    },
+    {
+        path: '/people/:uuid',
+        component: PersonDetail,
+        name: 'person-detail',
+        children: [
+        ]
+
     },
     {
         path: '/about',

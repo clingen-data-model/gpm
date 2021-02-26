@@ -9,6 +9,10 @@
           
           <router-link to="/" class="text-blue-500 hover:underline">Aplications</router-link> 
           |
+          <router-link to="/cdwgs" class="text-blue-500 hover:underline">CDWGs</router-link> 
+          |
+          <router-link to="/people" class="text-blue-500 hover:underline">people</router-link> 
+          |
           <router-link to="/about" class="text-blue-500 hover:underline">About</router-link> 
           <!-- |
           <router-link to="/guides-and-documentation" class="text-blue-500 hover:underline">Guides &amp; documentation</router-link> | -->
