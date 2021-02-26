@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Applications\NextActions;
+namespace Tests\Feature\End2End\Applications\NextActions;
 
 use Tests\TestCase;
 use App\Models\User;

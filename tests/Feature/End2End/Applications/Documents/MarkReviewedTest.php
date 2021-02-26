@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\End2End\Appiclications\Documents;
+namespace Tests\Feature\End2End\Applications\Documents;
 
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
