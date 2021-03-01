@@ -1,14 +1,20 @@
 <template>
     <div class="relative top-0 right-0 text-right">
         <div v-if="isUser">
-            <div class="flex flex-row-reverse align-middle -mb-3 pb-3 pr-2 relative z-20 cursor-pointer" 
+            <div class="flex flex-row-reverse align-middle -mb-3 pb-3 pr-2 relative z-20 cursor-pointer"
+                ref="menuButton" 
                 @click="toggleMenu"
             >
                 <chevron-down></chevron-down>
                 {{user.name}} 
             </div>
             <transition name="slide-fade-down">            
-                <div class="absolute right-0 -top-3 pt-11 bg-white border w-48 z-10 shadow" v-if="menuOpen">
+                <div 
+                    v-show="menuOpen" 
+                    v-click-outside="{exclude: ['menuButton'], handler: handleOutsideClick}"
+                    ref="dropdownMenu"
+                    class="absolute right-0 -top-3 pt-11 bg-white border w-48 z-10 shadow" 
+                >
                     <ul>
                         <li class="p-3 hover:bg-blue-100 cursor-pointer border-b border-t">
                             <router-link to="me">My info</router-link>
@@ -30,6 +36,7 @@ import {mapGetters} from 'vuex'
 import ChevronDown from './icons/IconCheveronDown'
 
 export default {
+    name: 'UserMenu',
     components: {
         ChevronDown
     },
@@ -50,8 +57,14 @@ export default {
         }
     },
     methods: {
+        handleOutsideClick() {
+            this.menuOpen = false;
+        },
         toggleMenu () {
             this.menuOpen = !this.menuOpen
+            if (this.menuOpen) {
+                this.$refs.dropdownMenu.focus()
+            }
         },
         logout () {
             try{

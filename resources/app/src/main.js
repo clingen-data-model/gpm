@@ -32,6 +32,8 @@ import ObjectDictionary from './components/ObjectDictionary'
 app.component('object-dictionary', ObjectDictionary)
 app.component('object-dict', ObjectDictionary)
 
+import ClickOutside from './directives/click_outside'
 
+app.directive('click-outside', ClickOutside)
 
 app.use(store).use(router).mount('#app')
