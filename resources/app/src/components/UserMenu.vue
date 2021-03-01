@@ -1,6 +1,6 @@
 <template>
     <div class="relative top-0 right-0 text-right">
-        <div v-if="isUser">
+        <div v-show="isUser">
             <div class="flex flex-row-reverse align-middle -mb-3 pb-3 pr-2 relative z-20 cursor-pointer"
                 ref="menuButton" 
                 @click="toggleMenu"
@@ -25,9 +25,6 @@
                     </ul>
                 </div>
             </transition>
-        </div>
-        <div v-else>
-            <router-link to="/login">Login</router-link>
         </div>
     </div>
 </template>
