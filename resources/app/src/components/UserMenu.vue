@@ -16,11 +16,13 @@
                     class="absolute right-0 -top-3 pt-11 bg-white border w-48 z-10 shadow" 
                 >
                     <ul>
-                        <li class="p-3 hover:bg-blue-100 cursor-pointer border-b border-t">
-                            <router-link to="me" @click="showMenu = false">My info</router-link>
+                        <li class="hover:bg-blue-100 cursor-pointer border-b border-t">
+                            <router-link to="me" @click="showMenu = false" class="p-3 block">My info</router-link>
                         </li>
-                        <li class="p-3 hover:bg-blue-100 cursor-pointer border-t-2 border-gray-400">
-                            <button class="text-blue-500 cursor-pointer" @click="logout">Log out</button>
+                        <li class="hover:bg-blue-100 cursor-pointer border-t border-gray-300">
+                            <button class="p-3 block w-full text-blue-500 cursor-pointer text-right" @click="logout">
+                                Log out
+                            </button>
                         </li>
                     </ul>
                 </div>
