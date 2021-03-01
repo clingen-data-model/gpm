@@ -17,7 +17,7 @@
                 >
                     <ul>
                         <li class="p-3 hover:bg-blue-100 cursor-pointer border-b border-t">
-                            <router-link to="me">My info</router-link>
+                            <router-link to="me" @click="showMenu = false">My info</router-link>
                         </li>
                         <li class="p-3 hover:bg-blue-100 cursor-pointer border-t-2 border-gray-400">
                             <button class="text-blue-500 cursor-pointer" @click="logout">Log out</button>
