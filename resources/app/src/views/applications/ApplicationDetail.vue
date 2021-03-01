@@ -1,44 +1,41 @@
 <template>
     <div>
-        <div>
-            <div class="bg-gray-200 px-4 py-2 flex justify-between border border-gray-300 rounded-t-xl">
-                <h3 class="text-lg">{{application.name}} - Current Step: {{application.current_step}}</h3>
+        <card :title="`${application.name} - Current Step: ${application.current_step}`">
+            <template v-slot:header-right>
                 <div class="flex space-x-2">
                     <router-link :to="{name: 'NextAction'}" class="btn btn-sm">Add Next Action</router-link>
                     <router-link :to="{name: 'LogEntry'}" class="btn btn-sm">Add Log Entry</router-link>
-                </div>
-            </div>
-            <div class="bg-white border border-t-0 border-gray-300 rounded-b  px-4 py-3 ">
-                <next-action-banner :application="application" :next-action="application.latest_pending_next_action" v-if="hasPendingNextAction">
-                </next-action-banner>
+                </div>                
+            </template>
+            
+            <next-action-banner 
+                :application="application" 
+                :next-action="application.latest_pending_next_action" 
+                v-if="hasPendingNextAction"
+            ></next-action-banner>
 
-                <ep-attributes-form :application="application"></ep-attributes-form>
+            <ep-attributes-form :application="application"></ep-attributes-form>
 
-                <hr class="my-3">
+            <progress-chart 
+                :application="application" 
+                class="py-4 border-t border-b border-gray-300 my-6"
+            ></progress-chart>
 
-                <progress-chart :application="application"></progress-chart>
+            <tabs-container>
+                <tab-item label="Application">
+                    <step-tabs :application="application"></step-tabs>
+                </tab-item>
 
-                <hr class="my-3">
+                <tab-item label="Application Log">
+                    <application-log :uuid="application.uuid"></application-log>
+                </tab-item>
 
-                <tabs-container>
-                    
-                    <tab-item label="Application">
-                        <step-tabs :application="application"></step-tabs>
-                    </tab-item>
+                <tab-item label="Dev Tools">
+                    <pre>{{this.application}}</pre>
+                </tab-item>
+            </tabs-container>
 
-                    <tab-item label="Application Log">
-                        <application-log :uuid="application.uuid"></application-log>
-                    </tab-item>
-
-                    <tab-item label="Dev Tools">
-                        <pre>{{this.application}}</pre>
-                    </tab-item>
-
-                </tabs-container>
-
-            </div>    
-        </div>
-        
+        </card>
 
         <modal-dialog v-model="showModal" @closed="handleModalClosed">
             <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
