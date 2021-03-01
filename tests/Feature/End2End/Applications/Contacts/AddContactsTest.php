@@ -61,24 +61,6 @@ class AddContactsTest extends TestCase
             ]
         ]);
 
-        // $response->assertJson([
-        //     'message' => 'The given data was invalid.',
-        //     'errors' => [
-        //         'uuid' => ['The uuid field is required.'],
-        //         'first_name' => ['The first name field is required.'],
-        //         'last_name' => ['The last name field is required.'],
-        //         'email' => ['The email field is required.'],
-        //         'phone' => ['The phone field is required.'],
-        //     ]
-        // ]);
-
-
-        // $data = [
-        //     'uuid' => 'test-this-is-not-uuid',
-        //     'first_name' => 'Aliqua anim et excepteur amet exercitation. Consequat duis fugiat qui labore laborum culpa amet. Exercitation eiusmod id velit excepteur incididunt minim magna cupidatat. Excepteur ullamco culpa ut labore exercitation laborum veniam. Cupidatat ex laborum di',
-        //     'last_name' => 'Aliqua anim et excepteur amet exercitation. Consequat duis fugiat qui labore laborum culpa amet. Exercitation eiusmod id velit excepteur incididunt minim magna cupidatat. Excepteur ullamco culpa ut labore exercitation laborum veniam. Cupidatat ex laborum di',
-        //     'email' => 'bob\'s your uncle'
-        // ];
 
         $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', ['person_uuid'=>'this-is-not-a-uuid']);
 
@@ -90,17 +72,6 @@ class AddContactsTest extends TestCase
                 'person_uuid' => ['The person uuid must be a valid UUID.'],
             ]
         ]);
-
-        // $response->assertJson([
-        //     'message' => 'The given data was invalid.',
-        //     'errors' => [
-        //         'uuid' => ['The uuid must be a valid UUID.'],
-        //         'first_name' => ['The first name may not be greater than 256 characters.'],
-        //         'last_name' => ['The last name may not be greater than 256 characters.'],
-        //         'email' => ['The email must be a valid email address.'],
-        //     ]
-        // ]);
-
 
         $uuid = Uuid::uuid4()->toString();
 
@@ -114,16 +85,6 @@ class AddContactsTest extends TestCase
                 'person_uuid' => ['The person must already exist in the database.'],
             ]
         ]);
-        // $response->assertJson([
-        //     'message' => 'The given data was invalid.',
-        //     'errors' => [
-        //         'uuid' => ['The uuid must be a valid UUID.'],
-        //         'first_name' => ['The first name may not be greater than 256 characters.'],
-        //         'last_name' => ['The last name may not be greater than 256 characters.'],
-        //         'email' => ['This email address is already associated with a person in the system.'],
-        //     ]
-        // ]);
-
     }
     
     /**

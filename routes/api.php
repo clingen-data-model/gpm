@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CdwgController;
 use App\Http\Controllers\Api\PeopleController;
 use App\Http\Controllers\Api\ApplicationController;
@@ -22,15 +23,19 @@ use App\Http\Controllers\Api\ApplicationNextActionsController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-Route::middleware('auth:sanctum')->get('/current-user', function (Request $request) {
-    return $request->user();
+Route::group(['middleware' => ['guest']], function () {
+    Route::post('/send-reset-password-link', [AuthController::class, 'sendResetPasswordLink']);
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+    Route::get('/current-user', function (Request $request) {
+        return $request->user();
+    });
+
     Route::get('/applications', [ApplicationController::class, 'index']);
     Route::post('/applications', [ApplicationController::class, 'store']);
     Route::get('/applications/{app_uuid}', [ApplicationController::class, 'show']);

@@ -4,20 +4,20 @@
       <div class="container mx-auto py-3 flex">
         <div id="main-menu" class="flex-grow">
           <div class="inline-block pr-3">
-            <router-link to="/" class="text-black hover:text-black">ClinGen EPAM</router-link>
+            <router-link to="/" class="text-black hover:text-black"> EPAM</router-link>
           </div>
-
-          <div v-if="$store.getters.authed">
-            <router-link to="/" class="text-blue-500 hover:underline">Aplications</router-link> 
-            |
-            <router-link to="/cdwgs" class="text-blue-500 hover:underline">CDWGs</router-link> 
-            |
-            <router-link to="/people" class="text-blue-500 hover:underline">people</router-link> 
-            |
-            <router-link to="/about" class="text-blue-500 hover:underline">About</router-link> 
-          </div>          
+          
+          <span v-if="$store.getters.authed">
+          <router-link to="/" class="text-blue-500 hover:underline">Aplications</router-link> 
+          |
+          <router-link to="/cdwgs" class="text-blue-500 hover:underline">CDWGs</router-link> 
+          |
+          <router-link to="/people" class="text-blue-500 hover:underline">people</router-link> 
+          |
+          <router-link to="/about" class="text-blue-500 hover:underline">About</router-link>
           <!-- |
           <router-link to="/guides-and-documentation" class="text-blue-500 hover:underline">Guides &amp; documentation</router-link> | -->
+          </span>
         </div>
         <user-menu></user-menu>
       </div>

@@ -90,6 +90,11 @@ const routes = [{
         component: () => import ( '../views/LoginPage'),
     },
     {
+        path: '/reset-password',
+        name: 'reset-password',
+        component: () => import ( /* webpackChunkName: "reset-password" */ '../views/ResetPassword')
+    },
+    {
         path: '/me',
         name: 'me',
         component: () => import ('../views/Me.vue'),
