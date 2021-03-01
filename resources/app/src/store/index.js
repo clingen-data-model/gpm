@@ -38,10 +38,11 @@ export default createStore({
                     })
             } catch (error) {
                 if (isAuthError(error)) {
-                    console.error('implement auth error handling')
+                    throw('implement auth error handling')
                 }
             }
         },
+        // eslint-disable-next-line
         async login({commit}, {email, password}) {
             await axios.get('/sanctum/csrf-cookie')
             await axios.post('/api/login', {email: email, password: password});
@@ -49,7 +50,7 @@ export default createStore({
         async logout({commit}) {
             try {
                 await axios.post('/api/logout')
-                    .then(response => {
+                    .then(() => {
                         commit('clearCurrentUser')
                     });
             } catch (error) {

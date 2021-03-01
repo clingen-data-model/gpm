@@ -87,10 +87,8 @@ export default {
             this.$emit('done');
         },
         async save () {
-            console.log('removeConact save')
             try {
                 await this.$store.dispatch('applications/removeContact', {application: this.application, contact: this.contact})
-                console.log('now do this stuff')
                 this.showRemoveConfirmation = false;
                 this.$emit('saved');
                 this.$emit('deleted');

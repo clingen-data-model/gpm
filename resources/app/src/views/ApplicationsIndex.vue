@@ -34,11 +34,6 @@ export default {
       showModal: false
     }
   },
-  watch: {
-    'this.$route.hash': function (to, from) {
-      console.log('to, from', [to, from]);
-    }
-  },
   computed: {
   }
 }

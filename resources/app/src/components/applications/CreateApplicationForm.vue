@@ -111,7 +111,7 @@ export default {
                     this.errors = error.response.data.errors
                     return;
                 }
-                console.error(error)
+                throw(error)
             }
         },
         initForm() {
@@ -127,7 +127,6 @@ export default {
             };
         },
         clearErrors(fieldName) {
-            console.info('clearErrors for ',fieldName)
             if (fieldName) {
                 delete this.errors[fieldName];
                 return;

@@ -173,8 +173,6 @@ export default {
                     default:
                         return data.sort(this.textAndNumberSort)
                 }                
-            } else {
-                console.log('no data');
             }
             return []
         },

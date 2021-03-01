@@ -86,7 +86,6 @@ export default {
         }),
         hasPendingNextAction () {
             if (typeof this.application == 'undefined') {
-                console.log('this.application is undefined')
                 return false;
             }
 
@@ -102,12 +101,8 @@ export default {
             this.$router.push({name: 'ApplicationDetail', params: {uuid: this.uuid}});
         },
         clearModalForm () {
-            // throw new Error('not implemented')
             if (typeof this.$refs.modalView.clearForm === 'function') {
-                console.log('clearModalForm: call clearForm');
                 this.$refs.modalView.clearForm();
-            } else {
-                console.log('no clearForm function on component');
             }
         }
     },

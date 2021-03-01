@@ -71,7 +71,6 @@ export default {
 
             await axios.get(baseUrl+ queryStringFromParams(params))
                 .then(response => {
-                    console.log(response.data)
                     response.data.forEach(item => {
                         commit('addPerson', item)
                         commit('setLastFetch', new Date)

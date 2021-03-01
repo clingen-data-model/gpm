@@ -131,9 +131,7 @@ export default {
                 await this.$store.dispatch('people/createPerson', data);
 
                 const getter = this.$store.getters['people/personWithUuid'];
-                console.info('getter', getter);
-                const addedPerson = getter(data.uuid);
-                console.info('addedPerson', addedPerson);
+                // const addedPerson = getter(data.uuid);
 
 
                 await this.$store.dispatch('applications/addContact', {

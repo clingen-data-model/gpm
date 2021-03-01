@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import store from '../store/index'
-
-console.log(store);
+// import store from '../store/index'
 
 const NextActionForm = () => import (/* next-action-form */ '../components/next_actions/NextActionForm')
 const LogEntryForm = () => import (/* log-entry-form */ '../components/log_entries/LogEntryForm')

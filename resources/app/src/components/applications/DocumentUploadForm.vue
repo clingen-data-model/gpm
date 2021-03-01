@@ -52,7 +52,6 @@ export default {
         async saveDocument() {
             try {
                 let data = new FormData();
-                console.log(Object)
                 Object.keys(this.newDocument)
                     .forEach(key => {
                         const val = this.newDocument[key]
@@ -60,8 +59,6 @@ export default {
                         data.append(key, val);
                     })
                 data.append('file', this.$refs.fileInput.files[0]);
-
-                console.info('formData', data);
 
                 await this.$store.dispatch('applications/addDocument', 
                         {application: this.application, documentData: data}

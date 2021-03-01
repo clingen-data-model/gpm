@@ -108,7 +108,7 @@ export default {
                     this.errors = error.response.data.errors
                     return;
                 }
-                console.error(error)
+                throw(error)
             }
             
         },

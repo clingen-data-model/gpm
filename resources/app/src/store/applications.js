@@ -30,7 +30,6 @@ export default {
             return state.items.filter(app => app.ep_type_id == 2);
         },
         currentItem: state => {
-            console.log(state.currentItemIdx)
             if (state.currentItemIdx === null) {
                 return new Application();
             }
@@ -58,9 +57,7 @@ export default {
             state.items = [];
         },
         setLastFetch(state) {
-            console.log('last fetch was '+state.lastFetch)
             state.lastFetch = new Date();
-            console.log('set last fetch to'+state.lastFetch)
         },
         setLastParams(state, params) {
             state.lastParams = params;
@@ -72,8 +69,6 @@ export default {
     },
     actions: {
         async getApplications({ commit, state }, params, fresh = false) {
-            console.log('getApplications');
-            console.log(state);
             if (fresh || state.lastFetch === null) {
                 commit('setLastParams', params);
                 await appRepo.all(params)
@@ -92,7 +87,6 @@ export default {
 
         async getApplicationsSinceLastFetch({ commit, state }, params=null) 
         {
-            console.log('getApplicationsSinceLastFetch');
             if (params === null) {
                 params = state.lastParams
             }
@@ -119,8 +113,7 @@ export default {
                     store.dispatch('applications/getApplications')
                 })
         },
-        async getApplication({ commit, state }, appUuid) {
-            console.log(state)
+        async getApplication({ commit }, appUuid) {
             await appRepo.find(appUuid, {with: ['logEntries', 'documents', 'contacts', 'logEntries.causer']})
                 .then(item => {
                     commit('addApplication', item)
@@ -129,7 +122,6 @@ export default {
         },
         // eslint-disable-next-line
         async updateEpAttributes( {commit}, application) {
-            console.log(application);
             await appRepo.updateEpAttributes(application)
                 .then( () => {
                     store.dispatch('applications/getApplication', application.uuid);
@@ -195,7 +187,6 @@ export default {
         async removeContact({ commit }, {application, contact}) {
             await appRepo.removeContact(application, contact)
                 .then( () => {
-                    console.log('removed contact')
                     store.dispatch('applications/getApplication', application.uuid);
                 });
         }
