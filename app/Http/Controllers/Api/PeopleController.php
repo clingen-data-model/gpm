@@ -36,4 +36,10 @@ class PeopleController extends Controller
         return $person;
     }
     
+    public function show($uuid, Request $request)
+    {
+        $person = Person::findByUuidOrFail($uuid);
+        return $person;
+    }
+    
 }
