@@ -2,13 +2,17 @@
 
 namespace Tests\Feature\End2End\Applications;
 
-use Illuminate\Support\Carbon;
 use Tests\TestCase;
 use App\Models\User;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Carbon;
+use App\Domain\Person\Models\Person;
+use App\Domain\Application\Jobs\AddContact;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Notification;
 use App\Domain\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Domain\Application\Notifications\ApplicationStepApprovedNotification;
 
 class ApproveStepTest extends TestCase
 {
@@ -75,6 +79,65 @@ class ApproveStepTest extends TestCase
             ->assertStatus(422)
             ->assertJsonFragment(['date_approved' => ['The date approved is not a valid date.']]);
     }
+    
+    /**
+     * @test
+     */
+    public function sends_no_notifications_if_not_specified()
+    {
+        $approvalData = [
+            'date_approved' => Carbon::now(),
+        ];
+
+        Notification::fake();
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->json('POST', '/api/applications/'.$this->application->uuid.'/current-step/approve', $approvalData)
+            ->assertStatus(200);
+
+        Notification::assertNothingSent();
+    }
+
+    /**
+     * @test
+     */
+    public function sends_notification_to_contacts_if_specified()
+    {
+        $person = Person::factory()->create();
+        AddContact::dispatch($this->application->uuid, $person->uuid);
+
+        $approvalData = [
+            'date_approved' => Carbon::now(),
+            'notify_contacts' => true
+        ];
+
+        Notification::fake();
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->json('POST', '/api/applications/'.$this->application->uuid.'/current-step/approve', $approvalData)
+            ->assertStatus(200);
+
+        Notification::assertSentTo($person, ApplicationStepApprovedNotification::class);
+    }
+    
+    /**
+     * @test
+     */
+    // public function sends_notification_to_system_admins_if_specified()
+    // {
+    //     $person = Person::factory()->create();
+    //     AddContact::dispatch($this->application->uuid, $person->uuid);
+
+    //     $approvalData = [
+    //         'date_approved' => Carbon::now(),
+    //         'notify_contacts' => true
+    //     ];
+
+    //     Notification::fake();
+    //     \Laravel\Sanctum\Sanctum::actingAs($this->user);
+    //     $this->json('POST', '/api/applications/'.$this->application->uuid.'/current-step/approve', $approvalData)
+    //         ->assertStatus(200);
+
+    //     Notification::assertSentTo($person, ApplicationStepApprovedNotification::class);
+    // }
     
     
 }

@@ -2,10 +2,11 @@
 
 namespace Tests;
 
-use Illuminate\Support\Carbon;
 use App\Models\Cdwg;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Testing\WithFaker;
+use App\Domain\Application\Models\Application;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -46,5 +47,33 @@ abstract class TestCase extends BaseTestCase
         }
 
         return $contacts;
+    }
+    
+    protected  function assertLoggedActivity(
+        $application, 
+        $description, 
+        $properties = null, 
+        $causer_type = null, 
+        $causer_id = null
+    )
+    {
+
+        $data = [
+            'log_name' => 'applications',
+            'description' => $description,
+            'subject_type' => Application::class,
+            'subject_id' => (string)$application->id,
+            'causer_type' => $causer_type,
+            'causer_id' => $causer_id,
+        ];
+
+        if ($properties) {
+            if (!isset($properties['step'])) {
+                $properties['step'] = $application->current_step;
+            }
+            $data['properties'] = json_encode($properties);
+        }
+
+        $this->assertDatabaseHas('activity_log', $data);
     }
 }

@@ -163,30 +163,6 @@ class Application extends Model
         Event::dispatch(new NextActionCompleted(application: $this, nextAction: $nextAction));
     }
 
-    public function approveCurrentStep(Carbon $dateApproved)
-    {
-        $stepManager = app()->make(StepManagerFactory::class)($this);
-        
-        if (! $stepManager->canApprove()) {
-            throw new UnmetStepRequirementsException($this, $stepManager->getUnmetRequirements());
-        }
-
-        $wasLastStep = $stepManager->isLastStep();
-        $approvedStep = $this->current_step;
-        $this->addApprovalDate($approvedStep, $dateApproved);
-
-        if (!$wasLastStep) {
-            $this->current_step = $this->current_step+1;
-        }
-        
-        $this->save();
-
-        Event::dispatch(new StepApproved(application: $this, step: $approvedStep, dateApproved: $dateApproved));
-        if ($wasLastStep) {
-            $this->completeApplication($dateApproved);
-        }
-    }
-
     public function completeApplication(Carbon $dateCompleted)
     {
         $stepManager = app()->make(StepManagerFactory::class)($this);
@@ -209,7 +185,7 @@ class Application extends Model
     }
     
     
-    private function addApprovalDate(int $step, Carbon $date)
+    public function addApprovalDate(int $step, Carbon $date)
     {
         if (is_null($this->approval_dates)) {
             $this->approval_dates = [];

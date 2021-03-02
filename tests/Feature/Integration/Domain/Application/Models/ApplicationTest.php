@@ -138,19 +138,6 @@ class ApplicationTest extends TestCase
     /**
      * @test
      */
-    public function fires_StepApproved_event_when_step_approved_and_logs_activity()
-    {
-        $application = Application::factory()->create();
-
-        $dateApproved = Carbon::now();
-        $application->approveCurrentStep($dateApproved);
-
-        $this->assertLoggedActivity($application, 'Step 1 approved', ['date_approved' => $dateApproved]);
-    }
-
-    /**
-     * @test
-     */
     public function fires_DocumentAdded_event_fired()
     {
         $application = Application::factory()->create();
@@ -437,37 +424,4 @@ class ApplicationTest extends TestCase
 
         $this->assertEquals('https://clinicalgenome.org/affiliation/4000123', $application->clingen_url);
     }
-    
-    
-
-    // Helpers    
-    private function assertLoggedActivity(
-        $application, 
-        $description, 
-        $properties = null, 
-        $causer_type = null, 
-        $causer_id = null
-    )
-    {
-
-        $data = [
-            'log_name' => 'applications',
-            'description' => $description,
-            'subject_type' => Application::class,
-            'subject_id' => (string)$application->id,
-            'causer_type' => $causer_type,
-            'causer_id' => $causer_id,
-        ];
-
-        if ($properties) {
-            if (!isset($properties['step'])) {
-                $properties['step'] = $application->current_step;
-            }
-            $data['properties'] = json_encode($properties);
-        }
-
-        $this->assertDatabaseHas('activity_log', $data);
-    }
- 
-    
 }
