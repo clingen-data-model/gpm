@@ -1,6 +1,6 @@
 let handleOutsideClick;
 export default {
-    beforeMount (el, binding, vnode) {
+    beforeMount (el, binding) {
         handleOutsideClick = (evt) => {
             evt.stopPropagation();
             const { handler, exclude } = binding.value
