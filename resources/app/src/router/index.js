@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-// import store from '../store/index'
+import store from '../store/index'
 
 const NextActionForm = () => import (/* next-action-form */ '../components/next_actions/NextActionForm')
 const LogEntryForm = () => import (/* log-entry-form */ '../components/log_entries/LogEntryForm')
@@ -13,13 +13,14 @@ const CreateApplicationForm = () => import ( /* webpackChunkName: "create-applic
 const routes = [{
         path: '/',
         redirect: '/vceps',
-        name: 'Index',
+        name: 'index',
         components: {
             default: ApplicationIndex,
             modal: CreateApplicationForm,
         },
         children: [{
             path: "gceps",
+            name: 'gceps',
             components: {
                     default: () => import ( /* webpackChunkName: "application-index" */ '../views/indexes/GcepsList.vue'),
                     modal: CreateApplicationForm,
@@ -27,6 +28,7 @@ const routes = [{
             },
             {
                 path: "vceps",
+                name: 'vceps',
                 components: {
                     default: () => import ( /* webpackChunkName: "application-index" */ '../views/indexes/VcepsList.vue'),
                     modal: CreateApplicationForm,
@@ -104,6 +106,23 @@ const routes = [{
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes
+})
+
+router.beforeEach(async (to, from, next) => {
+    await store.dispatch('checkAuth')
+
+    if (to.name != 'login' && !store.state.authenticated) {
+        console.log(to.name + '&&' + store.getters.isAuthed)
+        next({name: 'login'});
+        return;
+    }
+
+    if (to.name == 'login' && store.state.authenticated) {
+        console.log(to.name + '&&' + store.getters.isAuthed)
+        next({name: 'vceps'})
+    }
+
+    next();
 })
 
 export default router

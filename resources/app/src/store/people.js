@@ -42,6 +42,9 @@ export default {
         },
     },
     actions: {
+        async all({ commit }, params, fresh = false) {
+            store.dispatch('people/getAll', params)
+        },
         async getAll({ commit, state }, params, fresh = false) {
             if (fresh || state.lastFetch === null) {
                 commit('setLastParams', params);
@@ -63,9 +66,14 @@ export default {
                 params = state.lastParams
             }
 
-            if (typeof params == 'undefined' || !params.where) {
-                params.where = {}
+            if (typeof params == 'undefined' || params === null) {
+                params = {};
             }
+            
+            if(!params.where) {
+                    params.where = {};
+            }
+
             params.where.since = state.lastFetch.toISOString()
             
 

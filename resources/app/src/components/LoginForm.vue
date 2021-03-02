@@ -9,7 +9,6 @@
     </div>
 </template>
 <script>
-import api from '../http/api'
 import is_validation_error from '../http/is_validation_error'
 
 export default {

@@ -43,7 +43,7 @@ export default {
             fields: fields,
             logEntries: [],
             sort: {
-                field: fields.find(i => i.name = 'created_at'),
+                field: 'created_at',
                 desc: true
             }
         }

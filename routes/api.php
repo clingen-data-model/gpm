@@ -28,6 +28,8 @@ Route::group(['middleware' => ['guest']], function () {
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 });
 
+Route::get('/authenticated', [AuthController::class, 'isAuthenticated']);
+
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/user', function (Request $request) {
         return $request->user();

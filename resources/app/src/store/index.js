@@ -16,10 +16,12 @@ export default createStore({
     state: {
         user: {...nullUser},
         openRequests: [],
+        authenticated: false,
     },
     getters: {
         currentUser: (state) => state.user,
-        authed: (state) => Boolean(state.user.id)
+        authed: (state) => state.authenticated,
+        isAuthed: (state) => state.authenticated,
     },  
     mutations: {
         setCurrentUser(state, user) {
@@ -27,6 +29,10 @@ export default createStore({
         },
         clearCurrentUser(state) {
             state.user = {...nullUser}
+            state.authenticated = false
+        },
+        setAuthenticated(state, authVal) {
+            state.authenticated = authVal
         }
     },
     actions: {
@@ -42,10 +48,12 @@ export default createStore({
                 }
             }
         },
-        // eslint-disable-next-line
         async login({commit}, {email, password}) {
             await axios.get('/sanctum/csrf-cookie')
-            await axios.post('/api/login', {email: email, password: password});
+            await axios.post('/api/login', {email: email, password: password})
+                .then(response => {
+                    commit('setAuthenticated', true)
+                });
         },
         async logout({commit}) {
             try {
@@ -57,6 +65,21 @@ export default createStore({
                 if (isAuthError(error)) {
                     alert('You cannot log out because you are not logged in');
                 }
+            }
+        },
+        async checkAuth({commit, state}) {
+            if (!state.authenticated) {
+                console.log('checking auth')
+                await axios.get('/api/authenticated')
+                    .then(() => {
+                        commit('setAuthenticated', true)
+                    })
+                    .catch(error => {
+                        if (error.response.status && error.response.status == 401) {
+                            commit('setAuthenticated', false)
+                        }
+                    })
+                    
             }
         }
     },
