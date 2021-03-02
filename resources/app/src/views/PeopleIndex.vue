@@ -10,6 +10,9 @@
             row-class="cursor-pointer"
             v-model:sort="sort"
         >
+            <template v-slot:cell-uuid="item">
+                <button class="btn btn-xs" @click="goToEditPerson(item.item)">Edit</button>
+            </template>
         </data-table>
     </card>
 </template>
@@ -29,7 +32,7 @@ const fields = [
                     type: String
                 },
                 {
-                    name: 'id',
+                    name: 'uuid',
                     label: '',
                     sortable: false
                 }
@@ -55,6 +58,9 @@ export default {
     methods: {
         goToPerson (person) {
             this.$router.push('/people/'+person.uuid)
+        },
+        goToEditPerson (person) {
+            this.$router.push('/people/'+person.uuid+'/edit')
         }
     },
     mounted() {
