@@ -12,7 +12,7 @@
           |
           <router-link to="/cdwgs" class="text-blue-500 hover:underline">CDWGs</router-link> 
           |
-          <router-link to="/people" class="text-blue-500 hover:underline">people</router-link> 
+          <router-link to="/people" class="text-blue-500 hover:underline">People</router-link> 
           |
           <router-link to="/about" class="text-blue-500 hover:underline">About</router-link>
           <!-- |
