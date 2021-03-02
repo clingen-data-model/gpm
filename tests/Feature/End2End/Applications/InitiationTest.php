@@ -2,17 +2,28 @@
 
 namespace Tests\Feature\End2End\Applications;
 
-use App\Domain\Person\Models\Person;
-use App\Models\Cdwg;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
+use App\Models\Cdwg;
+use App\Models\User;
+use Ramsey\Uuid\Uuid;
+use Laravel\Sanctum\Sanctum;
+use App\Domain\Person\Models\Person;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class InitiationTest extends TestCase
 {
     use WithFaker;
     use RefreshDatabase;
+
+    public function setup():void
+    {
+        parent::setup();
+        $this->user = User::factory()->create();
+        Sanctum::actingAs($this->user);
+
+    }
+
 
     /**
      * @test

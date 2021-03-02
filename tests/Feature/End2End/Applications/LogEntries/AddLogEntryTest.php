@@ -29,8 +29,8 @@ class AddLogEntryTest extends TestCase
      */
     public function user_can_add_a_log_entry()
     {
-        $this->actingAs($this->user, 'api')
-            ->json('POST', $this->baseUrl, [
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+            $this->json('POST', $this->baseUrl, [
                 'step' => $this->application->current_step,
                 'log_date' => '2021-01-01',
                 'entry' => 'A log entry description',
@@ -55,8 +55,8 @@ class AddLogEntryTest extends TestCase
      */
     public function validates_required_fields()
     {
-        $this->actingAs($this->user, 'api')
-            ->json('POST', $this->baseUrl, [])
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+            $this->json('POST', $this->baseUrl, [])
             ->assertStatus(422)
             ->assertJsonFragment([
                 'entry' => ['The entry field is required.'],
@@ -69,8 +69,8 @@ class AddLogEntryTest extends TestCase
      */
     public function validates_field_types()
     {
-        $this->actingAs($this->user, 'api')
-            ->json('POST', $this->baseUrl, [
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+            $this->json('POST', $this->baseUrl, [
                 'log_date' => 'bob\'s yer uncle',
                 'step' => 'four'
             ])

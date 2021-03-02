@@ -29,8 +29,8 @@ class AddNextActionTest extends TestCase
      */
     public function user_can_create_next_action()
     {
-        $this->actingAs($this->user, 'api')
-            ->json('POST', $this->baseUrl, [
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+            $this->json('POST', $this->baseUrl, [
                 'uuid' => Uuid::uuid4()->toString(),
                 'date_created' => Carbon::today(),
                 'target_date' => Carbon::today()->addDays(7),
@@ -53,8 +53,8 @@ class AddNextActionTest extends TestCase
      */
     public function validates_required_fields()
     {
-        $this->actingAs($this->user, 'api')
-            ->json('POST', $this->baseUrl, [])
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+            $this->json('POST', $this->baseUrl, [])
             ->assertStatus(422)
             ->assertJsonFragment([
                 'uuid' => ['The uuid field is required.'],
@@ -68,8 +68,8 @@ class AddNextActionTest extends TestCase
      */
     public function validates_field_types()
     {
-        $this->actingAs($this->user, 'api')
-            ->json('POST', $this->baseUrl, [
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+            $this->json('POST', $this->baseUrl, [
                 'uuid' => 'eat-my-shorts',
                 'date_created' => 'test',
                 'target_date' => 'test',

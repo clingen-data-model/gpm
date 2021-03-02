@@ -38,8 +38,8 @@ class UpdateExpertPanelAttributesTest extends TestCase
             'cdwg_id' => $this->cdwg->id
         ];
 
-        $this->actingAs($this->user, 'api')
-            ->json('PUT', '/api/applications/'.$application->uuid, $data)
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+            $this->json('PUT', '/api/applications/'.$application->uuid, $data)
             ->assertStatus(200)
             ->assertJsonFragment($data);
     }
@@ -68,8 +68,8 @@ class UpdateExpertPanelAttributesTest extends TestCase
         ];
         $dataWithUuid = array_merge($data, $nonEpData);
 
-        $this->actingAs($this->user, 'api')
-            ->json('PUT', '/api/applications/'.$application->uuid, $dataWithUuid)
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+            $this->json('PUT', '/api/applications/'.$application->uuid, $dataWithUuid)
             ->assertStatus(200)
             ->assertJsonFragment([
                 'uuid' => $application->uuid,
@@ -88,8 +88,8 @@ class UpdateExpertPanelAttributesTest extends TestCase
     {
 
         $application = Application::factory()->gcep()->create();
-        $this->actingAs($this->user, 'api')
-            ->json('PUT', '/api/applications/'.$application->uuid, [])
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+            $this->json('PUT', '/api/applications/'.$application->uuid, [])
             ->assertStatus(422)
             ->assertJsonFragment([
                 'working_name' => ['The working name field is required.'],
@@ -103,8 +103,8 @@ class UpdateExpertPanelAttributesTest extends TestCase
     public function validates_data_types()
     {
         $application = Application::factory()->gcep()->create();
-        $this->actingAs($this->user, 'api')
-            ->json('PUT', '/api/applications/'.$application->uuid, [
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+            $this->json('PUT', '/api/applications/'.$application->uuid, [
                 'working_name' => $this->longText,
                 'cdwg_id' => 999,
                 'long_base_name' => $this->longText,

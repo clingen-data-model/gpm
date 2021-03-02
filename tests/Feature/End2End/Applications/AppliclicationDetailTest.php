@@ -78,8 +78,8 @@ class AppliclicationDetailTest extends TestCase
      */
     public function gets_application_with_uuid()
     {
-        $this->actingAs($this->user, 'api')
-            ->json('get', '/api/applications/'.$this->uuid)
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+            $this->json('get', '/api/applications/'.$this->uuid)
             ->assertStatus(200)
             ->assertJsonFragment(['working_name' => $this->application->working_name, 'uuid' => $this->uuid]);
     }
@@ -89,8 +89,8 @@ class AppliclicationDetailTest extends TestCase
      */
     public function loads_latestLogEntry_by_default()
     {
-        $this->actingAs($this->user, 'api')
-            ->json('get', '/api/applications/'.$this->uuid)
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+            $this->json('get', '/api/applications/'.$this->uuid)
             ->assertStatus(200)
             ->assertJsonFragment(['description' => 'TEst me', 'uuid' => $this->uuid]);
     }
@@ -100,8 +100,8 @@ class AppliclicationDetailTest extends TestCase
      */
     public function loads_latestPendingNextAction_by_default()
     {
-        $this->actingAs($this->user, 'api')
-            ->json('get', '/api/applications/'.$this->uuid)
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+            $this->json('get', '/api/applications/'.$this->uuid)
             ->assertStatus(200)
             ->assertJsonFragment(['entry' => 'TEst me']);
     }

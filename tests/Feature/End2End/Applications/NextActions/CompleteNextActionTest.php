@@ -30,8 +30,8 @@ class CompleteNextActionTest extends TestCase
      */
     public function can_mark_next_action_complete()
     {
-        $this->actingAs($this->user, 'api')
-            ->json('POST', $this->url, ['date_completed' => '2021-01-01'])
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+            $this->json('POST', $this->url, ['date_completed' => '2021-01-01'])
             ->assertStatus(200)
             ->assertJsonFragment([
                 'uuid' => $this->nextAction->uuid,

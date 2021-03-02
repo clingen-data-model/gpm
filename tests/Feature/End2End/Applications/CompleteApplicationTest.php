@@ -27,8 +27,8 @@ class CompleteApplicationTest extends TestCase
     {
         $application = Application::factory()->gcep()->create();
         $dateApproved = Carbon::parse('2021-09-16');
-        $this->actingAs($this->user, 'api')
-            ->json('POST', '/api/applications/'.$application->uuid.'/current-step/approve', ['date_approved' => $dateApproved])
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+            $this->json('POST', '/api/applications/'.$application->uuid.'/current-step/approve', ['date_approved' => $dateApproved])
             ->assertStatus(200)
             ->assertJsonFragment([
                 'date_completed' => $dateApproved->toJson(),
@@ -55,8 +55,8 @@ class CompleteApplicationTest extends TestCase
         $this->assertNull($application->date_completed);
 
         $dateApproved = Carbon::parse('2021-09-16');
-        $this->actingAs($this->user, 'api')
-            ->json('POST', '/api/applications/'.$application->uuid.'/current-step/approve', ['date_approved' => $dateApproved])
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+            $this->json('POST', '/api/applications/'.$application->uuid.'/current-step/approve', ['date_approved' => $dateApproved])
             ->assertStatus(200)
             ->assertJsonFragment([
                 'date_completed' => $dateApproved->toJson()

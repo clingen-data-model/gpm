@@ -35,8 +35,8 @@ class UploadTest extends TestCase
 
         $data = $this->makeRequestData();
 
-        $response = $this->actingAs($this->user)
-            ->json('POST', '/api/applications/'.$this->application->uuid.'/documents', $data);
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/documents', $data);
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -64,8 +64,8 @@ class UploadTest extends TestCase
             dateReviewed: Carbon::parse('2020-11-14')
         );
 
-        $response = $this->actingAs($this->user)
-            ->json('POST', '/api/applications/'.$this->application->uuid.'/documents', $data);
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/documents', $data);
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -88,8 +88,8 @@ class UploadTest extends TestCase
         $this->application->addDocument(Document::factory()->make(['document_category_id' => 1]));
 
         $data = $this->makeRequestData();
-        $response = $this->actingAs($this->user, 'api')
-            ->json('POST', '/api/applications/'.$this->application->uuid.'/documents', $data);
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/documents', $data);
 
             $response->assertStatus(200);
             $response->assertJson([
@@ -104,8 +104,8 @@ class UploadTest extends TestCase
      */
     public function validates_required_fields()
     {
-        $response = $this->actingAs($this->user, 'api')
-            ->json('POST', '/api/applications/'.$this->application->uuid.'/documents', [])
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/documents', [])
             ->assertStatus(422)
             ->assertJsonFragment([
                 'uuid' => ['The uuid field is required.'],
@@ -127,8 +127,8 @@ class UploadTest extends TestCase
             'date_reviewed' => 'or destroy the brain'
         ];
 
-        $response = $this->actingAs($this->user, 'api')
-            ->json('POST', '/api/applications/'.$this->application->uuid.'/documents', $data)
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/documents', $data)
             ->assertStatus(422)
             ->assertJsonFragment([
                 'uuid' => ['The uuid must be a valid UUID.'],

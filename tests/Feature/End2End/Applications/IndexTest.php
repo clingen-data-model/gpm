@@ -29,27 +29,11 @@ class IndexTest extends TestCase
     /**
      * @test
      */
-    // public function returns_20_applications_at_a_time()
-    // {
-    //     $response = $this->actingAs($this->user, 'api')
-    //         ->json('GET', self::URL);
-    //     $response->assertStatus(200);
-    //     $response->assertJsonCount(20, 'data');
-    //     $response->assertJsonFragment(['current_page'=>1]);
-
-    //     $response = $this->actingAs($this->user, 'api')
-    //         ->json('GET', self::URL.'?page=2')
-    //         ->assertStatus(200)
-    //         ->assertJsonCount(5, 'data');
-    // }
-
-    /**
-     * @test
-     */
     public function sorts_results_by_name()
     {
-        $response = $this->actingAs($this->user, 'api')
-                        ->json('GET', self::URL.'?sort[field]=name&sort[dir]=desc');
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $response = $this->json('GET', self::URL.'?sort[field]=name&sort[dir]=desc');
+        
         $this->assertResultsSorted($this->applications->sortBy('working_name')->slice(0,20), $response);
     }
 
@@ -58,8 +42,8 @@ class IndexTest extends TestCase
      */
     public function sorts_results_by_current_step()
     {
-        $response = $this->actingAs($this->user, 'api')
-                    ->json('GET', self::URL.'?sort[field]=current_step&sort[dir]=asc');
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $response = $this->json('GET', self::URL.'?sort[field]=current_step&sort[dir]=asc');
         $this->assertResultsSorted($this->applications->sortBy('current_step')->slice(0,20), $response);
     }
     
@@ -69,8 +53,8 @@ class IndexTest extends TestCase
     public function sorts_results_by_cdwg_name()
     {
         $this->applications->load('cdwg');
-        $response = $this->actingAs($this->user, 'api')
-                    ->json('GET', self::URL.'?sort[field]=cdwg.name&sort[dir]=asc');
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $response = $this->json('GET', self::URL.'?sort[field]=cdwg.name&sort[dir]=asc');
         $this->assertResultsSorted($this->applications->sortBy('cdwg.name')->slice(0,20), $response);
     }
     
@@ -90,8 +74,8 @@ class IndexTest extends TestCase
         $this->applications->load('logEntries');
 
 
-        $response = $this->actingAs($this->user, 'api')
-                    ->json('GET', self::URL.'?sort[field]=latestLogEntry.created_at&sort[dir]=asc');
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $response = $this->json('GET', self::URL.'?sort[field]=latestLogEntry.created_at&sort[dir]=asc');
         $this->assertResultsSorted($this->applications->sortBy('latestLogEntry.created_at')->slice(0,20), $response);
     }
     
@@ -105,8 +89,8 @@ class IndexTest extends TestCase
             $app->save();
         });
 
-        $this->actingAs($this->user, 'api')
-            ->call('get', '/api/applications?where[since]='.Carbon::now()->subDays(6)->toJson())
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+            $this->json('get', '/api/applications?where[since]='.Carbon::now()->subDays(6)->toJson())
             ->assertStatus(200)
             ->assertJsonCount(5, 'data');
         

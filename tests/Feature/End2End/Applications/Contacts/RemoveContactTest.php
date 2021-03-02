@@ -30,8 +30,8 @@ class RemoveContactTest extends TestCase
      */
     public function removes_contact_from_application()
     {
-        $this->actingAs($this->user, 'api')
-            ->json('DELETE', '/api/applications/'.$this->application->uuid.'/contacts/'.$this->person->uuid)
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+            $this->json('DELETE', '/api/applications/'.$this->application->uuid.'/contacts/'.$this->person->uuid)
             ->assertStatus(200);
 
         $this->assertDatabaseMissing('application_person', [
@@ -45,12 +45,12 @@ class RemoveContactTest extends TestCase
      */
     public function responds_with_404_if_application_or_person_not_found()
     {
-        $this->actingAs($this->user, 'api')
-            ->json('DELETE', '/api/applications/'.$this->application->uuid.'/contacts/bob-is-your-uncle')
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+            $this->json('DELETE', '/api/applications/'.$this->application->uuid.'/contacts/bob-is-your-uncle')
             ->assertStatus(404);
 
-        $this->actingAs($this->user, 'api')
-            ->json('DELETE', '/api/applications/'.Uuid::uuid4().'/contacts/'.$this->person->uuid)
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+            $this->json('DELETE', '/api/applications/'.Uuid::uuid4().'/contacts/'.$this->person->uuid)
             ->assertStatus(404);
     }
 
@@ -61,8 +61,8 @@ class RemoveContactTest extends TestCase
     {
         $person2 = Person::factory()->create();
 
-        $this->actingAs($this->user, 'api')
-            ->json('DELETE', '/api/applications/'.$this->application->uuid.'/contacts/'.$person2->uuid)
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+            $this->json('DELETE', '/api/applications/'.$this->application->uuid.'/contacts/'.$person2->uuid)
             ->assertStatus(422)
             ->assertJsonFragment([
                 'contact' => ['The specified person is not a contact of this application.']

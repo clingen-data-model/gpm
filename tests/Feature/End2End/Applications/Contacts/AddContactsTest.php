@@ -10,6 +10,7 @@ use App\Domain\Application\Models\Application;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
+use Laravel\Sanctum\Sanctum;
 use Ramsey\Uuid\Uuid;
 
 class AddContactsTest extends TestCase
@@ -32,6 +33,7 @@ class AddContactsTest extends TestCase
     {
         $person = Person::factory()->create();
 
+        Sanctum::actingAs($this->user);
         $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', ['person_uuid' => $person->uuid]);
         $response->assertStatus(200);
         $response->assertJson([
@@ -50,6 +52,7 @@ class AddContactsTest extends TestCase
     public function validates_new_contact_data()
     {
         $data = [];
+        Sanctum::actingAs($this->user);
         $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', $data);
 
         $response->assertStatus(422);
@@ -107,6 +110,7 @@ class AddContactsTest extends TestCase
         //     Bus::dispatch($job);
         });
 
+        Sanctum::actingAs($this->user);
         $response = $this->json('GET', '/api/applications/'.$this->application->uuid.'/contacts');
         $response->assertStatus(200);
         $response->assertJson($contacts->toArray());

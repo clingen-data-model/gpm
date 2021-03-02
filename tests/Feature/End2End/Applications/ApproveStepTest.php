@@ -31,8 +31,8 @@ class ApproveStepTest extends TestCase
             'date_approved' => Carbon::now(),
         ];
 
-        $this->actingAs($this->user)
-            ->json('POST', '/api/applications/'.$this->application->uuid.'/current-step/approve', $approvalData)
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->json('POST', '/api/applications/'.$this->application->uuid.'/current-step/approve', $approvalData)
             ->assertStatus(200)
             ->assertJson($this->application->fresh()->toArray());
 
@@ -56,8 +56,8 @@ class ApproveStepTest extends TestCase
 
         $badUuid = Uuid::uuid4();
 
-        $this->actingAs($this->user)
-            ->json('POST', '/api/applications/'.$badUuid.'/current-step/approve', $approvalData)
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->json('POST', '/api/applications/'.$badUuid.'/current-step/approve', $approvalData)
             ->assertStatus(404);
     }
     
@@ -70,8 +70,8 @@ class ApproveStepTest extends TestCase
             'date_approved' => 'Carbon::now()',
         ];
 
-        $this->actingAs($this->user)
-            ->json('POST', '/api/applications/'.$this->application->uuid.'/current-step/approve', $approvalData)
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->json('POST', '/api/applications/'.$this->application->uuid.'/current-step/approve', $approvalData)
             ->assertStatus(422)
             ->assertJsonFragment(['date_approved' => ['The date approved is not a valid date.']]);
     }

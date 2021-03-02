@@ -27,8 +27,8 @@ class CdwgIndextTest extends TestCase
      */
     public function lists_all_cdwgs_sorted_by_name()
     {
-        $this->actingAs($this->user, 'api')
-            ->call('GET', '/api/cdwgs')
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->json('GET', '/api/cdwgs', ['*'])
             ->assertStatus(200)
             ->assertJson($this->cdwgs->sortBy('name')->toArray());
     }
