@@ -22,6 +22,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { formatDate } from '../../date_utils'
+import SortAndFilter from '../../composables/router_aware_sort_and_filter'
 
 export default {
     components: {
@@ -92,31 +93,6 @@ export default {
         ...mapGetters({
             applications: 'applications/all'
         }),
-        sort: {
-            immediate: true,
-            get() {
-                if (Object.keys(this.$route.query).includes('sort-field')) {
-                    return {
-                        field: this.fields.find(i => i.name == this.$route.query['sort-field']),
-                        desc: Boolean(parseInt(this.$route.query['sort-desc']))
-                    }
-                }
-                return {
-                    field: this.fields.find(i => i.name == 'name'),
-                    desc: false
-                }
-            },
-            set(sortObj) {
-                const newSortQuery = {'sort-field': sortObj.field.name, 'sort-desc': sortObj.desc ? 1 : 0}
-
-                const newQuery = {
-                    ...this.$route.query, 
-                    ...newSortQuery
-                };
- 
-                this.$router.replace({path: this.$route.path, query: newQuery})
-            }
-        },
         filteredData() {
             return this.applications
                 .filter(item => !this.epTypeId || item.ep_type_id == this.epTypeId)
@@ -147,26 +123,6 @@ export default {
             },
             immediate: true
         },
-        filter: {
-            set(value) {
-                let currentQuery = this.$route.query;
-                let currentPath = this.$route.path;
-
-                let updatedQuery = {...currentQuery};
-
-                if (!value) {
-                    delete updatedQuery.filter;
-                } else {
-                    updatedQuery = {...currentQuery, ...{'filter': value} };
-                }
-
-                this.$router.replace({path: currentPath, query: updatedQuery})
-            },
-            get() {
-                return this.$route.query.filter
-            },
-            immediate: true
-        }
     },
     methods: {
 
@@ -193,6 +149,9 @@ export default {
     },
     mounted () {
         this.getApplications()
+    },
+    setup() {
+        return SortAndFilter()
     }
 }
 </script>
