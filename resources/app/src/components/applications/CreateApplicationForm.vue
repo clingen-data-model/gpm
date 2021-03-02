@@ -1,18 +1,21 @@
 <template>
     <div>
         <h4 class="text-xl font-semibold pb-2 border-b mb-4">Initiate Application</h4>
-        <input-row label="Working Name" :errors="errors.working_name">
-            <input type="text" 
-                v-model="this.app.working_name" 
-                placeholder="A recognizable name"
-            >
-        </input-row>
+        <input-row
+            label="Working Name"
+            :errors="errors.working_name"
+            type="text"
+            v-model="this.app.working_name"
+            placeholder="A recognizable name"
+        ></input-row>
+        
         <input-row label="CDWG" :errors="errors.cdwg_id">
             <select v-model="app.cdwg_id">
                 <option :value="null">Select...</option>
                 <option v-for="cdwg in cdwgs" :key="cdwg.id" :value="cdwg.id">{{cdwg.name}}</option>
             </select>
         </input-row>
+        
         <input-row label="EP Type" :errors="errors.ep_type_id">
             <div>
                 <div
@@ -37,11 +40,16 @@
                     &nbsp;
                     <label for="show-initiation-checkbox">Backdate this initiation</label>
                 </div>
-                <input-row label="Initiation Date" v-show="showInitiationDate">
-                    <input type="date" v-model="app.date_initiated">
+                <input-row 
+                    type="date" 
+                    label="Initiation Date" 
+                    v-show="showInitiationDate" 
+                    v-model="app.date_initiated"
+                >
                 </input-row>
             </div>
         </input-row>
+
         <button-row>
             <button class="btn" @click="cancel">Cancel</button>
             <button class="btn blue" @click="save">Initiate Application</button>
