@@ -44,11 +44,11 @@ async function initiate(data) {
         .then(response => response.data)
 }
 
-async function approveCurrentStep(application, dateApproved){
+async function approveCurrentStep(application, dateApproved, notifyContacts, notifyClingen){
     entityHasUuid(application)
 
     const url = `${baseUrl}/${application.uuid}/current-step/approve`
-    return await axios.post(url, {date_approved: dateApproved})
+    return await axios.post(url, {date_approved: dateApproved, notify_contacts: notifyContacts, notify_clingen: notifyClingen})
                     .then(response => response.data)
 }
 

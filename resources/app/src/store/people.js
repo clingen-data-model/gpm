@@ -59,6 +59,7 @@ export default {
             store.dispatch('people/getAll', {params})
         },
         async getAll({ commit, state }, {params, fresh = false}) {
+            console.log('people/getAll')
             if (fresh || state.lastFetch === null) {
                 commit('setLastParams', params);
                 await axios.get(baseUrl+queryStringFromParams(params))

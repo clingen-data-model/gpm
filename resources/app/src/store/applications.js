@@ -168,8 +168,8 @@ export default {
         },
 
         // eslint-disable-next-line
-        async approveCurrentStep ({commit}, {application, dateApproved}) {
-            await appRepo.approveCurrentStep(application, dateApproved)
+        async approveCurrentStep ({commit}, {application, dateApproved, notifyContacts, NotifyClingen}) {
+            await appRepo.approveCurrentStep(application, dateApproved, notifyContacts, NotifyClingen)
                 .then( () => {
                     store.dispatch('applications/getApplication', application.uuid)
                 });

@@ -5,6 +5,7 @@ namespace Tests\Feature\End2End\Applications;
 use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Support\Carbon;
+use App\Domain\Application\Jobs\ApproveStep;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Domain\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -42,15 +43,21 @@ class CompleteApplicationTest extends TestCase
     public function vcep_application_completed_when_step4_approved()
     {
         $application = Application::factory()->vcep()->create();
-        $application->approveCurrentStep(Carbon::parse('2021-01-02'));
+        ApproveStep::dispatch($application->uuid, Carbon::parse('2021-01-02'));
+        // $application->approveCurrentStep(Carbon::parse('2021-01-02'));
+        $application = $application->fresh();
         $this->assertEquals(2, $application->current_step);
         $this->assertNull($application->date_completed);
 
-        $application->approveCurrentStep(Carbon::parse('2021-01-03'));
+        // $application->approveCurrentStep(Carbon::parse('2021-01-03'));
+        ApproveStep::dispatch($application->uuid, Carbon::parse('2021-01-03'));
+        $application = $application->fresh();
         $this->assertEquals(3, $application->current_step);
         $this->assertNull($application->date_completed);
         
-        $application->approveCurrentStep(Carbon::parse('2021-01-04'));
+        // $application->approveCurrentStep(Carbon::parse('2021-01-04'));
+        ApproveStep::dispatch($application->uuid, Carbon::parse('2021-01-04'));
+        $application = $application->fresh();
         $this->assertEquals(4, $application->current_step);
         $this->assertNull($application->date_completed);
 

@@ -27,8 +27,8 @@ class ApproveStep
     public function __construct(
         string $applicationUuid, 
         string $dateApproved,
-        bool $notifyContacts = false,
-        bool $notifyClingen = false
+        private bool $notifyContacts = false,
+        private bool $notifyClingen = false
     )
     {
         $this->application = Application::findByUuidOrFail($applicationUuid);
@@ -42,8 +42,6 @@ class ApproveStep
      */
     public function handle()
     {
-        // $this->application->approveCurrentStep($this->dateApproved);
-
         $stepManager = app()->make(StepManagerFactory::class)($this->application);
         
         if (! $stepManager->canApprove()) {
@@ -71,7 +69,8 @@ class ApproveStep
             $this->application->completeApplication($this->dateApproved);
         }
 
-        
-        Notification::send($this->application->contacts, new ApplicationStepApprovedNotification());
+        if ($this->notifyContacts) {
+            Notification::send($this->application->contacts, new ApplicationStepApprovedNotification($this->application, $approvedStep, $wasLastStep));
+        }
     }
 }

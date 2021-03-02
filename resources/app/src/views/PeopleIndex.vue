@@ -64,7 +64,7 @@ export default {
         }
     },
     mounted() {
-        this.$store.dispatch('people/all')
+        this.$store.dispatch('people/all', {})
     },
     setup() {
         return SortAndFilter()

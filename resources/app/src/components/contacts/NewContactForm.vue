@@ -169,7 +169,8 @@ export default {
         }
     },
     mounted () {
-        this.$store.dispatch('people/getAll');
+        console.log('NewContactForm.mounted')
+        this.$store.dispatch('people/getAll', {});
     }
 }
 </script>

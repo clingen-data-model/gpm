@@ -19,7 +19,11 @@ class ApplicationStepController extends Controller
     public function approve($uuid, ApplicationApprovalRequest $request)
     {
         try {
-            $job = new ApproveStep(applicationUuid: $uuid, dateApproved: $request->date_approved);
+            $job = new ApproveStep(
+                applicationUuid: $uuid, 
+                dateApproved: $request->date_approved,
+                notifyContacts: ($request->has('notify_contacts')) ? $request->notify_contacts : false
+            );
             $this->dispatcher->dispatch($job);
 
             return Application::findByUuidOrFail($uuid);

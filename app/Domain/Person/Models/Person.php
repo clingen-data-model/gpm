@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
+use Illuminate\Notifications\Notifiable;
 
 class Person extends Model
 {
@@ -15,6 +16,7 @@ class Person extends Model
     use SoftDeletes;
     use HasTimestamps;
     use HasUuid;
+    use Notifiable;
 
     protected $fillable = [
         'uuid',

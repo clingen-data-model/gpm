@@ -4,6 +4,18 @@
         
         <input-row v-model="dateApproved" type="date" :errors="errors.date_approved" label="Date Approved"></input-row>
 
+        <dictionary-row label="">
+            <label class="text-sm">
+                <input type="checkbox" v-model="notifyContacts" :value="true"> Send notification email to contacts
+            </label>
+        </dictionary-row>
+
+        <!-- <dictionary-row label="">
+            <label class="text-sm">
+                <input type="checkbox" v-model="notifyClingen"> Send notification to ClinGen system administrators
+            </label>
+        </dictionary-row> -->
+
         <button-row>
             <button class="btn" @click="cancel">Cancel</button>
             <button class="btn blue" @click="save">Approve step {{application.current_step}}</button>
@@ -25,6 +37,8 @@ export default {
     data() {
         return {
             dateApproved: null,
+            notifyContacts: false,
+            notifyClinGen: false,
             errors: {}
         }
     },
@@ -42,7 +56,13 @@ export default {
             this.$emit('canceled');
         },
         async save () {
-            const data = {application: this.application, dateApproved: this.dateApproved};
+            const data = {
+                application: this.application, 
+                dateApproved: this.dateApproved,
+                notifyContacts: this.notifyContacts,
+                notifyClingen: this.notifyClinGen,
+            };
+
             try {
                 await this.$store.dispatch('applications/approveCurrentStep', data)
                 this.clearForm();
