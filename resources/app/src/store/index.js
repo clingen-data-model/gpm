@@ -51,7 +51,7 @@ export default createStore({
         async login({commit}, {email, password}) {
             await axios.get('/sanctum/csrf-cookie')
             await axios.post('/api/login', {email: email, password: password})
-                .then(response => {
+                .then(() => {
                     commit('setAuthenticated', true)
                 });
         },
