@@ -9,7 +9,7 @@
         <data-table 
             :fields="filteredFields" 
             :data="filteredDocuments" 
-            :sort="{field: fields[0], desc: true}"
+            :sort="{field: fields[0].name, desc: true}"
             v-if="filteredDocuments.length > 0"
         >
             <template v-slot:cell-date_reviewed="item">
