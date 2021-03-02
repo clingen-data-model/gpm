@@ -54,7 +54,7 @@ export default {
         },
     },
     actions: {
-        /* */
+        // eslint-disable-next-line
         async all({ commit }, params) {
             store.dispatch('people/getAll', {params})
         },
