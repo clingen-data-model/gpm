@@ -12,13 +12,21 @@ export default {
         requests: [],
         items: [],
         lastFetch: null,
+        currentItemIdx: null
     }),
     getters: {
         people: state => state.items,
         all: state => state.items,
         personWithUuid: (state) => (uuid) => state.items.find(i => i.uuid == uuid),
         getPersonWithUuid: (state) => (uuid) => state.items.find(i => i.uuid == uuid),
-        indexForPersonWithUuid: (state, uuid) => state.items.findIndex(i => i.uuid == uuid)
+        indexForPersonWithUuid: (state, uuid) => state.items.findIndex(i => i.uuid == uuid),
+        currentItem: state => {
+            if (state.currentItemIdx === null) {
+                return new Person();
+            }
+
+            return state.items[state.currentItemIdx]
+        },
     },
     mutations: {
         addPerson(state, itemData) {
@@ -40,12 +48,17 @@ export default {
         setLastParams(state, params) {
             state.lastParams = params;
         },
+        setCurrentItemIdx(state, item) {
+            const idx = state.items.findIndex(i => i.uuid == item.uuid);
+            state.currentItemIdx = idx;
+        },
     },
     actions: {
-        async all({ commit }, params, fresh = false) {
-            store.dispatch('people/getAll', params)
+        /* */
+        async all({ commit }, params) {
+            store.dispatch('people/getAll', {params})
         },
-        async getAll({ commit, state }, params, fresh = false) {
+        async getAll({ commit, state }, {params, fresh = false}) {
             if (fresh || state.lastFetch === null) {
                 commit('setLastParams', params);
                 await axios.get(baseUrl+queryStringFromParams(params))
@@ -95,6 +108,16 @@ export default {
                 .then(response => {
                     commit('addPerson', response.data);
                     return response.data;
+                });
+        },
+
+        async getPerson({ commit }, {uuid, params}) {
+            console.log('getPerson')
+            console.info('uuid', uuid);
+            await axios.get(`${baseUrl}/${uuid}`+queryStringFromParams(params))
+                .then(response => {
+                    commit('addPerson', response.data)
+                    commit('setCurrentItemIdx', response.data)
                 });
         }
 

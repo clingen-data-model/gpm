@@ -5,8 +5,8 @@
 
     <div class="mb-2 mt-4">
       <div class="tabs">
-        <router-link to="/vceps" class="tab">VCEPS</router-link>
-        <router-link to="/gceps" class="tab">GCEPS</router-link>
+        <router-link :to="{name: 'vceps'}" class="tab">VCEPS</router-link>
+        <router-link :to="{name: 'gceps'}" class="tab">GCEPS</router-link>
       </div>
       <div class="p-4 border rounded-tr-lg rounded-b-lg bg-white">
         <router-view></router-view>

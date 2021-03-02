@@ -1,106 +1,24 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store from '../store/index'
+import applicationRoutes from './applications'
+import peopleRoutes from './people'
+import authRoutes from './auth'
+import cdwgRoutes from './cdwgs'
 
-const NextActionForm = () => import (/* next-action-form */ '../components/next_actions/NextActionForm')
-const LogEntryForm = () => import (/* log-entry-form */ '../components/log_entries/LogEntryForm')
-const PersonDetail = () => import (/* person-detail */ '../components/people/PersonDetail')
-const PeopleIndex = () => import (/* people-index */ '../views/PeopleIndex')
-
-const ApplicationIndex = () => import ( /* webpackChunkName: "application-index" */ '../views/ApplicationsIndex.vue')
-const ApplicationDetail = () => import (/* webpackChunkName: "application-detail" */ '../views/applications/ApplicationDetail');
-const CreateApplicationForm = () => import ( /* webpackChunkName: "create-application-form" */ '../components/applications/CreateApplicationForm');
-
-const routes = [{
+const routes = [
+    { name: 'home',
         path: '/',
-        redirect: '/vceps',
-        name: 'index',
-        components: {
-            default: ApplicationIndex,
-            modal: CreateApplicationForm,
-        },
-        children: [{
-            path: "gceps",
-            name: 'gceps',
-            components: {
-                    default: () => import ( /* webpackChunkName: "application-index" */ '../views/indexes/GcepsList.vue'),
-                    modal: CreateApplicationForm,
-                }
-            },
-            {
-                path: "vceps",
-                name: 'vceps',
-                components: {
-                    default: () => import ( /* webpackChunkName: "application-index" */ '../views/indexes/VcepsList.vue'),
-                    modal: CreateApplicationForm,
-                }
-            },
-        ]
+        redirect: '/applications'
     },
-    {
-        name: 'ApplicationDetail',
-        path: '/applications/:uuid',
-        component: ApplicationDetail,
-        props: true,
-        children: [{
-                name: 'NextAction',
-                path: 'next-action',
-                component: NextActionForm,
-                meta: {
-                    default: ApplicationDetail,
-                    showModal: true
-                },
-                props: true,
-            },
-            {
-                name: 'LogEntry',
-                path: 'log-entry',
-                component: LogEntryForm,
-                meta: {
-                    showModal: true
-                },
-                props: true,
-            }
-        ]
-    },
-    {
-        path: '/cdwgs',
-        name: 'cdwg-index',
-        component: () => import (/* webpackChunkName "cdwgs" */ '../views/cdwgs/CdwgIndex')
-    },
-    {
-            name: 'people-index',
-            path: '/people',
-            component: PeopleIndex,
-    },
-    {
-        path: '/people/:uuid',
-        component: PersonDetail,
-        name: 'person-detail',
-        children: [
-        ]
-
-    },
-    {
+    ...applicationRoutes,
+    ...peopleRoutes,
+    ...authRoutes,
+    ...cdwgRoutes,
+    { name: 'about',
         path: '/about',
-        name: 'about',
         component: () =>
             import ( /* webpackChunkName: "about" */ '../views/About.vue')
     },
-    {
-        path: '/login',
-        name: 'login',
-        component: () => import ( '../views/LoginPage'),
-    },
-    {
-        path: '/reset-password',
-        name: 'reset-password',
-        component: () => import ( /* webpackChunkName: "reset-password" */ '../views/ResetPassword')
-    },
-    {
-        path: '/me',
-        name: 'me',
-        component: () => import ('../views/Me.vue'),
-    }
 ]
 
 const router = createRouter({
