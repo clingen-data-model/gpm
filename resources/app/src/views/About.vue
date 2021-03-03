@@ -1,5 +1,5 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-  </div>
+    <div class="w-full h-48 mx-auto align-middle py-48 text-center border bg-gray-100">
+        PLACEHOLDER FOR ABOUT PAGE
+    </div>
 </template>
