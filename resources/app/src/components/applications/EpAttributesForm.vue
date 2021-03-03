@@ -102,7 +102,6 @@ export default {
             try {
                 this.clearErrors();
                 await this.$store.dispatch('applications/updateEpAttributes', this.appClone);
-                this.resetClone();
             } catch (error) {
                 if (error.response && error.response.status == 422 && error.response.data.errors) {
                     this.errors = error.response.data.errors
