@@ -1,3 +1,3 @@
 export default function (error) {
-    return error.response && error.response.status == 402
+    return error.response && [401, 402, 403].includes(error.response.status)
 }

@@ -12,19 +12,28 @@ export default [
             default: ApplicationIndex,
             modal: CreateApplicationForm,
         },
+        meta: {
+            protected: true
+        },
         children: [
             { name: 'gceps',
                 path: "gceps",
                 components: {
-                        default: () => import ( /* webpackChunkName: "application-index" */ '../views/indexes/GcepsList.vue'),
-                        modal: CreateApplicationForm,
-                    }
+                    default: () => import ( /* webpackChunkName: "application-index" */ '../views/indexes/GcepsList.vue'),
+                    modal: CreateApplicationForm,
+                },
+                meta: {
+                    protected: true
+                },
             },
             { name: 'vceps',
                 path: "vceps",
                 components: {
                     default: () => import ( /* webpackChunkName: "application-index" */ '../views/indexes/VcepsList.vue'),
                     modal: CreateApplicationForm,
+                },
+                meta: {
+                    protected: true
                 }
             },
         ]
@@ -33,13 +42,17 @@ export default [
         path: '/applications/:uuid',
         component: ApplicationDetail,
         props: true,
+        meta: {
+            protected: true
+        },
         children: [
             { name: 'NextAction',
                 path: 'next-action',
                 component: NextActionForm,
                 meta: {
                     default: ApplicationDetail,
-                    showModal: true
+                    showModal: true,
+                    protected: true
                 },
                 props: true,
             },
@@ -47,7 +60,8 @@ export default [
                 path: 'log-entry',
                 component: LogEntryForm,
                 meta: {
-                    showModal: true
+                    showModal: true,
+                    protected: true
                 },
                 props: true,
             }

@@ -9,7 +9,10 @@
             @click="close"
         ></div>
         <div class="bg-white p-4 border border-gray-500 opacity-100 relative mt-24 mb-auto rounded-lg shadow-md" :class="width">
-            <button @click="close" class="btn btn-xs gray float-right">X</button>
+            <button 
+                @click="close" class="btn btn-xs gray float-right"
+                v-if="!hideClose"
+            >X</button>
             <header>
                 <slot name="header">
                     <h4>{{title}}</h4>
@@ -35,19 +38,33 @@ export default {
             type: String,
             required: false,
             default: 'md'
+        },
+        hideClose: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     },
     data() {
         return {
-            isVisible: false
+            // isVisible: false
         }
     },
-    watch: {
-        modelValue(to) {
-            this.isVisible = Boolean(to);
-        }
-    },
+    // watch: {
+    //     modelValue(to) {
+    //         this.isVisible = Boolean(to);
+    //     }
+    // },
     computed: {
+        isVisible: {
+            immediate: true,
+            get () {
+                return this.modelValue
+            },
+            set (value) {
+                this.$emit('modelValue:updated', value)
+            }
+        },
         width() {
             switch (this.size) {
                 case 'sm': 

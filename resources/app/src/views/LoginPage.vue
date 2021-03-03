@@ -1,6 +1,6 @@
 <template>
     <card title="Login" class="w-1/2 mx-auto">
-        <login-form></login-form>
+        <login-form @authenticated="goHome"></login-form>
     </card>
 </template>
 <script>
@@ -21,9 +21,13 @@ export default {
         }
     },
     methods: {
+        goHome() {
+            console.log('going home');
+            this.$router.push({name: 'home'})
+        },
         redirectIfAuthed(){
             if (this.isAuthed) {
-                this.$router.replace({name: 'vceps'});
+                this.$router.replace({name: 'home'});
             }
         }
     },

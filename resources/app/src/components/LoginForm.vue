@@ -10,10 +10,10 @@
 </template>
 <script>
 import is_validation_error from '../http/is_validation_error'
+import isAuthError from '../http/is_auth_error'
 
 export default {
     props: {
-        
     },
     data() {
         return {
@@ -22,6 +22,10 @@ export default {
             errors: {}
         }
     },
+    emits: [
+        'authenticated',
+        'authenticationFailed'
+    ],
     computed: {
 
     },
@@ -29,13 +33,24 @@ export default {
         async authenticate() {
             try {
                 await this.$store.dispatch('login', {email: this.email, password: this.password})
-                await this.$store.dispatch('getCurrentUser');
-                this.$router.push('/')
             } catch (e) {
                 if (is_validation_error(e)) {
                     this.errors = e.response.data.errors
+                    this.$emit('authenticationFailed')
                 }
+                throw e;
             }
+
+            try {
+                await this.$store.dispatch('getCurrentUser')
+            } catch (e) {
+                if (isAuthError(e)) {
+                    this.$emit('authenticationFailed')
+                }
+                throw e
+            }
+            this.$emit('authenticated');
+
         }
     }
 }

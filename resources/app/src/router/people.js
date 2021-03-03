@@ -6,11 +6,17 @@ export default [
     { name: 'people-index',
             path: '/people',
             component: PeopleIndex,
+            meta: {
+                protected: true
+            },
     },
     { name: 'person-detail',
         path: '/people/:uuid',
         component: PersonDetail,
         props: true,
+        meta: {
+            protected: true
+        },
         children: [
             { name: 'person-edit',
                 path: 'edit',
@@ -19,7 +25,8 @@ export default [
                     modal: PersonForm
                 },
                 meta: {
-                    showModal: true
+                    showModal: true,
+                    protected: true
                 },
                 props: true,
             }

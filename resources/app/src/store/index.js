@@ -12,7 +12,7 @@ const nullUser = {
 };
 
 
-export default createStore({
+const store = createStore({
     state: {
         user: {...nullUser},
         openRequests: [],
@@ -26,25 +26,29 @@ export default createStore({
     mutations: {
         setCurrentUser(state, user) {
             state.user = user
+            store.commit('setAuthenticated', true)
         },
         clearCurrentUser(state) {
             state.user = {...nullUser}
-            state.authenticated = false
+            store.commit('setAuthenticated', false)
         },
         setAuthenticated(state, authVal) {
             state.authenticated = authVal
         }
     },
     actions: {
-        async getCurrentUser({commit}) {
-            try {
-                await axios.get('/api/current-user')
-                    .then(response => {
-                        commit('setCurrentUser', response.data)
-                    })
-            } catch (error) {
-                if (isAuthError(error)) {
-                    throw('implement auth error handling')
+        async getCurrentUser({commit, state}) {
+            if (state.authenticated) {
+                try {
+                    await axios.get('/api/current-user')
+                        .then(response => {
+                            commit('setCurrentUser', response.data)
+                        })
+                } catch (error) {
+                    if (isAuthError(error)) {
+                        throw('implement auth error handling')
+                    }
+                    commit('clearCurrentUser');
                 }
             }
         },
@@ -68,19 +72,22 @@ export default createStore({
             }
         },
         async checkAuth({commit, state}) {
+            console.log('store.actions.checkAuth')
             if (!state.authenticated) {
                 console.log('checking auth')
                 await axios.get('/api/authenticated')
                     .then(() => {
+                        console.log('checking auth: authed')
                         commit('setAuthenticated', true)
                     })
                     .catch(error => {
                         if (error.response.status && error.response.status == 401) {
+                            console.log('checking auth: not authed')
                             commit('setAuthenticated', false)
                         }
                     })
-                    
             }
+            console.log('don store.state.authenticated is true so we did not make the api call');
         }
     },
     modules: {
@@ -89,3 +96,5 @@ export default createStore({
         people: PeopleStore,
     }
 })
+
+export default store

@@ -26,21 +26,22 @@ const router = createRouter({
     routes
 })
 
-router.beforeEach(async (to, from, next) => {
-    await store.dispatch('checkAuth')
+console.log(store.state);
 
-    if (to.name != 'login' && !store.state.authenticated) {
-        console.log(to.name + '&&' + store.getters.isAuthed)
+router.beforeEach(async (to, from, next) => {
+
+    console.info('beforeEach('+to.name+', '+from.name+') - store.state.authenticated', store.getters.isAuthed)
+    if (to.name != 'login' && !store.getters.isAuthed) {
         next({name: 'login'});
         return;
     }
 
-    if (to.name == 'login' && store.state.authenticated) {
-        console.log(to.name + '&&' + store.getters.isAuthed)
-        next({name: 'vceps'})
+    if (to.name == 'login' && store.getters.isAuthed) {
+        next({name: 'home'})
     }
 
     next();
 })
+
 
 export default router
