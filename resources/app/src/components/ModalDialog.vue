@@ -62,7 +62,7 @@ export default {
                 return this.modelValue
             },
             set (value) {
-                this.$emit('modelValue:updated', value)
+                this.$emit('update:modelValue', value)
             }
         },
         width() {
@@ -84,12 +84,10 @@ export default {
         open() {
             this.isVisible = true;
             this.$emit('opened');
-            this.$emit('update:modelValue', this.isVisible);
         },
         close() {
             this.isVisible = false;
             this.$emit('closed');
-            this.$emit('update:modelValue', this.isVisible);
         }
     }
 }
