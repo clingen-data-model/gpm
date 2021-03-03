@@ -1,9 +1,9 @@
-<style lang="postcss" module>
+<style lang="postcss" scope>
     table {
         @apply w-full;
     }
     tbody tr {
-        @apply odd:bg-gray-100 hover:bg-blue-100
+        @apply bg-white odd:bg-gray-100 hover:bg-blue-100 hover:border-blue-300
     }
     th.sorted, td.sorted  {
         @apply bg-blue-100 hover:bg-blue-100
@@ -11,18 +11,15 @@
 </style>
 
 <template>
-    <div>
-        <table>
+    <div class="shadow-inner border">
+        <table class="border-none">
             <thead>
                 <slot name="thead">
                 <tr class="bg-gray-200">
                     <th v-for="field in fields.filter(f => !f.hideHeader)" :key="field.name"
                         class="text-left border border-gray-300 px-3"
                         :title="field.sortable ? `Click to sort` : ``"
-                        :class="{
-                            'cursor-pointer underline hover:bg-gray-300': field.sortable, 
-                            'sorted': realSort.field == field
-                        }"
+                        :class="getHeaderClass(field)"
                         @click="field.sortable && updateSort(field)"
                         :colspan="(field.colspan ? field.colspan : 1)"
                     >
@@ -56,6 +53,7 @@
                         v-for="field in fields" 
                         :key="field.name"
                         class="text-left p-1 px-3 border"
+                        :class="getCellClass(field)"
                     >
                         <slot :name="`cell-${field.name}`" :item="item" :field="field" :value="resolveDisplayAttribute(item, field)">
                             {{resolveDisplayAttribute(item, field)}}
@@ -299,6 +297,21 @@ export default {
                 return field.name
             }
             return field.label
+        },
+        getHeaderClass(field) {
+            const classes = field.class || [];
+            if (field.sortable) {
+                classes.push('cursor-pointer underline hover:bg-gray-300');
+            }
+            if (field.colspan == 1) {
+                if (this.realSort.field == field) {
+                    classes.push(field)
+                }
+            }
+            return classes.join(' ');
+        },
+        getCellClass(field) {
+            return field.class;
         }
     }
 }

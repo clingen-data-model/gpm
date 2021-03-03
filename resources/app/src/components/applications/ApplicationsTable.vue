@@ -1,28 +1,44 @@
 <template>
     <div>
-        <div class="mb-1 flex space-x-2">
-            <label>Filter: <input type="text" class="sm" v-model="filter" placeholder="filter"></label>
-            <label>
-                <input type="checkbox" v-model="showCompleted">
-                Show completed
-            </label>
+        <div class="flex justify-between">
+            <div class="mb-1 flex space-x-2">
+                <label>Filter: <input type="text" class="sm" v-model="filter" placeholder="filter"></label>
+                <label>
+                    <input type="checkbox" v-model="showCompleted">
+                    Show completed
+                </label>
+            </div>
+            <div v-if="vcepList">
+                <button class="btn btn-xs" :class="{blue: showAllInfo == 0}" @click="showAllInfo = 0">Summary</button>
+                <button class="btn btn-xs" :class="{blue: showAllInfo == 1}" @click="showAllInfo = 1">All Info</button>
+            </div>
         </div>
         <data-table 
             :data="filteredData" 
-            :fields="fields" 
+            :fields="selectedFields" 
             :filter-term="filter" 
-            class="width-full"
             :row-click-handler="goToApplication"
             row-class="cursor-pointer"
             v-model:sort="sort"
+            :style="remainingHeight"
+            class="overflow-auto"
+            ref="table"
         >
+            <template v-slot:cell-contacts="{item}">
+                <ul>
+                    <li v-for="c in item.contacts" :key="c.id">
+                        <small><a :href="`mailto:${c.email}`" class="text-blue-500">{{c.name}}</a></small>
+                    </li>
+                </ul>
+            </template>
         </data-table>
     </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
 import { formatDate } from '../../date_utils'
-import SortAndFilter from '../../composables/router_aware_sort_and_filter'
+import sortAndFilter from '../../composables/router_aware_sort_and_filter'
+// import computedQueryParam from '../../composables/computed_query_param'
 
 export default {
     components: {
@@ -40,7 +56,7 @@ export default {
                     name: 'id',
                     label: 'ID',
                     type: Number,
-                    sortable: true
+                    sortable: true,
                 },
                 {
                     name: 'name',
@@ -71,28 +87,85 @@ export default {
                         }
                         return null
                     },
-                    colspan: 2
+                    colspan: 2,
+                    class: ['min-w-28']
                 },
                 {
                     name: 'latest_log_entry.description',
                     label: 'Last Activity',
                     type: String,
-                    hideHeader: true
+                    hideHeader: true,
                 },
                 {
                     name: 'latest_pending_next_action.entry',
                     label: 'Next Action',
                     type: String,
-                    sortable: false
+                    sortable: false,
+                    class: ['min-w-40'],
 
                 }
             ],
+            allInfoFields: [
+                    {
+                        name: 'contacts',
+                        label: 'Contacts',
+                        type: Array,
+                        sortable: false,
+                        class: ['min-w-40']
+                    },
+                    {
+                        name: 'first_scope_document.date_received',
+                        label: 'Step 1 Received',
+                        type: Date,
+                        sortable: false,
+                        class: ['min-w-28']
+
+                    },
+                    {
+                        name: 'approval_dates.step 1',
+                        label: 'Step 1 Approved',
+                        type: Date,
+                        sortable: false,
+                        class: ['min-w-28']
+                    },
+                    {
+                        name: 'approval_dates.step 2',
+                        label: 'Step 2 Approved',
+                        type: Date,
+                        sortable: false,
+                        class: ['min-w-28']
+                    },
+                    {
+                        name: 'approval_dates.step 3',
+                        label: 'Step 3 Approved',
+                        type: Date,
+                        sortable: false,
+                        class: ['min-w-28']
+                    },
+                    {
+                        name: 'first_final_document.date_received',
+                        label: 'Step 4 Received',
+                        type: Date,
+                        sortable: false,
+                        class: ['min-w-28']
+                    },
+                    {
+                        name: 'approval_dates.step 4',
+                        label: 'Step 4 Approved',
+                        type: Date,
+                        sortable: false,
+                        class: ['min-w-28']
+                    }
+            ]
         }
     },
     computed: {
         ...mapGetters({
             applications: 'applications/all'
         }),
+        vcepList () {
+            return this.epTypeId == 2
+        },
         filteredData() {
             return this.applications
                 .filter(item => !this.epTypeId || item.ep_type_id == this.epTypeId)
@@ -123,6 +196,32 @@ export default {
             },
             immediate: true
         },
+        selectedFields() {
+            if (this.showAllInfo == 1) {
+                return [...this.fields, ...this.allInfoFields]
+            }
+            return this.fields
+        },
+        showAllInfo: {
+            immediate: true,
+                get() {
+                    if (Object.keys(this.$route.query).includes('showAllInfo')) {
+                        return this.$route.query.showAllInfo
+                    }
+                    return 0
+                },
+                set(newValue) {
+                    const newQuery = {...this.$route.query};
+                    newQuery.showAllInfo = newValue
+
+                    this.$router.replace({path: this.$route.path, query: newQuery})
+                }            
+        },
+        remainingHeight () {
+            console.log(this.$refs.table)
+            // const yPosition = this.$refs.applicationsTable.$el
+            return {height: 'calc(100vh - 220px)'}
+        }
     },
     methods: {
 
@@ -131,7 +230,10 @@ export default {
                 with: [
                     'latestLogEntry',
                     'latestPendingNextAction',
-                    'type'
+                    'type',
+                    'contacts',
+                    'firstScopeDocument',
+                    'firstFinalDocument'
                 ],
             }
 
@@ -151,7 +253,14 @@ export default {
         this.getApplications()
     },
     setup() {
-        return SortAndFilter()
+        const {sort, filter} = sortAndFilter();
+        // const showAllInfo = computedQueryParam('showAllInfo');
+
+        return {
+            sort,
+            filter,
+            // showAllInfo
+        }
     }
 }
 </script>
