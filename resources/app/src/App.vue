@@ -8,7 +8,7 @@
           </div>
           
           <span v-if="$store.getters.isAuthed">
-          <router-link to="/" class="text-blue-500 hover:underline">Aplications</router-link> 
+          <router-link to="/applications" class="text-blue-500 hover:underline">Aplications</router-link> 
           |
           <router-link to="/cdwgs" class="text-blue-500 hover:underline">CDWGs</router-link> 
           |
