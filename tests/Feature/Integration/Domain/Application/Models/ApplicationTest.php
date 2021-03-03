@@ -424,4 +424,59 @@ class ApplicationTest extends TestCase
 
         $this->assertEquals('https://clinicalgenome.org/affiliation/4000123', $application->clingen_url);
     }
+
+    /**
+     * @test
+     */
+    public function can_get_first_scope_document()
+    {
+        $application = Application::factory()->create();
+        $document1 = Document::factory()
+                        ->make([
+                            'document_category_id' => config('documents.categories.scope.id'), 
+                            'version' => 1
+                        ]);
+        $document2 = Document::factory()
+                        ->make([
+                        'document_category_id' => config('documents.categories.scope.id'), 
+                        'version' => 2
+                    ]);
+        
+        $application->documents()->save($document1);
+        $application->documents()->save($document2);
+
+        $this->assertEquals($application->documents->count(), 2);
+
+        $this->assertEquals($application->firstScopeDocument->id, $document1->id);
+
+
+    }
+    
+    /**
+     * @test
+     */
+    public function can_get_first_final_document()
+    {
+        $application = Application::factory()->create();
+        $document1 = Document::factory()
+                        ->make([
+                            'document_category_id' => config('documents.categories.final-app.id'), 
+                            'version' => 1
+                        ]);
+        $document2 = Document::factory()
+                        ->make([
+                        'document_category_id' => config('documents.categories.final-app.id'), 
+                        'version' => 2
+                    ]);
+        
+        $application->documents()->save($document1);
+        $application->documents()->save($document2);
+
+        $this->assertEquals($application->documents->count(), 2);
+
+        $this->assertEquals($application->firstFinalDocument->id, $document1->id);
+
+
+    }
+    
 }

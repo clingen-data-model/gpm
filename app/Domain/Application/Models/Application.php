@@ -18,7 +18,6 @@ use Spatie\Activitylog\Models\Activity;
 use Database\Factories\ApplicationFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Domain\Application\Events\ContactAdded;
-use App\Domain\Application\Events\StepApproved;
 use App\Domain\Application\Events\DocumentAdded;
 use App\Domain\Application\Events\ContactRemoved;
 use App\Domain\Application\Events\NextActionAdded;
@@ -214,6 +213,20 @@ class Application extends Model
     public function documents()
     {
         return $this->hasMany(Document::class);
+    }
+
+    public function firstScopeDocument()
+    {
+        return $this->hasOne(Document::class)
+            ->category(config('documents.categories.scope.id'))
+            ->version(1);
+    }
+
+    public function firstFinalDocument()
+    {
+        return $this->hasOne(Document::class)
+            ->category(config('documents.categories.final-app.id'))
+            ->version(1);
     }
 
     public function logEntries()

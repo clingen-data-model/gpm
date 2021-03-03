@@ -42,4 +42,19 @@ class Document extends Model
     {
         return $this->belongsTo(DocumentCategory::class, 'document_category_id');
     }
+
+    public function scopeCategory($query, $category)
+    {
+        $id = $category;
+        if ($category instanceof DocumentCategory) {
+            $id = $category->id;
+        }
+        return $query->where('document_category_id', $id);
+    }
+
+    public function scopeVersion($query, $version)
+    {
+        return $query->where('version', $version);
+    }
+    
 }

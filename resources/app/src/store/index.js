@@ -38,7 +38,7 @@ const store = createStore({
     },
     actions: {
         async getCurrentUser({commit, state}) {
-            if (state.authenticated) {
+            if (!state.authenticated) {
                 try {
                     await axios.get('/api/current-user')
                         .then(response => {
