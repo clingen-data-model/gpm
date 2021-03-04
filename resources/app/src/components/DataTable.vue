@@ -13,9 +13,9 @@
         @apply border-l-0;
     }
 
-    tr:last-child > td{
+    /* tr:last-child > td{
         @apply border-b-0
-    }
+    } */
     th:last-child,
     td:last-child {
         @apply border-r-0
@@ -27,7 +27,7 @@
 </style>
 
 <template>
-    <div class="shadow-inner border">
+    <div class="shadow-inner border bg-gray-50">
         <table class="border-none">
             <thead>
                 <slot name="thead">
@@ -324,8 +324,13 @@ export default {
                     classes.push(field)
                 }
             }
+            if (field.headerClass) {
+                classes.push(...field.headerClass)
+            }
+
             return classes.join(' ');
         },
+
         getCellClass(field) {
             return field.class;
         }
