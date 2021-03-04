@@ -16,7 +16,7 @@ export default {
         document.addEventListener('touchstart', handleOutsideClick)
     },
     unmounted() {
-        document.removeEventListener('click', this.handleOutsideClick)
-        document.removeEventListener('touchstart', this.handleOutsideClick)
+        document.removeEventListener('click', handleOutsideClick)
+        document.removeEventListener('touchstart', handleOutsideClick)
     },
 }
