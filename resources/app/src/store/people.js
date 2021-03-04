@@ -59,7 +59,6 @@ export default {
             store.dispatch('people/getAll', {params})
         },
         async getAll({ commit, state }, {params, fresh = false}) {
-            console.log('people/getAll')
             if (fresh || state.lastFetch === null) {
                 commit('setLastParams', params);
                 await axios.get(baseUrl+queryStringFromParams(params))
@@ -113,13 +112,18 @@ export default {
         },
 
         async getPerson({ commit }, {uuid, params}) {
-            console.log('getPerson')
-            console.info('uuid', uuid);
             await axios.get(`${baseUrl}/${uuid}`+queryStringFromParams(params))
                 .then(response => {
                     commit('addPerson', response.data)
                     commit('setCurrentItemIdx', response.data)
                 });
+        },
+
+        async updateAttributes({ commit }, {uuid, attributes}) {
+            await axios.put(`${baseUrl}/${uuid}`, attributes)
+                .then(response => {
+                    commit('addPerson', response.data);
+                })
         }
 
     }
