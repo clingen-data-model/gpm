@@ -1,12 +1,13 @@
 <template>
     <div class="relative top-0 right-0 text-right">
-        <div v-show="isUser">
+        <div v-show="isAuthed">
             <div class="flex flex-row-reverse align-middle -mb-3 pb-3 pr-2 relative z-20 cursor-pointer"
+                :class="{'w-48': menuOpen}"
                 ref="menuButton" 
-                @click="toggleMenu"
+                @click.stop="toggleMenu"
             >
                 <chevron-down></chevron-down>
-                {{user.name}} 
+                {{user.name}}
             </div>
             <transition name="slide-fade-down">            
                 <div 
@@ -49,17 +50,16 @@ export default {
     },
     computed: {
         ...mapGetters({
-            user: 'currentUser'
-        }),
-        isUser () {
-            return (this.user && this.user.id)
-        }
+            user: 'currentUser',
+            isAuthed: 'isAuthed'
+        })
     },
     methods: {
         handleOutsideClick() {
             this.menuOpen = false;
         },
         toggleMenu () {
+            // console.info('toggleMenu to', !this.menuOpen);
             this.menuOpen = !this.menuOpen
             if (this.menuOpen) {
                 this.$refs.dropdownMenu.focus()
