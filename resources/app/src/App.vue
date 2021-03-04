@@ -27,21 +27,13 @@
       <router-view/>
     </div>
 
-    <!-- <div v-if="$route.meta.protected">
-      <modal-dialog 
-        v-model="unauthenticated" 
-        :hide-close="true"
-      >
-        <h3 class="text-lg border-b pb-2 mb-4">Log In</h3>
-        <login-form @authenticated="refreshCurrentRoute"></login-form>
-      </modal-dialog>
-    </div> -->
   </div>
 </template>
 
 <script>
 import UserMenu from './components/UserMenu'
 import LoginForm from './components/LoginForm'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -50,7 +42,17 @@ export default {
   },
   data() {
     return {
-      beans: true
+      showLogin: false
+    }
+  },
+  computed: {
+    ...mapGetters(['isAuthed']),
+  },
+  watch: {
+    isAuthed () {
+      if (this.isAuthed == false && this.$route.name != 'login') {
+        this.$router.push('login', {params: {redirect: this.$route.name}})
+      }
     }
   },
   methods: {
@@ -59,11 +61,6 @@ export default {
     },
     refreshCurrentRoute() {
       this.$router.push(this.$route)
-    }
-  },
-  computed: {
-    unauthenticated () {
-      return !this.$store.getters.isAuthed
     }
   },
   mounted() {
