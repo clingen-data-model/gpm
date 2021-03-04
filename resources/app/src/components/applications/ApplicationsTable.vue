@@ -8,7 +8,7 @@
                     Show completed
                 </label>
             </div>
-            <div v-if="vcepList">
+            <div>
                 <button class="btn btn-xs" :class="{blue: showAllInfo == 0}" @click="showAllInfo = 0">Summary</button>
                 <button class="btn btn-xs" :class="{blue: showAllInfo == 1}" @click="showAllInfo = 1">All Info</button>
             </div>
@@ -88,6 +88,7 @@ export default {
                         return null
                     },
                     colspan: 2,
+                    headerClass: ['max-w-sm'],
                     class: ['min-w-28']
                 },
                 {
@@ -95,13 +96,14 @@ export default {
                     label: 'Last Activity',
                     type: String,
                     hideHeader: true,
+                    class: ['max-w-48', 'truncate']
                 },
                 {
                     name: 'latest_pending_next_action.entry',
                     label: 'Next Action',
                     type: String,
                     sortable: false,
-                    class: ['min-w-40'],
+                    class: ['min-w-28', 'max-w-xs', 'truncate'],
 
                 }
             ],
@@ -111,50 +113,57 @@ export default {
                         label: 'Contacts',
                         type: Array,
                         sortable: false,
-                        class: ['min-w-40']
+                        class: ['min-w-40'],
+                        step: 1
                     },
                     {
                         name: 'first_scope_document.date_received',
-                        label: 'Step 1 Received',
+                        label: this.epTypeId == 2 ? 'Step 1 Received' : 'Application Received',
                         type: Date,
                         sortable: false,
-                        class: ['min-w-28']
+                        class: ['min-w-28'],
+                        step: 1
 
                     },
                     {
                         name: 'approval_dates.step 1',
-                        label: 'Step 1 Approved',
+                        label: this.epTypeId == 2 ? 'Step 1 Approved' : 'Application Approved',
                         type: Date,
                         sortable: false,
-                        class: ['min-w-28']
+                        class: ['min-w-28'],
+                        step: 1
                     },
                     {
                         name: 'approval_dates.step 2',
                         label: 'Step 2 Approved',
                         type: Date,
                         sortable: false,
-                        class: ['min-w-28']
+                        class: ['min-w-28'],
+                        step: 2
                     },
                     {
                         name: 'approval_dates.step 3',
                         label: 'Step 3 Approved',
                         type: Date,
                         sortable: false,
-                        class: ['min-w-28']
+                        class: ['min-w-28'],
+                        step: 3
                     },
                     {
                         name: 'first_final_document.date_received',
                         label: 'Step 4 Received',
                         type: Date,
                         sortable: false,
-                        class: ['min-w-28']
+                        class: ['min-w-28'],
+                        step: 4
                     },
                     {
                         name: 'approval_dates.step 4',
                         label: 'Step 4 Approved',
                         type: Date,
                         sortable: false,
-                        class: ['min-w-28']
+                        class: ['min-w-28'],
+                        step: 4
                     }
             ]
         }
@@ -163,9 +172,6 @@ export default {
         ...mapGetters({
             applications: 'applications/all'
         }),
-        vcepList () {
-            return this.epTypeId == 2
-        },
         filteredData() {
             return this.applications
                 .filter(item => !this.epTypeId || item.ep_type_id == this.epTypeId)
@@ -198,7 +204,9 @@ export default {
         },
         selectedFields() {
             if (this.showAllInfo == 1) {
-                return [...this.fields, ...this.allInfoFields]
+                const stepsToShow = this.epTypeId == 2 ? [1,2,3,4] : [1]
+                const allInfoFields = this.allInfoFields.filter(field => stepsToShow.includes(field.step))
+                return [...this.fields, ...allInfoFields]
             }
             return this.fields
         },
@@ -218,8 +226,6 @@ export default {
                 }            
         },
         remainingHeight () {
-            console.log(this.$refs.table)
-            // const yPosition = this.$refs.applicationsTable.$el
             return {height: 'calc(100vh - 220px)'}
         }
     },
