@@ -5,6 +5,22 @@
     tbody tr {
         @apply bg-white odd:bg-gray-100 hover:bg-blue-100 hover:border-blue-300
     }
+    tr:first-child > th{
+        @apply border-t-0
+    }
+    th:first-child,
+    td:first-child {
+        @apply border-l-0;
+    }
+
+    tr:last-child > td{
+        @apply border-b-0
+    }
+    th:last-child,
+    td:last-child {
+        @apply border-r-0
+    }
+
     th.sorted, td.sorted  {
         @apply bg-blue-100 hover:bg-blue-100
     }
