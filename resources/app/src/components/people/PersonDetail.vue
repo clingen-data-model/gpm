@@ -54,7 +54,6 @@ export default {
         },
         showModal: {
             get() {
-                console.info('getShowModal', this.$route.meta.showModal)
                 return this.$route.meta.showModal
             },
             set(value) {

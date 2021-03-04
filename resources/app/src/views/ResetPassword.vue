@@ -53,7 +53,7 @@ export default {
             };
 
             api.post('/api/reset-password', data)
-                .then(response => {
+                .then(() => {
                     this.$store.dispatch('login', {email: this.email, password: this.password})
                         .then(() => {
                             this.$store.dispatch('getCurrentUser');
