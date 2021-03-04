@@ -59,7 +59,6 @@ export default {
             this.menuOpen = false;
         },
         toggleMenu () {
-            // console.info('toggleMenu to', !this.menuOpen);
             this.menuOpen = !this.menuOpen
             if (this.menuOpen) {
                 this.$refs.dropdownMenu.focus()
