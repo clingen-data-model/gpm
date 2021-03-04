@@ -7,4 +7,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/people', [PeopleController::class, 'index']);
     Route::post('/people', [PeopleController::class, 'store']);
     Route::get('/people/{uuid}', [PeopleController::class, 'show']);
+    Route::put('/people/{uuid}', [PeopleController::class, 'update']);
 });

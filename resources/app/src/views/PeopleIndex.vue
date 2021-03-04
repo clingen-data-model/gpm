@@ -11,7 +11,12 @@
             v-model:sort="sort"
         >
             <template v-slot:cell-uuid="item">
-                <button class="btn btn-xs" @click="goToEditPerson(item.item)">Edit</button>
+                <button 
+                    class="btn btn-xs" 
+                    @click.stop="goToEditPerson(item.item)"
+                > 
+                    Edit
+                </button>
             </template>
         </data-table>
     </card>
@@ -60,7 +65,7 @@ export default {
             this.$router.push('/people/'+person.uuid)
         },
         goToEditPerson (person) {
-            this.$router.push('/people/'+person.uuid+'/edit')
+            this.$router.push(`/people/${person.uuid}/edit`)
         }
     },
     mounted() {

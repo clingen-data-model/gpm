@@ -8,6 +8,8 @@ use Illuminate\Bus\Dispatcher;
 use App\Domain\Person\Models\Person;
 use App\Http\Controllers\Controller;
 use App\Domain\Person\Jobs\CreatePerson;
+use App\Domain\Person\Jobs\UpdatePerson;
+use App\Http\Requests\PersonUpdateRequest;
 use App\Http\Requests\PersonCreationRequest;
 
 class PeopleController extends Controller
@@ -41,5 +43,16 @@ class PeopleController extends Controller
         $person = Person::findByUuidOrFail($uuid);
         return $person;
     }
+
+    public function update($uuid, PersonUpdateRequest $request)
+    {
+        $data = $request->only('first_name', 'last_name', 'email', 'phone');
+        $this->commandBus->dispatch(new UpdatePerson(uuid: $uuid, attributes: $data));
+
+        $person = Person::findByUuidOrFail($uuid);
+
+        return $person;
+    }
+    
     
 }

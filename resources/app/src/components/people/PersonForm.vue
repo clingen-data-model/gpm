@@ -11,6 +11,7 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
+import is_validation_error from '../../http/is_validation_error';
 
 export default {
     props: {
@@ -44,12 +45,22 @@ export default {
         syncWorkingPerson() {
             this.workingPerson = this.person.attributes
         },
-        handleCancel () {
-            this.syncWorkingPerson();
+        backToDetail () {
             this.$router.push({name: 'person-detail', params: {uuid: this.person.uuid}});
         },
-        handleSaved () {
-            console.log('save!!')
+        handleCancel () {
+            this.syncWorkingPerson();
+            this.backToDetail()
+        },
+        async handleSaved () {
+            try {
+                await this.$store.dispatch('people/updateAttributes', {uuid: this.person.uuid, attributes: this.workingPerson})
+                this.backToDetail();
+            } catch (error) {
+                if (is_validation_error(error)) {
+                    this.errors = error.response.data.errors
+                }
+            }
         }
     },
     mounted() {
