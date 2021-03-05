@@ -3,7 +3,7 @@
 namespace Tests\Feature\End2End;
 
 use Tests\TestCase;
-use App\Models\User;
+use App\Modules\User\Models\User;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;

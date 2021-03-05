@@ -4,7 +4,7 @@ namespace Tests\Feature\End2End\Applications;
 
 use Tests\TestCase;
 use App\Models\Cdwg;
-use App\Models\User;
+use App\Modules\User\Models\User;
 use Ramsey\Uuid\Uuid;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\Person\Models\Person;

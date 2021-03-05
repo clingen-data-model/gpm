@@ -3,7 +3,7 @@
 namespace Tests\Feature\End2End\Applications;
 
 use Tests\TestCase;
-use App\Models\User;
+use App\Modules\User\Models\User;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Carbon;
 use App\Modules\Person\Models\Person;

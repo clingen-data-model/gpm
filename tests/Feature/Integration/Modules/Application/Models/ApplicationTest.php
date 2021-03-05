@@ -3,7 +3,7 @@
 namespace Tests\Feature\Integration\Modules\Application\Models;
 
 use Tests\TestCase;
-use App\Models\User;
+use App\Modules\User\Models\User;
 use App\Models\Document;
 use App\Models\NextAction;
 use Illuminate\Support\Carbon;

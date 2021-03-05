@@ -3,7 +3,7 @@
 namespace Tests\Feature\End2End\Applications;
 
 use Tests\TestCase;
-use App\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Support\Carbon;
 use App\Modules\Application\Jobs\ApproveStep;
 use Illuminate\Foundation\Testing\WithFaker;

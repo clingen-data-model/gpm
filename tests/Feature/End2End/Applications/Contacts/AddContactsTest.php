@@ -7,7 +7,7 @@ use Tests\TestCase;
 use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Application\Models\Application;
-use App\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Laravel\Sanctum\Sanctum;

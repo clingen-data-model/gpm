@@ -4,7 +4,7 @@ namespace Tests\Feature\End2End\Applications\Documents;
 
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
-use App\Models\User;
+use App\Modules\User\Models\User;
 use App\Models\Document;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Application\Models\Application;

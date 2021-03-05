@@ -3,7 +3,7 @@
 namespace Tests\Feature\End2End\Applications;
 
 use Tests\TestCase;
-use App\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Application\Models\Application;

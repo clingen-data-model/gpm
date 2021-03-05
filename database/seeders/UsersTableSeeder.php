@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class UsersTableSeeder extends Seeder

@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Models;
+namespace App\Modules\User\Models;
 
+use App\Models\HasEmail;
+use Laravel\Sanctum\HasApiTokens;
+use Database\Factories\UserFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
-use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements CanResetPassword
 {
@@ -43,4 +45,13 @@ class User extends Authenticatable implements CanResetPassword
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+
+    // Factory support
+    static protected function newFactory()
+    {
+        return new UserFactory();
+    }
+
 }

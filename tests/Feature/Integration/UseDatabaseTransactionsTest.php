@@ -3,7 +3,7 @@
 namespace Tests\Feature\Integration;
 
 use Tests\TestCase;
-use App\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Contracts\Bus\Dispatcher;
 use App\Jobs\Pipes\UseDatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;

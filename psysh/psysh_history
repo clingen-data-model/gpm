@@ -82,3 +82,10 @@ use\040App\134Domain\134Application\134Models\134Person;\040use\040App\134Domain
 $app->addContact($p1)
 use\040App\134Domain\134Application\134Models\134Person;\040use\040App\134Domain\134Application\134Models\134Application;\040$app\040=\040Application::factory()->create();\040$p1\040=\040Person::factory()->create();
 $app->addContact($p1)
+$app\040=\040App\134Modules\134Application\134Models\134Application::find(43)
+$app->logEntries()
+$app->logEntries()->get()
+\134DB::table("activity_log")->where(['subject_id'=>43,\040'subject_type'=>get_class($app)])
+\134DB::table("activity_log")->where(['subject_id'=>43,\040'subject_type'=>get_class($app)])->count();
+\134DB::table("activity_log")->where(['subject_id'=>43,\040'subject_type'=>get_class($app)])->count();
+\134DB::table("activity_log")->where(['subject_id'=>43])->count();
