@@ -27,36 +27,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        ApplicationInitiated::class => [
-            RecordEvent::class,
-        ],
-        ApplicationCompleted::class => [
-            RecordEvent::class,
-        ],
-        ExpertPanelAttributesUpdated::class => [
-            RecordEvent::class,
-        ],
-        ContactAdded::class => [
-            RecordEvent::class,
-        ],
-        ContactRemoved::class => [
-            RecordEvent::class,
-        ],
-        DocumentAdded::class => [
-            RecordEvent::class,
-        ],
-        DocumentReviewed::class => [
-            RecordEvent::class,
-        ],
-        StepApproved::class => [
-            RecordEvent::class,
-        ],
-        NextActionAdded::class => [
-            RecordEvent::class,
-        ],
-        NextActionCompleted::class => [
-            RecordEvent::class,
-        ]
+        // NOTE That intra-module listeners are registered in the module's service provider.
     ];
 
     /**
