@@ -19,6 +19,15 @@ class PersonCreated extends PersonEvent
     {
     }
 
+    public function getLogEntry():string
+    {
+        return 'Person created.';           
+    }
+
+    public function getProperties(): array
+    {
+        return $this->person->getAttributes();
+    }
 
 
     /**
