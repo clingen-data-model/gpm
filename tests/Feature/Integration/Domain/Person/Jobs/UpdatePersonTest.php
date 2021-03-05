@@ -58,6 +58,22 @@ class UpdatePersonTest extends TestCase
     /**
      * @test
      */
+    public function records_activity_when_person_attribues_updated()
+    {
+        $job = new UpdatePerson($this->person->uuid, ['email' => 'a@b.com', 'first_name' => null]);
+        $this->bus->dispatch($job);   
+
+        $this->assertDatabaseHas('activity_log', [
+            'subject_type' => Person::class,
+            'subject_id' => $this->person->id,
+            'properties' => json_encode(['email' => 'a@b.com'])
+        ]);   
+    }
+    
+
+    /**
+     * @test
+     */
     public function does_not_fire_PersonDataUpdateEvent_if_attributes_not_changed()
     {
         Event::fake();
