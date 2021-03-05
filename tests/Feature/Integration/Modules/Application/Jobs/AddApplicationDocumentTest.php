@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Integration\Domain\Application\Jobs;
+namespace Tests\Feature\Integration\Modules\Application\Jobs;
 
 use Illuminate\Support\Carbon;
 use Tests\TestCase;

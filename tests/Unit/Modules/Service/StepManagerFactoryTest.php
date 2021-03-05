@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Domain\Service;
+namespace Tests\Unit\Modules\Service;
 
 use Tests\TestCase;
 use Illuminate\Support\Carbon;

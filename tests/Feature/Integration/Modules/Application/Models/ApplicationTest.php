@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Integration\Domain\Application\Models;
+namespace Tests\Feature\Integration\Modules\Application\Models;
 
 use Tests\TestCase;
 use App\Models\User;
