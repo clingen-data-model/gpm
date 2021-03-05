@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\End2End\Applications\Contacts;
 
-use App\Domain\Application\Jobs\AddContact;
+use App\Modules\Application\Jobs\AddContact;
 use Tests\TestCase;
-use App\Domain\Person\Models\Person;
+use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Domain\Application\Models\Application;
+use App\Modules\Application\Models\Application;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;

@@ -2,8 +2,8 @@
 
 namespace App\Listeners;
 
-use App\Domain\Application\Events\ApplicationEvent;
-use App\Domain\Application\Events\ApplicationInitiated;
+use App\Modules\Application\Events\ApplicationEvent;
+use App\Modules\Application\Events\ApplicationInitiated;
 use App\Events\RecordableEvent;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Queue\InteractsWithQueue;

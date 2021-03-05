@@ -5,9 +5,9 @@ namespace Tests\Feature\End2End\Applications\Contacts;
 use Tests\TestCase;
 use App\Models\User;
 use Ramsey\Uuid\Uuid;
-use App\Domain\Person\Models\Person;
+use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Domain\Application\Models\Application;
+use App\Modules\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RemoveContactTest extends TestCase

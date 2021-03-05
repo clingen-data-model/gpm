@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Integration\Domain\Person\Jobs;
 
-use App\Domain\Person\Events\PersonDataUpdated;
-use App\Domain\Person\Jobs\UpdatePerson;
+use App\Modules\Person\Events\PersonDataUpdated;
+use App\Modules\Person\Jobs\UpdatePerson;
 use Tests\TestCase;
-use App\Domain\Person\Models\Person;
+use App\Modules\Person\Models\Person;
 use Illuminate\Bus\Dispatcher;
 use Illuminate\Contracts\Bus\Dispatcher as BusDispatcher;
 use Illuminate\Foundation\Testing\WithFaker;

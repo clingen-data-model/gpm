@@ -7,15 +7,15 @@ use App\Models\User;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Bus;
-use App\Domain\Application\Jobs\AddContact;
-use App\Domain\Application\Jobs\AddLogEntry;
+use App\Modules\Application\Jobs\AddContact;
+use App\Modules\Application\Jobs\AddLogEntry;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Domain\Application\Models\Application;
-use App\Domain\Application\Jobs\CreateNextAction;
+use App\Modules\Application\Models\Application;
+use App\Modules\Application\Jobs\CreateNextAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Domain\Application\Jobs\InitiateApplication;
-use App\Domain\Application\Jobs\AddApplicationDocument;
-use App\Domain\Person\Models\Person;
+use App\Modules\Application\Jobs\InitiateApplication;
+use App\Modules\Application\Jobs\AddApplicationDocument;
+use App\Modules\Person\Models\Person;
 
 class AppliclicationDetailTest extends TestCase
 {

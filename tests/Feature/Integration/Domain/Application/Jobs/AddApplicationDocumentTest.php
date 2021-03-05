@@ -8,9 +8,9 @@ use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Domain\Application\Models\Application;
+use App\Modules\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Domain\Application\Jobs\AddApplicationDocument;
+use App\Modules\Application\Jobs\AddApplicationDocument;
 
 class AddApplicationDocumentTest extends TestCase
 {

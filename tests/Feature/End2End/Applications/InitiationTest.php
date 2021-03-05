@@ -7,7 +7,7 @@ use App\Models\Cdwg;
 use App\Models\User;
 use Ramsey\Uuid\Uuid;
 use Laravel\Sanctum\Sanctum;
-use App\Domain\Person\Models\Person;
+use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

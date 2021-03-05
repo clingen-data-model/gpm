@@ -5,7 +5,7 @@ namespace Database\Factories;
 use Carbon\Carbon;
 use App\Models\Cdwg;
 use Ramsey\Uuid\Uuid;
-use App\Domain\Application\Models\Application;
+use App\Modules\Application\Models\Application;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ApplicationFactory extends Factory

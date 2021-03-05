@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Api;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Bus\Dispatcher;
-use App\Domain\Person\Models\Person;
+use App\Modules\Person\Models\Person;
 use App\Http\Controllers\Controller;
-use App\Domain\Person\Jobs\CreatePerson;
-use App\Domain\Person\Jobs\UpdatePerson;
+use App\Modules\Person\Jobs\CreatePerson;
+use App\Modules\Person\Jobs\UpdatePerson;
 use App\Http\Requests\PersonUpdateRequest;
 use App\Http\Requests\PersonCreationRequest;
 

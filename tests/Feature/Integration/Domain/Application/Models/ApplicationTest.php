@@ -9,19 +9,19 @@ use App\Models\NextAction;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
-use App\Domain\Person\Models\Person;
-use App\Domain\Application\Models\Application;
-use App\Domain\Application\Events\ContactAdded;
-use App\Domain\Application\Events\StepApproved;
-use App\Domain\Application\Events\DocumentAdded;
-use App\Domain\Application\Events\ContactRemoved;
-use App\Domain\Application\Events\NextActionAdded;
+use App\Modules\Person\Models\Person;
+use App\Modules\Application\Models\Application;
+use App\Modules\Application\Events\ContactAdded;
+use App\Modules\Application\Events\StepApproved;
+use App\Modules\Application\Events\DocumentAdded;
+use App\Modules\Application\Events\ContactRemoved;
+use App\Modules\Application\Events\NextActionAdded;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Domain\Application\Events\DocumentReviewed;
-use App\Domain\Application\Events\NextActionCompleted;
-use App\Domain\Application\Events\ApplicationCompleted;
-use App\Domain\Application\Events\ApplicationInitiated;
-use App\Domain\Application\Events\ExpertPanelAttributesUpdated;
+use App\Modules\Application\Events\DocumentReviewed;
+use App\Modules\Application\Events\NextActionCompleted;
+use App\Modules\Application\Events\ApplicationCompleted;
+use App\Modules\Application\Events\ApplicationInitiated;
+use App\Modules\Application\Events\ExpertPanelAttributesUpdated;
 
 class ApplicationTest extends TestCase
 {

@@ -5,7 +5,7 @@ namespace Tests\Feature\End2End;
 use Tests\TestCase;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
-use App\Domain\Person\Models\Person;
+use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;

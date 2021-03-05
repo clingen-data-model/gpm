@@ -10,7 +10,7 @@ use App\Models\Document;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Domain\Application\Models\Application;
+use App\Modules\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UploadTest extends TestCase

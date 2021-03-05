@@ -6,7 +6,7 @@ use App\Models\Cdwg;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Domain\Application\Models\Application;
+use App\Modules\Application\Models\Application;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase

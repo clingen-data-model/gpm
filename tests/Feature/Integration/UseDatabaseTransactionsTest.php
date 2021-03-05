@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Contracts\Bus\Dispatcher;
 use App\Jobs\Pipes\UseDatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Domain\Application\Models\Application;
+use App\Modules\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UseDatabaseTransactionsTest extends TestCase

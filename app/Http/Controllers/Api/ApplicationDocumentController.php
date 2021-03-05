@@ -8,10 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Bus\Dispatcher;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Event;
-use App\Domain\Application\Models\Application;
-use App\Domain\Application\Jobs\MarkDocumentReviewed;
+use App\Modules\Application\Models\Application;
+use App\Modules\Application\Jobs\MarkDocumentReviewed;
 use App\Http\Requests\ApplicationDocumentStoreRequest;
-use App\Domain\Application\Jobs\AddApplicationDocument;
+use App\Modules\Application\Jobs\AddApplicationDocument;
 use App\Http\Requests\Applications\MarkDocumentReviewedRequest;
 
 class ApplicationDocumentController extends Controller

@@ -7,11 +7,11 @@ use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Bus;
-use App\Domain\Application\Jobs\ApproveStep;
-use App\Domain\Application\Models\Application;
-use App\Domain\Application\Jobs\CreateNextAction;
-use App\Domain\Application\Jobs\AddApplicationDocument;
-use App\Domain\Application\Jobs\CompleteNextAction;
+use App\Modules\Application\Jobs\ApproveStep;
+use App\Modules\Application\Models\Application;
+use App\Modules\Application\Jobs\CreateNextAction;
+use App\Modules\Application\Jobs\AddApplicationDocument;
+use App\Modules\Application\Jobs\CompleteNextAction;
 
 class CreateApplicationsFromCommands extends Command
 {

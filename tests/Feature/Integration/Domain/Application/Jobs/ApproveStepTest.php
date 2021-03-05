@@ -4,9 +4,9 @@ namespace Tests\Feature\Integration\Domain\Application\Jobs;
 
 use Tests\TestCase;
 use Illuminate\Support\Carbon;
-use App\Domain\Application\Jobs\ApproveStep;
+use App\Modules\Application\Jobs\ApproveStep;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Domain\Application\Models\Application;
+use App\Modules\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ApproveStepTest extends TestCase

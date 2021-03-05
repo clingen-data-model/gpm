@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Validation\Rule;
-use App\Domain\Person\Models\Person;
+use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PersonUpdateRequest extends FormRequest

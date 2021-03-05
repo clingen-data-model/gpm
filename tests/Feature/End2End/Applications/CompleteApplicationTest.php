@@ -5,9 +5,9 @@ namespace Tests\Feature\End2End\Applications;
 use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Support\Carbon;
-use App\Domain\Application\Jobs\ApproveStep;
+use App\Modules\Application\Jobs\ApproveStep;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Domain\Application\Models\Application;
+use App\Modules\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CompleteApplicationTest extends TestCase

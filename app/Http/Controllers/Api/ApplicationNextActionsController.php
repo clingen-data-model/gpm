@@ -6,8 +6,8 @@ use App\Models\NextAction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Bus\Dispatcher;
-use App\Domain\Application\Jobs\CreateNextAction;
-use App\Domain\Application\Jobs\CompleteNextAction;
+use App\Modules\Application\Jobs\CreateNextAction;
+use App\Modules\Application\Jobs\CompleteNextAction;
 use App\Http\Requests\Applications\CreateNextActionRequest;
 use App\Http\Requests\Applications\CompleteNextActionRequest;
 

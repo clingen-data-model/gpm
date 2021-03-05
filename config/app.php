@@ -177,7 +177,7 @@ return [
         /**
          *  Module Providers
          */
-        App\Domain\Person\Providers\PersonServiceProvider::class
+        App\Modules\Person\Providers\PersonServiceProvider::class
 
     ],
 

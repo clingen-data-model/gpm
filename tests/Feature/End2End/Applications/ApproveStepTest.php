@@ -6,13 +6,13 @@ use Tests\TestCase;
 use App\Models\User;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Carbon;
-use App\Domain\Person\Models\Person;
-use App\Domain\Application\Jobs\AddContact;
+use App\Modules\Person\Models\Person;
+use App\Modules\Application\Jobs\AddContact;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
-use App\Domain\Application\Models\Application;
+use App\Modules\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Domain\Application\Notifications\ApplicationStepApprovedNotification;
+use App\Modules\Application\Notifications\ApplicationStepApprovedNotification;
 
 class ApproveStepTest extends TestCase
 {

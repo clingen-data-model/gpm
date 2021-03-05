@@ -8,11 +8,11 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Bus\Dispatcher;
-use App\Domain\Application\Jobs\AddContact;
-use App\Domain\Application\Models\Application;
+use App\Modules\Application\Jobs\AddContact;
+use App\Modules\Application\Models\Application;
 use App\Http\Requests\InitiateApplicationRequest;
-use App\Domain\Application\Jobs\InitiateApplication;
-use App\Domain\Application\Jobs\UpdateExpertPanelAttributes;
+use App\Modules\Application\Jobs\InitiateApplication;
+use App\Modules\Application\Jobs\UpdateExpertPanelAttributes;
 use App\Http\Requests\Applications\UpdateExpertPanelAttributesRequest;
 
 class ApplicationController extends Controller

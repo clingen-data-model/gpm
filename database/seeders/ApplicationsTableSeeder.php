@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Domain\Application\Jobs\InitiateApplication;
-use App\Domain\Application\Models\Application;
+use App\Modules\Application\Jobs\InitiateApplication;
+use App\Modules\Application\Models\Application;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 

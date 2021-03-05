@@ -4,7 +4,7 @@ namespace Tests\Feature\End2End\Applications\LogEntries;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Domain\Application\Models\Application;
+use App\Modules\Application\Models\Application;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;

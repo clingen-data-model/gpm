@@ -6,14 +6,14 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AddContactRequest;
 use Illuminate\Contracts\Bus\Dispatcher;
-use App\Domain\Person\Models\Person;
-use App\Domain\Application\Jobs\AddContact;
-use App\Domain\Application\Jobs\RemoveContact;
-use App\Domain\Application\Models\Application;
+use App\Modules\Person\Models\Person;
+use App\Modules\Application\Jobs\AddContact;
+use App\Modules\Application\Jobs\RemoveContact;
+use App\Modules\Application\Models\Application;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\ApplicationContactRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Domain\Application\Exceptions\PersonNotContactException;
+use App\Modules\Application\Exceptions\PersonNotContactException;
 
 class ApplicationContactController extends Controller
 {

@@ -8,8 +8,8 @@ use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Activitylog\Models\Activity;
-use App\Domain\Application\Jobs\AddLogEntry;
-use App\Domain\Application\Models\Application;
+use App\Modules\Application\Jobs\AddLogEntry;
+use App\Modules\Application\Models\Application;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use App\Http\Requests\Applications\CreateApplicationLogEntryRequest;
 

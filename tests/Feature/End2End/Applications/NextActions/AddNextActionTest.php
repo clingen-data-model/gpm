@@ -7,7 +7,7 @@ use Tests\TestCase;
 use App\Models\User;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Domain\Application\Models\Application;
+use App\Modules\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AddNextActionTest extends TestCase
