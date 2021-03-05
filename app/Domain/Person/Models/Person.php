@@ -2,6 +2,7 @@
 
 namespace App\Domain\Person\Models;
 
+use App\Models\HasEmail;
 use App\Models\HasUuid;
 use Database\Factories\PersonFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +18,7 @@ class Person extends Model
     use HasTimestamps;
     use HasUuid;
     use Notifiable;
+    use HasEmail;
 
     protected $fillable = [
         'uuid',
@@ -29,6 +31,18 @@ class Person extends Model
     protected $appends = [
         'name',
     ];
+
+    // Relations
+    public function logEntries()
+    {
+        return $this->morphMany(Activity::class, 'subject');
+    }
+
+    public function latestLogEntry()
+    {
+        return $this->morphOne(Activity::class, 'subject')
+                ->orderBy('created_at', 'desc');
+    }
 
     // Queries
     static public function findByEmail($email)

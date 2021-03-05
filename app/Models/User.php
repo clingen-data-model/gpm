@@ -12,7 +12,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements CanResetPassword
 {
-    use HasFactory, Notifiable, CanResetPasswordTrait, HasApiTokens;
+    use HasFactory, Notifiable, CanResetPasswordTrait, HasApiTokens, HasEmail;
 
     /**
      * The attributes that are mass assignable.

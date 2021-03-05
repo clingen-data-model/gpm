@@ -173,6 +173,12 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\BusServiceProvider::class,
+
+        /**
+         *  Module Providers
+         */
+        App\Domain\Person\Providers\PersonServiceProvider::class
+
     ],
 
     /*
