@@ -32,13 +32,11 @@
 
 <script>
 import UserMenu from './components/UserMenu'
-import LoginForm from './components/LoginForm'
 import { mapGetters } from 'vuex'
 
 export default {
   components: {
     UserMenu,
-    LoginForm
   },
   data() {
     return {
