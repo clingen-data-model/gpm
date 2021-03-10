@@ -26,7 +26,7 @@ class CreateApplicationsTable extends Migration
             $table->date('date_initiated')->nullable();
             $table->json('approval_dates')->nullable();
             $table->date('date_completed')->nullable();
-            $table->string('survey_monkey_url')->unique()->nullable(); // can be nullable b/c we're going to asyncronously get a new data collector from SurveyMonkey
+            $table->string('coi_code', 12)->unique();
             $table->timestamps();
             $table->softDeletes();
             

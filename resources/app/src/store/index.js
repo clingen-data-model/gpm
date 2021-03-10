@@ -2,6 +2,7 @@ import { createStore } from 'vuex'
 import ApplicationStore from './applications.js'
 import PeopleStore from './people.js'
 import CdwgStore from './cdwgs.js'
+import Alerts from './alerts'
 import axios from '@/http/api'
 import isAuthError from './../http/is_auth_error'
 
@@ -11,9 +12,9 @@ const nullUser = {
     email: null,
 };
 
-
 const store = createStore({
     state: {
+        hostname: process.env.VUE_APP_URL,
         user: {...nullUser},
         openRequests: [],
         authenticated: null,
@@ -87,6 +88,7 @@ const store = createStore({
         applications: ApplicationStore,
         cdwgs: CdwgStore,
         people: PeopleStore,
+        alerts: Alerts
     }
 })
 

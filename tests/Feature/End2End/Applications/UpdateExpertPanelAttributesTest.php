@@ -64,7 +64,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
             'date_completed' => '2019-01-01',
             'approval_dates' => json_encode(['step_1' => '2019-01-01']),
             'current_step' => 12,
-            'survey_monkey_url' => 'https://bob.com'
+            'coi_code' => '123456789012'
         ];
         $dataWithUuid = array_merge($data, $nonEpData);
 
@@ -76,7 +76,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
                 'date_initiated' => $application->date_initiated->toJson(),
                 'date_completed' => null,
                 'current_step' => 1,
-                'survey_monkey_url' => null,
+                'coi_code' => $application->coi_code,
                 'approval_dates' => null
             ]);
     }

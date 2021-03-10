@@ -53,57 +53,7 @@ class ApplicationTest extends TestCase
 
         $this->assertEquals($application->name, $application->short_base_name);
     }
-    
-    
-
-    /**
-     * @test
-     */
-    public function stores_new_application_model_when_initiated()
-    {
-
-        $data = $this->makeApplicationData();
-
-        $application = Application::initiate(...$data);
-
-        $this->assertDatabaseHas('applications', $data);
-    }
-
-    /**
-     * @test
-     */
-    public function fires_ApplicationInitiated_event_when_initiated()
-    {
-        Event::fake();
-
-        $data = $this->makeApplicationData();
-        Application::initiate(...$data);
-
-        Event::assertDispatched(ApplicationInitiated::class);
-    }
-
-    /**
-     * @test
-     */
-    public function activity_log_entry_is_added_when_initiated()
-    {
-        $user = User::factory()->create();
-
-        Auth::loginUsingId($user->id);
-
-        $data = $this->makeApplicationData();
-        $application = Application::initiate(...$data);
-
-        $properties = array_merge($application->getAttributes(), ['step' => 1]);
-        // dd($properties);
-        $this->assertLoggedActivity(
-            $application, 
-            'Application initiated', 
-            $properties, 
-            get_class($user), $user->id
-        );
-    }
-    
+        
     /**
      * @test
      */
@@ -286,8 +236,6 @@ class ApplicationTest extends TestCase
             'description' => 'Next action completed: '.$nextAction->entry
         ]);
     }
-    
-
     
     /**
      * @test

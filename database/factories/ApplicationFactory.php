@@ -31,7 +31,8 @@ class ApplicationFactory extends Factory
             'cdwg_id' => $cdwg->id,
             'ep_type_id' => 1,
             'date_initiated' => Carbon::now(),
-            'current_step' => 1
+            'current_step' => 1,
+            'coi_code' => bin2hex(random_bytes(12))
         ];
     }
 

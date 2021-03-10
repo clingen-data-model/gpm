@@ -1,9 +1,9 @@
 <template>
     <div>
-        <div class="flex my-2">
-            <div class="w-36">
+        <div class="my-2" :class="{'flex': !vertical}">
+            <div :class="fullLabelClass">
                 <slot name="label" v-if="label">
-                    <label>{{label}}:</label>
+                    <label>{{label}}{{colon}}</label>
                 </slot>
             </div>
             <slot>
@@ -18,6 +18,19 @@ export default {
         label: {
             type: String,
             required: false
+        },
+        vertical: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        labelWidth: {
+            type: Number,
+            default: 9
+        },
+        labelClass: {
+            type: String,
+            required: false
         }
     },
     data() {
@@ -26,7 +39,25 @@ export default {
         }
     },
     computed: {
-
+        colon () {
+            if (this.label && [':',';','.','?', '!'].includes(this.label.substr(-1))) {
+                return '';
+            }
+            return ':';    
+        },
+        fullLabelClass () {
+            const classList = [];
+            if (!this.vertical) {
+                classList.push('w-'+(this.labelWidth*4).toString())
+            }
+            if (this.vertical) {
+                classList.push('mb-1')
+            }
+            if (this.labelClass) {
+                classList.push(this.labelClass.split(' '));
+            }
+            return classList
+        }
     },
     methods: {
 

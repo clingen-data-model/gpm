@@ -114,7 +114,7 @@ export default {
                 })
         },
         async getApplication({ commit }, appUuid) {
-            await appRepo.find(appUuid, {with: ['logEntries', 'documents', 'contacts', 'logEntries.causer']})
+            await appRepo.find(appUuid, {with: ['logEntries', 'documents', 'contacts', 'logEntries.causer', 'cois']})
                 .then(item => {
                     commit('addApplication', item)
                     commit('setCurrentItemIdx', item)

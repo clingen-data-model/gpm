@@ -1,0 +1,60 @@
+{
+    "name": "Conflict of Interest Survey",
+    "questions": [
+        {
+            "name": "email",
+            "question": "Email address",
+            "type": "string",
+            "validation": "required|email",
+            "placeholder": "email@example.com"
+        },
+        {
+            "name": "first_name",
+            "question": "First Name",
+            "type": "string",
+            "validation": "required|max:255|min:2",
+            "placeholder": "First"
+        },
+        {
+            "name": "last_name",
+            "question": "Last Name",
+            "type": "string",
+            "validation": "required|max:255|min:2",
+            "placeholder": "Last"
+        },
+        {
+            "name": "work_fee_lab",
+            "question": "Do you work for a laboratory that offers fee-for-service testing related to the work of your Expert Panel?",
+            "validation": "required",
+            "type": "yes-no"
+        },
+        {
+            "name": "contributions_to_gd_in_ep",
+            "question": "Have you made substantial contributions to the literature implicating a gene:disease relationship that relates to the work of your Expert Panel?",
+            "validation": "required",
+            "type": "yes-no"
+        },
+        {
+            "name": "contributions_to_genes",
+            "question": "Please list the genes:",
+            "type": "text",
+            "validation": "required_if:contributions_to_gd_in_ep,1",
+            "show": {
+                "name": "contributions_to_gd_in_ep",
+                "value": 1
+            }
+        },
+        {
+            "name": "independent_efforts",
+            "question": "Do you have any other existing or planned independent efforts that will potentially overlap with the scope of your ClinGen work? If so, please describe and also send an email describing the project(s) to the co-chairs and coordinator:",
+            "type": "text",
+            "validation": "required"
+        },  
+        {
+            "name": "coi",
+            "question": "Please disclose any other relevant conflicts of interest (e.g. patents, intellectual property ownership, or paid consultancies related to any variants or genes associated with the work of your Expert Panel):",
+            "type": "text",
+            "validation": "required"
+        }
+    ]
+}

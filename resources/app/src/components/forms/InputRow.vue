@@ -1,10 +1,10 @@
 <template>
     <div :class="{'border border-red-500 rounded-sm p-2 mb-2': hasErrors}">
         <input-errors :errors="errors"></input-errors>
-        <div class="flex my-3">
-            <div class="w-36">
+        <div class="my-3" :class="{'flex': !vertical}">
+            <div :class="{'w-36': !vertical, 'my-1': vertical}">
                 <slot name="label" v-if="label">
-                    <label :class="{'text-red-800': hasErrors}">{{label}}:</label>
+                    <label :class="{'text-red-800': hasErrors}">{{label}}{{colon}}</label>
                 </slot>
             </div>
             <slot>
@@ -26,6 +26,10 @@ export default {
         InputErrors
     },
     props: {
+        vertical: {
+            type: Boolean,
+            default: false
+        },
         errors: {
             type: Array,
             required: false,
@@ -53,6 +57,12 @@ export default {
         'update:modelValue'
     ],
     computed: {
+        colon () {
+            if (this.label && [':',';','.','?', '!'].includes(this.label.substr(-1))) {
+                return '';
+            }
+            return ':';    
+        },
         hasErrors () {
             return this.errors.length > 0;
         }

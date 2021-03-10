@@ -14,11 +14,22 @@ const routes = [
     ...peopleRoutes,
     ...authRoutes,
     ...cdwgRoutes,
+    {
+        name: 'coi',
+        path: '/coi/:code',
+        component: () => import (/* webpackChunkName "coi-survey" */ '../views/Coi.vue'),
+        props: true
+    },
     { name: 'about',
         path: '/about',
         component: () =>
             import ( /* webpackChunkName: "about" */ '../views/About.vue')
     },
+    {
+        name: 'not-found',
+        path: '/:pathMatch(.*)*',
+        component: import (/* webpackChunkName "not-found" */ '../views/NotFound.vue'),
+    }
 ]
 
 const router = createRouter({

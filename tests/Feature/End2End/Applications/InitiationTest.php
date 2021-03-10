@@ -21,7 +21,6 @@ class InitiationTest extends TestCase
         parent::setup();
         $this->user = User::factory()->create();
         Sanctum::actingAs($this->user);
-
     }
 
 

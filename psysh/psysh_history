@@ -89,3 +89,17 @@ $app->logEntries()->get()
 \134DB::table("activity_log")->where(['subject_id'=>43,\040'subject_type'=>get_class($app)])->count();
 \134DB::table("activity_log")->where(['subject_id'=>43,\040'subject_type'=>get_class($app)])->count();
 \134DB::table("activity_log")->where(['subject_id'=>43])->count();
+Application::all()->each(function\040($a)\040{\040$a->update(['coi_code'\040=>\040bin2hex(random_bytes(12))])});
+Application::all()->each(function\040($a)\040{\040$a->update(['coi_code'\040=>\040bin2hex(random_bytes(12))];)});
+Application::all()->each(function\040($a)\040{\040$a->update(['coi_code'\040=>\040bin2hex(random_bytes(12))]);\040});
+Application::all()->each(function\040($a)\040{\040$a->update(['coi_code'\040=>\040bin2hex(random_bytes(12))]);\040});
+Application::all()->each(function\040($a)\040{\040$a->coi_code\040=\040bin2hex(random_bytes(12));\040$a->save()\040});
+Application::all()->each(function\040($a)\040{\040$a->coi_code\040=\040bin2hex(random_bytes(12));\040$a->save();\040});
+Application::all()->each(function\040($a)\040{\040$a->coi_code\040=\040bin2hex(random_bytes(12));\040$a->save();\040});
+bin2hex(random_bytes(12)\012;
+bin2hex(random_bytes(12))
+bin2hex(random_bytes(8))
+Application::all()->each(function\040($a)\040{\040$a->coi_code\040=\040bin2hex(random_bytes(12));\040$a->save();\040});
+exit
+$app\040=\040App\134Modules\134Application\134Models\134Application::find(44)
+$app->cois

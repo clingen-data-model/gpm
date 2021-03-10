@@ -3,15 +3,17 @@
 namespace App\Modules\Application\Models;
 
 use DateTime;
+use App\Models\Coi;
 use App\Models\Cdwg;
 use App\Models\EpType;
+use App\Models\CoiCode;
 use App\Models\HasUuid;
 use App\Models\Document;
 use App\Models\NextAction;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
-use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Auth;
+use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Models\Activity;
@@ -22,9 +24,9 @@ use App\Modules\Application\Events\DocumentAdded;
 use App\Modules\Application\Events\ContactRemoved;
 use App\Modules\Application\Events\NextActionAdded;
 use App\Modules\Application\Events\DocumentReviewed;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Modules\Application\Events\NextActionCompleted;
 use App\Modules\Application\Service\StepManagerFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Modules\Application\Events\ApplicationCompleted;
 use App\Modules\Application\Events\ApplicationInitiated;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
@@ -60,25 +62,12 @@ class Application extends Model
     ];
 
     protected $appends = [
+        'coi_url',
         'clingen_url',
         'name'
     ];
 
     // Domain methods
-    public static function initiate(string $uuid, string $working_name, int $cdwg_id, int $ep_type_id, DateTime $date_initiated)
-    {
-        $application = new static();
-        $application->uuid = $uuid;
-        $application->working_name = $working_name;
-        $application->cdwg_id = $cdwg_id;
-        $application->ep_type_id = $ep_type_id;
-        $application->date_initiated = $date_initiated;
-        $application->save();
-    
-        Event::dispatch(new ApplicationInitiated($application));
-
-        return $application;
-    }
 
     public function addContact(Person $contact)
     {
@@ -237,8 +226,7 @@ class Application extends Model
     public function latestLogEntry()
     {
         return $this->morphOne(Activity::class, 'subject')
-                ->orderBy('created_at', 'desc')
-                ;
+                ->orderBy('created_at', 'desc');
     }
 
     public function nextActions()
@@ -253,12 +241,28 @@ class Application extends Model
                 ->orderBy('created_at', 'desc');
     }
 
+    public function cois()
+    {
+        return $this->hasMany(Coi::class);
+    }
+
     public function cdwg()
     {
         return $this->belongsTo(Cdwg::class);
     }
 
     // Access methods
+
+    static public function findByCoiCode($code)
+    {
+        return static::where('coi_code', $code)->first();
+    }
+
+    static public function findByCoiCodeOrFail($code)
+    {
+        return static::where('coi_code', $code)->sole();
+    }
+
     static public function latestLogEntryForUuid($uuid)
     {
         return static::findByUuid($uuid)->latestLogEntry;
@@ -291,6 +295,12 @@ class Application extends Model
 
         return 'https://clinicalgenome.org/affiliation/'.$this->affiliation_id;
     }
+
+    public function getCoiUrlAttribute()
+    {
+        return '/coi/'.$this->coi_code;
+    }
+    
     
 
     // Factory support
