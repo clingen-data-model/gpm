@@ -1,11 +1,19 @@
 <template>
     <div>
         <h4 class="text-md font-bold">Conflict of Interest</h4>
-        <div>
-            COI URL: 
-            <router-link :to="application.coi_url" class="text-blue-500">
-                https://{{$store.state.hostname}}{{application.coi_url}}
-            </router-link>
+        <div class="my-2 flex justify-between">
+            <div>
+                COI URL: 
+                <router-link :to="application.coi_url" class="text-blue-500">
+                    https://{{$store.state.hostname}}{{application.coi_url}}
+                </router-link>
+            </div>
+            <icon-refresh 
+                :height="14" :width="14" 
+                :class="{'animate-spin': refreshing}"
+                @click="refresh"
+            ></icon-refresh>
+            <!-- add copy link button -->
         </div>
         <div v-if="!hasCois" class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200">
             No Conflict of interest surveys completed
@@ -70,7 +78,12 @@
 
 </template>
 <script>
+import IconRefresh from '../icons/IconRefresh';
+
 export default {
+    components: {
+        IconRefresh
+    },
     props: {
         application: {
             required: true,
@@ -108,7 +121,8 @@ export default {
                     label: '',
                     sortale: false
                 }
-            ]
+            ],
+            refreshing: false
         }
     },
     computed: {
@@ -130,7 +144,11 @@ export default {
             }
 
             return response;
-
+        },
+        async refresh() {
+            this.refreshing = true;
+            await this.$store.dispatch('applications/getApplication', this.application.uuid);
+            this.refreshing = false;
         }
 
     }

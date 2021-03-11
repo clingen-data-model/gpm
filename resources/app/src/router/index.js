@@ -8,8 +8,11 @@ import cdwgRoutes from './cdwgs'
 const routes = [
     { name: 'home',
         path: '/',
-        redirect: '/applications'
-    },
+        redirect: '/applications',
+        meta: {
+            protected: true
+        }
+},
     ...applicationRoutes,
     ...peopleRoutes,
     ...authRoutes,
@@ -38,6 +41,10 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
+    if (!to.meta.protected) {
+        next();
+        return;
+    }
 
     try{
         await store.dispatch('checkAuth')

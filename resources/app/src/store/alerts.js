@@ -1,5 +1,3 @@
-import {Static} from "vue";
-import store from ".";
 import {v4 as uuid4} from 'uuid'
 
 class Alert {
@@ -12,7 +10,6 @@ class Alert {
 
     constructor(message, type='info') {
         this.message = message;
-        console.log(Alert.types)
         if (Alert.types.findIndex(t => t == type) == -1)  {
             throw new Error('Unknown alert type: '+type)
         }

@@ -5,9 +5,13 @@
         </card>
         <card :title="coiTitle"  class="w-3/4 mx-auto relative" v-if="codeIsValid">
             <div v-if="saved">
-                Thanks for completing the conflict of interest form for {{application.name}}!
+                Thanks for completing the conflict of interest form for {{epName}}!
+                <small v-if="$store.getters.isAuthed">
+                    <p>You'll be redirected back in {{redirectCountdown}} seconds.</p>
+                    <button @click="$router.go(-1)" class="text-blue-500">Go back</button>
+                </small>
             </div>
-            <div v-else>
+            <div v-else class="relative">
                 <div 
                     v-for="question in survey.questions"
                     :key="question.name"
@@ -45,11 +49,12 @@
                         </input-row>
                     </transition>
                 </div>
+                <button-row :show-cancel="false" @submitClicked="storeResponse()">
+                    <slot v-if="saving">
+                        Saving...
+                    </slot>
+                </button-row>
             </div>
-            <div v-if="saving" class="absolute top-0 left-0 right-0 bottom-0">
-                Saving your response...
-            </div>
-            <button-row :show-cancel="false" @submitClicked="storeResponse()"></button-row>
         </card>
     </div>
 </template>
@@ -77,7 +82,8 @@ export default {
             epName: null,
             verifying: false,
             saved: false,
-            saving: false
+            saving: false,
+            redirectCountdown: 5
         }
     },
     computed: {
@@ -105,7 +111,13 @@ export default {
             api.post(`/api/coi/${this.code}`, this.response)
                 .then(() => {
                     this.saved = true;
-                    setTimeout(() => this.$router.push({'name': 'home'}), 3000)
+                    if (this.$store.getters.isAuthed) {
+                        setInterval(() => {this.redirectCountdown--}, 1000)
+                        setTimeout(() => {
+                            this.$router.go(-1)
+                            console.log('shold have gone back')
+                        }, 5000)
+                    }
                 })
                 .catch(e => {
                     if (is_validation_error(e)) {
