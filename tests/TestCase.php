@@ -3,11 +3,14 @@
 namespace Tests;
 
 use App\Models\Cdwg;
+use App\Modules\Application\Jobs\AddContact;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Carbon;
+use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Application\Models\Application;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\Bus;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -49,6 +52,15 @@ abstract class TestCase extends BaseTestCase
         return $contacts;
     }
     
+    protected function addContactToApplication(Application $application)
+    {
+        $person = Person::factory()->create();
+        $job = new AddContact($application->uuid, $person->uuid);
+        Bus::dispatch($job);
+        
+        return $person;
+    }
+
     protected  function assertLoggedActivity(
         $application, 
         $description, 
