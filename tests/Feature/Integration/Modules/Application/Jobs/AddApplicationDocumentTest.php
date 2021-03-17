@@ -52,9 +52,43 @@ class AddApplicationDocumentTest extends TestCase
             'date_received' => Carbon::now()->format('Y-m-d H:i:s'),
             'date_reviewed' => null,
             'version' => 1,
-            'application_id' => $this->application->id
+            'application_id' => $this->application->id,
+            'is_final' => 0
         ]);
-
     }    
+
+    /**
+     * @test
+     */
+    public function marks_document_version_final_if_specified()
+    {
+        $docUuid = Uuid::uuid4();
+        Carbon::setTestNow('2021-01-01');
+
+        $job = new AddApplicationDocument(
+            applicationUuid: $this->application->uuid,
+            filename: 'testfile.doc',
+            storage_path: $this->faker->file(base_path('tests/files')),
+            document_category_id: 1,
+            step: 1,
+            uuid: $docUuid,
+            is_final: true
+        );
+
+
+        $this->dispatcher->dispatch($job);
+        
+        $this->assertDatabaseHas('documents', [
+            'uuid' => $docUuid,
+            'document_category_id' => 1,
+            'step' => 1,
+            'date_received' => Carbon::now()->format('Y-m-d H:i:s'),
+            'date_reviewed' => null,
+            'version' => 1,
+            'application_id' => $this->application->id,
+            'is_final' => 1
+        ]);
+    }
+    
     
 }

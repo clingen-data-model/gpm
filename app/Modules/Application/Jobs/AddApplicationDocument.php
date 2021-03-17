@@ -30,6 +30,7 @@ class AddApplicationDocument
         private ?string $date_received = null,
         private ?string $date_reviewed = null,
         private ?array $metadata = null,
+        private ?bool $is_final = false,
     )
     {
         $this->application = Application::findByUuidOrFail($applicationUuid);
@@ -44,7 +45,6 @@ class AddApplicationDocument
      */
     public function handle()
     {
-
         $document = Document::make([
             'uuid' => $this->uuid,
             'filename' => $this->filename,
@@ -53,7 +53,8 @@ class AddApplicationDocument
             'date_received' => $this->dateReceived,
             'date_reviewed' => $this->dateReviewed,
             'metadata' => $this->metadata,
-            'step' => $this->step
+            'step' => $this->step,
+            'is_final' => $this->is_final
         ]);
         
         $this->application->addDocument($document);

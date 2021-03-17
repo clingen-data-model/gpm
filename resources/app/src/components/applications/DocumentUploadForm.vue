@@ -9,6 +9,13 @@
         <input-row label="Date Received" type="date" v-model="newDocument.date_received" :errors="errors.date_receoved"></input-row>
         
         <input-row label="Date Reviewed" type="date" v-model="newDocument.date_reviewed" :errors="errors.date_reviewed"></input-row>
+
+        <input-row label="" v-if="isReviewed">
+            <label>
+                <input type="checkbox" v-model="newDocument.is_final">
+                This is the final document.
+            </label>
+        </input-row>
         
         <button-row>
             <button class="btn white" @click="cancel">Cancel</button>
@@ -43,9 +50,15 @@ export default {
                 date_received: formatDate(new Date()),
                 date_reviewed: null,
                 step: this.step,
-                document_category_id: this.documentTypeId
+                document_category_id: this.documentTypeId,
+                is_final: false
         },
             errors: {} 
+        }
+    },
+    computed: {
+        isReviewed () {
+            return Boolean(this.newDocument.date_reviewed)
         }
     },
     methods: {

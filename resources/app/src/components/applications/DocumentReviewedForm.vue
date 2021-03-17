@@ -3,6 +3,12 @@
         <h3 class="text-lg border-b pb-1 mb-3">Mark Document Reviewed</h3>
 
         <input-row v-model="dateReviewed" label="Date Reviewed" :errors="errors.date_reviewed" type="date"></input-row>
+        <input-row label="" v-if="isReviewed">
+            <label>
+                <input type="checkbox" v-model="isFinal">
+                This is the final document.
+            </label>
+        </input-row>
         <button-row>
             <button class="btn" @click="cancel">Cancel</button>
             <button class="btn blue" @click="saveDateReviewed">Mark Reviewed</button>
@@ -27,15 +33,26 @@ export default {
     data() {
         return {
             dateReviewed: null,
+            isFinal: false,
             errors: {}
         }
     },
     computed: {
+        isReviewed () {
+            return Boolean(this.dateReviewed)
+        }
     },
     methods: {
         async saveDateReviewed() {
             try {
-                await this.$store.dispatch('applications/markDocumentReviewed',{application: this.application, document: this.document, dateReviewed: this.dateReviewed});
+                await this.$store.dispatch(
+                        'applications/markDocumentReviewed',
+                        {
+                            application: this.application, 
+                            document: this.document, 
+                            dateReviewed: this.dateReviewed,
+                            isFinal: this.isFinal
+                        });
     
                 this.clearForm();
                 this.$emit('saved');

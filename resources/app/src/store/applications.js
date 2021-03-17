@@ -160,8 +160,8 @@ export default {
         },
 
         // eslint-disable-next-line
-        async markDocumentReviewed ({commit}, {application, document, dateReviewed}) {
-            await appRepo.markDocumentReviewed(application, document, dateReviewed)
+        async markDocumentReviewed ({commit}, {application, document, dateReviewed, isFinal}) {
+            await appRepo.markDocumentReviewed(application, document, dateReviewed, isFinal)
             .then(() => {
                 store.dispatch('applications/getApplication', application.uuid)
             })

@@ -34,7 +34,8 @@ class ApplicationDocumentController extends Controller
             'date_received', 
             'date_reviewed', 
             'metadata', 
-            'step'
+            'step',
+            'is_final'
         ]);
 
         $data['storage_path'] = $path;
@@ -45,7 +46,7 @@ class ApplicationDocumentController extends Controller
 
         $newDocument = Document::findByUuid($request->uuid);
 
-        return $newDocument;
+        return $newDocument->toArray();
     }
 
     public function markReviewed($appUuid, $docUuid, MarkDocumentReviewedRequest $request)

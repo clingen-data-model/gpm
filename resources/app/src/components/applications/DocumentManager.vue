@@ -91,19 +91,32 @@ export default {
             fields: [
                 {
                     name: 'version',
+                    label: 'Version',
                     type: Number
                 },
                 {
                     name: 'filename',
+                    label: 'File',
                     type: String
                 },
                 {
                     name: 'date_received',
+                    label: 'Date Received',
                     type: Date,
                 },
                 {
                     name: 'date_reviewed',
+                    label: 'Date Reviewed',
                     type: Date,
+                },
+                {
+                    name: 'is_final',
+                    label: 'Final',
+                    type: Boolean,
+                    sortable: false,
+                    resolveValue (item) {
+                        return item.is_final ? 'Yes' : 'No'
+                    }
                 }
             ],
         }

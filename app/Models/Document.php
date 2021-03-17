@@ -26,6 +26,7 @@ class Document extends Model
         'date_reviewed',
         'application_id',
         'document_category_id',
+        'is_final',
     ];
 
     protected $casts = [

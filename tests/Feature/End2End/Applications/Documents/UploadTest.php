@@ -56,7 +56,7 @@ class UploadTest extends TestCase
     /**
      * @test
      */
-    public function sets__date_received_and_date_reviewed_if_provided()
+    public function sets_date_received_and_date_reviewed_if_provided()
     {
         Carbon::setTestNow('2021-01-01');
         $data = $this->makeRequestData(
@@ -139,6 +139,27 @@ class UploadTest extends TestCase
             ]);
     }
     
+    /**
+     * @test
+     */
+    public function sets_is_final_based_on_input()
+    {
+        Carbon::setTestNow('2021-01-01');
+
+        $data = $this->makeRequestData();
+        $data['is_final'] = true;
+
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/documents', $data);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'uuid' => $data['uuid'],
+            'is_final' => 1
+        ]);
+    }
+    
+
     private function makeRequestData($documentCategoryId = 1, $dateReceived = null, $dateReviewed = null, $step = null)
     {
         Storage::fake();
@@ -154,9 +175,4 @@ class UploadTest extends TestCase
         ];
     }
 
-
-    
-    
-    
-    
 }
