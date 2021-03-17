@@ -76,7 +76,7 @@ export default {
         },
         cancel() {
             this.clearForm();
-            this.$emit('closed');
+            this.$emit('canceled');
         },
         clearForm() {
             this.initNewDocument();
