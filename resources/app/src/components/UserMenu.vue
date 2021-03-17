@@ -18,7 +18,7 @@
                 >
                     <ul>
                         <li class="hover:bg-blue-100 cursor-pointer border-b border-t">
-                            <router-link to="me" @click="showMenu = false" class="p-3 block">My info</router-link>
+                            <router-link :to="{name: 'me'}" @click="showMenu = false" class="p-3 block">My info</router-link>
                         </li>
                         <li class="hover:bg-blue-100 cursor-pointer border-t border-gray-300">
                             <button class="p-3 block w-full text-blue-500 cursor-pointer text-right" @click="logout">
