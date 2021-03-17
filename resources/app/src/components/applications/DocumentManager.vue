@@ -1,51 +1,67 @@
 <template>
     <div>
-        <button class="btn mb-2" 
-            @click="showUploadForm = true"
+        <div
+            v-if="!application.stepIsApproved(step)"        
         >
-            Upload a new version
-        </button>
-        
-        <data-table 
-            :fields="filteredFields" 
-            :data="filteredDocuments" 
-            :sort="{field: fields[0].name, desc: true}"
-            v-if="filteredDocuments.length > 0"
-        >
-            <template v-slot:cell-date_reviewed="item">
-                <div class="text-center">
-                    <span v-if="item.value">{{item.value}}</span>
-                    <button v-else class="btn btn-xs" @click="showMarkReviewed(item.item)">Mark reviewed</button>
-                </div>
-            </template>
-        </data-table>
-
-        <modal-dialog v-model="showUploadForm" @closed="$refs.uploadform.clearForm()">
-            <document-upload-form 
-                :application="application" 
-                :document-type-id="documentTypeId" 
-                :step="step"
-                @canceled="closeDialog" 
-                @saved="closeDialog" 
-                ref="uploadform"
+            <button class="btn mb-2" 
+                @click="showUploadForm = true"
             >
-            </document-upload-form>
-        </modal-dialog>
+                Upload a new version
+            </button>
+            
+            <data-table 
+                :fields="filteredFields" 
+                :data="filteredDocuments" 
+                :sort="{field: fields[0].name, desc: true}"
+                v-if="filteredDocuments.length > 0"
+            >
+                <template v-slot:cell-date_reviewed="item">
+                    <div class="text-center">
+                        <span v-if="item.value">{{item.value}}</span>
+                        <button v-else class="btn btn-xs" @click="showMarkReviewed(item.item)">Mark reviewed</button>
+                    </div>
+                </template>
+            </data-table>
 
-        <modal-dialog v-model="showReviewedForm">
-            <document-reviewed-form :document="activeDocument" :application="application" @canceled="hideReviewedForm" @saved="hideReviewedForm"></document-reviewed-form>
-        </modal-dialog>
+            <modal-dialog v-model="showUploadForm" @closed="$refs.uploadform.clearForm()">
+                <document-upload-form 
+                    :application="application" 
+                    :document-type-id="documentTypeId" 
+                    :step="step"
+                    @canceled="closeDialog" 
+                    @saved="closeDialog" 
+                    ref="uploadform"
+                >
+                </document-upload-form>
+            </modal-dialog>
+
+            <modal-dialog v-model="showReviewedForm">
+                <document-reviewed-form :document="activeDocument" :application="application" @canceled="hideReviewedForm" @saved="hideReviewedForm"></document-reviewed-form>
+            </modal-dialog>
+        </div>
+
+        <final-document-view
+            :application="application"
+            :document-type-id="documentTypeId"
+            :step="step"
+            v-else
+        >
+        </final-document-view>
+
+
     </div>
 </template>
 <script>
 import DocumentUploadForm from './DocumentUploadForm'
 import DocumentReviewedForm from './DocumentReviewedForm'
+import FinalDocumentView from './FinalDocumentView'
 
 export default {
     name: 'DocumentManager',
     components: {
         DocumentUploadForm,
-        DocumentReviewedForm
+        DocumentReviewedForm,
+        FinalDocumentView
     },
     props: {
         application: {

@@ -8,26 +8,7 @@
                     :document-type-id="documentType"
                     :getsReviewd="documentGetsReviewed"
                     :step="step"
-                    v-if="!application.stepIsApproved(step)"        
                 ></document-manager>
-                
-                <div v-else
-                    class="pb-3 border-b"
-                >
-                    <dictionary-row label="Final Document">
-                        <a href="" class="text-blue-500 underline">{{application.finalDocumentOfType(documentType).filename}}</a>
-                    </dictionary-row>
-                    <dictionary-row label="Date Received">
-                        {{firstDateReceived}}
-                    </dictionary-row>
-                    <dictionary-row label="Date Reviewed">
-                        {{finalDateReviewed}}
-                    </dictionary-row>
-                    <dictionary-row label="Date Approved">
-                        {{dateApproved}}
-                    </dictionary-row>
-                </div>
-
             </div>
         </slot>
 
@@ -61,7 +42,6 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { formatDate } from '../../date_utils'
 import ApplicationLog from './ApplicationLog'
 import DocumentManager from './DocumentManager'
 import ApproveStepForm from './ApproveStepForm'
@@ -70,7 +50,7 @@ export default {
     components: {
         ApplicationLog,
         DocumentManager,
-        ApproveStepForm
+        ApproveStepForm,
     },
     props: {
         step: {
@@ -111,15 +91,6 @@ export default {
         isCurrentStep () {
             return this.step == this.application.current_step
         },
-        finalDateReviewed () {
-            return formatDate(this.application.finalDocumentOfType(this.documentType).date_reviewed)
-        },
-        firstDateReceived () {
-            return formatDate(this.application.firstDocumentOfType(this.documentType).date_received)
-        },
-        dateApproved () {
-            return formatDate(this.application.approvalDateForStep(this.step))
-        }
     },
     methods: {
         startApproveStep () {
