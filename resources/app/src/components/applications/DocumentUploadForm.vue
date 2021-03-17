@@ -12,7 +12,7 @@
 
         <input-row label="" v-if="isReviewed">
             <label>
-                <input type="checkbox" v-model="newDocument.is_final">
+                <input type="checkbox" v-model="newDocument.is_final" value="1">
                 This is the final document.
             </label>
         </input-row>
@@ -51,7 +51,7 @@ export default {
                 date_reviewed: null,
                 step: this.step,
                 document_category_id: this.documentTypeId,
-                is_final: false
+                is_final: 0
         },
             errors: {} 
         }
@@ -101,7 +101,8 @@ export default {
                 date_received: formatDate(new Date()),
                 date_reviewed: null,
                 step: this.step,
-                document_category_id: this.documentTypeId
+                document_category_id: this.documentTypeId,
+                is_final: false
             }
         },
         clearErrors () {
