@@ -44,6 +44,12 @@ class NextActionAdded extends ApplicationEvent
         return Carbon::parse($this->nextAction->date_created);
     }
 
+    public function getStep()
+    {
+        return $this->nextAction->step;
+    }
+    
+
     
 
     /**

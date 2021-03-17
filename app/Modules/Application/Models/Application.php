@@ -22,13 +22,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\Application\Events\ContactAdded;
 use App\Modules\Application\Events\DocumentAdded;
 use App\Modules\Application\Events\ContactRemoved;
-use App\Modules\Application\Events\NextActionAdded;
 use App\Modules\Application\Events\DocumentReviewed;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Modules\Application\Events\NextActionCompleted;
 use App\Modules\Application\Service\StepManagerFactory;
 use App\Modules\Application\Events\ApplicationCompleted;
-use App\Modules\Application\Events\ApplicationInitiated;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use App\Modules\Application\Events\ExpertPanelAttributesUpdated;
 use App\Modules\Application\Exceptions\PersonNotContactException;
@@ -134,21 +131,8 @@ class Application extends Model
         $this->touch();
     }
 
-    public function addNextAction(NextAction $nextAction)
-    {
-        $this->nextActions()->save($nextAction);
-        $this->touch();
-        
-        Event::dispatch(new NextActionAdded($this, $nextAction));
-    }
-
     public function completeNextAction(NextAction $nextAction, string $dateCompleted)
     {
-        $nextAction->date_completed = $dateCompleted;
-        $nextAction->save();
-        $this->touch();
-
-        Event::dispatch(new NextActionCompleted(application: $this, nextAction: $nextAction));
     }
 
     public function completeApplication(Carbon $dateCompleted)

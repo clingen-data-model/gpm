@@ -3,8 +3,10 @@
 namespace App\Modules\Application\Jobs;
 
 use App\Models\NextAction;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Modules\Application\Models\Application;
+use App\Modules\Application\Events\NextActionAdded;
 
 class CreateNextAction
 {
@@ -43,7 +45,11 @@ class CreateNextAction
             'date_completed' => $this->dateCompleted
         ]);
 
-        $application->addNextAction($nextAction);
+        $application->nextActions()->save($nextAction);
+        $application->touch();
+        
+        Event::dispatch(new NextActionAdded($application, $nextAction));
 
     }
+
 }

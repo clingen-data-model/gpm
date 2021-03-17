@@ -3,8 +3,10 @@
 namespace App\Modules\Application\Jobs;
 
 use App\Models\NextAction;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Modules\Application\Models\Application;
+use App\Modules\Application\Events\NextActionCompleted;
 
 class CompleteNextAction
 {
@@ -30,6 +32,10 @@ class CompleteNextAction
         $application = Application::findByUuidOrFail($this->applicationUuid);
         $nextAction = NextAction::findByUuidOrFail($this->nextActionUuid);
 
-        $application->completeNextAction($nextAction, $this->dateCompleted);
+        $nextAction->date_completed = $this->dateCompleted;
+        $nextAction->save();
+        $application->touch();
+
+        Event::dispatch(new NextActionCompleted(application: $application, nextAction: $nextAction));
     }
 }

@@ -3,20 +3,22 @@
 namespace Tests\Feature\Integration\Modules\Application\Models;
 
 use Tests\TestCase;
-use App\Modules\User\Models\User;
 use App\Models\Document;
 use App\Models\NextAction;
 use Illuminate\Support\Carbon;
+use App\Modules\User\Models\User;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Event;
 use App\Modules\Person\Models\Person;
+use Illuminate\Support\Facades\Event;
 use App\Modules\Application\Models\Application;
 use App\Modules\Application\Events\ContactAdded;
 use App\Modules\Application\Events\StepApproved;
 use App\Modules\Application\Events\DocumentAdded;
 use App\Modules\Application\Events\ContactRemoved;
-use App\Modules\Application\Events\NextActionAdded;
+use App\Modules\Application\Jobs\CreateNextAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Modules\Application\Events\NextActionAdded;
 use App\Modules\Application\Events\DocumentReviewed;
 use App\Modules\Application\Events\NextActionCompleted;
 use App\Modules\Application\Events\ApplicationCompleted;
@@ -205,68 +207,6 @@ class ApplicationTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
-    public function raises_NextActionCompleted_event()
-    {
-        $application = Application::factory()->create();
-        $nextAction = NextAction::factory()->make();
-        $application->addNextAction($nextAction);
-
-        Event::fake();
-        $application->completeNextAction($nextAction, '2021-02-01');
-
-        Event::assertDispatched(NextActionCompleted::class);
-    }
-    
-    /**
-     * @test
-     */
-    public function NextActionCompleted_logged()
-    {
-        $application = Application::factory()->create();
-        $nextAction = NextAction::factory()->make();
-        $application->addNextAction($nextAction);
-
-        $application->completeNextAction($nextAction, '2021-02-01');
-
-        $this->assertDatabaseHas('activity_log', [
-            'subject_id' => $application->id,
-            'description' => 'Next action completed: '.$nextAction->entry
-        ]);
-    }
-    
-    /**
-     * @test
-     */
-    public function raises_NextActionAdded_event()
-    {
-        $app = Application::factory()->create();
-        $nextAction = NextAction::factory()->make();
-
-        Event::fake();
-        $app->addNextAction($nextAction);
-
-        Event::assertDispatched(NextActionAdded::class);
-    }
-
-    /**
-     * @test
-     */
-    public function logs_next_action_added()
-    {
-        $app = Application::factory()->create();
-        $nextAction = NextAction::factory()->make();
-
-        $app->addNextAction($nextAction);
-
-        $this->assertDatabaseHas('activity_log', [
-            'subject_id' => $app->id,
-            'description' => 'Added next action: '.$nextAction->entry
-        ]);
-    }
-    
 
     /**
      * @test

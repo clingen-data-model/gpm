@@ -71,7 +71,17 @@ class ApproveStep
 
         // TODO: extract to command and log an event on the person.
         if ($this->notifyContacts) {
-            Notification::send($this->application->contacts, new ApplicationStepApprovedNotification($this->application, $approvedStep, $wasLastStep));
+            if ($wasLastStep) {                
+                // Notification::send(
+                //     $this->application->contacts, 
+                //     new ApplicationCompletedNotification($this->application)
+                // );
+                return;
+            }
+            Notification::send(
+                $this->application->contacts, 
+                new ApplicationStepApprovedNotification($this->application, $approvedStep, $wasLastStep)
+            );
         }
     }
 }
