@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 use Database\Seeders\Seeder;
-use App\Models\DocumentCategory;
+use App\Models\DocumentType;
 
-class DocumentCategoriesTableSeeder extends Seeder
+class DocumentTypesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,6 +14,6 @@ class DocumentCategoriesTableSeeder extends Seeder
      */
     public function run()
     {
-        $this->seedFromConfig('documents.categories', DocumentCategory::class);        
+        $this->seedFromConfig('documents.types', DocumentType::class);        
     }
 }

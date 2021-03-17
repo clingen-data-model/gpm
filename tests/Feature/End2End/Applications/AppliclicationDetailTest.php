@@ -40,7 +40,7 @@ class AppliclicationDetailTest extends TestCase
                 uuid: Uuid::uuid4()->toString(),
                 filename: uniqid().'test.tst', 
                 storage_path: '/tmp/'.uniqid().'.tst',
-                document_category_id: 1,
+                document_type_id: 1,
                 step: 1,
                 date_received: '2020-01-01'
             )

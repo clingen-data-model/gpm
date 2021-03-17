@@ -37,7 +37,7 @@ class AddApplicationDocumentTest extends TestCase
             applicationUuid: $this->application->uuid,
             filename: 'testfile.doc',
             storage_path: $this->faker->file(base_path('tests/files')),
-            document_category_id: 1,
+            document_type_id: 1,
             step: 1,
             uuid: $docUuid
         );
@@ -47,7 +47,7 @@ class AddApplicationDocumentTest extends TestCase
         
         $this->assertDatabaseHas('documents', [
             'uuid' => $docUuid,
-            'document_category_id' => 1,
+            'document_type_id' => 1,
             'step' => 1,
             'date_received' => Carbon::now()->format('Y-m-d H:i:s'),
             'date_reviewed' => null,
@@ -69,7 +69,7 @@ class AddApplicationDocumentTest extends TestCase
             applicationUuid: $this->application->uuid,
             filename: 'testfile.doc',
             storage_path: $this->faker->file(base_path('tests/files')),
-            document_category_id: 1,
+            document_type_id: 1,
             step: 1,
             uuid: $docUuid,
             is_final: true
@@ -80,7 +80,7 @@ class AddApplicationDocumentTest extends TestCase
         
         $this->assertDatabaseHas('documents', [
             'uuid' => $docUuid,
-            'document_category_id' => 1,
+            'document_type_id' => 1,
             'step' => 1,
             'date_received' => Carbon::now()->format('Y-m-d H:i:s'),
             'date_reviewed' => null,

@@ -25,7 +25,7 @@ class ApplicationDocumentStoreRequest extends FormRequest
     {
         return [
             'uuid' => 'required|uuid',
-            'document_category_id' => 'required|exists:document_categories,id',
+            'document_type_id' => 'required|exists:document_types,id',
             'file' => 'required|file',
             'date_received' => 'nullable|date',
             'date_reviewed' => 'nullable|date',

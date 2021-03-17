@@ -93,7 +93,7 @@ class ApplicationTest extends TestCase
     public function fires_DocumentAdded_event_fired()
     {
         $application = Application::factory()->create();
-        $document = Document::factory()->make(['document_category_id'=>config('documents.categories.scope.id')]);
+        $document = Document::factory()->make(['document_type_id'=>config('documents.types.scope.id')]);
 
         Event::fake();
         $application->addDocument($document);
@@ -110,7 +110,7 @@ class ApplicationTest extends TestCase
     public function DocumentAdded_activity_logged_when_dispatched()
     {
         $application = Application::factory()->create();
-        $document = Document::factory()->make(['document_category_id'=>config('documents.categories.scope.id')]);
+        $document = Document::factory()->make(['document_type_id'=>config('documents.types.scope.id')]);
 
         $application->addDocument($document);
 
@@ -127,11 +127,11 @@ class ApplicationTest extends TestCase
     {
         $application = Application::factory()->create();
 
-        $application->addDocument(Document::factory()->make(['document_category_id' => 1]));
+        $application->addDocument(Document::factory()->make(['document_type_id' => 1]));
 
         $this->assertEquals($application->documents->first()->version, 1);
 
-        $application->addDocument(Document::factory()->make(['document_category_id' => 1]));
+        $application->addDocument(Document::factory()->make(['document_type_id' => 1]));
 
         $this->assertEquals($application->fresh()->documents()->count(), 2);
 
@@ -194,7 +194,7 @@ class ApplicationTest extends TestCase
     {
         $application = Application::factory()->create();
 
-        $document = Document::factory()->make(['date_reviewed' => null, 'document_category_id' => 1]);
+        $document = Document::factory()->make(['date_reviewed' => null, 'document_type_id' => 1]);
         $application->addDocument($document);
 
         $dateReviewed = Carbon::parse('2021-01-20');
@@ -202,7 +202,7 @@ class ApplicationTest extends TestCase
         $application->markDocumentReviewed($document, $dateReviewed);
 
         $this->assertDatabaseHas('activity_log', [
-            'description' => 'Reviewed '.$document->category->long_name.' version '.$document->version.'.',
+            'description' => 'Reviewed '.$document->type->long_name.' version '.$document->version.'.',
             'subject_id' => $application->id
         ]);
     }
@@ -321,12 +321,12 @@ class ApplicationTest extends TestCase
         $application = Application::factory()->create();
         $document1 = Document::factory()
                         ->make([
-                            'document_category_id' => config('documents.categories.scope.id'), 
+                            'document_type_id' => config('documents.types.scope.id'), 
                             'version' => 1
                         ]);
         $document2 = Document::factory()
                         ->make([
-                        'document_category_id' => config('documents.categories.scope.id'), 
+                        'document_type_id' => config('documents.types.scope.id'), 
                         'version' => 2
                     ]);
         
@@ -348,12 +348,12 @@ class ApplicationTest extends TestCase
         $application = Application::factory()->create();
         $document1 = Document::factory()
                         ->make([
-                            'document_category_id' => config('documents.categories.final-app.id'), 
+                            'document_type_id' => config('documents.types.final-app.id'), 
                             'version' => 1
                         ]);
         $document2 = Document::factory()
                         ->make([
-                        'document_category_id' => config('documents.categories.final-app.id'), 
+                        'document_type_id' => config('documents.types.final-app.id'), 
                         'version' => 2
                     ]);
         

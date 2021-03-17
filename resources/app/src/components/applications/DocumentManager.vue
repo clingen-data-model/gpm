@@ -133,7 +133,7 @@ export default {
         filteredDocuments() {
             if (this.application && this.application.documents) {
                 // return this.application.documents
-                return this.application.documents.filter(d =>  d.document_category_id == this.documentTypeId)
+                return this.application.documents.filter(d =>  d.document_type_id == this.documentTypeId)
             }
             return [];
         }

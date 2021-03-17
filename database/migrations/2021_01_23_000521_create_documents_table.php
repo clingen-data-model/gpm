@@ -21,7 +21,7 @@ class CreateDocumentsTable extends Migration
             $table->unsignedBigInteger('application_id');
             $table->integer('step')->nullable();
             $table->json('metadata')->nullable();
-            $table->unsignedBigInteger('document_category_id');
+            $table->unsignedBigInteger('document_type_id');
             $table->integer('version')->default(1);
             $table->date('date_received')->useCurrent();
             $table->date('date_reviewed')->nullable();
@@ -29,7 +29,7 @@ class CreateDocumentsTable extends Migration
             $table->softDeletes();
 
             $table->foreign('application_id')->references('id')->on('applications')->onDelete('cascade');
-            $table->foreign('document_category_id')->references('id')->on('document_categories');
+            $table->foreign('document_type_id')->references('id')->on('document_types');
         });
     }
 

@@ -28,7 +28,7 @@ class DocumentReviewed extends ApplicationEvent
 
     public function getLogEntry():string
     {
-        return 'Reviewed '.$this->document->category->long_name.' version '.$this->document->version.'.';
+        return 'Reviewed '.$this->document->type->long_name.' version '.$this->document->version.'.';
     }
     
     public function getProperties():array

@@ -25,7 +25,7 @@ class Document extends Model
         'date_received',
         'date_reviewed',
         'application_id',
-        'document_category_id',
+        'document_type_id',
         'is_final',
     ];
 
@@ -39,18 +39,18 @@ class Document extends Model
     ];
 
     # Relationships
-    public function category()
+    public function type()
     {
-        return $this->belongsTo(DocumentCategory::class, 'document_category_id');
+        return $this->belongsTo(Documenttype::class, 'document_type_id');
     }
 
-    public function scopeCategory($query, $category)
+    public function scopetype($query, $type)
     {
-        $id = $category;
-        if ($category instanceof DocumentCategory) {
-            $id = $category->id;
+        $id = $type;
+        if ($type instanceof Documenttype) {
+            $id = $type->id;
         }
-        return $query->where('document_category_id', $id);
+        return $query->where('document_type_id', $id);
     }
 
     public function scopeVersion($query, $version)

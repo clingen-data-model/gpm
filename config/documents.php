@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'categories' => [
+    'types' => [
         'scope' => [
             'id' => 1,
             'name' => 'scope',

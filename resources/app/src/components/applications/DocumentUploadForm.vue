@@ -50,7 +50,7 @@ export default {
                 date_received: formatDate(new Date()),
                 date_reviewed: null,
                 step: this.step,
-                document_category_id: this.documentTypeId,
+                document_type_id: this.documentTypeId,
                 is_final: 0
         },
             errors: {} 
@@ -101,7 +101,7 @@ export default {
                 date_received: formatDate(new Date()),
                 date_reviewed: null,
                 step: this.step,
-                document_category_id: this.documentTypeId,
+                document_type_id: this.documentTypeId,
                 is_final: false
             }
         },

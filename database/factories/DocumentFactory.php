@@ -29,7 +29,7 @@ class DocumentFactory extends Factory
             'storage_path' => $this->faker->file(base_path('tests/files')),
             'step' => $this->faker->randomElement(range(1,4)),
             'metadata' => null,
-            'document_category_id' => $this->faker->randomElement(config('documents.categories'))['id'],
+            'document_type_id' => $this->faker->randomElement(config('documents.types'))['id'],
             'version' => 1,
             'date_received' => Carbon::now(),
             'date_reviewed' => null

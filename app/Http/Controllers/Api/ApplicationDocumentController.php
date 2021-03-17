@@ -30,7 +30,7 @@ class ApplicationDocumentController extends Controller
 
         $data = $request->only([
             'uuid', 
-            'document_category_id', 
+            'document_type_id', 
             'date_received', 
             'date_reviewed', 
             'metadata', 

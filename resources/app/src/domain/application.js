@@ -79,7 +79,7 @@ class Application extends Entity{
 
     firstDocumentOfType(docTypeId) {
         const typeDocs = this.documents
-                            .filter(d =>  d.document_category_id == docTypeId)
+                            .filter(d =>  d.document_type_id == docTypeId)
                             .sort((a, b) => {
                                 if (a.date_reviewed == b.date_reviewed) {
                                     return (a.version > b.version) ? 1 : -1;
@@ -93,7 +93,7 @@ class Application extends Entity{
 
     finalDocumentOfType(docTypeId) {
         const typeDocs = this.documents
-                            .filter(d =>  d.document_category_id == docTypeId)
+                            .filter(d =>  d.document_type_id == docTypeId)
                             .sort((a, b) => {
                                 if (a.date_reviewed == b.date_reviewed) {
                                     return (a.version > b.version) ? 1 : -1;

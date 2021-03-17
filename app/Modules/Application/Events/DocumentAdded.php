@@ -33,7 +33,7 @@ class DocumentAdded extends ApplicationEvent
 
     public function getLogEntry():string
     {
-        return 'Added version '.$this->document->version.' of '.$this->document->category->long_name.'.';
+        return 'Added version '.$this->document->version.' of '.$this->document->type->long_name.'.';
     }
     
 

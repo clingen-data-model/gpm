@@ -42,7 +42,7 @@ class UploadTest extends TestCase
         $response->assertJson([
             'uuid' => $data['uuid'],
             'filename' => 'Test Scope Document.docx',
-            'document_category_id' => config('documents.categories.scope.id'),
+            'document_type_id' => config('documents.types.scope.id'),
             'date_received' => Carbon::now()->toJson(),
             'date_reviewed' => null,
             'metadata' => null,
@@ -71,7 +71,7 @@ class UploadTest extends TestCase
         $response->assertJson([
             'uuid' => $data['uuid'],
             'filename' => 'Test Scope Document.docx',
-            'document_category_id' => config('documents.categories.scope.id'),
+            'document_type_id' => config('documents.types.scope.id'),
             'date_received' => Carbon::parse('2020-10-28')->toJson(),
             'date_reviewed' => Carbon::parse('2020-11-14')->toJson(),
             'metadata' => null,
@@ -85,7 +85,7 @@ class UploadTest extends TestCase
      */
     public function sets_version_based_existing_versions()
     {
-        $this->application->addDocument(Document::factory()->make(['document_category_id' => 1]));
+        $this->application->addDocument(Document::factory()->make(['document_type_id' => 1]));
 
         $data = $this->makeRequestData();
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
@@ -110,7 +110,7 @@ class UploadTest extends TestCase
             ->assertJsonFragment([
                 'uuid' => ['The uuid field is required.'],
                 'file' => ['The file field is required.'],
-                'document_category_id' => ['The document category id field is required.']
+                'document_type_id' => ['The document type id field is required.']
             ]);
     }
     
@@ -120,7 +120,7 @@ class UploadTest extends TestCase
     public function validates_field_types()
     {
         $data = [
-            'document_category_id' => 999,
+            'document_type_id' => 999,
             'uuid' => 'blah',
             'file' => 'beans',
             'date_received' => 'detach the head',
@@ -133,7 +133,7 @@ class UploadTest extends TestCase
             ->assertJsonFragment([
                 'uuid' => ['The uuid must be a valid UUID.'],
                 'file' => ['The file must be a file.'],
-                'document_category_id' => ['The selected document category id is invalid.'],
+                'document_type_id' => ['The selected document type id is invalid.'],
                 "date_received" => ["The date received is not a valid date."],
                 'date_reviewed' => ['The date reviewed is not a valid date.'],
             ]);
@@ -160,7 +160,7 @@ class UploadTest extends TestCase
     }
     
 
-    private function makeRequestData($documentCategoryId = 1, $dateReceived = null, $dateReviewed = null, $step = null)
+    private function makeRequestData($DocumentTypeId = 1, $dateReceived = null, $dateReviewed = null, $step = null)
     {
         Storage::fake();
         $file = UploadedFile::fake()->create(name: 'Test Scope Document.docx', mimeType: 'docx');
@@ -168,7 +168,7 @@ class UploadTest extends TestCase
         return [
             'uuid' => Uuid::uuid4()->toString(),
             'file' => $file,
-            'document_category_id' => $documentCategoryId,
+            'document_type_id' => $DocumentTypeId,
             'date_received' => $dateReceived,
             'date_reviewed' => $dateReviewed,
             'step' => $step

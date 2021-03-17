@@ -87,13 +87,13 @@ describe('application entity', () => {
         const app = new Application({
             documents: [
                 {
-                    "document_category_id": 3,
+                    "document_type_id": 3,
                     "version": 1,
                     "date_received": "2021-02-10T00:00:00.000000Z",
                     "date_reviewed": "2021-02-11T00:00:00.000000Z",
                 },
                 {
-                    "document_category_id": 3,
+                    "document_type_id": 3,
                     "version": 2,
                     "date_received": "2021-02-10T00:00:00.000000Z",
                     "date_reviewed": "2021-02-11T00:00:00.000000Z",
@@ -102,14 +102,14 @@ describe('application entity', () => {
         });
 
         expect(app.firstDocumentOfType(3)).toEqual({
-            "document_category_id": 3,
+            "document_type_id": 3,
             "version": 1,
             "date_received": "2021-02-10T00:00:00.000000Z",
             "date_reviewed": "2021-02-11T00:00:00.000000Z",
         });
 
         expect(app.finalDocumentOfType(3)).toEqual({
-            "document_category_id": 3,
+            "document_type_id": 3,
             "version": 2,
             "date_received": "2021-02-10T00:00:00.000000Z",
             "date_reviewed": "2021-02-11T00:00:00.000000Z",

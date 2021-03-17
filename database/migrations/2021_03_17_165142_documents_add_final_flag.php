@@ -14,7 +14,7 @@ class DocumentsAddFinalFlag extends Migration
     public function up()
     {
         Schema::table('documents', function (Blueprint $table) {
-            $table->boolean('is_final')->default(0)->after('document_category_id');
+            $table->boolean('is_final')->default(0)->after('document_type_id');
         });
     }
 

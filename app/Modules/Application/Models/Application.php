@@ -92,7 +92,7 @@ class Application extends Model
     
     public function addDocument(Document $document)
     {
-        $lastDocumentVersion = $this->getLatestVersionForDocument($document->document_category_id);
+        $lastDocumentVersion = $this->getLatestVersionForDocument($document->document_type_id);
         $document->version = $lastDocumentVersion+1;
 
         $this->documents()->save($document);
@@ -191,14 +191,14 @@ class Application extends Model
     public function firstScopeDocument()
     {
         return $this->hasOne(Document::class)
-            ->category(config('documents.categories.scope.id'))
+            ->type(config('documents.types.scope.id'))
             ->version(1);
     }
 
     public function firstFinalDocument()
     {
         return $this->hasOne(Document::class)
-            ->category(config('documents.categories.final-app.id'))
+            ->type(config('documents.types.final-app.id'))
             ->version(1);
     }
 
@@ -252,10 +252,10 @@ class Application extends Model
         return static::findByUuid($uuid)->latestLogEntry;
     }
 
-    private function getLatestVersionForDocument($documentCategoryId)
+    private function getLatestVersionForDocument($DocumentTypeId)
     {
         $results = $this->documents()
-            ->where('document_category_id', $documentCategoryId)
+            ->where('document_type_id', $DocumentTypeId)
             ->selectRaw('max(version) as max_version')
             ->first();
 

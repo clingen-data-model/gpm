@@ -108,7 +108,7 @@ class CreateApplicationsFromCommands extends Command
                         'uuid' => Uuid::uuid4()->toString(),
                         'filename' => 'test',
                         'storage_path' => '/tmp/'.uniqid().'_test.tst',
-                        'document_category_id' => 1,
+                        'document_type_id' => 1,
                         'step' => 1,
                         'date_received' => Carbon::now()->subDays(30),
                         'date_reviewed' => Carbon::now()->subDays(25)
@@ -130,7 +130,7 @@ class CreateApplicationsFromCommands extends Command
                         'uuid' => Uuid::uuid4()->toString(),
                         'filename' => 'test',
                         'storage_path' => '/tmp/'.uniqid().'test.tst',
-                        'document_category_id' => 2,
+                        'document_type_id' => 2,
                         'step' => 2,
                         'date_received' => Carbon::now()->subDays(14),
                         'date_reviewed' => Carbon::now()->subDays(10)
@@ -162,7 +162,7 @@ class CreateApplicationsFromCommands extends Command
                         'uuid' => $nextActionUuid,
                         'filename' => 'test',
                         'storage_path' => '/tmp/'.uniqid().'test.tst',
-                        'document_category_id' => 3,
+                        'document_type_id' => 3,
                         'step' => 3,
                         'date_received' => Carbon::now()->subDays(6),
                         'date_reviewed' => Carbon::now()->subDays(5)
@@ -185,7 +185,7 @@ class CreateApplicationsFromCommands extends Command
                         'uuid' => Uuid::uuid4()->toString(),
                         'filename' => 'test',
                         'storage_path' => '/tmp/'.uniqid().'test.tst',
-                        'document_category_id' => 4,
+                        'document_type_id' => 4,
                         'step' => 3,
                         'date_received' => Carbon::now()->subDays(6),
                         'date_reviewed' => Carbon::now()->subDays(5)
@@ -207,7 +207,7 @@ class CreateApplicationsFromCommands extends Command
                         'uuid' => Uuid::uuid4()->toString(),
                         'filename' => 'test',
                         'storage_path' => '/tmp/'.uniqid().'test.tst',
-                        'document_category_id' => 5,
+                        'document_type_id' => 5,
                         'step' => 4,
                         'date_received' => Carbon::now()->subDays(3),
                         'date_reviewed' => Carbon::now()->subDays(3)
