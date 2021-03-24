@@ -53,7 +53,7 @@ export default {
     methods: {
         async save() {
             const data = this.assembleFormData(this.$refs['fileInput'], this.newCoi);
-            api.post(`/api/applications/${this.application.uuid}`)
+            api.post(`/api/applications/${this.application.uuid}`, data)
         },
         cancel() {
             this.clearForm();
@@ -63,7 +63,7 @@ export default {
             
         }
     },
-    setup(context) {
+    setup() {
         const assembleFormData = (fileInput, otherData) => {
             let data = new FormData();
             Object.keys(otherData)

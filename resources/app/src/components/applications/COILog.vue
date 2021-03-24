@@ -2,7 +2,9 @@
     <div>
         <div class="flex justify-between">
             <h4 class="text-md font-bold">Conflict of Interest</h4>
-            <coi-legacy-upload :application="application"></coi-legacy-upload>
+            <coi-legacy-upload :application="application"
+                v-if="$store.state.features.legacyCoi"
+            ></coi-legacy-upload>
         </div>
         <div class="my-2 flex justify-between">
             <div>
@@ -40,7 +42,6 @@
 
 </template>
 <script>
-import api from '../../http/api';
 import IconRefresh from '../icons/IconRefresh';
 import CoiDetail from './CoiDetail';
 import CoiLegacyUpload from './CoiLegacyUpload';

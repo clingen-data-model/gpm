@@ -52,6 +52,7 @@ class Survey {
     }
 
     responseIsValid(response) {
+        response;
         return true;
     }
 

@@ -19,6 +19,7 @@ const docTypeStore = module_factory({
 })
 
 console.log(docTypeStore);
+console.log(process.env);
 
 const store = createStore({
     state: {
@@ -26,7 +27,10 @@ const store = createStore({
         user: {...nullUser},
         openRequests: [],
         authenticated: null,
-        documentTypes: null
+        documentTypes: null,
+        features: {
+            legacyCoi: process.env.VUE_APP_LEGACY_COI == 'true',
+        }
     },
     getters: {
         currentUser: (state) => state.user,
