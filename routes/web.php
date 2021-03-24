@@ -15,4 +15,4 @@ use App\Http\Controllers\ViewController;
 */
 
 Route::get('/{any}', [ViewController::class, 'app'])
-    ->where('any', '^(?!(api|sanctum)).*$');
+    ->where('any', '^(?!(api|sanctum|admin)).*$');
