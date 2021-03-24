@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: epam-template
+  annotations:
+    description: "Template for all resources required to stand up the EPAM"
+    tags: "epam,laravel,php,mysql,redis,etc"
+
+objects:
+  - apiVersion: v1
+    kind: PeristantVolumeClaim
+    metadata:
+      name: "epamclaim"
+    spec:
+      accessModes:
+        - "ReadWriteMany"
+      resources:
+        requests:
+          storage: "2Gi"
+      volumnName: "epam0001"
+  - apiVersion: v1
+    kind: Route
+    metadata:
+      name: app
+    spec:
+      path: "/"
+      to: 
+        kind: Service
+        name: epam
+        port: 8080
+  # - apiVersion: v1
+  #   kind: PeristantVolume
+  #   metadata: 
+  #     name: epam-volume
+  #   spec:
+  #     capacity: 
+  #       storage: 2Gi
+  #     accessModes:
+  #       - ReadWriteMany
+      
