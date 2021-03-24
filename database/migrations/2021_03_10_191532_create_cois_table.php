@@ -15,7 +15,6 @@ class CreateCoisTable extends Migration
     {
         
         Schema::create('cois', function (Blueprint $table) {
-            $coiDefinition = json_decode(file_get_contents(base_path('resources/surveys/coi.json')));
             $table->id();
             $table->unsignedBigInteger('application_id');
             $table->json('data');
