@@ -1,12 +1,17 @@
 <template>
     <div>
-        <h4 class="text-md font-bold">Conflict of Interest</h4>
+        <div class="flex justify-between">
+            <h4 class="text-md font-bold">Conflict of Interest</h4>
+            <coi-legacy-upload :application="application"></coi-legacy-upload>
+        </div>
         <div class="my-2 flex justify-between">
             <div>
                 COI URL: 
                 <router-link :to="application.coi_url" class="text-blue-500">
-                    https://{{$store.state.hostname}}{{application.coi_url}}
+                    {{$store.state.hostname}}{{application.coi_url}}
                 </router-link>
+                &nbsp;
+                <a :href="mailtoLink" class="btn btn-xs">Send url to contacts.</a>
             </div>
             <icon-refresh 
                 :height="14" :width="14" 
@@ -28,61 +33,23 @@
                 </template>
             </data-table>
             <modal-dialog v-model="showResponseDialog" size="xl">
-                <div v-if="currentResponse">
-                    <h4 class="text-lg border-b pb-2 mb-4 font-bold">
-                        COI response for 
-                        {{currentResponse.first_name.response}} {{currentResponse.last_name.response}}
-                    </h4>
-                    <div class=" text-sm">
-                    <dictionary-row label="Email" label-class="font-bold" class="pb-1 mb-1 border-b">{{currentResponse.email.response}}</dictionary-row>
-
-                    <dictionary-row :label="currentResponse.work_fee_lab.question" :vertical="true"
-                        class="pb-1 mb-1 border-b"
-                        label-class="font-bold"
-                     >
-                        {{getQuestionValue(currentResponse.work_fee_lab.response)}}
-                    </dictionary-row>
-
-                    <dictionary-row :label="currentResponse.contributions_to_gd_in_ep.question" :vertical="true"
-                        class="pb-1 mb-1 border-b"
-                        label-class="font-bold"
-                     >
-                        {{getQuestionValue(currentResponse.contributions_to_gd_in_ep.response)}}
-                        <dictionary-row :label="currentResponse.contributions_to_genes.question" :vertical="true"
-                            v-if="currentResponse.contributions_to_gd_in_ep.response == 1"
-                            class="pb-1 mb-1 ml-4"
-                            label-class="font-bold"
-                        >
-                            {{getQuestionValue(currentResponse.contributions_to_genes.response)}}
-                        </dictionary-row>
-                    </dictionary-row>
-
-                    <dictionary-row :label="currentResponse.independent_efforts.question" :vertical="true"
-                        class="pb-1 mb-1 border-b"
-                        label-class="font-bold"
-                     >
-                        {{getQuestionValue(currentResponse.independent_efforts.response)}}
-                    </dictionary-row>
-
-                    <dictionary-row :label="currentResponse.coi.question" :vertical="true"
-                        class="pb-1 mb-1"
-                        label-class="font-bold"
-                     >
-                        {{getQuestionValue(currentResponse.coi.response)}}
-                    </dictionary-row>
-                    </div>
-                </div>
+                <coi-detail :response="currentResponse"></coi-detail>
             </modal-dialog>
         </div>
     </div>
 
 </template>
 <script>
+import api from '../../http/api';
 import IconRefresh from '../icons/IconRefresh';
+import CoiDetail from './CoiDetail';
+import CoiLegacyUpload from './CoiLegacyUpload';
 
 export default {
     components: {
-        IconRefresh
+        IconRefresh,
+        CoiDetail,
+        CoiLegacyUpload,
     },
     props: {
         application: {
@@ -129,6 +96,9 @@ export default {
         hasCois() {
             return this.application.cois && this.application.cois.length > 0;
         },
+        mailtoLink() {
+            return `mailto:${this.application.contacts.map(p => p.email).join(';')}?subject=Your COI Link for your Expert Panel Application&body=Your expert panel's COI form: ${this.$store.state.hostname}${this.application.coi_url}.`
+        }
     },
     methods: {
         showResponse(response) {
@@ -150,7 +120,6 @@ export default {
             await this.$store.dispatch('applications/getApplication', this.application.uuid);
             this.refreshing = false;
         }
-
     }
 }
 </script>

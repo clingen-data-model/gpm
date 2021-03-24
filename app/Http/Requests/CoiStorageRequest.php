@@ -28,7 +28,7 @@ class CoiStorageRequest extends FormRequest
 
         $rules = [];
         foreach ($coiDefinition->questions as $question) {
-            if($question->validation) {
+            if(isset($question->validation)) {
                 $rules[$question->name] = $question->validation;
             }
         }

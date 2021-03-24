@@ -46,15 +46,35 @@
         },
         {
             "name": "independent_efforts",
-            "question": "Do you have any other existing or planned independent efforts that will potentially overlap with the scope of your ClinGen work? If so, please describe and also send an email describing the project(s) to the co-chairs and coordinator:",
-            "type": "text",
+            "question": "Do you have any other existing or planned independent efforts that will potentially overlap with the scope of your ClinGen work?",
+            "type": "yes-no",
             "validation": "required"
-        },  
+        },
+        {
+            "name": "independent_efforts_details",
+            "question": "Please describe and also send an email describing the project(s) to the co-chairs and coordinator:",
+            "type": "text",
+            "valiation": "required_if:independent_efforts,1",
+            "show": {
+                "name": "independent_efforts",
+                "value": 1
+            }
+        },
         {
             "name": "coi",
             "question": "Please disclose any other relevant conflicts of interest (e.g. patents, intellectual property ownership, or paid consultancies related to any variants or genes associated with the work of your Expert Panel):",
-            "type": "text",
+            "type": "yes-no",
             "validation": "required"
+        },
+        {
+            "name": "coi_details",
+            "question": "Please describe:",
+            "type": "text",
+            "valiation": "required_if:coi,1",
+            "show": {
+                "name": "coi",
+                "value": 1
+            }
         }
     ]
 }
