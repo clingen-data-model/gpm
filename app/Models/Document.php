@@ -41,13 +41,13 @@ class Document extends Model
     # Relationships
     public function type()
     {
-        return $this->belongsTo(Documenttype::class, 'document_type_id');
+        return $this->belongsTo(DocumentType::class, 'document_type_id');
     }
 
     public function scopetype($query, $type)
     {
         $id = $type;
-        if ($type instanceof Documenttype) {
+        if ($type instanceof DocumentType) {
             $id = $type->id;
         }
         return $query->where('document_type_id', $id);
