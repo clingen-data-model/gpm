@@ -1,6 +1,7 @@
 <template>
     <div>
-        <h4 class="text-xl font-semibold pb-2 border-b mb-4">Upload document type {{documentTypeId}}</h4>
+        <!-- <pre>{{documentTypes}}</pre> -->
+        <h4 class="text-xl font-semibold pb-2 border-b mb-4">Upload document {{documentType.long_name}}</h4>
 
         <input-row label="Document" :errors="errors.file">
             <input type="file" ref="fileInput">
@@ -24,6 +25,7 @@
     </div>
 </template>
 <script>
+import { mapState } from 'vuex';
 import {formatDate} from '../../date_utils'
 import is_validation_error from '../../http/is_validation_error';
 
@@ -52,13 +54,24 @@ export default {
                 step: this.step,
                 document_type_id: this.documentTypeId,
                 is_final: 0
-        },
-            errors: {} 
+            },
+            errors: {},
+            // documentType: {}
         }
     },
     computed: {
+        ...mapState({
+            documentTypes: state => state.doctypes.items
+        }),
         isReviewed () {
             return Boolean(this.newDocument.date_reviewed)
+        },
+        documentType () {
+            if (this.documentTypes.length == 0) {
+                return {};
+            }
+            // return this.documentTypes. 
+            return this.$store.getters['doctypes/getItemById'](this.documentTypeId)
         }
     },
     methods: {
@@ -108,6 +121,10 @@ export default {
         clearErrors () {
             this.errors = {}
         }
+    },
+    mounted() {
+        console.log(this.$store.state);
+        this.$store.dispatch('doctypes/getItems');
     }
 }
 </script>

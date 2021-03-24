@@ -37,10 +37,8 @@ export default {
             return state.items[state.currentItemIdx]
         },
         getApplicationByUuid: (state) => (uuid) => {
-            // return uuid
             return state.items.find(app => app.uuid == uuid);
         },
-        // lastUpdate: (state) {}
     },
     mutations: {
         addApplication(state, application) {

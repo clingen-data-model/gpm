@@ -30,6 +30,9 @@ class Coi extends Model
 
         $responseData = collect($this->data)->map(function ($value, $key) use ($coiDef) {
             $questions = collect($coiDef->questions)->keyBy('name')->toArray();
+            if (!isset($questions[$key])) {
+                \Log::debug('key, questions->keys(): ', ['keys'=> $key, 'questions'=>$questions->keys()->toArray()]);
+            }
             return [
                 'question' => $questions[$key]->question,
                 'response' => $value

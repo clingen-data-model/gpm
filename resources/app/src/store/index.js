@@ -5,6 +5,7 @@ import CdwgStore from './cdwgs.js'
 import Alerts from './alerts'
 import axios from '@/http/api'
 import isAuthError from './../http/is_auth_error'
+import module_factory from './module_factory';
 
 const nullUser = {
     id: null,
@@ -12,12 +13,20 @@ const nullUser = {
     email: null,
 };
 
+const docTypeStore = module_factory({
+    baseUrl: '/api/document-types', 
+    namespace: 'doctypes'
+})
+
+console.log(docTypeStore);
+
 const store = createStore({
     state: {
         hostname: process.env.VUE_APP_URL,
         user: {...nullUser},
         openRequests: [],
         authenticated: null,
+        documentTypes: null
     },
     getters: {
         currentUser: (state) => state.user,
@@ -35,7 +44,7 @@ const store = createStore({
         },
         setAuthenticated(state, authVal) {
             state.authenticated = authVal
-        }
+        },
     },
     actions: {
         async getCurrentUser({commit, state}) {
@@ -88,8 +97,8 @@ const store = createStore({
         applications: ApplicationStore,
         cdwgs: CdwgStore,
         people: PeopleStore,
-        alerts: Alerts
+        alerts: Alerts,
+        doctypes: docTypeStore
     }
 })
-
 export default store

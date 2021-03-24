@@ -27,5 +27,10 @@ return [
             'name' => 'final-app',
             'long_name' => 'final application',
         ],
+        'coi' => [
+            'id' => 6,
+            'name' => 'coi',
+            'long_name' => 'Conflict of interest (legacy)'
+        ]
     ]
 ];
