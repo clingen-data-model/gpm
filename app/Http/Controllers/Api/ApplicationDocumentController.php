@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Support\Carbon;
 use App\Models\Document;
 use Illuminate\Http\Request;
 use Illuminate\Bus\Dispatcher;
+use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Storage;
 use App\Modules\Application\Models\Application;
-use App\Modules\Application\Jobs\MarkDocumentReviewed;
 use App\Http\Requests\ApplicationDocumentStoreRequest;
+use App\Modules\Application\Jobs\MarkDocumentReviewed;
 use App\Modules\Application\Jobs\AddApplicationDocument;
 use App\Http\Requests\Applications\MarkDocumentReviewedRequest;
 
@@ -26,7 +27,8 @@ class ApplicationDocumentController extends Controller
         $application = Application::findByUuidOrFail($applicationUuid);
 
         $file = $request->file('file');
-        $path = $file->store('documents');
+
+        $path = Storage::disk('local')->putFile('documents', $file);
 
         $data = $request->only([
             'uuid', 

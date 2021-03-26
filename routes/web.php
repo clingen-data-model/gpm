@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ViewController;
+use App\Http\Controllers\DocumentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +16,7 @@ use App\Http\Controllers\ViewController;
 */
 
 Route::get('/{any}', [ViewController::class, 'app'])
-    ->where('any', '^(?!(api|sanctum|admin)).*$');
+    ->where('any', '^(?!(api|sanctum|admin|documents)).*$');
+
+
+Route::get('/documents/{uuid}', [DocumentController::class, 'show'])->middleware('auth:sanctum');

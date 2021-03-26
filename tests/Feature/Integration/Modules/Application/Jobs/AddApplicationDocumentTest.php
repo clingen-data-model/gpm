@@ -12,6 +12,9 @@ use App\Modules\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Application\Jobs\AddApplicationDocument;
 
+/**
+ * @group documents
+ */
 class AddApplicationDocumentTest extends TestCase
 {
     use RefreshDatabase;

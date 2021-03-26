@@ -21,6 +21,10 @@
                         <button v-else class="btn btn-xs" @click="showMarkReviewed(item.item)">Mark reviewed</button>
                     </div>
                 </template>
+
+                <template v-slot:cell-id="{item}">
+                    <button class="btn btn-xs" @click="downloadDocument(item)"><icon-download width="12" height="18"></icon-download></button>
+                </template>
             </data-table>
 
             <modal-dialog v-model="showUploadForm" @closed="$refs.uploadform.clearForm()">
@@ -55,13 +59,15 @@
 import DocumentUploadForm from './DocumentUploadForm'
 import DocumentReviewedForm from './DocumentReviewedForm'
 import FinalDocumentView from './FinalDocumentView'
+import IconDownload from '../icons/IconDownload'
 
 export default {
     name: 'DocumentManager',
     components: {
         DocumentUploadForm,
         DocumentReviewedForm,
-        FinalDocumentView
+        FinalDocumentView,
+        IconDownload
     },
     props: {
         application: {
@@ -117,6 +123,11 @@ export default {
                     resolveValue (item) {
                         return item.is_final ? 'Yes' : 'No'
                     }
+                },
+                {
+                    name: 'id',
+                    label: '',
+                    sortable: false
                 }
             ],
         }
@@ -148,6 +159,9 @@ export default {
         },
         closeDialog(){
             this.showUploadForm = false;
+        },
+        downloadDocument(item) {
+            window.location = item.download_url;
         }
     }
 }

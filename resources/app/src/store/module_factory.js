@@ -8,7 +8,6 @@ const validateConfig = (config) => {
 
 export default function (config = {}) {
     validateConfig(config)
-    const namespace = config.namespace ?  config.namespace+'/' : '';
     const defaultObject = {
         namespaced: Boolean(config.namespace),
         state: {

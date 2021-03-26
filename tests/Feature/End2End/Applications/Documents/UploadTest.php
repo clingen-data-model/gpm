@@ -2,20 +2,25 @@
 
 namespace Tests\Feature\End2End\Applications\Documents;
 
-use Illuminate\Support\Carbon;
 use Tests\TestCase;
-use App\Modules\User\Models\User;
 use Ramsey\Uuid\Uuid;
 use App\Models\Document;
+use Illuminate\Support\Carbon;
+use App\Modules\User\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Tests\CreatesDocumentUploadRequestData;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+/**
+ * @group documents
+ */
 class UploadTest extends TestCase
 {
     use RefreshDatabase;
+    use CreatesDocumentUploadRequestData;
 
     public function setup():void
     {
@@ -33,7 +38,7 @@ class UploadTest extends TestCase
     {
         Carbon::setTestNow('2021-01-01');
 
-        $data = $this->makeRequestData();
+        $data = $this->makeDocumentUploadRequestData();
 
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/documents', $data);
@@ -50,7 +55,9 @@ class UploadTest extends TestCase
             'application_id' => $this->application->id
         ]);
 
-        Storage::disk()->assertExists('documents/'.$data['file']->hashName());
+        $doc = Document::findByUuid($data['uuid']);
+
+        Storage::disk('local')->assertExists($doc->storage_path);
     }
 
     /**
@@ -59,7 +66,7 @@ class UploadTest extends TestCase
     public function sets_date_received_and_date_reviewed_if_provided()
     {
         Carbon::setTestNow('2021-01-01');
-        $data = $this->makeRequestData(
+        $data = $this->makeDocumentUploadRequestData(
             dateReceived: Carbon::parse('2020-10-28'), 
             dateReviewed: Carbon::parse('2020-11-14')
         );
@@ -87,7 +94,7 @@ class UploadTest extends TestCase
     {
         $this->application->addDocument(Document::factory()->make(['document_type_id' => 1]));
 
-        $data = $this->makeRequestData();
+        $data = $this->makeDocumentUploadRequestData();
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/documents', $data);
 
@@ -146,7 +153,7 @@ class UploadTest extends TestCase
     {
         Carbon::setTestNow('2021-01-01');
 
-        $data = $this->makeRequestData();
+        $data = $this->makeDocumentUploadRequestData();
         $data['is_final'] = true;
 
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
@@ -159,20 +166,5 @@ class UploadTest extends TestCase
         ]);
     }
     
-
-    private function makeRequestData($DocumentTypeId = 1, $dateReceived = null, $dateReviewed = null, $step = null)
-    {
-        Storage::fake();
-        $file = UploadedFile::fake()->create(name: 'Test Scope Document.docx', mimeType: 'docx');
-
-        return [
-            'uuid' => Uuid::uuid4()->toString(),
-            'file' => $file,
-            'document_type_id' => $DocumentTypeId,
-            'date_received' => $dateReceived,
-            'date_reviewed' => $dateReviewed,
-            'step' => $step
-        ];
-    }
 
 }

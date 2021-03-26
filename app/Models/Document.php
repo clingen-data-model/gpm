@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Models\HasUuid;
+use Illuminate\Database\Eloquent\Model;
+use App\Http\Controllers\DocumentController;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
@@ -38,6 +39,10 @@ class Document extends Model
         'date_reviewed'
     ];
 
+    protected $appends = [
+        'download_url',
+    ];
+
     # Relationships
     public function type()
     {
@@ -58,4 +63,8 @@ class Document extends Model
         return $query->where('version', $version);
     }
     
+    public function getDownloadUrlAttribute()
+    {
+        return url()->action([DocumentController::class, 'show'], [$this->uuid]);
+    }
 }
