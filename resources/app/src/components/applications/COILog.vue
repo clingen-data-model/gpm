@@ -106,16 +106,6 @@ export default {
             this.currentResponse = response.response_document;
             this.showResponseDialog = true;
         },
-        getQuestionValue(response) {
-            if (response === 1) {
-                return 'Yes';
-            }
-            if (response === 0) {
-                return 'No';
-            }
-
-            return response;
-        },
         async refresh() {
             this.refreshing = true;
             await this.$store.dispatch('applications/getApplication', this.application.uuid);

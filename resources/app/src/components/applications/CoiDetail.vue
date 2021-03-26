@@ -89,6 +89,16 @@ export default {
         }
     },
     methods: {
+        getQuestionValue(response) {
+            if (response === 1) {
+                return 'Yes';
+            }
+            if (response === 0) {
+                return 'No';
+            }
+
+            return response;
+        },
 
     }
 }
