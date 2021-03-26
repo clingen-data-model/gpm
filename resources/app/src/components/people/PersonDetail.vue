@@ -10,11 +10,18 @@
                 </router-link>
             </template>
             <dictionary-row 
-                v-for="key in ['name', 'email', 'phone', 'created_at', 'updated_at']"
+                v-for="key in ['name', 'email', 'phone']"
                 :key="key"
                 :label="key"
             >
                 {{person[key]}}
+            </dictionary-row>
+            <dictionary-row 
+                v-for="key in ['created_at', 'updated_at']"
+                :key="key"
+                :label="key"
+            >
+                {{formatDate(person[key])}}
             </dictionary-row>
         </card>
         <modal-dialog v-model="showModal">
@@ -24,6 +31,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import {formatDateTime as formatDate} from '../../date_utils'
 
 export default {
     props: {
@@ -66,6 +74,11 @@ export default {
     },
     methods: {
 
+    },
+    setup() {
+        return {
+            formatDate: formatDate
+        }
     },
     mounted() {
         this.$store.dispatch('people/getPerson', {uuid: this.uuid})
