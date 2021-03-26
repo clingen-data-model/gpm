@@ -11,12 +11,10 @@
 import {mapGetters} from 'vuex'
 import AddContactControl from './AddContactControl.vue'
 import ContactRow from './ContactRow'
-import NewContactForm from './NewContactForm'
 
 export default {
     components: {
         ContactRow,
-        NewContactForm,
         AddContactControl
     },
     props: {
