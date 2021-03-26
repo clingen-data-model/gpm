@@ -18,14 +18,12 @@ const docTypeStore = module_factory({
     namespace: 'doctypes'
 })
 
-console.log(docTypeStore);
-console.log(process.env);
-
 const store = createStore({
     state: {
         hostname: process.env.VUE_APP_URL,
         user: {...nullUser},
         openRequests: [],
+        authenticating: true,
         authenticated: null,
         documentTypes: null,
         features: {
@@ -49,10 +47,16 @@ const store = createStore({
         setAuthenticated(state, authVal) {
             state.authenticated = authVal
         },
+        startAuthenticating(state) {
+            state.authenticating = true;
+        },
+        stopAuthenticating(state) {
+            state.authenticating = false;
+        } 
     },
     actions: {
         async getCurrentUser({commit, state}) {
-            if (!state.authenticated) {
+            if (!state.authenticated || state.user.id === null) {
                 try {
                     await axios.get('/api/current-user')
                         .then(response => {

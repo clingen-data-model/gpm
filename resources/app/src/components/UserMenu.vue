@@ -21,12 +21,12 @@
                             <router-link :to="{name: 'me'}" @click="showMenu = false" class="p-3 block">My info</router-link>
                         </li>
                         <li class="hover:bg-blue-100 cursor-pointer border-t border-gray-300">
-                            <button class="p-3 block w-full text-blue-500 cursor-pointer text-right" @click="logout">
+                            <button class="p-3 block w-full cursor-pointer text-right" @click="logout">
                                 Log out
                             </button>
                         </li>
                         <li class="hover:bg-blue-100 cursor-pointer border-t border-gray-300">
-                            <a href="/admin/logs">Logs</a>
+                            <a href="/admin/logs" class="p-3 block">View Logs</a>
                         </li>
                     </ul>
                 </div>
