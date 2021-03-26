@@ -25,6 +25,9 @@
                                 Log out
                             </button>
                         </li>
+                        <li class="hover:bg-blue-100 cursor-pointer border-t border-gray-300">
+                            <a href="/admin/logs">Logs</a>
+                        </li>
                     </ul>
                 </div>
             </transition>
