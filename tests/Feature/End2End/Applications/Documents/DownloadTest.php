@@ -63,9 +63,9 @@ class DownloadTest extends TestCase
     {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
-        $response = $this->json('GET', '/documents/'.Uuid::uuid4());
+        $url = '/documents/'.Uuid::uuid4()->toString();
+        $response = $this->json('GET', $url);
         $response->assertStatus(404);
-        
     }
 
     /**
