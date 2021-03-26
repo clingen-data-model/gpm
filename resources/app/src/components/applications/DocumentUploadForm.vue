@@ -123,7 +123,6 @@ export default {
         }
     },
     mounted() {
-        console.log(this.$store.state);
         this.$store.dispatch('doctypes/getItems');
     }
 }

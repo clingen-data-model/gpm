@@ -63,10 +63,10 @@ export default function (config = {}) {
             async getItems({commit}) {
                 const items = await api.get(config.baseUrl)
                     .then(response => response.data);
-                console.log(namespace+'addItem');
-                for(let i in items) {
-                    commit('addItem', items[i])
-                }
+
+                    for(let i in items) {
+                        commit('addItem', items[i])
+                    }
     
             },
 

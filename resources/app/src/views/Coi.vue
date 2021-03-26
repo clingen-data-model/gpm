@@ -115,7 +115,6 @@ export default {
                         setInterval(() => {this.redirectCountdown--}, 1000)
                         setTimeout(() => {
                             this.$router.go(-1)
-                            console.log('shold have gone back')
                         }, 5000)
                     }
                 })

@@ -36,7 +36,7 @@ export default {
         removeAlert(state, uuid) {
             const idx = state.alerts.findIndex(a => a.uuid == uuid);
             if (idx < 0) {
-                console.error('Alert with uuid '+uuid+' not found in alerts.');
+                return;
             }
             state.alerts.splice(idx,1)
         },

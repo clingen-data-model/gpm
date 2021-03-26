@@ -46,8 +46,6 @@ export default {
             return this.application.finalDocumentOfType(this.documentTypeId);
         },
         finalDateReviewed () {
-            console.info('this.documentTypeId', this.documentTypeId);
-            console.info('finalDateReviewed', this.finalDocument.date_reviewed);
             if (!this.finalDocument.date_reviewed) {
                 return '--'
             }
