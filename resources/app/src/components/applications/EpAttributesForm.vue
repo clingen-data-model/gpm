@@ -27,9 +27,10 @@
             <application-contacts></application-contacts>
         </input-row>
         <input-row label="Expert Panel URL">
-            <div :class="{'text-gray-400': !hasAffiliationId}">
+            <div class="text-gray-400" v-show="!hasAffiliationId">
                 {{affiliationUrl}}
             </div>
+            <a v-show="hasAffiliationId" :href="affiliationUrl" target="clingen" class="text-blue-500 underline">{{affiliationUrl}}</a>
         </input-row>
         <div class="py-1 flex space-x-2">
             <button class="btn white btn-xs" @click="resetClone" :disabled="isClean">Reset</button>
