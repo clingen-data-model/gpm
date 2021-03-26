@@ -54,6 +54,10 @@ class Application extends Entity{
         throw new Error('Unknown ep_type_id found when determining applicaiton steps.');
     }
 
+    get hasContacts() {
+        return (this.contacts.length > 0);
+    }
+
     stepIsApproved(stepNumber) {
         if (!this.steps.includes(stepNumber)) {
             throw new Error(`Step ${stepNumber} out of bounds`)

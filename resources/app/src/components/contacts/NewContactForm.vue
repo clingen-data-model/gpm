@@ -152,7 +152,7 @@ export default {
         },
         async addExistingPersonAsContact(person) {
             try {
-                this.$store.dispatch('applications/addContact', {application: this.application, contact: person});
+                await this.$store.dispatch('applications/addContact', {application: this.application, contact: person});
                 this.clearForm();
                 this.$emit('saved');
                 this.$emit('done');

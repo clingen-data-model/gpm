@@ -45,6 +45,10 @@ export default {
             default: false
         }
     },
+    emits: [
+        'opened',
+        'closed'
+    ],
     data() {
         return {
             // isVisible: false

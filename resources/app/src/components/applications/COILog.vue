@@ -13,7 +13,12 @@
                     {{$store.state.hostname}}{{application.coi_url}}
                 </router-link>
                 &nbsp;
-                <a :href="mailtoLink" class="btn btn-xs">Send url to contacts.</a>
+                <a :href="mailtoLink" 
+                    class="btn btn-xs"
+                    v-show="application.hasContacts"
+                    ref="mailtobutton"
+                >Send url to contacts.</a>
+                <add-contact-control class="inline-block" v-show="!application.hasContacts"></add-contact-control>
             </div>
             <icon-refresh 
                 :height="14" :width="14" 
@@ -45,12 +50,14 @@
 import IconRefresh from '../icons/IconRefresh';
 import CoiDetail from './CoiDetail';
 import CoiLegacyUpload from './CoiLegacyUpload';
+import AddContactControl from '../contacts/AddContactControl.vue'
 
 export default {
     components: {
         IconRefresh,
         CoiDetail,
         CoiLegacyUpload,
+        AddContactControl,
     },
     props: {
         application: {
@@ -110,6 +117,9 @@ export default {
             this.refreshing = true;
             await this.$store.dispatch('applications/getApplication', this.application.uuid);
             this.refreshing = false;
+        },
+        mailToContacts() {
+            this.$refs.mailtobutton.click()
         }
     }
 }
