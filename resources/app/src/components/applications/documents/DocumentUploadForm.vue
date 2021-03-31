@@ -11,12 +11,12 @@
         
         <input-row label="Date Reviewed" type="date" v-model="newDocument.date_reviewed" :errors="errors.date_reviewed"></input-row>
 
-        <input-row label="" v-if="isReviewed">
+        <!-- <input-row label="" v-if="isReviewed">
             <label>
                 <input type="checkbox" v-model="newDocument.is_final" value="1">
                 This is the final document.
             </label>
-        </input-row>
+        </input-row> -->
         
         <button-row>
             <button class="btn white" @click="cancel">Cancel</button>
@@ -26,8 +26,8 @@
 </template>
 <script>
 import { mapState } from 'vuex';
-import {formatDate} from '../../date_utils'
-import is_validation_error from '../../http/is_validation_error';
+import {formatDate} from '../../../date_utils'
+import is_validation_error from '../../../http/is_validation_error';
 
 export default {
     props: {

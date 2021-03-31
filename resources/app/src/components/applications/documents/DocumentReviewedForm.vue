@@ -3,12 +3,12 @@
         <h3 class="text-lg border-b pb-1 mb-3">Mark Document Reviewed</h3>
 
         <input-row v-model="dateReviewed" label="Date Reviewed" :errors="errors.date_reviewed" type="date"></input-row>
-        <input-row label="" v-if="isReviewed">
+        <!-- <input-row label="" v-if="isReviewed">
             <label>
                 <input type="checkbox" v-model="isFinal">
                 This is the final document.
             </label>
-        </input-row>
+        </input-row> -->
         <button-row>
             <button class="btn" @click="cancel">Cancel</button>
             <button class="btn blue" @click="saveDateReviewed">Mark Reviewed</button>
@@ -16,7 +16,7 @@
     </div>
 </template>
 <script>
-import isValidationError from '../../http/is_validation_error'
+import isValidationError from '../../../http/is_validation_error'
 
 export default {
     name: 'DocumentReviewForm',

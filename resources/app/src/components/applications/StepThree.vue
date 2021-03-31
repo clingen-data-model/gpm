@@ -28,7 +28,7 @@
 import {mapGetters} from 'vuex'
 import {formatDate} from '../../date_utils'
 import BaseStep from './BaseStep'
-import DocumentManager from './DocumentManager'
+import DocumentManager from './documents/DocumentManager'
 
 export default {
     name: 'StepThree',

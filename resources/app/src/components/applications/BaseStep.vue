@@ -43,7 +43,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import ApplicationLog from './ApplicationLog'
-import DocumentManager from './DocumentManager'
+import DocumentManager from './documents/DocumentManager'
 import ApproveStepForm from './ApproveStepForm'
 
 export default {
