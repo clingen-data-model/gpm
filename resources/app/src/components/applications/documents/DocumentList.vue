@@ -41,8 +41,13 @@
         </data-table>
 
         <modal-dialog v-model="showReviewedForm">
-            <document-reviewed-form :document="activeDocument" :application="application" @canceled="hideReviewedForm" @saved="hideReviewedForm"></document-reviewed-form>
-        </modal-dialog>        
+            <document-reviewed-form 
+                :document="activeDocument" 
+                :application="application" 
+                @canceled="hideReviewedForm" 
+                @saved="hideReviewedForm"
+            ></document-reviewed-form>
+        </modal-dialog>
     </div>
 </template>
 <script>
@@ -128,8 +133,11 @@ export default {
             }
             return [];
         },
-        finalDocumentSet() {
-            return (this.filteredDocuments.findIndex(d => d.is_final) > -1)
+        hasFinalVersion() {
+            return (this.filteredDocuments.findIndex(d => d.is_final) > -1);
+        },
+        finalVersion() {
+            return this.filteredDocuments.find(d => d.is_final) || {};
         }
     },
     methods: {
@@ -143,8 +151,21 @@ export default {
         downloadDocument(item) {
             window.location = item.download_url;
         },
+        confirmNewFinal(item) {
+                const confirmMessage = `There is already a version of this document marked as final.  Only one version can be marked as final.  Do you want to mark this version (version ${item.version}) as final instead of ${this.finalVersion.version}`
+                return confirm(confirmMessage);
+        },
         markFinal(item) {
-            this.$store.dispatch('')
+            if (!this.hasFinalVersion || this.confirmNewFinal(item)) {
+                this.$store.dispatch(
+                    'applications/markDocumentVersionFinal',
+                    {
+                        application: this.application, 
+                        document: item
+                    }
+                );
+            }
+
         }
     }
 }

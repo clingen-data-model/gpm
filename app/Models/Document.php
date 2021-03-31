@@ -31,7 +31,7 @@ class Document extends Model
     ];
 
     protected $casts = [
-        'metadata' => 'array'
+        'metadata' => 'array',
     ];
 
     protected $dates = [
@@ -49,7 +49,7 @@ class Document extends Model
         return $this->belongsTo(DocumentType::class, 'document_type_id');
     }
 
-    public function scopetype($query, $type)
+    public function scopeType($query, $type)
     {
         $id = $type;
         if ($type instanceof DocumentType) {
@@ -61,6 +61,11 @@ class Document extends Model
     public function scopeVersion($query, $version)
     {
         return $query->where('version', $version);
+    }
+
+    public function scopeFinal($query)
+    {
+        return $query->where('is_final', 1);
     }
     
     public function getDownloadUrlAttribute()

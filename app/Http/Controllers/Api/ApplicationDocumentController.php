@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use App\Modules\Application\Models\Application;
+use App\Modules\Application\Jobs\MarkDocumentFinal;
 use App\Http\Requests\ApplicationDocumentStoreRequest;
 use App\Modules\Application\Jobs\MarkDocumentReviewed;
 use App\Modules\Application\Jobs\AddApplicationDocument;
@@ -54,6 +55,16 @@ class ApplicationDocumentController extends Controller
     public function markReviewed($appUuid, $docUuid, MarkDocumentReviewedRequest $request)
     {
         $job = new MarkDocumentReviewed($appUuid, $docUuid, Carbon::parse($request->date_reviewed));
+        $this->dispatcher->dispatch($job);
+
+        $updatedDocument = Document::findByUuid($docUuid);
+
+        return $updatedDocument;
+    }
+
+    public function markFinal($appUuid, $docUuid)
+    {
+        $job = new MarkDocumentFinal($appUuid, $docUuid);
         $this->dispatcher->dispatch($job);
 
         $updatedDocument = Document::findByUuid($docUuid);

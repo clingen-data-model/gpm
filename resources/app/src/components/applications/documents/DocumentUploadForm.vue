@@ -11,13 +11,6 @@
         
         <input-row label="Date Reviewed" type="date" v-model="newDocument.date_reviewed" :errors="errors.date_reviewed"></input-row>
 
-        <!-- <input-row label="" v-if="isReviewed">
-            <label>
-                <input type="checkbox" v-model="newDocument.is_final" value="1">
-                This is the final document.
-            </label>
-        </input-row> -->
-        
         <button-row>
             <button class="btn white" @click="cancel">Cancel</button>
             <button class="btn blue" @click="saveDocument">Save</button>
@@ -53,10 +46,8 @@ export default {
                 date_reviewed: null,
                 step: this.step,
                 document_type_id: this.documentTypeId,
-                is_final: 0
             },
             errors: {},
-            // documentType: {}
         }
     },
     computed: {
@@ -109,13 +100,13 @@ export default {
             this.clearErrors();
         },
         initNewDocument() {
+            this.$refs.fileInput.value = null;
             this.newDocument = {
                 file: null,
                 date_received: formatDate(new Date()),
                 date_reviewed: null,
                 step: this.step,
                 document_type_id: this.documentTypeId,
-                is_final: false
             }
         },
         clearErrors () {

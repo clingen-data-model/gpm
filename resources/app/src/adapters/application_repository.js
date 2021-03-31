@@ -85,12 +85,12 @@ async function addDocument(application, documentData) {
         .then(response => response.data);
 }
 
-async function markDocumentReviewed(application, document, dateReviewed, isFinal) {
+async function markDocumentReviewed(application, document, dateReviewed) {
     entityHasUuid(application);
     entityHasUuid(document);
 
     const url = `${baseUrl}/${application.uuid}/documents/${document.uuid}/review`
-    return await axios.post(url, {date_reviewed: dateReviewed, is_final: isFinal})
+    return await axios.post(url, {date_reviewed: dateReviewed})
         .then(response => response.data)
 }
 

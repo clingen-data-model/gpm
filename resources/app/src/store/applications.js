@@ -1,7 +1,7 @@
 import store from ".";
 import Application from '@/domain/application'
 import appRepo from '../adapters/application_repository';
-import axios from '@/http/api';
+import api from '@/http/api';
 
 export default {
     namespaced: true,
@@ -135,7 +135,7 @@ export default {
         // eslint-disable-next-line
         async completeNextAction({ commit }, {application, nextAction, dateCompleted }) {
             const url = `/api/applications/${application.uuid}/next-actions/${nextAction.uuid}/complete`;
-            await axios.post(url, {date_completed: dateCompleted})
+            await api.post(url, {date_completed: dateCompleted})
                 .then (() => {
                     store.dispatch('applications/getApplication', application.uuid)
                 })
@@ -143,7 +143,7 @@ export default {
         // eslint-disable-next-line
         async addLogEntry ({commit}, { application, logEntryData }) {
             const url = `/api/applications/${application.uuid}/log-entries`
-            await axios.post(url, logEntryData)
+            await api.post(url, logEntryData)
                 .then( () => {
                     store.dispatch('applications/getApplication', application.uuid);
                 })
@@ -151,6 +151,7 @@ export default {
         
         // eslint-disable-next-line
         async addDocument ({commit}, {application, documentData}) {
+            console.log(documentData);
             await appRepo.addDocument(application, documentData)
                 .then(() => {
                     store.dispatch('applications/getApplication', application.uuid)
@@ -163,6 +164,14 @@ export default {
             .then(() => {
                 store.dispatch('applications/getApplication', application.uuid)
             })
+        },
+
+        // eslint-disable-next-line
+        async markDocumentVersionFinal ({commit}, {application, document}) {
+            await api.post(`/api/applications/${application.uuid}/documents/${document.uuid}/final`)
+                .then(()=> {
+                    store.dispatch('applications/getApplication', application.uuid)
+                });
         },
 
         // eslint-disable-next-line

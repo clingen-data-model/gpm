@@ -23,6 +23,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     
     Route::post('/applications/{app_uuid}/documents', [ApplicationDocumentController::class, 'store']);
     Route::post('/applications/{app_uuid}/documents/{doc_uuid}/review', [ApplicationDocumentController::class, 'markReviewed']);
+    Route::post('/applications/{app_uuid}/documents/{doc_uuid}/final', [ApplicationDocumentController::class, 'markFinal']);
     
     Route::get('/applications/{app_uuid}/log-entries', [ApplicationLogController::class, 'index']);
     Route::post('/applications/{app_uuid}/log-entries', [ApplicationLogController::class, 'store']);
