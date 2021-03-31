@@ -7,7 +7,7 @@
         role="presentation"
     >
         <title :id="iconName" lang="en">
-            {{ iconName }} icon
+            {{ iconName }}
         </title>
 
         <g :fill="iconColor">
