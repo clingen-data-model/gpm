@@ -1,12 +1,10 @@
 <template>
     <div>
-        {{modelValue}}
         <input 
             type="date" 
             :value="formattedDate" 
             @input="setDate"
         >
-        <pre>{{formattedDate}}</pre>
     </div>
 </template>
 <script>
