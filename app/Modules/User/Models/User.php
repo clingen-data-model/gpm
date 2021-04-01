@@ -5,6 +5,8 @@ namespace App\Modules\User\Models;
 use App\Models\HasEmail;
 use Laravel\Sanctum\HasApiTokens;
 use Database\Factories\UserFactory;
+use Illuminate\Support\Facades\Cache;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
@@ -14,7 +16,7 @@ use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
 
 class User extends Authenticatable implements CanResetPassword
 {
-    use HasFactory, Notifiable, CanResetPasswordTrait, HasApiTokens, HasEmail;
+    use HasFactory, Notifiable, CanResetPasswordTrait, HasApiTokens, HasEmail, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -51,6 +53,27 @@ class User extends Authenticatable implements CanResetPassword
         return config('logging.channels.slack.url');
     }
 
+    public function hasPermissionTo($permString)
+    {
+        return $this->getAllPermissions()->contains('name', $permString);
+    }
+
+    public function getAllPermissions()
+    {
+        if (is_null($this->allPermissions)) {
+            $this->allPermissions = Cache::remember('user-'.$this->id.'-allPermissions', 60 * 20, function () {
+                $permissions = $this->permissions;
+
+                if ($this->roles) {
+                    $permissions = $permissions->merge($this->getPermissionsViaRoles());
+                }
+
+                return $permissions->sort()->values();
+            });
+        }
+
+        return $this->allPermissions;
+    }
 
     // Factory support
     static protected function newFactory()

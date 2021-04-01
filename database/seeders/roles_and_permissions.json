@@ -1,0 +1,80 @@
+{
+    "permissions": {
+        "singles": [
+            "logs-view",
+            "email-log-view"
+        ],
+        "groups": {
+            "applications": [
+                "initiate",
+                "list",
+                "view",
+                "update",
+                "delete",
+                "pre-approve step",
+                "approve step",
+                "create log entry",
+                "create next action",
+                "complete next action",
+                "add application document",
+                "mark document reviewed",
+                "mark document final",
+                "download document",
+                "add contact",
+                "remove contact",
+                "update expert panel attrirbutes"
+            ],
+            "people": [
+                "create",
+                "list",
+                "view",
+                "update",
+                "delete"
+            ],
+            "users": [
+                "create",
+                "list",
+                "view",
+                "update",
+                "delete"
+            ]
+        }
+    },
+    "roles": [
+        {
+            "name": "super-user",
+            "permissions": {
+                "singles": "*",
+                "groups": "*"
+            }
+        },
+        {
+            "name": "admin",
+            "permissions": {
+                "singles": [
+                    "email-log-view"
+                ],
+                "groups": [
+                    {
+                        "name": "applications",
+                        "permissions": "*"
+                    },
+                    {
+                        "name": "people",
+                        "permissions": "*"
+                    },
+                    {
+                        "name": "users",
+                        "permissions": [
+                            "create",
+                            "list",
+                            "view",
+                            "update",
+                            "delete"
+                        ]
+                    }
+                ]    
+            }
+       }
+    ]
+}
