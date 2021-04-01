@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands\Dev;
 
-use App\Notifications\Dev\Deployed;
-use App\User;
 use Illuminate\Console\Command;
+use App\Modules\User\Models\User;
+use App\Notifications\Dev\Deployed;
 
 class NotifyDeployed extends Command
 {

@@ -46,6 +46,10 @@ class User extends Authenticatable implements CanResetPassword
         'email_verified_at' => 'datetime',
     ];
 
+    public function routeNotificationForSlack()
+    {
+        return config('logging.channels.slack.url');
+    }
 
 
     // Factory support
