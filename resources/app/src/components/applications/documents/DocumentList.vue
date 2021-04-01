@@ -14,20 +14,17 @@
             </template>
 
             <template v-slot:cell-is_final="{item}">
-                <div v-if="item.date_reviewed">
-                    <icon-checkmark 
-                        v-if="!item.is_final" 
-                        @click="markFinal(item)" 
-                        title="Mark this the final version."
-                        class="text-gray-300 cursor-pointer inline"
-                    ></icon-checkmark>
-                    <icon-checkmark 
-                        class="text-green-600 inline" 
-                        v-if="item.is_final"
-                        title="This is the final document"
-                    ></icon-checkmark>
-                </div>
-                <span></span>
+                <icon-checkmark 
+                    v-if="!item.is_final" 
+                    @click="markFinal(item)" 
+                    title="Mark this the final version."
+                    class="text-gray-300 cursor-pointer inline"
+                ></icon-checkmark>
+                <icon-checkmark 
+                    class="text-green-600 inline" 
+                    v-if="item.is_final"
+                    title="This is the final document"
+                ></icon-checkmark>
             </template>
 
             <template v-slot:cell-id="{item}">
