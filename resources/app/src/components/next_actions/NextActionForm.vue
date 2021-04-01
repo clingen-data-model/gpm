@@ -26,7 +26,6 @@
     </div>
 </template>
 <script>
-import {formatDate} from '../../date_utils'
 import StepInput from '../forms/StepInput'
 import {mapGetters} from 'vuex'
 
