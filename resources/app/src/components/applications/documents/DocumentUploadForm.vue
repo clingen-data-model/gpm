@@ -7,7 +7,12 @@
             <input type="file" ref="fileInput">
         </input-row>
         
-        <input-row label="Date Received" type="date" v-model="newDocument.date_received" :errors="errors.date_receoved"></input-row>
+        <input-row 
+            label="Date Received" 
+            type="date" 
+            v-model="newDocument.date_received" 
+            :errors="errors.date_receoved"
+        ></input-row>
         
         <input-row label="Date Reviewed" type="date" v-model="newDocument.date_reviewed" :errors="errors.date_reviewed"></input-row>
 

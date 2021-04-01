@@ -8,7 +8,13 @@
                 </slot>
             </div>
             <slot>
+                <date-input 
+                    v-if="type == 'date'"
+                    :modelValue="modelValue" 
+                    @update:modelValue="emitValue" 
+                ></date-input>
                 <input 
+                    v-else
                     :type="type" 
                     :value="modelValue" 
                     @input="$emit('update:modelValue', $event.target.value)"
@@ -65,6 +71,12 @@ export default {
         },
         hasErrors () {
             return this.errors.length > 0;
+        },
+    },
+    methods: {
+        emitValue(evt) {
+            console.log(evt);
+            this.$emit('update:modelValue', evt)
         }
     }
 }

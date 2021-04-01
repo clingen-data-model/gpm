@@ -1,7 +1,7 @@
 <template>
     <div>
         <dictionary-row label="Final Document">
-            <a href="" class="text-blue-500 underline" v-if="finalDocument.filename">
+            <a :href="finalDocument.download_url" class="text-blue-500 underline" v-if="finalDocument.filename">
                 {{finalDocument.filename}}
             </a>
             <span v-else>none on file</span>

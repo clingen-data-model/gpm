@@ -1,0 +1,61 @@
+<template>
+    <div>
+        {{modelValue}}
+        <input 
+            type="date" 
+            :value="formattedDate" 
+            @input="setDate"
+        >
+        <pre>{{formattedDate}}</pre>
+    </div>
+</template>
+<script>
+export default {
+    props: {
+        modelValue: {
+            required: false,
+            default: null
+        }
+    },
+    emits: [
+        'update:modelValue'
+    ],
+    data() {
+        return {
+            
+        }
+    },
+    computed: {
+        formattedDate () {
+            if (!this.modelValue) {
+                return null;
+            }
+            const fmtdt = this.formatDate(this.modelValue)
+            console.log(fmtdt);
+            return fmtdt
+        }
+    },
+    methods: {
+        setDate(event) {
+            const date = new Date(Date.parse(event.target.value));
+            const adjustedDate = new Date(date.getTime() + date.getTimezoneOffset()*60*1000);
+
+            this.$emit('update:modelValue', adjustedDate)
+        },
+        formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2) 
+                month = '0' + month;
+            if (day.length < 2) 
+                day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+
+    }
+}
+</script>

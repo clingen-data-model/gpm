@@ -24,7 +24,7 @@ export default {
     data() {
         return {
             newEntry: {
-                log_date: formatDate(new Date),
+                log_date: new Date(),
                 step: null,
                 entry: null
             },
