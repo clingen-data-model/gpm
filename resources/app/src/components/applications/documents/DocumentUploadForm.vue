@@ -47,7 +47,7 @@ export default {
         return {
             newDocument: {
                 file: null,
-                date_received: formatDate(new Date()),
+                date_received: new Date(),
                 date_reviewed: null,
                 step: this.step,
                 document_type_id: this.documentTypeId,
