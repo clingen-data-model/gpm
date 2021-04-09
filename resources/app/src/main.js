@@ -8,6 +8,9 @@ const app = createApp(App)
 import IconBase from './components/icons/IconBase'
 app.component('icon-base', IconBase);
 
+import Note from './components/Note'
+app.component('note', Note);
+
 import Card from './components/Card';
 app.component('card', Card);
 
