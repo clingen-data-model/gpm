@@ -1,11 +1,27 @@
 <template>
     <div>
-        <slot name="document">
-            <div class="mb-6">
-                <div class="flex justify-between text-lg font-bold pb-2 mb-2 border-b">
-                    <h3 class="">{{documentName}}</h3>
-                    <div v-if="dateApproved">Appproved: {{dateApproved}}</div>
+        <div class="mb-6">
+
+            <div class="flex justify-between text-lg font-bold pb-2 mb-2 border-b">
+                <h3>
+                    {{title}}
+                </h3>
+                <div v-if="dateApproved">
+                    <div class="flex space-x-1" v-if="!editApprovalDate">
+                        <div class="text-white bg-green-600 rounded-xl px-2">
+                            Appproved: {{dateApproved}}
+                        </div>
+                        <edit-button class="text-black" @click="initEditApprovalDate"></edit-button>
+                    </div>
+                    <div class="flex space-x-1" v-else>
+                        <date-input v-model="newApprovalDate"></date-input>
+                        <button class="btn blue" @click="updateApprovalDate">Save</button>
+                        <remove-button @click="editApprovalDate = false"></remove-button>
+                    </div>
                 </div>
+            </div>
+            <slot name="document">
+                <h4 class="font-bold">{{documentName}}</h4>
                 <document-manager
                     class="border-b"
                     :application="application"
@@ -13,8 +29,8 @@
                     :getsReviewd="documentGetsReviewed"
                     :step="step"
                 ></document-manager>
-            </div>
-        </slot>
+            </slot>
+        </div>
 
         <!-- Approve step -->
         <div  
@@ -50,14 +66,24 @@ import { formatDate } from '../../date_utils'
 import ApplicationLog from './ApplicationLog'
 import DocumentManager from './documents/DocumentManager'
 import ApproveStepForm from './ApproveStepForm'
+import EditButton from '../buttons/EditIconButton'
+import RemoveButton from '../buttons/RemoveButton'
+import is_validation_error from '../../http/is_validation_error'
 
 export default {
     components: {
         ApplicationLog,
         DocumentManager,
         ApproveStepForm,
+        EditButton,
+        RemoveButton
     },
     props: {
+        title: {
+            type: String, 
+            required: false,
+            default: 'YOU SHOULD SET A TITLE'
+        },
         step: {
             type: Number,
             required: true
@@ -86,7 +112,9 @@ export default {
     emits: ['documentUploaded', 'stepApproved'],
     data() {
         return {
-            showApproveForm: false
+            showApproveForm: false,
+            editApprovalDate: false,
+            newApprovalDate: null
         }
     },
     computed: {
@@ -113,6 +141,27 @@ export default {
         },
         hideApproveForm () {
             this.showApproveForm = false;
+        },
+        initEditApprovalDate () {
+            this.editApprovalDate = true;
+            this.newApprovalDate = this.dateApproved;
+        },
+        async updateApprovalDate() {
+            try {
+                await this.$store.dispatch(
+                    'applications/updateApprovalDate', 
+                    {
+                        application: this.application, 
+                        dateApproved: this.newApprovalDate, 
+                        step: this.step
+                    }
+                );
+                this.editApprovalDate = false;
+            } catch (error) {
+                if (is_validation_error(error)) {
+                    this.errors = error.response.data.errors;
+                }
+            }
         }
     }
 }

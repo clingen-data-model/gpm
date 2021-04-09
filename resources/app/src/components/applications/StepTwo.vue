@@ -5,6 +5,7 @@
         document-name="Draft Specifications"
         :document-gets-reviewed="false"
         approve-button-label="Approve Draft Specifications"
+        title="Draft AMCG Guideline Specifications"
     >
     </base-step>
 </template>

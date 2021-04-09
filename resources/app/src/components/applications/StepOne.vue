@@ -2,6 +2,7 @@
     <base-step 
         :step="1" 
         document-name="Scope and Membership Application" 
+        title="Scope and Membership" 
         :document-type="1" 
         :document-gets-reviewed="true"
         approve-button-label="Approve Scope and Membership"

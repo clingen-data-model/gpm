@@ -191,6 +191,17 @@ export default {
         },
 
         // eslint-disable-next-line
+        async updateApprovalDate ({commit}, {application, dateApproved, step}) {
+            await api.put(`/api/applications/${application.uuid}/approve`, {
+                    date_approved: dateApproved,
+                    step: step
+                })
+                .then( () => {
+                    store.dispatch('applications/getApplication', application.uuid)
+                });
+        },
+
+        // eslint-disable-next-line
         async addContact ( { commit }, {application, contact} ) {
             await appRepo.addContact(application, contact)
                 .then( () => {

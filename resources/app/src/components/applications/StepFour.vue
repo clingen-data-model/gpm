@@ -5,6 +5,7 @@
         document-name="Final Approval"
         :document-gets-reviewed="true"
         approve-button-label="Approve Final Application"
+        title="Final Approval"
     >
     </base-step>
 </template>
