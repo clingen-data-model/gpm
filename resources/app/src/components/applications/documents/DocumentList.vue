@@ -33,9 +33,23 @@
                 <button class="btn btn-xs" @click="downloadDocument(item)">
                     <icon-download width="12" height="16"></icon-download>
                 </button>
+                <button class="btn btn-xs" @click="openEditForm(item)">
+                    <icon-edit width="12" height="16"></icon-edit>
+                    <!-- edit -->
+                </button>
                 </div>
             </template>
         </data-table>
+
+        <modal-dialog v-model="showEditForm">
+            <document-edit-form
+                :document="activeDocument"
+                :application="application"
+                @canceled="showEditForm = false"
+                @saved="showEditForm = false"
+                @triggermarkreviewed="showMarkReviewed"
+            ></document-edit-form>
+        </modal-dialog>
 
         <modal-dialog v-model="showReviewedForm">
             <document-reviewed-form 
@@ -45,18 +59,23 @@
                 @saved="hideReviewedForm"
             ></document-reviewed-form>
         </modal-dialog>
+
     </div>
 </template>
 <script>
 import IconDownload from '../../icons/IconDownload'
 import IconCheckmark from '../../icons/IconCheckmark'
+import IconEdit from '../../icons/IconEdit'
 import DocumentReviewedForm from './DocumentReviewedForm'
+import DocumentEditForm from './DocumentEditForm'
 
 export default {
     components: {
         IconDownload,
         IconCheckmark,
-        DocumentReviewedForm
+        DocumentReviewedForm,
+        DocumentEditForm,
+        IconEdit
     },
     props: {
         application: {
@@ -76,6 +95,7 @@ export default {
     data() {
         return {
             showReviewedForm: false,
+            showEditForm: false,
             activeDocument: {},
             fields: [
                 {
@@ -162,7 +182,10 @@ export default {
                     }
                 );
             }
-
+        },
+        openEditForm(item) {
+            this.showEditForm = true; 
+            this.activeDocument = item;
         }
     }
 }

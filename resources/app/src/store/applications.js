@@ -112,7 +112,7 @@ export default {
                 })
         },
         async getApplication({ commit }, appUuid) {
-            await appRepo.find(appUuid, {with: ['logEntries', 'documents', 'contacts', 'logEntries.causer', 'cois']})
+            await appRepo.find(appUuid, {with: ['logEntries', 'documents', 'contacts', 'logEntries.causer', 'cois', 'documents.type']})
                 .then(item => {
                     commit('addApplication', item)
                     commit('setCurrentItemIdx', item)
@@ -170,6 +170,14 @@ export default {
         async markDocumentVersionFinal ({commit}, {application, document}) {
             await api.post(`/api/applications/${application.uuid}/documents/${document.uuid}/final`)
                 .then(()=> {
+                    store.dispatch('applications/getApplication', application.uuid)
+                });
+        },
+
+        //eslint-disable-next-line
+        async updateDocumentInfo ({commit}, {application, document}) {
+            await api.put(`/api/applications/${application.uuid}/documents/${document.uuid}`, document)
+                .then(() => {
                     store.dispatch('applications/getApplication', application.uuid)
                 });
         },
