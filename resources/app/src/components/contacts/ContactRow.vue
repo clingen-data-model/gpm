@@ -1,15 +1,3 @@
-<style lang="postcss">
-    .btn-delete {
-       @apply cursor-pointer inline-block p-0.5 rounded-full border border-red-500 text-red-500 align-text-top outline-none;
-    }
-    .btn-delete:active, .btn-delete:focus {
-        @apply outline-none;
-    }
-    .btn-delete:active{
-        @apply border-red-900 text-red-900 bg-gray-100 outline-none;
-        transform: scale(.95)
-    }
-</style>
 <template>
     <div>
         {{contact.name}}
@@ -17,10 +5,8 @@
         <a class="text-blue-500 underline" :href="`mailto:${contact.email}`">{{contact.email}}</a>
         -
         {{contact.phone}}
-        
-        <button class="btn-delete" @click="confirmRemove">
-            <icon-close :height="8" :width="8"></icon-close>
-        </button>
+
+        <remove-button size="xs" @click="confirmRemove"></remove-button>        
 
         <modal-dialog v-model="showRemoveConfirmation">
             <h4 class="text-lg mb-3 border-b pb-1">Confirm Contact Removal</h4>
@@ -48,11 +34,11 @@
 <script>
 import { mapGetters } from 'vuex'
 import is_validation_error from '../../http/is_validation_error'
-import IconClose from '../icons/IconClose'
+import RemoveButton from '../buttons/RemoveButton'
 
 export default {
     components: {
-        IconClose
+        RemoveButton
     },
     props: {
         contact: {
