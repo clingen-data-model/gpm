@@ -7,20 +7,25 @@
                     <label :class="{'text-red-800': hasErrors}">{{label}}{{colon}}</label>
                 </slot>
             </div>
-            <slot>
-                <date-input 
-                    v-if="type == 'date'"
-                    :modelValue="modelValue" 
-                    @update:modelValue="emitValue" 
-                ></date-input>
-                <input 
-                    v-else
-                    :type="type" 
-                    :value="modelValue" 
-                    @input="$emit('update:modelValue', $event.target.value)"
-                    :placeholder="placeholder"
-                >
-            </slot>
+            <div>
+                <slot>
+                    <date-input 
+                        v-if="type == 'date'"
+                        :modelValue="modelValue" 
+                        @update:modelValue="emitValue" 
+                        :disabled="disabled"
+                    ></date-input>
+                    <input 
+                        v-else
+                        :type="type" 
+                        :value="modelValue" 
+                        @input="$emit('update:modelValue', $event.target.value)"
+                        :placeholder="placeholder"
+                        :disabled="disabled"
+                    >
+                </slot>
+                <slot name="after-input"></slot>
+            </div>
         </div>
     </div>
 </template>
@@ -57,6 +62,10 @@ export default {
         placeholder: {
             required: false,
             value: null
+        },
+        disabled: {
+            required: false,
+            default: false
         }
     },
     emits: [

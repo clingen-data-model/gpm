@@ -4,6 +4,7 @@
             type="date" 
             :value="formattedDate" 
             @input="handleDateInput"
+            :disabled="disabled"
         >
     </div>
 </template>
@@ -13,6 +14,10 @@ export default {
         modelValue: {
             required: false,
             default: null
+        },
+        disabled: {
+            required: false,
+            default: false
         }
     },
     emits: [
