@@ -2,8 +2,12 @@
     <div>
         <slot name="document">
             <div class="mb-6">
-                <h3 class="text-lg font-bold mb-1">{{documentName}}</h3>
+                <div class="flex justify-between text-lg font-bold pb-2 mb-2 border-b">
+                    <h3 class="">{{documentName}}</h3>
+                    <div v-if="dateApproved">Appproved: {{dateApproved}}</div>
+                </div>
                 <document-manager
+                    class="border-b"
                     :application="application"
                     :document-type-id="documentType"
                     :getsReviewd="documentGetsReviewed"
@@ -42,6 +46,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import { formatDate } from '../../date_utils'
 import ApplicationLog from './ApplicationLog'
 import DocumentManager from './documents/DocumentManager'
 import ApproveStepForm from './ApproveStepForm'
@@ -91,6 +96,13 @@ export default {
         isCurrentStep () {
             return this.step == this.application.current_step
         },
+        dateApproved () {
+            if (this.application.approvalDateForStep(this.step)) {
+                return formatDate(this.application.approvalDateForStep(this.step))
+            }
+
+            return null;
+        }
     },
     methods: {
         startApproveStep () {
