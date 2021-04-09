@@ -20,6 +20,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::delete('/applications/{app_uuid}/contacts/{person_uuid}', [ApplicationContactController::class, 'remove']);
     
     Route::post('/applications/{app_uuid}/current-step/approve', [ApplicationStepController::class, 'approve']);
+    Route::put('/applications/{app_uuid}/approve', [ApplicationStepController::class, 'updateApprovalDate']);
     
     Route::post('/applications/{app_uuid}/documents', [ApplicationDocumentController::class, 'store']);
     Route::put('/applications/{app_uuid}/documents/{doc_uuid}', [ApplicationDocumentController::class, 'update']);
