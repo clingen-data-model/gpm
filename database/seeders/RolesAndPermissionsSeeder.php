@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
@@ -23,6 +24,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $permissionGroups = $config['permissions']['groups'];
         $roles = $config['roles'];
 
+        DB::beginTransaction();
         foreach ($permissions as $perm) {
             Permission::firstOrcreate(['name' => $perm]);
         }
@@ -62,7 +64,7 @@ class RolesAndPermissionsSeeder extends Seeder
             }
 
         }
-        
+        DB::commit();
 
     }
 

@@ -11,9 +11,11 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use App\Modules\Application\Models\Application;
 use App\Modules\Application\Jobs\MarkDocumentFinal;
+use App\Modules\Application\Jobs\UpdateDocumentInfo;
 use App\Http\Requests\ApplicationDocumentStoreRequest;
 use App\Modules\Application\Jobs\MarkDocumentReviewed;
 use App\Modules\Application\Jobs\AddApplicationDocument;
+use App\Http\Requests\Applications\DocumentUpdateInfoRequest;
 use App\Http\Requests\Applications\MarkDocumentReviewedRequest;
 
 class ApplicationDocumentController extends Controller
@@ -51,6 +53,25 @@ class ApplicationDocumentController extends Controller
 
         return $newDocument->toArray();
     }
+
+    public function update($appUuid, $docUuid, DocumentUpdateInfoRequest $request)
+    {
+        $command = new UpdateDocumentInfo(
+            applicationUuid: $appUuid,
+            uuid: $docUuid,
+            dateReceived: $request->date_received,
+            dateReviewed: $request->date_reviewed,
+        );
+        $this->dispatcher->dispatch($command);
+        
+        $document = Document::findByUuidOrFail($docUuid);
+
+
+        return response($document,200);
+    }
+    
+
+
 
     public function markReviewed($appUuid, $docUuid, MarkDocumentReviewedRequest $request)
     {

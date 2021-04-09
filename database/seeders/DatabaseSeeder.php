@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $seederClasses = [
-            RolesAndPermissionsSeeder::class,
+            // RolesAndPermissionsSeeder::class,  //Needs optimization for testing.
             UsersTableSeeder::class,
             EpTypesTableSeeder::class,
             DocumentTypesTableSeeder::class,
