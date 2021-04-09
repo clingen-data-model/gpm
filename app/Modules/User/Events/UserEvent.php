@@ -13,7 +13,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class UserEvent extends RecordableEvent
+abstract class UserEvent extends RecordableEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

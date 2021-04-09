@@ -9,38 +9,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 
-class RecordableEvent
+abstract class RecordableEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public function getLogEntry():string
-    {
-        throw new Exception('Not implemented');
-    }
+    abstract public function getLogEntry():string;
 
-    public function getLog():string
-    {
-        throw new Exception('Not implemented');
-    }
+    abstract public function getLog():string;
 
-    public function hasSubject():bool
-    {
-        throw new Exception('Not implemented');
-    }
+    abstract public function hasSubject():bool;
 
-    public function getSubject():Model
-    {
-        throw new Exception('Not implemented');
-    }
+    abstract public function getSubject():Model;
 
-    public function getProperties():array
-    {
-        throw new Exception('Not implemented');
-    }
+    abstract public function getProperties():array;
 
-    public function getLogDate():Carbon
-    {
-        throw new Exception('Not implemented');
-    }
+    abstract public function getLogDate():Carbon;
 
 }

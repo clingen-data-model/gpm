@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Ramsey\Uuid\Type\Integer;
 
-class ApplicationEvent extends RecordableEvent
+abstract class ApplicationEvent extends RecordableEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
