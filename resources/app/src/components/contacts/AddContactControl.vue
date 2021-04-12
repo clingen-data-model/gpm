@@ -1,12 +1,16 @@
 <template>
     <div>
         <div class="align-baseline">
-            <button class="btn btn-xs" @click="showForm = true">
+            <button class="btn btn-xs" @click="initiateAddContact">
                 <slot>Add Contact</slot>
             </button>
         </div>
         <modal-dialog v-model="showForm">
-            <new-contact-form @done="showForm = false" @saved="triggerAddedContact"></new-contact-form>
+            <new-contact-form 
+                @done="showForm = false;"
+                @saved="triggerAddedContact"
+                @new-contact-canceled="$emit('new-contact-canceled')"
+            ></new-contact-form>
         </modal-dialog>
     </div>
 </template>
@@ -15,11 +19,14 @@ import {mapGetters} from 'vuex'
 import NewContactForm from './NewContactForm'
 
 export default {
+    name: 'AddContactControl',
     components: {
         NewContactForm
     },
     emits: [
-        'contactadded'
+        'new-contact-initiated',
+        'contact-added',
+        'new-contact-canceled'
     ],
     data() {
         return {
@@ -33,8 +40,12 @@ export default {
         })
     },
     methods: {
+        initiateAddContact() {
+            this.showForm = true;
+            this.$emit('new-contact-initiated');
+        },
         triggerAddedContact() {
-            this.$emit('contactadded');
+            this.$emit('contact-added');
         }
     }
 }

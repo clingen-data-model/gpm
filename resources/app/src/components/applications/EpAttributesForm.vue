@@ -24,7 +24,7 @@
             </select>
         </input-row>
         <input-row label="Contacts">
-            <application-contacts></application-contacts>
+            <application-contacts @new-contact-initiated="saveChanges()"></application-contacts>
         </input-row>
         <input-row label="Expert Panel URL">
             <div class="text-gray-400" v-show="!hasAffiliationId">
@@ -100,6 +100,9 @@ export default {
     },
     methods: {
         async saveChanges() {
+            if (!this.hasChanges) {
+                return;
+            }
             try {
                 this.clearErrors();
                 await this.$store.dispatch('applications/updateEpAttributes', this.appClone);

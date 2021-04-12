@@ -4,7 +4,7 @@
             v-for="contact in application.contacts" :key="contact.id"
             :contact="contact"
         ></contact-row>
-        <add-contact-control></add-contact-control>
+        <add-contact-control @new-contact-initiated="propagateEvent($event)"></add-contact-control>
     </div>
 </template>
 <script>
@@ -20,6 +20,9 @@ export default {
     props: {
         
     },
+    emits: [
+        'new-contact-initiated'
+    ],
     data() {
         return {
         }
@@ -30,6 +33,10 @@ export default {
         })
     },
     methods: {
+        propagateEvent(evt) {
+            console.log(evt);
+            this.$emit('new-contact-initiated')
+        }
     }
 }
 </script>
