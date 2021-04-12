@@ -21,7 +21,7 @@
             </div>
         </dictionary-row>
 
-        <dictionary-row label="Date Reviewed">
+        <!-- <dictionary-row label="Date Reviewed">
             <div v-show="!editDateReviewed">
                 {{finalDateReviewed}}
                 <edit-button @click="initEditReviewed"></edit-button>
@@ -31,7 +31,7 @@
                 <button class="btn btn-sm blue" @click="saveDateReviewed">Save</button>
                 <remove-button class="ml-1" @click="editDateReviewed = false"></remove-button>
             </div>
-        </dictionary-row>
+        </dictionary-row> -->
 
         <modal-dialog v-model="showEditForm">
             <document-edit-form
