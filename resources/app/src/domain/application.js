@@ -62,7 +62,7 @@ class Application extends Entity{
         if (!this.steps.includes(stepNumber)) {
             throw new Error(`Step ${stepNumber} out of bounds`)
         }
-        if (this.approval_dates === null) {
+        if (this.approval_dates === null || typeof this.approval_dates === 'undefined') {
             this.approval_dates = {};
         }
 
@@ -72,6 +72,10 @@ class Application extends Entity{
     approvalDateForStep(stepNumber) {
         if (!this.steps.includes(stepNumber)) {
             throw new Error(`Step ${stepNumber} out of bounds`)
+        }
+
+        if (this.approval_dates === null || typeof this.approval_dates === 'undefined') {
+            this.approval_dates = {};
         }
 
         const stepKey = `step ${stepNumber}`;

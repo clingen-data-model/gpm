@@ -14,7 +14,7 @@
             :errors="errors.date_receoved"
         ></input-row>
         
-        <input-row label="Date Reviewed" type="date" v-model="newDocument.date_reviewed" :errors="errors.date_reviewed"></input-row>
+        <!-- <input-row label="Date Reviewed" type="date" v-model="newDocument.date_reviewed" :errors="errors.date_reviewed"></input-row> -->
 
         <button-row>
             <button class="btn white" @click="cancel">Cancel</button>

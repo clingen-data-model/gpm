@@ -6,12 +6,12 @@
             :sort="{field: fields[0].name, desc: true}"
             v-if="filteredDocuments.length > 0"
         >
-            <template v-slot:cell-date_reviewed="{item, value}">
+            <!-- <template v-slot:cell-date_reviewed="{item, value}">
                 <div class="text-center">
                     <span v-if="value">{{value}}</span>
                     <button v-else class="btn btn-xs" @click="showMarkReviewed(item)">Mark reviewed</button>
                 </div>
-            </template>
+            </template> -->
 
             <template v-slot:cell-is_final="{item}">
                 <icon-checkmark 
@@ -113,11 +113,11 @@ export default {
                     label: 'Date Received',
                     type: Date,
                 },
-                {
-                    name: 'date_reviewed',
-                    label: 'Date Reviewed',
-                    type: Date,
-                },
+                // {
+                //     name: 'date_reviewed',
+                //     label: 'Date Reviewed',
+                //     type: Date,
+                // },
                 {
                     name: 'is_final',
                     label: 'Final',

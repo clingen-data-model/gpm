@@ -6,7 +6,7 @@
             {{document.filename}}
         </dictionary-row>
         <input-row v-model="docProxy.date_received" label="Date Received" type="date" :errors="errors.date_received"></input-row>
-        <input-row 
+        <!-- <input-row 
             v-model="docProxy.date_reviewed" 
             label="Date Reviewed" 
             type="date" 
@@ -16,7 +16,7 @@
             <template v-slot:after-input>
                 <note class="mt-1" v-if="!docProxy.date_reviewed">Mark this document reviewed to edit this field.</note>
             </template>
-        </input-row>
+        </input-row> -->
         <button-row>
             <button class="btn" @click="cancelEdit">Cancel</button>
             <button class="btn blue" @click="saveEdits">Save</button>

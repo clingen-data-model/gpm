@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.63800cd0278fe183ffeb568557f569ae.js"
+  "/precache-manifest.a586d2875b675a18813eb441bf7dc80f.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "EPAM"});
