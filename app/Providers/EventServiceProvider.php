@@ -21,13 +21,9 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         // NOTE That intra-module listeners are registered in the module's service provider.
-        // StepApproved::class => [
-        //     SendStepApprovedNotification::class
-        // ],
-        // ApplicationCompleted::class => [
-        //     SendApplicationCompletedNotification::class
-        // ],
-        
+        'Illuminate\Mail\Events\MessageSent' => [
+            'App\Listeners\Mail\StoreMailInDatabase'
+        ]        
     ];
 
     /**
