@@ -29,10 +29,15 @@ const routes = [
             import ( /* webpackChunkName: "about" */ '../views/About.vue')
     },
     {
+        name: 'mail-log',
+        path:'/mail-log',
+        component: () => import(/* webpackChunkName "mail-log" */ '../views/MailLog.vue'),
+    },
+    {
         name: 'not-found',
         path: '/:pathMatch(.*)*',
-        component: import (/* webpackChunkName "not-found" */ '../views/NotFound.vue'),
-    }
+        component: () => import (/* webpackChunkName "not-found" */ '../views/NotFound.vue'),
+    },
 ]
 
 const router = createRouter({

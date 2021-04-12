@@ -25,8 +25,11 @@
                                 Log out
                             </button>
                         </li>
+                        <li class="hover:bg-blue-100 cursor-pointer border-t-4 border-gray-300">
+                            <router-link :to="{name: 'mail-log'}" @click="showMenu = false" class="p-3 block">Mail log</router-link>
+                        </li>
                         <li class="hover:bg-blue-100 cursor-pointer border-t border-gray-300">
-                            <a href="/admin/logs" class="p-3 block">View Logs</a>
+                            <a href="/admin/logs" class="p-3 block">System Log</a>
                         </li>
                     </ul>
                 </div>

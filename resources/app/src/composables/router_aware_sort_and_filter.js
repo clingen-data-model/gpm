@@ -1,9 +1,10 @@
 import { useRouter, useRoute } from 'vue-router'
 import {computed} from 'vue'
 
-export default function () {
+export default function (defaultSort = null) {
     const router = useRouter()
     const route = useRoute()
+    defaultSort = (defaultSort) ? defaultSort : {field: 'name', desc: false}
     
     const sort = computed({
         immediate: true,
@@ -14,10 +15,7 @@ export default function () {
                     desc: Boolean(parseInt(route.query['sort-desc']))
                 }
             }
-            return {
-                field: 'name',
-                desc: false
-            }
+            return defaultSort;
         },
         set(sortObj) {
             const newSortQuery = {'sort-field': sortObj.field, 'sort-desc': sortObj.desc ? 1 : 0}
