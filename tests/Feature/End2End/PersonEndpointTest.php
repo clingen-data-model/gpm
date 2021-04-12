@@ -85,7 +85,7 @@ class PersonEndpointTest extends TestCase
                 'email' => ['The email field is required.'],
                 'first_name' => ['The first name field is required.'],
                 'last_name' => ['The last name field is required.'],
-                'phone' => ['The phone field is required.']
+                // 'phone' => ['The phone field is required.'] // Phone was determined to be optional by stakeholders.
             ]
         ]);
         $otherPerson = Person::factory()->create();

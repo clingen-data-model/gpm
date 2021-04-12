@@ -28,7 +28,7 @@ class PersonCreationRequest extends FormRequest
             'first_name' => 'required|max:256',
             'last_name' => 'required|max:256',
             'email' => 'required|email|unique:people,email',
-            'phone' => 'required'
+            'phone' => 'nullable'
         ];
     }
 

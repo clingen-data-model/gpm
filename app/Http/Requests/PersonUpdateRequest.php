@@ -33,7 +33,7 @@ class PersonUpdateRequest extends FormRequest
             ],
             'first_name' => 'required',
             'last_name' => 'required',
-            'phone' => 'required'
+            'phone' => 'nullable'
         ];
     }
 }
