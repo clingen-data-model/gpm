@@ -4,6 +4,7 @@
             type="date" 
             :value="formattedDate" 
             @input="handleDateInput"
+            @change="$emit('change')"
             :disabled="disabled"
         >
     </div>
@@ -21,7 +22,8 @@ export default {
         }
     },
     emits: [
-        'update:modelValue'
+        'update:modelValue',
+        'change'
     ],
     data() {
         return {

@@ -14,6 +14,7 @@
                         :modelValue="modelValue" 
                         @update:modelValue="emitValue" 
                         :disabled="disabled"
+                        @change="$emit('change')"
                     ></date-input>
                     <input 
                         v-else
@@ -22,6 +23,7 @@
                         @input="$emit('update:modelValue', $event.target.value)"
                         :placeholder="placeholder"
                         :disabled="disabled"
+                        @change="$emit('change')"
                     >
                 </slot>
                 <slot name="after-input"></slot>
@@ -69,7 +71,8 @@ export default {
         }
     },
     emits: [
-        'update:modelValue'
+        'update:modelValue',
+        'change'
     ],
     computed: {
         colon () {

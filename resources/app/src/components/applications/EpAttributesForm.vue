@@ -5,21 +5,24 @@
             v-model="appClone.long_base_name" 
             placeholder="Long base name"
             :errors="errors.long_base_name"
+            @change="saveChanges()"
         ></input-row>
         <input-row 
             label="Short Base Name" 
             v-model="appClone.short_base_name" 
             placeholder="Short base name"
             :errors="errors.short_base_name"
+            @change="saveChanges()"
         ></input-row>
         <input-row 
             label="Affiliation ID" 
             v-model="appClone.affiliation_id" 
             :placeholder="affiliationIdPlaceholder"
             :errors="errors.affiliation_id"
+            @change="saveChanges()"
         ></input-row>
         <input-row label="CDWG" :errors="errors.cdwg_id">
-            <select name="" id="" v-model="appClone.cdwg_id">
+            <select name="" id="" v-model="appClone.cdwg_id" @change="saveChanges()">
                 <option :value="cdwg.id" v-for="cdwg in cdwgs" :key="cdwg.id">{{cdwg.name}}</option>
             </select>
         </input-row>
@@ -32,10 +35,10 @@
             </div>
             <a v-show="hasAffiliationId" :href="affiliationUrl" target="clingen" class="text-blue-500 underline">{{affiliationUrl}}</a>
         </input-row>
-        <div class="py-1 flex space-x-2">
+        <!-- <div class="py-1 flex space-x-2">
             <button class="btn white btn-xs" @click="resetClone" :disabled="isClean">Reset</button>
             <button class="btn blue btn-xs" @click="saveChanges" :disabled="isClean">Save Changes</button>
-        </div>
+        </div> -->
     </div>
 </template>
 <script>
