@@ -22,7 +22,7 @@ class UsersTableSeeder extends Seeder
                 'role' => 'super-user'
             ],
             [
-                'name' => 'Danielle Azaritti',
+                'name' => 'Danielle Azzariti',
                 'email' => 'dazzarit@broadinstitute.org',
                 'password' => Hash::make(uniqid()),
                 'role' => 'admin'
