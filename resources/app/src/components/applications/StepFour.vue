@@ -2,7 +2,7 @@
     <base-step 
         :step="4"
         :document-type="5"
-        document-name="Final Approval"
+        document-name="Final Approved Application"
         :document-gets-reviewed="true"
         approve-button-label="Approve Final Application"
         title="Final Approval"

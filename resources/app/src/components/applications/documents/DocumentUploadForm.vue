@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- <pre>{{documentTypes}}</pre> -->
-        <h4 class="text-xl font-semibold pb-2 border-b mb-4">Upload document {{documentType.long_name}}</h4>
+        <h4 class="text-xl font-semibold pb-2 border-b mb-4">Upload {{documentType.long_name}} document(s)</h4>
 
         <input-row label="Document" :errors="errors.file">
             <input type="file" ref="fileInput">
@@ -41,7 +41,7 @@ export default {
             type: Number,
             required: false,
             default: null
-        }
+        },
     },
     data() {
         return {
