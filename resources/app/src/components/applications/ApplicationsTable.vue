@@ -77,6 +77,9 @@ export default {
                     sortable: true,
                     resolveValue (item) {
                         return item.isCompleted ? 'Completed' : item.current_step
+                    },
+                    resolveSort (item) {
+                        return item.isCompleted ? 5 : item.current_step
                     }
                 },
                 {
@@ -123,7 +126,7 @@ export default {
                         name: 'first_scope_document.date_received',
                         label: this.epTypeId == 2 ? 'Step 1 Received' : 'Application Received',
                         type: Date,
-                        sortable: false,
+                        sortable: true,
                         class: ['min-w-28'],
                         step: 1
 
@@ -132,7 +135,7 @@ export default {
                         name: 'approval_dates.step 1',
                         label: this.epTypeId == 2 ? 'Step 1 Approved' : 'Application Approved',
                         type: Date,
-                        sortable: false,
+                        sortable: true,
                         class: ['min-w-28'],
                         step: 1
                     },
@@ -140,7 +143,7 @@ export default {
                         name: 'approval_dates.step 2',
                         label: 'Step 2 Approved',
                         type: Date,
-                        sortable: false,
+                        sortable: true,
                         class: ['min-w-28'],
                         step: 2
                     },
@@ -148,7 +151,7 @@ export default {
                         name: 'approval_dates.step 3',
                         label: 'Step 3 Approved',
                         type: Date,
-                        sortable: false,
+                        sortable: true,
                         class: ['min-w-28'],
                         step: 3
                     },
@@ -156,7 +159,7 @@ export default {
                         name: 'first_final_document.date_received',
                         label: 'Step 4 Received',
                         type: Date,
-                        sortable: false,
+                        sortable: true,
                         class: ['min-w-28'],
                         step: 4
                     },
@@ -164,7 +167,7 @@ export default {
                         name: 'approval_dates.step 4',
                         label: 'Step 4 Approved',
                         type: Date,
-                        sortable: false,
+                        sortable: true,
                         class: ['min-w-28'],
                         step: 4
                     }
