@@ -1,0 +1,15 @@
+Data needed from CSPEC registry
+
+Events:
+CSpec Created
+CSpec Updated
+CSpec Draft Approval Update
+CSpec Final Approval Update
+CSpec Deleted
+
+All messages:
+CSPEC ID
+VCEP ID
+Step / Status
+Effective Date
+URL to CSpec and/or CSpec UI

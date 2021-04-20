@@ -74,7 +74,10 @@ export default {
                     name: 'current_step',
                     label: 'Current Step',
                     type: Number,
-                    sortable: true
+                    sortable: true,
+                    resolveValue (item) {
+                        return item.isCompleted ? 'Completed' : item.current_step
+                    }
                 },
                 {
                     name: 'latest_log_entry.created_at',

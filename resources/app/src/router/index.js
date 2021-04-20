@@ -23,6 +23,12 @@ const routes = [
         component: () => import (/* webpackChunkName "coi-survey" */ '../views/Coi.vue'),
         props: true
     },
+    {
+        name: 'alt-coi',
+        path: '/expert-panels/:name/coi/:code',
+        component: () => import (/* webpackChunkName "coi-survey" */ '../views/Coi.vue'),
+        props: true
+    },
     { name: 'about',
         path: '/about',
         component: () =>
@@ -32,6 +38,9 @@ const routes = [
         name: 'mail-log',
         path:'/mail-log',
         component: () => import(/* webpackChunkName "mail-log" */ '../views/MailLog.vue'),
+        meta: {
+            protected: true
+        }
     },
     {
         name: 'not-found',
