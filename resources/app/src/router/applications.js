@@ -1,8 +1,9 @@
 const ApplicationIndex = () => import ( /* webpackChunkName: "application-index" */ '../views/ApplicationsIndex.vue')
 const ApplicationDetail = () => import (/* webpackChunkName: "application-detail" */ '../views/applications/ApplicationDetail');
 const CreateApplicationForm = () => import ( /* webpackChunkName: "create-application-form" */ '../components/applications/CreateApplicationForm');
-const NextActionForm = () => import (/* next-action-form */ '../components/next_actions/NextActionForm')
-const LogEntryForm = () => import (/* log-entry-form */ '../components/log_entries/LogEntryForm')
+const NextActionForm = () => import (/* webpackChunkName: "next-action-form" */ '../components/next_actions/NextActionForm')
+const LogEntryForm = () => import (/* webpackChunkName: "log-entry-form" */ '../components/log_entries/LogEntryForm')
+const NewContactForm = () => import (/* webpackChunkName: "new-contact-form" */ '../components/contacts/NewContactForm')
 
 export default [
     { name: 'applications-index',
@@ -64,6 +65,14 @@ export default [
                     protected: true
                 },
                 props: true,
+            },
+            { name: 'AddContact',
+                path: 'add-contact',
+                component: NewContactForm,
+                meta: {
+                    showModal: true,
+                    protected: true
+                }
             }
         ]
     },

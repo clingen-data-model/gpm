@@ -15,7 +15,11 @@
 
 
       <modal-dialog v-model="showModal" size='md' @closed="$refs.initiateform.initForm()">
-        <create-application-form name="modal" @canceled="showModal = false" @saved="showModal = false" ref="initiateform"></create-application-form>
+        <create-application-form name="modal" 
+          @canceled="showModal = false" 
+          @saved="handleApplicationInitiated" 
+          ref="initiateform"
+        ></create-application-form>
       </modal-dialog>
   </div>
 </template>
@@ -35,6 +39,12 @@ export default {
     }
   },
   computed: {
+  },
+  methods: {
+    handleApplicationInitiated(applicationData) {
+      this.showModal = false;
+      this.$router.push({name: 'AddContact', params: {uuid: applicationData.uuid}})
+    }
   }
 }
 </script>

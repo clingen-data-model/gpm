@@ -113,7 +113,7 @@ export default {
         async save() {
             try {
                 await this.$store.dispatch('applications/initiateApplication', this.app)
-                this.$emit('saved');
+                this.$emit('saved', this.app);
             } catch (error) {
                 if (error.response && error.response.status == 422 && error.response.data.errors) {
                     this.errors = error.response.data.errors
