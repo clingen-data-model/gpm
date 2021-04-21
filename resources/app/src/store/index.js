@@ -2,6 +2,7 @@ import { createStore } from 'vuex'
 import ApplicationStore from './applications.js'
 import PeopleStore from './people.js'
 import CdwgStore from './cdwgs.js'
+import COIStore from './coi_store.js'
 import Alerts from './alerts'
 import axios from '@/http/api'
 import isAuthError from './../http/is_auth_error'
@@ -106,7 +107,8 @@ const store = createStore({
         cdwgs: CdwgStore,
         people: PeopleStore,
         alerts: Alerts,
-        doctypes: docTypeStore
+        coiStore: COIStore,
+        doctypes: docTypeStore,
     }
 })
 export default store

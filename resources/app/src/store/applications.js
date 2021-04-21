@@ -151,10 +151,10 @@ export default {
         
         // eslint-disable-next-line
         async addDocument ({commit}, {application, documentData}) {
-            console.log(documentData);
             await appRepo.addDocument(application, documentData)
-                .then(() => {
+                .then((response) => {
                     store.dispatch('applications/getApplication', application.uuid)
+                    return response;
                 })
         },
 

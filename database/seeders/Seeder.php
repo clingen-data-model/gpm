@@ -37,7 +37,7 @@ abstract class Seeder extends BaseSeeder
     {
         Model::unguard();
         foreach ($items as $itemData) {
-            $modelClass::updateOrCreate($itemData);
+            $modelClass::updateOrCreate(['id'=>$itemData['id']], $itemData);
         }
         Model::reguard();
     }

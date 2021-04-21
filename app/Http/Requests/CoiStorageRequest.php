@@ -26,6 +26,11 @@ class CoiStorageRequest extends FormRequest
     {
         $coiDefinition = json_decode(file_get_contents(base_path('resources/surveys/coi.json')));
 
+        if (request()->has('document_uuid')) {
+            $coiDefinition = json_decode(file_get_contents(base_path('resources/surveys/legacy_coi.json')));
+        }
+
+
         $rules = [];
         foreach ($coiDefinition->questions as $question) {
             if(isset($question->validation)) {

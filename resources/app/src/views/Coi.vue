@@ -106,26 +106,23 @@ export default {
                     this.verifying = false;
                 })
         },
-        storeResponse() {
+        async storeResponse() {
             this.saving = true;
-            api.post(`/api/coi/${this.code}`, this.response)
-                .then(() => {
-                    this.saved = true;
-                    if (this.$store.getters.isAuthed) {
-                        setInterval(() => {this.redirectCountdown--}, 1000)
-                        setTimeout(() => {
-                            this.$router.go(-1)
-                        }, 5000)
-                    }
-                })
-                .catch(e => {
-                    if (is_validation_error(e)) {
-                        this.errors = e.response.data.errors
-                    }
-                })
-                .then(() => {
-                    this.saving = false;
-                })
+            try {
+                await this.$store.dispatch('storeCoi', {code: this.code, coiData: this.response});
+                this.saved = true;
+                if (this.$store.getters.isAuthed) {
+                    setInterval(() => {this.redirectCountdown--}, 1000)
+                    setTimeout(() => {
+                        this.$router.go(-1)
+                    }, 5000)
+                }
+            } catch (error) {
+                if (is_validation_error(error)) {
+                    this.errors = error.response.data.errors
+                }
+            }
+            this.saving = false;
         }
     },
     mounted() {

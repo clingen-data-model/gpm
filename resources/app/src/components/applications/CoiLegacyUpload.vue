@@ -18,7 +18,8 @@
 </template>
 <script>
 import Application from '../../domain/application'
-import api from '../../http/api'
+import is_validation_error from '../../http/is_validation_error'
+// import api from '../../http/api'
 
 export default {
     props: {
@@ -27,6 +28,11 @@ export default {
             required: true
         }
     },
+    emits: [
+        'saved',
+        'canceled',
+        'done'
+    ],
     data() {
         return {
             showModal: false,
@@ -52,15 +58,32 @@ export default {
     },
     methods: {
         async save() {
-            const data = this.assembleFormData(this.$refs['fileInput'], this.newCoi);
-            api.post(`/api/applications/${this.application.uuid}`, data)
+            try {
+                const data = this.assembleFormData(this.$refs['fileInput'], this.newCoi);
+
+                await this.$store.dispatch('storeLegacyCoi', {application: this.application, coiData: data})
+                this.clearForm();
+                this.showModal = false;
+                this.$emit('saved');
+                this.$emit('done');
+            } catch (error) {
+                if (is_validation_error(error)) {
+                    this.errors = error.response.data.errors;
+                }
+            }
         },
         cancel() {
             this.clearForm();
             this.showModal = false;
+            this.$emit('canceled');
         },
         clearForm() {
-            
+            this.newCoi = {
+                email: null,
+                first_name: null,
+                last_name: null
+            };
+            this.errors = {}
         }
     },
     setup() {
@@ -73,6 +96,7 @@ export default {
                     data.append(key, val);
                 })
             data.append('file', fileInput.files[0]);
+            data.append('document_type_id', 6);
             return data;
         }
 

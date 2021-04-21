@@ -25,12 +25,17 @@ return [
         'final-app' => [
             'id' => 5,
             'name' => 'final-app',
-            'long_name' => 'final application',
+            'long_name' => 'final approved application',
         ],
         'coi' => [
             'id' => 6,
             'name' => 'coi',
             'long_name' => 'Conflict of interest (legacy)'
+        ],
+        'pilot-add' => [
+            'id' => 7,
+            'name' => 'pilot-add',
+            'long_name' => 'additional pilot'
         ]
     ]
 ];
