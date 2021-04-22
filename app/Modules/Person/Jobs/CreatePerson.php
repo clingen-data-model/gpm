@@ -22,7 +22,7 @@ class CreatePerson
         private string $first_name,
         private string $last_name,
         private string $email,
-        private string $phone,
+        private ?string $phone = null,
     )
     {
         //

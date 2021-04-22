@@ -27,6 +27,7 @@ class PersonEndpointTest extends TestCase
     public function it_can_create_a_person_entity()
     {
         $person = Person::factory()->make();
+        $person->phone = null;
 
         $this->json('POST', '/api/people', $person->toArray())
             ->assertStatus(200)
@@ -64,7 +65,7 @@ class PersonEndpointTest extends TestCase
             'first_name' => 'Beano', 
             'last_name'=>$person->last_name, 
             'email' => $person->email, 
-            'phone' => $person->phone
+            // 'phone' => $person->phone
         ])
             ->assertStatus(200)
             ->assertJson(['first_name' => 'Beano']);

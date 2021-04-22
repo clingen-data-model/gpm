@@ -50,7 +50,8 @@ class NotifyStepApprovedTest extends TestCase
 
         Bus::dispatch($job);
 
-        Notification::assertNothingSent();
+        // Notification::assertNothingSent();
+        Notification::assertSentTo($this->application->contacts, ApplicationStepApprovedNotification::class);        
     }
     
     /**
