@@ -7,16 +7,36 @@
             :data="data"
             :filter-term="filter" 
             row-class="cursor-pointer"
+            :row-click-handler="showMailDetail"
             v-model:sort="sort"
         >
             <template v-slot:cell-to="{item}">
                 <ul>
                     <li v-for="(name,email) in item.to" :key="email">
-                        {{}}{{email}}
+                        {{email}}
                     </li>
                 </ul>
             </template>
         </data-table>
+
+        <modal-dialog v-model="showDetail">
+            <dictionary-row label="To" label-class="font-bold" class="mb-1 border-b">
+                <div v-for="(name, address) in currentEmail.to" :key="address">
+                    {{address}}
+                </div>
+            </dictionary-row>
+            <dictionary-row label="From" label-class="font-bold" class="mb-1 border-b">
+                <div v-for="(name, address) in currentEmail.from" :key="address">
+                    {{address}}
+                </div>
+            </dictionary-row>
+            <dictionary-row label="Subject" label-class="font-bold" class="mb-1 border-b">
+                {{currentEmail.subject}}
+            </dictionary-row>
+            <dictionary-row label="Body" label-class="font-bold" class="mb-1">
+                <div v-html="currentEmail.body"></div>
+            </dictionary-row>
+        </modal-dialog>
     </div>
 </template>
 <script>
@@ -38,6 +58,7 @@ export default {
     },
     data() {
         return {
+            showDetail: false,
             fields: [
                 {        
                     name: 'to',
@@ -72,7 +93,8 @@ export default {
                     type: String
                 }
             ],
-            data: []
+            data: [],
+            currentEmail: {}
         }
     },
     computed: {
@@ -88,6 +110,10 @@ export default {
             } catch (error) {
                 alert(error);
             }
+        },
+        showMailDetail (item) {
+            this.currentEmail = item;
+            this.showDetail = true;
         }
     },
     mounted() {

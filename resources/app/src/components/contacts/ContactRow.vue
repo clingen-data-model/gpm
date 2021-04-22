@@ -3,9 +3,10 @@
         {{contact.name}}
         -
         <a class="text-blue-500 underline" :href="`mailto:${contact.email}`">{{contact.email}}</a>
-        -
-        {{contact.phone}}
-
+        <span v-if="contact.phone">
+            - {{contact.phone}}
+        </span>
+        &nbsp;
         <remove-button size="xs" @click="confirmRemove"></remove-button>        
 
         <modal-dialog v-model="showRemoveConfirmation">
