@@ -59,7 +59,9 @@ class UsersTableSeeder extends Seeder
             $role = $userData['role'];
             unset($userData['role']); 
             $user = User::create($userData);
-            $user->assignRole($role);
+            if (!app()->environment('testing')) {
+                $user->assignRole($role);
+            }
         }
 
     }

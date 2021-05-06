@@ -41,9 +41,14 @@ class ApplicationStepApprovedNotification extends Notification
      */
     public function toMail($notifiable)
     {
+        $stepViewMap = [
+            1 => 'applications.email.approvals.initial_approval',
+            2 => 'applications.email.approvals.vcep_step_2_approval'
+        ];
+
         return (new MailMessage)
                     ->subject('Application step '.$this->approvedStep.' for your ClinGen expert panel '.$this->application->name.' has been approved.')
-                    ->view('applications.email.step_approved', [
+                    ->view($stepViewMap[$this->approvedStep], [
                         'notifiable' => $notifiable,
                         'application' => $this->application,
                         'approvedStep' => $this->approvedStep,
