@@ -13,6 +13,7 @@ return [
     'key' => env('APP_KEY'),
     'cipher' => 'AES-256-CBC',
     'url_scheme' => env('URL_SCHEME', null),
+    'test_scheduler' => env('TEST_SCHEDULER', false),
     'providers' => [
         /*
          * Laravel Framework Service Providers...
