@@ -46,6 +46,10 @@ class ApplicationStepApprovedNotification extends Notification
             2 => 'applications.email.approval.vcep_step_2_approval'
         ];
 
+        if (!isset($stepViewMap[$this->approvedStep])) {
+            return;
+        }
+
         return (new MailMessage)
                     ->subject('Application step '.$this->approvedStep.' for your ClinGen expert panel '.$this->application->name.' has been approved.')
                     ->view($stepViewMap[$this->approvedStep], [

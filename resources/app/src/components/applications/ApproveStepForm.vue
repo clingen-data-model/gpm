@@ -5,9 +5,12 @@
         <input-row v-model="dateApproved" type="date" :errors="errors.date_approved" label="Date Approved"></input-row>
 
         <dictionary-row label="">
-            <label class="text-sm">
+            <label class="text-sm" v-if="[1,2].indexOf(application.current_step) > -1">
                 <input type="checkbox" v-model="notifyContacts" :value="true"> Send notification email to contacts
             </label>
+            <div class="text-gray-400 text-xs">
+                No emails have been defined for step {{application.current_step}} approval.
+            </div>
         </dictionary-row>
 
         <!-- <dictionary-row label="">
