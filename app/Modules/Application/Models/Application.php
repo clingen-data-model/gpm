@@ -108,7 +108,7 @@ class Application extends Model
     public function markDocumentReviewed(Document $document, Carbon $dateReviewed)
     {
         if (! is_null($document->date_reviewed)) {
-            Log::warning('Applicaiton::markDocumentReviewed attempted on document already marked reviewed');
+            Log::warning('Application::markDocumentReviewed attempted on document already marked reviewed');
             return;
         }
 
