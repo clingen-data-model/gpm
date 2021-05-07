@@ -1,0 +1,51 @@
+[
+    {
+        "name": "initiate-application",
+        "summary": "Guest should be able to initiate an EP Application",
+        "primary_actor": "guest",
+        "secondary_actors": [
+            "oc member"
+        ],
+        "goal": "Start a Expet Panel Application",
+        "description": "A user who may or may not be a ClinGen member needs to be able to start an Expert Panel Application.",
+        "acceptance_criteria": [
+            "Guest should be able to start an application without logging in",
+            "An OC member should be notified"
+        ],
+        "triggers": [],
+        "outcomes": [
+            {
+                "summary": "The new application has been stored in the database; an oc member should be notified about new application.",
+                "type": "success"
+            }
+        ],
+        "created_at": "1596572408"
+    },
+    {
+        "name": "create-group-from-application",
+        "summary": "An OC member creates a new coordinator from initiated application",
+        "primary_actor": "oc member",
+        "secondary_actors": [
+            "admin"
+        ],
+        "goal": "Create a new coordinator and group based on an applicaiton.",
+        "description": "Once a guest initiates an application, an OC member needs to be able to make the application \"live\", by creating a new coordinator, and group in the system.",
+        "acceptance_criteria": [
+            "OC member should be able to review the initial application",
+            "OC member should be able to create a user and group from the information in the initiated application"
+        ],
+        "triggers": [
+            {
+                "event": "Guest initiates an application.",
+                "use_case": "initiate-application"
+            }
+        ],
+        "outcomes": [
+            {
+                "summary": "Coordinator user is created; Group is created; new coordinator is related to new group; new coordinator notified.",
+                "type": "success"
+            }
+        ],
+        "timestamp": "1596572964"
+    }
+]
