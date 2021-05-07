@@ -42,8 +42,8 @@ class ApplicationStepApprovedNotification extends Notification
     public function toMail($notifiable)
     {
         $stepViewMap = [
-            1 => 'applications.email.approvals.initial_approval',
-            2 => 'applications.email.approvals.vcep_step_2_approval'
+            1 => 'applications.email.approval.initial_approval',
+            2 => 'applications.email.approval.vcep_step_2_approval'
         ];
 
         return (new MailMessage)
