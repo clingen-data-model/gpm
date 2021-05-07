@@ -14,12 +14,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $seederClasses = [
-            // RolesAndPermissionsSeeder::class,  //Needs optimization for testing.
+        $seederClasses = [];
+        if (!app()->environment('testing')) {
+            $seederClasses[] = RolesAndPermissionsSeeder::class; // Needs optimization for refreshing testing db
+        }
+            
+        $seederClasses = array_merge($seederClasses, [
             UsersTableSeeder::class,
             EpTypesTableSeeder::class,
             DocumentTypesTableSeeder::class,
-        ];
+        ]);
+        
         if (app()->environment('testing')) {
             $seederClasses[] = CdwgsTableSeeder::class;
         }
