@@ -24,10 +24,10 @@ class DatabaseSeeder extends Seeder
             EpTypesTableSeeder::class,
             DocumentTypesTableSeeder::class,
         ]);
-        
-        if (app()->environment('testing')) {
+
+        // if (app()->environment('testing')) {
             $seederClasses[] = CdwgsTableSeeder::class;
-        }
+        // }
 
         foreach ($seederClasses as $seederClass) {
             $seeder = new $seederClass();
