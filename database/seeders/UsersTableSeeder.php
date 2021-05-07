@@ -18,37 +18,31 @@ class UsersTableSeeder extends Seeder
             [
                 'name' => 'tj ward',
                 'email' => 'jward3@email.unc.edu',
-                'password' => Hash::make(uniqid()),
                 'role' => 'super-user'
             ],
             [
                 'name' => 'Danielle Azzariti',
                 'email' => 'dazzarit@broadinstitute.org',
-                'password' => Hash::make(uniqid()),
                 'role' => 'admin'
             ],
             [
                 'name' => 'Hanna Dziadzio',
                 'email' => 'hdziadzi@broadinstitute.org',
-                'password' => Hash::make(uniqid()),
                 'role' => 'admin'
             ],
             [
                 'name' => 'Emma Owens',
                 'email' => 'emma_owens@med.unc.edu',
-                'password' => Hash::make(uniqid()),
                 'role' => 'admin'
             ],
             [
                 'name' => 'Courtney Thaxton',
                 'email' => 'courtney_thaxton@med.unc.edu',
-                'password' => Hash::make(uniqid()),
                 'role' => 'admin'
             ],
             [
                 'name' => 'Laura Milko',
                 'email' => 'laura_milko@med.unc.edu',
-                'password' => Hash::make(uniqid()),
                 'role' => 'admin'
             ]
 
@@ -58,6 +52,8 @@ class UsersTableSeeder extends Seeder
 
             $role = $userData['role'];
             unset($userData['role']); 
+            $userData['password'] = (app()->environment('local')) ? Hash::make('tester') : Hash::make(uniqid());
+
             $user = User::create($userData);
             if (!app()->environment('testing')) {
                 $user->assignRole($role);
