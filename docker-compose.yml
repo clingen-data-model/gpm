@@ -2,8 +2,8 @@ version: "3"
 services: 
     app:
         build: .
-        image: epam-laravel-app
-        container_name: epam-laravel-app
+        image: epam-app
+        container_name: epam-app
         sysctls:
             - net.ipv4.ip_unprivileged_port_start=0
         depends_on:
@@ -41,7 +41,7 @@ services:
         environment:
             - REDIS_PASSWORD=beans
     artisan:
-        image: epam-laravel-app
+        image: epam-app
         container_name: epam-artisan
         volumes:
             - .:/srv/app
@@ -54,7 +54,7 @@ services:
             CONTAINER_ENV: local
 
     scheduler:
-        image: epam-laravel-app
+        image: epam-app
         container_name: epam-scheduler
         sysctls: 
             - net.ipv4.ip_unprivileged_port_start=0
@@ -67,7 +67,7 @@ services:
             CONTAINER_ENV: local
 
     queue:
-        image: epam-laravel-app
+        image: epam-app
         container_name: epam-queue
         sysctls: 
             - net.ipv4.ip_unprivileged_port_start=0
