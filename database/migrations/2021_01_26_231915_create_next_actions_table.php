@@ -17,9 +17,9 @@ class CreateNextActionsTable extends Migration
             $table->id();
             $table->uuid('uuid');
             $table->text('entry');
-            $table->date('date_created');
-            $table->date('target_date')->nullable();
-            $table->date('date_completed')->nullable();
+            $table->datetime('date_created');
+            $table->datetime('target_date')->nullable();
+            $table->datetime('date_completed')->nullable();
             $table->integer('step')->nullable();
             $table->unsignedBigInteger('application_id');
             $table->timestamps();

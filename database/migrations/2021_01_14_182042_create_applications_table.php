@@ -23,9 +23,9 @@ class CreateApplicationsTable extends Migration
             $table->string('long_base_name')->unique()->nullable();
             $table->string('affiliation_id', 8)->unique()->nullable();
             $table->integer('current_step')->default(1);
-            $table->date('date_initiated')->nullable();
+            $table->datetime('date_initiated')->nullable();
             $table->json('approval_dates')->nullable();
-            $table->date('date_completed')->nullable();
+            $table->datetime('date_completed')->nullable();
             $table->string('coi_code', 24)->unique();
             $table->timestamps();
             $table->softDeletes();

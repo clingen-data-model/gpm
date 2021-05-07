@@ -23,8 +23,8 @@ class CreateDocumentsTable extends Migration
             $table->json('metadata')->nullable();
             $table->unsignedBigInteger('document_type_id');
             $table->integer('version')->default(1);
-            $table->date('date_received')->useCurrent();
-            $table->date('date_reviewed')->nullable();
+            $table->datetime('date_received')->useCurrent();
+            $table->datetime('date_reviewed')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
