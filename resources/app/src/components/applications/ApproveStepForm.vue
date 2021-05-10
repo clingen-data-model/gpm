@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <form-container @keyup.enter="save">
         <h3 class="text-lg">Approve Step {{application.current_step}}</h3>
         
         <input-row v-model="dateApproved" type="date" :errors="errors.date_approved" label="Date Approved"></input-row>
@@ -23,7 +23,7 @@
             <button class="btn" @click="cancel">Cancel</button>
             <button class="btn blue" @click="save">Approve step {{application.current_step}}</button>
         </button-row>
-    </div>
+    </form-container>
 </template>
 <script>
 import {mapGetters} from 'vuex'
@@ -77,6 +77,11 @@ export default {
                 }
             }
         }
+    },
+    mounted() {
+        // console.log(this.$el.querySelectorAll('input'));
+        // this.$el.querySelectorAll('input')[0].focus();
     }
+
 }
 </script>

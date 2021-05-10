@@ -1,7 +1,7 @@
 <template>
-    <div class="log-entry-form">
+    <form-container class="log-entry-form" @keyup.enter="save">
         <h4 class="pb-2 border-b my-2 text-xl">Add Log Entry</h4>
-        <input-row label="Log Date" v-model="newEntry.log_date" :errors="errors.log_date" type="date"></input-row>
+        <input-row label="Log Date" v-model="newEntry.log_date" :errors="errors.log_date" type="date" ref="logdate"></input-row>
         <step-input v-model="newEntry.step" :errors="errors.step" v-if="application.ep_type_id == 2"></step-input>
         <input-row label="Entry" :errors="errors.entry">
             <textarea cols="30" rows="10" v-model="newEntry.entry"></textarea>
@@ -10,7 +10,7 @@
             <button class="btn" @click="cancel">Cancel</button>
             <button class="btn blue" @click="save">Save</button>
         </button-row>
-    </div>
+    </form-container>
 </template>
 <script>
 import {mapGetters} from 'vuex'
@@ -60,6 +60,9 @@ export default {
                 }
             }
         }
+    },
+    mounted() {
+        this.$el.querySelectorAll('input')[0].focus();
     }
 }
 </script>

@@ -1,13 +1,13 @@
 <template>
-    <div>
+    <form-container @keyup.enter="save">
         <h3 class="text-lg border-b py-2">Edit - {{person.name}}</h3>
-        <input-row label="First Name" :errors="errors.first_name" v-model="workingPerson.first_name"></input-row>
+        <input-row label="First Name" :errors="errors.first_name" v-model="workingPerson.first_name" ref="firstname"></input-row>
         <input-row label="Last Name" :errors="errors.last_name" v-model="workingPerson.last_name"></input-row>
         <input-row label="Email" :errors="errors.email" v-model="workingPerson.email"></input-row>
         <input-row label="Phone" :errors="errors.phone" v-model="workingPerson.phone"></input-row>
 
-        <button-row @cancelClicked="handleCancel" @submitClicked="handleSaved" submitText="Save"></button-row>
-    </div>
+        <button-row @cancelClicked="handleCancel" @submitClicked="save" submitText="Save"></button-row>
+    </form-container>
 </template>
 <script>
 import {mapGetters} from 'vuex'
@@ -52,7 +52,7 @@ export default {
             this.syncWorkingPerson();
             this.backToDetail()
         },
-        async handleSaved () {
+        async save () {
             try {
                 await this.$store.dispatch('people/updateAttributes', {uuid: this.person.uuid, attributes: this.workingPerson})
                 this.backToDetail();
@@ -64,6 +64,7 @@ export default {
         }
     },
     mounted() {
+        this.$refs.firstname.focus();
     }
 }
 </script>

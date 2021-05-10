@@ -128,7 +128,6 @@ export default {
             this.newDateReviewed = this.finalDateReviewed
         },
         async saveDateReviewed() {
-            console.log (this.finalDocument)
             try {
                 await this.$store.dispatch('applications/updateDocumentInfo', {
                         application: this.application, 

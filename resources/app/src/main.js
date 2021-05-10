@@ -20,6 +20,9 @@ app.component('data-table', DataTable);
 import ModalDialog from './components/ModalDialog'
 app.component('modal-dialog', ModalDialog);
 
+import FormContainer from './components/forms/FormContainer'
+app.component('form-container', FormContainer);
+
 import DateInput from './components/forms/DateInput'
 app.component('date-input', DateInput);
 import InputRow from './components/forms/InputRow'

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <form-container @keyup.enter="save">
         <h3 class="text-lg border-b pb-1 mb-3">Edit {{type}} version {{document.version}} Info</h3>
 
         <dictionary-row label="File">
@@ -18,10 +18,10 @@
             </template>
         </input-row> -->
         <button-row>
-            <button class="btn" @click="cancelEdit">Cancel</button>
-            <button class="btn blue" @click="saveEdits">Save</button>
+            <button class="btn" @click="cancel">Cancel</button>
+            <button class="btn blue" @click="save">Save</button>
         </button-row>
-    </div>
+    </form-container>
 </template>
 <script>
 import is_validation_error from '../../../http/is_validation_error';
@@ -55,17 +55,16 @@ export default {
         document: {
             immediate: true,
             handler () {
-                console.log(this.document);
                 this.docProxy = JSON.parse(JSON.stringify(this.document))
             }
         }
     },
     methods: {
-        cancelEdit() {
+        cancel() {
             this.docProxy = {};
             this.$emit('canceled');
         },
-        async saveEdits() {
+        async save() {
             try {
                 await this.$store.dispatch('applications/updateDocumentInfo', {application: this.application, document: this.docProxy});
                 this.docProxy = {};

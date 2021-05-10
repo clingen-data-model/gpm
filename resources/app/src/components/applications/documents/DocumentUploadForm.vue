@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <form-container @keyup.enter="save">
         <!-- <pre>{{documentTypes}}</pre> -->
         <h4 class="text-xl font-semibold pb-2 border-b mb-4">Upload {{documentType.long_name}} document(s)</h4>
 
@@ -18,9 +18,9 @@
 
         <button-row>
             <button class="btn white" @click="cancel">Cancel</button>
-            <button class="btn blue" @click="saveDocument">Save</button>
+            <button class="btn blue" @click="save">Save</button>
         </button-row>
-    </div>
+    </form-container>
 </template>
 <script>
 import { mapState } from 'vuex';
@@ -71,7 +71,7 @@ export default {
         }
     },
     methods: {
-        async saveDocument() {
+        async save() {
             try {
                 let data = new FormData();
                 Object.keys(this.newDocument)

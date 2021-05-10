@@ -1,12 +1,12 @@
 <template>
-    <div>
+    <form-container @keyup.enter="authenticate">
         <input-row v-model="email" label="Email" type="text" :errors="errors.email" required></input-row>
         <input-row v-model="password" label="Password" type="password" :errors="errors.password" required></input-row>
         
         <p><router-link class="text-blue-500 underline" :to="{name: 'reset-password'}">Forget your password?</router-link></p>
 
         <button-row><button class="btn blue" @click="authenticate">Log in</button></button-row>
-    </div>
+    </form-container>
 </template>
 <script>
 import is_validation_error from '../http/is_validation_error'

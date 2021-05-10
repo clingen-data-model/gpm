@@ -1,6 +1,5 @@
 <template>
-    <div :class="{'border border-red-500 rounded-sm p-2 mb-2': hasErrors}">
-        <input-errors :errors="errors"></input-errors>
+    <div :class="{'border-l border-red-800 px-2': hasErrors}">
         <div class="my-3" :class="{'flex': !vertical}">
             <div :class="{'w-36': !vertical, 'my-1': vertical}">
                 <slot name="label" v-if="label">
@@ -15,6 +14,7 @@
                         @update:modelValue="emitValue" 
                         :disabled="disabled"
                         @change="$emit('change')"
+                        ref="input"
                     ></date-input>
                     <input 
                         v-else
@@ -24,9 +24,11 @@
                         :placeholder="placeholder"
                         :disabled="disabled"
                         @change="$emit('change')"
+                        ref="input"
                     >
                 </slot>
                 <slot name="after-input"></slot>
+                <input-errors class="text-xs" :errors="errors"></input-errors>
             </div>
         </div>
     </div>
@@ -87,9 +89,12 @@ export default {
     },
     methods: {
         emitValue(evt) {
-            console.log(evt);
             this.$emit('update:modelValue', evt)
+        },
+        focus() {
+            this.$refs.input.focus();
         }
+
     }
 }
 </script>

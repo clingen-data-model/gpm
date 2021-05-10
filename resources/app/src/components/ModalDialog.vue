@@ -47,7 +47,8 @@ export default {
     },
     emits: [
         'opened',
-        'closed'
+        'closed',
+        'update:modelValue'
     ],
     data() {
         return {

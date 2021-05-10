@@ -33,8 +33,7 @@ export default {
         })
     },
     methods: {
-        propagateEvent(evt) {
-            console.log(evt);
+        propagateEvent() {
             this.$emit('new-contact-initiated')
         }
     }

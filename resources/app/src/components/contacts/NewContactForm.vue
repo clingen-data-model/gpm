@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <form-container @keyup.enter="save">
         <h4 class="text-lg">Add a contact</h4>
         <div class="flex space-x-4">
             <div class="flex-1">
@@ -60,7 +60,7 @@
                 </div>
             </transition>
         </div>
-    </div>
+    </form-container>
 </template>
 <script>
 import {mapGetters} from 'vuex'

@@ -1,7 +1,9 @@
 <template>
     <div>
         <input 
-            type="date" 
+            ref="input"
+            type="date"
+            class="date-input"
             :value="formattedDate" 
             @input="handleDateInput"
             @change="$emit('change')"
@@ -65,6 +67,11 @@ export default {
                 day = '0' + day;
 
             return [year, month, day].join('-');
+        },
+        focus() {
+            this.$nextTick(() => {
+                this.$refs.input.focus();
+            });
         }
     },
     mounted() {

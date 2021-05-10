@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <form-container @keydown.enter="save">
         <h4 class="text-xl font-semibold pb-2 border-b mb-4">Initiate Application</h4>
         <input-row
             label="Working Name"
@@ -54,7 +54,7 @@
             <button class="btn" @click="cancel">Cancel</button>
             <button class="btn blue" @click="save">Initiate Application</button>
         </button-row>
-    </div>
+    </form-container>
 </template>
 <script>
 import { mapGetters } from 'vuex'

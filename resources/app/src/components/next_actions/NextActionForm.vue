@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <form-container @keyup.enter="save">
         <h4 class="pb-2 border-b my-2 text-xl">Add Next Action</h4>
         <input-row label="Creation Date" :errors="errors.date_created" type="date" v-model="newAction.date_created"></input-row>
 
@@ -23,7 +23,7 @@
             <button class="btn" @click="cancel">Cancel</button>
             <button class="btn blue" @click="save">Save</button>
         </button-row>
-    </div>
+    </form-container>
 </template>
 <script>
 import StepInput from '../forms/StepInput'
