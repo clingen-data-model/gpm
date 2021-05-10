@@ -15,3 +15,5 @@ yarn-error.log
 .openshift/secrets.env
 .openshift/epam.env
 psysh/*
+gpm_clinicalgenome_org.csr
+gpm_clinicalgenome_org.key

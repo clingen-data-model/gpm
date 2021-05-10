@@ -21,7 +21,7 @@ abstract class RecordableEvent
 
     abstract public function getSubject():Model;
 
-    abstract public function getProperties():array;
+    abstract public function getProperties():?array;
 
     abstract public function getLogDate():Carbon;
 

@@ -11,13 +11,13 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class UserCreated extends UserEvent
+class UserUpdated extends UserEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public function getLogEntry(): string
     {
-        return 'User created: '.$this->user->name.' <'.$this->user->email.'> ('.$this->user->id.')';
+        return 'User updated';
     }
     
 

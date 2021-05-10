@@ -7,6 +7,7 @@ use App\Events\RecordableEvent;
 use Illuminate\Support\Facades\Event;
 use App\Modules\Foundation\ClassGetter;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Auth\Events\Authenticated;
 use App\Modules\Foundation\ModuleServiceProvider;
 
 class UserModuleServiceProvider extends ModuleServiceProvider
@@ -23,16 +24,6 @@ class UserModuleServiceProvider extends ModuleServiceProvider
     public function register()
     {
         parent::register();
-    }
-
-    /**
-     * Bootstrap services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        //
     }
 
     protected function getEventPath()

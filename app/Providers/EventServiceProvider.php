@@ -2,14 +2,13 @@
 
 namespace App\Providers;
 
-use App\Listeners\RecordEvent;
-use App\Listeners\TestListener;
-use App\Modules\Application\Events\ApplicationCompleted;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Auth\Events\Registered;
 
-use App\Modules\Application\Events\StepApproved;
-use App\Modules\Application\Events\ApplicationInitiated;
+use App\Modules\User\Events\UserLoggedIn;
+use App\Modules\User\Events\UserLoggedOut;
+use App\Modules\User\Events\UserAuthenticated;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -23,7 +22,7 @@ class EventServiceProvider extends ServiceProvider
         // NOTE That intra-module listeners are registered in the module's service provider.
         'Illuminate\Mail\Events\MessageSent' => [
             'App\Listeners\Mail\StoreMailInDatabase'
-        ]        
+        ]
     ];
 
     /**
@@ -33,5 +32,11 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Event::listen(function (Login $event) {
+            Event::dispatch(new UserLoggedIn($event->user));
+        });
+        Event::listen(function (Logout $event) {
+            Event::dispatch(new UserLoggedOut($event->user));
+        });
     }
 }

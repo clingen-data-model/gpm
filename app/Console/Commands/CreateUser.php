@@ -2,12 +2,14 @@
 
 namespace App\Console\Commands;
 
-use App\Modules\User\Models\User;
 use Illuminate\Console\Command;
+use App\Modules\User\Models\User;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use App\Modules\User\Jobs\CreateUser as JobsCreateUser;
 
 class CreateUser extends Command
 {
@@ -48,7 +50,8 @@ class CreateUser extends Command
             $email = $this->getEmail();
 
             if ($this->confirm('You are about to create a new user for '.$name.' <'.$email.'>.  Do you want to continue', true)) {
-                $newUser = User::create(['name' => $name, 'email' => $email, 'password' => Hash::make(uniqid())]);
+                $job = new JobsCreateUser(name: $name, email: $email);
+                $newUser = Bus::dispatch($job);
                 if ($newUser) {
                     $this->info('Account created for '.$name.' with email '.$email);
                 }
