@@ -27,7 +27,7 @@ class InitiateApplicationRequest extends FormRequest
             'uuid' => 'required|uuid',
             'working_name' => 'required|max:256|min:3',
             'date_initiated' => 'nullable|date',
-            'cdwg_id' => 'required|exists:cdwgs,id',
+            'cdwg_id' => 'nullable|exists:cdwgs,id',
             'ep_type_id' => 'required|exists:ep_types,id',
         ];
     }
@@ -39,5 +39,4 @@ class InitiateApplicationRequest extends FormRequest
             'ep_type_id.exists' => 'The selected expert panel type is invalid.',
         ];
     }
-    
 }

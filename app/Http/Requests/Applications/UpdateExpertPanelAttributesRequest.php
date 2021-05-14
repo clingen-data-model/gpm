@@ -25,7 +25,7 @@ class UpdateExpertPanelAttributesRequest extends FormRequest
     {
         return [
             'working_name' => 'required|max:255',
-            'cdwg_id' => 'required|exists:cdwgs,id',
+            'cdwg_id' => 'nullable|exists:cdwgs,id',
             'long_base_name' => 'nullable|max:255',
             'short_base_name' => 'nullable|max:15',
             'affiliation_id' => 'nullable|max:8',

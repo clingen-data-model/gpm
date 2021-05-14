@@ -21,7 +21,7 @@ class InitiateApplication
     public function __construct(
         private string $uuid,
         private string $working_name,
-        private string $cdwg_id,
+        private int|null $cdwg_id,
         private int $ep_type_id,
         private ?DateTime $date_initiated = null,
     )
@@ -29,6 +29,7 @@ class InitiateApplication
         if (is_null($this->date_initiated)) {
             $this->date_initiated = Carbon::now();
         }
+
     }
 
     public function handle(): void

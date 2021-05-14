@@ -31,7 +31,10 @@ class CdwgsTableSeeder extends Seeder
             'Skeletal Disorders CDWG',
             'Ocular CDWG',
             'Immunology CDWG',
-            'Neurodegenerative'
+            'Neurodegenerative',
+            'Somatic CDWG',
+            'Pulmonary CDWG',
+            'Other'
         ];
         foreach ($names as $name) {
             Cdwg::create([

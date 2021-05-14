@@ -93,7 +93,6 @@ class UpdateExpertPanelAttributesTest extends TestCase
             ->assertStatus(422)
             ->assertJsonFragment([
                 'working_name' => ['The working name field is required.'],
-                'cdwg_id' => ['The cdwg id field is required.'],
             ]);
     }
 

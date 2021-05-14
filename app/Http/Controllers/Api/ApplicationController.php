@@ -89,7 +89,7 @@ class ApplicationController extends Controller
     public function store(InitiateApplicationRequest $request)
     {
         $data = $request->except('contacts');
-        $data['cdwg_id'] = (int)$request->cdwg_id;
+        $data['cdwg_id'] = $request->cdwg_id;
         $data['date_initiated'] = $request->date_initiated ? Carbon::parse($request->date_initiated) : null;
         $job = new InitiateApplication(...$data);
         $this->dispatcher->dispatchNow($job);

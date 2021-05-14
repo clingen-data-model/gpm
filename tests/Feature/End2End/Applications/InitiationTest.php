@@ -29,17 +29,18 @@ class InitiationTest extends TestCase
      */
     public function can_create_initiate_an_application()
     {
-        $this->seed();    
+        $this->seed();
 
         $data = $this->makeApplicationData();
+        $data['cdwg_id'] = null;
         $response = $this->json('POST', '/api/applications', $data);
 
         $response->assertStatus(200);
 
         $expectedAttributes = array_merge(
-            $data, 
+            $data,
             [
-                'date_initiated'=>'2020-01-01T00:00:00.000000Z', 
+                'date_initiated'=>'2020-01-01T00:00:00.000000Z',
                 'current_step' => 1
             ]
         );
@@ -51,7 +52,7 @@ class InitiationTest extends TestCase
      */
     public function validates_required_parameters_before_initiating_application()
     {
-        $this->seed();    
+        $this->seed();
 
         $data = [];
         $response = $this->json('Post', '/api/applications', $data);
@@ -62,7 +63,6 @@ class InitiationTest extends TestCase
             'errors' => [
                 'uuid' => ['The uuid field is required.'],
                 'working_name' => ['The working name field is required.'],
-                'cdwg_id' => ['The cdwg id field is required.'],
                 'ep_type_id' => ['The ep type id field is required.'],
             ]
         ]);
@@ -134,6 +134,4 @@ class InitiationTest extends TestCase
         $response->assertStatus(422);
         $response->assertJsonFragment(['ep_type_id' => ['The selected expert panel type is invalid.']]);
     }
-    
-    
 }
