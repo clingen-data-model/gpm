@@ -4,13 +4,13 @@
             COI response for 
             {{response.first_name.response}} {{response.last_name.response}}
         </h4>
-        <div class="text-sm">
-            <dictionary-row label="Email" label-class="font-bold" class="pb-1 mb-1 border-b">
-                {{response.email.response}}
-            </dictionary-row>
-            
+        <div class="text-sm">            
             <dictionary-row label="Name" label-class="font-bold" class="pb-1 mb-1 border-b">
                 {{response.first_name.response}} {{response.last_name.response}}
+            </dictionary-row>
+
+            <dictionary-row label="Email" label-class="font-bold" class="pb-1 mb-1 border-b">
+                {{response.email.response}}
             </dictionary-row>
 
             <dictionary-row label="COI File" v-if="response.document_uuid"  label-class="font-bold">
@@ -51,7 +51,7 @@
                     {{getQuestionValue(response.independent_efforts.response)}}
 
                     <dictionary-row :label="response.independent_efforts_details.question" :vertical="true"
-                        v-if="response.independent_efforts.response == 1"
+                        v-if="[1,2].indexOf(response.independent_efforts.response) > -1"
                         class="pb-1 mb-1 ml-4"
                         label-class="font-bold"
                     >
@@ -67,7 +67,7 @@
                     {{getQuestionValue(response.coi.response)}}
 
                     <dictionary-row :label="response.coi_details.question" :vertical="true"
-                        v-if="response.coi.response == 1"
+                        v-if="[1,2].indexOf(response.coi.response) > -1"
                         class="pb-1 mb-1 ml-4"
                         label-class="font-bold"
                     >
@@ -79,6 +79,8 @@
     </div>
 </template>
 <script>
+// import coiDef from '../../../surveys/coi.json'
+
 export default {
     props: {
         response: {
@@ -98,11 +100,15 @@ export default {
     },
     methods: {
         getQuestionValue(response) {
+
             if (response === 1) {
                 return 'Yes';
             }
             if (response === 0) {
                 return 'No';
+            }
+            if (response === 2) {
+                return 'Unsure';
             }
 
             return response;
