@@ -282,7 +282,7 @@ class Application extends Model
 
     public function getCoiUrlAttribute()
     {
-        return '/expert-panels/'.$this->name.'/coi/'.$this->coi_code;
+        return '/expert-panels/'.urlencode($this->name).'/coi/'.$this->coi_code;
     }
     
     
