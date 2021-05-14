@@ -2,7 +2,7 @@
     <base-step 
         :step="3"
         approve-button-label="Approve Pilot and Specifications"
-        title="Pilot AMCG Guideline Specificiations"
+        title="Pilot ACMG Guideline Specificiations"
     >
         <template v-slot:document>
             <h3 class="text-lg font-bold mb-1">Final Specifications</h3>

@@ -25,10 +25,10 @@ This set of minimal use cases assumes that administrators will make all changes 
     1. all contacts for the EP will be sent the approval email (see [GCEP/VCEP Approval Checklist](https://docs.google.com/document/d/1OvECRLrxa7NeqxrFUsrLMz6qxPUkq5zxa9pu6vCdbJQ) for details)
     1. An *administrator* adds an GCI/VCI affiliation id to th **Expert Panel**
 11. Given the **Expert Panel** is approved and is a *VCEP*...
-    1. an *administrator* can enter a **Progress Log Entry** for AMCG/AMP Specifications Draft.
+    1. an *administrator* can enter a **Progress Log Entry** for ACMG/AMP Specifications Draft.
     2. an *adminstrator* sets the **Expert Panel**'s "draft specifications approved date"
 13. Given the **Expert Panel** is an approved VCEP and has approved draft specifications... 
-        1. an *administrator* enters a **Progress Log Entry** for Final AMCG/AMP Specifications.
+        1. an *administrator* enters a **Progress Log Entry** for Final ACMG/AMP Specifications.
         1. an *administrator* sets the **Expert Panel**'s "final specifcations approved date".
 14. Given the **Expert Panel** is an approved VCEP with approved final specifications...
     1. an *administrator* sets **Expert Panel**'s 'step 4 application recieved date

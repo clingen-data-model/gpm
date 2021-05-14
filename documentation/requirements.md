@@ -7,7 +7,7 @@ The requirements below are based on interviews with multiple stakeholders repres
 ## Definition of terms and user roles
 * ACMG - American college of edial Genetics and Genomics
   * ACMG/AMP Guidelines - General guidelines for interpreting the pathogenicity of variants.
-  * ACMG/AMP guideline specifications (specifications) - VCEP specifications of the AMCG/AMP Guidelines applicable to the VCEP's genes of interest.
+  * ACMG/AMP guideline specifications (specifications) - VCEP specifications of the ACMG/AMP Guidelines applicable to the VCEP's genes of interest.
 * CDWG (Clinical Domain Working Group) - 
 * CDWG Oversight committee (OC) - 
 * Co-chairs - 
@@ -26,7 +26,7 @@ Members include:
 
 
 ## Expert Panel Application Management
-The EP application process differs between GCEPs and VCEPs.  GCEPs only need to define the scope and membership of their group (EP Definition).  VCEPs must also develop and pilot AMCG guidelines.  
+The EP application process differs between GCEPs and VCEPs.  GCEPs only need to define the scope and membership of their group (EP Definition).  VCEPs must also develop and pilot ACMG guidelines.  
 
 ### General
 * Authorized users should be able to move an application from one step to another.
@@ -78,17 +78,17 @@ The EP application process differs between GCEPs and VCEPs.  GCEPs only need to 
     * Affiliation name for (GCI/VCI and Evidence Repo)
     * Website Long and Short
     * ClinVar submission and publication name
-    * AMCG/AMP specifications name
+    * ACMG/AMP specifications name
 * A coordinator needs to be able to define the scope of the EP
   * Description of scope
   * Gene List
 * A coordinator needs to be able to define an SOP 
 * An authorized user should be able to comment on and SOP
 
-### AMCG/AMP Guideline Specifications
+### ACMG/AMP Guideline Specifications
 * Baylor’s Specification registry will handle structured entry and versioning of ACMG guidelines specifications.
 * Applicants and users should be able to move easily between this system and the Specifications Registry.
-* ~~A coordinator should be able to create, update, and delete draft AMCG guidelines in a structured way~~
+* ~~A coordinator should be able to create, update, and delete draft ACMG guidelines in a structured way~~
   * ~~ACMG/AMP guidelines have the following structure:~~
      * ~~applicable genes~~
      * ~~Description for criteria~~
@@ -122,8 +122,8 @@ The EP application process differs between GCEPs and VCEPs.  GCEPs only need to 
 * A coordinator should be able to add publications produced by the EP.
   * publication record should include at least the title, authors, and PMID.
 * A coordinator should be able to indicate that the EP would like to expand it's scope of work to inclue new genes.
-* A coordinator should be able to submit AMCG/AMP Specifications for new genes added to the EP's scope of work.
-* Approval of Specifications for genes added to the EPs scope of work should go through *AMCG/AMP Guildine Specifications*, *Specifications Pilot*, and *Final Approval*
+* A coordinator should be able to submit ACMG/AMP Specifications for new genes added to the EP's scope of work.
+* Approval of Specifications for genes added to the EPs scope of work should go through *ACMG/AMP Guildine Specifications*, *Specifications Pilot*, and *Final Approval*
 
 ### Annual Review
 * A coordinator must review EP members and make any updates that have not been recorded.
