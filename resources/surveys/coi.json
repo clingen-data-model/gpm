@@ -1,14 +1,6 @@
 {
     "name": "Conflict of Interest Survey",
-    "questions": [
-        {
-            "name": "email",
-            "question": "Email address",
-            "type": "string",
-            "validation": "required|email",
-            "placeholder": "email@example.com"
-        },
-        {
+    "questions": [{
             "name": "first_name",
             "question": "First Name",
             "type": "string",
@@ -21,6 +13,13 @@
             "type": "string",
             "validation": "required|max:255|min:2",
             "placeholder": "Last"
+        },
+        {
+            "name": "email",
+            "question": "Email address",
+            "type": "string",
+            "validation": "required|email",
+            "placeholder": "email@example.com"
         },
         {
             "name": "work_fee_lab",
@@ -42,12 +41,18 @@
             "show": {
                 "name": "contributions_to_gd_in_ep",
                 "value": 1
-            }
+            },
+            "class": "ml-4"
         },
         {
             "name": "independent_efforts",
-            "question": "Do you have any other existing or planned independent efforts that will potentially overlap with the scope of your ClinGen work?",
-            "type": "yes-no",
+            "question": "Do you have any other existing or planned independent efforts that will potentially overlap with the scope of your ClinGen work?",
+            "type": "multiple-choice",
+            "options": [
+                { "label": "Yes", "value": 1 },
+                { "label": "No", "value": 0 },
+                { "label": "Unsure", "value": 2 }
+            ],
             "validation": "required"
         },
         {
@@ -57,13 +62,19 @@
             "valiation": "required_if:independent_efforts,1",
             "show": {
                 "name": "independent_efforts",
-                "value": 1
-            }
+                "value": [1, 2]
+            },
+            "class": "ml-4"
         },
         {
             "name": "coi",
-            "question": "Please disclose any other relevant conflicts of interest (e.g. patents, intellectual property ownership, or paid consultancies related to any variants or genes associated with the work of your Expert Panel):",
-            "type": "yes-no",
+            "question": "Do you have any other potential conflicts of interest to disclose (e.g. patents, intellectual property ownership, or paid consultancies related to any variants or genes associated with the work of your Expert Panel):",
+            "type": "multiple-choice",
+            "options": [
+                { "label": "Yes", "value": 1 },
+                { "label": "No", "value": 0 },
+                { "label": "Unsure", "value": 2 }
+            ],
             "validation": "required"
         },
         {
@@ -73,8 +84,9 @@
             "valiation": "required_if:coi,1",
             "show": {
                 "name": "coi",
-                "value": 1
-            }
+                "value": [1, 2]
+            },
+            "class": "ml-4"
         }
     ]
 }

@@ -4,8 +4,9 @@ class Question {
         this.name = question.name;
         this.options = question.options;
         this.validationRules = question.validation;
-        this.type = question.type
-        this.show = question.show
+        this.type = question.type;
+        this.show = question.show;
+        this.class = question.class;
     }
 }
 
@@ -13,8 +14,7 @@ class YesNoQuestion extends Question {
     constructor(question) {
         super(question)
         this.type = 'multiple-choice';
-        this.options = [
-            {
+        this.options = [{
                 label: 'Yes',
                 value: 1
             },
@@ -25,7 +25,7 @@ class YesNoQuestion extends Question {
         ];
     }
 
-    
+
 }
 
 function makeQuestion(questionDef) {
@@ -43,7 +43,7 @@ class Survey {
 
     }
 
-    get name () {
+    get name() {
         return this._name;
     }
 
@@ -62,7 +62,7 @@ class Survey {
             rsp[q.name] = null
         });
         return rsp;
-        
+
     }
 }
 

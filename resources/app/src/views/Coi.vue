@@ -15,13 +15,14 @@
                 <div 
                     v-for="question in survey.questions"
                     :key="question.name"
+                            :class="question.class"
                 >
                     <transition name="slide-fade-down">
                         <input-row
                             :label="question.question_text"
                             :errors="errors[question.name]"
                             :vertical="true"
-                            v-show="!question.show || (response[question.show.name] == question.show.value)"
+                            v-show="showQuestion(question)"
                         >
                         
                             <textarea  v-if="question.type == 'text'"
@@ -95,6 +96,16 @@ export default {
         }
     },
     methods: {
+        showQuestion(question) {
+            if (!question.show) {
+                return true;
+            }
+            if (Array.isArray(question.show.value)) {
+                console.log(question.show.value);
+                return question.show.value.indexOf(this.response[question.show.name]) > -1;
+            }
+            return (this.response[question.show.name] == question.show.value);
+        },
         verifyCode() {
             this.verifying = true;
             api.get(`/api/coi/${this.code}/application`)
