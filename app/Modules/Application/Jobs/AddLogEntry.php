@@ -31,10 +31,16 @@ class AddLogEntry
      */
     public function handle()
     {
-        $this->application->addLogEntry(
-            logDate: $this->logDate, 
-            entry: $this->entry, 
-            step: $this->step
-        );
+        $logEntry = activity('applications')
+            ->performedOn($this->application)
+            ->createdAt(Carbon::parse($this->logDate))
+            ->causedBy(Auth::user())
+            ->withProperties([
+                'entry' => $this->entry,
+                'log_date' => $this->logDate,
+                'step' => $this->step
+            ])->log($this->entry);
+        $this->application->touch();
+
     }
 }

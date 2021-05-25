@@ -117,20 +117,6 @@ class Application extends Model
         Event::dispatch(new DocumentReviewed(application: $this, document: $document));
     }
 
-    public function addLogEntry(string $entry, string $logDate, ?int $step = 1)
-    {
-        $logEntry = activity('applications')
-            ->performedOn($this)
-            ->createdAt(Carbon::parse($logDate))
-            ->causedBy(Auth::user())
-            ->withProperties([
-                'entry' => $entry,
-                'log_date' => $logDate,
-                'step' => $step
-            ])->log($entry);
-        $this->touch();
-    }
-
     public function completeNextAction(NextAction $nextAction, string $dateCompleted)
     {
     }
