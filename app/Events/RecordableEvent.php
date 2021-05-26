@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use Exception;
+use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +15,12 @@ abstract class RecordableEvent
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     abstract public function getLogEntry():string;
+
+    public function getActivityType():string
+    {
+        $type = Str::kebab(array_slice(explode('\\', get_class($this)), -1, 1)[0]);
+        return $type;
+    }
 
     abstract public function getLog():string;
 

@@ -47,6 +47,8 @@ class RecordEvent
             if ($event instanceof ApplicationEvent && !isset($properties['step'])) {
                 $properties['step'] = $event->getStep();
             }
+
+            $properties['activity_type'] = $event->getActivityType();
             
             $logger->withProperties($properties);
         }

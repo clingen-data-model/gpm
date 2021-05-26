@@ -24,7 +24,15 @@ class ApproveStepTest extends TestCase
         $dateApproved = Carbon::today();
         ApproveStep::dispatch($application->uuid, $dateApproved);
         
-        $this->assertLoggedActivity($application, 'Step 1 approved', ['date_approved' => $dateApproved]);
+        $this->assertLoggedActivity(
+            $application, 
+            'Step 1 approved', 
+            [
+                'date_approved' => $dateApproved->toIsoString(), 
+                'step' => 1, 
+                'activity_type' => 'step-approved'
+            ]
+        );
     }
 
 }

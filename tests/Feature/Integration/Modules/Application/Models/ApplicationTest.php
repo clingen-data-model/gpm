@@ -83,8 +83,13 @@ class ApplicationTest extends TestCase
         $this->assertLoggedActivity(
             $application,
             'Added contact '.$person->name.' to application.',
-            ['person'=>$person->toArray()]
+            [ 'person' => $person->toArray()],
         );
+
+        $this->assertDatabaseHas('activity_log', [
+            'subject_id' => $application->id,
+            'activity_type' => 'contact-added'
+        ]);
     }
 
     /**

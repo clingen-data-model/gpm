@@ -66,7 +66,7 @@ class UpdatePersonTest extends TestCase
         $this->assertDatabaseHas('activity_log', [
             'subject_type' => Person::class,
             'subject_id' => $this->person->id,
-            'properties' => json_encode(['email' => 'a@b.com'])
+            'properties->email' => 'a@b.com'
         ]);   
     }
     

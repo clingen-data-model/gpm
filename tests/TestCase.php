@@ -83,7 +83,13 @@ abstract class TestCase extends BaseTestCase
             if (!isset($properties['step'])) {
                 $properties['step'] = $application->current_step;
             }
-            $data['properties'] = json_encode($properties);
+            foreach ($properties as $key => $val) {
+                $dbVal = $val;
+                if (is_array($val) || is_object($val)) {
+                    $dbVal = json_encode($val);
+                }
+                $data['properties->'.$key] = $dbVal;
+            }
         }
 
         $this->assertDatabaseHas('activity_log', $data);
