@@ -26,6 +26,7 @@
     </div>
 </template>
 <script>
+import is_validation_error from '../../http/is_validation_error';
 export default {
     props: {
         application: {
@@ -49,15 +50,21 @@ export default {
             this.dateCompleted = null;
         },
         async markComplete () {
-            await this.$store.dispatch('applications/completeNextAction', 
-                {
-                    application: this.application, 
-                    nextAction: this.nextAction, 
-                    dateCompleted: this.dateCompleted
-                })
-            this.clearForm();
-            this.$emit('completed');
-            this.showModal = false;
+            try {
+                await this.$store.dispatch('applications/completeNextAction', 
+                    {
+                        application: this.application, 
+                        nextAction: this.nextAction, 
+                        dateCompleted: this.dateCompleted
+                    })
+                this.clearForm();
+                this.$emit('completed');
+                this.showModal = false;
+            } catch (error) {
+                if (is_validation_error(error)) {
+                    this.errors = error.response.data.errors
+                }
+            }
         },
         cancel () {
             this.clearForm()
