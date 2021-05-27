@@ -29,6 +29,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     
     Route::get('/applications/{app_uuid}/log-entries', [ApplicationLogController::class, 'index']);
     Route::post('/applications/{app_uuid}/log-entries', [ApplicationLogController::class, 'store']);
+    Route::put('/applications/{app_uuid}/log-entries/{id}', [ApplicationLogController::class, 'update']);
+    Route::delete('/applications/{app_uuid}/log-entries/{id}', [ApplicationLogController::class, 'destroy']);
     
     Route::post('/applications/{app_uuid}/next-actions', [ApplicationNextActionsController::class, 'store']);
     Route::post('/applications/{app_uuid}/next-actions/{action_uuid}/complete', [ApplicationNextActionsController::class, 'complete']);
