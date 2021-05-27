@@ -20,7 +20,8 @@ class Activity extends BaseActivity
          * and accessor
          */
         static::saving(function ($activity) {
-            if ($activity->getExtraProperty('activity_type')) {
+
+            if ($activity->properties && $activity->getExtraProperty('activity_type')) {
                 $activity->activity_type = $activity->getExtraProperty('activity_type');
             }
         });
