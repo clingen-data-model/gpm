@@ -190,12 +190,12 @@ class Application extends Model
 
     public function logEntries()
     {
-        return $this->morphMany(Activity::class, 'subject');
+        return $this->morphMany(config('activitylog.activity_model'), 'subject');
     }
 
     public function latestLogEntry()
     {
-        return $this->morphOne(Activity::class, 'subject')
+        return $this->morphOne(config('activitylog.activity_model'), 'subject')
                 ->orderBy('created_at', 'desc');
     }
 
