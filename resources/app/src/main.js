@@ -4,6 +4,8 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 
+import CKEditor from '@ckeditor/ckeditor5-vue'
+
 const app = createApp(App)
 import IconBase from './components/icons/IconBase'
 app.component('icon-base', IconBase);
@@ -47,4 +49,7 @@ import ClickOutside from './directives/click_outside'
 
 app.directive('click-outside', ClickOutside)
 
-app.use(store).use(router).mount('#app')
+app.use(store)
+    .use(router)
+    .use(CKEditor)
+    .mount('#app')

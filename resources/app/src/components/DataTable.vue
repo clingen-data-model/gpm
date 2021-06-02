@@ -68,7 +68,7 @@
                     <td 
                         v-for="field in fields" 
                         :key="field.name"
-                        class="text-left p-1 px-3 border"
+                        class="text-left p-1 px-3 border align-top"
                         :class="getCellClass(field)"
                     >
                         <slot :name="`cell-${field.name}`" :item="item" :field="field" :value="resolveDisplayAttribute(item, field)">
