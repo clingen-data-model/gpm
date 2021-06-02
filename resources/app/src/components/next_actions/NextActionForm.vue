@@ -1,5 +1,5 @@
 <template>
-    <form-container @keyup.enter="save">
+    <form-container>
         <h4 class="pb-2 border-b my-2 text-xl">Add Next Action</h4>
         <input-row label="Creation Date" :errors="errors.date_created" type="date" v-model="newAction.date_created"></input-row>
 
@@ -8,7 +8,8 @@
         <input-row label="Target" Date="" :errors="errors.target_date" type="date" v-model="newAction.target_date"></input-row>
 
         <input-row label="Entry" :errors="errors.entry">
-            <textarea name="" id="" cols="30" rows="5" v-model="newAction.entry"></textarea>
+            <!-- <textarea name="" id="" cols="30" rows="5" v-model="newAction.entry" @keyup.enter.exact.stop="" @keyup.meta.enter.exact="save"></textarea> -->
+            <rich-text-editor v-model="newAction.entry"></rich-text-editor>
         </input-row>    
 
         <label class="ml-36">
@@ -28,11 +29,13 @@
 <script>
 import StepInput from '../forms/StepInput'
 import {mapGetters} from 'vuex'
+import RichTextEditor from '../forms/RichTextEditor'
 
 export default {
     name: 'NextActionForm',
     components: {
-        StepInput
+        StepInput,
+        RichTextEditor
     },
     props: {
         uuid: {

@@ -1,0 +1,92 @@
+<style lang="postcss" scope>
+    blockquote {
+        @apply mt-4 ml-4 border-l-4 pl-2 text-gray-700;
+        font-size: 1.1rem;
+    }
+</style>
+<template>
+    <div>
+        <h3 class="text-xl">You are about to delete the following log entry:</h3>
+
+        <div class="border-y py-2">
+        <blockquote>
+            <div v-html="logEntry.description"></div>
+        </blockquote>
+        <div class="ml-4 mt-2 mb-4 text-gray-700 text-sm" v-if="logEntry.causer">Logged by {{logEntry.causer.name}}, {{logDate}}</div>
+        </div>
+
+        <div>This can not be undone. Are you sure you want to continue?</div>
+
+        <div v-if="flattenedErrors.length > 0" class="bg-red-200 text-red-900 rounded p-2 my-2">
+            <ul>
+                <li v-for="(err,idx) in flattenedErrors" :key="idx">
+                    {{err}}
+                </li>
+            </ul> 
+        </div>
+        
+        <button-row @canceled="$router.go(-1)" @submitted="deleteEntry" submitText="Delete Log Entry"></button-row>
+    </div>
+</template>
+<script>
+import {mapGetters} from 'vuex'
+import { formatDate } from '../../date_utils'
+import is_validation_error from '../../http/is_validation_error'
+
+
+export default {
+    name: 'ConfirmDeleteLogEntry',
+    props: {
+        id: {
+            required: true,
+            type: String,
+        }
+    },
+    data() {
+        return {
+            errors: {}
+        }
+    },
+    computed: {
+        ...mapGetters({
+            application: 'applications/currentItem'
+        }),
+        logEntry () {
+            const logEntry = this.application.log_entries.find(entry => entry.id == this.id);
+            return logEntry || {};
+        },
+        logDate () {
+            return formatDate(this.logEntry.properties.log_date)
+        },
+        flattenedErrors () {
+            return Object.values(this.errors).flat();
+        }
+    },
+    watch: {
+        logEntry: {
+            immediate: true,
+            handler: function () {
+                console.info('logEntry watch handler', this.logEntry.id)
+                if (!this.logEntry.id) {
+                    this.$router.go(-1);
+                }
+            }
+        }
+    },
+    methods: {
+        async deleteEntry()
+        {
+            try {
+                await this.$store.dispatch('applications/deleteLogEntry', {application: this.application, logEntry: this.logEntry});
+                this.$router.go(-1);
+            } catch ( error ) {
+                if (is_validation_error(error)) {
+                    this.errors = error.response.data.errors;
+                }
+                this.errors = {a: error.message};
+                
+            }
+        }
+    }
+}
+</script>

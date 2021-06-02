@@ -1,14 +1,45 @@
+<style lang="postcss">
+    .links-blue a {
+        @apply text-blue-500;
+    }
+</style>
 <template>
     <div>
         <div class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200" v-if="!hasLogEntries">
             {{noResultsMessage}}
         </div>
         <data-table :fields="fields" :data="filteredLogEntries" v-model:sort="sort" v-else>
+            <template v-slot:cell-id="{item}">
+                <div class="flex space-x-1">
+                    <router-link :to="{name: 'EditLogEntry', params:{id: item.id}}" class="btn btn-xs inline-block">
+                        <icon-edit width="12"></icon-edit>
+                    </router-link>
+                    <router-link 
+                        :to="{name: 'ConfirmDeleteLogEntry', params:{id: item.id}}" 
+                        v-if="item.activity_type === null"
+                        class="btn btn-xs inline-block"
+                    >
+                        <icon-trash width="12"></icon-trash>
+                    </router-link>
+                </div>
+            </template>
+            <template v-slot:cell-description="{item}">
+                <div v-html="item.description" class="links-blue"></div>
+            </template>
         </data-table>
+        <modal-dialog v-model="editingEntry">
+            <h3 class="text-xl">Edit log entry</h3>
+            <log-entry-form></log-entry-form>
+        </modal-dialog>
     </div>
 </template>
 <script>
 import {mapGetters} from 'vuex';
+import IconEdit from '../icons/IconEdit'
+import IconTrash from '../icons/IconTrash'
+import LogEntryForm from '../log_entries/LogEntryForm'
+import formatDate from '../../date_utils'
+
 
 const fields = [
                 {
@@ -28,10 +59,20 @@ const fields = [
                     name: 'causer.name',
                     label: 'User',
                     sortable: true
+                },
+                {
+                    name: 'id',
+                    label: '',
+                    sortable: false,
                 }
             ];
 
 export default {
+    components: {
+        IconEdit,
+        IconTrash,
+        LogEntryForm
+    },
     props: {
         step: {
             required: false,
@@ -45,7 +86,9 @@ export default {
             sort: {
                 field: 'created_at',
                 desc: true
-            }
+            },
+            selectedLogEntry: {},
+            editingEntry: false,
         }
     },
     computed: {
@@ -77,6 +120,10 @@ export default {
     methods: {
         async getLogEntries() {
             await this.$store.dispatch('applications/getApplication', this.application.uuid)
+        },
+        editLogEntry(entry) {
+            this.editingEntry = true;
+            this.selectedLogEntry = entry;
         }
     },
     mounted() {

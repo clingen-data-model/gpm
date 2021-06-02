@@ -1,8 +1,8 @@
 <template>
     <div class="border-t pt-3 mb-1 mt-3 flex space-x-3">
         <slot>
-            <button class="btn" @click="$emit('cancelClicked')" v-if="showCancel">{{cancelText}}</button>
-            <button class="btn blue" @click="$emit('submitClicked')">{{submitText}}</button>
+            <button class="btn" @click="cancel" v-if="showCancel">{{cancelText}}</button>
+            <button class="btn blue" @click="submit">{{submitText}}</button>
         </slot>
     </div>
 </template>
@@ -25,7 +25,19 @@ export default {
     },
     emits: [
         'cancelClicked',
-        'submitClicked'
-    ]
+        'submitClicked',
+        'canceled',
+        'submitted'
+    ],
+    methods: {
+        cancel () {
+            this.$emit('cancelClicked');
+            this.$emit('canceled');
+        },
+        submit () {
+            this.$emit('submitClicked');
+            this.$emit('submitted');
+        }
+    }
 }
 </script>

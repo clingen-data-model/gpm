@@ -1,10 +1,10 @@
 <template>
-    <form-container class="log-entry-form" @keyup.enter="save">
-        <h4 class="pb-2 border-b my-2 text-xl">Add Log Entry</h4>
+    <form-container class="log-entry-form" ref="form-container">
+        <h4 class="pb-2 border-b my-2 text-xl">{{this.$route.meta.title}}</h4>
         <input-row label="Log Date" v-model="newEntry.log_date" :errors="errors.log_date" type="date" ref="logdate"></input-row>
         <step-input v-model="newEntry.step" :errors="errors.step" v-if="application.ep_type_id == 2"></step-input>
         <input-row label="Entry" :errors="errors.entry">
-            <textarea cols="30" rows="10" v-model="newEntry.entry"></textarea>
+            <rich-text-editor v-model="newEntry.entry"></rich-text-editor>
         </input-row>
         <button-row>
             <button class="btn" @click="cancel">Cancel</button>
@@ -16,10 +16,21 @@
 import {mapGetters} from 'vuex'
 import { formatDate } from '../../date_utils'
 import StepInput from '../forms/StepInput'
+import Editor from '@ckeditor/ckeditor5-build-classic'
+import RichTextEditor from '../forms/RichTextEditor'
+
 
 export default {
+    name: 'LogEntryForm',
     components: {
-        StepInput
+        StepInput,
+        RichTextEditor
+    },
+    props: {
+        id: {
+            required: false,
+            default: null
+        }
     },
     data() {
         return {
@@ -28,7 +39,11 @@ export default {
                 step: null,
                 entry: null
             },
-            errors: {}
+            errors: {},
+            editor: Editor,
+            editorConfig: {
+                toolbar: ['bold', 'italic', '|', 'link']
+            }
         }
     },
     computed: {
@@ -36,12 +51,51 @@ export default {
             application: 'applications/currentItem'
         })
     },
+    watch: {
+        id: {
+            immediate: true,
+            handler: function() {
+                const entry = this.findEntry();
+                if (entry) {
+                    this.syncEntry(entry)
+                }
+            }
+        },
+        application: {
+            immediate: true,
+            handler: function () {
+                const entry = this.findEntry();
+                if (entry) {
+                    this.syncEntry(entry);
+                }
+            }
+        }
+    },
     methods: {
+        findEntry () {
+            if (this.id === null) {
+                return null;
+            }
+            if (this.application.log_entries) {
+                return this.application.log_entries.find(i => i.id == this.id);
+            }
+        },
         initNewEntry () {
-            this.newEntry ={
+            this.newEntry = {
                 log_date: formatDate(new Date),
                 step: null,
-                entry: null
+                entry: ''
+            }
+        },
+        syncEntry (entry) {
+            if (!entry) {
+                return;
+            }
+            this.newEntry = {
+                id: entry.id,
+                log_date: formatDate(new Date(Date.parse((entry.created_at)))),
+                step: entry.properties.step,
+                entry: entry.description
             }
         },
         cancel() {
@@ -50,7 +104,17 @@ export default {
         },
         async save() {
             try {
-                await this.$store.dispatch('applications/addLogEntry', {application: this.application, logEntryData: this.newEntry})
+                if (this.newEntry.id) {
+                    await this.$store.dispatch(
+                        'applications/updateLogEntry', 
+                        {
+                            application: this.application, 
+                            updatedEntry: this.newEntry,
+                        }
+                    );
+                } else {
+                    await this.$store.dispatch('applications/addLogEntry', {application: this.application, logEntryData: this.newEntry})
+                }
                 this.initNewEntry();
                 this.$emit('saved');
             } catch (error) {
@@ -59,7 +123,7 @@ export default {
                     return;
                 }
             }
-        }
+        },
     },
     mounted() {
         this.$el.querySelectorAll('input')[0].focus();
