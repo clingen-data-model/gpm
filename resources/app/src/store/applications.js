@@ -12,8 +12,7 @@ export default {
         lastParams: {},
         currentItemIdx: null,
         lastFetchBy: null
-    })
-    ,
+    }),
     getters: {
         applications: state => state.items,
         all: state => state.items,
@@ -83,8 +82,7 @@ export default {
             store.dispatch('applications/getApplicationsSinceLastFetch', params);
         },
 
-        async getApplicationsSinceLastFetch({ commit, state }, params=null) 
-        {
+        async getApplicationsSinceLastFetch({ commit, state }, params = null) {
             if (params === null) {
                 params = state.lastParams
             }
@@ -112,45 +110,63 @@ export default {
                 })
         },
         async getApplication({ commit }, appUuid) {
-            await appRepo.find(appUuid, {with: ['logEntries', 'documents', 'contacts', 'logEntries.causer', 'cois', 'documents.type']})
+            await appRepo.find(appUuid, { with: ['logEntries', 'documents', 'contacts', 'logEntries.causer', 'cois', 'documents.type', 'nextActions'] })
                 .then(item => {
                     commit('addApplication', item)
                     commit('setCurrentItemIdx', item)
                 });
         },
         // eslint-disable-next-line
-        async updateEpAttributes( {commit}, application) {
+        async updateEpAttributes({ commit }, application) {
             await appRepo.updateEpAttributes(application)
-                .then( () => {
+                .then(() => {
                     store.dispatch('applications/getApplication', application.uuid);
                 });
         },
         // eslint-disable-next-line
         async addNextAction({ commit }, { application, nextActionData }) {
             await appRepo.addNextAction(application, nextActionData)
-                .then( () => {
+                .then(() => {
                     store.dispatch('applications/getApplication', application.uuid)
                 })
         },
         // eslint-disable-next-line
-        async completeNextAction({ commit }, {application, nextAction, dateCompleted }) {
+        async completeNextAction({ commit }, { application, nextAction, dateCompleted }) {
             const url = `/api/applications/${application.uuid}/next-actions/${nextAction.uuid}/complete`;
-            await api.post(url, {date_completed: dateCompleted})
-                .then (() => {
+            await api.post(url, { date_completed: dateCompleted })
+                .then(() => {
                     store.dispatch('applications/getApplication', application.uuid)
                 })
         },
         // eslint-disable-next-line
-        async addLogEntry ({commit}, { application, logEntryData }) {
+        async addLogEntry({ commit }, { application, logEntryData }) {
             const url = `/api/applications/${application.uuid}/log-entries`
             await api.post(url, logEntryData)
-                .then( () => {
+                .then(() => {
                     store.dispatch('applications/getApplication', application.uuid);
                 })
         },
-        
+
         // eslint-disable-next-line
-        async addDocument ({commit}, {application, documentData}) {
+        async updateLogEntry({ commit }, { application, updatedEntry }) {
+            const url = `/api/applications/${application.uuid}/log-entries/${updatedEntry.id}`;
+            await api.put(url, updatedEntry)
+                .then(() => {
+                    store.dispatch('applications/getApplication', application.uuid);
+                })
+        },
+
+        // eslint-disable-next-line
+        async deleteLogEntry({ commit }, { application, logEntry }) {
+            const url = `/api/applications/${application.uuid}/log-entries/${logEntry.id}`;
+            await api.delete(url)
+                .then(() => {
+                    store.dispatch('applications/getApplication', application.uuid)
+                });
+        },
+
+        // eslint-disable-next-line
+        async addDocument({ commit }, { application, documentData }) {
             await appRepo.addDocument(application, documentData)
                 .then((response) => {
                     store.dispatch('applications/getApplication', application.uuid)
@@ -159,23 +175,23 @@ export default {
         },
 
         // eslint-disable-next-line
-        async markDocumentReviewed ({commit}, {application, document, dateReviewed, isFinal}) {
+        async markDocumentReviewed({ commit }, { application, document, dateReviewed, isFinal }) {
             await appRepo.markDocumentReviewed(application, document, dateReviewed, isFinal)
-            .then(() => {
-                store.dispatch('applications/getApplication', application.uuid)
-            })
+                .then(() => {
+                    store.dispatch('applications/getApplication', application.uuid)
+                })
         },
 
         // eslint-disable-next-line
-        async markDocumentVersionFinal ({commit}, {application, document}) {
+        async markDocumentVersionFinal({ commit }, { application, document }) {
             await api.post(`/api/applications/${application.uuid}/documents/${document.uuid}/final`)
-                .then(()=> {
+                .then(() => {
                     store.dispatch('applications/getApplication', application.uuid)
                 });
         },
 
         //eslint-disable-next-line
-        async updateDocumentInfo ({commit}, {application, document}) {
+        async updateDocumentInfo({ commit }, { application, document }) {
             await api.put(`/api/applications/${application.uuid}/documents/${document.uuid}`, document)
                 .then(() => {
                     store.dispatch('applications/getApplication', application.uuid)
@@ -183,36 +199,36 @@ export default {
         },
 
         // eslint-disable-next-line
-        async approveCurrentStep ({commit}, {application, dateApproved, notifyContacts, NotifyClingen}) {
+        async approveCurrentStep({ commit }, { application, dateApproved, notifyContacts, NotifyClingen }) {
             await appRepo.approveCurrentStep(application, dateApproved, notifyContacts, NotifyClingen)
-                .then( () => {
+                .then(() => {
                     store.dispatch('applications/getApplication', application.uuid)
                 });
         },
 
         // eslint-disable-next-line
-        async updateApprovalDate ({commit}, {application, dateApproved, step}) {
+        async updateApprovalDate({ commit }, { application, dateApproved, step }) {
             await api.put(`/api/applications/${application.uuid}/approve`, {
                     date_approved: dateApproved,
                     step: step
                 })
-                .then( () => {
+                .then(() => {
                     store.dispatch('applications/getApplication', application.uuid)
                 });
         },
 
         // eslint-disable-next-line
-        async addContact ( { commit }, {application, contact} ) {
+        async addContact({ commit }, { application, contact }) {
             await appRepo.addContact(application, contact)
-                .then( () => {
+                .then(() => {
                     store.dispatch('applications/getApplication', application.uuid);
                 })
         },
 
         // eslint-disable-next-line
-        async removeContact({ commit }, {application, contact}) {
+        async removeContact({ commit }, { application, contact }) {
             await appRepo.removeContact(application, contact)
-                .then( () => {
+                .then(() => {
                     store.dispatch('applications/getApplication', application.uuid);
                 });
         }
