@@ -38,7 +38,6 @@ import {mapGetters} from 'vuex';
 import IconEdit from '../icons/IconEdit'
 import IconTrash from '../icons/IconTrash'
 import LogEntryForm from '../log_entries/LogEntryForm'
-import formatDate from '../../date_utils'
 
 
 const fields = [
