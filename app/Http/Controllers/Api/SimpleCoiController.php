@@ -44,6 +44,7 @@ class SimpleCoiController extends Controller
         $coiDefinition = Coi::getDefinition();
         $questions = collect($coiDefinition->questions)->keyBy('name');
         $headings = $questions->map(function ($q) { return $q->question; });
+        $headings[] = 'Date Completed';
 
         $coiData = Coi::forApplication($application)->get();
 
@@ -53,10 +54,11 @@ class SimpleCoiController extends Controller
         fputcsv($handle, $headings->toArray());
         $coiData->each(function ($coi) use ($handle, $questions) {
             $readableResponse = $coi->getResponseForHumans();
-            // dd($readableResponse);
+            $readableResponse['date_completed'] = $coi->created_at->format('Y-m-d H:i:s');
             fputcsv($handle, $readableResponse);
         });
         fclose($handle);
+
 
         return response()->download($reportPath, $filename);
     }
