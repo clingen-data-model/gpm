@@ -3,6 +3,7 @@
 namespace Tests\Feature\End2End\Module\Application;
 
 use Carbon\Carbon;
+use App\Models\Coi;
 use Tests\TestCase;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
@@ -95,6 +96,7 @@ class SimpleCoiEndpointTest extends TestCase
      */
     public function returns_csv_of_coi_results_for_application()
     {
+        Coi::factory(2)->create(['application_id' => $this->application->id]);
         Carbon::setTestNow('2021-06-01');
         $user = User::factory()->create();
         Sanctum::actingAs($user);

@@ -40,7 +40,6 @@ class SimpleCoiController extends Controller
     public function getReport($coiCode)
     {
         $application = Application::findByCoiCodeOrFail($coiCode);
-        Coi::factory(2)->create(['application_id' => $application->id]);
 
         $coiDefinition = Coi::getDefinition();
         $questions = collect($coiDefinition->questions)->keyBy('name');
