@@ -125,7 +125,6 @@ export default {
         },
         downloadReport() {
             const reportUrl = `/report/${this.application.coi_code}`
-            alert(reportUrl);
             window.location = reportUrl;
         },
 
