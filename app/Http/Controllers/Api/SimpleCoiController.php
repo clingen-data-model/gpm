@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use Carbon\Carbon;
+use App\Models\Coi;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CoiStorageRequest;
@@ -33,5 +36,31 @@ class SimpleCoiController extends Controller
 
         return response(['message' => 'COI response stored.'], 200);
     }
+
+    public function getReport($coiCode)
+    {
+        $application = Application::findByCoiCodeOrFail($coiCode);
+        Coi::factory(2)->create(['application_id' => $application->id]);
+
+        $coiDefinition = Coi::getDefinition();
+        $questions = collect($coiDefinition->questions)->keyBy('name');
+        $headings = $questions->map(function ($q) { return $q->question; });
+
+        $coiData = Coi::forApplication($application)->get();
+
+        $filename = Str::kebab($application->name).'-coi-report-'.Carbon::now()->format('Y-m-d').'.csv';
+        $reportPath = '/tmp/'.$filename;
+        $handle = fopen($reportPath, 'w');
+        fputcsv($handle, $headings->toArray());
+        $coiData->each(function ($coi) use ($handle, $questions) {
+            $readableResponse = $coi->getResponseForHumans();
+            // dd($readableResponse);
+            fputcsv($handle, $readableResponse);
+        });
+        fclose($handle);
+
+        return response()->download($reportPath, $filename);
+    }
+    
     
 }

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Modules\Application\Models\Application;
+use Hamcrest\Type\IsObject;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
@@ -50,6 +52,54 @@ class Coi extends Model
         
         return $responseData;
     }
+
+    public function getResponseForHumans()
+    {
+        $data = (array)$this->data;
+        $questions = collect(static::getDefinition()->questions)->keyBy('name');
+
+        $humanReadable = [];
+
+        foreach ($questions as $name => $def) {
+            $response = $data[$name];
+            $readableResponse = $response;
+            if (in_array($def->type, ['multiple-choice'])) {
+                $options = collect($def->options)->pluck('label', 'value');
+                $readableResponse = $options[$response];
+            }
+            if ($def->type == 'yes-no') {
+                $readableResponse = $response == 1 ? 'Yes' : 'No';
+            }
+            $humanReadable[$name] = $readableResponse;
+        }
+        // foreach ($data as $key => $response) {
+        //     $question = $questions->get($key);
+        //     $readableResponse = $value;
+        //     if (in_array($question->type, ['multiple-choice'])) {
+        //         $options = collect($question->options)->pluck('label', 'value');
+        //         $readableResponse = $options[$value];
+        //     }
+        //     if ($question->type == 'yes-no') {
+        //         $readableResponse = $value == 1 ? 'Yes' : 'No';
+        //     }
+        //     $humanReadable[$key] = $readableResponse;
+        // }
+        return $humanReadable;
+    }
+    
+
+    /**
+     * SCOPES
+     */
+    public function scopeForApplication($query, $application)
+    {
+        $id = $application;
+        if ($application instanceof Application) {
+            $id = $application->id;
+        }
+        return $query->where('application_id', $id);
+    }
+    
 
     static public function getDefinition()
     {

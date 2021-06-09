@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\End2End\Module\Application;
 
+use Carbon\Carbon;
 use Tests\TestCase;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -88,7 +90,19 @@ class SimpleCoiEndpointTest extends TestCase
         ]);
     }
     
-    
-    
-    
+    /**
+     * @test
+     */
+    public function returns_csv_of_coi_results_for_application()
+    {
+        Carbon::setTestNow('2021-06-01');
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+        $response = $this->get('/report/'.$this->application->coi_code);
+        $response->assertStatus(200);
+        
+        $this->assertFileExists('/tmp/'.Str::kebab($this->application->name).'-coi-report-'.Carbon::now()->format('Y-m-d').'.csv');
+
+        $response->assertDownload();
+    }
 }
