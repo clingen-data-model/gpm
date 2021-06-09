@@ -19,6 +19,8 @@
                     ref="mailtobutton"
                 >Send url to contacts.</a>
                 <add-contact-control class="inline-block" v-show="!application.hasContacts"></add-contact-control>
+                &nbsp;
+                <button class="btn btn-xs" @click="downloadReport">get coi report</button>
             </div>
             <icon-refresh 
                 :height="14" :width="14" 
@@ -120,7 +122,13 @@ export default {
         },
         mailToContacts() {
             this.$refs.mailtobutton.click()
-        }
+        },
+        downloadReport() {
+            const reportUrl = `/report/${this.application.coi_code}`
+            alert(reportUrl);
+            window.location = reportUrl;
+        },
+
     }
 }
 </script>

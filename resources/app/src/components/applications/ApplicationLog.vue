@@ -41,30 +41,30 @@ import LogEntryForm from '../log_entries/LogEntryForm'
 
 
 const fields = [
-                {
-                    name: 'created_at',
-                    label: 'Created',
-                    sortName: 'created_at',
-                    sortable: true,
-                    type: Date,
-                },
-                {
-                    name: 'description',
-                    label: 'Entry',
-                    sortable: true,
-                    type: String
-                },
-                {
-                    name: 'causer.name',
-                    label: 'User',
-                    sortable: true
-                },
-                {
-                    name: 'id',
-                    label: '',
-                    sortable: false,
-                }
-            ];
+    {
+        name: 'created_at',
+        label: 'Created',
+        sortName: 'created_at',
+        sortable: true,
+        type: Date,
+    },
+    {
+        name: 'description',
+        label: 'Entry',
+        sortable: true,
+        type: String
+    },
+    {
+        name: 'causer.name',
+        label: 'User',
+        sortable: true
+    },
+    {
+        name: 'id',
+        label: '',
+        sortable: false,
+    }
+];
 
 export default {
     components: {
