@@ -71,7 +71,7 @@
                         class="text-left p-1 px-3 border align-top"
                         :class="getCellClass(field)"
                     >
-                        <slot :name="`cell-${field.name}`" :item="item" :field="field" :value="resolveDisplayAttribute(item, field)">
+                        <slot :name="getSlotName(field)" :item="item" :field="field" :value="resolveDisplayAttribute(item, field)">
                             {{resolveDisplayAttribute(item, field)}}
                         </slot>
                     </td>
@@ -333,6 +333,10 @@ export default {
 
         getCellClass(field) {
             return field.class;
+        },
+
+        getSlotName(field) {
+            return `cell-${field.name.replace(' ', '_').replace('.', '_')}`
         }
     }
 }

@@ -31,6 +31,12 @@
                     </li>
                 </ul>
             </template>
+            <template v-slot:cell-latest_log_entry_description="{value}">
+                <div v-html="value"></div>
+            </template>
+            <template v-slot:cell-latest_pending_next_action_entry="{value}">
+                <div v-html="value"></div>
+            </template>
         </data-table>
     </div>
 </template>
