@@ -8,8 +8,21 @@ CSpec Final Approval Update
 CSpec Deleted
 
 All messages:
-CSPEC ID
+CSPEC_ID
+RULESET_ID
 VCEP ID
+scope
+    gene(s)
+    disease
 Step / Status
-Effective Date
+status Date
+last upate
 URL to CSpec and/or CSpec UI
+
+
+{
+    approval_status: {
+        step: Step 3 - In Preperation
+        date: 2021-06-16
+    }
+}

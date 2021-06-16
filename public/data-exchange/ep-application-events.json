@@ -13,12 +13,12 @@
             "type": "string",
             "title": "Type of curation event",
             "enum": [
-                "initiated", 
-                "updated", 
+                "initiated",
+                "updated",
                 "step_approved", 
                 "completed", 
                 "deleted", 
-                "member_added",     
+                "member_added",
                 "member_removed"
             ]
         },
@@ -26,7 +26,7 @@
         "data": {
             "type": "object",
             "properties": {
-                "uuid": {
+                "expert_panel_id": {
                     "type": "string",
                     "pattern": "^\\w{8}(-\\w{4}){3}-\\w{12}$"
                 },

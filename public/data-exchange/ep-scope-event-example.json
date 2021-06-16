@@ -1,0 +1,152 @@
+{
+    "event_types": [
+        {
+            "name": "ep_definition_approved",
+            "description": "Membership and Scope has been give first approval by the CDWG OC. and VCEPs are ready to start drafting specifications"
+        },
+        {
+            "name": "ep_final_approval",
+            "description": "Step 1 or Step 4 approval for GCEPS and VCEPS respectively.  Indicates plans for review have been approved and all necessary attestations have been completed by approved membership.  EP is now fully approved."
+        },
+        {
+            "name": "gene_added",
+            "description": "CDWG OC has approved an updated scope and gene list for a VCEP"
+        },
+        {
+            "name": "gene_removed",
+            "description": "CDWG OC has approved an updated scope and gene list for a VCEP"
+        },
+        {
+            "name": "member_added",
+            "description": "EP has added a new member."
+        },
+        {
+            "name": "member_removed",
+            "description": "EP has added a new member."
+        },
+        {
+            "name": "Account Updated",
+            "description": "GPM user has updated their email or they have been their roles/permissions have changed."
+        },
+        {
+            "name": "Profile Updated",
+            "description": "ClinGen Member has updated their profile."
+        }
+    ],
+
+    "example_events": [
+        {
+            "event_type": "ep_definition_approved",
+            "date": "2020-06-01",
+            "expert_panel": {
+                "id": "some-random-uuid",
+                "name": "Some Random VCEP",
+                "type": "VCEP",
+                "affiliation_id": 500099
+            },
+            "scope": {
+                "statement": "A human readable description of Some Random VCEPs scope which wil probably include a description of the gene or genes in the scope and the disease(s) we will look at in relatio the gene(s).",
+                "genes": [
+                    {
+                        "hgnc_id": "hgnc:12345",
+                        "hgnc_symbol": "GNE1"
+                    }
+                ],
+                "gene_type": "nuclear" // could be mitochondrial (look at spec in mitochondrial gcep)
+            },
+            "members": [
+                {
+                    "id": "c000558b-330d-477f-829b-1580caef9ca4",
+                    "first_name": "Elenor",
+                    "last_name": "Shelstrop",
+                    "email": "elenor@medplace.com",
+                    "group_role": "coordinator"
+                },
+                {
+                    "id": "eafb106c-1b0c-4637-9ec5-10ff1efd31d7",
+                    "first_name": "Janet",
+                    "last_name": "Nadagurl",
+                    "email": "janet@void.edu",
+                    "group_role": "chair"
+                },
+                {
+                    "id": "a98fb1a4-c022-47ae-95a2-a8c26d125ee2",
+                    "first_name": "Chidi",
+                    "last_name": "Anagonye",
+                    "email": "chidi@unsw.edu",
+                    "group_role": "biocurator"
+                }
+            ]
+        },
+        {
+            "event_type": "member_added",
+            "date": "2021-06-04",
+            "expert_panel": {
+                "id": "some-random-uuid",
+                "name": "Some Random VCEP",
+                "type": "VCEP",
+                "affiliation_id": 500099
+            },
+            "members": [
+                {
+                    "id": "a98fb1a4-c022-47ae-95a2-a8c26d125eha",
+                    "first_name": "Tehani",
+                    "last_name": "Al Jamil",
+                    "email": "tehani@unsw.edu",
+                    "group_role": "biocurator"
+                }
+            ]
+        },
+        {
+            "event_type": "member_removed",
+            "date": "2021-06-04",
+            "expert_panel": {
+                "id": "some-random-uuid",
+                "name": "Some Random VCEP",
+                "type": "VCEP",
+                "affiliation_id": 500099
+            },
+            "members": [
+                {
+                    "id": "a98fb1a4-c022-47ae-95a2-a8c26d125eha",
+                    "first_name": "Tehani",
+                    "last_name": "Al Jamil",
+                    "email": "tehani@unsw.edu",
+                    "group_role": "biocurator"
+                }
+            ]
+        },
+        {
+            "event_type": "gene_added",
+            "date": "2021-06-16",
+            "expert_panel": {
+                "id": "some-random-uuid",
+                "name": "Some Random VCEP",
+                "type": "VCEP",
+                "affiliation_id": 500099
+            },
+            "genes": [
+                {
+                    "hgnc_id": "hgnc:67890",
+                    "symbol": "GNE2"
+                }
+            ]
+        },
+        {
+            "event_type": "gene_remove",
+            "date": "2021-06-16",
+            "expert_panel": {
+                "id": "some-random-uuid",
+                "name": "Some Random VCEP",
+                "type": "VCEP",
+                "affiliation_id": 500099
+            },
+            "genes": [
+                {
+                    "hgnc_id": "hgnc:67890",
+                    "symbol": "GNE2"
+                }
+            ]
+        }
+    ]
+}
