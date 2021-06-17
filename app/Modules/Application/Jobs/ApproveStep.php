@@ -48,30 +48,24 @@ class ApproveStep
             throw new UnmetStepRequirementsException($this->application, $stepManager->getUnmetRequirements());
         }
 
-        $wasLastStep = $stepManager->isLastStep();
         $approvedStep = $this->application->current_step;
         $this->application->addApprovalDate($approvedStep, $this->dateApproved);
 
-        if (!$wasLastStep) {
-            $this->application->current_step = $this->application->current_step+1;
+        if (!$stepManager->isLastStep()) {
+            $this->application->current_step++;
         }
         
         $this->application->save();
 
-        $event = new StepApproved(
-                    application: $this->application, 
-                    step: $approvedStep, 
-                    dateApproved: $this->dateApproved
-                );
-        Event::dispatch($event);
+        $this->dispatchEvent($approvedStep);
         
-        if ($wasLastStep) {
+        if ($stepManager->isLastStep()) {
             $this->application->completeApplication($this->dateApproved);
         }
 
         // TODO: extract to command and log an event on the person.
         if ($this->notifyContacts) {
-            // if ($wasLastStep) {
+            // if ($stepManager->isLastStep()) {
             //     Notification::send(
             //         $this->application->contacts, 
             //         new ApplicationCompletedNotification($this->application)
@@ -80,8 +74,19 @@ class ApproveStep
             // }
             Notification::send(
                 $this->application->contacts, 
-                new ApplicationStepApprovedNotification($this->application, $approvedStep, $wasLastStep)
+                new ApplicationStepApprovedNotification($this->application, $approvedStep, $stepManager->isLastStep())
             );
         }
     }
+
+    private function dispatchEvent($approvedStep)
+    {
+        $event = new StepApproved(
+            application: $this->application, 
+            step: $approvedStep, 
+            dateApproved: $this->dateApproved
+        );
+        Event::dispatch($event);
+    }
+    
 }

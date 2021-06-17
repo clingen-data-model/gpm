@@ -1,4 +1,4 @@
-<p>Dear {{$application->name}} {{$application->epType->display_name}} Leaders,</p>
+<p>Dear {{$application->long_base_name}} Leaders,</p>
 
 @yield('content')
 
