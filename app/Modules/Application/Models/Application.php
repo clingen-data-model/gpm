@@ -224,17 +224,17 @@ class Application extends Model
 
     // Access methods
 
-    static public function findByCoiCode($code)
+    public static function findByCoiCode($code)
     {
         return static::where('coi_code', $code)->first();
     }
 
-    static public function findByCoiCodeOrFail($code)
+    public static function findByCoiCodeOrFail($code)
     {
         return static::where('coi_code', $code)->sole();
     }
 
-    static public function latestLogEntryForUuid($uuid)
+    public static function latestLogEntryForUuid($uuid)
     {
         return static::findByUuid($uuid)->latestLogEntry;
     }
@@ -255,7 +255,7 @@ class Application extends Model
 
     public function getNameAttribute()
     {
-        return $this->short_base_name ?? $this->working_name;
+        return $this->long_base_name ?? $this->working_name;
     }
 
     public function getClingenUrlAttribute()
@@ -275,7 +275,7 @@ class Application extends Model
     
 
     // Factory support
-    static protected function newFactory()
+    protected static function newFactory()
     {
         return new ApplicationFactory();
     }
