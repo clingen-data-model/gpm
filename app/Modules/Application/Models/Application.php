@@ -64,6 +64,10 @@ class Application extends Model
         'name'
     ];
 
+    protected $with = [
+        'epType'
+    ];
+
     // Domain methods
 
     public function addContact(Person $contact)
@@ -255,8 +259,54 @@ class Application extends Model
 
     public function getNameAttribute()
     {
-        return $this->long_base_name ?? $this->working_name;
+        return $this->long_base_name ?? $this->addEpTypeSuffix($this->working_name);
     }
+
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = $this->trimEpTypeSuffix($value);
+    }
+    
+
+    public function getLongBaseNameAttribute()
+    {
+        return isset($this->attributes['long_base_name'])
+            ? $this->addEpTypeSuffix($this->attributes['long_base_name'])
+            : null;
+    }
+
+    public function getShortBaseNameAttribute()
+    {
+        return isset($this->attributes['short_base_name'])
+            ? $this->addEpTypeSuffix($this->attributes['short_base_name'])
+            : null;
+    }
+    
+    public function setLongBaseNameAttribute($value)
+    {
+        $this->attributes['long_base_name'] = $this->trimEpTypeSuffix($value);
+    }
+
+    public function setShortBaseNameAttribute($value)
+    {
+        $this->attributes['short_base_name'] = $this->trimEpTypeSuffix($value);
+    }
+
+    private function trimEpTypeSuffix($string)
+    {
+        if (in_array(substr($string, -4), ['VCEP', 'GCEP'])) {
+            return trim(substr($string, 0, -4));
+        }
+        return $string;
+    }
+
+    private function addEpTypeSuffix($string)
+    {
+        return $string.' '.$this->epType->display_name;
+    }
+    
+    
+    
 
     public function getClingenUrlAttribute()
     {

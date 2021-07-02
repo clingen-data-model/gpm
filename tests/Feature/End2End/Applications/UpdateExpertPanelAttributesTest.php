@@ -38,10 +38,14 @@ class UpdateExpertPanelAttributesTest extends TestCase
             'cdwg_id' => $this->cdwg->id
         ];
 
+        $expectedData = $data;
+        $expectedData['long_base_name'] = $data['long_base_name'].' GCEP';
+        $expectedData['short_base_name'] = $data['short_base_name'].' GCEP';
+
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('PUT', '/api/applications/'.$application->uuid, $data)
+        $this->json('PUT', '/api/applications/'.$application->uuid, $data)
             ->assertStatus(200)
-            ->assertJsonFragment($data);
+            ->assertJsonFragment($expectedData);
     }
 
     /**
@@ -69,7 +73,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
         $dataWithUuid = array_merge($data, $nonEpData);
 
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('PUT', '/api/applications/'.$application->uuid, $dataWithUuid)
+        $this->json('PUT', '/api/applications/'.$application->uuid, $dataWithUuid)
             ->assertStatus(200)
             ->assertJsonFragment([
                 'uuid' => $application->uuid,
@@ -86,10 +90,9 @@ class UpdateExpertPanelAttributesTest extends TestCase
      */
     public function validates_required_attributes()
     {
-
         $application = Application::factory()->gcep()->create();
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('PUT', '/api/applications/'.$application->uuid, [])
+        $this->json('PUT', '/api/applications/'.$application->uuid, [])
             ->assertStatus(422)
             ->assertJsonFragment([
                 'working_name' => ['The working name field is required.'],
@@ -103,7 +106,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
     {
         $application = Application::factory()->gcep()->create();
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('PUT', '/api/applications/'.$application->uuid, [
+        $this->json('PUT', '/api/applications/'.$application->uuid, [
                 'working_name' => $this->longText,
                 'cdwg_id' => 999,
                 'long_base_name' => $this->longText,
@@ -119,7 +122,4 @@ class UpdateExpertPanelAttributesTest extends TestCase
                 'affiliation_id' => ['The affiliation id may not be greater than 8 characters.'],
             ]);
     }
-    
-    
-    
 }

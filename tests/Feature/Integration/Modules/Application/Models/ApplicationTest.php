@@ -33,7 +33,7 @@ class ApplicationTest extends TestCase
     {
         parent::setup();
         $this->seed();
-        Carbon::setTestNow('2021-01-01');   
+        Carbon::setTestNow('2021-01-01');
     }
     
     /**
@@ -49,11 +49,11 @@ class ApplicationTest extends TestCase
     /**
      * @test
      */
-    public function name_is_short_base_name_if_not_null()
+    public function name_is_long_base_name_if_not_null()
     {
-        $application = Application::factory()->create(['short_base_name' => 'Beans']);
+        $application = Application::factory()->create(['long_base_name' => 'Beans']);
 
-        $this->assertEquals($application->name, $application->short_base_name);
+        $this->assertEquals($application->name, $application->long_base_name);
     }
         
     /**
@@ -103,7 +103,7 @@ class ApplicationTest extends TestCase
         Event::fake();
         $application->addDocument($document);
 
-        Event::assertDispatched(DocumentAdded::class, function($event) use ($application, $document) {
+        Event::assertDispatched(DocumentAdded::class, function ($event) use ($application, $document) {
             return $event->application->uuid == $application->uuid
                 && $event->document->uuid == $document->uuid;
         });
@@ -120,10 +120,10 @@ class ApplicationTest extends TestCase
         $application->addDocument($document);
 
         $this->assertLoggedActivity(
-            $application, 
+            $application,
             description: 'Added version 1 of scope and membership application.'
         );
-    }    
+    }
 
     /**
      * @test
@@ -139,7 +139,6 @@ class ApplicationTest extends TestCase
         $application->addDocument(Document::factory()->make(['document_type_id' => 1]));
 
         $this->assertEquals($application->fresh()->documents()->count(), 2);
-
     }
 
     /**
@@ -244,7 +243,6 @@ class ApplicationTest extends TestCase
             'subject_id' => $application->id,
             'description' => 'Removed contact '.$person->name
         ]);
-
     }
 
     /**
@@ -326,12 +324,12 @@ class ApplicationTest extends TestCase
         $application = Application::factory()->create();
         $document1 = Document::factory()
                         ->make([
-                            'document_type_id' => config('documents.types.scope.id'), 
+                            'document_type_id' => config('documents.types.scope.id'),
                             'version' => 1
                         ]);
         $document2 = Document::factory()
                         ->make([
-                        'document_type_id' => config('documents.types.scope.id'), 
+                        'document_type_id' => config('documents.types.scope.id'),
                         'version' => 2
                     ]);
         
@@ -341,8 +339,6 @@ class ApplicationTest extends TestCase
         $this->assertEquals($application->documents->count(), 2);
 
         $this->assertEquals($application->firstScopeDocument->id, $document1->id);
-
-
     }
     
     /**
@@ -353,12 +349,12 @@ class ApplicationTest extends TestCase
         $application = Application::factory()->create();
         $document1 = Document::factory()
                         ->make([
-                            'document_type_id' => config('documents.types.final-app.id'), 
+                            'document_type_id' => config('documents.types.final-app.id'),
                             'version' => 1
                         ]);
         $document2 = Document::factory()
                         ->make([
-                        'document_type_id' => config('documents.types.final-app.id'), 
+                        'document_type_id' => config('documents.types.final-app.id'),
                         'version' => 2
                     ]);
         
@@ -368,8 +364,18 @@ class ApplicationTest extends TestCase
         $this->assertEquals($application->documents->count(), 2);
 
         $this->assertEquals($application->firstFinalDocument->id, $document1->id);
-
-
     }
-    
+
+    /**
+     * @test
+     */
+    public function removes_epType_display_name_suffix_when_storing_long_and_short_base_name()
+    {
+        $application = Application::factory()->make();
+
+        $application->long_base_name = 'Garbage Gut VCEP';
+        $application->short_base_name = 'GG VCEP';
+
+        $this->assertEquals('Garbage Gut', $application->getAttributes()['long_base_name']);
+    }
 }
