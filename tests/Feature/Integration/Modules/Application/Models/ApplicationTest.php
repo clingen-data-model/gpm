@@ -39,9 +39,9 @@ class ApplicationTest extends TestCase
     /**
      * @test
      */
-    public function name_is_working_name_if_short_base_name_is_null()
+    public function name_is_working_name_if_long_base_name_is_null()
     {
-        $application = Application::factory()->create(['short_base_name' => null]);
+        $application = Application::factory()->create(['long_base_name' => null]);
 
         $this->assertEquals($application->name, $application->working_name);
     }

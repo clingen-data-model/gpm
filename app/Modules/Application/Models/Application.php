@@ -259,12 +259,17 @@ class Application extends Model
 
     public function getNameAttribute()
     {
-        return $this->long_base_name ?? $this->addEpTypeSuffix($this->working_name);
+        return $this->long_base_name ?? $this->working_name;
     }
 
-    public function setNameAttribute($value)
+    public function setWorkingNameAttribute($value)
     {
-        $this->attributes['name'] = $this->trimEpTypeSuffix($value);
+        $this->attributes['working_name'] = $this->trimEpTypeSuffix($value);
+    }
+    
+    public function getWorkingNameAttribute()
+    {
+        return $this->addEpTypeSuffix($this->attributes['working_name']);
     }
     
 

@@ -4,6 +4,7 @@ namespace Tests\Feature\End2End\Applications;
 
 use Tests\TestCase;
 use App\Models\Cdwg;
+use App\Models\EpType;
 use App\Modules\User\Models\User;
 use Ramsey\Uuid\Uuid;
 use Laravel\Sanctum\Sanctum;
@@ -40,6 +41,7 @@ class InitiationTest extends TestCase
         $expectedAttributes = array_merge(
             $data,
             [
+                'working_name' => $data['working_name'].' '.EpType::find($data['ep_type_id'])->display_name,
                 'date_initiated'=>'2020-01-01T00:00:00.000000Z',
                 'current_step' => 1
             ]

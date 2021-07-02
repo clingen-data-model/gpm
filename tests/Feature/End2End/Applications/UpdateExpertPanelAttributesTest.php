@@ -31,21 +31,18 @@ class UpdateExpertPanelAttributesTest extends TestCase
     {
         $application = Application::factory()->gcep()->create();
         $data = [
-            'working_name' => 'New Test Working Name',
-            'long_base_name' => 'Test Expert Panel Base Name',
-            'short_base_name' => 'Test EP',
+            'working_name' => 'New Test Working Name GCEP',
+            'long_base_name' => 'Test Expert Panel Base Name GCEP',
+            'short_base_name' => 'Test EP GCEP',
             'affiliation_id' => '400001',
             'cdwg_id' => $this->cdwg->id
         ];
 
-        $expectedData = $data;
-        $expectedData['long_base_name'] = $data['long_base_name'].' GCEP';
-        $expectedData['short_base_name'] = $data['short_base_name'].' GCEP';
 
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $this->json('PUT', '/api/applications/'.$application->uuid, $data)
             ->assertStatus(200)
-            ->assertJsonFragment($expectedData);
+            ->assertJsonFragment($data);
     }
 
     /**
