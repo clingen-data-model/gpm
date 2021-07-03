@@ -19,7 +19,7 @@ class CreateNextActionTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed(); 
+        $this->seed();
         $this->application = Application::factory()->create();
     }
     
@@ -49,7 +49,7 @@ class CreateNextActionTest extends TestCase
     public function logs_next_action_added()
     {
         $nextAction = NextAction::factory()->make(['step'=>3]);
-        Bus::dispatch(new CreateNextAction(            
+        Bus::dispatch(new CreateNextAction(
             applicationUuid: $this->application->uuid,
             uuid: $nextAction->uuid,
             dateCreated: $nextAction->date_created,
@@ -64,7 +64,6 @@ class CreateNextActionTest extends TestCase
             'description' => 'Added next action: '.$nextAction->entry,
         ]);
 
-        $this->assertEquals(3, $this->application->latestLogEntry->properties['step']);
+        $this->assertEquals(3, $this->application->logEntries->last()->properties['step']);
     }
-
 }

@@ -31,15 +31,16 @@ class UpdateExpertPanelAttributesTest extends TestCase
     {
         $application = Application::factory()->gcep()->create();
         $data = [
-            'working_name' => 'New Test Working Name',
-            'long_base_name' => 'Test Expert Panel Base Name',
-            'short_base_name' => 'Test EP',
+            'working_name' => 'New Test Working Name GCEP',
+            'long_base_name' => 'Test Expert Panel Base Name GCEP',
+            'short_base_name' => 'Test EP GCEP',
             'affiliation_id' => '400001',
             'cdwg_id' => $this->cdwg->id
         ];
 
+
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('PUT', '/api/applications/'.$application->uuid, $data)
+        $this->json('PUT', '/api/applications/'.$application->uuid, $data)
             ->assertStatus(200)
             ->assertJsonFragment($data);
     }
@@ -69,7 +70,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
         $dataWithUuid = array_merge($data, $nonEpData);
 
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('PUT', '/api/applications/'.$application->uuid, $dataWithUuid)
+        $this->json('PUT', '/api/applications/'.$application->uuid, $dataWithUuid)
             ->assertStatus(200)
             ->assertJsonFragment([
                 'uuid' => $application->uuid,
@@ -86,10 +87,9 @@ class UpdateExpertPanelAttributesTest extends TestCase
      */
     public function validates_required_attributes()
     {
-
         $application = Application::factory()->gcep()->create();
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('PUT', '/api/applications/'.$application->uuid, [])
+        $this->json('PUT', '/api/applications/'.$application->uuid, [])
             ->assertStatus(422)
             ->assertJsonFragment([
                 'working_name' => ['The working name field is required.'],
@@ -103,7 +103,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
     {
         $application = Application::factory()->gcep()->create();
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('PUT', '/api/applications/'.$application->uuid, [
+        $this->json('PUT', '/api/applications/'.$application->uuid, [
                 'working_name' => $this->longText,
                 'cdwg_id' => 999,
                 'long_base_name' => $this->longText,
@@ -119,7 +119,4 @@ class UpdateExpertPanelAttributesTest extends TestCase
                 'affiliation_id' => ['The affiliation id may not be greater than 8 characters.'],
             ]);
     }
-    
-    
-    
 }
