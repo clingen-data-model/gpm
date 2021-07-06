@@ -72,7 +72,7 @@ class NotifyStepApprovedTest extends TestCase
     /**
      * @test
      */
-    public function step_approved_email_carbon_copies_clingen_addresses()
+    public function step_1_approved_email_carbon_copies_clingen_addresses()
     {
         $this->application->ep_type_id = config('expert_panels.types.vcep.id');
 
@@ -82,5 +82,28 @@ class NotifyStepApprovedTest extends TestCase
         $clingenAddresses = config('applications.cc_on_step_approved');
 
         $this->assertEquals($clingenAddresses, $mailMessage->cc);
+    }
+
+    /**
+     * @test
+     */
+    public function steps_2_through_4_approved_does_not_cc_clingen_addresses()
+    {
+        $this->application->ep_type_id = config('expert_panels.types.vcep.id');
+
+        $mailMessage = (new ApplicationStepApprovedNotification($this->application, 2, false))
+                            ->toMail($this->application->contacts->first());
+
+        $this->assertEquals([], $mailMessage->cc);
+
+        // $mailMessage = (new ApplicationStepApprovedNotification($this->application, 3, false))
+        //                     ->toMail($this->application->contacts->first());
+
+        // $this->assertEquals([], $mailMessage->cc);
+
+        // $mailMessage = (new ApplicationStepApprovedNotification($this->application, 4, false))
+        //                     ->toMail($this->application->contacts->first());
+
+        $this->assertEquals([], $mailMessage->cc);
     }
 }
