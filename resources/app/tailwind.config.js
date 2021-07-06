@@ -31,10 +31,15 @@ module.exports = {
                 '32': '8rem',
                 '40': '10rem',
                 '48': '12rem',
-            },    
+            },
         },
         container: {
-            padding: '3rem'
+            padding: {
+                DEFAULT: '1rem',
+                sm: '1rem',
+                md: '2rem',
+                lg: '3rem'
+            }
         },
     },
     variants: {

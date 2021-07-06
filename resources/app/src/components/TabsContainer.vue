@@ -30,7 +30,7 @@
 }
 
 .vertical > .tab-content {
-    @apply w-full
+    @apply w-full overflow-x-auto;
 }
 
 </style>
