@@ -32,7 +32,10 @@ class ApplicationModuleServiceProvider extends ModuleServiceProvider
      */
     public function boot()
     {
-        //
+        $this->mergeConfigFrom(
+            __DIR__.'/../config.php',
+            'applications'
+        );
     }
 
     protected function getEventPath()

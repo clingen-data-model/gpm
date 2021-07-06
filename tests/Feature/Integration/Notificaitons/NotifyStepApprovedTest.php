@@ -51,7 +51,7 @@ class NotifyStepApprovedTest extends TestCase
         Bus::dispatch($job);
 
         // Notification::assertNothingSent();
-        Notification::assertSentTo($this->application->contacts, ApplicationStepApprovedNotification::class);        
+        Notification::assertSentTo($this->application->contacts, ApplicationStepApprovedNotification::class);
     }
     
     /**
@@ -66,8 +66,21 @@ class NotifyStepApprovedTest extends TestCase
 
         Bus::dispatch($job);
 
-        Notification::assertSentTo($this->application->contacts, ApplicationStepApprovedNotification::class);        
+        Notification::assertSentTo($this->application->contacts, ApplicationStepApprovedNotification::class);
     }
-    
-    
+
+    /**
+     * @test
+     */
+    public function step_approved_email_carbon_copies_clingen_addresses()
+    {
+        $this->application->ep_type_id = config('expert_panels.types.vcep.id');
+
+        $mailMessage = (new ApplicationStepApprovedNotification($this->application, 1, false))
+                            ->toMail($this->application->contacts->first());
+
+        $clingenAddresses = config('applications.cc_on_step_approved');
+
+        $this->assertEquals($clingenAddresses, $mailMessage->cc);
+    }
 }

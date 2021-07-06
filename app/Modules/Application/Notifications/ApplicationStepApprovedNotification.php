@@ -50,7 +50,7 @@ class ApplicationStepApprovedNotification extends Notification
             return;
         }
 
-        return (new MailMessage)
+        $mailMessage = (new MailMessage)
                     ->subject('Application step '.$this->approvedStep.' for your ClinGen expert panel '.$this->application->name.' has been approved.')
                     ->view($stepViewMap[$this->approvedStep], [
                         'notifiable' => $notifiable,
@@ -58,6 +58,11 @@ class ApplicationStepApprovedNotification extends Notification
                         'approvedStep' => $this->approvedStep,
                         'wasLastStep' => $this->wasLastStep
                     ]);
+
+        foreach (config('applications.cc_on_step_approved') as $cc) {
+            $mailMessage->cc($cc[0], $cc[1]);
+        }
+        return $mailMessage;
     }
 
     /**
