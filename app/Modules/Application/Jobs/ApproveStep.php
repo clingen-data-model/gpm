@@ -11,6 +11,7 @@ use App\Modules\Application\Events\StepApproved;
 use App\Modules\Application\Service\StepManagerFactory;
 use App\Modules\Application\Exceptions\UnmetStepRequirementsException;
 use App\Modules\Application\Notifications\ApplicationStepApprovedNotification;
+use App\Notifications\UserDefinedMailNotification;
 
 class ApproveStep
 {
@@ -18,6 +19,7 @@ class ApproveStep
 
     private Application $application;
     private Carbon $dateApproved;
+    private array $ccAddresses;
 
     /**
      * Create a new job instance.
@@ -25,14 +27,24 @@ class ApproveStep
      * @return void
      */
     public function __construct(
-        string $applicationUuid, 
+        string $applicationUuid,
         string $dateApproved,
         private bool $notifyContacts = false,
-        private bool $notifyClingen = false
-    )
-    {
+        private ?string $subject = null,
+        private ?string $body = null,
+        private $attachments = []
+    ) {
         $this->application = Application::findByUuidOrFail($applicationUuid);
         $this->dateApproved = $dateApproved ? Carbon::parse($dateApproved) : Carbon::now();
+
+        $defaultMail = (new ApplicationStepApprovedNotification($this->application, $this->application->current_step, false))->toMail($this->application->contacts->first());
+        if (!$this->subject) {
+            $this->subject = $defaultMail->subject;
+        }
+        if (!$this->body) {
+            $this->body = $defaultMail->render();
+        }
+        $this->ccAddresses = $defaultMail->cc;
     }
 
     /**
@@ -65,16 +77,14 @@ class ApproveStep
 
         // TODO: extract to command and log an event on the person.
         if ($this->notifyContacts) {
-            // if ($stepManager->isLastStep()) {
-            //     Notification::send(
-            //         $this->application->contacts, 
-            //         new ApplicationCompletedNotification($this->application)
-            //     );
-            //     return;
-            // }
             Notification::send(
-                $this->application->contacts, 
-                new ApplicationStepApprovedNotification($this->application, $approvedStep, $stepManager->isLastStep())
+                $this->application->contacts,
+                new UserDefinedMailNotification(
+                    subject: $this->subject,
+                    body: $this->body,
+                    attachments: $this->attachments,
+                    ccAddresses: $this->ccAddresses
+                )
             );
         }
     }
@@ -82,11 +92,10 @@ class ApproveStep
     private function dispatchEvent($approvedStep)
     {
         $event = new StepApproved(
-            application: $this->application, 
-            step: $approvedStep, 
+            application: $this->application,
+            step: $approvedStep,
             dateApproved: $this->dateApproved
         );
         Event::dispatch($event);
     }
-    
 }

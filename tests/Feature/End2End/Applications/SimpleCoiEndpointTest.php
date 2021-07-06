@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\End2End\Module\Application;
+namespace Tests\Feature\End2End\Applications;
 
 use Carbon\Carbon;
 use App\Models\Coi;

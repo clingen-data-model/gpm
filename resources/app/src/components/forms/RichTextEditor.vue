@@ -2,8 +2,13 @@
     /* Note: punting on more precise sizing b/c it's more complicated than it should be. */
     .ck-editor__editable, .ck-editor__editable_inline {
         min-width: 300px;
-        max-width: 500px;
         height: 300px;
+    }
+    .ck.ck-editor__main p {
+        @apply my-4;
+    }
+    .ck.ck-editor__main a {
+        @apply text-blue-600 underline;
     }
 </style>
 <template>
@@ -14,7 +19,7 @@
             :config="editorConfig"
             @keyup.enter.stop=""
             @input="emitValue"
-            class="w-full"
+            
         ></ckeditor>
     </div>
 </template>
@@ -38,8 +43,8 @@ export default {
                 remove: ['Heading', "CKFinderUploadAdapter"],
                 width: '100%',
                 height: 200,
-                resize_minWidth: '300px',
-                resize_maxWidth: '300px',
+                // resize_minWidth: '300px',
+                resize_maxWidth: '700px',
             }            
         }
     },

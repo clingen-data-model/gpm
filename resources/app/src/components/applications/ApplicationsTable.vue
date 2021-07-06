@@ -1,9 +1,9 @@
 <template>
     <div>
-        <div class="flex justify-between">
-            <div class="mb-1 flex space-x-2">
-                <label>Filter: <input type="text" class="sm" v-model="filter" placeholder="filter"></label>
-                <label>
+        <div class="sm:flex justify-between">
+            <div class="mb-1 sm:flex space-x-2">
+                <label class="block">Filter: <input type="text" class="sm" v-model="filter" placeholder="filter"></label>
+                <label class="block">
                     <input type="checkbox" v-model="showCompleted">
                     Show completed
                 </label>

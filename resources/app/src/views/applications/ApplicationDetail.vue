@@ -30,9 +30,9 @@
                     <application-log :uuid="application.uuid"></application-log>
                 </tab-item>
 
-                <tab-item label="Dev Tools">
+                <!-- <tab-item label="Dev Tools">
                     <pre>{{this.application}}</pre>
-                </tab-item>
+                </tab-item> -->
             </tabs-container>
 
         </card>

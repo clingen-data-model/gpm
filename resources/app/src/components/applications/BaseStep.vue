@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="overflow-x-auto">
         <div class="mb-6">
 
             <div class="flex justify-between text-lg font-bold pb-2 mb-2 border-b">
@@ -45,7 +45,7 @@
             >
                 {{approveButtonLabel}}
             </button>
-            <modal-dialog v-model="showApproveForm">
+            <modal-dialog v-model="showApproveForm" size="xl">
                 <approve-step-form @saved="hideApproveForm" @canceled="hideApproveForm"></approve-step-form>
             </modal-dialog>
         </div>

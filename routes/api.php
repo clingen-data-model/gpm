@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CdwgController;
+use App\Http\Controllers\Api\MailDraftController;
 use App\Http\Controllers\Api\PeopleController;
 use App\Http\Controllers\Api\MailLogController;
 
@@ -36,8 +37,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
     Route::get('/current-user', function (Request $request) {
         return $request->user();
-    });    
+    });
 
     Route::get('/mail-log', [MailLogController::class, 'index']);
+    Route::get('/email-drafts/{applicationUuid}/{approvedStepNumber}', [MailDraftController::class, 'show']);
 });
 Route::get('/cdwgs', [CdwgController::class, 'index']);

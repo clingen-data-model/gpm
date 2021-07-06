@@ -17,8 +17,11 @@ class ApplicationStepApprovedNotification extends Notification
      *
      * @return void
      */
-    public function __construct(public Application $application, public int $approvedStep, public bool $wasLastStep)
-    {
+    public function __construct(
+        public Application $application,
+        public int $approvedStep,
+        public ?bool $wasLastStep = false
+    ) {
         //
     }
 
@@ -52,7 +55,7 @@ class ApplicationStepApprovedNotification extends Notification
             return;
         }
 
-        return (new MailMessage)
+        $mailMessage = (new MailMessage)
                     ->subject('Application step '.$this->approvedStep.' for your ClinGen expert panel '.$this->application->name.' has been approved.')
                     ->view($stepMessages[$this->approvedStep], [
                         'notifiable' => $notifiable,
@@ -60,6 +63,12 @@ class ApplicationStepApprovedNotification extends Notification
                         'approvedStep' => $this->approvedStep,
                         'wasLastStep' => $this->wasLastStep
                     ]);
+        if ($this->approvedStep === 1) {
+            foreach (config('applications.cc_on_step_approved') as $cc) {
+                $mailMessage->cc($cc[0], $cc[1]);
+            }
+        }
+        return $mailMessage;
     }
 
     /**

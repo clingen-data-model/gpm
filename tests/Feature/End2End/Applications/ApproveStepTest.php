@@ -3,14 +3,16 @@
 namespace Tests\Feature\End2End\Applications;
 
 use Tests\TestCase;
-use App\Modules\User\Models\User;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Carbon;
+use App\Modules\User\Models\User;
+use Illuminate\Support\Facades\View;
 use App\Modules\Person\Models\Person;
 use App\Modules\Application\Jobs\AddContact;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use App\Modules\Application\Models\Application;
+use App\Notifications\UserDefinedMailNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Application\Notifications\ApplicationStepApprovedNotification;
 
@@ -105,9 +107,14 @@ class ApproveStepTest extends TestCase
         $person = Person::factory()->create();
         AddContact::dispatch($this->application->uuid, $person->uuid);
 
+        $subject = 'This is a <strong>test</strong> custom message';
+        $body = '<p>this is the body of a <em>custom message<em>.</p>';
+
         $approvalData = [
             'date_approved' => Carbon::now(),
-            'notify_contacts' => true
+            'notify_contacts' => true,
+            'subject' => $subject,
+            'body' => $body
         ];
 
         Notification::fake();
@@ -115,29 +122,27 @@ class ApproveStepTest extends TestCase
         $this->json('POST', '/api/applications/'.$this->application->uuid.'/current-step/approve', $approvalData)
             ->assertStatus(200);
 
-        Notification::assertSentTo($person, ApplicationStepApprovedNotification::class);
+        Notification::assertSentTo(
+            $person,
+            UserDefinedMailNotification::class,
+            function ($notification) use ($body, $subject) {
+                return $notification->subject == $subject
+                    && $notification->body == $body
+                    && $notification->attachments == [];
+            }
+        );
+
+        $mailable = (new UserDefinedMailNotification(subject: $subject, body: $body))->toMail($person);
+
+        $view = View::make(
+            'email.user_defined_email',
+            [
+                'body' => $body
+            ]
+        );
+
+        $this->assertEquals($view, $mailable->render());
+        $this->assertEquals($subject, $mailable->subject);
+        $this->assertEquals([], $mailable->attachments);
     }
-    
-    /**
-     * @test
-     */
-    // public function sends_notification_to_system_admins_if_specified()
-    // {
-    //     $person = Person::factory()->create();
-    //     AddContact::dispatch($this->application->uuid, $person->uuid);
-
-    //     $approvalData = [
-    //         'date_approved' => Carbon::now(),
-    //         'notify_contacts' => true
-    //     ];
-
-    //     Notification::fake();
-    //     \Laravel\Sanctum\Sanctum::actingAs($this->user);
-    //     $this->json('POST', '/api/applications/'.$this->application->uuid.'/current-step/approve', $approvalData)
-    //         ->assertStatus(200);
-
-    //     Notification::assertSentTo($person, ApplicationStepApprovedNotification::class);
-    // }
-    
-    
 }
