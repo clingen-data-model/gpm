@@ -1,6 +1,6 @@
 <template>
     <div :class="{'border-l border-red-800 px-2': hasErrors}" class="input-row">
-        <div class="my-3" :class="{'flex': !vertical}">
+        <div class="my-3" :class="{'sm:flex': !vertical}">
             <div :class="{'w-36': !vertical, 'my-1': vertical}">
                 <slot name="label" v-if="label">
                     <label :class="{'text-red-800': hasErrors}">{{label}}{{colon}}</label>

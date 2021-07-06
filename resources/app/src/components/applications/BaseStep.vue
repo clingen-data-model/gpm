@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="overflow-x-auto">
         <div class="mb-6">
 
             <div class="flex justify-between text-lg font-bold pb-2 mb-2 border-b">

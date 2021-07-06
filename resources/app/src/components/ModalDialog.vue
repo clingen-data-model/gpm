@@ -8,6 +8,7 @@
             class="fixed top-0 left-0 right-0 bottom-0 bg-black opacity-50" 
             @click="close"
         ></div>
+
         <div class="bg-white p-4 border border-gray-500 opacity-100 relative mt-24 mb-auto rounded-lg shadow-md" :class="width">
             <button 
                 @click="close" class="btn btn-xs gray float-right"
@@ -73,15 +74,15 @@ export default {
         width() {
             switch (this.size) {
                 case 'sm': 
-                    return 'md:w-1/3'
+                    return 'lg:w-1/3'
                 case 'md':
-                    return 'md:w-1/2'
+                    return 'lg:w-1/2'
                 case 'lg': 
-                    return 'md:w-2/3'
+                    return 'lg:w-2/3'
                 case 'xl':
-                    return 'md:w-3/4'           
+                    return 'lg:w-3/4'           
                 default:
-                    return 'md:w-1/2'
+                    return 'lg:w-1/2'
             }
         }
     },
