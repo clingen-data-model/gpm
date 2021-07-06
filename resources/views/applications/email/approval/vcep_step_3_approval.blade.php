@@ -6,7 +6,7 @@
     </p>
 
     <p>
-        <b>VCEP Step 4 Guidance:<b> 
+        <b>VCEP Step 4 Guidance:</b> 
 
         The next step in the ClinGen VCEP application process is Step 4 - Final VCEP Approval.        
         

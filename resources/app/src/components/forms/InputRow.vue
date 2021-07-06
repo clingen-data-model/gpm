@@ -1,12 +1,12 @@
 <template>
     <div :class="{'border-l border-red-800 px-2': hasErrors}" class="input-row">
         <div class="my-3" :class="{'sm:flex': !vertical}">
-            <div :class="{'w-36': !vertical, 'my-1': vertical}">
+            <div class="flex-none" :class="{'w-36': !vertical, 'my-1': vertical}">
                 <slot name="label" v-if="label">
                     <label :class="{'text-red-800': hasErrors}">{{label}}{{colon}}</label>
                 </slot>
             </div>
-            <div>
+            <div class="flex-grow">
                 <slot>
                     <date-input 
                         v-if="type == 'date'"
@@ -25,6 +25,7 @@
                         :disabled="disabled"
                         @change="$emit('change')"
                         ref="input"
+                        class="w-"
                     >
                 </slot>
                 <slot name="after-input"></slot>

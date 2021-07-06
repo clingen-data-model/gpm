@@ -1,5 +1,5 @@
 <template>
-    <card title="Login" class="w-1/2 mx-auto">
+    <card title="Login" class="lg:w-1/2 mx-auto">
         <login-form @authenticated="redirect"></login-form>
     </card>
     <!-- <pre>{{$route.path}}</pre> -->

@@ -17,8 +17,11 @@ class ApplicationStepApprovedNotification extends Notification
      *
      * @return void
      */
-    public function __construct(public Application $application, public int $approvedStep, public bool $wasLastStep)
-    {
+    public function __construct(
+        public Application $application,
+        public int $approvedStep,
+        public ?bool $wasLastStep = false
+    ) {
         //
     }
 

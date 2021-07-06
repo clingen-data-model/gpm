@@ -38,6 +38,13 @@
                     {{address}}
                 </div>
             </dictionary-row>
+            <dictionary-row label="Cc" label-class="font-bold" class="mb-1 border-b">
+                <ul>
+                    <li v-for="(name, address) in currentEmail.cc" :key="address">
+                        {{address}}
+                    </li>
+                </ul>
+            </dictionary-row>
             <dictionary-row label="Subject" label-class="font-bold" class="mb-1 border-b">
                 {{currentEmail.subject}}
             </dictionary-row>

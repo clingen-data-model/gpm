@@ -20,5 +20,3 @@ Route::get('/{any}', [ViewController::class, 'app'])
 
 Route::get('/documents/{uuid?}', [DocumentController::class, 'show'])->middleware('auth:sanctum');
 Route::get('/report/{coiCode}', [SimpleCoiController::class, 'getReport'])->middleware('auth:sanctum');
-    
-    
