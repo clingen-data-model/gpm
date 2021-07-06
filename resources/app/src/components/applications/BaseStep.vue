@@ -45,7 +45,7 @@
             >
                 {{approveButtonLabel}}
             </button>
-            <modal-dialog v-model="showApproveForm">
+            <modal-dialog v-model="showApproveForm" size="xl">
                 <approve-step-form @saved="hideApproveForm" @canceled="hideApproveForm"></approve-step-form>
             </modal-dialog>
         </div>

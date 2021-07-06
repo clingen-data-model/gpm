@@ -199,8 +199,26 @@ export default {
         },
 
         // eslint-disable-next-line
-        async approveCurrentStep({ commit }, { application, dateApproved, notifyContacts, NotifyClingen }) {
-            await appRepo.approveCurrentStep(application, dateApproved, notifyContacts, NotifyClingen)
+        async approveCurrentStep({ commit }, { application, dateApproved, notifyContacts, subject, body, attachments }) {
+            const formData = new FormData();
+            formData.append('date_approved', dateApproved);
+            formData.append('notify_contacts', notifyContacts);
+            formData.append('subject', subject);
+            formData.append('body', body);
+
+            Array.from(attachments).forEach((file, idx) => {
+                formData.append('attachments[' + idx + ']', file);
+            });
+
+            const url = `/api/applications/${application.uuid}/current-step/approve`
+            return await api.post(
+                    url,
+                    formData, {
+                        headers: {
+                            "Content-Type": "multipart/form-data"
+                        }
+                    }
+                )
                 .then(() => {
                     store.dispatch('applications/getApplication', application.uuid)
                 });

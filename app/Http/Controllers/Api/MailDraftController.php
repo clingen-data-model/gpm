@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 use App\Modules\Application\Models\Application;
+use App\Notifications\UserDefinedMailNotification;
 
 class MailDraftController extends Controller
 {
@@ -17,7 +19,6 @@ class MailDraftController extends Controller
 
     public function show($applicationUuid, $approvedStepNumber)
     {
-        // dd($applicationUuid);
         $application = Application::findByUuidOrFail($applicationUuid);
 
         if (!isset($this->stepMessages[$approvedStepNumber])) {
@@ -41,13 +42,5 @@ class MailDraftController extends Controller
             'subject' => 'Application step '.$approvedStepNumber.' for your ClinGen expert panel '.$application->name.' has been approved.',
             'body' => $view->render()
         ];
-    }
-
-    public function send($applicationUuid, )
-    {
-        Bus::dispatch(new (
-            applicationUuid: $applicationUuid, 
-            subject: $
-        ))
     }
 }

@@ -16,8 +16,17 @@ class UserDefinedMailNotification extends Notification
      *
      * @return void
      */
-    public function __construct(private String $subject, private String $body, private ?String $fromEmail = null, private array $attachments = [])
-    {
+    public function __construct(
+        public String $subject,
+        public String $body,
+        public ?String $fromEmail = null,
+        public ?String $fromName = null,
+        public ?array $attachments = [],
+        public ?array $ccAddresses = [],
+        public ?array $bccAddresses = [],
+        public ?string $replyToEmail = null,
+        public ?string $replyToName = null,
+    ) {
         //
     }
 
@@ -47,7 +56,23 @@ class UserDefinedMailNotification extends Notification
                     ]);
 
         if ($this->fromEmail) {
-            $mail->from($this->fromEmail);
+            $mail->from($this->fromEmail, $this->fromName);
+        }
+
+        if ($this->replyToEmail) {
+            $mail->from($this->replyToEmail, $this->replyToName);
+        }
+
+        if (count($this->ccAddresses) > 0) {
+            foreach ($this->ccAddresses as $cc) {
+                $mail->cc(...$cc);
+            }
+        }
+
+        if (count($this->bccAddresses) > 0) {
+            foreach ($this->bccAddresses as $bcc) {
+                $mail->cc(...$cc);
+            }
         }
 
         if (count($this->attachments) > 0) {
@@ -57,6 +82,7 @@ class UserDefinedMailNotification extends Notification
                 ]);
             }
         }
+        return $mail;
     }
 
     /**
