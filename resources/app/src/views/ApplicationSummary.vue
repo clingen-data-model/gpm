@@ -13,9 +13,7 @@
     </div>
 </template>
 <script>
-import ApplicationsTable from '../components/applications/ApplicationsTable.vue'
 export default {
-  components: { ApplicationsTable },
     name: 'ComponentName',
     props: {
         

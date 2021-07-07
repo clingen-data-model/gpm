@@ -38,9 +38,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { formatDate } from '@/date_utils'
 import sortAndFilter from '@/composables/router_aware_sort_and_filter'
-// import computedQueryParam from '../../composables/computed_query_param'
 
 export default {
     name: 'SummaryVceps',
