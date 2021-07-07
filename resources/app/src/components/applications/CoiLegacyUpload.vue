@@ -2,7 +2,7 @@
     <div>
         <button class="btn btn-xs" @click="showModal = true">Upload COI file</button>
         <modal-dialog v-model="showModal">
-            <h4 class="text-lg">Upload a legacy COI file</h4>
+            <h2>Upload a legacy COI file</h2>
             <input-row label="Name" type="text" :errors="nameErrors">
                  <input type="text" v-model="newCoi.first_name" placeholder="First">
                  &nbsp;

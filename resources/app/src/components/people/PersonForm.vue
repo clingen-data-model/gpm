@@ -1,6 +1,6 @@
 <template>
     <form-container @keyup.enter="save">
-        <h3 class="text-lg border-b py-2">Edit - {{person.name}}</h3>
+        <h2 class="border-b py-2">Edit - {{person.name}}</h2>
         <input-row label="First Name" :errors="errors.first_name" v-model="workingPerson.first_name" ref="firstname"></input-row>
         <input-row label="Last Name" :errors="errors.last_name" v-model="workingPerson.last_name"></input-row>
         <input-row label="Email" :errors="errors.email" v-model="workingPerson.email"></input-row>

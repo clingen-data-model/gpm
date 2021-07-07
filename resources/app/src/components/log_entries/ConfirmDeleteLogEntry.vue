@@ -6,7 +6,7 @@
 </style>
 <template>
     <div>
-        <h3 class="text-xl">You are about to delete the following log entry:</h3>
+        <h2>You are about to delete the following log entry:</h2>
 
         <div class="border-y py-2">
         <blockquote>

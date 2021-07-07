@@ -1,6 +1,6 @@
 <template>
     <form-container @keydown.enter="save">
-        <h4 class="text-xl font-semibold pb-2 border-b mb-4">Initiate Application</h4>
+        <h2 class="pb-2 border-b mb-4">Initiate Application</h2>
         <input-row
             label="Working Name"
             :errors="errors.working_name"

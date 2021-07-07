@@ -27,8 +27,7 @@
                 <div v-html="item.description" class="links-blue"></div>
             </template>
         </data-table>
-        <modal-dialog v-model="editingEntry">
-            <h3 class="text-xl">Edit log entry</h3>
+        <modal-dialog v-model="editingEntry" title="Edit log entry">
             <log-entry-form></log-entry-form>
         </modal-dialog>
     </div>

@@ -1,14 +1,13 @@
 <template>
     <div>
-        <div class="px-2 py-2 pl-3 bg-blue-200 rounded flex justify-between text-blue-800">
-            <div class="leading-6 flex space-x-2">
-                <strong>Next Action:</strong> <span v-html="nextAction.entry"></span>
+        <div class="px-2 py-2 pl-3 bg-blue-100 rounded flex justify-between items-start text-blue-800">
+            <div class="leading-5 w-4/5">
+                <span v-html="nextAction.entry"></span>
             </div>
-            <button class="btn blue btn-xs" @click="showModal = true">Mark completed</button>        
+            <button class="btn blue btn-xs block flex-initial self-center" @click="showModal = true">Mark completed</button>        
         </div>
 
-        <modal-dialog v-model="showModal">
-            <h4 class="text-lg">Complete next action</h4>
+        <modal-dialog v-model="showModal" title="Complete next action">
             <dict-row label="Action">
                 <div v-html="nextAction.entry"></div>
             </dict-row>

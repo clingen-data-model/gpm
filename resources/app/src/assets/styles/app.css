@@ -10,6 +10,22 @@ body {
     font-size: .9rem;
 }
 
+h1, h2, h3, h4, h5 {
+    @apply font-semibold;
+}
+
+h1 {
+    @apply text-2xl pb-2 mb-4 border-b;
+}
+
+h2{
+    @apply text-xl;
+}
+
+h3 { 
+    @apply text-lg;
+}
+
 input[type=file]{
     @apply border-none p-0;
 }
@@ -107,4 +123,8 @@ textarea.sm {
 }
 .alert-error {
     @apply bg-red-300 text-red-700;
+}
+
+.block-title {
+    @apply pb-2 border-b mb-2;
 }

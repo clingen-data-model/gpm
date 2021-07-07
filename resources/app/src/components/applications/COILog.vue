@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="flex justify-between">
-            <h4 class="text-md font-bold">Conflict of Interest</h4>
+            <h2>Conflict of Interest</h2>
             <coi-legacy-upload :application="application"
                 v-if="$store.state.features.legacyCoi"
             ></coi-legacy-upload>

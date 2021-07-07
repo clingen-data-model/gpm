@@ -1,7 +1,7 @@
 <template>
     <form-container @keyup.enter="save">
         <!-- <pre>{{documentTypes}}</pre> -->
-        <h4 class="text-xl font-semibold pb-2 border-b mb-4">Upload {{documentType.long_name}} document(s)</h4>
+        <h2 class="pb-2 border-b mb-4">Upload {{documentType.long_name}} document(s)</h2>
 
         <input-row label="Document" :errors="errors.file">
             <input type="file" ref="fileInput">

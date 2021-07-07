@@ -1,6 +1,6 @@
 <template>
     <form-container @keyup.enter="save">
-        <h4 class="text-lg">Add a contact</h4>
+        <h2 class="block-title">Add a contact</h2>
         <div class="flex space-x-4">
             <div class="flex-1">
                 <input-row 

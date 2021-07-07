@@ -1,14 +1,8 @@
 <template>
     <div>
-        <h3 class="text-lg border-b pb-1 mb-3">Mark Document Reviewed</h3>
+        <h2 class="border-b pb-1 mb-3">Mark Document Reviewed</h2>
 
         <input-row v-model="dateReviewed" label="Date Reviewed" :errors="errors.date_reviewed" type="date"></input-row>
-        <!-- <input-row label="" v-if="isReviewed">
-            <label>
-                <input type="checkbox" v-model="isFinal">
-                This is the final document.
-            </label>
-        </input-row> -->
         <button-row>
             <button class="btn" @click="cancel">Cancel</button>
             <button class="btn blue" @click="saveDateReviewed">Mark Reviewed</button>
