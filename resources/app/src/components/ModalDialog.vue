@@ -16,7 +16,7 @@
             >X</button>
             <header>
                 <slot name="header">
-                    <h4>{{title}}</h4>
+                    <h2 class="pb-2 border-b mb-2" v-if="title">{{title}}</h2>
                 </slot>
             </header>
             <slot name="default" />

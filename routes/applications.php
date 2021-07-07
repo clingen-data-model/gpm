@@ -8,8 +8,9 @@ use App\Http\Controllers\Api\ApplicationContactController;
 use App\Http\Controllers\Api\ApplicationDocumentController;
 use App\Http\Controllers\Api\ApplicationNextActionsController;
 
+Route::get('/applications', [ApplicationController::class, 'index']);
+
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::get('/applications', [ApplicationController::class, 'index']);
     Route::post('/applications', [ApplicationController::class, 'store']);
     Route::get('/applications/{app_uuid}', [ApplicationController::class, 'show']);
     Route::put('/applications/{app_uuid}', [ApplicationController::class, 'update']);

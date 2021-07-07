@@ -1,15 +1,20 @@
+<style lang="postcss">
+    .response-data > .dictionary-row {
+        @apply pb-2 mb-1 border-b border-gray-100
+    }
+</style>
 <template>
     <div v-if="response">
-        <h4 class="text-lg border-b pb-2 mb-4 font-bold">
+        <h2 class="block-title">
             COI response for 
             {{response.first_name.response}} {{response.last_name.response}}
-        </h4>
-        <div class="text-sm">            
-            <dictionary-row label="Name" label-class="font-bold" class="pb-1 mb-1 border-b">
+        </h2>
+        <div class="text-sm response-data">            
+            <dictionary-row label="Name" label-class="font-bold">
                 {{response.first_name.response}} {{response.last_name.response}}
             </dictionary-row>
 
-            <dictionary-row label="Email" label-class="font-bold" class="pb-1 mb-1 border-b">
+            <dictionary-row label="Email" label-class="font-bold">
                 {{response.email.response}}
             </dictionary-row>
 
@@ -21,17 +26,17 @@
                     </button>
                 </div>
             </dictionary-row>
-            <div v-if="!response.document_uuid">
+            <div v-if="!response.document_uuid" class="response-data">
 
                 <dictionary-row :label="response.work_fee_lab.question" :vertical="true"
-                    class="pb-1 mb-1 border-b"
+                   
                     label-class="font-bold"
                 >
                     {{getQuestionValue(response.work_fee_lab.response)}}
                 </dictionary-row>
 
                 <dictionary-row :label="response.contributions_to_gd_in_ep.question" :vertical="true"
-                    class="pb-1 mb-1 border-b"
+                   
                     label-class="font-bold"
                 >
                     {{getQuestionValue(response.contributions_to_gd_in_ep.response)}}
@@ -44,15 +49,16 @@
                     </dictionary-row>
                 </dictionary-row>
 
-                <dictionary-row :label="response.independent_efforts.question" :vertical="true"
-                    class="pb-1 mb-1 border-b"
+                <dictionary-row 
+                    :label="response.independent_efforts.question" 
+                    :vertical="true"
                     label-class="font-bold"
                 >
                     {{getQuestionValue(response.independent_efforts.response)}}
 
                     <dictionary-row :label="response.independent_efforts_details.question" :vertical="true"
                         v-if="[1,2].indexOf(response.independent_efforts.response) > -1"
-                        class="pb-1 mb-1 ml-4"
+                        class="pb-1 mb-1 ml-4 border-none"
                         label-class="font-bold"
                     >
                         {{getQuestionValue(response.independent_efforts_details.response)}}

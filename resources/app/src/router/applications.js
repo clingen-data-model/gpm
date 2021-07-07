@@ -15,7 +15,7 @@ const ConfirmDeleteLogEntry = () =>
 
 
 export default [{
-        name: 'applications-index',
+        name: 'ApplicationsIndex',
         path: '/applications',
         redirect: '/applications/vceps',
         components: {

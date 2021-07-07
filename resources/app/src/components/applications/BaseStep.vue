@@ -3,9 +3,9 @@
         <div class="mb-6">
 
             <div class="flex justify-between text-lg font-bold pb-2 mb-2 border-b">
-                <h3>
+                <h2>
                     {{title}}
-                </h3>
+                </h2>
                 <div v-if="dateApproved">
                     <div class="flex space-x-1" v-if="!editApprovalDate">
                         <div class="text-white bg-green-600 rounded-xl px-2">
@@ -21,7 +21,7 @@
                 </div>
             </div>
             <slot name="document">
-                <h4 class="font-bold">{{documentName}}</h4>
+                <h3>{{documentName}}</h3>
                 <document-manager
                     class="border-b"
                     :application="application"
@@ -54,7 +54,7 @@
 
         <slot name="log">
             <div class="mb-6">
-                <h4 class="text-md font-bold mb-2">Step {{step}} Progress Log</h4>
+                <h3 class="mb-2">Step {{step}} Progress Log</h3>
                 <application-log :step="step"></application-log>
             </div>
         </slot>

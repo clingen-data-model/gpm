@@ -1,6 +1,6 @@
 <template>
     <form-container>
-        <h4 class="pb-2 border-b my-2 text-xl">Add Next Action</h4>
+        <h2 class="block-title">Add Next Action</h2>
         <input-row label="Creation Date" :errors="errors.date_created" type="date" v-model="newAction.date_created"></input-row>
 
         <step-input v-model="newAction.step" :errors="errors.step" v-if="application.ep_type_id == 2"></step-input>

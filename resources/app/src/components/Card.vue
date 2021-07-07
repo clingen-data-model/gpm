@@ -3,7 +3,7 @@
         <slot name="header">
             <div class="bg-gray-200 px-4 py-2 sm:flex justify-between border border-gray-300 rounded-t" v-if="title">
                 <slot name="title">
-                     <h3 class="text-lg">{{title}}</h3>
+                     <h2>{{title}}</h2>
                 </slot>
                 <slot name="header-right"></slot>
             </div>

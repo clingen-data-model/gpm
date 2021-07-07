@@ -5,7 +5,7 @@
         title="Pilot ACMG Guideline Specificiations"
     >
         <template v-slot:document>
-            <h3 class="text-lg font-bold mb-1">Final Specifications</h3>
+            <h2>Final Specifications</h2>
             <document-manager 
                 :application="application"
                 :document-type-id="3"
@@ -14,7 +14,7 @@
                     class="mb-4"
             ></document-manager>
 
-            <h3 class="text-lg font-bold mb-1">Pilot Classifications</h3>
+            <h2>Pilot Classifications</h2>
             <document-manager 
                 :application="application"
                 :document-type-id="4"

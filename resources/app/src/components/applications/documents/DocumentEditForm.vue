@@ -1,7 +1,7 @@
 <template>
     <form-container @keyup.enter="save">
-        <h3 class="text-lg border-b pb-1 mb-3">Edit {{type}} version {{document.version}} Info</h3>
-
+        <h2 class="text-lg border-b pb-1 mb-3">Edit {{type}} version {{document.version}} Info</h2>
+        
         <dictionary-row label="File">
             {{document.filename}}
         </dictionary-row>

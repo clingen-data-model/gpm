@@ -12,7 +12,26 @@ const routes = [
         meta: {
             protected: true
         }
-},
+    },
+    {
+        name: 'ApplicationSummary',
+        path: '/application-summary',
+        redirect: '/application-summary/vceps',
+        component: () => import (/* webpackChunkName "applications-summary" */ '@/views/ApplicationSummary'),
+        children: [{
+                name: 'GcepsSummary',
+                path: "gceps",
+                component: () =>
+                        import ( /* webpackChunkName: "application-summary" */ '@/views/SummaryGcep.vue'),
+            },
+            {
+                name: 'VcepsSummary',
+                path: "vceps",
+                component: () =>
+                        import ( /* webpackChunkName: "application-summary" */ '@/views/SummaryVcep.vue'),
+            },
+        ]
+    },    
     ...applicationRoutes,
     ...peopleRoutes,
     ...authRoutes,

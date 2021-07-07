@@ -8,13 +8,19 @@
                 </div>                
             </template>
             
-            <next-action-banner 
-                :application="application" 
-                :next-action="application.latest_pending_next_action" 
-                v-if="hasPendingNextAction"
-            ></next-action-banner>
+            <div class="md:flex space-x-4">
+                <ep-attributes-form :application="application" class=" flex-1"></ep-attributes-form>
+                <div class="flex-1 space-y-2 border-l rounded px-4 py-2" v-if="application.pendingNextActions.length > 0">
+                    <h3>Next Actions</h3>
+                    <pre>{{application.pendingNexActions}}</pre>
+                    <next-action-banner 
+                        :application="application" 
+                        v-for="na in application.pendingNextActions" :key="na.id"
+                        :next-action="na" 
+                    ></next-action-banner>
+                </div>
 
-            <ep-attributes-form :application="application"></ep-attributes-form>
+            </div>
 
             <progress-chart 
                 :application="application" 

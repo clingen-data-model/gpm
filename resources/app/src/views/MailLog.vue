@@ -8,7 +8,7 @@
 </style>
 <template>
     <div>
-        <h1 class="text-xl font-bold pb-2 mb-4 border-b">Mail Log</h1>
+        <h1>Mail Log</h1>
         Filter: <input type="text" v-model="filter">
         <data-table 
             :fields="fields" 

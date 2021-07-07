@@ -9,8 +9,7 @@
         &nbsp;
         <remove-button size="xs" @click="confirmRemove"></remove-button>        
 
-        <modal-dialog v-model="showRemoveConfirmation">
-            <h4 class="text-lg mb-3 border-b pb-1">Confirm Contact Removal</h4>
+        <modal-dialog v-model="showRemoveConfirmation" title="Confirm Contact Removal">
             <p class="mb-2">
                 You are about to remove <strong>{{contact.name}}</strong> as a contact for this application.
                 Do you want to continue?

@@ -1,9 +1,9 @@
 import Entity from './entity'
-class Application extends Entity{
+class Application extends Entity {
     static dates = [
         'date_completed',
         'date_initiated',
-        'created_at', 
+        'created_at',
         'updated_at',
         'deleted_at'
     ];
@@ -48,10 +48,17 @@ class Application extends Entity{
             return [1];
         }
         if (this.ep_type_id == 2) {
-            return [1,2,3,4];
+            return [1, 2, 3, 4];
         }
 
         throw new Error('Unknown ep_type_id found when determining applicaiton steps.');
+    }
+
+    get pendingNextActions() {
+        if (!this.next_actions) {
+            return [];
+        }
+        return this.next_actions.filter(na => na.date_completed === null);
     }
 
     get hasContacts() {
@@ -80,37 +87,37 @@ class Application extends Entity{
 
         const stepKey = `step ${stepNumber}`;
 
-        return (Object.keys(this.approval_dates).includes(stepKey)) 
-                    ? new Date(Date.parse(this.approval_dates[stepKey])) 
-                    : null;
+        return (Object.keys(this.approval_dates).includes(stepKey)) ?
+            new Date(Date.parse(this.approval_dates[stepKey])) :
+            null;
     }
 
     firstDocumentOfType(docTypeId) {
         const typeDocs = this.documents
-                            .filter(d =>  d.document_type_id == docTypeId)
-                            .sort((a, b) => {
-                                if (a.date_reviewed == b.date_reviewed) {
-                                    return (a.version > b.version) ? 1 : -1;
-                                }
+            .filter(d => d.document_type_id == docTypeId)
+            .sort((a, b) => {
+                if (a.date_reviewed == b.date_reviewed) {
+                    return (a.version > b.version) ? 1 : -1;
+                }
 
-                                return (a.date_reviewed > b.date_reviewed) ? 1 : -1;
-                            });
+                return (a.date_reviewed > b.date_reviewed) ? 1 : -1;
+            });
 
         return typeDocs[0] || {}
     }
 
     finalDocumentOfType(docTypeId) {
         const typeDocs = this.documents
-                            .filter(d =>  d.document_type_id == docTypeId)
-                            .sort((a, b) => {
-                                if (a.date_reviewed == b.date_reviewed) {
-                                    return (a.version > b.version) ? 1 : -1;
-                                }
+            .filter(d => d.document_type_id == docTypeId)
+            .sort((a, b) => {
+                if (a.date_reviewed == b.date_reviewed) {
+                    return (a.version > b.version) ? 1 : -1;
+                }
 
-                                return (a.date_reviewed > b.date_reviewed) ? 1 : -1;
-                            });
+                return (a.date_reviewed > b.date_reviewed) ? 1 : -1;
+            });
 
-        return typeDocs[(typeDocs.length-1)] || {}
+        return typeDocs[(typeDocs.length - 1)] || {}
     }
 }
 

@@ -1,14 +1,17 @@
+<style lang="postcss" scoped>
+    .dictionary-row {
+        @apply my-2;
+    }
+</style>
 <template>
-    <div>
-        <div class="my-2" :class="{'flex': !vertical}">
-            <div :class="fullLabelClass">
-                <slot name="label" v-if="label">
-                    <label>{{label}}{{colon}}</label>
-                </slot>
-            </div>
-            <slot>
+    <div class="dictionary-row" :class="{'flex': !vertical}">
+        <div :class="fullLabelClass">
+            <slot name="label" v-if="label">
+                <label>{{label}}{{colon}}</label>
             </slot>
         </div>
+        <slot>
+        </slot>
     </div>
 
 </template>
