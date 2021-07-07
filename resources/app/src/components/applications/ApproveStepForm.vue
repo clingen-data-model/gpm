@@ -1,5 +1,5 @@
 <template>
-    <form-container @keyup.enter="save">
+    <form-container>
         <h2>Approve Step {{application.current_step}}</h2>
         
         <input-row v-model="dateApproved" type="date" :errors="errors.date_approved" label="Date Approved"></input-row>
