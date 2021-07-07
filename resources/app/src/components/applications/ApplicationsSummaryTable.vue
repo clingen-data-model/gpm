@@ -8,10 +8,6 @@
                     Show completed
                 </label>
             </div>
-            <div>
-                <button class="btn btn-xs" :class="{blue: showAllInfo == 0}" @click="showAllInfo = 0">Summary</button>
-                <button class="btn btn-xs" :class="{blue: showAllInfo == 1}" @click="showAllInfo = 1">All Info</button>
-            </div>
         </div>
         <data-table 
             :data="filteredData" 
@@ -21,7 +17,7 @@
             row-class="cursor-pointer"
             v-model:sort="sort"
             :style="remainingHeight"
-            class="overflow-auto"
+            class="overflow-auto text-xs"
             ref="table"
         >
             <template v-slot:cell-contacts="{item}">
@@ -42,11 +38,12 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { formatDate } from '../../date_utils'
-import sortAndFilter from '../../composables/router_aware_sort_and_filter'
+import { formatDate } from '@/date_utils'
+import sortAndFilter from '@/composables/router_aware_sort_and_filter'
 // import computedQueryParam from '../../composables/computed_query_param'
 
 export default {
+    name: 'SummaryVceps',
     components: {
     },
     props: {
@@ -58,12 +55,6 @@ export default {
     data() {
         return {
             fields: [
-                {
-                    name: 'id',
-                    label: 'ID',
-                    type: Number,
-                    sortable: true,
-                },
                 {
                     name: 'name',
                     label: 'Name',
@@ -81,7 +72,7 @@ export default {
                 },
                 {
                     name: 'current_step',
-                    label: 'Current Step',
+                    label: 'Step',
                     type: Number,
                     sortable: true,
                     resolveValue (item) {
@@ -92,94 +83,62 @@ export default {
                     }
                 },
                 {
-                    name: 'latest_log_entry.created_at',
-                    label: 'Last Activity',
-                    type: String,
-                    sortable: true,
-                    resolveValue (item) {
-                        if (item && item.latest_log_entry) {
-                            return formatDate(item.latest_log_entry.created_at);
-                        }
-                        return null
-                    },
-                    colspan: 2,
-                    headerClass: ['max-w-sm'],
-                    class: ['min-w-28']
-                },
-                {
-                    name: 'latest_log_entry.description',
-                    label: 'Last Activity',
-                    type: String,
-                    hideHeader: true,
-                    class: ['max-w-48', 'truncate']
-                },
-                {
-                    name: 'latest_pending_next_action.entry',
-                    label: 'Next Action',
-                    type: String,
+                    name: 'contacts',
+                    label: 'Contacts',
+                    type: Array,
                     sortable: false,
-                    class: ['min-w-28', 'max-w-xs', 'truncate'],
+                    class: ['min-w-40'],
+                    step: 1
+                },
+                {
+                    name: 'first_scope_document.date_received',
+                    label: this.epTypeId == 2 ? 'Step 1 Received' : 'Application Received',
+                    type: Date,
+                    sortable: true,
+                    class: ['min-w-28'],
+                    step: 1
 
+                },
+                {
+                    name: 'approval_dates.step 1',
+                    label: this.epTypeId == 2 ? 'Step 1 Approved' : 'Application Approved',
+                    type: Date,
+                    sortable: true,
+                    class: ['min-w-28'],
+                    step: 1
+                },
+                {
+                    name: 'approval_dates.step 2',
+                    label: 'Step 2 Approved',
+                    type: Date,
+                    sortable: true,
+                    class: ['min-w-28'],
+                    step: 2
+                },
+                {
+                    name: 'approval_dates.step 3',
+                    label: 'Step 3 Approved',
+                    type: Date,
+                    sortable: true,
+                    class: ['min-w-28'],
+                    step: 3
+                },
+                {
+                    name: 'first_final_document.date_received',
+                    label: 'Step 4 Received',
+                    type: Date,
+                    sortable: true,
+                    class: ['min-w-28'],
+                    step: 4
+                },
+                {
+                    name: 'approval_dates.step 4',
+                    label: 'Step 4 Approved',
+                    type: Date,
+                    sortable: true,
+                    class: ['min-w-28'],
+                    step: 4
                 }
-            ],
-            allInfoFields: [
-                    {
-                        name: 'contacts',
-                        label: 'Contacts',
-                        type: Array,
-                        sortable: false,
-                        class: ['min-w-40'],
-                        step: 1
-                    },
-                    {
-                        name: 'first_scope_document.date_received',
-                        label: this.epTypeId == 2 ? 'Step 1 Received' : 'Application Received',
-                        type: Date,
-                        sortable: true,
-                        class: ['min-w-28'],
-                        step: 1
-
-                    },
-                    {
-                        name: 'approval_dates.step 1',
-                        label: this.epTypeId == 2 ? 'Step 1 Approved' : 'Application Approved',
-                        type: Date,
-                        sortable: true,
-                        class: ['min-w-28'],
-                        step: 1
-                    },
-                    {
-                        name: 'approval_dates.step 2',
-                        label: 'Step 2 Approved',
-                        type: Date,
-                        sortable: true,
-                        class: ['min-w-28'],
-                        step: 2
-                    },
-                    {
-                        name: 'approval_dates.step 3',
-                        label: 'Step 3 Approved',
-                        type: Date,
-                        sortable: true,
-                        class: ['min-w-28'],
-                        step: 3
-                    },
-                    {
-                        name: 'first_final_document.date_received',
-                        label: 'Step 4 Received',
-                        type: Date,
-                        sortable: true,
-                        class: ['min-w-28'],
-                        step: 4
-                    },
-                    {
-                        name: 'approval_dates.step 4',
-                        label: 'Step 4 Approved',
-                        type: Date,
-                        sortable: true,
-                        class: ['min-w-28'],
-                        step: 4
-                    }
             ]
         }
     },
@@ -218,12 +177,8 @@ export default {
             immediate: true
         },
         selectedFields() {
-            if (this.showAllInfo == 1) {
-                const stepsToShow = this.epTypeId == 2 ? [1,2,3,4] : [1]
-                const allInfoFields = this.allInfoFields.filter(field => stepsToShow.includes(field.step))
-                return [...this.fields, ...allInfoFields]
-            }
-            return this.fields
+            const stepsToShow = this.epTypeId == 2 ? [1,2,3,4] : [1]
+            return this.fields.filter(field => !field.step || stepsToShow.includes(field.step))
         },
         showAllInfo: {
             immediate: true,
