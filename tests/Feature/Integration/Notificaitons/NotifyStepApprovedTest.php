@@ -7,7 +7,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Application\Jobs\ApproveStep;
 use App\Modules\Application\Models\Application;
-use App\Modules\Application\Notifications\ApplicationStepApprovedNotification;
+use App\Notifications\UserDefinedMailNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Notification;
@@ -46,12 +46,12 @@ class NotifyStepApprovedTest extends TestCase
     public function does_not_send_StepApprovedNotification_if_is_last_step()
     {
         $job = new ApproveStep($this->application->uuid, Carbon::now(), true);
-        Notification::fake(ApplicationStepApprovedNotification::class);
+        Notification::fake(UserDefinedMailNotification::class);
 
         Bus::dispatch($job);
 
         // Notification::assertNothingSent();
-        Notification::assertSentTo($this->application->contacts, ApplicationStepApprovedNotification::class);
+        Notification::assertSentTo($this->application->contacts, UserDefinedMailNotification::class);
     }
     
     /**
@@ -62,11 +62,11 @@ class NotifyStepApprovedTest extends TestCase
         $this->application->ep_type_id = config('expert_panels.types.vcep.id');
         $this->application->save();
         $job = new ApproveStep($this->application->uuid, Carbon::now(), true);
-        Notification::fake(ApplicationStepApprovedNotification::class);
+        Notification::fake(UserDefinedMailNotification::class);
 
         Bus::dispatch($job);
 
-        Notification::assertSentTo($this->application->contacts, ApplicationStepApprovedNotification::class);
+        Notification::assertSentTo($this->application->contacts, UserDefinedMailNotification::class);
     }
 
     /**
@@ -76,10 +76,11 @@ class NotifyStepApprovedTest extends TestCase
     {
         $this->application->ep_type_id = config('expert_panels.types.vcep.id');
 
-        $mailMessage = (new ApplicationStepApprovedNotification($this->application, 1, false))
+        $clingenAddresses = config('applications.cc_on_step_approved');
+
+        $mailMessage = (new UserDefinedMailNotification($this->application, 1, false, ccAddresses: $clingenAddresses))
                             ->toMail($this->application->contacts->first());
 
-        $clingenAddresses = config('applications.cc_on_step_approved');
 
         $this->assertEquals($clingenAddresses, $mailMessage->cc);
     }
@@ -91,18 +92,18 @@ class NotifyStepApprovedTest extends TestCase
     {
         $this->application->ep_type_id = config('expert_panels.types.vcep.id');
 
-        $mailMessage = (new ApplicationStepApprovedNotification($this->application, 2, false))
+        $mailMessage = (new UserDefinedMailNotification($this->application, 2, false))
                             ->toMail($this->application->contacts->first());
 
         $this->assertEquals([], $mailMessage->cc);
 
-        // $mailMessage = (new ApplicationStepApprovedNotification($this->application, 3, false))
-        //                     ->toMail($this->application->contacts->first());
+        $mailMessage = (new UserDefinedMailNotification($this->application, 3, false))
+                            ->toMail($this->application->contacts->first());
 
-        // $this->assertEquals([], $mailMessage->cc);
+        $this->assertEquals([], $mailMessage->cc);
 
-        // $mailMessage = (new ApplicationStepApprovedNotification($this->application, 4, false))
-        //                     ->toMail($this->application->contacts->first());
+        $mailMessage = (new UserDefinedMailNotification($this->application, 4, false))
+                            ->toMail($this->application->contacts->first());
 
         $this->assertEquals([], $mailMessage->cc);
     }

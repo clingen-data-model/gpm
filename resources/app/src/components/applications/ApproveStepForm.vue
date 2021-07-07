@@ -1,37 +1,53 @@
 <template>
-    <form-container @keyup.enter="save">
+    <form-container>
         <h2>Approve Step {{application.current_step}}</h2>
         
         <input-row v-model="dateApproved" type="date" :errors="errors.date_approved" label="Date Approved"></input-row>
 
         <dictionary-row label="">
-            <label class="text-sm" v-if="[1,2].indexOf(application.current_step) > -1">
-                <input type="checkbox" v-model="notifyContacts" :value="true"> Send notification email to contacts
-            </label>
-            <div class="text-gray-400 text-xs">
-                No emails have been defined for step {{application.current_step}} approval.
+            <div>
+                <label class="text-sm block">
+                    <input type="checkbox" v-model="notifyContacts" :value="true"> Send notification email to contacts
+                </label>
             </div>
         </dictionary-row>
-
-        <!-- <dictionary-row label="">
-            <label class="text-sm">
-                <input type="checkbox" v-model="notifyClingen"> Send notification to ClinGen system administrators
-            </label>
-        </dictionary-row> -->
+        
+        <transition name="slide-fade-down">
+            <div v-if="notifyContacts">
+                <h4 class="font-bold border-b">Email</h4>
+                <input-row label="Subject">
+                    <input type="text" v-model="email.subject" class="w-full">
+                </input-row>
+                <input-row label="Body">
+                    <rich-text-editor  v-model="email.body"></rich-text-editor>
+                </input-row>
+                <input-row label="Attachments">
+                    <input type="file" multiple ref="attachmentsField">
+                </input-row>
+                <note v-if="application.current_step == 1">ClinGen Services will be carbon copied on this email.</note>
+            </div>
+        </transition>
 
         <button-row>
             <button class="btn" @click="cancel">Cancel</button>
-            <button class="btn blue" @click="save">Approve step {{application.current_step}}</button>
+            <button class="btn blue" @click="save">
+                Approve step {{application.current_step}}
+                <span v-if="notifyContacts">
+                    and notify
+                </span>
+            </button>
         </button-row>
     </form-container>
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import isValidationError from '../../http/is_validation_error';
+import api from '@/http/api';
+import isValidationError from '@/http/is_validation_error';
+import RichTextEditor from '@/components/forms/RichTextEditor.vue';
 
 export default {
-    props: {
-        
+    components: {
+        RichTextEditor
     },
     emits: [
         'canceled',
@@ -41,7 +57,10 @@ export default {
         return {
             dateApproved: null,
             notifyContacts: false,
-            notifyClinGen: false,
+            email: {
+                subject: '',
+                body: '',
+            },
             errors: {}
         }
     },
@@ -49,6 +68,18 @@ export default {
         ...mapGetters({
             application: 'applications/currentItem'
         })
+    },
+    watch: {
+        notifyContacts: function (to) {
+            console.info('url:', `/api/email-drafts/${this.application.uuid}/${this.application.current_step}`)
+            console.info('to', to)
+            if (to) {
+                api.get(`/api/email-drafts/${this.application.uuid}/${this.application.current_step}`)
+                    .then(response => {
+                        this.email = response.data;
+                    })
+            }
+        }
     },
     methods: {
         clearForm() {
@@ -63,7 +94,9 @@ export default {
                 application: this.application, 
                 dateApproved: this.dateApproved,
                 notifyContacts: this.notifyContacts,
-                notifyClingen: this.notifyClinGen,
+                subject: this.email.subject,
+                body: this.email.body,
+                attachments: this.$refs.attachmentsField.files
             };
 
             try {

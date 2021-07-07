@@ -1,3 +1,11 @@
+<style lang="postcss">
+.email-body p{
+    @apply mb-4;
+}
+.email-body a {
+    @apply text-blue-700 underline
+}
+</style>
 <template>
     <div>
         <h1>Mail Log</h1>
@@ -30,11 +38,18 @@
                     {{address}}
                 </div>
             </dictionary-row>
+            <dictionary-row label="Cc" label-class="font-bold" class="mb-1 border-b">
+                <ul>
+                    <li v-for="(name, address) in currentEmail.cc" :key="address">
+                        {{address}}
+                    </li>
+                </ul>
+            </dictionary-row>
             <dictionary-row label="Subject" label-class="font-bold" class="mb-1 border-b">
                 {{currentEmail.subject}}
             </dictionary-row>
             <dictionary-row label="Body" label-class="font-bold" class="mb-1">
-                <div v-html="currentEmail.body"></div>
+                <div v-html="currentEmail.body" class="email-body w-3/4"></div>
             </dictionary-row>
         </modal-dialog>
     </div>
