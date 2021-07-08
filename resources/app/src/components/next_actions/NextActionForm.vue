@@ -8,9 +8,21 @@
         <input-row label="Target" Date="" :errors="errors.target_date" type="date" v-model="newAction.target_date"></input-row>
 
         <input-row label="Entry" :errors="errors.entry">
-            <!-- <textarea name="" id="" cols="30" rows="5" v-model="newAction.entry" @keyup.enter.exact.stop="" @keyup.meta.enter.exact="save"></textarea> -->
             <rich-text-editor v-model="newAction.entry"></rich-text-editor>
-        </input-row>    
+        </input-row>
+
+        <input-row label="Assigned To" :errors="assignmentErrors">
+            <select id="" v-model="newAction.assigned_to">
+                <option :value="null">Select...</option>
+                <option value="Expert Panel">Expert Panel</option>
+                <option value="CDWG OC">CDWG OC</option>
+            </select>
+            &nbsp;&nbsp;
+            <input type="text" label="Name" v-model="newAction.assigned_to_name" placeholder="Name (optional)">
+        </input-row>
+
+        <div class="ml-4">
+        </div>
 
         <label class="ml-36">
             <input type="checkbox" v-model="completed"> This is already completed
@@ -46,7 +58,8 @@ export default {
     emits: [
         'saved',
         'closed',
-        'formCleard'
+        'formCleared',
+        'canceled'
     ],
     data() {
         return {
@@ -56,7 +69,9 @@ export default {
                 date_created: new Date(),
                 step: null,
                 date_completed: null,
-                entry: null
+                entry: '',
+                assigned_to: null,
+                assigned_to_name: null
             },
             completed: false
         }
@@ -66,6 +81,16 @@ export default {
         steps () {
             return [1,2,3,4];
         },
+        assignmentErrors () {
+            let errors = [];
+            if (this.errors.assigned_to) {
+                errors = [...errors, ...this.errors.assigned_to]
+            }
+            if (this.errors.assigned_to_name) {
+                errors = [...errors, ...this.errors.assigned_to_name]
+            }
+            return errors;
+        }
     },
     methods: {
         async save() {
@@ -85,21 +110,26 @@ export default {
             this.$emit('canceled');
         },
         clearForm() {
+            console.log('clearForm()');
             this.initNewAction();
             this.$emit('formCleared')
         },
         initNewAction () {
+            console.log('initNewAction()');
             this.newAction = {
                 // uuid: this.uuid,
                 date_created: new Date(),
                 step: null,
                 target_date: null,
                 date_completed: null,
-                entry: null,
+                entry: '',
+                assigned_to: null,
+                assigned_to_name: null,
             };      
         }
     },
     unmounted() {
+        console.log('unmounted');
         this.initNewAction()
     },
     mounted() {

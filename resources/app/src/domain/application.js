@@ -61,8 +61,37 @@ class Application extends Entity {
         return this.next_actions.filter(na => na.date_completed === null);
     }
 
+    get pendingActionsByAssignee() {
+        let groups = {cdwg_oc: [], expert_panel: []}
+        if (!this.next_actions) {
+            return groups;
+        }
+
+        for (const na in this.pendingNextActions) {
+            console.info('na', na);
+            console.info('this.pendingNextActions[na]', this.pendingNextActions[na]);
+            const assignedTo = this.pendingNextActions[na].assigned_to;
+            if (assignedTo == 'CDWG OC') {
+                groups.cdwg_oc.push(this.pendingNextActions[na]);
+            }
+            if (assignedTo == 'Expert Panel') {
+                groups.expert_panel.push(this.pendingNextActions[na]);
+            }
+        }
+        console.log(groups);
+        return groups
+    }
+
     get hasContacts() {
         return (this.contacts.length > 0);
+    }
+
+    isWaitingOnCdwgOc() {
+        return this.pendingActionsAssigneeCounts.cdwg_oc > 0;
+    }
+
+    isWaitingOnExpertPanel() {
+        return this.pendingActionsAssigneeCounts.expert_panel > 0;
     }
 
     stepIsApproved(stepNumber) {
