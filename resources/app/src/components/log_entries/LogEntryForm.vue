@@ -37,7 +37,7 @@ export default {
             newEntry: {
                 log_date: new Date(),
                 step: null,
-                entry: null
+                entry: ''
             },
             errors: {},
             editor: Editor,
