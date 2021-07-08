@@ -18,14 +18,16 @@ class CreateNextAction
      * @return void
      */
     public function __construct(
-        private string $applicationUuid, 
-        private string $uuid, 
-        private string $entry, 
-        private string $dateCreated, 
-        private ?string $dateCompleted = null, 
-        private ?string $targetDate = null, 
-        private ?int $step = null)
-    {
+        private string $applicationUuid,
+        private string $uuid,
+        private string $entry,
+        private string $dateCreated,
+        private ?string $dateCompleted = null,
+        private ?string $targetDate = null,
+        private ?int $step = null,
+        private ?string $assignedTo = null,
+        private ?string $assignedToName = null,
+    ) {
     }
 
     /**
@@ -42,14 +44,14 @@ class CreateNextAction
             'date_created' => $this->dateCreated,
             'target_date' => $this->targetDate,
             'step' => $this->step,
-            'date_completed' => $this->dateCompleted
+            'date_completed' => $this->dateCompleted,
+            'assigned_to' => $this->assignedTo,
+            'assigned_to_name' => $this->assignedToName
         ]);
 
         $application->nextActions()->save($nextAction);
         $application->touch();
         
         Event::dispatch(new NextActionAdded($application, $nextAction));
-
     }
-
 }

@@ -29,6 +29,8 @@ class ApplicationNextActionsController extends Controller
             dateCompleted: $request->date_completed,
             targetDate: $request->target_date,
             step: $request->step,
+            assignedTo: $request->assigned_to,
+            assignedToName: $request->assigned_to_name
         );
 
         $this->dispatcher->dispatch($job);
@@ -41,8 +43,8 @@ class ApplicationNextActionsController extends Controller
     public function complete($applicationUuid, $nextActionUuid, CompleteNextActionRequest $request)
     {
         $job = new CompleteNextAction(
-            applicationUuid: $applicationUuid, 
-            nextActionUuid: $nextActionUuid, 
+            applicationUuid: $applicationUuid,
+            nextActionUuid: $nextActionUuid,
             dateCompleted: $request->date_completed
         );
         $this->dispatcher->dispatch($job);
@@ -50,5 +52,5 @@ class ApplicationNextActionsController extends Controller
         $nextAction = NextAction::findByUuid($nextActionUuid);
 
         return $nextAction;
-    }    
+    }
 }

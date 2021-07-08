@@ -24,7 +24,6 @@ class NextActionAdded extends ApplicationEvent
      */
     public function __construct(public Application $application, public NextAction $nextAction)
     {
-        
     }
 
     public function getLogEntry():string
@@ -34,6 +33,7 @@ class NextActionAdded extends ApplicationEvent
 
     public function getProperties(): array
     {
+        // dd($this->nextAction->toArray());
         return [
             'next_action' => $this->nextAction->toArray()
         ];
