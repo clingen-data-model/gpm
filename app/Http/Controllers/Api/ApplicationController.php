@@ -104,7 +104,7 @@ class ApplicationController extends Controller
     public function show($uuid, Request $request)
     {
         $application = Application::findByUuidOrFail($uuid);
-        $application->load(['latestLogEntry', 'cdwg', 'type', 'contacts', 'latestPendingNextAction']);
+        $application->load(['latestLogEntry', 'cdwg', 'type', 'contacts', 'nextActions']);
         if ($request->has('with')) {
             $application->load($request->with);
         }
