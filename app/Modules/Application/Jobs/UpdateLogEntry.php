@@ -3,10 +3,10 @@
 namespace App\Modules\Application\Jobs;
 
 use App\Models\Activity;
-use App\Modules\Application\Models\Application;
-use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Bus\Dispatchable;
+use App\Modules\Application\Models\Application;
 
 class UpdateLogEntry
 {
@@ -26,8 +26,7 @@ class UpdateLogEntry
         private string $logDate,
         private string $entry,
         private ?int $step = null
-    )
-    {
+    ) {
         $this->application = Application::findByUuidOrFail($applicationUuid);
         $this->logEntry = $this->application->logEntries()->findOrFail($logEntryId);
     }
