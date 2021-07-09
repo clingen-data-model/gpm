@@ -17,9 +17,7 @@
             :editor="editor" 
             :model-value="modelValue" 
             :config="editorConfig"
-            @keyup.enter.stop=""
             @input="emitValue"
-            
         ></ckeditor>
     </div>
 </template>

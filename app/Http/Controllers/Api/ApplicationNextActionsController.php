@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\NextAction;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Bus\Dispatcher;
+use App\Http\Requests\UpdateNextActionRequest;
 use App\Modules\Application\Jobs\CreateNextAction;
+use App\Modules\Application\Jobs\UpdateNextAction;
 use App\Modules\Application\Jobs\CompleteNextAction;
 use App\Http\Requests\Applications\CreateNextActionRequest;
 use App\Http\Requests\Applications\CompleteNextActionRequest;
@@ -29,6 +32,8 @@ class ApplicationNextActionsController extends Controller
             dateCompleted: $request->date_completed,
             targetDate: $request->target_date,
             step: $request->step,
+            assignedTo: $request->assigned_to,
+            assignedToName: $request->assigned_to_name
         );
 
         $this->dispatcher->dispatch($job);
@@ -38,11 +43,32 @@ class ApplicationNextActionsController extends Controller
         return $nextAction;
     }
 
+    public function update($applicationUuid, $id, UpdateNextActionRequest $request)
+    {
+        $all = $request->except('id', 'uuid');
+        $cmdParams = [
+            'applicationUuid' => $applicationUuid,
+            'nextActionId' => $id
+        ];
+        foreach ($all as $key => $value) {
+            $cmdParams[Str::camel($key)] = $value;
+        }
+
+        // dd($cmdParams);
+
+        $this->dispatcher->dispatch(new UpdateNextAction(...$cmdParams));
+
+        $nextAction = NextAction::find($id);
+
+        return $nextAction;
+    }
+    
+
     public function complete($applicationUuid, $nextActionUuid, CompleteNextActionRequest $request)
     {
         $job = new CompleteNextAction(
-            applicationUuid: $applicationUuid, 
-            nextActionUuid: $nextActionUuid, 
+            applicationUuid: $applicationUuid,
+            nextActionUuid: $nextActionUuid,
             dateCompleted: $request->date_completed
         );
         $this->dispatcher->dispatch($job);
@@ -50,5 +76,5 @@ class ApplicationNextActionsController extends Controller
         $nextAction = NextAction::findByUuid($nextActionUuid);
 
         return $nextAction;
-    }    
+    }
 }

@@ -72,6 +72,18 @@ export default [{
                 props: true,
             },
             {
+                name: 'EditNextAction',
+                path: 'next-actions/:id/edit',
+                component: NextActionForm,
+                meta: {
+                    default: ApplicationDetail,
+                    showModal: true,
+                    protected: true,
+                    title: 'Add Next Action'
+                },
+                props: true,
+            },
+            {
                 name: 'LogEntry',
                 path: 'log-entry',
                 component: LogEntryForm,

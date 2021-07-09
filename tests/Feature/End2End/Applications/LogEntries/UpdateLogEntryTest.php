@@ -32,12 +32,12 @@ class UpdateLogEntryTest extends TestCase
     /**
      * @test
      */
-    public function test_example()
+    public function updates_log_entry()
     {
         Sanctum::actingAs($this->user);
         $response = $this->json(
-            'PUT', 
-            '/api/applications/'.$this->application->uuid.'/log-entries/'.$this->logEntry->id, 
+            'PUT',
+            '/api/applications/'.$this->application->uuid.'/log-entries/'.$this->logEntry->id,
             [
                 'entry' => 'puppies are cute',
                 'log_date' => $this->logEntry->created_at->toIsoString(),

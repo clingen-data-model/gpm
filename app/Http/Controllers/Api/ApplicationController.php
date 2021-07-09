@@ -31,7 +31,7 @@ class ApplicationController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Application::query()->select('applications.*')->with('cdwg', 'logEntries');
+        $query = Application::query()->select('applications.*')->with('cdwg', 'logEntries', 'nextActions');
         if ($request->has('sort')) {
             $field = $request->sort['field'];
             // dd($field);
@@ -40,9 +40,7 @@ class ApplicationController extends Controller
             if ($field == 'cdwg.name') {
                 $query->leftJoin('cdwgs', 'applications.cdwg_id', '=', 'cdwgs.id');
                 $query->orderBy('cdwgs.name', $dir);
-            }
-            
-            elseif ($field == 'latestLogEntry.created_at') {
+            } elseif ($field == 'latestLogEntry.created_at') {
                 $subQuery = DB::table('activity_log')
                                 ->select('subject_id', DB::raw('MAX(created_at) as latest_activity_at'))
                                 ->where('subject_type', Application::class)
@@ -53,12 +51,9 @@ class ApplicationController extends Controller
                 })
                 ->addSelect('latest_activity.latest_activity_at as latest_activity_at')
                 ->orderBy('latest_activity_at', $dir);
-            }
-            
-            else {
+            } else {
                 $query->orderBy($field, $dir);
             }
-
         }
 
         if ($request->has('with')) {
@@ -109,7 +104,7 @@ class ApplicationController extends Controller
     public function show($uuid, Request $request)
     {
         $application = Application::findByUuidOrFail($uuid);
-        $application->load(['latestLogEntry', 'cdwg', 'type', 'contacts', 'latestPendingNextAction']);
+        $application->load(['latestLogEntry', 'cdwg', 'type', 'contacts', 'nextActions']);
         if ($request->has('with')) {
             $application->load($request->with);
         }
@@ -127,7 +122,7 @@ class ApplicationController extends Controller
     {
         $this->dispatcher->dispatch(
             new UpdateExpertPanelAttributes(
-                uuid: $uuid, 
+                uuid: $uuid,
                 attributes: $request->only('working_name', 'long_base_name', 'short_base_name', 'affiliation_id', 'cdwg_id')
             )
         );

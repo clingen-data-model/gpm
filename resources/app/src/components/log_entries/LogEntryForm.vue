@@ -16,7 +16,6 @@
 import {mapGetters} from 'vuex'
 import { formatDate } from '../../date_utils'
 import StepInput from '../forms/StepInput'
-import Editor from '@ckeditor/ckeditor5-build-classic'
 import RichTextEditor from '../forms/RichTextEditor'
 
 
@@ -37,13 +36,9 @@ export default {
             newEntry: {
                 log_date: new Date(),
                 step: null,
-                entry: null
+                entry: ''
             },
             errors: {},
-            editor: Editor,
-            editorConfig: {
-                toolbar: ['bold', 'italic', '|', 'link']
-            }
         }
     },
     computed: {

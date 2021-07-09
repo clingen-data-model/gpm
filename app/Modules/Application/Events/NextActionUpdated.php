@@ -13,7 +13,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class NextActionAdded extends ApplicationEvent
+class NextActionUpdated extends ApplicationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -22,20 +22,20 @@ class NextActionAdded extends ApplicationEvent
      *
      * @return void
      */
-    public function __construct(public Application $application, public NextAction $nextAction)
+    public function __construct(public Application $application, public NextAction $nextAction, public array $oldData)
     {
     }
 
     public function getLogEntry():string
     {
-        return 'Added next action: '.$this->nextAction->entry;
+        return 'Updated next action '.$this->nextAction->id;
     }
 
     public function getProperties(): array
     {
-        // dd($this->nextAction->toArray());
         return [
-            'next_action' => $this->nextAction->toArray()
+            'next_action' => $this->nextAction->toArray(),
+            'previous_data' => $this->oldData
         ];
     }
 

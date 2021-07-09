@@ -10,6 +10,9 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+/**
+ * @group next-actions
+ */
 class AddNextActionTest extends TestCase
 {
     use RefreshDatabase;
@@ -20,7 +23,7 @@ class AddNextActionTest extends TestCase
         $this->seed();
         $this->user = User::factory()->create();
         $this->application = Application::factory()->create();
-        $this->baseUrl = 'api/applications/'.$this->application->uuid.'/next-actions';    
+        $this->baseUrl = 'api/applications/'.$this->application->uuid.'/next-actions';
         Carbon::setTestNow();
     }
 
@@ -30,13 +33,15 @@ class AddNextActionTest extends TestCase
     public function user_can_create_next_action()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('POST', $this->baseUrl, [
+        $this->json('POST', $this->baseUrl, [
                 'uuid' => Uuid::uuid4()->toString(),
                 'date_created' => Carbon::today(),
                 'target_date' => Carbon::today()->addDays(7),
                 'step' => 1,
                 'entry' => 'This is an action I would like to take withing 7 days.',
-                'date_completed' => null
+                'date_completed' => null,
+                'assigned_to' => 'CDWG OC',
+                'assigned_to_name' => 'Bob Dobbs'
             ])
             ->assertStatus(200)
             ->assertJson([
@@ -44,7 +49,9 @@ class AddNextActionTest extends TestCase
                 'target_date' => Carbon::today()->addDays(7)->toJson(),
                 'step' => 1,
                 'entry' => 'This is an action I would like to take withing 7 days.',
-                'date_completed' => null
+                'date_completed' => null,
+                'assigned_to' => 'CDWG OC',
+                'assigned_to_name' => 'Bob Dobbs'
             ]);
     }
 
@@ -54,12 +61,13 @@ class AddNextActionTest extends TestCase
     public function validates_required_fields()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('POST', $this->baseUrl, [])
+        $this->json('POST', $this->baseUrl, [])
             ->assertStatus(422)
             ->assertJsonFragment([
                 'uuid' => ['The uuid field is required.'],
                 'date_created' => ['The date created field is required.'],
                 'entry' => ['The entry field is required.'],
+                'assigned_to' => ['The assigned to field is required.']
             ]);
     }
 
@@ -69,13 +77,13 @@ class AddNextActionTest extends TestCase
     public function validates_field_types()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('POST', $this->baseUrl, [
+        $this->json('POST', $this->baseUrl, [
                 'uuid' => 'eat-my-shorts',
                 'date_created' => 'test',
                 'target_date' => 'test',
                 'step' => 'one',
-                'date_completed' => 'test'
-
+                'date_completed' => 'test',
+                'assigned_to' => 'Bob'
             ])
             ->assertStatus(422)
             ->assertJsonFragment([
@@ -83,11 +91,8 @@ class AddNextActionTest extends TestCase
                 'date_created' => ['The date created is not a valid date.'],
                 'target_date' => ['The target date is not a valid date.'],
                 'date_completed' => ['The date completed is not a valid date.'],
-                'step' => ['The step must be an integer.']
-            ]);        
+                'step' => ['The step must be an integer.'],
+                'assigned_to' => ['The next action must be assigned to the "CDWG OC" or "Expert Panel"']
+            ]);
     }
-    
-    
-    
-    
 }

@@ -22,7 +22,9 @@ class NextAction extends Model
         'target_date',
         'step',
         'application_id',
-        'uuid'
+        'uuid',
+        'assigned_to',
+        'assigned_to_name'
     ];
 
     protected $dates = [
@@ -35,5 +37,4 @@ class NextAction extends Model
     {
         return $query->whereNull('date_completed');
     }
-    
 }

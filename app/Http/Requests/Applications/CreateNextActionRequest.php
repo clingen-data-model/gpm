@@ -29,7 +29,15 @@ class CreateNextActionRequest extends FormRequest
             'date_created' => 'required|date',
             'target_date' => 'nullable|date',
             'date_completed' => 'nullable|date',
-            'step' => 'nullable|int|between:1,4'
+            'step' => 'nullable|int|between:1,4',
+            'assigned_to' => 'required|in:CDWG OC,Expert Panel'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'assigned_to.in' => 'The next action must be assigned to the "CDWG OC" or "Expert Panel"'
         ];
     }
 }

@@ -2,11 +2,23 @@
     <div>
         <div class="sm:flex justify-between">
             <div class="mb-1 sm:flex space-x-2">
-                <label class="block">Filter: <input type="text" class="sm" v-model="filter" placeholder="filter"></label>
+                <label class="block">
+                    Filter: 
+                    <input type="text" class="sm" v-model="filter" placeholder="filter">
+                </label>
+                <label class="block">
+                    Waiting on: 
+                    <select v-model="waitingOn" class="sm">
+                        <option :value="null">Any</option>
+                        <option value="cdwg_oc">CDWG OC</option>
+                        <option value="expert_panel">Expert Panel</option>
+                    </select>
+                </label>
                 <label class="block">
                     <input type="checkbox" v-model="showCompleted">
                     Show completed
                 </label>
+
             </div>
             <div>
                 <button class="btn btn-xs" :class="{blue: showAllInfo == 0}" @click="showAllInfo = 0">Summary</button>
@@ -34,8 +46,15 @@
             <template v-slot:cell-latest_log_entry_description="{value}">
                 <div v-html="value"></div>
             </template>
-            <template v-slot:cell-latest_pending_next_action_entry="{value}">
-                <div v-html="value"></div>
+            <template v-slot:cell-next_actions="{item}">
+                <div>
+                    <div v-if="item.pendingActionsByAssignee.expert_panel.length">
+                        <span>Expert Panel: <strong>{{item.pendingActionsByAssignee.expert_panel.length}}</strong></span>
+                    </div>
+                    <div v-if="item.pendingActionsByAssignee.cdwg_oc.length">
+                        CDWG OC: <strong>{{item.pendingActionsByAssignee.cdwg_oc.length}}</strong>
+                    </div>
+                </div>
             </template>
         </data-table>
     </div>
@@ -114,8 +133,8 @@ export default {
                     class: ['max-w-48', 'truncate']
                 },
                 {
-                    name: 'latest_pending_next_action.entry',
-                    label: 'Next Action',
+                    name: 'next_actions',
+                    label: 'Next Actions',
                     type: String,
                     sortable: false,
                     class: ['min-w-28', 'max-w-xs', 'truncate'],
@@ -180,7 +199,8 @@ export default {
                         class: ['min-w-28'],
                         step: 4
                     }
-            ]
+            ],
+            waitingOn: null
         }
     },
     computed: {
@@ -188,7 +208,7 @@ export default {
             applications: 'applications/all'
         }),
         filteredData() {
-            return this.applications
+            let applications = this.applications
                 .filter(item => !this.epTypeId || item.ep_type_id == this.epTypeId)
                 .filter(item => {
                     if (!this.showCompleted) {
@@ -196,6 +216,13 @@ export default {
                     }
                     return true;
                 })
+
+            if (this.waitingOn) {
+                applications = applications.filter(app => app.pendingActionsByAssignee[this.waitingOn].length > 0);
+            }
+
+            return applications
+
         },
         showCompleted: {
             set(value) {

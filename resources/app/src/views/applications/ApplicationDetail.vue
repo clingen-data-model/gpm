@@ -8,16 +8,10 @@
                 </div>                
             </template>
             
-            <div class="md:flex space-x-4">
+            <div class="md:flex md:space-x-4">
                 <ep-attributes-form :application="application" class=" flex-1"></ep-attributes-form>
-                <div class="flex-1 space-y-2 border-l rounded px-4 py-2" v-if="application.pendingNextActions.length > 0">
-                    <h3>Next Actions</h3>
-                    <pre>{{application.pendingNexActions}}</pre>
-                    <next-action-banner 
-                        :application="application" 
-                        v-for="na in application.pendingNextActions" :key="na.id"
-                        :next-action="na" 
-                    ></next-action-banner>
+                <div class="flex-1 space-y-2 md:border-l md:px-4 md:py-2">
+                    <next-actions :next-actions="application.next_actions"></next-actions>
                 </div>
 
             </div>
@@ -52,7 +46,8 @@
 import { mapGetters } from 'vuex'
 import ApplicationLog from '../../components/applications/ApplicationLog'
 import EpAttributesForm from '../../components/applications/EpAttributesForm'
-import NextActionBanner from '../../components/next_actions/NextActionBanner'
+// import NextActionBanner from '../../components/next_actions/NextActionBanner'
+import NextActions from '../../components/next_actions/NextActions'
 import ProgressChart from '../../components/applications/ProgressChart'
 import StepTabs from '../../components/applications/StepTabs'
 
@@ -61,7 +56,7 @@ export default {
     components: {
         ApplicationLog,
         EpAttributesForm,
-        NextActionBanner,
+        NextActions,
         ProgressChart,
         StepTabs
     },
