@@ -12,12 +12,6 @@
                 <ep-attributes-form :application="application" class=" flex-1"></ep-attributes-form>
                 <div class="flex-1 space-y-2 md:border-l md:px-4 md:py-2">
                     <next-actions :next-actions="application.next_actions"></next-actions>
-                    <!-- 
-                    <next-action-banner 
-                        :application="application" 
-                        v-for="na in application.pendingNextActions" :key="na.id"
-                        :next-action="na" 
-                    ></next-action-banner> -->
                 </div>
 
             </div>

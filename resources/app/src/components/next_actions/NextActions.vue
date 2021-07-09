@@ -18,8 +18,19 @@
                 </div>
             </template>
             <template v-slot:cell-action="{item}">
-                <div>
-                    <input type="checkbox" class="btn btn-xs" @click.prevent="startCompleting(item)" :checked="Boolean(item.date_completed)">
+                <div class="flex space-x-3">
+                    <edit-button @click="$router.push({name: 'EditNextAction', params: {uuid: application.uuid, id: item.id}})"></edit-button>
+                    <checkmark-icon 
+                        width="20" 
+                        height="20"
+                        :class="{'text-green-500': Boolean(item.date_completed), 'text-gray-300': !Boolean(item.date_completed)}"
+                        v-if="Boolean(item.date_completed)"
+                    ></checkmark-icon>
+                    <checkmark-button
+                        v-else
+                        @click.prevent="startCompleting(item)"
+                        title="Mark complete"
+                    ></checkmark-button>
                 </div>
             </template>
         </data-table>
@@ -39,11 +50,18 @@
 </template>
 <script>
 import CompleteNextActionForm from '@/components/next_actions/CompleteNextActionForm'
+import {mapGetters} from 'vuex'
+import EditButton from '@/components/buttons/EditIconButton'
+import CheckmarkButton from '@/components/buttons/CheckmarkIconButton'
+import CheckmarkIcon from '@/components/icons/IconCheckmark'
 
 export default {
     name: 'NextActions',
     components: {
         CompleteNextActionForm,
+        EditButton,
+        CheckmarkIcon,
+        CheckmarkButton,
     },
     props: {
         nextActions: {
@@ -94,6 +112,9 @@ export default {
         }
     },
     computed: {
+        ...mapGetters ({
+            application: 'applications/currentItem'
+        }),
         filteredNextActions () {
             if (!this.nextActions) {
                 return [];
@@ -104,7 +125,7 @@ export default {
             }
 
             return this.nextActions.filter(na => !na.date_completed);
-        }
+        },
     },
     methods: {
         startCompleting(nextAction) {

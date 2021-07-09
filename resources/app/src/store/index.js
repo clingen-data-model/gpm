@@ -1,4 +1,4 @@
-import { createStore } from 'vuex'
+import { createStore, createLogger } from 'vuex'
 import ApplicationStore from './applications.js'
 import PeopleStore from './people.js'
 import CdwgStore from './cdwgs.js'
@@ -109,6 +109,9 @@ const store = createStore({
         alerts: Alerts,
         coiStore: COIStore,
         doctypes: docTypeStore,
-    }
+    },
+    plugins: process.env.NODE_ENV !== 'production'
+        ? [createLogger()]
+        : []
 })
 export default store

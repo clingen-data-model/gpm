@@ -52,17 +52,6 @@ async function approveCurrentStep(application, dateApproved, notifyContacts, not
                     .then(response => response.data)
 }
 
-async function addNextAction(application, nextActionData) {
-    entityHasUuid(application);
-
-    if (!nextActionData.uuid) {
-        nextActionData.uuid = uuid4();
-    }
-
-    return await axios.post(`${baseUrl}/${application.uuid}/next-actions`, nextActionData)
-        .then(response => response.data);
-}
-
 async function updateEpAttributes(application) {
     entityHasUuid(application);
     
@@ -116,7 +105,7 @@ export {
     find, 
     initiate, 
     approveCurrentStep,
-    addNextAction, 
+    // addNextAction, 
     updateEpAttributes, 
     addDocument,
     markDocumentReviewed,
@@ -129,7 +118,7 @@ export default {
     find, 
     initiate, 
     approveCurrentStep,
-    addNextAction, 
+    // addNextAction, 
     updateEpAttributes, 
     addDocument,
     markDocumentReviewed,

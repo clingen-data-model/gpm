@@ -2,6 +2,9 @@ import store from ".";
 import Application from '@/domain/application'
 import appRepo from '../adapters/application_repository';
 import api from '@/http/api';
+import { v4 as uuid4 } from 'uuid';
+
+const baseUrl = '/api/applications';
 
 export default {
     namespaced: true,
@@ -125,10 +128,27 @@ export default {
         },
         // eslint-disable-next-line
         async addNextAction({ commit }, { application, nextActionData }) {
-            await appRepo.addNextAction(application, nextActionData)
+            if (!nextActionData.uuid) {
+                nextActionData.uuid = uuid4();
+            }
+
+            return await api.post(`${baseUrl}/${application.uuid}/next-actions`, nextActionData)
                 .then(() => {
                     store.dispatch('applications/getApplication', application.uuid)
                 })
+        },
+        // eslint-disable-next-line
+        async updateNextAction({ commit }, { application, updatedAction }) {
+            if (!updatedAction.uuid) {
+                updatedAction.uuid = uuid4();
+            }
+
+            return await api.put(`${baseUrl}/${application.uuid}/next-actions/${updatedAction.id}`, updatedAction)
+                .then(() => {
+                    console.log('dispatch applications/getApplication');
+                    store.dispatch('applications/getApplication', application.uuid);
+                });
+        
         },
         // eslint-disable-next-line
         async completeNextAction({ commit }, { application, nextAction, dateCompleted }) {

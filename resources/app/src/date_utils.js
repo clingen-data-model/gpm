@@ -1,4 +1,7 @@
 const formatDate = function(date) {
+    if (date === null || typeof date == 'undefined') {
+        return null;
+    }
     const d = new Date(date);
     // const year = d.getFullYear().toString();
     // const month = (d.getMonth() + 1).toString().padStart(2, '0');
