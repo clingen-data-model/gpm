@@ -145,10 +145,19 @@ export default {
 
             return await api.put(`${baseUrl}/${application.uuid}/next-actions/${updatedAction.id}`, updatedAction)
                 .then(() => {
-                    console.log('dispatch applications/getApplication');
                     store.dispatch('applications/getApplication', application.uuid);
                 });
         
+        },
+       // eslint-disable-next-line
+       async deleteNextAction({ commit }, {application, nextAction}) {
+           console.log(nextAction.id)
+           const url = `/api/applications/${application.uuid}/next-actions/${nextAction.id}`
+            await api.delete(url)
+                .then(() => {
+                    console.log('deleted. reload application')
+                    store.dispatch('applications/getApplication', application.uuid);
+                })
         },
         // eslint-disable-next-line
         async completeNextAction({ commit }, { application, nextAction, dateCompleted }) {

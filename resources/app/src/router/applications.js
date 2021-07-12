@@ -12,6 +12,8 @@ const NewContactForm = () =>
     import ( /* webpackChunkName: "new-contact-form" */ '../components/contacts/NewContactForm')
 const ConfirmDeleteLogEntry = () =>
     import ( /* webpackChunkName: "confirm-delete-log-entry" */ '../components/log_entries/ConfirmDeleteLogEntry')
+const ConfirmDeleteNextAction = () =>
+    import ( /* webpackChunkName: "confirm-delete-log-entry" */ '../components/next_actions/ConfirmDeleteNextAction')
 
 
 export default [{
@@ -82,6 +84,16 @@ export default [{
                     title: 'Add Next Action'
                 },
                 props: true,
+            },
+            {
+                name: 'ConfirmDeleteNextAction',
+                path: 'next-actions/:id/delete',
+                component: ConfirmDeleteNextAction,
+                meta: {
+                    showModal: true,
+                    protected: true,
+                },
+                props: true
             },
             {
                 name: 'LogEntry',

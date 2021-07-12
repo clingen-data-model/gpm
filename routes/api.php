@@ -43,3 +43,4 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/email-drafts/{applicationUuid}/{approvedStepNumber}', [MailDraftController::class, 'show']);
 });
 Route::get('/cdwgs', [CdwgController::class, 'index']);
+Route::get('/next-actions/assignees', [NextActionAssigneeController::class, 'index']);

@@ -3,11 +3,12 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "serve": "vue-cli-service serve",
-        "build": "rm -rf ../../../public/assets/app/{js,css,img} && vue-cli-service build --no-clean",
-        "test:unit": "vue-cli-service test:unit --watch --verbose false",
-        "test:e2e": "vue-cli-service test:e2e",
-        "lint": "vue-cli-service lint"
+        "serve": "npm run export-configs; vue-cli-service serve",
+        "build": "npm run export-configs; rm -rf ../../../public/assets/app/{js,css,img} && vue-cli-service build --no-clean",
+        "test:unit": "npm run export-configs; vue-cli-service test:unit --watch --verbose false",
+        "test:e2e": "npm run export-configs; vue-cli-service test:e2e",
+        "lint": "vue-cli-service lint",
+        "export-configs": "php artisan config:export"
     },
     "dependencies": {
         "@ckeditor/ckeditor5-build-classic": "^27.1.0",

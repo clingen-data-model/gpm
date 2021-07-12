@@ -14,8 +14,11 @@
         <input-row label="Assigned To" :errors="assignmentErrors">
             <select id="" v-model="newAction.assigned_to">
                 <option :value="null">Select...</option>
-                <option value="Expert Panel">Expert Panel</option>
-                <option value="CDWG OC">CDWG OC</option>
+                <option v-for="i in assignees" :key="i.id"
+                    :value="i.id"
+                >
+                    {{i.name}}
+                </option>
             </select>
             &nbsp;&nbsp;
             <input type="text" label="Name" v-model="newAction.assigned_to_name" placeholder="Name (optional)">
@@ -43,6 +46,7 @@ import StepInput from '../forms/StepInput'
 import {mapGetters} from 'vuex'
 import RichTextEditor from '../forms/RichTextEditor'
 import {formatDate} from '@/date_utils'
+import configs from '@/configs'
 
 export default {
     name: 'NextActionForm',
@@ -93,6 +97,9 @@ export default {
                 errors = [...errors, ...this.errors.assigned_to_name]
             }
             return errors;
+        },
+        assignees () {
+            return Object.values(configs.nextActions.assignees);
         }
     },
     watch: {

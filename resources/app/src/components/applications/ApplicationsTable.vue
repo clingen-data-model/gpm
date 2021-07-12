@@ -10,8 +10,11 @@
                     Waiting on: 
                     <select v-model="waitingOn" class="sm">
                         <option :value="null">Any</option>
-                        <option value="cdwg_oc">CDWG OC</option>
-                        <option value="expert_panel">Expert Panel</option>
+                        <option v-for="i in assignees" :key="i.id"
+                            :value="i.id"
+                        >
+                            {{i.name}}
+                        </option>
                     </select>
                 </label>
                 <label class="block">
@@ -48,11 +51,13 @@
             </template>
             <template v-slot:cell-next_actions="{item}">
                 <div>
-                    <div v-if="item.pendingActionsByAssignee.expert_panel.length">
-                        <span>Expert Panel: <strong>{{item.pendingActionsByAssignee.expert_panel.length}}</strong></span>
-                    </div>
-                    <div v-if="item.pendingActionsByAssignee.cdwg_oc.length">
-                        CDWG OC: <strong>{{item.pendingActionsByAssignee.cdwg_oc.length}}</strong>
+                    <div v-for="assignee in assignees.filter(i => item.pendingActionsByAssignee[i.id].length > 0)" :key="assignee.id">
+                        <span>
+                            {{assignee.name}}: 
+                            <strong>
+                                {{item.pendingActionsByAssignee[assignee.id].length}}
+                            </strong>
+                        </span>
                     </div>
                 </div>
             </template>
@@ -63,6 +68,7 @@
 import { mapGetters } from 'vuex'
 import { formatDate } from '../../date_utils'
 import sortAndFilter from '../../composables/router_aware_sort_and_filter'
+import configs from '@/configs'
 // import computedQueryParam from '../../composables/computed_query_param'
 
 export default {
@@ -218,6 +224,7 @@ export default {
                 })
 
             if (this.waitingOn) {
+                console.info(this.waitingOn)
                 applications = applications.filter(app => app.pendingActionsByAssignee[this.waitingOn].length > 0);
             }
 
@@ -269,6 +276,9 @@ export default {
         },
         remainingHeight () {
             return {height: 'calc(100vh - 220px)'}
+        },
+        assignees () {
+            return Object.values(configs.nextActions.assignees);
         }
     },
     methods: {
@@ -277,7 +287,7 @@ export default {
             const params = {
                 with: [
                     'latestLogEntry',
-                    'latestPendingNextAction',
+                    'nextActions',
                     'type',
                     'contacts',
                     'firstScopeDocument',

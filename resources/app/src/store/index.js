@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import { createStore, createLogger } from 'vuex'
 import ApplicationStore from './applications.js'
 import PeopleStore from './people.js'
@@ -110,8 +111,8 @@ const store = createStore({
         coiStore: COIStore,
         doctypes: docTypeStore,
     },
-    plugins: process.env.NODE_ENV !== 'production'
-        ? [createLogger()]
-        : []
+    // plugins: process.env.NODE_ENV !== 'production'
+    //     ? [createLogger()]
+    //     : []
 })
 export default store
