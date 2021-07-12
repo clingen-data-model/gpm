@@ -12,6 +12,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group next-actions
+ * @group next_actions
+ * @group nextactions
  */
 class AddNextActionTest extends TestCase
 {

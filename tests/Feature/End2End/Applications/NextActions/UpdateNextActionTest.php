@@ -12,6 +12,11 @@ use App\Modules\Application\Models\Application;
 use App\Modules\Application\Jobs\CreateNextAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+/**
+ * @group next-actions
+ * @group next_actions
+ * @group nextactions
+ */
 class UpdateNextActionTest extends TestCase
 {
     use RefreshDatabase;

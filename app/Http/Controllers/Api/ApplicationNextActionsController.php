@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Bus\Dispatcher;
 use App\Http\Requests\UpdateNextActionRequest;
 use App\Modules\Application\Jobs\CreateNextAction;
+use App\Modules\Application\Jobs\DeleteNextAction;
 use App\Modules\Application\Jobs\UpdateNextAction;
 use App\Modules\Application\Jobs\CompleteNextAction;
 use App\Http\Requests\Applications\CreateNextActionRequest;
@@ -76,5 +77,16 @@ class ApplicationNextActionsController extends Controller
         $nextAction = NextAction::findByUuid($nextActionUuid);
 
         return $nextAction;
+    }
+
+    public function destroy($applicationUuid, $id)
+    {
+        $job = new DeleteNextAction(
+            applicationUuid: $applicationUuid,
+            nextActionId: $id
+        );
+        $this->dispatcher->dispatch($job);
+
+        return response(['status' => 'success']);
     }
 }

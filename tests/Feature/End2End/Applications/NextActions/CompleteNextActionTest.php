@@ -12,6 +12,11 @@ use App\Modules\Application\Models\Application;
 use App\Modules\Application\Jobs\CreateNextAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+/**
+ * @group next-actions
+ * @group next_actions
+ * @group nextactions
+ */
 class CompleteNextActionTest extends TestCase
 {
     use RefreshDatabase;
@@ -24,7 +29,7 @@ class CompleteNextActionTest extends TestCase
         $this->application = Application::factory()->create();
         $this->nextAction = NextAction::factory()->make();
 
-        Bus::dispatch(new CreateNextAction(            
+        Bus::dispatch(new CreateNextAction(
             applicationUuid: $this->application->uuid,
             uuid: $this->nextAction->uuid,
             dateCreated: $this->nextAction->date_created,
@@ -42,13 +47,11 @@ class CompleteNextActionTest extends TestCase
     public function can_mark_next_action_complete()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('POST', $this->url, ['date_completed' => '2021-01-01'])
+        $this->json('POST', $this->url, ['date_completed' => '2021-01-01'])
             ->assertStatus(200)
             ->assertJsonFragment([
                 'uuid' => $this->nextAction->uuid,
                 'date_completed' => Carbon::parse('2021-01-01')->toJson()
             ]);
     }
-    
-    
 }
