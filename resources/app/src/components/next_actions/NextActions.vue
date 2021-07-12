@@ -18,13 +18,14 @@
             </template>
             <template v-slot:cell-assigned_to="{item}">
                 <div class="flex">
-                    <div class="flex-1">{{item.assignee ? item.assignee.name : '??'}}</div>
-                    <div class="flex-1" v-if="item.assigned_to_name">{{item.assigned_to_name}}</div>
+                    {{item.assignee ? item.assignee.name : '??'}}&nbsp;
+                    <span v-if="item.assigned_to_name"> - {{item.assigned_to_name}}</span> 
                 </div>
             </template>
             <template v-slot:cell-action="{item}">
-                <div class="flex space-x-3">
+                <div class="flex space-x-1">
                     <edit-button @click="$router.push({name: 'EditNextAction', params: {uuid: application.uuid, id: item.id}})"></edit-button>
+                    <trash-icon-button @click="initiateDelete(item)"></trash-icon-button>
                     <checkmark-icon 
                         width="20" 
                         height="20"
@@ -43,10 +44,10 @@
             There are no pending <span v-if="showCompleted">or completed</span> next actions.
         </div>
 
-        <modal-dialog v-model="showModal" title="Complete next action">
+        <modal-dialog v-model="showCreateModal" title="Complete next action">
             <complete-next-action-form 
                 :next-action="selectedNextAction"
-                @canceled="showModal = false"
+                @canceled="showCreateModal = false"
                 @completed="handleCompleted"
             ></complete-next-action-form>
         </modal-dialog>
@@ -59,6 +60,7 @@ import {mapGetters} from 'vuex'
 import EditButton from '@/components/buttons/EditIconButton'
 import CheckmarkButton from '@/components/buttons/CheckmarkIconButton'
 import CheckmarkIcon from '@/components/icons/IconCheckmark'
+import TrashIconButton from '../buttons/TrashIconButton.vue'
 
 export default {
     name: 'NextActions',
@@ -67,6 +69,7 @@ export default {
         EditButton,
         CheckmarkIcon,
         CheckmarkButton,
+        TrashIconButton,
     },
     props: {
         nextActions: {
@@ -81,9 +84,10 @@ export default {
                 desc: false
             },
             showCompleted: false,
+            showDeleteConfirmation: false,
             selectedNextAction: {},
             errors: {},
-            showModal: false,
+            showCreateModal: false,
             fields: [
                 {
                     name: 'entry',
@@ -135,11 +139,20 @@ export default {
     methods: {
         startCompleting(nextAction) {
             this.selectedNextAction = nextAction;
-            this.showModal = true;
+            this.showCreateModal = true;
         },
         handleCompleted() {
             this.$emit('completed');
-            this.showModal = false;
+            this.showCreateModal = false;
+        },
+        initiateDelete(nextAction) {
+            this.$router.push({
+                name: 'ConfirmDeleteNextAction', 
+                params: {
+                    applicationUuid: this.application.uuid, 
+                    id: nextAction.id
+                }
+            });
         }
     }
 }

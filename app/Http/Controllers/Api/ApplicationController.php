@@ -108,7 +108,6 @@ class ApplicationController extends Controller
         if ($request->has('with')) {
             $application->load($request->with);
         }
-        dd($application->nextActions);
         return $application;
     }
 

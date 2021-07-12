@@ -11,10 +11,7 @@
             <div class="md:flex md:space-x-4">
                 <ep-attributes-form :application="application" class=" flex-1"></ep-attributes-form>
                 <div class="flex-1 space-y-2 md:border-l md:px-4 md:py-2">
-                    <!-- <pre>
-                        {{application.next_actions}}
-                    </pre> -->
-                    <next-actions :next-actions="application.next_actions"></next-actions>
+                    <next-actions :next-actions="application.next_actions" v-if="application.next_actions"></next-actions>
                 </div>
 
             </div>
