@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import { createStore, createLogger } from 'vuex'
 import ApplicationStore from './applications.js'
 import PeopleStore from './people.js'
