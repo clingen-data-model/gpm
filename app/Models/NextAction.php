@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use App\Models\HasUuid;
-use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 
 class NextAction extends Model
 {
@@ -32,6 +33,18 @@ class NextAction extends Model
         'date_completed',
         'target_date'
     ];
+
+    protected $with = ['assignee'];
+
+    /**
+     * Get the assignedTo that owns the NextAction
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function assignee(): BelongsTo
+    {
+        return $this->belongsTo(NextActionAssignee::class, 'assigned_to', 'id');
+    }
 
     public function scopePending($query)
     {

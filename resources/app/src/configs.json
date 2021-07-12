@@ -1,0 +1,46 @@
+{
+    "applications": {
+        "ccOnStepApproved": [
+            [
+                "cdwg_oversightcommittee@clinicalgenome.org",
+                "CDWG Oversite Committee"
+            ],
+            [
+                "clingentrackerhelp@unc.edu",
+                "Clingen Tracker Help"
+            ],
+            [
+                "volunteer@clinicalgenome.org",
+                "CCDB Support"
+            ],
+            [
+                "erepo@clinicalgenome.org",
+                "ERepo Support"
+            ],
+            [
+                "clingen-helpdesk@lists.stanford.edu",
+                "GCI\/VCI Support"
+            ]
+        ]
+    },
+    "nextActions": {
+        "assignees": {
+            "cdwg-oc": {
+                "name": "CDWG OC",
+                "id": 1
+            },
+            "expert-panel": {
+                "name": "Expert Panel",
+                "id": 2
+            },
+            "svi-vcep-review-committee": {
+                "name": "SVI VCEP Review Committee",
+                "id": 3
+            }
+        }
+    },
+    "mailFrom": {
+        "address": "cdwg_oversightcommittee@clinicalgenome.org",
+        "name": "ClinGen CDWG Oversight Committee"
+    }
+}

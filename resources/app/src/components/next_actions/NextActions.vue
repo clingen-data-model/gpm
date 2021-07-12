@@ -1,5 +1,6 @@
 <template>
     <div class="text-sm">
+        <!-- <pre>{{filteredNextActions}}</pre> -->
         <div class="flex justify-between">
             <h3>Next Actions</h3>
             <label>
@@ -7,13 +8,17 @@
                 Show completed
             </label>
         </div>
-        <data-table :fields="fields" :data="filteredNextActions" v-model:sort="tableSort"  v-if="filteredNextActions.length > 0">
+        <data-table 
+            :fields="fields" 
+            :data="filteredNextActions" v-model:sort="tableSort"  
+            v-if="filteredNextActions.length > 0"
+        >
             <template v-slot:cell-entry="{item}">
                 <div  v-html="item.entry"></div>
             </template>
             <template v-slot:cell-assigned_to="{item}">
                 <div class="flex">
-                    <div class="flex-1">{{item.assigned_to}}</div>
+                    <div class="flex-1">{{item.assignee ? item.assignee.name : '??'}}</div>
                     <div class="flex-1" v-if="item.assigned_to_name">{{item.assigned_to_name}}</div>
                 </div>
             </template>

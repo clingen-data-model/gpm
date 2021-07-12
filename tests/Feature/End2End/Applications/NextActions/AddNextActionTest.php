@@ -40,7 +40,7 @@ class AddNextActionTest extends TestCase
                 'step' => 1,
                 'entry' => 'This is an action I would like to take withing 7 days.',
                 'date_completed' => null,
-                'assigned_to' => 'CDWG OC',
+                'assigned_to' => 1,
                 'assigned_to_name' => 'Bob Dobbs'
             ])
             ->assertStatus(200)
@@ -50,7 +50,7 @@ class AddNextActionTest extends TestCase
                 'step' => 1,
                 'entry' => 'This is an action I would like to take withing 7 days.',
                 'date_completed' => null,
-                'assigned_to' => 'CDWG OC',
+                'assigned_to' => 1,
                 'assigned_to_name' => 'Bob Dobbs'
             ]);
     }
@@ -92,7 +92,7 @@ class AddNextActionTest extends TestCase
                 'target_date' => ['The target date is not a valid date.'],
                 'date_completed' => ['The date completed is not a valid date.'],
                 'step' => ['The step must be an integer.'],
-                'assigned_to' => ['The next action must be assigned to the "CDWG OC" or "Expert Panel"']
+                'assigned_to' => ['The next action must be assigned to CDWG OC, Expert Panel, or SVI VCEP Review Committee']
             ]);
     }
 }

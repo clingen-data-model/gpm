@@ -1,4 +1,6 @@
 import Entity from './entity'
+import configs from '@/configs'
+
 class Application extends Entity {
     static dates = [
         'date_completed',
@@ -62,21 +64,19 @@ class Application extends Entity {
     }
 
     get pendingActionsByAssignee() {
-        let groups = {cdwg_oc: [], expert_panel: []}
+        const naAssignees = Object.values(configs.nextActions.assignees).map(na => na.id);
+        let groups = {};
+        for (let i in naAssignees) {
+            const item = naAssignees[i];
+            groups[item] = [];
+        }
         if (!this.next_actions) {
             return groups;
         }
 
         for (const na in this.pendingNextActions) {
-            console.info('na', na);
-            console.info('this.pendingNextActions[na]', this.pendingNextActions[na]);
             const assignedTo = this.pendingNextActions[na].assigned_to;
-            if (assignedTo == 'CDWG OC') {
-                groups.cdwg_oc.push(this.pendingNextActions[na]);
-            }
-            if (assignedTo == 'Expert Panel') {
-                groups.expert_panel.push(this.pendingNextActions[na]);
-            }
+            groups[assignedTo].push(this.pendingNextActions[na]);
         }
         console.log(groups);
         return groups

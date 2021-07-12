@@ -110,8 +110,8 @@ const store = createStore({
         coiStore: COIStore,
         doctypes: docTypeStore,
     },
-    plugins: process.env.NODE_ENV !== 'production'
-        ? [createLogger()]
-        : []
+    // plugins: process.env.NODE_ENV !== 'production'
+    //     ? [createLogger()]
+    //     : []
 })
 export default store

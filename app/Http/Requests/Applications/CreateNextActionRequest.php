@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Applications;
 
+use App\Models\NextActionAssignee;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateNextActionRequest extends FormRequest
@@ -30,14 +31,15 @@ class CreateNextActionRequest extends FormRequest
             'target_date' => 'nullable|date',
             'date_completed' => 'nullable|date',
             'step' => 'nullable|int|between:1,4',
-            'assigned_to' => 'required|in:CDWG OC,Expert Panel'
+            'assigned_to' => 'required|exists:next_action_assignees,id'
         ];
     }
 
     public function messages()
     {
+        $assignees = NextActionAssignee::getAll();
         return [
-            'assigned_to.in' => 'The next action must be assigned to the "CDWG OC" or "Expert Panel"'
+            'assigned_to.exists' => 'The next action must be assigned to '.$assignees->pluck('name')->join(', ', ', or ')
         ];
     }
 }

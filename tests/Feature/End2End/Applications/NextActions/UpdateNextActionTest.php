@@ -32,7 +32,7 @@ class UpdateNextActionTest extends TestCase
             dateCreated: '2020-01-01',
             entry: 'This is a next action',
             targetDate: '2020-02-01',
-            assignedTo: 'CDWG OC',
+            assignedTo: 1,
             step: 1
         ));
         $this->nextAction = $this->application->refresh()->nextActions->first();
