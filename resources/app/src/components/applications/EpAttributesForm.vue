@@ -6,14 +6,24 @@
             placeholder="Long base name"
             :errors="errors.long_base_name"
             @change="saveChanges()"
-        ></input-row>
+        >
+            <template v-slot:label>
+                Long Base Name:
+                <note>"{{application.type.display_name}}" will be appended.</note>
+            </template>
+        </input-row>
         <input-row 
             label="Short Base Name" 
             v-model="appClone.short_base_name" 
             placeholder="Short base name"
             :errors="errors.short_base_name"
             @change="saveChanges()"
-        ></input-row>
+        >
+            <template v-slot:label>
+                Short Base Name:
+                <note>"{{application.type.display_name}}" will be appended.</note>
+            </template>
+        </input-row>
         <input-row 
             label="Affiliation ID" 
             v-model="appClone.affiliation_id" 
@@ -64,7 +74,7 @@ export default {
         application: {
             immediate: true,
             handler() {
-                this.appClone = this.application.clone()
+                this.resetClone()
             }
         }
     },
@@ -120,6 +130,14 @@ export default {
         },
         resetClone() {
             this.appClone = this.application.clone()
+            if (this.appClone.short_base_name) {
+                this.appClone.short_base_name = this.appClone.short_base_name.replace(/ [GV]CEP$/, '')
+            }
+
+            if (this.appClone.long_base_name) {
+                this.appClone.long_base_name = this.appClone.long_base_name.replace(/ [GV]CEP$/, '')
+            }
+            console.info('appClone', this.appClone);
         },
         clearErrors() {
             this.errors = {};
