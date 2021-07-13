@@ -13,7 +13,7 @@
         </dictionary-row>
         
         <transition name="slide-fade-down">
-            <div v-if="notifyContacts">
+            <div v-show="notifyContacts">
                 <h4 class="font-bold border-b">Email</h4>
                 <input-row label="Subject">
                     <input type="text" v-model="email.subject" class="w-full">
