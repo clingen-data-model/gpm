@@ -31,4 +31,15 @@ class UpdateExpertPanelAttributesRequest extends FormRequest
             'affiliation_id' => 'nullable|max:8',
         ];
     }
+
+    /**
+     * @test
+     */
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'loong_base_name' => preg_replace("/ [GV]CEP$/", '', $this->long_base_name),
+            'short_base_name' => preg_replace("/ [GV]CEP$/", '', $this->short_base_name)
+        ]);
+    }
 }
