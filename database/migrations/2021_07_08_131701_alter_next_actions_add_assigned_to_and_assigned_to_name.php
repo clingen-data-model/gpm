@@ -14,16 +14,20 @@ class AlterNextActionsAddAssignedToAndAssignedToName extends Migration
     public function up()
     {
         Schema::table('next_actions', function (Blueprint $table) {
-            $table->unsignedBigInteger('assigned_to')
-                ->nullable()
-                ->default(2)
-                ->after('target_date');
-            $table->string('assigned_to_name')
-                ->nullable()
-                ->after('assigned_to');
+            if (!Schema::hasColumn('next_actions', 'assigned_to')) {
+                $table->unsignedBigInteger('assigned_to')
+                    ->nullable()
+                    ->default(2)
+                    ->after('target_date');
+                $table->index(['assigned_to'], 'assigned_to_index');
+                $table->foreign('assigned_to')->references('id')->on('next_action_assignees');
+            }
 
-            $table->index(['assigned_to'], 'assigned_to_index');
-            $table->foreign('assigned_to')->references('id')->on('next_action_assignees');
+            if (!Schema::hasColumn('next_actions', 'assigned_to_name')) {
+                $table->string('assigned_to_name')
+                    ->nullable()
+                    ->after('assigned_to');
+            }
         });
     }
 
