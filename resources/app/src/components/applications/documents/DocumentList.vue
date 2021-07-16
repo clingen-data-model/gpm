@@ -3,16 +3,13 @@
         <data-table 
             :fields="filteredFields" 
             :data="filteredDocuments" 
-            :sort="{field: fields[0].name, desc: true}"
+            :sort="{field: filteredFields[0].name, desc: true}"
             v-if="filteredDocuments.length > 0"
         >
-            <!-- <template v-slot:cell-date_reviewed="{item, value}">
-                <div class="text-center">
-                    <span v-if="value">{{value}}</span>
-                    <button v-else class="btn btn-xs" @click="showMarkReviewed(item)">Mark reviewed</button>
-                </div>
-            </template> -->
 
+            <template v-slot:cell-notes="{value}">
+                <truncate-expander :value="value" :truncate-length="50"></truncate-expander>
+            </template>
             <template v-slot:cell-is_final="{item}">
                 <icon-checkmark 
                     v-if="!item.is_final" 
@@ -35,11 +32,13 @@
                 </button>
                 <button class="btn btn-xs" @click="openEditForm(item)">
                     <icon-edit width="12" height="16"></icon-edit>
-                    <!-- edit -->
                 </button>
+                <trash-button @click="initDelete(item)"></trash-button>
                 </div>
             </template>
         </data-table>
+
+        <div v-else class="px-2 py-1 border bg-gray-100 rounded">No documents uploaded</div>
 
         <modal-dialog v-model="showEditForm">
             <document-edit-form
@@ -60,14 +59,35 @@
             ></document-reviewed-form>
         </modal-dialog>
 
+        <modal-dialog 
+            v-model="showDeleteConfirmation" 
+            :title="`You are about to delete ${activeDocument.type.long_name}, v${activeDocument.version}`"
+        >
+            <div v-if="activeDocument">
+                <p v-if="activeDocument.is_final" class="mb-3">
+                    This version has been tagged as the final version of the document.
+                </p>
+                <p>Are you sure you want to continue?</p>
+
+                <button-row 
+                    submit-text="Delete Document" 
+                    @canceled="cancelDelete" 
+                    @submitted="commitDelete"
+                >
+                </button-row>
+            </div>
+        </modal-dialog>
+
     </div>
 </template>
 <script>
-import IconDownload from '../../icons/IconDownload'
-import IconCheckmark from '../../icons/IconCheckmark'
-import IconEdit from '../../icons/IconEdit'
-import DocumentReviewedForm from './DocumentReviewedForm'
-import DocumentEditForm from './DocumentEditForm'
+import IconDownload from '../../icons/IconDownload';
+import IconCheckmark from '../../icons/IconCheckmark';
+import IconEdit from '../../icons/IconEdit';
+import TrashButton from '@/components/buttons/TrashIconButton';
+import DocumentReviewedForm from './DocumentReviewedForm';
+import DocumentEditForm from './DocumentEditForm';
+import is_validation_error from '../../../http/is_validation_error';
 
 export default {
     components: {
@@ -75,7 +95,8 @@ export default {
         IconCheckmark,
         DocumentReviewedForm,
         DocumentEditForm,
-        IconEdit
+        IconEdit,
+        TrashButton,
     },
     props: {
         application: {
@@ -91,12 +112,18 @@ export default {
             required: false,
             default: true
         },
+        showVersion: {
+            type: Boolean,
+            required: false,
+            default: true
+        }
     },
     data() {
         return {
+            showDeleteConfirmation: false,
             showReviewedForm: false,
             showEditForm: false,
-            activeDocument: {},
+            activeDocument: {type: {}},
             fields: [
                 {
                     name: 'version',
@@ -106,25 +133,32 @@ export default {
                 {
                     name: 'filename',
                     label: 'File',
-                    type: String
+                    type: String,
+                    headerClass: ['w-1/3']
+                },
+                {
+                    name: 'notes',
+                    label: 'Notes',
+                    type: String,
+                    sortable: false,
+                    resolveValue (item) {
+                        return item.notes || '';
+                    },
+                    headerClass: ['w-1/3']
                 },
                 {
                     name: 'date_received',
                     label: 'Date Received',
                     type: Date,
+                    headerClass: ['w-32']
                 },
-                // {
-                //     name: 'date_reviewed',
-                //     label: 'Date Reviewed',
-                //     type: Date,
-                // },
                 {
                     name: 'is_final',
                     label: 'Final',
                     type: Boolean,
                     sortable: false,
                     class: ['text-center'],
-                    headerClass: ['text-center']
+                    headerClass: ['text-center', 'w-12']
                 },
                 {
                     name: 'id',
@@ -137,15 +171,22 @@ export default {
     computed: {
         filteredFields () {
             let clonedFields = [...this.fields]
+            if (!this.showVersion) {
+                const kdx = clonedFields.findIndex(f => f && f.name == 'version')
+                clonedFields.splice(kdx, 1)
+
+                const jdx = clonedFields.findIndex(f => f && f.name == 'is_final')
+                clonedFields.splice(jdx, 1)
+            }
+
             if (!this.getsReviewed) {
                 const idx = clonedFields.findIndex(f => f && f.name == 'date_reviewed')
-                clonedFields = clonedFields.slice(0,idx)
+                clonedFields.splice(idx, 1)
             }
             return clonedFields
         },
         filteredDocuments() {
             if (this.application && this.application.documents) {
-                // return this.application.documents
                 return this.application.documents.filter(d =>  d.document_type_id == this.documentTypeId)
             }
             return [];
@@ -186,6 +227,23 @@ export default {
         openEditForm(item) {
             this.showEditForm = true; 
             this.activeDocument = item;
+        },
+        initDelete(item) {
+            this.activeDocument = item;
+            this.showDeleteConfirmation = true;
+        },
+        cancelDelete() {
+            this.showDeleteConfirmation = false;
+        },
+        async commitDelete() {
+            try {
+                await this.$store.dispatch('applications/deleteDocument', {application: this.application, document: this.activeDocument});
+                this.showDeleteConfirmation = false;
+            } catch (err) {
+                if (is_validation_error(err)) {
+                    alert(err);
+                }
+            }
         }
     }
 }

@@ -25,7 +25,7 @@ class UploadTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();    
+        $this->seed();
 
         $this->user = User::factory()->create();
         $this->application = Application::factory()->create();
@@ -50,9 +50,11 @@ class UploadTest extends TestCase
             'document_type_id' => config('documents.types.scope.id'),
             'date_received' => Carbon::now()->toJson(),
             'date_reviewed' => null,
+            'notes' => 'this is a note',
             'metadata' => null,
             'version' => 1,
-            'application_id' => $this->application->id
+            'application_id' => $this->application->id,
+            'notes' => 'this is a test'
         ]);
 
         $doc = Document::findByUuid($data['uuid']);
@@ -67,7 +69,7 @@ class UploadTest extends TestCase
     {
         Carbon::setTestNow('2021-01-01');
         $data = $this->makeDocumentUploadRequestData(
-            dateReceived: Carbon::parse('2020-10-28'), 
+            dateReceived: Carbon::parse('2020-10-28'),
             dateReviewed: Carbon::parse('2020-11-14')
         );
 
@@ -98,12 +100,12 @@ class UploadTest extends TestCase
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/documents', $data);
 
-            $response->assertStatus(200);
-            $response->assertJson([
+        $response->assertStatus(200);
+        $response->assertJson([
                 'uuid' => $data['uuid'],
                 'version' => 2,
                 'application_id' => $this->application->id
-            ]);        
+            ]);
     }
 
     /**
@@ -165,6 +167,4 @@ class UploadTest extends TestCase
             'is_final' => 1
         ]);
     }
-    
-
 }

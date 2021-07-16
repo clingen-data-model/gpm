@@ -78,7 +78,6 @@ class DownloadTest extends TestCase
         Sanctum::actingAs($user);
         $response = $this->json('GET', '/documents/'.$this->doc->uuid)
                         ->assertStatus(404);
-
     }
     
     /**
@@ -99,9 +98,5 @@ class DownloadTest extends TestCase
         $response->assertStatus(200);
 
         $content = $response->streamedContent();
-        
     }
-    
-    
-    
 }

@@ -5,16 +5,16 @@ namespace Tests\Feature\End2End\Applications\Documents;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\Document;
+use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Sanctum\Sanctum;
 
 /**
  * @group documents
  */
-class UpdateDocumentInfoTest extends TestCase
+class DeleteDocumentTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -22,42 +22,44 @@ class UpdateDocumentInfoTest extends TestCase
     {
         parent::setup();
         $this->seed();
+
         $this->user = User::factory()->create();
         Sanctum::actingAs($this->user);
+
         $this->application = Application::factory()->create();
         $this->document = Document::factory()->make();
         $this->application->documents()->save($this->document);
         $this->docUrl = '/api/applications/'.$this->application->uuid.'/documents/'.$this->document->uuid;
         Carbon::setTestNow('2021-02-01');
     }
-
+    
     /**
      * @test
      */
-    public function it_updates_info_for_a_document()
+    public function it_can_delete_a_document()
     {
-        $this->json('PUT', $this->docUrl, [
-            'date_received' => Carbon::now(),
-            'date_reviewed' => Carbon::now()->addDays(7),
-            'notes' => 'This is a note!'
-        ])
-        ->assertStatus(200)
-        ->assertJsonFragment([
-            'date_received' => Carbon::now()->toISOString(),
-            'date_reviewed' => Carbon::now()->addDays(7)->toISOString(),
-            'notes' => 'This is a note!'
+        $this->json('DELETE', $this->docUrl)
+            ->assertStatus(200);
+
+        $this->assertDatabaseMissing('documents', [
+            'uuid' => $this->document->uuid,
+            'deleted_at' => null
         ]);
     }
 
     /**
      * @test
      */
-    public function it_validates_required_data()
+    public function it_logs_a_document_deleted_event()
     {
-        $this->json('PUT', $this->docUrl, [])
-            ->assertStatus(422)
-            ->assertJsonFragment([
-                'date_received' => ['The date received field is required.']
-            ]);
+        $this->json('DELETE', $this->docUrl)
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('activity_log', [
+            'subject_id' => (string)$this->application->id,
+            'subject_type' => get_class($this->application),
+            'activity_type' => 'document-deleted',
+            'properties->document_uuid' => $this->document->uuid
+        ]);
     }
 }

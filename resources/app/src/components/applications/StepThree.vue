@@ -5,20 +5,30 @@
         title="Pilot ACMG Guideline Specificiations"
     >
         <template v-slot:document>
-            <h2>Final Specifications</h2>
             <document-manager 
                 :application="application"
                 :document-type-id="3"
                 :getsReviewd="false"
                 :step="3"
-                    class="mb-4"
+                class="mb-4"
+                title="Final Specifications"
             ></document-manager>
 
-            <h2>Pilot Classifications</h2>
             <document-manager 
+                title="Pilot Classifications"
                 :application="application"
                 :document-type-id="4"
                 :getsReviewd="false"
+                :step="3"
+                class="mb-6"
+            ></document-manager>
+
+            <document-manager 
+                title="Additional Documents"
+                :application="application"
+                :document-type-id="5"
+                :getsReviewd="false"
+                :show-version="false"
                 :step="3"
                 class="mb-6"
             ></document-manager>

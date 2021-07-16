@@ -21,8 +21,8 @@
                 </div>
             </div>
             <slot name="document">
-                <h3>{{documentName}}</h3>
                 <document-manager
+                    :title="documentName"
                     class="border-b"
                     :application="application"
                     :document-type-id="documentType"

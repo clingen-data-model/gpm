@@ -12,6 +12,9 @@ use App\Modules\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 
+/**
+ * @group documents
+ */
 class MarkFinalTest extends TestCase
 {
     use RefreshDatabase;
@@ -79,7 +82,4 @@ class MarkFinalTest extends TestCase
             'description' => $this->document->type->name.' version '.$this->document->version.' marked final.'
         ]);
     }
-    
-    
-    
 }

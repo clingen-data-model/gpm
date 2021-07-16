@@ -13,6 +13,9 @@ app.component('icon-base', IconBase);
 import Note from './components/Note'
 app.component('note', Note);
 
+import TruncateExpander from './components/TruncateExpander'
+app.component('truncate-expander', TruncateExpander);
+
 import Card from './components/Card';
 app.component('card', Card);
 

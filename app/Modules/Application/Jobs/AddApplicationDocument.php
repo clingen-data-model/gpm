@@ -31,8 +31,8 @@ class AddApplicationDocument
         private ?string $date_reviewed = null,
         private ?array $metadata = null,
         private ?bool $is_final = false,
-    )
-    {
+        private ?string $notes = null
+    ) {
         $this->application = Application::findByUuidOrFail($applicationUuid);
         $this->dateReceived = $date_received ? Carbon::parse($date_received) : Carbon::now();
         $this->dateReviewed = $date_reviewed ? Carbon::parse($date_reviewed) : null;
@@ -54,10 +54,10 @@ class AddApplicationDocument
             'date_reviewed' => $this->dateReviewed,
             'metadata' => $this->metadata,
             'step' => $this->step,
-            'is_final' => $this->is_final
+            'is_final' => $this->is_final,
+            'notes' => $this->notes
         ]);
         
         $this->application->addDocument($document);
-
     }
 }

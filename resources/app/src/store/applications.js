@@ -221,7 +221,15 @@ export default {
 
         //eslint-disable-next-line
         async updateDocumentInfo({ commit }, { application, document }) {
-            await api.put(`/api/applications/${application.uuid}/documents/${document.uuid}`, document)
+            return await api.put(`/api/applications/${application.uuid}/documents/${document.uuid}`, document)
+                .then(() => {
+                    store.dispatch('applications/getApplication', application.uuid)
+                });
+        },
+
+        //eslint-disable-next-line
+        async deleteDocument( { commit }, {application, document}) {
+            return await api.delete(`/api/applications/${application.uuid}/documents/${document.uuid}`)
                 .then(() => {
                     store.dispatch('applications/getApplication', application.uuid)
                 });

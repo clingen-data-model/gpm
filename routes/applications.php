@@ -25,6 +25,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     
     Route::post('/applications/{app_uuid}/documents', [ApplicationDocumentController::class, 'store']);
     Route::put('/applications/{app_uuid}/documents/{doc_uuid}', [ApplicationDocumentController::class, 'update']);
+    Route::delete('/applications/{app_uuid}/documents/{doc_uuid}', [ApplicationDocumentController::class, 'destroy']);
     Route::post('/applications/{app_uuid}/documents/{doc_uuid}/review', [ApplicationDocumentController::class, 'markReviewed']);
     Route::post('/applications/{app_uuid}/documents/{doc_uuid}/final', [ApplicationDocumentController::class, 'markFinal']);
     
