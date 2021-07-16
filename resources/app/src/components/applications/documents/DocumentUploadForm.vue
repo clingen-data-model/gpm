@@ -1,5 +1,5 @@
 <template>
-    <form-container @keyup.enter="save">
+    <form-container>
         <!-- <pre>{{documentTypes}}</pre> -->
         <h2 class="pb-2 border-b mb-4">Upload {{documentType.long_name}} document(s)</h2>
 
