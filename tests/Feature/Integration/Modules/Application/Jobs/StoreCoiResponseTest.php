@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Integration\Modules\Applications\Jobs;
+namespace Tests\Feature\Integration\Modules\Application\Jobs;
 
 use Tests\TestCase;
 use Illuminate\Support\Facades\Bus;
@@ -19,7 +19,7 @@ class StoreCoiResponseTest extends TestCase
     {
         parent::setup();
         $this->seed();
-        $this->application = Application::factory()->create();    
+        $this->application = Application::factory()->create();
         $this->coiData = [
             'email' => 'email@example.com',
             'first_name' => 'test',
@@ -73,10 +73,5 @@ class StoreCoiResponseTest extends TestCase
             'subject_type' => get_class($this->application),
             'description' => 'COI form completed by '.$this->coiData['email']
         ]);
-
     }
-    
-    
-    
-    
 }
