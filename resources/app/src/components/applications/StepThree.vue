@@ -26,7 +26,7 @@
             <document-manager 
                 title="Additional Documents"
                 :application="application"
-                :document-type-id="5"
+                :document-type-id="7"
                 :getsReviewd="false"
                 :show-version="false"
                 :step="3"
