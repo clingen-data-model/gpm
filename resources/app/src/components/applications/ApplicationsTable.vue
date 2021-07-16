@@ -53,7 +53,7 @@
                 <div>
                     <div v-for="assignee in assignees.filter(i => item.pendingActionsByAssignee[i.id].length > 0)" :key="assignee.id">
                         <span>
-                            {{assignee.name}}: 
+                            {{assignee.short_name}}: 
                             <strong>
                                 {{item.pendingActionsByAssignee[assignee.id].length}}
                             </strong>

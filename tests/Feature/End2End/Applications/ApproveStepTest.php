@@ -6,8 +6,10 @@ use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\View;
 use App\Modules\Person\Models\Person;
+use App\Modules\Person\Jobs\CreatePerson;
 use App\Modules\Application\Jobs\AddContact;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
@@ -24,7 +26,10 @@ class ApproveStepTest extends TestCase
     {
         parent::setup();
         $this->seed();
+        $this->person = Person::factory()->create();
         $this->application = Application::factory()->vcep()->create();
+        Bus::dispatch(new AddContact($this->application->uuid, $this->person->uuid));
+
         $this->user = User::factory()->create();
     }
 
@@ -89,6 +94,7 @@ class ApproveStepTest extends TestCase
     {
         $approvalData = [
             'date_approved' => Carbon::now(),
+            'notify_contacts' => 'false'
         ];
 
         Notification::fake();

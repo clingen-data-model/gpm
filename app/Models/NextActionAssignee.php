@@ -10,7 +10,7 @@ class NextActionAssignee extends Model
 {
     use HasFactory;
 
-    public $fillable = ['name'];
+    public $fillable = ['name', 'short_name'];
 
     public static function boot()
     {
@@ -20,6 +20,16 @@ class NextActionAssignee extends Model
             Cache::forever('next-action-assignees', static::all());
         });
     }
+
+    public function getShortNameAttribute()
+    {
+        if (!isset($this->attributes['short_name']) || !$this->attributes['short_name']) {
+            return $this->name;
+        }
+
+        return $this->attributes['short_name'];
+    }
+    
 
     public static function getAll()
     {

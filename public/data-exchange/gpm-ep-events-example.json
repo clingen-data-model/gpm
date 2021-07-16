@@ -5,6 +5,14 @@
             "description": "Membership and Scope has been give first approval by the CDWG OC. and VCEPs are ready to start drafting specifications"
         },
         {
+            "name": "vcep_draft_specifications_approved",
+            "description": "Drafts for all scopes in VCEP specifications have been approved in the CSPEC Registry for all gene/diseases in the approved scope."
+        },
+        {
+            "name": "vcep_pilot_approved",
+            "description": "All specification scopes and pilot classifications for gene/diseases in the appoved scope have been given final approval in the CSPEC Registry."
+        },
+        {
             "name": "ep_final_approval",
             "description": "Step 1 or Step 4 approval for GCEPS and VCEPS respectively.  Indicates plans for review have been approved and all necessary attestations have been completed by approved membership.  EP is now fully approved."
         },
@@ -25,11 +33,11 @@
             "description": "EP has added a new member."
         },
         {
-            "name": "Account Updated",
+            "name": "account_updated",
             "description": "GPM user has updated their email or they have been their roles/permissions have changed."
         },
         {
-            "name": "Profile Updated",
+            "name": "profile_updated",
             "description": "ClinGen Member has updated their profile."
         }
     ],
@@ -49,10 +57,10 @@
                 "genes": [
                     {
                         "hgnc_id": "hgnc:12345",
-                        "hgnc_symbol": "GNE1"
+                        "hgnc_symbol": "GNE1",
+                        "disease_entity": "MONDO:1234567"
                     }
                 ],
-                "gene_type": "nuclear" // could be mitochondrial (look at spec in mitochondrial gcep)
             },
             "members": [
                 {
@@ -128,12 +136,13 @@
             "genes": [
                 {
                     "hgnc_id": "hgnc:67890",
-                    "symbol": "GNE2"
+                    "symbol": "GNE2",
+                    "mondo_id": "MONDO:7654321"
                 }
             ]
         },
         {
-            "event_type": "gene_remove",
+            "event_type": "gene_removed",
             "date": "2021-06-16",
             "expert_panel": {
                 "id": "some-random-uuid",
@@ -144,7 +153,8 @@
             "genes": [
                 {
                     "hgnc_id": "hgnc:67890",
-                    "symbol": "GNE2"
+                    "symbol": "GNE2",
+                    "mondo_id": "MONDO:7654321"
                 }
             ]
         }

@@ -27,7 +27,7 @@ abstract class Seeder extends BaseSeeder
             }
 
             if (is_array($value)) {
-                $modelClass::updateOrCreate($value);
+                $modelClass::updateOrCreate(['id' => $value['id']], $value);
             }
         }
         Model::reguard();
