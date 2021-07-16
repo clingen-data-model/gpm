@@ -37,10 +37,10 @@ class CdwgsTableSeeder extends Seeder
             'Other'
         ];
         foreach ($names as $name) {
-            Cdwg::create([
-                'name' => $name,
-                'uuid' => Uuid::uuid4()
-            ]);
+            Cdwg::updateOrCreate(
+                ['name' => $name],
+                ['uuid' => Uuid::uuid4()]
+            );
         }
     }
 }

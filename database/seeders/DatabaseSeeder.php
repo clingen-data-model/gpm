@@ -25,6 +25,8 @@ class DatabaseSeeder extends Seeder
             
         $seederClasses = array_merge($seederClasses, [
             UsersTableSeeder::class,
+            CdwgsTableSeeder::class,
+            NextActionAssigneesTableSeeder::class,
             EpTypesTableSeeder::class,
             NextActionAssigneesTableSeeder::class,
             DocumentTypesTableSeeder::class,
