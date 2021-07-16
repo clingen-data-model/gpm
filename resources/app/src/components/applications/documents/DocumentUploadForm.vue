@@ -13,6 +13,10 @@
             v-model="newDocument.date_received" 
             :errors="errors.date_receoved"
         ></input-row>
+
+        <input-row :errors="errors.notes" label="Notes">
+            <textarea name="notes" v-model="newDocument.notes" cols="30" rows="10"></textarea>
+        </input-row>
         
         <!-- <input-row label="Date Reviewed" type="date" v-model="newDocument.date_reviewed" :errors="errors.date_reviewed"></input-row> -->
 
@@ -51,6 +55,7 @@ export default {
                 date_reviewed: null,
                 step: this.step,
                 document_type_id: this.documentTypeId,
+                notes: null
             },
             errors: {},
         }
@@ -112,6 +117,7 @@ export default {
                 date_reviewed: null,
                 step: this.step,
                 document_type_id: this.documentTypeId,
+                notes: null
             }
         },
         clearErrors () {

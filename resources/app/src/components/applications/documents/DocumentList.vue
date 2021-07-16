@@ -7,6 +7,9 @@
             v-if="filteredDocuments.length > 0"
         >
 
+            <template v-slot:cell-notes="{value}">
+                <truncate-expander :value="value" :truncate-length="50"></truncate-expander>
+            </template>
             <template v-slot:cell-is_final="{item}">
                 <icon-checkmark 
                     v-if="!item.is_final" 
@@ -124,12 +127,24 @@ export default {
                 {
                     name: 'filename',
                     label: 'File',
-                    type: String
+                    type: String,
+                    headerClass: ['w-1/3']
+                },
+                {
+                    name: 'notes',
+                    label: 'Notes',
+                    type: String,
+                    sortable: false,
+                    resolveValue (item) {
+                        return item.notes || '';
+                    },
+                    headerClass: ['w-1/3']
                 },
                 {
                     name: 'date_received',
                     label: 'Date Received',
                     type: Date,
+                    headerClass: ['w-32']
                 },
                 // {
                 //     name: 'date_reviewed',
@@ -142,7 +157,7 @@ export default {
                     type: Boolean,
                     sortable: false,
                     class: ['text-center'],
-                    headerClass: ['text-center']
+                    headerClass: ['text-center', 'w-12']
                 },
                 {
                     name: 'id',
