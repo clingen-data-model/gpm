@@ -20,9 +20,8 @@ trait CreatesDocumentUploadRequestData
             'document_type_id' => $DocumentTypeId,
             'date_received' => $dateReceived,
             'date_reviewed' => $dateReviewed,
-            'step' => $step
+            'step' => $step,
+            'notes' => 'this is a test'
         ];
     }
-
-
 }

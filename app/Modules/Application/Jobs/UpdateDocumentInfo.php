@@ -22,11 +22,12 @@ class UpdateDocumentInfo
      * @return void
      */
     public function __construct(
-        String $applicationUuid, 
-        String $uuid, 
-        private String $dateReceived, 
-        private String|null $dateReviewed = null)
-    {
+        String $applicationUuid,
+        String $uuid,
+        private String $dateReceived,
+        private String|null $dateReviewed = null,
+        private string|null $notes = null
+    ) {
         $this->application = Application::findByUuidOrFail($applicationUuid);
         $this->document = Document::findByUuidOrFail($uuid);
     }
@@ -40,6 +41,7 @@ class UpdateDocumentInfo
     {
         $this->document->date_received = $this->dateReceived;
         $this->document->date_reviewed = $this->dateReviewed;
+        $this->document->notes = $this->notes;
 
         if ($this->document->isDirty()) {
             DB::transaction(function () {

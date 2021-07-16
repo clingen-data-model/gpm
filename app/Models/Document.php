@@ -28,6 +28,7 @@ class Document extends Model
         'application_id',
         'document_type_id',
         'is_final',
+        'notes',
     ];
 
     protected $casts = [

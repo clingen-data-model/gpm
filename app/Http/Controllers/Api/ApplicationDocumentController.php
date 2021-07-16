@@ -41,7 +41,8 @@ class ApplicationDocumentController extends Controller
             'date_reviewed',
             'metadata',
             'step',
-            'is_final'
+            'is_final',
+            'notes'
         ]);
 
         $data['storage_path'] = $path;
@@ -62,6 +63,7 @@ class ApplicationDocumentController extends Controller
             uuid: $docUuid,
             dateReceived: $request->date_received,
             dateReviewed: $request->date_reviewed,
+            notes: $request->notes
         );
         $this->dispatcher->dispatch($command);
         

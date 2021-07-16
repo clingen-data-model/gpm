@@ -11,6 +11,9 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+/**
+ * @group documents
+ */
 class DeleteDocumentTest extends TestCase
 {
     use RefreshDatabase;

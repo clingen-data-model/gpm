@@ -10,6 +10,9 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+/**
+ * @group documents
+ */
 class MarkReviewedTest extends TestCase
 {
     use RefreshDatabase;
@@ -33,11 +36,11 @@ class MarkReviewedTest extends TestCase
     public function responds_with_404_if_application_or_document_not_found()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('POST', '/api/applications/bobs-yer-uncle/documents/'.$this->document->uuid.'/review', ['date_reviewed' => Carbon::today()])
+        $this->json('POST', '/api/applications/bobs-yer-uncle/documents/'.$this->document->uuid.'/review', ['date_reviewed' => Carbon::today()])
             ->assertStatus(404);
 
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('POST', '/api/applications/'.$this->application->uuid.'/documents/bobs-yer-uncle/review', ['date_reviewed' => Carbon::today()])
+        $this->json('POST', '/api/applications/'.$this->application->uuid.'/documents/bobs-yer-uncle/review', ['date_reviewed' => Carbon::today()])
             ->assertStatus(404);
     }
     
@@ -48,10 +51,10 @@ class MarkReviewedTest extends TestCase
     public function can_mark_existing_application_document_reviewed()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('POST', $this->docUrl.'/review', ['date_reviewed' => Carbon::today()])
+        $this->json('POST', $this->docUrl.'/review', ['date_reviewed' => Carbon::today()])
             ->assertStatus(200)
             ->assertJsonFragment([
-                'uuid' => $this->document->uuid, 
+                'uuid' => $this->document->uuid,
                 'date_reviewed'=>Carbon::today()->toJson()
             ]);
     }
@@ -65,10 +68,10 @@ class MarkReviewedTest extends TestCase
         $this->document->update(['date_reviewed' => $originalDate]);
 
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('POST', $this->docUrl.'/review', ['date_reviewed' => Carbon::today()])
+        $this->json('POST', $this->docUrl.'/review', ['date_reviewed' => Carbon::today()])
             ->assertStatus(200)
             ->assertJsonFragment([
-                'uuid' => $this->document->uuid, 
+                'uuid' => $this->document->uuid,
                 'date_reviewed'=>$originalDate->toJson()
             ]);
     }
@@ -79,21 +82,17 @@ class MarkReviewedTest extends TestCase
     public function validates_date_reviewed()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('POST', $this->docUrl.'/review', [])
+        $this->json('POST', $this->docUrl.'/review', [])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'date_reviewed' => ['The date reviewed field is required.'], 
+                'date_reviewed' => ['The date reviewed field is required.'],
             ]);
 
-            \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('POST', $this->docUrl.'/review', ['date_reviewed' => 'beansforlunch'])
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->json('POST', $this->docUrl.'/review', ['date_reviewed' => 'beansforlunch'])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'date_reviewed' => ['The date reviewed is not a valid date.'], 
+                'date_reviewed' => ['The date reviewed is not a valid date.'],
             ]);
     }
-    
-    
-    
-    
 }
