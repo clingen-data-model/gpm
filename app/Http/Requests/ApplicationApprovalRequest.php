@@ -24,7 +24,15 @@ class ApplicationApprovalRequest extends FormRequest
     public function rules()
     {
         return [
-            'date_approved' => 'required|date'
+            'date_approved' => 'required|date',
+            'notify_contacts' => 'nullable'
         ];
+    }
+
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'notify_contacts' => filter_var($this->notify_contacts, FILTER_VALIDATE_BOOL),
+        ]);
     }
 }
