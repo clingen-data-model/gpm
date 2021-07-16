@@ -6,12 +6,6 @@
             :sort="{field: fields[0].name, desc: true}"
             v-if="filteredDocuments.length > 0"
         >
-            <!-- <template v-slot:cell-date_reviewed="{item, value}">
-                <div class="text-center">
-                    <span v-if="value">{{value}}</span>
-                    <button v-else class="btn btn-xs" @click="showMarkReviewed(item)">Mark reviewed</button>
-                </div>
-            </template> -->
 
             <template v-slot:cell-is_final="{item}">
                 <icon-checkmark 
@@ -35,8 +29,8 @@
                 </button>
                 <button class="btn btn-xs" @click="openEditForm(item)">
                     <icon-edit width="12" height="16"></icon-edit>
-                    <!-- edit -->
                 </button>
+                <trash-button @click="initDelete(item)"></trash-button>
                 </div>
             </template>
         </data-table>
@@ -60,14 +54,36 @@
             ></document-reviewed-form>
         </modal-dialog>
 
+        <modal-dialog 
+            v-model="showDeleteConfirmation" 
+            :title="`You are about to delete ${activeDocument.type.long_name}, v${activeDocument.version}`"
+        >
+            <div v-if="activeDocument">
+                <p v-if="activeDocument.is_final" class="mb-3">
+                    This version has been tagged as the final version of the document.
+                </p>
+                <p>Are you sure you want to continue?</p>
+
+                <button-row 
+                    submit-text="Delete Document" 
+                    @canceled="cancelDelete" 
+                    @submitted="commitDelete"
+                >
+                </button-row>
+            </div>
+        </modal-dialog>
+
     </div>
 </template>
 <script>
-import IconDownload from '../../icons/IconDownload'
-import IconCheckmark from '../../icons/IconCheckmark'
-import IconEdit from '../../icons/IconEdit'
-import DocumentReviewedForm from './DocumentReviewedForm'
-import DocumentEditForm from './DocumentEditForm'
+import IconDownload from '../../icons/IconDownload';
+import IconCheckmark from '../../icons/IconCheckmark';
+import IconEdit from '../../icons/IconEdit';
+import TrashButton from '@/components/buttons/TrashIconButton';
+import DocumentReviewedForm from './DocumentReviewedForm';
+import DocumentEditForm from './DocumentEditForm';
+import ButtonRow from '../../forms/ButtonRow.vue';
+import is_validation_error from '../../../http/is_validation_error';
 
 export default {
     components: {
@@ -75,7 +91,8 @@ export default {
         IconCheckmark,
         DocumentReviewedForm,
         DocumentEditForm,
-        IconEdit
+        IconEdit,
+        TrashButton,
     },
     props: {
         application: {
@@ -94,9 +111,10 @@ export default {
     },
     data() {
         return {
+            showDeleteConfirmation: false,
             showReviewedForm: false,
             showEditForm: false,
-            activeDocument: {},
+            activeDocument: {type: {}},
             fields: [
                 {
                     name: 'version',
@@ -186,6 +204,23 @@ export default {
         openEditForm(item) {
             this.showEditForm = true; 
             this.activeDocument = item;
+        },
+        initDelete(item) {
+            this.activeDocument = item;
+            this.showDeleteConfirmation = true;
+        },
+        cancelDelete() {
+            this.showDeleteConfirmation = false;
+        },
+        async commitDelete() {
+            try {
+                await this.$store.dispatch('applications/deleteDocument', {application: this.application, document: this.activeDocument});
+                this.showDeleteConfirmation = false;
+            } catch (err) {
+                if (is_validation_error(err)) {
+                    alert(err);
+                }
+            }
         }
     }
 }

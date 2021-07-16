@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Document;
 use Illuminate\Http\Request;
 use Illuminate\Bus\Dispatcher;
 use Illuminate\Support\Carbon;
@@ -10,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use App\Modules\Application\Models\Application;
+use App\Modules\Application\Jobs\DeleteDocument;
 use App\Modules\Application\Jobs\MarkDocumentFinal;
 use App\Modules\Application\Jobs\UpdateDocumentInfo;
 use App\Http\Requests\ApplicationDocumentStoreRequest;
@@ -17,6 +17,7 @@ use App\Modules\Application\Jobs\MarkDocumentReviewed;
 use App\Modules\Application\Jobs\AddApplicationDocument;
 use App\Http\Requests\Applications\DocumentUpdateInfoRequest;
 use App\Http\Requests\Applications\MarkDocumentReviewedRequest;
+use App\Models\Document;
 
 class ApplicationDocumentController extends Controller
 {
@@ -34,11 +35,11 @@ class ApplicationDocumentController extends Controller
         $path = Storage::disk('local')->putFile('documents', $file);
 
         $data = $request->only([
-            'uuid', 
-            'document_type_id', 
-            'date_received', 
-            'date_reviewed', 
-            'metadata', 
+            'uuid',
+            'document_type_id',
+            'date_received',
+            'date_reviewed',
+            'metadata',
             'step',
             'is_final'
         ]);
@@ -67,7 +68,7 @@ class ApplicationDocumentController extends Controller
         $document = Document::findByUuidOrFail($docUuid);
 
 
-        return response($document,200);
+        return response($document, 200);
     }
     
 
@@ -92,5 +93,10 @@ class ApplicationDocumentController extends Controller
 
         return $updatedDocument;
     }
-    
+
+    public function destroy($appUuid, $docUuid)
+    {
+        $job = new DeleteDocument($appUuid, $docUuid);
+        $this->dispatcher->dispatch($job);
+    }
 }

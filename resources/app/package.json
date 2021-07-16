@@ -8,7 +8,7 @@
         "test:unit": "npm run export-configs; vue-cli-service test:unit --watch --verbose false",
         "test:e2e": "npm run export-configs; vue-cli-service test:e2e",
         "lint": "vue-cli-service lint",
-        "export-configs": "php artisan config:export"
+        "export-configs": "cd ../../ && php artisan config:export && cd -"
     },
     "dependencies": {
         "@ckeditor/ckeditor5-build-classic": "^27.1.0",
