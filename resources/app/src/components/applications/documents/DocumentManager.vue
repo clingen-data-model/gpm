@@ -1,24 +1,27 @@
 <template>
-    <div>
-        <div v-if="application.stepIsApproved(step)">
+    <div class="mt-8">
+        <slot name="title">
+            <div class="md:flex justify-between">
+                <h3>{{title}}</h3>
+                <button class="btn mb-2 btn-sm" @click="showUploadForm = true">
+                    Upload a new {{showVersion ? `version`: 'document'}}
+                </button>
+            </div>
+        </slot>
+        <div v-if="application.stepIsApproved(step) && showVersion">
             <final-document-view
                 :application="application"
                 :document-type-id="documentTypeId"
                 :step="step"
             >
             </final-document-view>
-            <button class="btn mb-2" @click="showUploadForm = true">
-                Upload a new version
-            </button>
         </div>
 
         <div v-else>
-            <button class="btn mb-2" @click="showUploadForm = true">
-                Upload a new version
-            </button>
             <document-list 
                 :application="application"
-                :document-type-id="documentTypeId" 
+                :document-type-id="documentTypeId"
+                :show-version="showVersion"
             ></document-list>
             
         </div>
@@ -65,6 +68,14 @@ export default {
             type: Number,
             required: false,
             default: null
+        },
+        showVersion: {
+            type: Boolean,
+            default: true
+        },
+        title: {
+            type: String, 
+            required: false
         }
     },
     data() {

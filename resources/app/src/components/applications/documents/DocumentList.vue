@@ -3,7 +3,7 @@
         <data-table 
             :fields="filteredFields" 
             :data="filteredDocuments" 
-            :sort="{field: fields[0].name, desc: true}"
+            :sort="{field: filteredFields[0].name, desc: true}"
             v-if="filteredDocuments.length > 0"
         >
 
@@ -37,6 +37,8 @@
                 </div>
             </template>
         </data-table>
+
+        <div v-else class="px-2 py-1 border bg-gray-100 rounded">No documents uploaded</div>
 
         <modal-dialog v-model="showEditForm">
             <document-edit-form
@@ -85,7 +87,6 @@ import IconEdit from '../../icons/IconEdit';
 import TrashButton from '@/components/buttons/TrashIconButton';
 import DocumentReviewedForm from './DocumentReviewedForm';
 import DocumentEditForm from './DocumentEditForm';
-import ButtonRow from '../../forms/ButtonRow.vue';
 import is_validation_error from '../../../http/is_validation_error';
 
 export default {
@@ -111,6 +112,11 @@ export default {
             required: false,
             default: true
         },
+        showVersion: {
+            type: Boolean,
+            required: false,
+            default: true
+        }
     },
     data() {
         return {
@@ -146,11 +152,6 @@ export default {
                     type: Date,
                     headerClass: ['w-32']
                 },
-                // {
-                //     name: 'date_reviewed',
-                //     label: 'Date Reviewed',
-                //     type: Date,
-                // },
                 {
                     name: 'is_final',
                     label: 'Final',
@@ -170,15 +171,22 @@ export default {
     computed: {
         filteredFields () {
             let clonedFields = [...this.fields]
+            if (!this.showVersion) {
+                const kdx = clonedFields.findIndex(f => f && f.name == 'version')
+                clonedFields.splice(kdx, 1)
+
+                const jdx = clonedFields.findIndex(f => f && f.name == 'is_final')
+                clonedFields.splice(jdx, 1)
+            }
+
             if (!this.getsReviewed) {
                 const idx = clonedFields.findIndex(f => f && f.name == 'date_reviewed')
-                clonedFields = clonedFields.slice(0,idx)
+                clonedFields.splice(idx, 1)
             }
             return clonedFields
         },
         filteredDocuments() {
             if (this.application && this.application.documents) {
-                // return this.application.documents
                 return this.application.documents.filter(d =>  d.document_type_id == this.documentTypeId)
             }
             return [];
