@@ -1,3 +1,23 @@
+FROM node:14 as builder
+
+# Set the working directory
+WORKDIR /usr/src
+
+# Copy package.json & lock file
+COPY resources/app/package.json .
+COPY resources/app/package-lock.json .
+
+# Install dependencies
+RUN npm install
+
+# Copy source to working directory (/usr/src/app)
+COPY ./resources/app ./
+COPY ./resources/surveys/coi.json /usr/surveys/coi.json
+
+# build the app
+ENV BUILD_ENV=docker
+RUN npm run build
+
 FROM jward3/php:8.0-apache
 
 LABEL maintainer="TJ Ward" \
@@ -7,7 +27,7 @@ LABEL maintainer="TJ Ward" \
     io.k8s.display-name="epam version 1" \
     io.openshift.tags="php,apache"
 
-ENV XDG_CONFIG_HOME=/srv/app
+# ENV XDG_CONFIG_HOME=/srv/app
 
 USER root
 
@@ -25,14 +45,14 @@ RUN composer install \
         --no-suggest \
         --prefer-dist
 
-# RUN apt-get install -yqq librdkafka-dev \
-#     && pecl install rdkafka-3.1.3
-
 COPY .docker/php/conf.d/* $PHP_INI_DIR/conf.d/
 
 COPY .docker/start.sh /usr/local/bin/start
 
 COPY . /srv/app
+
+COPY --from=builder /usr/src/dist ./public
+COPY --from=builder /usr/src/dist/index.html ./resources/views/app.blade.php
 
 RUN chgrp -R 0 /srv/app \
     && chmod -R g+w /srv/app \

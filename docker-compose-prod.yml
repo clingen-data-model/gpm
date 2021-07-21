@@ -27,9 +27,9 @@ services:
             - database:database
             - redis:redis
         volumes:
-            - .:/srv/app
-            # - ./storage:/srv/app/storage
-            # - ./.env:/srv/app/.env
+            # - .:/srv/app
+            - ./storage:/srv/app/storage
+            - ./.env:/srv/app/.env
         environment:
             CONTAINER_ROLE: app
             CONTAINER_ENV: local
