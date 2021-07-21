@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["about"],{f820:function(e,t,n){"use strict";n.r(t);var r=n("7a23"),a={class:"w-full h-48 mx-auto align-middle py-48 text-center border bg-gray-100"};function c(e,t){return Object(r["s"])(),Object(r["f"])("div",a," PLACEHOLDER FOR ABOUT PAGE ")}const o={};o.render=c;t["default"]=o}}]);
-//# sourceMappingURL=about.1af0ca49.js.map
