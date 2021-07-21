@@ -39,24 +39,24 @@ const routes = [
     {
         name: 'coi',
         path: '/coi/:code',
-        component: () => import (/* webpackChunkName "coi-survey" */ '../views/Coi.vue'),
+        component: () => import (/* webpackChunkName "coi-survey" */ '@/views/Coi.vue'),
         props: true
     },
     {
         name: 'alt-coi',
         path: '/expert-panels/:name/coi/:code',
-        component: () => import (/* webpackChunkName "coi-survey" */ '../views/Coi.vue'),
+        component: () => import (/* webpackChunkName "coi-survey" */ '@/views/Coi.vue'),
         props: true
     },
     { name: 'about',
         path: '/about',
         component: () =>
-            import ( /* webpackChunkName: "about" */ '../views/About.vue')
+            import ( /* webpackChunkName: "about" */ '@/views/About.vue')
     },
     {
         name: 'mail-log',
         path:'/mail-log',
-        component: () => import(/* webpackChunkName "mail-log" */ '../views/MailLog.vue'),
+        component: () => import(/* webpackChunkName "mail-log" */ '@/views/MailLog.vue'),
         meta: {
             protected: true
         }
@@ -64,7 +64,7 @@ const routes = [
     {
         name: 'not-found',
         path: '/:pathMatch(.*)*',
-        component: () => import (/* webpackChunkName "not-found" */ '../views/NotFound.vue'),
+        component: () => import (/* webpackChunkName "not-found" */ '@/views/NotFound.vue'),
     },
 ]
 

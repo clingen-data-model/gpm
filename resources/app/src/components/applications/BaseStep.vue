@@ -62,13 +62,13 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { formatDate } from '../../date_utils'
-import ApplicationLog from './ApplicationLog'
-import DocumentManager from './documents/DocumentManager'
-import ApproveStepForm from './ApproveStepForm'
-import EditButton from '../buttons/EditIconButton'
-import RemoveButton from '../buttons/RemoveButton'
-import is_validation_error from '../../http/is_validation_error'
+import { formatDate } from '@/date_utils'
+import ApplicationLog from '@/components/applications/ApplicationLog'
+import DocumentManager from '@/components/applications/documents/DocumentManager'
+import ApproveStepForm from '@/components/applications/ApproveStepForm'
+import EditButton from '@/components/buttons/EditIconButton'
+import RemoveButton from '@/components/buttons/RemoveButton'
+import is_validation_error from '@/http/is_validation_error'
 
 export default {
     components: {

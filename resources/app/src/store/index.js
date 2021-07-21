@@ -1,13 +1,13 @@
 // eslint-disable-next-line
 import { createStore, createLogger } from 'vuex'
-import ApplicationStore from './applications.js'
-import PeopleStore from './people.js'
-import CdwgStore from './cdwgs.js'
-import COIStore from './coi_store.js'
-import Alerts from './alerts'
+import ApplicationStore from '@/store/applications.js'
+import PeopleStore from '@/store/people.js'
+import CdwgStore from '@/store/cdwgs.js'
+import COIStore from '@/store/coi_store.js'
+import Alerts from '@/store/alerts'
 import axios from '@/http/api'
-import isAuthError from './../http/is_auth_error'
-import module_factory from './module_factory';
+import isAuthError from '@/http/is_auth_error'
+import module_factory from '@/store/module_factory';
 
 const nullUser = {
     id: null,

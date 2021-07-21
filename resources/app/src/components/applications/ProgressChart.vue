@@ -13,7 +13,7 @@
     </div>
 </template>
 <script>
-import ProgressStep from './ProgressStep'
+import ProgressStep from '@/components/applications/ProgressStep'
 
 export default {
     components: {

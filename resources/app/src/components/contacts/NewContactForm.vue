@@ -64,7 +64,7 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import is_validation_error from '../../http/is_validation_error'
+import is_validation_error from '@/http/is_validation_error'
 import { v4 as uuid4 } from 'uuid';
 
 export default {

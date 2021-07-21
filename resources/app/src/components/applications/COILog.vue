@@ -49,10 +49,10 @@
 
 </template>
 <script>
-import IconRefresh from '../icons/IconRefresh';
-import CoiDetail from './CoiDetail';
-import CoiLegacyUpload from './CoiLegacyUpload';
-import AddContactControl from '../contacts/AddContactControl.vue'
+import IconRefresh from '@/components/icons/IconRefresh';
+import CoiDetail from '@/components/applications/CoiDetail';
+import CoiLegacyUpload from '@/components/applications/CoiLegacyUpload';
+import AddContactControl from '@/components/contacts/AddContactControl.vue'
 
 export default {
     components: {

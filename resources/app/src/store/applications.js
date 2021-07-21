@@ -1,6 +1,6 @@
 import store from ".";
 import Application from '@/domain/application'
-import appRepo from '../adapters/application_repository';
+import appRepo from '@/adapters/application_repository';
 import api from '@/http/api';
 import { v4 as uuid4 } from 'uuid';
 

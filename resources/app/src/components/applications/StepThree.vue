@@ -38,9 +38,9 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import {formatDate} from '../../date_utils'
-import BaseStep from './BaseStep'
-import DocumentManager from './documents/DocumentManager'
+import {formatDate} from '@/date_utils'
+import BaseStep from '@/components/applications/BaseStep'
+import DocumentManager from '@/components/applications/documents/DocumentManager'
 
 export default {
     name: 'StepThree',

@@ -11,7 +11,7 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import BaseStep from './BaseStep'
+import BaseStep from '@/components/applications/BaseStep'
 
 export default {
     name: 'StepTwo',

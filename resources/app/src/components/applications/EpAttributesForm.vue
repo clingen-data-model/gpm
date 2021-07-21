@@ -52,7 +52,7 @@
     </div>
 </template>
 <script>
-import ApplicationContacts from '../contacts/ApplicationContacts'
+import ApplicationContacts from '@/components/contacts/ApplicationContacts'
 
 export default {
     components: {

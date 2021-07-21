@@ -56,7 +56,7 @@
 </template>
 <script>
 import api from '../http/api'
-import {formatDateTime} from '../date_utils'
+import {formatDateTime} from '@/date_utils'
 import sortAndFilter from '../composables/router_aware_sort_and_filter'
 
 export default {

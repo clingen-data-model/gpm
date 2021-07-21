@@ -31,7 +31,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import {formatDateTime as formatDate} from '../../date_utils'
+import {formatDateTime as formatDate} from '@/date_utils'
 
 export default {
     props: {

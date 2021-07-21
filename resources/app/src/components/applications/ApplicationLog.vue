@@ -34,9 +34,9 @@
 </template>
 <script>
 import {mapGetters} from 'vuex';
-import IconEdit from '../icons/IconEdit'
-import IconTrash from '../icons/IconTrash'
-import LogEntryForm from '../log_entries/LogEntryForm'
+import IconEdit from '@/components/icons/IconEdit'
+import IconTrash from '@/components/icons/IconTrash'
+import LogEntryForm from '@/components/log_entries/LogEntryForm'
 
 
 const fields = [

@@ -39,7 +39,7 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import ChevronDown from './icons/IconCheveronDown'
+import ChevronDown from '@/components/icons/IconCheveronDown'
 
 export default {
     name: 'UserMenu',

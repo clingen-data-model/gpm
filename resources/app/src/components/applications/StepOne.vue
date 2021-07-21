@@ -13,8 +13,8 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import BaseStep from './BaseStep'
-import CoiLog from './COILog'
+import BaseStep from '@/components/applications/BaseStep'
+import CoiLog from '@/components/applications/COILog'
 
 export default {
     name: 'StepOne',

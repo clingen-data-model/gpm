@@ -17,9 +17,8 @@
     </div>
 </template>
 <script>
-import Application from '../../domain/application'
-import is_validation_error from '../../http/is_validation_error'
-// import api from '../../http/api'
+import Application from '@/domain/application'
+import is_validation_error from '@/http/is_validation_error'
 
 export default {
     props: {
