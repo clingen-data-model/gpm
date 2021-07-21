@@ -33,6 +33,12 @@
                 <!-- <tab-item label="Dev Tools">
                     <pre>{{this.application}}</pre>
                 </tab-item> -->
+                <tab-item label="Advanced">
+                    <h2 class="block-title">Advanced actions and controls</h2>
+                    <router-link :to="{name: 'ConfirmDeleteApplication'}" class="btn red">
+                        Delete Application and all associated information.
+                    </router-link>
+                </tab-item>
             </tabs-container>
 
         </card>
@@ -68,7 +74,7 @@ export default {
     },
     data() {
         return {
-            showModal: false
+            showModal: false,
         }
     },
     watch: {
@@ -102,7 +108,7 @@ export default {
             if (typeof this.$refs.modalView.clearForm === 'function') {
                 this.$refs.modalView.clearForm();
             }
-        }
+        },
     },
     mounted() {
         this.$store.dispatch('applications/getApplication', this.uuid);

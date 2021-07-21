@@ -14,6 +14,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/applications', [ApplicationController::class, 'store']);
     Route::get('/applications/{app_uuid}', [ApplicationController::class, 'show']);
     Route::put('/applications/{app_uuid}', [ApplicationController::class, 'update']);
+    Route::delete('/applications/{app_uuid}', [ApplicationController::class, 'destroy']);
     
     Route::get('/applications/{app_uuid}/contacts', [ApplicationContactController::class, 'index']);
     Route::post('/applications/{app_uuid}/contacts', [ApplicationContactController::class, 'store']);

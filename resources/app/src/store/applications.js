@@ -66,6 +66,13 @@ export default {
             const idx = state.items.findIndex(i => i.uuid == application.uuid);
             state.currentItemIdx = idx;
         },
+        removeItem(state, item) {
+            const idx = state.items.findIndex(i => i.uuid == item.uuid);
+            state.items.splice(idx, 1);           
+        },
+        clearCurrentItemIdx(state) {
+            state.currentItemIdx = null;
+        }
     },
     actions: {
         async getApplications({ commit, state }, params, fresh = false) {
@@ -286,6 +293,14 @@ export default {
                 .then(() => {
                     store.dispatch('applications/getApplication', application.uuid);
                 });
+        },
+
+        async deleteApplication({ commit }, {application}) {
+            return await api.delete(`/api/applications/${application.uuid}`)
+                .then(response => {
+                    commit('removeItem', application);
+                    commit('clearCurrentItemIdx')
+                })
         }
 
 
