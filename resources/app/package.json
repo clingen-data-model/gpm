@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "serve": "npm run export-configs; vue-cli-service serve",
-        "build": "npm run export-configs; rm -rf ../../../public/assets/app/{js,css,img} && vue-cli-service build --no-clean",
+        "build": "rm -rf ../../../public/assets/app/{js,css,img} && vue-cli-service build --no-clean",
         "test:unit": "npm run export-configs; vue-cli-service test:unit --watch --verbose false",
         "test:e2e": "npm run export-configs; vue-cli-service test:e2e",
         "lint": "vue-cli-service lint",
