@@ -30,8 +30,8 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import { formatDate } from '../../date_utils'
-import is_validation_error from '../../http/is_validation_error'
+import { formatDate } from '@/date_utils'
+import is_validation_error from '@/http/is_validation_error'
 
 
 export default {

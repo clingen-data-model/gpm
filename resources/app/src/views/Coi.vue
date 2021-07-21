@@ -61,9 +61,9 @@
 </template>
 <script>
 import coiDef from '../../../surveys/coi.json'
-import Survey from '../survey'
-import api from '../http/api'
-import is_validation_error from '../http/is_validation_error';
+import Survey from '@/survey'
+import api from '@/http/api'
+import is_validation_error from '@/http/is_validation_error';
 
 const survey = new Survey(coiDef);
 

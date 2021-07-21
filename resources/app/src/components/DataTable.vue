@@ -81,9 +81,9 @@
     </div>
 </template>
 <script>
-import { formatDate } from '../date_utils'
-import IconCheveronDown from '../components/icons/IconCheveronDown'
-import IconCheveronUp from '../components/icons/IconCheveronUp'
+import { formatDate } from '@/date_utils'
+import IconCheveronDown from '@/components/icons/IconCheveronDown'
+import IconCheveronUp from '@/components/icons/IconCheveronUp'
 
 /**
  * 

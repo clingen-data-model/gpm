@@ -16,7 +16,7 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import NewContactForm from './NewContactForm'
+import NewContactForm from '@/components/contacts/NewContactForm'
 
 export default {
     name: 'AddContactControl',

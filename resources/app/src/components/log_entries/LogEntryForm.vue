@@ -14,9 +14,9 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import { formatDate } from '../../date_utils'
-import StepInput from '../forms/StepInput'
-import RichTextEditor from '../forms/RichTextEditor'
+import { formatDate } from '@/date_utils'
+import StepInput from '@/components/forms/StepInput'
+import RichTextEditor from '@/components/forms/RichTextEditor'
 
 
 export default {

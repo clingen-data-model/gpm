@@ -4,7 +4,7 @@
     </div>
 </template>
 <script>
-import ApplicationsTable from '../../components/applications/ApplicationsTable'
+import ApplicationsTable from '@/components/applications/ApplicationsTable'
 
 export default {
     components: {

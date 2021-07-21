@@ -85,8 +85,6 @@
     </div>
 </template>
 <script>
-// import coiDef from '../../../surveys/coi.json'
-
 export default {
     props: {
         response: {

@@ -19,7 +19,7 @@
     </div>
 </template>
 <script>
-import { formatDate } from '../../date_utils'
+import { formatDate } from '@/date_utils'
 
 export default {
     props: {

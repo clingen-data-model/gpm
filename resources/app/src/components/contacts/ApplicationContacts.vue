@@ -9,8 +9,8 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import AddContactControl from './AddContactControl.vue'
-import ContactRow from './ContactRow'
+import AddContactControl from '@/components/contacts/AddContactControl'
+import ContactRow from '@/components/contacts/ContactRow'
 
 export default {
     components: {

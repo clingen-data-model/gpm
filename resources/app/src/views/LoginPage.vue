@@ -5,7 +5,7 @@
     <!-- <pre>{{$route.path}}</pre> -->
 </template>
 <script>
-import LoginForm from '../components/LoginForm';
+import LoginForm from '@/components/LoginForm';
 import { mapGetters } from 'vuex'
 
 export default {

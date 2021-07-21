@@ -1,6 +1,6 @@
-const PersonDetail = () => import (/* person-detail */ '../components/people/PersonDetail')
-const PersonForm = () => import (/* person-detail */ '../components/people/PersonForm')
-const PeopleIndex = () => import (/* people-index */ '../views/PeopleIndex')
+const PersonDetail = () => import (/* person-detail */ '@/components/people/PersonDetail')
+const PersonForm = () => import (/* person-detail */ '@/components/people/PersonForm')
+const PeopleIndex = () => import (/* people-index */ '@/views/PeopleIndex')
 
 export default [
     { name: 'people-index',

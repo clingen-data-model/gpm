@@ -17,3 +17,12 @@ yarn-error.log
 psysh/*
 gpm_clinicalgenome_org.csr
 gpm_clinicalgenome_org.key
+public/js/chunk-2d0e5e97.25ca8499.js.map
+
+# built css & js
+/public/css/*
+/public/js/*
+/public/service-worker.js
+/public/precache*
+/public/index.html
+

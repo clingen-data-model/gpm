@@ -4,7 +4,7 @@
     </button>
 </template>
 <script>
-import IconEdit from '../icons/IconEdit'
+import IconEdit from '@/components/icons/IconEdit'
 
 export default {
     components: {

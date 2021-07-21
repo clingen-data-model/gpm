@@ -33,8 +33,8 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import is_validation_error from '../../http/is_validation_error'
-import RemoveButton from '../buttons/RemoveButton'
+import is_validation_error from '@/http/is_validation_error'
+import RemoveButton from '@/components/buttons/RemoveButton'
 
 export default {
     components: {

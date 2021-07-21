@@ -2,7 +2,7 @@ import axios from '@/http/api';
 import store from '.';
 import Person from '@/domain/person'
 import { v4 as uuid4 } from 'uuid';
-import queryStringFromParams from '../http/query_string_from_params'
+import queryStringFromParams from '@/http/query_string_from_params'
 
 const baseUrl = '/api/people';
 

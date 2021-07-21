@@ -16,7 +16,7 @@
     </button>
 </template>
 <script>
-import IconClose from '../icons/IconClose'
+import IconClose from '@/components/icons/IconClose'
 export default {
     components: {
         IconClose,

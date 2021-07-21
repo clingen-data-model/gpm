@@ -60,7 +60,7 @@ import {mapGetters} from 'vuex'
 import EditButton from '@/components/buttons/EditIconButton'
 import CheckmarkButton from '@/components/buttons/CheckmarkIconButton'
 import CheckmarkIcon from '@/components/icons/IconCheckmark'
-import TrashIconButton from '../buttons/TrashIconButton.vue'
+import TrashIconButton from '@/components/buttons/TrashIconButton.vue'
 
 export default {
     name: 'NextActions',
