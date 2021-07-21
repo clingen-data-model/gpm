@@ -13,6 +13,9 @@ app.component('icon-base', IconBase);
 import Note from './components/Note'
 app.component('note', Note);
 
+import DropdownMenu from './components/DropdownMenu'
+app.component('dropdown-menu', DropdownMenu);
+
 import TruncateExpander from './components/TruncateExpander'
 app.component('truncate-expander', TruncateExpander);
 

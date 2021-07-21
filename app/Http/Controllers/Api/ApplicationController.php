@@ -11,6 +11,7 @@ use Illuminate\Contracts\Bus\Dispatcher;
 use App\Modules\Application\Jobs\AddContact;
 use App\Modules\Application\Models\Application;
 use App\Http\Requests\InitiateApplicationRequest;
+use App\Modules\Application\Jobs\DeleteApplication;
 use App\Modules\Application\Jobs\InitiateApplication;
 use App\Modules\Application\Jobs\UpdateExpertPanelAttributes;
 use App\Http\Requests\Applications\UpdateExpertPanelAttributesRequest;
@@ -70,6 +71,11 @@ class ApplicationController extends Controller
                 $query->where($key, $value);
             }
         }
+
+        // if ($request->has('showDeleted')) {
+        $query->withTrashed();
+        // }
+
         $applications = $query->paginate(200);
         // $applications = $query->get();
 
@@ -139,7 +145,8 @@ class ApplicationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($uuid)
     {
+        $this->dispatcher->dispatch(new DeleteApplication(applicationUuid: $uuid));
     }
 }
