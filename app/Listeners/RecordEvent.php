@@ -42,20 +42,17 @@ class RecordEvent
         }
 
         $properties = $event->getProperties();
+        $properties['activity_type'] = $event->getActivityType();
+            
         if ($properties) {
-
             if ($event instanceof ApplicationEvent && !isset($properties['step'])) {
                 $properties['step'] = $event->getStep();
             }
-
-            $properties['activity_type'] = $event->getActivityType();
-            
-            $logger->withProperties($properties);
         }
+        $logger->withProperties($properties);
 
         $logger->createdAt($event->getLogDate());
 
         $logger->log($event->getLogEntry());
-
     }
 }

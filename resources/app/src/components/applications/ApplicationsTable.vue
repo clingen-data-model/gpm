@@ -22,6 +22,8 @@
                     Show completed
                 </label>
 
+                <label class="block"><input type="checkbox" v-model="showDeleted">Show Deleted</label>
+
             </div>
             <div>
                 <button class="btn btn-xs" :class="{blue: showAllInfo == 0}" @click="showAllInfo = 0">Summary</button>
@@ -205,7 +207,8 @@ export default {
                         step: 4
                     }
             ],
-            waitingOn: null
+            waitingOn: null,
+            showDeleted: false
         }
     },
     computed: {
@@ -225,6 +228,10 @@ export default {
             if (this.waitingOn) {
                 console.info(this.waitingOn)
                 applications = applications.filter(app => app.pendingActionsByAssignee[this.waitingOn].length > 0);
+            }
+
+            if (!this.showDeleted) {
+                applications = applications.filter(app => app.deleted_at === null);
             }
 
             return applications
@@ -299,10 +306,18 @@ export default {
             if (Object.keys(where).length > 0) {
                 params.where = where;
             }
+            console.info(this.showDeleted)
+            if (this.showDeleted) {
+                params.showDeleted = 1;
+            }
 
             this.$store.dispatch('applications/getApplications', params);
         },
         goToApplication (item) {
+            if (item.deleted_at) {
+                alert ('The application for '+item.name+' has been deleted.  Details cannot be viewed.');
+                return;
+            }
             this.$router.push({name: 'ApplicationDetail', params: {uuid: item.uuid}})
         },
     },

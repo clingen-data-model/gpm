@@ -31,5 +31,4 @@ abstract class RecordableEvent
     abstract public function getProperties():?array;
 
     abstract public function getLogDate():Carbon;
-
 }

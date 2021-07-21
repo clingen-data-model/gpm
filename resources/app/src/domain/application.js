@@ -78,7 +78,6 @@ class Application extends Entity {
             const assignedTo = this.pendingNextActions[na].assigned_to;
             groups[assignedTo].push(this.pendingNextActions[na]);
         }
-        console.log(groups);
         return groups
     }
 

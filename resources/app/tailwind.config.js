@@ -45,12 +45,12 @@ module.exports = {
     variants: {
         extend: {
             borderStyle: ['active', 'hover', 'first', 'last'],
+            borderRadius: ['first', 'last'],
             padding: ['active'],
             backgroundColor: ['even', 'odd', 'active'],
             opacity: ['disabled'],
             cursor: ['disabled'],
             gradientColorStops: ['active'],
-
         },
     },
     plugins: [],
