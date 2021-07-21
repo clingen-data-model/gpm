@@ -22,7 +22,7 @@
                     Show completed
                 </label>
 
-                <label class="block"><input type="checkbox" v-model="showDeleted">Show Deleted</label>
+                <!-- <label class="block"><input type="checkbox" v-model="showDeleted">Show Deleted</label> -->
 
             </div>
             <div>
