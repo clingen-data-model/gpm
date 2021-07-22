@@ -5,13 +5,6 @@
             <div class="flex-1">
                 <input-row 
                     type="text" 
-                    v-model="newContact.email" 
-                    :errors="errors.email"
-                    placeholder="elenor@medplace.com" 
-                    label="Email"
-                ></input-row>
-                <input-row 
-                    type="text" 
                     v-model="newContact.first_name" 
                     :errors="errors.first_name"
                     placeholder="Elenor" 
@@ -23,6 +16,13 @@
                     :errors="errors.last_name"
                     placeholder="Shelstrop" 
                     label="Last name"
+                ></input-row>
+                <input-row 
+                    type="text" 
+                    v-model="newContact.email" 
+                    :errors="errors.email"
+                    placeholder="elenor@medplace.com" 
+                    label="Email"
                 ></input-row>
                 <input-row 
                     type="text" 
@@ -96,11 +96,17 @@ export default {
             people: 'people/all',
         }),
         suggestedPeople() {
-            if (this.newContact.email) {
-                return this.people
-                        .filter(p => p.email.includes(this.newContact.email));
+            let people = [];
+            if (this.newContact.email && this.newContact.email.length > 2) {
+                people = people.concat(this.people.filter(p => p.email.includes(this.newContact.email)));
             }
-            return [];
+            if (this.newContact.first_name) {
+                people = people.concat(this.people.filter(p => p.first_name.includes(this.newContact.first_name)));
+            }
+            if (this.newContact.last_name) {
+                people = people.concat(this.people.filter(p => p.last_name.includes(this.newContact.last_name)));
+            }
+            return Array.from(new Set(people));
         }
         
     },

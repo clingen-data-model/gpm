@@ -13,9 +13,9 @@ const NewContactForm = () =>
 const ConfirmDeleteLogEntry = () =>
     import ( /* webpackChunkName: "confirm-delete-log-entry" */ '@/components/log_entries/ConfirmDeleteLogEntry')
 const ConfirmDeleteNextAction = () =>
-    import ( /* webpackChunkName: "confirm-delete-log-entry" */ '../components/next_actions/ConfirmDeleteNextAction')
+    import ( /* webpackChunkName: "confirm-delete-log-entry" */ '@/components/next_actions/ConfirmDeleteNextAction')
 const ConfirmDeleteApplication = () =>
-    import ( /* webpackChunkName: "delete-application" */ '../components/applications/ConfirmDeleteApplication')
+    import ( /* webpackChunkName: "delete-application" */ '@/components/applications/ConfirmDeleteApplication')
 
 
 export default [{
