@@ -297,7 +297,7 @@ export default {
 
         async deleteApplication({ commit }, {application}) {
             return await api.delete(`/api/applications/${application.uuid}`)
-                .then(response => {
+                .then(() => {
                     commit('removeItem', application);
                     commit('clearCurrentItemIdx')
                 })
