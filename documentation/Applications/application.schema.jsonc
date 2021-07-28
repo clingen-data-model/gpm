@@ -1,0 +1,31 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "$id": "https://gpm.clinicalgenome.org/application.schema.json",
+    "title": "EP Application Structure",
+    "description": "This schema defines the structure of a ClinGen expert panel application.  The structures is dependent on the expert panel type.",
+    "type": "object",
+    "properties": {
+        "ep_type_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2 // maximum is the largest ID in ep_types.
+        },
+        "sections": {
+            "type": "array",
+            ""
+        }
+
+
+
+    },
+    "required": [
+        "ep_type_id"
+    ],
+    "if": {
+        "properties": {"ep_type_id": { "const": 2}}
+    },
+    "then": {
+        ""
+    }
+
+}
