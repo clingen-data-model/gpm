@@ -1,0 +1,57 @@
+/**
+  General:
+    * Meaning of 'Classification' in this context?  I know variant curators use "Classification Rules" and that to get Specifications to final-approval the VCEP will do "pilot classfications" in the VCI but I'm not sure I know what it refers to in this context.
+      ** Neethu will change "Classification" to something else b/c of overloading of the term.
+ */
+[
+  {
+    "previousStatus": "Initiation", //TJ: would we not get an initiation event?
+    "currentStatus": "Proposed",
+    "event": "proposal-submitted",
+    "description": "A new specicification document CSpec document created with scopes and VCEP affiliation defined"
+    // TJ: Is this essentially the creation of th CSpec document?
+  },
+  {
+    "previousStatus": "Proposed",
+    "currentStatus": "RulesClassification",
+    "event": "proposal-approved",
+    "description": "A CSpec document and scopes are in agreement with GPM and a document is ready to proceed to Rules classification. This event requires GMP notification of the Step 1 approval - ep_definition_approved"
+    // TJ: do you expect this to happen automatically? YES, based on info from EPAM
+  },
+  {
+    "previousStatus": "RulesClassification",
+    "currentStatus": "ClassifiedRulesUnderReview",
+    "event": "classified-rules-submitted",
+    "description": "Initial draft of the CSpec with rules for all the applicable scopes are submitted for review"
+  },
+  {
+    "previousStatus": "ClassifiedRulesUnderReview",
+    "currentStatus": "PilotRulesClassification",
+    "event": "classified-rules-approved",
+    "description": "Classified rules from the initial draft are approved by the SVI"
+  },
+  {
+    "previousStatus": "PilotRulesClassification",
+    "currentStatus": "ClassifiedPilotRulesUnderReview",
+    "event": "pilot-rules-submitted",
+    "description": "Pilot rules after validation are submitted for review for all the applicable scopes"
+  },
+  {
+    "previousStatus": "ClassifiedPilotRulesUnderReview",
+    "currentStatus": "CSpecFinalReview",
+    "event": "pilot-rules-approved",
+    "description": "Pilot rules after validation are submitted for review for all the applicable scopes"
+  },
+  {
+    "previousStatus": "CSpecFinalReview",
+    "currentStatus": "ApprovedForRelease",
+    "event": "vcep-final-release-approved",
+    "description": "VCEP final approval notification receieved from GPM - ep_final_approval"
+  },
+  {
+    "previousStatus": "ApprovedForRelease",
+    "currentStatus": "Released",
+    "event": "all-cspec-release-approved",
+    "description": "All the specifications within the VCEP are approved for release in sync with the Step 4 application approval"
+  }
+]
