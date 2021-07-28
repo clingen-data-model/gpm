@@ -119,4 +119,25 @@ class UpdateExpertPanelAttributesTest extends TestCase
                 'affiliation_id' => ['The affiliation id may not be greater than 8 characters.'],
             ]);
     }
+
+    /**
+     * @test
+     */
+    public function validates_base_names_are_unique_for_type()
+    {
+        $application = Application::factory()->gcep()->create();
+        $app2 = Application::factory()->gcep()->create(['long_base_name' => 'testlong', 'short_base_name'=>'testshort']);
+        // dd($app2->long_base_name);
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $response =$this->json('PUT', '/api/applications/'.$application->uuid, [
+            'working_name' => 'test',
+            'long_base_name' => $app2->long_base_name,
+            'short_base_name' => $app2->short_base_name,
+        ]);
+        $response->assertStatus(422);
+        $response->assertJsonFragment([
+                'long_base_name' => ['The long base name must be unique for expert panels of this type.'],
+                'short_base_name' => ['The short base name must be unique for expert panels of this type.'],
+            ]);
+    }
 }
