@@ -1,0 +1,65 @@
+{
+    "name": "VCEP Application",
+    "version": "5.0.0",
+    "ep_type": {
+        "name": "Variant Curation Expert Panel",
+        "id": 1
+    },
+    "components": [
+        {
+            "step": 1,
+            "section": 1,
+            "name": "Expert Panel Info"
+        },
+        {
+            "step": 1,
+            "section": 2,
+            "name": "membership"
+        },
+        {
+            "step": 1,
+            "section": 3,
+            "name": "scope of work"
+        },
+        {
+            "step": 2,
+            "section": 1,
+            "name": "draft rules specification"
+        },
+        {
+            "step": 3,
+            "section": 1,
+            "name": "rules specification pilot"
+        },
+        {
+            "step": 4,
+            "section": 1,
+            "name": "ongoing variant curation and review"
+        },
+        {
+            "step": 4,
+            "section": 1,
+            "name": "reanalysis and discrepency resolution"
+        },
+        {
+            "step": 4,
+            "section": 2,
+            "name": "example evidence summaries"
+        },
+        {
+            "step": 4,
+            "section": 3,
+            "name": "member role/training designation"
+        },
+        {
+            "step": 4,
+            "section": 4,
+            "name": "NHGRI Data Availability"
+        },
+        {
+            "step": 4,
+            "section": 4,
+            "name": "leader attestation"
+        },
+    ]
+}

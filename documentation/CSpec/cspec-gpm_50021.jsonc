@@ -1,0 +1,25 @@
+/**
+ General:
+  * Is it possible for events to be backdated? That is can they have effective dates that are different than the timestamp of the event? If so can I get the effective date in messages?
+  * Will you have information about the user responsible for an event?  If so can we include that information?
+  * Will any of the links included take the user to the Editor?  If not, could we include a link to the editor for a specific cspec and/or ruleset?
+*/
+
+{
+  "event" : "all-cspec-release-approved",
+  "cspecSviDoc" : {
+    "cspecId" : "https://cspec.genome.network/cspec/SequenceVariantInterpretation/id/GN004",
+    "cspecRegUILink" : "https://cspec.genome.network/cspec/ui/svi/svi/GN004",
+    "previousStatus": "ApprovedForRelease",
+    "currentStatus": "Released",
+    "vcepId": 50021,
+    // Neethu will include approval date (i.e. effective date);
+    "ruleSet": [
+      {
+        "status": "Completed",
+        "cspecRegUILink": "https://cspec.genome.network/cspec/ui/svi/ruleset/135640573",
+        "ruleSetId": "https://cspec.genome.network/cspec/RuleSet/id/135640573"
+      }
+    ]
+  }
+}

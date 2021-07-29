@@ -1,0 +1,45 @@
+{
+    "name": "GCEP Application",
+    "version": "5.0.0",
+    "ep_type": {
+        "name": "Gene Curation Expert Panel",
+        "id": 1
+    },
+    "components": [
+        {
+            "step": 1,
+            "section": 1,
+            "name": "Expert Panel Info"
+        },
+        {
+            "step": 1,
+            "section": 2,
+            "name": "membership"
+        },
+        {
+            "step": 1,
+            "section": 3,
+            "name": "scope of work"
+        },
+        {
+            "step": 1,
+            "section": 4,
+            "name": "leader attestation"
+        },
+        {
+            "step": 1,
+            "section": 4,
+            "name": "gcep curation and review protocol"
+        },
+        {
+            "step": 1,
+            "section": 4,
+            "name": "gcep biocurator training attestation"
+        },
+        {
+            "step": 1,
+            "section": 5,
+            "name": "NHGRI data availability"
+        }
+    ]
+}
