@@ -1,11 +1,11 @@
-FROM node:14 as builder
+FROM node:latest as builder
 
 # Set the working directory
 WORKDIR /usr/src
 
 # Copy package.json & lock file
-COPY resources/app/package.json .
-COPY resources/app/package-lock.json .
+COPY resources/app/package*.json .
+# COPY resources/app/package-lock.json .
 
 # Install dependencies
 RUN npm install
