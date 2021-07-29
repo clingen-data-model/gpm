@@ -2,7 +2,6 @@
     <card title="Login" class="lg:w-1/2 mx-auto">
         <login-form @authenticated="redirect"></login-form>
     </card>
-    <!-- <pre>{{$route.path}}</pre> -->
 </template>
 <script>
 import LoginForm from '@/components/LoginForm';
@@ -23,11 +22,11 @@ export default {
     },
     methods: {
         redirect() {
-            let routeName = 'home';
-            if (this.$route.query && this.$route.query.redirect) {
-                routeName = this.$route.query.redirect
+            let route = {name: 'home'};
+            if (this.$route.redirectedFrom && this.$route.redirectedFrom.name !== 'login') {
+                route = this.$route.redirectedFrom
             }
-            this.$router.push({name: routeName})
+            this.$router.push(route)
         },
         redirectIfAuthed(){
             if (this.isAuthed) {

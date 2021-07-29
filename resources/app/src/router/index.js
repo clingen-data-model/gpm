@@ -87,7 +87,7 @@ router.beforeEach(async (to, from, next) => {
     }
 
     if (!to.name.includes('login') && !store.getters.isAuthed) {
-        next({name: 'login'});
+        next({name: 'login', query: { redirect: to.fullPath }});
         return;
     }
 
