@@ -26,7 +26,6 @@ class UpdateExpertPanelAttributesRequest extends FormRequest
     public function rules()
     {
         $application = Application::findByUuidOrFail($this->route('app_uuid'));
-        \Log::debug('ep_type_id', [$application->ep_type_id]);
         return [
             'working_name' => 'required|max:255',
             'cdwg_id' => 'nullable|exists:cdwgs,id',
@@ -46,7 +45,6 @@ class UpdateExpertPanelAttributesRequest extends FormRequest
                                         ->ignore($application)
                                         ->where(function ($query) use ($application) {
                                             $query->where('ep_type_id', $application->ep_type_id);
-                                            \Log::debug(renderQuery($query));
                                             return $query;
                                         })
                                 ],
