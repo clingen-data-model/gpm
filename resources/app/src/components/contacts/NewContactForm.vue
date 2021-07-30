@@ -97,15 +97,18 @@ export default {
         }),
         suggestedPeople() {
             let people = [];
-            if (this.newContact.email && this.newContact.email.length > 2) {
-                people = people.concat(this.people.filter(p => p.email.includes(this.newContact.email)));
+            const searchFields = ['email', 'first_name', 'last_name'];
+            for (let i in searchFields) {
+                const field = searchFields[i];
+                const fieldVal = (this.newContact[field]) ? this.newContact[field].toLowerCase() : null;
+
+                if (Boolean(fieldVal) && fieldVal.length > 1) {
+                    people = people.concat(this.people.filter(p => p[field].toLowerCase().includes(fieldVal)));
+                    console.info('filtering on '+field+' includes ('+fieldVal+'): ', people);
+                }
+
             }
-            if (this.newContact.first_name) {
-                people = people.concat(this.people.filter(p => p.first_name.includes(this.newContact.first_name)));
-            }
-            if (this.newContact.last_name) {
-                people = people.concat(this.people.filter(p => p.last_name.includes(this.newContact.last_name)));
-            }
+
             return Array.from(new Set(people));
         }
         
