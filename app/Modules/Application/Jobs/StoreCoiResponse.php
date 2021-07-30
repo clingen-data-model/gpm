@@ -17,7 +17,7 @@ class StoreCoiResponse
      *
      * @return void
      */
-    public function __construct(private String $coiCode, private Array $responseData)
+    public function __construct(private String $coiCode, private array $responseData)
     {
     }
 
@@ -29,7 +29,15 @@ class StoreCoiResponse
     public function handle()
     {
         $application = Application::findByCoiCodeOrFail($this->coiCode);
-        $coi = new Coi(['data' => $this->responseData]);
+
+        $data = $this->responseData;
+        if (in_array('document_uuid', array_keys($this->responseData))) {
+            $data['email'] = 'Legacy Coi';
+            $data['first_name'] = 'Legacy';
+            $data['last_name'] = 'Coi';
+        }
+
+        $coi = new Coi(['data' => $data]);
         $coi->application_id = $application->id;
         $coi->save();
 

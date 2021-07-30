@@ -5,9 +5,11 @@ namespace Tests\Feature\End2End\Applications;
 use Carbon\Carbon;
 use App\Models\Coi;
 use Tests\TestCase;
+use App\Models\Document;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Application\Models\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -106,5 +108,34 @@ class SimpleCoiEndpointTest extends TestCase
         $this->assertFileExists('/tmp/'.Str::kebab($this->application->name).'-coi-report-'.Carbon::now()->format('Y-m-d').'.csv');
 
         $response->assertDownload();
+    }
+
+    /**
+     * @test
+     */
+    public function stores_legacy_coi()
+    {
+        $document = Document::factory()->create([
+            'application_id' => $this->application->id,
+            'document_type_id' => config('documents.types.coi.id')
+        ]);
+
+        $data = [
+            "download_url" => "http://localhost:8080/documents/".$document->uuid,
+            "document_uuid" => $document->uuid
+        ];
+        $this->json('POST', '/api/coi/'.$this->application->coi_code, $data)
+            ->assertStatus(200);
+            
+
+        $expectedData = array_merge($data, [
+            'email' => 'Legacy Coi',
+            'first_name' => 'Legacy',
+            'last_name' => 'Coi'
+        ]);
+        $this->assertDatabaseHas('cois', [
+            'application_id' => $this->application->id,
+            'data' => json_encode($expectedData)
+        ]);
     }
 }

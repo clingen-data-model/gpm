@@ -3,12 +3,6 @@
         <button class="btn btn-xs" @click="showModal = true">Upload COI file</button>
         <modal-dialog v-model="showModal">
             <h2>Upload a legacy COI file</h2>
-            <input-row label="Name" type="text" :errors="nameErrors">
-                 <input type="text" v-model="newCoi.first_name" placeholder="First">
-                 &nbsp;
-                 <input type="text" v-model="newCoi.last_name" placeholder="Last">
-            </input-row>
-            <input-row label="Email" type="email" v-model="newCoi.email" placeholder="email@example.com" :errors="errors.email"></input-row>
             <input-row label="COI File" :errors="errors.file">
                 <input type="file" ref="fileInput">
             </input-row>

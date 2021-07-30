@@ -17,9 +17,6 @@ export default {
             await application_repository.addDocument(application, coiData)
                 .then(async document => {
                     const data = {
-                        first_name: coiData.get('first_name'),
-                        last_name: coiData.get('last_name'),
-                        email: coiData.get('email'),
                         document_uuid: document.uuid,
                         download_url: document.download_url
                     };
