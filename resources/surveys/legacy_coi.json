@@ -5,21 +5,18 @@
             "name": "email",
             "question": "Email address",
             "type": "string",
-            "validation": "required|email",
             "placeholder": "email@example.com"
         },
         {
             "name": "first_name",
             "question": "First Name",
             "type": "string",
-            "validation": "required|max:255|min:2",
             "placeholder": "First"
         },
         {
             "name": "last_name",
             "question": "Last Name",
             "type": "string",
-            "validation": "required|max:255|min:2",
             "placeholder": "Last"
         },
         {
