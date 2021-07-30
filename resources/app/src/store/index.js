@@ -8,6 +8,7 @@ import Alerts from '@/store/alerts'
 import axios from '@/http/api'
 import isAuthError from '@/http/is_auth_error'
 import module_factory from '@/store/module_factory';
+import router from '../router'
 
 const nullUser = {
     id: null,
@@ -30,7 +31,7 @@ const store = createStore({
         documentTypes: null,
         features: {
             legacyCoi: process.env.VUE_APP_LEGACY_COI == 'true',
-        }
+        },
     },
     getters: {
         currentUser: (state) => state.user,
@@ -43,6 +44,7 @@ const store = createStore({
             store.commit('setAuthenticated', true)
         },
         clearCurrentUser(state) {
+            console.log('clearCurrentUser');
             state.user = {...nullUser}
             store.commit('setAuthenticated', false)
         },
@@ -54,7 +56,7 @@ const store = createStore({
         },
         stopAuthenticating(state) {
             state.authenticating = false;
-        } 
+        },
     },
     actions: {
         async getCurrentUser({commit, state}) {

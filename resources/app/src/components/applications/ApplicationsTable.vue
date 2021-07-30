@@ -306,7 +306,6 @@ export default {
             if (Object.keys(where).length > 0) {
                 params.where = where;
             }
-            console.info(this.showDeleted)
             if (this.showDeleted) {
                 params.showDeleted = 1;
             }

@@ -42,7 +42,7 @@
                 </template>
             </data-table>
             <modal-dialog v-model="showResponseDialog" size="xl">
-                <coi-detail :response="currentResponse"></coi-detail>
+                <coi-detail :response="currentResponse" v-if="currentResponse"></coi-detail>
             </modal-dialog>
         </div>
     </div>

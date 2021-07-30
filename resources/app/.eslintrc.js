@@ -19,13 +19,15 @@ module.exports = {
         'vue/no-unused-components': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
         'vue/no-unused-vars': process.env.NODE_ENV === 'production' ? 'warn' : 'warn',
     },
-    overrides: [{
+    overrides: [
+      {
         files: [
-            '**/__tests__/*.{j,t}s?(x)',
-            '**/tests/unit/**/*.spec.{j,t}s?(x)'
+          '**/__tests__/*.{j,t}s?(x)',
+          '**/tests/unit/**/*.spec.{j,t}s?(x)'
         ],
         env: {
-            jest: true
+          mocha: true
         }
-    }]
+      }
+    ]
 }

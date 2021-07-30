@@ -7,6 +7,7 @@
         </div>
         <modal-dialog v-model="showForm">
             <new-contact-form 
+                ref="newContactForm"
                 @done="showForm = false;"
                 @saved="triggerAddedContact"
                 @new-contact-canceled="$emit('new-contact-canceled')"
@@ -38,6 +39,13 @@ export default {
         ...mapGetters({
             application: 'applications/currentItem'
         })
+    },
+    watch: {
+        showForm: function () {
+            if (!this.showForm) {
+                this.$refs.newContactForm.clearForm();
+            }
+        }
     },
     methods: {
         initiateAddContact() {

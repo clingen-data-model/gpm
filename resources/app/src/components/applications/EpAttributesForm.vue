@@ -137,7 +137,6 @@ export default {
             if (this.appClone.long_base_name) {
                 this.appClone.long_base_name = this.appClone.long_base_name.replace(/ [GV]CEP$/, '')
             }
-            console.info('appClone', this.appClone);
         },
         clearErrors() {
             this.errors = {};

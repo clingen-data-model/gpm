@@ -73,9 +73,6 @@ export default {
         logout () {
             try{
                 this.$store.dispatch('logout')
-                    .then( () => {
-                        this.$router.push('/login')
-                    })
             } catch (error) {
                 alert(error)
             }
