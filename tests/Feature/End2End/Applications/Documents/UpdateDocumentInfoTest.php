@@ -38,13 +38,11 @@ class UpdateDocumentInfoTest extends TestCase
     {
         $this->json('PUT', $this->docUrl, [
             'date_received' => Carbon::now(),
-            'date_reviewed' => Carbon::now()->addDays(7),
             'notes' => 'This is a note!'
         ])
         ->assertStatus(200)
         ->assertJsonFragment([
             'date_received' => Carbon::now()->toISOString(),
-            'date_reviewed' => Carbon::now()->addDays(7)->toISOString(),
             'notes' => 'This is a note!'
         ]);
     }

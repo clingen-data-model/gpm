@@ -35,7 +35,6 @@ class DocumentFactory extends Factory
             'document_type_id' => $this->faker->randomElement(config('documents.types'))['id'],
             'version' => 1,
             'date_received' => Carbon::now(),
-            'date_reviewed' => null
         ];
     }
 }

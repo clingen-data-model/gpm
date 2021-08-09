@@ -13,7 +13,6 @@ class AddApplicationDocument
 
     private Application $application;
     private Carbon $dateReceived;
-    private ?Carbon $dateReviewed;
 
     /**
      * Create a new job instance.
@@ -28,14 +27,12 @@ class AddApplicationDocument
         private int $document_type_id,
         private ?int $step = null,
         private ?string $date_received = null,
-        private ?string $date_reviewed = null,
         private ?array $metadata = null,
         private ?bool $is_final = false,
         private ?string $notes = null
     ) {
         $this->application = Application::findByUuidOrFail($applicationUuid);
         $this->dateReceived = $date_received ? Carbon::parse($date_received) : Carbon::now();
-        $this->dateReviewed = $date_reviewed ? Carbon::parse($date_reviewed) : null;
     }
 
     /**
@@ -51,7 +48,6 @@ class AddApplicationDocument
             'storage_path' => $this->storage_path,
             'document_type_id' => $this->document_type_id,
             'date_received' => $this->dateReceived,
-            'date_reviewed' => $this->dateReviewed,
             'metadata' => $this->metadata,
             'step' => $this->step,
             'is_final' => $this->is_final,

@@ -52,7 +52,7 @@ class CreateApplicationsFromCommands extends Command
         $type = $this->option('type');
         
 
-        for ($i=0; $i < $count; $i++) { 
+        for ($i=0; $i < $count; $i++) {
             $uuid = Uuid::uuid4()->toString();
             $epTypeId = ($type) ? $type : $faker->randomElement([1,2]);
             $cdwgId = $faker->randomElement($cdwgs->pluck('id')->toArray());
@@ -60,7 +60,7 @@ class CreateApplicationsFromCommands extends Command
         }
     }
 
-    function createApplicationFromCommands($uuid, $epTypeId, $cdwgId)
+    public function createApplicationFromCommands($uuid, $epTypeId, $cdwgId)
     {
         $faker = \Faker\Factory::create();
         $lastApprovedStep = $this->option('last-approval', null);
@@ -77,7 +77,7 @@ class CreateApplicationsFromCommands extends Command
         $commandCount = ($epTypeId == 1) ? 2 : $faker->randomElement(range(1, count($cmdSequence)));
         $this->info('building application '.$uuid.' through '.$commandCount.' commands');
 
-        for ($i=0; $i < $commandCount; $i++) { 
+        for ($i=0; $i < $commandCount; $i++) {
             $cmd = $cmdSequence[$i];
             $class = $cmd['class'];
             $args = $cmd['args'];
@@ -111,7 +111,6 @@ class CreateApplicationsFromCommands extends Command
                         'document_type_id' => 1,
                         'step' => 1,
                         'date_received' => Carbon::now()->subDays(30),
-                        'date_reviewed' => Carbon::now()->subDays(25)
                     ]
                 ],
                 [ // Approve step 1 -> go to step 2
@@ -133,7 +132,6 @@ class CreateApplicationsFromCommands extends Command
                         'document_type_id' => 2,
                         'step' => 2,
                         'date_received' => Carbon::now()->subDays(14),
-                        'date_reviewed' => Carbon::now()->subDays(10)
                     ]
                 ],
                 [ // Approve step 2 -> go to step 3
@@ -165,7 +163,6 @@ class CreateApplicationsFromCommands extends Command
                         'document_type_id' => 3,
                         'step' => 3,
                         'date_received' => Carbon::now()->subDays(6),
-                        'date_reviewed' => Carbon::now()->subDays(5)
                     ]
                 ],
                 [ // Complete Next Action
@@ -188,7 +185,6 @@ class CreateApplicationsFromCommands extends Command
                         'document_type_id' => 4,
                         'step' => 3,
                         'date_received' => Carbon::now()->subDays(6),
-                        'date_reviewed' => Carbon::now()->subDays(5)
                     ]
                 ],
                 [ // Approve step 3 -> go to step 4
@@ -210,7 +206,6 @@ class CreateApplicationsFromCommands extends Command
                         'document_type_id' => 5,
                         'step' => 4,
                         'date_received' => Carbon::now()->subDays(3),
-                        'date_reviewed' => Carbon::now()->subDays(3)
                     ]
                 ],
                 [ // Approve step 4 -> go to step completed
@@ -222,7 +217,5 @@ class CreateApplicationsFromCommands extends Command
                     ]
                 ]
             ];
-    
     }
-
 }

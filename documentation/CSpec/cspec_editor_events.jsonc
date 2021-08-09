@@ -5,7 +5,7 @@
  */
 [
   {
-    "previousStatus": "Initiation", //TJ: would we not get an initiation event?
+    "previousStatus": "Initiation",
     "currentStatus": "Proposed",
     "event": "proposal-submitted",
     "description": "A new specicification document CSpec document created with scopes and VCEP affiliation defined"

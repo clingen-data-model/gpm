@@ -24,7 +24,6 @@ class Document extends Model
         'metadata',
         'version',
         'date_received',
-        'date_reviewed',
         'application_id',
         'document_type_id',
         'is_final',
@@ -36,8 +35,7 @@ class Document extends Model
     ];
 
     protected $dates = [
-        'date_received',
-        'date_reviewed'
+        'date_received'
     ];
 
     protected $appends = [

@@ -28,7 +28,6 @@ class ApplicationDocumentStoreRequest extends FormRequest
             'document_type_id' => 'required|exists:document_types,id',
             'file' => 'required|file',
             'date_received' => 'nullable|date',
-            'date_reviewed' => 'nullable|date',
         ];
     }
 }
