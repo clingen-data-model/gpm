@@ -33,8 +33,6 @@ class DocumentInfoUpdated extends ApplicationEvent
     public function getProperties():array
     {
         return [
-            'date_received' => $this->document->date_received,
-            'date_reviewed' => $this->document->date_reviewed
         ];
     }
 

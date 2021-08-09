@@ -22,7 +22,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\Application\Events\ContactAdded;
 use App\Modules\Application\Events\DocumentAdded;
 use App\Modules\Application\Events\ContactRemoved;
-use App\Modules\Application\Events\DocumentReviewed;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Modules\Application\Service\StepManagerFactory;
 use App\Modules\Application\Events\ApplicationCompleted;
@@ -107,18 +106,6 @@ class Application extends Model
             document: $document
         );
         Event::dispatch($event);
-    }
-        
-    public function markDocumentReviewed(Document $document, Carbon $dateReviewed)
-    {
-        if (! is_null($document->date_reviewed)) {
-            Log::warning('Application::markDocumentReviewed attempted on document already marked reviewed');
-            return;
-        }
-
-        $document->update(['date_reviewed' => $dateReviewed]);
-        $this->touch();
-        Event::dispatch(new DocumentReviewed(application: $this, document: $document));
     }
 
     public function completeNextAction(NextAction $nextAction, string $dateCompleted)

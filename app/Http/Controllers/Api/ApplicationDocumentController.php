@@ -13,10 +13,8 @@ use App\Modules\Application\Jobs\DeleteDocument;
 use App\Modules\Application\Jobs\MarkDocumentFinal;
 use App\Modules\Application\Jobs\UpdateDocumentInfo;
 use App\Http\Requests\ApplicationDocumentStoreRequest;
-use App\Modules\Application\Jobs\MarkDocumentReviewed;
 use App\Modules\Application\Jobs\AddApplicationDocument;
 use App\Http\Requests\Applications\DocumentUpdateInfoRequest;
-use App\Http\Requests\Applications\MarkDocumentReviewedRequest;
 use App\Models\Document;
 
 class ApplicationDocumentController extends Controller
@@ -38,7 +36,6 @@ class ApplicationDocumentController extends Controller
             'uuid',
             'document_type_id',
             'date_received',
-            'date_reviewed',
             'metadata',
             'step',
             'is_final',
@@ -62,7 +59,6 @@ class ApplicationDocumentController extends Controller
             applicationUuid: $appUuid,
             uuid: $docUuid,
             dateReceived: $request->date_received,
-            dateReviewed: $request->date_reviewed,
             notes: $request->notes
         );
         $this->dispatcher->dispatch($command);
@@ -71,19 +67,6 @@ class ApplicationDocumentController extends Controller
 
 
         return response($document, 200);
-    }
-    
-
-
-
-    public function markReviewed($appUuid, $docUuid, MarkDocumentReviewedRequest $request)
-    {
-        $job = new MarkDocumentReviewed($appUuid, $docUuid, Carbon::parse($request->date_reviewed));
-        $this->dispatcher->dispatch($job);
-
-        $updatedDocument = Document::findByUuid($docUuid);
-
-        return $updatedDocument;
     }
 
     public function markFinal($appUuid, $docUuid)

@@ -25,7 +25,6 @@ class UpdateDocumentInfo
         String $applicationUuid,
         String $uuid,
         private String $dateReceived,
-        private String|null $dateReviewed = null,
         private string|null $notes = null
     ) {
         $this->application = Application::findByUuidOrFail($applicationUuid);
@@ -40,7 +39,6 @@ class UpdateDocumentInfo
     public function handle()
     {
         $this->document->date_received = $this->dateReceived;
-        $this->document->date_reviewed = $this->dateReviewed;
         $this->document->notes = $this->notes;
 
         if ($this->document->isDirty()) {

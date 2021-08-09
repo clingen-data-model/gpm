@@ -25,7 +25,6 @@ class DocumentUpdateInfoRequest extends FormRequest
     {
         return [
             'date_received' => 'required|date',
-            'date_reviewed' => 'nullable|date'
         ];
     }
 }

@@ -49,7 +49,6 @@ class UploadTest extends TestCase
             'filename' => 'Test Scope Document.docx',
             'document_type_id' => config('documents.types.scope.id'),
             'date_received' => Carbon::now()->toJson(),
-            'date_reviewed' => null,
             'notes' => 'this is a note',
             'metadata' => null,
             'version' => 1,
@@ -60,33 +59,6 @@ class UploadTest extends TestCase
         $doc = Document::findByUuid($data['uuid']);
 
         Storage::disk('local')->assertExists($doc->storage_path);
-    }
-
-    /**
-     * @test
-     */
-    public function sets_date_received_and_date_reviewed_if_provided()
-    {
-        Carbon::setTestNow('2021-01-01');
-        $data = $this->makeDocumentUploadRequestData(
-            dateReceived: Carbon::parse('2020-10-28'),
-            dateReviewed: Carbon::parse('2020-11-14')
-        );
-
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/documents', $data);
-
-        $response->assertStatus(200);
-        $response->assertJson([
-            'uuid' => $data['uuid'],
-            'filename' => 'Test Scope Document.docx',
-            'document_type_id' => config('documents.types.scope.id'),
-            'date_received' => Carbon::parse('2020-10-28')->toJson(),
-            'date_reviewed' => Carbon::parse('2020-11-14')->toJson(),
-            'metadata' => null,
-            'version' => 1,
-            'application_id' => $this->application->id
-        ]);
     }
     
     /**
@@ -133,7 +105,6 @@ class UploadTest extends TestCase
             'uuid' => 'blah',
             'file' => 'beans',
             'date_received' => 'detach the head',
-            'date_reviewed' => 'or destroy the brain'
         ];
 
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
@@ -144,7 +115,6 @@ class UploadTest extends TestCase
                 'file' => ['The file must be a file.'],
                 'document_type_id' => ['The selected document type id is invalid.'],
                 "date_received" => ["The date received is not a valid date."],
-                'date_reviewed' => ['The date reviewed is not a valid date.'],
             ]);
     }
     

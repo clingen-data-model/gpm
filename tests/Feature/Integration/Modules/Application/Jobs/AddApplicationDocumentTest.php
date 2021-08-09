@@ -53,12 +53,11 @@ class AddApplicationDocumentTest extends TestCase
             'document_type_id' => 1,
             'step' => 1,
             'date_received' => Carbon::now()->format('Y-m-d H:i:s'),
-            'date_reviewed' => null,
             'version' => 1,
             'application_id' => $this->application->id,
             'is_final' => 0
         ]);
-    }    
+    }
 
     /**
      * @test
@@ -86,12 +85,9 @@ class AddApplicationDocumentTest extends TestCase
             'document_type_id' => 1,
             'step' => 1,
             'date_received' => Carbon::now()->format('Y-m-d H:i:s'),
-            'date_reviewed' => null,
             'version' => 1,
             'application_id' => $this->application->id,
             'is_final' => 1
         ]);
     }
-    
-    
 }

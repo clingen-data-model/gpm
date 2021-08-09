@@ -32,7 +32,6 @@ class CreateApplicationsTable extends Migration
             
             $table->foreign('ep_type_id')->references('id')->on('ep_types');
             $table->foreign('cdwg_id')->references('id')->on('cdwgs');
-            
         });
     }
 

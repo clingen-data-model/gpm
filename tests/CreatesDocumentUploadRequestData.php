@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 trait CreatesDocumentUploadRequestData
 {
-    protected function makeDocumentUploadRequestData($DocumentTypeId = 1, $dateReceived = null, $dateReviewed = null, $step = null, $filename = null)
+    protected function makeDocumentUploadRequestData($DocumentTypeId = 1, $dateReceived = null, $step = null, $filename = null)
     {
         Storage::fake();
         $filename = $filename ?? 'Test Scope Document.docx';
@@ -19,7 +19,6 @@ trait CreatesDocumentUploadRequestData
             'file' => $file,
             'document_type_id' => $DocumentTypeId,
             'date_received' => $dateReceived,
-            'date_reviewed' => $dateReviewed,
             'step' => $step,
             'notes' => 'this is a test'
         ];
