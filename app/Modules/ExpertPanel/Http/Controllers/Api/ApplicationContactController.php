@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Modules\ExpertPanel\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AddContactRequest;
+use App\Modules\ExpertPanel\Http\Requests\AddContactRequest;
 use Illuminate\Contracts\Bus\Dispatcher;
 use App\Modules\Person\Models\Person;
 use App\Modules\ExpertPanel\Jobs\AddContact;
 use App\Modules\ExpertPanel\Jobs\RemoveContact;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Validation\ValidationException;
-use App\Http\Requests\ApplicationContactRequest;
+use App\Modules\ExpertPanel\Http\Requests\ApplicationContactRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Modules\ExpertPanel\Exceptions\PersonNotContactException;
 

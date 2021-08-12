@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Modules\ExpertPanel\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateNextActionRequest extends FormRequest
+class DocumentUpdateInfoRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,7 @@ class UpdateNextActionRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'date_received' => 'required|date',
         ];
     }
 }

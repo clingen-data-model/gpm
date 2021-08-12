@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Modules\ExpertPanel\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AddContactRequest extends FormRequest
+class UpdateApplicationLogEntryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,14 +24,9 @@ class AddContactRequest extends FormRequest
     public function rules()
     {
         return [
-            'person_uuid' => 'required|uuid|exists:people,uuid',
-        ];
-    }
-
-    public function messages()
-    {
-        return [
-            'person_uuid.exists' => 'The person must already exist in the database.'
+            'entry' => 'required',
+            'log_date' => 'required|date',
+            'step' => 'nullable|numeric|between:1,4'
         ];
     }
 }

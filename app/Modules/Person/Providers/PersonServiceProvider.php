@@ -13,10 +13,6 @@ use App\Modules\Foundation\ModuleServiceProvider;
 
 class PersonServiceProvider extends ModuleServiceProvider
 {
-    protected $listeners = [
-        // EventClass::class => [ListenerClass::class]
-    ];
-
     /**
      * Register services.
      *
@@ -34,7 +30,12 @@ class PersonServiceProvider extends ModuleServiceProvider
      */
     public function boot()
     {
-        //
+        parent::boot();
+    }
+
+    protected function getRoutesPath()
+    {
+        return __DIR__.'/../routes';
     }
 
     protected function getEventPath()

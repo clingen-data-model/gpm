@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Modules\ExpertPanel\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -8,8 +8,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Bus\Dispatcher;
 use App\Modules\ExpertPanel\Jobs\ApproveStep;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Http\Requests\UpdateApprovalDateRequest;
-use App\Http\Requests\ApplicationApprovalRequest;
+use App\Modules\ExpertPanel\Http\Requests\UpdateApprovalDateRequest;
+use App\Modules\ExpertPanel\Http\Requests\ApplicationApprovalRequest;
 use App\Notifications\ValueObjects\MailAttachment;
 use App\Modules\ExpertPanel\Jobs\UpdateApprovalDate;
 use App\Modules\ExpertPanel\Service\StepManagerFactory;

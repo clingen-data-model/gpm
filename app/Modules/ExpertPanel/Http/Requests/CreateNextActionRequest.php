@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Applications;
+namespace App\Modules\ExpertPanel\Http\Requests;
 
 use App\Models\NextActionAssignee;
 use Illuminate\Foundation\Http\FormRequest;

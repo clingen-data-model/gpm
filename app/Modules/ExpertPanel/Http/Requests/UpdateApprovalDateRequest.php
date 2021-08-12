@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Modules\ExpertPanel\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ApplicationDocumentStoreRequest extends FormRequest
+class UpdateApprovalDateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,8 @@ class ApplicationDocumentStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'uuid' => 'required|uuid',
-            'document_type_id' => 'required|exists:document_types,id',
-            'file' => 'required|file',
-            'date_received' => 'nullable|date',
+            'step' => 'required|integer|min:1|max:4',
+            'date_approved' => 'required|date'
         ];
     }
 }

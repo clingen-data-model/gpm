@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Modules\ExpertPanel\Http\Controllers\Api;
 
 use App\Models\Cdwg;
 use Illuminate\Http\Request;
@@ -10,11 +10,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Bus\Dispatcher;
 use App\Modules\ExpertPanel\Jobs\AddContact;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Http\Requests\InitiateApplicationRequest;
+use App\Modules\ExpertPanel\Http\Requests\InitiateApplicationRequest;
 use App\Modules\ExpertPanel\Jobs\DeleteExpertPanel;
 use App\Modules\ExpertPanel\Jobs\InitiateApplication;
 use App\Modules\ExpertPanel\Jobs\UpdateExpertPanelAttributes;
-use App\Http\Requests\Applications\UpdateExpertPanelAttributesRequest;
+use App\Modules\ExpertPanel\Http\Requests\UpdateExpertPanelAttributesRequest;
 
 class ApplicationController extends Controller
 {

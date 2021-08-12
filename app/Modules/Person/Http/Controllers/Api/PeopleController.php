@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Modules\Person\Http\Controllers\Api;
 
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Bus\Dispatcher;
-use App\Modules\Person\Models\Person;
 use App\Http\Controllers\Controller;
+use App\Modules\Person\Models\Person;
 use App\Modules\Person\Jobs\CreatePerson;
 use App\Modules\Person\Jobs\UpdatePerson;
-use App\Http\Requests\PersonUpdateRequest;
-use App\Http\Requests\PersonCreationRequest;
+use App\Modules\Person\Http\Requests\PersonUpdateRequest;
+use App\Modules\Person\Http\Requests\PersonCreationRequest;
 
 class PeopleController extends Controller
 {
@@ -38,7 +38,7 @@ class PeopleController extends Controller
         return $person;
     }
     
-    public function show($uuid, Request $request)
+    public function show($uuid)
     {
         $person = Person::findByUuidOrFail($uuid);
         return $person;

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Applications;
+namespace App\Modules\ExpertPanel\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CompleteNextActionRequest extends FormRequest
+class ApplicationApprovalRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,15 @@ class CompleteNextActionRequest extends FormRequest
     public function rules()
     {
         return [
-            'date_completed' => 'required|date'
+            'date_approved' => 'required|date',
+            'notify_contacts' => 'nullable'
         ];
+    }
+
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'notify_contacts' => filter_var($this->notify_contacts, FILTER_VALIDATE_BOOL),
+        ]);
     }
 }

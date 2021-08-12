@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Modules\ExpertPanel\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateApprovalDateRequest extends FormRequest
+class CreateApplicationLogEntryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,9 @@ class UpdateApprovalDateRequest extends FormRequest
     public function rules()
     {
         return [
-            'step' => 'required|integer|min:1|max:4',
-            'date_approved' => 'required|date'
+            'entry' => 'required',
+            'log_date' => 'required|date',
+            'step' => 'nullable|numeric|between:1,4'
         ];
     }
 }
