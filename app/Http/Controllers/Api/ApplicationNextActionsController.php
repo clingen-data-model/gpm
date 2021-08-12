@@ -24,7 +24,6 @@ class ApplicationNextActionsController extends Controller
 
     public function store($expertPanelUuid, CreateNextActionRequest $request)
     {
-        $data = array_merge($request->all(), ['applicationuuid' => $expertPanelUuid]);
         $job = new CreateNextAction(
             expertPanelUuid: $expertPanelUuid,
             uuid: $request->uuid,
