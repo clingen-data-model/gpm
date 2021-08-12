@@ -1,6 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Modules\ExpertPanel\Actions\AddApplicationDocument;
+use App\Modules\ExpertPanel\Actions\DeleteApplicationDocument;
+use App\Modules\ExpertPanel\Actions\MarkDocumentFinal;
+use App\Modules\ExpertPanel\Actions\UpdateApplicationDocument;
 use App\Modules\ExpertPanel\Http\Controllers\Api\SimpleCoiController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationLogController;
@@ -37,10 +41,15 @@ Route::group([
         Route::post('/{app_uuid}/current-step/approve', [ApplicationStepController::class, 'approve']);
         Route::put('/{app_uuid}/approve', [ApplicationStepController::class, 'updateApprovalDate']);
         
-        Route::post('/{app_uuid}/documents', [ApplicationDocumentController::class, 'store']);
-        Route::put('/{app_uuid}/documents/{doc_uuid}', [ApplicationDocumentController::class, 'update']);
-        Route::delete('/{app_uuid}/documents/{doc_uuid}', [ApplicationDocumentController::class, 'destroy']);
-        Route::post('/{app_uuid}/documents/{doc_uuid}/final', [ApplicationDocumentController::class, 'markFinal']);
+        // Route::post('/{app_uuid}/documents', [ApplicationDocumentController::class, 'store']);
+        // Route::put('/{app_uuid}/documents/{doc_uuid}', [ApplicationDocumentController::class, 'update']);
+        // Route::delete('/{app_uuid}/documents/{doc_uuid}', [ApplicationDocumentController::class, 'destroy']);
+        // Route::post('/{app_uuid}/documents/{doc_uuid}/final', [ApplicationDocumentController::class, 'markFinal']);
+        
+        Route::post('/{app_uuid}/documents', AddApplicationDocument::class);
+        Route::put('/{app_uuid}/documents/{doc_uuid}', UpdateApplicationDocument::class);
+        Route::post('/{app_uuid}/documents/{doc_uuid}/final', MarkDocumentFinal::class);
+        Route::delete('/{app_uuid}/documents/{doc_uuid}', DeleteApplicationDocument::class);
         
         Route::get('/{app_uuid}/log-entries', [ApplicationLogController::class, 'index']);
         Route::post('/{app_uuid}/log-entries', [ApplicationLogController::class, 'store']);
