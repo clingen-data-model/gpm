@@ -11,7 +11,7 @@ class DeleteLogEntry
 {
     use Dispatchable;
 
-    protected ExpertPanel  $applicationUuid;
+    protected ExpertPanel  $expertPanelUuid;
 
     protected ?Activity $logEntry;
 
@@ -20,11 +20,11 @@ class DeleteLogEntry
      *
      * @return void
      */
-    public function __construct(String $applicationUuid, Int $logEntryId)
+    public function __construct(String $expertPanelUuid, Int $logEntryId)
     {
         //
-        $this->application = ExpertPanel::findByUuidOrFail($applicationUuid);
-        $this->logEntry = $this->application->logEntries()->findOrFail($logEntryId);
+        $this->expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
+        $this->logEntry = $this->expertPanel->logEntries()->findOrFail($logEntryId);
     }
 
     /**

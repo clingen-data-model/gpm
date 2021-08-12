@@ -19,10 +19,10 @@ class RemoveContactTest extends TestCase
         parent::setup();
         $this->seed();
         $this->user = User::factory()->create();
-        $this->application = ExpertPanel::factory()->create();
+        $this->expertPanel = ExpertPanel::factory()->create();
         $this->person = Person::factory()->create();
         
-        $this->application->addContact($this->person);
+        $this->expertPanel->addContact($this->person);
     }
 
     /**
@@ -31,11 +31,11 @@ class RemoveContactTest extends TestCase
     public function removes_contact_from_application()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('DELETE', '/api/applications/'.$this->application->uuid.'/contacts/'.$this->person->uuid)
+            $this->json('DELETE', '/api/applications/'.$this->expertPanel->uuid.'/contacts/'.$this->person->uuid)
             ->assertStatus(200);
 
         $this->assertDatabaseMissing('application_person', [
-            'application_id' => $this->application->id,
+            'application_id' => $this->expertPanel->id,
             'person' => $this->person->id
         ]);
     }
@@ -46,7 +46,7 @@ class RemoveContactTest extends TestCase
     public function responds_with_404_if_application_or_person_not_found()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('DELETE', '/api/applications/'.$this->application->uuid.'/contacts/bob-is-your-uncle')
+            $this->json('DELETE', '/api/applications/'.$this->expertPanel->uuid.'/contacts/bob-is-your-uncle')
             ->assertStatus(404);
 
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
@@ -62,7 +62,7 @@ class RemoveContactTest extends TestCase
         $person2 = Person::factory()->create();
 
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('DELETE', '/api/applications/'.$this->application->uuid.'/contacts/'.$person2->uuid)
+            $this->json('DELETE', '/api/applications/'.$this->expertPanel->uuid.'/contacts/'.$person2->uuid)
             ->assertStatus(422)
             ->assertJsonFragment([
                 'contact' => ['The specified person is not a contact of this application.']

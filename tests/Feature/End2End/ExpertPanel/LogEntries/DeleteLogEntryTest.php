@@ -22,17 +22,17 @@ class DeleteLogEntryTest extends TestCase
         $this->seed();
 
         $this->user = User::factory()->create();
-        $this->application = ExpertPanel::factory()->create();
-        $this->baseUrl = '/api/applications/'.$this->application->uuid.'/log-entries';
+        $this->expertPanel = ExpertPanel::factory()->create();
+        $this->baseUrl = '/api/applications/'.$this->expertPanel->uuid.'/log-entries';
 
         Bus::dispatch(new ApproveStep(
-            applicationUuid: $this->application->uuid, 
+            expertPanelUuid: $this->expertPanel->uuid, 
             dateApproved: '2020-01-01', 
             notifyContacts: false
         ));
-        $this->autoEntry = $this->application->fresh()->latestLogEntry;
-        Bus::dispatch(new AddLogEntry($this->application->uuid, '2021-01-01', 'test test test'));
-        $this->logEntry = $this->application->logEntries->last();
+        $this->autoEntry = $this->expertPanel->fresh()->latestLogEntry;
+        Bus::dispatch(new AddLogEntry($this->expertPanel->uuid, '2021-01-01', 'test test test'));
+        $this->logEntry = $this->expertPanel->logEntries->last();
     }
 
     /**
@@ -41,7 +41,7 @@ class DeleteLogEntryTest extends TestCase
     public function prevents_deleting_typed_log_entries()
     {
         Sanctum::actingAs($this->user);
-        $response = $this->json('delete', '/api/applications/'.$this->application->uuid.'/log-entries/'.$this->autoEntry->id);
+        $response = $this->json('delete', '/api/applications/'.$this->expertPanel->uuid.'/log-entries/'.$this->autoEntry->id);
 
         $response->assertStatus(422)
             ->assertJson([
@@ -57,7 +57,7 @@ class DeleteLogEntryTest extends TestCase
     public function deletes_manual_log_entries()
     {
         Sanctum::actingAs($this->user);
-        $response = $this->json('delete', '/api/applications/'.$this->application->uuid.'/log-entries/'.$this->logEntry->id);
+        $response = $this->json('delete', '/api/applications/'.$this->expertPanel->uuid.'/log-entries/'.$this->logEntry->id);
 
         $response->assertStatus(200);
 

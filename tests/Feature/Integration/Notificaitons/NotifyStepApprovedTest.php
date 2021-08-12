@@ -21,11 +21,11 @@ class NotifyStepApprovedTest extends TestCase
         parent::setup();
         $this->seed();
         
-        $this->application = ExpertPanel::factory()->create([
+        $this->expertPanel = ExpertPanel::factory()->create([
             'ep_type_id' => config('expert_panels.types.gcep.id')
         ]);
-        $this->addContactToApplication($this->application);
-        $this->addContactToApplication($this->application);
+        $this->addContactToApplication($this->expertPanel);
+        $this->addContactToApplication($this->expertPanel);
     }
 
     /**
@@ -33,7 +33,7 @@ class NotifyStepApprovedTest extends TestCase
      */
     public function does_not_send_StepApprovedNotification_if_notify_contacts_is_false()
     {
-        $job = new ApproveStep($this->application->uuid, Carbon::now(), false);
+        $job = new ApproveStep($this->expertPanel->uuid, Carbon::now(), false);
         Notification::fake();
         Bus::dispatch($job);
 
@@ -45,13 +45,13 @@ class NotifyStepApprovedTest extends TestCase
      */
     public function does_not_send_StepApprovedNotification_if_is_last_step()
     {
-        $job = new ApproveStep($this->application->uuid, Carbon::now(), true);
+        $job = new ApproveStep($this->expertPanel->uuid, Carbon::now(), true);
         Notification::fake(UserDefinedMailNotification::class);
 
         Bus::dispatch($job);
 
         // Notification::assertNothingSent();
-        Notification::assertSentTo($this->application->contacts, UserDefinedMailNotification::class);
+        Notification::assertSentTo($this->expertPanel->contacts, UserDefinedMailNotification::class);
     }
     
     /**
@@ -59,14 +59,14 @@ class NotifyStepApprovedTest extends TestCase
      */
     public function sends_StepApprovedNotification_if_not_last_step_and_notify_contacts_is_true()
     {
-        $this->application->ep_type_id = config('expert_panels.types.vcep.id');
-        $this->application->save();
-        $job = new ApproveStep($this->application->uuid, Carbon::now(), true);
+        $this->expertPanel->ep_type_id = config('expert_panels.types.vcep.id');
+        $this->expertPanel->save();
+        $job = new ApproveStep($this->expertPanel->uuid, Carbon::now(), true);
         Notification::fake(UserDefinedMailNotification::class);
 
         Bus::dispatch($job);
 
-        Notification::assertSentTo($this->application->contacts, UserDefinedMailNotification::class);
+        Notification::assertSentTo($this->expertPanel->contacts, UserDefinedMailNotification::class);
     }
 
     /**
@@ -74,12 +74,12 @@ class NotifyStepApprovedTest extends TestCase
      */
     public function step_1_approved_email_carbon_copies_clingen_addresses()
     {
-        $this->application->ep_type_id = config('expert_panels.types.vcep.id');
+        $this->expertPanel->ep_type_id = config('expert_panels.types.vcep.id');
 
         $clingenAddresses = config('applications.cc_on_step_approved');
 
-        $mailMessage = (new UserDefinedMailNotification($this->application, 1, false, ccAddresses: $clingenAddresses))
-                            ->toMail($this->application->contacts->first());
+        $mailMessage = (new UserDefinedMailNotification($this->expertPanel, 1, false, ccAddresses: $clingenAddresses))
+                            ->toMail($this->expertPanel->contacts->first());
 
 
         $this->assertEquals($clingenAddresses, $mailMessage->cc);
@@ -90,20 +90,20 @@ class NotifyStepApprovedTest extends TestCase
      */
     public function steps_2_through_4_approved_does_not_cc_clingen_addresses()
     {
-        $this->application->ep_type_id = config('expert_panels.types.vcep.id');
+        $this->expertPanel->ep_type_id = config('expert_panels.types.vcep.id');
 
-        $mailMessage = (new UserDefinedMailNotification($this->application, 2, false))
-                            ->toMail($this->application->contacts->first());
-
-        $this->assertEquals([], $mailMessage->cc);
-
-        $mailMessage = (new UserDefinedMailNotification($this->application, 3, false))
-                            ->toMail($this->application->contacts->first());
+        $mailMessage = (new UserDefinedMailNotification($this->expertPanel, 2, false))
+                            ->toMail($this->expertPanel->contacts->first());
 
         $this->assertEquals([], $mailMessage->cc);
 
-        $mailMessage = (new UserDefinedMailNotification($this->application, 4, false))
-                            ->toMail($this->application->contacts->first());
+        $mailMessage = (new UserDefinedMailNotification($this->expertPanel, 3, false))
+                            ->toMail($this->expertPanel->contacts->first());
+
+        $this->assertEquals([], $mailMessage->cc);
+
+        $mailMessage = (new UserDefinedMailNotification($this->expertPanel, 4, false))
+                            ->toMail($this->expertPanel->contacts->first());
 
         $this->assertEquals([], $mailMessage->cc);
     }

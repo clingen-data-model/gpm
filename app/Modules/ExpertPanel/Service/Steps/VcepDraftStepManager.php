@@ -6,14 +6,14 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 
 class VcepDraftStepManager extends AbstractStepManager
 {
-    public function __construct(private ExpertPanel  $application)
+    public function __construct(private ExpertPanel  $expertPanel)
     {
     }
 
     public function isCurrentStep():bool
     {
-        return $this->application->ep_type_id == config('expert_panels.types.vcep.id')
-            && $this->application->current_step == 2;
+        return $this->expertPanel->ep_type_id == config('expert_panels.types.vcep.id')
+            && $this->expertPanel->current_step == 2;
     }
 
     public function meetsAllRequirements():bool

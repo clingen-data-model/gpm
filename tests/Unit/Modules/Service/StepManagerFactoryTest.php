@@ -73,7 +73,7 @@ class StepManagerFactoryTest extends TestCase
     public function throws_UnexpectedStepException_if_step_cant_be_matched()
     {
         $factory = new StepManagerFactory();    
-        $application = new ExpertPanel([
+        $expertPanel = new ExpertPanel([
             'current_step' => 5,
             'ep_type_id' => 2,
             'cdwg_id' => 1,
@@ -81,15 +81,15 @@ class StepManagerFactoryTest extends TestCase
         ]);
         
         $this->expectException(UnexpectedCurrentStepException::class);
-        $factory($application);
+        $factory($expertPanel);
 
     }
 
     private function returnsManagerForTypeAndStep($expectedClass, $epTypeId, $currentStep)
     {
         $factory = new StepManagerFactory();
-        $application = ExpertPanel::factory()->make(['ep_type_id' => $epTypeId, 'current_step' => $currentStep]);
-        $stepManager = $factory($application);
+        $expertPanel = ExpertPanel::factory()->make(['ep_type_id' => $epTypeId, 'current_step' => $currentStep]);
+        $stepManager = $factory($expertPanel);
 
         $this->assertInstanceOf($expectedClass, $stepManager);
     }

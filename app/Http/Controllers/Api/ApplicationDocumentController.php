@@ -24,9 +24,9 @@ class ApplicationDocumentController extends Controller
     }
     
 
-    public function store($applicationUuid, ApplicationDocumentStoreRequest $request)
+    public function store($expertPanelUuid, ApplicationDocumentStoreRequest $request)
     {
-        $application = ExpertPanel::findByUuidOrFail($applicationUuid);
+        $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
 
         $file = $request->file('file');
 
@@ -45,7 +45,7 @@ class ApplicationDocumentController extends Controller
         $data['storage_path'] = $path;
         $data['filename'] = $file->getClientOriginalName();
 
-        $command = new AddApplicationDocument($applicationUuid, ...$data);
+        $command = new AddApplicationDocument($expertPanelUuid, ...$data);
         $this->dispatcher->dispatch($command);
 
         $newDocument = Document::findByUuid($request->uuid);
@@ -56,7 +56,7 @@ class ApplicationDocumentController extends Controller
     public function update($appUuid, $docUuid, DocumentUpdateInfoRequest $request)
     {
         $command = new UpdateDocumentInfo(
-            applicationUuid: $appUuid,
+            expertPanelUuid: $appUuid,
             uuid: $docUuid,
             dateReceived: $request->date_received,
             notes: $request->notes

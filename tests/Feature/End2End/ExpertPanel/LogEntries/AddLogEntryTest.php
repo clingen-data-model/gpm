@@ -19,8 +19,8 @@ class AddLogEntryTest extends TestCase
         $this->seed();
 
         $this->user = User::factory()->create();
-        $this->application = ExpertPanel::factory()->create();
-        $this->baseUrl = '/api/applications/'.$this->application->uuid.'/log-entries';
+        $this->expertPanel = ExpertPanel::factory()->create();
+        $this->baseUrl = '/api/applications/'.$this->expertPanel->uuid.'/log-entries';
 
     }
 
@@ -31,7 +31,7 @@ class AddLogEntryTest extends TestCase
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
             $this->json('POST', $this->baseUrl, [
-                'step' => $this->application->current_step,
+                'step' => $this->expertPanel->current_step,
                 'log_date' => '2021-01-01',
                 'entry' => 'A log entry description',
             ])
@@ -45,7 +45,7 @@ class AddLogEntryTest extends TestCase
                     'email' => $this->user->email
                 ],
                 'properties' => [
-                    'step' => $this->application->current_step
+                    'step' => $this->expertPanel->current_step
                 ]
             ]);
     }

@@ -23,7 +23,7 @@ class CreateNextActionTest extends TestCase
     {
         parent::setup();
         $this->seed();
-        $this->application = ExpertPanel::factory()->create();
+        $this->expertPanel = ExpertPanel::factory()->create();
     }
     
     /**
@@ -34,7 +34,7 @@ class CreateNextActionTest extends TestCase
         $nextAction = NextAction::factory()->make();
         Event::fake();
         Bus::dispatch(new CreateNextAction(
-            applicationUuid: $this->application->uuid,
+            expertPanelUuid: $this->expertPanel->uuid,
             uuid: $nextAction->uuid,
             dateCreated: $nextAction->date_created,
             entry: $nextAction->entry,
@@ -53,7 +53,7 @@ class CreateNextActionTest extends TestCase
     {
         $nextAction = NextAction::factory()->make(['step'=>3]);
         Bus::dispatch(new CreateNextAction(
-            applicationUuid: $this->application->uuid,
+            expertPanelUuid: $this->expertPanel->uuid,
             uuid: $nextAction->uuid,
             dateCreated: $nextAction->date_created,
             entry: $nextAction->entry,
@@ -65,12 +65,12 @@ class CreateNextActionTest extends TestCase
         ));
 
         $this->assertDatabaseHas('activity_log', [
-            'subject_id' => $this->application->id,
+            'subject_id' => $this->expertPanel->id,
             'description' => 'Added next action: '.$nextAction->entry,
             'properties->next_action->assigned_to' => 'CDWG OC',
             'properties->next_action->assigned_to_name' => 'Bob Dobbs'
         ]);
 
-        $this->assertEquals(3, $this->application->logEntries->last()->properties['step']);
+        $this->assertEquals(3, $this->expertPanel->logEntries->last()->properties['step']);
     }
 }

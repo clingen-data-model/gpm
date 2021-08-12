@@ -11,16 +11,16 @@ class AddLogEntry
 {
     use Dispatchable;
 
-    private ExpertPanel  $application;
+    private ExpertPanel  $expertPanel;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($applicationUuid, private string $logDate, private string $entry, private ?int $step = null)
+    public function __construct($expertPanelUuid, private string $logDate, private string $entry, private ?int $step = null)
     {
-        $this->application = ExpertPanel::findByUuidOrFail($applicationUuid);
+        $this->expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         //
     }
 
@@ -32,7 +32,7 @@ class AddLogEntry
     public function handle()
     {
         $logEntry = activity('applications')
-            ->performedOn($this->application)
+            ->performedOn($this->expertPanel)
             ->createdAt(Carbon::parse($this->logDate))
             ->causedBy(Auth::user())
             ->withProperties([
@@ -40,7 +40,7 @@ class AddLogEntry
                 'log_date' => $this->logDate,
                 'step' => $this->step
             ])->log($this->entry);
-        $this->application->touch();
+        $this->expertPanel->touch();
 
     }
 }

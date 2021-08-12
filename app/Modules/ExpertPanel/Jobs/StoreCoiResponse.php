@@ -28,7 +28,7 @@ class StoreCoiResponse
      */
     public function handle()
     {
-        $application = ExpertPanel::findByCoiCodeOrFail($this->coiCode);
+        $expertPanel = ExpertPanel::findByCoiCodeOrFail($this->coiCode);
 
         $data = $this->responseData;
         if (in_array('document_uuid', array_keys($this->responseData))) {
@@ -38,9 +38,9 @@ class StoreCoiResponse
         }
 
         $coi = new Coi(['data' => $data]);
-        $coi->application_id = $application->id;
+        $coi->application_id = $expertPanel->id;
         $coi->save();
 
-        Event::dispatch(new CoiCompleted($application, $coi));
+        Event::dispatch(new CoiCompleted($expertPanel, $coi));
     }
 }

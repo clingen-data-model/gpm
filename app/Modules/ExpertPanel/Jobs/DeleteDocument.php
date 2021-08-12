@@ -11,7 +11,7 @@ class DeleteDocument
 {
     use Dispatchable;
 
-    protected ExpertPanel  $application;
+    protected ExpertPanel  $expertPanel;
 
     protected Document $document;
 
@@ -20,10 +20,10 @@ class DeleteDocument
      *
      * @return void
      */
-    public function __construct(string $applicationUuid, string $documentUuid)
+    public function __construct(string $expertPanelUuid, string $documentUuid)
     {
-        $this->application= ExpertPanel::findByUuidOrFail($applicationUuid);
-        $this->document = $this->application->documents()->where('uuid', $documentUuid)->sole();
+        $this->expertPanel= ExpertPanel::findByUuidOrFail($expertPanelUuid);
+        $this->document = $this->expertPanel->documents()->where('uuid', $documentUuid)->sole();
     }
 
     /**
@@ -35,6 +35,6 @@ class DeleteDocument
     {
         $this->document->delete();
 
-        event(new DocumentDeleted($this->application, $this->document));
+        event(new DocumentDeleted($this->expertPanel, $this->document));
     }
 }

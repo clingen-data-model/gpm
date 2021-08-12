@@ -28,11 +28,11 @@ class UpdateNextActionTest extends TestCase
 
         $this->user = User::factory()->create();
         Sanctum::actingAs($this->user);
-        $this->application = ExpertPanel::factory()->create();
-        $this->baseUrl = '/api/applications/'.$this->application->uuid.'/next-actions';
+        $this->expertPanel = ExpertPanel::factory()->create();
+        $this->baseUrl = '/api/applications/'.$this->expertPanel->uuid.'/next-actions';
 
         Bus::dispatch(new CreateNextAction(
-            applicationUuid: $this->application->uuid,
+            expertPanelUuid: $this->expertPanel->uuid,
             uuid: Uuid::uuid4(),
             dateCreated: '2020-01-01',
             entry: 'This is a next action',
@@ -40,7 +40,7 @@ class UpdateNextActionTest extends TestCase
             assignedTo: 1,
             step: 1
         ));
-        $this->nextAction = $this->application->refresh()->nextActions->first();
+        $this->nextAction = $this->expertPanel->refresh()->nextActions->first();
     }
 
     /**
@@ -91,8 +91,8 @@ class UpdateNextActionTest extends TestCase
         )->assertStatus(200);
         
         $this->assertDatabaseHas('activity_log', [
-            'subject_type' => get_class($this->application),
-            'subject_id' => $this->application->id,
+            'subject_type' => get_class($this->expertPanel),
+            'subject_id' => $this->expertPanel->id,
             'description' => 'Updated next action '.$this->nextAction->id,
             'properties->previous_data->date_created' => '2020-01-01T00:00:00.000000Z'
         ]);

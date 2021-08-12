@@ -13,7 +13,7 @@ class UpdateDocumentInfo
 {
     use Dispatchable;
 
-    private $application;
+    private $expertPanel;
     private $document;
 
     /**
@@ -22,12 +22,12 @@ class UpdateDocumentInfo
      * @return void
      */
     public function __construct(
-        String $applicationUuid,
+        String $expertPanelUuid,
         String $uuid,
         private String $dateReceived,
         private string|null $notes = null
     ) {
-        $this->application = ExpertPanel::findByUuidOrFail($applicationUuid);
+        $this->expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         $this->document = Document::findByUuidOrFail($uuid);
     }
 
@@ -44,7 +44,7 @@ class UpdateDocumentInfo
         if ($this->document->isDirty()) {
             DB::transaction(function () {
                 $this->document->save();
-                Event::dispatch(new DocumentInfoUpdated($this->application, $this->document));
+                Event::dispatch(new DocumentInfoUpdated($this->expertPanel, $this->document));
             });
         }
     }

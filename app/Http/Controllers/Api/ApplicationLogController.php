@@ -25,10 +25,10 @@ class ApplicationLogController extends Controller
     {
     }
 
-    public function index($applicationUuid, Request $request)
+    public function index($expertPanelUuid, Request $request)
     {
-        $application = ExpertPanel::findByUuidOrFail($applicationUuid);
-        return $application->logEntries()->with([
+        $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
+        return $expertPanel->logEntries()->with([
             'causer' => function (MorphTo $morphTo) {
                 $morphTo;
             }
@@ -36,25 +36,25 @@ class ApplicationLogController extends Controller
     }
     
 
-    public function store($applicationUuid, CreateApplicationLogEntryRequest $request)
+    public function store($expertPanelUuid, CreateApplicationLogEntryRequest $request)
     {
         $job = new AddLogEntry(
-            applicationUuid: $applicationUuid, 
+            expertPanelUuid: $expertPanelUuid, 
             logDate: $request->log_date, 
             entry: $request->entry, 
             step: $request->step
         );
         $this->dispatcher->dispatch($job);
 
-        $logEntry = ExpertPanel::latestLogEntryForUuid($applicationUuid);
+        $logEntry = ExpertPanel::latestLogEntryForUuid($expertPanelUuid);
         $logEntry->load(['causer']);
         return $logEntry;
     }
 
-    public function update($applicationUuid, $logEntryId, UpdateApplicationLogEntryRequest $request)
+    public function update($expertPanelUuid, $logEntryId, UpdateApplicationLogEntryRequest $request)
     {
         $job = new UpdateLogEntry(
-            applicationUuid: $applicationUuid,
+            expertPanelUuid: $expertPanelUuid,
             logEntryId: $logEntryId,
             entry: $request->entry,
             step: $request->step,
@@ -62,16 +62,16 @@ class ApplicationLogController extends Controller
         );
         Bus::dispatch($job);
 
-        $logEntry = ExpertPanel::latestLogEntryForUuid($applicationUuid);
+        $logEntry = ExpertPanel::latestLogEntryForUuid($expertPanelUuid);
         $logEntry->load(['causer']);
         return $logEntry;
     }
 
-    public function destroy($applicationUuid, $logEntryId)
+    public function destroy($expertPanelUuid, $logEntryId)
     {
         try {
             Bus::dispatch(new DeleteLogEntry(
-                applicationUuid: $applicationUuid,
+                expertPanelUuid: $expertPanelUuid,
                 logEntryId: $logEntryId,
             ));
 

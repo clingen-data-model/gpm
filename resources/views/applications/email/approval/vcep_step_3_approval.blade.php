@@ -2,7 +2,7 @@
 
 @section('content')
     <p>
-        Congratulations on your Step 3 approval. I have updated your VCEP status on your webpage <a href="https://www.clinicalgenome.org/affiliation/{{$application->affiliation_id}}/">https://www.clinicalgenome.org/affiliation/{{$application->affiliation_id}}/</a>".
+        Congratulations on your Step 3 approval. I have updated your VCEP status on your webpage <a href="https://www.clinicalgenome.org/affiliation/{{$expertPanel->affiliation_id}}/">https://www.clinicalgenome.org/affiliation/{{$expertPanel->affiliation_id}}/</a>".
     </p>
 
     <p>

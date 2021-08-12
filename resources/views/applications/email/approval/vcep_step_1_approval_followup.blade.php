@@ -4,7 +4,7 @@ Dear {{$notifiable->name}},
 
 <p>
     <strong>ClinGen Web Page Development:</strong> 
-    I have used the information in your application to set up a page on clinicalgenome.org for your group at <a href="{{$application->clingenUrl}}">{{$application->clingenUrl}}</a>, please review and update as needed. The page is currently hidden, and can be made public with your approval. If we do not hear back from you within two weeks, we will go ahead and make the page public. If you need help with any changes, just let me know. 
+    I have used the information in your application to set up a page on clinicalgenome.org for your group at <a href="{{$expertPanel->clingenUrl}}">{{$expertPanel->clingenUrl}}</a>, please review and update as needed. The page is currently hidden, and can be made public with your approval. If we do not hear back from you within two weeks, we will go ahead and make the page public. If you need help with any changes, just let me know. 
 </p>
 
 <p>I can also set up a representative from your VCEP with an admin account to edit the website, please let me know if that’s of interest and who your representative will be.</p>

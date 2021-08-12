@@ -17,9 +17,9 @@ class MailDraftController extends Controller
         4 => 'applications.email.approval.vcep_step_4_approval',
     ];
 
-    public function show($applicationUuid, $approvedStepNumber)
+    public function show($expertPanelUuid, $approvedStepNumber)
     {
-        $application = ExpertPanel::findByUuidOrFail($applicationUuid);
+        $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
 
         if (!isset($this->stepMessages[$approvedStepNumber])) {
             return abort(404);
@@ -28,18 +28,18 @@ class MailDraftController extends Controller
         $view = View::make(
             $this->stepMessages[$approvedStepNumber],
             [
-                'application' => $application,
+                'expertPanel' => $expertPanel,
                 'approvedStep' => $approvedStepNumber,
             ]
         );
 
         return [
-            'to' => $application->contacts
+            'to' => $expertPanel->contacts
                         ->map(function ($c) {
                             return $c->name . ' <'.$c->email.'>';
                         })
                         ->join(', '),
-            'subject' => 'Application step '.$approvedStepNumber.' for your ClinGen expert panel '.$application->name.' has been approved.',
+            'subject' => 'Application step '.$approvedStepNumber.' for your ClinGen expert panel '.$expertPanel->name.' has been approved.',
             'body' => $view->render()
         ];
     }

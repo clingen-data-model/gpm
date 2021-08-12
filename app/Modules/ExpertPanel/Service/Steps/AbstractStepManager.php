@@ -6,7 +6,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 
 abstract class AbstractStepManager implements StepManagerInterface
 {
-    public function __construct(private ExpertPanel  $application)
+    public function __construct(private ExpertPanel  $expertPanel)
     {
     }
 

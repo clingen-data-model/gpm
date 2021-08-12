@@ -76,10 +76,10 @@ class ApplicationController extends Controller
         $query->withTrashed();
         // }
 
-        $applications = $query->paginate(200);
-        // $applications = $query->get();
+        $expertPanels = $query->paginate(200);
+        // $expertPanels = $query->get();
 
-        return $applications;
+        return $expertPanels;
     }
 
     /**
@@ -95,9 +95,9 @@ class ApplicationController extends Controller
         $job = new InitiateApplication(...$data);
         $this->dispatcher->dispatchNow($job);
 
-        $application = ExpertPanel::findByUuid($request->uuid);
+        $expertPanel = ExpertPanel::findByUuid($request->uuid);
         
-        return $application;
+        return $expertPanel;
     }
 
     /**
@@ -109,12 +109,12 @@ class ApplicationController extends Controller
      */
     public function show($uuid, Request $request)
     {
-        $application = ExpertPanel::findByUuidOrFail($uuid);
-        $application->load(['latestLogEntry', 'cdwg', 'type', 'contacts', 'nextActions']);
+        $expertPanel = ExpertPanel::findByUuidOrFail($uuid);
+        $expertPanel->load(['latestLogEntry', 'cdwg', 'type', 'contacts', 'nextActions']);
         if ($request->has('with')) {
-            $application->load($request->with);
+            $expertPanel->load($request->with);
         }
-        return $application;
+        return $expertPanel;
     }
 
     /**
@@ -133,9 +133,9 @@ class ApplicationController extends Controller
             )
         );
 
-        $application = ExpertPanel::findByUuidOrFail($uuid);
+        $expertPanel = ExpertPanel::findByUuidOrFail($uuid);
 
-        return $application;
+        return $expertPanel;
     }
 
     /**
@@ -147,6 +147,6 @@ class ApplicationController extends Controller
      */
     public function destroy($uuid)
     {
-        $this->dispatcher->dispatch(new DeleteExpertPanel(applicationUuid: $uuid));
+        $this->dispatcher->dispatch(new DeleteExpertPanel(expertPanelUuid: $uuid));
     }
 }

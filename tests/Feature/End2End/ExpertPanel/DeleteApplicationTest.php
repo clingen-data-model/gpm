@@ -18,8 +18,8 @@ class DeleteExpertPanelTest extends TestCase
         parent::setup();
         $this->seed();
         $this->user = User::factory()->create();
-        $this->application = ExpertPanel::factory()->create();
-        $this->url = '/api/applications/'.$this->application->uuid;
+        $this->expertPanel = ExpertPanel::factory()->create();
+        $this->url = '/api/applications/'.$this->expertPanel->uuid;
     }
 
     /**
@@ -41,7 +41,7 @@ class DeleteExpertPanelTest extends TestCase
             ->assertStatus(200);
         
         $this->assertDatabaseMissing('applications', [
-            'uuid' => $this->application->uuid,
+            'uuid' => $this->expertPanel->uuid,
             'deleted_at' => null
         ]);
     }
@@ -55,8 +55,8 @@ class DeleteExpertPanelTest extends TestCase
         $response = $this->json('DELETE', $this->url);
 
         $this->assertDatabaseHas('activity_log', [
-            'subject_type' => get_class($this->application),
-            'subject_id' => $this->application->id,
+            'subject_type' => get_class($this->expertPanel),
+            'subject_id' => $this->expertPanel->id,
             'activity_type' => 'expert-panel-deleted',
             'causer_type' => get_class($this->user),
             'causer_id' => $this->user->id

@@ -1,4 +1,4 @@
-<p>Dear {{$application->long_base_name}} Leaders,</p>
+<p>Dear {{$expertPanel->long_base_name}} Leaders,</p>
 
 @yield('content')
 

@@ -18,7 +18,7 @@ class UpdateApprovalDateTest extends TestCase
         parent::setup();
         $this->seed();
         $this->user = User::factory()->create();
-        $this->application = ExpertPanel::factory()
+        $this->expertPanel = ExpertPanel::factory()
                                 ->create([
                                     'ep_type_id' => 2, 
                                     'approval_dates'=>['step 1' => '2020-01-01']
@@ -33,7 +33,7 @@ class UpdateApprovalDateTest extends TestCase
     public function it_validates_request_params()
     {
         Sanctum::actingAs($this->user);
-        $this->json('put', '/api/applications/'.$this->application->uuid.'/approve', [])
+        $this->json('put', '/api/applications/'.$this->expertPanel->uuid.'/approve', [])
             ->assertStatus(422)
             ->assertJson(['errors' => [
                 'step' => ['The step field is required.'],
@@ -41,7 +41,7 @@ class UpdateApprovalDateTest extends TestCase
                 ]
             ]);
 
-            $this->json('put', '/api/applications/'.$this->application->uuid.'/approve', [
+            $this->json('put', '/api/applications/'.$this->expertPanel->uuid.'/approve', [
                 'step' => '10',
                 'date_approved' => 'beans'
             ])
@@ -58,7 +58,7 @@ class UpdateApprovalDateTest extends TestCase
     public function it_stores_new_date_and_returns_the_document()
     {
         Sanctum::actingAs($this->user);
-        $response = $this->json('put', '/api/applications/'.$this->application->uuid.'/approve', [
+        $response = $this->json('put', '/api/applications/'.$this->expertPanel->uuid.'/approve', [
             'step' => 1,
             'date_approved' => '2021-04-22T04:00:00.000000Z'
         ]);
@@ -67,12 +67,12 @@ class UpdateApprovalDateTest extends TestCase
         $this->assertEquals(['step 1' => '2021-04-22T04:00:00.000000Z'], $response->original['approval_dates']);
 
         $this->assertDatabaseHas('applications', [
-            'uuid' => $this->application->uuid,
+            'uuid' => $this->expertPanel->uuid,
             'approval_dates' => json_encode(['step 1' => '2021-04-22T04:00:00.000000Z'])
         ]);
 
         $this->assertDatabaseHas('activity_log', [
-            'subject_id' => $this->application->id,
+            'subject_id' => $this->expertPanel->id,
             'description' => 'Approval date updated to 2021-04-22T04:00:00.000000Z for step 1'
         ]);
     }

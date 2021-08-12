@@ -26,11 +26,11 @@ class CompleteNextActionTest extends TestCase
         parent::setup();
         $this->seed();
         $this->user = User::factory()->create();
-        $this->application = ExpertPanel::factory()->create();
+        $this->expertPanel = ExpertPanel::factory()->create();
         $this->nextAction = NextAction::factory()->make();
 
         Bus::dispatch(new CreateNextAction(
-            applicationUuid: $this->application->uuid,
+            expertPanelUuid: $this->expertPanel->uuid,
             uuid: $this->nextAction->uuid,
             dateCreated: $this->nextAction->date_created,
             entry: $this->nextAction->entry,
@@ -38,7 +38,7 @@ class CompleteNextActionTest extends TestCase
             targetDate: $this->nextAction->targetDate,
             step: $this->nextAction->step
         ));
-        $this->url = 'api/applications/'.$this->application->uuid.'/next-actions/'.$this->nextAction->uuid.'/complete';
+        $this->url = 'api/applications/'.$this->expertPanel->uuid.'/next-actions/'.$this->nextAction->uuid.'/complete';
     }
 
     /**

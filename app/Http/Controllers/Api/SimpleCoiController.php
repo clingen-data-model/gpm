@@ -24,9 +24,9 @@ class SimpleCoiController extends Controller
 
     public function getApplication($code)
     {
-        $application = ExpertPanel::findByCoiCodeOrFail($code);
+        $expertPanel = ExpertPanel::findByCoiCodeOrFail($code);
 
-        return $application;
+        return $expertPanel;
     }
     
     public function store($coiCode, CoiStorageRequest $request)
@@ -39,16 +39,16 @@ class SimpleCoiController extends Controller
 
     public function getReport($coiCode)
     {
-        $application = ExpertPanel::findByCoiCodeOrFail($coiCode);
+        $expertPanel = ExpertPanel::findByCoiCodeOrFail($coiCode);
 
         $coiDefinition = Coi::getDefinition();
         $questions = collect($coiDefinition->questions)->keyBy('name');
         $headings = $questions->map(function ($q) { return $q->question; });
         $headings[] = 'Date Completed';
 
-        $coiData = Coi::forApplication($application)->get();
+        $coiData = Coi::forApplication($expertPanel)->get();
 
-        $filename = Str::kebab($application->name).'-coi-report-'.Carbon::now()->format('Y-m-d').'.csv';
+        $filename = Str::kebab($expertPanel->name).'-coi-report-'.Carbon::now()->format('Y-m-d').'.csv';
         $reportPath = '/tmp/'.$filename;
         $handle = fopen($reportPath, 'w');
         fputcsv($handle, $headings->toArray());

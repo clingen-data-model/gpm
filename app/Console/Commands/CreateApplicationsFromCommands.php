@@ -64,14 +64,14 @@ class CreateApplicationsFromCommands extends Command
     {
         $faker = \Faker\Factory::create();
         $lastApprovedStep = $this->option('last-approval', null);
-        $application = ExpertPanel::initiate(...[
+        $expertPanel = ExpertPanel::initiate(...[
             'uuid' => $uuid,
             'working_name' => ucwords(join(' ', $faker->words(4))),
             'cdwg_id' => $cdwgId,
             'ep_type_id' => $epTypeId,
             'date_initiated' => Carbon::now()->subDays(30)
         ]);
-        $application->save();
+        $expertPanel->save();
 
         $cmdSequence = $this->makeCommandSequence($uuid);
         $commandCount = ($epTypeId == 1) ? 2 : $faker->randomElement(range(1, count($cmdSequence)));
@@ -91,8 +91,8 @@ class CreateApplicationsFromCommands extends Command
             $job = new $class(...$args);
             Bus::dispatchNow($job);
 
-            $application->fresh();
-            $this->info('new step is '.$application->fresh()->current_step);
+            $expertPanel->fresh();
+            $this->info('new step is '.$expertPanel->fresh()->current_step);
         }
     }
 
@@ -104,7 +104,7 @@ class CreateApplicationsFromCommands extends Command
                     'step' => 1,
                     'class' => AddApplicationDocument::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'uuid' => Uuid::uuid4()->toString(),
                         'filename' => 'test',
                         'storage_path' => '/tmp/'.uniqid().'_test.tst',
@@ -117,7 +117,7 @@ class CreateApplicationsFromCommands extends Command
                     'step' => 1,
                     'class' => ApproveStep::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'dateApproved' => Carbon::now()->subDays(14)
                     ]
                 ],
@@ -125,7 +125,7 @@ class CreateApplicationsFromCommands extends Command
                     'step' => 2,
                     'class' => AddApplicationDocument::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'uuid' => Uuid::uuid4()->toString(),
                         'filename' => 'test',
                         'storage_path' => '/tmp/'.uniqid().'test.tst',
@@ -138,7 +138,7 @@ class CreateApplicationsFromCommands extends Command
                     'step' => 2,
                     'class' => ApproveStep::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'dateApproved' => Carbon::now()->subDays(7)
                     ]
                 ],
@@ -146,7 +146,7 @@ class CreateApplicationsFromCommands extends Command
                     'step' => 3,
                     'class' => CreateNextAction::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'uuid' => $nextActionUuid,
                         'entry' => 'Do this next!',
                         'dateCreated' => Carbon::now()->subDays(7)
@@ -156,7 +156,7 @@ class CreateApplicationsFromCommands extends Command
                     'step' => 3,
                     'class' => AddApplicationDocument::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'uuid' => $nextActionUuid,
                         'filename' => 'test',
                         'storage_path' => '/tmp/'.uniqid().'test.tst',
@@ -169,7 +169,7 @@ class CreateApplicationsFromCommands extends Command
                     'step' => '3',
                     'class' => CompleteNextAction::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'nextActionUuid' => $nextActionUuid,
                         'dateCompleted' =>  Carbon::now()->subDays(5)
                     ]
@@ -178,7 +178,7 @@ class CreateApplicationsFromCommands extends Command
                     'step' => 3,
                     'class' => AddApplicationDocument::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'uuid' => Uuid::uuid4()->toString(),
                         'filename' => 'test',
                         'storage_path' => '/tmp/'.uniqid().'test.tst',
@@ -191,7 +191,7 @@ class CreateApplicationsFromCommands extends Command
                     'step' => 3,
                     'class' => ApproveStep::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'dateApproved' => Carbon::now()->subDays(4)
                     ]
                 ],
@@ -199,7 +199,7 @@ class CreateApplicationsFromCommands extends Command
                     'step' => 4,
                     'class' => AddApplicationDocument::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'uuid' => Uuid::uuid4()->toString(),
                         'filename' => 'test',
                         'storage_path' => '/tmp/'.uniqid().'test.tst',
@@ -212,7 +212,7 @@ class CreateApplicationsFromCommands extends Command
                     'step' => 4,
                     'class' => ApproveStep::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'dateApproved' => Carbon::now()->subDays(1)
                     ]
                 ]

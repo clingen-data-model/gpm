@@ -28,11 +28,11 @@ class DownloadTest extends TestCase
     {
         parent::setup();
         $this->seed();
-        $this->application = ExpertPanel::factory()->create();
+        $this->expertPanel = ExpertPanel::factory()->create();
         $this->doc = Document::factory()->make();
 
         $job = new AddApplicationDocument(
-            applicationUuid: $this->application->uuid,
+            expertPanelUuid: $this->expertPanel->uuid,
             uuid: $this->doc->uuid,
             filename: 'test.docx',
             storage_path: 'documents/test_download.docx',
@@ -92,7 +92,7 @@ class DownloadTest extends TestCase
         $data = $this->makeDocumentUploadRequestData(filename: 'test_download.docx');
 
         \Laravel\Sanctum\Sanctum::actingAs($user);
-        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/documents', $data);
+        $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/documents', $data);
         
         $response = $this->json('GET', '/documents/'.$data['uuid']);
         $response->assertStatus(200);

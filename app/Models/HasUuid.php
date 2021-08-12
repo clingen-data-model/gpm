@@ -21,12 +21,12 @@ trait HasUuid
 
     static public function findByUuidOrFail($uuid)
     {
-        $application = static::where('uuid', $uuid)->sole();
-        // if (is_null($application)) {
+        $expertPanel = static::where('uuid', $uuid)->sole();
+        // if (is_null($expertPanel)) {
         //     throw new ModelNotFoundException();
         // }
 
-        return $application;
+        return $expertPanel;
         
     }
 }

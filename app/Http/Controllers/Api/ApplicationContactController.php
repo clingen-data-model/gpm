@@ -20,31 +20,31 @@ class ApplicationContactController extends Controller
     public function __construct(private Dispatcher $dispatcher)
     {}
 
-    public function index($applicationUuid)
+    public function index($expertPanelUuid)
     {
-        $application = ExpertPanel::findByUuidOrFail($applicationUuid);
+        $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
 
-        return $application->contacts;
+        return $expertPanel->contacts;
     }
 
-    public function store($applicationUuid, AddContactRequest $request)
+    public function store($expertPanelUuid, AddContactRequest $request)
     {
         $job = new AddContact(
-            applicationUuid: $applicationUuid,
+            expertPanelUuid: $expertPanelUuid,
             uuid: $request->person_uuid,
         );
 
         $this->dispatcher->dispatchNow($job);
        
-        $person = ExpertPanel::findByUuid($applicationUuid)->contacts()->where('uuid', $request->person_uuid)->sole();
+        $person = ExpertPanel::findByUuid($expertPanelUuid)->contacts()->where('uuid', $request->person_uuid)->sole();
 
         return $person;
     }
 
-    public function remove($applicationUuid, $personUuid)
+    public function remove($expertPanelUuid, $personUuid)
     {
         try {
-            $job = new RemoveContact(applicationUuid: $applicationUuid, personUuid: $personUuid);
+            $job = new RemoveContact(expertPanelUuid: $expertPanelUuid, personUuid: $personUuid);
             $this->dispatcher->dispatch($job);
         } catch (PersonNotContactException $e) {
             \Log::warning($e->getMessage(), ['appliation_id' => $e->getApplication()->id, 'person_id' => $e->getPerson()->id]);
@@ -53,7 +53,7 @@ class ApplicationContactController extends Controller
             ]);
         }
 
-        return response(['message'=>'deleted person '.$personUuid.' from appliation '.$applicationUuid], 200);
+        return response(['message'=>'deleted person '.$personUuid.' from appliation '.$expertPanelUuid], 200);
     }
     
 }

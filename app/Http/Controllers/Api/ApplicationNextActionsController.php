@@ -22,11 +22,11 @@ class ApplicationNextActionsController extends Controller
         //code
     }
 
-    public function store($applicationUuid, CreateNextActionRequest $request)
+    public function store($expertPanelUuid, CreateNextActionRequest $request)
     {
-        $data = array_merge($request->all(), ['applicationuuid' => $applicationUuid]);
+        $data = array_merge($request->all(), ['applicationuuid' => $expertPanelUuid]);
         $job = new CreateNextAction(
-            applicationUuid: $applicationUuid,
+            expertPanelUuid: $expertPanelUuid,
             uuid: $request->uuid,
             entry: $request->entry,
             dateCreated: $request->date_created,
@@ -44,11 +44,11 @@ class ApplicationNextActionsController extends Controller
         return $nextAction;
     }
 
-    public function update($applicationUuid, $id, UpdateNextActionRequest $request)
+    public function update($expertPanelUuid, $id, UpdateNextActionRequest $request)
     {
         $all = $request->except('id', 'uuid');
         $cmdParams = [
-            'applicationUuid' => $applicationUuid,
+            'expertPanelUuid' => $expertPanelUuid,
             'nextActionId' => $id
         ];
         foreach ($all as $key => $value) {
@@ -65,10 +65,10 @@ class ApplicationNextActionsController extends Controller
     }
     
 
-    public function complete($applicationUuid, $nextActionUuid, CompleteNextActionRequest $request)
+    public function complete($expertPanelUuid, $nextActionUuid, CompleteNextActionRequest $request)
     {
         $job = new CompleteNextAction(
-            applicationUuid: $applicationUuid,
+            expertPanelUuid: $expertPanelUuid,
             nextActionUuid: $nextActionUuid,
             dateCompleted: $request->date_completed
         );
@@ -79,10 +79,10 @@ class ApplicationNextActionsController extends Controller
         return $nextAction;
     }
 
-    public function destroy($applicationUuid, $id)
+    public function destroy($expertPanelUuid, $id)
     {
         $job = new DeleteNextAction(
-            applicationUuid: $applicationUuid,
+            expertPanelUuid: $expertPanelUuid,
             nextActionId: $id
         );
         $this->dispatcher->dispatch($job);

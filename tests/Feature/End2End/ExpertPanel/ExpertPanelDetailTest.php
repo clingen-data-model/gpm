@@ -36,7 +36,7 @@ class ExpertPanelDetailTest extends TestCase
         ));
         Bus::dispatch(
             new AddApplicationDocument(
-                applicationUuid: $this->uuid,
+                expertPanelUuid: $this->uuid,
                 uuid: Uuid::uuid4()->toString(),
                 filename: uniqid().'test.tst',
                 storage_path: '/tmp/'.uniqid().'.tst',
@@ -47,7 +47,7 @@ class ExpertPanelDetailTest extends TestCase
         );
         Bus::dispatch(
             new CreateNextAction(
-                applicationUuid: $this->uuid,
+                expertPanelUuid: $this->uuid,
                 uuid: Uuid::uuid4()->toString(),
                 entry: 'TEst me',
                 dateCreated: '2020-01-01'
@@ -55,7 +55,7 @@ class ExpertPanelDetailTest extends TestCase
         );
         Bus::dispatch(
             new AddLogEntry(
-                applicationUuid: $this->uuid,
+                expertPanelUuid: $this->uuid,
                 entry: 'TEst me',
                 logDate: Carbon::now()->addDays(1)->toJson()
             )
@@ -65,12 +65,12 @@ class ExpertPanelDetailTest extends TestCase
 
         Bus::dispatch(
             new AddContact(
-                applicationUuid: $this->uuid,
+                expertPanelUuid: $this->uuid,
                 uuid: $person->uuid,
             )
         );
 
-        $this->application = ExpertPanel::findByUuidOrFail($this->uuid);
+        $this->expertPanel = ExpertPanel::findByUuidOrFail($this->uuid);
     }
 
     /**
@@ -81,7 +81,7 @@ class ExpertPanelDetailTest extends TestCase
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $this->json('get', '/api/applications/'.$this->uuid)
             ->assertStatus(200)
-            ->assertJsonFragment(['working_name' => $this->application->working_name, 'uuid' => $this->uuid]);
+            ->assertJsonFragment(['working_name' => $this->expertPanel->working_name, 'uuid' => $this->uuid]);
     }
 
     /**

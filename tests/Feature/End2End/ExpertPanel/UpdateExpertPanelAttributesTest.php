@@ -29,7 +29,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
      */
     public function sets_ep_attributes()
     {
-        $application = ExpertPanel::factory()->gcep()->create();
+        $expertPanel = ExpertPanel::factory()->gcep()->create();
         $data = [
             'working_name' => 'New Test Working Name GCEP',
             'long_base_name' => 'Test Expert Panel Base Name GCEP',
@@ -40,7 +40,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
 
 
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $this->json('PUT', '/api/applications/'.$application->uuid, $data)
+        $this->json('PUT', '/api/applications/'.$expertPanel->uuid, $data)
             ->assertStatus(200)
             ->assertJsonFragment($data);
     }
@@ -50,7 +50,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
      */
     public function will_not_update_other_non_ep_attributes()
     {
-        $application = ExpertPanel::factory()->gcep()->create();
+        $expertPanel = ExpertPanel::factory()->gcep()->create();
         $data = [
             'working_name' => 'New Test Working Name',
             'long_base_name' => 'Test Expert Panel Base Name',
@@ -70,14 +70,14 @@ class UpdateExpertPanelAttributesTest extends TestCase
         $dataWithUuid = array_merge($data, $nonEpData);
 
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $this->json('PUT', '/api/applications/'.$application->uuid, $dataWithUuid)
+        $this->json('PUT', '/api/applications/'.$expertPanel->uuid, $dataWithUuid)
             ->assertStatus(200)
             ->assertJsonFragment([
-                'uuid' => $application->uuid,
-                'date_initiated' => $application->date_initiated->toJson(),
+                'uuid' => $expertPanel->uuid,
+                'date_initiated' => $expertPanel->date_initiated->toJson(),
                 'date_completed' => null,
                 'current_step' => 1,
-                'coi_code' => $application->coi_code,
+                'coi_code' => $expertPanel->coi_code,
                 'approval_dates' => null
             ]);
     }
@@ -87,9 +87,9 @@ class UpdateExpertPanelAttributesTest extends TestCase
      */
     public function validates_required_attributes()
     {
-        $application = ExpertPanel::factory()->gcep()->create();
+        $expertPanel = ExpertPanel::factory()->gcep()->create();
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $this->json('PUT', '/api/applications/'.$application->uuid, [])
+        $this->json('PUT', '/api/applications/'.$expertPanel->uuid, [])
             ->assertStatus(422)
             ->assertJsonFragment([
                 'working_name' => ['The working name field is required.'],
@@ -101,9 +101,9 @@ class UpdateExpertPanelAttributesTest extends TestCase
      */
     public function validates_data_types()
     {
-        $application = ExpertPanel::factory()->gcep()->create();
+        $expertPanel = ExpertPanel::factory()->gcep()->create();
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $this->json('PUT', '/api/applications/'.$application->uuid, [
+        $this->json('PUT', '/api/applications/'.$expertPanel->uuid, [
                 'working_name' => $this->longText,
                 'cdwg_id' => 999,
                 'long_base_name' => $this->longText,
@@ -125,11 +125,11 @@ class UpdateExpertPanelAttributesTest extends TestCase
      */
     public function validates_base_names_are_unique_for_type()
     {
-        $application = ExpertPanel::factory()->gcep()->create();
+        $expertPanel = ExpertPanel::factory()->gcep()->create();
         $app2 = ExpertPanel::factory()->gcep()->create(['long_base_name' => 'testlong', 'short_base_name'=>'testshort']);
         // dd($app2->long_base_name);
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $response =$this->json('PUT', '/api/applications/'.$application->uuid, [
+        $response =$this->json('PUT', '/api/applications/'.$expertPanel->uuid, [
             'working_name' => 'test',
             'long_base_name' => $app2->long_base_name,
             'short_base_name' => $app2->short_base_name,

@@ -17,7 +17,7 @@ class ApproveStep
 {
     use Dispatchable;
 
-    private ExpertPanel  $application;
+    private ExpertPanel  $expertPanel;
     private Carbon $dateApproved;
     private array $ccAddresses;
 
@@ -27,17 +27,17 @@ class ApproveStep
      * @return void
      */
     public function __construct(
-        string $applicationUuid,
+        string $expertPanelUuid,
         string $dateApproved,
         private bool $notifyContacts = false,
         private ?string $subject = null,
         private ?string $body = null,
         private $attachments = []
     ) {
-        $this->application = ExpertPanel::findByUuidOrFail($applicationUuid);
+        $this->expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         $this->dateApproved = $dateApproved ? Carbon::parse($dateApproved) : Carbon::now();
 
-        $defaultMail = (new ApplicationStepApprovedNotification($this->application, $this->application->current_step, false))->toMail($this->application->contacts->first());
+        $defaultMail = (new ApplicationStepApprovedNotification($this->expertPanel, $this->expertPanel->current_step, false))->toMail($this->expertPanel->contacts->first());
         if (!$this->subject) {
             $this->subject = $defaultMail->subject;
         }
@@ -54,31 +54,31 @@ class ApproveStep
      */
     public function handle()
     {
-        $stepManager = app()->make(StepManagerFactory::class)($this->application);
+        $stepManager = app()->make(StepManagerFactory::class)($this->expertPanel);
         
         if (! $stepManager->canApprove()) {
-            throw new UnmetStepRequirementsException($this->application, $stepManager->getUnmetRequirements());
+            throw new UnmetStepRequirementsException($this->expertPanel, $stepManager->getUnmetRequirements());
         }
 
-        $approvedStep = $this->application->current_step;
-        $this->application->addApprovalDate($approvedStep, $this->dateApproved);
+        $approvedStep = $this->expertPanel->current_step;
+        $this->expertPanel->addApprovalDate($approvedStep, $this->dateApproved);
 
         if (!$stepManager->isLastStep()) {
-            $this->application->current_step++;
+            $this->expertPanel->current_step++;
         }
         
-        $this->application->save();
+        $this->expertPanel->save();
 
         $this->dispatchEvent($approvedStep);
         
         if ($stepManager->isLastStep()) {
-            $this->application->completeApplication($this->dateApproved);
+            $this->expertPanel->completeApplication($this->dateApproved);
         }
 
         // TODO: extract to command and log an event on the person.
         if ($this->notifyContacts) {
             Notification::send(
-                $this->application->contacts,
+                $this->expertPanel->contacts,
                 new UserDefinedMailNotification(
                     subject: $this->subject,
                     body: $this->body,
@@ -92,7 +92,7 @@ class ApproveStep
     private function dispatchEvent($approvedStep)
     {
         $event = new StepApproved(
-            application: $this->application,
+            application: $this->expertPanel,
             step: $approvedStep,
             dateApproved: $this->dateApproved
         );
