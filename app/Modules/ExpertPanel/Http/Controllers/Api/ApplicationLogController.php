@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Modules\ExpertPanel\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use InvalidArgumentException;
@@ -16,8 +16,8 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Jobs\DeleteLogEntry;
 use App\Modules\ExpertPanel\Jobs\UpdateLogEntry;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use App\Http\Requests\UpdateApplicationLogEntryRequest;
-use App\Http\Requests\Applications\CreateApplicationLogEntryRequest;
+use App\Modules\ExpertPanel\Http\Requests\UpdateApplicationLogEntryRequest;
+use App\Modules\ExpertPanel\Http\Requests\CreateApplicationLogEntryRequest;
 
 class ApplicationLogController extends Controller
 {

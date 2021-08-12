@@ -9,7 +9,7 @@ use App\Modules\Foundation\ClassGetter;
 use Illuminate\Support\ServiceProvider;
 use App\Modules\Foundation\ModuleServiceProvider;
 
-class ApplicationModuleServiceProvider extends ModuleServiceProvider
+class ExpertPanelModuleServiceProvider extends ModuleServiceProvider
 {
     protected $listeners = [
         // EventClass::class => [ListenerClass::class]
@@ -32,10 +32,16 @@ class ApplicationModuleServiceProvider extends ModuleServiceProvider
      */
     public function boot()
     {
+        parent::boot();
         $this->mergeConfigFrom(
             __DIR__.'/../config.php',
             'applications'
         );
+    }
+
+    protected function getRoutesPath()
+    {
+        return __DIR__.'/../routes';
     }
 
     protected function getEventPath()

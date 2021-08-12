@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Modules\ExpertPanel\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Bus\Dispatcher;
@@ -12,9 +12,9 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Jobs\DeleteDocument;
 use App\Modules\ExpertPanel\Jobs\MarkDocumentFinal;
 use App\Modules\ExpertPanel\Jobs\UpdateDocumentInfo;
-use App\Http\Requests\ApplicationDocumentStoreRequest;
+use App\Modules\ExpertPanel\Http\Requests\ApplicationDocumentStoreRequest;
 use App\Modules\ExpertPanel\Jobs\AddApplicationDocument;
-use App\Http\Requests\Applications\DocumentUpdateInfoRequest;
+use App\Modules\ExpertPanel\Http\Requests\DocumentUpdateInfoRequest;
 use App\Models\Document;
 
 class ApplicationDocumentController extends Controller

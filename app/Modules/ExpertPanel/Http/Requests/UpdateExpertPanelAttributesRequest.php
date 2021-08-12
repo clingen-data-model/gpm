@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Applications;
+namespace App\Modules\ExpertPanel\Http\Requests;
 
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Validation\Rule;

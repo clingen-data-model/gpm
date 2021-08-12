@@ -41,7 +41,7 @@ abstract class ModuleServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $this->loadRoutes();
     }
 
     private function registerRecordableEventListeners()
@@ -61,6 +61,25 @@ abstract class ModuleServiceProvider extends ServiceProvider
                 Event::listen($event, [$listener, 'handle']);
             }
         }        
+    }
+
+    protected function getRoutesPath()
+    {
+        return __DIR__.'/../routes';
+    }
+
+    protected function loadRoutes()
+    {
+        $routesDir = $this->getRoutesPath();
+        if (!file_exists($routesDir) || !is_dir($routesDir)) {
+            return;
+        }
+        foreach (scandir($routesDir) as $file) {
+            if (in_array($file, ['.', '..'])) {
+                continue;
+            }
+            $this->loadRoutesFrom($routesDir.'/'.$file);
+        }
     }
 
     protected abstract function getEventPath();

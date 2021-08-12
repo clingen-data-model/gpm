@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Modules\ExpertPanel\Http\Controllers\Api;
 
 use App\Models\NextAction;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Bus\Dispatcher;
-use App\Http\Requests\UpdateNextActionRequest;
+use App\Modules\ExpertPanel\Http\Requests\UpdateNextActionRequest;
 use App\Modules\ExpertPanel\Jobs\CreateNextAction;
 use App\Modules\ExpertPanel\Jobs\DeleteNextAction;
 use App\Modules\ExpertPanel\Jobs\UpdateNextAction;
 use App\Modules\ExpertPanel\Jobs\CompleteNextAction;
-use App\Http\Requests\Applications\CreateNextActionRequest;
-use App\Http\Requests\Applications\CompleteNextActionRequest;
+use App\Modules\ExpertPanel\Http\Requests\CreateNextActionRequest;
+use App\Modules\ExpertPanel\Http\Requests\CompleteNextActionRequest;
 
 class ApplicationNextActionsController extends Controller
 {

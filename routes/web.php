@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\SimpleCoiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ViewController;
 use App\Http\Controllers\DocumentController;
@@ -19,4 +18,3 @@ Route::get('/{any}', [ViewController::class, 'app'])
     ->where('any', '^(?!(api|sanctum|admin|documents|report|downloads)).*$');
 
 Route::get('/documents/{uuid?}', [DocumentController::class, 'show'])->middleware('auth:sanctum');
-Route::get('/report/{coiCode}', [SimpleCoiController::class, 'getReport'])->middleware('auth:sanctum');

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Modules\ExpertPanel\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateApplicationLogEntryRequest extends FormRequest
+class ApplicationDocumentStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,10 @@ class UpdateApplicationLogEntryRequest extends FormRequest
     public function rules()
     {
         return [
-            'entry' => 'required',
-            'log_date' => 'required|date',
-            'step' => 'nullable|numeric|between:1,4'
+            'uuid' => 'required|uuid',
+            'document_type_id' => 'required|exists:document_types,id',
+            'file' => 'required|file',
+            'date_received' => 'nullable|date',
         ];
     }
 }

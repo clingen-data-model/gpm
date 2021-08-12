@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Modules\ExpertPanel\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Models\NextActionAssignee;
