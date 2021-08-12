@@ -25,7 +25,7 @@ class AddApplicationDocumentTest extends TestCase
         parent::setup();
         $this->seed();
         $this->dispatcher = app()->make(Dispatcher::class);
-        $this->application = ExpertPanel::factory()->create();
+        $this->expertPanel = ExpertPanel::factory()->create();
     }
 
     /**
@@ -37,7 +37,7 @@ class AddApplicationDocumentTest extends TestCase
         Carbon::setTestNow('2021-01-01');
 
         $job = new AddApplicationDocument(
-            applicationUuid: $this->application->uuid,
+            expertPanelUuid: $this->expertPanel->uuid,
             filename: 'testfile.doc',
             storage_path: $this->faker->file(base_path('tests/files')),
             document_type_id: 1,
@@ -54,7 +54,7 @@ class AddApplicationDocumentTest extends TestCase
             'step' => 1,
             'date_received' => Carbon::now()->format('Y-m-d H:i:s'),
             'version' => 1,
-            'application_id' => $this->application->id,
+            'application_id' => $this->expertPanel->id,
             'is_final' => 0
         ]);
     }
@@ -68,7 +68,7 @@ class AddApplicationDocumentTest extends TestCase
         Carbon::setTestNow('2021-01-01');
 
         $job = new AddApplicationDocument(
-            applicationUuid: $this->application->uuid,
+            expertPanelUuid: $this->expertPanel->uuid,
             filename: 'testfile.doc',
             storage_path: $this->faker->file(base_path('tests/files')),
             document_type_id: 1,
@@ -86,7 +86,7 @@ class AddApplicationDocumentTest extends TestCase
             'step' => 1,
             'date_received' => Carbon::now()->format('Y-m-d H:i:s'),
             'version' => 1,
-            'application_id' => $this->application->id,
+            'application_id' => $this->expertPanel->id,
             'is_final' => 1
         ]);
     }

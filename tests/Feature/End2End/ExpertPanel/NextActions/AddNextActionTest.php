@@ -24,8 +24,8 @@ class AddNextActionTest extends TestCase
         parent::setup();
         $this->seed();
         $this->user = User::factory()->create();
-        $this->application = ExpertPanel::factory()->create();
-        $this->baseUrl = 'api/applications/'.$this->application->uuid.'/next-actions';
+        $this->expertPanel = ExpertPanel::factory()->create();
+        $this->baseUrl = 'api/applications/'.$this->expertPanel->uuid.'/next-actions';
         Carbon::setTestNow();
     }
 

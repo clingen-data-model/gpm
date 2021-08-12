@@ -16,7 +16,7 @@ class RemoveContact
      *
      * @return void
      */
-    public function __construct(private string $applicationUuid, private string $personUuid)
+    public function __construct(private string $expertPanelUuid, private string $personUuid)
     {
         //
     }
@@ -28,9 +28,9 @@ class RemoveContact
      */
     public function handle()
     {
-        $application = ExpertPanel::findByUuidOrFail($this->applicationUuid);
+        $expertPanel = ExpertPanel::findByUuidOrFail($this->expertPanelUuid);
         $person = Person::findByUuidOrFail($this->personUuid);
 
-        $application->removeContact($person);
+        $expertPanel->removeContact($person);
     }
 }

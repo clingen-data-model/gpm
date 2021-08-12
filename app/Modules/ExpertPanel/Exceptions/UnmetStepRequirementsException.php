@@ -7,7 +7,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 
 class UnmetStepRequirementsException extends Exception
 {
-    public function __construct(private ExpertPanel  $application, private array $unmetRequirements)
+    public function __construct(private ExpertPanel  $expertPanel, private array $unmetRequirements)
     {
         parent::__construct('You can not approve this application step b/c there are unmet requirements');
     }
@@ -19,7 +19,7 @@ class UnmetStepRequirementsException extends Exception
 
     public function getApplication()
     {
-        return $this->application;
+        return $this->expertPanel;
     }
     
 }

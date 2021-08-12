@@ -18,7 +18,7 @@ class ApplicationStepApprovedNotification extends Notification
      * @return void
      */
     public function __construct(
-        public ExpertPanel  $application,
+        public ExpertPanel  $expertPanel,
         public int $approvedStep,
         public ?bool $wasLastStep = false
     ) {
@@ -56,10 +56,10 @@ class ApplicationStepApprovedNotification extends Notification
         }
 
         $mailMessage = (new MailMessage)
-                    ->subject('Application step '.$this->approvedStep.' for your ClinGen expert panel '.$this->application->name.' has been approved.')
+                    ->subject('Application step '.$this->approvedStep.' for your ClinGen expert panel '.$this->expertPanel->name.' has been approved.')
                     ->view($stepMessages[$this->approvedStep], [
                         'notifiable' => $notifiable,
-                        'application' => $this->application,
+                        'expertPanel' => $this->expertPanel,
                         'approvedStep' => $this->approvedStep,
                         'wasLastStep' => $this->wasLastStep
                     ]);

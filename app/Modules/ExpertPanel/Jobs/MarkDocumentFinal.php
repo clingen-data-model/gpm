@@ -12,7 +12,7 @@ class MarkDocumentFinal
 {
     use Dispatchable;
 
-    private ExpertPanel  $application;
+    private ExpertPanel  $expertPanel;
     private Document $document;
 
     /**
@@ -22,7 +22,7 @@ class MarkDocumentFinal
      */
     public function __construct(string $appUuid, string $documentUuid)
     {
-        $this->application = ExpertPanel::findByUuidOrFail($appUuid);
+        $this->expertPanel = ExpertPanel::findByUuidOrFail($appUuid);
         $this->document = Document::findByUuidOrFail($documentUuid);
     }
 
@@ -33,7 +33,7 @@ class MarkDocumentFinal
      */
     public function handle()
     {
-        $prevFinal = $this->application
+        $prevFinal = $this->expertPanel
             ->documents()
             ->type($this->document->document_type_id)
             ->final()
@@ -45,6 +45,6 @@ class MarkDocumentFinal
 
         $this->document->update(['is_final' => 1]);
 
-        Event::dispatch(new DocumentMarkedFinal($this->application, $this->document));
+        Event::dispatch(new DocumentMarkedFinal($this->expertPanel, $this->document));
     }
 }

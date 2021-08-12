@@ -21,7 +21,7 @@ class CompleteNextActionTest extends TestCase
     {
         parent::setup();
         $this->seed(); 
-        $this->application = ExpertPanel::factory()->create();
+        $this->expertPanel = ExpertPanel::factory()->create();
     }
 
     /**
@@ -31,7 +31,7 @@ class CompleteNextActionTest extends TestCase
     {
         $nextAction = NextAction::factory()->make();
         Bus::dispatch(new CreateNextAction(            
-            applicationUuid: $this->application->uuid,
+            expertPanelUuid: $this->expertPanel->uuid,
             uuid: $nextAction->uuid,
             dateCreated: $nextAction->date_created,
             entry: $nextAction->entry,
@@ -43,7 +43,7 @@ class CompleteNextActionTest extends TestCase
         Event::fake();
 
         Bus::dispatch(new CompleteNextAction(
-            applicationUuid: $this->application->uuid, 
+            expertPanelUuid: $this->expertPanel->uuid, 
             nextActionUuid: $nextAction->uuid, 
             dateCompleted: '2021-02-01')
         );
@@ -58,7 +58,7 @@ class CompleteNextActionTest extends TestCase
     {
         $nextAction = NextAction::factory()->make();
         Bus::dispatch(new CreateNextAction(            
-            applicationUuid: $this->application->uuid,
+            expertPanelUuid: $this->expertPanel->uuid,
             uuid: $nextAction->uuid,
             dateCreated: $nextAction->date_created,
             entry: $nextAction->entry,
@@ -68,13 +68,13 @@ class CompleteNextActionTest extends TestCase
         ));
 
         Bus::dispatch(new CompleteNextAction(
-            applicationUuid: $this->application->uuid, 
+            expertPanelUuid: $this->expertPanel->uuid, 
             nextActionUuid: $nextAction->uuid, 
             dateCompleted: '2021-02-01')
         );
 
         $this->assertDatabaseHas('activity_log', [
-            'subject_id' => $this->application->id,
+            'subject_id' => $this->expertPanel->id,
             'description' => 'Next action completed: '.$nextAction->entry
         ]);
     }    

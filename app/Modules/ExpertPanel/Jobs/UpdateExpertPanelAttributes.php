@@ -28,7 +28,7 @@ class UpdateExpertPanelAttributes
      */
     public function handle()
     {
-        $application = ExpertPanel::findByUuidOrFail($this->uuid);
-        $application->setExpertPanelAttributes($this->attributes);
+        $expertPanel = ExpertPanel::findByUuidOrFail($this->uuid);
+        $expertPanel->setExpertPanelAttributes($this->attributes);
     }
 }

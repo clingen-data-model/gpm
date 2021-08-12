@@ -10,7 +10,7 @@ class DeleteNextAction
 {
     use Dispatchable;
 
-    protected ExpertPanel  $application;
+    protected ExpertPanel  $expertPanel;
 
     protected NextAction $nextAction;
 
@@ -19,11 +19,11 @@ class DeleteNextAction
      *
      * @return void
      */
-    public function __construct(string $applicationUuid, $nextActionId)
+    public function __construct(string $expertPanelUuid, $nextActionId)
     {
         //
-        $this->application = ExpertPanel::findByUuidOrFail($applicationUuid);
-        $this->nextAction = $this->application->nextActions()->findOrFail($nextActionId);
+        $this->expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
+        $this->nextAction = $this->expertPanel->nextActions()->findOrFail($nextActionId);
     }
 
     /**

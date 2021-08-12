@@ -26,10 +26,10 @@ class DeleteDocumentTest extends TestCase
         $this->user = User::factory()->create();
         Sanctum::actingAs($this->user);
 
-        $this->application = ExpertPanel::factory()->create();
+        $this->expertPanel = ExpertPanel::factory()->create();
         $this->document = Document::factory()->make();
-        $this->application->documents()->save($this->document);
-        $this->docUrl = '/api/applications/'.$this->application->uuid.'/documents/'.$this->document->uuid;
+        $this->expertPanel->documents()->save($this->document);
+        $this->docUrl = '/api/applications/'.$this->expertPanel->uuid.'/documents/'.$this->document->uuid;
         Carbon::setTestNow('2021-02-01');
     }
     
@@ -56,8 +56,8 @@ class DeleteDocumentTest extends TestCase
             ->assertStatus(200);
 
         $this->assertDatabaseHas('activity_log', [
-            'subject_id' => (string)$this->application->id,
-            'subject_type' => get_class($this->application),
+            'subject_id' => (string)$this->expertPanel->id,
+            'subject_type' => get_class($this->expertPanel),
             'activity_type' => 'document-deleted',
             'properties->document_uuid' => $this->document->uuid
         ]);

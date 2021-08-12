@@ -23,7 +23,7 @@ class AddContact implements ShouldQueue
      * @return void
      */
     public function __construct(
-        private string $applicationUuid,
+        private string $expertPanelUuid,
         private string $uuid
     )
     {
@@ -36,10 +36,10 @@ class AddContact implements ShouldQueue
      */
     public function handle()
     {        
-        $application = ExpertPanel::findByUuidOrFail($this->applicationUuid);
+        $expertPanel = ExpertPanel::findByUuidOrFail($this->expertPanelUuid);
         
         $person = Person::findByUuidOrFail($this->uuid);
 
-        $application->addContact($person);
+        $expertPanel->addContact($person);
     }
 }

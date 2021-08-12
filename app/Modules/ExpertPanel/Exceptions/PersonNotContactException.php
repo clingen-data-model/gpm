@@ -7,7 +7,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 
 class PersonNotContactException extends \Exception
 {
-    public function __construct(private ExpertPanel  $application, private Person $person)
+    public function __construct(private ExpertPanel  $expertPanel, private Person $person)
     {
         $message = 'The specified person is not a contact of this application.';
         parent::__construct($message, 422);
@@ -15,7 +15,7 @@ class PersonNotContactException extends \Exception
 
     public function getApplication()
     {
-        return $this->application;
+        return $this->expertPanel;
     }
 
     public function getPerson()

@@ -52,17 +52,17 @@ abstract class TestCase extends BaseTestCase
         return $contacts;
     }
     
-    protected function addContactToApplication(ExpertPanel  $application)
+    protected function addContactToApplication(ExpertPanel  $expertPanel)
     {
         $person = Person::factory()->create();
-        $job = new AddContact($application->uuid, $person->uuid);
+        $job = new AddContact($expertPanel->uuid, $person->uuid);
         Bus::dispatch($job);
         
         return $person;
     }
 
     protected  function assertLoggedActivity(
-        $application, 
+        $expertPanel, 
         $description, 
         $properties = null, 
         $causer_type = null, 
@@ -74,14 +74,14 @@ abstract class TestCase extends BaseTestCase
             'log_name' => 'applications',
             'description' => $description,
             'subject_type' => ExpertPanel::class,
-            'subject_id' => (string)$application->id,
+            'subject_id' => (string)$expertPanel->id,
             'causer_type' => $causer_type,
             'causer_id' => $causer_id,
         ];
 
         if ($properties) {
             if (!isset($properties['step'])) {
-                $properties['step'] = $application->current_step;
+                $properties['step'] = $expertPanel->current_step;
             }
             foreach ($properties as $key => $val) {
                 $dbVal = $val;

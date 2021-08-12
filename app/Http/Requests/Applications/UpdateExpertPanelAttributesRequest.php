@@ -25,7 +25,7 @@ class UpdateExpertPanelAttributesRequest extends FormRequest
      */
     public function rules()
     {
-        $application = ExpertPanel::findByUuidOrFail($this->route('app_uuid'));
+        $expertPanel = ExpertPanel::findByUuidOrFail($this->route('app_uuid'));
         return [
             'working_name' => 'required|max:255',
             'cdwg_id' => 'nullable|exists:cdwgs,id',
@@ -33,18 +33,18 @@ class UpdateExpertPanelAttributesRequest extends FormRequest
                                     'nullable',
                                     'max:255',
                                     Rule::unique('applications')
-                                        ->ignore($application)
-                                        ->where(function ($query) use ($application) {
-                                            return $query->where('ep_type_id', $application->ep_type_id);
+                                        ->ignore($expertPanel)
+                                        ->where(function ($query) use ($expertPanel) {
+                                            return $query->where('ep_type_id', $expertPanel->ep_type_id);
                                         })
                                 ],
             'short_base_name' => [
                                     'nullable',
                                     'max:15',
                                     Rule::unique('applications')
-                                        ->ignore($application)
-                                        ->where(function ($query) use ($application) {
-                                            $query->where('ep_type_id', $application->ep_type_id);
+                                        ->ignore($expertPanel)
+                                        ->where(function ($query) use ($expertPanel) {
+                                            $query->where('ep_type_id', $expertPanel->ep_type_id);
                                             return $query;
                                         })
                                 ],

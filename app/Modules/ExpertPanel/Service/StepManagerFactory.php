@@ -13,26 +13,26 @@ use App\Modules\ExpertPanel\Exceptions\UnexpectedCurrentStepException;
 
 class StepManagerFactory
 {
-    public function __invoke(ExpertPanel  $application): StepManagerInterface
+    public function __invoke(ExpertPanel  $expertPanel): StepManagerInterface
     {
-        if ($application->ep_type_id == config('expert_panels.types.gcep.id') && $application->current_step == 1) {
-            return new GcepDefinitionStepManager($application);
+        if ($expertPanel->ep_type_id == config('expert_panels.types.gcep.id') && $expertPanel->current_step == 1) {
+            return new GcepDefinitionStepManager($expertPanel);
         }
 
-        switch ($application->current_step) {
+        switch ($expertPanel->current_step) {
             case 1:
-                return new VcepDefinitionStepManager($application);
+                return new VcepDefinitionStepManager($expertPanel);
             case 2:
-                return new VcepDraftStepManager($application);
+                return new VcepDraftStepManager($expertPanel);
             case 3:
-                return new VcepPilotStepManager($application);
+                return new VcepPilotStepManager($expertPanel);
             case 4:
-                return new VcepFinalizeStepManager($application);
+                return new VcepFinalizeStepManager($expertPanel);
             default:
                 break;
         }
 
-        throw new UnexpectedCurrentStepException($application);
+        throw new UnexpectedCurrentStepException($expertPanel);
     }
     
 }

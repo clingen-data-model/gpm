@@ -58,12 +58,12 @@ class InitiateApplicationTest extends TestCase
 
         Bus::dispatch($this->job);
 
-        $application = ExpertPanel::findByUuidOrFail($this->data['uuid']);
+        $expertPanel = ExpertPanel::findByUuidOrFail($this->data['uuid']);
 
-        $properties = array_merge($application->only(['uuid','working_name','cdwg_id','ep_type_id','date_initiated','coi_code', 'created_at', 'updated_at']), ['step' => 1]);
+        $properties = array_merge($expertPanel->only(['uuid','working_name','cdwg_id','ep_type_id','date_initiated','coi_code', 'created_at', 'updated_at']), ['step' => 1]);
 
         $this->assertLoggedActivity(
-            $application, 
+            $expertPanel, 
             'Application initiated', 
             // $properties,  // comment out properties b/c can't get a match.
             null,

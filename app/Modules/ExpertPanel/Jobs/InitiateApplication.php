@@ -34,20 +34,20 @@ class InitiateApplication
 
     public function handle(): void
     {
-        $application = new ExpertPanel();
-        $application->uuid = $this->uuid;
-        $application->working_name = $this->working_name;
-        $application->cdwg_id = $this->cdwg_id;
-        $application->ep_type_id = $this->ep_type_id;
-        $application->date_initiated = $this->date_initiated;
-        $application->coi_code = bin2hex(random_bytes(12));
+        $expertPanel = new ExpertPanel();
+        $expertPanel->uuid = $this->uuid;
+        $expertPanel->working_name = $this->working_name;
+        $expertPanel->cdwg_id = $this->cdwg_id;
+        $expertPanel->ep_type_id = $this->ep_type_id;
+        $expertPanel->date_initiated = $this->date_initiated;
+        $expertPanel->coi_code = bin2hex(random_bytes(12));
 
-        $application->save();
+        $expertPanel->save();
     
-        Event::dispatch(new ApplicationInitiated($application));
+        Event::dispatch(new ApplicationInitiated($expertPanel));
 
 
-        // $application = ExpertPanel::initiate(...get_object_vars($this));
+        // $expertPanel = ExpertPanel::initiate(...get_object_vars($this));
     }
 
 }

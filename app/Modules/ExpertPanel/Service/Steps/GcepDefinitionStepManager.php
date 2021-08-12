@@ -6,7 +6,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 
 class GcepDefinitionStepManager extends AbstractStepManager
 {
-    public function __construct(private ExpertPanel  $application)
+    public function __construct(private ExpertPanel  $expertPanel)
     {
     }
 
@@ -22,8 +22,8 @@ class GcepDefinitionStepManager extends AbstractStepManager
 
     public function isCurrentStep():bool
     {
-        return $this->application->current_step == 1 
-            && $this->application->ep_type_id == config('expert_panels.types.gcep.id');
+        return $this->expertPanel->current_step == 1 
+            && $this->expertPanel->ep_type_id == config('expert_panels.types.gcep.id');
     }
 
     public function isLastStep():bool

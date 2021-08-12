@@ -13,7 +13,7 @@ class UpdateNextAction
 {
     use Dispatchable;
 
-    protected ExpertPanel  $application;
+    protected ExpertPanel  $expertPanel;
 
     protected NextAction $nextAction;
 
@@ -23,7 +23,7 @@ class UpdateNextAction
      * @return void
      */
     public function __construct(
-        string $applicationUuid,
+        string $expertPanelUuid,
         int $nextActionId,
         private ?String $dateCreated = null,
         private ?String $dateCompleted = null,
@@ -34,8 +34,8 @@ class UpdateNextAction
         private ?String $assignedToName = null
     ) {
         //
-        $this->application = ExpertPanel::findByUuidOrFail($applicationUuid);
-        $this->nextAction = $this->application->nextActions()->find($nextActionId);
+        $this->expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
+        $this->nextAction = $this->expertPanel->nextActions()->find($nextActionId);
     }
 
     /**
@@ -51,7 +51,7 @@ class UpdateNextAction
             $this->nextAction->update($updatedData);
         });
 
-        event(new NextActionUpdated(application: $this->application, nextAction: $this->nextAction, oldData: $oldData));
+        event(new NextActionUpdated(application: $this->expertPanel, nextAction: $this->nextAction, oldData: $oldData));
     }
     
     private function assembleUpdatedData(): array

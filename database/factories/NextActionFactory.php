@@ -23,7 +23,7 @@ class NextActionFactory extends Factory
     public function definition()
     {
 
-        $applicationId = ExpertPanel::all()->random()->id;
+        $expertPanelId = ExpertPanel::all()->random()->id;
         return [
             'uuid' => $this->faker->uuid,
             'entry' => $this->faker->paragraph,
@@ -31,7 +31,7 @@ class NextActionFactory extends Factory
             'target_date' => $this->faker->date,
             'date_completed' => $this->faker->date,
             'step' => $this->faker->randomElement([1,2,3,4,null]),
-            'application_id' => $applicationId
+            'application_id' => $expertPanelId
         ];
     }
 }

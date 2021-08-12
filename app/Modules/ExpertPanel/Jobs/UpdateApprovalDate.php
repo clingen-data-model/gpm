@@ -18,9 +18,9 @@ class UpdateApprovalDate
      *
      * @return void
      */
-    public function __construct(string $applicationUuid, private int $step, private string $dateApproved)
+    public function __construct(string $expertPanelUuid, private int $step, private string $dateApproved)
     {
-        $this->application = ExpertPanel::findByUuidOrFail($applicationUuid);
+        $this->expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
     }
 
     /**
@@ -30,14 +30,14 @@ class UpdateApprovalDate
      */
     public function handle()
     {   
-        $approvalDates = $this->application->approval_dates;
+        $approvalDates = $this->expertPanel->approval_dates;
         $approvalDates['step '.$this->step] = $this->dateApproved;
-        $this->application->approval_dates = $approvalDates;
+        $this->expertPanel->approval_dates = $approvalDates;
 
         DB::transaction(function () {
-            $this->application->save();
+            $this->expertPanel->save();
 
-            Event::dispatch(new StepDateApprovedUpdated(application: $this->application, step: $this->step, dateApproved: $this->dateApproved));
+            Event::dispatch(new StepDateApprovedUpdated(application: $this->expertPanel, step: $this->step, dateApproved: $this->dateApproved));
         });
     }
 }

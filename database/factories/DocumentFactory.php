@@ -24,9 +24,9 @@ class DocumentFactory extends Factory
      */
     public function definition()
     {
-        $application = ExpertPanel::all()->random() ?? ExpertPanel::factory()->create();
+        $expertPanel = ExpertPanel::all()->random() ?? ExpertPanel::factory()->create();
         return [
-            'application_id' => $application->id,
+            'application_id' => $expertPanel->id,
             'uuid' => Uuid::uuid4(),
             'filename' => uniqid(),
             'storage_path' => $this->faker->file(base_path('tests/files')),

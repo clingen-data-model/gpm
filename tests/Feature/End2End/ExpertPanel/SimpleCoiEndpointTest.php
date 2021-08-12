@@ -22,7 +22,7 @@ class SimpleCoiEndpointTest extends TestCase
     {
         parent::setup();
         $this->seed();
-        $this->application = ExpertPanel::factory()->create();
+        $this->expertPanel = ExpertPanel::factory()->create();
     }
     
     /**
@@ -30,9 +30,9 @@ class SimpleCoiEndpointTest extends TestCase
      */
     public function can_get_application_from_coi_code()
     {
-        $this->json('GET', '/api/coi/'.$this->application->coi_code.'/application')
+        $this->json('GET', '/api/coi/'.$this->expertPanel->coi_code.'/application')
         ->assertStatus(200)
-        ->assertJson($this->application->toArray());
+        ->assertJson($this->expertPanel->toArray());
     }
     
     /**
@@ -49,7 +49,7 @@ class SimpleCoiEndpointTest extends TestCase
      */
     public function validates_coi_response_data()
     {
-        $this->json('POST', '/api/coi/'.$this->application->coi_code, [])
+        $this->json('POST', '/api/coi/'.$this->expertPanel->coi_code, [])
             ->assertStatus(422)
             ->assertJsonFragment(['email' => ['This field is required.']])
             ->assertJsonFragment(['first_name' => ['This field is required.']])
@@ -59,11 +59,11 @@ class SimpleCoiEndpointTest extends TestCase
             ->assertJsonFragment(['independent_efforts' => ['This field is required.']])
             ->assertJsonFragment(['coi' => ['This field is required.']]);
 
-        $this->json('POST', '/api/coi/'.$this->application->coi_code, ['contributions_to_gd_in_ep' => 1])
+        $this->json('POST', '/api/coi/'.$this->expertPanel->coi_code, ['contributions_to_gd_in_ep' => 1])
             ->assertStatus(422)
             ->assertJsonFragment(['contributions_to_genes' => ['This field is required.']]);
 
-        $this->json('POST', '/api/coi/'.$this->application->coi_code, ['email' => 'bob'])
+        $this->json('POST', '/api/coi/'.$this->expertPanel->coi_code, ['email' => 'bob'])
             ->assertStatus(422)
             ->assertJsonFragment(['email' => ['The email must be a valid email address.']]);
     }
@@ -84,11 +84,11 @@ class SimpleCoiEndpointTest extends TestCase
             'coi' => 'no coi',
         ];
 
-        $this->json('POST', '/api/coi/'.$this->application->coi_code, $data)
+        $this->json('POST', '/api/coi/'.$this->expertPanel->coi_code, $data)
             ->assertStatus(200);
 
         $this->assertDatabaseHas('cois', [
-            'application_id' => $this->application->id,
+            'application_id' => $this->expertPanel->id,
             'data' => json_encode($data)
         ]);
     }
@@ -98,14 +98,14 @@ class SimpleCoiEndpointTest extends TestCase
      */
     public function returns_csv_of_coi_results_for_application()
     {
-        Coi::factory(2)->create(['application_id' => $this->application->id]);
+        Coi::factory(2)->create(['application_id' => $this->expertPanel->id]);
         Carbon::setTestNow('2021-06-01');
         $user = User::factory()->create();
         Sanctum::actingAs($user);
-        $response = $this->get('/report/'.$this->application->coi_code);
+        $response = $this->get('/report/'.$this->expertPanel->coi_code);
         $response->assertStatus(200);
         
-        $this->assertFileExists('/tmp/'.Str::kebab($this->application->name).'-coi-report-'.Carbon::now()->format('Y-m-d').'.csv');
+        $this->assertFileExists('/tmp/'.Str::kebab($this->expertPanel->name).'-coi-report-'.Carbon::now()->format('Y-m-d').'.csv');
 
         $response->assertDownload();
     }
@@ -116,7 +116,7 @@ class SimpleCoiEndpointTest extends TestCase
     public function stores_legacy_coi()
     {
         $document = Document::factory()->create([
-            'application_id' => $this->application->id,
+            'application_id' => $this->expertPanel->id,
             'document_type_id' => config('documents.types.coi.id')
         ]);
 
@@ -124,7 +124,7 @@ class SimpleCoiEndpointTest extends TestCase
             "download_url" => "http://localhost:8080/documents/".$document->uuid,
             "document_uuid" => $document->uuid
         ];
-        $this->json('POST', '/api/coi/'.$this->application->coi_code, $data)
+        $this->json('POST', '/api/coi/'.$this->expertPanel->coi_code, $data)
             ->assertStatus(200);
             
 
@@ -134,7 +134,7 @@ class SimpleCoiEndpointTest extends TestCase
             'last_name' => 'Coi'
         ]);
         $this->assertDatabaseHas('cois', [
-            'application_id' => $this->application->id,
+            'application_id' => $this->expertPanel->id,
             'data' => json_encode($expectedData)
         ]);
     }

@@ -24,10 +24,10 @@ class MarkFinalTest extends TestCase
         parent::setup();
         $this->seed();
         $this->user = User::factory()->create();
-        $this->application = ExpertPanel::factory()->create();
+        $this->expertPanel = ExpertPanel::factory()->create();
         $this->document = Document::factory()->make();
-        $this->application->documents()->save($this->document);
-        $this->docUrl = '/api/applications/'.$this->application->uuid.'/documents/'.$this->document->uuid.'/final';
+        $this->expertPanel->documents()->save($this->document);
+        $this->docUrl = '/api/applications/'.$this->expertPanel->uuid.'/documents/'.$this->document->uuid.'/final';
         Carbon::setTestNow('2021-02-01');
     }
 
@@ -50,7 +50,7 @@ class MarkFinalTest extends TestCase
     public function marks_any_previous_final_documents_for_same_application_and_type_as_not_final()
     {
         Sanctum::actingAs($this->user);
-        $document = $this->application->documents()->save(Document::factory()->make(['is_final'=>1, 'document_type_id' => $this->document->document_type_id]));
+        $document = $this->expertPanel->documents()->save(Document::factory()->make(['is_final'=>1, 'document_type_id' => $this->document->document_type_id]));
 
         $this->call('POST', $this->docUrl)
             ->assertStatus(200)
@@ -78,7 +78,7 @@ class MarkFinalTest extends TestCase
 
         $this->assertDatabaseHas('activity_log', [
             'subject_type' => 'App\Modules\ExpertPanel\Models\ExpertPanel',
-            'subject_id' => $this->application->id,
+            'subject_id' => $this->expertPanel->id,
             'description' => $this->document->type->name.' version '.$this->document->version.' marked final.'
         ]);
     }

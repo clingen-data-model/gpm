@@ -12,7 +12,7 @@ class UpdateLogEntry
 {
     use Dispatchable;
 
-    private ExpertPanel  $application;
+    private ExpertPanel  $expertPanel;
     private Activity $logEntry;
 
     /**
@@ -21,14 +21,14 @@ class UpdateLogEntry
      * @return void
      */
     public function __construct(
-        string $applicationUuid,
+        string $expertPanelUuid,
         int $logEntryId,
         private string $logDate,
         private string $entry,
         private ?int $step = null
     ) {
-        $this->application = ExpertPanel::findByUuidOrFail($applicationUuid);
-        $this->logEntry = $this->application->logEntries()->findOrFail($logEntryId);
+        $this->expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
+        $this->logEntry = $this->expertPanel->logEntries()->findOrFail($logEntryId);
     }
 
     /**

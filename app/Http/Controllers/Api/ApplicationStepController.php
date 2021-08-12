@@ -30,7 +30,7 @@ class ApplicationStepController extends Controller
             })
             ->toArray();
             $job = new ApproveStep(
-                applicationUuid: $uuid,
+                expertPanelUuid: $uuid,
                 dateApproved: $request->date_approved,
                 notifyContacts: ($request->has('notify_contacts')) ? $request->notify_contacts : false,
                 subject: $request->subject,
@@ -48,12 +48,12 @@ class ApplicationStepController extends Controller
         }
     }
 
-    public function updateApprovalDate($applicationUuid, UpdateApprovalDateRequest $request)
+    public function updateApprovalDate($expertPanelUuid, UpdateApprovalDateRequest $request)
     {
-        $job = new UpdateApprovalDate(applicationUuid: $applicationUuid, step: $request->step, dateApproved: $request->date_approved);
+        $job = new UpdateApprovalDate(expertPanelUuid: $expertPanelUuid, step: $request->step, dateApproved: $request->date_approved);
         
         $this->dispatcher->dispatch($job);
 
-        return ExpertPanel::findByUuidOrFail($applicationUuid);
+        return ExpertPanel::findByUuidOrFail($expertPanelUuid);
     }
 }

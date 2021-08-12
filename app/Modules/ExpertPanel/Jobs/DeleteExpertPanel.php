@@ -10,16 +10,16 @@ class DeleteExpertPanel
 {
     use Dispatchable;
 
-    private ExpertPanel  $application;
+    private ExpertPanel  $expertPanel;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(String $applicationUuid)
+    public function __construct(String $expertPanelUuid)
     {
-        $this->application = ExpertPanel::findByUuidOrFail($applicationUuid);
+        $this->expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
     }
 
     /**
@@ -29,8 +29,8 @@ class DeleteExpertPanel
      */
     public function handle()
     {
-        $this->application->delete();
+        $this->expertPanel->delete();
 
-        event(new ExpertPanelDeleted(application: $this->application));
+        event(new ExpertPanelDeleted(application: $this->expertPanel));
     }
 }

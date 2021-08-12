@@ -28,7 +28,7 @@ class UploadTest extends TestCase
         $this->seed();
 
         $this->user = User::factory()->create();
-        $this->application = ExpertPanel::factory()->create();
+        $this->expertPanel = ExpertPanel::factory()->create();
     }
 
     /**
@@ -41,7 +41,7 @@ class UploadTest extends TestCase
         $data = $this->makeDocumentUploadRequestData();
 
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/documents', $data);
+        $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/documents', $data);
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -52,7 +52,7 @@ class UploadTest extends TestCase
             'notes' => 'this is a note',
             'metadata' => null,
             'version' => 1,
-            'application_id' => $this->application->id,
+            'application_id' => $this->expertPanel->id,
             'notes' => 'this is a test'
         ]);
 
@@ -66,17 +66,17 @@ class UploadTest extends TestCase
      */
     public function sets_version_based_existing_versions()
     {
-        $this->application->addDocument(Document::factory()->make(['document_type_id' => 1]));
+        $this->expertPanel->addDocument(Document::factory()->make(['document_type_id' => 1]));
 
         $data = $this->makeDocumentUploadRequestData();
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/documents', $data);
+        $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/documents', $data);
 
         $response->assertStatus(200);
         $response->assertJson([
                 'uuid' => $data['uuid'],
                 'version' => 2,
-                'application_id' => $this->application->id
+                'application_id' => $this->expertPanel->id
             ]);
     }
 
@@ -86,7 +86,7 @@ class UploadTest extends TestCase
     public function validates_required_fields()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/documents', [])
+        $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/documents', [])
             ->assertStatus(422)
             ->assertJsonFragment([
                 'uuid' => ['The uuid field is required.'],
@@ -108,7 +108,7 @@ class UploadTest extends TestCase
         ];
 
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/documents', $data)
+        $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/documents', $data)
             ->assertStatus(422)
             ->assertJsonFragment([
                 'uuid' => ['The uuid must be a valid UUID.'],
@@ -129,7 +129,7 @@ class UploadTest extends TestCase
         $data['is_final'] = true;
 
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/documents', $data);
+        $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/documents', $data);
 
         $response->assertStatus(200);
         $response->assertJson([

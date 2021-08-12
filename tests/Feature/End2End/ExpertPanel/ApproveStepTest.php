@@ -27,8 +27,8 @@ class ApproveStepTest extends TestCase
         parent::setup();
         $this->seed();
         $this->person = Person::factory()->create();
-        $this->application = ExpertPanel::factory()->vcep()->create();
-        Bus::dispatch(new AddContact($this->application->uuid, $this->person->uuid));
+        $this->expertPanel = ExpertPanel::factory()->vcep()->create();
+        Bus::dispatch(new AddContact($this->expertPanel->uuid, $this->person->uuid));
 
         $this->user = User::factory()->create();
     }
@@ -43,12 +43,12 @@ class ApproveStepTest extends TestCase
         ];
 
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $this->json('POST', '/api/applications/'.$this->application->uuid.'/current-step/approve', $approvalData)
+        $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/current-step/approve', $approvalData)
             ->assertStatus(200)
-            ->assertJson($this->application->fresh()->toArray());
+            ->assertJson($this->expertPanel->fresh()->toArray());
 
         $this->assertDatabaseHas('applications', [
-            'uuid' => $this->application->uuid,
+            'uuid' => $this->expertPanel->uuid,
             'current_step' => (string)2,
             'approval_dates' => json_encode([
                 'step 1' => $approvalData['date_approved'],
@@ -82,7 +82,7 @@ class ApproveStepTest extends TestCase
         ];
 
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $this->json('POST', '/api/applications/'.$this->application->uuid.'/current-step/approve', $approvalData)
+        $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/current-step/approve', $approvalData)
             ->assertStatus(422)
             ->assertJsonFragment(['date_approved' => ['The date approved is not a valid date.']]);
     }
@@ -99,7 +99,7 @@ class ApproveStepTest extends TestCase
 
         Notification::fake();
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $this->json('POST', '/api/applications/'.$this->application->uuid.'/current-step/approve', $approvalData)
+        $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/current-step/approve', $approvalData)
             ->assertStatus(200);
 
         Notification::assertNothingSent();
@@ -111,7 +111,7 @@ class ApproveStepTest extends TestCase
     public function sends_notification_to_contacts_if_specified()
     {
         $person = Person::factory()->create();
-        AddContact::dispatch($this->application->uuid, $person->uuid);
+        AddContact::dispatch($this->expertPanel->uuid, $person->uuid);
 
         $subject = 'This is a <strong>test</strong> custom message';
         $body = '<p>this is the body of a <em>custom message<em>.</p>';
@@ -125,7 +125,7 @@ class ApproveStepTest extends TestCase
 
         Notification::fake();
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $this->json('POST', '/api/applications/'.$this->application->uuid.'/current-step/approve', $approvalData)
+        $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/current-step/approve', $approvalData)
             ->assertStatus(200);
 
         Notification::assertSentTo(

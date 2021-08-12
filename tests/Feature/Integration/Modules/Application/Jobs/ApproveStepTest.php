@@ -19,10 +19,10 @@ class ApproveStepTest extends TestCase
     public function fires_StepApproved_event_when_step_approved_and_logs_activity()
     {
         $this->seed();
-        $application = ExpertPanel::factory()->create();
+        $expertPanel = ExpertPanel::factory()->create();
 
         $dateApproved = Carbon::today();
-        ApproveStep::dispatch($application->uuid, $dateApproved);
+        ApproveStep::dispatch($expertPanel->uuid, $dateApproved);
 
         // $this->assertDatabaseHas('activity_log', [
         //     'log_name' => 'applications',
@@ -32,7 +32,7 @@ class ApproveStepTest extends TestCase
         //     'properties->step' => 1
         // ]);
         $this->assertLoggedActivity(
-            $application, 
+            $expertPanel, 
             'Step 1 approved', 
             [
                 'date_approved' => $dateApproved->toIsoString(), 

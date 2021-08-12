@@ -24,10 +24,10 @@ class UpdateDocumentInfoTest extends TestCase
         $this->seed();
         $this->user = User::factory()->create();
         Sanctum::actingAs($this->user);
-        $this->application = ExpertPanel::factory()->create();
+        $this->expertPanel = ExpertPanel::factory()->create();
         $this->document = Document::factory()->make();
-        $this->application->documents()->save($this->document);
-        $this->docUrl = '/api/applications/'.$this->application->uuid.'/documents/'.$this->document->uuid;
+        $this->expertPanel->documents()->save($this->document);
+        $this->docUrl = '/api/applications/'.$this->expertPanel->uuid.'/documents/'.$this->document->uuid;
         Carbon::setTestNow('2021-02-01');
     }
 

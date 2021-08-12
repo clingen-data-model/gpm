@@ -11,7 +11,7 @@ class AddApplicationDocument
 {
     use Dispatchable;
 
-    private ExpertPanel  $application;
+    private ExpertPanel  $expertPanel;
     private Carbon $dateReceived;
 
     /**
@@ -20,7 +20,7 @@ class AddApplicationDocument
      * @return void
      */
     public function __construct(
-        private string $applicationUuid,
+        private string $expertPanelUuid,
         private string $uuid,
         private string $filename,
         private string $storage_path,
@@ -31,7 +31,7 @@ class AddApplicationDocument
         private ?bool $is_final = false,
         private ?string $notes = null
     ) {
-        $this->application = ExpertPanel::findByUuidOrFail($applicationUuid);
+        $this->expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         $this->dateReceived = $date_received ? Carbon::parse($date_received) : Carbon::now();
     }
 
@@ -54,6 +54,6 @@ class AddApplicationDocument
             'notes' => $this->notes
         ]);
         
-        $this->application->addDocument($document);
+        $this->expertPanel->addDocument($document);
     }
 }

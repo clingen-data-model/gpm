@@ -7,16 +7,16 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 
 class UnexpectedCurrentStepException extends Exception
 {
-    public function __construct(private ExpertPanel  $application)
+    public function __construct(private ExpertPanel  $expertPanel)
     {
-        $message = 'Unexpected step '.$application->current_step.' for application with uuid '.$application->uuid;
+        $message = 'Unexpected step '.$expertPanel->current_step.' for application with uuid '.$expertPanel->uuid;
         parent::__construct($message, 422);
     }
     
 
     public function getApplication()
     {
-        return $this->application;
+        return $this->expertPanel;
     }
     
 }

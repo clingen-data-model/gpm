@@ -18,7 +18,7 @@ class CreateNextAction
      * @return void
      */
     public function __construct(
-        private string $applicationUuid,
+        private string $expertPanelUuid,
         private string $uuid,
         private string $entry,
         private string $dateCreated,
@@ -37,7 +37,7 @@ class CreateNextAction
      */
     public function handle()
     {
-        $application = ExpertPanel::findByUuidOrFail($this->applicationUuid);
+        $expertPanel = ExpertPanel::findByUuidOrFail($this->expertPanelUuid);
         $nextAction = NextAction::make([
             'uuid' => $this->uuid,
             'entry' => $this->entry,
@@ -49,9 +49,9 @@ class CreateNextAction
             'assigned_to_name' => $this->assignedToName
         ]);
 
-        $application->nextActions()->save($nextAction);
-        $application->touch();
+        $expertPanel->nextActions()->save($nextAction);
+        $expertPanel->touch();
         
-        Event::dispatch(new NextActionAdded($application, $nextAction));
+        Event::dispatch(new NextActionAdded($expertPanel, $nextAction));
     }
 }

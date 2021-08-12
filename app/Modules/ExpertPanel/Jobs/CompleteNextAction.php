@@ -17,7 +17,7 @@ class CompleteNextAction
      *
      * @return void
      */
-    public function __construct(private string $applicationUuid, private string $nextActionUuid, private string $dateCompleted)
+    public function __construct(private string $expertPanelUuid, private string $nextActionUuid, private string $dateCompleted)
     {
         //
     }
@@ -29,13 +29,13 @@ class CompleteNextAction
      */
     public function handle()
     {
-        $application = ExpertPanel::findByUuidOrFail($this->applicationUuid);
+        $expertPanel = ExpertPanel::findByUuidOrFail($this->expertPanelUuid);
         $nextAction = NextAction::findByUuidOrFail($this->nextActionUuid);
 
         $nextAction->date_completed = $this->dateCompleted;
         $nextAction->save();
-        $application->touch();
+        $expertPanel->touch();
 
-        Event::dispatch(new NextActionCompleted(application: $application, nextAction: $nextAction));
+        Event::dispatch(new NextActionCompleted(application: $expertPanel, nextAction: $nextAction));
     }
 }

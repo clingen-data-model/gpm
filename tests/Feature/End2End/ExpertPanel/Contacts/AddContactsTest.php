@@ -21,7 +21,7 @@ class AddContactsTest extends TestCase
     {
         parent::setup();
         $this->seed();    
-        $this->application = ExpertPanel::factory()->create();    
+        $this->expertPanel = ExpertPanel::factory()->create();    
         $this->user = User::factory()->create();
     }
     
@@ -34,14 +34,14 @@ class AddContactsTest extends TestCase
         $person = Person::factory()->create();
 
         Sanctum::actingAs($this->user);
-        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', ['person_uuid' => $person->uuid]);
+        $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/contacts', ['person_uuid' => $person->uuid]);
         $response->assertStatus(200);
         $response->assertJson([
             'email' => $person->email,
             'uuid' => $person->uuid
         ]);
         $this->assertDatabaseHas('application_person', [
-            'application_id' => $this->application->id,
+            'application_id' => $this->expertPanel->id,
             'person_id' => $person->id
         ]);
     }
@@ -53,7 +53,7 @@ class AddContactsTest extends TestCase
     {
         $data = [];
         Sanctum::actingAs($this->user);
-        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', $data);
+        $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/contacts', $data);
 
         $response->assertStatus(422);
 
@@ -65,7 +65,7 @@ class AddContactsTest extends TestCase
         ]);
 
 
-        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', ['person_uuid'=>'this-is-not-a-uuid']);
+        $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/contacts', ['person_uuid'=>'this-is-not-a-uuid']);
 
         $response->assertStatus(422);
 
@@ -78,7 +78,7 @@ class AddContactsTest extends TestCase
 
         $uuid = Uuid::uuid4()->toString();
 
-        $response = $this->json('POST', '/api/applications/'.$this->application->uuid.'/contacts', ['person_uuid' => $uuid]);
+        $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/contacts', ['person_uuid' => $uuid]);
 
         $response->assertStatus(422);
 
@@ -98,9 +98,9 @@ class AddContactsTest extends TestCase
         $contacts = Person::factory(2)->create();
 
         $contacts->each(function ($contact) {
-            $this->application->addContact($contact);
+            $this->expertPanel->addContact($contact);
         //     $job = new AddContact(
-        //         applicationUuid: $this->application->uuid, 
+        //         expertPanelUuid: $this->expertPanel->uuid, 
         //         uuid: Uuid::uuid4(),
         //         first_name: $contact->first_name,
         //         last_name: $contact->last_name,
@@ -111,7 +111,7 @@ class AddContactsTest extends TestCase
         });
 
         Sanctum::actingAs($this->user);
-        $response = $this->json('GET', '/api/applications/'.$this->application->uuid.'/contacts');
+        $response = $this->json('GET', '/api/applications/'.$this->expertPanel->uuid.'/contacts');
         $response->assertStatus(200);
         $response->assertJson($contacts->toArray());
     }

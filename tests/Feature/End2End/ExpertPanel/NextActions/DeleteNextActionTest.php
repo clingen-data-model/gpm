@@ -28,11 +28,11 @@ class DeleteNextActionTest extends TestCase
 
         $this->user = User::factory()->create();
         Sanctum::actingAs($this->user);
-        $this->application = ExpertPanel::factory()->create();
-        $this->baseUrl = '/api/applications/'.$this->application->uuid.'/next-actions';
+        $this->expertPanel = ExpertPanel::factory()->create();
+        $this->baseUrl = '/api/applications/'.$this->expertPanel->uuid.'/next-actions';
 
         Bus::dispatch(new CreateNextAction(
-            applicationUuid: $this->application->uuid,
+            expertPanelUuid: $this->expertPanel->uuid,
             uuid: Uuid::uuid4(),
             dateCreated: '2020-01-01',
             entry: 'This is a next action',
@@ -40,7 +40,7 @@ class DeleteNextActionTest extends TestCase
             assignedTo: 1,
             step: 1
         ));
-        $this->nextAction = $this->application->refresh()->nextActions->first();
+        $this->nextAction = $this->expertPanel->refresh()->nextActions->first();
     }
 
     /**

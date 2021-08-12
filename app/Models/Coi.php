@@ -48,7 +48,7 @@ class Coi extends Model
             ->filter()
             ->toArray();
 
-        $responseData['application_id'] = $this->application_id;
+        $responseData['application_id'] = $this->expertPanel_id;
         
         return $responseData;
     }
@@ -91,11 +91,11 @@ class Coi extends Model
     /**
      * SCOPES
      */
-    public function scopeForApplication($query, $application)
+    public function scopeForApplication($query, $expertPanel)
     {
-        $id = $application;
-        if ($application instanceof Application) {
-            $id = $application->id;
+        $id = $expertPanel;
+        if ($expertPanel instanceof Application) {
+            $id = $expertPanel->id;
         }
         return $query->where('application_id', $id);
     }
