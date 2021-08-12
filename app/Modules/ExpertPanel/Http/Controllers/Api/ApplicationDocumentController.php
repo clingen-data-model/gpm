@@ -16,6 +16,7 @@ use App\Modules\ExpertPanel\Http\Requests\ApplicationDocumentStoreRequest;
 use App\Modules\ExpertPanel\Jobs\AddApplicationDocument;
 use App\Modules\ExpertPanel\Http\Requests\DocumentUpdateInfoRequest;
 use App\Models\Document;
+use App\Modules\ExpertPanel\Actions\AddApplicationDocument as ActionsAddApplicationDocument;
 
 class ApplicationDocumentController extends Controller
 {
@@ -44,11 +45,10 @@ class ApplicationDocumentController extends Controller
 
         $data['storage_path'] = $path;
         $data['filename'] = $file->getClientOriginalName();
+        $data['expertPanelUuid'] = $expertPanelUuid;
 
-        $command = new AddApplicationDocument($expertPanelUuid, ...$data);
-        $this->dispatcher->dispatch($command);
-
-        $newDocument = Document::findByUuid($request->uuid);
+        $action = new ActionsAddApplicationDocument();
+        $newDocument = $action->handle(...$data);
 
         return $newDocument->toArray();
     }

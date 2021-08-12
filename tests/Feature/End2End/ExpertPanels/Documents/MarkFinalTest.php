@@ -40,7 +40,7 @@ class MarkFinalTest extends TestCase
         $this->call('POST', $this->docUrl)
             ->assertStatus(200)
             ->assertJsonFragment([
-                'is_final' => "1"
+                'is_final' => 1
             ]);
     }
 
@@ -55,7 +55,7 @@ class MarkFinalTest extends TestCase
         $this->call('POST', $this->docUrl)
             ->assertStatus(200)
             ->assertJsonFragment([
-                'is_final' => "1"
+                'is_final' => 1
             ]);
 
         $this->assertDatabaseHas('documents', [
@@ -73,7 +73,7 @@ class MarkFinalTest extends TestCase
         $this->call('POST', $this->docUrl)
             ->assertStatus(200)
             ->assertJsonFragment([
-                'is_final' => "1"
+                'is_final' => 1
             ]);
 
         $this->assertDatabaseHas('activity_log', [
