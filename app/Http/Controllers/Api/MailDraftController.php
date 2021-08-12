@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
-use App\Modules\Application\Models\Application;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Notifications\UserDefinedMailNotification;
 
 class MailDraftController extends Controller
@@ -19,7 +19,7 @@ class MailDraftController extends Controller
 
     public function show($applicationUuid, $approvedStepNumber)
     {
-        $application = Application::findByUuidOrFail($applicationUuid);
+        $application = ExpertPanel::findByUuidOrFail($applicationUuid);
 
         if (!isset($this->stepMessages[$approvedStepNumber])) {
             return abort(404);

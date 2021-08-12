@@ -3,12 +3,12 @@
 namespace Tests;
 
 use App\Models\Cdwg;
-use App\Modules\Application\Jobs\AddContact;
+use App\Modules\ExpertPanel\Jobs\AddContact;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Carbon;
 use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\Application\Models\Application;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Bus;
 
@@ -52,7 +52,7 @@ abstract class TestCase extends BaseTestCase
         return $contacts;
     }
     
-    protected function addContactToApplication(Application $application)
+    protected function addContactToApplication(ExpertPanel  $application)
     {
         $person = Person::factory()->create();
         $job = new AddContact($application->uuid, $person->uuid);
@@ -73,7 +73,7 @@ abstract class TestCase extends BaseTestCase
         $data = [
             'log_name' => 'applications',
             'description' => $description,
-            'subject_type' => Application::class,
+            'subject_type' => ExpertPanel::class,
             'subject_id' => (string)$application->id,
             'causer_type' => $causer_type,
             'causer_id' => $causer_id,

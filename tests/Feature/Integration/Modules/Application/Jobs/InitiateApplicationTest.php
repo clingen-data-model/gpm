@@ -8,10 +8,10 @@ use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\Application\Models\Application;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Modules\Application\Jobs\InitiateApplication;
-use App\Modules\Application\Events\ApplicationInitiated;
+use App\Modules\ExpertPanel\Jobs\InitiateApplication;
+use App\Modules\ExpertPanel\Events\ApplicationInitiated;
 
 class InitiateApplicationTest extends TestCase
 {
@@ -58,7 +58,7 @@ class InitiateApplicationTest extends TestCase
 
         Bus::dispatch($this->job);
 
-        $application = Application::findByUuidOrFail($this->data['uuid']);
+        $application = ExpertPanel::findByUuidOrFail($this->data['uuid']);
 
         $properties = array_merge($application->only(['uuid','working_name','cdwg_id','ep_type_id','date_initiated','coi_code', 'created_at', 'updated_at']), ['step' => 1]);
 

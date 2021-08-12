@@ -5,7 +5,7 @@ namespace Database\Factories;
 use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use App\Models\Document;
-use App\Modules\Application\Models\Application;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DocumentFactory extends Factory
@@ -24,7 +24,7 @@ class DocumentFactory extends Factory
      */
     public function definition()
     {
-        $application = Application::all()->random() ?? Application::factory()->create();
+        $application = ExpertPanel::all()->random() ?? ExpertPanel::factory()->create();
         return [
             'application_id' => $application->id,
             'uuid' => Uuid::uuid4(),

@@ -7,10 +7,10 @@ use App\Models\NextAction;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\Application\Models\Application;
-use App\Modules\Application\Jobs\CreateNextAction;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Jobs\CreateNextAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Modules\Application\Events\NextActionAdded;
+use App\Modules\ExpertPanel\Events\NextActionAdded;
 
 /**
  * @group next-actions
@@ -23,7 +23,7 @@ class CreateNextActionTest extends TestCase
     {
         parent::setup();
         $this->seed();
-        $this->application = Application::factory()->create();
+        $this->application = ExpertPanel::factory()->create();
     }
     
     /**

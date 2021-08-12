@@ -10,11 +10,11 @@ use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Activitylog\Models\Activity;
-use App\Modules\Application\Jobs\AddLogEntry;
+use App\Modules\ExpertPanel\Jobs\AddLogEntry;
 use Illuminate\Validation\ValidationException;
-use App\Modules\Application\Models\Application;
-use App\Modules\Application\Jobs\DeleteLogEntry;
-use App\Modules\Application\Jobs\UpdateLogEntry;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Jobs\DeleteLogEntry;
+use App\Modules\ExpertPanel\Jobs\UpdateLogEntry;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use App\Http\Requests\UpdateApplicationLogEntryRequest;
 use App\Http\Requests\Applications\CreateApplicationLogEntryRequest;
@@ -27,7 +27,7 @@ class ApplicationLogController extends Controller
 
     public function index($applicationUuid, Request $request)
     {
-        $application = Application::findByUuidOrFail($applicationUuid);
+        $application = ExpertPanel::findByUuidOrFail($applicationUuid);
         return $application->logEntries()->with([
             'causer' => function (MorphTo $morphTo) {
                 $morphTo;
@@ -46,7 +46,7 @@ class ApplicationLogController extends Controller
         );
         $this->dispatcher->dispatch($job);
 
-        $logEntry = Application::latestLogEntryForUuid($applicationUuid);
+        $logEntry = ExpertPanel::latestLogEntryForUuid($applicationUuid);
         $logEntry->load(['causer']);
         return $logEntry;
     }
@@ -62,7 +62,7 @@ class ApplicationLogController extends Controller
         );
         Bus::dispatch($job);
 
-        $logEntry = Application::latestLogEntryForUuid($applicationUuid);
+        $logEntry = ExpertPanel::latestLogEntryForUuid($applicationUuid);
         $logEntry->load(['causer']);
         return $logEntry;
     }

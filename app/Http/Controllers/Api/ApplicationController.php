@@ -8,12 +8,12 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Bus\Dispatcher;
-use App\Modules\Application\Jobs\AddContact;
-use App\Modules\Application\Models\Application;
+use App\Modules\ExpertPanel\Jobs\AddContact;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Http\Requests\InitiateApplicationRequest;
-use App\Modules\Application\Jobs\DeleteApplication;
-use App\Modules\Application\Jobs\InitiateApplication;
-use App\Modules\Application\Jobs\UpdateExpertPanelAttributes;
+use App\Modules\ExpertPanel\Jobs\DeleteApplication;
+use App\Modules\ExpertPanel\Jobs\InitiateApplication;
+use App\Modules\ExpertPanel\Jobs\UpdateExpertPanelAttributes;
 use App\Http\Requests\Applications\UpdateExpertPanelAttributesRequest;
 
 class ApplicationController extends Controller
@@ -32,7 +32,7 @@ class ApplicationController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Application::query()->select('applications.*')->with('cdwg', 'logEntries', 'nextActions');
+        $query = ExpertPanel::query()->select('applications.*')->with('cdwg', 'logEntries', 'nextActions');
         if ($request->has('sort')) {
             $field = $request->sort['field'];
             // dd($field);
@@ -44,7 +44,7 @@ class ApplicationController extends Controller
             } elseif ($field == 'latestLogEntry.created_at') {
                 $subQuery = DB::table('activity_log')
                                 ->select('subject_id', DB::raw('MAX(created_at) as latest_activity_at'))
-                                ->where('subject_type', Application::class)
+                                ->where('subject_type', ExpertPanel::class)
                                 ->groupBy('subject_id');
 
                 $query->leftJoinSub($subQuery, 'latest_activity', function ($join) {
@@ -95,7 +95,7 @@ class ApplicationController extends Controller
         $job = new InitiateApplication(...$data);
         $this->dispatcher->dispatchNow($job);
 
-        $application = Application::findByUuid($request->uuid);
+        $application = ExpertPanel::findByUuid($request->uuid);
         
         return $application;
     }
@@ -109,7 +109,7 @@ class ApplicationController extends Controller
      */
     public function show($uuid, Request $request)
     {
-        $application = Application::findByUuidOrFail($uuid);
+        $application = ExpertPanel::findByUuidOrFail($uuid);
         $application->load(['latestLogEntry', 'cdwg', 'type', 'contacts', 'nextActions']);
         if ($request->has('with')) {
             $application->load($request->with);
@@ -133,7 +133,7 @@ class ApplicationController extends Controller
             )
         );
 
-        $application = Application::findByUuidOrFail($uuid);
+        $application = ExpertPanel::findByUuidOrFail($uuid);
 
         return $application;
     }

@@ -7,11 +7,11 @@ use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Bus;
-use App\Modules\Application\Jobs\ApproveStep;
-use App\Modules\Application\Models\Application;
-use App\Modules\Application\Jobs\CreateNextAction;
-use App\Modules\Application\Jobs\AddApplicationDocument;
-use App\Modules\Application\Jobs\CompleteNextAction;
+use App\Modules\ExpertPanel\Jobs\ApproveStep;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Jobs\CreateNextAction;
+use App\Modules\ExpertPanel\Jobs\AddApplicationDocument;
+use App\Modules\ExpertPanel\Jobs\CompleteNextAction;
 
 class CreateApplicationsFromCommands extends Command
 {
@@ -64,7 +64,7 @@ class CreateApplicationsFromCommands extends Command
     {
         $faker = \Faker\Factory::create();
         $lastApprovedStep = $this->option('last-approval', null);
-        $application = Application::initiate(...[
+        $application = ExpertPanel::initiate(...[
             'uuid' => $uuid,
             'working_name' => ucwords(join(' ', $faker->words(4))),
             'cdwg_id' => $cdwgId,

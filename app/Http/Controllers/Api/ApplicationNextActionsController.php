@@ -8,10 +8,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Bus\Dispatcher;
 use App\Http\Requests\UpdateNextActionRequest;
-use App\Modules\Application\Jobs\CreateNextAction;
-use App\Modules\Application\Jobs\DeleteNextAction;
-use App\Modules\Application\Jobs\UpdateNextAction;
-use App\Modules\Application\Jobs\CompleteNextAction;
+use App\Modules\ExpertPanel\Jobs\CreateNextAction;
+use App\Modules\ExpertPanel\Jobs\DeleteNextAction;
+use App\Modules\ExpertPanel\Jobs\UpdateNextAction;
+use App\Modules\ExpertPanel\Jobs\CompleteNextAction;
 use App\Http\Requests\Applications\CreateNextActionRequest;
 use App\Http\Requests\Applications\CompleteNextActionRequest;
 

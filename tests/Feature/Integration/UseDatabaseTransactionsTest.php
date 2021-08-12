@@ -7,7 +7,7 @@ use App\Modules\User\Models\User;
 use Illuminate\Contracts\Bus\Dispatcher;
 use App\Jobs\Pipes\UseDatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\Application\Models\Application;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UseDatabaseTransactionsTest extends TestCase
@@ -49,7 +49,7 @@ class UseDatabaseTransactionsTest extends TestCase
         $this->dispatcher->dispatch(function () use ($user) {
             
             $user->save();
-            Application::factory()->create(['working_name' => 'test application']);
+            ExpertPanel::factory()->create(['working_name' => 'test application']);
         });
 
         $this->assertDatabaseHas('users', $user->getAttributes());

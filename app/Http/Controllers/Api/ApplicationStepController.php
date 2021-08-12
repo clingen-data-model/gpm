@@ -6,14 +6,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Bus\Dispatcher;
-use App\Modules\Application\Jobs\ApproveStep;
-use App\Modules\Application\Models\Application;
+use App\Modules\ExpertPanel\Jobs\ApproveStep;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Http\Requests\UpdateApprovalDateRequest;
 use App\Http\Requests\ApplicationApprovalRequest;
 use App\Notifications\ValueObjects\MailAttachment;
-use App\Modules\Application\Jobs\UpdateApprovalDate;
-use App\Modules\Application\Service\StepManagerFactory;
-use App\Modules\Application\Exceptions\UnmetStepRequirementsException;
+use App\Modules\ExpertPanel\Jobs\UpdateApprovalDate;
+use App\Modules\ExpertPanel\Service\StepManagerFactory;
+use App\Modules\ExpertPanel\Exceptions\UnmetStepRequirementsException;
 
 class ApplicationStepController extends Controller
 {
@@ -39,7 +39,7 @@ class ApplicationStepController extends Controller
             );
             $this->dispatcher->dispatch($job);
 
-            return Application::findByUuidOrFail($uuid);
+            return ExpertPanel::findByUuidOrFail($uuid);
         } catch (UnmetStepRequirementsException $e) {
             return response([
                 'message' => $e->getMessage(),
@@ -54,6 +54,6 @@ class ApplicationStepController extends Controller
         
         $this->dispatcher->dispatch($job);
 
-        return Application::findByUuidOrFail($applicationUuid);
+        return ExpertPanel::findByUuidOrFail($applicationUuid);
     }
 }

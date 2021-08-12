@@ -2,12 +2,13 @@
 
 namespace App\Listeners;
 
-use App\Modules\Application\Events\ApplicationEvent;
-use App\Modules\Application\Events\ApplicationInitiated;
 use App\Events\RecordableEvent;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Modules\ExpertPanel\Events\ApplicationEvent;
+use App\Modules\ExpertPanel\Events\ExpertPanelEvent;
+use App\Modules\ExpertPanel\Events\ApplicationInitiated;
 
 class RecordEvent
 {
@@ -45,7 +46,7 @@ class RecordEvent
         $properties['activity_type'] = $event->getActivityType();
             
         if ($properties) {
-            if ($event instanceof ApplicationEvent && !isset($properties['step'])) {
+            if ($event instanceof ExpertPanelEvent && !isset($properties['step'])) {
                 $properties['step'] = $event->getStep();
             }
         }

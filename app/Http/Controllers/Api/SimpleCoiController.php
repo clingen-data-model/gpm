@@ -9,8 +9,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CoiStorageRequest;
 use Illuminate\Contracts\Bus\Dispatcher;
-use App\Modules\Application\Models\Application;
-use App\Modules\Application\Jobs\StoreCoiResponse;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Jobs\StoreCoiResponse;
 
 class SimpleCoiController extends Controller
 {
@@ -24,7 +24,7 @@ class SimpleCoiController extends Controller
 
     public function getApplication($code)
     {
-        $application = Application::findByCoiCodeOrFail($code);
+        $application = ExpertPanel::findByCoiCodeOrFail($code);
 
         return $application;
     }
@@ -39,7 +39,7 @@ class SimpleCoiController extends Controller
 
     public function getReport($coiCode)
     {
-        $application = Application::findByCoiCodeOrFail($coiCode);
+        $application = ExpertPanel::findByCoiCodeOrFail($coiCode);
 
         $coiDefinition = Coi::getDefinition();
         $questions = collect($coiDefinition->questions)->keyBy('name');

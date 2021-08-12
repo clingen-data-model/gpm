@@ -7,13 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AddContactRequest;
 use Illuminate\Contracts\Bus\Dispatcher;
 use App\Modules\Person\Models\Person;
-use App\Modules\Application\Jobs\AddContact;
-use App\Modules\Application\Jobs\RemoveContact;
-use App\Modules\Application\Models\Application;
+use App\Modules\ExpertPanel\Jobs\AddContact;
+use App\Modules\ExpertPanel\Jobs\RemoveContact;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\ApplicationContactRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Modules\Application\Exceptions\PersonNotContactException;
+use App\Modules\ExpertPanel\Exceptions\PersonNotContactException;
 
 class ApplicationContactController extends Controller
 {
@@ -22,7 +22,7 @@ class ApplicationContactController extends Controller
 
     public function index($applicationUuid)
     {
-        $application = Application::findByUuidOrFail($applicationUuid);
+        $application = ExpertPanel::findByUuidOrFail($applicationUuid);
 
         return $application->contacts;
     }
@@ -36,7 +36,7 @@ class ApplicationContactController extends Controller
 
         $this->dispatcher->dispatchNow($job);
        
-        $person = Application::findByUuid($applicationUuid)->contacts()->where('uuid', $request->person_uuid)->sole();
+        $person = ExpertPanel::findByUuid($applicationUuid)->contacts()->where('uuid', $request->person_uuid)->sole();
 
         return $person;
     }

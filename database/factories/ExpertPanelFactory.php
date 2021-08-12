@@ -2,7 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\ExpertPanel;
+use Carbon\Carbon;
+use App\Models\Cdwg;
+use Ramsey\Uuid\Uuid;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ExpertPanelFactory extends Factory
@@ -21,8 +24,43 @@ class ExpertPanelFactory extends Factory
      */
     public function definition()
     {
+        $cdwg = Cdwg::all()->random();
         return [
-            //
+            'uuid' => Uuid::uuid4()->toString(),
+            'working_name' => uniqid().' ExpertPanel',
+            'cdwg_id' => $cdwg->id,
+            'ep_type_id' => 1,
+            'date_initiated' => Carbon::now(),
+            'current_step' => 1,
+            'coi_code' => bin2hex(random_bytes(12))
         ];
     }
+
+    public function gcep()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'ep_type_id' => config('expert_panels.types.gcep.id')
+            ];
+        });
+    }
+    
+    public function vcep()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'ep_type_id' => config('expert_panels.types.vcep.id')
+            ];
+        });
+    }
+
+    public function randomStep()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'current_step' => $this->faker->randomElement(range(1,4))
+            ];
+        });
+    }
+    
 }
