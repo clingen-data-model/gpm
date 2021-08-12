@@ -9,7 +9,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 
-class DeleteExpertPanelTest extends TestCase
+class DeleteApplicationTest extends TestCase
 {
     use RefreshDatabase;
 
