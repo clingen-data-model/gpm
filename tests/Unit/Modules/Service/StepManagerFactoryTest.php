@@ -4,15 +4,15 @@ namespace Tests\Unit\Modules\Service;
 
 use Tests\TestCase;
 use Illuminate\Support\Carbon;
-use App\Modules\Application\Models\Application;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Modules\Application\Service\StepManagerFactory;
-use App\Modules\Application\Service\Steps\VcepDraftStepManager;
-use App\Modules\Application\Service\Steps\VcepPilotStepManager;
-use App\Modules\Application\Service\Steps\VcepFinalizeStepManager;
-use App\Modules\Application\Service\Steps\GcepDefinitionStepManager;
-use App\Modules\Application\Service\Steps\VcepDefinitionStepManager;
-use App\Modules\Application\Exceptions\UnexpectedCurrentStepException;
+use App\Modules\ExpertPanel\Service\StepManagerFactory;
+use App\Modules\ExpertPanel\Service\Steps\VcepDraftStepManager;
+use App\Modules\ExpertPanel\Service\Steps\VcepPilotStepManager;
+use App\Modules\ExpertPanel\Service\Steps\VcepFinalizeStepManager;
+use App\Modules\ExpertPanel\Service\Steps\GcepDefinitionStepManager;
+use App\Modules\ExpertPanel\Service\Steps\VcepDefinitionStepManager;
+use App\Modules\ExpertPanel\Exceptions\UnexpectedCurrentStepException;
 
 class StepManagerFactoryTest extends TestCase
 {
@@ -73,7 +73,7 @@ class StepManagerFactoryTest extends TestCase
     public function throws_UnexpectedStepException_if_step_cant_be_matched()
     {
         $factory = new StepManagerFactory();    
-        $application = new Application([
+        $application = new ExpertPanel([
             'current_step' => 5,
             'ep_type_id' => 2,
             'cdwg_id' => 1,
@@ -88,7 +88,7 @@ class StepManagerFactoryTest extends TestCase
     private function returnsManagerForTypeAndStep($expectedClass, $epTypeId, $currentStep)
     {
         $factory = new StepManagerFactory();
-        $application = Application::factory()->make(['ep_type_id' => $epTypeId, 'current_step' => $currentStep]);
+        $application = ExpertPanel::factory()->make(['ep_type_id' => $epTypeId, 'current_step' => $currentStep]);
         $stepManager = $factory($application);
 
         $this->assertInstanceOf($expectedClass, $stepManager);

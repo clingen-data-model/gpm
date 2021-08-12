@@ -8,9 +8,9 @@ use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\Application\Models\Application;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Modules\Application\Jobs\AddApplicationDocument;
+use App\Modules\ExpertPanel\Jobs\AddApplicationDocument;
 
 /**
  * @group documents
@@ -25,7 +25,7 @@ class AddApplicationDocumentTest extends TestCase
         parent::setup();
         $this->seed();
         $this->dispatcher = app()->make(Dispatcher::class);
-        $this->application = Application::factory()->create();
+        $this->application = ExpertPanel::factory()->create();
     }
 
     /**

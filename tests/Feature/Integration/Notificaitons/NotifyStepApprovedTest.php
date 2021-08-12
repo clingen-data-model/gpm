@@ -5,8 +5,8 @@ namespace Tests\Feature\Integration\Notificaitons;
 use Tests\TestCase;
 use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\Application\Jobs\ApproveStep;
-use App\Modules\Application\Models\Application;
+use App\Modules\ExpertPanel\Jobs\ApproveStep;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Notifications\UserDefinedMailNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
@@ -21,7 +21,7 @@ class NotifyStepApprovedTest extends TestCase
         parent::setup();
         $this->seed();
         
-        $this->application = Application::factory()->create([
+        $this->application = ExpertPanel::factory()->create([
             'ep_type_id' => config('expert_panels.types.gcep.id')
         ]);
         $this->addContactToApplication($this->application);

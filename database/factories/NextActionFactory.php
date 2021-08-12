@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Modules\Application\Models\Application;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Models\NextAction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -23,7 +23,7 @@ class NextActionFactory extends Factory
     public function definition()
     {
 
-        $applicationId = Application::all()->random()->id;
+        $applicationId = ExpertPanel::all()->random()->id;
         return [
             'uuid' => $this->faker->uuid,
             'entry' => $this->faker->paragraph,

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Modules\Application\Models\Application;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Hamcrest\Type\IsObject;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;

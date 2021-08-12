@@ -8,12 +8,12 @@ use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
-use App\Modules\Application\Models\Application;
-use App\Modules\Application\Jobs\DeleteDocument;
-use App\Modules\Application\Jobs\MarkDocumentFinal;
-use App\Modules\Application\Jobs\UpdateDocumentInfo;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Jobs\DeleteDocument;
+use App\Modules\ExpertPanel\Jobs\MarkDocumentFinal;
+use App\Modules\ExpertPanel\Jobs\UpdateDocumentInfo;
 use App\Http\Requests\ApplicationDocumentStoreRequest;
-use App\Modules\Application\Jobs\AddApplicationDocument;
+use App\Modules\ExpertPanel\Jobs\AddApplicationDocument;
 use App\Http\Requests\Applications\DocumentUpdateInfoRequest;
 use App\Models\Document;
 
@@ -26,7 +26,7 @@ class ApplicationDocumentController extends Controller
 
     public function store($applicationUuid, ApplicationDocumentStoreRequest $request)
     {
-        $application = Application::findByUuidOrFail($applicationUuid);
+        $application = ExpertPanel::findByUuidOrFail($applicationUuid);
 
         $file = $request->file('file');
 

@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Applications;
 
-use App\Modules\Application\Models\Application;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,7 +25,7 @@ class UpdateExpertPanelAttributesRequest extends FormRequest
      */
     public function rules()
     {
-        $application = Application::findByUuidOrFail($this->route('app_uuid'));
+        $application = ExpertPanel::findByUuidOrFail($this->route('app_uuid'));
         return [
             'working_name' => 'required|max:255',
             'cdwg_id' => 'nullable|exists:cdwgs,id',

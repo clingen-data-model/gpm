@@ -6,9 +6,9 @@ use Tests\TestCase;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\Application\Models\Application;
-use App\Modules\Application\Events\CoiCompleted;
-use App\Modules\Application\Jobs\StoreCoiResponse;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Events\CoiCompleted;
+use App\Modules\ExpertPanel\Jobs\StoreCoiResponse;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class StoreCoiResponseTest extends TestCase
@@ -19,7 +19,7 @@ class StoreCoiResponseTest extends TestCase
     {
         parent::setup();
         $this->seed();
-        $this->application = Application::factory()->create();
+        $this->application = ExpertPanel::factory()->create();
         $this->coiData = [
             'email' => 'email@example.com',
             'first_name' => 'test',
