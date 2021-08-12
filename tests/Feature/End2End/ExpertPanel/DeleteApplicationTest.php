@@ -9,7 +9,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 
-class DeleteApplicationTest extends TestCase
+class DeleteExpertPanelTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -57,7 +57,7 @@ class DeleteApplicationTest extends TestCase
         $this->assertDatabaseHas('activity_log', [
             'subject_type' => get_class($this->application),
             'subject_id' => $this->application->id,
-            'activity_type' => 'application-deleted',
+            'activity_type' => 'expert-panel-deleted',
             'causer_type' => get_class($this->user),
             'causer_id' => $this->user->id
         ]);

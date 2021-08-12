@@ -8,7 +8,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Support\Carbon;
 
-class ApplicationDeleted extends ExpertPanelEvent
+class ExpertPanelDeleted extends ExpertPanelEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

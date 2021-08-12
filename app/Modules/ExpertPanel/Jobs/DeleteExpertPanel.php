@@ -4,9 +4,9 @@ namespace App\Modules\ExpertPanel\Jobs;
 
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Events\ApplicationDeleted;
+use App\Modules\ExpertPanel\Events\ExpertPanelDeleted;
 
-class DeleteApplication
+class DeleteExpertPanel
 {
     use Dispatchable;
 
@@ -31,6 +31,6 @@ class DeleteApplication
     {
         $this->application->delete();
 
-        event(new ApplicationDeleted(application: $this->application));
+        event(new ExpertPanelDeleted(application: $this->application));
     }
 }

@@ -11,7 +11,7 @@ use Illuminate\Contracts\Bus\Dispatcher;
 use App\Modules\ExpertPanel\Jobs\AddContact;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Http\Requests\InitiateApplicationRequest;
-use App\Modules\ExpertPanel\Jobs\DeleteApplication;
+use App\Modules\ExpertPanel\Jobs\DeleteExpertPanel;
 use App\Modules\ExpertPanel\Jobs\InitiateApplication;
 use App\Modules\ExpertPanel\Jobs\UpdateExpertPanelAttributes;
 use App\Http\Requests\Applications\UpdateExpertPanelAttributesRequest;
@@ -147,6 +147,6 @@ class ApplicationController extends Controller
      */
     public function destroy($uuid)
     {
-        $this->dispatcher->dispatch(new DeleteApplication(applicationUuid: $uuid));
+        $this->dispatcher->dispatch(new DeleteExpertPanel(applicationUuid: $uuid));
     }
 }
