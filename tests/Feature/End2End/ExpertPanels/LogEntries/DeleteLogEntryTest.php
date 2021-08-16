@@ -3,14 +3,14 @@
 namespace Tests\Feature\End2End\ExpertPanels\LogEntries;
 
 use Tests\TestCase;
+use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Jobs\AddLogEntry;
 use App\Modules\ExpertPanel\Jobs\ApproveStep;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Actions\LogEntryAdd;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Sanctum\Sanctum;
 
 class DeleteLogEntryTest extends TestCase
 {
@@ -26,12 +26,12 @@ class DeleteLogEntryTest extends TestCase
         $this->baseUrl = '/api/applications/'.$this->expertPanel->uuid.'/log-entries';
 
         Bus::dispatch(new ApproveStep(
-            expertPanelUuid: $this->expertPanel->uuid, 
-            dateApproved: '2020-01-01', 
+            expertPanelUuid: $this->expertPanel->uuid,
+            dateApproved: '2020-01-01',
             notifyContacts: false
         ));
         $this->autoEntry = $this->expertPanel->fresh()->latestLogEntry;
-        Bus::dispatch(new AddLogEntry($this->expertPanel->uuid, '2021-01-01', 'test test test'));
+        (new LogEntryAdd)->handle($this->expertPanel->uuid, '2021-01-01', 'test test test');
         $this->logEntry = $this->expertPanel->logEntries->last();
     }
 
@@ -65,6 +65,4 @@ class DeleteLogEntryTest extends TestCase
             'id' => $this->logEntry->id
         ]);
     }
-    
-
 }

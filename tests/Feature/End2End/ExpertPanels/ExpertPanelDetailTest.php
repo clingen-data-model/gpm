@@ -8,14 +8,14 @@ use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Bus;
 use App\Modules\Person\Models\Person;
-use App\Modules\ExpertPanel\Jobs\AddContact;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Jobs\AddLogEntry;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Jobs\CreateNextAction;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Modules\ExpertPanel\Jobs\InitiateApplication;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
+use App\Modules\ExpertPanel\Actions\ContactAdd;
+use App\Modules\ExpertPanel\Actions\LogEntryAdd;
+use App\Modules\ExpertPanel\Jobs\CreateNextAction;
+use App\Modules\ExpertPanel\Jobs\InitiateApplication;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ExpertPanelDetailTest extends TestCase
 {
@@ -51,21 +51,17 @@ class ExpertPanelDetailTest extends TestCase
                 dateCreated: '2020-01-01'
             )
         );
-        Bus::dispatch(
-            new AddLogEntry(
-                expertPanelUuid: $this->uuid,
-                entry: 'TEst me',
-                logDate: Carbon::now()->addDays(1)->toJson()
-            )
+        (new LogEntryAdd)->handle(
+            expertPanelUuid: $this->uuid,
+            entry: 'TEst me',
+            logDate: Carbon::now()->addDays(1)->toJson()
         );
 
         $person = Person::factory()->create();
 
-        Bus::dispatch(
-            new AddContact(
-                expertPanelUuid: $this->uuid,
-                uuid: $person->uuid,
-            )
+        (new ContactAdd)->handle(
+            expertPanelUuid: $this->uuid,
+            uuid: $person->uuid,
         );
 
         $this->expertPanel = ExpertPanel::findByUuidOrFail($this->uuid);

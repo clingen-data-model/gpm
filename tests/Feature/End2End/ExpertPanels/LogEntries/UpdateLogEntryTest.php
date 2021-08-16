@@ -3,13 +3,13 @@
 namespace Tests\Feature\End2End\ExpertPanels\LogEntries;
 
 use Tests\TestCase;
+use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Jobs\AddLogEntry;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Actions\LogEntryAdd;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Sanctum\Sanctum;
 
 class UpdateLogEntryTest extends TestCase
 {
@@ -24,7 +24,7 @@ class UpdateLogEntryTest extends TestCase
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->baseUrl = '/api/applications/'.$this->expertPanel->uuid.'/log-entries';
 
-        Bus::dispatch(new AddLogEntry($this->expertPanel->uuid, '2020-01-01', 'test test test'));
+        (new LogEntryAdd)->handle($this->expertPanel->uuid, '2020-01-01', 'test test test');
         $this->logEntry = $this->expertPanel->fresh()->latestLogEntry;
     }
     
