@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Bus\Dispatcher;
 use App\Modules\ExpertPanel\Http\Requests\UpdateNextActionRequest;
-use App\Modules\ExpertPanel\Jobs\CreateNextAction;
+use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use App\Modules\ExpertPanel\Jobs\DeleteNextAction;
 use App\Modules\ExpertPanel\Jobs\UpdateNextAction;
 use App\Modules\ExpertPanel\Jobs\CompleteNextAction;
@@ -24,7 +24,7 @@ class ApplicationNextActionsController extends Controller
 
     public function store($expertPanelUuid, CreateNextActionRequest $request)
     {
-        $job = new CreateNextAction(
+        return (new NextActionCreate)->handle(
             expertPanelUuid: $expertPanelUuid,
             uuid: $request->uuid,
             entry: $request->entry,
@@ -35,12 +35,6 @@ class ApplicationNextActionsController extends Controller
             assignedTo: $request->assigned_to,
             assignedToName: $request->assigned_to_name
         );
-
-        $this->dispatcher->dispatch($job);
-
-        $nextAction = NextAction::findByUuid($request->uuid);
-
-        return $nextAction;
     }
 
     public function update($expertPanelUuid, $id, UpdateNextActionRequest $request)

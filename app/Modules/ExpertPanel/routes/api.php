@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Actions\ContactRemove;
+use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentDelete;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentUpdate;
@@ -52,7 +53,7 @@ Route::group([
         Route::put('/{app_uuid}/log-entries/{id}', [ApplicationLogController::class, 'update']);
         Route::delete('/{app_uuid}/log-entries/{id}', [ApplicationLogController::class, 'destroy']);
         
-        Route::post('/{app_uuid}/next-actions', [ApplicationNextActionsController::class, 'store']);
+        Route::post('/{app_uuid}/next-actions', NextActionCreate::class);
         Route::put('/{app_uuid}/next-actions/{id}', [ApplicationNextActionsController::class, 'update']);
         Route::delete('/{app_uuid}/next-actions/{id}', [ApplicationNextActionsController::class, 'destroy']);
         Route::post(

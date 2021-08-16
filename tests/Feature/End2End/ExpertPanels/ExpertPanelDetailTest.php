@@ -12,7 +12,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Actions\LogEntryAdd;
-use App\Modules\ExpertPanel\Jobs\CreateNextAction;
+use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use App\Modules\ExpertPanel\Jobs\InitiateApplication;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -43,13 +43,11 @@ class ExpertPanelDetailTest extends TestCase
             step: 1,
             date_received: '2020-01-01'
         );
-        Bus::dispatch(
-            new CreateNextAction(
-                expertPanelUuid: $this->uuid,
-                uuid: Uuid::uuid4()->toString(),
-                entry: 'TEst me',
-                dateCreated: '2020-01-01'
-            )
+        (new NextActionCreate)->handle(
+            expertPanelUuid: $this->uuid,
+            uuid: Uuid::uuid4()->toString(),
+            entry: 'TEst me',
+            dateCreated: '2020-01-01'
         );
         (new LogEntryAdd)->handle(
             expertPanelUuid: $this->uuid,

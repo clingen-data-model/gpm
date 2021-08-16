@@ -9,7 +9,7 @@ use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Jobs\CreateNextAction;
+use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
@@ -31,7 +31,7 @@ class DeleteNextActionTest extends TestCase
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->baseUrl = '/api/applications/'.$this->expertPanel->uuid.'/next-actions';
 
-        Bus::dispatch(new CreateNextAction(
+        (new NextActionCreate)->handle(
             expertPanelUuid: $this->expertPanel->uuid,
             uuid: Uuid::uuid4(),
             dateCreated: '2020-01-01',
@@ -39,7 +39,7 @@ class DeleteNextActionTest extends TestCase
             targetDate: '2020-02-01',
             assignedTo: 1,
             step: 1
-        ));
+        );
         $this->nextAction = $this->expertPanel->refresh()->nextActions->first();
     }
 
