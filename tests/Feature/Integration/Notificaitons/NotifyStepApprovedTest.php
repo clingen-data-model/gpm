@@ -5,7 +5,7 @@ namespace Tests\Feature\Integration\Notificaitons;
 use Tests\TestCase;
 use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Jobs\ApproveStep;
+use App\Modules\ExpertPanel\Actions\StepApprove;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Notifications\UserDefinedMailNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,6 +24,7 @@ class NotifyStepApprovedTest extends TestCase
         $this->expertPanel = ExpertPanel::factory()->create([
             'expert_panel_type' => config('expert_panels.types.gcep.id')
         ]);
+        $this->action = app()->make(StepApprove::class);
         $this->addContactToApplication($this->expertPanel);
         $this->addContactToApplication($this->expertPanel);
     }
@@ -33,10 +34,8 @@ class NotifyStepApprovedTest extends TestCase
      */
     public function does_not_send_StepApprovedNotification_if_notify_contacts_is_false()
     {
-        $job = new ApproveStep($this->expertPanel->uuid, Carbon::now(), false);
         Notification::fake();
-        Bus::dispatch($job);
-
+        $this->action->handle($this->expertPanel->uuid, Carbon::now(), false);
         Notification::assertNothingSent();
     }
 
@@ -45,11 +44,8 @@ class NotifyStepApprovedTest extends TestCase
      */
     public function does_not_send_StepApprovedNotification_if_is_last_step()
     {
-        $job = new ApproveStep($this->expertPanel->uuid, Carbon::now(), true);
         Notification::fake(UserDefinedMailNotification::class);
-
-        Bus::dispatch($job);
-
+        $this->action->handle($this->expertPanel->uuid, Carbon::now(), true);
         Notification::assertSentTo($this->expertPanel->contacts, UserDefinedMailNotification::class);
     }
     
@@ -60,10 +56,8 @@ class NotifyStepApprovedTest extends TestCase
     {
         $this->expertPanel->expert_panel_type_id = config('expert_panels.types.vcep.id');
         $this->expertPanel->save();
-        $job = new ApproveStep($this->expertPanel->uuid, Carbon::now(), true);
         Notification::fake(UserDefinedMailNotification::class);
-
-        Bus::dispatch($job);
+        $this->action->handle($this->expertPanel->uuid, Carbon::now(), true);
 
         Notification::assertSentTo($this->expertPanel->contacts, UserDefinedMailNotification::class);
     }

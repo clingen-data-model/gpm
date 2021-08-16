@@ -7,7 +7,7 @@ use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Bus;
-use App\Modules\ExpertPanel\Jobs\ApproveStep;
+use App\Modules\ExpertPanel\Actions\StepApprove;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use App\Modules\ExpertPanel\Jobs\ApplicationDocumentAdd;
@@ -82,7 +82,7 @@ class CreateApplicationsFromCommands extends Command
             $class = $cmd['class'];
             $args = $cmd['args'];
 
-            if (!is_null($lastApprovedStep) && $class == ApproveStep::class && (int)$cmd['step'] > (int)$lastApprovedStep) {
+            if (!is_null($lastApprovedStep) && $class == StepApprove::class && (int)$cmd['step'] > (int)$lastApprovedStep) {
                 $this->info('Stop building b/c last-approval set to '.$lastApprovedStep);
                 break;
             }
@@ -115,7 +115,7 @@ class CreateApplicationsFromCommands extends Command
                 ],
                 [ // Approve step 1 -> go to step 2
                     'step' => 1,
-                    'class' => ApproveStep::class,
+                    'class' => StepApprove::class,
                     'args' => [
                         'expertPanelUuid' => $uuid,
                         'dateApproved' => Carbon::now()->subDays(14)
@@ -136,7 +136,7 @@ class CreateApplicationsFromCommands extends Command
                 ],
                 [ // Approve step 2 -> go to step 3
                     'step' => 2,
-                    'class' => ApproveStep::class,
+                    'class' => StepApprove::class,
                     'args' => [
                         'expertPanelUuid' => $uuid,
                         'dateApproved' => Carbon::now()->subDays(7)
@@ -189,7 +189,7 @@ class CreateApplicationsFromCommands extends Command
                 ],
                 [ // Approve step 3 -> go to step 4
                     'step' => 3,
-                    'class' => ApproveStep::class,
+                    'class' => StepApprove::class,
                     'args' => [
                         'expertPanelUuid' => $uuid,
                         'dateApproved' => Carbon::now()->subDays(4)
@@ -210,7 +210,7 @@ class CreateApplicationsFromCommands extends Command
                 ],
                 [ // Approve step 4 -> go to step completed
                     'step' => 4,
-                    'class' => ApproveStep::class,
+                    'class' => StepApprove::class,
                     'args' => [
                         'expertPanelUuid' => $uuid,
                         'dateApproved' => Carbon::now()->subDays(1)

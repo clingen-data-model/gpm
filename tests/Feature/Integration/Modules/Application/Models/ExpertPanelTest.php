@@ -46,36 +46,6 @@ class ExpertPanelTest extends TestCase
 
         $this->assertEquals($expertPanel->name, $expertPanel->long_base_name);
     }
-        
-
-
-    /**
-     * @test
-     */
-    public function raises_ApplicationCompleted_event()
-    {
-        $expertPanel = ExpertPanel::factory()->gcep()->create([
-            'current_step' => 1
-        ]);
-    
-        Event::fake();
-        $expertPanel->completeApplication(Carbon::parse('2020-01-01'));
-    
-        Event::assertDispatched(ApplicationCompleted::class);
-    }
-
-    /**
-     * @test
-     */
-    public function logs_Application_completed()
-    {
-        $expertPanel = ExpertPanel::factory()->gcep()->create([
-            'current_step' => 1
-        ]);
-    
-        $expertPanel->completeApplication(Carbon::parse('2020-01-01'));
-        $this->assertLoggedActivity($expertPanel, 'Application completed.');
-    }
 
     /**
      * @test

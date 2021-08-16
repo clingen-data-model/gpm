@@ -72,21 +72,6 @@ class ExpertPanel extends Model
     ];
 
     // Domain methods
-    public function completeNextAction(NextAction $nextAction, string $dateCompleted)
-    {
-    }
-
-    public function completeApplication(Carbon $dateCompleted)
-    {
-        $stepManager = app()->make(StepManagerFactory::class)($this);
-        if ($stepManager->isLastStep()) {
-            $this->date_completed = $dateCompleted;
-            $this->save();
-        }
-
-        Event::dispatch(new ApplicationCompleted($this));
-    }
-
     public function setExpertPanelAttributes(array $attributes)
     {
         $this->fill($attributes);
