@@ -114,39 +114,6 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
-    public function dispatches_ContactRemovedEvent()
-    {
-        $expertPanel = ExpertPanel::factory()->create();
-        $person = Person::factory()->create();
-        (new ContactAdd)->handle($expertPanel->uuid, $person->uuid);
-
-        Event::fake();
-        $expertPanel->removeContact($person);
-
-        Event::assertDispatched(ContactRemoved::class);
-    }
-    
-
-    /**
-     * @test
-     */
-    public function logs_contact_removed()
-    {
-        $expertPanel = ExpertPanel::factory()->create();
-        $person = Person::factory()->create();
-        (new ContactAdd)->handle($expertPanel->uuid, $person->uuid);
-
-        $expertPanel->removeContact($person);
-
-        $this->assertDatabaseHas('activity_log', [
-            'subject_id' => $expertPanel->id,
-            'description' => 'Removed contact '.$person->name
-        ]);
-    }
-
-    /**
-     * @test
-     */
     public function raises_ApplicationCompleted_event()
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create([

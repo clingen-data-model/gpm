@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
+use App\Modules\ExpertPanel\Actions\ContactRemove;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentDelete;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentUpdate;
@@ -34,21 +35,12 @@ Route::group([
         Route::put('/{app_uuid}', [ApplicationController::class, 'update']);
         Route::delete('/{app_uuid}', [ApplicationController::class, 'destroy']);
         
-        // Route::post('/{app_uuid}/contacts', [ApplicationContactController::class, 'store']);
         Route::get('/{app_uuid}/contacts', [ApplicationContactController::class, 'index']);
-        Route::delete('/{app_uuid}/contacts/{person_uuid}', [ApplicationContactController::class, 'remove']);
-
         Route::post('/{app_uuid}/contacts', ContactAdd::class);
-        // Route::get('/{app_uuid}/contacts', [ApplicationContactController::class, 'index']);
-        // Route::delete('/{app_uuid}/contacts/{person_uuid}', [ApplicationContactController::class, 'remove']);
+        Route::delete('/{app_uuid}/contacts/{person_uuid}', ContactRemove::class);
         
         Route::post('/{app_uuid}/current-step/approve', [ApplicationStepController::class, 'approve']);
         Route::put('/{app_uuid}/approve', [ApplicationStepController::class, 'updateApprovalDate']);
-        
-        // Route::post('/{app_uuid}/documents', [ApplicationDocumentController::class, 'store']);
-        // Route::put('/{app_uuid}/documents/{doc_uuid}', [ApplicationDocumentController::class, 'update']);
-        // Route::delete('/{app_uuid}/documents/{doc_uuid}', [ApplicationDocumentController::class, 'destroy']);
-        // Route::post('/{app_uuid}/documents/{doc_uuid}/final', [ApplicationDocumentController::class, 'markFinal']);
         
         Route::post('/{app_uuid}/documents', ApplicationDocumentAdd::class);
         Route::put('/{app_uuid}/documents/{doc_uuid}', ApplicationDocumentUpdate::class);
