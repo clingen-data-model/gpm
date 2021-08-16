@@ -10,14 +10,14 @@ use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Activitylog\Models\Activity;
-use App\Modules\ExpertPanel\Jobs\AddLogEntry;
 use Illuminate\Validation\ValidationException;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Actions\LogEntryAdd;
 use App\Modules\ExpertPanel\Jobs\DeleteLogEntry;
 use App\Modules\ExpertPanel\Jobs\UpdateLogEntry;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use App\Modules\ExpertPanel\Http\Requests\UpdateApplicationLogEntryRequest;
 use App\Modules\ExpertPanel\Http\Requests\CreateApplicationLogEntryRequest;
+use App\Modules\ExpertPanel\Http\Requests\UpdateApplicationLogEntryRequest;
 
 class ApplicationLogController extends Controller
 {
@@ -38,13 +38,12 @@ class ApplicationLogController extends Controller
 
     public function store($expertPanelUuid, CreateApplicationLogEntryRequest $request)
     {
-        $job = new AddLogEntry(
-            expertPanelUuid: $expertPanelUuid, 
-            logDate: $request->log_date, 
-            entry: $request->entry, 
+        $job = (new LogEntryAdd)->handle(
+            expertPanelUuid: $expertPanelUuid,
+            logDate: $request->log_date,
+            entry: $request->entry,
             step: $request->step
         );
-        $this->dispatcher->dispatch($job);
 
         $logEntry = ExpertPanel::latestLogEntryForUuid($expertPanelUuid);
         $logEntry->load(['causer']);
@@ -80,5 +79,4 @@ class ApplicationLogController extends Controller
             throw ValidationException::withMessages(['activity_type' => ['Only manual log entries can be deleted.']]);
         }
     }
-    
 }
