@@ -11,7 +11,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Events\DocumentInfoUpdated;
 use App\Modules\ExpertPanel\Http\Requests\DocumentUpdateInfoRequest;
 
-class UpdateApplicationDocument
+class ApplicationDocumentUpdate
 {
     use AsAction;
 
@@ -47,7 +47,5 @@ class UpdateApplicationDocument
         );
 
         return response($document, 200);
-
     }
-    
 }

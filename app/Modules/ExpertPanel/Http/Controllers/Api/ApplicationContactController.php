@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\ExpertPanel\Http\Requests\AddContactRequest;
 use Illuminate\Contracts\Bus\Dispatcher;
 use App\Modules\Person\Models\Person;
-use App\Modules\ExpertPanel\Jobs\AddContact;
+use App\Modules\ExpertPanel\Jobs\ContactAdd;
 use App\Modules\ExpertPanel\Jobs\RemoveContact;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Validation\ValidationException;
@@ -18,27 +18,14 @@ use App\Modules\ExpertPanel\Exceptions\PersonNotContactException;
 class ApplicationContactController extends Controller
 {
     public function __construct(private Dispatcher $dispatcher)
-    {}
+    {
+    }
 
     public function index($expertPanelUuid)
     {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
 
         return $expertPanel->contacts;
-    }
-
-    public function store($expertPanelUuid, AddContactRequest $request)
-    {
-        $job = new AddContact(
-            expertPanelUuid: $expertPanelUuid,
-            uuid: $request->person_uuid,
-        );
-
-        $this->dispatcher->dispatchNow($job);
-       
-        $person = ExpertPanel::findByUuid($expertPanelUuid)->contacts()->where('uuid', $request->person_uuid)->sole();
-
-        return $person;
     }
 
     public function remove($expertPanelUuid, $personUuid)
@@ -55,5 +42,4 @@ class ApplicationContactController extends Controller
 
         return response(['message'=>'deleted person '.$personUuid.' from appliation '.$expertPanelUuid], 200);
     }
-    
 }

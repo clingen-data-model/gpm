@@ -5,6 +5,7 @@ namespace Tests\Feature\Integration\Modules\Application\Models;
 use Tests\TestCase;
 use App\Models\Document;
 use App\Models\NextAction;
+use App\Modules\ExpertPanel\Actions\ContactAdd;
 use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Bus;
@@ -25,6 +26,10 @@ use App\Modules\ExpertPanel\Events\ApplicationInitiated;
 use App\Modules\ExpertPanel\Events\ApplicationAttributesUpdated;
 use App\Modules\ExpertPanel\Events\ExpertPanelAttributesUpdated;
 
+/**
+ * @group applications
+ * @group expert-panels
+ */
 class ExpertPanelTest extends TestCase
 {
     use RefreshDatabase;
@@ -56,42 +61,6 @@ class ExpertPanelTest extends TestCase
         $this->assertEquals($expertPanel->name, $expertPanel->long_base_name);
     }
         
-    /**
-     * @test
-     */
-    public function fires_ContactAdded_event_when_contact_added()
-    {
-        $person = Person::factory()->create();
-        $expertPanel = ExpertPanel::factory()->create();
-
-        Event::fake();
-        $expertPanel->addContact($person);
-
-        Event::assertDispatched(ContactAdded::class);
-    }
-
-    /**
-     * @test
-     */
-    public function ContactAdded_event_logged_when_dispatched()
-    {
-        $person = Person::factory()->create();
-        $expertPanel = ExpertPanel::factory()->create();
-
-        $expertPanel->addContact($person);
-
-        $this->assertLoggedActivity(
-            $expertPanel,
-            'Added contact '.$person->name.' to application.',
-            [ 'person' => $person->toArray()],
-        );
-
-        $this->assertDatabaseHas('activity_log', [
-            'subject_id' => $expertPanel->id,
-            'activity_type' => 'contact-added'
-        ]);
-    }
-
     /**
      * @test
      */
@@ -149,7 +118,7 @@ class ExpertPanelTest extends TestCase
     {
         $expertPanel = ExpertPanel::factory()->create();
         $person = Person::factory()->create();
-        $expertPanel->addContact($person);
+        (new ContactAdd)->handle($expertPanel->uuid, $person->uuid);
 
         Event::fake();
         $expertPanel->removeContact($person);
@@ -165,7 +134,7 @@ class ExpertPanelTest extends TestCase
     {
         $expertPanel = ExpertPanel::factory()->create();
         $person = Person::factory()->create();
-        $expertPanel->addContact($person);
+        (new ContactAdd)->handle($expertPanel->uuid, $person->uuid);
 
         $expertPanel->removeContact($person);
 

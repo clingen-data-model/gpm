@@ -10,12 +10,14 @@ use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Modules\ExpertPanel\Jobs\AddApplicationDocument;
+use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
 
 /**
+ * @group applications
+ * @group expert-panels
  * @group documents
  */
-class AddApplicationDocumentTest extends TestCase
+class ApplicationDocumentAddTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
@@ -36,7 +38,7 @@ class AddApplicationDocumentTest extends TestCase
         $docUuid = Uuid::uuid4();
         Carbon::setTestNow('2021-01-01');
 
-        $job = new AddApplicationDocument(
+        (new ApplicationDocumentAdd)->handle(
             expertPanelUuid: $this->expertPanel->uuid,
             filename: 'testfile.doc',
             storage_path: $this->faker->file(base_path('tests/files')),
@@ -46,8 +48,6 @@ class AddApplicationDocumentTest extends TestCase
         );
 
 
-        $this->dispatcher->dispatch($job);
-        
         $this->assertDatabaseHas('documents', [
             'uuid' => $docUuid,
             'document_type_id' => 1,
@@ -67,7 +67,7 @@ class AddApplicationDocumentTest extends TestCase
         $docUuid = Uuid::uuid4();
         Carbon::setTestNow('2021-01-01');
 
-        $job = new AddApplicationDocument(
+        (new ApplicationDocumentAdd)->handle(
             expertPanelUuid: $this->expertPanel->uuid,
             filename: 'testfile.doc',
             storage_path: $this->faker->file(base_path('tests/files')),
@@ -77,9 +77,6 @@ class AddApplicationDocumentTest extends TestCase
             is_final: true
         );
 
-
-        $this->dispatcher->dispatch($job);
-        
         $this->assertDatabaseHas('documents', [
             'uuid' => $docUuid,
             'document_type_id' => 1,

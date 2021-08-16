@@ -2,17 +2,24 @@
 
 namespace Tests\Feature\End2End\ExpertPanels\Contacts;
 
-use App\Modules\ExpertPanel\Jobs\AddContact;
 use Tests\TestCase;
-use App\Modules\Person\Models\Person;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Bus;
-use Laravel\Sanctum\Sanctum;
 use Ramsey\Uuid\Uuid;
+use Laravel\Sanctum\Sanctum;
+use App\Modules\User\Models\User;
+use Illuminate\Support\Facades\Bus;
+use App\Modules\Person\Models\Person;
+use App\Modules\ExpertPanel\Jobs\AddContact;
+use Illuminate\Foundation\Testing\WithFaker;
+use App\Modules\ExpertPanel\Actions\ContactAdd;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
+/**
+ * @group applications
+ * @group expert-panels
+ * @group contacts
+ * @group membership
+ */
 class AddContactsTest extends TestCase
 {
     use RefreshDatabase;
@@ -20,8 +27,8 @@ class AddContactsTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();    
-        $this->expertPanel = ExpertPanel::factory()->create();    
+        $this->seed();
+        $this->expertPanel = ExpertPanel::factory()->create();
         $this->user = User::factory()->create();
     }
     
@@ -98,16 +105,7 @@ class AddContactsTest extends TestCase
         $contacts = Person::factory(2)->create();
 
         $contacts->each(function ($contact) {
-            $this->expertPanel->addContact($contact);
-        //     $job = new AddContact(
-        //         expertPanelUuid: $this->expertPanel->uuid, 
-        //         uuid: Uuid::uuid4(),
-        //         first_name: $contact->first_name,
-        //         last_name: $contact->last_name,
-        //         email: $contact->email,
-        //         phone: $contact->phone,
-        //     );
-        //     Bus::dispatch($job);
+            (new ContactAdd)->handle($this->expertPanel->uuid, $contact->uuid);
         });
 
         Sanctum::actingAs($this->user);
