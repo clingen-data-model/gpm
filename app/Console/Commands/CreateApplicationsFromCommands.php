@@ -9,7 +9,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Bus;
 use App\Modules\ExpertPanel\Jobs\ApproveStep;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Jobs\CreateNextAction;
+use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use App\Modules\ExpertPanel\Jobs\ApplicationDocumentAdd;
 use App\Modules\ExpertPanel\Jobs\CompleteNextAction;
 
@@ -144,7 +144,7 @@ class CreateApplicationsFromCommands extends Command
                 ],
                 [ // Create Next Action
                     'step' => 3,
-                    'class' => CreateNextAction::class,
+                    'class' => NextActionCreate::class,
                     'args' => [
                         'expertPanelUuid' => $uuid,
                         'uuid' => $nextActionUuid,

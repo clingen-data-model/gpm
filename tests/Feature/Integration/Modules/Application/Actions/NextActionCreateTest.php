@@ -8,14 +8,14 @@ use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Jobs\CreateNextAction;
+use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Events\NextActionAdded;
 
 /**
  * @group next-actions
  */
-class CreateNextActionTest extends TestCase
+class NextActionCreateTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -33,7 +33,7 @@ class CreateNextActionTest extends TestCase
     {
         $nextAction = NextAction::factory()->make();
         Event::fake();
-        Bus::dispatch(new CreateNextAction(
+        (new NextActionCreate)->handle(
             expertPanelUuid: $this->expertPanel->uuid,
             uuid: $nextAction->uuid,
             dateCreated: $nextAction->date_created,
@@ -41,7 +41,7 @@ class CreateNextActionTest extends TestCase
             dateCompleted: $nextAction->dateCompleted,
             targetDate: $nextAction->targetDate,
             step: $nextAction->step
-        ));
+        );
 
         Event::assertDispatched(NextActionAdded::class);
     }
@@ -52,7 +52,7 @@ class CreateNextActionTest extends TestCase
     public function logs_next_action_added()
     {
         $nextAction = NextAction::factory()->make(['step'=>3]);
-        Bus::dispatch(new CreateNextAction(
+        (new NextActionCreate)->handle(
             expertPanelUuid: $this->expertPanel->uuid,
             uuid: $nextAction->uuid,
             dateCreated: $nextAction->date_created,
@@ -62,7 +62,7 @@ class CreateNextActionTest extends TestCase
             step: $nextAction->step,
             assignedTo: 'CDWG OC',
             assignedToName: 'Bob Dobbs'
-        ));
+        );
 
         $this->assertDatabaseHas('activity_log', [
             'subject_id' => $this->expertPanel->id,

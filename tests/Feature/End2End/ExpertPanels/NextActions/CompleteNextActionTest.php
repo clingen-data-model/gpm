@@ -9,7 +9,7 @@ use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Jobs\CreateNextAction;
+use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
@@ -29,7 +29,7 @@ class CompleteNextActionTest extends TestCase
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->nextAction = NextAction::factory()->make();
 
-        Bus::dispatch(new CreateNextAction(
+        (new NextActionCreate)->handle(
             expertPanelUuid: $this->expertPanel->uuid,
             uuid: $this->nextAction->uuid,
             dateCreated: $this->nextAction->date_created,
@@ -37,7 +37,7 @@ class CompleteNextActionTest extends TestCase
             dateCompleted: $this->nextAction->dateCompleted,
             targetDate: $this->nextAction->targetDate,
             step: $this->nextAction->step
-        ));
+        );
         $this->url = 'api/applications/'.$this->expertPanel->uuid.'/next-actions/'.$this->nextAction->uuid.'/complete';
     }
 
