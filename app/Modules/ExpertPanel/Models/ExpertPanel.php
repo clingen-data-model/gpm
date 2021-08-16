@@ -73,17 +73,6 @@ class ExpertPanel extends Model
 
     // Domain methods
 
-    public function removeContact(Person $contact)
-    {
-        if (! $this->contacts->pluck('uuid')->contains($contact->uuid)) {
-            throw new PersonNotContactException($this, $contact);
-        }
-
-        $this->contacts()->detach($contact);
-        $this->touch();
-        Event::dispatch(new ContactRemoved($this, $contact));
-    }
-    
     public function addDocument(Document $document)
     {
         $lastDocumentVersion = $this->getLatestVersionForDocument($document->document_type_id);

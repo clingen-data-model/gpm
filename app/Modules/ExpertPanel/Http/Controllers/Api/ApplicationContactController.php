@@ -27,19 +27,4 @@ class ApplicationContactController extends Controller
 
         return $expertPanel->contacts;
     }
-
-    public function remove($expertPanelUuid, $personUuid)
-    {
-        try {
-            $job = new RemoveContact(expertPanelUuid: $expertPanelUuid, personUuid: $personUuid);
-            $this->dispatcher->dispatch($job);
-        } catch (PersonNotContactException $e) {
-            \Log::warning($e->getMessage(), ['appliation_id' => $e->getApplication()->id, 'person_id' => $e->getPerson()->id]);
-            throw ValidationException::withMessages([
-                'contact' => ['The specified person is not a contact of this application.']
-            ]);
-        }
-
-        return response(['message'=>'deleted person '.$personUuid.' from appliation '.$expertPanelUuid], 200);
-    }
 }
