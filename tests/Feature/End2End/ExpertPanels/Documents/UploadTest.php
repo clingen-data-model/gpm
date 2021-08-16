@@ -5,6 +5,7 @@ namespace Tests\Feature\End2End\ExpertPanels\Documents;
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
 use App\Models\Document;
+use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
 use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
 use Illuminate\Http\UploadedFile;
@@ -66,8 +67,15 @@ class UploadTest extends TestCase
      */
     public function sets_version_based_existing_versions()
     {
-        $this->expertPanel->addDocument(Document::factory()->make(['document_type_id' => 1]));
-
+        $document = Document::factory()->make(['document_type_id' => 1]);
+        (new ApplicationDocumentAdd)->handle(
+            $this->expertPanel->uuid,
+            $document->uuid,
+            $document->filename,
+            $document->storage_path,
+            $document->document_type_id
+        );
+        
         $data = $this->makeDocumentUploadRequestData();
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/documents', $data);

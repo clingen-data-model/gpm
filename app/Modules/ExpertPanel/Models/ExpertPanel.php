@@ -72,22 +72,6 @@ class ExpertPanel extends Model
     ];
 
     // Domain methods
-
-    public function addDocument(Document $document)
-    {
-        $lastDocumentVersion = $this->getLatestVersionForDocument($document->document_type_id);
-        $document->version = $lastDocumentVersion+1;
-
-        $this->documents()->save($document);
-        $this->touch();
-
-        $event = new DocumentAdded(
-            application: $this,
-            document: $document
-        );
-        Event::dispatch($event);
-    }
-
     public function completeNextAction(NextAction $nextAction, string $dateCompleted)
     {
     }
@@ -210,7 +194,7 @@ class ExpertPanel extends Model
         return static::findByUuid($uuid)->latestLogEntry;
     }
 
-    private function getLatestVersionForDocument($DocumentTypeId)
+    public function getLatestVersionForDocument($DocumentTypeId)
     {
         $results = $this->documents()
             ->where('document_type_id', $DocumentTypeId)

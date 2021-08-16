@@ -24,10 +24,9 @@ class DocumentAdded extends ExpertPanelEvent
      * @return void
      */
     public function __construct(
-        public ExpertPanel  $application, 
+        public ExpertPanel $application,
         public Document $document
-    )
-    {
+    ) {
         //
     }
 

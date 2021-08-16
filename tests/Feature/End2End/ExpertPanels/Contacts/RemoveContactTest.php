@@ -44,7 +44,7 @@ class RemoveContactTest extends TestCase
 
         $this->assertDatabaseMissing('application_person', [
             'application_id' => $this->expertPanel->id,
-            'person' => $this->person->id
+            'person_id' => $this->person->id
         ]);
     }
 
