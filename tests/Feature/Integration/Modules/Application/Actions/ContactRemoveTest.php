@@ -7,6 +7,7 @@ use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Actions\ContactRemove;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
@@ -16,6 +17,15 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
  */
 class ContactRemoveTest extends TestCase
 {
+    use RefreshDatabase;
+
+    public function setup():void
+    {
+        parent::setup();
+        $this->seed();
+    }
+    
+
     /**
      * @test
      */
@@ -25,7 +35,7 @@ class ContactRemoveTest extends TestCase
         $person = Person::factory()->create();
         (new ContactAdd)->handle($expertPanel->uuid, $person->uuid);
 
-        $expertPanel->removeContact($person);
+        (new ContactRemove)->handle($expertPanel->uuid, $person->uuid);
 
         $this->assertDatabaseHas('activity_log', [
             'subject_id' => $expertPanel->id,

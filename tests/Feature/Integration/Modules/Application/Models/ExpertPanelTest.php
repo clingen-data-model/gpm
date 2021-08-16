@@ -5,25 +5,11 @@ namespace Tests\Feature\Integration\Modules\Application\Models;
 use Tests\TestCase;
 use App\Models\Document;
 use App\Models\NextAction;
-use App\Modules\ExpertPanel\Actions\ContactAdd;
 use Illuminate\Support\Carbon;
-use App\Modules\User\Models\User;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Auth;
-use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Event;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Events\ContactAdded;
-use App\Modules\ExpertPanel\Events\StepApproved;
-use App\Modules\ExpertPanel\Events\DocumentAdded;
-use App\Modules\ExpertPanel\Events\ContactRemoved;
-use App\Modules\ExpertPanel\Jobs\CreateNextAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Modules\ExpertPanel\Events\NextActionAdded;
-use App\Modules\ExpertPanel\Events\NextActionCompleted;
 use App\Modules\ExpertPanel\Events\ApplicationCompleted;
-use App\Modules\ExpertPanel\Events\ApplicationInitiated;
-use App\Modules\ExpertPanel\Events\ApplicationAttributesUpdated;
 use App\Modules\ExpertPanel\Events\ExpertPanelAttributesUpdated;
 
 /**
@@ -61,54 +47,6 @@ class ExpertPanelTest extends TestCase
         $this->assertEquals($expertPanel->name, $expertPanel->long_base_name);
     }
         
-    /**
-     * @test
-     */
-    public function fires_DocumentAdded_event_fired()
-    {
-        $expertPanel = ExpertPanel::factory()->create();
-        $document = Document::factory()->make(['document_type_id'=>config('documents.types.scope.id')]);
-
-        Event::fake();
-        $expertPanel->addDocument($document);
-
-        Event::assertDispatched(DocumentAdded::class, function ($event) use ($expertPanel, $document) {
-            return $event->application->uuid == $expertPanel->uuid
-                && $event->document->uuid == $document->uuid;
-        });
-    }
-
-    /**
-     * @test
-     */
-    public function DocumentAdded_activity_logged_when_dispatched()
-    {
-        $expertPanel = ExpertPanel::factory()->create();
-        $document = Document::factory()->make(['document_type_id'=>config('documents.types.scope.id')]);
-
-        $expertPanel->addDocument($document);
-
-        $this->assertLoggedActivity(
-            $expertPanel,
-            description: 'Added version 1 of scope and membership application.'
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function sets_version_based_existing_versions()
-    {
-        $expertPanel = ExpertPanel::factory()->create();
-
-        $expertPanel->addDocument(Document::factory()->make(['document_type_id' => 1]));
-
-        $this->assertEquals($expertPanel->documents->first()->version, 1);
-
-        $expertPanel->addDocument(Document::factory()->make(['document_type_id' => 1]));
-
-        $this->assertEquals($expertPanel->fresh()->documents()->count(), 2);
-    }
 
 
     /**

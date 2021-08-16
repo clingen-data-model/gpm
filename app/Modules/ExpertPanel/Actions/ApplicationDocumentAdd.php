@@ -4,9 +4,11 @@ namespace App\Modules\ExpertPanel\Actions;
 
 use Carbon\Carbon;
 use App\Models\Document;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Lorisleiva\Actions\Concerns\AsAction;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Events\DocumentAdded;
 use App\Modules\ExpertPanel\Http\Requests\ApplicationDocumentStoreRequest;
 
 class ApplicationDocumentAdd
@@ -40,7 +42,17 @@ class ApplicationDocumentAdd
             'notes' => $notes
         ]);
         
-        $expertPanel->addDocument($document);
+        $lastDocumentVersion = $expertPanel->getLatestVersionForDocument($document->document_type_id);
+        $document->version = $lastDocumentVersion+1;
+
+        $expertPanel->documents()->save($document);
+        $expertPanel->touch();
+
+        $event = new DocumentAdded(
+            application: $expertPanel,
+            document: $document
+        );
+        Event::dispatch($event);
 
         return $document;
     }
