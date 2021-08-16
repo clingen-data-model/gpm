@@ -3,19 +3,19 @@
 namespace Tests\Feature\End2End\ExpertPanels;
 
 use Tests\TestCase;
-use App\Modules\User\Models\User;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Carbon;
+use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Bus;
+use App\Modules\Person\Models\Person;
 use App\Modules\ExpertPanel\Jobs\AddContact;
-use App\Modules\ExpertPanel\Jobs\AddLogEntry;
 use Illuminate\Foundation\Testing\WithFaker;
+use App\Modules\ExpertPanel\Jobs\AddLogEntry;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Jobs\CreateNextAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Jobs\InitiateApplication;
-use App\Modules\ExpertPanel\Jobs\AddApplicationDocument;
-use App\Modules\Person\Models\Person;
+use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
 
 class ExpertPanelDetailTest extends TestCase
 {
@@ -34,16 +34,14 @@ class ExpertPanelDetailTest extends TestCase
             ep_type_id: 2,
             date_initiated: Carbon::parse('2020-01-01')
         ));
-        Bus::dispatch(
-            new AddApplicationDocument(
-                expertPanelUuid: $this->uuid,
-                uuid: Uuid::uuid4()->toString(),
-                filename: uniqid().'test.tst',
-                storage_path: '/tmp/'.uniqid().'.tst',
-                document_type_id: 1,
-                step: 1,
-                date_received: '2020-01-01'
-            )
+        (new ApplicationDocumentAdd)->handle(
+            expertPanelUuid: $this->uuid,
+            uuid: Uuid::uuid4()->toString(),
+            filename: uniqid().'test.tst',
+            storage_path: '/tmp/'.uniqid().'.tst',
+            document_type_id: 1,
+            step: 1,
+            date_received: '2020-01-01'
         );
         Bus::dispatch(
             new CreateNextAction(

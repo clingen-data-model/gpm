@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Bus;
 use App\Modules\ExpertPanel\Jobs\ApproveStep;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Jobs\CreateNextAction;
-use App\Modules\ExpertPanel\Jobs\AddApplicationDocument;
+use App\Modules\ExpertPanel\Jobs\ApplicationDocumentAdd;
 use App\Modules\ExpertPanel\Jobs\CompleteNextAction;
 
 class CreateApplicationsFromCommands extends Command
@@ -102,7 +102,7 @@ class CreateApplicationsFromCommands extends Command
         return [
                 [ // Add Scope Document
                     'step' => 1,
-                    'class' => AddApplicationDocument::class,
+                    'class' => ApplicationDocumentAdd::class,
                     'args' => [
                         'expertPanelUuid' => $uuid,
                         'uuid' => Uuid::uuid4()->toString(),
@@ -123,7 +123,7 @@ class CreateApplicationsFromCommands extends Command
                 ],
                 [ // Add draft doc
                     'step' => 2,
-                    'class' => AddApplicationDocument::class,
+                    'class' => ApplicationDocumentAdd::class,
                     'args' => [
                         'expertPanelUuid' => $uuid,
                         'uuid' => Uuid::uuid4()->toString(),
@@ -154,7 +154,7 @@ class CreateApplicationsFromCommands extends Command
                 ],
                 [ // Add final specs
                     'step' => 3,
-                    'class' => AddApplicationDocument::class,
+                    'class' => ApplicationDocumentAdd::class,
                     'args' => [
                         'expertPanelUuid' => $uuid,
                         'uuid' => $nextActionUuid,
@@ -176,7 +176,7 @@ class CreateApplicationsFromCommands extends Command
                 ],
                 [ // Add pilot classifications
                     'step' => 3,
-                    'class' => AddApplicationDocument::class,
+                    'class' => ApplicationDocumentAdd::class,
                     'args' => [
                         'expertPanelUuid' => $uuid,
                         'uuid' => Uuid::uuid4()->toString(),
@@ -197,7 +197,7 @@ class CreateApplicationsFromCommands extends Command
                 ],
                 [ // Add finalize application
                     'step' => 4,
-                    'class' => AddApplicationDocument::class,
+                    'class' => ApplicationDocumentAdd::class,
                     'args' => [
                         'expertPanelUuid' => $uuid,
                         'uuid' => Uuid::uuid4()->toString(),

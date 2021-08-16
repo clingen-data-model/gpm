@@ -8,7 +8,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Events\DocumentMarkedFinal;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class MarkDocumentFinal
+class ApplicationDocumentMarkFinal
 {
     use AsAction;
 
@@ -24,8 +24,8 @@ class MarkDocumentFinal
             ->get();
 
         $prevFinal->each(function ($doc) {
-                $doc->update(['is_final' => 0]);
-            });
+            $doc->update(['is_final' => 0]);
+        });
 
         $document->update(['is_final' => 1]);
 
@@ -33,5 +33,4 @@ class MarkDocumentFinal
 
         return $document;
     }
-    
 }

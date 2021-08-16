@@ -10,13 +10,13 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Jobs\DeleteDocument;
-use App\Modules\ExpertPanel\Jobs\MarkDocumentFinal;
+use App\Modules\ExpertPanel\Jobs\ApplicationDocumentMarkFinal;
 use App\Modules\ExpertPanel\Jobs\UpdateDocumentInfo;
 use App\Modules\ExpertPanel\Http\Requests\ApplicationDocumentStoreRequest;
-use App\Modules\ExpertPanel\Jobs\AddApplicationDocument;
+use App\Modules\ExpertPanel\Jobs\ApplicationDocumentAdd;
 use App\Modules\ExpertPanel\Http\Requests\DocumentUpdateInfoRequest;
 use App\Models\Document;
-use App\Modules\ExpertPanel\Actions\AddApplicationDocument as ActionsAddApplicationDocument;
+use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd as ActionsApplicationDocumentAdd;
 
 class ApplicationDocumentController extends Controller
 {
@@ -47,7 +47,7 @@ class ApplicationDocumentController extends Controller
         $data['filename'] = $file->getClientOriginalName();
         $data['expertPanelUuid'] = $expertPanelUuid;
 
-        $action = new ActionsAddApplicationDocument();
+        $action = new ActionsApplicationDocumentAdd();
         $newDocument = $action->handle(...$data);
 
         return $newDocument->toArray();
@@ -71,7 +71,7 @@ class ApplicationDocumentController extends Controller
 
     public function markFinal($appUuid, $docUuid)
     {
-        $job = new MarkDocumentFinal($appUuid, $docUuid);
+        $job = new ApplicationDocumentMarkFinal($appUuid, $docUuid);
         $this->dispatcher->dispatch($job);
 
         $updatedDocument = Document::findByUuid($docUuid);

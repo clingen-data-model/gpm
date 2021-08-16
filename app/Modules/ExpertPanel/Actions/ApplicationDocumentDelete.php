@@ -6,15 +6,14 @@ use Lorisleiva\Actions\Concerns\AsAction;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Events\DocumentDeleted;
 
-class DeleteApplicationDocument
+class ApplicationDocumentDelete
 {
     use AsAction;
 
     public function handle(
         string $expertPanelUuid,
         string $documentUuid
-    )
-    {
+    ) {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         $document = $expertPanel->documents()->where('uuid', $documentUuid)->sole();
 

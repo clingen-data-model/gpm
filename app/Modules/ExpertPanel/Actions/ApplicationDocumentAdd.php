@@ -9,7 +9,7 @@ use Lorisleiva\Actions\Concerns\AsAction;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Http\Requests\ApplicationDocumentStoreRequest;
 
-class AddApplicationDocument
+class ApplicationDocumentAdd
 {
     use AsAction;
     
@@ -24,8 +24,7 @@ class AddApplicationDocument
         ?array $metadata = null,
         ?bool $is_final = false,
         ?string $notes = null
-    ): Document
-    {
+    ): Document {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         $dateReceived = $date_received ? Carbon::parse($date_received) : Carbon::now();
 
@@ -72,5 +71,4 @@ class AddApplicationDocument
 
         return $newDocument->toArray();
     }
-    
 }

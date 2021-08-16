@@ -2,6 +2,7 @@
 
 namespace App\Modules\ExpertPanel\Jobs;
 
+use App\Modules\ExpertPanel\Actions\ContactAdd;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -25,8 +26,7 @@ class AddContact implements ShouldQueue
     public function __construct(
         private string $expertPanelUuid,
         private string $uuid
-    )
-    {
+    ) {
     }
 
     /**
@@ -34,12 +34,8 @@ class AddContact implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
-    {        
-        $expertPanel = ExpertPanel::findByUuidOrFail($this->expertPanelUuid);
-        
-        $person = Person::findByUuidOrFail($this->uuid);
-
-        $expertPanel->addContact($person);
+    public function handle(ContactAdd $action)
+    {
+        return $action($this->expertPanelUuid, $this->uuid);
     }
 }

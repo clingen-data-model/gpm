@@ -8,7 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Events\DocumentMarkedFinal;
 
-class MarkDocumentFinal
+class ApplicationDocumentMarkFinal
 {
     use Dispatchable;
 

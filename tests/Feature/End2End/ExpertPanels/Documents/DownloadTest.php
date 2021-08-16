@@ -14,7 +14,7 @@ use Tests\CreatesDocumentUploadRequestData;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Modules\ExpertPanel\Jobs\AddApplicationDocument;
+use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
 
 /**
  * @group documents
@@ -31,21 +31,14 @@ class DownloadTest extends TestCase
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->doc = Document::factory()->make();
 
-        $job = new AddApplicationDocument(
+        (new ApplicationDocumentAdd)->handle(
             expertPanelUuid: $this->expertPanel->uuid,
             uuid: $this->doc->uuid,
             filename: 'test.docx',
             storage_path: 'documents/test_download.docx',
             document_type_id: 1
         );
-        Bus::dispatch($job);
     }
-
-    // public function tearDown():void
-    // {
-    //     parent::tearDown();
-    //     unlink(storage_path('app/documents/test_download.docx'));
-    // }
 
     /**
      * @test
