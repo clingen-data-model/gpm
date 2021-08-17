@@ -2,7 +2,7 @@
 
 namespace App\Modules\ExpertPanel\Http\Requests;
 
-use App\Models\NextActionAssignee;
+use App\Modules\ExpertPanel\Models\NextActionAssignee;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateNextActionRequest extends FormRequest

@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Models\NextAction;
+use App\Modules\ExpertPanel\Models\NextAction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class NextActionFactory extends Factory

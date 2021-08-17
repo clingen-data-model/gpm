@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\NextActionAssignee;
+use App\Modules\ExpertPanel\Models\NextActionAssignee;
 use Database\Seeders\UsersTableSeeder;
 use Database\Seeders\DocumentTypesTableSeeder;
 use Database\Seeders\RolesAndPermissionsSeeder;

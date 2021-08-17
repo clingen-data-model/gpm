@@ -4,7 +4,7 @@ namespace Tests\Feature\Integration\Modules\Application\Models;
 
 use Tests\TestCase;
 use App\Models\Document;
-use App\Models\NextAction;
+use App\Modules\ExpertPanel\Models\NextAction;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use App\Modules\ExpertPanel\Models\ExpertPanel;

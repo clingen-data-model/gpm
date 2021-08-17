@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\EpType;
+use App\Modules\ExpertPanel\Models\ExpertPanelType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class EpTypeFactory extends Factory
+class ExpertPanelTypeFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = EpType::class;
+    protected $model = ExpertPanelType::class;
 
     /**
      * Define the model's default state.

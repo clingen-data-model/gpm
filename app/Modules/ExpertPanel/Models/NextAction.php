@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Models;
+namespace App\Modules\ExpertPanel\Models;
 
 use App\Models\HasUuid;
 use Illuminate\Database\Eloquent\Model;
+use Database\Factories\NextActionFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Modules\ExpertPanel\Models\NextActionAssignee;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 
@@ -49,5 +51,11 @@ class NextAction extends Model
     public function scopePending($query)
     {
         return $query->whereNull('date_completed');
+    }
+
+    // Factory
+    static protected function newFactory()
+    {
+        return new NextActionFactory();
     }
 }

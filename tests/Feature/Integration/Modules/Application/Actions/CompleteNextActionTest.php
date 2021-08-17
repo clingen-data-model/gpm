@@ -3,7 +3,7 @@
 namespace Tests\Feature\Integration\Modules\Application\Actions;
 
 use Tests\TestCase;
-use App\Models\NextAction;
+use App\Modules\ExpertPanel\Models\NextAction;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;

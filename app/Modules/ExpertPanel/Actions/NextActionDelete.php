@@ -2,7 +2,7 @@
 
 namespace App\Modules\ExpertPanel\Actions;
 
-use App\Models\NextAction;
+use App\Modules\ExpertPanel\Models\NextAction;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Modules\ExpertPanel\Models\ExpertPanel;

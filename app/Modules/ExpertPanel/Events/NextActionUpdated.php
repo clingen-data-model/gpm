@@ -2,14 +2,14 @@
 
 namespace App\Modules\ExpertPanel\Events;
 
-use App\Models\NextAction;
 use Illuminate\Support\Carbon;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\PresenceChannel;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Models\NextAction;
 use Illuminate\Foundation\Events\Dispatchable;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 

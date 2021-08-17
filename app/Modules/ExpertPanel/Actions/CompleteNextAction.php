@@ -2,7 +2,7 @@
 
 namespace App\Modules\ExpertPanel\Jobs;
 
-use App\Models\NextAction;
+use App\Modules\ExpertPanel\Models\NextAction;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Modules\ExpertPanel\Models\ExpertPanel;

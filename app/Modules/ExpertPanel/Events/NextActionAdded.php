@@ -2,7 +2,7 @@
 
 namespace App\Modules\ExpertPanel\Events;
 
-use App\Models\NextAction;
+use App\Modules\ExpertPanel\Models\NextAction;
 use Illuminate\Support\Carbon;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;

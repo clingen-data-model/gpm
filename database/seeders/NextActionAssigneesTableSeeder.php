@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\NextActionAssignee;
+use App\Modules\ExpertPanel\Models\NextActionAssignee;
 
 class NextActionAssigneesTableSeeder extends Seeder
 {
