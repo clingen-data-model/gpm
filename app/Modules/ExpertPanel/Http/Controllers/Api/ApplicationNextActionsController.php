@@ -7,19 +7,19 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Bus\Dispatcher;
-use App\Modules\ExpertPanel\Http\Requests\UpdateNextActionRequest;
-use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use App\Modules\ExpertPanel\Jobs\DeleteNextAction;
 use App\Modules\ExpertPanel\Jobs\UpdateNextAction;
 use App\Modules\ExpertPanel\Jobs\CompleteNextAction;
+use App\Modules\ExpertPanel\Actions\NextActionCreate;
+use App\Modules\ExpertPanel\Actions\NextActionComplete;
 use App\Modules\ExpertPanel\Http\Requests\CreateNextActionRequest;
+use App\Modules\ExpertPanel\Http\Requests\UpdateNextActionRequest;
 use App\Modules\ExpertPanel\Http\Requests\CompleteNextActionRequest;
 
 class ApplicationNextActionsController extends Controller
 {
-    public function __construct(private Dispatcher $dispatcher)
+    public function __construct(private Dispatcher $dispatcher, private NextActionComplete $completeAction)
     {
-        //code
     }
 
     public function store($expertPanelUuid, CreateNextActionRequest $request)
@@ -60,14 +60,11 @@ class ApplicationNextActionsController extends Controller
 
     public function complete($expertPanelUuid, $nextActionUuid, CompleteNextActionRequest $request)
     {
-        $job = new CompleteNextAction(
+        $nextAction = $this->completeAction->handle(
             expertPanelUuid: $expertPanelUuid,
             nextActionUuid: $nextActionUuid,
             dateCompleted: $request->date_completed
         );
-        $this->dispatcher->dispatch($job);
-
-        $nextAction = NextAction::findByUuid($nextActionUuid);
 
         return $nextAction;
     }
