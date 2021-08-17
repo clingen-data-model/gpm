@@ -2,7 +2,7 @@
 
 namespace App\Modules\ExpertPanel\Http\Controllers\Api;
 
-use App\Models\NextAction;
+use App\Modules\ExpertPanel\Models\NextAction;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

@@ -2,7 +2,7 @@
 
 namespace App\Modules\ExpertPanel\Actions;
 
-use App\Models\NextAction;
+use App\Modules\ExpertPanel\Models\NextAction;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;

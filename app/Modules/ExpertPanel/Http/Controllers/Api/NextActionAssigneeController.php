@@ -3,7 +3,7 @@
 namespace App\Modules\ExpertPanel\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use App\Models\NextActionAssignee;
+use App\Modules\ExpertPanel\Models\NextActionAssignee;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
 

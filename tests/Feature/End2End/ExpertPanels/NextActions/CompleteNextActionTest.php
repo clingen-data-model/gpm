@@ -3,11 +3,9 @@
 namespace Tests\Feature\End2End\ExpertPanels\NextActions;
 
 use Tests\TestCase;
-use App\Models\NextAction;
+use App\Modules\ExpertPanel\Models\NextAction;
 use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use Illuminate\Foundation\Testing\RefreshDatabase;

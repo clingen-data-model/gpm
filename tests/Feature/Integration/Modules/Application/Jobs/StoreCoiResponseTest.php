@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Integration\Modules\Application\Jobs;
 
+use run;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
@@ -10,6 +11,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Events\CoiCompleted;
 use App\Modules\ExpertPanel\Jobs\StoreCoiResponse;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Modules\ExpertPanel\Actions\CoiResponseStore;
 
 class StoreCoiResponseTest extends TestCase
 {
@@ -37,9 +39,8 @@ class StoreCoiResponseTest extends TestCase
      */
     public function stores_response_data()
     {
-        $job = new StoreCoiResponse($this->expertPanel->coi_code, $this->coiData);
+        CoiResponseStore::run($this->expertPanel->coi_code, $this->coiData);
 
-        Bus::dispatch($job);
 
         $this->assertDatabaseHas('cois', [
             'application_id' => $this->expertPanel->id,
@@ -54,8 +55,7 @@ class StoreCoiResponseTest extends TestCase
     {
         Event::fake();
 
-        $job = new StoreCoiResponse($this->expertPanel->coi_code, $this->coiData);
-        Bus::dispatch($job);
+        CoiResponseStore::run($this->expertPanel->coi_code, $this->coiData);
 
         Event::assertDispatched(CoiCompleted::class);
     }
@@ -65,8 +65,7 @@ class StoreCoiResponseTest extends TestCase
      */
     public function CoiCompleted_event_is_logged()
     {
-        $job = new StoreCoiResponse($this->expertPanel->coi_code, $this->coiData);
-        Bus::dispatch($job);
+        CoiResponseStore::run($this->expertPanel->coi_code, $this->coiData);
 
         $this->assertDatabaseHas('activity_log', [
             'subject_id' => $this->expertPanel->id,

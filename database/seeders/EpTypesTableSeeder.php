@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\EpType;
+use App\Modules\ExpertPanel\Models\ExpertPanelType;
 
 class EpTypesTableSeeder extends Seeder
 {
@@ -13,6 +13,6 @@ class EpTypesTableSeeder extends Seeder
      */
     public function run()
     {
-        $this->seedFromConfig('expert_panels.types', EpType::class);
+        $this->seedFromConfig('expert_panels.types', ExpertPanelType::class);
     }
 }

@@ -4,13 +4,13 @@ namespace Tests\Feature\End2End\ExpertPanels;
 
 use Tests\TestCase;
 use App\Models\Cdwg;
-use App\Models\EpType;
-use App\Modules\User\Models\User;
 use Ramsey\Uuid\Uuid;
 use Laravel\Sanctum\Sanctum;
+use App\Modules\User\Models\User;
 use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Modules\ExpertPanel\Models\ExpertPanelType;
 
 class InitiationTest extends TestCase
 {
@@ -41,7 +41,7 @@ class InitiationTest extends TestCase
         $expectedAttributes = array_merge(
             $data,
             [
-                'working_name' => $data['working_name'].' '.EpType::find($data['ep_type_id'])->display_name,
+                'working_name' => $data['working_name'].' '.ExpertPanelType::find($data['ep_type_id'])->display_name,
                 'date_initiated'=>'2020-01-01T00:00:00.000000Z',
                 'current_step' => 1
             ]

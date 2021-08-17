@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\Modules\ExpertPanel\Models;
 
+use Database\Factories\NextActionAssigneeFactory;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -37,4 +38,11 @@ class NextActionAssignee extends Model
             return static::all();
         });
     }
+
+    // Factory
+    static protected function newFactory()
+    {
+        return new NextActionAssigneeFactory();
+    }
+
 }

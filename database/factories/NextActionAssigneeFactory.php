@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\NextActionAssignee;
+use App\Modules\ExpertPanel\Models\NextActionAssignee;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class NextActionAssigneeFactory extends Factory

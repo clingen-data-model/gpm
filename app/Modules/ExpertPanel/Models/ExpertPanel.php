@@ -5,11 +5,9 @@ namespace App\Modules\ExpertPanel\Models;
 use DateTime;
 use App\Models\Coi;
 use App\Models\Cdwg;
-use App\Models\EpType;
-use App\Models\CoiCode;
 use App\Models\HasUuid;
 use App\Models\Document;
-use App\Models\NextAction;
+use App\Modules\ExpertPanel\Models\NextAction;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -23,6 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\ExpertPanel\Events\ContactAdded;
 use App\Modules\ExpertPanel\Events\DocumentAdded;
 use App\Modules\ExpertPanel\Events\ContactRemoved;
+use App\Modules\ExpertPanel\Models\ExpertPanelType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Modules\ExpertPanel\Service\StepManagerFactory;
 use App\Modules\ExpertPanel\Events\ApplicationCompleted;
@@ -84,9 +83,14 @@ class ExpertPanel extends Model
     }
 
     // Relationships
+    public function expertPanelType()
+    {
+        return $this->belongsTo(ExpertPanelType::class, 'ep_type_id');
+    }
+
     public function epType()
     {
-        return $this->belongsTo(EpType::class);
+        return $this->expertPanelType();
     }
 
     public function type()
