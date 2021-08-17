@@ -3,14 +3,15 @@
 namespace Tests;
 
 use App\Models\Cdwg;
-use App\Modules\ExpertPanel\Jobs\AddContact;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Bus;
 use App\Modules\Person\Models\Person;
+use App\Modules\ExpertPanel\Jobs\AddContact;
 use Illuminate\Foundation\Testing\WithFaker;
+use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Illuminate\Support\Facades\Bus;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -39,7 +40,7 @@ abstract class TestCase extends BaseTestCase
     protected function makeContactData(int $number = 1)
     {
         $contacts = [];
-        for ($i=0; $i < $number; $i++) { 
+        for ($i=0; $i < $number; $i++) {
             $contacts[] = [
                 'uuid' => Uuid::uuid4(),
                 'first_name' => $this->faker()->firstName,
@@ -55,21 +56,18 @@ abstract class TestCase extends BaseTestCase
     protected function addContactToApplication(ExpertPanel  $expertPanel)
     {
         $person = Person::factory()->create();
-        $job = new AddContact($expertPanel->uuid, $person->uuid);
-        Bus::dispatch($job);
+        ContactAdd::run($expertPanel->uuid, $person->uuid);
         
         return $person;
     }
 
-    protected  function assertLoggedActivity(
-        $expertPanel, 
-        $description, 
-        $properties = null, 
-        $causer_type = null, 
+    protected function assertLoggedActivity(
+        $expertPanel,
+        $description,
+        $properties = null,
+        $causer_type = null,
         $causer_id = null
-    )
-    {
-
+    ) {
         $data = [
             'log_name' => 'applications',
             'description' => $description,

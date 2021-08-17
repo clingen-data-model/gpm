@@ -13,6 +13,7 @@ use App\Modules\Person\Jobs\CreatePerson;
 use App\Modules\ExpertPanel\Jobs\AddContact;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
+use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Notifications\UserDefinedMailNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -28,7 +29,7 @@ class ApproveStepTest extends TestCase
         $this->seed();
         $this->person = Person::factory()->create();
         $this->expertPanel = ExpertPanel::factory()->vcep()->create();
-        Bus::dispatch(new AddContact($this->expertPanel->uuid, $this->person->uuid));
+        ContactAdd::run($this->expertPanel->uuid, $this->person->uuid);
 
         $this->user = User::factory()->create();
     }
@@ -111,7 +112,7 @@ class ApproveStepTest extends TestCase
     public function sends_notification_to_contacts_if_specified()
     {
         $person = Person::factory()->create();
-        AddContact::dispatch($this->expertPanel->uuid, $person->uuid);
+        ContactAdd::run($this->expertPanel->uuid, $person->uuid);
 
         $subject = 'This is a <strong>test</strong> custom message';
         $body = '<p>this is the body of a <em>custom message<em>.</p>';

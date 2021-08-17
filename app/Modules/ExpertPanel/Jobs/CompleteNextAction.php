@@ -29,13 +29,5 @@ class CompleteNextAction
      */
     public function handle()
     {
-        $expertPanel = ExpertPanel::findByUuidOrFail($this->expertPanelUuid);
-        $nextAction = NextAction::findByUuidOrFail($this->nextActionUuid);
-
-        $nextAction->date_completed = $this->dateCompleted;
-        $nextAction->save();
-        $expertPanel->touch();
-
-        Event::dispatch(new NextActionCompleted(application: $expertPanel, nextAction: $nextAction));
     }
 }
