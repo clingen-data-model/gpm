@@ -29,14 +29,6 @@ class SimpleCoiController extends Controller
         return $expertPanel;
     }
     
-    public function store($coiCode, CoiStorageRequest $request)
-    {
-        $job = new StoreCoiResponse($coiCode, $request->all());
-        $this->dispatcher->dispatch($job);
-
-        return response(['message' => 'COI response stored.'], 200);
-    }
-
     public function getReport($coiCode)
     {
         $expertPanel = ExpertPanel::findByCoiCodeOrFail($coiCode);

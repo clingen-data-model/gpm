@@ -34,49 +34,4 @@ class ApplicationLogController extends Controller
             }
         ])->get();
     }
-    
-
-    public function store($expertPanelUuid, CreateApplicationLogEntryRequest $request)
-    {
-        $job = (new LogEntryAdd)->handle(
-            expertPanelUuid: $expertPanelUuid,
-            logDate: $request->log_date,
-            entry: $request->entry,
-            step: $request->step
-        );
-
-        $logEntry = ExpertPanel::latestLogEntryForUuid($expertPanelUuid);
-        $logEntry->load(['causer']);
-        return $logEntry;
-    }
-
-    public function update($expertPanelUuid, $logEntryId, UpdateApplicationLogEntryRequest $request)
-    {
-        $job = new UpdateLogEntry(
-            expertPanelUuid: $expertPanelUuid,
-            logEntryId: $logEntryId,
-            entry: $request->entry,
-            step: $request->step,
-            logDate: $request->log_date
-        );
-        Bus::dispatch($job);
-
-        $logEntry = ExpertPanel::latestLogEntryForUuid($expertPanelUuid);
-        $logEntry->load(['causer']);
-        return $logEntry;
-    }
-
-    public function destroy($expertPanelUuid, $logEntryId)
-    {
-        try {
-            Bus::dispatch(new DeleteLogEntry(
-                expertPanelUuid: $expertPanelUuid,
-                logEntryId: $logEntryId,
-            ));
-
-            return response('', 200);
-        } catch (InvalidArgumentException $e) {
-            throw ValidationException::withMessages(['activity_type' => ['Only manual log entries can be deleted.']]);
-        }
-    }
 }

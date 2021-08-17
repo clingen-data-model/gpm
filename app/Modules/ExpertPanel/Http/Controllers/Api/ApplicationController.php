@@ -2,19 +2,12 @@
 
 namespace App\Modules\ExpertPanel\Http\Controllers\Api;
 
-use App\Models\Cdwg;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Bus\Dispatcher;
-use App\Modules\ExpertPanel\Jobs\AddContact;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Http\Requests\InitiateApplicationRequest;
-use App\Modules\ExpertPanel\Jobs\DeleteExpertPanel;
-use App\Modules\ExpertPanel\Jobs\InitiateApplication;
-use App\Modules\ExpertPanel\Jobs\UpdateExpertPanelAttributes;
-use App\Modules\ExpertPanel\Http\Requests\UpdateExpertPanelAttributesRequest;
 
 class ApplicationController extends Controller
 {
@@ -83,24 +76,6 @@ class ApplicationController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function store(InitiateApplicationRequest $request)
-    {
-        $data = $request->except('contacts');
-        $data['cdwg_id'] = $request->cdwg_id;
-        $data['date_initiated'] = $request->date_initiated ? Carbon::parse($request->date_initiated) : null;
-        $job = new InitiateApplication(...$data);
-        $this->dispatcher->dispatchNow($job);
-
-        $expertPanel = ExpertPanel::findByUuid($request->uuid);
-        
-        return $expertPanel;
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param int $id
@@ -117,36 +92,4 @@ class ApplicationController extends Controller
         return $expertPanel;
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateExpertPanelAttributesRequest $request, $uuid)
-    {
-        $this->dispatcher->dispatch(
-            new UpdateExpertPanelAttributes(
-                uuid: $uuid,
-                attributes: $request->only('working_name', 'long_base_name', 'short_base_name', 'affiliation_id', 'cdwg_id')
-            )
-        );
-
-        $expertPanel = ExpertPanel::findByUuidOrFail($uuid);
-
-        return $expertPanel;
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($uuid)
-    {
-        $this->dispatcher->dispatch(new DeleteExpertPanel(expertPanelUuid: $uuid));
-    }
 }

@@ -11,9 +11,10 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Jobs\InitiateApplication;
+use App\Modules\ExpertPanel\Actions\ExpertPanelCreate;
 use App\Modules\ExpertPanel\Events\ApplicationInitiated;
 
-class InitiateApplicationTest extends TestCase
+class ExpertPanelCreateTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -23,7 +24,6 @@ class InitiateApplicationTest extends TestCase
         $this->seed();
         $this->data = $this->makeApplicationData();
 
-        $this->job = new InitiateApplication(...$this->data);
     }
     
     /**
@@ -31,7 +31,7 @@ class InitiateApplicationTest extends TestCase
      */
     public function stores_new_application_model_when_initiated()
     {
-        Bus::dispatch($this->job);
+        ExpertPanelCreate::run(...$this->data);
         $this->assertDatabaseHas('applications', $this->data);
     }
 
@@ -42,7 +42,7 @@ class InitiateApplicationTest extends TestCase
     {
         Event::fake();
 
-        Bus::dispatch($this->job);
+        ExpertPanelCreate::run(...$this->data);
 
         Event::assertDispatched(ApplicationInitiated::class);
     }
@@ -56,9 +56,7 @@ class InitiateApplicationTest extends TestCase
 
         Auth::loginUsingId($user->id);
 
-        Bus::dispatch($this->job);
-
-        $expertPanel = ExpertPanel::findByUuidOrFail($this->data['uuid']);
+        $expertPanel =ExpertPanelCreate::run(...$this->data);
 
         $properties = array_merge($expertPanel->only(['uuid','working_name','cdwg_id','ep_type_id','date_initiated','coi_code', 'created_at', 'updated_at']), ['step' => 1]);
 

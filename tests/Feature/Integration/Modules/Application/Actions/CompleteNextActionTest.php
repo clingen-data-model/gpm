@@ -1,15 +1,13 @@
 <?php
 
-namespace Tests\Feature\Integration\Modules\Application\Jobs;
+namespace Tests\Feature\Integration\Modules\Application\Actions;
 
 use Tests\TestCase;
 use App\Models\NextAction;
-use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Modules\ExpertPanel\Jobs\CompleteNextAction;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use App\Modules\ExpertPanel\Actions\NextActionComplete;
 use App\Modules\ExpertPanel\Events\NextActionCompleted;

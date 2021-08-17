@@ -72,16 +72,6 @@ class ExpertPanel extends Model
     ];
 
     // Domain methods
-    public function setExpertPanelAttributes(array $attributes)
-    {
-        $this->fill($attributes);
-        if ($this->isDirty()) {
-            $updatedAttributes = $this->getDirty();
-            $this->save();
-            Event::dispatch(new ExpertPanelAttributesUpdated($this, $updatedAttributes));
-        }
-    }
-    
     
     public function addApprovalDate(int $step, Carbon $date)
     {

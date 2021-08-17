@@ -6,16 +6,15 @@ use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
-use Illuminate\Support\Facades\Bus;
 use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
-use App\Modules\ExpertPanel\Actions\LogEntryAdd;
-use App\Modules\ExpertPanel\Actions\NextActionCreate;
-use App\Modules\ExpertPanel\Jobs\InitiateApplication;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Actions\LogEntryAdd;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Modules\ExpertPanel\Actions\NextActionCreate;
+use App\Modules\ExpertPanel\Actions\ExpertPanelCreate;
+use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
 
 class ExpertPanelDetailTest extends TestCase
 {
@@ -27,14 +26,14 @@ class ExpertPanelDetailTest extends TestCase
         $this->seed();
         $this->user = User::factory()->create();
         $this->uuid = Uuid::uuid4()->toString();
-        Bus::dispatch(new InitiateApplication(
+        ExpertPanelCreate::run(
             uuid: $this->uuid,
             working_name: 'test name',
             cdwg_id: 1,
             ep_type_id: 2,
             date_initiated: Carbon::parse('2020-01-01')
-        ));
-        (new ApplicationDocumentAdd)->handle(
+        );
+        ApplicationDocumentAdd::run(
             expertPanelUuid: $this->uuid,
             uuid: Uuid::uuid4()->toString(),
             filename: uniqid().'test.tst',
@@ -43,13 +42,13 @@ class ExpertPanelDetailTest extends TestCase
             step: 1,
             date_received: '2020-01-01'
         );
-        (new NextActionCreate)->handle(
+        NextActionCreate::run(
             expertPanelUuid: $this->uuid,
             uuid: Uuid::uuid4()->toString(),
             entry: 'TEst me',
             dateCreated: '2020-01-01'
         );
-        (new LogEntryAdd)->handle(
+        LogEntryAdd::run(
             expertPanelUuid: $this->uuid,
             entry: 'TEst me',
             logDate: Carbon::now()->addDays(1)->toJson()
@@ -57,7 +56,7 @@ class ExpertPanelDetailTest extends TestCase
 
         $person = Person::factory()->create();
 
-        (new ContactAdd)->handle(
+        ContactAdd::run(
             expertPanelUuid: $this->uuid,
             uuid: $person->uuid,
         );

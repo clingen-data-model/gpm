@@ -11,6 +11,8 @@ use App\Modules\ExpertPanel\Jobs\DeleteNextAction;
 use App\Modules\ExpertPanel\Jobs\UpdateNextAction;
 use App\Modules\ExpertPanel\Jobs\CompleteNextAction;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
+use App\Modules\ExpertPanel\Actions\NextActionDelete;
+use App\Modules\ExpertPanel\Actions\NextActionUpdate;
 use App\Modules\ExpertPanel\Actions\NextActionComplete;
 use App\Modules\ExpertPanel\Http\Requests\CreateNextActionRequest;
 use App\Modules\ExpertPanel\Http\Requests\UpdateNextActionRequest;
@@ -18,13 +20,18 @@ use App\Modules\ExpertPanel\Http\Requests\CompleteNextActionRequest;
 
 class ApplicationNextActionsController extends Controller
 {
-    public function __construct(private Dispatcher $dispatcher, private NextActionComplete $completeAction)
-    {
+    public function __construct(
+        private Dispatcher $dispatcher,
+        private NextActionCreate $createAction,
+        private NextActionComplete $completeAction,
+        private NextActionUpdate $updateAction,
+        private NextActionDelete $deleteAction
+    ) {
     }
 
     public function store($expertPanelUuid, CreateNextActionRequest $request)
     {
-        return (new NextActionCreate)->handle(
+        return $this->createAction->handle(
             expertPanelUuid: $expertPanelUuid,
             uuid: $request->uuid,
             entry: $request->entry,
@@ -39,20 +46,16 @@ class ApplicationNextActionsController extends Controller
 
     public function update($expertPanelUuid, $id, UpdateNextActionRequest $request)
     {
-        $all = $request->except('id', 'uuid');
+        $params = $request->except('id', 'uuid');
         $cmdParams = [
             'expertPanelUuid' => $expertPanelUuid,
             'nextActionId' => $id
         ];
-        foreach ($all as $key => $value) {
+        foreach ($params as $key => $value) {
             $cmdParams[Str::camel($key)] = $value;
         }
 
-        // dd($cmdParams);
-
-        $this->dispatcher->dispatch(new UpdateNextAction(...$cmdParams));
-
-        $nextAction = NextAction::find($id);
+        $nextAction = $this->updateAction->handle(...$cmdParams);
 
         return $nextAction;
     }
@@ -71,11 +74,10 @@ class ApplicationNextActionsController extends Controller
 
     public function destroy($expertPanelUuid, $id)
     {
-        $job = new DeleteNextAction(
+        $this->deleteAction->handle(
             expertPanelUuid: $expertPanelUuid,
             nextActionId: $id
         );
-        $this->dispatcher->dispatch($job);
 
         return response(['status' => 'success']);
     }

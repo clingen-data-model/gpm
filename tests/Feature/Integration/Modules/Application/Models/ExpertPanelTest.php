@@ -46,35 +46,6 @@ class ExpertPanelTest extends TestCase
 
         $this->assertEquals($expertPanel->name, $expertPanel->long_base_name);
     }
-
-    /**
-     * @test
-     */
-    public function raises_ExpertPanelAttributesUpdated_event()
-    {
-        $expertPanel = ExpertPanel::factory()->gcep()->create();
-    
-        Event::fake();
-        $expertPanel->setExpertPanelAttributes([
-            'working_name' => 'test'
-        ]);
-    
-        Event::assertDispatched(ExpertPanelAttributesUpdated::class);
-    }
-
-    /**
-     * @test
-     */
-    public function logs_ExpertPanelAttributesUpdated()
-    {
-        $expertPanel = ExpertPanel::factory()->gcep()->create(['long_base_name'=>'aabb']);
-    
-        $expertPanel->setExpertPanelAttributes([
-            'working_name' => 'test',
-            'long_base_name' => 'aabb',
-        ]);
-        $this->assertLoggedActivity($expertPanel, 'Attributes updated: working_name = test');
-    }
     
     /**
      * @test
