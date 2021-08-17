@@ -2,7 +2,7 @@
 
 namespace App\Modules\ExpertPanel\Events;
 
-use App\Models\Coi;
+use App\Modules\ExpertPanel\Models\Coi;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;

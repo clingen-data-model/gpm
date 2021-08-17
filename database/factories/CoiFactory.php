@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Coi;
+use App\Modules\ExpertPanel\Models\Coi;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
