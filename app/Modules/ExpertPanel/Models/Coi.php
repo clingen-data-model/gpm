@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace App\Modules\ExpertPanel\Models;
 
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Database\Factories\CoiFactory;
 use Hamcrest\Type\IsObject;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
@@ -72,18 +73,7 @@ class Coi extends Model
             }
             $humanReadable[$name] = $readableResponse;
         }
-        // foreach ($data as $key => $response) {
-        //     $question = $questions->get($key);
-        //     $readableResponse = $value;
-        //     if (in_array($question->type, ['multiple-choice'])) {
-        //         $options = collect($question->options)->pluck('label', 'value');
-        //         $readableResponse = $options[$value];
-        //     }
-        //     if ($question->type == 'yes-no') {
-        //         $readableResponse = $value == 1 ? 'Yes' : 'No';
-        //     }
-        //     $humanReadable[$key] = $readableResponse;
-        // }
+
         return $humanReadable;
     }
     
@@ -94,7 +84,7 @@ class Coi extends Model
     public function scopeForApplication($query, $expertPanel)
     {
         $id = $expertPanel;
-        if ($expertPanel instanceof Application) {
+        if ($expertPanel instanceof ExpertPanel) {
             $id = $expertPanel->id;
         }
         return $query->where('application_id', $id);
@@ -115,4 +105,10 @@ class Coi extends Model
         });
     }
     
+    // Factory
+    static protected function newFactory()
+    {
+        return new CoiFactory();
+    }
+
 }

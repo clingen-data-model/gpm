@@ -3,7 +3,7 @@
 namespace App\Modules\ExpertPanel\Models;
 
 use DateTime;
-use App\Models\Coi;
+use App\Modules\ExpertPanel\Models\Coi;
 use App\Models\Cdwg;
 use App\Models\HasUuid;
 use App\Models\Document;
