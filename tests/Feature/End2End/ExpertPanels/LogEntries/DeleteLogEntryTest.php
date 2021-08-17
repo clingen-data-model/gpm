@@ -11,6 +11,10 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Actions\LogEntryAdd;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+/**
+ * @group applications
+ * @group log-entries
+ */
 class DeleteLogEntryTest extends TestCase
 {
     use RefreshDatabase;

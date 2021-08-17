@@ -4,23 +4,15 @@ namespace App\Modules\ExpertPanel\Actions;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Foundation\Bus\Dispatchable;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Http\Requests\CreateApplicationLogEntryRequest;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class LogEntryAdd
 {
-    use Dispatchable;
+    use AsAction;
 
     private ExpertPanel  $expertPanel;
-
-    /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
 
     /**
      * Execute the job.
@@ -46,5 +38,18 @@ class LogEntryAdd
         $expertPanel->touch();
 
         return $logEntry;
+    }
+
+    public function asController($expertPanelUuid, CreateApplicationLogEntryRequest $request)
+    {
+        $logEntry = $this->handle(
+            expertPanelUuid: $expertPanelUuid,
+            logDate: $request->log_date,
+            entry: $request->entry,
+            step: $request->step
+        );
+
+        $logEntry->load(['causer']);
+        return response($logEntry, 200);
     }
 }
