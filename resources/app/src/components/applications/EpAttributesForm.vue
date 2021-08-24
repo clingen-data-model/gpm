@@ -83,7 +83,7 @@ export default {
             return `https://clinicalgenome.org/affiliation/${this.appClone.affiliation_id || this.affiliationIdPlaceholder}`
         },
         affiliationIdPlaceholder() {
-            if (this.application && this.application.ep_type_id == 1) {
+            if (this.application && this.application.expert_panel_type_id == 1) {
                 return '4000XX'
             }
             return '5000XX'

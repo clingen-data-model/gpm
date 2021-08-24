@@ -217,7 +217,7 @@ export default {
         }),
         filteredData() {
             let applications = this.applications
-                .filter(item => !this.epTypeId || item.ep_type_id == this.epTypeId)
+                .filter(item => !this.epTypeId || item.expert_panel_type_id == this.epTypeId)
                 .filter(item => {
                     if (!this.showCompleted) {
                         return item.date_completed == null;

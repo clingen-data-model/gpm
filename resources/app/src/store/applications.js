@@ -26,10 +26,10 @@ export default {
             return state.requests.length > 0;
         },
         gceps: state => {
-            return state.items.filter(app => app.ep_type_id == 1);
+            return state.items.filter(app => app.expert_panel_type_id == 1);
         },
         vceps: state => {
-            return state.items.filter(app => app.ep_type_id == 2);
+            return state.items.filter(app => app.expert_panel_type_id == 2);
         },
         currentItem: state => {
             if (state.currentItemIdx === null) {

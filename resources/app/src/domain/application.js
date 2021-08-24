@@ -12,7 +12,7 @@ class Application extends Entity {
 
     static defaults = {
         working_name: null,
-        ep_type_id: null,
+        expert_panel_type_id: null,
         cdwg_id: null,
         id: null,
         uuid: null,
@@ -38,22 +38,22 @@ class Application extends Entity {
     }
 
     get isGcep() {
-        return this.ep_type_id == 1;
+        return this.expert_panel_type_id == 1;
     }
 
     get isVcep() {
-        return this.ep_type_id == 2;
+        return this.expert_panel_type_id == 2;
     }
 
     get steps() {
-        if (this.ep_type_id == 1) {
+        if (this.expert_panel_type_id == 1) {
             return [1];
         }
-        if (this.ep_type_id == 2) {
+        if (this.expert_panel_type_id == 2) {
             return [1, 2, 3, 4];
         }
 
-        throw new Error('Unknown ep_type_id found when determining applicaiton steps.');
+        throw new Error('Unknown expert_panel_type_id found when determining applicaiton steps.');
     }
 
     get pendingNextActions() {
