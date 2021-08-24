@@ -23,20 +23,32 @@ class NextAction extends Model
         'date_created',
         'date_completed',
         'target_date',
-        'step',
-        'application_id',
+        'application_step',
+        'expert_panel_id',
         'uuid',
+        'assignee_id',
+        'assignee_name',
         'assigned_to',
         'assigned_to_name'
     ];
 
-    protected $dates = [
-        'date_created',
-        'date_completed',
-        'target_date'
+    protected $casts = [
+        'id' => 'int',
+        'application_step' => 'int',
+        'expert_panel_id' => 'int',
+        'assignee_id' => 'int',
+        'date_created' => 'datetime',
+        'date_completed' => 'datetime',
+        'target_date' => 'datetime'
     ];
 
     protected $with = ['assignee'];
+
+    protected $appends = [
+        'assigned_to',
+        'assigned_to_name',
+        'step'
+    ];
 
     /**
      * Get the assignedTo that owns the NextAction
@@ -45,7 +57,7 @@ class NextAction extends Model
      */
     public function assignee(): BelongsTo
     {
-        return $this->belongsTo(NextActionAssignee::class, 'assigned_to', 'id');
+        return $this->belongsTo(NextActionAssignee::class, 'assignee_id', 'id');
     }
 
     public function scopePending($query)
@@ -53,8 +65,45 @@ class NextAction extends Model
         return $query->whereNull('date_completed');
     }
 
+    /**
+     * ACCESSORS
+     */
+
+    public function getAssignedToAttribute()
+    {
+        return $this->assignee_id;
+    }
+
+    public function setAssignedToAttribute($value)
+    {
+        $this->attributes['assignee_id'] = $value;
+    }
+    
+     
+    public function getAssignedToNameAttribute()
+    {
+        return $this->attributes['assignee_name'];
+    }
+
+    public function setAssignedToNameAttribute($value)
+    {
+        return $this->attributes['assignee_name'] = $value;
+    }
+    
+
+    public function getStepAttribute()
+    {
+        return $this->application_step;
+    }
+    
+    public function setStepAttribute($value)
+    {
+        $this->attributes['application_step'] = $value;
+    }
+         
+
     // Factory
-    static protected function newFactory()
+    protected static function newFactory()
     {
         return new NextActionFactory();
     }

@@ -35,7 +35,7 @@ class ExpertPanelModuleServiceProvider extends ModuleServiceProvider
         parent::boot();
         $this->mergeConfigFrom(
             __DIR__.'/../config.php',
-            'applications'
+            'expert-panels'
         );
     }
 

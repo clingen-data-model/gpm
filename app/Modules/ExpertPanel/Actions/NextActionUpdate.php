@@ -47,7 +47,9 @@ class NextActionUpdate
             'assigned_to' => $assignedTo,
             'assigned_to_name' => $assignedToName
         ];
-        DB::transaction(fn () => $nextAction->update($data));
+        $nextAction->fill($data);
+        // dd($nextAction->toArray());
+        DB::transaction(fn () => $nextAction->save());
         $nextAction->update($data);
 
         event(new NextActionUpdated(application: $expertPanel, nextAction: $nextAction, oldData: $oldData));

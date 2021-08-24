@@ -4,6 +4,7 @@ namespace App\Modules\ExpertPanel\Actions;
 
 use DateTime;
 use Illuminate\Support\Carbon;
+use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\Concerns\AsAction;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
@@ -23,19 +24,26 @@ class ExpertPanelCreate
         string $uuid,
         string $working_name,
         int|null $cdwg_id,
-        int $ep_type_id,
+        int $expert_panel_type_id,
         ?DateTime $date_initiated = null,
-    )
-    {
+    ) {
         if (is_null($date_initiated)) {
             $date_initiated = Carbon::now();
         }
+        
+        // TODO: extract to action.
+        $group = Group::create([
+            'uuid' => $uuid,
+            'name' => $working_name,
+            'group_type_id' => config('groups.types.ep.id'),
+            'group_status_id' => config('groups.statuses.pending-approval'),
+            'parent_id' => $cdwg_id,
+        ]);
 
         $expertPanel = new ExpertPanel();
         $expertPanel->uuid = $uuid;
-        $expertPanel->working_name = $working_name;
-        $expertPanel->cdwg_id = $cdwg_id;
-        $expertPanel->ep_type_id = $ep_type_id;
+        $expertPanel->group_id = $group->id;
+        $expertPanel->expert_panel_type_id = $expert_panel_type_id;
         $expertPanel->date_initiated = $date_initiated;
         $expertPanel->coi_code = bin2hex(random_bytes(12));
         $expertPanel->current_step = 1;
@@ -56,6 +64,4 @@ class ExpertPanelCreate
         $expertPanel = $this->handle(...$data);
         return response($expertPanel, 200);
     }
-    
-
 }

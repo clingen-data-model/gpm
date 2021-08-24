@@ -54,7 +54,7 @@ class UpdateNextActionTest extends TestCase
             [
                 'date_created' => '2020-02-01',
                 'target_date' => '2020-03-01',
-                'assigned_to' => 'Expert Panel',
+                'assigned_to' => 2,
                 'assigned_to_name' => 'Early Dog',
                 'entry' => 'This is the edited next action',
                 'step' => 1
@@ -65,10 +65,10 @@ class UpdateNextActionTest extends TestCase
             'id' => $this->nextAction->id,
             'date_created' => '2020-02-01 00:00:00',
             'target_date' => '2020-03-01 00:00:00',
-            'assigned_to' => 'Expert Panel',
-            'assigned_to_name' => 'Early Dog',
+            'assignee_id' => 2,
+            'assignee_name' => 'Early Dog',
             'entry' => 'This is the edited next action',
-            'step' => 1
+            'application_step' => 1
         ]);
     }
 
@@ -83,7 +83,7 @@ class UpdateNextActionTest extends TestCase
             [
                 'date_created' => '2020-02-01',
                 'target_date' => '2020-03-01',
-                'assigned_to' => 'Expert Panel',
+                'assigned_to' => 2,
                 'assigned_to_name' => 'Early Dog',
                 'entry' => 'This is the edited next action',
                 'step' => 1

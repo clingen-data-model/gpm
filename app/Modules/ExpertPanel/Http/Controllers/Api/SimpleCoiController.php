@@ -14,7 +14,6 @@ use App\Modules\ExpertPanel\Jobs\StoreCoiResponse;
 
 class SimpleCoiController extends Controller
 {
-
     public function __construct(private Dispatcher $dispatcher)
     {
         $this->dispatcher = $dispatcher;
@@ -35,7 +34,9 @@ class SimpleCoiController extends Controller
 
         $coiDefinition = Coi::getDefinition();
         $questions = collect($coiDefinition->questions)->keyBy('name');
-        $headings = $questions->map(function ($q) { return $q->question; });
+        $headings = $questions->map(function ($q) {
+            return $q->question;
+        });
         $headings[] = 'Date Completed';
 
         $coiData = Coi::forApplication($expertPanel)->get();
@@ -54,6 +55,4 @@ class SimpleCoiController extends Controller
 
         return response()->download($reportPath, $filename);
     }
-    
-    
 }

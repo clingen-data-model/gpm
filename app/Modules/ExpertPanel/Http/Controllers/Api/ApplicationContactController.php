@@ -25,6 +25,10 @@ class ApplicationContactController extends Controller
     {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
 
-        return $expertPanel->contacts;
+        return $expertPanel
+            ->contacts()
+            ->with('person')
+            ->get()
+            ->pluck('person');
     }
 }

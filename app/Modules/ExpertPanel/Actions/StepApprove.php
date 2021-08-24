@@ -17,8 +17,10 @@ class StepApprove
 {
     use AsAction;
 
-    public function __construct(private NotifyContacts $notifyContactsAction, private ApplicationComplete $applicationCompleteAction)
-    {
+    public function __construct(
+        private NotifyContacts $notifyContactsAction,
+        private ApplicationComplete $applicationCompleteAction
+    ) {
     }
 
     /**
@@ -51,7 +53,7 @@ class StepApprove
         }
 
         $approvedStep = $expertPanel->current_step;
-        $expertPanel->addApprovalDate($approvedStep, $dateApproved);
+        $expertPanel->setApprovalDate($approvedStep, $dateApproved);
 
         if (!$stepManager->isLastStep()) {
             $expertPanel->current_step++;
@@ -69,7 +71,6 @@ class StepApprove
             $this->applicationCompleteAction->handle($expertPanel, $dateApproved);
         }
 
-        // TODO: extract to command and log an event on the person.
         if ($notifyContacts) {
             $this->notifyContactsAction->handle(
                 expertPanel: $expertPanel,

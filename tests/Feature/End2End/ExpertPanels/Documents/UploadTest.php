@@ -49,11 +49,13 @@ class UploadTest extends TestCase
             'uuid' => $data['uuid'],
             'filename' => 'Test Scope Document.docx',
             'document_type_id' => config('documents.types.scope.id'),
-            'date_received' => Carbon::now()->toJson(),
             'notes' => 'this is a note',
-            'metadata' => null,
-            'version' => 1,
-            'application_id' => $this->expertPanel->id,
+            'owner_id' => $this->expertPanel->group->id,
+            'owner_type' => get_class($this->expertPanel->group),
+            'metadata' => [
+                'date_received' => Carbon::now()->toJson(),
+                'version' => 1,
+            ],
             'notes' => 'this is a test'
         ]);
 
@@ -84,7 +86,8 @@ class UploadTest extends TestCase
         $response->assertJson([
                 'uuid' => $data['uuid'],
                 'version' => 2,
-                'application_id' => $this->expertPanel->id
+                'owner_id' => $this->expertPanel->group->id,
+                'owner_type' => get_class($this->expertPanel->group)
             ]);
     }
 

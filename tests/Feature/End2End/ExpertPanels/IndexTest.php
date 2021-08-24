@@ -33,8 +33,8 @@ class IndexTest extends TestCase
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $response = $this->json('GET', self::URL.'?sort[field]=name&sort[dir]=desc');
-        
-        $this->assertResultsSorted($this->expertPanels->sortBy('working_name')->slice(0,20), $response);
+
+        $this->assertResultsSorted($this->expertPanels->sortByDesc('group.name')->slice(0, 20), $response);
     }
 
     /**
@@ -44,7 +44,7 @@ class IndexTest extends TestCase
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $response = $this->json('GET', self::URL.'?sort[field]=current_step&sort[dir]=asc');
-        $this->assertResultsSorted($this->expertPanels->sortBy('current_step')->slice(0,20), $response);
+        $this->assertResultsSorted($this->expertPanels->sortBy('current_step')->slice(0, 20), $response);
     }
     
     /**
@@ -52,10 +52,10 @@ class IndexTest extends TestCase
      */
     public function sorts_results_by_cdwg_name()
     {
-        $this->expertPanels->load('cdwg');
+        $this->expertPanels->load('group.parent');
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $response = $this->json('GET', self::URL.'?sort[field]=cdwg.name&sort[dir]=asc');
-        $this->assertResultsSorted($this->expertPanels->sortBy('cdwg.name')->slice(0,20), $response);
+        $this->assertResultsSorted($this->expertPanels->sortBy('cdwg.name')->slice(0, 20), $response);
     }
     
     /**
@@ -76,7 +76,7 @@ class IndexTest extends TestCase
 
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $response = $this->json('GET', self::URL.'?sort[field]=latestLogEntry.created_at&sort[dir]=asc');
-        $this->assertResultsSorted($this->expertPanels->sortBy('latestLogEntry.created_at')->slice(0,20), $response);
+        $this->assertResultsSorted($this->expertPanels->sortBy('latestLogEntry.created_at')->slice(0, 20), $response);
     }
     
     /**
@@ -90,19 +90,17 @@ class IndexTest extends TestCase
         });
 
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('get', '/api/applications?where[since]='.Carbon::now()->subDays(6)->toJson())
+        $this->json('get', '/api/applications?where[since]='.Carbon::now()->subDays(6)->toJson())
             ->assertStatus(200)
             ->assertJsonCount(5, 'data');
-        
     }
     
 
     private function assertResultsSorted(Collection $expected, $response)
     {
+        $response->assertOk();
         foreach ($expected->values() as $idx => $app) {
-            $this->assertEquals($app->id, $response->original->toArray()['data'][$idx]['id']);        
+            $this->assertEquals($app->id, $response->original->toArray()['data'][$idx]['id']);
         }
     }
-    
-    
 }

@@ -8,6 +8,7 @@ use Lorisleiva\Actions\Concerns\AsAction;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Events\ContactAdded;
 use App\Modules\ExpertPanel\Http\Requests\AddContactRequest;
+use App\Modules\Group\Models\GroupMember;
 
 class ContactAdd
 {
@@ -23,15 +24,14 @@ class ContactAdd
         string $uuid
     ) {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
-        
         $person = Person::findByUuidOrFail($uuid);
 
         if ($expertPanel->contacts()->get()->contains($person)) {
             return;
         }
 
-        $expertPanel->contacts()->attach($person);
-        $expertPanel->touch();
+        
+        $expertPanel->addContact($person);
         Event::dispatch(new ContactAdded($expertPanel, $person));
 
         return $person;
@@ -39,12 +39,10 @@ class ContactAdd
 
     public function asController($epUuid, AddContactRequest $request)
     {
-        $this->handle(
+        $person = $this->handle(
             expertPanelUuid: $epUuid,
             uuid: $request->person_uuid,
         );
-
-        $person = ExpertPanel::findByUuid($epUuid)->contacts()->where('uuid', $request->person_uuid)->sole();
 
         return $person;
     }

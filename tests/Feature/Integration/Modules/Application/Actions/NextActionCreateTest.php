@@ -60,15 +60,15 @@ class NextActionCreateTest extends TestCase
             dateCompleted: $nextAction->dateCompleted,
             targetDate: $nextAction->targetDate,
             step: $nextAction->step,
-            assignedTo: 'CDWG OC',
+            assignedTo: 1,
             assignedToName: 'Bob Dobbs'
         );
 
         $this->assertDatabaseHas('activity_log', [
             'subject_id' => $this->expertPanel->id,
             'description' => 'Added next action: '.$nextAction->entry,
-            'properties->next_action->assigned_to' => 'CDWG OC',
-            'properties->next_action->assigned_to_name' => 'Bob Dobbs'
+            'properties->next_action->assignee_id' => 1,
+            'properties->next_action->assignee_name' => 'Bob Dobbs'
         ]);
 
         $this->assertEquals(3, $this->expertPanel->logEntries->last()->properties['step']);

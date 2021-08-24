@@ -50,7 +50,8 @@ class MarkFinalTest extends TestCase
     public function marks_any_previous_final_documents_for_same_application_and_type_as_not_final()
     {
         Sanctum::actingAs($this->user);
-        $document = $this->expertPanel->documents()->save(Document::factory()->make(['is_final'=>1, 'document_type_id' => $this->document->document_type_id]));
+        $d = Document::factory()->make(['metadata'=>['is_final' => 1], 'document_type_id' => $this->document->document_type_id]);
+        $document = $this->expertPanel->documents()->save($d);
 
         $this->call('POST', $this->docUrl)
             ->assertStatus(200)
@@ -60,7 +61,7 @@ class MarkFinalTest extends TestCase
 
         $this->assertDatabaseHas('documents', [
             'id' => $document->id,
-            'is_final' => 0
+            'metadata->is_final' => 0
         ]);
     }
 

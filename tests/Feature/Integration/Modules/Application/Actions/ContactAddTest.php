@@ -53,8 +53,8 @@ class ContactAddTest extends TestCase
     {
         $this->action->handle($this->expertPanel->uuid, $this->person->uuid);
 
-        $this->assertDatabaseHas('application_person', [
-            'application_id' => $this->expertPanel->id,
+        $this->assertDatabaseHas('group_members', [
+            'group_id' => $this->expertPanel->group_id,
             'person_id' => $this->person->id
         ]);
     }

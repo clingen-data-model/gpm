@@ -4,6 +4,7 @@ namespace Tests\Feature\Integration\Modules\Application\Jobs;
 
 use Tests\TestCase;
 use App\Modules\User\Models\User;
+use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
@@ -23,16 +24,36 @@ class ExpertPanelCreateTest extends TestCase
         parent::setup();
         $this->seed();
         $this->data = $this->makeApplicationData();
-
     }
     
     /**
      * @test
      */
+    public function creates_new_group_with_cdwg_as_parent_for_expert_panel()
+    {
+        $expertPanel = ExpertPanelCreate::run(...$this->data);
+        $this->assertDatabaseHas('groups', [
+            'name' => $this->data['working_name'],
+            'parent_id' => $this->data['cdwg_id']
+        ]);
+
+        $group = Group::orderBy('id', 'desc')->first();
+
+        $this->assertDatabaseHas('expert_panels', [
+            'group_id' => $group->id
+        ]);
+    }
+    
+
+    /**
+     * @test
+     */
     public function stores_new_application_model_when_initiated()
     {
-        ExpertPanelCreate::run(...$this->data);
-        $this->assertDatabaseHas('applications', $this->data);
+        $expertPanel = ExpertPanelCreate::run(...$this->data);
+        unset($this->data['working_name']);
+        unset($this->data['cdwg_id']);
+        $this->assertDatabaseHas('expert_panels', $this->data);
     }
 
     /**
@@ -58,14 +79,14 @@ class ExpertPanelCreateTest extends TestCase
 
         $expertPanel =ExpertPanelCreate::run(...$this->data);
 
-        $properties = array_merge($expertPanel->only(['uuid','working_name','cdwg_id','ep_type_id','date_initiated','coi_code', 'created_at', 'updated_at']), ['step' => 1]);
+        $properties = array_merge($expertPanel->only(['uuid','working_name','cdwg_id','expert_panel_type_id','date_initiated','coi_code', 'created_at', 'updated_at']), ['step' => 1]);
 
         $this->assertLoggedActivity(
-            $expertPanel, 
-            'Application initiated', 
+            $expertPanel,
+            'Application initiated',
             // $properties,  // comment out properties b/c can't get a match.
             null,
-            get_class($user), 
+            get_class($user),
             $user->id
         );
     }

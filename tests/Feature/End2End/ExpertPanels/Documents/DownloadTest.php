@@ -36,7 +36,8 @@ class DownloadTest extends TestCase
             uuid: $this->doc->uuid,
             filename: 'test.docx',
             storage_path: 'documents/test_download.docx',
-            document_type_id: 1
+            document_type_id: 1,
+            step: 1
         );
     }
 

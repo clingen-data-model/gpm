@@ -5,6 +5,7 @@ namespace Tests;
 use App\Models\Cdwg;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Carbon;
+use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Bus;
 use App\Modules\Person\Models\Person;
 use App\Modules\ExpertPanel\Jobs\AddContact;
@@ -30,8 +31,8 @@ abstract class TestCase extends BaseTestCase
         $data = [
             'uuid' => Uuid::uuid4()->toString(),
             'working_name' => 'EP Working Name',
-            'ep_type_id' => config('expert_panels.types.vcep.id'),
-            'cdwg_id' => Cdwg::all()->random()->id,
+            'expert_panel_type_id' => config('expert_panels.types.vcep.id'),
+            'cdwg_id' => Group::cdwg()->get()->random()->id,
             'date_initiated' => Carbon::parse('2020-01-01')
         ];
         return $data;

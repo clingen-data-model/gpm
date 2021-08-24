@@ -32,34 +32,14 @@ class UpdateExpertPanelAttributesRequest extends FormRequest
             'long_base_name' => [
                                     'nullable',
                                     'max:255',
-                                    Rule::unique('applications')
-                                        ->ignore($expertPanel)
-                                        ->where(function ($query) use ($expertPanel) {
-                                            return $query->where('ep_type_id', $expertPanel->ep_type_id);
-                                        })
                                 ],
             'short_base_name' => [
                                     'nullable',
                                     'max:15',
-                                    Rule::unique('applications')
-                                        ->ignore($expertPanel)
-                                        ->where(function ($query) use ($expertPanel) {
-                                            $query->where('ep_type_id', $expertPanel->ep_type_id);
-                                            return $query;
-                                        })
                                 ],
             'affiliation_id' => 'nullable|max:8',
         ];
     }
-
-    public function messages()
-    {
-        return [
-            'long_base_name.unique' => 'The long base name must be unique for expert panels of this type.',
-            'short_base_name.unique' => 'The short base name must be unique for expert panels of this type.',
-        ];
-    }
-    
 
     public function prepareForValidation()
     {

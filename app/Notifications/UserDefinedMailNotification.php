@@ -27,7 +27,6 @@ class UserDefinedMailNotification extends Notification
         public ?string $replyToEmail = null,
         public ?string $replyToName = null,
     ) {
-        //
     }
 
     /**

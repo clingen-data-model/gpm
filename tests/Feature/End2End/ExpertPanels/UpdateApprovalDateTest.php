@@ -7,6 +7,7 @@ use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Laravel\Sanctum\Sanctum;
 
 class UpdateApprovalDateTest extends TestCase
@@ -20,8 +21,8 @@ class UpdateApprovalDateTest extends TestCase
         $this->user = User::factory()->create();
         $this->expertPanel = ExpertPanel::factory()
                                 ->create([
-                                    'ep_type_id' => 2, 
-                                    'approval_dates'=>['step 1' => '2020-01-01']
+                                    'expert_panel_type_id' => 2,
+                                    'step_1_approval_date'=>'2020-01-01'
                                 ]);
     }
     
@@ -41,7 +42,7 @@ class UpdateApprovalDateTest extends TestCase
                 ]
             ]);
 
-            $this->json('put', '/api/applications/'.$this->expertPanel->uuid.'/approve', [
+        $this->json('put', '/api/applications/'.$this->expertPanel->uuid.'/approve', [
                 'step' => '10',
                 'date_approved' => 'beans'
             ])
@@ -64,11 +65,11 @@ class UpdateApprovalDateTest extends TestCase
         ]);
         $response->assertStatus(200);
 
-        $this->assertEquals(['step 1' => '2021-04-22T04:00:00.000000Z'], $response->original['approval_dates']);
+        $this->assertEquals(Carbon::parse('2021-04-22T04:00:00.000000Z'), $response->original['step_1_approval_date']);
 
-        $this->assertDatabaseHas('applications', [
+        $this->assertDatabaseHas('expert_panels', [
             'uuid' => $this->expertPanel->uuid,
-            'approval_dates' => json_encode(['step 1' => '2021-04-22T04:00:00.000000Z'])
+            'step_1_approval_date' => '2021-04-22 04:00:00'
         ]);
 
         $this->assertDatabaseHas('activity_log', [
@@ -76,5 +77,4 @@ class UpdateApprovalDateTest extends TestCase
             'description' => 'Approval date updated to 2021-04-22T04:00:00.000000Z for step 1'
         ]);
     }
-    
 }

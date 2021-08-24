@@ -35,10 +35,10 @@ class NextActionCreate
             'entry' => $entry,
             'date_created' => $dateCreated,
             'target_date' => $targetDate,
-            'step' => $step,
+            'application_step' => $step,
             'date_completed' => $dateCompleted,
-            'assigned_to' => $assignedTo,
-            'assigned_to_name' => $assignedToName
+            'assignee_id' => $assignedTo ?? 1,
+            'assignee_name' => $assignedToName
         ]);
 
         $expertPanel->nextActions()->save($nextAction);

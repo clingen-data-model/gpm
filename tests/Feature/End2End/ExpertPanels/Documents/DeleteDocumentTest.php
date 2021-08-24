@@ -5,6 +5,7 @@ namespace Tests\Feature\End2End\ExpertPanels\Documents;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\Document;
+use App\Models\DocumentType;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -28,6 +29,7 @@ class DeleteDocumentTest extends TestCase
 
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->document = Document::factory()->make();
+
         $this->expertPanel->documents()->save($this->document);
         $this->docUrl = '/api/applications/'.$this->expertPanel->uuid.'/documents/'.$this->document->uuid;
         Carbon::setTestNow('2021-02-01');

@@ -15,7 +15,8 @@ class Coi extends Model
     use HasFactory;
 
     public $fillable = [
-        'application_id',
+        'group_member_id',
+        'expert_panel_id',
         'email',
         'data'
     ];
@@ -49,7 +50,7 @@ class Coi extends Model
             ->filter()
             ->toArray();
 
-        $responseData['application_id'] = $this->expertPanel_id;
+        $responseData['group_member_id'] = $this->groupMember->id;
         
         return $responseData;
     }
@@ -91,14 +92,14 @@ class Coi extends Model
     }
     
 
-    static public function getDefinition()
+    public static function getDefinition()
     {
         return Cache::remember('coi-definition', 360, function () {
             return json_decode(file_get_contents(base_path('resources/surveys/coi.json')));
         });
     }
 
-    static public function getLegacyDefinition()
+    public static function getLegacyDefinition()
     {
         return Cache::remember('legacy-coi-definition', 360, function () {
             return json_decode(file_get_contents(base_path('resources/surveys/legacy_coi.json')));
@@ -106,9 +107,8 @@ class Coi extends Model
     }
     
     // Factory
-    static protected function newFactory()
+    protected static function newFactory()
     {
         return new CoiFactory();
     }
-
 }
