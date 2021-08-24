@@ -41,7 +41,7 @@ class InitiationTest extends TestCase
         $expectedAttributes = array_merge(
             $data,
             [
-                'working_name' => $data['working_name'].' '.ExpertPanelType::find($data['ep_type_id'])->display_name,
+                'working_name' => $data['working_name'].' '.ExpertPanelType::find($data['expert_panel_type_id'])->display_name,
                 'date_initiated'=>'2020-01-01T00:00:00.000000Z',
                 'current_step' => 1
             ]
@@ -65,7 +65,7 @@ class InitiationTest extends TestCase
             'errors' => [
                 'uuid' => ['The uuid field is required.'],
                 'working_name' => ['The working name field is required.'],
-                'ep_type_id' => ['The ep type id field is required.'],
+                'expert_panel_type_id' => ['The expert panel type id field is required.'],
             ]
         ]);
     }
@@ -128,12 +128,12 @@ class InitiationTest extends TestCase
     /**
      * @test
      */
-    public function validates_ep_types_id_exists()
+    public function validates_expert_panel_types_id_exists()
     {
-        $data = ['ep_type_id'=>'3'];
+        $data = ['expert_panel_type_id'=>'3'];
         $response = $this->json('Post', '/api/applications', $data);
 
         $response->assertStatus(422);
-        $response->assertJsonFragment(['ep_type_id' => ['The selected expert panel type is invalid.']]);
+        $response->assertJsonFragment(['expert_panel_type_id' => ['The selected expert panel type is invalid.']]);
     }
 }

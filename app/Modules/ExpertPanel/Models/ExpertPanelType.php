@@ -8,6 +8,4 @@ use Illuminate\Database\Eloquent\Model;
 class ExpertPanelType extends Model
 {
     use HasFactory;
-
-    protected $table = 'ep_types';
 }

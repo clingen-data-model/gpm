@@ -15,7 +15,10 @@ class StepManagerFactory
 {
     public function __invoke(ExpertPanel  $expertPanel): StepManagerInterface
     {
-        if ($expertPanel->ep_type_id == config('expert_panels.types.gcep.id') && $expertPanel->current_step == 1) {
+        if (
+            $expertPanel->expert_panel_type_id == config('expert_panels.types.gcep.id')
+            && $expertPanel->current_step == 1
+        ) {
             return new GcepDefinitionStepManager($expertPanel);
         }
 
@@ -34,5 +37,4 @@ class StepManagerFactory
 
         throw new UnexpectedCurrentStepException($expertPanel);
     }
-    
 }

@@ -18,8 +18,14 @@ class NotifyContacts
         array $attachments,
         array $ccAddresses
     ) {
+        $contacts = $expertPanel
+                        ->contacts()
+                        ->with('person')
+                        ->get()
+                        ->pluck('person');
+
         Notification::send(
-            $expertPanel->contacts,
+            $contacts,
             new UserDefinedMailNotification(
                 subject: $subject,
                 body: $body,

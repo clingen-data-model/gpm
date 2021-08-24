@@ -23,7 +23,7 @@ class ApplicationDocumentAdd
         int $document_type_id,
         ?int $step = null,
         ?string $date_received = null,
-        ?array $metadata = null,
+        ?array $metadata = [],
         ?bool $is_final = false,
         ?string $notes = null
     ): Document {
@@ -35,14 +35,16 @@ class ApplicationDocumentAdd
             'filename' => $filename,
             'storage_path' => $storage_path,
             'document_type_id' => $document_type_id,
-            'date_received' => $dateReceived,
-            'metadata' => $metadata,
-            'step' => $step,
-            'is_final' => $is_final,
+            'metadata' => array_merge($metadata, [
+                'step' => $step,
+                'is_final' => $is_final,
+                'date_received' => $dateReceived,
+            ]),
             'notes' => $notes
         ]);
         
         $lastDocumentVersion = $expertPanel->getLatestVersionForDocument($document->document_type_id);
+
         $document->version = $lastDocumentVersion+1;
 
         $expertPanel->documents()->save($document);

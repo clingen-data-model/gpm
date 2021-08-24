@@ -82,7 +82,6 @@ class ExpertPanelTest extends TestCase
         $expertPanel->documents()->save($document2);
 
         $this->assertEquals($expertPanel->documents->count(), 2);
-
         $this->assertEquals($expertPanel->firstScopeDocument->id, $document1->id);
     }
     

@@ -22,8 +22,8 @@ class CreateExpertPanelsTable extends Migration
             $table->string('affiliaton_id', 8)->unique();
             $table->foreign('cdwg_id')->references('id')->on('cdwgs');
 
-            $table->unsignedBigInteger('ep_type_id');
-            $table->foreign('ep_type_id')->references('id')->on('ep_types');
+            $table->unsignedBigInteger('expert_panel_id');
+            $table->foreign('expert_panel_id')->references('id')->on('ep_types');
 
             $table->timestamps();
             $table->softDeletes();

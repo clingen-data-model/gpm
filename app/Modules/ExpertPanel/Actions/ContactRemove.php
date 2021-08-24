@@ -25,12 +25,17 @@ class ContactRemove
     {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         $person = Person::findByUuidOrFail($personUuid);
+        $contact = $expertPanel
+                    ->contacts()
+                    ->whereHas('person', function ($q) use ($personUuid) {
+                        $q->where('uuid', $personUuid);
+                    })->first();
 
-        if (! $expertPanel->contacts->pluck('uuid')->contains($person->uuid)) {
+        if (! $contact) {
             throw new PersonNotContactException($expertPanel, $person);
         }
 
-        $expertPanel->contacts()->detach($person);
+        $contact->delete($contact);
         $expertPanel->touch();
         Event::dispatch(new ContactRemoved($expertPanel, $person));
     }

@@ -64,8 +64,8 @@ class ApplicationStepApprovedNotification extends Notification
                         'wasLastStep' => $this->wasLastStep
                     ]);
                     
-        if (in_array($this->approvedStep, config('applications.notifications.cc.steps'))) {
-            foreach (config('applications.notifications.cc.recipients') as $cc) {
+        if (in_array($this->approvedStep, config('expert_panels.notifications.cc.steps'))) {
+            foreach (config('expert_panels.notifications.cc.recipients') as $cc) {
                 $mailMessage->cc($cc[0], $cc[1]);
             }
         }

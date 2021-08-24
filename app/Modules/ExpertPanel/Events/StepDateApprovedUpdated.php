@@ -35,7 +35,7 @@ class StepDateApprovedUpdated extends ExpertPanelEvent
             'application_uuid' => $this->application->uuid,
             'step' => $this->step,
             'new_date_approved' => $this->dateApproved,
-            'old_approval_date' => $this->application->getOriginal('approval_dates')['step '.$this->step]
+            'old_approval_date' => $this->application->getOriginal('step_'.$this->step.'_approval_date')
         ];
     }
 

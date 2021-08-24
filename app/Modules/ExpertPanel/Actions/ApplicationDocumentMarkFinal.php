@@ -22,12 +22,16 @@ class ApplicationDocumentMarkFinal
             ->type($document->document_type_id)
             ->final()
             ->get();
-
+        
         $prevFinal->each(function ($doc) {
-            $doc->update(['is_final' => 0]);
+            // dd($doc->toArray());
+            $doc->is_final = 0;
+            $doc->save();
         });
 
-        $document->update(['is_final' => 1]);
+        $document->isFinal = 1;
+        $document->save();
+
 
         Event::dispatch(new DocumentMarkedFinal($expertPanel, $document));
 

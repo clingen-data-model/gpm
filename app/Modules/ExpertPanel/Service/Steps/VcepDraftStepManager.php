@@ -12,7 +12,7 @@ class VcepDraftStepManager extends AbstractStepManager
 
     public function isCurrentStep():bool
     {
-        return $this->expertPanel->ep_type_id == config('expert_panels.types.vcep.id')
+        return $this->expertPanel->expert_panel_type_id == config('expert_panels.types.vcep.id')
             && $this->expertPanel->current_step == 2;
     }
 
@@ -25,6 +25,4 @@ class VcepDraftStepManager extends AbstractStepManager
     {
         return [];
     }
-        
-    
 }

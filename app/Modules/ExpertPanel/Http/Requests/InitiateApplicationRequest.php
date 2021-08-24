@@ -28,7 +28,7 @@ class InitiateApplicationRequest extends FormRequest
             'working_name' => 'required|max:256|min:3',
             'date_initiated' => 'nullable|date',
             'cdwg_id' => 'nullable|exists:cdwgs,id',
-            'ep_type_id' => 'required|exists:ep_types,id',
+            'expert_panel_type_id' => 'required|exists:expert_panel_types,id',
         ];
     }
 
@@ -36,7 +36,7 @@ class InitiateApplicationRequest extends FormRequest
     {
         return [
             'cdwg_id.exists' => 'The selected cdwg is invalid.',
-            'ep_type_id.exists' => 'The selected expert panel type is invalid.',
+            'expert_panel_type_id.exists' => 'The selected expert panel type is invalid.',
         ];
     }
 }

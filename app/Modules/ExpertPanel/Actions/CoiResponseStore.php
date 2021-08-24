@@ -8,6 +8,7 @@ use App\Modules\ExpertPanel\Models\Coi;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Ramsey\Uuid\Uuid;
 
 class CoiResponseStore
 {
@@ -24,8 +25,8 @@ class CoiResponseStore
             $data['last_name'] = 'Coi';
         }
 
-        $coi = new Coi(['data' => $data]);
-        $coi->application_id = $expertPanel->id;
+        $coi = new Coi(['uuid'=>Uuid::uuid4(), 'data' => $data]);
+        $coi->expert_panel_id = $expertPanel->id;
         $coi->save();
 
         Event::dispatch(new CoiCompleted($expertPanel, $coi));
@@ -37,5 +38,4 @@ class CoiResponseStore
 
         return response(['message' => 'COI response stored.'], 200);
     }
-    
 }

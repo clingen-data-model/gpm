@@ -22,8 +22,6 @@ class StepManagerFactoryTest extends TestCase
     {
         parent::setup();
         $this->seed();
-        $this->vcepTypeId = 2;
-        $this->gcepTypeId = 1;
     }
 
     /**
@@ -31,7 +29,7 @@ class StepManagerFactoryTest extends TestCase
      */
     public function returns_GcepDefinitionStepManager_if_gcep_and_step_1()
     {
-        $this->returnsManagerForTypeAndStep(GcepDefinitionStepManager::class, $this->gcepTypeId, 1);
+        $this->returnsManagerForTypeAndStep(GcepDefinitionStepManager::class, config("expert_panels.types.gcep.id"), 1);
     }
     
     /**
@@ -39,7 +37,7 @@ class StepManagerFactoryTest extends TestCase
      */
     public function returns_VcepDefinitionStepManager_if_vcep_and_step_1()
     {
-        $this->returnsManagerForTypeAndStep(VcepDefinitionStepManager::class, $this->vcepTypeId, 1);
+        $this->returnsManagerForTypeAndStep(VcepDefinitionStepManager::class, config('expert_panels.types.vcep.id'), 1);
     }
     
     /**
@@ -47,7 +45,7 @@ class StepManagerFactoryTest extends TestCase
      */
     public function returns_VcepDraftStepManager_if_vcep_and_step_2()
     {
-        $this->returnsManagerForTypeAndStep(VcepDraftStepManager::class, $this->vcepTypeId, 2);
+        $this->returnsManagerForTypeAndStep(VcepDraftStepManager::class, config('expert_panels.types.vcep.id'), 2);
     }
     
     /**
@@ -55,7 +53,7 @@ class StepManagerFactoryTest extends TestCase
      */
     public function returns_VcepPilotStepManager_if_vcep_and_step_3()
     {
-        $this->returnsManagerForTypeAndStep(VcepPilotStepManager::class, $this->vcepTypeId, 3);
+        $this->returnsManagerForTypeAndStep(VcepPilotStepManager::class, config('expert_panels.types.vcep.id'), 3);
     }
     
     /**
@@ -63,7 +61,7 @@ class StepManagerFactoryTest extends TestCase
      */
     public function returns_VcepFinalizeStepManager_if_vcep_and_step_3()
     {
-        $this->returnsManagerForTypeAndStep(VcepFinalizeStepManager::class, $this->vcepTypeId, 4);
+        $this->returnsManagerForTypeAndStep(VcepFinalizeStepManager::class, config('expert_panels.types.vcep.id'), 4);
     }
     
 
@@ -72,28 +70,23 @@ class StepManagerFactoryTest extends TestCase
      */
     public function throws_UnexpectedStepException_if_step_cant_be_matched()
     {
-        $factory = new StepManagerFactory();    
+        $factory = new StepManagerFactory();
         $expertPanel = new ExpertPanel([
             'current_step' => 5,
-            'ep_type_id' => 2,
-            'cdwg_id' => 1,
+            'expert_panel_type_id' => 2,
             'date_initiated' => Carbon::now()
         ]);
         
         $this->expectException(UnexpectedCurrentStepException::class);
         $factory($expertPanel);
-
     }
 
     private function returnsManagerForTypeAndStep($expectedClass, $epTypeId, $currentStep)
     {
         $factory = new StepManagerFactory();
-        $expertPanel = ExpertPanel::factory()->make(['ep_type_id' => $epTypeId, 'current_step' => $currentStep]);
+        $expertPanel = ExpertPanel::factory()->make(['expert_panel_type_id' => $epTypeId, 'current_step' => $currentStep]);
         $stepManager = $factory($expertPanel);
 
         $this->assertInstanceOf($expectedClass, $stepManager);
     }
-    
-    
-    
 }

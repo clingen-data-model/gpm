@@ -6,6 +6,7 @@ use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
+use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
@@ -26,13 +27,16 @@ class ExpertPanelDetailTest extends TestCase
         $this->seed();
         $this->user = User::factory()->create();
         $this->uuid = Uuid::uuid4()->toString();
-        ExpertPanelCreate::run(
+
+        $this->parentGroup = Group::factory()->create();
+        $this->ep = ExpertPanelCreate::run(
             uuid: $this->uuid,
             working_name: 'test name',
-            cdwg_id: 1,
-            ep_type_id: 2,
+            cdwg_id: $this->parentGroup->id,
+            expert_panel_type_id: 2,
             date_initiated: Carbon::parse('2020-01-01')
         );
+
         ApplicationDocumentAdd::run(
             expertPanelUuid: $this->uuid,
             uuid: Uuid::uuid4()->toString(),

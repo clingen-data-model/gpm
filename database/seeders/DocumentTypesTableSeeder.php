@@ -14,6 +14,6 @@ class DocumentTypesTableSeeder extends Seeder
      */
     public function run()
     {
-        $this->seedFromConfig('documents.types', DocumentType::class);        
+        $this->seedFromConfig('documents.types', DocumentType::class);
     }
 }

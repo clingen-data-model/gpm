@@ -68,7 +68,7 @@ class CreateApplicationsFromCommands extends Command
             'uuid' => $uuid,
             'working_name' => ucwords(join(' ', $faker->words(4))),
             'cdwg_id' => $cdwgId,
-            'ep_type_id' => $epTypeId,
+            'expert_panel_type_id' => $epTypeId,
             'date_initiated' => Carbon::now()->subDays(30)
         ]);
         $expertPanel->save();

@@ -33,6 +33,8 @@ class CompleteApplicationTest extends TestCase
             ->assertStatus(200)
             ->assertJsonFragment([
                 'date_completed' => $dateApproved->toJson(),
+            ])
+            ->assertJsonFragment([
                 'current_step' => 1
             ]);
     }

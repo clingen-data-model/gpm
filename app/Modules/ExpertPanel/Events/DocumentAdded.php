@@ -43,7 +43,7 @@ class DocumentAdded extends ExpertPanelEvent
 
     public function getLogDate():Carbon
     {
-        return $this->document->date_received;
+        return $this->document->date_received ?? Carbon::now();
     }
     
     /**
