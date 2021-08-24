@@ -73,7 +73,7 @@ export default {
             return this.step == 1;
         },
         isLastStep () {
-            const lastStep = this.application.ep_type_id == 1 ? 1 : 4;
+            const lastStep = this.application.expert_panel_type_id == 1 ? 1 : 4;
             return this.step == lastStep;
         }
     },

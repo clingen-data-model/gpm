@@ -1,9 +1,9 @@
 <template>
     <div>
-        <div v-if="this.application.ep_type_id == 1">
+        <div v-if="this.application.expert_panel_type_id == 1">
             <step-one></step-one>
         </div>
-        <tabs-container tab-location="right" v-model="activeIndex" v-if="this.application.ep_type_id == 2">
+        <tabs-container tab-location="right" v-model="activeIndex" v-if="this.application.expert_panel_type_id == 2">
             <tab-item label="Step 1 - Define">
                 <step-one></step-one>
             </tab-item>

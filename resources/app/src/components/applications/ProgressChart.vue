@@ -27,7 +27,7 @@ export default {
     },
     computed: {
         steps () {
-            if (this.application.ep_type_id == 2) {
+            if (this.application.expert_panel_type_id == 2) {
                 return [1,2,3,4]
             }
 
