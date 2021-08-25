@@ -14,6 +14,9 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+/**
+ * @group coi
+ */
 class SimpleCoiEndpointTest extends TestCase
 {
     use RefreshDatabase;
@@ -23,7 +26,7 @@ class SimpleCoiEndpointTest extends TestCase
         parent::setup();
         $this->seed();
         $this->expertPanel = ExpertPanel::factory()->create();
-        $this->markTestSkipped();
+        // $this->markTestSkipped();
     }
     
     /**
@@ -89,7 +92,7 @@ class SimpleCoiEndpointTest extends TestCase
             ->assertStatus(200);
 
         $this->assertDatabaseHas('cois', [
-            'application_id' => $this->expertPanel->id,
+            'expert_panel_id' => $this->expertPanel->id,
             'data' => json_encode($data)
         ]);
     }
@@ -99,7 +102,7 @@ class SimpleCoiEndpointTest extends TestCase
      */
     public function returns_csv_of_coi_results_for_application()
     {
-        Coi::factory(2)->create(['application_id' => $this->expertPanel->id]);
+        Coi::factory(2)->create(['expert_panel_id' => $this->expertPanel->id]);
         Carbon::setTestNow('2021-06-01');
         $user = User::factory()->create();
         Sanctum::actingAs($user);
@@ -117,7 +120,8 @@ class SimpleCoiEndpointTest extends TestCase
     public function stores_legacy_coi()
     {
         $document = Document::factory()->create([
-            'application_id' => $this->expertPanel->id,
+            'owner_id' => $this->expertPanel->id,
+            'owner_type' => get_class($this->expertPanel),
             'document_type_id' => config('documents.types.coi.id')
         ]);
 
@@ -135,7 +139,7 @@ class SimpleCoiEndpointTest extends TestCase
             'last_name' => 'Coi'
         ]);
         $this->assertDatabaseHas('cois', [
-            'application_id' => $this->expertPanel->id,
+            'expert_panel_id' => $this->expertPanel->id,
             'data' => json_encode($expectedData)
         ]);
     }

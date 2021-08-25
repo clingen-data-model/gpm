@@ -25,7 +25,7 @@ class CoiResponseStore
             $data['last_name'] = 'Coi';
         }
 
-        $coi = new Coi(['uuid'=>Uuid::uuid4(), 'data' => $data]);
+        $coi = new Coi(['uuid'=>Uuid::uuid4()->toString(), 'data' => $data]);
         $coi->expert_panel_id = $expertPanel->id;
         $coi->save();
 

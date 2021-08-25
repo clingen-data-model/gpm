@@ -10,13 +10,14 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Coi extends Model
+class CoiV2 extends Model
 {
     use HasFactory;
 
     public $fillable = [
-        'application_id',
-        'email',
+        'uuid',
+        'group_member_id',
+        'expert_panel_id',
         'data'
     ];
 
@@ -49,7 +50,7 @@ class Coi extends Model
             ->filter()
             ->toArray();
 
-        $responseData['application_id'] = $this->expertPanel_id;
+        $responseData['expert_panel_id'] = $this->expertPanel_id;
         
         return $responseData;
     }
@@ -87,7 +88,7 @@ class Coi extends Model
         if ($expertPanel instanceof ExpertPanel) {
             $id = $expertPanel->id;
         }
-        return $query->where('application_id', $id);
+        return $query->where('expert_panel_id', $id);
     }
     
 
