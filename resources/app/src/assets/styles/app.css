@@ -87,6 +87,12 @@ textarea.sm {
     @apply border-red-600;
 }
 
+.btn.light-red {
+    @apply bg-gradient-to-b from-red-100 to-red-200 hover:to-red-300;
+    @apply active:from-red-300 to-red-200;
+    @apply border-red-800;
+}
+
 /* Transitions */
 
 

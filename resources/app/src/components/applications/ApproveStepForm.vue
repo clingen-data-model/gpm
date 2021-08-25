@@ -15,6 +15,21 @@
         <transition name="slide-fade-down">
             <div v-show="notifyContacts">
                 <h4 class="font-bold border-b">Email</h4>
+                <dictionary-row label="To">
+                    <static-alert v-if="application.contacts.length == 0" class="flex-1" variant="danger">
+                        There are no contacts to notify!!
+                    </static-alert>
+                    <ul v-if="application.contacts.length > 0">
+                        <li v-for="contact in application.contacts" :key="contact.id">
+                            <router-link 
+                                :to="{name: 'person-detail', params: {uuid: contact.uuid}}"
+                                class="text-blue-600 hover:underline" 
+                                :target="`person-${contact.id}`"
+                            >
+                                {{contact.name}} &lt;{{contact.email}}&gt;</router-link>
+                        </li>
+                    </ul>
+                </dictionary-row>
                 <input-row label="Subject">
                     <input type="text" v-model="email.subject" class="w-full">
                 </input-row>

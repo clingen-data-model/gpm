@@ -7,6 +7,9 @@ import store from './store'
 import CKEditor from '@ckeditor/ckeditor5-vue'
 
 const app = createApp(App)
+import StaticAlert from './components/alerts/StaticAlert'
+app.component('static-alert', StaticAlert);
+
 import IconBase from './components/icons/IconBase'
 app.component('icon-base', IconBase);
 
