@@ -23,7 +23,7 @@ class CoiFactory extends Factory
     public function definition()
     {
         return [
-            'application_id' => ExpertPanel::factory()->create()->id,
+            'expert_panel_id' => ExpertPanel::factory()->create()->id,
             'data' => (object)[
                 'first_name' => $this->faker->firstName,
                 'last_name' => $this->faker->lastName,

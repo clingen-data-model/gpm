@@ -13,6 +13,9 @@ use App\Modules\ExpertPanel\Jobs\StoreCoiResponse;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Actions\CoiResponseStore;
 
+/**
+ * @group coi
+ */
 class StoreCoiResponseTest extends TestCase
 {
     use RefreshDatabase;
@@ -32,7 +35,6 @@ class StoreCoiResponseTest extends TestCase
             'independent_efforts' => 'lots',
             'coi' => 'many'
         ];
-        $this->markTestSkipped();
     }
 
     /**

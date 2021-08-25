@@ -214,6 +214,7 @@ class DataMigration
                     ['group_member_id' => $groupMember->id],
                     [
                         'uuid' => Uuid::uuid4(),
+                        'expert_panel_id' => $expertPanel->id,
                         'group_member_id' => $groupMember->id,
                         'data' => $row->data
                     ]
