@@ -1,7 +1,11 @@
 <template>
     <div>
         <div class="align-baseline">
-            <button class="btn btn-xs" @click="initiateAddContact">
+            <button 
+                class="btn btn-xs" 
+                :class="{'blue': (application.contacts.length == 0)}"
+                @click="initiateAddContact"
+            >
                 <slot>Add Contact</slot>
             </button>
         </div>

@@ -28,17 +28,17 @@ class AppliclicationDetailTest extends TestCase
         $this->user = User::factory()->create();
         $this->uuid = Uuid::uuid4()->toString();
         Bus::dispatch(new InitiateApplication(
-                        uuid: $this->uuid, 
-                        working_name: 'test name', 
-                        cdwg_id: 1, 
-                        ep_type_id: 2,
-                        date_initiated: Carbon::parse('2020-01-01')
-                    ));
+            uuid: $this->uuid,
+            working_name: 'test name',
+            cdwg_id: 1,
+            ep_type_id: 2,
+            date_initiated: Carbon::parse('2020-01-01')
+        ));
         Bus::dispatch(
             new AddApplicationDocument(
                 applicationUuid: $this->uuid,
                 uuid: Uuid::uuid4()->toString(),
-                filename: uniqid().'test.tst', 
+                filename: uniqid().'test.tst',
                 storage_path: '/tmp/'.uniqid().'.tst',
                 document_type_id: 1,
                 step: 1,
@@ -79,7 +79,7 @@ class AppliclicationDetailTest extends TestCase
     public function gets_application_with_uuid()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('get', '/api/applications/'.$this->uuid)
+        $this->json('get', '/api/applications/'.$this->uuid)
             ->assertStatus(200)
             ->assertJsonFragment(['working_name' => $this->application->working_name, 'uuid' => $this->uuid]);
     }
@@ -90,7 +90,7 @@ class AppliclicationDetailTest extends TestCase
     public function loads_latestLogEntry_by_default()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('get', '/api/applications/'.$this->uuid)
+        $this->json('get', '/api/applications/'.$this->uuid)
             ->assertStatus(200)
             ->assertJsonFragment(['description' => 'TEst me', 'uuid' => $this->uuid]);
     }
@@ -101,12 +101,8 @@ class AppliclicationDetailTest extends TestCase
     public function loads_latestPendingNextAction_by_default()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-            $this->json('get', '/api/applications/'.$this->uuid)
+        $this->json('get', '/api/applications/'.$this->uuid)
             ->assertStatus(200)
             ->assertJsonFragment(['entry' => 'TEst me']);
     }
-    
-    
-    
-    
 }

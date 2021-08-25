@@ -42,7 +42,7 @@ class AddApplicationDocument
      */
     public function handle()
     {
-        $document = Document::make([
+        $document = new Document([
             'uuid' => $this->uuid,
             'filename' => $this->filename,
             'storage_path' => $this->storage_path,

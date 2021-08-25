@@ -1,5 +1,8 @@
 <template>
     <div>
+        <static-alert variant="danger" v-if="application.contacts.length == 0" class="mb-4">
+            <strong>Warning!!</strong> There are currently no contacts connected to this application!
+        </static-alert >
         <card :title="`${application.name} - Current Step: ${application.current_step}`">
             <template v-slot:header-right>
                 <div class="flex space-x-2">
@@ -10,6 +13,7 @@
             
             <div class="md:flex md:space-x-4">
                 <ep-attributes-form :application="application" class=" flex-1"></ep-attributes-form>
+
                 <div class="flex-1 space-y-2 md:border-l md:px-4 md:py-2">
                     <next-actions :next-actions="application.next_actions" v-if="application.next_actions"></next-actions>
                 </div>
