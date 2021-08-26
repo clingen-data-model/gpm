@@ -25,7 +25,6 @@
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
     "@ckeditor/ckeditor5-dev-utils": "^25.2.1",
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^25.2.1",
     "@tailwindcss/postcss7-compat": "^2.0.2",
@@ -38,7 +37,9 @@
     "@vue/compiler-sfc": "^3.0.0",
     "@vue/test-utils": "^2.0.0-0",
     "babel-eslint": "^10.1.0",
+    "cypress": "^8.3.0",
     "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^7.0.0-0"
+    "eslint-plugin-vue": "^7.0.0-0",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2"
   }
 }
