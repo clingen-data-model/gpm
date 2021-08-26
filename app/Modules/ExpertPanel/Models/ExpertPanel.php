@@ -128,6 +128,11 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
 
     // Relationships
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(Group::class);
+    }
+
     public function expertPanelType()
     {
         return $this->belongsTo(ExpertPanelType::class);
@@ -150,6 +155,9 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
     public function documents(): MorphMany
     {
+        if (is_null($this->group)) {
+            $this->group = $this->group()->first();
+        }
         return $this->group->documents();
     }
 

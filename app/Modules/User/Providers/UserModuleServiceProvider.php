@@ -7,6 +7,7 @@ use App\Events\RecordableEvent;
 use Illuminate\Support\Facades\Event;
 use App\Modules\Foundation\ClassGetter;
 use Illuminate\Support\ServiceProvider;
+use Lorisleiva\Actions\Facades\Actions;
 use Illuminate\Auth\Events\Authenticated;
 use App\Modules\Foundation\ModuleServiceProvider;
 
@@ -25,6 +26,12 @@ class UserModuleServiceProvider extends ModuleServiceProvider
     {
         parent::register();
     }
+
+    public function boot()
+    {
+        Actions::registerCommands(__DIR__.'/../Actions');
+    }
+    
 
     protected function getEventPath()
     {

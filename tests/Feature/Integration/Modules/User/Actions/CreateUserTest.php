@@ -1,12 +1,13 @@
 <?php
 
-namespace Tests\Feature\Integration\Modules\User\Jobs;
+namespace Tests\Feature\Integration\Modules\User\Actions;
 
 use Tests\TestCase;
 use Illuminate\Bus\Dispatcher;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Bus;
 use App\Modules\User\Jobs\CreateUser;
+use App\Modules\User\Actions\UserCreate;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -18,8 +19,6 @@ class CreateUserTest extends TestCase
     {
         parent::setup();
         $this->seed();
-
-        $this->commandBus = app()->make(Dispatcher::class);    
     }
     
 
@@ -28,8 +27,7 @@ class CreateUserTest extends TestCase
      */
     public function creates_user()
     {
-        $job = new CreateUser(name: 'Lana Kane', email: 'lana@archer.com');
-        $this->commandBus->dispatch($job);
+        UserCreate::run(name: 'Lana Kane', email: 'lana@archer.com');
 
         $this->assertDatabaseHas('users', ['name' => 'Lana Kane', 'email' => 'lana@archer.com']);
     }
@@ -39,11 +37,10 @@ class CreateUserTest extends TestCase
      */
     public function logs_user_created_event()
     {
-        $job = new CreateUser(name: 'Lana Kane', email: 'lana@archer.com');
-        $user  = $this->commandBus->dispatch($job);
+        $user = UserCreate::run(name: 'Lana Kane', email: 'lana@archer.com');
 
         $this->assertDatabaseHas(
-            'activity_log', 
+            'activity_log',
             [
                 'log_name' => 'users',
                 'subject_type' => User::class,
@@ -52,6 +49,4 @@ class CreateUserTest extends TestCase
             ]
         );
     }
-    
-    
 }
