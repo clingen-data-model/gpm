@@ -2,7 +2,7 @@
     /* Note: punting on more precise sizing b/c it's more complicated than it should be. */
     .ck-editor__editable, .ck-editor__editable_inline {
         min-width: 300px;
-        height: 300px;
+        height: 250px;
     }
     .ck.ck-editor__main p {
         @apply my-4;

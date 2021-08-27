@@ -33,12 +33,25 @@ class MailDraftController extends Controller
             ]
         );
 
+        // dump($approvedStepNumber);
+        // dump(config('applications.notifications.cc.recipients'));
+        // dd(config('applications.notifications'));
+        $ccrecipients = [];
+        if (in_array($approvedStepNumber, config('applications.notifications.cc.steps'))) {
+            $ccrecipients = collect(config('applications.notifications.cc.recipients'))
+                                ->map(fn ($pair) => ['name' => $pair[1], 'email' => $pair[0]]);
+        }
+
         return [
             'to' => $application->contacts
                         ->map(function ($c) {
-                            return $c->name . ' <'.$c->email.'>';
-                        })
-                        ->join(', '),
+                            return [
+                                'name' => $c->name,
+                                'email' => $c->email,
+                                'uuid' => $c->uuid
+                            ];
+                        }),
+            'cc' => $ccrecipients,
             'subject' => 'Application step '.$approvedStepNumber.' for your ClinGen expert panel '.$application->name.' has been approved.',
             'body' => $view->render()
         ];

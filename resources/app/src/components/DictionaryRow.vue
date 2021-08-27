@@ -5,7 +5,7 @@
 </style>
 <template>
     <div class="dictionary-row" :class="{'flex': !vertical}">
-        <div :class="fullLabelClass">
+        <div :class="fullLabelClass" class="flex-shrink-0">
             <slot name="label" v-if="label">
                 <label>{{label}}{{colon}}</label>
             </slot>
