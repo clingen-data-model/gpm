@@ -70,7 +70,7 @@ class UserDefinedMailNotification extends Notification
 
         if (count($this->bccAddresses) > 0) {
             foreach ($this->bccAddresses as $bcc) {
-                $mail->cc(...$cc);
+                $mail->cc(...$bcc);
             }
         }
 

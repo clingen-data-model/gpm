@@ -71,6 +71,8 @@ class NotifyStepApprovedTest extends TestCase
         $this->expertPanel->current_step = 1;
         $this->expertPanel->save();
 
+        $contacts = $this->expertPanel->contacts->pluck('person');
+
         Notification::fake();
 
         StepApprove::run(
@@ -80,10 +82,10 @@ class NotifyStepApprovedTest extends TestCase
         );
 
         Notification::assertSentTo(
-            $this->expertPanel->contacts,
+            $contacts,
             UserDefinedMailNotification::class,
             function ($notification) {
-                return $notification->ccAddresses == config('expert_panels.notifications.cc.recipients');
+                return $notification->ccAddresses == config('expert-panels.notifications.cc.recipients');
             }
         );
     }
@@ -100,17 +102,17 @@ class NotifyStepApprovedTest extends TestCase
 
         Notification::fake();
 
-        Bus::dispatch(new ApproveStep(
+        StepApprove::run(
             expertPanelUuid: $this->expertPanel->uuid,
             dateApproved: '2020-01-01',
             notifyContacts: true,
-        ));
+        );
 
         Notification::assertSentTo(
-            $this->expertPanel->contacts,
+            $this->expertPanel->contacts->pluck('person'),
             UserDefinedMailNotification::class,
             function ($notification) {
-                return $notification->ccAddresses == config('expert_panels.notifications.cc.recipients');
+                return $notification->ccAddresses == config('expert-panels.notifications.cc.recipients');
             }
         );
     }
@@ -125,16 +127,17 @@ class NotifyStepApprovedTest extends TestCase
         $this->expertPanel->current_step = 2;
         $this->expertPanel->save();
 
+
         Notification::fake();
 
-        Bus::dispatch(new ApproveStep(
+        StepApprove::run(
             expertPanelUuid: $this->expertPanel->uuid,
             dateApproved: '2020-01-01',
             notifyContacts: true,
-        ));
+        );
 
         Notification::assertSentTo(
-            $this->expertPanel->contacts,
+            $this->expertPanel->contacts->pluck('person'),
             UserDefinedMailNotification::class,
             function ($notification) {
                 return $notification->ccAddresses == [];
@@ -154,14 +157,14 @@ class NotifyStepApprovedTest extends TestCase
 
         Notification::fake();
 
-        Bus::dispatch(new ApproveStep(
+        StepApprove::run(
             expertPanelUuid: $this->expertPanel->uuid,
             dateApproved: '2020-01-01',
             notifyContacts: true,
-        ));
+        );
 
         Notification::assertSentTo(
-            $this->expertPanel->contacts,
+            $this->expertPanel->contacts->pluck('person'),
             UserDefinedMailNotification::class,
             function ($notification) {
                 return $notification->ccAddresses == [];

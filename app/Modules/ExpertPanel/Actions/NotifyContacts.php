@@ -23,7 +23,7 @@ class NotifyContacts
                         ->with('person')
                         ->get()
                         ->pluck('person');
-
+        
         Notification::send(
             $contacts,
             new UserDefinedMailNotification(
