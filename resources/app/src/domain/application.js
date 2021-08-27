@@ -53,7 +53,7 @@ class Application extends Entity {
             return [1, 2, 3, 4];
         }
 
-        throw new Error('Unknown ep_type_id found when determining applicaiton steps.');
+        throw new Error('Unknown ep_type_id found when determining application steps.');
     }
 
     get pendingNextActions() {
