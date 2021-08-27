@@ -20,15 +20,21 @@
                         There are no contacts to notify!!
                     </static-alert>
                     <ul v-if="application.contacts.length > 0">
-                        <li v-for="contact in application.contacts" :key="contact.id">
+                        <li v-for="contact in email.to" :key="contact.email">
                             <router-link 
                                 :to="{name: 'person-detail', params: {uuid: contact.uuid}}"
                                 class="text-blue-600 hover:underline" 
-                                :target="`person-${contact.id}`"
+                                target="person"
                             >
                                 {{contact.name}} &lt;{{contact.email}}&gt;</router-link>
                         </li>
                     </ul>
+                </dictionary-row>
+                <dictionary-row label="Cc">
+                    <div v-if="email.cc.length > 0">
+                        <truncate-expander :value="ccAddresses" :truncate-length="100"></truncate-expander>
+                    </div>
+                    <div class="text-gray-500" v-else>None</div>
                 </dictionary-row>
                 <input-row label="Subject">
                     <input type="text" v-model="email.subject" class="w-full">
@@ -39,7 +45,7 @@
                 <input-row label="Attachments">
                     <input type="file" multiple ref="attachmentsField">
                 </input-row>
-                <note v-if="application.current_step == 1">ClinGen Services will be carbon copied on this email.</note>
+                <note v-if="emailCced">ClinGen Services will be carbon copied on this email.</note>
             </div>
         </transition>
 
@@ -75,6 +81,8 @@ export default {
             email: {
                 subject: '',
                 body: '',
+                cc: [],
+                to: []
             },
             errors: {}
         }
@@ -82,7 +90,13 @@ export default {
     computed: {
         ...mapGetters({
             application: 'applications/currentItem'
-        })
+        }),
+        emailCced () {
+            return this.application.current_step == 1 || this.application.current_step == 4
+        },
+        ccAddresses () {
+            return this.email.cc.map(c => c.email).join(', ')
+        }
     },
     watch: {
         notifyContacts: function (to) {
@@ -98,7 +112,9 @@ export default {
     },
     methods: {
         clearForm() {
+            console.log('claerForm');
             this.dateApproved = null;
+            this.notifyContacts = false;
         },
         cancel () {
             this.clearForm();

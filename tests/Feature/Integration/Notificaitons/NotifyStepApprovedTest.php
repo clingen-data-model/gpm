@@ -50,7 +50,6 @@ class NotifyStepApprovedTest extends TestCase
 
         Bus::dispatch($job);
 
-        // Notification::assertNothingSent();
         Notification::assertSentTo($this->application->contacts, UserDefinedMailNotification::class);
     }
     
@@ -75,14 +74,24 @@ class NotifyStepApprovedTest extends TestCase
     public function step_1_approved_email_carbon_copies_clingen_addresses()
     {
         $this->application->ep_type_id = config('expert_panels.types.vcep.id');
+        $this->application->current_step = 1;
+        $this->application->save();
 
-        $clingenAddresses = config('applications.notifications.cc.recipients');
+        Notification::fake();
 
-        $mailMessage = (new UserDefinedMailNotification($this->application, 1, false, ccAddresses: $clingenAddresses))
-                            ->toMail($this->application->contacts->first());
+        Bus::dispatch(new ApproveStep(
+            applicationUuid: $this->application->uuid,
+            dateApproved: '2020-01-01',
+            notifyContacts: true,
+        ));
 
-
-        $this->assertEquals($clingenAddresses, $mailMessage->cc);
+        Notification::assertSentTo(
+            $this->application->contacts,
+            UserDefinedMailNotification::class,
+            function ($notification) {
+                return $notification->ccAddresses == config('applications.notifications.cc.recipients');
+            }
+        );
     }
 
     /**
@@ -92,35 +101,77 @@ class NotifyStepApprovedTest extends TestCase
     {
         $this->application->ep_type_id = config('expert_panels.types.vcep.id');
 
-        $clingenAddresses = config('applications.notifications.cc.recipients');
+        $this->application->current_step = 4;
+        $this->application->save();
 
-        $mailMessage = (new UserDefinedMailNotification($this->application, 4, false, ccAddresses: $clingenAddresses))
-                            ->toMail($this->application->contacts->first());
+        Notification::fake();
 
+        Bus::dispatch(new ApproveStep(
+            applicationUuid: $this->application->uuid,
+            dateApproved: '2020-01-01',
+            notifyContacts: true,
+        ));
 
-        $this->assertEquals($clingenAddresses, $mailMessage->cc);
+        Notification::assertSentTo(
+            $this->application->contacts,
+            UserDefinedMailNotification::class,
+            function ($notification) {
+                return $notification->ccAddresses == config('applications.notifications.cc.recipients');
+            }
+        );
     }
 
     /**
      * @test
      */
-    public function steps_2_and_3_approved_does_not_cc_clingen_addresses()
+    public function steps_2_approved_does_not_cc_clingen_addresses()
     {
         $this->application->ep_type_id = config('expert_panels.types.vcep.id');
 
-        $mailMessage = (new UserDefinedMailNotification($this->application, 2, false))
-                            ->toMail($this->application->contacts->first());
+        $this->application->current_step = 2;
+        $this->application->save();
 
-        $this->assertEquals([], $mailMessage->cc);
+        Notification::fake();
 
-        $mailMessage = (new UserDefinedMailNotification($this->application, 3, false))
-                            ->toMail($this->application->contacts->first());
+        Bus::dispatch(new ApproveStep(
+            applicationUuid: $this->application->uuid,
+            dateApproved: '2020-01-01',
+            notifyContacts: true,
+        ));
 
-        $this->assertEquals([], $mailMessage->cc);
+        Notification::assertSentTo(
+            $this->application->contacts,
+            UserDefinedMailNotification::class,
+            function ($notification) {
+                return $notification->ccAddresses == [];
+            }
+        );
+    }
 
-        $mailMessage = (new UserDefinedMailNotification($this->application, 4, false))
-                            ->toMail($this->application->contacts->first());
+    /**
+     * @test
+     */
+    public function steps_3_approved_does_not_cc_clingen_addresses()
+    {
+        $this->application->ep_type_id = config('expert_panels.types.vcep.id');
 
-        $this->assertEquals([], $mailMessage->cc);
+        $this->application->current_step = 3;
+        $this->application->save();
+
+        Notification::fake();
+
+        Bus::dispatch(new ApproveStep(
+            applicationUuid: $this->application->uuid,
+            dateApproved: '2020-01-01',
+            notifyContacts: true,
+        ));
+
+        Notification::assertSentTo(
+            $this->application->contacts,
+            UserDefinedMailNotification::class,
+            function ($notification) {
+                return $notification->ccAddresses == [];
+            }
+        );
     }
 }

@@ -9,7 +9,7 @@
             @click="close"
         ></div>
 
-        <div class="bg-white p-4 border border-gray-500 opacity-100 relative mt-24 mb-auto rounded-lg shadow-md" :class="width">
+        <div class="bg-white p-4 border border-gray-500 opacity-100 relative mt-16 mb-auto rounded-lg shadow-md" :class="width">
             <button 
                 @click="close" class="btn btn-xs gray float-right"
                 v-if="!hideClose"

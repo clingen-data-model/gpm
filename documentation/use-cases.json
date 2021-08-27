@@ -28,7 +28,7 @@
         "secondary_actors": [
             "admin"
         ],
-        "goal": "Create a new coordinator and group based on an applicaiton.",
+        "goal": "Create a new coordinator and group based on an application.",
         "description": "Once a guest initiates an application, an OC member needs to be able to make the application \"live\", by creating a new coordinator, and group in the system.",
         "acceptance_criteria": [
             "OC member should be able to review the initial application",
