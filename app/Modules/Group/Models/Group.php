@@ -151,5 +151,4 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     {
         return new GroupFactory();
     }
-
 }

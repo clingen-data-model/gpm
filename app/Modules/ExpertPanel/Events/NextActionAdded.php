@@ -33,7 +33,6 @@ class NextActionAdded extends ExpertPanelEvent
 
     public function getProperties(): array
     {
-        // dd($this->nextAction->toArray());
         return [
             'next_action' => $this->nextAction->toArray()
         ];

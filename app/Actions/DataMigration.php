@@ -24,7 +24,7 @@ class DataMigration
     {
         Model::unguard();
         DB::transaction(function () {
-            $cdwgs = $this->migrateCdwgs()->keyBy('');
+            $cdwgs = $this->migrateCdwgs()->keyBy('id');
             $this->migrateApplications($cdwgs);
         });
         Model::reguard();
@@ -43,6 +43,7 @@ class DataMigration
                     'short_base_name' => $row->short_base_name,
                     'long_base_name' => $row->long_base_name,
                     'expert_panel_type_id' => $row->ep_type_id,
+                    'cdwg_id' => $cdwgs->get($row->cdwg_id) ? $cdwgs->get($row->cdwg_id)->id : null,
                     'affiliation_id' => $row->affiliation_id,
                     'date_initiated' => $row->date_initiated,
                     'step_1_approval_date' => isset($approvalDates['step 1']) ? $approvalDates['step 1'] : null,
@@ -53,7 +54,8 @@ class DataMigration
                     'created_at' => $row->created_at,
                     'updated_at' => $row->updated_at,
                     'deleted_at' => $row->deleted_at,
-                    'coi_code' => $row->coi_code
+                    'coi_code' => $row->coi_code,
+                    'current_step' => $row->current_step
                 ];
 
                 $expertPanel = ExpertPanel::withTrashed()->firstOrCreate(['group_id' => $group->id], $data);
@@ -178,6 +180,7 @@ class DataMigration
                     [
                         'group_id' => $group->id,
                         'person_id' => $row->person_id,
+                        'v1_contact' => 1
                     ],
                 );
         });

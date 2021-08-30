@@ -26,6 +26,9 @@ class CreateExpertPanelsV2 extends Migration
                 ->constrained()
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
+            $table->unsignedBigInteger('cdwg_id')->nullable();
+            $table->foreign('cdwg_id')->references('id')->on('groups');
+
             $table->string('short_base_name')->nullable();
             $table->string('long_base_name')->nullable();
             $table->string('affiliation_id', 8)->unique()->nullable();

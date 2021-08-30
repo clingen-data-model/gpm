@@ -24,7 +24,6 @@ class ApplicationDocumentMarkFinal
             ->get();
         
         $prevFinal->each(function ($doc) {
-            // dd($doc->toArray());
             $doc->is_final = 0;
             $doc->save();
         });

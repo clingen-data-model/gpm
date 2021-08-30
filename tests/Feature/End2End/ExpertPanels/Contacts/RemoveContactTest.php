@@ -42,8 +42,8 @@ class RemoveContactTest extends TestCase
         $this->json('DELETE', '/api/applications/'.$this->expertPanel->uuid.'/contacts/'.$this->person->uuid)
             ->assertStatus(200);
 
-        $this->assertDatabaseMissing('application_person', [
-            'application_id' => $this->expertPanel->id,
+        $this->assertDatabaseMissing('group_members', [
+            'group_id' => $this->expertPanel->group->id,
             'person_id' => $this->person->id
         ]);
     }

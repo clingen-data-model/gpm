@@ -263,7 +263,7 @@ export default {
             const coefficient = this.realSort.desc ? -1 : 1;
             let aVal = this.resolveSortAttribute(a, this.sortField);
             let bVal = this.resolveSortAttribute(b, this.sortField);
-            if (this.realSort.field.type == String) {
+            if (this.realSort.field.type == String && aVal !== null && bVal !== null) {
                 aVal = aVal.toLowerCase();
                 bVal = bVal.toLowerCase();
             }

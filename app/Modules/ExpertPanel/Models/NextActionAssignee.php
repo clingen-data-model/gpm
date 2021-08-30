@@ -32,17 +32,9 @@ class NextActionAssignee extends Model
     }
     
 
-    public static function getAll()
-    {
-        return Cache::rememberForever('next-action-assignees', function () {
-            return static::all();
-        });
-    }
-
     // Factory
-    static protected function newFactory()
+    protected static function newFactory()
     {
         return new NextActionAssigneeFactory();
     }
-
 }

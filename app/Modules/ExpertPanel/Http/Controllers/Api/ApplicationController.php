@@ -7,6 +7,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Bus\Dispatcher;
+use App\Http\Resources\ExpertPanelResource;
+use App\Http\Resources\ExpertPanelCollection;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 
 class ApplicationController extends Controller
@@ -27,7 +29,7 @@ class ApplicationController extends Controller
     {
         $query = ExpertPanel::query()
                     ->select('expert_panels.*')
-                    ->with('logEntries', 'nextActions', 'group', 'group.parent');
+                    ->with('logEntries', 'nextActions', 'group', 'group.parent', 'cdwg');
 
         if ($request->has('sort')) {
             $field = $request->sort['field'];
@@ -57,8 +59,19 @@ class ApplicationController extends Controller
         }
 
         if ($request->has('with')) {
-            $realRelationships = [];
-            $query->with($request->with);
+            $relations = $request->with;
+            if (is_string($relations)) {
+                $relations = array_map(fn ($i) => trim($i), explode(',', $request->with));
+            }
+
+            $realRelationships = [
+                'documents' => 'group.documents'
+            ];
+            foreach ($realRelationships as $rel => $realRel) {
+                $idx = array_search($rel, $relations);
+                $relations[$idx] = $realRel;
+            }
+            $query->with($relations);
         }
 
         if ($request->has('where')) {
@@ -71,16 +84,13 @@ class ApplicationController extends Controller
             }
         }
 
-        // if ($request->has('showDeleted')) {
-        $query->withTrashed();
-        // }
+        if ($request->has('showDeleted')) {
+            $query->withTrashed();
+        }
 
-        $expertPanels = $query->paginate(20);
+        // return ExpertPanelResource::collection($query->get());
 
-        // $expertPanels = $query->get();
-
-
-        return $expertPanels;
+        return new ExpertPanelCollection($query->paginate(20));
     }
 
     /**
@@ -93,11 +103,20 @@ class ApplicationController extends Controller
     public function show($uuid, Request $request)
     {
         $expertPanel = ExpertPanel::findByUuidOrFail($uuid);
-        $expertPanel->load(['latestLogEntry', 'group', 'group.parent', 'type', 'contacts', 'nextActions']);
-        $expertPanel->contacts;
+        $expertPanel->load([
+            'latestLogEntry',
+            'cdwg',
+            'group',
+            'group.parent',
+            'group.documents',
+            'type',
+            'group.members',
+            'group.members.person',
+            'nextActions'
+        ]);
         if ($request->has('with')) {
             $expertPanel->load($request->with);
         }
-        return $expertPanel;
+        return new ExpertPanelResource($expertPanel);
     }
 }

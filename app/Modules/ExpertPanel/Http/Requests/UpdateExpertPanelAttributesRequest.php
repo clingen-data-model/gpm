@@ -28,7 +28,7 @@ class UpdateExpertPanelAttributesRequest extends FormRequest
         $expertPanel = ExpertPanel::findByUuidOrFail($this->route('app_uuid'));
         return [
             'working_name' => 'required|max:255',
-            'cdwg_id' => 'nullable|exists:cdwgs,id',
+            'cdwg_id' => 'nullable|exists:groups,id',
             'long_base_name' => [
                                     'nullable',
                                     'max:255',

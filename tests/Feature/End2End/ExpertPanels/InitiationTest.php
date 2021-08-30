@@ -46,6 +46,7 @@ class InitiationTest extends TestCase
                 'current_step' => 1
             ]
         );
+        unset($expectedAttributes['cdwg_id']);
         $response->assertJson($expectedAttributes);
     }
 

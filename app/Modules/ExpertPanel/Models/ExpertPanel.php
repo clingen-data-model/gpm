@@ -102,7 +102,8 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
     protected $appends = [
         'working_name',
-        'cdwg_id'
+        'name',
+        'coi_url'
     ];
 
     // Domain methods
@@ -115,13 +116,10 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
     public function addContact(Person $person)
     {
-        $groupId = $this->id;
-        if (get_class($this) == ExpertPanel::class) {
-            $groupId = $this->group_id;
-        }
         $member = GroupMember::firstOrCreate([
             'person_id' => $person->id,
-            'group_id' => $groupId
+            'group_id' => $this->group_id,
+            'v1_contact' => 1
         ]);
         $this->touch();
     }
@@ -150,14 +148,13 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
     public function contacts()
     {
-        return $this->hasMany(GroupMember::class, 'group_id', 'group_id');
+        return $this->hasMany(GroupMember::class, 'group_id', 'group_id')
+            ->contact();
     }
 
     public function documents(): MorphMany
     {
-        if (is_null($this->group)) {
-            $this->group = $this->group()->first();
-        }
+        $this->ensureGroupLoaded();
         return $this->group->documents();
     }
 
@@ -269,6 +266,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
      */
     public function parentGroup(): BelongsTo
     {
+        $this->ensureGroupLoaded();
         return $this->group->parent();
     }
 
@@ -277,7 +275,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
      */
     public function cdwg(): BelongsTo
     {
-        return $this->parentGroup();
+        return $this->belongsTo(Group::class, 'cdwg_id');
     }
 
     /**
@@ -287,6 +285,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
      */
     public function members(): Relation
     {
+        $this->ensureGroupLoaded();
         return $this->group->members();
     }
     
@@ -371,11 +370,13 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
     public function setWorkingNameAttribute($value)
     {
+        $this->ensureGroupLoaded();
         $this->group->name = $this->trimEpTypeSuffix($value);
     }
     
     public function getWorkingNameAttribute()
     {
+        $this->ensureGroupLoaded();
         return $this->addEpTypeSuffix($this->group->name);
     }
     
@@ -404,17 +405,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         $this->attributes['short_base_name'] = $this->trimEpTypeSuffix($value);
     }
 
-    public function getCdwgIdAttribute()
-    {
-        return $this->group->parent_id;
-    }
-
-    public function setCdwgIdAttribute($value)
-    {
-        $this->group->parent_id = $value;
-    }
-    
-
     private function trimEpTypeSuffix($string)
     {
         if (in_array(substr($string, -4), ['VCEP', 'GCEP'])) {
@@ -428,9 +418,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $string.' '.$this->epType->display_name;
     }
     
-    
-    
-
     public function getClingenUrlAttribute()
     {
         if (is_null($this->affiliation_id)) {
@@ -451,5 +438,13 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     protected static function newFactory()
     {
         return new ExpertPanelFactory();
+    }
+
+    private function ensureGroupLoaded()
+    {
+        if (!$this->relationLoaded('group')) {
+            $this->load('group');
+            return;
+        }
     }
 }

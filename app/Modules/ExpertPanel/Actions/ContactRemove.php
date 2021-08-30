@@ -35,7 +35,7 @@ class ContactRemove
             throw new PersonNotContactException($expertPanel, $person);
         }
 
-        $contact->delete($contact);
+        $contact->forceDelete($contact);
         $expertPanel->touch();
         Event::dispatch(new ContactRemoved($expertPanel, $person));
     }

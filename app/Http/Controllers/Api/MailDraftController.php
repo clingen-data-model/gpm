@@ -33,9 +33,6 @@ class MailDraftController extends Controller
             ]
         );
 
-        // dump($approvedStepNumber);
-        // dump(config('applications.notifications.cc.recipients'));
-        // dd(config('applications.notifications'));
         $ccrecipients = [];
         if (in_array($approvedStepNumber, config('applications.notifications.cc.steps'))) {
             $ccrecipients = collect(config('applications.notifications.cc.recipients'))

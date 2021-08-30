@@ -97,12 +97,12 @@ export default {
                     sortable: true
                 },
                 {
-                    name: 'cdwg.name',
+                    name: 'group.parent.name',
                     label: 'CDWG',
                     type: String,
                     sortable: true,
                     resolveValue (item) {
-                        return item.cdwg ? item.cdwg.name : '';
+                        return (item.group && item.group.parent)? item.group.parent.name : '';
                     }
                 },
                 {
@@ -295,9 +295,7 @@ export default {
                     'latestLogEntry',
                     'nextActions',
                     'type',
-                    'contacts',
-                    'firstScopeDocument',
-                    'firstFinalDocument'
+                    'contacts'
                 ],
             }
 

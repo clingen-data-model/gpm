@@ -37,7 +37,7 @@ class CreateNextActionRequest extends FormRequest
 
     public function messages()
     {
-        $assignees = NextActionAssignee::getAll();
+        $assignees = NextActionAssignee::all();
         return [
             'assigned_to.exists' => 'The next action must be assigned to '.$assignees->pluck('name')->join(', ', ', or ')
         ];
