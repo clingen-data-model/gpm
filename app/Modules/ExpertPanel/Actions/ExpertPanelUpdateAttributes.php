@@ -23,18 +23,15 @@ class ExpertPanelUpdateAttributes
     ) {
         $attributes = collect($attributes);
         $expertPanel = ExpertPanel::findByUuidOrFail($uuid);
-        $expertPanel->fill($attributes->except('cdwg_id', 'working_name')->toArray());
+        $expertPanel->fill($attributes->toArray());
         if ($expertPanel->isDirty()) {
             $updatedAttributes = $expertPanel->getDirty();
             $expertPanel->save();
             Event::dispatch(new ExpertPanelAttributesUpdated($expertPanel, $updatedAttributes));
         }
 
-        if ($attributes->get('working_name') || $attributes->get('cdwg_id')) {
+        if ($attributes->get('cdwg_id')) {
             $groupAttributes = [];
-            if (isset($attributes['working_name'])) {
-                $groupAttributes['name'] = $attributes['working_name'];
-            }
             if (isset($attributes['cdwg_id'])) {
                 $groupAttributes['parent_id'] = $attributes['cdwg_id'];
             }
@@ -46,7 +43,7 @@ class ExpertPanelUpdateAttributes
 
     public function asController(string $uuid, UpdateExpertPanelAttributesRequest $request)
     {
-        $data = $request->only('working_name', 'long_base_name', 'short_base_name', 'affiliation_id', 'cdwg_id');
+        $data = $request->only('long_base_name', 'short_base_name', 'affiliation_id', 'cdwg_id');
         return $this->handle($uuid, $data);
     }
 }

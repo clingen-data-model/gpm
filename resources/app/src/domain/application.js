@@ -105,13 +105,11 @@ class Application extends Entity {
     }
 
     approvalDateForStep(stepNumber) {
-        console.log('stepNumber: ', stepNumber);
         if (!this.steps.includes(stepNumber)) {
             throw new Error(`Step ${stepNumber} out of bounds`)
         }
 
         const stepKey = `step_${stepNumber}_approval_date`;
-        console.log('stepKey: ', stepKey);
 
         return (this[stepKey]) ?
             new Date(Date.parse(this[stepKey])) :

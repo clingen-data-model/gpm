@@ -55,8 +55,8 @@ async function approveCurrentStep(application, dateApproved, notifyContacts, not
 async function updateEpAttributes(application) {
     entityHasUuid(application);
     
-    const {working_name, long_base_name, short_base_name, affiliation_id, cdwg_id} = application;
-    const data = {working_name, long_base_name, short_base_name, affiliation_id, cdwg_id};
+    const {long_base_name, short_base_name, affiliation_id, cdwg_id} = application;
+    const data = {long_base_name, short_base_name, affiliation_id, cdwg_id};
 
     return await axios.put(`${baseUrl}/${application.uuid}`, data)
         .then(response => response.data)

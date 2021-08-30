@@ -27,7 +27,6 @@ class UpdateExpertPanelAttributesRequest extends FormRequest
     {
         $expertPanel = ExpertPanel::findByUuidOrFail($this->route('app_uuid'));
         return [
-            'working_name' => 'required|max:255',
             'cdwg_id' => 'nullable|exists:groups,id',
             'long_base_name' => [
                                     'nullable',
@@ -43,9 +42,15 @@ class UpdateExpertPanelAttributesRequest extends FormRequest
 
     public function prepareForValidation()
     {
+        $longBaseName = !empty($this->long_base_name)
+                            ? preg_replace("/ [GV]CEP$/", '', $this->long_base_name)
+                            : null;
+        $shortBaseName = !empty($this->short_base_name)
+                            ? preg_replace("/ [GV]CEP$/", '', $this->short_base_name)
+                            : null;
         $this->merge([
-            'long_base_name' => preg_replace("/ [GV]CEP$/", '', $this->long_base_name),
-            'short_base_name' => preg_replace("/ [GV]CEP$/", '', $this->short_base_name)
+            'long_base_name' => $longBaseName,
+            'short_base_name' => $shortBaseName
         ]);
     }
 }

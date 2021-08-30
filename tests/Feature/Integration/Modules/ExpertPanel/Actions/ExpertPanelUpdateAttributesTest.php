@@ -51,23 +51,6 @@ class ExpertPanelUpdateAttributesTest extends TestCase
     /**
      * @test
      */
-    public function updates_group_name_if_working_name_is_updated()
-    {
-        $expertPanel = ExpertPanel::factory()->gcep()->create(['long_base_name'=>'aabb']);
-    
-        ExpertPanelUpdateAttributes::run($expertPanel->uuid, [
-            'working_name' => 'test',
-        ]);
-
-        $this->assertDatabaseHas('groups', [
-            'id' => $expertPanel->group->id,
-            'name' => 'test'
-        ]);
-    }
-
-    /**
-     * @test
-     */
     public function updates_group_parent_id_if_cdwg_id_is_updated()
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create(['long_base_name'=>'aabb']);

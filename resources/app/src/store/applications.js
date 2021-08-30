@@ -158,11 +158,9 @@ export default {
         },
        // eslint-disable-next-line
        async deleteNextAction({ commit }, {application, nextAction}) {
-           console.log(nextAction.id)
            const url = `/api/applications/${application.uuid}/next-actions/${nextAction.id}`
             await api.delete(url)
                 .then(() => {
-                    console.log('deleted. reload application')
                     store.dispatch('applications/getApplication', application.uuid);
                 })
         },

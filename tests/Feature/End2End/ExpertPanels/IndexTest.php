@@ -134,7 +134,7 @@ class IndexTest extends TestCase
 
         $response = $this->json('GET', self::URL.'?sort[field]=name&sort[dir]=desc&with=documents');
         $response->assertOk();
-        $this->assertObjectHasAttribute('documents', json_decode($response->content())->data[0]);
+        $this->assertObjectHasAttribute('documents', json_decode($response->content())->data[0]->group);
         $this->assertEquals($document->uuid, json_decode($response->content())->data[0]->documents[0]->uuid);
     }
     
@@ -143,7 +143,6 @@ class IndexTest extends TestCase
     private function assertResultsSorted(Collection $expected, $response)
     {
         $response->assertOk();
-        // dump($response->original->toArray());
         foreach ($expected->values() as $idx => $app) {
             $this->assertEquals($app->id, $response->original->toArray()[$idx]['id']);
         }

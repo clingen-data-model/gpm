@@ -57,9 +57,11 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'short_base_name',
         'affiliation_id',
         'date_initiated',
+        'step_1_received_date',
         'step_1_approval_date',
         'step_2_approval_date',
         'step_3_approval_date',
+        'step_4_received_date',
         'step_4_approval_date',
         'date_completed',
         'hypothesis_group',
@@ -77,9 +79,11 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
     protected $dates = [
         'date_initiated',
+        'step_1_received_date',
         'step_1_approval_date',
         'step_2_approval_date',
         'step_3_approval_date',
+        'step_4_received_date',
         'step_4_approval_date',
         'date_completed',
         'nhgri_attestation_date',
@@ -365,6 +369,9 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
     public function getNameAttribute()
     {
+        if (!$this->relationLoaded('group')) {
+            $this->load('group');
+        }
         return $this->long_base_name ?? $this->working_name;
     }
 

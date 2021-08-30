@@ -69,7 +69,9 @@ class ApplicationController extends Controller
             ];
             foreach ($realRelationships as $rel => $realRel) {
                 $idx = array_search($rel, $relations);
-                $relations[$idx] = $realRel;
+                if ($idx !== false) {
+                    $relations[$idx] = $realRel;
+                }
             }
             $query->with($relations);
         }

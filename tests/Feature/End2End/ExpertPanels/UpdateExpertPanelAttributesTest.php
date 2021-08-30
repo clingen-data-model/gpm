@@ -31,7 +31,6 @@ class UpdateExpertPanelAttributesTest extends TestCase
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create();
         $data = [
-            'working_name' => 'farts',
             'long_base_name' => 'Test Expert Panel Base Name GCEP',
             'short_base_name' => 'Test EP GCEP',
             'affiliation_id' => '400001',
@@ -54,7 +53,6 @@ class UpdateExpertPanelAttributesTest extends TestCase
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create();
         $data = [
-            'working_name' => 'test test teset',
             'long_base_name' => 'Test Expert Panel Base Name',
             'short_base_name' => 'Test EP',
             'affiliation_id' => '400001',
@@ -90,26 +88,11 @@ class UpdateExpertPanelAttributesTest extends TestCase
     /**
      * @test
      */
-    public function validates_required_attributes()
-    {
-        $expertPanel = ExpertPanel::factory()->gcep()->create();
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $this->json('PUT', '/api/applications/'.$expertPanel->uuid, [])
-            ->assertStatus(422)
-            ->assertJsonFragment([
-                'working_name' => ['The working name field is required.'],
-            ]);
-    }
-
-    /**
-     * @test
-     */
     public function validates_data_types()
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create();
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $this->json('PUT', '/api/applications/'.$expertPanel->uuid, [
-                'working_name' => $this->longText,
                 'cdwg_id' => 999,
                 'long_base_name' => $this->longText,
                 'short_base_name' => 'more than sixteen',
@@ -117,7 +100,6 @@ class UpdateExpertPanelAttributesTest extends TestCase
             ])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'working_name' => ['The working name may not be greater than 255 characters.'],
                 'cdwg_id' => ['The selected cdwg id is invalid.'],
                 'long_base_name' => ['The long base name may not be greater than 255 characters.'],
                 'short_base_name' => ['The short base name may not be greater than 15 characters.'],

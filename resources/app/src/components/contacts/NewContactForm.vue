@@ -104,7 +104,6 @@ export default {
 
                 if (Boolean(fieldVal) && fieldVal.length > 1) {
                     people = people.concat(this.people.filter(p => p[field].toLowerCase().includes(fieldVal)));
-                    console.info('filtering on '+field+' includes ('+fieldVal+'): ', people);
                 }
 
             }

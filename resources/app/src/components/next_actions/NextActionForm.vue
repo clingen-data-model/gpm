@@ -128,7 +128,6 @@ export default {
             this.$emit('canceled');
         },
         clearForm() {
-            console.log('clearForm()');
             this.initNewAction();
             this.$emit('formCleared')
         },
@@ -168,8 +167,6 @@ export default {
             }
         },
         async save() {
-            console.log('save!');
-            console.info('this.newAction', this.newAction);
             try {
                 if (this.newAction.id) {
                     await this.$store.dispatch(

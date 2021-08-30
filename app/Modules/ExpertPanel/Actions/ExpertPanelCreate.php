@@ -46,6 +46,7 @@ class ExpertPanelCreate
         $expertPanel->expert_panel_type_id = $expert_panel_type_id;
         $expertPanel->date_initiated = $date_initiated;
         $expertPanel->coi_code = bin2hex(random_bytes(12));
+        $expertPanel->cdwg_id = $cdwg_id;
         $expertPanel->current_step = 1;
 
         $expertPanel->save();

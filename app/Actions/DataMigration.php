@@ -60,7 +60,11 @@ class DataMigration
 
                 $expertPanel = ExpertPanel::withTrashed()->firstOrCreate(['group_id' => $group->id], $data);
 
-                $this->migrateDocumentsForGroup($this->queryAppItems('documents', $row->id)->get(), $group);
+                $this->migrateDocumentsForGroup(
+                    $this->queryAppItems('documents', $row->id)->get(),
+                    $group,
+                    $expertPanel
+                );
                 $this->migrateNextActionForEp($this->queryAppItems('next_actions', $row->id)->get(), $expertPanel);
                 $this->migrateGroupMembers($this->queryAppItems('application_person', $row->id)->get(), $group);
                 $activityLogs = DB::table('activity_log')
@@ -243,9 +247,9 @@ class DataMigration
         });
     }
 
-    private function migrateDocumentsForGroup($documents, $group)
+    private function migrateDocumentsForGroup($documents, $group, $expertPanel)
     {
-        $documents->each(function ($doc) use ($group) {
+        $documents->each(function ($doc) use ($group, &$expertPanel) {
             $mapped = (array)$doc;
             $mapped['metadata'] = [
                 'step' => $doc->step,
@@ -265,7 +269,18 @@ class DataMigration
 
             $document = new Document;
             $document->setTable('documents_v2')->withTrashed()->firstOrCreate(['uuid' => $doc->uuid], $mapped);
+
+            dump($doc->document_type_id.' - v'.$doc->version.': '.$doc->date_received);
+            if ($doc->document_type_id == config('documents.types.scope.id') && $doc->version == 1) {
+                $expertPanel->step_1_received_date = $doc->date_received;
+            }
+
+            if ($doc->document_type_id == config('documents.types.final-app.id') && $doc->version == 1) {
+                $expertPanel->step_4_received_date = $doc->date_received;
+            }
         });
+
+        $expertPanel->save();
     }
 
     private function createGroupForApplication($row, $cdwgs)

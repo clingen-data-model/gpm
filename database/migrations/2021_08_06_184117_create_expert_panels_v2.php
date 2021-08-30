@@ -34,9 +34,11 @@ class CreateExpertPanelsV2 extends Migration
             $table->string('affiliation_id', 8)->unique()->nullable();
             $table->integer('current_step')->default(1);
             $table->datetime('date_initiated')->nullable();
+            $table->dateTime('step_1_received_date')->nullable();
             $table->dateTime('step_1_approval_date')->nullable();
             $table->dateTime('step_2_approval_date')->nullable();
             $table->dateTime('step_3_approval_date')->nullable();
+            $table->dateTime('step_4_received_date')->nullable();
             $table->dateTime('step_4_approval_date')->nullable();
             $table->datetime('date_completed')->nullable();
             $table->string('coi_code', 24)->unique();

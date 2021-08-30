@@ -43,12 +43,11 @@ class ApplicationDocumentAdd
             'notes' => $notes
         ]);
         
-        $lastDocumentVersion = $expertPanel->getLatestVersionForDocument($document->document_type_id);
-
-        $document->version = $lastDocumentVersion+1;
+        $document->version = 1 + $expertPanel->getLatestVersionForDocument($document->document_type_id);
 
         $expertPanel->documents()->save($document);
-        $expertPanel->touch();
+
+        $this->updateOrTouchExpertPanel($expertPanel, $document);
 
         $event = new DocumentAdded(
             application: $expertPanel,
@@ -84,5 +83,20 @@ class ApplicationDocumentAdd
         $newDocument = $this->handle(...$data);
 
         return $newDocument->toArray();
+    }
+
+    private function updateOrTouchExpertPanel($expertPanel, $document): void
+    {
+        if ($document->version == 1) {
+            if ($document->document_type_id == config('documents.types.scope.id')) {
+                $expertPanel->step_1_received_date = $document->dateReceived;
+            }
+            if ($document->document_type_id == config('documents.types.final-app.id')) {
+                $expertPanel->step_4_received_date = $document->dateReceived;
+            }
+            $expertPanel->save();
+        } else {
+            $expertPanel->touch();
+        }
     }
 }
