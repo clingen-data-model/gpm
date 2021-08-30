@@ -49,7 +49,7 @@ class Application extends Entity {
         if (this.expert_panel_type_id == 1) {
             return [1];
         }
-        if (this.expert_panel_type_id == 2) {
+        if (this.expert_panel_type_id == 2 || this.expert_panel_type_id === null) {
             return [1, 2, 3, 4];
         }
 
@@ -94,29 +94,27 @@ class Application extends Entity {
     }
 
     stepIsApproved(stepNumber) {
+        if (!stepNumber) {
+            return false;
+        }
         if (!this.steps.includes(stepNumber)) {
             throw new Error(`Step ${stepNumber} out of bounds`)
         }
-        if (this.approval_dates === null || typeof this.approval_dates === 'undefined') {
-            this.approval_dates = {};
-        }
 
-        return Boolean(this.approval_dates[`step ${stepNumber}`])
+        return Boolean(this[`step_${stepNumber}_approval_date`]);
     }
 
     approvalDateForStep(stepNumber) {
+        console.log('stepNumber: ', stepNumber);
         if (!this.steps.includes(stepNumber)) {
             throw new Error(`Step ${stepNumber} out of bounds`)
         }
 
-        if (this.approval_dates === null || typeof this.approval_dates === 'undefined') {
-            this.approval_dates = {};
-        }
+        const stepKey = `step_${stepNumber}_approval_date`;
+        console.log('stepKey: ', stepKey);
 
-        const stepKey = `step ${stepNumber}`;
-
-        return (Object.keys(this.approval_dates).includes(stepKey)) ?
-            new Date(Date.parse(this.approval_dates[stepKey])) :
+        return (this[stepKey]) ?
+            new Date(Date.parse(this[stepKey])) :
             null;
     }
 
