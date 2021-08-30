@@ -34,13 +34,14 @@ class MailDraftController extends Controller
         );
 
         $ccrecipients = [];
-        if (in_array($approvedStepNumber, config('applications.notifications.cc.steps'))) {
-            $ccrecipients = collect(config('applications.notifications.cc.recipients'))
+        if (in_array($approvedStepNumber, config('expert-panels.notifications.cc.steps'))) {
+            $ccrecipients = collect(config('expert-panels.notifications.cc.recipients'))
                                 ->map(fn ($pair) => ['name' => $pair[1], 'email' => $pair[0]]);
         }
 
         return [
             'to' => $expertPanel->contacts
+                        ->pluck('person')
                         ->map(function ($c) {
                             return [
                                 'name' => $c->name,
