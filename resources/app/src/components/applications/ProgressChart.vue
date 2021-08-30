@@ -27,11 +27,7 @@ export default {
     },
     computed: {
         steps () {
-            if (this.application.ep_type_id == 2) {
-                return [1,2,3,4]
-            }
-
-            return [1]
+            return this.application.steps
         },
     }
 }

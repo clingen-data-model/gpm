@@ -7,11 +7,11 @@ use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Bus;
-use App\Modules\Application\Jobs\ApproveStep;
-use App\Modules\Application\Models\Application;
-use App\Modules\Application\Jobs\CreateNextAction;
-use App\Modules\Application\Jobs\AddApplicationDocument;
-use App\Modules\Application\Jobs\CompleteNextAction;
+use App\Modules\ExpertPanel\Actions\StepApprove;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Actions\NextActionCreate;
+use App\Modules\ExpertPanel\Jobs\ApplicationDocumentAdd;
+use App\Modules\ExpertPanel\Jobs\CompleteNextAction;
 
 class CreateApplicationsFromCommands extends Command
 {
@@ -64,14 +64,14 @@ class CreateApplicationsFromCommands extends Command
     {
         $faker = \Faker\Factory::create();
         $lastApprovedStep = $this->option('last-approval', null);
-        $application = Application::initiate(...[
+        $expertPanel = ExpertPanel::initiate(...[
             'uuid' => $uuid,
             'working_name' => ucwords(join(' ', $faker->words(4))),
             'cdwg_id' => $cdwgId,
-            'ep_type_id' => $epTypeId,
+            'expert_panel_type_id' => $epTypeId,
             'date_initiated' => Carbon::now()->subDays(30)
         ]);
-        $application->save();
+        $expertPanel->save();
 
         $cmdSequence = $this->makeCommandSequence($uuid);
         $commandCount = ($epTypeId == 1) ? 2 : $faker->randomElement(range(1, count($cmdSequence)));
@@ -82,7 +82,7 @@ class CreateApplicationsFromCommands extends Command
             $class = $cmd['class'];
             $args = $cmd['args'];
 
-            if (!is_null($lastApprovedStep) && $class == ApproveStep::class && (int)$cmd['step'] > (int)$lastApprovedStep) {
+            if (!is_null($lastApprovedStep) && $class == StepApprove::class && (int)$cmd['step'] > (int)$lastApprovedStep) {
                 $this->info('Stop building b/c last-approval set to '.$lastApprovedStep);
                 break;
             }
@@ -91,8 +91,8 @@ class CreateApplicationsFromCommands extends Command
             $job = new $class(...$args);
             Bus::dispatchNow($job);
 
-            $application->fresh();
-            $this->info('new step is '.$application->fresh()->current_step);
+            $expertPanel->fresh();
+            $this->info('new step is '.$expertPanel->fresh()->current_step);
         }
     }
 
@@ -102,9 +102,9 @@ class CreateApplicationsFromCommands extends Command
         return [
                 [ // Add Scope Document
                     'step' => 1,
-                    'class' => AddApplicationDocument::class,
+                    'class' => ApplicationDocumentAdd::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'uuid' => Uuid::uuid4()->toString(),
                         'filename' => 'test',
                         'storage_path' => '/tmp/'.uniqid().'_test.tst',
@@ -115,17 +115,17 @@ class CreateApplicationsFromCommands extends Command
                 ],
                 [ // Approve step 1 -> go to step 2
                     'step' => 1,
-                    'class' => ApproveStep::class,
+                    'class' => StepApprove::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'dateApproved' => Carbon::now()->subDays(14)
                     ]
                 ],
                 [ // Add draft doc
                     'step' => 2,
-                    'class' => AddApplicationDocument::class,
+                    'class' => ApplicationDocumentAdd::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'uuid' => Uuid::uuid4()->toString(),
                         'filename' => 'test',
                         'storage_path' => '/tmp/'.uniqid().'test.tst',
@@ -136,17 +136,17 @@ class CreateApplicationsFromCommands extends Command
                 ],
                 [ // Approve step 2 -> go to step 3
                     'step' => 2,
-                    'class' => ApproveStep::class,
+                    'class' => StepApprove::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'dateApproved' => Carbon::now()->subDays(7)
                     ]
                 ],
                 [ // Create Next Action
                     'step' => 3,
-                    'class' => CreateNextAction::class,
+                    'class' => NextActionCreate::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'uuid' => $nextActionUuid,
                         'entry' => 'Do this next!',
                         'dateCreated' => Carbon::now()->subDays(7)
@@ -154,9 +154,9 @@ class CreateApplicationsFromCommands extends Command
                 ],
                 [ // Add final specs
                     'step' => 3,
-                    'class' => AddApplicationDocument::class,
+                    'class' => ApplicationDocumentAdd::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'uuid' => $nextActionUuid,
                         'filename' => 'test',
                         'storage_path' => '/tmp/'.uniqid().'test.tst',
@@ -169,16 +169,16 @@ class CreateApplicationsFromCommands extends Command
                     'step' => '3',
                     'class' => CompleteNextAction::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'nextActionUuid' => $nextActionUuid,
                         'dateCompleted' =>  Carbon::now()->subDays(5)
                     ]
                 ],
                 [ // Add pilot classifications
                     'step' => 3,
-                    'class' => AddApplicationDocument::class,
+                    'class' => ApplicationDocumentAdd::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'uuid' => Uuid::uuid4()->toString(),
                         'filename' => 'test',
                         'storage_path' => '/tmp/'.uniqid().'test.tst',
@@ -189,17 +189,17 @@ class CreateApplicationsFromCommands extends Command
                 ],
                 [ // Approve step 3 -> go to step 4
                     'step' => 3,
-                    'class' => ApproveStep::class,
+                    'class' => StepApprove::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'dateApproved' => Carbon::now()->subDays(4)
                     ]
                 ],
                 [ // Add finalize application
                     'step' => 4,
-                    'class' => AddApplicationDocument::class,
+                    'class' => ApplicationDocumentAdd::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'uuid' => Uuid::uuid4()->toString(),
                         'filename' => 'test',
                         'storage_path' => '/tmp/'.uniqid().'test.tst',
@@ -210,9 +210,9 @@ class CreateApplicationsFromCommands extends Command
                 ],
                 [ // Approve step 4 -> go to step completed
                     'step' => 4,
-                    'class' => ApproveStep::class,
+                    'class' => StepApprove::class,
                     'args' => [
-                        'applicationUuid' => $uuid,
+                        'expertPanelUuid' => $uuid,
                         'dateApproved' => Carbon::now()->subDays(1)
                     ]
                 ]

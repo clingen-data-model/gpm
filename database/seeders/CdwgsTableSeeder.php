@@ -3,8 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\Cdwg;
-use Illuminate\Database\Seeder;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Database\Seeder;
+use App\Modules\Group\Models\Group;
 
 class CdwgsTableSeeder extends Seeder
 {
@@ -37,9 +38,13 @@ class CdwgsTableSeeder extends Seeder
             'Other'
         ];
         foreach ($names as $name) {
-            Cdwg::updateOrCreate(
+            Group::updateOrCreate(
                 ['name' => $name],
-                ['uuid' => Uuid::uuid4()]
+                [
+                    'uuid' => Uuid::uuid4(),
+                    'group_type_id' => config('groups.types.cdwg.id'),
+                    'group_status_id' => config('groups.statuses.active')
+                ]
             );
         }
     }

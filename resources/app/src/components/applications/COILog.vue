@@ -27,7 +27,6 @@
                 :class="{'animate-spin': refreshing}"
                 @click="refresh"
             ></icon-refresh>
-            <!-- add copy link button -->
         </div>
         <div v-if="!hasCois" class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200">
             No Conflict of interest surveys completed

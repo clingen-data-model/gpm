@@ -19,6 +19,7 @@
         "laravel/sanctum": "^2.11",
         "laravel/slack-notification-channel": "^2.3",
         "laravel/tinker": "^2.5",
+        "lorisleiva/laravel-actions": "^2.1",
         "rap2hpoutre/laravel-log-viewer": "^1.7",
         "spatie/laravel-activitylog": "^3.16",
         "spatie/laravel-permission": "^3.18"

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
-use App\Modules\Application\Models\Application;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Notifications\UserDefinedMailNotification;
 
 class MailDraftController extends Controller
@@ -17,9 +17,9 @@ class MailDraftController extends Controller
         4 => 'applications.email.approval.vcep_step_4_approval',
     ];
 
-    public function show($applicationUuid, $approvedStepNumber)
+    public function show($expertPanelUuid, $approvedStepNumber)
     {
-        $application = Application::findByUuidOrFail($applicationUuid);
+        $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
 
         if (!isset($this->stepMessages[$approvedStepNumber])) {
             return abort(404);
@@ -28,22 +28,20 @@ class MailDraftController extends Controller
         $view = View::make(
             $this->stepMessages[$approvedStepNumber],
             [
-                'application' => $application,
+                'expertPanel' => $expertPanel,
                 'approvedStep' => $approvedStepNumber,
             ]
         );
 
-        // dump($approvedStepNumber);
-        // dump(config('applications.notifications.cc.recipients'));
-        // dd(config('applications.notifications'));
         $ccrecipients = [];
-        if (in_array($approvedStepNumber, config('applications.notifications.cc.steps'))) {
-            $ccrecipients = collect(config('applications.notifications.cc.recipients'))
+        if (in_array($approvedStepNumber, config('expert-panels.notifications.cc.steps'))) {
+            $ccrecipients = collect(config('expert-panels.notifications.cc.recipients'))
                                 ->map(fn ($pair) => ['name' => $pair[1], 'email' => $pair[0]]);
         }
 
         return [
-            'to' => $application->contacts
+            'to' => $expertPanel->contacts
+                        ->pluck('person')
                         ->map(function ($c) {
                             return [
                                 'name' => $c->name,
@@ -52,7 +50,7 @@ class MailDraftController extends Controller
                             ];
                         }),
             'cc' => $ccrecipients,
-            'subject' => 'Application step '.$approvedStepNumber.' for your ClinGen expert panel '.$application->name.' has been approved.',
+            'subject' => 'Application step '.$approvedStepNumber.' for your ClinGen expert panel '.$expertPanel->name.' has been approved.',
             'body' => $view->render()
         ];
     }

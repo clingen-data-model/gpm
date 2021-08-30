@@ -3,14 +3,16 @@
 namespace Tests;
 
 use App\Models\Cdwg;
-use App\Modules\Application\Jobs\AddContact;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Carbon;
-use App\Modules\Person\Models\Person;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\Application\Models\Application;
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Bus;
+use App\Modules\Person\Models\Person;
+use App\Modules\ExpertPanel\Jobs\AddContact;
+use Illuminate\Foundation\Testing\WithFaker;
+use App\Modules\ExpertPanel\Actions\ContactAdd;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -29,8 +31,8 @@ abstract class TestCase extends BaseTestCase
         $data = [
             'uuid' => Uuid::uuid4()->toString(),
             'working_name' => 'EP Working Name',
-            'ep_type_id' => config('expert_panels.types.vcep.id'),
-            'cdwg_id' => Cdwg::all()->random()->id,
+            'expert_panel_type_id' => config('expert_panels.types.vcep.id'),
+            'cdwg_id' => Group::cdwg()->get()->random()->id,
             'date_initiated' => Carbon::parse('2020-01-01')
         ];
         return $data;
@@ -39,7 +41,7 @@ abstract class TestCase extends BaseTestCase
     protected function makeContactData(int $number = 1)
     {
         $contacts = [];
-        for ($i=0; $i < $number; $i++) { 
+        for ($i=0; $i < $number; $i++) {
             $contacts[] = [
                 'uuid' => Uuid::uuid4(),
                 'first_name' => $this->faker()->firstName,
@@ -52,36 +54,33 @@ abstract class TestCase extends BaseTestCase
         return $contacts;
     }
     
-    protected function addContactToApplication(Application $application)
+    protected function addContactToApplication(ExpertPanel  $expertPanel)
     {
         $person = Person::factory()->create();
-        $job = new AddContact($application->uuid, $person->uuid);
-        Bus::dispatch($job);
+        ContactAdd::run($expertPanel->uuid, $person->uuid);
         
         return $person;
     }
 
-    protected  function assertLoggedActivity(
-        $application, 
-        $description, 
-        $properties = null, 
-        $causer_type = null, 
+    protected function assertLoggedActivity(
+        $expertPanel,
+        $description,
+        $properties = null,
+        $causer_type = null,
         $causer_id = null
-    )
-    {
-
+    ) {
         $data = [
             'log_name' => 'applications',
             'description' => $description,
-            'subject_type' => Application::class,
-            'subject_id' => (string)$application->id,
+            'subject_type' => ExpertPanel::class,
+            'subject_id' => (string)$expertPanel->id,
             'causer_type' => $causer_type,
             'causer_id' => $causer_id,
         ];
 
         if ($properties) {
             if (!isset($properties['step'])) {
-                $properties['step'] = $application->current_step;
+                $properties['step'] = $expertPanel->current_step;
             }
             foreach ($properties as $key => $val) {
                 $dbVal = $val;

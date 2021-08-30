@@ -3,10 +3,10 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\NextActionAssignee;
+use Database\Seeders\GroupTypeSeeder;
 use Database\Seeders\UsersTableSeeder;
+use Database\Seeders\GroupStatusSeeder;
 use Database\Seeders\DocumentTypesTableSeeder;
-use Database\Seeders\RolesAndPermissionsSeeder;
 use Database\Seeders\NextActionAssigneesTableSeeder;
 
 class DatabaseSeeder extends Seeder
@@ -18,11 +18,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $seederClasses = [];
-        if (!app()->environment('testing')) {
-            $seederClasses[] = RolesAndPermissionsSeeder::class; // Needs optimization for refreshing testing db
-        }
-            
+        $seederClasses = [];            
         $seederClasses = array_merge($seederClasses, [
             UsersTableSeeder::class,
             CdwgsTableSeeder::class,
@@ -30,11 +26,9 @@ class DatabaseSeeder extends Seeder
             EpTypesTableSeeder::class,
             NextActionAssigneesTableSeeder::class,
             DocumentTypesTableSeeder::class,
+            GroupTypeSeeder::class,
+            GroupStatusSeeder::class
         ]);
-
-        // if (app()->environment('testing')) {
-        $seederClasses[] = CdwgsTableSeeder::class;
-        // }
 
         foreach ($seederClasses as $seederClass) {
             $seeder = new $seederClass();

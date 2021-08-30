@@ -9,5 +9,7 @@ class Cdwg extends Model
 {
     use HasFactory;
 
+    protected $table = 'groups';
+
     protected $fillable = ['name', 'uuid'];
 }

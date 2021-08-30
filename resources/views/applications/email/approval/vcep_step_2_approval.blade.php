@@ -2,7 +2,7 @@
 
 @section('content')
     <p>
-        Congratulations on your Step 2 approval. I have updated your VCEP status on your webpage <a href="{{$application->clingenUrl}}">{{$application->clingenUrl}}</a>.
+        Congratulations on your Step 2 approval. I have updated your VCEP status on your webpage <a href="{{$expertPanel->clingenUrl}}">{{$expertPanel->clingenUrl}}</a>.
     </p>
 
     <p>

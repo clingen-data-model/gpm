@@ -26,10 +26,10 @@ export default {
             return state.requests.length > 0;
         },
         gceps: state => {
-            return state.items.filter(app => app.ep_type_id == 1);
+            return state.items.filter(app => app.expert_panel_type_id == 1);
         },
         vceps: state => {
-            return state.items.filter(app => app.ep_type_id == 2);
+            return state.items.filter(app => app.expert_panel_type_id == 2);
         },
         currentItem: state => {
             if (state.currentItemIdx === null) {
@@ -120,7 +120,7 @@ export default {
                 })
         },
         async getApplication({ commit }, appUuid) {
-            await appRepo.find(appUuid, { with: ['logEntries', 'documents', 'contacts', 'logEntries.causer', 'cois', 'documents.type', 'nextActions'] })
+            await appRepo.find(appUuid, { with: ['logEntries', 'group.documents', 'contacts', 'logEntries.causer', 'cois', 'group.documents.type', 'nextActions'] })
                 .then(item => {
                     commit('addApplication', item)
                     commit('setCurrentItemIdx', item)
@@ -158,11 +158,9 @@ export default {
         },
        // eslint-disable-next-line
        async deleteNextAction({ commit }, {application, nextAction}) {
-           console.log(nextAction.id)
            const url = `/api/applications/${application.uuid}/next-actions/${nextAction.id}`
             await api.delete(url)
                 .then(() => {
-                    console.log('deleted. reload application')
                     store.dispatch('applications/getApplication', application.uuid);
                 })
         },

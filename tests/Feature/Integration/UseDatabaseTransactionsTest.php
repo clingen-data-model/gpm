@@ -4,10 +4,11 @@ namespace Tests\Feature\Integration;
 
 use Tests\TestCase;
 use App\Modules\User\Models\User;
+use App\Modules\Group\Models\Group;
 use Illuminate\Contracts\Bus\Dispatcher;
 use App\Jobs\Pipes\UseDatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\Application\Models\Application;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UseDatabaseTransactionsTest extends TestCase
@@ -47,13 +48,12 @@ class UseDatabaseTransactionsTest extends TestCase
         $user = User::factory()->make();
 
         $this->dispatcher->dispatch(function () use ($user) {
-            
             $user->save();
-            Application::factory()->create(['working_name' => 'test application']);
+            Group::factory()->create(['name' => 'test application']);
         });
 
         $this->assertDatabaseHas('users', $user->getAttributes());
-        $this->assertDatabaseHas('applications', ['working_name' => 'test application']);
+        $this->assertDatabaseHas('groups', ['name' => 'test application']);
     }
     
     

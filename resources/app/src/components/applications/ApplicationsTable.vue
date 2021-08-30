@@ -97,12 +97,12 @@ export default {
                     sortable: true
                 },
                 {
-                    name: 'cdwg.name',
+                    name: 'group.parent.name',
                     label: 'CDWG',
                     type: String,
                     sortable: true,
                     resolveValue (item) {
-                        return item.cdwg ? item.cdwg.name : '';
+                        return (item.group && item.group.parent)? item.group.parent.name : '';
                     }
                 },
                 {
@@ -158,7 +158,7 @@ export default {
                         step: 1
                     },
                     {
-                        name: 'first_scope_document.date_received',
+                        name: 'step_1_received_date',
                         label: this.epTypeId == 2 ? 'Step 1 Received' : 'Application Received',
                         type: Date,
                         sortable: true,
@@ -167,7 +167,7 @@ export default {
 
                     },
                     {
-                        name: 'approval_dates.step 1',
+                        name: 'step_1_approval_date',
                         label: this.epTypeId == 2 ? 'Step 1 Approved' : 'Application Approved',
                         type: Date,
                         sortable: true,
@@ -175,7 +175,7 @@ export default {
                         step: 1
                     },
                     {
-                        name: 'approval_dates.step 2',
+                        name: 'step_2_approval_date',
                         label: 'Step 2 Approved',
                         type: Date,
                         sortable: true,
@@ -183,7 +183,7 @@ export default {
                         step: 2
                     },
                     {
-                        name: 'approval_dates.step 3',
+                        name: 'step_3_approval_date',
                         label: 'Step 3 Approved',
                         type: Date,
                         sortable: true,
@@ -191,7 +191,7 @@ export default {
                         step: 3
                     },
                     {
-                        name: 'first_final_document.date_received',
+                        name: 'step_4_received_date',
                         label: 'Step 4 Received',
                         type: Date,
                         sortable: true,
@@ -199,7 +199,7 @@ export default {
                         step: 4
                     },
                     {
-                        name: 'approval_dates.step 4',
+                        name: 'step_4_approval_date',
                         label: 'Step 4 Approved',
                         type: Date,
                         sortable: true,
@@ -217,7 +217,7 @@ export default {
         }),
         filteredData() {
             let applications = this.applications
-                .filter(item => !this.epTypeId || item.ep_type_id == this.epTypeId)
+                .filter(item => !this.epTypeId || item.expert_panel_type_id == this.epTypeId)
                 .filter(item => {
                     if (!this.showCompleted) {
                         return item.date_completed == null;
@@ -226,7 +226,6 @@ export default {
                 })
 
             if (this.waitingOn) {
-                console.info(this.waitingOn)
                 applications = applications.filter(app => app.pendingActionsByAssignee[this.waitingOn].length > 0);
             }
 
@@ -295,9 +294,7 @@ export default {
                     'latestLogEntry',
                     'nextActions',
                     'type',
-                    'contacts',
-                    'firstScopeDocument',
-                    'firstFinalDocument'
+                    'contacts'
                 ],
             }
 

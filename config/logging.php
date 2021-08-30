@@ -34,9 +34,15 @@ return [
     */
 
     'channels' => [
+        'dev-stack' => [
+            'driver' => 'stack',
+            'channels' => ['stderr', 'single']
+        ],
         'stack' => [
             'driver' => 'stack',
-            'channels' => (!is_null(env('LOG_SLACK_WEBHOOK_URL'))) ? ['stderr', 'daily', 'slack'] : ['stderr', 'daily'],
+            'channels' => (!is_null(env('LOG_SLACK_WEBHOOK_URL')))
+                            ? ['stderr', 'daily', 'slack']
+                            : ['stderr', 'daily'],
             'ignore_exceptions' => false,
         ],
 

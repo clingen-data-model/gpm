@@ -42,10 +42,11 @@ export default {
             return formatDate(this.application.date_initiated)
         },
         approvalDate() {
-            if (!this.application.approval_dates || !this.application.approval_dates['step '+this.step]) {
-                return ' '
+            if (this.application.approvalDateForStep(this.step)) {
+                return formatDate(this.application.approvalDateForStep(this.step))
             }
-            return formatDate(this.application.approval_dates['step '+this.step])
+
+            return ' '
         },
         displayClass () {
             const classes = [];
@@ -66,14 +67,13 @@ export default {
             return this.application.current_step == this.step
         },
         isApproved () {
-            return this.application.approval_dates 
-                && typeof this.application.approval_dates[`step ${this.step}`] != 'undefined'
+            return this.application.stepIsApproved(this.step);
         },
         isFirstStep () {
             return this.step == 1;
         },
         isLastStep () {
-            const lastStep = this.application.ep_type_id == 1 ? 1 : 4;
+            const lastStep = Math.max.apply(Math, this.application.steps);
             return this.step == lastStep;
         }
     },

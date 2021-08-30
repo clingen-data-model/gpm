@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder as BaseSeeder;
 
@@ -38,6 +39,16 @@ abstract class Seeder extends BaseSeeder
         Model::unguard();
         foreach ($items as $itemData) {
             $modelClass::updateOrCreate(['id'=>$itemData['id']], $itemData);
+        }
+        Model::reguard();
+    }
+    
+    public function seedFromSimpleArray($items, $modelClass)
+    {
+        Model::unguard();
+        foreach ($items as $slug => $id) {
+            $name = Str::title($slug);
+            $modelClass::updateOrCreate(['id' => $id, 'name' => $name]);
         }
         Model::reguard();
     }

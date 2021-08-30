@@ -5,8 +5,8 @@ namespace Tests\Feature\Integration\Notificaitons;
 use Tests\TestCase;
 use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\Application\Jobs\ApproveStep;
-use App\Modules\Application\Models\Application;
+use App\Modules\ExpertPanel\Actions\StepApprove;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Notifications\UserDefinedMailNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
@@ -21,11 +21,11 @@ class NotifyStepApprovedTest extends TestCase
         parent::setup();
         $this->seed();
         
-        $this->application = Application::factory()->create([
-            'ep_type_id' => config('expert_panels.types.gcep.id')
+        $this->expertPanel = ExpertPanel::factory()->create([
+            'expert_panel_type_id' => config('expert_panels.types.gcep.id')
         ]);
-        $this->addContactToApplication($this->application);
-        $this->addContactToApplication($this->application);
+        $this->addContactToApplication($this->expertPanel);
+        $this->addContactToApplication($this->expertPanel);
     }
 
     /**
@@ -33,10 +33,8 @@ class NotifyStepApprovedTest extends TestCase
      */
     public function does_not_send_StepApprovedNotification_if_notify_contacts_is_false()
     {
-        $job = new ApproveStep($this->application->uuid, Carbon::now(), false);
         Notification::fake();
-        Bus::dispatch($job);
-
+        StepApprove::run($this->expertPanel->uuid, Carbon::now(), false);
         Notification::assertNothingSent();
     }
 
@@ -45,12 +43,9 @@ class NotifyStepApprovedTest extends TestCase
      */
     public function does_not_send_StepApprovedNotification_if_is_last_step()
     {
-        $job = new ApproveStep($this->application->uuid, Carbon::now(), true);
         Notification::fake(UserDefinedMailNotification::class);
-
-        Bus::dispatch($job);
-
-        Notification::assertSentTo($this->application->contacts, UserDefinedMailNotification::class);
+        StepApprove::run($this->expertPanel->uuid, Carbon::now(), true);
+        Notification::assertNotSentTo($this->expertPanel->contacts, UserDefinedMailNotification::class);
     }
     
     /**
@@ -58,14 +53,13 @@ class NotifyStepApprovedTest extends TestCase
      */
     public function sends_StepApprovedNotification_if_not_last_step_and_notify_contacts_is_true()
     {
-        $this->application->ep_type_id = config('expert_panels.types.vcep.id');
-        $this->application->save();
-        $job = new ApproveStep($this->application->uuid, Carbon::now(), true);
+        $this->expertPanel->update(['expert_panel_type_id' => config('expert_panels.types.vcep.id')]);
+
         Notification::fake(UserDefinedMailNotification::class);
+        
+        StepApprove::run($this->expertPanel->uuid, Carbon::now(), true);
 
-        Bus::dispatch($job);
-
-        Notification::assertSentTo($this->application->contacts, UserDefinedMailNotification::class);
+        Notification::assertSentTo($this->expertPanel->contacts()->with('person')->get()->pluck('person'), UserDefinedMailNotification::class);
     }
 
     /**
@@ -73,23 +67,25 @@ class NotifyStepApprovedTest extends TestCase
      */
     public function step_1_approved_email_carbon_copies_clingen_addresses()
     {
-        $this->application->ep_type_id = config('expert_panels.types.vcep.id');
-        $this->application->current_step = 1;
-        $this->application->save();
+        $this->expertPanel->expert_panel_type_id = config('expert_panels.types.vcep.id');
+        $this->expertPanel->current_step = 1;
+        $this->expertPanel->save();
+
+        $contacts = $this->expertPanel->contacts->pluck('person');
 
         Notification::fake();
 
-        Bus::dispatch(new ApproveStep(
-            applicationUuid: $this->application->uuid,
+        StepApprove::run(
+            expertPanelUuid: $this->expertPanel->uuid,
             dateApproved: '2020-01-01',
             notifyContacts: true,
-        ));
+        );
 
         Notification::assertSentTo(
-            $this->application->contacts,
+            $contacts,
             UserDefinedMailNotification::class,
             function ($notification) {
-                return $notification->ccAddresses == config('applications.notifications.cc.recipients');
+                return $notification->ccAddresses == config('expert-panels.notifications.cc.recipients');
             }
         );
     }
@@ -99,24 +95,24 @@ class NotifyStepApprovedTest extends TestCase
      */
     public function step_4_approved_email_carbon_copies_clingen_addresses()
     {
-        $this->application->ep_type_id = config('expert_panels.types.vcep.id');
+        $this->expertPanel->expert_panel_type_id = config('expert_panels.types.vcep.id');
 
-        $this->application->current_step = 4;
-        $this->application->save();
+        $this->expertPanel->current_step = 4;
+        $this->expertPanel->save();
 
         Notification::fake();
 
-        Bus::dispatch(new ApproveStep(
-            applicationUuid: $this->application->uuid,
+        StepApprove::run(
+            expertPanelUuid: $this->expertPanel->uuid,
             dateApproved: '2020-01-01',
             notifyContacts: true,
-        ));
+        );
 
         Notification::assertSentTo(
-            $this->application->contacts,
+            $this->expertPanel->contacts->pluck('person'),
             UserDefinedMailNotification::class,
             function ($notification) {
-                return $notification->ccAddresses == config('applications.notifications.cc.recipients');
+                return $notification->ccAddresses == config('expert-panels.notifications.cc.recipients');
             }
         );
     }
@@ -126,21 +122,22 @@ class NotifyStepApprovedTest extends TestCase
      */
     public function steps_2_approved_does_not_cc_clingen_addresses()
     {
-        $this->application->ep_type_id = config('expert_panels.types.vcep.id');
+        $this->expertPanel->expert_panel_type_id = config('expert_panels.types.vcep.id');
 
-        $this->application->current_step = 2;
-        $this->application->save();
+        $this->expertPanel->current_step = 2;
+        $this->expertPanel->save();
+
 
         Notification::fake();
 
-        Bus::dispatch(new ApproveStep(
-            applicationUuid: $this->application->uuid,
+        StepApprove::run(
+            expertPanelUuid: $this->expertPanel->uuid,
             dateApproved: '2020-01-01',
             notifyContacts: true,
-        ));
+        );
 
         Notification::assertSentTo(
-            $this->application->contacts,
+            $this->expertPanel->contacts->pluck('person'),
             UserDefinedMailNotification::class,
             function ($notification) {
                 return $notification->ccAddresses == [];
@@ -153,21 +150,21 @@ class NotifyStepApprovedTest extends TestCase
      */
     public function steps_3_approved_does_not_cc_clingen_addresses()
     {
-        $this->application->ep_type_id = config('expert_panels.types.vcep.id');
+        $this->expertPanel->expert_panel_type_id = config('expert_panels.types.vcep.id');
 
-        $this->application->current_step = 3;
-        $this->application->save();
+        $this->expertPanel->current_step = 3;
+        $this->expertPanel->save();
 
         Notification::fake();
 
-        Bus::dispatch(new ApproveStep(
-            applicationUuid: $this->application->uuid,
+        StepApprove::run(
+            expertPanelUuid: $this->expertPanel->uuid,
             dateApproved: '2020-01-01',
             notifyContacts: true,
-        ));
+        );
 
         Notification::assertSentTo(
-            $this->application->contacts,
+            $this->expertPanel->contacts->pluck('person'),
             UserDefinedMailNotification::class,
             function ($notification) {
                 return $notification->ccAddresses == [];

@@ -66,7 +66,6 @@ export default {
         logEntry: {
             immediate: true,
             handler: function () {
-                console.info('logEntry watch handler', this.logEntry.id)
                 if (!this.logEntry.id) {
                     this.$router.go(-1);
                 }

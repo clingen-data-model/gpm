@@ -3,7 +3,7 @@
         <h2 class="block-title">{{title}}</h2>
         <input-row label="Creation Date" :errors="errors.date_created" type="date" v-model="newAction.date_created"></input-row>
 
-        <step-input v-model="newAction.step" :errors="errors.step" v-if="application.ep_type_id == 2"></step-input>
+        <step-input v-model="newAction.step" :errors="errors.step" v-if="application.expert_panel_type_id == 2"></step-input>
 
         <input-row label="Target" Date="" :errors="errors.target_date" type="date" v-model="newAction.target_date"></input-row>
 
@@ -128,7 +128,6 @@ export default {
             this.$emit('canceled');
         },
         clearForm() {
-            console.log('clearForm()');
             this.initNewAction();
             this.$emit('formCleared')
         },
@@ -168,8 +167,6 @@ export default {
             }
         },
         async save() {
-            console.log('save!');
-            console.info('this.newAction', this.newAction);
             try {
                 if (this.newAction.id) {
                     await this.$store.dispatch(

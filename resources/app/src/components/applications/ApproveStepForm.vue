@@ -100,8 +100,6 @@ export default {
     },
     watch: {
         notifyContacts: function (to) {
-            console.info('url:', `/api/email-drafts/${this.application.uuid}/${this.application.current_step}`)
-            console.info('to', to)
             if (to) {
                 api.get(`/api/email-drafts/${this.application.uuid}/${this.application.current_step}`)
                     .then(response => {
@@ -112,7 +110,6 @@ export default {
     },
     methods: {
         clearForm() {
-            console.log('claerForm');
             this.dateApproved = null;
             this.notifyContacts = false;
         },
@@ -143,8 +140,6 @@ export default {
         }
     },
     mounted() {
-        // console.log(this.$el.querySelectorAll('input'));
-        // this.$el.querySelectorAll('input')[0].focus();
     }
 
 }

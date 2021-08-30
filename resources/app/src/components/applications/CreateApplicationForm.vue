@@ -16,7 +16,7 @@
             </select>
         </input-row>
         
-        <input-row label="EP Type" :errors="errors.ep_type_id">
+        <input-row label="EP Type" :errors="errors.expert_panel_type_id">
             <div>
                 <div
                     v-for="epType in epTypes" 
@@ -25,7 +25,7 @@
                     <input 
                         type="radio" 
                         :value="epType.id" 
-                        v-model="app.ep_type_id"
+                        v-model="app.expert_panel_type_id"
                         :id="`ep-${epType.id}-radio`"
                     >
                     &nbsp;
@@ -76,7 +76,7 @@ export default {
             app: {
                 working_name: null,
                 cdwg_id: null,
-                ep_type_id: null,
+                expert_panel_type_id: null,
                 date_initiated: formatDate(new Date())
             },
             epTypes: [
@@ -101,8 +101,8 @@ export default {
         'app.cdwg_id': function () {
             this.clearErrors('cdwg_id')
         },
-        'app.ep_type_id': function () {
-            this.clearErrors('ep_type_id')
+        'app.expert_panel_type_id': function () {
+            this.clearErrors('expert_panel_type_id')
         }
     },
     methods: {
@@ -130,7 +130,7 @@ export default {
             this.app = {
                 working_name: null,
                 cdwg_id: null,
-                ep_type_id: null,
+                expert_panel_type_id: null,
                 date_initiated: formatDate(new Date())
             };
         },

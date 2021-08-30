@@ -50,6 +50,7 @@
         <modal-dialog v-model="showModal" @closed="handleModalClosed">
             <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
         </modal-dialog>
+        <note>{{application.id}}</note>
     </div>
 </template>
 <script>

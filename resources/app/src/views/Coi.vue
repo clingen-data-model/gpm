@@ -101,7 +101,6 @@ export default {
                 return true;
             }
             if (Array.isArray(question.show.value)) {
-                console.log(question.show.value);
                 return question.show.value.indexOf(this.response[question.show.name]) > -1;
             }
             return (this.response[question.show.name] == question.show.value);

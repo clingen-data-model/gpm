@@ -15,6 +15,7 @@
                         :disabled="disabled"
                         @change="$emit('change')"
                         ref="input"
+                        :name="name"
                     ></date-input>
                     <input 
                         v-else
@@ -26,6 +27,7 @@
                         @change="$emit('change')"
                         ref="input"
                         class="w-"
+                        :name="name"
                     >
                 </slot>
                 <slot name="after-input"></slot>
@@ -70,7 +72,13 @@ export default {
         },
         disabled: {
             required: false,
-            default: false
+            default: false,
+            type: Boolean
+        },
+        name: {
+            required: false,
+            default: null,
+            type: String
         }
     },
     emits: [

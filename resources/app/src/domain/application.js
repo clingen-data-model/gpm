@@ -12,7 +12,7 @@ class Application extends Entity {
 
     static defaults = {
         working_name: null,
-        ep_type_id: null,
+        expert_panel_type_id: null,
         cdwg_id: null,
         id: null,
         uuid: null,
@@ -38,22 +38,22 @@ class Application extends Entity {
     }
 
     get isGcep() {
-        return this.ep_type_id == 1;
+        return this.expert_panel_type_id == 1;
     }
 
     get isVcep() {
-        return this.ep_type_id == 2;
+        return this.expert_panel_type_id == 2;
     }
 
     get steps() {
-        if (this.ep_type_id == 1) {
+        if (this.expert_panel_type_id == 1) {
             return [1];
         }
-        if (this.ep_type_id == 2) {
+        if (this.expert_panel_type_id == 2 || this.expert_panel_type_id === null) {
             return [1, 2, 3, 4];
         }
 
-        throw new Error('Unknown ep_type_id found when determining application steps.');
+        throw new Error('Unknown expert_panel_type_id found when determining applicaiton steps.');
     }
 
     get pendingNextActions() {
@@ -94,14 +94,14 @@ class Application extends Entity {
     }
 
     stepIsApproved(stepNumber) {
+        if (!stepNumber) {
+            return false;
+        }
         if (!this.steps.includes(stepNumber)) {
             throw new Error(`Step ${stepNumber} out of bounds`)
         }
-        if (this.approval_dates === null || typeof this.approval_dates === 'undefined') {
-            this.approval_dates = {};
-        }
 
-        return Boolean(this.approval_dates[`step ${stepNumber}`])
+        return Boolean(this[`step_${stepNumber}_approval_date`]);
     }
 
     approvalDateForStep(stepNumber) {
@@ -109,14 +109,10 @@ class Application extends Entity {
             throw new Error(`Step ${stepNumber} out of bounds`)
         }
 
-        if (this.approval_dates === null || typeof this.approval_dates === 'undefined') {
-            this.approval_dates = {};
-        }
+        const stepKey = `step_${stepNumber}_approval_date`;
 
-        const stepKey = `step ${stepNumber}`;
-
-        return (Object.keys(this.approval_dates).includes(stepKey)) ?
-            new Date(Date.parse(this.approval_dates[stepKey])) :
+        return (this[stepKey]) ?
+            new Date(Date.parse(this[stepKey])) :
             null;
     }
 

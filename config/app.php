@@ -59,7 +59,8 @@ return [
         /**
          *  Module Providers
          */
-        App\Modules\Application\Providers\ApplicationModuleServiceProvider::class,
+        App\Modules\ExpertPanel\Providers\ExpertPanelModuleServiceProvider::class,
+        App\Modules\Group\Providers\GroupModuleServiceProvider::class,
         App\Modules\Person\Providers\PersonServiceProvider::class,
         App\Modules\User\Providers\UserModuleServiceProvider::class
 

@@ -8,7 +8,7 @@ import Alerts from '@/store/alerts'
 import axios from '@/http/api'
 import isAuthError from '@/http/is_auth_error'
 import module_factory from '@/store/module_factory';
-import router from '../router'
+// import router from '../router'
 
 const nullUser = {
     id: null,

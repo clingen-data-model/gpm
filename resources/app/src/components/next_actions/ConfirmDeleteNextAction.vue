@@ -87,7 +87,6 @@ export default {
         },
         async commitDelete()
         {
-            console.log('committing delete');
             try {
                 await this.$store.dispatch('applications/deleteNextAction', 
                                     {

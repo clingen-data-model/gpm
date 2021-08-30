@@ -37,12 +37,12 @@ describe('application entity', () => {
 
     test('it knows if it is for a gcep or a vcep', () => {
         const gcep = new Application({
-            ep_type_id: 1,
+            expert_panel_type_id: 1,
         });
         expect(gcep.isGcep).toEqual(true)
 
         const vcep = new Application({
-            ep_type_id: 2,
+            expert_panel_type_id: 2,
         });
         expect(vcep.isVcep).toEqual(true)
     })
@@ -57,12 +57,12 @@ describe('application entity', () => {
 
     test('it knows how many steps it should have', () => {
         const gcep = new Application({
-            ep_type_id: 1,
+            expert_panel_type_id: 1,
         });
         expect(gcep.steps).toEqual([1])
 
         const vcep = new Application({
-            ep_type_id: 2,
+            expert_panel_type_id: 2,
         });
         expect(vcep.steps).toEqual([1,2,3,4])
 
@@ -70,7 +70,7 @@ describe('application entity', () => {
 
     test('it knows if a given step is completed', () => {
         const app = new Application({
-                            ep_type_id: 2,
+                            expert_panel_type_id: 2,
                             approval_dates: {
                                 'step 1': '2021-01-01', 
                                 'step 2': '2021-02-01'
@@ -118,7 +118,7 @@ describe('application entity', () => {
 
     test('it gets approval date for a given step', () => {
         const app = new Application({
-            ep_type_id: 2,
+            expert_panel_type_id: 2,
             approval_dates: {
                 'step 1': '2021-01-01', 
                 'step 2': '2021-02-01'
