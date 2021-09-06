@@ -2,20 +2,17 @@
 
 namespace App\Modules\Group\Events;
 
-use Illuminate\Support\Carbon;
-use App\Events\RecordableEvent;
-use App\Modules\Group\Models\Group;
+use Illuminate\Support\Collection;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Database\Eloquent\Model;
+use App\Modules\Group\Models\GroupMember;
 use Illuminate\Broadcasting\PrivateChannel;
-use phpDocumentor\Reflection\Types\Boolean;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-abstract class GroupEvent extends RecordableEvent
+class MemberAssignedRole extends GroupEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -24,36 +21,23 @@ abstract class GroupEvent extends RecordableEvent
      *
      * @return void
      */
-    public function __construct(public Group $group)
+    public function __construct(public GroupMember $groupMember, public Collection $roles)
     {
+        $this->group = $groupMember->group;
     }
 
-    public function hasSubject(): bool
+    public function getLogEntry(): string
     {
-        return true;
-    }
-
-    public function getSubject(): Model
-    {
-        return $this->group;
+        return $this->groupMember->name.' given roles '.$this->roles->pluck('name')->join(',', ', and');
     }
     
-    public function getLog(): string
-    {
-        return 'groups';
-    }
-
     public function getProperties(): ?array
     {
-        return null;
+        return [
+            'member' => $this->groupMember->person->only('id', 'name', 'email'),
+            'roles' => $this->roles->pluck('name')->toArray()
+        ];
     }
-
-    public function getLogDate(): Carbon
-    {
-        return Carbon::now();
-    }
-
-    abstract public function getLogEntry() :string;
 
     /**
      * Get the channels the event should broadcast on.
