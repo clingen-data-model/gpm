@@ -43,4 +43,9 @@ class GroupModuleServiceProvider extends ModuleServiceProvider
     {
         return (__DIR__.'/../Events');
     }
+
+    protected function getRoutesPath()
+    {
+        return __DIR__.'/../routes';
+    }
 }

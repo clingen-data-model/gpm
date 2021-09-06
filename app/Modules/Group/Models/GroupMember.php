@@ -92,4 +92,17 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
     {
         return new GroupMemberFactory();
     }
+
+    /**
+     * Added to force spatie/laravel-permission to allow Roles/Permissions with web guard to GroupMember.
+     * NOTE: I'm not entirely sure why Spatie thinks it's important to link roles to guards
+     *      While it could be used to separate sets of roles and permissions like I'm doing with the scope
+     *      attribute, it locks you into only being able to grant roles to authenticatable models.  I guess
+     *      their solution to our use case would be to use the 'Team' concept, but that doesn't really fit
+     *      our authorization use cases.
+     */
+    public function guardName()
+    {
+        return 'web';
+    }
 }
