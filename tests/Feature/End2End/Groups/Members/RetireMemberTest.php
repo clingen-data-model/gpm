@@ -31,7 +31,7 @@ class RetireMemberTest extends TestCase
         $this->roles = config('permission.models.role')::factory(2)->create(['scope' => 'group']);
 
         $this->groupMember = MemberAdd::run($this->group, $this->person);
-        $this->url = 'api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id;
+        $this->url = 'api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id.'/retire/';
         Sanctum::actingAs($this->user);
     }
 
@@ -41,7 +41,7 @@ class RetireMemberTest extends TestCase
     public function can_retire_member_from_group()
     {
         $endDate = (new DateTime());
-        $response = $this->json('DELETE', $this->url, [
+        $response = $this->json('POST', $this->url, [
             'action' => 'retire',
             'start_date' => $endDate->format(DateTime::ATOM),
             'end_date' => $endDate->format(DateTime::ATOM),
@@ -61,11 +61,10 @@ class RetireMemberTest extends TestCase
      */
     public function validates_required_information()
     {
-        $response = $this->json('DELETE', $this->url, []);
+        $response = $this->json('POST', $this->url, []);
         $response->assertStatus(422);
 
         $response->assertJsonFragment([ 'errors' => [
-            'action' => ['The action field is required.'],
             'start_date' => ['The start date field is required.'],
             'end_date' => ['The end date field is required.'],
         ]]);
@@ -74,22 +73,9 @@ class RetireMemberTest extends TestCase
     /**
      * @test
      */
-    public function validates_action_is_valid()
-    {
-        $response = $this->json('DELETE', $this->url, ['action' => uniqid()]);
-        $response->assertStatus(422);
-
-        $response->assertJsonFragment([
-            'action' => ['The selected action is invalid.']
-        ]);
-    }
-    
-    /**
-     * @test
-     */
     public function validates_start_and_end_date_is_a_valid_date()
     {
-        $response = $this->json('DELETE', $this->url, ['start_date' => uniqid(), 'end_date' => uniqid()]);
+        $response = $this->json('POST', $this->url, ['start_date' => uniqid(), 'end_date' => uniqid()]);
         $response->assertStatus(422);
 
         $response->assertJsonFragment([
@@ -106,7 +92,7 @@ class RetireMemberTest extends TestCase
     public function validates_end_date_is_gte_start_date()
     {
         $response = $this->json(
-            'DELETE',
+            'POST',
             $this->url,
             [
                 'start_date' => (new DateTime)->format(DateTime::ATOM),
@@ -127,8 +113,7 @@ class RetireMemberTest extends TestCase
      */
     public function logs_member_retired_activity()
     {
-        $response = $this->json('DELETE', $this->url, [
-            'action' => 'retire',
+        $response = $this->json('POST', $this->url, [
             'start_date' => (new DateTime())->format(DateTime::ATOM),
             'end_date' => (new DateTime())->format(DateTime::ATOM),
         ]);

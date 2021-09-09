@@ -35,7 +35,6 @@ class MemberRetire
     public function rules(): array
     {
         return [
-            'action' => ['required', Rule::in(['retire', 'remove'])],
             'end_date' => 'required|date|after_or_equal:start_date',
             'start_date' => 'required|date'
         ];
