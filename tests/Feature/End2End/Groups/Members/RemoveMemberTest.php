@@ -1,0 +1,104 @@
+<?php
+
+namespace Tests\Feature\End2End\Groups\Members;
+
+use DateTime;
+use Tests\TestCase;
+use Laravel\Sanctum\Sanctum;
+use App\Modules\User\Models\User;
+use App\Modules\Group\Models\Group;
+use App\Modules\Person\Models\Person;
+use App\Modules\Group\Actions\MemberAdd;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+/**
+ * @group groups
+ * @group members
+ */
+class RemoveMemberTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function setup():void
+    {
+        parent::setup();
+        $this->seed();
+
+        $this->user = User::factory()->create();
+        $this->group = Group::factory()->create();
+        $this->person = Person::factory()->create();
+        $this->roles = config('permission.models.role')::factory(2)->create(['scope' => 'group']);
+
+        $this->groupMember = MemberAdd::run($this->group, $this->person);
+        $this->url = 'api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id;
+        Sanctum::actingAs($this->user);
+    }
+
+    /**
+     * @test
+     */
+    public function can_retire_member_from_group()
+    {
+        $endDate = (new DateTime());
+        $response = $this->json('DELETE', $this->url, [
+            'end_date' => $endDate->format(DateTime::ATOM),
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson($this->groupMember->fresh()->toArray());
+
+        $this->assertDatabaseMissing('group_members', [
+            'id' => $this->groupMember->id,
+            'deleted_at' => $endDate->format('Y-m-d H:i:s')
+        ]);
+    }
+    
+    /**
+     * @test
+     */
+    public function validates_required_information()
+    {
+        $response = $this->json('DELETE', $this->url, []);
+        $response->assertStatus(422);
+
+        $response->assertJsonFragment([ 'errors' => [
+            'end_date' => ['The end date field is required.'],
+        ]]);
+    }
+
+    /**
+     * @test
+     */
+    public function validates_end_date_is_a_valid_date()
+    {
+        $response = $this->json('DELETE', $this->url, ['end_date' => uniqid()]);
+        $response->assertStatus(422);
+
+        $response->assertJsonFragment([
+            'end_date' => ['The end date is not a valid date.'],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function logs_member_retired_activity()
+    {
+        $response = $this->json('DELETE', $this->url, [
+            'start_date' => (new DateTime())->format(DateTime::ATOM),
+            'end_date' => (new DateTime())->format(DateTime::ATOM),
+        ]);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('activity_log', [
+            'subject_type' => get_class($this->group),
+            'subject_id' => $this->group->id,
+            'activity_type' => 'member-removed',
+            'properties->group_member_id' => $this->groupMember->id,
+            'properties->person->id' => $this->person->id,
+            'properties->person->name' => $this->person->name,
+            'properties->person->email' => $this->person->email,
+        ]);
+    }
+}
