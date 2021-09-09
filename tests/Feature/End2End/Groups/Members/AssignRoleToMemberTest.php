@@ -121,7 +121,7 @@ class AssignRoleToMemberTest extends TestCase
         $this->assertDatabaseHas('activity_log', [
             'subject_type' => Group::class,
             'subject_id' => $this->groupMember->group->id,
-            'activity_type' => 'member-assigned-role',
+            'activity_type' => 'member-role-assigned',
             'properties->member->id' => $this->groupMember->person->id,
             'properties->member->name' => $this->groupMember->person->name,
             'properties->member->email' => $this->groupMember->person->email,

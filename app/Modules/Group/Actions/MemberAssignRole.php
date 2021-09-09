@@ -8,7 +8,7 @@ use App\Modules\Group\Models\GroupMember;
 use Lorisleiva\Actions\Concerns\AsObject;
 use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
-use App\Modules\Group\Events\MemberAssignedRole;
+use App\Modules\Group\Events\MemberRoleAssigned;
 
 class MemberAssignRole
 {
@@ -34,7 +34,7 @@ class MemberAssignRole
 
         $groupMember->assignRole($roles);
 
-        Event::dispatch(new MemberAssignedRole($groupMember, $roles));
+        Event::dispatch(new MemberRoleAssigned($groupMember, $roles));
 
         return $groupMember;
     }

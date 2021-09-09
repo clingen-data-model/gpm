@@ -12,7 +12,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class MemberAssignedRole extends GroupEvent
+class MemberRoleAssigned extends GroupEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
