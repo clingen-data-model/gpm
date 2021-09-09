@@ -28,7 +28,6 @@ class RemoveMemberTest extends TestCase
         $this->user = User::factory()->create();
         $this->group = Group::factory()->create();
         $this->person = Person::factory()->create();
-        $this->roles = config('permission.models.role')::factory(2)->create(['scope' => 'group']);
 
         $this->groupMember = MemberAdd::run($this->group, $this->person);
         $this->url = 'api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id;
