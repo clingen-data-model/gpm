@@ -19,17 +19,15 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class RetireMemberTest extends TestCase
 {
     use RefreshDatabase;
+    use SetsUpGroupPersonAndMember;
 
     public function setup():void
     {
         parent::setup();
         $this->seed();
 
-        $this->user = User::factory()->create();
-        $this->group = Group::factory()->create();
-        $this->person = Person::factory()->create();
+        $this->setupEntities()->setupMember();
 
-        $this->groupMember = MemberAdd::run($this->group, $this->person);
         $this->url = 'api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id.'/retire/';
         Sanctum::actingAs($this->user);
     }

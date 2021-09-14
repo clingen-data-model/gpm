@@ -30,7 +30,12 @@ use App\Modules\ExpertPanel\Models\Traits\BelongsToExpertPanel as BelongsToExper
  */
 class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToExpertPanel
 {
-    use HasFactory, SoftDeletes, HasRoles, HasNotesTrait, BelongstToGroupTrait, BelongsToExpertPanelTrait;
+    use HasFactory;
+    use SoftDeletes;
+    use HasRoles;
+    use HasNotesTrait;
+    use BelongstToGroupTrait;
+    use BelongsToExpertPanelTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -85,6 +90,11 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
     public function scopeContact($query)
     {
         return $query->where('v1_contact', 1);
+    }
+    
+    public function scopeIsActive($query)
+    {
+        return $query->whereNull('end_date');
     }
     
 

@@ -19,6 +19,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class RemoveRoleFromMemberTest extends TestCase
 {
     use RefreshDatabase;
+    use SetsUpGroupPersonAndMember;
 
     public function setup():void
     {
@@ -26,11 +27,10 @@ class RemoveRoleFromMemberTest extends TestCase
         $this->seed();
 
         $this->user = User::factory()->create();
-        $this->group = Group::factory()->create();
-        $this->person = Person::factory()->create();
         $this->roles = config('permission.models.role')::factory(2)->create(['scope' => 'group']);
 
-        $this->groupMember = MemberAdd::run($this->group, $this->person);
+        $this->setupEntities()->setupMember();
+
         MemberAssignRole::run($this->groupMember, $this->roles);
         $this->url = 'api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id.'/roles';
     }

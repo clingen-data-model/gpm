@@ -18,6 +18,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class AssignRoleToMemberTest extends TestCase
 {
     use RefreshDatabase;
+    use SetsUpGroupPersonAndMember;
     
     public function setup():void
     {
@@ -25,11 +26,10 @@ class AssignRoleToMemberTest extends TestCase
         $this->seed();
 
         $this->user = User::factory()->create();
-        $this->group = Group::factory()->create();
-        $this->person = Person::factory()->create();
+        $this->setupEntities()->setupMember();
+        
         $this->roles = config('permission.models.role')::factory(2)->create(['scope' => 'group']);
 
-        $this->groupMember = MemberAdd::run($this->group, $this->person);
         $this->url = 'api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id.'/roles';
     }
 

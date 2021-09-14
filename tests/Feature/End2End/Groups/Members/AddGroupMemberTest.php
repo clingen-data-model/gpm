@@ -23,13 +23,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class AddGroupMemberTest extends TestCase
 {
     use RefreshDatabase;
+    use SetsUpGroupPersonAndMember;
 
     public function setup():void
     {
         parent::setup();
         $this->seed();
-        $this->group = Group::factory()->create();
-        $this->person = Person::factory()->create();
+        $this->setupEntities();
         $this->admin = User::factory()->create();
         $this->role = config('permission.models.role')::factory()
                         ->create(['scope' => 'group']);

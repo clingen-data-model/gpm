@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\End2End\Modules\Group;
+namespace Tests\Feature\End2End\Groups\Members;
 
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
@@ -11,6 +11,7 @@ use App\Modules\Group\Actions\MemberAdd;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Feature\End2End\Groups\Members\SetsUpGroupPersonAndMember;
 
 /**
  * @group groups
@@ -18,8 +19,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
  */
 class GrantMemberPermissionTest extends TestCase
 {
-
     use RefreshDatabase;
+    use SetsUpGroupPersonAndMember;
     
     public function setup():void
     {
@@ -27,11 +28,10 @@ class GrantMemberPermissionTest extends TestCase
         $this->seed();
 
         $this->user = User::factory()->create();
-        $this->group = Group::factory()->create();
-        $this->person = Person::factory()->create();
         $this->permissions = config('permission.models.permission')::factory(2)->create(['scope' => 'group']);
 
-        $this->groupMember = MemberAdd::run($this->group, $this->person);
+        $this->setupEntities()->setupMember();
+
         $this->url = 'api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id.'/permissions/';
         Sanctum::actingAs($this->user);
     }
@@ -122,7 +122,6 @@ class GrantMemberPermissionTest extends TestCase
         $response->assertJsonFragment([
             'permission_ids' => ['The selected permission ids is invalid.']
         ]);
-
     }
     
     
@@ -140,5 +139,4 @@ class GrantMemberPermissionTest extends TestCase
             'role_ids' => ['All permissions must be group permissions.']
         ];
     }
-    
 }
