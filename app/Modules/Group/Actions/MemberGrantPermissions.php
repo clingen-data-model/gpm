@@ -49,7 +49,4 @@ class MemberGrantPermissions
             'permission_ids' => 'required|array|exists:permissions,id'
         ];
     }
-    
-    
-
 }
