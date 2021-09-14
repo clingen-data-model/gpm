@@ -33,6 +33,22 @@
             "description": "EP has added a new member."
         },
         {
+            "name": "member_role_assigned",
+            "description": ""
+        },
+        {
+            "name": "member_role_removed",
+            "description": ""
+        },
+        {
+            "name": "member_permission_granted",
+            "description": ""
+        },
+        {
+            "name": "member_permission_revoked",
+            "description": ""
+        },
+        {
             "name": "account_updated",
             "description": "GPM user has updated their email or they have been their roles/permissions have changed."
         },
@@ -101,7 +117,7 @@
                     "first_name": "Tehani",
                     "last_name": "Al Jamil",
                     "email": "tehani@unsw.edu",
-                    "group_role": "biocurator"
+                    "group_role": ["biocurator"]
                 }
             ]
         },
@@ -120,7 +136,7 @@
                     "first_name": "Tehani",
                     "last_name": "Al Jamil",
                     "email": "tehani@unsw.edu",
-                    "group_role": "biocurator"
+                    "group_role": ["biocurator"]
                 }
             ]
         },
