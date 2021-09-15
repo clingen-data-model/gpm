@@ -3,7 +3,7 @@
 namespace Tests\Feature\Integration\Modules\Group\Models;
 
 use Tests\TestCase;
-use App\Modules\Group\Models\Invite;
+use App\Modules\Person\Models\Invite;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
