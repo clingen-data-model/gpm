@@ -12,7 +12,7 @@ use Lorisleiva\Actions\Concerns\AsObject;
 use App\Modules\Person\Events\ProfileUpdated;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Person\Http\Requests\ProfileUpdateRequest;
-use App\Modules\Person\Policies\ProfilePolicy;
+use App\Modules\Person\Policies\PersonPolicy;
 
 class ProfileUpdate
 {
@@ -21,13 +21,13 @@ class ProfileUpdate
 
     public function handle(Person $person, array $data)
     {
-        $policy = new ProfilePolicy();
+        $policy = new PersonPolicy();
         if (Auth::guest()) {
             abort(403);
         }
         // if (!$policy->update(Auth::user(), $person)) {
         if (Auth::user()->cannot('update', $person)) {
-            abort(403);
+            abort(403, 'You do not have permission to update this person\'s profile.');
         }
         $person->update($data);
 

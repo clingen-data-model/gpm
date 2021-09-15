@@ -95,6 +95,7 @@ class AssignRoleToMemberTest extends TestCase
     {
         $systemRole = config('permission.models.role')::factory()->create(['scope' => 'system']);
 
+        Sanctum::actingAs($this->user);
         $response = $this->json('POST', $this->url, ['role_ids' => [$this->roles->first()->id, $systemRole->id]])
                         ->assertStatus(422);
 
@@ -109,7 +110,6 @@ class AssignRoleToMemberTest extends TestCase
     public function logs_member_role_assignment_activity()
     {
         Sanctum::actingAs($this->user);
-
         $response = $this->json(
             'POST',
             $this->url,

@@ -1,0 +1,31 @@
+<?php
+
+namespace Tests\Feature\Integration\Modules\Group\Models;
+
+use Tests\TestCase;
+use App\Modules\Group\Models\Invite;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+/**
+ * @group groups
+ * @group invites
+ */
+class InviteTest extends TestCase
+{
+    use RefreshDatabase;
+
+    /**
+     * @test
+     */
+    public function generates_code_before_saving_if_null()
+    {
+        $invite = Invite::factory()->make(['code' => null]);
+
+        $this->assertNull($invite->code);
+
+        $invite->save();
+        
+        $this->assertNotNull($invite->code);
+    }
+}

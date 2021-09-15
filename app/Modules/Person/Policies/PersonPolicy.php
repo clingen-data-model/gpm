@@ -6,7 +6,7 @@ use App\Modules\User\Models\User;
 use App\Modules\Person\Models\Person;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class ProfilePolicy
+class PersonPolicy
 {
     use HandlesAuthorization;
 
@@ -41,7 +41,7 @@ class ProfilePolicy
      */
     public function create(User $user)
     {
-        return false;
+        return $user->hasPermissionTo('person-create');
     }
 
     /**
