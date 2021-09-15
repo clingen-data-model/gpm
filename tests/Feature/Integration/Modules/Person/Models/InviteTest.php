@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Integration\Modules\Group\Models;
+namespace Tests\Feature\Integration\Modules\Person\Models;
 
 use Tests\TestCase;
 use App\Modules\Person\Models\Invite;
