@@ -4,6 +4,7 @@ namespace App\Modules\Person\Models;
 
 use App\Models\HasUuid;
 use App\Models\HasEmail;
+use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Race;
 use App\Modules\Person\Models\Gender;
@@ -19,6 +20,7 @@ use App\Modules\Group\Models\Traits\HasMembers;
 use App\Modules\Person\Models\PrimaryOccupation;
 use App\Modules\Group\Models\Traits\IsGroupMember;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -150,6 +152,16 @@ class Person extends Model
     public function gender()
     {
         return $this->belongsTo(Gender::class);
+    }
+
+    /**
+     * Get the user that owns the Person
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
 

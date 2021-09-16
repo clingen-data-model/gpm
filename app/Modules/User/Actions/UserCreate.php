@@ -31,13 +31,19 @@ class UserCreate
     }
 
     /**
-     * Execute the job.
+     * Creates a user entity with name, email, and password.  
+     * Password value is hashed before storage. If password is null, a random password is created and hashed.
+     * 
+     * @param string $name User's name
+     * @param string $email Email for the user account
+     * @param string|null $password Password (or null).
      *
      * @return void
      */
-    public function handle(string $name, string $email)
+    public function handle(string $name, string $email, ?string $password = null): User
     {
-        $user = User::create(['name' => $name, 'email' => $email, 'password' => Hash::make(uniqid())]);
+        $pass = $password ?? uniqid();
+        $user = User::create(['name' => $name, 'email' => $email, 'password' => Hash::make($pass)]);
         Event::dispatch(new UserCreated(user: $user));
 
         return $user;

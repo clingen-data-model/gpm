@@ -2,6 +2,7 @@
 
 namespace App\Modules\Person\Models;
 
+use Illuminate\Support\Carbon;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
 use Database\Factories\InviteFactory;
@@ -44,6 +45,21 @@ class Invite extends Model
     
 
     /**
+     * DOMAIN
+     */
+    public function hasBeenRedeemed(): bool
+    {
+        return !is_null($this->redeemed_at);
+    }
+
+    public function markRedeemed(): static
+    {
+        $this->redeemed_at = Carbon::now();
+        return $this;
+    }
+    
+
+    /**
      * RELATIONS
      */
     public function person(): BelongsTo
@@ -79,6 +95,20 @@ class Invite extends Model
         return $query->where('group_id', $groupId);
     }
     
+    /**
+     * QUERIES
+     */
+
+    public static function findByCode($code): ?static
+    {
+        return static::where('code', $code)->first();
+    }
+
+    public static function findByCodeOrFail($code): static
+    {
+        return static::where('code', $code)->sole();
+    }
+
     /**
      * ACCESSORS
      */
