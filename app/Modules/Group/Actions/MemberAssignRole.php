@@ -39,7 +39,7 @@ class MemberAssignRole
         return $groupMember;
     }
 
-    public function asController($groupUuid, $memberId, ActionRequest $request)
+    public function asController(ActionRequest $request, $groupUuid, $memberId)
     {
         return $this->handle(GroupMember::findOrFail($memberId), $request->role_ids);
     }

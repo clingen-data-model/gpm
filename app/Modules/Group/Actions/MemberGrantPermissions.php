@@ -35,7 +35,7 @@ class MemberGrantPermissions
         return $groupMember;
     }
 
-    public function asController($groupUuid, $memberId, ActionRequest $request)
+    public function asController(ActionRequest $request, $groupUuid, $memberId)
     {
         $groupMember = Group::findByUuidOrFail($groupUuid)->members()->findOrFail($memberId);
         $permissions = config('permission.models.permission')::find($request->permission_ids);

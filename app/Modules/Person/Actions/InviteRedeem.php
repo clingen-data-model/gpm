@@ -41,7 +41,7 @@ class InviteRedeem
         return $invite;
     }
 
-    public function asController($code, ActionRequest $request)
+    public function asController(ActionRequest $request, $code)
     {
         $invite = Invite::findByCodeOrFail($code);
         if ($invite->hasBeenRedeemed()) {
@@ -59,5 +59,4 @@ class InviteRedeem
             'password' => 'required|max:255|confirmed',
         ];
     }
-    
 }

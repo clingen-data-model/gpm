@@ -37,7 +37,7 @@ class MemberAdd
         return $groupMember;
     }
 
-    public function asController(string $groupUuid, ActionRequest $request)
+    public function asController(ActionRequest $request, string $groupUuid)
     {
         $group = Group::findByUuidOrFail($groupUuid);
         $person = Person::findOrFail($request->person_id);

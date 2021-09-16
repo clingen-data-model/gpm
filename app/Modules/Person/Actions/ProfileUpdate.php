@@ -36,7 +36,7 @@ class ProfileUpdate
         return $person;
     }
 
-    public function asController($personUuid, ProfileUpdateRequest $request)
+    public function asController(ProfileUpdateRequest $request, $personUuid)
     {
         $person = Person::findByUuidOrFail($personUuid);
 

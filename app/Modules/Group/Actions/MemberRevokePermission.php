@@ -2,6 +2,7 @@
 
 namespace App\Modules\Group\Actions;
 
+use Illuminate\Http\Request;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Event;
 use App\Modules\Group\Models\GroupMember;
@@ -26,7 +27,7 @@ class MemberRevokePermission
         return $groupMember;
     }
     
-    public function asController($groupUuid, $groupMemberId, $permissionId)
+    public function asController(Request $request, $groupUuid, $groupMemberId, $permissionId)
     {
         $groupMember = Group::findByUuidOrFail($groupUuid)
                         ->members()->findOrFail($groupMemberId);
@@ -35,6 +36,4 @@ class MemberRevokePermission
 
         return $this->handle($groupMember, $permission);
     }
-    
-    
 }

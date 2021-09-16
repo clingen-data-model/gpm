@@ -23,7 +23,7 @@ class MemberRemove
         return $groupMember;
     }
 
-    public function asController($groupUuid, $groupMemberId, ActionRequest $request)
+    public function asController(ActionRequest $request, $groupUuid, $groupMemberId)
     {
         $groupMember = GroupMember::findOrFail($groupMemberId);
         $endDate = Carbon::parse($request->endDate);

@@ -33,7 +33,7 @@ class MemberInvite
         return $newMember;
     }
 
-    public function asController($groupUuid, ActionRequest $request)
+    public function asController(ActionRequest $request, $groupUuid)
     {
         $group = Group::findByUuidOrFail($groupUuid);
         if (!Auth::user()->person->hasGroupPermissionTo('members-invite', collect([$group]))) {

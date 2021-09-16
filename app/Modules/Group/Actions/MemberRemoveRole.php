@@ -2,6 +2,7 @@
 
 namespace App\Modules\Group\Actions;
 
+use Illuminate\Http\Request;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Event;
 use Spatie\Permission\Contracts\Role;
@@ -23,7 +24,7 @@ class MemberRemoveRole
         return $groupMember;
     }
 
-    public function asController(string $groupUuid, int $memberId, int $roleId)
+    public function asController(Request $request, string $groupUuid, int $memberId, int $roleId)
     {
         $group = Group::findByUuidOrFail($groupUuid);
         $groupMember = $group->members()->findOrFail($memberId);
