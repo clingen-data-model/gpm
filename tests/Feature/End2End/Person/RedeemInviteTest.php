@@ -37,10 +37,7 @@ class RedeemInviteTest extends TestCase
             ->assertStatus(200);
 
         $this->json('GET', static::URL.'/gobbledy-guk')
-            ->assertStatus(404)
-            ->assertJsonFragment([
-                'code' => ['The invite code is not valid.']
-            ]);
+            ->assertStatus(404);
     }
 
     /**
@@ -154,6 +151,4 @@ class RedeemInviteTest extends TestCase
             'properties->user->email' => $this->validData['email'],
         ]);
     }
-    
-    
 }

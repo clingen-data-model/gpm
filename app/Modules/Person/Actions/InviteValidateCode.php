@@ -13,7 +13,7 @@ class InviteValidateCode
 
     public function handle($code)
     {
-        $invite = Invite::findByCode($code);
+        $invite = Invite::findByCodeOrFail($code);
         if ($invite) {
             if ($invite->hasBeenRedeemed()) {
                 throw ValidationException::withMessages(['code' => ['This invite has already been redeemed.']]);
