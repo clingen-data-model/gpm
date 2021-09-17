@@ -36,7 +36,7 @@ class UpdateExpertPanelAttributesRequest extends FormRequest
                                     'nullable',
                                     'max:15',
                                 ],
-            'affiliation_id' => 'nullable|max:8',
+            'affiliation_id' => 'nullable|digits:5',
         ];
     }
 
