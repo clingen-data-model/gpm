@@ -128,19 +128,6 @@ textarea.sm {
     opacity: 0;
 }
 
-.alert-info {
-    @apply bg-blue-300 text-blue-700;
-}
-.alert-success {
-    @apply bg-green-300 text-green-700;
-}
-.alert-warning {
-    @apply bg-yellow-300 text-yellow-700;
-}
-.alert-error {
-    @apply bg-red-300 text-red-700;
-}
-
 .block-title {
     @apply pb-2 border-b mb-2;
 }
