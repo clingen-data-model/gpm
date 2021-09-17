@@ -29,9 +29,20 @@ export default {
         error: state => state.alerts.filter(a => a.type == 'error'),
     },
     mutations: {
-
         pushAlert(state, {message, type}) {
             state.alerts.push(new Alert(message, type));
+        },
+        pushError(state, message) {
+            state.alerts.push(new Alert(message, 'error'));
+        },
+        pushInfo(state, message) {
+            state.alerts.push(new Alert(message, 'info'));
+        },
+        pushSuccess(state, message) {
+            state.alerts.push(new Alert(message, 'success'));
+        },
+        pushWarning(state, message) {
+            state.alerts.push(new Alert(message, 'warning'));
         },
         removeAlert(state, uuid) {
             const idx = state.alerts.findIndex(a => a.uuid == uuid);
