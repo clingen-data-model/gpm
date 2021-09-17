@@ -21,8 +21,11 @@ class PasswordChange
         if (!$user instanceof User) {
             if (is_string($user)) {
                 $user = User::findByEmail($user);
+                // if (!$user) {
+                //     $user = User::findByUuid($user);
+                // }
                 if (!$user) {
-                    $user = User::findByUuid($user);
+                    $user = User::find($user);
                 }
             }
             if (is_int($user)) {
