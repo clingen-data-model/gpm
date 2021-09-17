@@ -25,7 +25,7 @@ const store = createStore({
     state: {
         hostname: process.env.VUE_APP_URL,
         user: {...nullUser},
-        openRequests: [],
+        openRequests: 0,
         authenticating: true,
         authenticated: null,
         documentTypes: null,
@@ -39,6 +39,12 @@ const store = createStore({
         isAuthed: (state) => state.authenticated,
     },  
     mutations: {
+        addRequest(state) {
+            state.openRequests++;
+        },
+        removeRequest(state) {
+            state.openRequests--;
+        },
         setCurrentUser(state, user) {
             state.user = user
             store.commit('setAuthenticated', true)
