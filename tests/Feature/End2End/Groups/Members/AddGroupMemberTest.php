@@ -73,9 +73,27 @@ class AddGroupMemberTest extends TestCase
     /**
      * @test
      */
+    public function returns_new_member_with_person_and_roles()
+    {
+        $response = $this->callCreateEndpoint();
+        $response->assertStatus(201);
+        $response->assertJsonFragment([
+            'person_id' => $this->person->id,
+            'group_id' => $this->group->id,
+        ]);
+        $response->assertJsonFragment([
+            'uuid' => $this->person->uuid,
+            'first_name' => $this->person->first_name,
+        ]);
+        $this->assertEquals($this->role->id, $response->original->roles[0]->id);
+    }
+    
+    /**
+     * @test
+     */
     public function adds_group_roles_to_new_member()
     {
-        $role2 = ModelsRole::factory()->create();
+        $role2 = ModelsRole::factory()->create(['scope' => 'group']);
 
         $response = $this->callCreateEndpoint(personId: null, roleIds: [$this->role->id, $role2->id]);
         $response->assertStatus(201);
