@@ -20,15 +20,25 @@ class MemberInvite
     use AsController;
     use AsObject;
     
-    public function __construct(private PersonInvite $invitePerson, private MemberAdd $addMember)
+    public function __construct(private PersonInvite $invitePerson, private MemberAdd $addMember, private MemberAssignRole $assignRole)
     {
     }
 
     public function handle(Group $group, array $data)
     {
+        $roleIds = null;
+        if (isset($data['role_ids'])) {
+            $roleIds = $data['role_ids'];
+            unset($data['role_ids']);
+        }
+
         [$person, $invite] = $this->invitePerson->handle($data);
         
         $newMember = $this->addMember->handle($group, $person);
+
+        if ($roleIds) {
+            $newMember = $this->assignRole->handle($newMember, $roleIds);
+        }
 
         return $newMember;
     }

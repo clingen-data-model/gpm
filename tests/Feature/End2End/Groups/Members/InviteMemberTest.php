@@ -113,6 +113,32 @@ class InviteMemberTest extends TestCase
     /**
      * @test
      */
+    public function invite_can_also_give_roles_to_invited_member()
+    {
+        MemberGrantPermissions::run(
+            $this->userMember,
+            collect([config('permission.models.permission')::factory()->create(['name' => 'members-invite', 'scope' => 'group'])])
+        );
+
+        $role = config('permission.models.role')::factory(['scope' => 'group'])->create();
+
+        Sanctum::actingAs($this->user->fresh());
+        $response = $this->json('POST', $this->url, [
+            'first_name' => 'Test',
+            'last_name' => 'Testerson',
+            'email' => 'test@test.com',
+            'inviter_id' => $this->group->id,
+            'inviter_type' => get_class($this->group),
+            'role_ids' => [$role->id]
+        ]);
+        $response->assertStatus(201);
+        $this->assertEquals($role->id, $response->original->roles[0]->id);
+    }
+    
+
+    /**
+     * @test
+     */
     public function logs_invite_created_activity()
     {
         MemberGrantPermissions::run(
