@@ -46,7 +46,7 @@ class MemberAdd
         $member = $this->handle(group: $group, person: $person);
 
         if ($roles->count() > 0) {
-            $member->assignRole($roles);
+            $member = $this->assignRoleAction->handle($member, $roles);
         }
 
         return $member;
