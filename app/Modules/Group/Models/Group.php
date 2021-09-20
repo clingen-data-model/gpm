@@ -14,6 +14,8 @@ use App\Modules\Group\Models\GroupStatus;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Models\Traits\HasNotes as HasNotesTrait;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Traits\HasDocuments as HasDocumentsTrait;
 use App\Models\Traits\RecordsEvents as RecordsEventsTrait;
@@ -69,7 +71,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function expertPanel()
+    public function expertPanel(): HasOne
     {
         return $this->hasOne(ExpertPanel::class);
     }
@@ -77,12 +79,12 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function groupType()
+    public function groupType(): BelongsTo
     {
         return $this->belongsTo(GroupType::class);
     }
 
-    public function type()
+    public function type(): BelongsTo
     {
         return $this->groupType();
     }
@@ -90,15 +92,25 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function groupStatus()
+    public function groupStatus(): BelongsTo
     {
         return $this->belongsTo(GroupStatus::class);
     }
 
     /**
+     * Get the status that owns the Group
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function parent()
+    public function status(): BelongsTo
+    {
+        return $this->groupStatus();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(Group::class);
     }
