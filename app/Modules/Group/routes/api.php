@@ -18,9 +18,7 @@ Route::group([
     'prefix' => 'api/groups',
     'middleware' => ['api', 'auth:sanctum']
 ], function () {
-    Route::get('/{group_uuid}/fucks', function ($uuid) {
-        return 'what the actual fuck: '.$uuid;
-    });
+    Route::get('/', [GroupController::class, 'index']);
     
     Route::post('/{uuid}/invites', MemberInvite::class);
     
