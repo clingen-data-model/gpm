@@ -1,4 +1,5 @@
 import Entity from '@/domain/entity'
+import config from '@/configs.json'
 
 class Group extends Entity {
     static dates = [
@@ -31,6 +32,18 @@ class Group extends Entity {
         }
 
         this.members.push(member);
+    }
+    
+    isEp() {
+        return this.attributes.group_type_id === config.groups.types.ep.id;
+    }
+
+    isWorkingGroup() {
+        return this.attributes.group_type_id === config.groups.types.wg.id;
+    }
+
+    isCdwg() {
+        return this.attributes.group_type_id === config.groups.types.cdwg.id;
     }
 
     clone(){

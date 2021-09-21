@@ -1,7 +1,24 @@
 import { expect } from 'chai';
 import Group from '@/domain/group'
+import config from '@/configs.json'
+
 
 describe('group entity', () => {
+    it('can tell if it is an expert panel', () => {
+        const group = new Group({'group_type_id': config.groups.types.ep.id})
+        expect(group.isEp()).to.be.true;
+    });
+
+    it('can tell if it is an working group', () => {
+        const group = new Group({'group_type_id': config.groups.types.wg.id})
+        expect(group.isWorkingGroup()).to.be.true;
+    });
+
+    it('can tell if it is an cdwg', () => {
+        const group = new Group({'group_type_id': config.groups.types.cdwg.id})
+        expect(group.isCdwg()).to.be.true;
+    });
+
     it('can add/or update members', () => {
         const group = new Group();
         expect(group.members).to.be.eql([]);
