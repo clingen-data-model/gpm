@@ -45,18 +45,6 @@ class GrantMemberPermissionTest extends TestCase
         $response->assertStatus(200);
 
         foreach ($this->permissions as $perm) {
-            // $response->assetJsonFragment([
-            //     'id' => $this->groupMember->id,
-            //     'person_id' => $this->person->id,
-            //     'group_id' => $this->group->id,
-            //     'permissions' => [
-            //         [
-            //             'id' => $perm->id,
-            //             'name' => $perm->name
-            //         ]
-            //     ]
-            // ]);
-
             $this->assertDatabaseHas('model_has_permissions', [
                  'model_id' => $this->groupMember->id,
                  'model_type' => GroupMember::class,

@@ -39,7 +39,6 @@ class RetireMemberTest extends TestCase
     {
         $endDate = (new DateTime());
         $response = $this->json('POST', $this->url, [
-            'action' => 'retire',
             'start_date' => $endDate->format(DateTime::ATOM),
             'end_date' => $endDate->format(DateTime::ATOM),
         ]);
