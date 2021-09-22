@@ -2,8 +2,11 @@
     table {
         @apply w-full;
     }
-    tbody tr {
-        @apply bg-white odd:bg-gray-100 hover:bg-blue-100 hover:border-blue-300
+    tbody tr:not(.details){
+        @apply bg-white odd:bg-gray-100 hover:bg-blue-50 hover:border-blue-300
+    }
+    tbody tr:hover + tr.details {
+        @apply border-blue-300 bg-blue-50;
     }
     tr:first-child > th{
         @apply border-t-0
@@ -64,18 +67,29 @@
                 </slot>
             </thead>
             <tbody>
-                <tr v-for="item in sortedFilteredData" :key="item.uuid" :class="rowClass" @click="handleRowClick(item)">
-                    <td 
-                        v-for="field in fields" 
-                        :key="field.name"
-                        class="text-left p-1 px-3 border align-top"
-                        :class="getCellClass(field)"
-                    >
-                        <slot :name="getSlotName(field)" :item="item" :field="field" :value="resolveDisplayAttribute(item, field)">
-                            {{resolveDisplayAttribute(item, field)}}
-                        </slot>
-                    </td>
-                </tr>
+                <template v-for="item in sortedFilteredData" :key="item.uuid">
+                    <tr :class="rowClass" @click="handleRowClick(item)">
+                        <td 
+                            v-for="field in fields" 
+                            :key="field.name"
+                            class="text-left p-1 px-3 border align-top"
+                            :class="getCellClass(field)"
+                        >
+                            <slot :name="getSlotName(field)" :item="item" :field="field" :value="resolveDisplayAttribute(item, field)">
+                                {{resolveDisplayAttribute(item, field)}}
+                            </slot>
+                        </td>
+                    </tr>
+                    <transition name="fade-slide-down">
+                        <tr class="details" v-if="detailRows && item.showDetails">
+                            <td :colspan="fields.length" class="border-none p-0">
+                                <slot name="detail" :item="item">
+                                    <object-dictionary :obj="item"></object-dictionary>
+                                </slot>
+                            </td>
+                        </tr>
+                    </transition>
+                </template>
             </tbody>
         </table>
     </div>
@@ -134,7 +148,18 @@ export default {
         },
         sort: {
             required: false,
-            type: Object
+            type: Object,
+            default: () => {
+                return {
+                    field: 'id',
+                    desc: false
+                }
+            }
+        },
+        detailRows: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     },
     data() {
@@ -337,7 +362,7 @@ export default {
 
         getSlotName(field) {
             return `cell-${field.name.replace(' ', '_').replace('.', '_')}`
-        }
-    }
+        },
+    },
 }
 </script>
