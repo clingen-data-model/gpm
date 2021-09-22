@@ -114,14 +114,18 @@ textarea.sm {
     opacity: 0;
 }
 
+.fade-slide-down-enter-active,
 .slide-fade-down-enter-active {
     transition: all 0.3s ease-out;
 }
   
+.fade-slide-down-leave-active,
 .slide-fade-down-leave-active {
     transition: all 0.3s ease-out;
 }
   
+.fade-slide-down-enter-from,
+.fade-slide-down-leave-to,
 .slide-fade-down-enter-from,
 .slide-fade-down-leave-to {
     transform: translateY(-20px);
