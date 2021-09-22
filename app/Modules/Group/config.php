@@ -28,11 +28,26 @@ return [
         'removed' => 4
     ],
     'roles' => [
-        'coordinator' => 1,
-        'chair' => 2,
-        'biocurator' => 3,
-        'expert' => 4,
-        'core-approval-member' => 5
+        'coordinator' => [
+            'id' => 1,
+            'name' => 'Coordinator'
+        ],
+        'chair' => [
+            'id' => 2,
+            'name' => 'Chair'
+        ],
+        'biocurator' => [
+            'id' => 3,
+            'name' => 'Biocurator'
+        ],
+        'expert' => [
+            'id' => 4,
+            'name' => 'Expert'
+        ],
+        'core-approval-member' => [
+            'id' => 5,
+            'name' => 'Core Approval Member'
+        ],
     ],
     'permissions' => [
         'info-edit' => 1,

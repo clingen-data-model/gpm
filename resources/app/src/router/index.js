@@ -4,6 +4,7 @@ import applicationRoutes from './applications'
 import peopleRoutes from './people'
 import authRoutes from './auth'
 import cdwgRoutes from './cdwgs'
+import groupRoutes from './groups'
 
 const routes = [
     { name: 'home',
@@ -33,6 +34,7 @@ const routes = [
         ]
     },    
     ...applicationRoutes,
+    ...groupRoutes,
     ...peopleRoutes,
     ...authRoutes,
     ...cdwgRoutes,

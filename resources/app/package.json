@@ -28,6 +28,7 @@
     "@ckeditor/ckeditor5-dev-utils": "^25.2.1",
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^25.2.1",
     "@tailwindcss/postcss7-compat": "^2.0.2",
+    "@testing-library/vue": "^6.4.2",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-plugin-pwa": "~4.5.0",
