@@ -7,6 +7,8 @@ import store from './store'
 import CKEditor from '@ckeditor/ckeditor5-vue'
 
 const app = createApp(App)
+
+
 import StaticAlert from './components/alerts/StaticAlert'
 app.component('static-alert', StaticAlert);
 
@@ -33,7 +35,8 @@ app.component('modal-dialog', ModalDialog);
 
 import FormContainer from './components/forms/FormContainer'
 app.component('form-container', FormContainer);
-
+import Checkbox from '@/components/forms/Checkbox';
+app.component('checkbox', Checkbox);
 import DateInput from './components/forms/DateInput'
 app.component('date-input', DateInput);
 import InputRow from './components/forms/InputRow'
