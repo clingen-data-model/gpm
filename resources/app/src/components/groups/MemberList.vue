@@ -111,13 +111,22 @@ export default {
 
         },
         sendTrainingReminder (member) {
-            
+
         }
     }
 }
 </script>
 <template>
     <div>
+        <div class="border border-pink-500 bg-pink-50 my-4 text-pink-700 py-4">
+            <ol class="list-decimal pl-8">
+                <li>Fix table sorting &amp; store state in url.</li>
+                <li>Implement filtering &amp; store state in url.</li>
+                <li>Get filter icon in filter button</li>
+                <li>Implement Add Member form</li>
+                <li>Implement Role &amp; permission editing</li>
+            </ol>
+        </div>
         <head class="flex justify-between items-baseline">
             <div class="flex space-x-2 items-baseline">
                 <h2>Members</h2>
