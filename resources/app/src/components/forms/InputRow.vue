@@ -1,7 +1,7 @@
 <template>
-    <div :class="{'border-l border-red-800 px-2': hasErrors}" class="input-row">
-        <div class="my-3" :class="{'sm:flex': !vertical}">
-            <div class="flex-none" :class="{'w-36': !vertical, 'my-1': vertical}">
+    <div :class="{'border-l border-red-800 px-2': hasErrors}" class="input-row my-3">
+        <div :class="{'sm:flex': !vertical}">
+            <div class="flex-none" :class="labelContainerClass">
                 <slot name="label" v-if="label">
                     <label :class="{'text-red-800': hasErrors}">{{label}}{{colon}}</label>
                 </slot>
@@ -57,6 +57,11 @@ export default {
             type: String,
             required: false
         },
+        labelWidth: {
+            type: Number,
+            required: false,
+            default: 36
+        },
         type: {
             type: String,
             required: false,
@@ -95,6 +100,16 @@ export default {
         hasErrors () {
             return this.errors.length > 0;
         },
+        labelContainerClass () {
+            const classes = [];
+            if (this.vertical) {
+                classes.push('my-1');
+            } else {
+                classes.push(`w-${this.labelWidth}`);
+            }
+
+            return classes.join(' ');
+        }
     },
     methods: {
         emitValue(evt) {
