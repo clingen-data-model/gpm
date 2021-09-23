@@ -26,15 +26,28 @@ class UpdateExpertPanelAttributesRequest extends FormRequest
     public function rules()
     {
         $expertPanel = ExpertPanel::findByUuidOrFail($this->route('app_uuid'));
+        // dd($expertPanel);
         return [
             'cdwg_id' => 'nullable|exists:groups,id',
             'long_base_name' => [
                                     'nullable',
                                     'max:255',
+                                    Rule::unique('expert_panels', 'long_base_name')
+                                        ->ignore($expertPanel->id)
+                                    ->where(function ($query) use ($expertPanel) {
+                                        $query->whereNotNull('long_base_name')
+                                            ->where('expert_panel_type_id', $expertPanel->expert_panel_type_id);
+                                    })
                                 ],
             'short_base_name' => [
                                     'nullable',
                                     'max:15',
+                                    Rule::unique('expert_panels', 'short_base_name')
+                                        ->ignore($expertPanel->id)
+                                    ->where(function ($query) use ($expertPanel) {
+                                        $query->whereNotNull('short_base_name')
+                                            ->where('expert_panel_type_id', $expertPanel->expert_panel_type_id);
+                                    })
                                 ],
             'affiliation_id' => 'nullable|max:8',
         ];

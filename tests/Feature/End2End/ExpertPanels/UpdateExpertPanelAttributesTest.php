@@ -106,4 +106,84 @@ class UpdateExpertPanelAttributesTest extends TestCase
                 'affiliation_id' => ['The affiliation id may not be greater than 8 characters.'],
             ]);
     }
+
+    /**
+     * @test
+     */
+    public function validates_long_base_name_must_be_unique_for_type_if_not_null()
+    {
+        $nullLongName = ExpertPanel::factory()->gcep()->create();
+        $existingGcep = ExpertPanel::factory()->gcep()->create(['long_base_name' => 'Early is a bad dog']);
+        
+        $expertPanel = ExpertPanel::factory()->gcep()->create();
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->json('PUT', '/api/applications/'.$expertPanel->uuid, [
+            'cdwg_id' => 1,
+            'long_base_name' => null,
+            'short_base_name' => 'blah',
+            'affiliation_id' => '40001',
+        ])
+        ->assertStatus(200);
+
+
+        $this->json('PUT', '/api/applications/'.$expertPanel->uuid, [
+                'cdwg_id' => 1,
+                'long_base_name' => $existingGcep->long_base_name,
+                'short_base_name' => 'blah',
+                'affiliation_id' => '40001',
+            ])
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                'long_base_name' => ['The long base name has already been taken.'],
+            ]);
+
+        $expertPanel->update(['long_base_name' => 'Bird']);
+        $this->json('PUT', '/api/applications/'.$expertPanel->uuid, [
+            'cdwg_id' => 1,
+            'long_base_name' => 'Bird',
+            'short_base_name' => 'blah',
+            'affiliation_id' => '40001',
+        ])
+        ->assertStatus(200);
+    }
+
+    /**
+     * @test
+     */
+    public function validates_short_base_name_must_be_unique_for_type_if_not_null()
+    {
+        $nullShortName = ExpertPanel::factory()->gcep()->create();
+        $existingGcep = ExpertPanel::factory()->gcep()->create(['short_base_name' => 'Early']);
+        
+        $expertPanel = ExpertPanel::factory()->gcep()->create();
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->json('PUT', '/api/applications/'.$expertPanel->uuid, [
+            'cdwg_id' => 1,
+            'long_base_name' => null,
+            'short_base_name' => null,
+            'affiliation_id' => '40001',
+        ])
+        ->assertStatus(200);
+
+
+        $this->json('PUT', '/api/applications/'.$expertPanel->uuid, [
+                'cdwg_id' => 1,
+                'long_base_name' => $existingGcep->long_base_name,
+                'short_base_name' => 'Early',
+                'affiliation_id' => '40001',
+            ])
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                'short_base_name' => ['The short base name has already been taken.'],
+            ]);
+
+        $expertPanel->update(['short_base_name' => 'Bird']);
+        $this->json('PUT', '/api/applications/'.$expertPanel->uuid, [
+            'cdwg_id' => 1,
+            'short_base_name' => 'Bird',
+            'long_base_name' => 'blah',
+            'affiliation_id' => '40001',
+        ])
+        ->assertStatus(200);
+    }
 }
