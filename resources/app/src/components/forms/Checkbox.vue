@@ -1,11 +1,7 @@
 <template>
     <label>
         <slot name="input">
-            <input type="checkbox" 
-                :value="modelValue" 
-                @change="$emit('change')" 
-                @input="$emit('update:modelValue')"
-            >
+            <input type="checkbox" v-model="val">
         </slot>
         &nbsp;
         <slot>
@@ -29,5 +25,15 @@ export default {
         'update:modelValue',
         'change'
     ],
+    computed: {
+        val: {
+            get () {
+                return this.modelValue
+            },
+            set (val) {
+                this.$emit('update:modelValue', val)
+            }
+        }
+    }
 }
 </script>
