@@ -340,7 +340,7 @@ export default {
             return field.label
         },
         getHeaderClass(field) {
-            const classes = field.class || [];
+            const classes = field.class ? [...field.class] : [];
             if (field.sortable) {
                 classes.push('cursor-pointer underline hover:bg-gray-300');
             }
