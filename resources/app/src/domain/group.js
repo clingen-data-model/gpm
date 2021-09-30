@@ -1,4 +1,5 @@
 import Entity from '@/domain/entity'
+import GroupMember from '@/domain/group_member'
 import config from '@/configs.json'
 
 class Group extends Entity {
@@ -21,17 +22,17 @@ class Group extends Entity {
         const members = attributes.members;
         delete(attributes.members);
         super(attributes);
-        this.members = members || [];
+        this.members = members ? members.forEach(m => this.addMember(m)) : [];
     }
 
     addMember(member) {
         const idx = this.members.findIndex(m => m.id == member.id);
         if (idx > -1) {
-            this.members.splice(idx, 1, member)
+            this.members.splice(idx, 1, new GroupMember(member))
             return;
         }
 
-        this.members.push(member);
+        this.members.push(new GroupMember(member));
     }
     
     isEp() {

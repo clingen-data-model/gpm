@@ -71,7 +71,7 @@ describe ('MemberList Component', () => {
         expect(heading.text()).to.equal('Members');
     })
 
-    it('launches AddMember dialog when Add Member button clicked', () => {
+    it('launches AddMember dialog when Add Member button clicked', async () => {
         const addMemberBtn = component.find({ref: 'new-member-button'});
 
         await addMemberBtn.trigger('click');

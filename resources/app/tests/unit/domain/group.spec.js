@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import Group from '@/domain/group'
+import GroupMember from '@/domain/group_member'
 import config from '@/configs.json'
 
 
@@ -26,13 +27,13 @@ describe('group entity', () => {
         const louise = {id: 1, uuid: 'abcd', email: 'louise@bobsburgers.com'};
         group.addMember(louise);
 
-        expect(group.members).to.be.eql([louise]);
+        expect(group.members).to.be.eql([new GroupMember(louise)]);
 
         const roles = ['boss', 'kid'];
         const louise2 = {...louise, roles};
         group.addMember(louise2);
 
-        expect(group.members).to.be.eql([louise2])
+        expect(group.members).to.be.eql([new GroupMember(louise2)])
     });
 
     it('includes members in clode', () => {
@@ -41,6 +42,6 @@ describe('group entity', () => {
         group.addMember(louise);
 
         const groupClone = group.clone();
-        expect(groupClone.members).to.eql([louise])
+        expect(groupClone.members).to.eql([new GroupMember(louise)])
     })
 });

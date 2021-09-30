@@ -22,13 +22,13 @@
         end_date: null,
         v1_contact: 1,
         roles: [
-            { name: 'chair', id: 1 },
-            { name: 'coordinator', id: 2 },
-            { name: 'parent', id: 3 }
+            { name: 'chair', id: 2 },
+            { name: 'coordinator', id: 1 },
+            { name: 'biocurator', id: 3 }
         ],
-        coi_last_completed: Date.parse('2021-09-16T13:12:00Z'),
+        coi_last_completed: '2021-09-16T13:12:00Z',
         training_completed_at: null,
-        needs_training: false
+        needs_training: true
     });
     group.addMember({
         id: 2,
@@ -42,10 +42,10 @@
         end_date: null,
         v1_contact: 1,
         roles: [
-            { name: 'coordinator', id: 2 },
-            { name: 'parent', id: 3 }
+            { name: 'coordinator', id: 1 },
+            { name: 'parent', id: 16 }
         ],
-        coi_last_completed: new Date('2020-05-17T15:09:00Z'),
+        coi_last_completed: '2020-05-17T15:09:00Z',
         training_completed_at: null,
         needs_training: false
     });
@@ -61,9 +61,9 @@
         end_date: null,
         v1_contact: 1,
         roles: [
-            { name: 'kid', id: 4 },
+            { name: 'kid', id: 17 },
         ],
-        training_completed_at: new Date('2020-09-19T00:00:00Z'),
+        training_completed_at: '2020-09-19T00:00:00Z',
         needs_training: true
     });
     group.addMember({
@@ -78,7 +78,7 @@
         end_date: null,
         v1_contact: 1,
         roles: [
-            { name: 'kid', id: 4 },
+            { name: 'biocurator', id: 3 },
         ],
         training_completed_at: null,
         needs_training: true

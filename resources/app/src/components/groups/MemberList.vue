@@ -1,15 +1,18 @@
 <script>
 import config from '@/configs.json'
-import ChevRightIcon from '@/components/icons/IconCheveronRight'
-import ChevDownIcon from '@/components/icons/IconCheveronDown'
-import { titleCase } from '@/utils'
 import { formatDate } from '@/date_utils'
+import sortAndFilter from '@/composables/router_aware_sort_and_filter'
+import ChevDownIcon from '@/components/icons/IconCheveronDown'
+import ChevRightIcon from '@/components/icons/IconCheveronRight'
+import FilterIcon from '@/components/icons/IconFilter'
+import { titleCase } from '@/utils'
 
 export default {
     name: 'MemberList',
     components: {
         ChevRightIcon,
         ChevDownIcon,
+        FilterIcon,
     },
     props: {
         group: {
@@ -25,10 +28,6 @@ export default {
                 roleId: null,
                 needsCoi: null,
                 needsTraining: null
-            },
-            tableSort: {
-                field: 'person.last_name',
-                desc: false,
             },
             tableFields: [
                 {
@@ -78,8 +77,7 @@ export default {
     },
     computed: {
         filteredMembers () {
-            // return this.group.members.filter(m => this.matchesFilters(m));
-            return this.group.members;
+            return this.group.members.filter(m => this.matchesFilters(m));
         },
         roles () {
             return config.groups.roles;
@@ -90,12 +88,36 @@ export default {
             return cuttoff;
         }
     },
+    setup() {
+        const {sort, filter} = sortAndFilter({field: 'person.last_name', desc: false});
+
+        return {
+            sort,
+            filter,
+        }
+    },
     methods: {
+        logEvent(event) {
+            console.log(event)
+        },
         toggleFilter() {
             this.showFilter = !this.showFilter;
         },
         matchesFilters(member) {
-            // implement
+            if (this.filters.keyword && !member.matchesKeyword(this.filters.keyword)) {
+                return false;
+            }
+            if (this.filters.roleId && !member.hasRole(this.filters.roleId)) {
+                return false;
+            }
+            if (this.filters.needsCoi && member.coiUpToDate()) {
+                return false;
+            }
+
+            if (this.filters.needsTraining && member.trainingComplete()) {
+                return false;
+            }
+
             return true;
         },
         toggleItemDetails(item) {
@@ -120,30 +142,34 @@ export default {
     <div>
         <div class="border border-pink-500 bg-pink-50 my-4 text-pink-700 py-4">
             <ol class="list-decimal pl-8">
-                <li>Fix table sorting &amp; store state in url.</li>
-                <li>Implement filtering &amp; store state in url.</li>
-                <li>Get filter icon in filter button</li>
                 <li>Implement Add Member form</li>
-                <li>Implement Role &amp; permission editing</li>
+                <li>Implement Member edit incl. role &amp; permission editing</li>
+                <li>Wire up actions</li>
+                <li>Store filter state in url.</li>
             </ol>
         </div>
         <head class="flex justify-between items-baseline">
             <div class="flex space-x-2 items-baseline">
                 <h2>Members</h2>
-                <button ref="filterToggleButton" class="px-3 py-1 bg-blue-200 rounded-t" :class="{'rounded-b': !showFilter}" @click="toggleFilter">F</button>
+                <button 
+                    ref="filterToggleButton" 
+                    class="px-3 py-2 rounded-t transition-color" 
+                    :class="{'rounded-b': !showFilter, 'bg-blue-200': showFilter}" 
+                    @click="toggleFilter">
+                    <filter-icon></filter-icon>
+                </button>
             </div>
             <router-link class="btn btn-xs" ref="addMemberButton" :to="{name: 'AddMember'}">Add Member</router-link>
         </head>
-        <transition name="slide-fade-down">        
+        <transition name="slide-fade-down">
             <div v-show="showFilter" class="flex justify-between px-2 space-x-2 bg-blue-200 rounded-lg">
                 <div class="flex-1">
-
-                <input-row label="Keyword" type="text" v-model="filters.keyword" :label-width="20"></input-row>
-                <input-row label="Role" :label-width="20">
+                    <input-row label="Keyword" type="text" v-model="filters.keyword" :label-width="20"></input-row>
+                    <input-row label="Role" :label-width="20">
                     <select v-model="filters.roleId">
                         <option :value="null">Select&hellip;</option>
                         <option 
-                            v-for="role in roles" 
+                            v-for="role in roles"
                             :key="role.id"
                             :value="role.id"
                         >
@@ -153,8 +179,8 @@ export default {
                 </input-row>
                 </div>
                 <div class="flex-1 py-2">
-                    <checkbox class="block" v-model="filters.needsCoi">Needs COI</checkbox>
-                    <checkbox class="block" v-model="filters.needsTraining">Needs Training</checkbox>
+                    <checkbox class="block" label="Needs COI" v-model="filters.needsCoi"></checkbox>
+                    <checkbox class="block" label="Needs Training" v-model="filters.needsTraining"></checkbox>
                 </div>
                 <div class="flex-1">
                     <!-- bob -->
@@ -163,7 +189,13 @@ export default {
         </transition>
         
         <div class="mt-3">
-            <data-table :fields="tableFields" :data="filteredMembers" :sort="tableSort" :detailRows="true">
+            <data-table 
+                :fields="tableFields" 
+                :data="filteredMembers" 
+                v-model:sort="sort" 
+                :detailRows="true" 
+                @update:sort="logEvent"
+            >
                 <template v-slot:cell-id="{item}">
                     <button @click="toggleItemDetails(item)">
                         <chev-right-icon v-if="!item.showDetails"></chev-right-icon>
@@ -207,5 +239,8 @@ export default {
         box-shadow: 
             inset 0px 11px 15px -10px #CCC,
             inset 0px -11px 10px -10px #EEE; 
+    }
+    .transition-color {
+        transition: background-color .3 linear;
     }
 </style>
