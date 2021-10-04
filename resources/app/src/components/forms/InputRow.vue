@@ -16,6 +16,7 @@
                         @change="$emit('change')"
                         ref="input"
                         :name="name"
+                        :class="inputClass"
                     ></date-input>
                     <input 
                         v-else
@@ -26,7 +27,7 @@
                         :disabled="disabled"
                         @change="$emit('change')"
                         ref="input"
-                        class="w-"
+                        :class="inputClass"
                         :name="name"
                     >
                 </slot>
@@ -81,6 +82,11 @@ export default {
             type: Boolean
         },
         name: {
+            required: false,
+            default: null,
+            type: String
+        },
+        inputClass: {
             required: false,
             default: null,
             type: String
