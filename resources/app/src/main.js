@@ -33,6 +33,11 @@ app.component('data-table', DataTable);
 import ModalDialog from './components/ModalDialog'
 app.component('modal-dialog', ModalDialog);
 
+import DevComponent from './components/dev/DevComponent'
+app.component('dev-component', DevComponent);
+import DevTodo from './components/dev/DevTodo'
+app.component('dev-todo', DevTodo);
+
 import FormContainer from './components/forms/FormContainer'
 app.component('form-container', FormContainer);
 import Checkbox from '@/components/forms/Checkbox';
