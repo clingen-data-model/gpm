@@ -18,7 +18,19 @@ export default [
         children: [
             {
                 name: 'AddMember',
-                path: '/groups/:uuid/add-member',
+                path: '/groups/:uuid/members/add',
+                component: AddMemberForm,
+                meta: {
+                    default: GroupDetail,
+                    showModal: true,
+                    protected: false,
+                    title: 'Add Group Member'
+                },
+                props: true,
+            },
+            {
+                name: 'EditMember',
+                path: '/groups/:uuid/members/:memberId',
                 component: AddMemberForm,
                 meta: {
                     default: GroupDetail,

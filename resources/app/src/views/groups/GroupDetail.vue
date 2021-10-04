@@ -1,6 +1,10 @@
 <template>
     <div>
         <member-list :group="group"></member-list>
+
+        <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="this.$route.meta.title">
+            <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
+        </modal-dialog>
         <note>group.id: {{group.id}}</note>
     </div>
 </template>
@@ -91,15 +95,41 @@ export default {
         MemberList
     },
     props: {
-        // group: {
-        //     type: Group,
-        //     required: true,
-        // }
+        uuid: {
+            type: String,
+            required: true
+        }
     },
     data () {
         return {
-            group: group
+            group: group,
+            showModal: false,
         }
+    },
+    watch: {
+        $route() {
+            this.showModal = this.$route.meta.showModal 
+                                ? Boolean(this.$route.meta.showModal) 
+                                : false;
+        }
+    },
+    methods: {
+        hideModal () {
+            this.$router.replace({name: 'GroupDetail', params: {uuid: this.uuid}});
+        },
+        handleModalClosed (evt) {
+            this.clearModalForm(evt);
+            this.$router.push({name: 'GroupDetail', params: {uuid: this.uuid}});
+        },
+        clearModalForm () {
+            if (typeof this.$refs.modalView.clearForm === 'function') {
+                this.$refs.modalView.clearForm();
+            }
+        },
+    },
+    mounted() {
+        console.log(this.$options.name)
+        this.showModal = Boolean(this.$route.meta.showModal)
     }
 }
 </script>

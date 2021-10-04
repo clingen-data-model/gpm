@@ -5,6 +5,7 @@ import sortAndFilter from '@/composables/router_aware_sort_and_filter'
 import ChevDownIcon from '@/components/icons/IconCheveronDown'
 import ChevRightIcon from '@/components/icons/IconCheveronRight'
 import FilterIcon from '@/components/icons/IconFilter'
+import EditButton from '@/components/buttons/EditIconButton'
 import { titleCase } from '@/utils'
 
 export default {
@@ -13,6 +14,7 @@ export default {
         ChevRightIcon,
         ChevDownIcon,
         FilterIcon,
+        EditButton,
     },
     props: {
         group: {
@@ -70,6 +72,12 @@ export default {
                     label: 'Training Completed',
                     type: Date,
                     sortable: true
+                },
+                {
+                    name: 'actions',
+                    label: '',
+                    type: Object,
+                    sortable: false
                 }
 
             ]
@@ -129,25 +137,20 @@ export default {
         formatDate (date) {
             return formatDate(date)
         },
-        sendCoiReminder (member) {
-
-        },
-        sendTrainingReminder (member) {
-
+        editMember (member) {
+            console.log('editMember: ', member)
         }
     }
 }
 </script>
 <template>
     <div>
-        <div class="border border-pink-500 bg-pink-50 my-4 text-pink-700 py-4">
-            <ol class="list-decimal pl-8">
-                <li>Implement Add Member form</li>
-                <li>Implement Member edit incl. role &amp; permission editing</li>
-                <li>Wire up actions</li>
-                <li>Store filter state in url.</li>
-            </ol>
-        </div>
+        <dev-todo :items="[
+            'Implement Add Member form',
+            'Implement Member edit incl. role &amp; permission editing',
+            '~ Store filter state in url.',
+
+        ]"></dev-todo>
         <head class="flex justify-between items-baseline">
             <div class="flex space-x-2 items-baseline">
                 <h2>Members</h2>
@@ -197,7 +200,7 @@ export default {
                 @update:sort="logEvent"
             >
                 <template v-slot:cell-id="{item}">
-                    <button @click="toggleItemDetails(item)">
+                    <button @click="toggleItemDetails(item)" class="w-6">
                         <chev-right-icon v-if="!item.showDetails"></chev-right-icon>
                         <chev-down-icon v-if="item.showDetails"></chev-down-icon>
                     </button>
@@ -205,24 +208,19 @@ export default {
                 <template v-slot:cell-roles="{value}">
                     {{titleCase(value.map(i => i.name).join(', '))}}
                 </template>
-                <template v-slot:cell-coi_last_completed="{item, value}">
+                <template v-slot:cell-coi_last_completed="{value}">
                     <div>
                         <span v-if="value">{{formatDate(value)}}</span>
-                        <span v-if="!value || value < Date.parse(coiCuttoff)">
-                            <span v-if="value">&nbsp;</span>
-                            <button class="link text-blue-500 underline" @click="sendCoiReminder(item)">Remind</button>
-                        </span>
                     </div>
                 </template>
                 <template v-slot:cell-training_completed_at="{item, value}">
                     <div>
                         <span v-if="value">{{formatDate(value)}}</span>
                         <span v-if="!item.needs_training" class="text-gray-500">N/A</span>
-                        <span v-if="!value && item.needs_training">
-                            <span v-if="value">&nbsp;</span>
-                            <button class="link text-blue-500 underline" @click="sendTrainingReminder(item)">Remind</button>
-                        </span>
                     </div>
+                </template>
+                <template v-slot:cell-actions="{item}">
+                    <edit-button @click="editMember(item)"></edit-button>
                 </template>
 
                 <template v-slot:detail="{item}">
