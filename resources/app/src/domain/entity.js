@@ -56,8 +56,16 @@ class Entity {
         this[attr] = value;
     }
 
+    isPersisted() {
+        return Boolean(this.attributes.id)
+    }
+
     clone(){
         return new (this.constructor.self)(this.attributes);
+    }
+
+    getAttributes() {
+        return this.attributes;
     }
 
 }
