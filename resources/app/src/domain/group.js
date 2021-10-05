@@ -19,10 +19,23 @@ class Group extends Entity {
     };
 
     constructor(attributes = {}) {
-        const members = attributes.members;
+        const members = attributes.members ? [...attributes.members] : [];
         delete(attributes.members);
+
         super(attributes);
-        this.members = members ? members.forEach(m => this.addMember(m)) : [];
+
+        this.members = [];
+        if (members) {
+            members.forEach(m => this.addMember(m))
+        }
+    }
+
+    get coordinators () {
+        return this.findMembersWithRole('coordinator')
+    }
+
+    get chairs () {
+        return this.findMembersWithRole('chair')
     }
 
     addMember(member) {
@@ -33,6 +46,30 @@ class Group extends Entity {
         }
 
         this.members.push(new GroupMember(member));
+    }
+
+    findMember(memberId) {
+        const member = this.members.find(m => m.id == memberId);
+        if (member) {
+            return member;
+        }
+        throw Error(`Member with id ${memberId} not found in group.`);
+    }
+
+    findMembersWithRole(role) {
+        let roleId = role;
+        if (typeof role == 'object') {
+            roleId = role.id
+        }
+        if (typeof role == 'string') {
+            console.log(config.groups.roles)
+            const matchingRole = config.groups.roles[role];
+            if (!matchingRole) {
+                throw new Error(`No role matching ${role}`);
+            }
+            roleId = matchingRole.id
+        }
+        return this.members.filter(m => m.hasRole(role));
     }
     
     isEp() {
@@ -51,7 +88,6 @@ class Group extends Entity {
         const members = this.members;
         return new (this.constructor.self)({...this.attributes, members});
     }
-
 }
 
 export default Group;
