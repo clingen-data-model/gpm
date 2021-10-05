@@ -85,7 +85,7 @@ export default {
     },
     computed: {
         filteredMembers () {
-            return this.group.members.filter(m => this.matchesFilters(m));
+            return (this.group.members) ? this.group.members.filter(m => this.matchesFilters(m)) : [];
         },
         roles () {
             return config.groups.roles;
@@ -138,19 +138,13 @@ export default {
             return formatDate(date)
         },
         editMember (member) {
-            console.log('editMember: ', member)
+            this.$router.push({name: 'EditMember', params: {uuid: this.group.uuid, memberId: member.id}})
         }
     }
 }
 </script>
 <template>
     <div>
-        <dev-todo :items="[
-            'Implement Add Member form',
-            'Implement Member edit incl. role &amp; permission editing',
-            '~ Store filter state in url.',
-
-        ]"></dev-todo>
         <head class="flex justify-between items-baseline">
             <div class="flex space-x-2 items-baseline">
                 <h2>Members</h2>
@@ -230,6 +224,9 @@ export default {
                 </template>
             </data-table>
         </div>
+        <dev-todo :items="[
+            '~ Store filter state in url.',
+        ]" class="mt-4"></dev-todo>
     </div>
 </template>
 <style>
