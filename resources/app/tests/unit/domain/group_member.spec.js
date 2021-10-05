@@ -36,6 +36,20 @@ describe('GroupMember entity', () => {
         expect(member.hasPermission({id: 2})).to.be.false;
     });
 
+    it('knows if the member has a permission through a role', () => {
+        const member = new GroupMember({
+            roles: [
+                {name: 'Coordinator', id: 1}
+            ]
+        });
+
+        expect(member.hasPermissionThroughRole({name: 'info-edit', id: 1}))
+            .to.be.true;
+
+            expect(member.hasPermissionThroughRole({name: 'farting-inpublic', id: 666}))
+            .to.be.false;
+    })
+
     it('knows if the member needs to complete coi', () => {
         const yesterday = new Date();
         yesterday.setFullYear(yesterday.getFullYear()-1);
