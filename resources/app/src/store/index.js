@@ -1,10 +1,11 @@
 // eslint-disable-next-line
 import { createStore } from 'vuex'
+import Alerts from '@/store/alerts'
 import ApplicationStore from '@/store/applications.js'
-import PeopleStore from '@/store/people.js'
 import CdwgStore from '@/store/cdwgs.js'
 import COIStore from '@/store/coi_store.js'
-import Alerts from '@/store/alerts'
+import GroupStore from '@/store/groups.js'
+import PeopleStore from '@/store/people.js'
 import axios from '@/http/api'
 import isAuthError from '@/http/is_auth_error'
 import module_factory from '@/store/module_factory';
@@ -157,12 +158,13 @@ const store = createStore({
         }
     },
     modules: {
-        applications: ApplicationStore,
-        cdwgs: CdwgStore,
-        people: PeopleStore,
         alerts: Alerts,
+        applications: ApplicationStore,
         coiStore: COIStore,
+        cdwgs: CdwgStore,
+        groups: GroupStore,
         doctypes: docTypeStore,
+        people: PeopleStore,
     },
     // plugins: process.env.NODE_ENV !== 'production'
     //     ? [createLogger()]
