@@ -9,6 +9,7 @@ use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Group\Actions\MemberRemoveRole;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Group\Actions\MemberRevokePermission;
+use App\Modules\Group\Http\Controllers\Api\GroupController;
 
 // Route::post('/{{group_uuid}}/members', MemberAdd::class);
 
@@ -19,6 +20,7 @@ Route::group([
     'middleware' => ['api', 'auth:sanctum']
 ], function () {
     Route::get('/', [GroupController::class, 'index']);
+    Route::get('/{uuid}', [GroupController::class, 'show']);
     
     Route::post('/{uuid}/invites', MemberInvite::class);
     
@@ -31,8 +33,4 @@ Route::group([
 
     Route::post('/{group_uuid}/members/{member_id}/permissions', MemberGrantPermissions::class);
     Route::delete('/{group_uuid}/members/{member_id}/permissions/{permission_id}', MemberRevokePermission::class);
-
-    Route::get('/', function () {
-        return 'groups!';
-    });
 });

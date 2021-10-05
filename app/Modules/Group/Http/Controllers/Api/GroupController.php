@@ -12,4 +12,12 @@ class GroupController extends Controller
     {
         return Group::with(['type', 'status'])->get();
     }
+
+    public function show($uuid, Request $request)
+    {
+        $group = Group::findByUuidOrFail($uuid);
+        $group->load(['members', 'members.person', 'members.roles', 'members.permissions']);
+
+        return $group;
+    }
 }
