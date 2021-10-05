@@ -1,9 +1,22 @@
+const GroupList = () =>
+    import ( /* webpackChunkName: "group-list" */ '@/views/groups/GroupList.vue')
 const GroupDetail = () =>
     import ( /* webpackChunkName: "group-detail" */ '@/views/groups/GroupDetail.vue')
-const AddMemberForm = () =>
-    import ( /* webpackChunkName: "group-detail" */ '@/components/groups/AddMemberForm.vue')
+const MemberForm = () =>
+    import ( /* webpackChunkName: "group-detail" */ '@/components/groups/MemberForm.vue')
 
 export default [
+    {
+        name: 'GroupList',
+        path: '/groups',
+        components:  {
+            default: GroupList
+        },
+        meta: {
+            protected: false,
+        },
+        props: true
+    },
     {
         name: 'GroupDetail',
         path: '/groups/:uuid',
@@ -19,7 +32,7 @@ export default [
             {
                 name: 'AddMember',
                 path: '/groups/:uuid/members/add',
-                component: AddMemberForm,
+                component: MemberForm,
                 meta: {
                     default: GroupDetail,
                     showModal: true,
@@ -31,7 +44,7 @@ export default [
             {
                 name: 'EditMember',
                 path: '/groups/:uuid/members/:memberId',
-                component: AddMemberForm,
+                component: MemberForm,
                 meta: {
                     default: GroupDetail,
                     showModal: true,
