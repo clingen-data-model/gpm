@@ -1,14 +1,41 @@
-import {exit} from 'process';
 import Group from '@/domain/group';
 import api from '@/http/api';
 // import { v4 as uuid4 } from 'uuid';
 import queryStringFromParams from "../http/query_string_from_params";
 
+import bobsBurgers from '@/data/bobs_burgers'
 const baseUrl = '/api/groups';
 
 export const getters = {
-    itemByUuid: (state) => (uuid) => state.items.find(itm => itm.uuid == uuid)
-}
+    groups: state => state.items,
+    items: state => state.items,
+    all: state => state.items,
+    requestCount: state => {
+        return state.requests.length;
+    },
+    hasPendingRequests: state => {
+        return state.requests.length > 0;
+    },
+    eps: state => {
+        return state.items.filter(item => item.group_type_id == 3);
+    },
+    cdwgs: state => {
+        return state.items.filter(item => item.group_type_id == 2);
+    },
+    wgs: state => {
+        return state.items.filter(item => item.group_type_id == 1);
+    },
+    currentItem: state => {
+        if (state.currentItemIdx === null) {
+            return new Group();
+        }
+
+        return state.items[state.currentItemIdx]
+    },
+    getItemByUuid: (state) => (uuid) => {
+        return state.items.find(app => app.uuid == uuid);
+    },
+};
 
 export const mutations = {
     addItem (state, item) {
@@ -41,6 +68,17 @@ export const mutations = {
         group.addMember(member);
 
         this.addItem(state, group);
+    },
+
+    setCurrentItemIdxByUuid(state, groupUuid) {
+        const currentItemIndex = state.items.findIndex(i => {
+            return i.uuid == groupUuid
+        });
+        if (currentItemIndex > -1) {
+            state.currentItemIdx = currentItemIndex;
+            return;
+        }
+        throw new Error(`Item with uuid ${groupUuid} not found in groups.items`);
     }
 };
 
@@ -67,6 +105,12 @@ export const actions = {
 
     async memberAdd ({commit}, {uuid, personId, roleIds}) {
         const url = `${baseUrl}/${uuid}/members`
+        // console.log('groups/memberAdd', {
+        //     url,
+        //     personId,
+        //     roleIds
+        // });
+        // return {data: {id: 10}};
         return await api.post(url, {
                 person_id: personId,
                 roleIds: roleIds
@@ -79,6 +123,14 @@ export const actions = {
 
     async memberInvite ({ commit }, {uuid, firstName, lastName, email, roleIds}) {
         const url = `${baseUrl}/${uuid}/invites`;
+        // console.log('groups/memberInvite', {
+        //     url,
+        //     firstName,
+        //     lastName,
+        //     email,
+        //     roleIds
+        // });
+        // return;
         const data = {
             first_name: firstName,
             last_name: lastName,
@@ -94,6 +146,13 @@ export const actions = {
 
     async memberAssignRole ( {commit}, {uuid, memberId, roleIds}) {
         const url= `${baseUrl}/${uuid}/members/${memberId}/roles`
+        // console.log('groups/memberAssignRole', {
+        //     url,
+        //     uuid,
+        //     memberId,
+        //     roleIds,
+        // });
+        // return;
         return await api.post(url, {role_ids: roleIds})
             .then(response => {
                 commit('addMemberToGroup', response.data);
@@ -103,6 +162,13 @@ export const actions = {
 
     async memberRemoveRole ({ commit }, {uuid, memberId, roleId}) {
         const url = `${baseUrl}/${uuid}/members/${memberId}/roles/${roleId}`
+        // console.log('groups/membeRemoveRole', {
+        //     url,
+        //     uuid,
+        //     memberId,
+        //     roleId,
+        // });
+        // return;
         return await api.delete(url)
                 .then(response => {
                     commit('addMemberToGroup', response.data);
@@ -112,6 +178,13 @@ export const actions = {
 
     async memberGrantPermission ({ commit }, {uuid, memberId, permissionIds}) {
         const url = `${baseUrl}/${uuid}/members/${memberId}/permissions`;
+        console.log('groups/memberGrantPermission', {
+            url,
+            uuid,
+            memberId,
+            permissionIds,
+        });
+        return;
         return await api.post(url, {permission_ids: permissionIds})
             .then(response => {
                 commit('addMemberToGroup', response.data);
@@ -121,6 +194,13 @@ export const actions = {
 
     async memberRevokePermission ({ commit }, {uuid, memberId, permissionId}) {
         const url = `${baseUrl}/${uuid}/members/${memberId}/permissions/${permissionId}`;
+        console.log('groups/memberRevokePermission', {
+            url,
+            uuid,
+            memberId,
+            permissionId,
+        });
+        return;
         return await api.delete(url)
             .then(response => {
                 commit('addMemberToGroup', response.data);
@@ -148,42 +228,13 @@ export const actions = {
 };
 
 export default {
-    namespace: true,
+    namespaced: true,
     state: () => ({
         requests: [],
         items: [],
         currentItemIdx: null,
     }),
-    getters: {
-        groups: state => state.items,
-        items: state => state.items,
-        all: state => state.items,
-        requestCount: state => {
-            return state.requests.length;
-        },
-        hasPendingRequests: state => {
-            return state.requests.length > 0;
-        },
-        eps: state => {
-            return state.items.filter(item => item.group_type_id == 3);
-        },
-        cdwgs: state => {
-            return state.items.filter(item => item.group_type_id == 2);
-        },
-        wgs: state => {
-            return state.items.filter(item => item.group_type_id == 1);
-        },
-        currentItem: state => {
-            if (state.currentItemIdx === null) {
-                return new Group();
-            }
-
-            return state.items[state.currentItemIdx]
-        },
-        getItemByUuid: (state) => (uuid) => {
-            return state.items.find(app => app.uuid == uuid);
-        },
-    },
+    getters: getters,
     mutations: mutations,
     actions: actions
 }
