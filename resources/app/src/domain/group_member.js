@@ -1,5 +1,6 @@
 import Entity from './entity'
 import Person from './person'
+import configs from '@/configs.json'
 
 class GroupMember extends Entity {
     static dates = [
@@ -19,6 +20,9 @@ class GroupMember extends Entity {
     }
 
     constructor(attributes = {}) {
+        if (attributes instanceof GroupMember) {
+            attributes = {...attributes.attributes, person: attributes.person.attributes}
+        }
         const person = attributes.person;
         delete(attributes.person);
         super(attributes);
@@ -32,6 +36,31 @@ class GroupMember extends Entity {
 
         return null;
     }
+
+    get first_name () {
+        return this.person.first_name
+    }
+
+    set first_name (value) {
+        this.person.first_name = value;
+    }
+
+    get last_name () {
+        return this.person.last_name
+    }
+
+    set last_name (value) {
+        this.person.last_name = value;
+    }
+
+    get email () {
+        return this.person.email
+    }
+
+    set email (value) {
+        this.person.email = value;
+    }
+
 
     matchesKeyword (keyword) {
         if (this.person.matchesKeyword(keyword)) {
@@ -61,8 +90,30 @@ class GroupMember extends Entity {
                 && this.attributes.permissions.findIndex(r => r.id == permissionId) > -1;
     }
 
+    hasPermissionThroughRole (permission) {
+        let permId = permission;
+        if (typeof permId == 'object') {
+            permId = permission.id
+        }
+
+        const memberRoleSlugs = this.roles.map(r => {
+            return r.name.toLowerCase()
+        })
+
+        for (let i in configs.groups.rolePermissions) {
+            if (!memberRoleSlugs.includes(i)) {
+                continue;
+            }
+
+            if (configs.groups.rolePermissions[i].includes(permId)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     coiUpToDate () {
-        console.log('member.coiUpToDate', this.coi_last_completed);
         if (!this.coi_last_completed) {
             return false;
         }
@@ -82,6 +133,12 @@ class GroupMember extends Entity {
         }
 
         return Boolean(this.attributes.training_completed_at)
+    }
+
+    clone(){
+        const person = this.person;
+        const clone = new (this.constructor)({...this.attributes, person: person.attributes});
+        return clone;
     }
 }
 
