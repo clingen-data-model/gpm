@@ -30,7 +30,7 @@ return [
     'roles' => [
         'coordinator' => [
             'id' => 1,
-            'name' => 'Coordinator'
+            'name' => 'Coordinator',
         ],
         'chair' => [
             'id' => 2,
@@ -50,11 +50,32 @@ return [
         ],
     ],
     'permissions' => [
-        'info-edit' => 1,
-        'members-invite' => 2,
-        'members-retire' => 3,
-        'members-remove' => 4,
-        'application-read' => 5,
-        'application-edit' => 6,
+        'info-edit' => [
+            'id' => 1,
+            'name' => 'Edit Info',
+        ],
+        'members-invite' => [
+            'id' => 2,
+            'name' => 'Invite Members',
+        ],
+        'members-retire' => [
+            'id' => 3,
+            'name' => 'Retire Members'
+        ],
+        'members-remove' => [
+            'id' => 4,
+            'name' => 'Remove Members'
+        ],
+        'application-read' => [
+            'id' => 5,
+            'name' => 'Read Application'
+        ],
+        'application-edit' => [
+            'id' => 6,
+            'name' => 'Edit Application'
+        ],
+    ],
+    'role_permissions' => [
+        'coordinator' => [1,2,3,4,5,6]
     ]
 ];
