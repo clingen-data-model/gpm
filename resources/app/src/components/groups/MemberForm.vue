@@ -153,8 +153,6 @@ export default {
     watch: {
         group () {
             this.syncMember();
-        },
-        newMember (to, from) {
         }
     },
     methods: {
