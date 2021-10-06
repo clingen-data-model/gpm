@@ -219,7 +219,11 @@ export default {
 
                 <template v-slot:detail="{item}">
                     <div class="px-8 py-2 inset">
-                        <object-dictionary :obj="item.person"></object-dictionary>
+                        <object-dictionary 
+                            :obj="item.person.attributes" 
+                            :only="['first_name', 'last_name','email']"
+                        ></object-dictionary>
+                        <dictionary-row label="Member ID">{{item.id}}</dictionary-row>
                     </div>
                 </template>
             </data-table>
