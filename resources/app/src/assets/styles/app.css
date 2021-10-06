@@ -45,6 +45,9 @@ select.sm,
 textarea.sm {
     @apply px-1 py-0.5 text-sm;
 }
+.link {
+    @apply text-blue-500 hover:underline;
+}
 
 .btn {
     @apply px-3 py-1 rounded border border-gray-300 focus:outline-none cursor-pointer;
