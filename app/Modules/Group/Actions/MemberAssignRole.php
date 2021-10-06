@@ -9,6 +9,7 @@ use Lorisleiva\Actions\Concerns\AsObject;
 use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
 use App\Modules\Group\Events\MemberRoleAssigned;
+use App\Modules\Group\Http\Resources\MemberResource;
 
 class MemberAssignRole
 {
@@ -41,7 +42,7 @@ class MemberAssignRole
 
     public function asController(ActionRequest $request, $groupUuid, $memberId)
     {
-        return $this->handle(GroupMember::findOrFail($memberId), $request->role_ids);
+        return new MemberResource($this->handle(GroupMember::findOrFail($memberId), $request->role_ids));
     }
 
     public function rules(): array

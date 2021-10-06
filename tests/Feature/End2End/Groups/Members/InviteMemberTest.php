@@ -71,8 +71,6 @@ class InviteMemberTest extends TestCase
             'first_name' => 'Test',
             'last_name' => 'Testerson',
             'email' => 'test@test.com',
-            'inviter_id' => $this->group->id,
-            'inviter_type' => get_class($this->group)
         ]);
         $response->assertStatus(201);
 

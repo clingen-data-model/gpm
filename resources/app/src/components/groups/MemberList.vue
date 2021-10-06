@@ -5,6 +5,7 @@ import sortAndFilter from '@/composables/router_aware_sort_and_filter'
 import ChevDownIcon from '@/components/icons/IconCheveronDown'
 import ChevRightIcon from '@/components/icons/IconCheveronRight'
 import FilterIcon from '@/components/icons/IconFilter'
+import UserIcon from '@/components/icons/IconUser'
 import EditButton from '@/components/buttons/EditIconButton'
 import { titleCase } from '@/utils'
 
@@ -15,6 +16,7 @@ export default {
         ChevDownIcon,
         FilterIcon,
         EditButton,
+        UserIcon,
     },
     props: {
         group: {
@@ -218,17 +220,30 @@ export default {
                 </template>
 
                 <template v-slot:detail="{item}">
-                    <div class="px-8 py-2 inset">
-                        <object-dictionary 
-                            :obj="item.person.attributes" 
-                            :only="['first_name', 'last_name','email']"
-                        ></object-dictionary>
-                        <dictionary-row label="Member ID">{{item.id}}</dictionary-row>
+                    <div class="px-8 py-2 inset flex space-x-4 text-sm">
+                        <div class="w-24 h-24 border border-gray-300 bg-white">
+                            <img v-if="item.person.profile_photo_path" :src="item.person.profile_photo_path">
+                            <user-icon v-else height="96" width="96" icon-color="#888"></user-icon>
+                        </div>
+                        <div class="flex-1 border-r">
+                            <dictionary-row label="Member ID">{{item.id}}</dictionary-row>
+                            <dictionary-row label="Name">{{item.person.name}}</dictionary-row>
+                            <dictionary-row label="Email">{{item.person.email}}</dictionary-row>
+                        </div>
+                        <div class="flex-1">
+                            <dictionary-row label="Roles">
+                                {{item.roles.length > 0 ? item.roles.map(i => i.name).join(', ') : '--'}}
+                            </dictionary-row>
+                            <dictionary-row label="Extra Permissions">
+                                {{item.permissions.length > 0 ? item.permissions.map(i => i.name).join(', ') : '--'}}</dictionary-row>
+                        </div>
                     </div>
                 </template>
             </data-table>
         </div>
         <dev-todo :items="[
+            'Add support to retire memmber',
+            'Add support to remove memmber',
             '~ Store filter state in url.',
         ]" class="mt-4"></dev-todo>
     </div>

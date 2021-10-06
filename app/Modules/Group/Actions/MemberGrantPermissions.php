@@ -11,6 +11,7 @@ use Lorisleiva\Actions\Concerns\AsObject;
 use Spatie\Permission\Contracts\Permission;
 use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
+use App\Modules\Group\Http\Resources\MemberResource;
 use App\Modules\Group\Events\MemberPermissionsGranted;
 
 class MemberGrantPermissions
@@ -40,7 +41,9 @@ class MemberGrantPermissions
         $groupMember = Group::findByUuidOrFail($groupUuid)->members()->findOrFail($memberId);
         $permissions = config('permission.models.permission')::find($request->permission_ids);
 
-        return $this->handle($groupMember, $permissions);
+        $member = $this->handle($groupMember, $permissions);
+        
+        return new MemberResource($member);
     }
 
     public function rules(): array

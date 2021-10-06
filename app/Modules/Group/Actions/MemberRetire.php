@@ -10,6 +10,7 @@ use App\Modules\Group\Models\GroupMember;
 use Lorisleiva\Actions\Concerns\AsObject;
 use App\Modules\Group\Events\MemberRetired;
 use Lorisleiva\Actions\Concerns\AsController;
+use App\Modules\Group\Http\Resources\MemberResource;
 
 class MemberRetire
 {
@@ -29,7 +30,7 @@ class MemberRetire
         $groupMember = GroupMember::findOrFail($groupMemberId);
         $endDate = Carbon::parse($request->endDate);
 
-        return $this->handle($groupMember, $endDate);
+        return new MemberResource($this->handle($groupMember, $endDate));
     }
 
     public function rules(): array

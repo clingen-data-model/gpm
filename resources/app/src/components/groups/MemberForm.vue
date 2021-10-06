@@ -155,7 +155,6 @@ export default {
             this.syncMember();
         },
         newMember (to, from) {
-            console.log({from, to})
         }
     },
     methods: {

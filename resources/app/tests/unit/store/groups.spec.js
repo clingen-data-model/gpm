@@ -11,7 +11,7 @@ const groupData = {
     parent_id: null
 }
 
-describe('groups mutations', () => {    
+describe('group mutations', () => {    
     it('adds new group to items', () => {
         const state = {
             items: []
@@ -46,15 +46,13 @@ describe('groups mutations', () => {
             items: [new Group({...groupData, ...{members: []}})]
         };
 
-        const personData = {person_id: 1, person: { first_name: 'tammy' }};
-        mutations.addMemberToGroup(state, groupData.uuid, personData);
-        
-        console.log('members', state.items[0].members);
-        // expect(state.items[0].members).to.eql([personData]);
+        const personData = {person_id: 100, group_id: groupData.id, person: { first_name: 'tammy' }};
+        mutations.addMemberToGroup(state, personData);
+                expect(state.items[0].members[0].person_id).to.equal(100);
     })
 });
 
-describe('groups actions', () => {
+describe('group actions', () => {
     let mock;
     beforeEach(() => {
         const MockAdapter = require('axios-mock-adapter');
@@ -81,7 +79,7 @@ describe('groups actions', () => {
     });
 
     it('gets a single group by uuid and commits addItem', () => {
-        mock.onGet("/api/groups/abcdefg").reply(200, groupData);
+        mock.onGet("/api/groups/abcdefg").reply(200, {data: groupData});
 
         testAction(
             actions.find,
@@ -109,7 +107,7 @@ describe('groups actions', () => {
             ]
         };
 
-        mock.onPost("/api/groups/abcdefg/members").reply(200, responseData);
+        mock.onPost("/api/groups/abcdefg/members").reply(200, {data: responseData});
 
         testAction(
             actions.memberAdd,
@@ -128,7 +126,7 @@ describe('groups actions', () => {
     });
 
     it('can invite a new person to be a member', () => {
-        const responseData = {
+        const responseData = {data: {
             group_id: groupData.id,
             person_id: 1,
             person: {
@@ -141,7 +139,7 @@ describe('groups actions', () => {
                     name: 'role name'
                 }
             ]
-        };
+        }};
 
         mock.onPost("/api/groups/"+groupData.uuid+"/invites").reply(200, responseData);
 
@@ -157,13 +155,13 @@ describe('groups actions', () => {
                 {...groupData, ...{members: []}}
             ]},
             [
-                {type: 'addMemberToGroup', payload: responseData}
+                {type: 'addMemberToGroup', payload: responseData.data}
             ]
         );
     });
 
     it('can assign roles to a member', () => {
-        const responseData = {
+        const responseData = {data: {
             id: 666,
             group_id: groupData.id,
             person_id: 1,
@@ -177,7 +175,7 @@ describe('groups actions', () => {
                     name: 'role name'
                 }
             ]
-        };
+        }};
         mock.onPost(`/api/groups/${groupData.uuid}/members/${responseData.id}/roles`).reply(201, responseData);
 
         testAction(
@@ -185,7 +183,7 @@ describe('groups actions', () => {
             {uuid: groupData.uuid, memberId: responseData.id, roleIds: [1]},
             {},
             [
-                {type: 'addMemberToGroup', payload: responseData}
+                {type: 'addMemberToGroup', payload: responseData.data}
             ]
         );
     });
@@ -200,7 +198,7 @@ describe('groups actions', () => {
             roles: []
         };
         mock.onDelete(`api/groups/${groupData.uuid}/members/${member.id}/roles/${role.id}`)
-            .reply(200, member);
+            .reply(200, {data: member});
 
         testAction(
             actions.memberRemoveRole,
@@ -215,7 +213,7 @@ describe('groups actions', () => {
         const member = { id: 1, permissions: [perm]};
 
         mock.onPost(`api/groups/${groupData.uuid}/members/${member.id}/permissions`)
-            .reply(201, member);
+            .reply(201, {data: member});
 
         testAction(
             actions.memberGrantPermission, 
@@ -231,7 +229,7 @@ describe('groups actions', () => {
         const member = { id: 1, permissions: []};
 
         mock.onDelete(`api/groups/${groupData.uuid}/members/${member.id}/permissions/${perm.id}`)
-            .reply(201, member);
+            .reply(201, {data: member});
 
         testAction(
             actions.memberRevokePermission, 
@@ -249,7 +247,7 @@ describe('groups actions', () => {
         }
 
         mock.onPost(`api/groups/${groupData.uuid}/members/${member.id}/retire`)
-            .reply(200, member);
+            .reply(200, {data: member});
 
         testAction(
             actions.memberRetire,
@@ -267,7 +265,7 @@ describe('groups actions', () => {
         }
 
         mock.onDelete(`api/groups/${groupData.uuid}/members/${member.id}`)
-            .reply(200, member);
+            .reply(200, {data: member});
 
         testAction(
             actions.memberRemove,

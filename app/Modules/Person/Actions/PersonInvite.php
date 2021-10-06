@@ -22,7 +22,6 @@ class PersonInvite
         $invite = Invite::create([
             'inviter_id' => isset($data['inviter_id']) ? $data['inviter_id'] : null,
             'inviter_type' => isset($data['inviter_type']) ? $data['inviter_type'] : null,
-            // 'inviter_type' => isset($data['inviter_type']) ? $data['inviter_type'] : null,
             'person_id' => $person->id,
             'email' => $data['email'],
             'first_name' => $data['first_name'],

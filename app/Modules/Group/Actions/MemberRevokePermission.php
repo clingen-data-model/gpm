@@ -9,6 +9,7 @@ use App\Modules\Group\Models\GroupMember;
 use Lorisleiva\Actions\Concerns\AsObject;
 use Spatie\Permission\Contracts\Permission;
 use Lorisleiva\Actions\Concerns\AsController;
+use App\Modules\Group\Http\Resources\MemberResource;
 use App\Modules\Group\Events\MemberPermissionRevoked;
 
 class MemberRevokePermission
@@ -34,6 +35,6 @@ class MemberRevokePermission
 
         $permission = config('permission.models.permission')::find($permissionId);
 
-        return $this->handle($groupMember, $permission);
+        return new MemberResource($this->handle($groupMember, $permission));
     }
 }

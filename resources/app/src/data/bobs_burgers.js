@@ -163,6 +163,4 @@ const group = {
     ]
 }
 
-console.log('bobs_burgers.group.members', group.members)
-
 export default group;

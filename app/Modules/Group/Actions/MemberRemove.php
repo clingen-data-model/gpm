@@ -2,13 +2,14 @@
 
 namespace App\Modules\Group\Actions;
 
-use App\Modules\Group\Models\GroupMember;
-use App\Modules\Group\Events\MemberRemoved;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\ActionRequest;
+use App\Modules\Group\Models\GroupMember;
 use Lorisleiva\Actions\Concerns\AsObject;
+use App\Modules\Group\Events\MemberRemoved;
 use Lorisleiva\Actions\Concerns\AsController;
+use App\Modules\Group\Http\Resources\MemberResource;
 
 class MemberRemove
 {
@@ -28,7 +29,7 @@ class MemberRemove
         $groupMember = GroupMember::findOrFail($groupMemberId);
         $endDate = Carbon::parse($request->endDate);
 
-        return $this->handle($groupMember, $endDate);
+        return new MemberResource($this->handle($groupMember, $endDate));
     }
 
     public function rules(): array

@@ -10,6 +10,7 @@ use App\Modules\Group\Models\GroupMember;
 use Lorisleiva\Actions\Concerns\AsObject;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Events\MemberRoleRemoved;
+use App\Modules\Group\Http\Resources\MemberResource;
 
 class MemberRemoveRole
 {
@@ -30,6 +31,6 @@ class MemberRemoveRole
         $groupMember = $group->members()->findOrFail($memberId);
         $role = config('permission.models.role')::findOrFail($roleId);
 
-        return $this->handle($groupMember, $role);
+        return new MemberResource($this->handle($groupMember, $role));
     }
 }

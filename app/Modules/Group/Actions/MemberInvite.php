@@ -14,6 +14,7 @@ use App\Modules\Group\Events\MemberInvited;
 use App\Modules\Person\Actions\PersonCreate;
 use App\Modules\Person\Actions\PersonInvite;
 use Lorisleiva\Actions\Concerns\AsController;
+use App\Modules\Group\Http\Resources\MemberResource;
 
 class MemberInvite
 {
@@ -32,7 +33,10 @@ class MemberInvite
             unset($data['role_ids']);
         }
 
-        [$person, $invite] = $this->invitePerson->handle($data);
+        $inviteData = $data;
+        $inviteData['inviter_type'] = get_class($group);
+        $inviteData['inviter_id'] = $group->id;
+        [$person, $invite] = $this->invitePerson->handle($inviteData);
         
         $newMember = $this->addMember->handle($group, $person);
 
@@ -46,9 +50,9 @@ class MemberInvite
     public function asController(ActionRequest $request, $groupUuid)
     {
         $group = Group::findByUuidOrFail($groupUuid);
-        if (!Auth::user()->person->hasGroupPermissionTo('members-invite', collect([$group]))) {
+        if (Auth::user()->person && !Auth::user()->person->hasGroupPermissionTo('members-invite', collect([$group]))) {
             abort('403', 'You do not have permission to invite members to this group.');
         }
-        return $this->handle($group, $request->all());
+        return new MemberResource($this->handle($group, $request->all()));
     }
 }

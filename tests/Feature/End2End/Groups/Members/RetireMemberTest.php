@@ -44,7 +44,7 @@ class RetireMemberTest extends TestCase
         ]);
 
         $response->assertStatus(200);
-        $response->assertJson($this->groupMember->fresh()->toArray());
+        $response->assertJsonFragment($this->groupMember->fresh()->toArray());
 
         $this->assertDatabaseHas('group_members', [
             'id' => $this->groupMember->id,

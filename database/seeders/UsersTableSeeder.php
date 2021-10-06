@@ -48,17 +48,15 @@ class UsersTableSeeder extends Seeder
 
         ];
 
-        foreach ($users as $userData ) {
-
+        foreach ($users as $userData) {
             $role = $userData['role'];
-            unset($userData['role']); 
+            unset($userData['role']);
             $userData['password'] = (app()->environment('local')) ? Hash::make('tester') : Hash::make(uniqid());
 
             $user = User::create($userData);
-            if (!app()->environment('testing')) {
-                $user->assignRole($role);
-            }
+            // if (!app()->environment('testing')) {
+            //     $user->assignRole($role);
+            // }
         }
-
     }
 }

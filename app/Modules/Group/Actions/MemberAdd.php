@@ -9,11 +9,12 @@ use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\ActionRequest;
 use Spatie\Permission\Contracts\Role;
+use App\Modules\Group\Events\MemberAdded;
 use App\Modules\Group\Models\GroupMember;
 use Lorisleiva\Actions\Concerns\AsObject;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Actions\MemberAssignRole;
-use App\Modules\Group\Events\MemberAdded;
+use App\Modules\Group\Http\Resources\MemberResource;
 
 class MemberAdd
 {
@@ -49,7 +50,7 @@ class MemberAdd
             $member = $this->assignRoleAction->handle($member, $roles);
         }
 
-        return $member;
+        return new MemberResource($member);
     }
 
     public function rules(): array

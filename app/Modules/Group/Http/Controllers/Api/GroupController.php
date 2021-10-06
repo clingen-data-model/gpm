@@ -5,6 +5,7 @@ namespace App\Modules\Group\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Modules\Group\Models\Group;
 use App\Http\Controllers\Controller;
+use App\Modules\Group\Http\Resources\GroupResource;
 
 class GroupController extends Controller
 {
@@ -18,6 +19,6 @@ class GroupController extends Controller
         $group = Group::findByUuidOrFail($uuid);
         $group->load(['members', 'members.person', 'members.roles', 'members.permissions']);
 
-        return $group;
+        return new GroupResource($group);
     }
 }
