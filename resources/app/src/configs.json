@@ -83,60 +83,60 @@
         },
         "roles": {
             "coordinator": {
-                "id": 1,
+                "id": 101,
                 "name": "Coordinator"
             },
             "chair": {
-                "id": 2,
+                "id": 102,
                 "name": "Chair"
             },
             "biocurator": {
-                "id": 3,
+                "id": 103,
                 "name": "Biocurator"
             },
             "expert": {
-                "id": 4,
+                "id": 104,
                 "name": "Expert"
             },
             "core-approval-member": {
-                "id": 5,
+                "id": 105,
                 "name": "Core Approval Member"
             }
         },
         "permissions": {
             "info-edit": {
-                "id": 1,
+                "id": 1001,
                 "name": "Edit Info"
             },
             "members-invite": {
-                "id": 2,
+                "id": 1002,
                 "name": "Invite Members"
             },
             "members-retire": {
-                "id": 3,
+                "id": 1003,
                 "name": "Retire Members"
             },
             "members-remove": {
-                "id": 4,
+                "id": 1004,
                 "name": "Remove Members"
             },
             "application-read": {
-                "id": 5,
+                "id": 1005,
                 "name": "Read Application"
             },
             "application-edit": {
-                "id": 6,
+                "id": 1006,
                 "name": "Edit Application"
             }
         },
         "rolePermissions": {
             "coordinator": [
-                1,
-                2,
-                3,
-                4,
-                5,
-                6
+                1001,
+                1002,
+                1003,
+                1004,
+                1005,
+                1006
             ]
         }
     }

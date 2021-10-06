@@ -8,15 +8,16 @@
           </div>
           
           <span v-if="$store.getters.isAuthed">
-          <router-link to="/applications" class="text-blue-500 hover:underline">Applications</router-link> 
+          <router-link to="/applications" class="link">Applications</router-link> 
           |
-          <!-- <router-link to="/cdwgs" class="text-blue-500 hover:underline">CDWGs</router-link>  -->
+          <!-- <router-link to="/cdwgs" class="link">CDWGs</router-link>  -->
           <!-- | -->
-          <router-link to="/people" class="text-blue-500 hover:underline">People</router-link> 
+          <router-link to="/people" class="link">People</router-link> 
           |
-          <!-- <router-link to="/about" class="text-blue-500 hover:underline">About</router-link> -->
+          <router-link :to="{name: 'GroupList'}" class="link">Groups</router-link>
+          <!-- <router-link to="/about" class="link">About</router-link> -->
           <!-- |
-          <router-link to="/guides-and-documentation" class="text-blue-500 hover:underline">Guides &amp; documentation</router-link> | -->
+          <router-link to="/guides-and-documentation" class="link">Guides &amp; documentation</router-link> | -->
           </span>
         </div>
         <user-menu></user-menu>
