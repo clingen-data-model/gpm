@@ -62,14 +62,13 @@ class Group extends Entity {
             roleId = role.id
         }
         if (typeof role == 'string') {
-            console.log(config.groups.roles)
             const matchingRole = config.groups.roles[role];
             if (!matchingRole) {
                 throw new Error(`No role matching ${role}`);
             }
             roleId = matchingRole.id
         }
-        return this.members.filter(m => m.hasRole(role));
+        return this.members.filter(m => m.hasRole(roleId));
     }
     
     isEp() {

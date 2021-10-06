@@ -12,7 +12,7 @@
 // import { mapGetters } from 'vuex'
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
-import {ref, computed, onMounted } from 'vue'
+import {computed, onMounted } from 'vue'
 export default {
     name: 'ComponentName',
     props: {
@@ -43,12 +43,12 @@ export default {
             ]
         }
     },
-    setup(props, context) {
+    setup() {
         const store = useStore();
         const router = useRouter();
         // console.log(store);
         let groups = computed(() => store.getters['groups/all']);
-        let filteredGroups = computed(() => groups.value.filter(g => true))
+        let filteredGroups = computed(() => groups.value.filter(() => true))
         const goToItem = (item) => {
             router.push({
                 name: 'GroupDetail',

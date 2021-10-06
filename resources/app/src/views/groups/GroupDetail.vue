@@ -5,7 +5,7 @@
             <dictionary-row label="Chairs:">
                 <template v-slot:label><strong>Chairs:</strong></template>
                 <div v-if="group.chairs.length > 0">
-                    {{group.chairs.join(', ')}}
+                    {{group.chairs.map(c => c.person.name).join(', ')}}
                 </div>
                 <div class="text-gray-500" v-else>
                     None assigned
@@ -14,7 +14,8 @@
             <dictionary-row label="Coordinators:">
                 <template v-slot:label><strong>Coordinators:</strong></template>
                 <div v-if="group.coordinators.length > 0">
-                    {{group.coordinators.join(', ')}}
+                    <!-- <pre>{{group.coordinators}}</pre> -->
+                    {{group.coordinators.map(c => c.person.name).join(', ')}}
                 </div>
                 <div class="text-gray-500" v-else>
                     None assigned
@@ -52,7 +53,7 @@ export default {
 
         onMounted(async () => {
             await store.dispatch('groups/find', props.uuid)
-                .then(response => {
+                .then(() => {
                     store.commit('groups/setCurrentItemIdxByUuid', props.uuid)
                 })
         });
