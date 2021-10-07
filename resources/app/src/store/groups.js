@@ -75,6 +75,14 @@ export const mutations = {
         group.addMember(member);
     },
 
+    removeMember(state, member) {
+        const group = getters.getItemById(state)(member.group_id);
+        if (!group) {
+            throw new Error('could not find group with id '+member.group_id+' in items.');
+        }
+        group.removeMember(member);
+    },
+
     setCurrentItemIdxByUuid(state, groupUuid) {
         if (state.items.length > 0) {
             const currentItemIndex = state.items.findIndex(i => {
@@ -185,9 +193,10 @@ export const actions = {
 
     async memberRemove ({ commit }, {uuid, memberId, endDate}) {
         const url = `${baseUrl}/${uuid}/members/${memberId}`;
-        return await api.delete(url, { end_date: endDate })
+         console.log({uuid, memberId, endDate})
+        return await api.delete(url, {data: { end_date: endDate }})
         .then(response => {
-            commit('addMemberToGroup', response.data.data);
+            commit('removeMember', response.data.data);
             return response;
         });
     },
