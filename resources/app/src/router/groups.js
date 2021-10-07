@@ -13,7 +13,7 @@ export default [
             default: GroupList
         },
         meta: {
-            protected: false,
+            protected: true,
         },
         props: true
     },
@@ -24,7 +24,7 @@ export default [
             default: GroupDetail
         },
         meta: {
-            protected: false
+            protected: true
         },
         props: true,
 
@@ -36,7 +36,7 @@ export default [
                 meta: {
                     default: GroupDetail,
                     showModal: true,
-                    protected: false,
+                    protected: true,
                     title: 'Add Group Member'
                 },
                 props: true,
@@ -48,7 +48,7 @@ export default [
                 meta: {
                     default: GroupDetail,
                     showModal: true,
-                    protected: false,
+                    protected: true,
                     title: 'Add Group Member'
                 },
                 props: true,
