@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Modules\ExpertPanel\Models\Contracts\BelongsToExpertPanel;
 use App\Modules\Group\Models\Traits\BelongsToGroup as BelongstToGroupTrait;
 use App\Modules\ExpertPanel\Models\Traits\BelongsToExpertPanel as BelongsToExpertPanelTrait;
+use Carbon\Carbon;
 
 /**
  * @property int $id
@@ -67,6 +68,22 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
         'end_date',
     ];
 
+    static public function boot():void
+    {
+        parent::boot();
+
+        /*
+         * Copy activity_type from properties json column to 
+         * activity_type column for indexing, speed of retrieval,
+         * and accessor
+         */
+        static::saving(function ($model) {
+
+            if (!$model->start_date) {
+                $model->start_date = Carbon::now();
+            }
+        });
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

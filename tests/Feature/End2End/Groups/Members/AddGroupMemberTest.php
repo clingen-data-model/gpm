@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\End2End\Groups\Members;
 
+use Carbon\Carbon;
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
@@ -73,8 +74,9 @@ class AddGroupMemberTest extends TestCase
     /**
      * @test
      */
-    public function returns_new_member_with_person_and_roles()
+    public function returns_new_member_with_person_roles_and_start_date()
     {
+        Carbon::setTestNow('2021-10-07');
         $response = $this->callCreateEndpoint();
         $response->assertStatus(201);
         $response->assertJsonFragment([
@@ -84,6 +86,7 @@ class AddGroupMemberTest extends TestCase
         $response->assertJsonFragment([
             'uuid' => $this->person->uuid,
             'first_name' => $this->person->first_name,
+            'start_date' => Carbon::now()->toISOString()
         ]);
         $this->assertEquals($this->role->id, $response->original->roles[0]->id);
     }
