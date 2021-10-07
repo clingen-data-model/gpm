@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="nav" class="border-b bg-gray-100">
+    <header id="nav" class="border-b bg-gray-100">
       <div class="container mx-auto py-3 flex">
         <div id="main-menu" class="flex-grow">
           <div class="inline-block pr-3">
@@ -22,11 +22,18 @@
         </div>
         <user-menu></user-menu>
       </div>
-    </div>
+    </header>
 
     <router-view class="container mx-auto my-3"/>
 
     <alert-viewer></alert-viewer>
+
+    <footer class="absolute bottom-0 left-0 w-full">
+      <div id="dev-info" class="container mx-auto py-3 flex"></div>
+      <div class="container mx-auto py-3 flex" id="footer-content">
+        
+      </div>
+    </footer>
   </div>
 </template>
 

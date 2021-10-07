@@ -35,6 +35,7 @@
             <tab-item label="Documents">
                 Group documents will go here.
             </tab-item>
+            <tab-item label="Log"></tab-item>
             <!--
                 <tab-item label="Manuscripts"></tab-item>
                 <tab-item label="Funding"></tab-item>
@@ -44,7 +45,9 @@
         <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="this.$route.meta.title">
             <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
         </modal-dialog>
-        <note>group.id: {{group.id}}</note>
+        <teleport to='#dev-info'>
+            <note>group.id: {{group.id}}</note>
+        </teleport>
     </div>
 </template>
 <script>
