@@ -5,8 +5,9 @@ import sortAndFilter from '@/composables/router_aware_sort_and_filter'
 import ChevDownIcon from '@/components/icons/IconCheveronDown'
 import ChevRightIcon from '@/components/icons/IconCheveronRight'
 import FilterIcon from '@/components/icons/IconFilter'
-import UserIcon from '@/components/icons/IconUser'
-import EditButton from '@/components/buttons/EditIconButton'
+import DropdownMenu from '@/components/DropdownMenu'
+import DropdownItem from '@/components/DropdownItem'
+import MemberPreview from '@/components/groups/MemberPreview'
 import { titleCase } from '@/utils'
 
 export default {
@@ -15,8 +16,9 @@ export default {
         ChevRightIcon,
         ChevDownIcon,
         FilterIcon,
-        EditButton,
-        UserIcon,
+        DropdownMenu,
+        DropdownItem,
+        MemberPreview
     },
     props: {
         group: {
@@ -27,11 +29,14 @@ export default {
     data() {
         return {
             showFilter: false,
+            showConfirmRetire: false,
+            showConfirmRemove: false,
             filters: {
                 keyword: null,
                 roleId: null,
                 needsCoi: null,
-                needsTraining: null
+                needsTraining: null,
+                hideAlumns: true 
             },
             tableFields: [
                 {
@@ -82,12 +87,24 @@ export default {
                     sortable: false
                 }
 
-            ]
+            ],
+            selectedMember: null,
+            hideAlumns: true
         }
     },
     computed: {
         filteredMembers () {
-            return (this.group.members) ? this.group.members.filter(m => this.matchesFilters(m)) : [];
+            if (!this.group.members) {
+                return [];
+            }
+            return this.group.members
+                    .filter(m => this.matchesFilters(m))
+                    .filter(m => {
+                        if (this.filters.hideAlumns) {
+                            return m.end_date === null;
+                        }
+                        return m;
+                    });
         },
         roles () {
             return config.groups.roles;
@@ -96,6 +113,9 @@ export default {
             const cuttoff = new Date();
             cuttoff.setFullYear(cuttoff.getFullYear()-1);
             return cuttoff;
+        },
+        selectedMemberName () {
+            return this.selectedMember ? this.selectedMember.person.name : null
         }
     },
     setup() {
@@ -141,6 +161,49 @@ export default {
         },
         editMember (member) {
             this.$router.push({name: 'EditMember', params: {uuid: this.group.uuid, memberId: member.id}})
+        },
+        confirmRetireMember (member) {
+            this.showConfirmRetire = true;
+            this.selectedMember = member;
+            console.log(this.selectedMember)
+        },
+        async retireMember (member) {
+            try {
+                await this.$store.dispatch('groups/memberRetire', {
+                    uuid: this.group.uuid,
+                    memberId: this.selectedMember.id,
+                    startDate: this.selectedMember.start_date, 
+                    endDate: new Date().toISOString()
+                });
+                this.cancelRetire();
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        cancelRetire () {
+            this.selectedMember = null;
+            this.showConfirmRetire = false;
+        },
+        confirmRemoveMember (member) {
+            this.showConfirmRemove = true;
+            this.selectedMember = member;
+        },
+        async removeMember (member) {
+            try {
+                await this.$store.dispatch('groups/memberRemove', {
+                    uuid: this.group.uuid,
+                    memberId: this.selectedMember.id,
+                    startDate: this.selectedMember.start_date, 
+                    endDate: new Date().toISOString()
+                });
+                this.cancelRemove();
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        cancelRemove () {
+            this.selectedMember = null;
+            this.showConfirmRemove = false;
         }
     }
 }
@@ -181,8 +244,8 @@ export default {
                     <checkbox class="block" label="Needs COI" v-model="filters.needsCoi"></checkbox>
                     <checkbox class="block" label="Needs Training" v-model="filters.needsTraining"></checkbox>
                 </div>
-                <div class="flex-1">
-                    <!-- bob -->
+                <div class="flex-1 py-2">
+                    <checkbox class="block" label="Hide Alumns" v-model="filters.hideAlumns"></checkbox>
                 </div>
             </div>
         </transition>
@@ -194,6 +257,7 @@ export default {
                 v-model:sort="sort" 
                 :detailRows="true" 
                 @update:sort="logEvent"
+                :row-class="(item) => item.isRetired ? 'retired-member' : null"
             >
                 <template v-slot:cell-id="{item}">
                     <button @click="toggleItemDetails(item)" class="w-6">
@@ -216,36 +280,46 @@ export default {
                     </div>
                 </template>
                 <template v-slot:cell-actions="{item}">
-                    <edit-button @click="editMember(item)"></edit-button>
+                    <!-- <edit-button @click="editMember(item)"></edit-button> -->
+                    <dropdown-menu :hide-cheveron="true" class="relative">
+                        <template v-slot:label class="btn btn-xs">
+                            &hellip;
+                        </template>
+                        <dropdown-item>
+                            <div @click="editMember(item)">Update membership</div>
+                        </dropdown-item>
+                        <dropdown-item>
+                            <div @click="confirmRetireMember(item)">Retire from group</div>
+                        </dropdown-item>
+                        <dropdown-item>
+                            <div @click="confirmRemoveMember(item)">Remove from group</div>
+                        </dropdown-item>
+                    </dropdown-menu>
                 </template>
 
                 <template v-slot:detail="{item}">
-                    <div class="px-8 py-2 inset flex space-x-4 text-sm">
-                        <div class="w-24 h-24 border border-gray-300 bg-white">
-                            <img v-if="item.person.profile_photo_path" :src="item.person.profile_photo_path">
-                            <user-icon v-else height="96" width="96" icon-color="#888"></user-icon>
-                        </div>
-                        <div class="flex-1 border-r">
-                            <dictionary-row label="Member ID">{{item.id}}</dictionary-row>
-                            <dictionary-row label="Name">{{item.person.name}}</dictionary-row>
-                            <dictionary-row label="Email">{{item.person.email}}</dictionary-row>
-                        </div>
-                        <div class="flex-1">
-                            <dictionary-row label="Roles">
-                                {{item.roles.length > 0 ? item.roles.map(i => i.name).join(', ') : '--'}}
-                            </dictionary-row>
-                            <dictionary-row label="Extra Permissions">
-                                {{item.permissions.length > 0 ? item.permissions.map(i => i.name).join(', ') : '--'}}</dictionary-row>
-                        </div>
-                    </div>
+                    <member-preview :member="item" :group="group"></member-preview>
                 </template>
             </data-table>
         </div>
-        <dev-todo :items="[
-            'Add support to retire memmber',
-            'Add support to remove memmber',
+        <!-- <dev-todo :items="[
             '~ Store filter state in url.',
-        ]" class="mt-4"></dev-todo>
+        ]" class="mt-4"></dev-todo> -->
+        <teleport to='body'>
+            <modal-dialog v-model="showConfirmRetire" size="xs" :title="`Retire ${selectedMemberName}?`">
+                <!-- <h3>Retire {{selectedMemberName}}?</h3> -->
+                <p class="text-lg">
+                    Are you sure you want to retire {{selectedMemberName}} from this group?
+                </p>
+
+                <button-row @submit="retireMember" @cancel="cancelRetire" submit-text="Retire Member"></button-row>
+            </modal-dialog>
+            <modal-dialog v-model="showConfirmRemove" size="xs" :title="`Remove ${selectedMemberName}?`">
+                <p class="text-lg"> Are you sure you want to remove {{selectedMemberName}} from this group?</p>
+                <p><strong>This cannot be undone.</strong></p>
+                <button-row @submit="removeMember" @cancel="cancelRemove" submit-text="Remove Member"></button-row>
+            </modal-dialog>
+        </teleport>
     </div>
 </template>
 <style>
@@ -256,5 +330,8 @@ export default {
     }
     .transition-color {
         transition: background-color .3 linear;
+    }
+    .retired-member > td {
+        @apply text-gray-400;
     }
 </style>
