@@ -68,7 +68,7 @@
             </thead>
             <tbody>
                 <template v-for="item in sortedFilteredData" :key="item.uuid">
-                    <tr :class="rowClass" @click="handleRowClick(item)">
+                    <tr :class="resolveRowClass(item)" @click="handleRowClick(item)">
                         <td 
                             v-for="field in fields" 
                             :key="field.name"
@@ -81,7 +81,7 @@
                         </td>
                     </tr>
                     <transition name="fade-slide-down">
-                        <tr class="details" v-if="detailRows && item.showDetails">
+                        <tr class="details" :class="rowClass(item)" v-if="detailRows && item.showDetails">
                             <td :colspan="fields.length" class="border-none p-0">
                                 <slot name="detail" :item="item">
                                     <object-dictionary :obj="item"></object-dictionary>
@@ -143,7 +143,7 @@ export default {
         },
         rowClass: {
             required: false,
-            type: [String,null],
+            type: [String, Function, null],
             default: null
         },
         sort: {
@@ -363,6 +363,16 @@ export default {
         getSlotName(field) {
             return `cell-${field.name.replace(' ', '_').replace('.', '_')}`
         },
+
+        resolveRowClass(item) {
+            if (typeof this.rowClass == 'function') {
+                // console.log((this.rowClass)(item));
+                return this.rowClass(item);
+            }
+
+            return this.rowClass;
+
+        }
     },
 }
 </script>
