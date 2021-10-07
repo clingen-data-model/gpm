@@ -61,6 +61,14 @@ class GroupMember extends Entity {
         this.person.email = value;
     }
 
+    get isActive () {
+        return this.attributes.end_date === null;
+    }
+
+    get isRetired () {
+        return !this.isActive;
+    }
+
 
     matchesKeyword (keyword) {
         if (this.person.matchesKeyword(keyword)) {
