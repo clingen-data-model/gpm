@@ -32,10 +32,16 @@ class Group extends Entity {
 
     get coordinators () {
         return this.findMembersWithRole('coordinator')
+                .filter(m => m.isActive)
     }
 
     get chairs () {
         return this.findMembersWithRole('chair')
+                .filter(m => m.isActive)
+    }
+
+    get activeMembers () {
+        return this.members.filter(m => m.isActive)
     }
 
     addMember(member) {
@@ -46,6 +52,15 @@ class Group extends Entity {
         }
 
         this.members.push(new GroupMember(member));
+    }
+
+    removeMember(member) {
+        const idx = this.members.findIndex(m => m.id == member.id);
+        if (idx > -1) {
+            // this.members.splice(idx, 1, new GroupMember(member))
+            delete(this.members[idx]);
+            return;
+        }
     }
 
     findMember(memberId) {
