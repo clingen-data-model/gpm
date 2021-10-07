@@ -73,6 +73,10 @@ export default {
         },
         width() {
             switch (this.size) {
+                case 'xxs': 
+                    return 'lg:w-1/6'
+                case 'xs': 
+                    return 'lg:w-1/4'
                 case 'sm': 
                     return 'lg:w-1/3'
                 case 'md':
