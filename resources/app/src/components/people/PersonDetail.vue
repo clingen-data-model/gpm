@@ -68,7 +68,7 @@ export default {
                 if (value) {
                     this.$router.push({name: 'person-edit', params: {uuid: this.person.uuid}})
                 }
-                this.$router.push({name: 'person-detail', params: {uuid: this.person.uuid}})
+                this.$router.push({name: 'PersonDetail', params: {uuid: this.person.uuid}})
             }
         }
     },

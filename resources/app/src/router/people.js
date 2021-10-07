@@ -10,7 +10,7 @@ export default [
                 protected: true
             },
     },
-    { name: 'person-detail',
+    { name: 'PersonDetail',
         path: '/people/:uuid',
         component: PersonDetail,
         props: true,

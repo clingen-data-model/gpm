@@ -46,7 +46,7 @@ export default {
             this.workingPerson = this.person.attributes
         },
         backToDetail () {
-            this.$router.push({name: 'person-detail', params: {uuid: this.person.uuid}});
+            this.$router.push({name: 'PersonDetail', params: {uuid: this.person.uuid}});
         },
         handleCancel () {
             this.syncWorkingPerson();
