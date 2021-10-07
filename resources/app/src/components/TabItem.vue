@@ -1,5 +1,6 @@
 <script>
 export default {
+    name: 'TabItem',
     props: {
         label: {
             required: true,
