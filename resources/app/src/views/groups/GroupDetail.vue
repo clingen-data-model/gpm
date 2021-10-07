@@ -22,8 +22,24 @@
                 </div>
             </dictionary-row>
         </header>
-
-        <member-list :group="group"></member-list>
+        <tabs-container>
+            <tab-item label="Members">
+                <member-list :group="group"></member-list>
+            </tab-item>
+            <tab-item label="Scope">
+                Description of scope and gene list will go here
+            </tab-item>
+            <tab-item label="Ongoing Curation">
+                Curation review process, Evidence Summaries, etc. will go here
+            </tab-item>
+            <tab-item label="Documents">
+                Group documents will go here.
+            </tab-item>
+            <!--
+                <tab-item label="Manuscripts"></tab-item>
+                <tab-item label="Funding"></tab-item>
+            -->
+        </tabs-container>
 
         <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="this.$route.meta.title">
             <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
