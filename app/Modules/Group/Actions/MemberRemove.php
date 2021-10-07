@@ -19,6 +19,7 @@ class MemberRemove
     public function handle(GroupMember $groupMember, Carbon $endDate): GroupMember
     {
         $groupMember->update(['end_date' => $endDate]);
+        $groupMember->delete();
         
         Event::dispatch(new MemberRemoved($groupMember));
         return $groupMember;

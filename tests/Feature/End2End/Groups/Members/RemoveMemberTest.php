@@ -36,7 +36,7 @@ class RemoveMemberTest extends TestCase
     /**
      * @test
      */
-    public function can_retire_member_from_group()
+    public function can_remove_member_from_group()
     {
         $endDate = (new DateTime());
         $response = $this->json('DELETE', $this->url, [
@@ -46,7 +46,7 @@ class RemoveMemberTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonFragment($this->groupMember->fresh()->toArray());
 
-        $this->assertDatabaseMissing('group_members', [
+        $this->assertDatabaseHas('group_members', [
             'id' => $this->groupMember->id,
             'deleted_at' => $endDate->format('Y-m-d H:i:s')
         ]);
