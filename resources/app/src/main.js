@@ -73,9 +73,9 @@ const d = app
 app.use(store)
     .mixin({
         methods: {
-            userCan: permission => store.state.user.hasPermission(permission),
-            hasPermission: permission => store.state.user.hasPermission(permission),
-            hasRole: role => store.state.user.hasRole(role)
+            userCan: (permission, group) => store.state.user.hasPermission(permission, group),
+            hasPermission: (permission, group) => store.state.user.hasPermission(permission, group),
+            hasRole: (role, group) => store.state.user.hasRole(role, group)
         }
     })
     .use(router)
