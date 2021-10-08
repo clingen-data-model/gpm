@@ -28,10 +28,13 @@
 
     <alert-viewer></alert-viewer>
 
-    <footer class="absolute bottom-0 left-0 w-full">
-      <div id="dev-info" class="container mx-auto py-3 flex"></div>
+    <div id="dev-info" class="container mx-auto py-3 flex">
+      <pre>{{$store.state.user}}</pre>
+    </div>
+
+    <footer class="w-full">
       <div class="container mx-auto py-3 flex" id="footer-content">
-        
+          
       </div>
     </footer>
   </div>
