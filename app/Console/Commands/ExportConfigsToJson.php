@@ -40,7 +40,7 @@ class ExportConfigsToJson extends Command
     {
         $configs = ($this->option('configs'))
                         ? explode(',', $this->option('configs'))
-                        : ['expert-panels', 'next_actions', 'mail.from', 'groups'];
+                        : ['expert-panels', 'next_actions', 'mail.from', 'groups', 'system'];
 
         $this->info('Exporting '.implode(', ', $configs).' to JSON.');
 

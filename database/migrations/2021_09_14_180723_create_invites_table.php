@@ -25,7 +25,7 @@ class CreateInvitesTable extends Migration
             //     ->cascadeOnDelete()
             //     ->cascadeOnUpdate();
             $table->foreignId('person_id')
-                ->constrainted()
+                ->constrained()
                 ->cascadeOnDelete()
                 ->casacadeOnUpdate();
             $table->dateTime('redeemed_at')->nullable();

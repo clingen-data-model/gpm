@@ -63,7 +63,7 @@ class User extends Authenticatable implements CanResetPassword
 
     public function preferences()
     {
-        return $this->hasMany(Preference::class);
+        return $this->belongsToMany(Preference::class, 'user_preference');
     }
     
     public function routeNotificationForSlack()

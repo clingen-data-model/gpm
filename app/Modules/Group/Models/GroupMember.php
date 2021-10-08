@@ -114,6 +114,11 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
         return $query->whereNull('end_date');
     }
     
+    public function scopeIsRetired($query)
+    {
+        return $query->whereNotNull('end_date');
+    }
+    
 
     protected static function newFactory()
     {

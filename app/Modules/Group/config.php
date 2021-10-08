@@ -30,49 +30,49 @@ return [
     'roles' => [
         'coordinator' => [
             'id' => 101,
-            'name' => 'Coordinator',
+            'name' => 'coordinator',
         ],
         'chair' => [
             'id' => 102,
-            'name' => 'Chair'
+            'name' => 'chair'
         ],
         'biocurator' => [
             'id' => 103,
-            'name' => 'Biocurator'
+            'name' => 'biocurator'
         ],
         'expert' => [
             'id' => 104,
-            'name' => 'Expert'
+            'name' => 'expert'
         ],
         'core-approval-member' => [
             'id' => 105,
-            'name' => 'Core Approval Member'
+            'name' => 'core-approval-member'
         ],
     ],
     'permissions' => [
         'info-edit' => [
             'id' => 1001,
-            'name' => 'Edit Info',
+            'name' => 'info-edit',
         ],
         'members-invite' => [
             'id' => 1002,
-            'name' => 'Invite Members',
+            'name' => 'members-invite',
         ],
         'members-retire' => [
             'id' => 1003,
-            'name' => 'Retire Members'
+            'name' => 'members-retire'
         ],
         'members-remove' => [
             'id' => 1004,
-            'name' => 'Remove Members'
+            'name' => 'members-remove'
         ],
         'application-read' => [
             'id' => 1005,
-            'name' => 'Read Application'
+            'name' => 'application-read'
         ],
         'application-edit' => [
             'id' => 1006,
-            'name' => 'Edit Application'
+            'name' => 'application-edit'
         ],
     ],
     'role_permissions' => [
