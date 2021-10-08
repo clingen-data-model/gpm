@@ -1,6 +1,6 @@
 import Entity from '@/domain/entity';
 import Person from '@/domain/person';
-import { ArrayContains } from '../utils';
+import { arrayContains } from '@/utils';
 class User extends Entity {
     static defaults = {
         id: null,
@@ -23,7 +23,7 @@ class User extends Entity {
 
     hasRole (role, group = null) 
     {
-        return ArrayContains(role, this.roles)
+        return arrayContains(role, this.roles)
             || this.hasGroupRole(role, group);
     }
 
@@ -46,11 +46,11 @@ class User extends Entity {
     }
 
     hasDirectPermission(permission) {
-        return ArrayContains(permission, this.permissions);
+        return arrayContains(permission, this.permissions);
     }
 
     hasPermissionThroughRole (permission) {
-        return ArrayContains(permission, this.roles.map(m => m.permissions).flat());
+        return arrayContains(permission, this.roles.map(m => m.permissions).flat());
     }
 
     hasGroupPermission (permission, group) {
