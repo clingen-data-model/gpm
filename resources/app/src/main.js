@@ -75,7 +75,8 @@ app.use(store)
         methods: {
             userCan: (permission, group) => store.state.user.hasPermission(permission, group),
             hasPermission: (permission, group) => store.state.user.hasPermission(permission, group),
-            hasRole: (role, group) => store.state.user.hasRole(role, group)
+            hasAnyPermission: (permissions) => store.state.user.hasAnyPermission(permissions),
+            hasRole: (role, group) => store.state.user.hasRole(role, group),
         }
     })
     .use(router)

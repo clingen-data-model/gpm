@@ -38,6 +38,27 @@ class User extends Entity {
         return false;
     }
 
+    hasAnyPermission (permissions) 
+    {
+        if (!Array.isArray(permissions)) {
+            throw new Error('user.hasAnyArray expected array got '+(typeof permissions));
+        }
+        return permissions.map(p => {
+            let perm = p;
+            let group = null;
+            if (Array.isArray(p)) {
+                perm = p[0];
+                group = p[1];
+            }
+            // check all possible permission sets
+            return this.hasDirectPermission(perm)
+                || this.hasPermissionThroughRole(perm)
+                || this.hasGroupPermission(perm, group);    
+            })
+            .filter(r => r) //filter for true values only
+            .length > 0; // check we have at least one true result
+    }
+
     hasPermission (permission, group = null)
     {
         return this.hasDirectPermission(permission)

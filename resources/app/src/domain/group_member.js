@@ -93,8 +93,7 @@ class GroupMember extends Entity {
             permissionId = permission.id
         }
 
-        return this.attributes.permissions 
-                && this.attributes.permissions.findIndex(r => r.id == permissionId) > -1;
+        return arrayContains(permission, this.attributes.permissions);
     }
 
     hasPermissionThroughRole (permission) {
