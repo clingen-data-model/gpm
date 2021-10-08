@@ -221,7 +221,12 @@ export default {
                     <filter-icon></filter-icon>
                 </button>
             </div>
-            <router-link class="btn btn-xs" ref="addMemberButton" :to="{name: 'AddMember'}">Add Member</router-link>
+            <router-link 
+                class="btn btn-xs" 
+                ref="addMemberButton" 
+                :to="{name: 'AddMember'}" 
+                v-if="hasAnyPermission([['members-invite', group], 'groups-manage'])"
+            >Add Member</router-link>
         </head>
         <transition name="slide-fade-down">
             <div v-show="showFilter" class="flex justify-between px-2 space-x-2 bg-blue-200 rounded-lg">
@@ -280,18 +285,23 @@ export default {
                     </div>
                 </template>
                 <template v-slot:cell-actions="{item}">
-                    <!-- <edit-button @click="editMember(item)"></edit-button> -->
                     <dropdown-menu :hide-cheveron="true" class="relative">
                         <template v-slot:label class="btn btn-xs">
                             &hellip;
                         </template>
-                        <dropdown-item>
+                        <dropdown-item
+                            v-if="hasAnyPermission([['members-update', group], 'groups-manage'])"
+                        >
                             <div @click="editMember(item)">Update membership</div>
                         </dropdown-item>
-                        <dropdown-item>
+                        <dropdown-item
+                            v-if="hasAnyPermission([['members-retire', group], 'groups-manage'])"
+                        >
                             <div @click="confirmRetireMember(item)">Retire from group</div>
                         </dropdown-item>
-                        <dropdown-item>
+                        <dropdown-item
+                            v-if="hasAnyPermission([['members-remove', group], 'groups-manage'])"
+                        >
                             <div @click="confirmRemoveMember(item)">Remove from group</div>
                         </dropdown-item>
                     </dropdown-menu>
