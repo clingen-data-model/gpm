@@ -1,6 +1,7 @@
 import Entity from './entity'
 import Person from './person'
 import configs from '@/configs.json'
+import { arrayContains } from '../utils';
 
 class GroupMember extends Entity {
     static dates = [
@@ -79,16 +80,14 @@ class GroupMember extends Entity {
     }
 
     hasRole (role) {
-        let roleId = role;
-        if (typeof role == 'object') {
-            roleId = role.id
-        }
-
-        return this.attributes.roles 
-                && this.attributes.roles.findIndex(r => r.id == roleId) > -1;
+        return arrayContains(role, this.roles);
     }
 
     hasPermission (permission) {
+        return this.hasDirectPermission(permission) || this.hasPermissionThroughRole(permission);
+    }
+
+    hasDirectPermission (permission) {
         let permissionId = permission;
         if (typeof permission == 'object') {
             permissionId = permission.id

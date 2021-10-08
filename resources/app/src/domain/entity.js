@@ -13,7 +13,6 @@ class Entity {
 
     constructor(attributes = {}) {
 
-
         this.attributes = {...this.constructor.defaults, ...attributes}
 
         for (let attr in this.attributes) {

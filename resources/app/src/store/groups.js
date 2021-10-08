@@ -193,7 +193,6 @@ export const actions = {
 
     async memberRemove ({ commit }, {uuid, memberId, endDate}) {
         const url = `${baseUrl}/${uuid}/members/${memberId}`;
-         console.log({uuid, memberId, endDate})
         return await api.delete(url, {data: { end_date: endDate }})
         .then(response => {
             commit('removeMember', response.data.data);

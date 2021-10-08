@@ -96,7 +96,7 @@ describe('people store actions', () => {
             data, 
             {items: []}, 
             [
-                { type: 'addPerson', personData}
+                { type: 'addPerson', payload: personData}
             ]
         )
     });

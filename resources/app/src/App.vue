@@ -28,9 +28,12 @@
 
     <alert-viewer></alert-viewer>
 
-    <div id="dev-info" class="container mx-auto py-3 flex">
-      <pre>{{$store.state.user}}</pre>
-    </div>
+    <dev-component id="dev-info" class="container mx-auto py-3">
+      <h3>Developer Info</h3>
+      <collapsible title="Current User">
+        <pre>{{$store.state.user.attributes}}</pre>
+      </collapsible>
+    </dev-component>
 
     <footer class="w-full">
       <div class="container mx-auto py-3 flex" id="footer-content">

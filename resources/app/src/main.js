@@ -33,6 +33,9 @@ app.component('data-table', DataTable);
 import ModalDialog from './components/ModalDialog'
 app.component('modal-dialog', ModalDialog);
 
+import Collapsible from './components/Collapsible'
+app.component('collapsible', Collapsible);
+
 import DevComponent from './components/dev/DevComponent'
 app.component('dev-component', DevComponent);
 import DevTodo from './components/dev/DevTodo'
@@ -63,10 +66,18 @@ app.component('object-dictionary', ObjectDictionary)
 app.component('object-dict', ObjectDictionary)
 
 import ClickOutside from './directives/click_outside'
-
 app.directive('click-outside', ClickOutside)
 
+const d = app
+
 app.use(store)
+    .mixin({
+        methods: {
+            userCan: permission => store.state.user.hasPermission(permission),
+            hasPermission: permission => store.state.user.hasPermission(permission),
+            hasRole: role => store.state.user.hasRole(role)
+        }
+    })
     .use(router)
     .use(CKEditor)
     .mount('#app')

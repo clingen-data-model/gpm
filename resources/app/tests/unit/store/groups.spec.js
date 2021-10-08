@@ -271,7 +271,7 @@ describe('group actions', () => {
             actions.memberRemove,
             {uuid: groupData.uuid, memberId: member.id, endData: member.end_date},
             {},
-            [{type: 'addMemberToGroup', payload: member}]
+            [{type: 'removeMember', payload: member}]
         );
     });
 });

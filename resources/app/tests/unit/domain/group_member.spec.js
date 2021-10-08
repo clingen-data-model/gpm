@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import GroupMember from '@/domain/group_member'
+import configs from '@/configs.json'
 
 describe('GroupMember entity', () => {
     it('knows_if_it_has_a_role', () => {
@@ -39,11 +40,11 @@ describe('GroupMember entity', () => {
     it('knows if the member has a permission through a role', () => {
         const member = new GroupMember({
             roles: [
-                {name: 'Coordinator', id: 1}
+                {name: 'coordinator', id: 1}
             ]
         });
 
-        expect(member.hasPermissionThroughRole({name: 'info-edit', id: 1}))
+        expect(member.hasPermissionThroughRole(configs.groups.permissions['info-edit']))
             .to.be.true;
 
             expect(member.hasPermissionThroughRole({name: 'farting-inpublic', id: 666}))

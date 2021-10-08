@@ -9,6 +9,7 @@ import PeopleStore from '@/store/people.js'
 import axios from '@/http/api'
 import isAuthError from '@/http/is_auth_error'
 import module_factory from '@/store/module_factory';
+import User from '@/domain/user'
 // import router from '../router'
 
 
@@ -73,7 +74,7 @@ export const mutations = {
         state.openRequests--;
     },
     setCurrentUser(state, user) {
-        state.user = user
+        state.user = new User(user)
         store.commit('setAuthenticated', true)
     },
     clearCurrentUser(state) {
@@ -95,7 +96,7 @@ export const mutations = {
 const store = createStore({
     state: {
         hostname: process.env.VUE_APP_URL,
-        user: {...nullUser},
+        user: new User(),
         openRequests: 0,
         authenticating: true,
         authenticated: null,
@@ -116,7 +117,7 @@ const store = createStore({
                 try {
                     await axios.get('/api/current-user')
                         .then(response => {
-                            commit('setCurrentUser', response.data)
+                            commit('setCurrentUser', response.data.data)
                         })
                 } catch (error) {
                     commit('clearCurrentUser');

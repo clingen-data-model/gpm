@@ -5,7 +5,13 @@ export const testAction = (action, actionPayload, state, expectedMutations) => {
 
     const commit = (commitType, commitData) => {
         if (!expectedMutations[count]) {
-            throw new Error('Unexpected mutation "'+commitType+'" called.')
+            throw new Error('test_utils.testAction error: Unexpected mutation "'+commitType+'" called.')
+        }
+        if (!expectedMutations[count].payload) {
+            throw new Error('test_utils.testAction error: Expected payload in "expectedMutations" argument')
+        }
+        if (!expectedMutations[count].type) {
+            throw new Error('test_utils.testAction error: Expected type in "expectedMutations" argument')
         }
         const expectedMutation = expectedMutations[count];
 
