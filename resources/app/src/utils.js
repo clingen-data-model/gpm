@@ -30,7 +30,7 @@ export const camelCase = string => {
     return parts.map(str => str.charAt(0).toUpperCase()+str.slice(1)).join('');
 }
 
-export const ArrayContains = (needle, haystack) => {
+export const arrayContains = (needle, haystack) => {
     if (!haystack) {
         return false;
     }
@@ -47,4 +47,13 @@ export const ArrayContains = (needle, haystack) => {
     return haystack
         .map(i => i.id)
         .includes(needle);
+}
+
+export default {
+    arrayContains,
+    normalizeCase,
+    titleCase,
+    kebabCase,
+    camelCase,
+    snakeCase
 }
