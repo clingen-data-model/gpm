@@ -4,7 +4,7 @@
             <slot name="title">
                 <div class="flex">
                     <right-cheveron v-if="!expanded" class="-ml-1"></right-cheveron>
-                    <down-cheveron v-if="expanded"></down-cheveron>
+                    <down-cheveron v-if="expanded" class="-ml-1"></down-cheveron>
                     <strong>{{title}}</strong>
                 </div>
             </slot>
@@ -40,7 +40,8 @@ export default {
     },
     emits: [
         'expanded',
-        'collpsed'
+        'collapsed',
+        'update:modelUpdate'
     ],
     data() {
         return {
