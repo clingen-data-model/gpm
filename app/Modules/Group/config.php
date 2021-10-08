@@ -66,16 +66,20 @@ return [
             'id' => 1004,
             'name' => 'members-remove'
         ],
-        'application-read' => [
+        'members-upate' => [
             'id' => 1005,
+            'name' => 'members-update'
+        ],
+        'application-read' => [
+            'id' => 1006,
             'name' => 'application-read'
         ],
         'application-edit' => [
-            'id' => 1006,
+            'id' => 1007,
             'name' => 'application-edit'
         ],
     ],
     'role_permissions' => [
-        'coordinator' => [1001,1002,1003,1004,1005,1006]
+        'coordinator' => [1001,1002,1003,1004,1005,1006, 1007]
     ]
 ];
