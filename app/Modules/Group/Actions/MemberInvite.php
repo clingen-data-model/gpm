@@ -21,7 +21,12 @@ class MemberInvite
     use AsController;
     use AsObject;
     
-    public function __construct(private PersonInvite $invitePerson, private MemberAdd $addMember, private MemberAssignRole $assignRole)
+    public function __construct(
+        private PersonCreate $createPerson,
+        private PersonInvite $invitePerson, 
+        private MemberAdd $addMember, 
+        private MemberAssignRole $assignRole
+    )
     {
     }
 
@@ -33,10 +38,17 @@ class MemberInvite
             unset($data['role_ids']);
         }
 
-        $inviteData = $data;
-        $inviteData['inviter_type'] = get_class($group);
-        $inviteData['inviter_id'] = $group->id;
-        [$person, $invite] = $this->invitePerson->handle($inviteData);
+        $personData = $data;
+        $personUuid = Uuid::uuid4();
+        $person = $this->createPerson->handle(
+            uuid: $personUuid, 
+            first_name: $data['first_name'],
+            last_name: $data['last_name'],
+            email: $data['email'],
+            phone: isset($data['phone']) ? $data['phone'] : null
+        );
+
+        $this->invitePerson->handle(person: $person, inviter: $group);
         
         $newMember = $this->addMember->handle($group, $person);
 
