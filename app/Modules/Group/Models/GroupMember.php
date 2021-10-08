@@ -48,7 +48,7 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
         'person_id',
         'start_date',
         'end_date',
-        'v1_contact',
+        'is_contact',
     ];
 
     /**
@@ -60,7 +60,7 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
         'id' => 'integer',
         'group_id' => 'integer',
         'person_id' => 'integer',
-        'v1_contact' => 'boolean',
+        'is_contact' => 'boolean',
     ];
 
     protected $dates = [
@@ -106,7 +106,7 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
 
     public function scopeContact($query)
     {
-        return $query->where('v1_contact', 1);
+        return $query->where('is_contact', 1);
     }
     
     public function scopeIsActive($query)

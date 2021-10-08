@@ -184,7 +184,7 @@ class DataMigration
                     [
                         'group_id' => $group->id,
                         'person_id' => $row->person_id,
-                        'v1_contact' => 1
+                        'is_contact' => 1
                     ],
                 );
         });

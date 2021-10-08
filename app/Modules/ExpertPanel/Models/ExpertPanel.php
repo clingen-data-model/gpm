@@ -123,7 +123,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         $member = GroupMember::firstOrCreate([
             'person_id' => $person->id,
             'group_id' => $this->group_id,
-            'v1_contact' => 1
+            'is_contact' => 1
         ]);
         $this->touch();
     }
