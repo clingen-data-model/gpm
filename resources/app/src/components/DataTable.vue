@@ -42,7 +42,7 @@
                         @click="field.sortable && updateSort(field)"
                         :colspan="(field.colspan ? field.colspan : 1)"
                     >
-                        <div class="block py-1 flex justify-between place-items-center">
+                        <div class="py-1 flex justify-between place-items-center">
                             <div>
                                 <slot :name="`header-${field.name}`" :item="{field}">
                                     {{this.getFieldLabel(field)}}
@@ -66,30 +66,28 @@
                 </tr>
                 </slot>
             </thead>
-            <tbody>
-                <template v-for="item in sortedFilteredData" :key="item.uuid">
-                    <tr :class="resolveRowClass(item)" @click="handleRowClick(item)">
-                        <td 
-                            v-for="field in fields" 
-                            :key="field.name"
-                            class="text-left p-1 px-3 border align-top"
-                            :class="getCellClass(field)"
-                        >
-                            <slot :name="getSlotName(field)" :item="item" :field="field" :value="resolveDisplayAttribute(item, field)">
-                                {{resolveDisplayAttribute(item, field)}}
+            <tbody v-for="item in sortedFilteredData" :key="item.uuid">
+                <tr :class="resolveRowClass(item)" @click="handleRowClick(item)">
+                    <td 
+                        v-for="field in fields" 
+                        :key="field.name"
+                        class="text-left p-1 px-3 border align-top"
+                        :class="getCellClass(field)"
+                    >
+                        <slot :name="getSlotName(field)" :item="item" :field="field" :value="resolveDisplayAttribute(item, field)">
+                            {{resolveDisplayAttribute(item, field)}}
+                        </slot>
+                    </td>
+                </tr>
+                <transition name="fade-slide-down">
+                    <tr class="details" :class="rowClass(item)" v-if="detailRows && item.showDetails">
+                        <td :colspan="fields.length" class="border-none p-0">
+                            <slot name="detail" :item="item">
+                                <object-dictionary :obj="item"></object-dictionary>
                             </slot>
                         </td>
                     </tr>
-                    <transition name="fade-slide-down">
-                        <tr class="details" :class="rowClass(item)" v-if="detailRows && item.showDetails">
-                            <td :colspan="fields.length" class="border-none p-0">
-                                <slot name="detail" :item="item">
-                                    <object-dictionary :obj="item"></object-dictionary>
-                                </slot>
-                            </td>
-                        </tr>
-                    </transition>
-                </template>
+                </transition>
             </tbody>
         </table>
     </div>
