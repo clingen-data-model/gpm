@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\URL;
 use Infrastructure\Service\MessageBus;
 use Illuminate\Support\ServiceProvider;
 use Infrastructure\Service\MessageBusInterface;
+use Lorisleiva\Actions\Facades\Actions;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,5 +29,6 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.url_scheme')) {
             URL::forceScheme(config('app.url_scheme'));
         }
+        Actions::registerCommands('app/Actions');
     }
 }

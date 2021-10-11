@@ -43,6 +43,19 @@ class PeopleController extends Controller
     public function show($uuid)
     {
         $person = Person::findByUuidOrFail($uuid);
+        $person->load([
+            'memberships', 
+            'memberships.group', 
+            'memberships.roles', 
+            'memberships.permissions', 
+            'memberships.group.type',
+            'institution',
+            'primaryOccupation',
+            'country',
+            'race',
+            'ethnicity',
+            'gender',
+        ]);
         return $person;
     }
 

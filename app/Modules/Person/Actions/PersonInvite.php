@@ -15,7 +15,7 @@ class PersonInvite
     {
     }
 
-    public function handle(Person $person, ?Model $inviter = null): array
+    public function handle(Person $person, ?Model $inviter = null): Invite
     {
         $invite = Invite::create([
             'inviter_id' => ($inviter) ? $inviter->id : null,
@@ -28,6 +28,6 @@ class PersonInvite
 
         Event::dispatch(new PersonInvited($invite));
 
-        return [$person, $invite];
+        return $invite;
     }
 }

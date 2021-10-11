@@ -19,7 +19,7 @@ class PersonInvited extends PersonEvent
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
 
-    public Model $inviter;
+    public ?Model $inviter;
     public Person $person;
 
     /**
@@ -43,7 +43,11 @@ class PersonInvited extends PersonEvent
         if ($this->inviter) {
             return 'Invited to join '.$this->inviter->name;
         }
-        return 'Invited by '.Auth()::user()->name;
+        if (Auth::user()) {
+            return 'Invited by '.Auth::user()->name;
+        }
+        
+        return 'Invited by system';
     }
 
     public function getSubject(): Model

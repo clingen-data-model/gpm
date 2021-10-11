@@ -93,6 +93,16 @@ class User extends Authenticatable implements CanResetPassword
         return $this->allPermissions;
     }
 
+    /**
+     * DOMAIN
+     */
+
+     public function isLinkedToPerson(): bool
+     {
+         return (bool)$this->person;
+     }
+     
+
     // Factory support
     protected static function newFactory()
     {

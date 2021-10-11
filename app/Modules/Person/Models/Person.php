@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\Group\Models\Traits\HasMembers;
 use App\Modules\Person\Models\PrimaryOccupation;
 use App\Modules\Group\Models\Traits\IsGroupMember;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -166,6 +167,16 @@ class Person extends Model
 
 
     /**
+     * Get the invite associated with the Person
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function invite(): HasOne
+    {
+        return $this->hasOne(Invite::class);
+    }
+
+    /**
      * QUERIES
      */
     public static function findByEmail($email)
@@ -176,11 +187,21 @@ class Person extends Model
     /**
      * ACCESSORS
      */
-    public function getNameAttribute()
+    public function getNameAttribute(): String
     {
         return $this->first_name.' '.$this->last_name;
     }
     
+
+    /**
+     * DOMAIN
+     */
+    public function isLinkedToUser(): bool
+    {
+        return !is_null($this->user_id);
+    }
+    
+
 
     // Factory
     protected static function newFactory()
