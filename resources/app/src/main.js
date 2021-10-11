@@ -67,8 +67,8 @@ app.component('object-dict', ObjectDictionary)
 
 import ClickOutside from './directives/click_outside'
 app.directive('click-outside', ClickOutside)
-
-const d = app
+import RemainingHeight from '@/directives/remaining_height'
+app.directive('remaining-height', RemainingHeight)
 
 app.use(store)
     .mixin({
