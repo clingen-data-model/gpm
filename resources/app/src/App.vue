@@ -24,7 +24,10 @@
       </div>
     </header>
 
-    <router-view class="container mx-auto my-3"/>
+    <div class="my-3">
+      <router-view class="container mx-auto mb-1"/>
+      <div class="container mx-auto" id="debug-info"></div>
+    </div>
 
     <alert-viewer></alert-viewer>
 
