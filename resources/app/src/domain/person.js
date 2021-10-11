@@ -1,15 +1,27 @@
 import Entity from './entity';
 
 class Person extends Entity {
-    static default = {
-        'uuid': '',
-        'first_name': '',
-        'last_name': '',
-        'email': '',
-        'phone':'',
-        'created_at': null,
-        'updated_at': null,
-        'deleted_at': null
+    static defaults = {
+        uuid: '',
+        first_name: '',
+        last_name: '',
+        email: '',
+        phone:'',
+        institution_id: null,
+        institution: {},
+        credentials: '',
+        race_id: null,
+        race: {},
+        race_other: '',
+        ethnicity_id: null,
+        ethnicity: {},
+        ethnicity_other: '',
+        gender_id: null,
+        gender: {},
+        gender_other: '',
+        created_at: null,
+        updated_at: null,
+        deleted_at: null
     }
 
     static dates = [
