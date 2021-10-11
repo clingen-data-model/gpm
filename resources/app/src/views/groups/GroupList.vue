@@ -1,10 +1,15 @@
 <template>
     <div>
+        <h1 class="flex justify-between items-center">
+            Groups
+            <button v-if="hasPermission('groups-manage')" class="btn btn-xs" @click="startCreateGroup">Create a group</button>
+        </h1>
         <data-table 
             :data="groups" 
             :fields="fields" 
             v-model:sort="sort"
             :row-click-handler="goToGroup"
+            v-remaining-height
         ></data-table>
     </div>
 </template>
@@ -65,21 +70,9 @@ export default {
             filteredGroups,
             goToItem,
             goToGroup: goToItem,
+            startCreateGroup: () => { console.log('start creating a group here!')}
         }
     }
-    // computed: {
-    //     ...mapGetters({
-    //         groups: 'groups/all'
-    //     }),
-    //     filteredGroups () {
-    //         return this.groups
-    //     }
-    // },
-    // methods: {
 
-    // },
-    // mounted () {
-
-    // }
 }
 </script>
