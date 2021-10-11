@@ -106,6 +106,11 @@ export default {
         IconCheveronDown,
         IconCheveronUp
     },
+    emits: [
+        'rowClicked',
+        'update:sort',
+        'sort'
+    ],
     props: {
         data: {
             required: false,
@@ -327,6 +332,7 @@ export default {
             return false;
         },
         handleRowClick(item) {
+            this.$emit('rowClick', item);
             if (this.rowClickHandler) {
                 this.rowClickHandler(item);
             }
