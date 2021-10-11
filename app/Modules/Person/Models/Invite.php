@@ -29,7 +29,7 @@ class Invite extends Model
     ];
 
     public $casts = [
-        'group_id' => 'integer',
+        'inviter_id' => 'integer',
         'person_id' => 'integer',
         'redeemed_at' => 'datetime'
     ];
