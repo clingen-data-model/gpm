@@ -204,6 +204,10 @@ export default {
         cancelRemove () {
             this.selectedMember = null;
             this.showConfirmRemove = false;
+        },
+        goToMember (member) {
+            console.log('goToMember', member)
+            this.$router.push({name: 'PersonDetail', params: {uuid: member.person.uuid}})
         }
     }
 }
@@ -262,12 +266,13 @@ export default {
                 v-model:sort="sort" 
                 :detailRows="true" 
                 @update:sort="logEvent"
-                :row-class="(item) => item.isRetired ? 'retired-member' : null"
+                :row-class="(item) => 'cursor-pointer'+ (item.isRetired ? ' retired-member' : '')"
+                @rowClick="goToMember"
             >
                 <template v-slot:cell-id="{item}">
-                    <button @click="toggleItemDetails(item)" class="w-6">
-                        <chev-right-icon v-if="!item.showDetails"></chev-right-icon>
-                        <chev-down-icon v-if="item.showDetails"></chev-down-icon>
+                    <button @click.stop="toggleItemDetails(item)" class="w-9 align-center block -mx-3">
+                        <chev-right-icon v-if="!item.showDetails" class="m-auto cursor-pointer"></chev-right-icon>
+                        <chev-down-icon v-if="item.showDetails" class="m-auto cursor-pointer"></chev-down-icon>
                     </button>
                 </template>
                 <template v-slot:cell-roles="{value}">
