@@ -1,6 +1,7 @@
 <template>
     <div>
         <header class="pb-4">
+            <note>Groups</note>
             <h1>{{group.name}}</h1>
             <dictionary-row label="Chairs:">
                 <template v-slot:label><strong>Chairs:</strong></template>
@@ -45,7 +46,7 @@
         <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="this.$route.meta.title">
             <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
         </modal-dialog>
-        <teleport to='#dev-info'>
+        <teleport to='#debug-info'>
             <note>group.id: {{group.id}}</note>
         </teleport>
     </div>
