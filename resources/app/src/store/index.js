@@ -36,7 +36,7 @@ axios.interceptors.response.use(
                 if (error.response.data.includes('The request to access this resource was rejected.')) {
                     const matches = error.response.data.match(/Reference this support identifier:\s*(\d+)/)
                     const supportId = matches[1] || null;
-                    store.commit('pushError', 'UNC\'s security filters thinks you\'re up to no good. But I\'m sure you didn\'t mean anything by it.  Please contact support and let them know you ran intoa problem.')
+                    store.commit('pushError', 'UNC\'s security filters thinks you\'re up to no good. But I\'m sure you didn\'t mean anything by it.  Please contact support and let them know you ran into a problem. Support ID: '+supportId)
                 } else {
                     store.commit('pushError', 'You do not have permission to complete that action.  If you think this is an error please contact support.')
                 }
@@ -55,11 +55,8 @@ axios.interceptors.response.use(
     }
 );
 
-const nullUser = {
-    id: null,
-    name: null,
-    email: null,
-};
+const nullUser = new User();
+console.log(nullUser);
 
 const docTypeStore = module_factory({
     baseUrl: '/api/document-types', 
@@ -78,8 +75,7 @@ export const mutations = {
         store.commit('setAuthenticated', true)
     },
     clearCurrentUser(state) {
-        console.log('clearCurrentUser');
-        state.user = {...nullUser}
+        state.user = new User();
         store.commit('setAuthenticated', false)
     },
     setAuthenticated(state, authVal) {
