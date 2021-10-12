@@ -1,6 +1,7 @@
 const PersonDetail = () => import (/* person-detail */ '@/components/people/PersonDetail')
 const PersonForm = () => import (/* person-detail */ '@/components/people/PersonForm')
 const PeopleIndex = () => import (/* people-index */ '@/views/PeopleIndex')
+const OnboardingWizard = () => import (/* onboarding-wizard */ '@/views/OnboardingWizard')
 
 export default [
     { name: 'people-index',
@@ -31,6 +32,9 @@ export default [
                 props: true,
             }
         ]
-
     },
+    { name: 'RedeemInvite',
+        path: '/redeem-invite',
+        component: OnboardingWizard
+    }
 ]
