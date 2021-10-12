@@ -41,6 +41,8 @@ app.component('dev-component', DevComponent);
 import DevTodo from './components/dev/DevTodo'
 app.component('dev-todo', DevTodo);
 
+import DataForm from '@/components/forms/DataForm'
+app.component('data-form', DataForm);
 import FormContainer from './components/forms/FormContainer'
 app.component('form-container', FormContainer);
 import Checkbox from '@/components/forms/Checkbox';
