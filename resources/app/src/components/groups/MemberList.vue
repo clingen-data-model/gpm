@@ -188,7 +188,7 @@ export default {
             this.showConfirmRemove = true;
             this.selectedMember = member;
         },
-        async removeMember (member) {
+        async removeMember () {
             try {
                 await this.$store.dispatch('groups/memberRemove', {
                     uuid: this.group.uuid,
@@ -206,7 +206,6 @@ export default {
             this.showConfirmRemove = false;
         },
         goToMember (member) {
-            console.log('goToMember', member)
             this.$router.push({name: 'PersonDetail', params: {uuid: member.person.uuid}})
         },
         hasAnyMemberPermission () {
