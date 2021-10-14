@@ -70,7 +70,6 @@ export default {
             this.$router.push(`/people/${person.uuid}/edit`)
         },
         canEdit(person) {
-            console.log(person)
             if (this.hasPermission('people-manage')) {
                 return true;
             }
