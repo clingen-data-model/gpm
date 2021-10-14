@@ -107,7 +107,7 @@ export default {
         IconCheveronUp
     },
     emits: [
-        'rowClicked',
+        'rowClick',
         'update:sort',
         'sort'
     ],
