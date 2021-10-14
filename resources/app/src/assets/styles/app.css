@@ -45,8 +45,17 @@ select.sm,
 textarea.sm {
     @apply px-1 py-0.5 text-sm;
 }
+
 .link {
     @apply text-blue-500 hover:underline;
+}
+
+.nav-item:after { 
+    @apply text-gray-400;
+    content: "|";
+}
+.nav-item:last-child:after {
+    content: '';
 }
 
 .btn {
