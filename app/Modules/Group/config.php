@@ -66,7 +66,7 @@ return [
             'id' => 1004,
             'name' => 'members-remove'
         ],
-        'members-upate' => [
+        'members-update' => [
             'id' => 1005,
             'name' => 'members-update'
         ],
