@@ -83,7 +83,8 @@ export default {
         handleOutsideClick() {
             this.menuOpen = false;
         },
-        toggleMenu () {
+        toggleMenu (event) {
+            event.stopPropagation();
             this.menuOpen = !this.menuOpen
             if (this.menuOpen) {
                 this.$refs.dropdownMenu.focus()
