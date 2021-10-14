@@ -87,17 +87,25 @@ router.beforeEach(async (to, from, next) => {
     } catch (error) {
         console.log(error);
     }
-
+    
     if (!to.name.includes('login') && !store.getters.isAuthed) {
         next({name: 'login', query: { redirect: to.fullPath }});
         return;
     }
 
     if (to.name == 'login' && store.getters.isAuthed) {
-        next({name: 'home'})
+        next({name: 'Dashboard'})
         return;
     }
 
+    if (to.meta.permissions && Array.isArray(to.meta.permissions) && to.meta.permissions.length > 0) {
+        if (store.getters.currentUser.hasAnyPermission(to.meta.permissions)) {
+            next();
+        }
+        router.replace({name: 'Dashboard'})
+        // alert('You don\'t have permissions!');
+    }
+    
     next();
 })
 
