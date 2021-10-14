@@ -208,6 +208,17 @@ export default {
         goToMember (member) {
             console.log('goToMember', member)
             this.$router.push({name: 'PersonDetail', params: {uuid: member.person.uuid}})
+        },
+        hasAnyMemberPermission () {
+            const hasPerm = this.hasAnyPermission([
+                ['members-update', this.group],
+                ['members-retire', this.group],
+                ['members-remove', this.group],
+                'groups-manage'
+            ])
+
+            console.log(hasPerm);
+            return hasPerm;
         }
     }
 }
@@ -290,7 +301,7 @@ export default {
                     </div>
                 </template>
                 <template v-slot:cell-actions="{item}">
-                    <dropdown-menu :hide-cheveron="true" class="relative">
+                    <dropdown-menu :hide-cheveron="true" class="relative" v-if="hasAnyMemberPermission()">
                         <template v-slot:label class="btn btn-xs">
                             &hellip;
                         </template>

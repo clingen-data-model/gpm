@@ -101,9 +101,10 @@ router.beforeEach(async (to, from, next) => {
     if (to.meta.permissions && Array.isArray(to.meta.permissions) && to.meta.permissions.length > 0) {
         if (store.getters.currentUser.hasAnyPermission(to.meta.permissions)) {
             next();
+            return;
         }
         router.replace({name: 'Dashboard'})
-        // alert('You don\'t have permissions!');
+        store.commit('pushError', 'You don\'t have permission to access '+to.path)
     }
     
     next();

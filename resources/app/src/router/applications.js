@@ -27,7 +27,8 @@ export default [{
             modal: CreateApplicationForm,
         },
         meta: {
-            protected: true
+            protected: true,
+            permissions: ['ep-applications-manage']
         },
         children: [{
                 name: 'gceps',
@@ -38,7 +39,8 @@ export default [{
                     modal: CreateApplicationForm,
                 },
                 meta: {
-                    protected: true
+                    protected: true,
+                    permissions: ['ep-applications-manage']
                 },
             },
             {
@@ -50,7 +52,8 @@ export default [{
                     modal: CreateApplicationForm,
                 },
                 meta: {
-                    protected: true
+                    protected: true,
+                    permissions: ['ep-applications-manage']
                 }
             },
         ]
@@ -71,7 +74,8 @@ export default [{
                     default: ApplicationDetail,
                     showModal: true,
                     protected: true,
-                    title: 'Add Next Action'
+                    title: 'Add Next Action',
+                    permissions: ['ep-applications-manage']
                 },
                 props: true,
             },
@@ -83,7 +87,8 @@ export default [{
                     default: ApplicationDetail,
                     showModal: true,
                     protected: true,
-                    title: 'Add Next Action'
+                    title: 'Add Next Action',
+                    permissions: ['ep-applications-manage']
                 },
                 props: true,
             },
@@ -94,6 +99,7 @@ export default [{
                 meta: {
                     showModal: true,
                     protected: true,
+                    permissions: ['ep-applications-manage']
                 },
                 props: true
             },
@@ -104,7 +110,8 @@ export default [{
                 meta: {
                     showModal: true,
                     protected: true,
-                    title: 'Add Log Entry'
+                    permissions: ['ep-applications-manage'],
+                    title: 'Add Log Entry',
                 },
                 props: true,
             },
@@ -115,6 +122,7 @@ export default [{
                 meta: {
                     showModal: true,
                     protected: true,
+                    permissions: ['ep-applications-manage'],
                     title: 'Edit Log Entry'
                 },
                 props: true
@@ -126,6 +134,7 @@ export default [{
                 meta: {
                     showModal: true,
                     protected: true,
+                    permissions: ['ep-applications-manage'],
                 },
                 props: true
             },
@@ -135,7 +144,8 @@ export default [{
                 component: NewContactForm,
                 meta: {
                     showModal: true,
-                    protected: true
+                    protected: true,
+                    permissions: ['ep-applications-manage'],
                 }
             },
             {
@@ -146,7 +156,8 @@ export default [{
                 meta: {
                     default: ApplicationDetail,
                     showModal: true,
-                    protected: true
+                    protected: true,
+                    permissions: ['ep-applications-manage'],
                 }
             }
         ]
