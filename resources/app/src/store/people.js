@@ -127,6 +127,13 @@ export const actions = {
             .then(response => {
                 commit('addPerson', response.data);
             })
+    },
+
+    async updateProfile({ commit }, {uuid, attributes}) {
+        await api.put(`${baseUrl}/${uuid}/profile`, attributes)
+            .then(response => {
+                commit('addPerson', response.data);
+            })
     }
 
 };

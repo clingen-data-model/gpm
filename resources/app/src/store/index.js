@@ -21,39 +21,39 @@ axios.interceptors.request.use(function (config) {
     return Promise.reject(error)
 });
 
-axios.interceptors.response.use(
-    response => {
-        store.commit('removeRequest');
-        return response
-    }, 
-    error => {
-        store.commit('removeRequest');
-        switch (error.response.status) {
-            case 401:
-                store.commit('setAuthenticated', false)
-                break;
-            case 403:
-                if (error.response.data.includes('The request to access this resource was rejected.')) {
-                    const matches = error.response.data.match(/Reference this support identifier:\s*(\d+)/)
-                    const supportId = matches[1] || null;
-                    store.commit('pushError', 'UNC\'s security filters thinks you\'re up to no good. But I\'m sure you didn\'t mean anything by it.  Please contact support and let them know you ran into a problem. Support ID: '+supportId)
-                } else {
-                    store.commit('pushError', 'You do not have permission to complete that action.  If you think this is an error please contact support.')
-                }
-                break;
-            case 404:
-                // store.commit('pushError', 'We can\'t find what you\'re looking for.');
-                break;
-            case 422:
-                store.commit('pushError', 'There was a problem with your submission');
-                break
-            case 500:
-                store.commit('pushError', 'We\'ve encountered a problem trying to complete your request.  Support has been notified and we will be in touch.');
-                break;
-        }
-        return Promise.reject(error);
-    }
-);
+// axios.interceptors.response.use(
+//     response => {
+//         store.commit('removeRequest');
+//         return response
+//     }, 
+//     error => {
+//         store.commit('removeRequest');
+//         switch (error.response.status) {
+//             case 401:
+//                 store.commit('setAuthenticated', false)
+//                 break;
+//             case 403:
+//                 if (error.response.data.includes('The request to access this resource was rejected.')) {
+//                     const matches = error.response.data.match(/Reference this support identifier:\s*(\d+)/)
+//                     const supportId = matches[1] || null;
+//                     store.commit('pushError', 'UNC\'s security filters thinks you\'re up to no good. But I\'m sure you didn\'t mean anything by it.  Please contact support and let them know you ran into a problem. Support ID: '+supportId)
+//                 } else {
+//                     store.commit('pushError', 'You do not have permission to complete that action.  If you think this is an error please contact support.')
+//                 }
+//                 break;
+//             case 404:
+//                 // store.commit('pushError', 'We can\'t find what you\'re looking for.');
+//                 break;
+//             case 422:
+//                 store.commit('pushError', 'There was a problem with your submission');
+//                 break
+//             case 500:
+//                 store.commit('pushError', 'We\'ve encountered a problem trying to complete your request.  Support has been notified and we will be in touch.');
+//                 break;
+//         }
+//         return Promise.reject(error);
+//     }
+// );
 
 const nullUser = new User();
 console.log(nullUser);

@@ -12,8 +12,8 @@
             :label-width="24"
         ></input-row>
         <input-row label="Confirm Password" 
-            v-model="confirm_password" type="password" 
-            :errors="errors.confirm_password" 
+            v-model="password_confirmation" type="password" 
+            :errors="errors.password_confirmation" 
             :label-width="24"
         ></input-row>
         <div class="flex flex-row-reverse">
@@ -22,6 +22,11 @@
     </div>
 </template>
 <script>
+import {ref, onMounted, watch} from 'vue'
+import {redeemInvite} from '@/domain/onboarding_service'
+import isValidationError from '@/http/is_validation_error'
+import { useStore } from 'vuex'
+
 export default {
     name: 'AccountCreationForm',
     props: {
@@ -30,20 +35,37 @@ export default {
             required: true
         }
     },
-    data() {
-        return {
-            errors: {},
-            email: null,
-            password: null,
-            confirmPassword: null
-        }
-    },
-    computed: {
+    setup (props, context) {
+        const store = useStore();
+        let errors = ref({});
+        let email = ref(null);
+        let password = ref(null);
+        let password_confirmation = ref(null);
 
-    },
-    methods: {
-        createAccount () {
-            this.$emit('saved')
+        const createAccount = async () => {
+            try {
+                await redeemInvite(props.invite, email.value, password.value, password_confirmation.value);
+                await store.dispatch('login', {email: email.value, password: password.value})
+                context.emit('saved')
+            } catch (error) {
+                if (isValidationError(error )) {
+                    errors.value = error.response.data;
+                }
+            }
+        }
+
+        const syncEmail = () => {
+            email.value = props.invite.person.email
+        }
+
+        onMounted(() => syncEmail());
+
+        return {
+            errors,
+            email,
+            password,
+            password_confirmation,
+            createAccount,
         }
     }
 }

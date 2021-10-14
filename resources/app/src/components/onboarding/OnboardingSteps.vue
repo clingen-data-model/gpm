@@ -1,13 +1,12 @@
 <template>
   <div>
-    <p class="text-lg text-center"><strong>Welcome to ClinGen!</strong></p>
-    <p>
-      <strong>
+    <p class="text-lg text-center font-bold">
+        Hi {{invite.first_name}}.
+        <br>
         You've been invited to join ClinGen<span v-if="invite.inviter">
           as part of the {{ invite.inviter.name }}
           {{ invite.inviter.type }}.</span
         ><span v-else>.</span>
-      </strong>
     </p>
 
     <p>There are just a few steps to get you set up:</p>

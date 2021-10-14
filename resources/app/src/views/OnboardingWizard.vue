@@ -1,24 +1,34 @@
 <template>
     <div>
-        <div class="flex items-center">
-                <button v-if="hasRole('super-user')" class="btn btn-xl" @click="goBack">&lt;</button>
-                <div class="onboarding-container" :style="`width: ${currentStepWidth}`">
-                    <keep-alive>
-                        <transition :name="animationDirection" mode="out-in">        
-                            <component 
-                                :is="currentStepComponent" 
-                                v-bind:invite="invite" 
-                                v-bind:person="invite.person"
-                                ref="stepForm"
-                                @codeverified="handleCodeVerified"
-                                @ok="goForward"
-                                @saved="goForward"
-                                @back="goBack"
-                            ></component>
-                        </transition>
-                    </keep-alive>
+        <div class="flex justify-center">
+                <button class="dev-nav-button" @click="goBack">&lt;</button>
+                <div>
+                    <div class="onboarding-container" :style="`width: ${currentStepWidth}`">
+                        <keep-alive>
+                            <transition :name="animationDirection" mode="out-in">        
+                                <component 
+                                    :is="currentStepComponent" 
+                                    v-bind:invite="invite" 
+                                    v-bind:person="invite.person"
+                                    ref="stepForm"
+                                    @codeverified="handleCodeVerified"
+                                    @ok="goForward"
+                                    @saved="goForward"
+                                    @back="goBack"
+                                ></component>
+                            </transition>
+                        </keep-alive>
+                        <dev-component class="mt-4">
+                            <collapsible title="invite">
+                                <pre>{{invite}}</pre>
+                            </collapsible>
+                        </dev-component>
+                    </div>
+                    <p>
+                        <router-link class="block link pt-2" :to="{name: 'login'}">&lt; Log In</router-link>
+                    </p>
                 </div>
-                <button v-if="hasRole('super-user')" @click="goForward" class="btn btn-xl">&gt;</button>
+                <button @click="goForward" class="dev-nav-button">&gt;</button>
         </div>
     </div>
 </template>
@@ -27,7 +37,6 @@ import OnboardingSteps from '@/components/onboarding/OnboardingSteps'
 import InviteRedemptionForm from '@/components/onboarding/InviteRedemptionForm'
 import AccountCreationForm from '@/components/onboarding/AccountCreationForm'
 import ProfileForm from '@/components/people/ProfileForm'
-import DemographicsForm from '@/components/people/DemographicsForm'
 import Person from '@/domain/person'
 
 const stepComponents = [
@@ -35,7 +44,6 @@ const stepComponents = [
     OnboardingSteps,
     AccountCreationForm,
     ProfileForm,
-    DemographicsForm,
 ];
 
 const stepWidths = [
@@ -53,7 +61,6 @@ export default {
         OnboardingSteps,
         AccountCreationForm,
         ProfileForm,
-        DemographicsForm,
     },
     props: {
         
@@ -61,18 +68,9 @@ export default {
     data() {
         return {
             animationDirection: 'forward',
-            currentStepIdx: 3,
+            currentStepIdx: 0,
             invite: {
-                inviteCode: 'blahblahblah',
-                // inviter: {
-                //     name: 'Beans',
-                //     type: 'VCEP'
-                // },
-                person: new Person({
-                    first_name: 'tj',
-                    last_name: 'ward',
-                    email: 'beans@ithrewup.com'
-                })
+                person: new Person({})
             },
         }
     },
@@ -84,18 +82,25 @@ export default {
             return stepWidths[this.currentStepIdx]
         }
     },
+    watch: {
+        invite: {
+            deep: true,
+            handler: function (to) {
+                if (to.inviter) {
+                    stepComponents.push()
+                }
+            }
+        }
+    },
     methods: {
-        handleCodeVerified () {
-            console.log('handleCodeVerified');
+        handleCodeVerified (invite) {
+            this.invite = invite;
             this.goForward();
-        },
-        submitCode() {
-
         },
         goBack () {
             this.animationDirection = 'fade';
             if (this.currentStepIdx == 0) {
-                this.currentStepIdx = stepComponents.length-1;
+                // this.currentStepIdx = stepComponents.length-1;
                 return;
             }
             this.currentStepIdx -= 1;
@@ -103,11 +108,29 @@ export default {
         goForward() {
             this.animationDirection = 'fade';
             if (this.currentStepIdx == stepComponents.length-1) {
-                this.currentStepIdx = 0;
+                this.$router.push({name: 'Dashboard'})
                 return;
             }
             this.currentStepIdx += 1;
         },
+        selectStep() {
+            if (!this.invite.id) {
+                this.currentStepIdx = 0;
+                if (this.$route.query.code) {
+                    this.invite.code = this.$route.query.code;
+                }
+                return;
+            }
+            if (this.invite.id) {
+                if (this.$store.state.user.id) {
+                    this.currentStepIndex = 3
+                    return
+                }
+            }
+        }
+    },
+    mounted () {
+        // this.selectStep();
     }
 }
 </script>
@@ -116,6 +139,9 @@ export default {
         @apply shadow-lg border px-4 py-8 mx-auto mt-12 border-gray-300;
         transition: all .3s;
         overflow: hidden;
+    }
+    .dev-nav-button {
+        @apply mt-12 p-2 bg-pink-100 mb-8 border border-pink-300;
     }
     .forwards-enter-active,
     .forwards-leave-active,

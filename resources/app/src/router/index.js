@@ -7,9 +7,9 @@ import cdwgRoutes from './cdwgs'
 import groupRoutes from './groups'
 
 const routes = [
-    { name: 'home',
+    { name: 'Dashboard',
         path: '/',
-        redirect: '/applications',
+        component: () => import (/* webpackChunkName "dashboard" */ '@/views/Dashboard'),
         meta: {
             protected: true
         }

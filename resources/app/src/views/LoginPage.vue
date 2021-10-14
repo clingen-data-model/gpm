@@ -29,7 +29,7 @@ export default {
     },
     methods: {
         redirect() {
-            let route = {name: 'home'};
+            let route = {name: 'Dashboard'};
             if (this.$route.redirectedFrom && this.$route.redirectedFrom.name !== 'login') {
                 route = this.$route.redirectedFrom
             }
