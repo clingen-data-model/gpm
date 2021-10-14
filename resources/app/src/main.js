@@ -79,6 +79,7 @@ app.use(store)
             hasPermission: (permission, group) => store.state.user.hasPermission(permission, group),
             hasAnyPermission: (permissions) => store.state.user.hasAnyPermission(permissions),
             hasRole: (role, group) => store.state.user.hasRole(role, group),
+            userIsPerson: (person) => store.state.user.id == person.user_id
         }
     })
     .use(router)

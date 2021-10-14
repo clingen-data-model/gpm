@@ -7,6 +7,7 @@
                 <router-link 
                     :to="`/people/${uuid}/edit`"
                     class="btn btn-xs flex-grow-0"
+                    v-if="(hasPermission('people-manage') || userIsPerson(person))"
                 >
                     <edit-icon width="16" heigh="16"></edit-icon>
                 </router-link>

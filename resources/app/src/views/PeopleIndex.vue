@@ -14,6 +14,7 @@
                 <button 
                     class="btn btn-xs" 
                     @click.stop="goToEditPerson(item.item)"
+                    v-if="canEdit(item)"
                 > 
                     Edit
                 </button>
@@ -57,7 +58,8 @@ export default {
     },
     computed: {
         ...mapGetters({
-            people: 'people/all'
+            people: 'people/all',
+            currentUser: 'currentUser'
         })
     },
     methods: {
@@ -66,6 +68,17 @@ export default {
         },
         goToEditPerson (person) {
             this.$router.push(`/people/${person.uuid}/edit`)
+        },
+        canEdit(person) {
+            console.log(person)
+            if (this.hasPermission('people-manage')) {
+                return true;
+            }
+            if (this.currentUser.id == person.user_id) {
+                return true;
+            }
+
+            return false;
         }
     },
     mounted() {
