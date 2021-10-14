@@ -6,18 +6,32 @@
           <div class="inline-block pr-3">
             <router-link to="/" class="text-black hover:text-black"> EPAM</router-link>
           </div>
-          
           <span v-if="$store.getters.isAuthed">
-          <router-link to="/applications" class="link">Applications</router-link> 
-          |
-          <!-- <router-link to="/cdwgs" class="link">CDWGs</router-link>  -->
-          <!-- | -->
-          <router-link to="/people" class="link">People</router-link> 
-          |
-          <router-link :to="{name: 'GroupList'}" class="link">Groups</router-link>
-          <!-- <router-link to="/about" class="link">About</router-link> -->
-          <!-- |
-          <router-link to="/guides-and-documentation" class="link">Guides &amp; documentation</router-link> | -->
+              <router-link 
+                to="/applications" 
+                class="link nav-item" 
+                v-if="hasPermission('ep-applications-manage')"
+              >
+                Applications
+              </router-link> 
+              <router-link 
+                to="/people" 
+                class="link nav-item"
+              >
+                People
+              </router-link>
+              <router-link 
+                :to="{name: 'GroupList'}" 
+                class="link nav-item"
+              >
+                Groups
+              </router-link>
+              <!-- <router-link 
+                to="/guides-and-documentation" 
+                class="link nav-item"
+              >
+                Guides &amp; documentation
+              </router-link> -->
           </span>
         </div>
         <user-menu></user-menu>
