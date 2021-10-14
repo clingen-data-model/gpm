@@ -45,7 +45,7 @@ export default {
                     sortable: false,
                     label: 'Roles',
                     resolveValue (item) {
-                        return item.roles.join(', ');
+                        return item.roles.map(r => r.name).join(', ');
                     }
                 },
                 {
@@ -54,7 +54,7 @@ export default {
                     sortable: false,
                     label: 'Permissions',
                     resolveValue (item) {
-                        return item.permissions.join(', ');
+                        return item.permissions.map(p => p.name).join(', ');
                     }
                 },
                 {
