@@ -5,7 +5,6 @@ namespace App\Providers;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Support\Facades\Event;
-use App\Listeners\CreateUserFromInvite;
 
 use App\Modules\User\Events\UserLoggedIn;
 use App\Modules\User\Events\UserLoggedOut;
@@ -25,9 +24,6 @@ class EventServiceProvider extends ServiceProvider
         'Illuminate\Mail\Events\MessageSent' => [
             'App\Listeners\Mail\StoreMailInDatabase'
         ],
-        InviteRedeemed::class => [
-            CreateUserFromInvite::class
-        ]
     ];
 
     /**
