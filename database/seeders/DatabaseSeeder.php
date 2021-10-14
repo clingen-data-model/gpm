@@ -3,9 +3,11 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Database\Seeders\CountrySeeder;
 use Database\Seeders\GroupTypeSeeder;
 use Database\Seeders\UsersTableSeeder;
 use Database\Seeders\GroupStatusSeeder;
+use Database\Seeders\InstitutionSeeder;
 use Database\Seeders\DocumentTypesTableSeeder;
 use Database\Seeders\GroupRoleAndPermissionsSeeder;
 use Database\Seeders\NextActionAssigneesTableSeeder;
@@ -30,7 +32,13 @@ class DatabaseSeeder extends Seeder
             NextActionAssigneesTableSeeder::class,
             DocumentTypesTableSeeder::class,
             GroupTypeSeeder::class,
-            GroupStatusSeeder::class
+            GroupStatusSeeder::class,
+            PrimaryOccupationSeeder::class,
+            EthnicitySeeder::class,
+            RaceSeeder::class,
+            GenderSeeder::class,
+            InstitutionSeeder::class,
+            CountrySeeder::class,
         ]);
 
         foreach ($seederClasses as $seederClass) {
