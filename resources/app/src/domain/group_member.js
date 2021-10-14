@@ -88,18 +88,19 @@ class GroupMember extends Entity {
     }
 
     hasDirectPermission (permission) {
-        let permissionId = permission;
-        if (typeof permission == 'object') {
-            permissionId = permission.id
-        }
-
         return arrayContains(permission, this.attributes.permissions);
     }
 
-    hasPermissionThroughRole (permission) {
+    hasPermissionThroughRole (permission) {        
         let permId = permission;
         if (typeof permId == 'object') {
             permId = permission.id
+        }
+        if (typeof permId == 'string') {
+            if (!configs.groups.permissions[permission]) {
+                throw new Error(`Can not find permission ${permission} in configs`)
+            }
+            permId = configs.groups.permissions[permission].id
         }
 
         const memberRoleSlugs = this.roles.map(r => {

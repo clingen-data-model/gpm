@@ -1,5 +1,6 @@
 import Entity from '@/domain/entity';
 import Person from '@/domain/person';
+import GroupMember from '@/domain/group_member';
 import { arrayContains } from '@/utils';
 class User extends Entity {
     static defaults = {
@@ -78,7 +79,10 @@ class User extends Entity {
         if (!group) {
             return false;
         }
-        const membership = this.memberships.find(m => m.group_id == group.id);
+        let membership = this.memberships.find(m => m.group_id == group.id);
+        if (!(membership instanceof GroupMember)) {
+            membership = new GroupMember(membership)
+        }
         if (membership && membership.hasPermission(permission)) {
             return true;
         }
