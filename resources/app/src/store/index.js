@@ -56,7 +56,6 @@ axios.interceptors.request.use(function (config) {
 // );
 
 const nullUser = new User();
-console.log(nullUser);
 
 const docTypeStore = module_factory({
     baseUrl: '/api/document-types', 
