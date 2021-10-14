@@ -50,7 +50,7 @@ class RedeemInviteTest extends TestCase
         $this->json('GET', static::URL.'/'.$this->invite->code, $this->validData)
             ->assertStatus(422)
             ->assertJsonFragment([
-                'code' => ['This invite has already been redeemed.']
+                'code' => ['This invite has already been redeemed. Please log in to access your account.']
             ]);
     }
 
@@ -74,7 +74,7 @@ class RedeemInviteTest extends TestCase
         $this->json('PUT', static::URL.'/'.$this->invite->code, $this->validData)
             ->assertStatus(422)
             ->assertJsonFragment([
-                'code' => ['This invite has already been redeemed.']
+                'code' => ['This invite has already been redeemed. Please log in to access your account.']
             ]);
     }
 

@@ -23,13 +23,14 @@ class InviteFactory extends Factory
      */
     public function definition()
     {
+        $group = Group::factory()->create();
         return [
             'code' => bin2hex(random_bytes(8)),
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
             'email' => $this->faker->email,
-            'inviter_id' => Group::factory()->create()->id,
-            'inviter_type' => get_class(Group::factory()),
+            'inviter_id' => $group->id,
+            'inviter_type' => get_class($group),
             'person_id' => Person::factory()->create()->id,
             'redeemed_at' => $this->faker->date(),
         ];
