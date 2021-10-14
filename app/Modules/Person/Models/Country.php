@@ -24,7 +24,7 @@ class Country extends Model
      */
     protected $fillable = [
         'name',
-        'abbreviation',
+        // 'abbreviation',
     ];
 
     /**
