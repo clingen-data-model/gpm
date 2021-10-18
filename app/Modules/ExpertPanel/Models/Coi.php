@@ -22,7 +22,10 @@ class Coi extends Model
     ];
 
     public $casts = [
-        'data' => 'object'
+        'data' => 'object',
+        'group_member_id' => 'integer',
+        'expert_panel_id' => 'integer',
+        'completed_at' => 'datetime'
     ];
     
     public $appends = [
