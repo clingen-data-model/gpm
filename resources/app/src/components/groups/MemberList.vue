@@ -1,10 +1,11 @@
 <script>
 import config from '@/configs.json'
-import { formatDate } from '@/date_utils'
+import { formatDate, yearAgo } from '@/date_utils'
 import sortAndFilter from '@/composables/router_aware_sort_and_filter'
 import ChevDownIcon from '@/components/icons/IconCheveronDown'
 import ChevRightIcon from '@/components/icons/IconCheveronRight'
 import FilterIcon from '@/components/icons/IconFilter'
+import ExclamationIcon from '@/components/icons/IconExclamation'
 import DropdownMenu from '@/components/DropdownMenu'
 import DropdownItem from '@/components/DropdownItem'
 import MemberPreview from '@/components/groups/MemberPreview'
@@ -18,7 +19,8 @@ export default {
         FilterIcon,
         DropdownMenu,
         DropdownItem,
-        MemberPreview
+        MemberPreview,
+        ExclamationIcon,
     },
     props: {
         group: {
@@ -124,6 +126,7 @@ export default {
         return {
             sort,
             filter,
+            yearAgo
         }
     },
     methods: {
@@ -218,6 +221,12 @@ export default {
 
             console.log(hasPerm);
             return hasPerm;
+        },
+        getCoiDateStyle (member) {
+            if (member.coi_last_completed === null) {
+                return 'text-red-700';
+            }
+            return 'text-yellow-500';
         }
     }
 }
@@ -288,17 +297,18 @@ export default {
                 <template v-slot:cell-roles="{value}">
                     {{titleCase(value.map(i => i.name).join(', '))}}
                 </template>
-                <template v-slot:cell-coi_last_completed="{value}">
-                    <div>
-                        <span v-if="value">{{formatDate(value)}}</span>
+                <template v-slot:cell-coi_last_completed="{item}">
+                    <div class="flex space-x-2">
+                        <span v-if="item.coi_last_completed">{{formatDate(item.coi_last_completed)}}</span>
+                        <exclamation-icon v-if="item.coi_last_completed === null || (item.coi_last_completed < yearAgo())" :class="getCoiDateStyle(item)"></exclamation-icon>
                     </div>
                 </template>
-                <template v-slot:cell-training_completed_at="{item, value}">
+                <!-- <template v-slot:cell-training_completed_at="{item, value}">
                     <div>
                         <span v-if="value">{{formatDate(value)}}</span>
                         <span v-if="!item.needs_training" class="text-gray-500">N/A</span>
                     </div>
-                </template>
+                </template> -->
                 <template v-slot:cell-actions="{item}">
                     <dropdown-menu :hide-cheveron="true" class="relative" v-if="hasAnyMemberPermission()">
                         <template v-slot:label class="btn btn-xs">
