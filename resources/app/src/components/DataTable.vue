@@ -96,6 +96,7 @@
 import { formatDate } from '@/date_utils'
 import IconCheveronDown from '@/components/icons/IconCheveronDown'
 import IconCheveronUp from '@/components/icons/IconCheveronUp'
+import {titleCase} from '@/utils'
 
 /**
  * 
@@ -109,7 +110,8 @@ export default {
     emits: [
         'rowClick',
         'update:sort',
-        'sort'
+        'sort',
+        'sorted'
     ],
     props: {
         data: {
@@ -339,7 +341,7 @@ export default {
         },
         getFieldLabel(field) {
             if (typeof field.label == 'undefined' || field.label === null ) {
-                return field.name
+                return titleCase(field.name)
             }
             return field.label
         },
@@ -370,12 +372,10 @@ export default {
 
         resolveRowClass(item) {
             if (typeof this.rowClass == 'function') {
-                // console.log((this.rowClass)(item));
                 return this.rowClass(item);
             }
 
             return this.rowClass;
-
         }
     },
 }
