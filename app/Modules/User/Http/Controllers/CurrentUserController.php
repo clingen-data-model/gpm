@@ -22,16 +22,18 @@ class CurrentUserController extends Controller
             'roles.permissions',
             'permissions',
             'person',
-            'person.memberships' => function ($q){
+            'person.memberships' => function ($q) {
                 $q->isActive();
             },
             'person.memberships.roles',
             'person.memberships.roles.permissions',
             'person.memberships.permissions',
+            'person.memberships.group',
+            'person.memberships.group.type',
+            'person.memberships.group.status',
             'preferences'
         ]);
 
         return new CurrentUserResource($user);
     }
-    
 }
