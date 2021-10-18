@@ -15,6 +15,7 @@ class PersonCreate
         string $last_name,
         string $email,
         ?string $phone = null,
+        ?int $user_id = null,
     ): Person {
         $person = Person::create([
             'uuid' => $uuid,
@@ -22,6 +23,7 @@ class PersonCreate
             'last_name' => $last_name,
             'email' => $email,
             'phone' => $phone,
+            'user_id' => $user_id,
         ]);
         Event::dispatch(new PersonCreated($person));
         
