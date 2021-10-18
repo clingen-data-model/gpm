@@ -11,21 +11,15 @@
                 to="/applications" 
                 class="link nav-item" 
                 v-if="hasPermission('ep-applications-manage')"
-              >
-                Applications
-              </router-link> 
+              >Applications</router-link> 
               <router-link 
                 to="/people" 
                 class="link nav-item"
-              >
-                People
-              </router-link>
+              >People</router-link>
               <router-link 
                 :to="{name: 'GroupList'}" 
                 class="link nav-item"
-              >
-                Groups
-              </router-link>
+              >Groups</router-link>
               <!-- <router-link 
                 to="/guides-and-documentation" 
                 class="link nav-item"
