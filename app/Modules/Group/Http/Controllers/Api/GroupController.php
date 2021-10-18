@@ -35,7 +35,7 @@ class GroupController extends Controller
     public function show($uuid, Request $request)
     {
         $group = Group::findByUuidOrFail($uuid);
-        $group->load(['members', 'members.person', 'members.roles', 'members.permissions']);
+        $group->load(['members', 'members.person', 'members.roles', 'members.permissions', 'members.cois']);
 
         return new GroupResource($group);
     }

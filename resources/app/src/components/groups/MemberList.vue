@@ -74,12 +74,12 @@ export default {
                     type: Date,
                     sortable: true,
                 },
-                {
-                    name: 'training_completed_at',
-                    label: 'Training Completed',
-                    type: Date,
-                    sortable: true
-                },
+                // {
+                //     name: 'training_completed_at',
+                //     label: 'Training Completed',
+                //     type: Date,
+                //     sortable: true
+                // },
                 {
                     name: 'actions',
                     label: '',
@@ -261,7 +261,7 @@ export default {
                 </div>
                 <div class="flex-1 py-2">
                     <checkbox class="block" label="Needs COI" v-model="filters.needsCoi"></checkbox>
-                    <checkbox class="block" label="Needs Training" v-model="filters.needsTraining"></checkbox>
+                    <!-- <checkbox class="block" label="Needs Training" v-model="filters.needsTraining"></checkbox> -->
                 </div>
                 <div class="flex-1 py-2">
                     <checkbox class="block" label="Hide Alumns" v-model="filters.hideAlumns"></checkbox>

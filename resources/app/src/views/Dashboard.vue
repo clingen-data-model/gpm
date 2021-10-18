@@ -9,22 +9,35 @@
                 @removeClicked="removeNotification(notification)"
             ></notification-item>
         </transition-group>
-        <section class="mt-8 mb-4">
-            <h2>Your Groups</h2>
-            <div class="border border-gray-300 text-gray-600 bg-gray-200 rounded p-2" v-if="!groups.length">You are not assigned to any groups.</div>
-            <data-table
-                v-else
-                :data="groups"
-                :fields="groupFields"
-                v-model:sort="groupSort"
-                @rowClick="navigateToGroup"
-                row-class="cursor-pointer"
-            >
-                <template v-slot:cell-status_name="{value}">
-                    <badge color="green">{{value}}</badge>
-                </template>
-            </data-table>
-        </section>
+        <tabs-container class="mt-8">
+            <tab-item label="Your Groups">
+                <div class="border border-gray-300 text-gray-600 bg-gray-200 rounded p-2" v-if="!groups.length">You are not assigned to any groups.</div>
+                <data-table
+                    v-else
+                    :data="groups"
+                    :fields="groupFields"
+                    v-model:sort="groupSort"
+                    @rowClick="navigateToGroup"
+                    row-class="cursor-pointer"
+                >
+                    <template v-slot:cell-status_name="{value}">
+                        <badge color="green">{{value}}</badge>
+                    </template>
+                </data-table>
+            </tab-item>
+            <tab-item label="COIs">
+                <data-table 
+                    :fields="coiFields" 
+                    :data="cois" 
+                    v-model:sort="coiSort"
+                >
+                    <template v-slot:cell-actions="{item}">
+                        <button class="btn btn-xs" v-if="item.completed_at">View response</button>
+                        <button class="btn btn-xs blue" v-else>Complete COI</button>
+                    </template>
+                </data-table>
+            </tab-item>
+        </tabs-container>
         <collapsible title="User Data">
             <pre>{{user}}</pre>
         </collapsible>
@@ -95,11 +108,47 @@ export default {
                 type: String
             }
         ]);
-
         const groupSort = ref({
             field: 'name',
             desc: false
         });
+
+
+        // TODO: extract to module.
+        // TODO: Get coi data on demand
+        const cois = computed(() => {
+            return user.value.memberships
+                .filter(m => m.cois !== null && m.cois.length > 0)
+                .map(m => {
+                    return m.cois.map(coi => {
+                        coi.group = m.group;
+                        return coi;
+                    })
+                })
+                .flat()
+        });
+        const coiFields = [
+            {
+                name: 'group.name',
+                label: 'Group',
+                type: String,
+                sortable: true
+            },
+            {
+                name: 'completed_at',
+                label: 'Completed',
+                sortable: false,
+                type: Date,
+            },
+            {
+                name: 'actions',
+                sortable: false,
+            }
+        ];
+        const coiSort = ref({
+            field: 'group.name',
+            desc: false
+        })
 
         onMounted(() => {
             getNotifications();
@@ -112,6 +161,9 @@ export default {
             groups,
             groupSort,
             groupFields,
+            cois,
+            coiFields,
+            coiSort,
             getNotifications,
             removeNotification,
             navigateToGroup: (item) => {

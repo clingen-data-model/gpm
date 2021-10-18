@@ -28,6 +28,7 @@ class CurrentUserController extends Controller
             'person.memberships.roles',
             'person.memberships.roles.permissions',
             'person.memberships.permissions',
+            'person.memberships.cois',
             'person.memberships.group',
             'person.memberships.group.type',
             'person.memberships.group.status',

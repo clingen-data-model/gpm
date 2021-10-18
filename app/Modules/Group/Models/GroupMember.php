@@ -30,6 +30,7 @@ use App\Modules\ExpertPanel\Models\Traits\BelongsToExpertPanel as BelongsToExper
  * @property \Carbon\Carbon $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $coi_last_completed
  */
 class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToExpertPanel
 {
@@ -111,7 +112,7 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
      */
     public function cois(): HasMany
     {
-        return $this->hasMany(Coi::class, 'foreign_key', 'local_key');
+        return $this->hasMany(Coi::class);
     }
 
 
@@ -129,6 +130,19 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
     {
         return $query->whereNotNull('end_date');
     }
+    
+    // ACCESSORS
+    public function getCoiLastCompletedAttribute()
+    {
+        $latestCoi =  $this->cois
+                    ->filter(function ($coi) {
+                        return !is_null($coi->completed_at);
+                    })
+                    ->sortByDesc('completed_at')
+                    ->first();
+        return $latestCoi ? $latestCoi->completed_at : null;
+    }
+    
     
 
     protected static function newFactory()
