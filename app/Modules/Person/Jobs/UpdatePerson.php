@@ -2,6 +2,8 @@
 
 namespace App\Modules\Person\Jobs;
 
+use Laravel\Sanctum\Sanctum;
+use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Event;

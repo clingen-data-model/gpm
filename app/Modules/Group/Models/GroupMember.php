@@ -2,22 +2,24 @@
 
 namespace App\Modules\Group\Models;
 
+use Carbon\Carbon;
 use App\Models\Traits\HasRoles;
 use App\Models\Contracts\HasNotes;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
+use App\Modules\ExpertPanel\Models\Coi;
 use Illuminate\Database\Eloquent\Model;
 use Database\Factories\GroupMemberFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Models\Traits\HasNotes as HasNotesTrait;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Modules\Group\Models\Contracts\BelongsToGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Modules\ExpertPanel\Models\Contracts\BelongsToExpertPanel;
 use App\Modules\Group\Models\Traits\BelongsToGroup as BelongstToGroupTrait;
 use App\Modules\ExpertPanel\Models\Traits\BelongsToExpertPanel as BelongsToExpertPanelTrait;
-use Carbon\Carbon;
 
 /**
  * @property int $id
@@ -68,17 +70,16 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
         'end_date',
     ];
 
-    static public function boot():void
+    public static function boot():void
     {
         parent::boot();
 
         /*
-         * Copy activity_type from properties json column to 
+         * Copy activity_type from properties json column to
          * activity_type column for indexing, speed of retrieval,
          * and accessor
          */
         static::saving(function ($model) {
-
             if (!$model->start_date) {
                 $model->start_date = Carbon::now();
             }
@@ -101,6 +102,16 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
     public function expertPanel(): Relation
     {
         return $this->hasOneThrough(ExpertPanel::class, Group::class);
+    }
+
+    /**
+     * Get all of the cois for the GroupMember
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function cois(): HasMany
+    {
+        return $this->hasMany(Coi::class, 'foreign_key', 'local_key');
     }
 
 

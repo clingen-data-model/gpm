@@ -20,7 +20,12 @@ class PersonEndpointTest extends TestCase
     public function setup():void
     {
         parent::setup();
+        config('permission.models.permission')::factory([
+            'name' => 'update-others-profile',
+            'scope' => 'system'
+        ])->create();
         $this->user = User::factory()->create();
+        $this->user->givePermissionTo('update-others-profile');
         Sanctum::actingAs($this->user);
     }
     
@@ -35,7 +40,6 @@ class PersonEndpointTest extends TestCase
             'first_name' => 'Beano',
             'last_name'=>$person->last_name,
             'email' => $person->email,
-            // 'phone' => $person->phone
         ])
             ->assertStatus(200)
             ->assertJson(['first_name' => 'Beano']);

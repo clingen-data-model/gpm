@@ -4,7 +4,7 @@ namespace App\Modules\ExpertPanel\Actions;
 
 use App\Http\Requests\CoiStorageRequest;
 use App\Modules\ExpertPanel\Events\CoiCompleted;
-use App\Modules\ExpertPanel\Models\Coi;
+use App\Modules\ExpertPanel\Models\CoiV1 as Coi;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\Concerns\AsAction;

@@ -15,6 +15,7 @@ use App\Models\Contracts\HasDocuments;
 use App\Models\Contracts\RecordsEvents;
 use App\Modules\ExpertPanel\Models\Coi;
 use Illuminate\Database\Eloquent\Model;
+use App\Modules\ExpertPanel\Models\CoiV1;
 use App\Modules\Group\Models\GroupMember;
 use Database\Factories\ExpertPanelFactory;
 use Illuminate\Database\Eloquent\Collection;
@@ -206,7 +207,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
     public function cois()
     {
-        return $this->hasMany(Coi::class, 'expert_panel_id');
+        return $this->hasMany(CoiV1::class, 'expert_panel_id');
     }
 
     /**

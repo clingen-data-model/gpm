@@ -2,22 +2,23 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Database\Factories\CoiFactory;
 use Hamcrest\Type\IsObject;
 use Illuminate\Support\Facades\Log;
+use Database\Factories\CoiV1Factory;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class CoiV2 extends Model
+class CoiV1 extends Model
 {
     use HasFactory;
 
+    protected $table = 'cois_v1';
+
     public $fillable = [
-        'uuid',
-        'group_member_id',
-        'expert_panel_id',
+        'application_id',
+        'email',
         'data'
     ];
 
@@ -50,7 +51,7 @@ class CoiV2 extends Model
             ->filter()
             ->toArray();
 
-        $responseData['expert_panel_id'] = $this->expertPanel_id;
+        $responseData['application_id'] = $this->expertPanel_id;
         
         return $responseData;
     }
@@ -88,7 +89,7 @@ class CoiV2 extends Model
         if ($expertPanel instanceof ExpertPanel) {
             $id = $expertPanel->id;
         }
-        return $query->where('expert_panel_id', $id);
+        return $query->where('application_id', $id);
     }
     
 
@@ -109,6 +110,6 @@ class CoiV2 extends Model
     // Factory
     protected static function newFactory()
     {
-        return new CoiFactory();
+        return new CoiV1Factory();
     }
 }
