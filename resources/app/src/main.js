@@ -12,6 +12,9 @@ const app = createApp(App)
 import StaticAlert from './components/alerts/StaticAlert'
 app.component('static-alert', StaticAlert);
 
+import Badge from './components/Badge'
+app.component('badge', Badge);
+
 import IconBase from './components/icons/IconBase'
 app.component('icon-base', IconBase);
 
