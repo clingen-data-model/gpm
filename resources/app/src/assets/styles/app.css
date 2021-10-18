@@ -50,12 +50,11 @@ textarea.sm {
     @apply text-blue-500 hover:underline;
 }
 
-.nav-item:after { 
-    @apply text-gray-400;
-    content: "|";
+.nav-item { 
+    @apply border-r-2 border-gray-400  pr-2 mr-2 align-middle;
 }
-.nav-item:last-child:after {
-    content: '';
+.nav-item:last-child {
+    @apply border-r-0;
 }
 
 .btn {
