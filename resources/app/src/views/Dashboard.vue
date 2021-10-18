@@ -11,8 +11,9 @@
         </transition-group>
         <section class="mt-8 mb-4">
             <h2>Your Groups</h2>
-            <div class="border bg-gray-200 rounded p-2" v-if="!groups.length">You are not assigned to any groups.</div>
+            <div class="border border-gray-300 text-gray-600 bg-gray-200 rounded p-2" v-if="!groups.length">You are not assigned to any groups.</div>
             <data-table
+                v-else
                 :data="groups"
                 :fields="groupFields"
                 v-model:sort="groupSort"
@@ -58,8 +59,8 @@ export default {
             console.log('getNotifiations...');
             loadingNotifications.value = true;
             await setTimeout(() => {
-                notifications.value.push({id: 1, message: 'This is a message'});
-                notifications.value.push({id: 2, message: 'This is another message'});
+                notifications.value.push({id: 1, message: 'This is a dummy notification.'});
+                notifications.value.push({id: 2, message: 'Start getting notificaitons from the server!'});
             }, 1000);
             loadingNotifications.value = false;
         }
