@@ -1,5 +1,6 @@
 <template>
-    <card title="People">
+    <div>
+        <h1>People</h1>
         <label class="block mb-2" for="filter-input">Filter:&nbsp;<input type="text" v-model="filter" placeholder="filter"></label>
         <data-table 
             :fields="fields" 
@@ -20,7 +21,7 @@
                 </button>
             </template>
         </data-table>
-    </card>
+    </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
