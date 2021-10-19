@@ -53,7 +53,10 @@ class UsersTableSeeder extends Seeder
             unset($userData['role']);
             $userData['password'] = (app()->environment('local')) ? Hash::make('tester') : Hash::make(uniqid());
 
-            $user = User::create($userData);
+            $user = User::firstOrCreate(['email' => $userData['email']], $userData);
+            if (!app()->environment('testing')) {
+                $user->assignRole($role);
+            }
         }
     }
 }

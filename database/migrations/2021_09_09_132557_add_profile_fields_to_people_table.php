@@ -77,6 +77,7 @@ class AddProfileFieldsToPeopleTable extends Migration
     public function down()
     {
         Schema::table('people', function (Blueprint $table) {
+            $table->dropForeign(['institution_id']);
             $table->dropColumn('institution_id');
             $table->dropColumn('credentials');
             $table->dropColumn('biography');
@@ -88,13 +89,18 @@ class AddProfileFieldsToPeopleTable extends Migration
             $table->dropColumn('city');
             $table->dropColumn('state');
             $table->dropColumn('zip');
+            $table->dropForeign(['country_id']);
             $table->dropColumn('country_id');
             $table->dropColumn('timezone');
+            $table->dropForeign(['primary_occupation_id']);
             $table->dropColumn('primary_occupation_id');
             $table->dropColumn('primary_occupation_other');
+            $table->dropForeign(['race_id']);
             $table->dropColumn('race_id');
             $table->dropColumn('race_other');
+            $table->dropForeign(['ethnicity_id']);
             $table->dropColumn('ethnicity_id');
+            $table->dropForeign(['gender_id']);
             $table->dropColumn('gender_id');
             $table->dropColumn('gender_other');
         });

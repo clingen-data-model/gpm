@@ -26,6 +26,6 @@ class MigrateApplicationDataToExpertPanels extends Migration
      */
     public function down()
     {
-        DB::table('expert_panels')->truncate();
+        DB::table('expert_panels')->delete();
     }
 }
