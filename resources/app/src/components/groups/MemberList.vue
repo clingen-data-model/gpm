@@ -240,7 +240,9 @@ export default {
                     ref="filterToggleButton" 
                     class="px-3 py-2 rounded-t transition-color" 
                     :class="{'rounded-b': !showFilter, 'bg-blue-200': showFilter}" 
-                    @click="toggleFilter">
+                    @click="toggleFilter"
+                    v-if="group.members.length > 0"
+                >
                     <filter-icon></filter-icon>
                 </button>
             </div>
@@ -252,7 +254,7 @@ export default {
             >Add Member</router-link>
         </head>
         <transition name="slide-fade-down">
-            <div v-show="showFilter" class="flex justify-between px-2 space-x-2 bg-blue-200 rounded-lg">
+            <div v-show="showFilter" class="flex justify-between px-2 space-x-2 bg-blue-200 rounded-lg"                v-if="group.members.length > 0">
                 <div class="flex-1">
                     <input-row label="Keyword" type="text" v-model="filters.keyword" :label-width="20"></input-row>
                     <input-row label="Role" :label-width="20">
@@ -287,6 +289,7 @@ export default {
                 @update:sort="logEvent"
                 :row-class="(item) => 'cursor-pointer'+ (item.isRetired ? ' retired-member' : '')"
                 @rowClick="goToMember"
+                v-if="group.members.length > 0"
             >
                 <template v-slot:cell-id="{item}">
                     <button @click.stop="toggleItemDetails(item)" class="w-9 align-center block -mx-3">
@@ -336,6 +339,9 @@ export default {
                     <member-preview :member="item" :group="group"></member-preview>
                 </template>
             </data-table>
+            <div v-else class="well">
+                This group does not yet have any members.
+            </div>
         </div>
         <!-- <dev-todo :items="[
             '~ Store filter state in url.',
