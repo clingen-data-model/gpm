@@ -104,13 +104,16 @@ textarea.sm {
     @apply border-red-800;
 }
 
-/* Transitions */
-
 
 .alert-item {
     transition: transform 0.8s ease;
 }
 
+.well {
+    @apply border border-gray-300 text-gray-600 bg-gray-200 rounded p-2;
+}
+
+/* Transitions */
 .fade-enter-active {
     transition: all 0.3s ease-out;
 }
