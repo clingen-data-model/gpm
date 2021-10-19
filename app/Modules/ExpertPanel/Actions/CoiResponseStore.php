@@ -16,15 +16,17 @@ class CoiResponseStore
 {
     use AsAction;
 
-    public function handle(String $coiCode, int $groupMemberId, array $responseData)
+    public function handle(String $coiCode, ?int $groupMemberId, array $responseData)
     {
         $expertPanel = ExpertPanel::findByCoiCodeOrFail($coiCode);
-        $groupMember = GroupMember::findOrFail($groupMemberId);
+        $groupMember = GroupMember::find($groupMemberId);
 
         $data = $responseData;
-        $data['first_name'] = $groupMember->person->first_name;
-        $data['last_name'] = $groupMember->person->last_name;
-        $data['email'] = $groupMember->person->email;
+        if ($groupMember) {
+            $data['first_name'] = $groupMember->person->first_name;
+            $data['last_name'] = $groupMember->person->last_name;
+            $data['email'] = $groupMember->person->email;
+        }
 
         if (in_array('document_uuid', array_keys($responseData))) {
             $data['email'] = 'Legacy Coi';
@@ -32,7 +34,6 @@ class CoiResponseStore
             $data['last_name'] = 'Coi';
         }
         
-
         $coi = Coi::create([
             'uuid'=>Uuid::uuid4()->toString(),
             'group_member_id' => $groupMemberId,

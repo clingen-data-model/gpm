@@ -135,7 +135,7 @@ class SimpleCoiEndpointTest extends TestCase
             'first_name' => 'Legacy',
             'last_name' => 'Coi'
         ]);
-        $this->assertDatabaseHas('cois_v1', [
+        $this->assertDatabaseHas('cois', [
             'expert_panel_id' => $this->expertPanel->id,
             'data' => json_encode($expectedData)
         ]);

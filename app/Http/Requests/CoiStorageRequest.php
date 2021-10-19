@@ -37,7 +37,9 @@ class CoiStorageRequest extends FormRequest
                 $rules[$question->name] = $question->validation;
             }
         }
-        $rules['group_member_id'] = 'required|exists:group_members,id';
+        if (request()->missing('document_uuid')) {
+            $rules['group_member_id'] = 'required|exists:group_members,id';
+        }
 
         return $rules;
     }
