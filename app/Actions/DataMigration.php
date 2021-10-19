@@ -196,6 +196,9 @@ class DataMigration
         $rows->each(function ($row) use ($expertPanel) {
             $uuid = Uuid::uuid4();
             $data = json_decode($row->data);
+            if ($data->email === "Legacy Coi") {
+                return;
+            }
             $person = Person::withTrashed()->firstOrCreate(
                 ['email' => $data->email],
                 [
