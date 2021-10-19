@@ -89,8 +89,8 @@ export default {
     },
     methods: {
     },
-    // mounted() {
-    //     this.syncCode();
-    // }
+    mounted() {
+        this.syncCode();
+    }
 }
 </script>
