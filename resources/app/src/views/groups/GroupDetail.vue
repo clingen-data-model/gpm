@@ -27,11 +27,14 @@
             <tab-item label="Members">
                 <member-list :group="group"></member-list>
             </tab-item>
-            <tab-item label="Scope">
+            <tab-item label="Scope" v-show="group.isEp()">
                 Description of scope and gene list will go here
             </tab-item>
-            <tab-item label="Ongoing Curation">
+            <tab-item label="Ongoing Curation" v-show="group.isEp()">
                 Curation review process, Evidence Summaries, etc. will go here
+            </tab-item>
+            <tab-item v-show="group.isVcep()" label="Specifications">
+                Specifiations info from CSPEC will go here.
             </tab-item>
             <tab-item label="Documents">
                 Group documents will go here.

@@ -14,10 +14,10 @@
     </div>
 </template>
 <script>
-// import { mapGetters } from 'vuex'
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
 import {computed, onMounted } from 'vue'
+
 export default {
     name: 'ComponentName',
     props: {
@@ -41,9 +41,22 @@ export default {
                     sortable: true
                 },
                 {
-                    name: 'type.name',
+                    name: 'type',
                     label: 'Type',
-                    sortable: true
+                    sortable: true,
+                    resolveSort: (group) => {
+                        if (group.isEp()) {
+                            return group.expert_panel.type.name;
+                        }
+                        return group.type.name;
+                    },
+                    resolveValue: (group) => {
+                        if (group.isEp()) {
+                            return group.expert_panel.type.name.toUpperCase();
+                        }
+
+                        return group.type.name.toUpperCase();
+                    }
                 }
             ]
         }

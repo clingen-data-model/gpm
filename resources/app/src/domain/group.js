@@ -98,6 +98,14 @@ class Group extends Entity {
         return this.attributes.group_type_id === config.groups.types.cdwg.id;
     }
 
+    isVcep() {
+        return this.isEp() && this.expert_panel && this.expert_panel.expert_panel_type_id == 2;
+    }
+
+    isGcep() {
+        return this.isEp() && this.expert_panel && this.expert_panel.expert_panel_type_id == 1;
+    }
+
     clone(){
         const members = this.members;
         return new (this.constructor.self)({...this.attributes, members});
