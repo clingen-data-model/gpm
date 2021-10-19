@@ -82,15 +82,20 @@ class SimpleCoiEndpointTest extends TestCase
             'coi' => 'no coi',
         ];
 
+        
         $this->json('POST', '/api/coi/'.$this->expertPanel->coi_code, $data)
-            ->assertStatus(200);
+        ->assertStatus(200);
 
         unset($data['group_member_id']);
 
         $this->assertDatabaseHas('cois', [
             'group_member_id' => $groupMember->id,
             'expert_panel_id' => $this->expertPanel->id,
-            'data' => json_encode($data)
+            'data->work_fee_lab' => 0,
+            'data->contributions_to_gd_in_ep' => 1,
+            'data->contributions_to_genes' => 'beans',
+            'data->independent_efforts' => 'None',
+            'data->coi' => 'no coi'
         ]);
     }
     
