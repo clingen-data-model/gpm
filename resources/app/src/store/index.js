@@ -119,6 +119,16 @@ const store = createStore({
                 }
             }
         },
+        async forceGetCurrentUser({commit, state}) {
+            try {
+                await axios.get('/api/current-user')
+                    .then(response => {
+                        commit('setCurrentUser', response.data.data)
+                    })
+            } catch (error) {
+                commit('clearCurrentUser');
+            }
+        },
         async login({commit}, {email, password}) {
             await axios.get('/sanctum/csrf-cookie')
             await axios.post('/api/login', {email: email, password: password})
