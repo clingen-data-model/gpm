@@ -42,13 +42,19 @@ const routes = [
         name: 'coi',
         path: '/coi/:code',
         component: () => import (/* webpackChunkName "coi-survey" */ '@/views/Coi.vue'),
-        props: true
+        props: true,
+        meta: {
+            protected: true
+        }
     },
     {
         name: 'alt-coi',
         path: '/expert-panels/:name/coi/:code',
         component: () => import (/* webpackChunkName "coi-survey" */ '@/views/Coi.vue'),
-        props: true
+        props: true,
+        meta: {
+            protected: true
+        }
     },
     { name: 'about',
         path: '/about',
