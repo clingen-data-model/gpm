@@ -1,26 +1,6 @@
 {
     "name": "Conflict of Interest Survey",
-    "questions": [{
-            "name": "first_name",
-            "question": "First Name",
-            "type": "string",
-            "validation": "required|max:255|min:2",
-            "placeholder": "First"
-        },
-        {
-            "name": "last_name",
-            "question": "Last Name",
-            "type": "string",
-            "validation": "required|max:255|min:2",
-            "placeholder": "Last"
-        },
-        {
-            "name": "email",
-            "question": "Email address",
-            "type": "string",
-            "validation": "required|email",
-            "placeholder": "email@example.com"
-        },
+    "questions": [
         {
             "name": "work_fee_lab",
             "question": "Do you work for a laboratory that offers fee-for-service testing related to the work of your Expert Panel?",
