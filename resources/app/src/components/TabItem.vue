@@ -27,9 +27,12 @@ export default {
     },
     render() {
         if (this.isActive()) {
-            return (
-                <section>{this.$slots.default()}</section>
-            )
+            if (this.$slots.default) {
+                return (
+                    <section>{this.$slots.default()}</section>
+                )
+            }
+            return (<section></section>)
         }
         return null;
     }

@@ -54,9 +54,14 @@
                     {{formatDate(person[key])}}
                 </dictionary-row>
             </tab-item>
-            <tab-item label="Conflict of Interest"></tab-item>
-            <tab-item label="Documents"></tab-item>
-            <tab-item label="Training &amp; Attestations"></tab-item>
+            <tab-item label="Conflict of Interest">
+                coi
+            </tab-item>
+            <tab-item label="Documents">
+                docs
+            </tab-item>
+            <tab-item label="Training &amp; Attestations">
+            </tab-item>
         </tabs-container>
         <modal-dialog v-model="showModal">
             <router-view name="modal"></router-view>
