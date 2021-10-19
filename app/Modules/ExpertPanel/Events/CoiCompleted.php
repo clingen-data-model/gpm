@@ -2,7 +2,7 @@
 
 namespace App\Modules\ExpertPanel\Events;
 
-use App\Modules\ExpertPanel\Models\CoiV1 as Coi;
+use App\Modules\ExpertPanel\Models\Coi;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -27,7 +27,7 @@ class CoiCompleted extends ExpertPanelEvent
 
     public function getLogEntry(): String
     {
-        return 'COI form completed by '.$this->coi->data->email;
+        return 'COI form completed by '.$this->coi->groupMember->person->email;
     }
     
     public function getProperties(): array

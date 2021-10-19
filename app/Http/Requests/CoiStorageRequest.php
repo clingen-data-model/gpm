@@ -33,10 +33,11 @@ class CoiStorageRequest extends FormRequest
 
         $rules = [];
         foreach ($coiDefinition->questions as $question) {
-            if(isset($question->validation)) {
+            if (isset($question->validation)) {
                 $rules[$question->name] = $question->validation;
             }
         }
+        $rules['group_member_id'] = 'required|exists:group_members,id';
 
         return $rules;
     }
@@ -45,8 +46,8 @@ class CoiStorageRequest extends FormRequest
     {
         return [
             'required' => 'This field is required.',
-            'required_if' => 'This field is required.'
+            'required_if' => 'This field is required.',
+            'group_member_id.required' => 'Storing a COI requires a group member id',
         ];
     }
-    
 }

@@ -14,7 +14,7 @@ class GroupController extends Controller
     {
         $searchService = new ModelSearchService(
             modelClass: Group::class,
-            defaultWith: ['type', 'status'],
+            defaultWith: ['type', 'status', 'expertPanel', 'expertPanel', 'expertPanel.type'],
             sortFunction: function ($query, $field, $dir) {
                 if ($field == 'type') {
                     $query->innerJoin('group_types', 'groups.group_type_id', '=', 'group_types.id');
@@ -35,7 +35,15 @@ class GroupController extends Controller
     public function show($uuid, Request $request)
     {
         $group = Group::findByUuidOrFail($uuid);
-        $group->load(['members', 'members.person', 'members.roles', 'members.permissions', 'members.cois']);
+        $group->load([
+            'members',
+            'members.person',
+            'members.roles',
+            'members.permissions',
+            'members.cois',
+            'expertPanel',
+            'expertPanel.type'
+        ]);
 
         return new GroupResource($group);
     }

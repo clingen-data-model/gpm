@@ -30,6 +30,7 @@ class CurrentUserController extends Controller
             'person.memberships.permissions',
             'person.memberships.cois',
             'person.memberships.group',
+            'person.memberships.group.expertPanel',
             'person.memberships.group.type',
             'person.memberships.group.status',
             'preferences'

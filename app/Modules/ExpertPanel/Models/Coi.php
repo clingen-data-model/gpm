@@ -2,12 +2,13 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Database\Factories\CoiFactory;
-use Hamcrest\Type\IsObject;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
+use App\Modules\Group\Models\GroupMember;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Coi extends Model
@@ -18,6 +19,7 @@ class Coi extends Model
         'uuid',
         'group_member_id',
         'expert_panel_id',
+        'completed_at',
         'data'
     ];
 
@@ -81,6 +83,18 @@ class Coi extends Model
         return $humanReadable;
     }
     
+    /**
+     * RELATIONS
+     */
+    /**
+     * Get the GroupMember that owns the Coi
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function groupMember(): BelongsTo
+    {
+        return $this->belongsTo(GroupMember::class);
+    }
 
     /**
      * SCOPES
