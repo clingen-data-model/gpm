@@ -56,10 +56,13 @@ export default [
         path: '/redeem-invite',
         component: OnboardingWizard,
         beforeEnter: () => {
-            if (store.getters.currentUser.id) {
+            if (store.getters.currentUser.id !== null) {
                 router.replace({name: 'Dashboard'});
             }
             return true;
+        },
+        meta: {
+            protected: false
         }
     }
 ]
