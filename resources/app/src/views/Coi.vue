@@ -93,6 +93,18 @@ export default {
         },
         coiTitle() {
             return survey.name+' for '+this.epName;
+        },
+        groupMemberId() {
+            const membership = this.$store.getters.currentUser.memberships.find(m => {
+                return m.group.expert_panel
+                    && m.group.expert_panel.coi_code === this.code
+            });
+
+            if (membership) {
+                return membership.id;
+            }
+
+            throw new Error('Could not find membership to EP that matches the code.');
         }
     },
     methods: {
@@ -119,13 +131,18 @@ export default {
         async storeResponse() {
             this.saving = true;
             try {
-                await this.$store.dispatch('storeCoi', {code: this.code, coiData: this.response});
+                await this.$store.dispatch(
+                    'storeCoi', 
+                    {
+                        code: this.code, 
+                        groupMemberId: this.groupMemberId,
+                        coiData: this.response, 
+                    }
+                );
                 this.saved = true;
+                this.$store.dispatch('forceGetCurrentUser');
                 if (this.$store.getters.isAuthed) {
-                    setInterval(() => {this.redirectCountdown--}, 1000)
-                    setTimeout(() => {
-                        this.$router.go(-1)
-                    }, 5000)
+                    this.countDownToRedirect()
                 }
             } catch (error) {
                 if (is_validation_error(error)) {
@@ -133,6 +150,12 @@ export default {
                 }
             }
             this.saving = false;
+        },
+        countDownToRedirect () {
+            setInterval(() => {this.redirectCountdown--}, 1000)
+            setTimeout(() => {
+                this.$router.go(-1)
+            }, 5000)
         }
     },
     mounted() {

@@ -41,7 +41,7 @@
                 </template>
             </data-table>
             <modal-dialog v-model="showResponseDialog" size="xl">
-                <coi-detail :response="currentResponse" v-if="currentResponse"></coi-detail>
+                <coi-detail :coi="currentCoi" v-if="currentCoi"></coi-detail>
             </modal-dialog>
         </div>
     </div>
@@ -69,7 +69,7 @@ export default {
     data() {
         return {
             showResponseDialog: false,
-            currentResponse: null,
+            currentCoi: null,
             fields: [
                 {
                     name: 'data.first_name',
@@ -110,8 +110,8 @@ export default {
         }
     },
     methods: {
-        showResponse(response) {
-            this.currentResponse = response.response_document;
+        showResponse(coi) {
+            this.currentCoi = coi;
             this.showResponseDialog = true;
         },
         async refresh() {
