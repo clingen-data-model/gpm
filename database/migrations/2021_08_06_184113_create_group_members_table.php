@@ -21,7 +21,7 @@ class CreateGroupMembersTable extends Migration
             $table->foreignId('person_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->dateTime('start_date')->useCurrent();
             $table->dateTime('end_date')->nullable();
-            $table->boolean('v1_contact')->default(0);
+            $table->boolean('is_contact')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

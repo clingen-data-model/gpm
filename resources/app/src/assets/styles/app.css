@@ -46,6 +46,17 @@ textarea.sm {
     @apply px-1 py-0.5 text-sm;
 }
 
+.link {
+    @apply text-blue-500 hover:underline;
+}
+
+.nav-item { 
+    @apply border-r-2 border-gray-400  pr-2 mr-2 align-middle;
+}
+.nav-item:last-child {
+    @apply border-r-0;
+}
+
 .btn {
     @apply px-3 py-1 rounded border border-gray-300 focus:outline-none cursor-pointer;
     @apply bg-gradient-to-b from-white to-gray-100 hover:to-gray-200;
@@ -100,6 +111,19 @@ textarea.sm {
     transition: transform 0.8s ease;
 }
 
+.fade-enter-active {
+    transition: all 0.3s ease-out;
+}
+  
+.fade-leave-active {
+    transition: all 0.3s ease-out;
+}
+  
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+
 .slide-fade-enter-active {
     transition: all 0.3s ease-out;
 }
@@ -114,31 +138,22 @@ textarea.sm {
     opacity: 0;
 }
 
+.fade-slide-down-enter-active,
 .slide-fade-down-enter-active {
     transition: all 0.3s ease-out;
 }
   
+.fade-slide-down-leave-active,
 .slide-fade-down-leave-active {
     transition: all 0.3s ease-out;
 }
   
+.fade-slide-down-enter-from,
+.fade-slide-down-leave-to,
 .slide-fade-down-enter-from,
 .slide-fade-down-leave-to {
     transform: translateY(-20px);
     opacity: 0;
-}
-
-.alert-info {
-    @apply bg-blue-300 text-blue-700;
-}
-.alert-success {
-    @apply bg-green-300 text-green-700;
-}
-.alert-warning {
-    @apply bg-yellow-300 text-yellow-700;
-}
-.alert-error {
-    @apply bg-red-300 text-red-700;
 }
 
 .block-title {

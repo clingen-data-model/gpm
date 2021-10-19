@@ -22,7 +22,7 @@
                     <ul v-if="application.contacts.length > 0">
                         <li v-for="contact in email.to" :key="contact.email">
                             <router-link 
-                                :to="{name: 'person-detail', params: {uuid: contact.uuid}}"
+                                :to="{name: 'PersonDetail', params: {uuid: contact.uuid}}"
                                 class="text-blue-600 hover:underline" 
                                 target="person"
                             >

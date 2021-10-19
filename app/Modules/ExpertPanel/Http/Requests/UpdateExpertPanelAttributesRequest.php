@@ -49,7 +49,7 @@ class UpdateExpertPanelAttributesRequest extends FormRequest
                                             ->where('expert_panel_type_id', $expertPanel->expert_panel_type_id);
                                     })
                                 ],
-            'affiliation_id' => 'nullable|max:8',
+            'affiliation_id' => 'nullable|digits:5',
         ];
     }
 

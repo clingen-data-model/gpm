@@ -33,7 +33,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
         $data = [
             'long_base_name' => 'Test Expert Panel Base Name GCEP',
             'short_base_name' => 'Test EP GCEP',
-            'affiliation_id' => '400001',
+            'affiliation_id' => '40001',
             'cdwg_id' => $this->cdwg->id,
         ];
 
@@ -55,7 +55,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
         $data = [
             'long_base_name' => 'Test Expert Panel Base Name',
             'short_base_name' => 'Test EP',
-            'affiliation_id' => '400001',
+            'affiliation_id' => '40001',
             'cdwg_id' => $this->cdwg->id,
             'group' => [
                 'name' => 'New Test Working Name',
@@ -103,7 +103,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
                 'cdwg_id' => ['The selected cdwg id is invalid.'],
                 'long_base_name' => ['The long base name may not be greater than 255 characters.'],
                 'short_base_name' => ['The short base name may not be greater than 15 characters.'],
-                'affiliation_id' => ['The affiliation id may not be greater than 8 characters.'],
+                'affiliation_id' => ['The affiliation id must be 5 digits.'],
             ]);
     }
 

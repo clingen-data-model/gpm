@@ -87,7 +87,7 @@ export default {
             return this.tabs.map((tab, idx) => {
                 if (!tab) return
 
-                const tabClasses = ['tab'];
+                const tabClasses = ['tab', 'cursor-pointer'];
                 if (tab.active) {
                     tabClasses.push('active');
                 }
@@ -102,6 +102,7 @@ export default {
     },
     render() {
         const tabList = this.renderTabs();
+        
         const containerClass = [];
         const tabsClass = ['tabs'];
         if (this.tabLocation == 'top') {

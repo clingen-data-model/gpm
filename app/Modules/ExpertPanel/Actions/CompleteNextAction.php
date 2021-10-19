@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\ExpertPanel\Jobs;
+namespace App\Modules\ExpertPanel\Actions;
 
 use App\Modules\ExpertPanel\Models\NextAction;
 use Illuminate\Support\Facades\Event;

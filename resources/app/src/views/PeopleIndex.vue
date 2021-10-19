@@ -1,5 +1,6 @@
 <template>
-    <card title="People">
+    <div>
+        <h1>People</h1>
         <label class="block mb-2" for="filter-input">Filter:&nbsp;<input type="text" v-model="filter" placeholder="filter"></label>
         <data-table 
             :fields="fields" 
@@ -14,12 +15,13 @@
                 <button 
                     class="btn btn-xs" 
                     @click.stop="goToEditPerson(item.item)"
+                    v-if="canEdit(item)"
                 > 
                     Edit
                 </button>
             </template>
         </data-table>
-    </card>
+    </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
@@ -57,7 +59,8 @@ export default {
     },
     computed: {
         ...mapGetters({
-            people: 'people/all'
+            people: 'people/all',
+            currentUser: 'currentUser'
         })
     },
     methods: {
@@ -66,6 +69,16 @@ export default {
         },
         goToEditPerson (person) {
             this.$router.push(`/people/${person.uuid}/edit`)
+        },
+        canEdit(person) {
+            if (this.hasPermission('people-manage')) {
+                return true;
+            }
+            if (this.currentUser.id == person.user_id) {
+                return true;
+            }
+
+            return false;
         }
     },
     mounted() {

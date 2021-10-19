@@ -27,6 +27,7 @@ class CreateCoisV2Table extends Migration
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table->json('data');
+            $table->datetime('completed_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -23,27 +23,27 @@ class UsersTableSeeder extends Seeder
             [
                 'name' => 'Danielle Azzariti',
                 'email' => 'dazzarit@broadinstitute.org',
-                'role' => 'admin'
+                'role' => 'super-admin'
             ],
             [
                 'name' => 'Hanna Dziadzio',
                 'email' => 'hdziadzi@broadinstitute.org',
-                'role' => 'admin'
+                'role' => 'super-admin'
             ],
             [
                 'name' => 'Emma Owens',
                 'email' => 'emma_owens@med.unc.edu',
-                'role' => 'admin'
+                'role' => 'super-admin'
             ],
             [
                 'name' => 'Courtney Thaxton',
                 'email' => 'courtney_thaxton@med.unc.edu',
-                'role' => 'admin'
+                'role' => 'super-admin'
             ],
             [
                 'name' => 'Laura Milko',
                 'email' => 'laura_milko@med.unc.edu',
-                'role' => 'admin'
+                'role' => 'super-admin'
             ]
 
         ];

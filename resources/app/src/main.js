@@ -7,8 +7,13 @@ import store from './store'
 import CKEditor from '@ckeditor/ckeditor5-vue'
 
 const app = createApp(App)
+
+
 import StaticAlert from './components/alerts/StaticAlert'
 app.component('static-alert', StaticAlert);
+
+import Badge from './components/Badge'
+app.component('badge', Badge);
 
 import IconBase from './components/icons/IconBase'
 app.component('icon-base', IconBase);
@@ -31,9 +36,20 @@ app.component('data-table', DataTable);
 import ModalDialog from './components/ModalDialog'
 app.component('modal-dialog', ModalDialog);
 
+import Collapsible from './components/Collapsible'
+app.component('collapsible', Collapsible);
+
+import DevComponent from './components/dev/DevComponent'
+app.component('dev-component', DevComponent);
+import DevTodo from './components/dev/DevTodo'
+app.component('dev-todo', DevTodo);
+
+import DataForm from '@/components/forms/DataForm'
+app.component('data-form', DataForm);
 import FormContainer from './components/forms/FormContainer'
 app.component('form-container', FormContainer);
-
+import Checkbox from '@/components/forms/Checkbox';
+app.component('checkbox', Checkbox);
 import DateInput from './components/forms/DateInput'
 app.component('date-input', DateInput);
 import InputRow from './components/forms/InputRow'
@@ -55,10 +71,20 @@ app.component('object-dictionary', ObjectDictionary)
 app.component('object-dict', ObjectDictionary)
 
 import ClickOutside from './directives/click_outside'
-
 app.directive('click-outside', ClickOutside)
+import RemainingHeight from '@/directives/remaining_height'
+app.directive('remaining-height', RemainingHeight)
 
 app.use(store)
+    .mixin({
+        methods: {
+            userCan: (permission, group) => store.state.user.hasPermission(permission, group),
+            hasPermission: (permission, group) => store.state.user.hasPermission(permission, group),
+            hasAnyPermission: (permissions) => store.state.user.hasAnyPermission(permissions),
+            hasRole: (role, group) => store.state.user.hasRole(role, group),
+            userIsPerson: (person) => store.state.user.id == person.user_id
+        }
+    })
     .use(router)
     .use(CKEditor)
     .mount('#app')

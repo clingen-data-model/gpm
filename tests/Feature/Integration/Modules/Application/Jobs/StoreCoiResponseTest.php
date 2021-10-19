@@ -45,7 +45,7 @@ class StoreCoiResponseTest extends TestCase
         CoiResponseStore::run($this->expertPanel->coi_code, $this->coiData);
 
 
-        $this->assertDatabaseHas('cois', [
+        $this->assertDatabaseHas('cois_v1', [
             'expert_panel_id' => $this->expertPanel->id,
             'data' => json_encode($this->coiData)
         ]);

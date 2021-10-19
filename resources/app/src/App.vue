@@ -1,31 +1,58 @@
 <template>
   <div>
-    <div id="nav" class="border-b bg-gray-100">
+    <header id="nav" class="border-b bg-gray-100">
       <div class="container mx-auto py-3 flex">
         <div id="main-menu" class="flex-grow">
           <div class="inline-block pr-3">
             <router-link to="/" class="text-black hover:text-black"> EPAM</router-link>
           </div>
-          
           <span v-if="$store.getters.isAuthed">
-          <router-link to="/applications" class="text-blue-500 hover:underline">Applications</router-link> 
-          |
-          <!-- <router-link to="/cdwgs" class="text-blue-500 hover:underline">CDWGs</router-link>  -->
-          <!-- | -->
-          <router-link to="/people" class="text-blue-500 hover:underline">People</router-link> 
-          |
-          <!-- <router-link to="/about" class="text-blue-500 hover:underline">About</router-link> -->
-          <!-- |
-          <router-link to="/guides-and-documentation" class="text-blue-500 hover:underline">Guides &amp; documentation</router-link> | -->
+              <router-link 
+                to="/applications" 
+                class="link nav-item" 
+                v-if="hasPermission('ep-applications-manage')"
+              >Applications</router-link> 
+              <router-link 
+                to="/people" 
+                class="link nav-item"
+              >People</router-link>
+              <router-link 
+                :to="{name: 'GroupList'}" 
+                class="link nav-item"
+              >Groups</router-link>
+              <!-- <router-link 
+                to="/guides-and-documentation" 
+                class="link nav-item"
+              >
+                Guides &amp; documentation
+              </router-link> -->
           </span>
         </div>
         <user-menu></user-menu>
       </div>
+    </header>
+
+    <div class="my-3">
+      <router-view class="container mx-auto mb-1"/>
+      <div class="container mx-auto" id="debug-info"></div>
     </div>
 
-    <router-view class="container mx-auto my-3"/>
-
     <alert-viewer></alert-viewer>
+
+    <div class="container mx-auto py-3">
+      <dev-component id="dev-info" class="">
+        <h3>Developer Info</h3>
+        <collapsible title="Current User">
+          <pre>{{$store.state.user.attributes}}</pre>
+        </collapsible>
+      </dev-component>
+    </div>
+
+    <footer class="w-full">
+      <div class="container mx-auto py-3 flex" id="footer-content">
+          
+      </div>
+    </footer>
   </div>
 </template>
 

@@ -5,8 +5,10 @@ namespace App\Modules\User\Models;
 use App\Models\HasEmail;
 use Laravel\Sanctum\HasApiTokens;
 use Database\Factories\UserFactory;
+use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Cache;
 use Spatie\Permission\Traits\HasRoles;
+use App\Modules\User\Models\Preference;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
@@ -45,9 +47,25 @@ class User extends Authenticatable implements CanResetPassword
      * @var array
      */
     protected $casts = [
+        'id' => 'integer',
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * Get the person associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function person()
+    {
+        return $this->hasOne(Person::class);
+    }
+
+    public function preferences()
+    {
+        return $this->belongsToMany(Preference::class, 'user_preference');
+    }
+    
     public function routeNotificationForSlack()
     {
         return config('logging.channels.slack.url');
@@ -75,10 +93,19 @@ class User extends Authenticatable implements CanResetPassword
         return $this->allPermissions;
     }
 
+    /**
+     * DOMAIN
+     */
+
+     public function isLinkedToPerson(): bool
+     {
+         return (bool)$this->person;
+     }
+     
+
     // Factory support
-    static protected function newFactory()
+    protected static function newFactory()
     {
         return new UserFactory();
     }
-
 }

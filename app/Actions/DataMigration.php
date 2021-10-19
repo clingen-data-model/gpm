@@ -185,7 +185,7 @@ class DataMigration
                     [
                         'group_id' => $group->id,
                         'person_id' => $row->person_id,
-                        'v1_contact' => 1
+                        'is_contact' => 1
                     ],
                 );
         });
@@ -217,14 +217,16 @@ class DataMigration
             );
             $coi = new Coi;
             $coi->setTable('cois_v2')
-                // ->withTrashed()
                 ->firstOrCreate(
                     ['group_member_id' => $groupMember->id],
                     [
                         'uuid' => Uuid::uuid4(),
                         'expert_panel_id' => $expertPanel->id,
                         'group_member_id' => $groupMember->id,
-                        'data' => $row->data
+                        'data' => $row->data,
+                        'completed_at' => $row->created_at,
+                        'created_at' => $row->created_at,
+                        'updated_at' => $row->updated_at,
                     ]
                 );
         });

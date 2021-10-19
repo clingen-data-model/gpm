@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Modules\ExpertPanel\Models\Coi;
+use App\Modules\Group\Models\GroupMember;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -23,7 +24,9 @@ class CoiFactory extends Factory
     public function definition()
     {
         return [
+            'uuid' => $this->faker->uuid(),
             'expert_panel_id' => ExpertPanel::factory()->create()->id,
+            'group_member_id' => GroupMember::factory()->create()->id,
             'data' => (object)[
                 'first_name' => $this->faker->firstName,
                 'last_name' => $this->faker->lastName,

@@ -13,7 +13,6 @@ class Entity {
 
     constructor(attributes = {}) {
 
-
         this.attributes = {...this.constructor.defaults, ...attributes}
 
         for (let attr in this.attributes) {
@@ -56,8 +55,16 @@ class Entity {
         this[attr] = value;
     }
 
+    isPersisted() {
+        return Boolean(this.attributes.id)
+    }
+
     clone(){
         return new (this.constructor.self)(this.attributes);
+    }
+
+    getAttributes() {
+        return this.attributes;
     }
 
 }

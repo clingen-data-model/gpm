@@ -10,6 +10,9 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 
+/**
+ * @group people
+ */
 class PersonEndpointTest extends TestCase
 {
     use RefreshDatabase;
@@ -17,41 +20,13 @@ class PersonEndpointTest extends TestCase
     public function setup():void
     {
         parent::setup();
+        config('permission.models.permission')::factory([
+            'name' => 'update-others-profile',
+            'scope' => 'system'
+        ])->create();
         $this->user = User::factory()->create();
+        $this->user->givePermissionTo('update-others-profile');
         Sanctum::actingAs($this->user);
-    }
-
-    /**
-     * @test
-     */
-    public function it_can_create_a_person_entity()
-    {
-        $person = Person::factory()->make();
-        $person->phone = null;
-
-        $this->json('POST', '/api/people', $person->toArray())
-            ->assertStatus(200)
-            ->assertJson($person->toArray());
-    }
-
-    /**
-     * @test
-     */
-    public function it_can_retrieve_a_person_with_uuid()
-    {
-        $person = Person::factory()->create();
-        $this->json('GET', '/api/people/'.$person->uuid)
-            ->assertStatus(200)
-            ->assertJson($person->toArray());   
-    }
-
-    /**
-     * @test
-     */
-    public function responds_with_404_when_person_not_found()
-    {
-        $this->json('GET', '/api/people/'.Uuid::uuid4()->toString())
-            ->assertStatus(404);   
     }
     
     /**
@@ -62,10 +37,9 @@ class PersonEndpointTest extends TestCase
         $person = Person::factory()->create();
 
         $this->json('PUT', '/api/people/'.$person->uuid, [
-            'first_name' => 'Beano', 
-            'last_name'=>$person->last_name, 
-            'email' => $person->email, 
-            // 'phone' => $person->phone
+            'first_name' => 'Beano',
+            'last_name'=>$person->last_name,
+            'email' => $person->email,
         ])
             ->assertStatus(200)
             ->assertJson(['first_name' => 'Beano']);
@@ -99,7 +73,4 @@ class PersonEndpointTest extends TestCase
             'email' => ['The email has already been taken.']
         ]);
     }
-    
-    
-    
 }

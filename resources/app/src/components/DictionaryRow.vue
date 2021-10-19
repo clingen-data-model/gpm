@@ -17,6 +17,7 @@
 </template>
 <script>
 export default {
+    name: 'DictionaryRow',
     props: {
         label: {
             type: String,

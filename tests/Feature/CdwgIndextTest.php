@@ -17,7 +17,7 @@ class CdwgIndextTest extends TestCase
         parent::setup();
         $this->seed();
         
-        Cdwg::all()->each->delete();
+        // Cdwg::all()->each->delete();
         $this->user = User::factory()->create();
         $this->cdwgs = Cdwg::factory()->count(13)->create();
     }
@@ -32,6 +32,4 @@ class CdwgIndextTest extends TestCase
             ->assertStatus(200)
             ->assertJson($this->cdwgs->sortBy('name')->toArray());
     }
-    
-    
 }

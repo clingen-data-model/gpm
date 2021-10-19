@@ -15,13 +15,17 @@ class Coi extends Model
     use HasFactory;
 
     public $fillable = [
-        'application_id',
-        'email',
+        'uuid',
+        'group_member_id',
+        'expert_panel_id',
         'data'
     ];
 
     public $casts = [
-        'data' => 'object'
+        'data' => 'object',
+        'group_member_id' => 'integer',
+        'expert_panel_id' => 'integer',
+        'completed_at' => 'datetime'
     ];
     
     public $appends = [
@@ -49,7 +53,7 @@ class Coi extends Model
             ->filter()
             ->toArray();
 
-        $responseData['application_id'] = $this->expertPanel_id;
+        $responseData['expert_panel_id'] = $this->expertPanel_id;
         
         return $responseData;
     }
@@ -87,7 +91,7 @@ class Coi extends Model
         if ($expertPanel instanceof ExpertPanel) {
             $id = $expertPanel->id;
         }
-        return $query->where('application_id', $id);
+        return $query->where('expert_panel_id', $id);
     }
     
 

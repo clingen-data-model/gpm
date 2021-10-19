@@ -20,4 +20,9 @@ const formatDateTime = function(date) {
     return `${d.toLocaleDateString()} ${d.toLocaleTimeString([], {timeStyle: 'short'})}`;
 }
 
-export { formatDate, formatDateTime }
+const yearAgo = () => {
+    const d = new Date();
+    return d.setFullYear(d.getFullYear()-1);
+}
+
+export { formatDate, formatDateTime, yearAgo }

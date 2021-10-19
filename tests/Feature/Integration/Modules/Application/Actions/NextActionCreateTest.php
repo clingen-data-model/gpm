@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Integration\Modules\Application\Jobs;
+namespace Tests\Feature\Integration\Modules\Application\Actions;
 
 use Tests\TestCase;
 use App\Modules\ExpertPanel\Models\NextAction;

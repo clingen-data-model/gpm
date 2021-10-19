@@ -1,5 +1,5 @@
 import axios from 'axios'
-import store from '@/store'
+// import store from '@/store/index'
 
 const api = axios.create({
     baseURL: '',
@@ -12,13 +12,6 @@ const api = axios.create({
         }
     },
 
-});
-
-api.interceptors.response.use(response => response, error => {
-        if (error.response.status == 401) {
-            store.commit('setAuthenticated', false)
-        }
-        return Promise.reject(error);
 });
 
 export default api

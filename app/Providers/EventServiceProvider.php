@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Event;
 
 use App\Modules\User\Events\UserLoggedIn;
 use App\Modules\User\Events\UserLoggedOut;
+use App\Modules\Person\Events\InviteRedeemed;
 use App\Modules\User\Events\UserAuthenticated;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -22,7 +23,7 @@ class EventServiceProvider extends ServiceProvider
         // NOTE That intra-module listeners are registered in the module's service provider.
         'Illuminate\Mail\Events\MessageSent' => [
             'App\Listeners\Mail\StoreMailInDatabase'
-        ]
+        ],
     ];
 
     /**
