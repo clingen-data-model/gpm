@@ -19,6 +19,7 @@
                 > 
                     Edit
                 </button>
+                <span v-else></span>
             </template>
         </data-table>
     </div>
