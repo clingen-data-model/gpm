@@ -38,6 +38,7 @@ class DataMigration
                 $approvalDates = json_decode($row->approval_dates, true);
 
                 $data = [
+                    'id' => $row->id,
                     'uuid' => $row->uuid,
                     'group_id' => $group->id,
                     'short_base_name' => $row->short_base_name,

@@ -34,7 +34,10 @@ class UpdgradeV1Tables extends Migration
                             return (array)$coi;
                         })
                         ->toArray();
-        DB::table('cois_temp')->insert($coiData);
+        foreach ($coiData as $row) {
+            DB::table('cois_temp')->insert($row);
+        }
+        // DB::table('cois_temp')->insert($coiData);
         Schema::dropIfExists('cois');
         Schema::rename('cois_temp', 'cois');
 
