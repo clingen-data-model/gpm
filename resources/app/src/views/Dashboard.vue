@@ -71,7 +71,7 @@
             </tab-item>
         </tabs-container>
         <collapsible title="User Data">
-            <pre>{{user.memmberships}}</pre>
+            <pre>{{user.memberships}}</pre>
         </collapsible>
     </div>
 </template>
@@ -126,6 +126,7 @@ export default {
         // TODO: Get groups by search with TONS of info.
         // TODO: Extract that work to a module.
         const groups = computed(() => user.value.memberships.map(m => m.group).filter(g => g !== null));
+        console.log(groups.value);
         const groupFields = ref([
             {
                 name: 'name',
@@ -165,6 +166,7 @@ export default {
                 .flat()
         });
         const needsCoi = computed(() => {
+            console.log(user.value.memberships);
             return user.value.memberships
                     .filter(m => (m.cois === null || m.cois.length === 0) && m.group.type.id == 3);
         });
