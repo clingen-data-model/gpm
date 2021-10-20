@@ -6,6 +6,8 @@ import ChevDownIcon from '@/components/icons/IconCheveronDown'
 import ChevRightIcon from '@/components/icons/IconCheveronRight'
 import FilterIcon from '@/components/icons/IconFilter'
 import ExclamationIcon from '@/components/icons/IconExclamation'
+import EnvelopeIcon from '@/components/icons/IconEnvelope'
+import NotificationIcon from '@/components/icons/IconNotification'
 import DropdownMenu from '@/components/DropdownMenu'
 import DropdownItem from '@/components/DropdownItem'
 import MemberPreview from '@/components/groups/MemberPreview'
@@ -21,6 +23,8 @@ export default {
         DropdownItem,
         MemberPreview,
         ExclamationIcon,
+        EnvelopeIcon,
+        NotificationIcon,
     },
     props: {
         group: {
@@ -310,7 +314,10 @@ export default {
                 <template v-slot:cell-coi_last_completed="{item}">
                     <div class="flex space-x-2">
                         <span v-if="item.coi_last_completed">{{formatDate(item.coi_last_completed)}}</span>
-                        <exclamation-icon v-if="item.coi_last_completed === null || (item.coi_last_completed < yearAgo())" :class="getCoiDateStyle(item)"></exclamation-icon>
+                        <exclamation-icon 
+                            v-if="!item.coi_last_completed === null || (item.coi_last_completed < yearAgo())"
+                            :class="getCoiDateStyle(item)"
+                        ></exclamation-icon>
                     </div>
                 </template>
                 <!-- <template v-slot:cell-training_completed_at="{item, value}">
@@ -320,26 +327,29 @@ export default {
                     </div>
                 </template> -->
                 <template v-slot:cell-actions="{item}">
-                    <dropdown-menu :hide-cheveron="true" class="relative" v-if="hasAnyMemberPermission()">
-                        <template v-slot:label class="btn btn-xs">
-                            &hellip;
-                        </template>
-                        <dropdown-item
-                            v-if="hasAnyPermission([['members-update', group], 'groups-manage'])"
-                        >
-                            <div @click="editMember(item)">Update membership</div>
-                        </dropdown-item>
-                        <dropdown-item
-                            v-if="hasAnyPermission([['members-retire', group], 'groups-manage'])"
-                        >
-                            <div @click="confirmRetireMember(item)">Retire from group</div>
-                        </dropdown-item>
-                        <dropdown-item
-                            v-if="hasAnyPermission([['members-remove', group], 'groups-manage'])"
-                        >
-                            <div @click="confirmRemoveMember(item)">Remove from group</div>
-                        </dropdown-item>
-                    </dropdown-menu>
+                    <div class="flex space-x-2">
+                        <dropdown-menu :hide-cheveron="true" class="relative" v-if="hasAnyMemberPermission()">
+                            <template v-slot:label>
+                                <button class="btn btn-xs">&hellip;</button>
+                            </template>
+                            <dropdown-item
+                                v-if="hasAnyPermission([['members-update', group], 'groups-manage'])"
+                            >
+                                <div @click="editMember(item)">Update membership</div>
+                            </dropdown-item>
+                            <dropdown-item
+                                v-if="hasAnyPermission([['members-retire', group], 'groups-manage'])"
+                            >
+                                <div @click="confirmRetireMember(item)">Retire from group</div>
+                            </dropdown-item>
+                            <dropdown-item
+                                v-if="hasAnyPermission([['members-remove', group], 'groups-manage'])"
+                            >
+                                <div @click="confirmRemoveMember(item)">Remove from group</div>
+                            </dropdown-item>
+                        </dropdown-menu>
+                        <notification-icon v-if="item.is_contact" :width="12" :height="12" icon-name="Is a group contact"></notification-icon>
+                    </div>
                 </template>
 
                 <template v-slot:detail="{item}">

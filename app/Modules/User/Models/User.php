@@ -4,6 +4,7 @@ namespace App\Modules\User\Models;
 
 use App\Models\HasEmail;
 use Laravel\Sanctum\HasApiTokens;
+use App\Modules\Group\Models\Group;
 use Database\Factories\UserFactory;
 use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Cache;
@@ -93,14 +94,20 @@ class User extends Authenticatable implements CanResetPassword
         return $this->allPermissions;
     }
 
+    public function hasGroupPermissionTo($permission, Group $group): bool
+    {
+        return $this->person && $this->person->hasGroupPermissionTo($permission, $group);
+    }
+    
+
     /**
      * DOMAIN
      */
 
-     public function isLinkedToPerson(): bool
-     {
-         return (bool)$this->person;
-     }
+    public function isLinkedToPerson(): bool
+    {
+        return (bool)$this->person;
+    }
      
 
     // Factory support

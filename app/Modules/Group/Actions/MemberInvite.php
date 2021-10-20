@@ -49,7 +49,8 @@ class MemberInvite
 
         $this->invitePerson->handle(person: $person, inviter: $group);
         
-        $newMember = $this->addMember->handle($group, $person);
+        $isContact = isset($data['is_contact']) ? $data['is_contact'] : false;
+        $newMember = $this->addMember->handle($group, $person, $isContact);
 
         if ($roleIds) {
             $newMember = $this->assignRole->handle($newMember, $roleIds);

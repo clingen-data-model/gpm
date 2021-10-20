@@ -13,7 +13,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Support\Carbon;
 
-class MemberAdded extends GroupEvent
+class MemberUpdated extends GroupEvent
 //  extends GroupEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
@@ -23,14 +23,14 @@ class MemberAdded extends GroupEvent
      *
      * @return void
      */
-    public function __construct(public GroupMember $groupMember)
+    public function __construct(public GroupMember $groupMember, public array $data)
     {
         $this->group = $this->groupMember->group;
     }
 
     public function getLogEntry(): string
     {
-        return $this->groupMember->person->name.' added to '.$this->group->name;
+        return $this->groupMember->person->name.' updated';
     }
     
     public function getLogDate(): Carbon
@@ -40,11 +40,12 @@ class MemberAdded extends GroupEvent
 
     public function getProperties(): ?array
     {
-        return $this->groupMember->person->only('id', 'uuid', 'name', 'email', 'is_contact');
+        return [
+            'group_member' => $this->groupMember->person->only('id', 'uuid', 'name', 'email'),
+            'new_data' => $this->data,
+        ];
     }
     
-    
-
     /**
      * Get the channels the event should broadcast on.
      *

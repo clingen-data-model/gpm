@@ -118,12 +118,13 @@ export const actions = {
         
     },
 
-    async memberAdd ({commit}, {uuid, personId, roleIds}) {
+    async memberAdd ({commit}, {uuid, personId, roleIds, isContact}) {
         const url = `${baseUrl}/${uuid}/members`
         
         return await api.post(url, {
                 person_id: personId,
-                role_ids: roleIds
+                role_ids: roleIds,
+                is_contact: isContact
             })
             .then(response =>  {
                 commit('addMemberToGroup', response.data.data);
@@ -131,19 +132,29 @@ export const actions = {
             });
     },
 
-    async memberInvite ({ commit }, {uuid, firstName, lastName, email, roleIds}) {
+    async memberInvite ({ commit }, {uuid, firstName, lastName, email, roleIds, isContact}) {
         const url = `${baseUrl}/${uuid}/invites`;
         const data = {
             first_name: firstName,
             last_name: lastName,
             email: email,
             role_ids: roleIds || null,
+            is_contact: isContact
         };
         return await api.post(url, data)
         .then(response => {
             commit('addMemberToGroup', response.data.data);
             return response.data;
         });
+    },
+
+    async memberUpdate ( {commit}, {groupUuid, memberId, data}) {
+        const url= `${baseUrl}/${groupUuid}/members/${memberId}`;
+        return await api.put(url, data)
+                .then(response => {
+                    commit('addMemberToGroup', response.data.data);
+                    return response.data
+                })
     },
 
     async memberAssignRole ( {commit}, {uuid, memberId, roleIds}) {

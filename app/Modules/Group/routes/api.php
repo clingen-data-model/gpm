@@ -5,6 +5,7 @@ use App\Modules\Group\Actions\MemberAdd;
 use App\Modules\Group\Actions\MemberInvite;
 use App\Modules\Group\Actions\MemberRemove;
 use App\Modules\Group\Actions\MemberRetire;
+use App\Modules\Group\Actions\MemberUpdate;
 use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Group\Actions\MemberRemoveRole;
 use App\Modules\Group\Actions\MemberGrantPermissions;
@@ -26,6 +27,7 @@ Route::group([
     
     Route::post('/{group_uuid}/members', MemberAdd::class);
     Route::delete('/{group_uuid}/members/{member_id}', MemberRemove::class);
+    Route::put('/{group_uuid}/members/{member_id}', MemberUpdate::class);
     Route::post('/{group_uuid}/members/{member_id}/retire', MemberRetire::class);
     
     Route::post('/{group_uuid}/members/{member_id}/roles', MemberAssignRole::class);

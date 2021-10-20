@@ -21,7 +21,7 @@
                     row-class="cursor-pointer"
                 >
                     <template v-slot:cell-status_name="{value}">
-                        <badge color="green">{{value}}</badge>
+                        <badge :color="groupBadgeColor(value)">{{value}}</badge>
                     </template>
                 </data-table>
             </tab-item>
@@ -29,20 +29,22 @@
             <tab-item label="COIs">
                 <div v-if="user.memberships.length > 0">
                     <div v-if="needsCoi.length > 0">
-                        <h4>You must complete a Conflict of Interest Disclosure for the following memberships:</h4>
+                        <h3>You must complete a Conflict of Interest Disclosure for the following memberships:</h3>
                         <div class="my-2">
                             <router-link 
-                                v-for="membership in user.memberships" :key="membership.id" 
-                                class="block my-0 font-bold p-2 border border-gray-300 first:rounded-t-lg last:rounded-b-lg cursor-pointer hover:bg-blue-50 link"
-                                :to="getCoiRoute(membership)" 
+                                v-for="membership in needsCoi" 
+                                :key="membership.id" 
+                                class="block my-0 font-bold p-2 border border-gray-300 first:rounded-t-lg last:rounded-b-lg cursor-pointer hover:bg-blue-50 link"                                :to="getCoiRoute(membership)" 
                             >{{membership.group.name}}</router-link>
                         </div>
                     </div>
+                    <h3>Completed Conflict of Interest Disclosures</h3>
                     <data-table 
                         :fields="coiFields" 
                         :data="cois" 
                         v-model:sort="coiSort"
                         v-if="cois.length > 0"
+                        class="my-2"
                     >
                         <template v-slot:cell-actions="{item}">
                             <div v-if="item.completed_at">
@@ -70,9 +72,20 @@
                 </teleport>
             </tab-item>
         </tabs-container>
-        <collapsible title="User Data">
-            <pre>{{user.memberships}}</pre>
-        </collapsible>
+        <div class="mt-8 space-y-4">
+            <collapsible title="User Memberships">
+                <pre>{{user.memberships}}</pre>
+            </collapsible>
+            <collapsible title="User Groups">
+                <pre>{{groups}}</pre>
+            </collapsible>
+            <collapsible title="User Cois">
+                <pre>{{cois}}</pre>
+            </collapsible>
+            <collapsible title="needsCoi">
+                <pre>{{needsCoi}}</pre>
+            </collapsible>
+        </div>
     </div>
 </template>
 <script>
@@ -114,7 +127,6 @@ export default {
             loadingNotifications.value = false;
         }
         const removeNotification = (notification) => {
-            console.log('removing notification', notification);
             const index = notifications.value.findIndex((item) => item.id == notification.id);
             if (index > -1) {
                 notifications.value.splice(index, 1);
@@ -149,6 +161,15 @@ export default {
             field: 'name',
             desc: false
         });
+        const groupBadgeColor = (status) => {
+            const map = {
+                Active: 'green',
+                'Pending-Approval': 'blue',
+                Retired: 'yellow',
+                Removed: 'red'
+            }
+            return map[status] || 'blue'
+        };
 
 
         // TODO: extract to module.
@@ -168,7 +189,7 @@ export default {
         const needsCoi = computed(() => {
             console.log(user.value.memberships);
             return user.value.memberships
-                    .filter(m => (m.cois === null || m.cois.length === 0) && m.group.type.id == 3);
+                    .filter(m => (m.cois === null || m.cois.length === 0) && m.group.expert_panel);
         });
         const coiFields = [
             {
@@ -220,6 +241,7 @@ export default {
             groups,
             groupSort,
             groupFields,
+            groupBadgeColor,
             needsCoi,
             cois,
             coiFields,

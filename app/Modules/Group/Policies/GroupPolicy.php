@@ -94,6 +94,11 @@ class GroupPolicy
 
     public function inviteMembers(User $user, Group $group)
     {
-        return $user->person->hasGroupPermissionTo('members-invite', $group) || $user->hasPermissionTo('groups-manage');
+        return $user->hasPermissionTo('groups-manage') || $user->hasGroupPermissionTo('members-invite', $group);
+    }
+
+    public function updateMembers(User $user, Group $group)
+    {
+        return $user->hasPermissionTo('groups-manage') || $user->hasGroupPermissionTo('members-update', $group);
     }
 }

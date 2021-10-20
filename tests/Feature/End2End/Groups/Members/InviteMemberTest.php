@@ -56,6 +56,7 @@ class InviteMemberTest extends TestCase
             ->assertStatus(403);
     }
 
+    
     /**
      * @test
      */
@@ -190,5 +191,33 @@ class InviteMemberTest extends TestCase
         
         $newPerson = Person::orderBy('id', 'desc')->first();
         Notification::assertSentTo($newPerson, InviteNotification::class);
+    }
+
+    /**
+     * @test
+     */
+    public function saves_is_contact_attribute()
+    {
+        MemberGrantPermissions::run(
+            $this->userMember,
+            collect([config('permission.models.permission')::factory()->create(['name' => 'members-invite', 'scope' => 'group'])])
+        );
+
+        Sanctum::actingAs($this->user->fresh());
+        $response = $this->json('POST', $this->url, [
+            'first_name' => 'Test',
+            'last_name' => 'Testerson',
+            'email' => 'test@test.com',
+            'is_contact' => true
+        ]);
+        $response->assertStatus(201);
+
+        $newPerson = Person::orderBy('id', 'desc')->first();
+        $this->assertNotEquals($this->user->person->id, $newPerson->id);
+        $this->assertDatabaseHas('group_members', [
+            'group_id' => $this->group->id,
+            'person_id' => $newPerson->id,
+            'is_contact' => 1
+        ]);
     }
 }

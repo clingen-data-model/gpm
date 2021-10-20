@@ -36,6 +36,13 @@
                         Adding existing person, {{newMember.person.name}}, as a group member.
                     </static-alert>
                 </div>
+
+                <div class="border-t mt-4 pt-4">
+                    <label>
+                        <input type="checkbox" v-model="newMember.is_contact">
+                        Receives notifications about group
+                    </label>
+                </div>
                 
                 <div class="border-t mt-4 pt-2">
                     <h3>Group Roles</h3>
@@ -138,6 +145,11 @@ export default {
             suggestedPeople: []
         }
     },
+    computed: {
+        originalMember () {
+            return this.group.findMember(this.memberId);
+        }
+    },
     setup () {
         const store = useStore();
         let group = computed(() => store.getters['groups/currentItem'] || {});
@@ -175,7 +187,7 @@ export default {
         syncMember () {
             try {
                 if (this.memberId) {
-                    this.newMember = this.group.findMember(this.memberId).clone();
+                    this.newMember = this.originalMember.clone();
                 }
             } catch (error) {
                 if (this.group.isPersisted()) {
@@ -212,7 +224,8 @@ export default {
                     firstName: member.person.first_name,
                     lastName: member.person.last_name,
                     email: member.person.email,
-                    roleIds: member.roles.map(r => r.id)
+                    roleIds: member.roles.map(r => r.id),
+                    isContact: member.is_contact
                 })
             
                 if (member.permissions.length > 0) {
@@ -233,7 +246,8 @@ export default {
                 const memberData = await this.$store.dispatch('groups/memberAdd', {
                     uuid: group.uuid,
                     personId: member.person_id,
-                    roleIds: member.roles.map(r => r.id)
+                    roleIds: member.roles.map(r => r.id),
+                    isContact: member.is_contact,
                 })
                 if (member.permissions.length > 0) {
                     await this.$store.dispatch('groups/memberGrantPermission', {
@@ -250,8 +264,20 @@ export default {
         },
 
         async updateExistingMember(group, member) {
-            this.syncRoles(group, member);
-            this.syncPermissions(group, member);
+            if (this.newMember.is_contact !== this.originalMember.is_contact) {
+                await this.$store.dispatch(
+                    'groups/memberUpdate', 
+                    {
+                        groupUuid: group.uuid, 
+                        memberId: member.id, 
+                        data: {
+                            is_contact: this.newMember.is_contact
+                        }
+                    }
+                )
+            }
+            await this.syncRoles(group, member);
+            await this.syncPermissions(group, member);
         },
 
         syncRoles(group, member) {

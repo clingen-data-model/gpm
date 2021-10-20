@@ -141,13 +141,29 @@ class AddGroupMemberTest extends TestCase
         ]);
     }
     
+    /**
+     * @test
+     */
+    public function saves_is_contact_attribute()
+    {
+        $this->callCreateEndpoint(isContact: true);
 
-    private function callCreateEndpoint($personId = null, ?array $roleIds = null)
+        $this->assertDatabaseHas('group_members', [
+            'group_id' => $this->group->id,
+            'person_id' => $this->person->id,
+            'is_contact' => 1
+        ]);
+    }
+    
+
+    private function callCreateEndpoint($personId = null, ?array $roleIds = null, bool $isContact = false)
     {
         $data = $data ?? [
             'person_id' => $personId ?? $this->person->id,
             'role_ids' => $roleIds ?? [$this->role->id],
+            'is_contact' => $isContact
         ];
+
         $url = '/api/groups/'.$this->group->uuid.'/members';
 
         Sanctum::actingAs($this->admin);

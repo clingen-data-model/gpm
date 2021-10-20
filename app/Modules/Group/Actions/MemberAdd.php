@@ -26,11 +26,12 @@ class MemberAdd
     }
     
 
-    public function handle(Group $group, Person $person): GroupMember
+    public function handle(Group $group, Person $person, ?bool $isContact = false): GroupMember
     {
         $groupMember = GroupMember::create([
             'group_id' => $group->id,
             'person_id' => $person->id,
+            'is_contact' => $isContact
         ]);
 
         Event::dispatch(new MemberAdded($groupMember));
@@ -44,11 +45,13 @@ class MemberAdd
         $person = Person::findOrFail($request->person_id);
         $roles = config('permission.models.role')::find($request->role_ids);
 
-        $member = $this->handle(group: $group, person: $person);
+        $member = $this->handle(group: $group, person: $person, isContact: $request->is_contact);
 
         if ($roles->count() > 0) {
             $member = $this->assignRoleAction->handle($member, $roles);
         }
+
+        $member->load('cois');
 
         return new MemberResource($member);
     }
