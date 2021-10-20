@@ -36,6 +36,8 @@ class GroupController extends Controller
     {
         $group = Group::findByUuidOrFail($uuid);
         $group->load([
+            'type',
+            'status',
             'members',
             'members.person',
             'members.roles',
