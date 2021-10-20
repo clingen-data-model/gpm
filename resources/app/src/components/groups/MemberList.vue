@@ -1,5 +1,5 @@
 <script>
-import config from '@/configs.json'
+import configs from '@/configs.json'
 import { formatDate, yearAgo } from '@/date_utils'
 import sortAndFilter from '@/composables/router_aware_sort_and_filter'
 import ChevDownIcon from '@/components/icons/IconCheveronDown'
@@ -108,8 +108,15 @@ export default {
                         return m;
                     });
         },
+        fieldsForGroupType () {
+            const fields = [...this.tableFields];
+            if (!this.group.isEp()) {
+               delete fields.splice(fields.findIndex(f => f.name == 'coi_last_completed'), 1);
+            }
+            return fields;
+        },
         roles () {
-            return config.groups.roles;
+            return configs.groups.roles;
         },
         coiCuttoff () {
             const cuttoff = new Date();
@@ -282,7 +289,7 @@ export default {
         
         <div class="mt-3">
             <data-table 
-                :fields="tableFields" 
+                :fields="fieldsForGroupType" 
                 :data="filteredMembers" 
                 v-model:sort="sort" 
                 :detailRows="true" 
