@@ -58,6 +58,9 @@
                             </div>
                         </template>
                     </data-table>
+                    <div v-if="needsCoi.length == 0 && cois.length == 0" class="well">
+                        None of your memberships require a conflict of interest disclosure
+                    </div>
                 </div>
                 <div class="well" v-else>You are not required to complet conflict of interest disclsoure</div>
                 <teleport to="body">
@@ -163,7 +166,7 @@ export default {
         });
         const needsCoi = computed(() => {
             return user.value.memberships
-                    .filter(m => (m.cois === null || m.cois.length === 0));
+                    .filter(m => (m.cois === null || m.cois.length === 0) && m.group.type.id == 3);
         });
         const coiFields = [
             {
@@ -191,7 +194,7 @@ export default {
             return {
                 name: 'alt-coi', 
                 params: {
-                    name: kebabCase(membership.group.name), 
+                    name: kebabCase(membership.group.name),
                     code: membership.group.expert_panel.coi_code
                 }
             }
