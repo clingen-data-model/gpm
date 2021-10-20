@@ -23,11 +23,10 @@ class MemberInvite
     
     public function __construct(
         private PersonCreate $createPerson,
-        private PersonInvite $invitePerson, 
-        private MemberAdd $addMember, 
+        private PersonInvite $invitePerson,
+        private MemberAdd $addMember,
         private MemberAssignRole $assignRole
-    )
-    {
+    ) {
     }
 
     public function handle(Group $group, array $data)
@@ -41,7 +40,7 @@ class MemberInvite
         $personData = $data;
         $personUuid = Uuid::uuid4();
         $person = $this->createPerson->handle(
-            uuid: $personUuid, 
+            uuid: $personUuid,
             first_name: $data['first_name'],
             last_name: $data['last_name'],
             email: $data['email'],
@@ -62,7 +61,7 @@ class MemberInvite
     public function asController(ActionRequest $request, $groupUuid)
     {
         $group = Group::findByUuidOrFail($groupUuid);
-        if (Auth::user()->person && !Auth::user()->person->hasGroupPermissionTo('members-invite', collect([$group]))) {
+        if (\Auth::user()->cannot('inviteMembers', $group)) {
             abort('403', 'You do not have permission to invite members to this group.');
         }
         return new MemberResource($this->handle($group, $request->all()));

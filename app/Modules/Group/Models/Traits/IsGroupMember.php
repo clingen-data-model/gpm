@@ -29,8 +29,16 @@ trait IsGroupMember
                 ->withPivot('start_date', 'end_date');
     }
 
-    public function hasGroupPermissionTo(string $permission, Collection $groups): bool
+    public function hasGroupPermissionTo(string $permission, $groups): bool
     {
+        if (is_object($groups) && get_class($groups) == Group::class) {
+            $groups = collect([$groups]);
+        }
+    
+        if (is_array($groups)) {
+            $groups = collect($groups);
+        }
+    
         $memberships = $this->memberships()
             ->isActive()
             ->whereIn('group_id', $groups->pluck('id')->toArray())
