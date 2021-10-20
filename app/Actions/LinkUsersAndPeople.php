@@ -32,6 +32,7 @@ class LinkUsersAndPeople
 
     public function asCommand(Command $command): void
     {
+        $command->info('Linking users to people');
         User::all()
             ->each(function ($user) {
                 $this->handle($user);

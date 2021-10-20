@@ -31,6 +31,7 @@ class CreateInviteForGroupMembers
 
     public function asCommand(Command $command)
     {
+        $command->info('create invites for people...');
         Person::all()->each(function ($person) {
             $this->linker->handle($person);
         });

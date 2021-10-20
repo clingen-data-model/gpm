@@ -276,7 +276,6 @@ class DataMigration
             $document = new Document;
             $document->setTable('documents_v2')->withTrashed()->firstOrCreate(['uuid' => $doc->uuid], $mapped);
 
-            dump($doc->document_type_id.' - v'.$doc->version.': '.$doc->date_received);
             if ($doc->document_type_id == config('documents.types.scope.id') && $doc->version == 1) {
                 $expertPanel->step_1_received_date = $doc->date_received;
             }
