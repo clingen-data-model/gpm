@@ -15,6 +15,7 @@
                                 v-model="newMember.person.last_name" 
                                 placeholder="Last" 
                                 class="block w-1/2"
+                                @input="getSuggestedPeople"
                             >
                         </div>
                     </input-row>
@@ -22,6 +23,7 @@
                         v-model="newMember.person.email" 
                         placeholder="example@example.com" 
                         input-class="w-full"
+                        @input="getSuggestedPeople"
                     ></input-row>
                 </div>
                 <div v-if="newMember.id || newMember.person_id">
@@ -227,16 +229,16 @@ export default {
             }
         },
         async addPersonAsMember(group, member) {
-            try {                
-                const response = await this.$store.dispatch('groups/memberAdd', {
+            try { 
+                const memberData = await this.$store.dispatch('groups/memberAdd', {
                     uuid: group.uuid,
                     personId: member.person_id,
                     roleIds: member.roles.map(r => r.id)
                 })
                 if (member.permissions.length > 0) {
                     await this.$store.dispatch('groups/memberGrantPermission', {
-                        uuid: group.group.uuid,
-                        memberId: response.data.id,
+                        uuid: group.uuid,
+                        memberId: memberData.id,
                         permissionIds: member.permissions.map(p => p.id)
                     });
                 }
