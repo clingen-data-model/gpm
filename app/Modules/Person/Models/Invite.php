@@ -117,8 +117,16 @@ class Invite extends Model
         return (bool)$this->group;
     }
 
+    public function getCoiCodeAttribute()
+    {
+        return $this->inviter ? $this->inviter->coi_code : null;
+    }
+    
+
+
     public static function newFactory()
     {
         return new InviteFactory();
     }
+    
 }

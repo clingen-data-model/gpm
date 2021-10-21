@@ -159,6 +159,19 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
                 });
     }
 
+    /**
+     * ACCESSORS
+     */
+    public function getCoiCodeAttribute()
+    {
+        if ($this->expertPanel) {
+            return $this->expertPanel->coi_code;
+        }
+        return null;
+    }
+    
+
+
     protected static function newFactory()
     {
         return new GroupFactory();

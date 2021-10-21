@@ -5,6 +5,7 @@ namespace App\Modules\Group\Actions;
 use Ramsey\Uuid\Uuid;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\Invite;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\ActionRequest;
@@ -62,9 +63,36 @@ class MemberInvite
     public function asController(ActionRequest $request, $groupUuid)
     {
         $group = Group::findByUuidOrFail($groupUuid);
-        if (\Auth::user()->cannot('inviteMembers', $group)) {
-            abort('403', 'You do not have permission to invite members to this group.');
-        }
         return new MemberResource($this->handle($group, $request->all()));
+    }
+
+    public function authorize(ActionRequest $request): Response
+    {
+        $group = Group::findByUuidOrFail($request->uuid);
+        if ($request->user()->cannot('inviteMembers', $group)) {
+            return Response::deny('You do not have permission to invite members to this group.');
+        }
+
+        return Response::allow();
+    }
+    
+
+    public function rules(): array
+    {
+        return [
+            'first_name' => 'required|max:255',
+            'last_name' => 'required|max:255',
+            'email' => 'required|email',
+        ];
+    }
+    
+
+    public function getValidationMessages(): array
+    {
+        return [
+            'first_name.required' => 'A first name is required.',
+            'last_name.required' => 'A last name is required.',
+            'email.required' => 'An email is required.',
+        ];
     }
 }

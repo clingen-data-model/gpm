@@ -2,9 +2,10 @@
 namespace App\Modules\Person\Actions;
 
 use App\Modules\Person\Models\Invite;
-use Illuminate\Validation\ValidationException;
 use Lorisleiva\Actions\Concerns\AsObject;
 use Lorisleiva\Actions\Concerns\AsController;
+use Illuminate\Validation\ValidationException;
+use App\Modules\Person\Http\Resources\InviteResource;
 
 class InviteValidateCode
 {
@@ -19,7 +20,7 @@ class InviteValidateCode
                 throw ValidationException::withMessages(['code' => ['This invite has already been redeemed. Please log in to access your account.']]);
             }
             $invite->load(['person', 'inviter']);
-            return response(['data' => $invite], 200);
+            return new InviteResource($invite);
         }
 
         return response(['code' => ['The invite code is not valid.']], 404);
