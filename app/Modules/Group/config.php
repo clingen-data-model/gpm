@@ -27,6 +27,12 @@ return [
         'retired' => 3,
         'removed' => 4
     ],
+    'status_colors' => [
+        1 => 'blue',
+        2 => 'green',
+        3 => 'gray',
+        4 => 'black'
+    ],
     'roles' => [
         'coordinator' => [
             'id' => 101,

@@ -2,7 +2,7 @@
     <div>
         <header class="pb-4">
             <note>Groups</note>
-            <h1>{{group.name}}</h1>
+            <h1>{{group.displayName}}</h1>
             <dictionary-row label="Chairs:">
                 <template v-slot:label><strong>Chairs:</strong></template>
                 <div v-if="group.chairs.length > 0">
@@ -23,9 +23,11 @@
                 </div>
             </dictionary-row>
         </header>
+
         <tabs-container>
             <tab-item label="Members">
                 <member-list :group="group"></member-list>
+                <membership-description-form :group="group" v-if="group.isVcep()"></membership-description-form>
             </tab-item>
             <tab-item label="Scope" v-show="group.isEp()">
                 Description of scope and gene list will go here
@@ -46,9 +48,12 @@
             -->
         </tabs-container>
 
-        <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="this.$route.meta.title">
-            <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
-        </modal-dialog>
+        <teleport to="body">
+            <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="this.$route.meta.title">
+                <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
+            </modal-dialog>
+        </teleport>
+
         <teleport to='#debug-info'>
             <note>group.id: {{group.id}}</note>
         </teleport>
@@ -56,13 +61,15 @@
 </template>
 <script>
 import MemberList from '@/components/groups/MemberList';
+import MembershipDescriptionForm from '@/components/expert_panels/MembershipDescriptionForm'
 import { ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 
 export default {
     name: 'GroupDetail',
     components: {
-        MemberList
+        MemberList,
+        MembershipDescriptionForm
     },
     props: {
         uuid: {

@@ -94,7 +94,7 @@ export default {
             return this.menuItems.map(i => i.render());
         },
         positionMenu () {
-            const dropdownWidth = this.$refs.dropdownMenu.offsetWidth; 
+            // const dropdownWidth = this.$refs.dropdownMenu.offsetWidth; 
             const labelWidth = this.$refs.menuButton.offsetWidth;
             const labelHeight = this.$refs.menuButton.offsetHeight;
             const rect = this.$el.getBoundingClientRect();
@@ -103,7 +103,7 @@ export default {
         }
     },
     render () {
-        const items = this.renderItems;
+        // const items = this.renderItems;
         const containerClass = [];
         return (
             <div class={containerClass.join(' ')}>

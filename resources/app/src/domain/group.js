@@ -16,6 +16,10 @@ class Group extends Entity {
         uuid: null,
         name: null,
         parent_id: null,
+        expert_panel: {
+            type: {},
+        },
+        type: {},
     };
 
     constructor(attributes = {}) {
@@ -44,6 +48,22 @@ class Group extends Entity {
         return this.members.filter(m => m.isActive)
     }
 
+    get typeName () {
+        return this.expert_panel && this.expert_panel.id ? this.expert_panel.type.display_name : this.type.name;
+    }
+
+    get displayName () {
+        return this.expert_panel && this.expert_panel.id 
+            ? `${this.name} ${this.typeName}`
+            : this.name;
+    }
+
+    get displayStatus () {
+        return this.expertPanelLoaded()
+            ? this.status.name
+            : this.status.name
+    }
+
     addMember(member) {
         const idx = this.members.findIndex(m => m.id == member.id);
         if (idx > -1) {
@@ -57,7 +77,6 @@ class Group extends Entity {
     removeMember(member) {
         const idx = this.members.findIndex(m => m.id == member.id);
         if (idx > -1) {
-            // this.members.splice(idx, 1, new GroupMember(member))
             delete(this.members[idx]);
             return;
         }
@@ -84,6 +103,10 @@ class Group extends Entity {
             roleId = matchingRole.id
         }
         return this.members.filter(m => m.hasRole(roleId));
+    }
+
+    expertPanelLoaded () {
+        return this.isEp() && this.expert_panel.id;
     }
     
     isEp() {

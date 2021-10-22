@@ -4,19 +4,44 @@
             Groups
             <button v-if="hasPermission('groups-manage')" class="btn btn-xs" @click="startCreateGroup">Create a group</button>
         </h1>
-        <data-table 
-            :data="groups" 
-            :fields="fields" 
-            v-model:sort="sort"
-            :row-click-handler="goToGroup"
-            v-remaining-height
-        ></data-table>
+        <tabs-container>
+            <tab-item v-for="def in tabDefinitions" :label="def.label" :key="def.label">
+                <data-table 
+                    :data="filteredGroups.filter(def.filter)" 
+                    :fields="fields" 
+                    v-model:sort="sort"
+                    :row-click-handler="goToGroup"
+                    v-remaining-height
+                    row-class="cursor-pointer active:bg-blue-100"
+                >
+                    <template v-slot:cell-displayStatus="{item}">
+                        <badge :color="statusColors[item.status.id]">{{item.displayStatus}}</badge>
+                    </template>
+                    <template v-slot:cell-coordinators="{value}">
+                        <div v-if="value.length == 0"></div>
+                        <span v-for="(coordinator, idx) in value" :key="coordinator.id">
+                            <span v-if="idx > 0">, </span>
+                            <router-link 
+                                :to="{name: 'PersonDetail', params: {uuid: coordinator.person.uuid}}" 
+                                class="link"
+                                @click.stop
+                            >
+                                {{coordinator.person.name}}
+                            </router-link>
+                        </span>
+                    </template>
+                </data-table>                
+            </tab-item>
+        </tabs-container>
     </div>
 </template>
 <script>
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
 import {computed, onMounted } from 'vue'
+import configs from '@/configs'
+
+console.log(configs.groups)
 
 export default {
     name: 'ComponentName',
@@ -25,6 +50,25 @@ export default {
     },
     data() {
         return {
+            statusColors: configs.groups.statusColors,
+            tabDefinitions:[
+                {
+                    label: 'VCEPS',
+                    filter: g => g.isVcep()
+                },
+                {
+                    label: 'GCEPS',
+                    filter: g => g.isGcep()
+                },
+                {
+                    label: 'CDWGs',
+                    filter: g => g.isCdwg()
+                },
+                // {
+                //     label: 'Working Groups',
+                //     filter: g => g.isWg()
+                // }
+            ],
             sort: {
                 field: 'id',
                 desc: false
@@ -38,26 +82,38 @@ export default {
                 {
                     name: 'name',
                     label: 'Name',
-                    sortable: true
+                    sortable: true,
+                    resolveValue: (item) => {
+                        return item.displayName
+                    }
                 },
                 {
-                    name: 'type',
-                    label: 'Type',
+                    name: 'coordinators',
+                    sortable: false
+                },
+                {
+                    name: 'displayStatus',
                     sortable: true,
-                    resolveSort: (group) => {
-                        if (group.isEp()) {
-                            return group.expert_panel.type.name;
-                        }
-                        return group.type.name;
-                    },
-                    resolveValue: (group) => {
-                        if (group.isEp()) {
-                            return group.expert_panel.type.name.toUpperCase();
-                        }
+                    label: 'status'
+                },
+                // {
+                //     name: 'type',
+                //     label: 'Type',
+                //     sortable: true,
+                //     resolveSort: (group) => {
+                //         if (group.isEp()) {
+                //             return group.expert_panel.type.name;
+                //         }
+                //         return group.type.name;
+                //     },
+                //     resolveValue: (group) => {
+                //         if (group.isEp()) {
+                //             return group.expert_panel.type.name.toUpperCase();
+                //         }
 
-                        return group.type.name.toUpperCase();
-                    }
-                }
+                //         return group.type.name.toUpperCase();
+                //     }
+                // }
             ]
         }
     },
