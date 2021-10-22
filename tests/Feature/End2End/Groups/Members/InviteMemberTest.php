@@ -60,6 +60,27 @@ class InviteMemberTest extends TestCase
     /**
      * @test
      */
+    public function validates_data()
+    {
+        MemberGrantPermissions::run(
+            $this->userMember,
+            collect([config('permission.models.permission')::factory()->create(['name' => 'members-invite', 'scope' => 'group'])])
+        );
+
+        Sanctum::actingAs($this->user->fresh());
+        $response = $this->json('POST', $this->url, []);
+        $response->assertStatus(422);
+        $response->assertJsonFragment([
+            'first_name' => ['A first name is required.'],
+            'last_name' => ['A last name is required.'],
+            'email' => ['An email is required.'],
+        ]);
+    }
+    
+
+    /**
+     * @test
+     */
     public function privileged_member_can_invite_new_member()
     {
         MemberGrantPermissions::run(
