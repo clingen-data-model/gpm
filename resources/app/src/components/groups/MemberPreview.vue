@@ -39,14 +39,12 @@
 <script>
 import GroupMember from '@/domain/group_member';
 import Group from '@/domain/group';
-import EditButton from '@/components/buttons/EditIconButton'
 import ProfilePicture from '@/components/people/ProfilePicture'
 import {formatDate} from '@/date_utils'
 
 export default {
     name: 'MemberPreview',
     components: {
-        EditButton,
         ProfilePicture,
     },
     props: {

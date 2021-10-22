@@ -19,7 +19,7 @@
     </div>
 </template>
 <script>
-import { ref, toRefs, onMounted, watch } from 'vue'
+import { ref, toRefs, watch } from 'vue'
 import {fetchInvite} from '@/domain/onboarding_service'
 import InputErrors from '@/components/forms/InputErrors'
 import isValidationError from '@/http/is_validation_error'
@@ -57,7 +57,7 @@ export default {
             deep: true
         })
 
-        watch(inviteCode, (to) => {
+        watch(inviteCode, () => {
             errors.value = [];
         });
 

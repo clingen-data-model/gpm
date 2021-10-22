@@ -6,7 +6,7 @@ const PersonForm = () => import (/* person-detail */ '@/components/people/Person
 const PeopleIndex = () => import (/* people-index */ '@/views/PeopleIndex')
 const OnboardingWizard = () => import (/* onboarding-wizard */ '@/views/OnboardingWizard')
 
-const checkPermissionAndPersonOwnership = async (to, from) => {
+const checkPermissionAndPersonOwnership = async (to) => {
     if (store.getters.currentUser.hasPermission('people-manage')) {
         return true;
     }

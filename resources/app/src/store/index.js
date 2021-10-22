@@ -55,8 +55,6 @@ axios.interceptors.request.use(function (config) {
 //     }
 // );
 
-const nullUser = new User();
-
 const docTypeStore = module_factory({
     baseUrl: '/api/document-types', 
     namespace: 'doctypes'
@@ -119,7 +117,7 @@ const store = createStore({
                 }
             }
         },
-        async forceGetCurrentUser({commit, state}) {
+        async forceGetCurrentUser({commit}) {
             try {
                 await axios.get('/api/current-user')
                     .then(response => {

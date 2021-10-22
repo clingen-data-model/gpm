@@ -6,7 +6,6 @@ import ChevDownIcon from '@/components/icons/IconCheveronDown'
 import ChevRightIcon from '@/components/icons/IconCheveronRight'
 import FilterIcon from '@/components/icons/IconFilter'
 import ExclamationIcon from '@/components/icons/IconExclamation'
-import EnvelopeIcon from '@/components/icons/IconEnvelope'
 import NotificationIcon from '@/components/icons/IconNotification'
 import DropdownMenu from '@/components/DropdownMenu'
 import DropdownItem from '@/components/DropdownItem'
@@ -23,7 +22,6 @@ export default {
         DropdownItem,
         MemberPreview,
         ExclamationIcon,
-        EnvelopeIcon,
         NotificationIcon,
     },
     props: {
@@ -185,8 +183,8 @@ export default {
             try {
                 await this.$store.dispatch('groups/memberRetire', {
                     uuid: this.group.uuid,
-                    memberId: this.selectedMember.id,
-                    startDate: this.selectedMember.start_date, 
+                    memberId: member.id,
+                    startDate: member.start_date, 
                     endDate: new Date().toISOString()
                 });
                 this.cancelRetire();

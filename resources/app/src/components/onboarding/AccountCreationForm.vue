@@ -22,7 +22,7 @@
     </div>
 </template>
 <script>
-import {ref, onMounted, watch} from 'vue'
+import {ref, onMounted} from 'vue'
 import {redeemInvite} from '@/domain/onboarding_service'
 import isValidationError from '@/http/is_validation_error'
 import { useStore } from 'vuex'

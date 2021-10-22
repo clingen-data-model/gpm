@@ -91,7 +91,7 @@
 <script>
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
-import {ref, computed, watch, onMounted} from 'vue'
+import {ref, computed, onMounted} from 'vue'
 import NotificationItem from '@/components/NotificationItem'
 import {kebabCase} from '@/utils'
 import CoiDetail from '@/components/applications/CoiDetail';
@@ -106,7 +106,7 @@ export default {
     props: {
         
     },
-    setup (props, context) {
+    setup () {
         const store = useStore();
         const router = useRouter();
         const user = computed(() => {

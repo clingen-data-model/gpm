@@ -16,7 +16,6 @@
     </div>
 </template>
 <script>
-import Person from '@/domain/person'
 import isValidationError from '@/http/is_validation_error'
 
 export default {
