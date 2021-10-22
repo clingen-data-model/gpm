@@ -44,7 +44,6 @@ class Coi extends Model
             ->map(function ($value, $key) use ($coiDef) {
                 $questions = collect($coiDef->questions)->keyBy('name');
                 if (!isset($questions[$key])) {
-                    Log::debug('key, questions->keys(): ', ['keys'=> $key, 'questions'=>$questions->keys()->toArray()]);
                     return;
                 }
                 return [
