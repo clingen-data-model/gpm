@@ -3,7 +3,9 @@
         <div class="flex">
             <div class="flex-1">
                 <div v-if="!newMember.id && !newMember.person_id">
-                    <input-row label="Name">
+                    <input-row label="Name" 
+                        :errors="nameErrors"
+                    >
                         <div class="flex space-x-2">
                             <input type="text" 
                                 v-model="newMember.person.first_name" 
@@ -16,6 +18,7 @@
                                 placeholder="Last" 
                                 class="block w-1/2"
                                 @input="getSuggestedPeople"
+                                :errors="errors.last_name"
                             >
                         </div>
                     </input-row>
@@ -24,6 +27,7 @@
                         placeholder="example@example.com" 
                         input-class="w-full"
                         @input="getSuggestedPeople"
+                        :errors="errors.email"
                     ></input-row>
                 </div>
                 <div v-if="newMember.id || newMember.person_id">
@@ -107,7 +111,7 @@
             @cancel="cancel"
             submit-text="Save"
         ></button-row>
-        <dev-todo class="mt-8" :items="['display validation errors.']"></dev-todo>
+        <!-- <dev-todo class="mt-8" :items="[]"></dev-todo> -->
     </div>
 </template>
 <script>
@@ -148,6 +152,11 @@ export default {
     computed: {
         originalMember () {
             return this.group.findMember(this.memberId);
+        },
+        nameErrors () {
+            return [this.errors.first_name, this.errors.last_name]
+                    .flat()
+                    .filter(i => i);
         }
     },
     setup () {
@@ -203,22 +212,29 @@ export default {
             this.$emit('canceled');
         },
         async save () {
-            if (!this.newMember.isPersisted()) {
-                if (!this.newMember.person.isPersisted()) {
-                    await this.inviteNewMember(this.group, this.newMember);
+            try {
+                if (!this.newMember.isPersisted()) {
+                    if (!this.newMember.person.isPersisted()) {
+                        await this.inviteNewMember(this.group, this.newMember);
+                    }
+                    if (this.newMember.person.isPersisted()) {
+                        await this.addPersonAsMember(this.group, this.newMember);
+                    }
                 }
-                if (this.newMember.person.isPersisted()) {
-                    await this.addPersonAsMember(this.group, this.newMember);
+                if (this.newMember.isPersisted()) {
+                    await this.updateExistingMember(this.group, this.newMember);
+                }
+                this.clearForm();
+                this.$emit('saved');
+            } catch (error) {
+                console.log(error.response.data.errors);
+                if (is_validation_error(error)) {
+                    this.errors = error.response.data.errors
                 }
             }
-            if (this.newMember.isPersisted()) {
-                await this.updateExistingMember(this.group, this.newMember);
-            }
-            this.clearForm();
-            this.$emit('saved');
         },
         async inviteNewMember (group, member) {
-            try {
+            // try {
                 const response = await this.$store.dispatch('groups/memberInvite', {
                     uuid: group.uuid,
                     firstName: member.person.first_name,
@@ -235,14 +251,14 @@ export default {
                         permissionIds: member.permissions.map(p => p.id)
                     });
                 }
-            } catch (error)  {
-                if (is_validation_error(error)) {
-                    this.errors = error.response.data
-                }
-            }
+            // } catch (error)  {
+            //     if (is_validation_error(error)) {
+            //         this.errors = error.response.data
+            //     }
+            // }
         },
         async addPersonAsMember(group, member) {
-            try { 
+            // try { 
                 const memberData = await this.$store.dispatch('groups/memberAdd', {
                     uuid: group.uuid,
                     personId: member.person_id,
@@ -256,11 +272,11 @@ export default {
                         permissionIds: member.permissions.map(p => p.id)
                     });
                 }
-            } catch (error) {
-                if (is_validation_error(error)) {
-                    this.errors = error.response.data
-                }
-            }
+            // } catch (error) {
+            //     if (is_validation_error(error)) {
+            //         this.errors = error.response.data
+            //     }
+            // }
         },
 
         async updateExistingMember(group, member) {
@@ -303,33 +319,42 @@ export default {
             })
         },
 
-        syncPermissions(group, member) {
+        async syncPermissions(group, member) {
             const originalMember = group.findMember(this.memberId);
 
             const existingPermIds = originalMember.permissions.map(p => p.id);
             const assignedPermIds = member.permissions.map(p => p.id);
             const newPermIds = assignedPermIds.filter(p => !existingPermIds.includes(p));
             const removedPermIds = existingPermIds.filter(p => !assignedPermIds.includes(p));
+            // const promises = [];
+            
             if (newPermIds.length > 0) {
-                this.$store.dispatch(
-                    'groups/memberGrantPermission', 
-                    {
-                        uuid: group.uuid,
-                        memberId: member.id,
-                        permissionIds: newPermIds
-                    }
-                );
+                // promises.push(
+                    this.$store.dispatch(
+                        'groups/memberGrantPermission', 
+                        {
+                            uuid: group.uuid,
+                            memberId: member.id,
+                            permissionIds: newPermIds
+                        }
+                    )
+                // );
             }
+            
             removedPermIds.forEach(permId => {
-                this.$store.dispatch(
-                    'groups/memberRevokePermission', 
-                    {
-                        uuid: group.uuid,
-                        memberId: member.id,
-                        permissionId: permId
-                    }
-                )
-            })
+                // promises.push(
+                    this.$store.dispatch(
+                        'groups/memberRevokePermission', 
+                        {
+                            uuid: group.uuid,
+                            memberId: member.id,
+                            permissionId: permId
+                        }
+                    )
+                // );
+            });
+
+            // await Promise.all(promises);
         },
 
         useExistingPerson(person) {
