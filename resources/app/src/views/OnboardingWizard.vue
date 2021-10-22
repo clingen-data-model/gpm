@@ -10,6 +10,7 @@
                                     :is="currentStepComponent" 
                                     v-bind:invite="invite" 
                                     v-bind:person="invite.person"
+                                    v-bind:code="invite.coi_code"
                                     ref="stepForm"
                                     @codeverified="handleCodeVerified"
                                     @ok="goForward"
@@ -38,6 +39,7 @@ import InviteRedemptionForm from '@/components/onboarding/InviteRedemptionForm'
 import AccountCreationForm from '@/components/onboarding/AccountCreationForm'
 import ProfileForm from '@/components/people/ProfileForm'
 import Person from '@/domain/person'
+import Coi from '@/views/Coi'
 
 const stepComponents = [
     InviteRedemptionForm,
@@ -63,7 +65,9 @@ export default {
         ProfileForm,
     },
     props: {
-        
+        code: {
+            required: false,
+        }
     },
     data() {
         return {
@@ -87,8 +91,14 @@ export default {
             deep: true,
             handler: function (to) {
                 if (to.inviter) {
-                    stepComponents.push()
+                    stepComponents.push(Coi)
                 }
+            }
+        },
+        code: {
+            immediate: true,
+            handler: function (to) {
+                this.invite.code = to
             }
         }
     },

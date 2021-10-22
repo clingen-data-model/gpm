@@ -158,8 +158,9 @@ export default {
             }, 5000)
         }
     },
-    mounted() {
+    async mounted() {
         this.verifyCode();
+        await this.$store.dispatch('getCurrentUser')
     }
 }
 </script>

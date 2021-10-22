@@ -30,6 +30,9 @@ export default {
         InputErrors
     },
     props: {
+        code: {
+            required: false
+        },
         invite: {
             type: Object,
             required: false,

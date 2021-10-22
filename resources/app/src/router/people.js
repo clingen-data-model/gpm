@@ -52,8 +52,23 @@ export default [
             }
         ]
     },
+    {
+        name: 'InviteWithCode',
+        path: '/invites/:code',
+        component: OnboardingWizard,
+        beforeEnter: () => {
+            if (store.getters.currentUser.id !== null) {
+                router.replace({name: 'Dashboard'});
+            }
+            return true;
+        },
+        meta: {
+            protected: false
+        },
+        props: true
+    },
     { name: 'RedeemInvite',
-        path: '/redeem-invite',
+        path: '/invites',
         component: OnboardingWizard,
         beforeEnter: () => {
             if (store.getters.currentUser.id !== null) {
@@ -64,5 +79,5 @@ export default [
         meta: {
             protected: false
         }
-    }
+    },
 ]
