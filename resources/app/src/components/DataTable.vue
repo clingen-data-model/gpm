@@ -2,41 +2,30 @@
     table {
         @apply w-full;
     }
-    tbody tr:not(.details){
-        @apply bg-white odd:bg-gray-100 hover:bg-blue-50 hover:border-blue-300
+    tbody{
+        @apply bg-white odd:bg-gray-100 border-0 hover:border-blue-300 hover:bg-blue-100
     }
-    tbody tr:hover + tr.details {
-        @apply border-blue-300 bg-blue-50;
+    tr > th {
+        @apply text-left border border-gray-300 px-3
     }
-    tr:first-child > th{
-        @apply border-t-0
+    tr:not(.details) > td {
+        @apply text-left p-1 px-3 border align-top;
     }
-    th:first-child,
-    td:first-child {
-        @apply border-l-0;
+    tr.details > td {
+        @apply border-none p-0;
     }
-
-    /* tr:last-child > td{
-        @apply border-b-0
-    } */
-    th:last-child,
-    td:last-child {
-        @apply border-r-0
-    }
-
     th.sorted, td.sorted  {
         @apply bg-blue-100 hover:bg-blue-100
     }
 </style>
 
 <template>
-    <div class="shadow-inner border bg-gray-50">
+    <div class="shadow-inner bg-gray-50">
         <table class="border-none">
             <thead>
                 <slot name="thead">
                 <tr class="bg-gray-200">
                     <th v-for="field in fields.filter(f => !f.hideHeader)" :key="field.name"
-                        class="text-left border border-gray-300 px-3"
                         :title="field.sortable ? `Click to sort` : ``"
                         :class="getHeaderClass(field)"
                         @click="field.sortable && updateSort(field)"
@@ -71,7 +60,6 @@
                     <td 
                         v-for="field in fields" 
                         :key="field.name"
-                        class="text-left p-1 px-3 border align-top"
                         :class="getCellClass(field)"
                     >
                         <slot :name="getSlotName(field)" :item="item" :field="field" :value="resolveDisplayAttribute(item, field)">
@@ -81,7 +69,7 @@
                 </tr>
                 <transition name="fade-slide-down">
                     <tr class="details" :class="rowClass(item)" v-if="detailRows && item.showDetails">
-                        <td :colspan="fields.length" class="border-none p-0">
+                        <td :colspan="fields.length">
                             <slot name="detail" :item="item">
                                 <object-dictionary :obj="item"></object-dictionary>
                             </slot>
