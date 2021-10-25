@@ -71,6 +71,10 @@
                     </modal-dialog>
                 </teleport>
             </tab-item>
+
+            <tab-item label="Profile">
+                <person-profile :person="user.person"></person-profile>
+            </tab-item>
         </tabs-container>
         <div class="mt-8 space-y-4">
             <collapsible title="User Memberships">
@@ -86,6 +90,9 @@
                 <pre>{{needsCoi}}</pre>
             </collapsible>
         </div>
+        <modal-dialog v-model="showModal">
+            <router-view name="modal"></router-view>
+        </modal-dialog>
     </div>
 </template>
 <script>
@@ -95,13 +102,20 @@ import {ref, computed, onMounted} from 'vue'
 import NotificationItem from '@/components/NotificationItem'
 import {kebabCase} from '@/utils'
 import CoiDetail from '@/components/applications/CoiDetail';
+import PersonProfile from '@/components/people/PersonProfile'
 
 
 export default {
     name: 'Dashboard',
     components: {
         NotificationItem,
-        CoiDetail
+        CoiDetail,
+        PersonProfile
+    },
+    data() {
+        return {
+            showModal: false
+        }
     },
     props: {
         

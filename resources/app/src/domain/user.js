@@ -14,6 +14,17 @@ class User extends Entity {
         memberships: [],
     }
 
+    constructor(attributes = {}) {
+        const {person = {}, memberships = []} = attributes;
+        delete(attributes.person);
+        delete(attributes.memberships);
+
+        super(attributes);
+
+        this.person = new Person(person);
+        this.memberships = memberships.map(m => new GroupMember(m));
+    }
+
     get rolePermissions () {
         return this.attributes.roles.map(r => r.permissions).flat();
     }
