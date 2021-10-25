@@ -53,7 +53,7 @@ class PersonPolicy
      */
     public function update(User $user, Person $person)
     {
-        if ($user->hasPermissionTo('update-others-profile')) {
+        if ($user->hasPermissionTo('people-manage')) {
             return true;
         }
 
@@ -61,9 +61,9 @@ class PersonPolicy
             return true;
         }
 
-        if ($user->person && $user->person->hasGroupPermissionTo('update-member-profiles', $person->groups)) {
-            return true;
-        }
+        // if ($user->person && $user->person->hasGroupPermissionTo('update-member-profiles', $person->groups)) {
+        //     return true;
+        // }
 
         return false;
     }
