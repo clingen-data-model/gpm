@@ -13,10 +13,10 @@
 import Person from '@/domain/person'
 
 export default {
-    name: 'ComponentName',
+    name: 'MembershipList',
     props: {
         person: {
-            type: Person,
+            type: Object,
             required: true
         }
     },
