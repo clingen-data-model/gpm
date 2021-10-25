@@ -2,12 +2,12 @@
     <div>
         <note>Admin</note>
         <h1>Invites</h1>
-        <pre>{{tableSort}}</pre>
         <data-table
             :data="invites"
             :fields="fields"
             v-model:sort="tableSort"
             class="text-sm"
+            v-remaining-height
         >
             <template v-slot:cell-actions="{item}">
                 <!-- <pre>{{item}}</pre> -->
