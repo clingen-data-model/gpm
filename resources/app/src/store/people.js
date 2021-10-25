@@ -29,7 +29,10 @@ export const getters = {
 
 export const mutations = {
     addPerson(state, itemData) {
-        const person = new Person(itemData)
+        // let person = itemData;
+        // if (itemData.constructor.name == 'Object') {
+            const person = new Person(itemData);
+        // }
         const idx = state.items.findIndex(item => item.uuid == itemData.uuid);
         if (idx > -1) {
             state.items.splice(idx, 1, person)
@@ -51,6 +54,11 @@ export const mutations = {
         state.lastParams = params;
     },
     setCurrentItemIdx(state, item) {
+        const idx = state.items.findIndex(i => i.uuid == item.uuid);
+        state.currentItemIdx = idx;
+    },
+    setCurrentItemIndex(state, item) {
+        console.log(item.uuid)
         const idx = state.items.findIndex(i => i.uuid == item.uuid);
         state.currentItemIdx = idx;
     },

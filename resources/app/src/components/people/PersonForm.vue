@@ -10,12 +10,23 @@
     </form-container>
 </template>
 <script>
-import {mapGetters} from 'vuex'
+// import {mapGetters} from 'vuex'
 import is_validation_error from '@/http/is_validation_error';
+import Person from '@/domain/person'
 
 export default {
+    name: 'PersonForm',
     props: {
+        person: {
+            type: Object,
+            required: true,
+            default: () => new Person()
+        }
     },
+    emits: [
+        'saved',
+        'canceled',
+    ],
     data() {
         return {
             workingPerson: {
@@ -26,11 +37,6 @@ export default {
             },
             errors: {}
         }
-    },
-    computed: {
-        ...mapGetters({
-            person: 'people/currentItem'
-        })
     },
     watch: {
         person: {
@@ -45,17 +51,20 @@ export default {
         syncWorkingPerson() {
             this.workingPerson = this.person.attributes
         },
-        backToDetail () {
-            this.$router.push({name: 'PersonDetail', params: {uuid: this.person.uuid}});
-        },
         handleCancel () {
             this.syncWorkingPerson();
-            this.backToDetail()
+            this.$emit('canceled');
         },
         async save () {
             try {
-                await this.$store.dispatch('people/updateAttributes', {uuid: this.person.uuid, attributes: this.workingPerson})
-                this.backToDetail();
+                await this.$store.dispatch(
+                    'people/updateAttributes', 
+                    {
+                        uuid: this.person.uuid, 
+                        attributes: this.workingPerson
+                    }
+                )
+                this.$emit('saved');
             } catch (error) {
                 if (is_validation_error(error)) {
                     this.errors = error.response.data.errors

@@ -9,6 +9,8 @@ class Person extends Entity {
         phone:'',
         institution_id: null,
         institution: {},
+        primary_occupation_id: null,
+        primary_occupation: {},
         credentials: '',
         race_id: null,
         race: {},
@@ -29,6 +31,14 @@ class Person extends Entity {
         'updated_at',
         'deleted_at'
     ]
+
+    get institutionName () {
+        return this.institution.name;
+    }
+
+    get primaryOccupationName () {
+        return this.primary_occupation ? this.primary_occupation.name : null
+    }
 
     matchesKeyword(keyword) {
         if (!keyword || keyword.length < 3) {
