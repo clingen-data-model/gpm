@@ -8,7 +8,6 @@ import CKEditor from '@ckeditor/ckeditor5-vue'
 
 const app = createApp(App)
 
-
 import StaticAlert from './components/alerts/StaticAlert'
 app.component('static-alert', StaticAlert);
 
@@ -75,6 +74,9 @@ app.directive('click-outside', ClickOutside)
 import RemainingHeight from '@/directives/remaining_height'
 app.directive('remaining-height', RemainingHeight)
 
+import {titleCase, camelCase, snakeCase, kebabCase} from '@/utils'
+import {formatDate} from '@/date_utils'
+
 app.use(store)
     .mixin({
         methods: {
@@ -82,7 +84,13 @@ app.use(store)
             hasPermission: (permission, group) => store.state.user.hasPermission(permission, group),
             hasAnyPermission: (permissions) => store.state.user.hasAnyPermission(permissions),
             hasRole: (role, group) => store.state.user.hasRole(role, group),
-            userIsPerson: (person) => store.state.user.id == person.user_id
+            userIsPerson: (person) => store.state.user.id == person.user_id,
+            formatDate,
+            titleCase,
+            camelCase,
+            snakeCase,
+            kebabCase
+
         }
     })
     .use(router)
