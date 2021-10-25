@@ -7,7 +7,7 @@
     <div v-if="response">
         <h2 class="block-title">
             COI response for 
-            {{coi.data.first_name}} {{coi.data.last_name}}
+            {{titleCase(`${coi.data.first_name} ${coi.data.last_name}`)}} in {{coi.group.name}}
         </h2>
         <div class="text-sm response-data">
             <dictionary-row label="Name" label-class="font-bold">
