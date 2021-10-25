@@ -15,7 +15,7 @@
                     row-class="cursor-pointer active:bg-blue-100"
                 >
                     <template v-slot:cell-displayStatus="{item}">
-                        <badge :color="statusColors[item.status.id]">{{item.displayStatus}}</badge>
+                        <badge class="text-xs" :color="statusColors[item.status.id]">{{item.displayStatus}}</badge>
                     </template>
                     <template v-slot:cell-coordinators="{value}">
                         <div v-if="value.length == 0"></div>
