@@ -47,6 +47,12 @@ export default {
         },
         emitChange() {
             this.$emit('update:modelValue', this.dataClone);
+        },
+        evalShow(field) {
+            if (field.show) {
+                return field.show(this.dataClone);
+            }
+            return true;
         }
     },
 }
@@ -54,31 +60,33 @@ export default {
 <template>
     <div class="data-form">
         <div v-for="field in fields" :key="field.name">
-            <input-row 
-                v-if="selectOrTextarea(field)" 
-                :label="getFieldLabel(field)"
-                :class="field.class"
-                :errors="errors[field.name]"
-            >
-                <select v-if="field.type == 'select'"
-                    v-model="dataClone[field.name]" 
+            <div v-if="evalShow(field)">
+                <input-row 
+                    v-if="selectOrTextarea(field)" 
+                    :label="getFieldLabel(field)"
+                    :class="field.class"
+                    :errors="errors[field.name]"
                 >
-                    <option value="">Select...</option>
-                    <option v-for="option in field.options" :key="option.value" :value="option.value">{{option.label}}</option>
-                </select>
-                <textarea v-else-if="field.type == 'textarea'" 
+                    <select v-if="field.type == 'select'"
+                        v-model="dataClone[field.name]" 
+                    >
+                        <option :value="null">Select...</option>
+                        <option v-for="option in field.options" :key="option.value" :value="option.value">{{option.label}}</option>
+                    </select>
+                    <textarea v-else-if="field.type == 'textarea'" 
+                        v-model="dataClone[field.name]" 
+                        class="w-full"
+                        rows="5"
+                    ></textarea>
+                </input-row>
+                <input-row v-else 
+                    :label="getFieldLabel(field)" 
                     v-model="dataClone[field.name]" 
-                    class="w-full"
-                    rows="5"
-                ></textarea>
-            </input-row>
-            <input-row v-else 
-                :label="getFieldLabel(field)" 
-                v-model="dataClone[field.name]" 
-                :type="field.type || 'text'"
-                :placeholder="field.placeholder || null"
-                :errors="errors[field.name]"
-            ></input-row>
+                    :type="field.type || 'text'"
+                    :placeholder="field.placeholder || null"
+                    :errors="errors[field.name]"
+                ></input-row>
+            </div>
         </div>
     </div>
 </template>
