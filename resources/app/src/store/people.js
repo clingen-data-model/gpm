@@ -53,11 +53,8 @@ export const mutations = {
     setLastParams(state, params) {
         state.lastParams = params;
     },
-    setCurrentItemIdx(state, item) {
-        const idx = state.items.findIndex(i => i.uuid == item.uuid);
-        state.currentItemIdx = idx;
-    },
     setCurrentItemIndex(state, item) {
+        console.log('people/setCurrentItemIndex')
         const idx = state.items.findIndex(i => i.uuid == item.uuid);
         state.currentItemIdx = idx;
     },
@@ -125,7 +122,7 @@ export const actions = {
         await api.get(`${baseUrl}/${uuid}`+queryStringFromParams(params))
             .then(response => {
                 commit('addPerson', response.data)
-                commit('setCurrentItemIdx', response.data)
+                commit('setCurrentItemIndex', response.data)
             });
     },
 
