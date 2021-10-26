@@ -33,11 +33,32 @@ class Person extends Entity {
     ]
 
     get institutionName () {
-        return this.institution.name;
+        return this.institution ? this.institution.name : null;
     }
 
     get primaryOccupationName () {
+        if (this.primary_occupation_id == 100) {
+            return this.primary_occupation_other;
+        }
         return this.primary_occupation ? this.primary_occupation.name : null
+    }
+
+    get raceName () {
+        if (this.race_id == 100) {
+            return this.race_other;
+        }
+        return this.race ? this.race.name : null
+    }
+
+    get ethnicityName () {
+        return this.ethnicity ? this.ethnicity.name : null
+    }
+
+    get genderName () {
+        if (this.gender_id == 100) {
+            return this.gender_other;
+        }
+        return this.gender ? this.gender.name : null
     }
 
     matchesKeyword(keyword) {

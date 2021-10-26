@@ -88,7 +88,6 @@ export default {
         }
     },
     async mounted () {
-        await this.$store.dispatch('people/getPerson', {uuid: this.person.uuid})
         this.initProfile()
     }
 }

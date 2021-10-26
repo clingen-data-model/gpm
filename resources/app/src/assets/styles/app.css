@@ -26,6 +26,10 @@ h3 {
     @apply text-lg;
 }
 
+hr {
+    @apply my-4
+}
+
 input[type=file]{
     @apply border-none p-0;
 }

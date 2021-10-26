@@ -28,11 +28,12 @@ export const getters = {
 };
 
 export const mutations = {
-    addPerson(state, itemData) {
-        // let person = itemData;
-        // if (itemData.constructor.name == 'Object') {
-            const person = new Person(itemData);
-        // }
+    addItem(state, itemData) {
+        let person = itemData;
+        if (!(itemData instanceof Person)) {
+            person = new Person(itemData);
+        }
+
         const idx = state.items.findIndex(item => item.uuid == itemData.uuid);
         if (idx > -1) {
             state.items.splice(idx, 1, person)
@@ -40,9 +41,6 @@ export const mutations = {
         }
 
         state.items.push(person);
-    },
-    addItem(state, itemData) {
-        this.addPerson(state, itemData)
     },
     clearItems(state) {
         state.items = [];
@@ -71,7 +69,7 @@ export const actions = {
             await api.get(baseUrl+queryStringFromParams(params))
                 .then(response => {
                     response.data.forEach(item => {
-                        commit('addPerson', item)
+                        commit('addItem', item)
                         commit('setLastFetch', new Date())
                     })
                 });
@@ -100,7 +98,7 @@ export const actions = {
         await api.get(baseUrl+ queryStringFromParams(params))
             .then(response => {
                 response.data.forEach(item => {
-                    commit('addPerson', item)
+                    commit('addItem', item)
                     commit('setLastFetch', new Date)
                 })
             })
@@ -113,7 +111,7 @@ export const actions = {
 
         await api.post(baseUrl, personData)
             .then(response => {
-                commit('addPerson', response.data);
+                commit('addItem', response.data);
                 return response.data;
             });
     },
@@ -121,7 +119,7 @@ export const actions = {
     async getPerson({ commit }, {uuid, params}) {
         await api.get(`${baseUrl}/${uuid}`+queryStringFromParams(params))
             .then(response => {
-                commit('addPerson', response.data)
+                commit('addItem', response.data)
                 commit('setCurrentItemIndex', response.data)
             });
     },
@@ -129,14 +127,14 @@ export const actions = {
     async updateAttributes({ commit }, {uuid, attributes}) {
         await api.put(`${baseUrl}/${uuid}`, attributes)
             .then(response => {
-                commit('addPerson', response.data);
+                commit('addItem', response.data);
             })
     },
 
     async updateProfile({ commit }, {uuid, attributes}) {
         await api.put(`${baseUrl}/${uuid}/profile`, attributes)
             .then(response => {
-                commit('addPerson', response.data);
+                commit('addItem', response.data);
             })
     }
 

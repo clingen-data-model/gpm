@@ -26,8 +26,8 @@
                 </data-table>
             </tab-item>
 
-            <tab-item label="Profile">
-                <person-profile :person="user.person"></person-profile>
+            <tab-item label="Your Info">
+                <person-profile :person="personFromStore"></person-profile>
             </tab-item>
 
             <tab-item label="COIs">
@@ -96,13 +96,13 @@
 <script>
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
-import {ref, computed, onMounted} from 'vue'
-import NotificationItem from '@/components/NotificationItem'
+import {ref, computed, onMounted, watch} from 'vue'
 import {kebabCase} from '@/utils'
+import NotificationItem from '@/components/NotificationItem'
 import CoiDetail from '@/components/applications/CoiDetail';
 import PersonProfile from '@/components/people/PersonProfile'
 import ProfileForm from '@/components/people/ProfileForm'
-
+import Person from "@/domain/person"
 
 export default {
     name: 'Dashboard',
@@ -124,6 +124,21 @@ export default {
         const router = useRouter();
         const user = computed(() => {
             return store.getters['currentUser']
+        });
+        const personFromStore = computed(() => {
+            return store.getters['people/currentItem'] || new Person();
+        })
+        const loadPersonInStore = () => {
+            if (user.value.id && user.value.person && user.value.person.id) {
+                store.commit('people/addItem', user.value.person);
+                store.commit('people/setCurrentItemIndex', user.value.person);
+            }
+        }
+        watch(() => user, () => {
+            loadPersonInStore();
+        });
+        onMounted(() => {
+            loadPersonInStore();
         });
 
         // NOTIFICATIONS
@@ -246,6 +261,7 @@ export default {
 
         return {
             user,
+            personFromStore,
             loadingNotifications,
             notifications,
             groups,
