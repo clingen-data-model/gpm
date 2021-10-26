@@ -30,7 +30,7 @@
                 <person-profile :person="person"></person-profile>
             </tab-item>
             <tab-item label="Conflict of Interest">
-                coi
+                <coi-list :person="person"></coi-list>
             </tab-item>
             <tab-item label="Documents">
                 docs
@@ -50,6 +50,7 @@ import EditIcon from '@/components/icons/IconEdit'
 import TabsContainer from '../TabsContainer.vue'
 import MembershipList from './MembershipList.vue'
 import PersonProfile from '@/components/people/PersonProfile'
+import CoiList from '@/components/people/CoiList'
 
 export default {
     name: 'PersonDetail',
@@ -58,6 +59,7 @@ export default {
         TabsContainer,
         MembershipList,
         PersonProfile,
+        CoiList,
     },
     props: {
         uuid: {

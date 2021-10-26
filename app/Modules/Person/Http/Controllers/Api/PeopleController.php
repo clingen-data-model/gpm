@@ -49,6 +49,8 @@ class PeopleController extends Controller
             'memberships.roles', 
             'memberships.permissions', 
             'memberships.group.type',
+            'memberships.cois',
+            'memberships.group.expertPanel',
             'institution',
             'primaryOccupation',
             'country',

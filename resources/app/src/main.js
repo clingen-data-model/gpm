@@ -77,14 +77,17 @@ app.directive('remaining-height', RemainingHeight)
 import {titleCase, camelCase, snakeCase, kebabCase} from '@/utils'
 import {formatDate} from '@/date_utils'
 
+import {userCan, hasPermission, hasAnyPermission, hasRole, userIsPerson} from '@/auth_utils'
+
+
 app.use(store)
     .mixin({
         methods: {
-            userCan: (permission, group) => store.state.user.hasPermission(permission, group),
-            hasPermission: (permission, group) => store.state.user.hasPermission(permission, group),
-            hasAnyPermission: (permissions) => store.state.user.hasAnyPermission(permissions),
-            hasRole: (role, group) => store.state.user.hasRole(role, group),
-            userIsPerson: (person) => store.state.user.id == person.user_id,
+            userCan,
+            hasPermission,
+            hasAnyPermission,
+            hasRole,
+            userIsPerson,
             formatDate,
             titleCase,
             camelCase,

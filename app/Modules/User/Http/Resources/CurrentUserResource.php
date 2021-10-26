@@ -23,7 +23,7 @@ class CurrentUserResource extends JsonResource
                                 ? $this->roles->pluck('permissions')->flatten()
                                 : collect();
         $data['memberships'] = $this->whenLoaded('person', MemberResource::collection($this->person->memberships));
-        unset($data['person']['memberships']);
+        // unset($data['person']['memberships']);
 
         return $data;
     }
