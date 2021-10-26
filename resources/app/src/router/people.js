@@ -51,7 +51,8 @@ export default [
                 },
                 meta: {
                     showModal: true,
-                    protected: true
+                    protected: true,
+                    title: 'Update Information'
                 },
                 props: true,
                 beforeEnter: [checkPermissionAndPersonOwnership]
