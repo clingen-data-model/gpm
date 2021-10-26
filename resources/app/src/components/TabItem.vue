@@ -24,7 +24,6 @@ export default {
     },
     mounted() {
         this.$parent.addTab(this)
-        console.log('mounted!')
     },
 }
 </script>
