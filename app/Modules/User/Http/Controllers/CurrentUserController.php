@@ -33,6 +33,10 @@ class CurrentUserController extends Controller
             'person.memberships.group.expertPanel',
             'person.memberships.group.type',
             'person.memberships.group.status',
+            'person.ethnicity',
+            'person.race',
+            'person.gender',
+            'person.primaryOccupation',
             'preferences'
         ]);
 

@@ -55,6 +55,7 @@ class PeopleController extends Controller
             'race',
             'ethnicity',
             'gender',
+            'invite'
         ]);
         return $person;
     }
