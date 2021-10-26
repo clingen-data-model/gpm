@@ -24,17 +24,14 @@ export default {
     },
     mounted() {
         this.$parent.addTab(this)
+        console.log('mounted!')
     },
-    render() {
-        if (this.isActive()) {
-            if (this.$slots.default) {
-                return (
-                    <section>{this.$slots.default()}</section>
-                )
-            }
-            return (<section></section>)
-        }
-        return null;
-    }
 }
 </script>
+<template>
+    <keep-alive>
+        <section v-if="this.active">
+            <slot></slot>
+        </section>
+    </keep-alive>
+</template>
