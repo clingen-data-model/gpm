@@ -53,7 +53,7 @@ export const mutations = {
         state.items.push(group);
     },
 
-    setCurrentItemIdx(state, item) {
+    setCurrentItemIndex(state, item) {
         const idx = state.items.findIndex(i => i.uuid == item.uuid);
         state.currentItemIdx = idx;
     },
@@ -83,7 +83,7 @@ export const mutations = {
         group.removeMember(member);
     },
 
-    setCurrentItemIdxByUuid(state, groupUuid) {
+    setCurrentItemIndexByUuid(state, groupUuid) {
         if (state.items.length > 0) {
             const currentItemIndex = state.items.findIndex(i => {
                 return i.uuid == groupUuid

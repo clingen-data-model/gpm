@@ -84,7 +84,7 @@ export default {
         onMounted(async () => {
             await store.dispatch('groups/find', props.uuid)
                 .then(() => {
-                    store.commit('groups/setCurrentItemIdxByUuid', props.uuid)
+                    store.commit('groups/setCurrentItemIndexByUuid', props.uuid)
                 })
         });
 

@@ -61,7 +61,7 @@ export default {
         setLastParams(state, params) {
             state.lastParams = params;
         },
-        setCurrentItemIdx(state, application) {
+        setCurrentItemIndex(state, application) {
             const idx = state.items.findIndex(i => i.uuid == application.uuid);
             state.currentItemIdx = idx;
         },
@@ -122,7 +122,7 @@ export default {
             await appRepo.find(appUuid, { with: ['logEntries', 'group.documents', 'contacts', 'logEntries.causer', 'cois', 'group.documents.type', 'nextActions'] })
                 .then(item => {
                     commit('addApplication', item)
-                    commit('setCurrentItemIdx', item)
+                    commit('setCurrentItemIndex', item)
                 });
         },
         async updateEpAttributes({ dispatch }, application) {
