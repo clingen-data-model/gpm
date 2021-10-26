@@ -9,21 +9,32 @@
             @click="close"
         ></div>
 
-        <div class="bg-white p-4 border border-gray-500 opacity-100 relative mt-16 mb-auto rounded-lg shadow-md" :class="width">
-            <button 
-                @click="close" class="btn btn-xs gray float-right"
-                v-if="!hideClose"
-            >X</button>
-            <header>
+        <div 
+            :class="modalClass"
+        >
+            <header class="px-4 border-b pb-2 mb-2" ref="header" v-if="hasHeader">
+                <button 
+                    @click="close" class="btn btn-xs gray float-right"
+                    v-if="!hideClose"
+                >X</button>
                 <slot name="header">
-                    <h2 class="pb-2 border-b mb-2" v-if="title">{{title}}</h2>
+                    <h2 class="" v-if="title">{{title}}</h2>
                 </slot>
             </header>
-            <slot name="default" />
+            <button 
+                @click="close" class="btn btn-xs gray float-right mr-4"
+                v-else-if="!hideClose"
+            >X</button>
+
+            <section class="overflow-auto px-4 pb-4" ref="panelbody">
+                <slot name="default" />
+            </section>
+            <slot name="footer"></slot>
         </div>
     </div>
 </template>
 <script>
+import {nextTick} from 'vue'
 export default {
     props: {
         title: {
@@ -53,15 +64,14 @@ export default {
     ],
     data() {
         return {
-            // isVisible: false
         }
     },
-    // watch: {
-    //     modelValue(to) {
-    //         this.isVisible = Boolean(to);
-    //     }
-    // },
     computed: {
+        panelStyle () {
+            return {
+                maxHeight: '500px',
+            }
+        },
         isVisible: {
             immediate: true,
             get () {
@@ -88,6 +98,35 @@ export default {
                 default:
                     return 'lg:w-1/2'
             }
+        },
+        hasHeader () {
+            return (this.$slots.header || this.title);
+        },
+        modalClass () {
+            const classes = [
+                'bg-white',
+                'border',
+                'border-gray-500',
+                'opacity-100',
+                'relative',
+                'mt-16',
+                'mb-auto',
+                'rounded-lg',
+                'shadow-md',
+                'pt-4',
+                this.width
+            ];
+            return classes.join(' ');
+        }
+    },
+    watch: {
+        isVisible: async function (to) {
+            document.body.style.overflow = "auto"
+            if (to) {
+                await nextTick();
+                this.setBodyMaxHeight()
+                document.body.style.overflow = "hidden"
+            }
         }
     },
     methods: {
@@ -98,7 +137,15 @@ export default {
         close() {
             this.isVisible = false;
             this.$emit('closed');
-        }
+        },
+        setBodyMaxHeight () {
+            const bodyBoundingRect = this.$refs.panelbody.getBoundingClientRect();
+            const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
+            this.$refs.panelbody.style.maxHeight = `calc(90vh - ${(bodyBoundingRect.y)}px)`
+        },
+    },
+    mounted () {
+        this.setBodyMaxHeight();
     }
 }
 </script>
