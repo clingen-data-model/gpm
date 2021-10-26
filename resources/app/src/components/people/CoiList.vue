@@ -14,31 +14,33 @@
                     </router-link>
                 </div>
             </div>
-            <h3>Completed Conflict of Interest Disclosures</h3>
-            <data-table 
-                :fields="fields" 
-                :data="cois" 
-                v-model:sort="coiSort"
-                v-if="cois.length > 0"
-                class="my-2"
-            >
-                <template v-slot:cell-actions="{item}">
-                    <div v-if="item.completed_at">
-                        <button 
-                            class="btn btn-xs" 
-                            @click="showCoiResponse(item)" 
-                        >View response</button>
-                        &nbsp;
-                        <router-link 
-                            :to="{
-                                name: 'alt-coi', 
-                                params: {code: item.group.expert_panel.coi_code, name: this.kebabCase(item.group.name)}
-                            }" 
-                            class="btn btn-xs"
-                        >Update COI</router-link>
-                    </div>
-                </template>
-            </data-table>
+            <section v-if="cois.length > 0">
+                <h3>Completed Conflict of Interest Disclosures</h3>
+                <data-table 
+                    :fields="fields" 
+                    :data="cois" 
+                    v-model:sort="coiSort"
+                    class="my-2"
+                >
+                    <template v-slot:cell-actions="{item}">
+                        <div v-if="item.completed_at">
+                            <button 
+                                class="btn btn-xs" 
+                                @click="showCoiResponse(item)" 
+                            >View response</button>
+                            &nbsp;
+                            <router-link
+                                v-if="userIsPerson(person)"
+                                :to="{
+                                    name: 'alt-coi', 
+                                    params: {code: item.group.expert_panel.coi_code, name: this.kebabCase(item.group.name)}
+                                }" 
+                                class="btn btn-xs"
+                            >Update COI</router-link>
+                        </div>
+                    </template>
+                </data-table>
+            </section>
             <div v-if="needsCoi.length == 0 && cois.length == 0" class="well">
                 None of your memberships require a conflict of interest disclosure
             </div>
