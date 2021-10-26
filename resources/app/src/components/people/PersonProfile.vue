@@ -23,7 +23,7 @@
                 <span v-if="person.state">{{person.state}}</span>
                 <span v-if="person.zip">{{person.zip}}</span>
             </p>
-            <p v-if="person.country">{{country.name}}</p>
+            <p v-if="person.country">{{person.country.name}}</p>
         </dict-row>
         <dict-row label="Phone">{{person.phone}}</dict-row>
         <hr>
