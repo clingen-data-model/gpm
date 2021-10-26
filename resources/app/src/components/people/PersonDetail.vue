@@ -38,7 +38,7 @@
             <tab-item label="Training &amp; Attestations">
             </tab-item>
         </tabs-container>
-        <modal-dialog v-model="showModal">
+        <modal-dialog v-model="showModal" :title="$route.meta.title">
             <router-view name="modal"></router-view>
         </modal-dialog>
     </div>
