@@ -35,6 +35,9 @@ class MemberRevokePermission
 
         $permission = config('permission.models.permission')::find($permissionId);
 
-        return new MemberResource($this->handle($groupMember, $permission));
+        $groupMember = $this->handle($groupMember, $permission);
+        $groupMember->load('cois', 'permissions', 'roles');
+
+        return new MemberResource($groupMember);
     }
 }

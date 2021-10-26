@@ -30,7 +30,11 @@ class MemberRemoveRole
         $group = Group::findByUuidOrFail($groupUuid);
         $groupMember = $group->members()->findOrFail($memberId);
         $role = config('permission.models.role')::findOrFail($roleId);
+        
+        $groupMember = $this->handle($groupMember, $role);
+        $groupMember->load('cois', 'permissions', 'roles');
 
-        return new MemberResource($this->handle($groupMember, $role));
+
+        return new MemberResource($groupMember);
     }
 }

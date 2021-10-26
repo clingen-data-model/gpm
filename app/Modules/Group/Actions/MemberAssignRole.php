@@ -42,7 +42,9 @@ class MemberAssignRole
 
     public function asController(ActionRequest $request, $groupUuid, $memberId)
     {
-        return new MemberResource($this->handle(GroupMember::findOrFail($memberId), $request->role_ids));
+        $groupMember = $this->handle(GroupMember::findOrFail($memberId), $request->role_ids);
+        $groupMember->load('cois', 'permissions', 'roles');
+        return new MemberResource($groupMember);
     }
 
     public function rules(): array

@@ -42,6 +42,7 @@ class MemberGrantPermissions
         $permissions = config('permission.models.permission')::find($request->permission_ids);
 
         $member = $this->handle($groupMember, $permissions);
+        $member->load('cois', 'permissions', 'roles');
         
         return new MemberResource($member);
     }
