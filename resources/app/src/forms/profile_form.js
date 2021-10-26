@@ -105,7 +105,7 @@ export const demographicFields = computed(() => [
 export const getLookups = () => {
     Object.keys(lookups.value).forEach(lkup => {
         if (lkup == 'timezones') {
-            api.get(`api/people/lookups/timezones`)
+            api.get(`/api/people/lookups/timezones`)
                 .then(response => {
                     lookups.value.timezones = response.data.data.map(i => ({value: i, label: i}));
                 })
