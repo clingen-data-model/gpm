@@ -226,7 +226,7 @@ class DataMigration
                         'uuid' => Uuid::uuid4(),
                         'expert_panel_id' => $expertPanel->id,
                         'group_member_id' => $groupMember->id,
-                        'data' => $row->data,
+                        'data' => json_decode($row->data),
                         'completed_at' => $row->created_at,
                         'created_at' => $row->created_at,
                         'updated_at' => $row->updated_at,
