@@ -58,7 +58,6 @@ export const mutations = {
         state.currentItemIdx = idx;
     },
     setCurrentItemIndex(state, item) {
-        console.log(item.uuid)
         const idx = state.items.findIndex(i => i.uuid == item.uuid);
         state.currentItemIdx = idx;
     },

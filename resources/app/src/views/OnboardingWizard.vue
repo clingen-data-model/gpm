@@ -37,7 +37,7 @@
 import OnboardingSteps from '@/components/onboarding/OnboardingSteps'
 import InviteRedemptionForm from '@/components/onboarding/InviteRedemptionForm'
 import AccountCreationForm from '@/components/onboarding/AccountCreationForm'
-import ProfileForm from '@/components/people/ProfileForm'
+import ProfileForm from '@/components/onboarding/ProfileForm'
 import Person from '@/domain/person'
 import Coi from '@/views/Coi'
 
