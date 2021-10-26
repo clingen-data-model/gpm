@@ -21,11 +21,11 @@ class PersonEndpointTest extends TestCase
     {
         parent::setup();
         config('permission.models.permission')::factory([
-            'name' => 'update-others-profile',
+            'name' => 'people-manage',
             'scope' => 'system'
         ])->create();
         $this->user = User::factory()->create();
-        $this->user->givePermissionTo('update-others-profile');
+        $this->user->givePermissionTo('people-manage');
         Sanctum::actingAs($this->user);
     }
     
@@ -36,6 +36,7 @@ class PersonEndpointTest extends TestCase
     {
         $person = Person::factory()->create();
 
+        Sanctum::actingAs($this->user);
         $this->json('PUT', '/api/people/'.$person->uuid, [
             'first_name' => 'Beano',
             'last_name'=>$person->last_name,
@@ -53,6 +54,7 @@ class PersonEndpointTest extends TestCase
         $person = Person::factory()->create();
         $url = '/api/people/'.$person->uuid;
         
+        Sanctum::actingAs($this->user);
         $this->json('PUT', $url, [])
         ->assertStatus(422)
         ->assertJsonFragment([
@@ -65,6 +67,7 @@ class PersonEndpointTest extends TestCase
         ]);
         $otherPerson = Person::factory()->create();
                 
+        Sanctum::actingAs($this->user);
         $this->json('PUT', $url, [
             'email' => $otherPerson->email
         ])

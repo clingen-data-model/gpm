@@ -36,8 +36,8 @@ class UpdateProfileTest extends TestCase
         $this->seed();
         $this->user = User::factory()->create();
         $this->person = Person::factory()->create();
-        $this->perm = Permission::factory()->create(['name' => 'update-others-profile']);
-        $this->groupPerm = Permission::factory()->create(['name' => 'update-member-profiles', 'scope' => 'group']);
+        $this->perm = Permission::factory()->create(['name' => 'people-manage']);
+        $this->groupPerm = Permission::factory()->create(['name' => 'members-update', 'scope' => 'group']);
 
         $this->url = '/api/people/'.$this->person->uuid.'/profile';
     }
@@ -97,7 +97,7 @@ class UpdateProfileTest extends TestCase
     /**
      * @test
      */
-    public function a_user_with_group_permission_can_update_profile()
+    public function a_user_with_group_permission_cannot_update_profile()
     {
         $group = Group::factory()->create();
         MemberAdd::run($group, $this->person);
@@ -108,7 +108,7 @@ class UpdateProfileTest extends TestCase
 
         Sanctum::actingAs($this->user->fresh());
         $this->json('PUT', $this->url, ['biography' => 'I like beans and George Wendt.'])
-            ->assertStatus(200);
+            ->assertStatus(403);
     }
     
     /**

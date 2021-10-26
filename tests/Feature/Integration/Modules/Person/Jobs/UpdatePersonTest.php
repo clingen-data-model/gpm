@@ -26,7 +26,7 @@ class UpdatePersonTest extends TestCase
         parent::setup();
         $this->person = Person::factory()->create();
         $this->bus = app()->make(BusDispatcher::class);
-        $this->permission = config('permission.models.permission')::factory()->create(['name' => 'update-others-profile']);
+        $this->permission = config('permission.models.permission')::factory()->create(['name' => 'people-manage']);
         $this->user = User::factory()->create();
         $this->user->givePermissionTo($this->permission);
         Sanctum::actingAs($this->user);
