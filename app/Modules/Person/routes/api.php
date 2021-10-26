@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Modules\Person\Actions\InviteRedeem;
 use App\Modules\Person\Actions\ProfileUpdate;
@@ -7,7 +8,7 @@ use App\Modules\Person\Actions\InviteValidateCode;
 use App\Modules\Person\Http\Controllers\Api\ApiController;
 use App\Modules\Person\Http\Controllers\Api\InviteController;
 use App\Modules\Person\Http\Controllers\Api\PeopleController;
-use Illuminate\Http\Request;
+use App\Modules\Person\Http\Controllers\Api\TimezoneController;
 
 Route::group([
     'prefix' => 'api/people',
@@ -28,11 +29,15 @@ Route::group([
     Route::get('/invites/{code}', InviteValidateCode::class);
     Route::put('/invites/{code}', InviteRedeem::class);
     
-    // index
+    Route::get('/lookups/timezones', [TimezoneController::class, 'index'])
+        ->name('people.timezones.index');
+
+        // index
     Route::get('/lookups/{model}', [ApiController::class, 'index'])
-        ->name('people.catchall.index');
+    ->name('people.catchall.index');
     
     // show
     Route::get('/lookups/{model}/{id}', [ApiController::class, 'show'])
         ->name('people.catchall.show');
+
 });
