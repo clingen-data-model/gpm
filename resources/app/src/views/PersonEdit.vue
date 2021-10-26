@@ -1,22 +1,22 @@
 <template>
     <div>
-        <person-form :person="person"
+        <profile-form :person="person"
             @saved="goBack()"
             @canceled="goBack()"
-        ></person-form>
+        ></profile-form>
     </div>
 </template>
 <script>
 import {watch, computed, onMounted} from 'vue'
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
-import PersonForm from '@/components/people/PersonForm'
+import ProfileForm from '@/components/people/ProfileForm'
 import Person from '@/domain/person'
 
 export default {
     name: 'PersonEdit',
     components: {
-        PersonForm
+        ProfileForm
     },
     props: {
         uuid: {
