@@ -26,6 +26,10 @@
                 </data-table>
             </tab-item>
 
+            <tab-item label="Profile">
+                <person-profile :person="user.person"></person-profile>
+            </tab-item>
+
             <tab-item label="COIs">
                 <div v-if="user.memberships.length > 0">
                     <div v-if="needsCoi.length > 0">
@@ -72,9 +76,6 @@
                 </teleport>
             </tab-item>
 
-            <tab-item label="Profile">
-                <person-profile :person="user.person"></person-profile>
-            </tab-item>
         </tabs-container>
         <div class="mt-8 space-y-4">
             <collapsible title="User Memberships">
@@ -90,9 +91,6 @@
                 <pre>{{needsCoi}}</pre>
             </collapsible>
         </div>
-        <modal-dialog v-model="showModal">
-            <router-view name="modal"></router-view>
-        </modal-dialog>
     </div>
 </template>
 <script>
@@ -103,6 +101,7 @@ import NotificationItem from '@/components/NotificationItem'
 import {kebabCase} from '@/utils'
 import CoiDetail from '@/components/applications/CoiDetail';
 import PersonProfile from '@/components/people/PersonProfile'
+import ProfileForm from '@/components/people/ProfileForm'
 
 
 export default {
@@ -110,11 +109,11 @@ export default {
     components: {
         NotificationItem,
         CoiDetail,
-        PersonProfile
+        PersonProfile,
+        ProfileForm,
     },
     data() {
         return {
-            showModal: false
         }
     },
     props: {
@@ -132,7 +131,6 @@ export default {
         const loadingNotifications = ref(false);
         const notifications = ref([]);
         const getNotifications = async () => {
-            console.log('getNotifiations...');
             loadingNotifications.value = true;
             await setTimeout(() => {
                 notifications.value.push({id: 1, message: 'This is a dummy notification.'});
@@ -152,7 +150,6 @@ export default {
         // TODO: Get groups by search with TONS of info.
         // TODO: Extract that work to a module.
         const groups = computed(() => user.value.memberships.map(m => m.group).filter(g => g !== null));
-        console.log(groups.value);
         const groupFields = ref([
             {
                 name: 'name',
@@ -201,7 +198,6 @@ export default {
                 .flat()
         });
         const needsCoi = computed(() => {
-            console.log(user.value.memberships);
             return user.value.memberships
                     .filter(m => (m.cois === null || m.cois.length === 0) && m.group.expert_panel);
         });
@@ -266,7 +262,6 @@ export default {
             getNotifications,
             removeNotification,
             navigateToGroup: (item) => {
-                console.log(item);
                 router.push({
                     name: 'GroupDetail',
                     params: {uuid: item.uuid}

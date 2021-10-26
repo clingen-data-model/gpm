@@ -45,8 +45,8 @@
             </button>
         </div>
         <teleport to="body">
-            <modal-dialog v-model="showEditForm">
-                <person-form :person="person" @saved="hideEditForm" @canceled="hideEditForm"></person-form>
+            <modal-dialog v-model="showEditForm" :title="formDialogTitle">
+                <profile-form :person="person" @saved="hideEditForm" @canceled="hideEditForm"> </profile-form>
             </modal-dialog>
         </teleport>
     </div>
@@ -54,12 +54,13 @@
 <script>
 import Person from '@/domain/person'
 
-import PersonForm from '@/components/people/PersonForm'
+// import PersonForm from '@/components/people/PersonForm'
+import ProfileForm from '@/components/people/ProfileForm'
 
 export default {
     name: 'PersonProfile',
     components: {
-        PersonForm,
+        ProfileForm,
     },
     props: {
         person: {
@@ -71,6 +72,12 @@ export default {
     data () {
         return {
             showEditForm: false
+        }
+    },
+    computed: {
+        formDialogTitle () {
+            const name = (this.userIsPerson(this.person)) ? 'your' : `${this.person.name}'s`;
+            return `Edit ${name} information.`
         }
     },
     methods: {
