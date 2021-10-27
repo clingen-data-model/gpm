@@ -14,7 +14,10 @@
                     <button-row @submit="save" @cancel="hideForm"></button-row>
                 </input-row>
                 <div v-else>
-                    <div class="markdown" v-if="membershipDescription" v-html="marked(membershipDescription)"></div>
+                    <markdown-block 
+                        v-if="membershipDescription" 
+                        :markdown="membershipDescription">
+                    </markdown-block>
                     <p class="well" v-else>
                         A description of expertise has not yet been provided.
                     </p>
@@ -29,7 +32,6 @@ import {useStore} from 'vuex'
 import Group from '@/domain/group'
 import EditButton from '@/components/buttons/EditIconButton'
 import is_validation_error from '../../http/is_validation_error'
-import marked from 'marked'
 
 export default {
     name: 'MembershipDescriptionForm',
@@ -102,8 +104,7 @@ export default {
             errors,
             membershipDescription,
             syncDescription,
-            save,
-            marked
+            save
         }
 
     },

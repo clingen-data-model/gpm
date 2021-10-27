@@ -69,6 +69,9 @@ import ObjectDictionary from './components/ObjectDictionary'
 app.component('object-dictionary', ObjectDictionary)
 app.component('object-dict', ObjectDictionary)
 
+import MarkdownBlock from './components/MarkdownBlock'
+app.component('markdown-block', MarkdownBlock)
+
 import ClickOutside from './directives/click_outside'
 app.directive('click-outside', ClickOutside)
 import RemainingHeight from '@/directives/remaining_height'
