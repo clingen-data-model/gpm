@@ -66,7 +66,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'step_4_approval_date',
         'date_completed',
         'hypothesis_group',
-        'member_description',
+        'membership_description',
         'scope_description',
         'coi_code',
         'nhgri_attestation_date',
@@ -101,8 +101,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     ];
 
     protected $with = [
-        'type',
-        'group'
+        'type'
     ];
 
     protected $appends = [
@@ -367,6 +366,21 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
         return $results->version;
     }
+
+    /**
+     * ACCESSORS
+     */
+
+    public function getIsVcepAttribute(): bool
+    {
+        return $this->expert_panel_type_id == config('expert_panels.types.vcep.id');
+    }
+
+    public function getIsGcepAttribute(): bool
+    {
+        return $this->expert_panel_type_id == config('expert_panels.types.gcep.id');
+    }
+
 
     public function getNameAttribute()
     {

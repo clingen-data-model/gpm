@@ -28,7 +28,7 @@ class ExpertPanelFactory extends Factory
     {
         return [
             'uuid' => Uuid::uuid4()->toString(),
-            'group_id' => Group::factory()->create(['name' => 'group '.uniqid()])->id,
+            'group_id' => Group::factory()->create(['name' => 'group '.uniqid(), 'group_type_id' => config('groups.types.ep.id')])->id,
             'expert_panel_type_id' => ExpertPanelType::all()->random()->id,
             'date_initiated' => Carbon::now(),
             'current_step' => 1,

@@ -14,7 +14,7 @@ class GroupController extends Controller
     {
         $searchService = new ModelSearchService(
             modelClass: Group::class,
-            defaultWith: ['type', 'status', 'expertPanel', 'expertPanel', 'expertPanel.type', 'members', 'members.person', 'members.roles'],
+            defaultWith: ['type', 'status', 'expertPanel', 'expertPanel', 'members', 'members.person', 'members.roles'],
             sortFunction: function ($query, $field, $dir) {
                 if ($field == 'type') {
                     $query->innerJoin('group_types', 'groups.group_type_id', '=', 'group_types.id');
@@ -44,7 +44,6 @@ class GroupController extends Controller
             'members.permissions',
             'members.cois',
             'expertPanel',
-            'expertPanel.type'
         ]);
 
         return new GroupResource($group);

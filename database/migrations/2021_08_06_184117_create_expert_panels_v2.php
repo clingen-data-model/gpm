@@ -43,7 +43,7 @@ class CreateExpertPanelsV2 extends Migration
             $table->datetime('date_completed')->nullable();
             $table->string('coi_code', 24)->unique();
             $table->string('hypothesis_group')->nullable();
-            $table->text('member_description')->nullable();
+            $table->text('membership_description')->nullable();
             $table->text('scope_description')->nullable();
             $table->dateTime('nhgri_attestation_date')->nullable();
             $table->dateTime('preprint_attestation_date')->nullable();

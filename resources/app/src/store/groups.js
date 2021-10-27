@@ -4,6 +4,7 @@ import api from '@/http/api';
 import queryStringFromParams from "../http/query_string_from_params";
 
 const baseUrl = '/api/groups';
+const getApplicationUrl = (uuid) => `${baseUrl}/${uuid}/application`;
 
 export const getters = {
     groups: state => state.items,
@@ -210,6 +211,17 @@ export const actions = {
             return response;
         });
     },
+
+    async membershipDescriptionUpdate({ commit }, {uuid, membershipDescription}) {
+        return await api.put(
+            `${getApplicationUrl(uuid)}/membership-description`, 
+            { membership_description: membershipDescription }
+        )
+        .then(response => {
+            commit('addItem', response.data.data)
+            return response;
+        })
+    }
 };
 
 export default {

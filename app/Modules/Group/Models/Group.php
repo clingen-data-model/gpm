@@ -67,6 +67,10 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         'parent_id' => 'integer',
     ];
 
+    protected $with = [
+        'type',
+        'status',
+    ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -169,8 +173,21 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         }
         return null;
     }
-    
 
+    public function getIsExpertPanelAttribute(): bool
+    {
+        return $this->group_type_id == config('groups.types.ep.id');
+    }
+
+    public function getIsVcepAttribute(): bool
+    {
+        return $this->isExpertPanel && $this->expertPanel->isVcep;
+    }
+
+    public function getIsGcepAttribute(): bool
+    {
+        return $this->isExpertPanel && $this->expertPanel->isGcep;
+    }
 
     protected static function newFactory()
     {
