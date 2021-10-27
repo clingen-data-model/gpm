@@ -17,6 +17,7 @@
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "js-yaml": "^4.0.0",
+    "marked": "^3.0.8",
     "postcss": "^7.0.35",
     "register-service-worker": "^1.7.1",
     "uuid": "^8.3.2",
