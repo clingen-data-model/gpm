@@ -7,6 +7,9 @@ const GroupDetail = () =>
 const MemberForm = () =>
     import ( /* webpackChunkName: "group-detail" */ '@/components/groups/MemberForm.vue')
 
+const GeneDiseaseForm = () =>
+    import ( /* webpackChunkName: "group-detail" */ '@/components/expert_panels/GeneDiseaseForm.vue')
+
 const hasGroupPermission = async (to, permission) => {
     if (store.getters.currentUser.hasPermission('groups-manage')) {
         return true;
@@ -17,6 +20,23 @@ const hasGroupPermission = async (to, permission) => {
     const group = store.getters['groups/currentItem'];
 
     if (store.getters.currentUser.hasGroupPermission(permission, group)) {
+        return true;
+    }
+
+    store.commit('pushError', 'Permission denied');
+    return false;
+}
+
+const canUpdateApplication = async (to) => {
+    if (store.getters.currentUser.hasPermission('ep-applications-manage')) {
+        return true;
+    }
+    if (!store.getters['groups/currentItem'] || store.getters['groups/currentItem'].uuid != to.params.uuid) {
+        await store.dispatch('find', to.params.uuid);
+    }
+    const group = store.getters['groups/currentItem'];
+
+    if (store.getters.currentUser.hasGroupPermission('application-edit', group)) {
         return true;
     }
 
@@ -78,6 +98,20 @@ export default [
                     return await hasGroupPermission(to, 'members-update')
                 }
             },
+            {
+                name: 'AddGene',
+                path: '/groups/:uuid/genes/add',
+                component: GeneDiseaseForm,
+                meta: {
+                    showModal: true,
+                    protected: true,
+                    title: 'Add a Gene/Disease pair to Scope'
+                },
+                props: true,
+                beforeEnter: async (to) => {
+                    return await canUpdateApplication(to)
+                }
+            }
         ],
     },
 ]

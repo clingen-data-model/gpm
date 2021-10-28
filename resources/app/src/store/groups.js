@@ -221,6 +221,24 @@ export const actions = {
             commit('addItem', response.data.data)
             return response;
         })
+    },
+
+    async scopeDescriptionUpdate({ commit }, {uuid, scopeDescription}) {
+        return await api.put(
+            `${getApplicationUrl(uuid)}/scope-description`, 
+            { scope_description: scopeDescription }
+        )
+        .then(response => {
+            commit('addItem', response.data.data)
+            return response;
+        })
+    },
+
+    async geneListUpdate({ commit }, {uuid, genes}) {
+        return await api.put(`${getApplicationUrl(uuid)}/gene-list`, { genes })
+            .then(response => {
+                commit('addItem', response.data.data)
+            });
     }
 };
 

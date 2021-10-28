@@ -27,12 +27,14 @@
         <tabs-container>
             <tab-item label="Members">
                 <member-list :group="group"></member-list>
-                <membership-description-form :group="group" v-if="group.isVcep()"></membership-description-form>
+                <membership-description-form :group="group" v-if="group.isVcep()" class="mt-8"></membership-description-form>
             </tab-item>
             <tab-item label="Scope" v-show="group.isEp()">
-                Description of scope and gene list will go here
+                <component :is="groupGeneList" :group="group" />
+                <br> 
+                <scope-description-form :group="group" v-if="group.isEp()"></scope-description-form>
             </tab-item>
-            <tab-item label="Ongoing Curation" v-show="group.isEp()">
+            <tab-item label="Sustained Curation" v-show="group.isEp()">
                 Curation review process, Evidence Summaries, etc. will go here
             </tab-item>
             <tab-item v-show="group.isVcep()" label="Specifications">
@@ -60,6 +62,9 @@
     </div>
 </template>
 <script>
+import GcepGeneList from '@/components/expert_panels/GcepGeneList'
+import VcepGeneList from '@/components/expert_panels/VcepGeneList'
+import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm'
 import MemberList from '@/components/groups/MemberList';
 import MembershipDescriptionForm from '@/components/expert_panels/MembershipDescriptionForm'
 import { ref, computed, onMounted } from 'vue'
@@ -69,7 +74,10 @@ export default {
     name: 'GroupDetail',
     components: {
         MemberList,
-        MembershipDescriptionForm
+        MembershipDescriptionForm,
+        GcepGeneList,
+        VcepGeneList,
+        ScopeDescriptionForm,
     },
     props: {
         uuid: {
@@ -78,6 +86,15 @@ export default {
         }
     },
     setup (props) {
+        const group = computed(() => {
+            return store.getters['groups/currentItem'] || {}
+        });
+        const groupGeneList = computed(() => {
+            if (!group.value.isEp()) {
+                return null;
+            }
+            return group.value.isVcep() ? VcepGeneList : GcepGeneList;
+        })
         const store = useStore();
         const showModal = ref(false);
 
@@ -89,9 +106,8 @@ export default {
         });
 
         return {
-            group: computed(() => {
-                return store.getters['groups/currentItem'] || {}
-            }),
+            group,
+            groupGeneList,
             showModal
         }
     },

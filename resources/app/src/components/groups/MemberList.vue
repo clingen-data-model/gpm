@@ -228,7 +228,6 @@ export default {
                 'groups-manage'
             ])
 
-            console.log(hasPerm);
             return hasPerm;
         },
         getCoiDateStyle (member) {

@@ -118,7 +118,7 @@ textarea.sm {
 }
 
 .markdown {
-    @apply px-4 py-2 border-t border-b
+
 }
 .markdown a {
     @apply text-blue-500 underline
