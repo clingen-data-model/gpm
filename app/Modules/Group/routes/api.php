@@ -10,6 +10,7 @@ use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Group\Actions\MemberRemoveRole;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Group\Actions\MemberRevokePermission;
+use App\Modules\Group\Actions\ScopeDescriptionUpdate;
 use App\Modules\Group\Actions\MembershipDescriptionUpdate;
 use App\Modules\Group\Http\Controllers\Api\GroupController;
 
@@ -25,6 +26,7 @@ Route::group([
     Route::get('/{uuid}', [GroupController::class, 'show']);
 
     Route::put('/{uuid}/application/membership-description', MembershipDescriptionUpdate::class);
+    Route::put('/{uuid}/application/scope-description', ScopeDescriptionUpdate::class);
     
     Route::post('/{uuid}/invites', MemberInvite::class);
     
