@@ -16,6 +16,7 @@
     "autoprefixer": "^9.8.6",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "dompurify": "^2.3.3",
     "js-yaml": "^4.0.0",
     "marked": "^3.0.8",
     "postcss": "^7.0.35",
