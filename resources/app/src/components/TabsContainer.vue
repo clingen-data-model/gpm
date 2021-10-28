@@ -74,10 +74,6 @@ export default {
             if (this.modelValue && this.tabs.length > this.modelValue) {
                 this.activateTab(this.modelValue);
             }
-
-            // if (this.tabs.length > 0 && this.tabs.findIndex(t => t.active) < 0) {
-            //     this.tabs[this.modelValue].active = true;
-            // }
         },
         addTab (tab) {
             this.tabs.push(tab);
