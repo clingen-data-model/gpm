@@ -35,6 +35,7 @@
 
 </style>
 <script>
+import {isEqual} from 'lodash'
 
 export default {
     name: 'TabsContainer',
@@ -58,6 +59,14 @@ export default {
     watch: {
         modelValue: function (newValue) {
             this.activateTab(newValue)
+        },
+        '$route.query': {
+            immediate: true,
+            handler: function (to, from) {
+                if (!isEqual(to, from)) {
+                    this.activateTabFromRoute();
+                }
+            }
         }
     },
     methods: {
@@ -65,6 +74,28 @@ export default {
             this.tabs.forEach(t => t.active = false)
             this.tabs[idx].active = true
             this.$emit('update:modelValue', idx);
+            this.updateRouteQuery(this.tabs[idx].label);
+        },
+
+        activateTabWithLabel (routeLabel) {
+            const normalized = routeLabel.toLowerCase();
+            const idx = this.tabs
+                .map(t => t.label.toLowerCase())
+                .findIndex(label => label == normalized);
+            if (idx > 0) {
+                this.activateTab(idx);
+            }
+        },
+        
+        activateTabFromRoute () {
+            if (Object.keys(this.$route.query).includes('tab')) {
+                this.activateTabWithLabel(this.$route.query.tab);
+            }
+        },
+
+        updateRouteQuery(label) {
+            const newQuery = {...this.$route.query, ...{tab: label.toLowerCase()}};
+            this.$router.replace({path: this.$route.path, query: newQuery})
         },
 
         setActiveIndex () {
@@ -73,6 +104,9 @@ export default {
             }
             if (this.modelValue && this.tabs.length > this.modelValue) {
                 this.activateTab(this.modelValue);
+            }
+            if (Object.keys(this.$route.query).includes('tab')) {
+                this.activateTabFromRoute();
             }
         },
         addTab (tab) {
