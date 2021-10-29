@@ -7,8 +7,6 @@ import ChevRightIcon from '@/components/icons/IconCheveronRight'
 import FilterIcon from '@/components/icons/IconFilter'
 import ExclamationIcon from '@/components/icons/IconExclamation'
 import NotificationIcon from '@/components/icons/IconNotification'
-import DropdownMenu from '@/components/DropdownMenu'
-import DropdownItem from '@/components/DropdownItem'
 import MemberPreview from '@/components/groups/MemberPreview'
 import { titleCase } from '@/utils'
 
@@ -18,8 +16,6 @@ export default {
         ChevRightIcon,
         ChevDownIcon,
         FilterIcon,
-        DropdownMenu,
-        DropdownItem,
         MemberPreview,
         ExclamationIcon,
         NotificationIcon,

@@ -23,6 +23,9 @@ app.component('note', Note);
 import DropdownMenu from './components/DropdownMenu'
 app.component('dropdown-menu', DropdownMenu);
 
+import DropdownItem from './components/DropdownItem'
+app.component('dropdown-item', DropdownItem);
+
 import TruncateExpander from './components/TruncateExpander'
 app.component('truncate-expander', TruncateExpander);
 
