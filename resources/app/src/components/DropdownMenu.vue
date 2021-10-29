@@ -112,7 +112,9 @@ export default {
                         ref="menuButton" 
                         onClick={this.toggleMenu}
                     >
-                        <span v-show={!this.hideCheveron}><cheveron-down></cheveron-down></span>
+                        <span v-show={!this.hideCheveron}>
+                            <cheveron-down></cheveron-down>
+                        </span>
                         {this.$slots.label ? this.$slots.label() : this.label}
                     </div>
                         <teleport to="body">
