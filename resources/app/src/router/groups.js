@@ -98,20 +98,6 @@ export default [
                     return await hasGroupPermission(to, 'members-update')
                 }
             },
-            {
-                name: 'AddGene',
-                path: '/groups/:uuid/genes/add',
-                component: GeneDiseaseForm,
-                meta: {
-                    showModal: true,
-                    protected: true,
-                    title: 'Add a Gene/Disease pair to Scope'
-                },
-                props: true,
-                beforeEnter: async (to) => {
-                    return await canUpdateApplication(to)
-                }
-            }
         ],
     },
 ]
