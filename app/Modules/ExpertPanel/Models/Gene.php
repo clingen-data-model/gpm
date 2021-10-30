@@ -49,15 +49,6 @@ class Gene extends Model
         'date_approved',
     ];
 
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function hgnc()
-    {
-        return $this->belongsTo(\App\Models\Hgnc::class);
-    }
-
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

@@ -17,7 +17,8 @@ class CreateGenesTable extends Migration
 
         Schema::create('genes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('hgnc_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate()->primary();
+            $table->unsignedBigInteger('hgnc_id');
+            // $table->foreignId('hgnc_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate()->primary();
             $table->foreignId('expert_panel_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('gene_symbol');
             $table->string('mondo_id', 14)->nullable();

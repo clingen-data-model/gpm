@@ -6,6 +6,7 @@ use App\Modules\Group\Actions\MemberInvite;
 use App\Modules\Group\Actions\MemberRemove;
 use App\Modules\Group\Actions\MemberRetire;
 use App\Modules\Group\Actions\MemberUpdate;
+use App\Modules\Group\Actions\AddGenesToVcep;
 use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Group\Actions\MemberRemoveRole;
 use App\Modules\Group\Actions\MemberGrantPermissions;
@@ -27,6 +28,7 @@ Route::group([
 
     Route::put('/{uuid}/application/membership-description', MembershipDescriptionUpdate::class);
     Route::put('/{uuid}/application/scope-description', ScopeDescriptionUpdate::class);
+    Route::post('/{uuid}/application/genes', AddGenesToVcep::class);
     
     Route::post('/{uuid}/invites', MemberInvite::class);
     

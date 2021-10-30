@@ -15,6 +15,7 @@ use App\Models\Contracts\HasDocuments;
 use App\Models\Contracts\RecordsEvents;
 use App\Modules\ExpertPanel\Models\Coi;
 use Illuminate\Database\Eloquent\Model;
+use App\Modules\ExpertPanel\Models\Gene;
 use App\Modules\ExpertPanel\Models\CoiV1;
 use App\Modules\Group\Models\GroupMember;
 use Database\Factories\ExpertPanelFactory;
@@ -25,6 +26,7 @@ use App\Models\Traits\HasNotes as TraitsHasNotes;
 use App\Modules\ExpertPanel\Models\ExpertPanelType;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use App\Modules\ExpertPanel\Models\EvidenceSummaries;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Modules\Group\Models\Contracts\BelongsToGroup;
@@ -214,7 +216,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
      */
     public function genes()
     {
-        return $this->hasMany(\App\Modules\ExpertPanels\Models\Gene::class);
+        return $this->hasMany(Gene::class);
     }
 
     /**
@@ -222,7 +224,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
      */
     public function evidenceSummaries()
     {
-        return $this->hasMany(\App\Modules\ExpertPanels\Models\EvidenceSummaries::class);
+        return $this->hasMany(EvidenceSummaries::class);
     }
 
     /**
