@@ -189,6 +189,16 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         return $this->isExpertPanel && $this->expertPanel->isGcep;
     }
 
+    public function getFullTypeAttribute()
+    {
+        if ($this->isExpertPanel) {
+            return $this->expertPanel->type;
+        }
+
+        return $this->type;
+    }
+
+
     protected static function newFactory()
     {
         return new GroupFactory();

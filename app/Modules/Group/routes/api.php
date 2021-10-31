@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Modules\Group\Actions\MemberAdd;
+use App\Modules\Group\Actions\GeneRemove;
+use App\Modules\Group\Actions\AddGenesToEp;
 use App\Modules\Group\Actions\MemberInvite;
 use App\Modules\Group\Actions\MemberRemove;
 use App\Modules\Group\Actions\MemberRetire;
@@ -28,7 +30,8 @@ Route::group([
 
     Route::put('/{uuid}/application/membership-description', MembershipDescriptionUpdate::class);
     Route::put('/{uuid}/application/scope-description', ScopeDescriptionUpdate::class);
-    Route::post('/{uuid}/application/genes', AddGenesToVcep::class);
+    Route::post('/{uuid}/application/genes', AddGenesToEp::class);
+    Route::delete('/{uuid}/application/genes/{gene_id}', GeneRemove::class);
     
     Route::post('/{uuid}/invites', MemberInvite::class);
     

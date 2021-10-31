@@ -116,13 +116,26 @@ class GroupPolicy
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determine whether the user can add a gene to an EPs scope.
      *
      * @param  \App\Modules\User\Models\User  $user
      * @param  \App\Models\ExpertPanel  $expertPanel
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function addGene(User $user, Group $group)
+    {
+        return $user->hasPermissionTo('ep-applications-manage')
+            || $user->hasGroupPermissionTo('application-edit', $group);
+    }
+
+    /**
+     * Determine whether the user can remove a gene to an EPs scope.
+     *
+     * @param  \App\Modules\User\Models\User  $user
+     * @param  \App\Models\ExpertPanel  $expertPanel
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function removeGene(User $user, Group $group)
     {
         return $user->hasPermissionTo('ep-applications-manage')
             || $user->hasGroupPermissionTo('application-edit', $group);
