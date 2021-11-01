@@ -19,64 +19,77 @@
                         ></th>
                     </tr>
                 </thead>
-                <tbody>
-                    <transition-group name="slide-fade-down">
-                        <tr v-for="gene in orderedGenes" :key="gene.id">                            
-                            <template v-if="!gene.edit">
-                                <td>{{gene.gene_symbol}}</td>
-                                <td>{{gene.mondo_id}}</td>
-                                <td>{{formatDate(gene.date_approved)}}</td>
-                                <td
-                                    v-if="hasAnyPermission([
-                                        'ep-applications-manage', 
-                                        ['application-edit', this.group]
-                                    ])"
-                                >
-                                    <div v-if="!gene.edit">
-                                        <dropdown-menu 
-                                            :hide-cheveron="true" 
-                                            class="relative"
-                                            v-if="!gene.toDelete"
-                                        >
-                                            <template v-slot:label>
-                                                <button class="btn btn-xs">&hellip;</button>
-                                            </template>
-                                            <dropdown-item @click="edit(gene)">Edit</dropdown-item>
-                                            <dropdown-item @click="remove(gene)">Remove</dropdown-item>
-                                        </dropdown-menu>
-
-                                        <div v-if="gene.toDelete">
-                                            <note>set for deletion in {{gene.removeCountdown}} seconds.</note>
-                                            <button @click="cancelPendingRemove(gene)" class="btn btn-xs">Cancel</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </template>
-                            <template v-else>
-                                <td>
-                                    <input 
-                                        type="text" 
-                                        v-model="gene.gene_symbol" 
-                                        placeholder="gene symbol"
-                                        class="w-full"
-                                    >
-                                </td>
-                                <td colspan="2">
-                                    <input 
-                                        type="text" 
-                                        v-model="gene.mondo_id" 
-                                        placeholder="Disease name or MonDO ID"
-                                        class="w-full"
-                                    >
-                                </td>
-                                <td>
-                                    <button class="btn btn-xs" @click="updateCancel(gene)">Cancel</button>
-                                    <button class="btn blue btn-xs" @click="updateGene(gene)">Save</button>
-                                </td>
-                            </template>
+                <transition-group name="fade" mode="out-in">                
+                    <tbody v-if="genes.length == 0">
+                        <tr>
+                            <td colspan="4">
+                                <div class="p-2 text-center font-bold">
+                                    {{(loading) ? 'Loading...' : `There are no genes in your gene list.`}}
+                                </div>
+                            </td>
                         </tr>
-                    </transition-group>
-                </tbody>
+                    </tbody>
+                    <tbody v-else>
+                        <transition-group name="slide-fade-down">
+                            <tr v-for="gene in orderedGenes" :key="gene.id">                            
+                                <template v-if="!gene.edit">
+                                    <td>{{gene.gene_symbol}}</td>
+                                    <td>{{gene.mondo_id}}</td>
+                                    <td>{{formatDate(gene.date_approved)}}</td>
+                                    <td
+                                        v-if="hasAnyPermission([
+                                            'ep-applications-manage', 
+                                            ['application-edit', this.group]
+                                        ])"
+                                    >
+                                        <div v-if="!gene.edit">
+                                            <dropdown-menu 
+                                                :hide-cheveron="true" 
+                                                class="relative"
+                                                v-if="!gene.toDelete"
+                                            >
+                                                <template v-slot:label>
+                                                    <button class="btn btn-xs">&hellip;</button>
+                                                </template>
+                                                <dropdown-item @click="edit(gene)">Edit</dropdown-item>
+                                                <dropdown-item @click="remove(gene)">Remove</dropdown-item>
+                                            </dropdown-menu>
+
+                                            <div v-if="gene.toDelete">
+                                                <note>set for deletion in {{gene.removeCountdown}} seconds.</note>
+                                                <button @click="cancelPendingRemove(gene)" class="btn btn-xs">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </template>
+                                <template v-else>
+                                    <td>
+                                        <input 
+                                            type="text" 
+                                            v-model="gene.hgnc_id" 
+                                            placeholder="gene symbol"
+                                            class="w-full"
+                                        >
+                                        <input-error :errors="errors.hgnc_id || []"></input-error>
+                                    </td>
+                                    <td colspan="2">
+                                        <input 
+                                            type="text" 
+                                            v-model="gene.mondo_id" 
+                                            placeholder="Disease name or MonDO ID"
+                                            class="w-full"
+                                        >
+                                        <input-error :errors="errors.mondo_id || []"></input-error>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-xs" @click="updateCancel(gene)">Cancel</button>
+                                        <button class="btn blue btn-xs" @click="updateGene(gene)">Save</button>
+                                    </td>
+                                </template>
+                            </tr>
+                        </transition-group>
+                    </tbody>
+                </transition-group>
                 <transition name="slide-fade-down">
                     <thead v-if="newGenes.length > 0">
                         <tr>
@@ -95,10 +108,11 @@
                             <td>
                                 <input 
                                     type="text" 
-                                    v-model="newGene.gene_symbol" 
+                                    v-model="newGene.hgnc_id" 
                                     placeholder="gene symbol"
                                     class="w-full"
                                 >
+                                <input-error :errors="errors[`genes.${idx}.hgnc_id`]"></input-error>
                             </td>
                             <td colspan="4">
                                 <input 
@@ -107,6 +121,7 @@
                                     placeholder="Disease name or MonDO ID"
                                     class="w-full"
                                 >
+                                <input-error :errors="errors[`genes.${idx}.mondo_id`]"></input-error>
                             </td>
                         </tr>
                     </transition-group>
@@ -129,16 +144,19 @@
     </div>
 </template>
 <script>
-import {ref, computed, watch} from 'vue';
+import api from '@/http/api'
+import {ref, computed, onMounted} from 'vue';
 import {useStore} from 'vuex';
 import EditButton from '@/components/buttons/EditIconButton'
+import InputError from '@/components/forms/InputErrors'
 import is_validation_error from '@/http/is_validation_error'
 import {isEqual} from 'lodash'
 
 export default {
     name: 'VcepGeneList',
     components: {
-        EditButton
+        EditButton,
+        InputError
     },
     props: {
         group: {
@@ -156,9 +174,10 @@ export default {
         const newGenes = ref([]);
         const removedGenes = ref([]);
         const addNewGene = () => {
-            newGenes.value.push({gene_symbol: null, mondo_id: null});
+            newGenes.value.push({hgnc_id: null, mondo_id: null});
         }
 
+        const loading = ref(false);
         const errors = ref({});
         const genes = ref([]);
         const orderedGenes = computed(() => {
@@ -172,23 +191,9 @@ export default {
             return sortedGenes;
         })
 
-        watch(() => props.group.expert_panel.genes, () => {
-                // genes.value = props.group.expert_panel.genes;
-                genes.value = [
-                    {id: 1, gene_symbol: 'MLTN1', mondo_id: 'MONDO:1234456', date_approved: null},
-                    {id: 1, gene_symbol: 'MLTN2', mondo_id: 'MONDO:1234456', date_approved: '2021-09-17T12:23:00'},
-                    {id: 1, gene_symbol: 'MLTN3', mondo_id: 'MONDO:1234456', date_approved: null},
-                    {id: 1, gene_symbol: 'MLTN4', mondo_id: 'MONDO:1234456', date_approved: null},
-                    {id: 1, gene_symbol: 'MLTN5', mondo_id: 'MONDO:1234456', date_approved: '2021-09-17T12:23:00'},
-                    {id: 1, gene_symbol: 'MLTN6', mondo_id: 'MONDO:1234456', date_approved: '2021-09-17T12:23:00'},
-                    {id: 1, gene_symbol: 'MLTN7', mondo_id: 'MONDO:1234456', date_approved: '2021-09-17T12:23:00'},
-                ]
-                // return [];
-            },
-            {immediate: true})
-       
         const clearNewGenes = () => {
             newGenes.value = [];
+            errors.value = {};
         }
 
         const edit = (gene) => {
@@ -217,10 +222,15 @@ export default {
         const remove = (gene) => {
             clearRemoveCountdown(gene);
             gene.toDelete = true;
-            gene.removeTimeout = setTimeout(() => {
+            gene.removeTimeout = setTimeout(async () => {
                 for (let idx = 0; idx < genes.value.length; idx++) {
                     if (genes.value[idx].toDelete) {
-                        genes.value.splice(idx, 1);
+                        try {
+                            await api.delete(`/api/groups/${props.group.uuid}/application/genes/${gene.id}`)
+                            await getGenes();
+                        } catch (error) {
+                            this.$store.commit('pushError', error.response.data);
+                        }
                     }
                 }
                 console.log(genes.value.length)
@@ -233,18 +243,29 @@ export default {
             }, 1000);
             
         }
+        
+        const getGenes = async () => {
+            loading.value = true;
+            try {
+                genes.value = await api.get(`/api/groups/${props.group.uuid}/application/genes`)
+                                .then(response => {
+                                    return response.data;
+                                });
+            } catch (error) {
+                this.$store.commit('pushError', error.response.data);
+            }
+            loading.value = false;
+        }
 
         const save = async () => {
             try {
                 if (newGenes.value.length > 0) {
-                    await Promise.all(
-                        newGenes.value.filter(ng => isEqual(ng, {}))
-                        .map(ngene => {
-                            // return store.dispatch('groups/addGenes', {uuid: props.group.uuid, ng})
-                        })
-                    );
+                    const filteredGenes = newGenes.value.filter(ng => !isEqual(ng, {hgnc_id: null, mondo_id: null}));
+                    await api.post(`/api/groups/${props.group.uuid}/application/genes`, {genes: filteredGenes});
+                    await getGenes();
                 }
                 clearNewGenes();
+                errors.value = {};
                 context.emit('saved')
             } catch (error) {
                 if (is_validation_error(error)) {
@@ -254,8 +275,15 @@ export default {
         };
 
         const updateGene = async (gene) => {
-            delete(gene.edit);
-            console.log('update gene', gene)
+            try {
+                await api.put(`/api/groups/${props.group.uuid}/application/genes/${gene.id}`, gene);
+                await getGenes();
+                delete(gene.edit);
+            } catch (error) {
+                if (is_validation_error(error)) {
+                    errors.value = error.response.data.errors
+                }
+            }
         }
         const updateCancel = gene => {
             delete(gene.edit);
@@ -266,11 +294,16 @@ export default {
             clearNewGenes();
         }
 
+        onMounted(() => {
+            getGenes();
+        });
+
         return {
             genes,
             newGenes,
             orderedGenes,
             errors,
+            loading,
             addNewGene,
             updateGene,
             updateCancel,
