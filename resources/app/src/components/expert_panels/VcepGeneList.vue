@@ -229,7 +229,7 @@ export default {
                             await api.delete(`/api/groups/${props.group.uuid}/application/genes/${gene.id}`)
                             await getGenes();
                         } catch (error) {
-                            this.$store.commit('pushError', error.response.data);
+                            store.commit('pushError', error.response.data);
                         }
                     }
                 }

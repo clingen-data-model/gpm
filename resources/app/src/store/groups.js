@@ -233,13 +233,6 @@ export const actions = {
             return response;
         })
     },
-
-    async geneListUpdate({ commit }, {uuid, genes}) {
-        return await api.put(`${getApplicationUrl(uuid)}/gene-list`, { genes })
-            .then(response => {
-                commit('addItem', response.data.data)
-            });
-    }
 };
 
 export default {

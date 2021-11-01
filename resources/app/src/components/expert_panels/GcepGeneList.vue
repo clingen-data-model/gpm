@@ -27,6 +27,8 @@ import {useStore} from 'vuex';
 import EditButton from '@/components/buttons/EditIconButton'
 import formFactory from '@/forms/form_factory'
 import is_validation_error from '@/http/is_validation_error'
+import api from '@/http/api'
+
 export default {
     name: 'GcepGeneList',
     components: {
@@ -52,12 +54,25 @@ export default {
                     ? props.group.expertPanel.genes.join(', ')
                     : null
         };
+        const getGenes = async () => {
+            try {
+                const genes = await api.get(`/api/groups/${props.group.uuid}/application/genes`)
+                                .then(response => response.data);
+
+                genesAsText.value = genes.map(g => g.gene_symbol).join(", ");
+            } catch (error) {
+                console.log(error);
+                store.commit('pushError', error.response.data);
+            }
+            
+        }
         const save = async () => {
             try {
                 const genes = genesAsText.value ? genesAsText.value.split(new RegExp(/[, \n]/)) : [];
-                await store.dispatch('groups/geneListUpdate', {uuid: props.group.uuid, genes});
+                await api.post(`/api/groups/${props.group.uuid}/application/genes`, {genes});
                 hideForm();
                 context.emit('saved')
+                getGenes();
             } catch (error) {
                 console.log(error);
                 if (is_validation_error(error)) {
@@ -68,6 +83,7 @@ export default {
 
         onMounted(() => {
             syncGenesAsText();
+            getGenes();
         })
 
         watch(() => props.group.expert_panel.genes, () => {
