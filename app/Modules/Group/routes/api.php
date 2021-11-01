@@ -17,6 +17,7 @@ use App\Modules\Group\Actions\MemberRevokePermission;
 use App\Modules\Group\Actions\ScopeDescriptionUpdate;
 use App\Modules\Group\Actions\MembershipDescriptionUpdate;
 use App\Modules\Group\Http\Controllers\Api\GroupController;
+use App\Modules\Group\Http\Controllers\Api\GeneListController;
 
 // Route::post('/{{group_uuid}}/members', MemberAdd::class);
 
@@ -31,6 +32,8 @@ Route::group([
 
     Route::put('/{uuid}/application/membership-description', MembershipDescriptionUpdate::class);
     Route::put('/{uuid}/application/scope-description', ScopeDescriptionUpdate::class);
+    
+    Route::get('/{uuid}/application/genes', [GeneListController::class, 'index']);
     Route::post('/{uuid}/application/genes', GenesAdd::class);
     Route::put('/{uuid}/application/genes/{gene_id}', GeneUpdate::class);
     Route::delete('/{uuid}/application/genes/{gene_id}', GeneRemove::class);
