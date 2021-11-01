@@ -5,7 +5,7 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Auth;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsObject;
-use App\Modules\Group\Actions\GenesAddToGcep;
+use App\Modules\Group\Actions\GeneListGcepSync;
 use App\Modules\Group\Actions\GenesAddToVcep;
 use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
@@ -16,7 +16,7 @@ class GenesAdd
     use AsController;
     use AsObject;
 
-    public function __construct(private GenesAddToVcep $addGenesToVcep, private GenesAddToGcep $addGenesToGcep)
+    public function __construct(private GenesAddToVcep $addGenesToVcep, private GeneListGcepSync $addGenesToGcep)
     {
     }
 
@@ -49,14 +49,17 @@ class GenesAdd
     public function rules(): array
     {
         $rules = [
-            'genes' => 'required|array|min:1',
-            'genes.*' => 'required|array:hgnc_id,mondo_id',
-            'genes.*.hgnc_id' => 'required|numeric',
+            'genes' => 'required|array'
         ];
 
         $group = Group::findByUuidOrFail(request()->uuid);
         if ($group->isVcep) {
-            $rules['genes.*.mondo_id'] = 'required|regex:/MONDO:\d\d\d\d\d\d\d/i';
+            $rules = [
+                'genes' => 'required|array|min:1',
+                'genes.*' => 'required|array:hgnc_id,mondo_id',
+                'genes.*.hgnc_id' => 'required|numeric',
+                'genes.*.mondo_id' => 'required|regex:/MONDO:\d\d\d\d\d\d\d/i'
+            ];
         }
 
         return $rules;

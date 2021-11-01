@@ -60,51 +60,12 @@ class AddGenesToVcepTest extends TestCase
         $rsp1->assertJsonFragment([
             'genes' => ['The genes field is required.']
         ]);
-
-        $rsp2 = $this->json('POST', $this->url, ['genes'=>[['hgnc_id'=>null, 'mondo_id' => null], ['hgnc_id' => 'bob', 'mondo_id' => '920192']]])
-            ->assertStatus(422)
-            ->assertJsonFragment([
-                    'genes.0.hgnc_id' => ['The genes.0.hgnc_id field is required.']
-            ])
-            ->assertJsonFragment([
-                    'genes.0.mondo_id' => ['The genes.0.mondo_id field is required.']
-            ])
-            ->assertJsonFragment([
-                    'genes.1.hgnc_id' => ['The genes.1.hgnc_id must be a number.']
-            ])
-            ->assertJsonFragment([
-                'genes.1.mondo_id' => ['The genes.1.mondo_id format is invalid.'],
-            ]);
     }
 
     /**
      * @test
      */
-    public function validates_input_for_gceps()
-    {
-        Sanctum::actingAs($this->user);
-
-        $this->expertPanel->update(['expert_panel_type_id' => config('expert_panels.types.gcep.id')]);
-        $this->json('POST', $this->url, ['genes'=>[['hgnc_id'=>null, 'mondo_id' => null], ['hgnc_id' => 'bob', 'mondo_id' => '920192']]])
-            ->assertStatus(422)
-            ->assertJsonFragment([
-                    'genes.0.hgnc_id' => ['The genes.0.hgnc_id field is required.']
-            ])
-            ->assertJsonMissing([
-                    'genes.0.mondo_id' => ['The genes.0.mondo_id field is required.']
-            ])
-            ->assertJsonFragment([
-                    'genes.1.hgnc_id' => ['The genes.1.hgnc_id must be a number.']
-            ])
-            ->assertJsonMissing([
-                'genes.1.mondo_id' => ['The genes.1.mondo_id format is invalid.'],
-            ]);
-    }
-
-    /**
-     * @test
-     */
-    public function validates_group_is_an_expert_panel()
+    public function validates_group_is_an_vcep()
     {
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.wg.id')]);
         Sanctum::actingAs($this->user);
@@ -142,39 +103,6 @@ class AddGenesToVcepTest extends TestCase
             [
                 'hgnc_id' => 789012,
                 'mondo_id' => 'MONDO:8901234',
-                'expert_panel_id' => $this->expertPanel->id
-            ]
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function privileged_user_can_add_new_genes_to_a_gcep()
-    {
-        $this->expertPanel->update(['expert_panel_type_id' => config('expert_panels.types.gcep.id')]);
-
-        Sanctum::actingAs($this->user);
-        $this->json('POST', $this->url, [
-            'genes' => [
-                ['hgnc_id'=>123456],
-                ['hgnc_id'=>789012]
-            ]
-        ])->assertStatus(200);
-
-        $this->assertDatabaseHas(
-            'genes',
-            [
-                'hgnc_id' => 123456,
-                'mondo_id' => null,
-                'expert_panel_id' => $this->expertPanel->id
-            ]
-        );
-        $this->assertDatabaseHas(
-            'genes',
-            [
-                'hgnc_id' => 789012,
-                'mondo_id' => null,
                 'expert_panel_id' => $this->expertPanel->id
             ]
         );
