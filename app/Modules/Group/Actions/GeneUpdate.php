@@ -3,22 +3,29 @@
 namespace App\Modules\Group\Actions;
 
 use App\Modules\Group\Models\Group;
+use App\Actions\Services\HgncLookup;
+use Illuminate\Support\Facades\Auth;
 use Lorisleiva\Actions\ActionRequest;
 use App\Modules\ExpertPanel\Models\Gene;
-use App\Modules\Group\Http\Resources\GroupResource;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 use Lorisleiva\Actions\Concerns\AsObject;
 use Lorisleiva\Actions\Concerns\AsController;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\Access\AuthorizationException;
+use App\Modules\Group\Http\Resources\GroupResource;
 
 class GeneUpdate
 {
     use AsObject;
     use AsController;
 
+    public function __construct(private HgncLookup $hgncLookup)
+    {
+    }
+    
+
     public function handle(Group $group, Gene $gene, array $data): Group
     {
+        $data['gene_symbol'] = $this->hgncLookup->findSymbolById($gene->hgnc_id);
         $gene->update($data);
 
         return $group;
@@ -39,7 +46,7 @@ class GeneUpdate
 
         $group = $this->handle($group, $gene, $request->all());
 
-        $group->load(['genes', 'members', 'members.permissions', 'members.roles', 'members.cois', 'members.person']);
+        $group->load(['expertPanel.genes', 'members', 'members.permissions', 'members.roles', 'members.cois', 'members.person']);
 
         return new GroupResource($group);
     }
