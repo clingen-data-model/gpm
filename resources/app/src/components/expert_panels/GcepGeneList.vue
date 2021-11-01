@@ -17,7 +17,9 @@
         </div>
         <div v-else>
             <p v-if="genesAsText">{{genesAsText}}</p>
-            <div class="well" v-else>No genes have been added to the gene list.</div>
+            <div class="well" v-else>
+                {{ loading ? `Loading...` : `No genes have been added to the gene list.`}}
+            </div>
         </div>
     </div>
 </template>
@@ -48,6 +50,7 @@ export default {
     setup(props, context) {
         const store = useStore();
         const {errors, editing, hideForm, showForm, cancel} = formFactory(props, context)
+        const loading = ref(false);
         const genesAsText = ref(null);
         const syncGenesAsText = () => {
             genesAsText.value = props.group.expert_panel.genes 
@@ -55,6 +58,7 @@ export default {
                     : null
         };
         const getGenes = async () => {
+            loading.value = true;
             try {
                 const genes = await api.get(`/api/groups/${props.group.uuid}/application/genes`)
                                 .then(response => response.data);
@@ -64,6 +68,7 @@ export default {
                 console.log(error);
                 store.commit('pushError', error.response.data);
             }
+            loading.value = false;
             
         }
         const save = async () => {
@@ -92,6 +97,7 @@ export default {
 
         return {
             genesAsText,
+            loading,
             errors,
             editing,
             hideForm,
