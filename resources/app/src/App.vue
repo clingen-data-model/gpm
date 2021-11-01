@@ -32,9 +32,14 @@
       </div>
     </header>
 
-    <div class="my-3">
-      <router-view class="container mx-auto mb-1"/>
-      <div class="container mx-auto" id="debug-info"></div>
+    <div class="my-3 md:flex space-x-4 container mx-auto mb-1">
+      <!-- <div class="w-80 border">
+
+      </div> -->
+      <div class='flex-1'>
+        <router-view />
+        <div class="container mx-auto" id="debug-info"></div>
+      </div>
     </div>
 
     <alert-viewer></alert-viewer>
