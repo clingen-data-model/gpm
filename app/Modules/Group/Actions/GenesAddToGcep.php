@@ -9,7 +9,7 @@ use App\Modules\ExpertPanel\Models\Gene;
 use App\Modules\Group\Events\GenesAdded;
 use Illuminate\Validation\ValidationException;
 
-class AddGenesToGcep
+class GenesAddToGcep
 {
     public function __construct(private HgncLookup $hgncLookup)
     {

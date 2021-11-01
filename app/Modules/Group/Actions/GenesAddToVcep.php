@@ -14,7 +14,7 @@ use Lorisleiva\Actions\Concerns\AsAction;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 
-class AddGenesToVcep
+class GenesAddToVcep
 {
     use AsAction;
     public function __construct(private HgncLookup $hgncLookup)

@@ -5,16 +5,18 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Auth;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsObject;
+use App\Modules\Group\Actions\GenesAddToGcep;
+use App\Modules\Group\Actions\GenesAddToVcep;
 use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 
-class AddGenesToEp
+class GenesAdd
 {
     use AsController;
     use AsObject;
 
-    public function __construct(private AddGenesToVcep $addGenesToVcep, private AddGenesToGcep $addGenesToGcep)
+    public function __construct(private GenesAddToVcep $addGenesToVcep, private GenesAddToGcep $addGenesToGcep)
     {
     }
 
