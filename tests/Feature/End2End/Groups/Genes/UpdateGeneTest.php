@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\End2End\Groups;
+namespace Tests\Feature\End2End\Groups\Genes;
 
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
