@@ -26,13 +26,14 @@ class MemberAdd
     }
     
 
-    public function handle(Group $group, Person $person, ?bool $isContact = false): GroupMember
+    public function handle(Group $group, Person $person, ?array $data = []): GroupMember
     {
-        $groupMember = GroupMember::create([
+        $memberData = array_merge([
             'group_id' => $group->id,
-            'person_id' => $person->id,
-            'is_contact' => $isContact
-        ]);
+            'person_id' => $person->id
+        ], $data);
+
+        $groupMember = GroupMember::create($memberData);
 
         Event::dispatch(new MemberAdded($groupMember));
 

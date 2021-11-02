@@ -40,6 +40,7 @@ Route::group([
     
     Route::post('/{uuid}/invites', MemberInvite::class);
     
+    Route::get('/{group_uuid}/members', [GroupController::class, 'members']);
     Route::post('/{group_uuid}/members', MemberAdd::class);
     Route::delete('/{group_uuid}/members/{member_id}', MemberRemove::class);
     Route::put('/{group_uuid}/members/{member_id}', MemberUpdate::class);

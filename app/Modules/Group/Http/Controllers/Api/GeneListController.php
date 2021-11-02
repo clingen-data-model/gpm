@@ -21,4 +21,5 @@ class GeneListController extends Controller
 
         return $group->expertPanel->genes;
     }
+
 }

@@ -52,6 +52,10 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
         'start_date',
         'end_date',
         'is_contact',
+        'expertise',
+        'notes',
+        'training_level_1',
+        'training_level_2'
     ];
 
     /**
@@ -64,6 +68,8 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
         'group_id' => 'integer',
         'person_id' => 'integer',
         'is_contact' => 'boolean',
+        'training_level_1' => 'boolean',
+        'training_level_2' => 'boolean',
     ];
 
     protected $dates = [

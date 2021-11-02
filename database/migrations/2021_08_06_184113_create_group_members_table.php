@@ -22,6 +22,10 @@ class CreateGroupMembersTable extends Migration
             $table->dateTime('start_date')->useCurrent();
             $table->dateTime('end_date')->nullable();
             $table->boolean('is_contact')->default(0);
+            $table->text('expertise')->nullable();
+            $table->text('notes')->nullable();
+            $table->boolean('training_level_1')->nullable()->default(0);
+            $table->boolean('training_level_2')->nullable()->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

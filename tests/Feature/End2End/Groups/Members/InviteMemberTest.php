@@ -93,6 +93,10 @@ class InviteMemberTest extends TestCase
             'first_name' => 'Test',
             'last_name' => 'Testerson',
             'email' => 'test@test.com',
+            'expertise' => 'test expertise',
+            'notes' => 'test notes',
+            'training_level_1' => true,
+            'training_level_2' => true
         ]);
         $response->assertStatus(201);
 
@@ -126,7 +130,11 @@ class InviteMemberTest extends TestCase
         $this->assertNotEquals($this->user->person->id, $newPerson->id);
         $this->assertDatabaseHas('group_members', [
             'group_id' => $this->group->id,
-            'person_id' => $newPerson->id
+            'person_id' => $newPerson->id,
+            'expertise' => 'test expertise',
+            'notes' => 'test notes',
+            'training_level_1' => 1,
+            'training_level_2' => 1
         ]);
     }
 
