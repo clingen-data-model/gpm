@@ -7,6 +7,7 @@ use App\Modules\Group\Models\Group;
 use App\Http\Controllers\Controller;
 use App\ModelSearchService;
 use App\Modules\Group\Http\Resources\GroupResource;
+use App\Modules\Group\Http\Resources\MemberResource;
 
 class GroupController extends Controller
 {
@@ -14,7 +15,14 @@ class GroupController extends Controller
     {
         $searchService = new ModelSearchService(
             modelClass: Group::class,
-            defaultWith: ['type', 'status', 'expertPanel', 'expertPanel', 'members', 'members.person', 'members.roles'],
+            defaultWith: [
+                'type', 
+                'status', 
+                'expertPanel', 
+                'coordinators', 
+                'coordinators.roles', 
+                'coordinators.person'
+            ],
             sortFunction: function ($query, $field, $dir) {
                 if ($field == 'type') {
                     $query->innerJoin('group_types', 'groups.group_type_id', '=', 'group_types.id');
@@ -38,14 +46,20 @@ class GroupController extends Controller
         $group->load([
             'type',
             'status',
-            'members',
-            'members.person',
-            'members.roles',
-            'members.permissions',
-            'members.cois',
+            // 'members',
+            // 'members.person',
+            // 'members.roles',
+            // 'members.permissions',
+            // 'members.cois',
             'expertPanel',
         ]);
 
         return new GroupResource($group);
+    }
+    public function members(Request $request, $groupUuid)
+    {
+        $group = Group::findByUuidOrFail($groupUuid);
+        $members = $group->members->load('roles', 'permissions', 'cois', 'person', 'person.institution');
+        return MemberResource::collection($members);
     }
 }

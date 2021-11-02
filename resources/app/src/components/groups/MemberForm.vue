@@ -40,27 +40,53 @@
                         Adding existing person, {{newMember.person.name}}, as a group member.
                     </static-alert>
                 </div>
+                
+                <input-row label="Expertise" :errors="errors.expertise">
+                    <textarea rows="5" v-model="newMember.expertise" class="w-full"></textarea>
+                </input-row>
 
-                <div class="border-t mt-4 pt-4">
+                <input-row label="Notes" :errors="errors.notes">
+                    <textarea rows="5" v-model="newMember.notes" class="w-full"></textarea>
+                </input-row>
+
+                <dictionary-row label="">
                     <label>
                         <input type="checkbox" v-model="newMember.is_contact">
                         Receives notifications about group
                     </label>
-                </div>
-                
+                </dictionary-row>
+
                 <div class="border-t mt-4 pt-2">
                     <h3>Group Roles</h3>
                     <div class="flex flex-col h-24 flex-wrap">
-
                         <label v-for="role in roles" :key="role.id">
                             <input type="checkbox" v-model="newMember.roles" :value="role">
                             {{role.name}}
                         </label>
                     </div>
+                    <transition name="fade-down">
+                        <div 
+                            v-if="newMember.hasRole('biocurator')"
+                            class="border-t mt-2 pt-2 pl-2"
+                        >
+                            <h4>Training</h4>
+                            <label class="block" v-for="num in [1, 2]" :key="num">
+                                <input type="checkbox" v-model="newMember[`training_level_${num}`]" :value="1">
+                                {{`Level ${num}`}}
+                            </label>
+                        </div>
+                    </transition>
                 </div>
-
-                <div class="border-t mt-4 pt-2">
-                    <h3>Group Permissions</h3>
+                <collapsible class="border-t mt-4 pt-2">
+                    <template v-slot:title>
+                        <h3 class="flex justify-between w-full items-center">
+                            Group Permissions
+                            <badge 
+                                v-if="newMember.permissions.length > 0"
+                                color="gray"
+                            >{{newMember.permissions.length}}</badge>
+                        </h3>
+                    </template>
                     <div class="flex flex-col h-24 flex-wrap">
                         <div 
                             v-for="permission in permissions" 
@@ -93,7 +119,7 @@
                         </div>
                         <div class="absolute top-0 left-0 w-full h-full bg-pink-500 opacity-0">&nbsp;</div>
                     </div>
-                </div>
+                </collapsible>
 
             </div>
             <transition name="slide-fade">            
@@ -157,6 +183,14 @@ export default {
             return [this.errors.first_name, this.errors.last_name]
                     .flat()
                     .filter(i => i);
+        },
+        hasARole: {
+            get() {
+                return this.newMember.roles.length > 0
+            },
+            set(value) {
+               return; 
+            }
         }
     },
     setup () {
@@ -213,6 +247,7 @@ export default {
         },
         async save () {
             try {
+                console.log({newMember: this.newMember});
                 if (!this.newMember.isPersisted()) {
                     if (!this.newMember.person.isPersisted()) {
                         await this.inviteNewMember(this.group, this.newMember);
@@ -234,14 +269,21 @@ export default {
             }
         },
         async inviteNewMember (group, member) {
+            console.log({member});
             // try {
                 const response = await this.$store.dispatch('groups/memberInvite', {
                     uuid: group.uuid,
-                    firstName: member.person.first_name,
-                    lastName: member.person.last_name,
-                    email: member.person.email,
-                    roleIds: member.roles.map(r => r.id),
-                    isContact: member.is_contact
+                    data: {
+                        firstName: member.person.first_name,
+                        lastName: member.person.last_name,
+                        email: member.person.email,
+                        roleIds: member.roles.map(r => r.id),
+                        isContact: member.is_contact,
+                        expertise: member.expertise,
+                        notes: member.notes,
+                        training_level_1: member.training_level_1,
+                        training_level_2: member.training_level_2,
+                    }
                 })
             
                 if (member.permissions.length > 0) {
@@ -258,12 +300,17 @@ export default {
             // }
         },
         async addPersonAsMember(group, member) {
+            console.log({member});
             // try { 
                 const memberData = await this.$store.dispatch('groups/memberAdd', {
                     uuid: group.uuid,
                     personId: member.person_id,
                     roleIds: member.roles.map(r => r.id),
                     isContact: member.is_contact,
+                    expertise: member.expertise,
+                    notes: member.notes,
+                    training_level_1: member.training_level_1,
+                    training_level_2: member.training_level_2,
                 })
                 if (member.permissions.length > 0) {
                     await this.$store.dispatch('groups/memberGrantPermission', {
@@ -280,18 +327,21 @@ export default {
         },
 
         async updateExistingMember(group, member) {
-            if (this.newMember.is_contact !== this.originalMember.is_contact) {
-                await this.$store.dispatch(
-                    'groups/memberUpdate', 
-                    {
-                        groupUuid: group.uuid, 
-                        memberId: member.id, 
-                        data: {
-                            is_contact: this.newMember.is_contact
-                        }
+            await this.$store.dispatch(
+                'groups/memberUpdate', 
+                {
+                    groupUuid: group.uuid, 
+                    memberId: member.id, 
+                    data: {
+                        is_contact: this.newMember.is_contact,
+                        expertise: this.newMember.expertise,
+                        notes: this.newMember.notes,
+                        training_level_1: this.newMember.training_level_1,
+                        training_level_2: this.newMember.training_level_2,
                     }
-                )
-            }
+                }
+            )
+
             await this.syncRoles(group, member);
             await this.syncPermissions(group, member);
         },

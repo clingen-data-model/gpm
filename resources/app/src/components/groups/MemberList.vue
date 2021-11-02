@@ -1,5 +1,6 @@
 <script>
 import configs from '@/configs.json'
+import api from '@/http/api'
 import { formatDate, yearAgo } from '@/date_utils'
 import sortAndFilter from '@/composables/router_aware_sort_and_filter'
 import ChevDownIcon from '@/components/icons/IconCheveronDown'
@@ -9,6 +10,7 @@ import ExclamationIcon from '@/components/icons/IconExclamation'
 import NotificationIcon from '@/components/icons/IconNotification'
 import MemberPreview from '@/components/groups/MemberPreview'
 import { titleCase } from '@/utils'
+import GroupMember from '@/domain/group_member'
 
 export default {
     name: 'MemberList',
@@ -89,7 +91,8 @@ export default {
 
             ],
             selectedMember: null,
-            hideAlumns: true
+            hideAlumns: true,
+            members: []
         }
     },
     computed: {
@@ -123,6 +126,16 @@ export default {
         },
         selectedMemberName () {
             return this.selectedMember ? this.selectedMember.person.name : null
+        }
+    },
+    watch: {
+        group: {
+            immediate: true,
+            handler: function () {
+                if (this.group.id) {
+                    this.$store.dispatch('groups/getMembers', {group: this.group});
+                }
+            }
         }
     },
     setup() {
@@ -231,6 +244,9 @@ export default {
                 return 'text-red-700';
             }
             return 'text-yellow-500';
+        },
+        async getMembers () {
+            // TODO: extract to groups store module and add members to the group in the store so updates
         }
     }
 }
@@ -313,14 +329,8 @@ export default {
                         ></exclamation-icon>
                     </div>
                 </template>
-                <!-- <template v-slot:cell-training_completed_at="{item, value}">
-                    <div>
-                        <span v-if="value">{{formatDate(value)}}</span>
-                        <span v-if="!item.needs_training" class="text-gray-500">N/A</span>
-                    </div>
-                </template> -->
                 <template v-slot:cell-actions="{item}">
-                    <div class="flex space-x-2">
+                    <div class="flex space-x-2 items-center">
                         <dropdown-menu :hide-cheveron="true" class="relative" v-if="hasAnyMemberPermission()">
                             <template v-slot:label>
                                 <button class="btn btn-xs">&hellip;</button>
@@ -341,7 +351,7 @@ export default {
                                 <div @click="confirmRemoveMember(item)">Remove from group</div>
                             </dropdown-item>
                         </dropdown-menu>
-                        <notification-icon v-if="item.is_contact" :width="12" :height="12" icon-name="Is a group contact"></notification-icon>
+                        <notification-icon v-if="item.is_contact" :width="12" :height="12" icon-name="Is a group contact" @click.stop=""></notification-icon>
                     </div>
                 </template>
 

@@ -24,7 +24,11 @@
                         <tr>
                             <td colspan="4">
                                 <div class="p-2 text-center font-bold">
-                                    {{(loading) ? 'Loading...' : `There are no genes in your gene list.`}}
+                                    <span v-if="loading">Loading...</span>
+                                    <div v-else-if="!editing">
+                                        <p>There are no genes in your gene list.</p>
+                                        <button class="btn blue btn-sm" @click="addNewGene">Add a gene/disease pair</button>
+                                    </div>
                                 </div>
                             </td>
                         </tr>

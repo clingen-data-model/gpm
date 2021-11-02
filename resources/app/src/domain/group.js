@@ -64,6 +64,12 @@ class Group extends Entity {
             : this.status.name
     }
 
+    addMembers (members) {
+        members.forEach(m => {
+            this.addMember(m);
+        })
+    }
+
     addMember(member) {
         const idx = this.members.findIndex(m => m.id == member.id);
         if (idx > -1) {

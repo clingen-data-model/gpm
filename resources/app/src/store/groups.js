@@ -119,13 +119,13 @@ export const actions = {
         
     },
 
-    async memberAdd ({commit}, {uuid, personId, roleIds, isContact}) {
+    async memberAdd ({commit}, {uuid, personId, roleIds, data}) {
         const url = `${baseUrl}/${uuid}/members`
         
         return await api.post(url, {
                 person_id: personId,
                 role_ids: roleIds,
-                is_contact: isContact
+                ...data
             })
             .then(response =>  {
                 commit('addMemberToGroup', response.data.data);
@@ -133,16 +133,25 @@ export const actions = {
             });
     },
 
-    async memberInvite ({ commit }, {uuid, firstName, lastName, email, roleIds, isContact}) {
+    async getMembers ({commit}, {group}) {
+        const members = await api.get(`${baseUrl}/${group.uuid}/members`)
+                         .then(response => response.data.data);
+
+        members.forEach(member => {
+            commit('addMemberToGroup', member);
+        });
+    },
+
+    async memberInvite ({ commit }, {uuid, data}) {
         const url = `${baseUrl}/${uuid}/invites`;
-        const data = {
-            first_name: firstName,
-            last_name: lastName,
-            email: email,
-            role_ids: roleIds || null,
-            is_contact: isContact
+        const memberData = {
+            first_name: data.firstName,
+            last_name: data.lastName,
+            email: data.email,
+            role_ids: data.roleIds || null,
+            ...data
         };
-        return await api.post(url, data)
+        return await api.post(url, memberData)
         .then(response => {
             commit('addMemberToGroup', response.data.data);
             return response.data;

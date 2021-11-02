@@ -147,9 +147,11 @@ describe('group actions', () => {
             actions.memberInvite,
             {
                 uuid: 'abcdefg',
-                first_name: 'bob',
-                last_name: 'belcher',
-                email: 'bob@bobsburgers.com',
+                data: {
+                    first_name: 'bob',
+                    last_name: 'belcher',
+                    email: 'bob@bobsburgers.com',
+                }
             },
             {items: [
                 {...groupData, ...{members: []}}

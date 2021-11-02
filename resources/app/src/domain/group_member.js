@@ -18,7 +18,11 @@ class GroupMember extends Entity {
         v1_contact: false,
         roles: [],
         permissions: [],
-        coi_last_completed: null
+        coi_last_completed: null,
+        expertise: null,
+        notes: null,
+        training_level_1: null,
+        training_level_2: null
     }
 
     constructor(attributes = {}) {

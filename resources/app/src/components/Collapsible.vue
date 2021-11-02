@@ -1,13 +1,13 @@
 <template>
     <div class="collapsible-container">
         <div class="collapsible-header" @click="expanded = !expanded">
-            <slot name="title">
-                <div class="flex">
-                    <right-cheveron v-if="!expanded" class="-ml-1"></right-cheveron>
-                    <down-cheveron v-if="expanded" class="-ml-1"></down-cheveron>
+            <div class="flex items-center">
+                <right-cheveron v-if="!expanded" class="-ml-1"></right-cheveron>
+                <down-cheveron v-if="expanded" class="-ml-1"></down-cheveron>
+                <slot name="title">
                     <strong>{{title}}</strong>
-                </div>
-            </slot>
+                </slot>
+            </div>
         </div>
         <transition name="slide-fade-down">
             <div v-show="opened">
@@ -54,7 +54,7 @@ export default {
         },
         expanded: {
             get () {
-                return this.valueSet ? this.value : this.opened;
+                return this.valueSet ? this.modelValue : this.opened;
             },
             set (value) {
                 this.opened = value;
