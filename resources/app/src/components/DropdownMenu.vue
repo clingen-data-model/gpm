@@ -94,12 +94,13 @@ export default {
             return this.menuItems.map(i => i.render());
         },
         positionMenu () {
-            // const dropdownWidth = this.$refs.dropdownMenu.offsetWidth; 
+            const scrollLeft = window.pageXOffset || this.$refs.menuButton.scrollLeft;
+            const scrollTop = window.pageYOffset || this.$refs.menuButton.scrollTop;
             const labelWidth = this.$refs.menuButton.offsetWidth;
             const labelHeight = this.$refs.menuButton.offsetHeight;
             const rect = this.$el.getBoundingClientRect();
-            this.menuX = rect.left - parseFloat(getComputedStyle(document.documentElement).fontSize)*12 + labelWidth;
-            this.menuY = rect.top + labelHeight - 14;
+            this.menuX = rect.left + scrollLeft - parseFloat(getComputedStyle(document.documentElement).fontSize)*12 + labelWidth;
+            this.menuY = rect.top + scrollTop + labelHeight - 14;
         }
     },
     render () {
