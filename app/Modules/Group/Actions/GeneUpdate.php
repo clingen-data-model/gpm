@@ -26,8 +26,8 @@ class GeneUpdate
 
     public function handle(Group $group, Gene $gene, array $data): Group
     {
-        $data['gene_symbol'] = $this->hgncLookup->findSymbolById($gene->hgnc_id);
-        $data['disease_name'] = $this->mondoLookup->findNameByMondoId($gene->mondo_id);
+        $data['gene_symbol'] = $this->hgncLookup->findSymbolById($data['hgnc_id']);
+        $data['disease_name'] = $this->mondoLookup->findNameByMondoId($data['mondo_id']);
         $gene->update($data);
 
         return $group;

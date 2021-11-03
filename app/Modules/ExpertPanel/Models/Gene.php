@@ -2,9 +2,12 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\GeneTracker\Gene as GtGene;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\GeneTracker\Disease as GtDisease;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -56,5 +59,25 @@ class Gene extends Model
     public function expertPanel()
     {
         return $this->belongsTo(\App\Models\ExpertPanel::class);
+    }
+
+    /**
+     * Get the gene that owns the Gene
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function gene(): BelongsTo
+    {
+        return $this->belongsTo(GtGene::class, 'hgnc_id', 'hgnc_id');
+    }
+
+    /**
+     * Get the disease that owns the Gene
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function disease(): BelongsTo
+    {
+        return $this->belongsTo(GtDisease::class, 'mondo_id', 'mondo_id');
     }
 }

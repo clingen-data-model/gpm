@@ -19,7 +19,7 @@ class GeneListController extends Controller
             throw new ModelNotFoundException('Only expert panels have gene lists.');
         }
 
-        return $group->expertPanel->genes;
+        return $group->expertPanel->genes()->with('gene', 'disease')->get();
     }
 
 }

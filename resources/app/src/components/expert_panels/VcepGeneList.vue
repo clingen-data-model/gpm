@@ -69,28 +69,13 @@
                                 <template v-else>
                                     <td>
                                         <input-row label="" :errors="errors.hgnc_id" :vertical="true">
-                                            <gene-search-select v-model="gene.hgnc_id"></gene-search-select>
+                                            <gene-search-select v-model="gene.gene"></gene-search-select>
                                         </input-row>
-                                        <!-- <input 
-                                            type="text"
-                                            v-model="gene.hgnc_id" 
-                                            placeholder="gene symbol"
-                                            class="w-full"
-                                        >
-                                        <input-error :errors="errors.hgnc_id || []"></input-error> -->
                                     </td>
                                     <td colspan="2">
                                         <input-row label="" :errors="errors.mondo_id" :vertical="true">
-                                            <disease-search-select v-model="gene.mondo_id"></disease-search-select>
+                                            <disease-search-select v-model="gene.disease"></disease-search-select>
                                         </input-row>
-                                        
-                                        <!-- <input 
-                                            type="text" 
-                                            v-model="gene.mondo_id" 
-                                            placeholder="Disease name or MonDO ID"
-                                            class="w-full"
-                                        >
-                                        <input-error :errors="errors.mondo_id || []"></input-error> -->
                                     </td>
                                     <td>
                                         <button class="btn btn-xs" @click="updateCancel(gene)">Cancel</button>
@@ -287,6 +272,8 @@ export default {
 
         const updateGene = async (gene) => {
             try {
+                gene.hgnc_id = gene.gene.hgnc_id;
+                gene.mondo_id = gene.disease.mondo_id;
                 await api.put(`/api/groups/${props.group.uuid}/application/genes/${gene.id}`, gene);
                 await getGenes();
                 delete(gene.edit);
