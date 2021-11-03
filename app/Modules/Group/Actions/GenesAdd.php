@@ -60,7 +60,6 @@ class GenesAdd
         }
         if ($group->isGcep) {
             return [
-                'genes' => 'required|array',
                 'genes.*' => 'exists:'.$gtConn.'.genes,gene_symbol'
             ];
         }

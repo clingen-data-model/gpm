@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h4 class="flex justify-between mb-4">
+        <h4 class="flex justify-between mb-2">
             Gene List
             <edit-button 
                 v-if="hasAnyPermission(['groups-manage'], ['edit-info', group]) && !editing"
@@ -10,14 +10,16 @@
         <div v-if="editing">
             <input-row 
                 :vertical="true"
-                label="List the gene symbols for the genes the Expert Panel plans to curate.  Separate genes by commas, spaces, or new lines.">
+                label="List the gene symbols for the genes the Expert Panel plans to curate.  Separate genes by commas, spaces, or new lines."
+                :errors="errors.genes"
+            >
                 <textarea id="" class="w-full" rows="5" v-model="genesAsText" placeholder="ABC, DEF1, BEAN"></textarea>
             </input-row>
             <button-row @submit="save" @cancel="cancel" submit-text="Save"></button-row>
         </div>
         <div v-else>
-            <p v-if="genesAsText">{{genesAsText}}</p>
-            <div class="well" v-else>
+            <p v-if="genesAsText" style="text-indent: 1rem;">{{genesAsText}}</p>
+            <div class="well cursor-pointer" v-else @click="editing = true">
                 {{ loading ? `Loading...` : `No genes have been added to the gene list.`}}
             </div>
         </div>
@@ -72,16 +74,37 @@ export default {
             
         }
         const save = async () => {
+            const genes = genesAsText.value 
+                            ? genesAsText.value
+                                .split(new RegExp(/[, \n]/))
+                                .filter(i => i !== '')
+                            : [];
             try {
-                const genes = genesAsText.value ? genesAsText.value.split(new RegExp(/[, \n]/)) : [];
                 await api.post(`/api/groups/${props.group.uuid}/application/genes`, {genes});
                 hideForm();
                 context.emit('saved')
                 getGenes();
             } catch (error) {
-                console.log(error);
                 if (is_validation_error(error)) {
-                    errors.value = error.response.data.errors
+                    const messages = error.response.data.errors
+                    if (messages.group) {
+                        messages.group
+                            .forEach(m => {
+                                store.pushError(m)
+                            })
+                    }
+                    const geneMessages = Object.keys(messages).map(key => {
+                        const [g, geneIdx] = key.split('.')
+                        if (g == 'genes') {
+                            if (geneIdx) {
+                                return `Gene #${(parseInt(geneIdx)+1)}, "${genes[geneIdx]}" wasn't found in our records.`
+                            }
+                            return messages[key];
+                        }
+                    });
+                    errors.value = {
+                        genes: geneMessages
+                    }
                 }
             }
         };
