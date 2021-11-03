@@ -67,4 +67,17 @@ class GeneUpdate
 
         return $rules;
     }
+
+    public function getValidationMessages(): array
+    {
+        return [
+            'hgnc_id.required' => 'The gene is required.',
+            'hgnc_id.numeric' => 'The selected gene is invalid.',
+            'hgnc_id.exists' => 'The selected gene is invalid.',
+            'mondo_id.required' => 'The disease is required.',
+            'mondo_id.regex' => 'The selected disease is invalid.',
+            'mondo_id.exists' => 'The selected disease is invalid.',
+        ];
+    }
+    
 }
