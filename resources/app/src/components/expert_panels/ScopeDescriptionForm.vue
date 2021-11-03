@@ -18,7 +18,7 @@
                         v-if="scopeDescription" 
                         :markdown="scopeDescription">
                     </markdown-block>
-                    <p class="well" v-else>
+                    <p class="well cursor-pointer" v-else @click="editing = true">
                         A description of expertise has not yet been provided.
                     </p>
                 </div>
