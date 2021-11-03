@@ -7,9 +7,9 @@
             <table class="border-none" v-if="genes">
                 <thead>
                     <tr>
-                        <th style="width: 10rem">HGNC Symbol</th>
-                        <th>Disease</th>
-                        <th style="width: 9rem">Date Approved</th>
+                        <th style="min-width: 10rem">HGNC Symbol</th>
+                        <th style="min-width: 15rem">Disease</th>
+                        <th style="max-width: 9rem">Date Approved</th>
                         <th
                             v-if="hasAnyPermission([
                                 'ep-applications-manage', 
@@ -38,7 +38,7 @@
                             <tr v-for="gene in orderedGenes" :key="gene.id">                            
                                 <template v-if="!gene.edit">
                                     <td>{{gene.gene_symbol}}</td>
-                                    <td>{{gene.mondo_id}}</td>
+                                    <td>{{gene.disease_name}}</td>
                                     <td>{{formatDate(gene.date_approved)}}</td>
                                     <td
                                         v-if="hasAnyPermission([
@@ -69,7 +69,7 @@
                                 <template v-else>
                                     <td>
                                         <input 
-                                            type="text" 
+                                            type="text"
                                             v-model="gene.hgnc_id" 
                                             placeholder="gene symbol"
                                             class="w-full"
@@ -110,21 +110,63 @@
                     <transition-group name="slide-fade-down">                
                         <tr v-for="(newGene, idx) in newGenes" :key="idx">
                             <td>
-                                <input 
+                                <!-- <input 
                                     type="text" 
                                     v-model="newGene.hgnc_id" 
                                     placeholder="gene symbol"
                                     class="w-full"
+                                > -->
+                                <search-select 
+                                    v-model="newGene.gene" 
+                                    :search-function="searchHgnc" 
+                                    style="z-index: 2" 
+                                    placeholder="HGNC ID or Gene Symbol"
                                 >
+                                    <template v-slot:selection-label="{selection}">
+                                        <div v-if="typeof selection == 'object'">
+                                            {{selection.gene_symbol}}
+                                        </div>
+                                        <div v-else>{{selection}}</div>
+                                    </template>
+                                    <template v-slot:option="{option}">
+                                        <div v-if="typeof option == 'object'">
+                                            {{option.gene_symbol}}
+                                        </div>
+                                        <div v-else>
+                                            {{option}}
+                                        </div>
+                                    </template>
+                                </search-select>
                                 <input-error :errors="errors[`genes.${idx}.hgnc_id`]"></input-error>
                             </td>
                             <td colspan="4">
-                                <input 
+                                <search-select 
+                                    v-model="newGene.disease" 
+                                    :search-function="searchMondo"
+                                    style="z-index: 2"
+                                    placeholder="MonDO ID or name"
+                                >
+                                    <template v-slot:selection-label="{selection}">
+                                        <div v-if="typeof selection == 'object'">
+                                            {{selection.mondo_id}} - {{selection.name}}
+                                        </div>
+                                        <div v-else>{{selection}}</div>
+                                    </template>
+                                    <template v-slot:option="{option}">
+                                        <div v-if="typeof option == 'object'">
+                                            {{option.mondo_id}} - {{option.name}}
+                                        </div>
+                                        <div v-else>
+                                            {{option}}
+                                        </div>
+                                    </template>
+                                </search-select>
+                                <!-- <input 
                                     type="text" 
                                     v-model="newGene.mondo_id" 
                                     placeholder="Disease name or MonDO ID"
                                     class="w-full"
-                                >
+                                > -->
                                 <input-error :errors="errors[`genes.${idx}.mondo_id`]"></input-error>
                             </td>
                         </tr>
@@ -153,14 +195,31 @@ import {ref, computed, onMounted} from 'vue';
 import {useStore} from 'vuex';
 import EditButton from '@/components/buttons/EditIconButton'
 import InputError from '@/components/forms/InputErrors'
+import SearchSelect from '@/components/forms/SearchSelect'
 import is_validation_error from '@/http/is_validation_error'
 import {isEqual} from 'lodash'
+
+const searchMondo = async (searchText) => {
+    return await api.get('/api/diseases/search?query_string='+searchText)
+        .then(response => {
+            return response.data;
+        });
+}
+
+const searchHgnc = async (searchText) => {
+    return await api.get('/api/genes/search?query_string='+searchText)
+        .then(response => {
+            return response.data;
+        });
+}
+
 
 export default {
     name: 'VcepGeneList',
     components: {
         EditButton,
-        InputError
+        InputError,
+        SearchSelect
     },
     props: {
         group: {
@@ -178,7 +237,7 @@ export default {
         const newGenes = ref([]);
         const removedGenes = ref([]);
         const addNewGene = () => {
-            newGenes.value.push({hgnc_id: null, mondo_id: null});
+            newGenes.value.push({gene: null, disease: null});
         }
 
         const loading = ref(false);
@@ -264,8 +323,11 @@ export default {
         const save = async () => {
             try {
                 if (newGenes.value.length > 0) {
-                    const filteredGenes = newGenes.value.filter(ng => !isEqual(ng, {hgnc_id: null, mondo_id: null}));
-                    await api.post(`/api/groups/${props.group.uuid}/application/genes`, {genes: filteredGenes});
+                    const filteredGenes = newGenes.value
+                                            .filter(ng => !isEqual(ng, {gene: null, disease: null}))
+                                            .map(scope => ({ hgnc_id: scope.gene.hgnc_id, mondo_id: scope.disease.mondo_id}));
+
+                await api.post(`/api/groups/${props.group.uuid}/application/genes`, {genes: filteredGenes});
                     await getGenes();
                 }
                 clearNewGenes();
@@ -316,6 +378,8 @@ export default {
             edit, 
             remove,
             cancelPendingRemove,
+            searchMondo,
+            searchHgnc
         }        
     }
 }

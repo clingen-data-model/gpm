@@ -6,14 +6,7 @@
     }
 
     .search-select-container {
-        /* @apply border leading-6 px-2 flex flex-wrap py-1; */
-        border: 1px solid;
-        line-height: 1.5rem;
-        padding: .5rem;
-        display: flex;
-        flex-wrap: wrap;
-        padding: .25rem .5rem;
-        border-radius: 10px;
+        @apply border border-gray-300 leading-6 px-2 flex items-center flex-wrap py-1 rounded bg-white;
     }
 
     .search-select-container > input {
@@ -21,12 +14,7 @@
     }
     
     .search-select-container > .selection {
-        /* @apply bg-gray-500 text-white flex mr-1 mb-1 rounded-sm;*/
-        margin: .15rem;
-        border-radius: 5px;
-        display: flex;
-        background: #666;
-        color: white;
+        @apply bg-gray-500 text-white flex mr-1 rounded-sm text-sm;
     }
 
     .search-select-container > .selection.disabled {
@@ -95,8 +83,8 @@
         <div class="search-select-container border">
             <div class="selection" :class="{disabled: disabled}" v-if="hasSelection">
                 <label>
-                    <slot name="selection-label" :selection="value">
-                        {{value}}
+                    <slot name="selection-label" :selection="modelValue">
+                        {{modelValue}}
                     </slot>
                 </label>  
                 <button @click="removeSelection()" :disabled="disabled">x</button>
@@ -164,7 +152,7 @@ export default {
             type: Function,
             default: null
         },
-        value: {
+        modelValue: {
             required: true
         },
         options: {
@@ -226,7 +214,7 @@ export default {
             return this.filteredOptions[this.cursorPosition];
         },
         hasSelection() {
-            return Boolean(this.value)
+            return Boolean(this.modelValue)
         },
     },
     watch: {
@@ -248,12 +236,12 @@ export default {
             })
         },
         removeSelection(    ){
-            this.$emit('input', null);
+            this.$emit('update:modelValue', null);
             this.$refs.input.focus();
         },
         setSelection(selection) {
             console.info('setSelection', selection);
-            this.$emit('input', selection);
+            this.$emit('update:modelValue', selection);
             console.log('emitted')
             this.clearInput();
             console.log('clearedInput')
