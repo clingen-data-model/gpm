@@ -3,9 +3,10 @@
 namespace App\Modules\Group\Actions;
 
 use App\Modules\Group\Models\Group;
-use App\Actions\Services\HgncLookup;
 use Illuminate\Support\Facades\Auth;
+use App\Services\HgncLookupInterface;
 use Lorisleiva\Actions\ActionRequest;
+use App\Services\MondoLookupInterface;
 use App\Modules\ExpertPanel\Models\Gene;
 use Lorisleiva\Actions\Concerns\AsObject;
 use Lorisleiva\Actions\Concerns\AsController;
@@ -18,7 +19,7 @@ class GeneUpdate
     use AsObject;
     use AsController;
 
-    public function __construct(private HgncLookup $hgncLookup)
+    public function __construct(private HgncLookupInterface $hgncLookup, private MondoLookupInterface $mondoLookup)
     {
     }
     
@@ -26,6 +27,7 @@ class GeneUpdate
     public function handle(Group $group, Gene $gene, array $data): Group
     {
         $data['gene_symbol'] = $this->hgncLookup->findSymbolById($gene->hgnc_id);
+        $data['disease_name'] = $this->mondoLookup->findNameByMondoId($gene->mondo_id);
         $gene->update($data);
 
         return $group;
@@ -53,13 +55,14 @@ class GeneUpdate
 
     public function rules(): array
     {
+        $connectionName = config('database.gt_db_connection');
         $rules = [
-            'hgnc_id' => 'required|numeric',
+            'hgnc_id' => 'required|numeric|exists:'.$connectionName.'.genes,hgnc_id',
         ];
 
         $group = Group::findByUuidOrFail(request()->uuid);
         if ($group->isVcep) {
-            $rules['mondo_id'] = 'required|regex:/MONDO:\d\d\d\d\d\d\d/i';
+            $rules['mondo_id'] = 'required|regex:/MONDO:\d\d\d\d\d\d\d/i|exists:'.$connectionName.'.diseases,mondo_id';
         }
 
         return $rules;

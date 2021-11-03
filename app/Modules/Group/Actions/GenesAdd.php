@@ -48,20 +48,36 @@ class GenesAdd
 
     public function rules(): array
     {
-        $rules = [
-            'genes' => 'required|array'
-        ];
-
+        $gtConn = config('database.gt_db_connection');
         $group = Group::findByUuidOrFail(request()->uuid);
         if ($group->isVcep) {
-            $rules = [
+            return [
                 'genes' => 'required|array|min:1',
                 'genes.*' => 'required|array:hgnc_id,mondo_id',
-                'genes.*.hgnc_id' => 'required|numeric',
-                'genes.*.mondo_id' => 'required|regex:/MONDO:\d\d\d\d\d\d\d/i'
+                'genes.*.hgnc_id' => 'required|numeric|exists:'.$gtConn.'.genes,hgnc_id',
+                'genes.*.mondo_id' => 'required|regex:/MONDO:\d\d\d\d\d\d\d/i|exists:'.$gtConn.'.diseases,mondo_id'
+            ];
+        }
+        if ($group->isGcep) {
+            return [
+                'genes' => 'required|array',
+                'genes.*' => 'exists:'.$gtConn.'.genes,gene_symbol'
             ];
         }
 
-        return $rules;
+        return [];
     }
+
+    public function getValidationMessages(): array
+    {
+        $gtConn = config('database.gt_db_connection');
+        $group = Group::findByUuidOrFail(request()->uuid);
+        return [
+            'required' => 'This field is required.',
+            'exists' => 'Your selection is invalid.',
+            'numeric' => 'Your selection is invalid.',
+            'regex' => 'Your selection selection should have a mondo_id with the format "MONDO:#######".'
+        ];
+    }
+    
 }

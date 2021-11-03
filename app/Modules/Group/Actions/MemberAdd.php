@@ -46,7 +46,7 @@ class MemberAdd
         $person = Person::findOrFail($request->person_id);
         $roles = config('permission.models.role')::find($request->role_ids);
 
-        $member = $this->handle(group: $group, person: $person, isContact: $request->is_contact);
+        $member = $this->handle(group: $group, person: $person, data: ['is_contact' => $request->is_contact]);
 
         if ($roles->count() > 0) {
             $member = $this->assignRoleAction->handle($member, $roles);

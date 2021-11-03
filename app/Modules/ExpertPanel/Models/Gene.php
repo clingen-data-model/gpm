@@ -31,6 +31,7 @@ class Gene extends Model
         'expert_panel_id',
         'gene_symbol',
         'mondo_id',
+        'disease_name',
         'date_approved',
     ];
 

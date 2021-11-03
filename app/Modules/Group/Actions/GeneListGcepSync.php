@@ -3,22 +3,24 @@ namespace App\Modules\Group\Actions;
 
 use InvalidArgumentException;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use App\Modules\Group\Models\Group;
-use App\Actions\Services\HgncLookup;
+use App\Services\HgncLookupInterface;
 use App\Modules\ExpertPanel\Models\Gene;
-use App\Modules\Group\Events\GeneRemoved;
 use App\Modules\Group\Events\GenesAdded;
+use App\Modules\Group\Events\GeneRemoved;
 use Illuminate\Validation\ValidationException;
 
 class GeneListGcepSync
 {
-    public function __construct(private HgncLookup $hgncLookup)
+    public function __construct(private HgncLookupInterface $hgncLookup)
     {
     }
 
     public function handle(Group $group, $genes): Group
     {
         $genes = collect($genes)->filter();
+
         if (!$group->isGcep) {
             throw new InvalidArgumentException('Expected group '.$group->name.' ('.$group->id.') to be a GCEP.  group is a '.$group->fullType->name);
         }
@@ -57,4 +59,5 @@ class GeneListGcepSync
             event(new GenesAdded($group, $saveData->toArray()));
         }
     }
+
 }

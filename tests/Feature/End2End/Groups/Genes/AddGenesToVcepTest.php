@@ -5,9 +5,12 @@ namespace Tests\Feature\End2End\Groups\Genes;
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
+use App\Services\HgncLookupInterface;
+use App\Services\MondoLookupInterface;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Traits\SeedsHgncGenesAndDiseases;
 
 /**
  * @group groups
@@ -18,17 +21,41 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class AddGenesToVcepTest extends TestCase
 {
     use RefreshDatabase;
+    use SeedsHgncGenesAndDiseases;
 
     public function setup():void
     {
         parent::setup();
         $this->seed();
+        $this->seedGenes();
+        $this->seedDiseases();
 
         $this->user = User::factory()->create();
         $this->user->givePermissionTo('ep-applications-manage');
 
         $this->expertPanel = ExpertPanel::factory()->create(['expert_panel_type_id' => config('expert_panels.types.vcep.id')]);
         $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/application/genes';
+        
+        app()->bind(HgncLookupInterface::class, function ($app) {
+            return new class implements HgncLookupInterface {
+                public function findSymbolById($hgncId): string{
+                    return 'ABC1';
+                }
+                public function findHgncIdBySymbol($geneSymbol): int {
+                    return 12345;
+                }
+            };
+        });
+
+        app()->bind(MondoLookupInterface::class, function ($app) {
+            return new class implements MondoLookupInterface{
+                public function findNameByMondoId($hgncId): string {
+                    return 'gladiola syndrome';
+                }
+            };
+        });
+
+
     }
 
     /**
@@ -41,8 +68,8 @@ class AddGenesToVcepTest extends TestCase
 
         $this->json('POST', $this->url, [
             'genes' => [[
-                'hgnc_id' => 1234567,
-                'mondo_id' => 'MONDO:1234567',
+                'hgnc_id' => 12345,
+                'mondo_id' => 'MONDO:9876543',
             ]]
         ])
         ->assertStatus(403);
@@ -58,7 +85,7 @@ class AddGenesToVcepTest extends TestCase
         $rsp1 = $this->json('POST', $this->url, []);
         $rsp1->assertStatus(422);
         $rsp1->assertJsonFragment([
-            'genes' => ['The genes field is required.']
+            'genes' => ['This field is required.']
         ]);
     }
 
@@ -70,7 +97,7 @@ class AddGenesToVcepTest extends TestCase
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.wg.id')]);
         Sanctum::actingAs($this->user);
 
-        $this->json('POST', $this->url, ['genes' => [['hgnc_id'=>1, 'mondo_id' => 'MONDO:1234567']]])
+        $this->json('POST', $this->url, ['genes' => [['hgnc_id'=>12345, 'mondo_id' => 'MONDO:9876543']]])
             ->assertStatus(422)
             ->assertJsonFragment([
                 'group' => ['Genes can only be added to an Expert Panel.'],
@@ -82,10 +109,12 @@ class AddGenesToVcepTest extends TestCase
      */
     public function privileged_user_can_add_new_genes_to_a_vcep()
     {
+        $this->seedGenes(['hgnc_id' => 789012, 'gene_symbol' => 'ABC12']);
+        $this->seedDiseases(['mondo_id' => 'MONDO:8901234', 'name' => 'fartsalot']);
         Sanctum::actingAs($this->user);
         $this->json('POST', $this->url, [
             'genes' => [
-                ['hgnc_id'=>123456, 'mondo_id' => 'MONDO:1234567'],
+                ['hgnc_id'=>12345, 'mondo_id' => 'MONDO:9876543'],
                 ['hgnc_id'=>789012, 'mondo_id' => 'MONDO:8901234']
             ]
         ])->assertStatus(200);
@@ -93,8 +122,10 @@ class AddGenesToVcepTest extends TestCase
         $this->assertDatabaseHas(
             'genes',
             [
-                'hgnc_id' => 123456,
-                'mondo_id' => 'MONDO:1234567',
+                'hgnc_id' => 12345,
+                'gene_symbol' => 'ABC1',
+                'mondo_id' => 'MONDO:9876543',
+                'disease_name' => 'gladiola syndrome',
                 'expert_panel_id' => $this->expertPanel->id
             ]
         );
@@ -113,8 +144,11 @@ class AddGenesToVcepTest extends TestCase
      */
     public function activity_logged()
     {
+        $this->seedGenes(['hgnc_id' => 789012, 'gene_symbol' => 'ABC12']);
+        $this->seedDiseases(['mondo_id' => 'MONDO:8901234', 'name' => 'fartsalot']);
+
         $genesData = [
-            ['hgnc_id'=>123456, 'mondo_id' => 'MONDO:1234567'],
+            ['hgnc_id'=>12345, 'mondo_id' => 'MONDO:9876543'],
             ['hgnc_id'=>789012, 'mondo_id' => 'MONDO:8901234']
         ];
 

@@ -5,6 +5,7 @@ namespace Tests\Feature\End2End\Groups\Genes;
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
+use Tests\Traits\SeedsHgncGenesAndDiseases;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -12,19 +13,22 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class UpdateGeneTest extends TestCase
 {
     use RefreshDatabase;
+    use SeedsHgncGenesAndDiseases;
 
     public function setup():void
     {
         parent::setup();
         $this->seed();
+        $this->seedGenes();
+        $this->seedDiseases();
 
         $this->user = User::factory()->create();
         $this->user->givePermissionTo('ep-applications-manage');
 
         $this->expertPanel = ExpertPanel::factory()->create(['expert_panel_type_id' => config('expert_panels.types.vcep.id')]);
         $this->gene1 = $this->expertPanel->genes()->create([
-            'hgnc_id' => 123345,
-            'mondo_id' => 'MONDO:1234567',
+            'hgnc_id' => 12345,
+            'mondo_id' => 'MONDO:9876543',
             'gene_symbol' => uniqid()
         ]);
         $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/application/genes/'.$this->gene1->id;
@@ -39,11 +43,11 @@ class UpdateGeneTest extends TestCase
         $this->user->revokePermissionTo('ep-applications-manage');
 
         // Sanctum::actingAs($this->user);
-        $this->json('PUT', $this->url, ['hgnc_id' => 109876, 'mondo_id' => 'MONDO:1234567'])
+        $this->json('PUT', $this->url, ['hgnc_id' => 12345, 'mondo_id' => 'MONDO:9876543'])
             ->assertStatus(403);
 
         $this->assertDatabaseHas('genes', [
-            'hgnc_id' => 123345,
+            'hgnc_id' => 12345,
             'expert_panel_id' => $this->expertPanel->id,
         ]);
     }
@@ -55,14 +59,14 @@ class UpdateGeneTest extends TestCase
     {
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.wg.id')]);
 
-        $this->json('PUT', $this->url, ['hgnc_id' => 109876])
+        $this->json('PUT', $this->url, ['hgnc_id' => 12345])
             ->assertStatus(422)
             ->assertJsonFragment([
                 'group' => ['Only expert panels have a gene list.  You can not update a gene on a '.$this->expertPanel->group->type->full_name]
             ]);
 
         $this->assertDatabaseHas('genes', [
-            'hgnc_id' => 123345,
+            'hgnc_id' => 12345,
             'expert_panel_id' => $this->expertPanel->id,
         ]);
     }
@@ -92,6 +96,15 @@ class UpdateGeneTest extends TestCase
             ])
             ->assertJsonFragment([
                 'mondo_id' => ['The mondo id format is invalid.'],
+            ]);
+
+        $rsp3 = $this->json('PUT', $this->url, ['hgnc_id' => 91828, 'mondo_id' => 'MONDO:3383710'])
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                'hgnc_id' => ['The selected hgnc id is invalid.']
+            ])
+            ->assertJsonFragment([
+                'mondo_id' => ['The selected mondo id is invalid.']
             ]);
     }
 
@@ -126,12 +139,13 @@ class UpdateGeneTest extends TestCase
      */
     public function privileged_user_can_update_gene()
     {
-        $this->json('PUT', $this->url, ['hgnc_id' => 109876, 'mondo_id' => 'MONDO:9876543'])
+        $this->seedGenes(['hgnc_id'=>67890, 'gene_symbol' => 'BRD1']);
+        $this->json('PUT', $this->url, ['hgnc_id' => 67890, 'mondo_id' => 'MONDO:9876543'])
             ->assertStatus(200);
 
         $this->assertDatabaseHas('genes', [
             'expert_panel_id' => $this->expertPanel->id,
-            'hgnc_id' => 109876,
+            'hgnc_id' => 67890,
             'mondo_id' => 'MONDO:9876543'
         ]);
     }

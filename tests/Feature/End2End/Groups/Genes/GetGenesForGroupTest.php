@@ -9,6 +9,7 @@ use App\Modules\Group\Actions\GenesAdd;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
+use Tests\Traits\SeedsHgncGenesAndDiseases;
 
 /**
  * @group applications
@@ -19,17 +20,27 @@ use Laravel\Sanctum\Sanctum;
 class GetGenesForGroupTest extends TestCase
 {
     use RefreshDatabase;
+    use SeedsHgncGenesAndDiseases;
 
     public function setup():void
     {
         parent::setup();
         $this->seed();
+        $this->seedGenes([
+            ['hgnc_id' => 12345, 'gene_symbol' => 'ABC1'], 
+            ['hgnc_id' => 987654, 'gene_symbol' => 'DEF1']
+        ]);
+        $this->seedDiseases([
+            ['mondo_id' => 'MONDO:1234567', 'name' => 'beans'], 
+            ['mondo_id' => 'MONDO:9876543', 'name' => 'monkeys']
+        ]);
+
         $this->user = User::factory()->create();
         $this->expertPanel = ExpertPanel::factory()->vcep()->create();
         $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/application/genes';
         GenesAdd::run($this->expertPanel->group, [
-            ['hgnc_id' => '123456', 'mondo_id' => 'MONDO:1234567'],
-            ['hgnc_id' => '987654', 'mondo_id' => 'MONDO:9876543'],
+            ['hgnc_id' => 12345, 'mondo_id' => 'MONDO:1234567'],
+            ['hgnc_id' => 987654, 'mondo_id' => 'MONDO:9876543'],
         ]);
         Sanctum::actingAs($this->user);
     }
@@ -54,7 +65,7 @@ class GetGenesForGroupTest extends TestCase
         $response->assertStatus(200);
 
         $this->assertEquals(2, $response->original->count());
-        $response->assertJsonFragment(['hgnc_id' => 123456]);
+        $response->assertJsonFragment(['hgnc_id' => 12345]);
         $response->assertJsonFragment(['mondo_id' => 'MONDO:1234567']);
         $response->assertJsonFragment(['hgnc_id' => 987654, 'mondo_id' => 'MONDO:9876543']);
     }

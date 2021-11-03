@@ -19,9 +19,13 @@ class CreateGenesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('hgnc_id');
             // $table->foreignId('hgnc_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate()->primary();
-            $table->foreignId('expert_panel_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('expert_panel_id')
+                ->constrained()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->string('gene_symbol');
             $table->string('mondo_id', 14)->nullable();
+            $table->string('disease_name')->nullable();
             $table->dateTime('date_approved')->nullable();
             $table->timestamps();
             $table->softDeletes();

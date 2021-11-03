@@ -33,12 +33,21 @@ return [
     |
     */
 
+    'gt_db_connection' => env('GT_DB_CONNECTION', 'genetracker'),
     'connections' => [
 
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DATABASE_URL'),
-            'database' => env('DB_DATABASE', database_path('database.sqlite')),
+            'database' => env('DB_DATABASE', database_path('epam.sqlite')),
+            'prefix' => '',
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+        ],
+
+        'gt_sqlite' => [
+            'driver' => 'sqlite',
+            'url' => env('GT_DATABASE_URL'),
+            'database' => env('GT_DB_DATABASE', database_path('gt.sqlite')),
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
@@ -52,6 +61,26 @@ return [
             'username' => env('DB_USERNAME', 'forge'),
             'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
+        'genetracker' => [
+            'driver' => 'mysql',
+            'url' => env('GT_DATABASE_URL'),
+            'host' => env('GT_DB_HOST', '127.0.0.1'),
+            'port' => env('GT_DB_PORT', '3306'),
+            'database' => env('GT_DB_DATABASE', 'forge'),
+            'username' => env('GT_DB_USERNAME', 'forge'),
+            'password' => env('GT_DB_PASSWORD', ''),
+            'unix_socket' => env('GT_DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',

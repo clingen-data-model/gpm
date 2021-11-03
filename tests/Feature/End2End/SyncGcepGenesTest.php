@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Traits\SeedsHgncGenesAndDiseases;
 
 /**
  * @group groups
@@ -20,11 +21,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class SyncGcepGenesTest extends TestCase
 {
     use RefreshDatabase;
+    use SeedsHgncGenesAndDiseases;
 
     public function setup():void
     {
         parent::setup();
         $this->seed();
+        $this->seedGenes([['hgnc_id' => 678, 'gene_symbol'=>'BCD'], ['hgnc_id' => 12345, 'gene_symbol' => 'ABC1']]);
 
         $this->user = User::factory()->create();
         $this->user->givePermissionTo('ep-applications-manage');
@@ -37,14 +40,13 @@ class SyncGcepGenesTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_can_not_add_genes_to_an_ep()
+    public function unprivileged_user_can_not_add_genes_to_an_gcep()
     {
         $this->user->revokePermissionTo('ep-applications-manage');
 
         $this->json('POST', $this->url, [
             'genes' => [[
-                'hgnc_id' => 1234567,
-                'mondo_id' => 'MONDO:1234567',
+                'ABC1'
             ]]
         ])
         ->assertStatus(403);
@@ -55,11 +57,19 @@ class SyncGcepGenesTest extends TestCase
      */
     public function validates_input_for_gceps()
     {
-        $this->expertPanel->update(['expert_panel_type_id' => config('expert_panels.types.gcep.id')]);
         $this->json('POST', $this->url, ['genes'=>null])
             ->assertStatus(422)
             ->assertJsonFragment([
-                    'genes' => ['The genes field is required.']
+                    'genes' => ['This field is required.']
+            ]);
+
+            $this->json('POST', $this->url, ['genes'=>['ZXC', 'ABC1']])
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                    'genes.0' => ['Your selection is invalid.']
+            ])
+            ->assertJsonMissing([
+                'genes.1' => ['Your selection is invalid.']
             ]);
     }
 
@@ -69,13 +79,13 @@ class SyncGcepGenesTest extends TestCase
     public function privileged_user_can_add_new_genes_to_a_gcep()
     {
         $this->json('POST', $this->url, [
-            'genes' => ['ABC', 'BCD'],
+            'genes' => ['ABC1', 'BCD'],
         ])->assertStatus(200);
 
         $this->assertDatabaseHas(
             'genes',
             [
-                'gene_symbol' => 'ABC',
+                'gene_symbol' => 'ABC1',
                 'mondo_id' => null,
                 'expert_panel_id' => $this->expertPanel->id
             ]
@@ -95,9 +105,10 @@ class SyncGcepGenesTest extends TestCase
      */
     public function privileged_user_can_remove_genes()
     {
+
         // Add some genes to the expert panel
         $this->expertPanel->genes()->saveMany([
-            new Gene(['hgnc_id' => 12345, 'gene_symbol'=>'ABC']),
+            new Gene(['hgnc_id' => 12345, 'gene_symbol'=>'ABC1']),
             new Gene(['hgnc_id' => 678, 'gene_symbol'=>'BCD']),
         ]);
 
@@ -108,7 +119,7 @@ class SyncGcepGenesTest extends TestCase
 
         $this->assertDatabaseHas('genes', [
             'expert_panel_id' => $this->expertPanel->id,
-            'gene_symbol' => 'ABC',
+            'gene_symbol' => 'ABC1',
             'deleted_at' => Carbon::now()
         ]);
 
@@ -124,6 +135,10 @@ class SyncGcepGenesTest extends TestCase
      */
     public function logs_appropriate_activities()
     {
+        $this->seedGenes([
+            ['hgnc_id' => 888, 'gene_symbol' => 'DEF'],
+            ['hgnc_id' => 999, 'gene_symbol' => 'EFG'],
+        ]);
         $this->expertPanel->genes()->saveMany([
             new Gene(['hgnc_id' => 12345, 'gene_symbol'=>'ABC']),
             new Gene(['hgnc_id' => 678, 'gene_symbol'=>'BCD']),

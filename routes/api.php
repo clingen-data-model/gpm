@@ -5,9 +5,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CdwgController;
-use App\Http\Controllers\Api\MailDraftController;
 use App\Http\Controllers\Api\PeopleController;
 use App\Http\Controllers\Api\MailLogController;
+use App\Http\Controllers\Api\MailDraftController;
+use App\Http\Controllers\Api\GeneLookupController;
+use App\Http\Controllers\Api\DiseaseLookupController;
 use App\Modules\User\Http\Controllers\CurrentUserController;
 
 /*
@@ -41,4 +43,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/mail-log', [MailLogController::class, 'index']);
     Route::get('/email-drafts/{applicationUuid}/{approvedStepNumber}', [MailDraftController::class, 'show']);
 });
+
 Route::get('/cdwgs', [CdwgController::class, 'index']);
+
+Route::get('/diseases/search', [DiseaseLookupController::class, 'search']);
+Route::get('/diseases/{mondo_id}', [DiseaseLookupController::class, 'show']);
+
+Route::get('/genes/search', [GeneLookupController::class, 'search']);
+Route::get('/genes/{hgnc_id}', [GeneLookupController::class, 'show']);

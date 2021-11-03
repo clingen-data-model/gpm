@@ -3,10 +3,14 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\URL;
+use App\Services\HgncLookup;
+use App\Services\HgncLookupInterface;
+use App\Services\MondoLookup;
+use App\Services\MondoLookupInterface;
 use Infrastructure\Service\MessageBus;
 use Illuminate\Support\ServiceProvider;
-use Infrastructure\Service\MessageBusInterface;
 use Lorisleiva\Actions\Facades\Actions;
+use Infrastructure\Service\MessageBusInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +30,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->app->bind(MondoLookupInterface::class, MondoLookup::class);
+        $this->app->bind(HgncLookupInterface::class, HgncLookup::class);
+
         if (config('app.url_scheme')) {
             URL::forceScheme(config('app.url_scheme'));
         }
