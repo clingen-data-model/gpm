@@ -51,13 +51,19 @@ export default {
     ],
     setup(props, context) {
         const store = useStore();
-        const {errors, editing, hideForm, showForm, cancel} = formFactory(props, context)
+        const {errors, editing, hideForm, showForm, cancel: baseCancel} = formFactory(props, context)
+        const cancel = () => {
+            getGenes();
+            baseCancel();
+        }
         const loading = ref(false);
         const genesAsText = ref(null);
         const syncGenesAsText = () => {
             genesAsText.value = props.group.expert_panel.genes 
                     ? props.group.expertPanel.genes.join(', ')
                     : null
+            
+            console.log({genesAsText: genesAsText.value});
         };
         const getGenes = async () => {
             loading.value = true;
@@ -97,7 +103,7 @@ export default {
                         const [g, geneIdx] = key.split('.')
                         if (g == 'genes') {
                             if (geneIdx) {
-                                return `Gene #${(parseInt(geneIdx)+1)}, "${genes[geneIdx]}" wasn't found in our records.`
+                                return `Gene #${(parseInt(geneIdx)+1)}, "${genes[geneIdx]}" wasn't found in our records.  Please confirm it is currently an approved HGNC gene symbol.`
                             }
                             return messages[key];
                         }
