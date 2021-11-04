@@ -135,8 +135,6 @@
 import api from '@/http/api'
 import {ref, computed, onMounted} from 'vue';
 import {useStore} from 'vuex';
-import EditButton from '@/components/buttons/EditIconButton'
-import InputError from '@/components/forms/InputErrors'
 import GeneSearchSelect from '@/components/forms/GeneSearchSelect'
 import DiseaseSearchSelect from '@/components/forms/DiseaseSearchSelect'
 import is_validation_error from '@/http/is_validation_error'
@@ -146,8 +144,6 @@ import {isEqual} from 'lodash'
 export default {
     name: 'VcepGeneList',
     components: {
-        EditButton,
-        InputError,
         GeneSearchSelect,
         DiseaseSearchSelect,
     },
@@ -165,7 +161,6 @@ export default {
     setup(props, context) {
         const store = useStore();
         const newGenes = ref([]);
-        const removedGenes = ref([]);
         const addNewGene = () => {
             newGenes.value.push({gene: null, disease: null});
         }
