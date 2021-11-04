@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\ExpertPanel\Models\NextAction;
 use App\Models\Traits\HasNotes as TraitsHasNotes;
+use App\Modules\ExpertPanel\Models\EvidenceSummary;
 use App\Modules\ExpertPanel\Models\ExpertPanelType;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -224,7 +225,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
      */
     public function evidenceSummaries()
     {
-        return $this->hasMany(EvidenceSummaries::class);
+        return $this->hasMany(EvidenceSummary::class);
     }
 
     /**

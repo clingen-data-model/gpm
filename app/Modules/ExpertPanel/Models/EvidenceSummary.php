@@ -2,11 +2,13 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
-use App\Models\Contracts\BelongsToExpertPanel;
-use App\Models\Traits\BelongsToExpertPanel as TraitsBelongsToExpertPanel;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Modules\ExpertPanel\Models\Gene;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Database\Factories\EvidenceSummaryFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Modules\ExpertPanel\Models\Contracts\BelongsToExpertPanel;
+use App\Modules\ExpertPanel\Models\Traits\BelongsToExpertPanel as TraitsBelongsToExpertPanel;
 
 /**
  * @property int $id
@@ -16,9 +18,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class EvidenceSummaries extends Model implements BelongsToExpertPanel
+class EvidenceSummary extends Model implements BelongsToExpertPanel
 {
-    use HasFactory, SoftDeletes, TraitsBelongsToExpertPanel;
+    use HasFactory;
+    use SoftDeletes;
+    use TraitsBelongsToExpertPanel;
 
     /**
      * The attributes that are mass assignable.
@@ -27,7 +31,10 @@ class EvidenceSummaries extends Model implements BelongsToExpertPanel
      */
     protected $fillable = [
         'expert_panel_id',
+        'summary',
         'gene_id',
+        'variant',
+        'vci_url'
     ];
 
     /**
@@ -46,6 +53,12 @@ class EvidenceSummaries extends Model implements BelongsToExpertPanel
      */
     public function gene()
     {
-        return $this->belongsTo(\App\Models\Gene::class);
+        return $this->belongsTo(Gene::class);
+    }
+
+    // Factory support
+    protected static function newFactory()
+    {
+        return new EvidenceSummaryFactory();
     }
 }

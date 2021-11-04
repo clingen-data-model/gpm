@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\GeneTracker\Gene as GtGene;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\GeneTracker\Disease as GtDisease;
+use Database\Factories\GeneFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -79,5 +80,10 @@ class Gene extends Model
     public function disease(): BelongsTo
     {
         return $this->belongsTo(GtDisease::class, 'mondo_id', 'mondo_id');
+    }
+
+    public static function newFactory()
+    {
+        return new GeneFactory();
     }
 }

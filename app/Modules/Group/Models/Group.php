@@ -73,6 +73,10 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     ];
 
     /**
+     * RELATIONS
+     */
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function expertPanel(): HasOne
@@ -142,7 +146,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         return $query->ofType(config('groups.types.wg.id'));
     }
 
-    public function scopeExpertPanel($query)
+    public function scopeTypeExpertPanel($query)
     {
         return $query->ofType(config('groups.types.expert_panel.id'));
     }

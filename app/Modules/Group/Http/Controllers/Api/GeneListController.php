@@ -5,8 +5,6 @@ namespace App\Modules\Group\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Modules\Group\Models\Group;
 use App\Http\Controllers\Controller;
-use App\ModelSearchService;
-use App\Modules\Group\Http\Resources\GroupResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class GeneListController extends Controller
@@ -21,5 +19,4 @@ class GeneListController extends Controller
 
         return $group->expertPanel->genes()->with('gene', 'disease')->get();
     }
-
 }

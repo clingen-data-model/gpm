@@ -35,7 +35,10 @@
                 <scope-description-form :group="group" v-if="group.isEp()"></scope-description-form>
             </tab-item>
             <tab-item label="Sustained Curation" v-show="group.isEp()">
-                Curation review process, Evidence Summaries, etc. will go here
+                <!-- <nhgri-attestation :group="group" class="pb-2 mb-4 border-b"></nhgri-attestation> -->
+                <!-- <ongoing-plans-form :group="group" class="pb-2 mb-4 border-b"></ongoing-plans-form> -->
+                <!-- <reanalysis-form :group="group" class="pb-2 mb-4 border-b"></reanalysis-form> -->
+                <evidence-summaries :group="group" class="pb-2 mb-4 border-b"></evidence-summaries>
             </tab-item>
             <tab-item v-show="group.isVcep()" label="Specifications">
                 Specifiations info from CSPEC will go here.
@@ -57,7 +60,10 @@
         </teleport>
 
         <teleport to='#debug-info'>
-            <note>group.id: {{group.id}}</note>
+            <note>
+                group.id: {{group.id}}
+                <span v-if="group.isEp()"> | expertPanel.id: {{group.expert_panel.id}}</span>
+            </note>
         </teleport>
     </div>
 </template>
@@ -67,6 +73,10 @@ import VcepGeneList from '@/components/expert_panels/VcepGeneList'
 import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm'
 import MemberList from '@/components/groups/MemberList';
 import MembershipDescriptionForm from '@/components/expert_panels/MembershipDescriptionForm'
+import NhgriAttestation from '@/components/expert_panels/NhgriAttestation'
+import OngoingPlansForm from '@/components/expert_panels/OngoingPlansForm'
+import ReanalysisForm from '@/components/expert_panels/ReanalysisForm'
+import EvidenceSummaries from '@/components/expert_panels/EvidenceSummaryList'
 import { ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 
@@ -78,6 +88,10 @@ export default {
         GcepGeneList,
         VcepGeneList,
         ScopeDescriptionForm,
+        NhgriAttestation,
+        OngoingPlansForm,
+        ReanalysisForm,
+        EvidenceSummaries,
     },
     props: {
         uuid: {

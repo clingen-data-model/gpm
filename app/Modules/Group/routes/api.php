@@ -12,12 +12,16 @@ use App\Modules\Group\Actions\MemberUpdate;
 use App\Modules\Group\Actions\AddGenesToVcep;
 use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Group\Actions\MemberRemoveRole;
+use App\Modules\Group\Actions\EvidenceSummaryAdd;
+use App\Modules\Group\Actions\EvidenceSummaryDelete;
+use App\Modules\Group\Actions\EvidenceSummaryUpdate;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Group\Actions\MemberRevokePermission;
 use App\Modules\Group\Actions\ScopeDescriptionUpdate;
 use App\Modules\Group\Actions\MembershipDescriptionUpdate;
 use App\Modules\Group\Http\Controllers\Api\GroupController;
 use App\Modules\Group\Http\Controllers\Api\GeneListController;
+use App\Modules\Group\Http\Controllers\Api\EvidenceSummaryController;
 
 // Route::post('/{{group_uuid}}/members', MemberAdd::class);
 
@@ -37,7 +41,12 @@ Route::group([
     Route::post('/{uuid}/application/genes', GenesAdd::class);
     Route::put('/{uuid}/application/genes/{gene_id}', GeneUpdate::class);
     Route::delete('/{uuid}/application/genes/{gene_id}', GeneRemove::class);
-    
+
+    Route::get('/{uuid}/application/evidence-summaries', [EvidenceSummaryController::class, 'index']);
+    Route::post('/{uuid}/application/evidence-summaries', EvidenceSummaryAdd::class);
+    Route::put('/{uuid}/application/evidence-summaries/{summaryId}', EvidenceSummaryUpdate::class);
+    Route::delete('/{uuid}/application/evidence-summaries/{summaryId}', EvidenceSummaryDelete::class);
+
     Route::post('/{uuid}/invites', MemberInvite::class);
     
     Route::get('/{group_uuid}/members', [GroupController::class, 'members']);
