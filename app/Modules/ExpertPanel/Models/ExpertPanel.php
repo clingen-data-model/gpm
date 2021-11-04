@@ -35,6 +35,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Modules\ExpertPanel\Models\SpecificationRuleSet;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use App\Models\Traits\HasDocuments as TraitsHasDocuments;
+use App\Modules\ExpertPanel\Models\CurationReviewProtocol;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use App\Models\Traits\RecordsEvents as TraitsRecordsEvents;
 use App\Modules\Group\Models\Traits\HasMembers as TraitsHasMembers;
@@ -74,8 +75,9 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'coi_code',
         'nhgri_attestation_date',
         'preprint_attestation_date',
-        'curtion_review_protocol',
+        'curation_review_protocol_id',
         'curation_review_protocol_other',
+        'meeting_frequency',
         'reanalysis_discrepency_resolution_id',
         'cdwg_id',
         'working_name',
@@ -98,7 +100,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'id' => 'integer',
         'group_id' => 'integer',
         'expert_panel_type_id' => 'integer',
-        'curtion_review_protocol' => 'integer',
+        'curtion_review_protocol_id' => 'integer',
         'reanalysis_discrepency_resolution_id' => 'integer',
         'current_step' => 'integer'
     ];
@@ -337,6 +339,15 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $this->hasManyThrough(Document::class, Group::class);
     }
 
+    /**
+     * Get the curationReviewProtocol that owns the ExpertPanel
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function curationReviewProtocol(): BelongsTo
+    {
+        return $this->belongsTo(CurationReviewProtocol::class);
+    }
 
 
     // Access methods

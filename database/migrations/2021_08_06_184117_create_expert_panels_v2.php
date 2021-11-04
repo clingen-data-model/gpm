@@ -46,7 +46,6 @@ class CreateExpertPanelsV2 extends Migration
             $table->text('membership_description')->nullable();
             $table->text('scope_description')->nullable();
             $table->dateTime('nhgri_attestation_date')->nullable();
-            $table->dateTime('preprint_attestation_date')->nullable();
             $table->foreignId('curation_review_protocol_id')
                 ->nullable()
                 ->constrained()
@@ -54,6 +53,7 @@ class CreateExpertPanelsV2 extends Migration
                 ->cascadeOnUpdate()
                 ;
             $table->text('curation_review_protocol_other')->nullable();
+            $table->string('meeting_frequency')->nullable();
             $table->foreignId('reanalysis_discrepency_resolution_id')->nullable()
                 ->constrained()
                 ->cascadeOnDelete()

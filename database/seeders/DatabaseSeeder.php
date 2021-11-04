@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
             GenderSeeder::class,
             InstitutionSeeder::class,
             CountrySeeder::class,
+            CurationReviewProtocolsSeeder::class
         ]);
 
         foreach ($seederClasses as $seederClass) {

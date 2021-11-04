@@ -10,6 +10,7 @@ use App\Modules\Group\Actions\MemberRemove;
 use App\Modules\Group\Actions\MemberRetire;
 use App\Modules\Group\Actions\MemberUpdate;
 use App\Modules\Group\Actions\AddGenesToVcep;
+use App\Modules\Group\Actions\CurationReviewProtocolUpdate;
 use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Group\Actions\MemberRemoveRole;
 use App\Modules\Group\Actions\EvidenceSummaryAdd;
@@ -46,6 +47,8 @@ Route::group([
     Route::post('/{uuid}/application/evidence-summaries', EvidenceSummaryAdd::class);
     Route::put('/{uuid}/application/evidence-summaries/{summaryId}', EvidenceSummaryUpdate::class);
     Route::delete('/{uuid}/application/evidence-summaries/{summaryId}', EvidenceSummaryDelete::class);
+    
+    Route::put('/{uuid}/application/curation-review-protocols', CurationReviewProtocolUpdate::class);
 
     Route::post('/{uuid}/invites', MemberInvite::class);
     

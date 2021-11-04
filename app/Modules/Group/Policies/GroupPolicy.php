@@ -179,4 +179,10 @@ class GroupPolicy
         return $user->hasPermissionTo('ep-applications-manage')
             || $user->hasGroupPermissionTo('application-edit', $group);
     }
+
+    public function updateCurationReviewProtocol(User $user, Group $group)
+    {
+        return $user->hasPermissionTo('ep-applications-manage')
+            || $user->hasGroupPermissionTo('application-edit', $group);
+    }
 }

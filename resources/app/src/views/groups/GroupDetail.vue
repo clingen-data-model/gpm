@@ -36,9 +36,9 @@
             </tab-item>
             <tab-item label="Sustained Curation" v-show="group.isEp()">
                 <!-- <nhgri-attestation :group="group" class="pb-2 mb-4 border-b"></nhgri-attestation> -->
-                <!-- <ongoing-plans-form :group="group" class="pb-2 mb-4 border-b"></ongoing-plans-form> -->
+                <component :is="ongoingPlansForm" :group="group" class="pb-2 mb-4 border-b"></component>
                 <!-- <reanalysis-form :group="group" class="pb-2 mb-4 border-b"></reanalysis-form> -->
-                <evidence-summaries :group="group" class="pb-2 mb-4 border-b"></evidence-summaries>
+                <evidence-summaries :group="group" class="pb-2 mb-4 border-b" v-if="group.isVcep()"></evidence-summaries>
             </tab-item>
             <tab-item v-show="group.isVcep()" label="Specifications">
                 Specifiations info from CSPEC will go here.
@@ -74,11 +74,13 @@ import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionFor
 import MemberList from '@/components/groups/MemberList';
 import MembershipDescriptionForm from '@/components/expert_panels/MembershipDescriptionForm'
 import NhgriAttestation from '@/components/expert_panels/NhgriAttestation'
-import OngoingPlansForm from '@/components/expert_panels/OngoingPlansForm'
+import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm'
+import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm'
 import ReanalysisForm from '@/components/expert_panels/ReanalysisForm'
 import EvidenceSummaries from '@/components/expert_panels/EvidenceSummaryList'
 import { ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
+import VcepOngoingPlansFormVue from '../../components/expert_panels/VcepOngoingPlansForm.vue';
 
 export default {
     name: 'GroupDetail',
@@ -89,7 +91,8 @@ export default {
         VcepGeneList,
         ScopeDescriptionForm,
         NhgriAttestation,
-        OngoingPlansForm,
+        VcepOngoingPlansForm,
+        GcepOngoingPlansForm,
         ReanalysisForm,
         EvidenceSummaries,
     },
@@ -111,6 +114,9 @@ export default {
         })
         const store = useStore();
         const showModal = ref(false);
+        const ongoingPlansForm = computed(() => {
+            return group.value.isVcep() ? VcepOngoingPlansFormVue : GcepOngoingPlansForm;
+        });
 
         onMounted(async () => {
             await store.dispatch('groups/find', props.uuid)
@@ -118,11 +124,13 @@ export default {
                     store.commit('groups/setCurrentItemIndexByUuid', props.uuid)
                 })
         });
+        
 
         return {
             group,
             groupGeneList,
-            showModal
+            showModal,
+            ongoingPlansForm
         }
     },
     watch: {

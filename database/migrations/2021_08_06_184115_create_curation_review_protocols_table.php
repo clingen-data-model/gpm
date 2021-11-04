@@ -18,6 +18,7 @@ class CreateCurationReviewProtocolsTable extends Migration
         Schema::create('curation_review_protocols', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
+            $table->string('full_name');
             $table->text('description')->nullable();
             $table->boolean('gcep_protocol')->default(1);
             $table->boolean('vcep_protocol')->default(1);
