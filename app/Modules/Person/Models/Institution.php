@@ -2,8 +2,10 @@
 
 namespace App\Modules\Person\Models;
 
+use App\Modules\Person\Models\Country;
 use Illuminate\Database\Eloquent\Model;
 use Database\Factories\InstitutionFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -27,6 +29,10 @@ class Institution extends Model
         'uuid',
         'name',
         'abbreviation',
+        'url',
+        'address',
+        'country_id',
+        'website_id',
     ];
 
     /**
@@ -37,6 +43,16 @@ class Institution extends Model
     protected $casts = [
         'id' => 'integer',
     ];
+
+    /**
+     * RELATIONS
+     */
+
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class);
+    }
+    
 
     // Factory
     protected static function newFactory()

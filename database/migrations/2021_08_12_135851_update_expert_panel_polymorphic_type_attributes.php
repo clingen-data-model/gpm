@@ -14,9 +14,9 @@ class UpdateExpertPanelPolymorphicTypeAttributes extends Migration
      */
     public function up()
     {
-        DB::table('activity_log')
-            ->where('subject_type', 'App\Modules\Application\Models\Application')
-            ->update(['subject_type' =>'App\Modules\ExpertPanel\Models\ExpertPanel']);
+        // DB::table('activity_log')
+        //     ->where('subject_type', 'App\Modules\Application\Models\Application')
+        //     ->update(['subject_type' =>'App\Modules\ExpertPanel\Models\ExpertPanel']);
     }
 
     /**
@@ -26,8 +26,8 @@ class UpdateExpertPanelPolymorphicTypeAttributes extends Migration
      */
     public function down()
     {
-        DB::table('activity_log')
-            ->where('subject_type', 'App\Modules\Application\Models\ExpertPanel')
-            ->update(['subject_type' =>'App\Modules\Application\Models\Application']);
+        // DB::table('activity_log')
+        //     ->where('subject_type', 'App\Modules\Application\Models\ExpertPanel')
+        //     ->update(['subject_type' =>'App\Modules\Application\Models\Application']);
     }
 }

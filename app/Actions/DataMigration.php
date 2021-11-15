@@ -78,57 +78,32 @@ class DataMigration
             });
     }
 
-    private function migrateActivityLogs($rows, $expertPanel)
+    private function migrateActivityLogs($logEntries, $expertPanel)
     {
-        foreach ($rows as $row) {
-            $subjectType = ExpertPanel::class;
-            $subjectId = $expertPanel->id;
+        foreach ($logEntries as $logEntry) {
+            $subjectType = Group::class;
+            $subjectId = $expertPanel->group_id;
 
-            if (substr($row->description, 0, 1) == '<') {
-                $props = json_decode($row->properties);
-                $data = [
-                    'entry' => $row->description,
-                    'subject_type' => $subjectType,
-                    'subject_id' => $subjectId,
-                    'author_type' => $row->causer_type,
-                    'author_id' => $row->causer_id,
-                    'log_date' => $row->created_at,
-                    'created_at' => $row->created_at,
-                    'updated_at' => $row->updated_at,
-                    'metadata' => [
-                        'step' => $props->step
-                    ]
-                ];
-
-                LogEntry::firstOrCreate(
-                    ['entry' => $row->description],
-                    $data
-                );
+            // Handle custom logs that were entered via ckeditor
+            if (substr($logEntry->description, 0, 1) == '<') {
+                $props = json_decode($logEntry->properties);
+                DB::table('activity_log')
+                    ->where('id', $logEntry->id)
+                    ->update([
+                        'subject_type' => $subjectType,
+                        'subject_id' => $subjectId,
+                    ]);
                 continue;
             }
 
-            if (
-                in_array($row->activity_type, ['contact-added']) ||
-                substr($row->description, 0, 12) == 'Added contact'
-            ) {
-                $subjectType = Group::class;
-                $subjectId = $expertPanel->group_id;
-            }
-
-            $activityType = $this->parseActivityType($row);
-
-            $mapped = [
-                'type' => $activityType,
-                'log_name' => $row->log_name,
-                'subject_type' => $subjectType,
-                'subject_id' => $subjectId,
-                'payload' => $row->properties
-            ];
-            Event::withTrashed()
-                ->firstOrCreate(
-                    ['id' => $row->id],
-                    $mapped
-                );
+            $activityType = $this->parseActivityType($logEntry);
+            DB::table('activity_log')
+                ->where('id', $logEntry->id)
+                ->update([
+                    'subject_type' => $subjectType,
+                    'subject_id' => $subjectId,
+                    'activity_type' => $activityType,
+                ]);
         };
     }
    
@@ -156,7 +131,9 @@ class DataMigration
                     '/(^Added next action.+)/',
                     '/(^Attributes updated:.+)/',
                     '/(^COI form completed.+)/',
-                    '/(^scope version marked final$)/',
+                    '/(^scope version \d marked final\.?$)/',
+                    '/(^Added version \d of .+.$)/',
+                    '/(^Application completed\.$)/'
                 ];
                 $replacements = [
                     'contact-added',
@@ -164,6 +141,9 @@ class DataMigration
                     'attributes-updated',
                     'coi-completed',
                     'document-marked-final',
+                    'document-added',
+                    'document-added',
+                    'application-completed'
                 ];
                 return preg_replace($patterns, $replacements, $row->description);
         }

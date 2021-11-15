@@ -37,8 +37,8 @@ class DatabaseSeeder extends Seeder
             EthnicitySeeder::class,
             RaceSeeder::class,
             GenderSeeder::class,
-            InstitutionSeeder::class,
             CountrySeeder::class,
+            InstitutionSeeder::class,
             CurationReviewProtocolsSeeder::class
         ]);
 
