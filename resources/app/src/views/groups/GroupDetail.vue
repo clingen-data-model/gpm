@@ -46,7 +46,10 @@
             <tab-item label="Documents">
                 Group documents will go here.
             </tab-item>
-            <tab-item label="Log"></tab-item>
+            <tab-item label="Log" v-show="hasPermission('groups-manage')">
+                <activity-log :log-entries="logEntries"></activity-log>
+                <button class="btn btn-xs mt-1" @click="getLogEntries">Refresh</button>
+            </tab-item>
             <!--
                 <tab-item label="Manuscripts"></tab-item>
                 <tab-item label="Funding"></tab-item>
@@ -68,6 +71,7 @@
     </div>
 </template>
 <script>
+import ActivityLog from '@/components/ActivityLog'
 import GcepGeneList from '@/components/expert_panels/GcepGeneList'
 import VcepGeneList from '@/components/expert_panels/VcepGeneList'
 import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm'
@@ -80,26 +84,37 @@ import ReanalysisForm from '@/components/expert_panels/ReanalysisForm'
 import EvidenceSummaries from '@/components/expert_panels/EvidenceSummaryList'
 import { ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
+import api from '@/http/api'
 import VcepOngoingPlansFormVue from '../../components/expert_panels/VcepOngoingPlansForm.vue';
 
 export default {
     name: 'GroupDetail',
     components: {
+        ActivityLog,
+        EvidenceSummaries,
+        GcepGeneList,
+        GcepOngoingPlansForm,
         MemberList,
         MembershipDescriptionForm,
-        GcepGeneList,
-        VcepGeneList,
-        ScopeDescriptionForm,
         NhgriAttestation,
-        VcepOngoingPlansForm,
-        GcepOngoingPlansForm,
         ReanalysisForm,
-        EvidenceSummaries,
+        ScopeDescriptionForm,
+        VcepGeneList,
+        VcepOngoingPlansForm,
     },
     props: {
         uuid: {
             type: String,
             required: true
+        }
+    },
+    data () {
+        return {
+            dummyLogEntries: [
+                {id: 1, created_at: '2021-09-01T13:01:00', description: 'test entry 1', causer: {name: 'Tester Testerson'}},
+                {id: 2, created_at: '2021-09-02T15:01:00', description: 'test entry 2', causer: {name: 'Tester Testerson'}},
+                {id: 3, created_at: '2021-09-03T15:01:00', description: 'test entry 3', causer: {name: 'Tester Testerson'}},
+            ]
         }
     },
     setup (props) {
@@ -118,11 +133,20 @@ export default {
             return group.value.isVcep() ? VcepOngoingPlansFormVue : GcepOngoingPlansForm;
         });
 
+        const logEntries = ref([]);
+
+        const getLogEntries = async () => {
+            logEntries.value = await api.get(`/api/groups/${props.uuid}/activity-logs`)
+                .then(response => response.data.data);
+        }
+
         onMounted(async () => {
             await store.dispatch('groups/find', props.uuid)
                 .then(() => {
                     store.commit('groups/setCurrentItemIndexByUuid', props.uuid)
                 })
+            
+            getLogEntries();
         });
         
 
@@ -130,7 +154,9 @@ export default {
             group,
             groupGeneList,
             showModal,
-            ongoingPlansForm
+            ongoingPlansForm,
+            logEntries,
+            getLogEntries,
         }
     },
     watch: {

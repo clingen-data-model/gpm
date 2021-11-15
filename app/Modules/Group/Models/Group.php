@@ -123,6 +123,13 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         return $this->belongsTo(Group::class);
     }
 
+    public function logEntries()
+    {
+        return $this->morphMany(config('activitylog.activity_model'), 'subject');
+    }
+
+
+
     /**
      * SCOPES
      */

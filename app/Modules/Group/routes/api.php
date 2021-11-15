@@ -20,6 +20,7 @@ use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Group\Actions\MemberRevokePermission;
 use App\Modules\Group\Actions\ScopeDescriptionUpdate;
 use App\Modules\Group\Actions\MembershipDescriptionUpdate;
+use App\Modules\Group\Http\Controllers\Api\ActivityLogsController;
 use App\Modules\Group\Http\Controllers\Api\GroupController;
 use App\Modules\Group\Http\Controllers\Api\GeneListController;
 use App\Modules\Group\Http\Controllers\Api\EvidenceSummaryController;
@@ -34,6 +35,8 @@ Route::group([
 ], function () {
     Route::get('/', [GroupController::class, 'index']);
     Route::get('/{uuid}', [GroupController::class, 'show']);
+
+    Route::get('/{uuid}/activity-logs', [ActivityLogsController::class, 'index']);
 
     Route::put('/{uuid}/application/membership-description', MembershipDescriptionUpdate::class);
     Route::put('/{uuid}/application/scope-description', ScopeDescriptionUpdate::class);
