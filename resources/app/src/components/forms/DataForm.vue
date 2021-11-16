@@ -1,12 +1,14 @@
 <script>
 // import {ref, watch} from 'vue';
 import InputRow from '@/components/forms/InputRow'
+import SearchSelect from '@/components/forms/SearchSelect'
 import { titleCase } from '@/utils'
 
 export default {
     name: 'DataForm',
     components: {
         InputRow,
+        SearchSelect,
     },
     props: {
         fields: {
@@ -45,6 +47,9 @@ export default {
         selectOrTextarea (field) {
             return ['textarea', 'select'].includes(field.type);
         },
+        searchSelect (field) {
+            return field.type == 'search-select'
+        },
         emitChange() {
             this.$emit('update:modelValue', this.dataClone);
         },
@@ -62,7 +67,7 @@ export default {
         <div v-for="field in fields" :key="field.name">
             <div v-if="evalShow(field)">
                 <input-row 
-                    v-if="selectOrTextarea(field)" 
+                    v-if="selectOrTextarea(field) || searchSelect(field)" 
                     :label="getFieldLabel(field)"
                     :class="field.class"
                     :errors="errors[field.name]"

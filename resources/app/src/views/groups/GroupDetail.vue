@@ -47,7 +47,11 @@
                 Group documents will go here.
             </tab-item>
             <tab-item label="Log" v-show="hasPermission('groups-manage')">
-                <activity-log :log-entries="logEntries"></activity-log>
+                <activity-log 
+                    :log-entries="logEntries"
+                    :api-url="`/api/groups/${group.uuid}/activity-logs`"
+                    v-bind:log-updated="getLogEntries"
+                ></activity-log>
                 <button class="btn btn-xs mt-1" @click="getLogEntries">Refresh</button>
             </tab-item>
             <!--
@@ -86,6 +90,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import api from '@/http/api'
 import VcepOngoingPlansFormVue from '../../components/expert_panels/VcepOngoingPlansForm.vue';
+import {logEntries, fetchEntries} from '@/adapters/log_entry_repository';
 
 export default {
     name: 'GroupDetail',
@@ -133,11 +138,8 @@ export default {
             return group.value.isVcep() ? VcepOngoingPlansFormVue : GcepOngoingPlansForm;
         });
 
-        const logEntries = ref([]);
-
         const getLogEntries = async () => {
-            logEntries.value = await api.get(`/api/groups/${props.uuid}/activity-logs`)
-                .then(response => response.data.data);
+            await fetchEntries(`/api/groups/${props.uuid}/activity-logs`);
         }
 
         onMounted(async () => {

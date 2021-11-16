@@ -11,18 +11,16 @@
         <data-table :fields="fields" :data="logEntries" v-model:sort="sort" v-else>
             <template v-slot:cell-id="{item}">
                 <div class="flex space-x-1" v-if="hasPermission('groups-manage')">
-                    <!-- <router-link :to="`log-entries/${item.id}/edit`" class="btn btn-xs inline-block"> -->
-                        <button class="btn btn-xs"  @click="editLogEntry(item)">
-                            <icon-edit width="12"></icon-edit>
-                        </button>
-                    <!-- </router-link> -->
-                    <router-link 
-                        :to="`log-entries/${item.id}/edit`" 
+                    <button class="btn btn-xs inline-block"  @click="editLogEntry(item)">
+                        <icon-edit width="12"></icon-edit>
+                    </button>
+                    <button 
+                        @click="confirmDelete(item)"
                         v-if="item.activity_type === null"
                         class="btn btn-xs inline-block"
                     >
                         <icon-trash width="12"></icon-trash>
-                    </router-link>
+                    </button>
                 </div>
             </template>
             <template v-slot:cell-description="{item}">
@@ -30,7 +28,21 @@
             </template>
         </data-table>
         <modal-dialog v-model="editingEntry" title="Edit log entry">
-            <log-entry-form :log-entry="selectedLogEntry"></log-entry-form>
+            <log-entry-form 
+                :log-entry="selectedEntry" 
+                :api-url="apiUrl"
+                @saved="closeEntryForm"
+                @canceled="closeEntryForm"
+            ></log-entry-form>
+        </modal-dialog>
+
+        <modal-dialog v-model="showDeleteConfirmation" title="Delete this log entry?">
+            <activity-log-delete-confirmation 
+                :logEntry="selectedEntry" 
+                :api-url="apiUrl"
+                @canceled="closeDeleteConfirmation"
+                @deleted="closeDeleteConfirmation"
+            ></activity-log-delete-confirmation>
         </modal-dialog>
     </div>
 </template>
@@ -40,7 +52,7 @@ import { useStore } from 'vuex';
 import IconEdit from '@/components/icons/IconEdit'
 import IconTrash from '@/components/icons/IconTrash'
 import LogEntryForm from '@/components/ActivityLogEntryForm'
-
+import ActivityLogDeleteConfirmation from '@/components/ActivityLogDeleteConfirmation'
 
 const fields = [
     {
@@ -72,12 +84,17 @@ export default {
     components: {
         IconEdit,
         IconTrash,
-        LogEntryForm
+        LogEntryForm,
+        ActivityLogDeleteConfirmation
     },
     props: {
         logEntries: {
             required: true,
             type: Array,
+        },
+        apiUrl: {
+            required: true,
+            type: String
         }
     },
     setup (props) {
@@ -85,7 +102,7 @@ export default {
             field: 'created_at',
             desc: true
         });
-        const selectedLogEntry = ref({});
+        const selectedEntry = ref({});
         const editingEntry = ref(false);
 
         const hasLogEntries = computed(() => {
@@ -94,16 +111,35 @@ export default {
 
         const editLogEntry = entry => {
             editingEntry.value = true;
-            selectedLogEntry.value = entry;
+            selectedEntry.value = entry;
         };
+
+        const closeEntryForm = () => {
+            editingEntry.value = false;
+            selectedEntry.value = {};
+        }
+
+        const showDeleteConfirmation = ref(false);
+        const confirmDelete = (entry) => {
+            selectedEntry.value = entry;
+            showDeleteConfirmation.value = true;
+        }
+        const closeDeleteConfirmation = () => {
+            showDeleteConfirmation.value = false;
+            selectedEntry.value = {};
+        }
 
         return {
             fields: ref(fields),
             sort,
-            selectedLogEntry,
+            selectedEntry,
             editingEntry,
             hasLogEntries,
-            editLogEntry
+            editLogEntry,
+            closeEntryForm,
+            showDeleteConfirmation,
+            confirmDelete,
+            closeDeleteConfirmation
         }
     }
 }

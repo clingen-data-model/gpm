@@ -343,12 +343,8 @@ export default {
                 if (searchText === '') {
                     return [];
                 }
-                
-                this.filteredOptions = options.filter(o => {
-                    const match = o.match(new RegExp(searchText, 'gi'));
-                    return match !== null
-                })
-                return;
+
+                return this.defaultSearchFunction(searchText, options);
             }
 
             this.filteredOptions = await this.searchFunction(searchText, options);

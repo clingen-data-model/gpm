@@ -18,11 +18,11 @@
     </form-container>
 </template>
 <script>
-import { ref, watch } from 'vue'
-import { useStore } from 'vuex'
-import { formatDate } from '@/date_utils'
+import api from '@/http/api'
+import { ref, watch, onMounted } from 'vue'
 import StepInput from '@/components/forms/StepInput'
 import RichTextEditor from '@/components/forms/RichTextEditor'
+import {saveEntry, updateEntry, fetchEntries} from '@/adapters/log_entry_repository'
 
 
 export default {
@@ -41,6 +41,10 @@ export default {
                     entry: '',
                 }
             }
+        },
+        apiUrl: {
+            required: true,
+            type: String
         }
     },
     setup (props, context) {
@@ -75,12 +79,14 @@ export default {
         const save = async () => {
             try {
                 if (newEntry.value.id) {
-                    //update log entry
+                    await updateEntry(`${props.apiUrl}/${newEntry.value.id}`, newEntry.value);
                 } else {
-                    // save log entry
+                    await saveEntry(props.apiUrl, newEntry.value);
                 }
+
+                await fetchEntries(props.apiUrl);
                 initNewEntry();
-                context.emit('saved');
+                context.emit('saved', newEntry.value);
             } catch (error) {
                 if (error.response && error.response.status == 422 && error.response.data.errors) {
                     errors.value = error.response.data.errors
@@ -94,7 +100,7 @@ export default {
             context.emit('canceled');
         }
 
-        watch (
+        watch(
             () => props.logEntry, 
             (to) => {
                 syncEntry(to)
@@ -107,7 +113,8 @@ export default {
             errors,
             syncEntry,
             initNewEntry,
-            cancel
+            save,
+            cancel,
         }
     },
     mounted() {
