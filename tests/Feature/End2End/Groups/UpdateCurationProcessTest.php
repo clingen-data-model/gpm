@@ -41,7 +41,7 @@ class UpdateCurationProcessTest extends TestCase
      */
     public function validates_required_data()
     {
-        $this->makeRequest([])
+        $this->makeRequest(['expert_panel_type_id' => $this->expertPanel->expert_panel_type_id])
             ->assertStatus(422)
             ->assertJsonFragment([
                 'curation_review_protocol_id' => ['This field is required.'],

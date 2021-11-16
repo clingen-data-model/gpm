@@ -78,8 +78,8 @@ class MarkFinalTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('activity_log', [
-            'subject_type' => 'App\Modules\ExpertPanel\Models\ExpertPanel',
-            'subject_id' => $this->expertPanel->id,
+            'subject_type' => get_class($this->expertPanel->group),
+            'subject_id' => $this->expertPanel->group->id,
             'description' => $this->document->type->name.' version '.$this->document->version.' marked final.'
         ]);
     }

@@ -65,12 +65,12 @@ class NextActionCreateTest extends TestCase
         );
 
         $this->assertDatabaseHas('activity_log', [
-            'subject_id' => $this->expertPanel->id,
+            'subject_id' => $this->expertPanel->group->id,
             'description' => 'Added next action: '.$nextAction->entry,
             'properties->next_action->assignee_id' => 1,
             'properties->next_action->assignee_name' => 'Bob Dobbs'
         ]);
 
-        $this->assertEquals(3, $this->expertPanel->logEntries->last()->properties['step']);
+        $this->assertEquals(3, $this->expertPanel->group->logEntries->last()->properties['step']);
     }
 }

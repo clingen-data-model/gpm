@@ -4,15 +4,21 @@ namespace App\Modules\ExpertPanel\Actions;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Http\Requests\CreateApplicationLogEntryRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Actions\LogEntryAdd as AppLogEntry;
+use App\Modules\ExpertPanel\Http\Requests\CreateApplicationLogEntryRequest;
 
 class LogEntryAdd
 {
     use AsAction;
 
     private ExpertPanel  $expertPanel;
+
+    public function __construct(private AppLogEntry $logEntryAdd)
+    {
+    }
+    
 
     /**
      * Execute the job.
@@ -26,16 +32,7 @@ class LogEntryAdd
         ?int $step = null
     ) {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
-        $logEntry = activity('applications')
-            ->performedOn($expertPanel)
-            ->createdAt(Carbon::parse($logDate))
-            ->causedBy(Auth::user())
-            ->withProperties([
-                'entry' => $entry,
-                'log_date' => $logDate,
-                'step' => $step
-            ])->log($entry);
-        $expertPanel->touch();
+        $logEntry = $this->logEntryAdd->handle(subject: $expertPanel->group, logDate: $logDate, entry: $entry, step: $step);
 
         return $logEntry;
     }

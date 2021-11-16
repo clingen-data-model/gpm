@@ -57,13 +57,7 @@ class SyncGcepGenesTest extends TestCase
      */
     public function validates_input_for_gceps()
     {
-        $this->json('POST', $this->url, ['genes'=>null])
-            ->assertStatus(422)
-            ->assertJsonFragment([
-                    'genes' => ['This field is required.']
-            ]);
-
-            $this->json('POST', $this->url, ['genes'=>['ZXC', 'ABC1']])
+        $this->json('POST', $this->url, ['genes'=>['ZXC', 'ABC1']])
             ->assertStatus(422)
             ->assertJsonFragment([
                     'genes.0' => ['Your selection is invalid.']

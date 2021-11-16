@@ -12,6 +12,7 @@ use App\Modules\Group\Models\Group;
 use App\Models\Contracts\HasMembers;
 use App\Modules\Person\Models\Person;
 use App\Models\Contracts\HasDocuments;
+use App\Models\Contracts\HasLogEntries;
 use App\Models\Contracts\RecordsEvents;
 use App\Modules\ExpertPanel\Models\Coi;
 use Illuminate\Database\Eloquent\Model;
@@ -35,13 +36,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Modules\ExpertPanel\Models\SpecificationRuleSet;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use App\Models\Traits\HasDocuments as TraitsHasDocuments;
+use App\Models\Traits\HasLogEntries as HasLogEntriesTraits;
 use App\Modules\ExpertPanel\Models\CurationReviewProtocol;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use App\Models\Traits\RecordsEvents as TraitsRecordsEvents;
 use App\Modules\Group\Models\Traits\HasMembers as TraitsHasMembers;
 use App\Modules\Group\Models\Traits\BelongsToGroup as TraitsBelongsToGroup;
 
-class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup, RecordsEvents, HasDocuments
+class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup, RecordsEvents, HasDocuments, HasLogEntries
 {
     use HasFactory;
     use HasTimestamps;
@@ -52,6 +54,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     use TraitsRecordsEvents;
     // use TraitsHasDocuments;
     use TraitsHasMembers;
+    use HasLogEntriesTraits;
 
     // protected $table = 'applications';
 
@@ -183,18 +186,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
             ->type(config('documents.types.final-app.id'))
             ->isVersion(1)
             ->first();
-    }
-
-    public function logEntries()
-    {
-        return $this->morphMany(config('activitylog.activity_model'), 'subject');
-    }
-
-    public function latestLogEntry()
-    {
-        return $this->morphOne(config('activitylog.activity_model'), 'subject')
-                ->where('description', 'not like', 'Added next action:%')
-                ->orderBy('created_at', 'desc');
     }
 
     public function nextActions()
@@ -348,7 +339,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     {
         return $this->belongsTo(CurationReviewProtocol::class);
     }
-
 
     // Access methods
 

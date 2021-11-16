@@ -63,7 +63,7 @@ abstract class TestCase extends BaseTestCase
     }
 
     protected function assertLoggedActivity(
-        $expertPanel,
+        $subject,
         $description,
         $properties = null,
         $causer_type = null,
@@ -72,8 +72,8 @@ abstract class TestCase extends BaseTestCase
         $data = [
             'log_name' => 'applications',
             'description' => $description,
-            'subject_type' => ExpertPanel::class,
-            'subject_id' => (string)$expertPanel->id,
+            'subject_type' => get_class($subject),
+            'subject_id' => $subject->id,
             'causer_type' => $causer_type,
             'causer_id' => $causer_id,
         ];

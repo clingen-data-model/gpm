@@ -45,7 +45,7 @@ class ExpertPanelUpdateAttributesTest extends TestCase
             'short_base_name' => 'test',
             'long_base_name' => 'aabb',
         ]);
-        $this->assertLoggedActivity($expertPanel, 'Attributes updated: short_base_name = test');
+        $this->assertLoggedActivity($expertPanel->group, 'Attributes updated: short_base_name = test');
     }
 
     /**

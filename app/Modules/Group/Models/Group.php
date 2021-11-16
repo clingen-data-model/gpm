@@ -7,6 +7,7 @@ use App\Models\Contracts\HasNotes;
 use App\Models\Contracts\HasMembers;
 use Database\Factories\GroupFactory;
 use App\Models\Contracts\HasDocuments;
+use App\Models\Contracts\HasLogEntries;
 use App\Models\Contracts\RecordsEvents;
 use App\Modules\Group\Models\GroupType;
 use Illuminate\Database\Eloquent\Model;
@@ -18,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Traits\HasDocuments as HasDocumentsTrait;
+use App\Models\Traits\HasLogEntries as HasLogEntriesTraits;
 use App\Models\Traits\RecordsEvents as RecordsEventsTrait;
 use App\Modules\Group\Models\Traits\HasMembers as HasMembersTrait;
 
@@ -32,7 +34,7 @@ use App\Modules\Group\Models\Traits\HasMembers as HasMembersTrait;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDocuments
+class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDocuments, HasLogEntries
 {
     use HasFactory;
     use SoftDeletes;
@@ -41,6 +43,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     use RecordsEventsTrait;
     use HasUuid;
     use HasDocumentsTrait;
+    use HasLogEntriesTraits;
 
     /**
      * The attributes that are mass assignable.
@@ -122,13 +125,6 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     {
         return $this->belongsTo(Group::class);
     }
-
-    public function logEntries()
-    {
-        return $this->morphMany(config('activitylog.activity_model'), 'subject');
-    }
-
-
 
     /**
      * SCOPES

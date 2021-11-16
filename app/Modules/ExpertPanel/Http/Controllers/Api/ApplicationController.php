@@ -29,7 +29,7 @@ class ApplicationController extends Controller
     {
         $query = ExpertPanel::query()
                     ->select('expert_panels.*')
-                    ->with('logEntries', 'nextActions', 'group', 'group.parent', 'cdwg');
+                    ->with('nextActions', 'group', 'group.parent', 'group.logEntries', 'cdwg');
 
         if ($request->has('sort')) {
             $field = $request->sort['field'];
@@ -90,8 +90,6 @@ class ApplicationController extends Controller
             $query->withTrashed();
         }
 
-        // return ExpertPanelResource::collection($query->get());
-
         return new ExpertPanelCollection($query->paginate(20));
     }
 
@@ -106,7 +104,6 @@ class ApplicationController extends Controller
     {
         $expertPanel = ExpertPanel::findByUuidOrFail($uuid);
         $expertPanel->load([
-            'latestLogEntry',
             'cdwg',
             'group',
             'group.parent',
@@ -114,6 +111,8 @@ class ApplicationController extends Controller
             'type',
             'group.members',
             'group.members.person',
+            'group.logEntries',
+            'group.latestLogEntry',
             'nextActions'
         ]);
         if ($request->has('with')) {
