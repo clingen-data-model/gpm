@@ -37,6 +37,9 @@ Route::group([
     Route::get('/{uuid}', [GroupController::class, 'show']);
 
     Route::get('/{uuid}/activity-logs', [ActivityLogsController::class, 'index']);
+    Route::post('/{uuid}/activity-logs', [ActivityLogsController::class, 'store']);
+    Route::put('/{uuid}/activity-logs/{logEntryId}', [ActivityLogsController::class, 'update']);
+    Route::delete('/{uuid}/activity-logs/{logEntryId}', [ActivityLogsController::class, 'destroy']);
 
     Route::put('/{uuid}/application/membership-description', MembershipDescriptionUpdate::class);
     Route::put('/{uuid}/application/scope-description', ScopeDescriptionUpdate::class);

@@ -16,7 +16,7 @@ abstract class ApiController
     {
         $modelClass = $this->resolveModelClass($classString);
 
-        return $this->resolveEloquentResource($classString)::collection($modelClass::all());
+        return $this->resolveEloquentResource($classString)::collection($modelClass::orderBy('name')->get());
     }
 
     public function show(Request $request, $classString, $id)

@@ -18,21 +18,10 @@ class InstitutionSeeder extends Seeder
     public function run()
     {
         // Get institutions from https://clinicalgenome.org/data-pull/organizations/
-        $institutions = json_decode(file_get_contents('https://clinicalgenome.org/data-pull/organizations/'));
-
-        $items = array_map(function ($inst) {
-            $countryId = $this->resolveCountryId($inst);
-
-            return [
-                'uuid' => Uuid::uuid4()->toString(),
-                'name' => $this->resolveName($inst->title),
-                'abbreviation' => $this->resolveAbbreviation($inst->title),
-                'url' => $this->resolveUrl($inst),
-                'address' => $this->resolveAddress($inst),
-                'country_id' => $countryId,
-                'website_id' => $inst->id,
-            ];
-        }, $institutions);
+        $items = [];
+        if (!app()->environment('testing')) {
+            $items = $this->getWebsiteInstitutions();
+        }
 
 
         $this->seedFromArray($items, Institution::class);
@@ -74,6 +63,28 @@ class InstitutionSeeder extends Seeder
                 return null;
         }
     }
+
+    private function getWebsiteInstitutions()
+    {
+        $institutions = json_decode(file_get_contents('https://clinicalgenome.org/data-pull/organizations/'));
+
+        $items = array_map(function ($inst) {
+            $countryId = $this->resolveCountryId($inst);
+
+            return [
+                'uuid' => Uuid::uuid4()->toString(),
+                'name' => $this->resolveName($inst->title),
+                'abbreviation' => $this->resolveAbbreviation($inst->title),
+                'url' => $this->resolveUrl($inst),
+                'address' => $this->resolveAddress($inst),
+                'country_id' => $countryId,
+                'website_id' => $inst->id,
+            ];
+        }, $institutions);
+
+        return $items;
+    }
+    
 
     private function resolveName($titleString)
     {
