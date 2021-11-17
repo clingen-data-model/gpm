@@ -106,6 +106,7 @@ export default {
     render () {
         // const items = this.renderItems;
         const containerClass = [];
+        // console.log(this.$slots.default());
         return (
             <div class={containerClass.join(' ')}>
                 <div class="dropdown" class={this.orientation}>
@@ -118,7 +119,7 @@ export default {
                         </span>
                         {this.$slots.label ? this.$slots.label() : this.label}
                     </div>
-                        <teleport to="body">
+                    <teleport to="body">
                         <transition name="slide-fade-down">
                             <div 
                                 v-show={this.menuOpen}
@@ -127,18 +128,24 @@ export default {
                                 class="dropdown-items-container"
                                 style={`top: ${this.menuY}px; left: ${this.menuX}px`}
                             >
-                                <ul class="dropdown-items">
+                                <ul class="dropdown-items" onClick="{this.toggleMenu}">
                                     {this.$slots.default()}
                                 </ul>
                             </div>
                         </transition>
-                        </teleport>
+                    </teleport>
                 </div>
             </div>
         )
     },
     mounted () {
-        this.positionMenu()
+        this.positionMenu();
+        Array.from(this.$refs.dropdownMenu.getElementsByClassName('menu-item'))
+            .forEach(item => {
+                item.addEventListener('click', (event) => {
+                    this.toggleMenu(event)
+                });
+            })
     }
 }
 </script>

@@ -1,6 +1,6 @@
 <script>
 export default {
-    name: 'ComponentName',
+    name: 'DropdownItem',
     data() {
         return {
             active: false   
@@ -16,7 +16,7 @@ export default {
     },
     render() {
         return (
-            <li class="hover:bg-blue-100 cursor-pointer">
+            <li class="menu-item hover:bg-blue-100 cursor-pointer">
                 {this.$slots.default()}
             </li>
         )
