@@ -10,19 +10,20 @@ use App\Modules\Group\Actions\MemberRemove;
 use App\Modules\Group\Actions\MemberRetire;
 use App\Modules\Group\Actions\MemberUpdate;
 use App\Modules\Group\Actions\AddGenesToVcep;
-use App\Modules\Group\Actions\CurationReviewProtocolUpdate;
 use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Group\Actions\MemberRemoveRole;
 use App\Modules\Group\Actions\EvidenceSummaryAdd;
 use App\Modules\Group\Actions\EvidenceSummaryDelete;
 use App\Modules\Group\Actions\EvidenceSummaryUpdate;
+use App\Modules\Group\Actions\NhgriAttestationStore;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Group\Actions\MemberRevokePermission;
 use App\Modules\Group\Actions\ScopeDescriptionUpdate;
 use App\Modules\Group\Actions\MembershipDescriptionUpdate;
-use App\Modules\Group\Http\Controllers\Api\ActivityLogsController;
+use App\Modules\Group\Actions\CurationReviewProtocolUpdate;
 use App\Modules\Group\Http\Controllers\Api\GroupController;
 use App\Modules\Group\Http\Controllers\Api\GeneListController;
+use App\Modules\Group\Http\Controllers\Api\ActivityLogsController;
 use App\Modules\Group\Http\Controllers\Api\EvidenceSummaryController;
 
 // Route::post('/{{group_uuid}}/members', MemberAdd::class);
@@ -41,20 +42,30 @@ Route::group([
     Route::put('/{uuid}/activity-logs/{logEntryId}', [ActivityLogsController::class, 'update']);
     Route::delete('/{uuid}/activity-logs/{logEntryId}', [ActivityLogsController::class, 'destroy']);
 
-    Route::put('/{uuid}/application/membership-description', MembershipDescriptionUpdate::class);
-    Route::put('/{uuid}/application/scope-description', ScopeDescriptionUpdate::class);
-    
-    Route::get('/{uuid}/application/genes', [GeneListController::class, 'index']);
-    Route::post('/{uuid}/application/genes', GenesAdd::class);
-    Route::put('/{uuid}/application/genes/{gene_id}', GeneUpdate::class);
-    Route::delete('/{uuid}/application/genes/{gene_id}', GeneRemove::class);
+    // APPLICATION
+    Route::group(['prefix' => '/{uuid}/application'], function () {
+        Route::put('/membership-description', MembershipDescriptionUpdate::class);
+        Route::put('/scope-description', ScopeDescriptionUpdate::class);
+        Route::put('/curation-review-protocols', CurationReviewProtocolUpdate::class);
 
-    Route::get('/{uuid}/application/evidence-summaries', [EvidenceSummaryController::class, 'index']);
-    Route::post('/{uuid}/application/evidence-summaries', EvidenceSummaryAdd::class);
-    Route::put('/{uuid}/application/evidence-summaries/{summaryId}', EvidenceSummaryUpdate::class);
-    Route::delete('/{uuid}/application/evidence-summaries/{summaryId}', EvidenceSummaryDelete::class);
+        Route::post('/nhgri', NhgriAttestationStore::class);
+
+        // GENES
+        Route::group(['prefix' => '/genes'], function () {
+            Route::get('/', [GeneListController::class, 'index']);
+            Route::post('/', GenesAdd::class);
+            Route::put('/{gene_id}', GeneUpdate::class);
+            Route::delete('/{gene_id}', GeneRemove::class);
+        });
     
-    Route::put('/{uuid}/application/curation-review-protocols', CurationReviewProtocolUpdate::class);
+        // EVIDENCE SUMMARIES
+        Route::group(['prefix' => '/evidence-summaries'], function () {
+            Route::get('/', [EvidenceSummaryController::class, 'index']);
+            Route::post('/', EvidenceSummaryAdd::class);
+            Route::put('/{summaryId}', EvidenceSummaryUpdate::class);
+            Route::delete('/{summaryId}', EvidenceSummaryDelete::class);
+        });
+    });
 
     Route::post('/{uuid}/invites', MemberInvite::class);
     

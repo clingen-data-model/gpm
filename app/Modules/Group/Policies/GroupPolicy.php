@@ -167,13 +167,6 @@ class GroupPolicy
             || $user->hasGroupPermissionTo('application-edit', $group);
     }
 
-    /**
-     * Determine whether the user can add an evidence summary to a VCEP.
-     *
-     * @param  \App\Modules\User\Models\User  $user
-     * @param  \App\Models\ExpertPanel  $expertPanel
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
     public function updateEvidenceSummary(User $user, Group $group)
     {
         return $user->hasPermissionTo('ep-applications-manage')
@@ -181,6 +174,12 @@ class GroupPolicy
     }
 
     public function updateCurationReviewProtocol(User $user, Group $group)
+    {
+        return $user->hasPermissionTo('ep-applications-manage')
+            || $user->hasGroupPermissionTo('application-edit', $group);
+    }
+
+    public function makeAttestation(User $user, Group $group)
     {
         return $user->hasPermissionTo('ep-applications-manage')
             || $user->hasGroupPermissionTo('application-edit', $group);

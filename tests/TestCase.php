@@ -67,20 +67,32 @@ abstract class TestCase extends BaseTestCase
         $description,
         $properties = null,
         $causer_type = null,
-        $causer_id = null
+        $causer_id = null,
+        $activity_type = null,
+        $logName = 'applications'
     ) {
         $data = [
-            'log_name' => 'applications',
+            'log_name' => $logName,
             'description' => $description,
             'subject_type' => get_class($subject),
             'subject_id' => $subject->id,
-            'causer_type' => $causer_type,
-            'causer_id' => $causer_id,
         ];
+
+        if ($causer_type) {
+            $data['causer_type'] = $causer_type;
+        }
+
+        if ($causer_id) {
+            $data['causer_id'] = $causer_id;
+        }
+
+        if ($activity_type) {
+            $data['activity_type'] = $activity_type;
+        }
 
         if ($properties) {
             if (!isset($properties['step'])) {
-                $properties['step'] = $expertPanel->current_step;
+                $properties['step'] = $subject->current_step;
             }
             foreach ($properties as $key => $val) {
                 $dbVal = $val;
