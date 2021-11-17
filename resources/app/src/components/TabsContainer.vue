@@ -113,21 +113,31 @@ export default {
             this.tabs.push(tab);
             this.setActiveIndex();
         },
+        
+        removeTab (tab) {
+            const idx = this.tabs.findIndex(i => tab ==i)
+            if (idx > -1) {
+                this.tabs.splice(idx, 1);
+            }
+        },
+
         renderTabs () {
-            return this.tabs.map((tab, idx) => {
-                if (!tab) return
+            return this.tabs
+                .filter(tab => tab.visible)
+                .map((tab, idx) => {
+                    if (!tab) return
 
-                const tabClasses = ['tab', 'cursor-pointer'];
-                if (tab.active) {
-                    tabClasses.push('active');
-                }
+                    const tabClasses = ['tab', 'cursor-pointer'];
+                    if (tab.active) {
+                        tabClasses.push('active');
+                    }
 
-                return (
-                    <li class={tabClasses.join(' ')} onClick={ () => this.activateTab(idx) }>
-                        {tab.label}
-                    </li>
-                )
-            })
+                    return (
+                        <li class={tabClasses.join(' ')} onClick={ () => this.activateTab(idx) }>
+                            {tab.label}
+                        </li>
+                    )
+                })
         },
     },
     render() {

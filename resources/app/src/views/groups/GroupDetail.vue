@@ -35,9 +35,9 @@
                 <scope-description-form :group="group" v-if="group.isEp()"></scope-description-form>
             </tab-item>
             <tab-item label="Sustained Curation" v-show="group.isEp()">
-                <!-- <nhgri-attestation :group="group" class="pb-2 mb-4 border-b"></nhgri-attestation> -->
+                <nhgri-attestation :group="group" class="pb-2 mb-4 border-b"></nhgri-attestation>
                 <component :is="ongoingPlansForm" :group="group" class="pb-2 mb-4 border-b"></component>
-                <!-- <reanalysis-form :group="group" class="pb-2 mb-4 border-b"></reanalysis-form> -->
+                <reanalysis-form :group="group" class="pb-2 mb-4 border-b"></reanalysis-form>
                 <evidence-summaries :group="group" class="pb-2 mb-4 border-b" v-if="group.isVcep()"></evidence-summaries>
             </tab-item>
             <tab-item v-show="group.isVcep()" label="Specifications">
@@ -46,8 +46,8 @@
             <tab-item label="Documents">
                 Group documents will go here.
             </tab-item>
-            <tab-item label="Log" v-show="hasPermission('groups-manage')">
-                <activity-log 
+            <tab-item label="Log" :visible="hasPermission('groups-manage')">
+                <activity-log
                     :log-entries="logEntries"
                     :api-url="`/api/groups/${group.uuid}/activity-logs`"
                     v-bind:log-updated="getLogEntries"
@@ -91,6 +91,7 @@ import { useStore } from 'vuex'
 import api from '@/http/api'
 import VcepOngoingPlansFormVue from '../../components/expert_panels/VcepOngoingPlansForm.vue';
 import {logEntries, fetchEntries} from '@/adapters/log_entry_repository';
+import {hasPermission} from '@/auth_utils'
 
 export default {
     name: 'GroupDetail',
@@ -111,15 +112,6 @@ export default {
         uuid: {
             type: String,
             required: true
-        }
-    },
-    data () {
-        return {
-            dummyLogEntries: [
-                {id: 1, created_at: '2021-09-01T13:01:00', description: 'test entry 1', causer: {name: 'Tester Testerson'}},
-                {id: 2, created_at: '2021-09-02T15:01:00', description: 'test entry 2', causer: {name: 'Tester Testerson'}},
-                {id: 3, created_at: '2021-09-03T15:01:00', description: 'test entry 3', causer: {name: 'Tester Testerson'}},
-            ]
         }
     },
     setup (props) {
@@ -147,8 +139,9 @@ export default {
                 .then(() => {
                     store.commit('groups/setCurrentItemIndexByUuid', props.uuid)
                 })
-            
-            getLogEntries();
+            if (hasPermission('groups-manage')) {
+                getLogEntries();
+            }
         });
         
 

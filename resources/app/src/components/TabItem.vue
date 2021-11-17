@@ -5,6 +5,11 @@ export default {
         label: {
             required: true,
             type: String
+        },
+        visible: {
+            type: Boolean,
+            required: false,
+            default: true
         }
     },
     data() {
@@ -25,11 +30,14 @@ export default {
     mounted() {
         this.$parent.addTab(this)
     },
+    unmounted () {
+        this.$parent.removeTab(this);
+    }
 }
 </script>
 <template>
     <keep-alive>
-        <section v-if="this.active">
+        <section v-if="this.active && this.visible">
             <slot></slot>
         </section>
     </keep-alive>
