@@ -114,7 +114,7 @@
                         </tr>
                     </transition-group>
                 </tbody>
-                <tr>
+                <tr v-if="hasAnyPermission(['ep-applications-manage', ['application-edit', group]])">
                     <td colspan="5" class="border-white">
                         <div class="-mx-2 my-2 flex space-x-2">
                             <button @click="addNewGene" class="btn btn-xs">Add Gene/Disease Pair</button>
