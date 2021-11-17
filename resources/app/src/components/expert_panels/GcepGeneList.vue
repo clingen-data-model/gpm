@@ -3,7 +3,7 @@
         <h4 class="flex justify-between mb-2">
             Gene List
             <edit-button 
-                v-if="hasAnyPermission(['groups-manage'], ['edit-info', group]) && !editing"
+                v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing"
                 @click="showForm"
             ></edit-button>
         </h4>
@@ -19,7 +19,7 @@
         </div>
         <div v-else>
             <p v-if="genesAsText" style="text-indent: 1rem;">{{genesAsText}}</p>
-            <div class="well cursor-pointer" v-else @click="editing = true">
+            <div class="well cursor-pointer" v-else @click="showForm">
                 {{ loading ? `Loading...` : `No genes have been added to the gene list.`}}
             </div>
         </div>
@@ -32,6 +32,7 @@ import EditButton from '@/components/buttons/EditIconButton'
 import formFactory from '@/forms/form_factory'
 import is_validation_error from '@/http/is_validation_error'
 import api from '@/http/api'
+import { hasAnyPermission } from '@/auth_utils'
 
 export default {
     name: 'GcepGeneList',
@@ -51,7 +52,8 @@ export default {
     ],
     setup(props, context) {
         const store = useStore();
-        const {errors, editing, hideForm, showForm, cancel: baseCancel} = formFactory(props, context)
+
+        const {errors, editing, hideForm, showForm: baseShowForm, cancel: baseCancel} = formFactory(props, context)
         const cancel = () => {
             getGenes();
             baseCancel();
@@ -114,6 +116,12 @@ export default {
                 }
             }
         };
+
+        const showForm = () => {
+            if (hasAnyPermission(['ep-applications-manage', ['application-edit', props.group]])) {
+                baseShowForm();
+            }
+        }
 
         onMounted(() => {
             syncGenesAsText();

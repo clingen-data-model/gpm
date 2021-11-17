@@ -3,7 +3,7 @@
         <header class="flex justify-between items-center">
             <h4>Description of Scope</h4>
             <edit-button 
-                v-if="hasAnyPermission(['groups-manage'], ['edit-info', group]) && !editing"
+                v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing"
                 @click="showForm"
             ></edit-button>
         </header>
@@ -18,7 +18,7 @@
                         v-if="scopeDescription" 
                         :markdown="scopeDescription">
                     </markdown-block>
-                    <p class="well cursor-pointer" v-else @click="editing = true">
+                    <p class="well cursor-pointer" v-else @click="showForm">
                         A description of expertise has not yet been provided.
                     </p>
                 </div>
@@ -32,6 +32,7 @@ import {useStore} from 'vuex'
 import Group from '@/domain/group'
 import EditButton from '@/components/buttons/EditIconButton'
 import is_validation_error from '../../http/is_validation_error'
+import { hasAnyPermission } from '@/auth_utils'
 
 export default {
     name: 'scopeDescriptionForm',
@@ -59,9 +60,11 @@ export default {
             errors.value = {};
         }
         const showForm = () => {
-            errors.value = {};
-            editing.value = true;
-            context.emit('editing');
+            if (hasAnyPermission(['ep-applications-manage', ['application-edit', props.group]])) {
+                errors.value = {};
+                editing.value = true;
+                context.emit('editing');
+            }
         }
         const cancel = () => {
             hideForm();
@@ -90,7 +93,6 @@ export default {
                 }
             }
         }
-        
 
         onMounted(() => {
             syncDescription();
@@ -104,7 +106,7 @@ export default {
             errors,
             scopeDescription,
             syncDescription,
-            save
+            save,
         }
 
     },

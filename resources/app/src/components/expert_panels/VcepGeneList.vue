@@ -11,10 +11,7 @@
                         <th style="min-width: 15rem">Disease</th>
                         <th style="max-width: 9rem">Date Approved</th>
                         <th
-                            v-if="hasAnyPermission([
-                                'ep-applications-manage', 
-                                ['application-edit', this.group]
-                            ])"
+                            v-if="canEdit"
                             style="width: 5rem"
                         ></th>
                     </tr>
@@ -26,8 +23,8 @@
                                 <div class="p-2 text-center font-bold">
                                     <span v-if="loading">Loading...</span>
                                     <div v-else>
-                                        <p>There are no genes in your gene list.</p>
-                                        <button class="btn blue btn-sm" @click="addNewGene">Add a gene/disease pair</button>
+                                        <p>There are no gene/disease pairs in the gene list.</p>
+                                        <button class="btn blue btn-sm" @click="addNewGene" v-if="canEdit">Add a gene/disease pair</button>
                                     </div>
                                 </div>
                             </td>
@@ -41,10 +38,7 @@
                                     <td>{{gene.disease_name}}</td>
                                     <td>{{formatDate(gene.date_approved)}}</td>
                                     <td
-                                        v-if="hasAnyPermission([
-                                            'ep-applications-manage', 
-                                            ['application-edit', this.group]
-                                        ])"
+                                        v-if="canEdit"
                                     >
                                         <div v-if="!gene.edit">
                                             <dropdown-menu 
@@ -114,7 +108,7 @@
                         </tr>
                     </transition-group>
                 </tbody>
-                <tr v-if="hasAnyPermission(['ep-applications-manage', ['application-edit', group]])">
+                <tr v-if="canEdit">
                     <td colspan="5" class="border-white">
                         <div class="-mx-2 my-2 flex space-x-2">
                             <button @click="addNewGene" class="btn btn-xs">Add Gene/Disease Pair</button>
@@ -139,6 +133,7 @@ import GeneSearchSelect from '@/components/forms/GeneSearchSelect'
 import DiseaseSearchSelect from '@/components/forms/DiseaseSearchSelect'
 import is_validation_error from '@/http/is_validation_error'
 import {isEqual} from 'lodash'
+import {hasAnyPermission} from '@/auth_utils'
 
 
 export default {
@@ -287,6 +282,10 @@ export default {
             clearNewGenes();
         }
 
+        const canEdit = computed(() => {
+            return hasAnyPermission(['ep-applications-manage', ['application-edit', props.group]])
+        })
+
         onMounted(() => {
             getGenes();
         });
@@ -305,6 +304,7 @@ export default {
             edit, 
             remove,
             cancelPendingRemove,
+            canEdit
         }        
     }
 }
