@@ -123,9 +123,8 @@ export default {
 
         renderTabs () {
             return this.tabs
-                .filter(tab => tab.visible)
                 .map((tab, idx) => {
-                    if (!tab) return
+                    if (!tab || !tab.visible) return
 
                     const tabClasses = ['tab', 'cursor-pointer'];
                     if (tab.active) {
