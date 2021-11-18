@@ -19,6 +19,7 @@ use App\Modules\Group\Actions\NhgriAttestationStore;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Group\Actions\MemberRevokePermission;
 use App\Modules\Group\Actions\ScopeDescriptionUpdate;
+use App\Modules\Group\Actions\ReanalysisAttestationStore;
 use App\Modules\Group\Actions\MembershipDescriptionUpdate;
 use App\Modules\Group\Actions\CurationReviewProtocolUpdate;
 use App\Modules\Group\Http\Controllers\Api\GroupController;
@@ -49,6 +50,7 @@ Route::group([
         Route::put('/curation-review-protocols', CurationReviewProtocolUpdate::class);
 
         Route::post('/nhgri', NhgriAttestationStore::class);
+        Route::post('/reanalysis', ReanalysisAttestationStore::class);
 
         // GENES
         Route::group(['prefix' => '/genes'], function () {

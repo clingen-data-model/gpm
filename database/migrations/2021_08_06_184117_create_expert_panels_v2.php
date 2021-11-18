@@ -54,11 +54,11 @@ class CreateExpertPanelsV2 extends Migration
                 ;
             $table->text('curation_review_protocol_other')->nullable();
             $table->string('meeting_frequency')->nullable();
-            $table->foreignId('reanalysis_discrepency_resolution_id')->nullable()
-                ->constrained()
-                ->cascadeOnDelete()
-                ->cascadeOnUpdate()
-                ;
+            $table->boolean('reanalysis_conflicting')->nullable();
+            $table->boolean('reanalysis_review_lp')->nullable();
+            $table->boolean('reanalysis_review_lb')->nullable();
+            $table->text('reanalysis_other')->nullable();
+            $table->dateTime('reanalysis_attestation_date')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
