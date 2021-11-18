@@ -1,7 +1,7 @@
 <template>
     <div :class="{'border-l border-red-800 px-2': hasErrors}" class="input-row my-3">
         <div :class="{'sm:flex': !vertical}">
-            <div class="flex-none" :class="labelContainerClass">
+            <div class="flex-none" :class="labelContainerClass" v-show="showLabel">
                 <slot name="label" v-if="label">
                     <label :class="{'text-red-800': hasErrors}">{{label}}{{colon}}</label>
                 </slot>
@@ -38,12 +38,8 @@
     </div>
 </template>
 <script>
-import InputErrors from './InputErrors'
 
 export default {
-    components: {
-        InputErrors
-    },
     props: {
         vertical: {
             type: Boolean,
@@ -90,6 +86,11 @@ export default {
             required: false,
             default: null,
             type: String
+        },
+        hideLabel: {
+            required: false,
+            default: false,
+            type: Boolean
         }
     },
     emits: [
@@ -115,6 +116,9 @@ export default {
             }
 
             return classes.join(' ');
+        },
+        showLabel () {
+            return !this.hideLabel;
         }
     },
     methods: {
