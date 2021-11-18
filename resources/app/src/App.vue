@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="epam-app-root">
     <header id="nav" class="border-b bg-gray-100">
       <div class="container mx-auto py-3 flex">
         <div id="main-menu" class="flex-grow">
@@ -53,12 +53,15 @@
       </dev-component>
     </div>
 
-    <footer class="w-full">
-      <div class="container mx-auto py-3 flex" id="footer-content">
-          
-      </div>
-    </footer>
+    <teleport to="body">
+      <footer class="w-full border-t mt-4 bg-gray-100">
+        <div class="container mx-auto py-3 flex" id="footer-content">
+            
+        </div>
+      </footer>
+    </teleport>
   </div>
+  
 </template>
 
 <script>
