@@ -70,7 +70,7 @@ export default {
         async submit () {
             if (this.attestation) {
                 try {
-                    await api.post(`/api/groups/${this.group.uuid}/application/nhgri`, {'attestation': this.attestation})
+                    await api.post(`/api/groups/${this.group.uuid}/application/attestations/nhgri`, {'attestation': this.attestation})
                 } catch (error) {
                     if (is_validation_error(error)) {
                         this.errors = error.response.data.errors

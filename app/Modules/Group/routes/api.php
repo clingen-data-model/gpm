@@ -49,8 +49,8 @@ Route::group([
         Route::put('/scope-description', ScopeDescriptionUpdate::class);
         Route::put('/curation-review-protocols', CurationReviewProtocolUpdate::class);
 
-        Route::post('/nhgri', NhgriAttestationStore::class);
-        Route::post('/reanalysis', ReanalysisAttestationStore::class);
+        Route::post('/attestations/nhgri', NhgriAttestationStore::class);
+        Route::post('/attestations/reanalysis', ReanalysisAttestationStore::class);
 
         // GENES
         Route::group(['prefix' => '/genes'], function () {

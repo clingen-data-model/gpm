@@ -23,19 +23,19 @@ class ReanalysisAttestationStore
     public function handle(
         Group $group,
         Carbon $attestationDate,
-        bool $reanalysisConflicting,
-        bool $reanalysisLP,
-        bool $reanalysisLB,
-        String $reanalysisOther,
+        bool $reanalysis_conflicting,
+        bool $reanalysis_review_lp,
+        bool $reanalysis_review_lb,
+        ?String $reanalysis_other,
     ) {
         if (!$group->isEp) {
             throw ValidationException::withMessages(['group' => 'Only expert panels have Reanalysis & Discrepancy Resolution attestations.']);
         }
 
-        $group->expertPanel->reanalysis_conflicting = $reanalysisConflicting;
-        $group->expertPanel->reanalysis_review_lp = $reanalysisLP;
-        $group->expertPanel->reanalysis_review_lb = $reanalysisLB;
-        $group->expertPanel->reanalysis_other = $reanalysisOther;
+        $group->expertPanel->reanalysis_conflicting = $reanalysis_conflicting;
+        $group->expertPanel->reanalysis_review_lp = $reanalysis_review_lp;
+        $group->expertPanel->reanalysis_review_lb = $reanalysis_review_lb;
+        $group->expertPanel->reanalysis_other = $reanalysis_other;
         $group->expertPanel->reanalysis_attestation_date = $attestationDate;
         $group->expertPanel->save();
         $group->touch();
@@ -59,10 +59,7 @@ class ReanalysisAttestationStore
         $this->handle(
             $group,
             $attestationDate,
-            $request->reanalysis_conflicting,
-            $request->reanalysis_review_lp,
-            $request->reanalysis_review_lb,
-            $request->reanalysis_other
+            ...$request->only('reanalysis_conflicting', 'reanalysis_review_lp', 'reanalysis_review_lb', 'reanalysis_other')
         );
 
         return new GroupResource($group);

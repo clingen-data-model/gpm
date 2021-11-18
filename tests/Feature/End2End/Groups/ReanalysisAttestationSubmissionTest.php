@@ -107,6 +107,6 @@ class ReanalysisAttestationSubmissionTest extends TestCase
             'reanalysis_other' => 'bob dobs'
         ];
 
-        return $this->json('POST', '/api/groups/'.$this->expertPanel->group->uuid.'/application/reanalysis', $data);
+        return $this->json('POST', '/api/groups/'.$this->expertPanel->group->uuid.'/application/attestations/reanalysis', $data);
     }
 }

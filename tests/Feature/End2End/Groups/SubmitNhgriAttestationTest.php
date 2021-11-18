@@ -95,6 +95,6 @@ class SubmitNhgriAttestation extends TestCase
     {
         $data = $data ?? ['attestation' => true];
 
-        return $this->json('POST', '/api/groups/'.$this->expertPanel->group->uuid.'/application/nhgri', $data);
+        return $this->json('POST', '/api/groups/'.$this->expertPanel->group->uuid.'/application/attestations/nhgri', $data);
     }
 }

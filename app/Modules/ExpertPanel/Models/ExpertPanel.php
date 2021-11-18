@@ -82,8 +82,8 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'curation_review_protocol_other',
         'meeting_frequency',
         'reanalysis_conflicting',
-        'reanalysis_rereview_lp',
-        'reanalysis_rereview_lb',
+        'reanalysis_review_lp',
+        'reanalysis_review_lb',
         'reanalysis_other',
         'cdwg_id',
         'working_name',
@@ -108,7 +108,10 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'expert_panel_type_id' => 'integer',
         'curtion_review_protocol_id' => 'integer',
         'reanalysis_discrepency_resolution_id' => 'integer',
-        'current_step' => 'integer'
+        'current_step' => 'integer',
+        'reanalysis_conflicting' => 'boolean',
+        'reanalysis_review_lp' => 'boolean',
+        'reanalysis_review_lb' => 'boolean',
     ];
 
     protected $with = [
