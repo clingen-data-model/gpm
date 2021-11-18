@@ -44,7 +44,7 @@
                 </input-row>
             </li>
         </ul>
-        <button class="btn" @click="submit">Submit</button>
+        <button class="btn" @click="submit" v-if="showSubmit">Submit</button>
     </div>
 </template>
 <script>
@@ -57,6 +57,11 @@ export default {
         group: {
             type: Object,
             required: true
+        },
+        showSubmit: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     },
     data() {

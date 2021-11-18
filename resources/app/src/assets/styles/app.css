@@ -47,6 +47,10 @@ input[type=file]{
     @apply border-none p-0;
 }
 
+a[href] {
+    @apply text-blue-500 hover:underline;
+}
+
 input,
 select,
 textarea {

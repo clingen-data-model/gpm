@@ -45,17 +45,11 @@
                 Group documents will go here.
             </tab-item>
             <tab-item label="Attestations">
-                <attestation-nghri :group="group" 
-                    class="pb-2 mb-4 border-b"
-                ></attestation-nghri>
-                <attestation-reanalysis :group="group" 
-                    class="pb-2 mb-4 border-b" 
-                    v-if="group.isVcep()"
-                ></attestation-reanalysis>
-                <gcep-attestation :group="group"
-                    class="pb-2 mb-4 border-b"
-                    v-if="group.isGcep()"
-                ></gcep-attestation>
+                <attestation-gcep :group="group" class="pb-2 mb-4 border-b" v-if="group.isGcep()" :show-submit="true" />
+
+                <attestation-reanalysis :group="group" class="pb-2 mb-4 border-b"  v-if="group.isVcep()" :show-submit="true" />
+                
+                <attestation-nhgri :group="group" class="pb-2 mb-4 border-b" :show-submit="true" />
             </tab-item>
             <tab-item label="Log" :visible="hasPermission('groups-manage')">
                 <activity-log
@@ -86,35 +80,38 @@
     </div>
 </template>
 <script>
-import ActivityLog from '@/components/ActivityLog'
-import GcepGeneList from '@/components/expert_panels/GcepGeneList'
-import VcepGeneList from '@/components/expert_panels/VcepGeneList'
-import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm'
-import MemberList from '@/components/groups/MemberList';
-import MembershipDescriptionForm from '@/components/expert_panels/MembershipDescriptionForm'
-import AttestationNhgri from '@/components/expert_panels/AttestationNhgri'
-import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm'
-import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm'
-import AttestationReanalysis from '@/components/expert_panels/AttestationReanalysis'
-import EvidenceSummaries from '@/components/expert_panels/EvidenceSummaryList'
 import { ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
-import api from '@/http/api'
-import VcepOngoingPlansFormVue from '../../components/expert_panels/VcepOngoingPlansForm.vue';
+
 import {logEntries, fetchEntries} from '@/adapters/log_entry_repository';
 import {hasPermission} from '@/auth_utils'
+
+import ActivityLog from '@/components/ActivityLog'
+import AttestationGcep from '@/components/expert_panels/AttestationGcep'
+import AttestationNhgri from '@/components/expert_panels/AttestationNhgri'
+import AttestationReanalysis from '@/components/expert_panels/AttestationReanalysis'
+import EvidenceSummaries from '@/components/expert_panels/EvidenceSummaryList'
+import GcepGeneList from '@/components/expert_panels/GcepGeneList'
+import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm'
+import MemberList from '@/components/groups/MemberList';
+import MembershipDescriptionForm from '@/components/expert_panels/MembershipDescriptionForm'
+import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm'
+import VcepGeneList from '@/components/expert_panels/VcepGeneList'
+import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm'
+import VcepOngoingPlansFormVue from '../../components/expert_panels/VcepOngoingPlansForm.vue';
 
 export default {
     name: 'GroupDetail',
     components: {
         ActivityLog,
+        AttestationGcep,
+        AttestationNhgri,
+        AttestationReanalysis,
         EvidenceSummaries,
         GcepGeneList,
         GcepOngoingPlansForm,
         MemberList,
         MembershipDescriptionForm,
-        AttestationNhgri,
-        AttestationReanalysis,
         ScopeDescriptionForm,
         VcepGeneList,
         VcepOngoingPlansForm,

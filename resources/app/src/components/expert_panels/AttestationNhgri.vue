@@ -35,7 +35,7 @@
             and refer to guidance on submissions to a preprint server (e.g. bioRxiv or medRxiv).
         </p>
 
-        <button class="btn" @click="submit" :disabled="!attestation">Submit</button>
+        <button class="btn" @click="submit" :disabled="!attestation" v-if="showSubmit">Submit</button>
     </div>
 </template>
 <script>
@@ -48,6 +48,11 @@ export default {
         group: {
             type: Object,
             required: true,
+        },
+        showSubmit: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     },
     data() {
