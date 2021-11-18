@@ -59,6 +59,19 @@ class CreateExpertPanelsV2 extends Migration
             $table->boolean('reanalysis_review_lb')->nullable();
             $table->text('reanalysis_other')->nullable();
             $table->dateTime('reanalysis_attestation_date')->nullable();
+
+            $table->boolean('utilize_gt')->nullable();
+            $table->boolean('utilize_gci')->nullable();
+            $table->boolean('curations_publicly_available')->nullable();
+            $table->boolean('pub_policy_reviewed')->nullable();
+            $table->boolean('draft_manuscripts')->nullable();
+            $table->boolean('recuration_process_review')->nullable();
+            $table->boolean('biocurator_training')->nullable();
+            $table->boolean('biocurator_mailing_list')->nullable();
+            $table->dateTime('gci_training_date')->nullable();
+            $table->dateTime('gcep_attestation_date')->nullable();
+    
+
             $table->timestamps();
             $table->softDeletes();
         });

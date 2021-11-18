@@ -14,7 +14,7 @@ use App\Modules\Group\Events\AttestationSigned;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Modules\Group\Http\Resources\GroupResource;
 
-class NhgriAttestationStore
+class AttestationNhgriStore
 {
     use AsObject;
     use AsController;

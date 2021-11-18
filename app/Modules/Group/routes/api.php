@@ -13,12 +13,15 @@ use App\Modules\Group\Actions\AddGenesToVcep;
 use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Group\Actions\MemberRemoveRole;
 use App\Modules\Group\Actions\EvidenceSummaryAdd;
+use App\Modules\Group\Actions\AttestationGcepStore;
+use App\Modules\Group\Actions\AttestationNhgriStore;
 use App\Modules\Group\Actions\EvidenceSummaryDelete;
 use App\Modules\Group\Actions\EvidenceSummaryUpdate;
 use App\Modules\Group\Actions\NhgriAttestationStore;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Group\Actions\MemberRevokePermission;
 use App\Modules\Group\Actions\ScopeDescriptionUpdate;
+use App\Modules\Group\Actions\AttestationReanalysisStore;
 use App\Modules\Group\Actions\ReanalysisAttestationStore;
 use App\Modules\Group\Actions\MembershipDescriptionUpdate;
 use App\Modules\Group\Actions\CurationReviewProtocolUpdate;
@@ -49,8 +52,9 @@ Route::group([
         Route::put('/scope-description', ScopeDescriptionUpdate::class);
         Route::put('/curation-review-protocols', CurationReviewProtocolUpdate::class);
 
-        Route::post('/attestations/nhgri', NhgriAttestationStore::class);
-        Route::post('/attestations/reanalysis', ReanalysisAttestationStore::class);
+        Route::post('/attestations/nhgri', AttestationNhgriStore::class);
+        Route::post('/attestations/reanalysis', AttestationReanalysisStore::class);
+        Route::post('/attestations/gcep', AttestationGcepStore::class);
 
         // GENES
         Route::group(['prefix' => '/genes'], function () {

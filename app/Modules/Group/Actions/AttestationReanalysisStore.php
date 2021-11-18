@@ -15,7 +15,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use App\Modules\Group\Http\Resources\GroupResource;
 use phpDocumentor\Reflection\Types\Boolean;
 
-class ReanalysisAttestationStore
+class AttestationReanalysisStore
 {
     use AsObject;
     use AsController;

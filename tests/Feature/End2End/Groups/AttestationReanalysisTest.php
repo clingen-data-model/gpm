@@ -3,14 +3,14 @@
 namespace Tests\Feature\End2End\Groups;
 
 use Tests\TestCase;
+use Laravel\Sanctum\Sanctum;
+use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Sanctum\Sanctum;
 
-class SubmitNhgriAttestation extends TestCase
+class AttestationReanalysisTest extends TestCase
 {
     use RefreshDatabase;
     
@@ -25,11 +25,11 @@ class SubmitNhgriAttestation extends TestCase
         Sanctum::actingAs($this->user);
         Carbon::setTestNow('2021-11-14');
     }
-
+    
     /**
      * @test
      */
-    public function unprivileged_user_cannot_submit_nhgri_attestation()
+    public function unprivileged_user_cannot_submit_reanalysis_attestation()
     {
         $this->submitRequest()
             ->assertStatus(403);
@@ -45,13 +45,16 @@ class SubmitNhgriAttestation extends TestCase
         $this->submitRequest([])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'attestation' => ['The attestation field is required.']
-            ]);
-
-        $this->submitRequest(['attestation' => 0])
-            ->assertStatus(422)
+                'reanalysis_conflicting' => ['This is required unless you explain differences.'],
+            ])
             ->assertJsonFragment([
-                'attestation' => ['The attestation must be accepted.']
+                'reanalysis_review_lp' => ['This is required unless you explain differences.'],
+            ])
+            ->assertJsonFragment([
+                'reanalysis_review_lb' => ['This is required unless you explain differences.'],
+            ])
+            ->assertJsonFragment([
+                'reanalysis_other' => ['This field is required when no other options are checked.'],
             ]);
     }
     
@@ -59,7 +62,7 @@ class SubmitNhgriAttestation extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_submit_nhgri_attestation()
+    public function privileged_user_can_submit_reanalysis_attestation()
     {
         $this->user->givePermissionTo('ep-applications-manage');
 
@@ -68,7 +71,11 @@ class SubmitNhgriAttestation extends TestCase
 
         $this->assertDatabaseHas('expert_panels', [
             'id' => $this->expertPanel->id,
-            'nhgri_attestation_date' => Carbon::now()
+            'reanalysis_conflicting' => 1,
+            'reanalysis_review_lp' => 1,
+            'reanalysis_review_lb' => 1,
+            'reanalysis_other' => 'bob dobs',
+            'reanalysis_attestation_date' => Carbon::now()
         ]);
     }
 
@@ -84,8 +91,8 @@ class SubmitNhgriAttestation extends TestCase
 
         $this->assertLoggedActivity(
             subject: $this->expertPanel->group,
-            description: 'NHGRI attestation submitted by '.$this->user->name.' on '.Carbon::now()->format('Y-m-d').' at '.Carbon::now()->format('H:i:s').'.',
-            activity_type: 'nhgri-attestation-submitted',
+            description: 'Reanalysis attestation submitted by '.$this->user->name.' on '.Carbon::now()->format('Y-m-d').' at '.Carbon::now()->format('H:i:s').'.',
+            activity_type: 'reanalysis-attestation-submitted',
             logName: 'groups'
         );
     }
@@ -93,8 +100,13 @@ class SubmitNhgriAttestation extends TestCase
 
     private function submitRequest($data = null)
     {
-        $data = $data ?? ['attestation' => true];
+        $data = $data ?? [
+            'reanalysis_conflicting' => true,
+            'reanalysis_review_lp' => true,
+            'reanalysis_review_lb' => true,
+            'reanalysis_other' => 'bob dobs'
+        ];
 
-        return $this->json('POST', '/api/groups/'.$this->expertPanel->group->uuid.'/application/attestations/nhgri', $data);
+        return $this->json('POST', '/api/groups/'.$this->expertPanel->group->uuid.'/application/attestations/reanalysis', $data);
     }
 }

@@ -85,6 +85,17 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'reanalysis_review_lp',
         'reanalysis_review_lb',
         'reanalysis_other',
+        'reanalysis_attestation_date',
+
+        'utilize_gt',
+        'utilize_gci',
+        'curations_publicly_available',
+        'pub_policy_reviewed',
+        'draft_manuscripts',
+        'biocurator_training',
+        'gci_training_date',
+        'biocurator_mailing_list',
+
         'cdwg_id',
         'working_name',
     ];
@@ -100,6 +111,10 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'date_completed',
         'nhgri_attestation_date',
         'preprint_attestation_date',
+        'reanalysis_attestation_date',
+        'gci_training_date',
+        'gcep_attesation_date',
+
     ];
 
     protected $casts = [
@@ -112,6 +127,13 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'reanalysis_conflicting' => 'boolean',
         'reanalysis_review_lp' => 'boolean',
         'reanalysis_review_lb' => 'boolean',
+        'utilize_gt' => 'boolean',
+        'utilize_gci' => 'boolean',
+        'curations_publicly_available' => 'boolean',
+        'pub_policy_reviewed' => 'boolean',
+        'draft_manuscripts' => 'boolean',
+        'biocurator_training' => 'boolean',
+        'biocurator_mailing_list' => 'boolean',
     ];
 
     protected $with = [
