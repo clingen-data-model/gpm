@@ -35,16 +35,27 @@
                 <scope-description-form :group="group" v-if="group.isEp()"></scope-description-form>
             </tab-item>
             <tab-item label="Sustained Curation" v-show="group.isEp()">
-                <nhgri-attestation :group="group" class="pb-2 mb-4 border-b"></nhgri-attestation>
                 <component :is="ongoingPlansForm" :group="group" class="pb-2 mb-4 border-b"></component>
-                <reanalysis-form :group="group" class="pb-2 mb-4 border-b"></reanalysis-form>
                 <evidence-summaries :group="group" class="pb-2 mb-4 border-b" v-if="group.isVcep()"></evidence-summaries>
             </tab-item>
-            <tab-item v-show="group.isVcep()" label="Specifications">
+            <tab-item :visible="group.isVcep()" label="Specifications">
                 Specifiations info from CSPEC will go here.
             </tab-item>
             <tab-item label="Documents">
                 Group documents will go here.
+            </tab-item>
+            <tab-item label="Attestations">
+                <attestation-nghri :group="group" 
+                    class="pb-2 mb-4 border-b"
+                ></attestation-nghri>
+                <attestation-reanalysis :group="group" 
+                    class="pb-2 mb-4 border-b" 
+                    v-if="group.isVcep()"
+                ></attestation-reanalysis>
+                <gcep-attestation :group="group"
+                    class="pb-2 mb-4 border-b"
+                    v-if="group.isGcep()"
+                ></gcep-attestation>
             </tab-item>
             <tab-item label="Log" :visible="hasPermission('groups-manage')">
                 <activity-log
@@ -81,10 +92,10 @@ import VcepGeneList from '@/components/expert_panels/VcepGeneList'
 import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm'
 import MemberList from '@/components/groups/MemberList';
 import MembershipDescriptionForm from '@/components/expert_panels/MembershipDescriptionForm'
-import NhgriAttestation from '@/components/expert_panels/NhgriAttestation'
+import AttestationNhgri from '@/components/expert_panels/AttestationNhgri'
 import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm'
 import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm'
-import ReanalysisForm from '@/components/expert_panels/ReanalysisForm'
+import AttestationReanalysis from '@/components/expert_panels/AttestationReanalysis'
 import EvidenceSummaries from '@/components/expert_panels/EvidenceSummaryList'
 import { ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
@@ -102,8 +113,8 @@ export default {
         GcepOngoingPlansForm,
         MemberList,
         MembershipDescriptionForm,
-        NhgriAttestation,
-        ReanalysisForm,
+        AttestationNhgri,
+        AttestationReanalysis,
         ScopeDescriptionForm,
         VcepGeneList,
         VcepOngoingPlansForm,
