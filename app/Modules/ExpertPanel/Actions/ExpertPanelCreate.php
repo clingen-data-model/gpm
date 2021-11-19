@@ -36,7 +36,7 @@ class ExpertPanelCreate
             'uuid' => $uuid,
             'name' => $working_name,
             'group_type_id' => config('groups.types.ep.id'),
-            'group_status_id' => config('groups.statuses.pending-approval'),
+            'group_status_id' => config('groups.statuses.pending-approval.id'),
             'parent_id' => $cdwg_id,
         ]);
 

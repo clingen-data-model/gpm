@@ -277,8 +277,8 @@ class DataMigration
                             'name' => $row->working_name,
                             'group_type_id' => config('groups.types.ep.id'),
                             'group_status_id' => ($row->date_completed)
-                                                    ? config('groups.statuses.active')
-                                                    : config('groups.statuses.pending-approval'),
+                                                    ? config('groups.statuses.active.id')
+                                                    : config('groups.statuses.pending-approval.id'),
                             'parent_id' => $cdwgs->get($row->cdwg_id) ? $cdwgs->get($row->cdwg_id)->id : null,
                             'created_at' => $row->created_at,
                             'updated_at' => $row->updated_at,
@@ -299,7 +299,7 @@ class DataMigration
                 [
                     'name' => $row->name,
                     'group_type_id' => config('groups.types.cdwg.id'),
-                    'group_status_id' => config('groups.statuses.active'),
+                    'group_status_id' => config('groups.statuses.active.id'),
                     'created_at' => $row->created_at,
                     'updated_at' => $row->updated_at,
                     'deleted_at' => null

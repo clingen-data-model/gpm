@@ -22,10 +22,23 @@ return [
         ]
     ],
     'statuses' => [
-        'pending-approval' => 1,
-        'active' => 2,
-        'retired' => 3,
-        'removed' => 4
+        'pending-approval' => [
+            'id' => 1,
+            'name' => 'pending-approval',
+        ],
+        'active' => [
+            'id' => 2,
+            'name' => 'active',
+        ],
+        'retired' => [
+            'id' => 3,
+            'name' => 'retired',
+        ],
+        'removed' => [
+            'id' => 4,
+            'name' => 'removed'
+        ]
+
     ],
     'status_colors' => [
         1 => 'blue',
