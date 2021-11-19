@@ -54,7 +54,7 @@ class Group extends Entity {
 
     get displayName () {
         return this.expert_panel && this.expert_panel.id 
-            ? `${this.name} ${this.typeName}`
+            ? this.expert_panel.full_long_base_name
             : this.name;
     }
 

@@ -4,7 +4,10 @@ import {computed} from 'vue'
 export default function (defaultSort = null) {
     const router = useRouter()
     const route = useRoute()
-    defaultSort = (defaultSort) ? defaultSort : {field: 'name', desc: false}
+    if (!defaultSort){
+        console.log('Warning: defaultSort is deprecated.  Please provide a sort object: {field: "fieldname", desc: boolean}')
+        defaultSort = (defaultSort) ? defaultSort : {field: 'name', desc: false}
+    }
     
     const sort = computed({
         immediate: true,

@@ -33,6 +33,10 @@
                 </data-table>                
             </tab-item>
         </tabs-container>
+
+        <modal-dialog v-model="showCreateForm" title="Create a New Group">
+            <group-form :group="{}"></group-form>
+        </modal-dialog>
     </div>
 </template>
 <script>
@@ -40,16 +44,19 @@ import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
 import {computed, onMounted } from 'vue'
 import configs from '@/configs'
-
-console.log(configs.groups)
+import GroupForm from '@/components/groups/GroupForm'
 
 export default {
     name: 'ComponentName',
+    components: {
+        GroupForm,
+    },
     props: {
         
     },
     data() {
         return {
+            showCreateForm: false,
             statusColors: configs.groups.statusColors,
             tabDefinitions:[
                 {
@@ -117,6 +124,11 @@ export default {
             ]
         }
     },
+    methods: {
+        startCreateGroup () {
+            this.showCreateForm = true;
+        }
+    },
     setup() {
         const store = useStore();
         const router = useRouter();
@@ -139,7 +151,6 @@ export default {
             filteredGroups,
             goToItem,
             goToGroup: goToItem,
-            startCreateGroup: () => { console.log('start creating a group here!')}
         }
     }
 

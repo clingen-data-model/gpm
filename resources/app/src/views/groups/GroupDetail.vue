@@ -2,12 +2,15 @@
     <div>
         <header class="pb-4">
             <note>Groups</note>
-            <h1>
-                {{group.displayName}}
-                <note v-if="hasRole('super-user')" class="font-normal">
-                    group.id: {{group.id}}
-                    <span v-if="group.isEp()"> | expertPanel.id: {{group.expert_panel.id}}</span>
-                </note>
+            <h1 class="flex justify-between items-center">
+                <div>
+                    {{group.displayName}}
+                    <note v-if="hasRole('super-user')" class="font-normal">
+                        group.id: {{group.id}}
+                        <span v-if="group.isEp()"> | expertPanel.id: {{group.expert_panel.id}}</span>
+                    </note>
+                </div>
+                <button class="btn btn-xs" v-if="hasAnyPermission(['groups-manage', ['info-edit', group]])" @click="showEdit">Edit</button>
             </h1>
             <dictionary-row label="Chairs:">
                 <template v-slot:label><strong>Chairs:</strong></template>
@@ -29,9 +32,6 @@
                 </div>
             </dictionary-row>
         </header>
-
-        <basic-info-form :group="group" ref="infoForm"></basic-info-form>
-        <button class="btn" @click="$refs.infoForm.save">Save</button>
 
         <tabs-container>
             <tab-item label="Members">
@@ -78,6 +78,9 @@
             <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="this.$route.meta.title">
                 <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
             </modal-dialog>
+            <modal-dialog v-model="showInfoEdit" @closed="showInfoEdit = false" title="Edit Group Info">
+                <group-form :group="group" ref="infoForm" @canceled="showInfoEdit = false"></group-form>
+            </modal-dialog>
         </teleport>
 
     </div>
@@ -93,10 +96,10 @@ import ActivityLog from '@/components/ActivityLog'
 import AttestationGcep from '@/components/expert_panels/AttestationGcep'
 import AttestationNhgri from '@/components/expert_panels/AttestationNhgri'
 import AttestationReanalysis from '@/components/expert_panels/AttestationReanalysis'
-import BasicInfoForm from '@/components/expert_panels/BasicInfoForm'
 import EvidenceSummaries from '@/components/expert_panels/EvidenceSummaryList'
 import GcepGeneList from '@/components/expert_panels/GcepGeneList'
 import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm'
+import GroupForm from '@/components/groups/GroupForm';
 import MemberList from '@/components/groups/MemberList';
 import MembershipDescriptionForm from '@/components/expert_panels/MembershipDescriptionForm'
 import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm'
@@ -111,7 +114,7 @@ export default {
         AttestationGcep,
         AttestationNhgri,
         AttestationReanalysis,
-        BasicInfoForm,
+        GroupForm,
         EvidenceSummaries,
         GcepGeneList,
         GcepOngoingPlansForm,
@@ -125,6 +128,11 @@ export default {
         uuid: {
             type: String,
             required: true
+        }
+    },
+    data () {
+        return {
+            showInfoEdit: false
         }
     },
     setup (props) {
@@ -187,6 +195,9 @@ export default {
                 this.$refs.modalView.clearForm();
             }
         },
+        showEdit () {
+            this.showInfoEdit = true;
+        }
     },
     mounted() {
         this.showModal = Boolean(this.$route.meta.showModal)
