@@ -25,6 +25,7 @@ use App\Modules\Group\Actions\AttestationReanalysisStore;
 use App\Modules\Group\Actions\ReanalysisAttestationStore;
 use App\Modules\Group\Actions\MembershipDescriptionUpdate;
 use App\Modules\Group\Actions\CurationReviewProtocolUpdate;
+use App\Modules\Group\Actions\ExpertPanelNameUpdate;
 use App\Modules\Group\Http\Controllers\Api\GroupController;
 use App\Modules\Group\Http\Controllers\Api\GeneListController;
 use App\Modules\Group\Http\Controllers\Api\ActivityLogsController;
@@ -71,6 +72,10 @@ Route::group([
             Route::put('/{summaryId}', EvidenceSummaryUpdate::class);
             Route::delete('/{summaryId}', EvidenceSummaryDelete::class);
         });
+    });
+
+    Route::group(['prefix' => '/{uuid}/expert-panel/'], function () {
+        Route::put('name', ExpertPanelNameUpdate::class);
     });
 
     Route::post('/{uuid}/invites', MemberInvite::class);
