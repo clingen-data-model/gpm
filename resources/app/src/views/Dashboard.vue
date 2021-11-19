@@ -60,6 +60,7 @@ import CoiList from '@/components/people/CoiList'
 import PersonProfile from '@/components/people/PersonProfile'
 import ProfileForm from '@/components/people/ProfileForm'
 import Person from "@/domain/person"
+import Group from "@/domain/group"
 
 export default {
     name: 'Dashboard',
@@ -121,10 +122,15 @@ export default {
         // GROUPS
         // TODO: Get groups by search with TONS of info.
         // TODO: Extract that work to a module.
-        const groups = computed(() => user.value.memberships.map(m => m.group).filter(g => g !== null));
+        const groups = computed(() => {
+            return user.value.memberships
+                    .map(m => m.group)
+                    .filter(g => g !== null)
+                    .map(group => new Group(group))
+        });
         const groupFields = ref([
             {
-                name: 'name',
+                name: 'displayName',
                 sortable: true,
                 type: String
             },
@@ -141,7 +147,7 @@ export default {
             }
         ]);
         const groupSort = ref({
-            field: 'name',
+            field: 'displayName',
             desc: false
         });
         const groupBadgeColor = (status) => {

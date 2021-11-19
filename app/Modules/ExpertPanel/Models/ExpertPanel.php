@@ -143,7 +143,10 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     protected $appends = [
         'working_name',
         'name',
-        'coi_url'
+        'coi_url',
+        'full_long_base_name',
+        'full_short_base_name',
+        'full_name'
     ];
 
     // Domain methods
@@ -422,6 +425,14 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $this->long_base_name ?? $this->working_name;
     }
 
+    public function getFullNameAttribute()
+    {
+        if (!$this->relationLoaded('group')) {
+            $this->load('group');
+        }
+        return $this->full_long_base_name ?? $this->working_name;
+    }
+
     public function setWorkingNameAttribute($value)
     {
         $this->ensureGroupLoaded();
@@ -435,14 +446,14 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     }
     
 
-    public function getLongBaseNameAttribute()
+    public function getFullLongBaseNameAttribute()
     {
         return isset($this->attributes['long_base_name'])
             ? $this->addEpTypeSuffix($this->attributes['long_base_name'])
             : null;
     }
 
-    public function getShortBaseNameAttribute()
+    public function getFullShortBaseNameAttribute()
     {
         return isset($this->attributes['short_base_name'])
             ? $this->addEpTypeSuffix($this->attributes['short_base_name'])

@@ -130,13 +130,6 @@ export default {
         },
         resetClone() {
             this.appClone = this.application.clone()
-            if (this.appClone.short_base_name) {
-                this.appClone.short_base_name = this.appClone.short_base_name.replace(/ [GV]CEP$/, '')
-            }
-
-            if (this.appClone.long_base_name) {
-                this.appClone.long_base_name = this.appClone.long_base_name.replace(/ [GV]CEP$/, '')
-            }
         },
         clearErrors() {
             this.errors = {};

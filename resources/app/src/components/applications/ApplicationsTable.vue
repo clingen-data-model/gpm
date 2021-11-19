@@ -91,7 +91,7 @@ export default {
                     sortable: true,
                 },
                 {
-                    name: 'name',
+                    name: 'full_name',
                     label: 'Name',
                     type: String,
                     sortable: true
@@ -321,7 +321,10 @@ export default {
         this.getApplications()
     },
     setup() {
-        const {sort, filter} = sortAndFilter();
+        const {sort, filter} = sortAndFilter({
+            field: 'full_name',
+            desc: false
+        });
         // const showAllInfo = computedQueryParam('showAllInfo');
 
         return {

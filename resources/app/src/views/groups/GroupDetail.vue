@@ -2,7 +2,13 @@
     <div>
         <header class="pb-4">
             <note>Groups</note>
-            <h1>{{group.displayName}}</h1>
+            <h1>
+                {{group.displayName}}
+                <note v-if="hasRole('super-user')" class="font-normal">
+                    group.id: {{group.id}}
+                    <span v-if="group.isEp()"> | expertPanel.id: {{group.expert_panel.id}}</span>
+                </note>
+            </h1>
             <dictionary-row label="Chairs:">
                 <template v-slot:label><strong>Chairs:</strong></template>
                 <div v-if="group.chairs.length > 0">
@@ -23,6 +29,9 @@
                 </div>
             </dictionary-row>
         </header>
+
+        <basic-info-form :group="group" ref="infoForm"></basic-info-form>
+        <button class="btn" @click="$refs.infoForm.save">Save</button>
 
         <tabs-container>
             <tab-item label="Members">
@@ -71,12 +80,6 @@
             </modal-dialog>
         </teleport>
 
-        <teleport to='#debug-info'>
-            <note>
-                group.id: {{group.id}}
-                <span v-if="group.isEp()"> | expertPanel.id: {{group.expert_panel.id}}</span>
-            </note>
-        </teleport>
     </div>
 </template>
 <script>
@@ -90,6 +93,7 @@ import ActivityLog from '@/components/ActivityLog'
 import AttestationGcep from '@/components/expert_panels/AttestationGcep'
 import AttestationNhgri from '@/components/expert_panels/AttestationNhgri'
 import AttestationReanalysis from '@/components/expert_panels/AttestationReanalysis'
+import BasicInfoForm from '@/components/expert_panels/BasicInfoForm'
 import EvidenceSummaries from '@/components/expert_panels/EvidenceSummaryList'
 import GcepGeneList from '@/components/expert_panels/GcepGeneList'
 import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm'
@@ -107,6 +111,7 @@ export default {
         AttestationGcep,
         AttestationNhgri,
         AttestationReanalysis,
+        BasicInfoForm,
         EvidenceSummaries,
         GcepGeneList,
         GcepOngoingPlansForm,

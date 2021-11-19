@@ -3,7 +3,7 @@
         <static-alert variant="danger" v-if="application.contacts.length == 0" class="mb-4">
             <strong>Warning!!</strong> There are currently no contacts connected to this application!
         </static-alert >
-        <card :title="`${application.name} - Current Step: ${application.current_step}`">
+        <card :title="`${application.full_name} - Current Step: ${application.current_step}`">
             <template v-slot:header-right>
                 <div class="flex space-x-2">
                     <router-link :to="{name: 'NextAction'}" class="btn btn-sm">Add Next Action</router-link>

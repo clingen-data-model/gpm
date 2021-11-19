@@ -2,7 +2,7 @@
     <div>
         <data-table 
             :fields="fields" 
-            :data="person.memberships" 
+            :data="memberships" 
             v-model:sort="sort"
             :rowClickHandler="goToGroup"
             :row-class="() => 'cursor-pointer'"
@@ -11,6 +11,7 @@
 </template>
 <script>
 import Person from '@/domain/person'
+import Group from '@/domain/group'
 
 export default {
     name: 'MembershipList',
@@ -23,12 +24,12 @@ export default {
     data() {
         return {
             sort: {
-                field: 'group.name',
+                field: 'group.displayName',
                 desc: false
             },
             fields: [
                 {
-                    name: 'group.name',
+                    name: 'group.displayName',
                     type: String,
                     sortable: true,
                     label: 'Name'
@@ -75,11 +76,19 @@ export default {
         }
     },
     computed: {
+        memberships () {
+            if (this.person.memberships) {
+                return this.person.memberships.map(m => {
+                    m.group = new Group(m.group);
+                    return m;
+                })
+            }
 
+            return [];
+        }
     },
     methods: {
         goToGroup(item) {
-            console.log(item.group.uuid);
             this.$router.push({name: 'GroupDetail', params: {uuid: item.group.uuid}})
         }
 
