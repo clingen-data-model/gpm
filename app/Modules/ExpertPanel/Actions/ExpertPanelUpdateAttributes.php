@@ -28,6 +28,8 @@ class ExpertPanelUpdateAttributes
             $updatedAttributes = $expertPanel->getDirty();
             $expertPanel->save();
             Event::dispatch(new ExpertPanelAttributesUpdated($expertPanel, $updatedAttributes));
+
+            $expertPanel->group->update(['name' => $expertPanel->long_base_name]);
         }
 
         if ($attributes->get('cdwg_id')) {
