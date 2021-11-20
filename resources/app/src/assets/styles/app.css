@@ -47,8 +47,11 @@ input[type=file]{
     @apply border-none p-0;
 }
 
-a[href] {
-    @apply text-blue-500 hover:underline;
+a[href]:not(.btn,.note) {
+    @apply text-blue-500;
+}
+a[href]:not(.btn) {
+    @apply hover:underline
 }
 
 input,
@@ -67,6 +70,9 @@ textarea.sm {
     @apply px-1 py-0.5 text-sm;
 }
 
+.note {
+    @apply text-xs text-gray-400
+}
 .link {
     @apply text-blue-500 hover:underline;
 }

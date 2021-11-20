@@ -1,7 +1,7 @@
 <template>
     <div>
         <header class="pb-4">
-            <note>Groups</note>
+            <router-link class="note" :to="{name: 'GroupList'}">Groups</router-link>
             <h1 class="flex justify-between items-center">
                 <div>
                     {{group.displayName}}
@@ -78,7 +78,7 @@
             <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="this.$route.meta.title">
                 <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
             </modal-dialog>
-            <modal-dialog v-model="showInfoEdit" @closed="showInfoEdit = false" title="Edit Group Info">
+            <modal-dialog v-model="showInfoEdit" @closed="showInfoEdit = false" title="Edit Group Info" size="sm">
                 <group-form :group="group" ref="infoForm" @canceled="showInfoEdit = false"></group-form>
             </modal-dialog>
         </teleport>

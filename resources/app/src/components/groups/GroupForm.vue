@@ -1,7 +1,7 @@
 <template>
     <div>
         <input-row label="Type" v-if="canSetType">
-            <select v-model="typeId" class="w-1/2">
+            <select v-model="typeId" class="w-full">
                 <option :value="null">Select&hellip;</option>
                 <option v-for="type in groupTypes" :key="type.id" :value="type.id">
                     {{type.fullname}}
@@ -14,17 +14,9 @@
                 v-if="typeId > 2 && group.expert_panel"
             />
             <div v-else>
-                <input-row v-model="workingCopy.name" placeholder="Name" label="Name" input-class="w-1/2"/>
-                <input-row label="Parent group">
-                    <select v-model="workingCopy.parent_id" class="w-1/2">
-                        <option :value="null"></option>
-                        <option v-for="group in groups" :key="group.id" :value="group.id">
-                            {{group.displayName}}
-                        </option>
-                    </select>
-                </input-row>
+                <input-row v-model="workingCopy.name" placeholder="Name" label="Name" input-class="w-full"/>
                 <input-row label="Status">
-                    <select v-model="workingCopy.group_status_id" class="w-1/2">
+                    <select v-model="workingCopy.group_status_id" class="w-full">
                         <option :value="null"></option>
                         <option v-for="status in groupStatuses" :key="status.id" :value="status.id">
                             {{titleCase(status.name)}}
@@ -33,6 +25,14 @@
                 </input-row>
             </div>
         </transition>
+        <input-row label="Parent group" :errors="errors.parent_id">
+            <select v-model="workingCopy.parent_id" class="w-full">
+                <option :value="null"></option>
+                <option v-for="group in groups" :key="group.id" :value="group.id">
+                    {{group.displayName}}
+                </option>
+            </select>
+        </input-row>
         <button-row submit-text="Save" @submitted="save" @canceled="cancel"></button-row>
     </div>
 </template>
@@ -42,6 +42,7 @@ import is_validation_error from '@/http/is_validation_error'
 import Group from '@/domain/group'
 import BasicInfoForm from '@/components/expert_panels/BasicInfoForm'
 import configs from '@/configs'
+import formFactory from '@/forms/form_factory'
 
 export default {
     name: 'GroupForm',
@@ -58,7 +59,6 @@ export default {
     data() {
         return {
             workingCopy: {},
-            errors: {},
             groupTypes: [
                 {id: 1, fullname: 'Working Group'},
                 {id: 2, fullname: 'Clinical Domain Working Group'},
@@ -97,15 +97,28 @@ export default {
         async save() {
             try {
                 this.saveGroupData();
-                this.saveEpData();
+                if (this.workingCopy.expert_panel) {
+                    this.saveEpData();
+                }
             } catch (error) {
                 if (is_validation_error(error)) {
                     this.errors = error.response.data.errors;
                 }
             }
+            this.$store.dispatch()
         },
         async saveGroupData () {
-            console.log('save group data');
+            const promises = [];
+            if (this.group.parent_id != this.workingCopy.parent_id) {
+                promises.push(
+                    this.submitFormData(
+                        `/api/groups/${this.group.uuid}/parent`, 
+                        { parent_id: this.workingCopy.parent_id }
+                    )
+                );
+            }
+            await Promise.all(promises);
+            this.$store.dispatch('groups/find', this.group.uuid);
         },
         async saveEpData() {
             await this.$refs.infoForm.save();
@@ -119,5 +132,13 @@ export default {
     beforeMount() {
         this.$store.dispatch('groups/getItems')
     },
+    setup (props, context) {
+        const {errors, submitFormData} = formFactory(props, context)
+
+        return {
+            errors,
+            submitFormData
+        }
+    }
 }
 </script>

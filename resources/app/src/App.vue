@@ -38,7 +38,6 @@
       </div> -->
       <div class='flex-1'>
         <router-view />
-        <div class="container mx-auto" id="debug-info"></div>
       </div>
     </div>
 
@@ -57,6 +56,8 @@
       <footer class="w-full border-t mt-4 bg-gray-100">
         <div class="container mx-auto py-3 flex" id="footer-content">
             
+        </div>
+        <div class="container mx-auto py-3" id="debug-info" v-if="hasRole('super-user')">
         </div>
       </footer>
     </teleport>

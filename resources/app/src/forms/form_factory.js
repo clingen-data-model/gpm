@@ -1,11 +1,25 @@
 import {ref} from 'vue'
+import is_validation_error from '@/http/is_validation_error'
+import api from '@/http/api'
 
 const errors = ref({});
 const editing = ref(false);
 const hideForm = () => {
-    console.log('hideForm');
     editing.value = false;
     errors.value = {};
+}
+const submitFormData = async (url, data) => {
+    console.log({url, data})
+    try {
+        return await api.put(
+            url, 
+            data
+        ).then(response => response.data.data)
+    } catch (error) {
+        if (is_validation_error(error)) {
+            errors.value = {...errors, ...error.response.data.errors}
+        }
+    }
 }
 
 export default (props, context) => {
@@ -21,6 +35,7 @@ export default (props, context) => {
         cancel: () => {
             hideForm();
             context.emit('canceled');
-        }
+        },
+        submitFormData
     }
 }

@@ -34,7 +34,7 @@
             </tab-item>
         </tabs-container>
 
-        <modal-dialog v-model="showCreateForm" title="Create a New Group">
+        <modal-dialog v-model="showCreateForm" title="Create a New Group" size="sm">
             <group-form :group="{}"></group-form>
         </modal-dialog>
     </div>
