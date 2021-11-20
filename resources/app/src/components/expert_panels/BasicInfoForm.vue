@@ -75,17 +75,19 @@ export default {
         async save(){
             const promises = []
             if (this.namesDirty) {
-                promises.push(this.submitFormData(
-                    `/api/groups/${this.group.uuid}/expert-panel/name`, 
-                    { long_base_name: this.longBaseName, short_base_name: this.shortBaseName}
-                ));
+                promises.push(this.submitFormData({
+                    method: 'put',
+                    url: `/api/groups/${this.group.uuid}/expert-panel/name`, 
+                    data: { long_base_name: this.longBaseName, short_base_name: this.shortBaseName}
+                }));
             }
 
             if (this.affiliationIdDirty) {
-                promises.push(this.submitFormData(
-                    `/api/groups/${this.group.uuid}/expert-panel/affiliation-id`, 
-                    { affiliation_id: this.affiliationId }
-                ));
+                promises.push(this.submitFormData({
+                    method: 'put',
+                    url: `/api/groups/${this.group.uuid}/expert-panel/affiliation-id`, 
+                    data: { affiliation_id: this.affiliationId }
+                }));
             }
 
             await Promise.all(promises);

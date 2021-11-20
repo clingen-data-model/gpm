@@ -9,26 +9,24 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class UpdateParentTest extends TestCase
+class UpdateGroupStatusTest extends TestCase
 {
     use RefreshDatabase;
-    
+
     public function setup():void
     {
         parent::setup();
         $this->seed();
 
         $this->user = $this->setupUser(permissions: ['groups-manage']);
+        $this->group = Group::factory()->create(['group_status_id' => 1]);
         Sanctum::actingAs($this->user);
-
-        $this->parent = Group::factory()->create();
-        $this->group = Group::factory()->create();
     }
 
     /**
      * @test
      */
-    public function unprivileged_user_cannot_update_parent()
+    public function unauthorized_user_cannot_update_group_status()
     {
         $this->user->revokePermissionTo('groups-manage');
         $this->makeRequest()
@@ -41,49 +39,54 @@ class UpdateParentTest extends TestCase
     public function validates_parameters()
     {
         $this->makeRequest([])
-            ->assertStatus(422);
-    }
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                'status_id' => ['This field is required.']
+            ]);
 
+
+        $this->makeRequest(['status_id' => 99999])
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                'status_id' => ['The status you selected is invalid.']
+            ]);
+    }
+    
     /**
      * @test
      */
-    public function privileged_user_can_update_group_parent()
+    public function authorized_user_can_update_group_status()
     {
         $this->makeRequest()
             ->assertStatus(200)
             ->assertJsonFragment([
-                'parent_id' => $this->parent->id
+                'group_status_id' => config('groups.statuses.active.id')
             ]);
 
         $this->assertDatabaseHas('groups', [
             'id' => $this->group->id,
-            'parent_id' => $this->parent->id
+            'group_status_id' => config('groups.statuses.active.id')
         ]);
     }
 
     /**
      * @test
      */
-    public function logs_activity()
+    public function logs_status_updated()
     {
-        $oldParent = Group::factory()->create();
-        $this->group->update(['parent_id' => $oldParent->id]);
-
+        $oldStatus = $this->group->status->name;
         $this->makeRequest();
-
 
         $this->assertLoggedActivity(
             subject: $this->group,
-            description: 'Parent changed from '.$oldParent->name.' to '.$this->parent->name.'.',
             logName: 'groups',
+            description: 'Status updated from "'.$oldStatus.'" to "'.config('groups.statuses.active.name').'"',
         );
     }
     
-    
     private function makeRequest($data = null)
     {
-        $data = $data ?? ['parent_id' => $this->parent->id];
-
-        return $this->json('PUT', '/api/groups/'.$this->group->uuid.'/parent', $data);
+        $data = $data ?? ['status_id' => config('groups.statuses.active.id')];
+        return $this->json('PUT', '/api/groups/'.$this->group->uuid.'/status', $data);
     }
 }

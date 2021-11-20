@@ -13,7 +13,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class ParentUpdated extends GroupEvent
+class GroupNameUpdated extends GroupEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -22,22 +22,20 @@ class ParentUpdated extends GroupEvent
      *
      * @return void
      */
-    public function __construct(public Group $group, public ?Group $parent, public ?Group $oldParent)
+    public function __construct(public Group $group, public String $newName, public String $oldName)
     {
     }
 
     public function getLogEntry(): string
     {
-        $oldParentName = $this->oldParent ? $this->oldParent->name : 'none';
-        $newParentName = $this->parent ? $this->parent->name : 'none';
-        return 'Parent changed from '.$oldParentName.' to '.$newParentName.'.';
+        return 'Name changed from "'.$this->oldName.'" to "'.$this->newName.'"';
     }
     
     public function getProperties(): ?array
     {
         return [
-            'new_parent' => $this->parent,
-            'old_parent' => $this->oldParent,
+            'new_name' => $this->newName,
+            'old_name' => $this->oldName
         ];
     }
 

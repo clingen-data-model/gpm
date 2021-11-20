@@ -8,13 +8,15 @@ const hideForm = () => {
     editing.value = false;
     errors.value = {};
 }
-const submitFormData = async (url, data) => {
+const submitFormData = async ({method, url, data}) => {
     console.log({url, data})
     try {
-        return await api.put(
+        // return await api.put(
+        return await api({
+            method,
             url, 
             data
-        ).then(response => response.data.data)
+        }).then(response => response.data.data)
     } catch (error) {
         if (is_validation_error(error)) {
             errors.value = {...errors, ...error.response.data.errors}

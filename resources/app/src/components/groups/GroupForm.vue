@@ -8,6 +8,8 @@
                 </option>
             </select>
         </input-row>
+        <dictionary-row label="Type" v-else>{{this.workingCopy.type.name.toUpperCase()}}</dictionary-row>
+        
         <transition name="slide-fade-down" mode="out-in">
             <basic-info-form 
                 :group="group" ref="infoForm"
@@ -27,7 +29,8 @@
         </transition>
         <input-row label="Parent group" :errors="errors.parent_id">
             <select v-model="workingCopy.parent_id" class="w-full">
-                <option :value="null"></option>
+                <option :value="null">Select...</option>
+                <option :value="0">None</option>
                 <option v-for="group in groups" :key="group.id" :value="group.id">
                     {{group.displayName}}
                 </option>
@@ -37,7 +40,6 @@
     </div>
 </template>
 <script>
-import api from '@/http/api'
 import is_validation_error from '@/http/is_validation_error'
 import Group from '@/domain/group'
 import BasicInfoForm from '@/components/expert_panels/BasicInfoForm'
@@ -74,7 +76,8 @@ export default {
             return this.$store.getters['groups/all'];
         },
         canSetType() {
-            return this.hasPermission('groups-manage') || !this.group.id
+            console.log(this.group.id);
+            return this.hasPermission('groups-manage') && !this.group.id 
         }
     },
     watch: {
@@ -96,32 +99,63 @@ export default {
         },
         async save() {
             try {
+                this.errors = {};
                 this.saveGroupData();
                 if (this.workingCopy.expert_panel) {
                     this.saveEpData();
                 }
+                this.$store.dispatch('groups/find', this.group.uuid)
             } catch (error) {
                 if (is_validation_error(error)) {
                     this.errors = error.response.data.errors;
                 }
             }
-            this.$store.dispatch()
         },
         async saveGroupData () {
             const promises = [];
-            if (this.group.parent_id != this.workingCopy.parent_id) {
-                promises.push(
-                    this.submitFormData(
-                        `/api/groups/${this.group.uuid}/parent`, 
-                        { parent_id: this.workingCopy.parent_id }
-                    )
-                );
+            if (this.isDirty('parent_id')) {
+                promises.push(this.saveParent());
             }
+
+            if (this.isDirty('name')) {
+                promises.push(this.saveName())
+            }
+
+            if (this.isDirty('group_status_id')) {
+                promises.push(this.saveStatus())
+            }
+
             await Promise.all(promises);
             this.$store.dispatch('groups/find', this.group.uuid);
         },
         async saveEpData() {
             await this.$refs.infoForm.save();
+        },
+
+        isDirty (attribute) {
+            return this.group[attribute] != this.workingCopy[attribute]
+        },
+        
+        saveParent () {
+            return this.submitFormData({
+                method: 'put',
+                url: `/api/groups/${this.group.uuid}/parent`, 
+                data: { parent_id: this.workingCopy.parent_id }
+            })
+        },
+        saveName () {
+            return this.submitFormData({
+                method: 'put',
+                url: `/api/groups/${this.group.uuid}/name`,
+                data: {name: this.workingCopy.name}
+            })
+        },
+        saveStatus () {
+            return this.submitFormData({
+                method: 'put',
+                url: `/api/groups/${this.group.uuid}/status`,
+                data: {status_id: this.workingCopy.group_status_id}
+            })
         },
         cancel() {
             this.syncWorkingCopy(this.group);
