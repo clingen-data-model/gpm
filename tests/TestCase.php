@@ -12,6 +12,7 @@ use App\Modules\ExpertPanel\Jobs\AddContact;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -104,5 +105,15 @@ abstract class TestCase extends BaseTestCase
         }
 
         $this->assertDatabaseHas('activity_log', $data);
+    }
+
+    protected function setupUser($userData = null, $permissions = [])
+    {
+        $user = User::factory()->create($userData);
+        if (count($permissions)) {
+            $user->syncPermissions($permissions);
+        }
+
+        return $user;
     }
 }
