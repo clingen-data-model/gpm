@@ -23,9 +23,8 @@
             </dictionary-row>
             <dictionary-row label="Coordinators:">
                 <template v-slot:label><strong>Coordinators:</strong></template>
-                <div v-if="group.coordinators.length > 0">
-                    <!-- <pre>{{group.coordinators}}</pre> -->
-                    {{group.coordinators.map(c => c.person.name).join(', ')}}
+                <div v-if="coordinators.length > 0">
+                    {{coordinators.map(c => c.person.name).join(', ')}}
                 </div>
                 <div class="text-gray-500" v-else>
                     None assigned
@@ -138,6 +137,19 @@ export default {
     data () {
         return {
             showInfoEdit: false,
+        }
+    },
+    computed: {
+        // NOTE: not sure why this is necessary. group.charis and group.coordinators
+        // are identical getters except for the role being filtered on. But since 
+        // both work when the data is first loaded I don't know why chairs updates on 
+        // member change and coordinators.
+        coordinators: function() {
+            if (!this.group) {
+                return [];
+            }
+            console.log('computed coordinators')
+            return this.group.members.filter(m => m.hasRole('coordinator'));
         }
     },
     setup (props) {
