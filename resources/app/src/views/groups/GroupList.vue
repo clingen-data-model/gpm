@@ -60,17 +60,21 @@ export default {
             statusColors: configs.groups.statusColors,
             tabDefinitions:[
                 {
-                    label: 'VCEPS',
+                    label: 'VCEPs',
                     filter: g => g.isVcep()
                 },
                 {
-                    label: 'GCEPS',
+                    label: 'GCEPs',
                     filter: g => g.isGcep()
                 },
                 {
                     label: 'CDWGs',
                     filter: g => g.isCdwg()
                 },
+                {
+                    label: 'WGs',
+                    filter: g => g.isWg()
+                }
                 // {
                 //     label: 'Working Groups',
                 //     filter: g => g.isWg()
