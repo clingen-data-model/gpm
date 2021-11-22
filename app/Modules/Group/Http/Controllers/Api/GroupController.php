@@ -16,11 +16,11 @@ class GroupController extends Controller
         $searchService = new ModelSearchService(
             modelClass: Group::class,
             defaultWith: [
-                'type', 
-                'status', 
-                'expertPanel', 
-                'coordinators', 
-                'coordinators.roles', 
+                'type',
+                'status',
+                'expertPanel',
+                'coordinators',
+                'coordinators.roles',
                 'coordinators.person'
             ],
             sortFunction: function ($query, $field, $dir) {

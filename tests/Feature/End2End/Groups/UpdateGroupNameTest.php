@@ -45,7 +45,7 @@ class UpdateGroupNameTest extends TestCase
             ]);
 
 
-        $this->makeRequest(['name' => 'something longer than 255 characters so that we can test the maximum length validation.  If we don\'t validate the length of the string some verbose pontificator will inevitably think their group is so important that it needs a name longer that 255 characters'])
+        $this->makeRequest(['name' => $this->getLongString()])
             ->assertStatus(422)
             ->assertJsonFragment([
                 'name' => ['The name may not be greater than 255 characters.']

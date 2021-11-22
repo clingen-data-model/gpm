@@ -5,6 +5,7 @@ use App\Modules\Group\Actions\GenesAdd;
 use App\Modules\Group\Actions\MemberAdd;
 use App\Modules\Group\Actions\GeneRemove;
 use App\Modules\Group\Actions\GeneUpdate;
+use App\Modules\Group\Actions\GroupCreate;
 use App\Modules\Group\Actions\MemberInvite;
 use App\Modules\Group\Actions\MemberRemove;
 use App\Modules\Group\Actions\MemberRetire;
@@ -43,6 +44,8 @@ Route::group([
     'middleware' => ['api', 'auth:sanctum']
 ], function () {
     Route::get('/', [GroupController::class, 'index']);
+    Route::post('/', GroupCreate::class);
+    
     Route::get('/{uuid}', [GroupController::class, 'show']);
     Route::put('/{group:uuid}/parent', ParentUpdate::class);
     Route::put('/{group:uuid}/name', GroupNameUpdate::class);

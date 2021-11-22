@@ -31,7 +31,9 @@ class GroupStatusUpdate
     public function asController(ActionRequest $request, Group $group)
     {
         $newStatus = GroupStatus::findOrFail($request->status_id);
-        return new GroupResource($this->handle($group, $newStatus));
+        $group = $this->handle($group, $newStatus);
+        $group->load('expertPanel');
+        return new GroupResource($group);
     }
 
     public function rules(): array

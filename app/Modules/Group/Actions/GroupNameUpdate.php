@@ -28,7 +28,9 @@ class GroupNameUpdate
 
     public function asController(ActionRequest $request, Group $group)
     {
-        return new GroupResource($this->handle($group, $request->name));
+        $group = $this->handle($group, $request->name);
+        $group->load('expertPanel');
+        return new GroupResource($group);
     }
 
     public function rules()
