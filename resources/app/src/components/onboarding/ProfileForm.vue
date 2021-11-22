@@ -17,7 +17,7 @@
 </template>
 <script>
 import isValidationError from '@/http/is_validation_error'
-import {onMounted, ref} from 'vue'
+import {onMounted} from 'vue'
 import {getLookups, profileFields, demographicFields} from '@/forms/profile_form';
 
 export default {
@@ -83,7 +83,6 @@ export default {
     },
     async mounted () {
         await this.$store.dispatch('people/getPerson', {uuid: this.person.uuid})
-        console.log(this.$store.getters['people/currentItem'])
         this.initProfile()
     }
 }

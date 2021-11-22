@@ -72,7 +72,6 @@ export default {
             scopeDescription.value = scope_description;
         }
         const save = async () => {
-            console.log('save!')
             try {
                 store.dispatch(
                     'groups/scopeDescriptionUpdate', 

@@ -62,9 +62,7 @@ export default {
             genesAsText.value = props.group.expert_panel.genes 
                     ? props.group.expertPanel.genes.join(', ')
                     : null
-            
-            console.log({genesAsText: genesAsText.value});
-        };
+            };
         const getGenes = async () => {
             loading.value = true;
             try {

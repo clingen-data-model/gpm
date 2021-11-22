@@ -123,7 +123,6 @@ export default {
     },
     methods: {
         initAttestation () {
-            console.log('initAttestation')
             this.attestation = {
                 utilize_gt: false,
                 utilize_gci: false,

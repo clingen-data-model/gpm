@@ -52,7 +52,6 @@ export const mutations = {
         state.lastParams = params;
     },
     setCurrentItemIndex(state, item) {
-        console.log('people/setCurrentItemIndex')
         const idx = state.items.findIndex(i => i.uuid == item.uuid);
         state.currentItemIdx = idx;
     },

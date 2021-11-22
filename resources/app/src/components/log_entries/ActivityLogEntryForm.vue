@@ -18,9 +18,8 @@
     </form-container>
 </template>
 <script>
-import api from '@/http/api'
-import { ref, watch, onMounted } from 'vue'
-import StepInput from '@/components/forms/StepInput'
+import { ref, watch } from 'vue'
+// import StepInput from '@/components/forms/StepInput'
 import RichTextEditor from '@/components/forms/RichTextEditor'
 import {saveEntry, updateEntry, fetchEntries} from '@/adapters/log_entry_repository'
 
@@ -28,7 +27,7 @@ import {saveEntry, updateEntry, fetchEntries} from '@/adapters/log_entry_reposit
 export default {
     name: 'LogEntryForm',
     components: {
-        StepInput,
+        // StepInput,
         RichTextEditor
     },
     props: {

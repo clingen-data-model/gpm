@@ -216,7 +216,6 @@ export default {
                         }
                     }
                 }
-                console.log(genes.value.length)
                 clearRemoveCountdown(gene)
             }, 10000);
 
@@ -275,7 +274,6 @@ export default {
         }
         const updateCancel = gene => {
             delete(gene.edit);
-            console.log('cancel update for gene')
         }
 
         const cancel = () => {

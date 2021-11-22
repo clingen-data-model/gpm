@@ -184,14 +184,6 @@ export default {
                     .flat()
                     .filter(i => i);
         },
-        hasARole: {
-            get() {
-                return this.newMember.roles.length > 0
-            },
-            set(value) {
-               return; 
-            }
-        }
     },
     setup () {
         const store = useStore();
@@ -247,7 +239,6 @@ export default {
         },
         async save () {
             try {
-                console.log({newMember: this.newMember});
                 if (!this.newMember.isPersisted()) {
                     if (!this.newMember.person.isPersisted()) {
                         await this.inviteNewMember(this.group, this.newMember);
@@ -262,15 +253,13 @@ export default {
                 this.clearForm();
                 this.$emit('saved');
             } catch (error) {
-                console.log(error.response.data.errors);
                 if (is_validation_error(error)) {
                     this.errors = error.response.data.errors
                 }
             }
         },
         async inviteNewMember (group, member) {
-            console.log({member});
-            // try {
+            try {
                 const response = await this.$store.dispatch('groups/memberInvite', {
                     uuid: group.uuid,
                     data: {
@@ -293,15 +282,14 @@ export default {
                         permissionIds: member.permissions.map(p => p.id)
                     });
                 }
-            // } catch (error)  {
-            //     if (is_validation_error(error)) {
-            //         this.errors = error.response.data
-            //     }
-            // }
+            } catch (error)  {
+                if (is_validation_error(error)) {
+                    this.errors = error.response.data.errors
+                }
+            }
         },
         async addPersonAsMember(group, member) {
-            console.log({member});
-            // try { 
+            try { 
                 const memberData = await this.$store.dispatch('groups/memberAdd', {
                     uuid: group.uuid,
                     personId: member.person_id,
@@ -319,11 +307,11 @@ export default {
                         permissionIds: member.permissions.map(p => p.id)
                     });
                 }
-            // } catch (error) {
-            //     if (is_validation_error(error)) {
-            //         this.errors = error.response.data
-            //     }
-            // }
+            } catch (error) {
+                if (is_validation_error(error)) {
+                    this.errors = error.response.data.errors
+                }
+            }
         },
 
         async updateExistingMember(group, member) {

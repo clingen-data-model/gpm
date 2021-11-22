@@ -33,7 +33,6 @@ import {formatDate} from '@/date_utils'
 import {userCan, hasPermission, hasAnyPermission, hasRole, userIsPerson} from '@/auth_utils'
 
 import objectUid from '@/object_uid'
-import {register} from 'register-service-worker'
 
 app.use(store)
     .mixin({

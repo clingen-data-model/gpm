@@ -9,22 +9,11 @@
             class="text-sm"
             v-remaining-height
         >
-            <template v-slot:cell-actions="{item}">
-                <!-- <pre>{{item}}</pre> -->
-                <button  
-                    v-if="!item.redeemed_at"
-                    class="btn btn-xs"
-                    @click="goToOnboarding(item)"
-                >
-                    Redeem
-                </button>
-            </template>
         </data-table>
     </div>
 </template>
 <script>
-import {ref, computed, onMounted} from 'vue'
-import {useRouter} from 'vue-router'
+import {ref, onMounted} from 'vue'
 import api from '@/http/api'
 
 export default {
@@ -33,8 +22,6 @@ export default {
         
     },
     setup () {
-        const router = useRouter();
-
         let invites = ref([]);
         const getInvites = async () => {
             invites.value = await api.get('/api/people/invites').then(rsp => rsp.data.data);     
@@ -80,27 +67,15 @@ export default {
                 sortable: false,
                 type: String
             }
-            // {
-            //     name: 'actions',
-            //     label: '',
-            //     sortable: false,
-            // },
         ];
 
         let tableSort = {field: 'id', desc: false}
-
-        const goToOnboarding = (invite) => {
-            console.log(invite)
-            console.log(`/people/invites/${invite.code}`)
-            // console.log(router.resolve({name: 'InviteWithCode', params: {code: invite.coi_code}}).href);
-        }
 
         return {
             invites,
             getInvites,
             fields,
-            tableSort,
-            goToOnboarding
+            tableSort
         }
     }
 }

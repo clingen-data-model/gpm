@@ -74,7 +74,6 @@ export default {
     watch: {
         group: {
             handler() {
-                console.log('group watcher triggered')
                 this.syncAttestation();
             },
             immediate: true

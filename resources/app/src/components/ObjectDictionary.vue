@@ -76,7 +76,6 @@ export default {
             Object.keys(this.obj)
                 .forEach(key => {
                     if (!this.except.includes(key)) {
-                        console.log(this.obj[key]);
                         except[key] = this.format(this.obj[key]);
                     }
                 })

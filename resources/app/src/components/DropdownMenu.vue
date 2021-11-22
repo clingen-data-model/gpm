@@ -103,9 +103,7 @@ export default {
         }
     },
     render () {
-        // const items = this.renderItems;
         const containerClass = [];
-        // console.log(this.$slots.default());
         return (
             <div class={containerClass.join(' ')}>
                 <div class="dropdown" class={this.orientation}>

@@ -1,11 +1,9 @@
 <script>
 import configs from '@/configs.json'
-import api from '@/http/api'
 import { formatDate, yearAgo } from '@/date_utils'
 import sortAndFilter from '@/composables/router_aware_sort_and_filter'
 import MemberPreview from '@/components/groups/MemberPreview'
 import { titleCase } from '@/utils'
-import GroupMember from '@/domain/group_member'
 
 export default {
     name: 'MemberList',
@@ -138,9 +136,6 @@ export default {
         }
     },
     methods: {
-        logEvent(event) {
-            console.log(event)
-        },
         toggleFilter() {
             this.showFilter = !this.showFilter;
         },
@@ -176,7 +171,6 @@ export default {
         confirmRetireMember (member) {
             this.showConfirmRetire = true;
             this.selectedMember = member;
-            console.log(this.selectedMember)
         },
         async retireMember (member) {
             try {
@@ -296,7 +290,6 @@ export default {
                 :data="filteredMembers" 
                 v-model:sort="sort" 
                 :detailRows="true" 
-                @update:sort="logEvent"
                 :row-class="(item) => 'cursor-pointer'+ (item.isRetired ? ' retired-member' : '')"
                 @rowClick="goToMember"
                 v-if="group.members.length > 0"

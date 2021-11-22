@@ -124,7 +124,6 @@ export default {
         },
         mergeSummary(summary) {
             const idx = this.summaries.findIndex(s => s.id == summary.id);
-            console.log(idx);
             if (idx > -1) {
                 this.summaries.splice(idx, 1, summary);
                 return;

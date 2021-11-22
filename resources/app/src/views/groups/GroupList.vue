@@ -134,7 +134,7 @@ export default {
     setup() {
         const store = useStore();
         const router = useRouter();
-        // console.log(store);
+
         let groups = computed(() => store.getters['groups/all']);
         let filteredGroups = computed(() => groups.value.filter(() => true))
         const goToItem = (item) => {

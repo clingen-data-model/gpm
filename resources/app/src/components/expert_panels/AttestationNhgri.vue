@@ -64,7 +64,6 @@ export default {
     watch: {
         group: {
             handler (to) {
-                console.log(to);
                 this.attestation = Boolean(to.expert_panel.nhgri_attestation_date)
             },
             immediate: true,

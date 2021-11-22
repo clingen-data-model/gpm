@@ -68,7 +68,6 @@ export default {
             membershipDescription.value = membership_description;
         }
         const save = async () => {
-            console.log('save!')
             try {
                 store.dispatch(
                     'groups/membershipDescriptionUpdate', 

@@ -44,17 +44,15 @@ import {ref, computed, onMounted, watch} from 'vue'
 import NotificationItem from '@/components/NotificationItem'
 import CoiList from '@/components/people/CoiList'
 import PersonProfile from '@/components/people/PersonProfile'
-import ProfileForm from '@/components/people/ProfileForm'
 import Person from "@/domain/person"
 import Group from "@/domain/group"
 
 export default {
     name: 'Dashboard',
     components: {
+        CoiList,
         NotificationItem,
-        PersonProfile,
-        ProfileForm,
-        CoiList
+        PersonProfile
     },
     data() {
         return {

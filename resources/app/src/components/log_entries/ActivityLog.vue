@@ -47,9 +47,7 @@
     </div>
 </template>
 <script>
-import { ref, reactive, computed } from 'vue'
-import { useStore } from 'vuex';
-
+import { ref, computed } from 'vue'
 
 import LogEntryForm from '@/components/log_entries/ActivityLogEntryForm'
 import ActivityLogDeleteConfirmation from '@/components/log_entries/ActivityLogDeleteConfirmation'
