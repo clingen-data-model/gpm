@@ -23,6 +23,10 @@ const submitFormData = async ({method, url, data}) => {
     }
 }
 
+const resetErrors = () => {
+    errors.value = {};
+}
+
 export default (props, context) => {
     return {
         errors,
@@ -37,6 +41,7 @@ export default (props, context) => {
             hideForm();
             context.emit('canceled');
         },
-        submitFormData
+        submitFormData,
+        resetErrors,
     }
 }

@@ -107,10 +107,11 @@ export default {
         },
         async save() {
             try {
-                this.errors = {};
+                this.resetErrors();
                 if (this.workingCopy.id) {
                     await this.updateGroup();
                     this.$emit('saved');
+
                     this.$store.dispatch('groups/find', this.workingCopy.uuid);
                     this.$store.commit('pushSuccess', 'Group info updated.');
                     return;
@@ -119,7 +120,7 @@ export default {
                                     .then(response => response.data.data);
                 this.$emit('saved');
                 this.$store.commit('pushSuccess', 'Group created.');
-                this.$router.push({name: 'GroupDetail', params: {uuid: newGroup.uuid}});
+                this.$router.push({name: 'AddMember', params: {uuid: newGroup.uuid}});
             } catch (error) {
                 if (is_validation_error(error)) {
                     this.errors = error.response.data.errors;
@@ -193,11 +194,12 @@ export default {
         this.$store.dispatch('groups/getItems')
     },
     setup (props, context) {
-        const {errors, submitFormData} = formFactory(props, context)
+        const {errors, submitFormData, resetErrors} = formFactory(props, context)
 
         return {
             errors,
-            submitFormData
+            submitFormData,
+            resetErrors
         }
     }
 }
