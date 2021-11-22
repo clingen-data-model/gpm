@@ -1,19 +1,21 @@
 <template>
     <div>
         <input-row label="Type" v-if="canSetType">
-            <select v-model="typeId" class="w-full">
+            <select v-model="workingCopy.group_type_id" class="w-full">
                 <option :value="null">Select&hellip;</option>
                 <option v-for="type in groupTypes" :key="type.id" :value="type.id">
                     {{type.fullname}}
                 </option>
             </select>
         </input-row>
-        <dictionary-row label="Type" v-else>{{this.workingCopy.type.name.toUpperCase()}}</dictionary-row>
+        <dictionary-row label="Type" v-else>
+            {{typeDisplayName}}
+        </dictionary-row>
         
         <transition name="slide-fade-down" mode="out-in">
             <basic-info-form 
                 :group="group" ref="infoForm"
-                v-if="typeId > 2 && group.expert_panel"
+                v-if="workingCopy.group_type_id > 2 && group.expert_panel"
             />
             <div v-else>
                 <input-row v-model="workingCopy.name" placeholder="Name" label="Name" input-class="w-full"/>
@@ -67,7 +69,6 @@ export default {
                 {id: 3, fullname: 'GCEP'},
                 {id: 4, fullname: 'VCEP'},
             ],
-            typeId: null,
             groupStatuses: configs.groups.statuses
         }
     },
@@ -76,8 +77,15 @@ export default {
             return this.$store.getters['groups/all'];
         },
         canSetType() {
-            console.log(this.group.id);
             return this.hasPermission('groups-manage') && !this.group.id 
+        },
+        typeDisplayName () {
+            if (!this.workingCopy.type) {
+                return 1;
+            }
+            return (this.workingCopy.type.id < 3) 
+                ? this.workingCopy.type.name.toUpperCase() 
+                : this.workingCopy.expert_panel.type.name.toUpperCase();
         }
     },
     watch: {
@@ -95,23 +103,42 @@ export default {
             } else {
                this.workingCopy = new Group(group)
             }
-            this.typeId = group.expertPanel ? group.expertPanel.expert_panel_type_id+2 : group.group_type_id;
+            this.workingCopy.group_type_id = group.expertPanel ? group.expertPanel.expert_panel_type_id+2 : group.group_type_id;
         },
         async save() {
             try {
                 this.errors = {};
-                this.saveGroupData();
-                if (this.workingCopy.expert_panel) {
-                    this.saveEpData();
-                }
-                this.$store.dispatch('groups/find', this.group.uuid)
+                if (this.workingCopy.id) {
+                    await this.updateGroup();
+                    this.$emit('saved');
+                    this.$store.dispatch('groups/find', this.workingCopy.uuid);
+                    this.$store.commit('pushSuccess', 'Group info updated.');
+                    return;
+                } 
+                const newGroup = await this.createGroup()
+                                    .then(response => response.data.data);
+                this.$emit('saved');
+                this.$store.commit('pushSuccess', 'Group created.');
+                this.$router.push({name: 'GroupDetail', params: {uuid: newGroup.uuid}});
             } catch (error) {
                 if (is_validation_error(error)) {
                     this.errors = error.response.data.errors;
                 }
             }
         },
-        async saveGroupData () {
+        createGroup () {
+            return this.$store.dispatch('groups/create', this.workingCopy);
+        },
+        updateGroup () {
+            const promises = [];
+            promises.push(this.saveGroupData());
+            if (this.workingCopy.expert_panel) {
+                promises.push(this.saveEpData());
+            }
+            
+            return Promise.all(promises);
+        },
+        saveGroupData () {
             const promises = [];
             if (this.isDirty('parent_id')) {
                 promises.push(this.saveParent());
@@ -125,8 +152,7 @@ export default {
                 promises.push(this.saveStatus())
             }
 
-            await Promise.all(promises);
-            this.$store.dispatch('groups/find', this.group.uuid);
+            return Promise.all(promises);
         },
         async saveEpData() {
             await this.$refs.infoForm.save();

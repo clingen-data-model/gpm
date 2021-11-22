@@ -16,6 +16,7 @@ class Group extends Entity {
         uuid: null,
         name: null,
         parent_id: null,
+        group_type_id: null,
         expert_panel: {
             type: {},
         },
@@ -62,6 +63,10 @@ class Group extends Entity {
         return this.expertPanelLoaded()
             ? this.status.name
             : this.status.name
+    }
+
+    get statusColor () {
+        return config.groups.statusColors[this.group_status_id];
     }
 
     addMembers (members) {
@@ -121,6 +126,10 @@ class Group extends Entity {
 
     isWorkingGroup() {
         return this.attributes.group_type_id === config.groups.types.wg.id;
+    }
+
+    isWg() {
+        return this.isWorkingGroup();
     }
 
     isCdwg() {

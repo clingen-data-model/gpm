@@ -99,6 +99,14 @@ export const mutations = {
 };
 
 export const actions = {
+    async create ({commit}, groupData) {
+        return await api.post(baseUrl, groupData)
+            .then(response => {
+                commit('addItem', response.data.data);
+                return response;
+            });
+    },
+
     async getItems ({commit}, params) {
         const url = baseUrl + queryStringFromParams(params);
         const data = await api.get(url)

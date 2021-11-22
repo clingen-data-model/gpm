@@ -15,7 +15,7 @@
                     row-class="cursor-pointer active:bg-blue-100"
                 >
                     <template v-slot:cell-displayStatus="{item}">
-                        <badge class="text-xs" :color="statusColors[item.status.id]">{{item.displayStatus}}</badge>
+                        <badge class="text-xs" :color="item.statusColor">{{item.displayStatus}}</badge>
                     </template>
                     <template v-slot:cell-coordinators="{value}">
                         <div v-if="value.length == 0"></div>
@@ -43,7 +43,6 @@
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
 import {computed, onMounted } from 'vue'
-import configs from '@/configs'
 import GroupForm from '@/components/groups/GroupForm'
 
 export default {
@@ -57,7 +56,6 @@ export default {
     data() {
         return {
             showCreateForm: false,
-            statusColors: configs.groups.statusColors,
             tabDefinitions:[
                 {
                     label: 'VCEPs',

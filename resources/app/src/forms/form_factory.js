@@ -9,7 +9,6 @@ const hideForm = () => {
     errors.value = {};
 }
 const submitFormData = async ({method, url, data}) => {
-    console.log({url, data})
     try {
         // return await api.put(
         return await api({

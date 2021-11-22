@@ -4,7 +4,7 @@
             <router-link class="note" :to="{name: 'GroupList'}">Groups</router-link>
             <h1 class="flex justify-between items-center">
                 <div>
-                    {{group.displayName}}
+                    {{group.displayName}} <badge :color="group.statusColor" class="text-xs">{{group.status ? group.status.name : 'loading...'}}</badge>
                     <note v-if="hasRole('super-user')" class="font-normal">
                         group.id: {{group.id}}
                         <span v-if="group.isEp()"> | expertPanel.id: {{group.expert_panel.id}}</span>
@@ -79,7 +79,12 @@
                 <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
             </modal-dialog>
             <modal-dialog v-model="showInfoEdit" @closed="showInfoEdit = false" title="Edit Group Info" size="sm">
-                <group-form :group="group" ref="infoForm" @canceled="showInfoEdit = false"></group-form>
+                <group-form 
+                    :group="group" 
+                    ref="infoForm" 
+                    @canceled="showInfoEdit = false"
+                    @saved="showInfoEdit = false"
+                />
             </modal-dialog>
         </teleport>
 
@@ -92,7 +97,7 @@ import { useStore } from 'vuex'
 import {logEntries, fetchEntries} from '@/adapters/log_entry_repository';
 import {hasPermission} from '@/auth_utils'
 
-import ActivityLog from '@/components/ActivityLog'
+import ActivityLog from '@/components/log_entries/ActivityLog'
 import AttestationGcep from '@/components/expert_panels/AttestationGcep'
 import AttestationNhgri from '@/components/expert_panels/AttestationNhgri'
 import AttestationReanalysis from '@/components/expert_panels/AttestationReanalysis'
@@ -132,7 +137,7 @@ export default {
     },
     data () {
         return {
-            showInfoEdit: false
+            showInfoEdit: false,
         }
     },
     setup (props) {
