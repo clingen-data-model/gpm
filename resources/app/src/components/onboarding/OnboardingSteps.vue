@@ -5,7 +5,7 @@
         <br>
         You've been invited to join ClinGen<span v-if="invite.inviter">
           as part of the {{ invite.inviter.name }}
-          {{ invite.inviter.type }}.</span
+          {{ invite.inviter.type.name.toUpperCase() }}.</span
         ><span v-else>.</span>
     </p>
 
