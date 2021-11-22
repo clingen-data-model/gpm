@@ -35,20 +35,6 @@
             </tab-item>
 
         </tabs-container>
-        <div class="mt-8 space-y-4">
-            <collapsible title="User Memberships">
-                <pre>{{user.memberships}}</pre>
-            </collapsible>
-            <collapsible title="User Groups">
-                <pre>{{groups}}</pre>
-            </collapsible>
-            <collapsible title="User Cois">
-                <pre>{{cois}}</pre>
-            </collapsible>
-            <collapsible title="needsCoi">
-                <pre>{{needsCoi}}</pre>
-            </collapsible>
-        </div>
     </div>
 </template>
 <script>
