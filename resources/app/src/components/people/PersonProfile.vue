@@ -1,12 +1,12 @@
 <template>
     <div>
 
-        <button 
+        <edit-icon-button 
             class="btn btn-sm float-right" 
             @click="editPerson"
         >
             Edit Info
-        </button>
+        </edit-icon-button>
 
 
         <dictionary-row 
