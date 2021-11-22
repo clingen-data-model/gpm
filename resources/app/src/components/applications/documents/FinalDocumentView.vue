@@ -12,7 +12,7 @@
         <dictionary-row label="Date Received">
             <div v-show="!editDateReceived">
                 {{firstDateReceived}}
-                <edit-button @click="initEditReceived"></edit-button>
+                <edit-icon-button @click="initEditReceived"></edit-icon-button>
             </div>
             <div v-show="editDateReceived">
                 <date-input v-model="newDateReceived" class="inline-block"></date-input>
@@ -24,7 +24,7 @@
         <!-- <dictionary-row label="Date Reviewed">
             <div v-show="!editDateReviewed">
                 {{finalDateReviewed}}
-                <edit-button @click="initEditReviewed"></edit-button>
+                <edit-icon-button @click="initEditReviewed"></edit-icon-button>
             </div>
             <div v-show="editDateReviewed">
                 <date-input v-model="newDateReviewed" class="inline-block"></date-input>
@@ -47,14 +47,12 @@
 <script>
 import { formatDate } from '../../../date_utils'
 import DocumentEditForm from './DocumentEditForm'
-import EditButton from '../../buttons/EditIconButton'
 import RemoveButton from '../../buttons/RemoveButton'
 import is_validation_error from '../../../http/is_validation_error'
 
 export default {
     components: {
         DocumentEditForm,
-        EditButton,
         RemoveButton
     },
     props: {

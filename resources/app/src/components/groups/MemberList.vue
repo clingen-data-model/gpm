@@ -3,11 +3,6 @@ import configs from '@/configs.json'
 import api from '@/http/api'
 import { formatDate, yearAgo } from '@/date_utils'
 import sortAndFilter from '@/composables/router_aware_sort_and_filter'
-import ChevDownIcon from '@/components/icons/IconCheveronDown'
-import ChevRightIcon from '@/components/icons/IconCheveronRight'
-import FilterIcon from '@/components/icons/IconFilter'
-import ExclamationIcon from '@/components/icons/IconExclamation'
-import NotificationIcon from '@/components/icons/IconNotification'
 import MemberPreview from '@/components/groups/MemberPreview'
 import { titleCase } from '@/utils'
 import GroupMember from '@/domain/group_member'
@@ -15,12 +10,7 @@ import GroupMember from '@/domain/group_member'
 export default {
     name: 'MemberList',
     components: {
-        ChevRightIcon,
-        ChevDownIcon,
-        FilterIcon,
         MemberPreview,
-        ExclamationIcon,
-        NotificationIcon,
     },
     props: {
         group: {
@@ -263,7 +253,7 @@ export default {
                     @click="toggleFilter"
                     v-if="group.members.length > 0"
                 >
-                    <filter-icon></filter-icon>
+                    <icon-filter></icon-filter>
                 </button>
             </div>
             <router-link 
@@ -313,8 +303,8 @@ export default {
             >
                 <template v-slot:cell-id="{item}">
                     <button @click.stop="toggleItemDetails(item)" class="w-9 align-center block -mx-3">
-                        <chev-right-icon v-if="!item.showDetails" class="m-auto cursor-pointer"></chev-right-icon>
-                        <chev-down-icon v-if="item.showDetails" class="m-auto cursor-pointer"></chev-down-icon>
+                        <icon-cheveron-right v-if="!item.showDetails" class="m-auto cursor-pointer" />
+                        <icon-cheveron-down v-if="item.showDetails" class="m-auto cursor-pointer" />
                     </button>
                 </template>
                 <template v-slot:cell-roles="{value}">
@@ -323,10 +313,10 @@ export default {
                 <template v-slot:cell-coi_last_completed="{item}">
                     <div class="flex space-x-2">
                         <span v-if="item.coi_last_completed">{{formatDate(item.coi_last_completed)}}</span>
-                        <exclamation-icon 
+                        <icon-exclamation
                             v-if="!item.coi_last_completed === null || (item.coi_last_completed < yearAgo())"
                             :class="getCoiDateStyle(item)"
-                        ></exclamation-icon>
+                        />
                     </div>
                 </template>
                 <template v-slot:cell-actions="{item}">
@@ -351,7 +341,7 @@ export default {
                                 <div @click="confirmRemoveMember(item)">Remove from group</div>
                             </dropdown-item>
                         </dropdown-menu>
-                        <notification-icon v-if="item.is_contact" :width="12" :height="12" icon-name="Is a group contact" @click.stop=""></notification-icon>
+                        <icon-notification v-if="item.is_contact" :width="12" :height="12" icon-name="Is a group contact" @click.stop=""/>
                     </div>
                 </template>
 

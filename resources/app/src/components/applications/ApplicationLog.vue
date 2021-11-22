@@ -34,8 +34,8 @@
 </template>
 <script>
 import {mapGetters} from 'vuex';
-import IconEdit from '@/components/icons/IconEdit'
-import IconTrash from '@/components/icons/IconTrash'
+
+
 import LogEntryForm from '@/components/log_entries/LogEntryForm'
 
 
@@ -67,8 +67,6 @@ const fields = [
 
 export default {
     components: {
-        IconEdit,
-        IconTrash,
         LogEntryForm
     },
     props: {

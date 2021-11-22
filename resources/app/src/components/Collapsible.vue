@@ -2,8 +2,8 @@
     <div class="collapsible-container">
         <div class="collapsible-header" @click="expanded = !expanded">
             <div class="flex items-center">
-                <right-cheveron v-if="!expanded" class="-ml-1"></right-cheveron>
-                <down-cheveron v-if="expanded" class="-ml-1"></down-cheveron>
+                <icon-cheveron-right v-if="!expanded" class="-ml-1" />
+                <icon-cheveron-down v-if="expanded" class="-ml-1" />
                 <slot name="title">
                     <strong>{{title}}</strong>
                 </slot>
@@ -17,15 +17,8 @@
     </div>
 </template>
 <script>
-import DownCheveron from '@/components/icons/IconCheveronDown'
-import RightCheveron from '@/components/icons/IconCheveronRight'
-
 export default {
     name: 'Collapsible',
-    components: {
-        DownCheveron,
-        RightCheveron
-    },
     props: {
         modelValue: {
             type: Boolean,

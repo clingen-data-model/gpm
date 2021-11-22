@@ -82,8 +82,8 @@
 </template>
 <script>
 import { formatDate } from '@/date_utils'
-import IconCheveronDown from '@/components/icons/IconCheveronDown'
-import IconCheveronUp from '@/components/icons/IconCheveronUp'
+
+
 import {titleCase} from '@/utils'
 
 /**
@@ -91,10 +91,6 @@ import {titleCase} from '@/utils'
  */
 export default {
     name: 'DataTable',
-    components: {
-        IconCheveronDown,
-        IconCheveronUp
-    },
     emits: [
         'rowClick',
         'update:sort',

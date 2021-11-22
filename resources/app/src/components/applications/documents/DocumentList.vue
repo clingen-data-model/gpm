@@ -81,9 +81,9 @@
     </div>
 </template>
 <script>
-import IconDownload from '../../icons/IconDownload';
-import IconCheckmark from '../../icons/IconCheckmark';
-import IconEdit from '../../icons/IconEdit';
+
+
+
 import TrashButton from '@/components/buttons/TrashIconButton';
 import DocumentReviewedForm from './DocumentReviewedForm';
 import DocumentEditForm from './DocumentEditForm';
@@ -91,11 +91,8 @@ import is_validation_error from '../../../http/is_validation_error';
 
 export default {
     components: {
-        IconDownload,
-        IconCheckmark,
         DocumentReviewedForm,
         DocumentEditForm,
-        IconEdit,
         TrashButton,
     },
     props: {

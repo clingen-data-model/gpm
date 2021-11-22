@@ -2,10 +2,10 @@
     <div>
         <h4 class="flex justify-between mb-2">
             Gene List
-            <edit-button 
+            <edit-icon-button 
                 v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing"
                 @click="showForm"
-            ></edit-button>
+            ></edit-icon-button>
         </h4>
         <div v-if="editing">
             <input-row 
@@ -28,7 +28,6 @@
 <script>
 import {ref, watch, onMounted} from 'vue';
 import {useStore} from 'vuex';
-import EditButton from '@/components/buttons/EditIconButton'
 import formFactory from '@/forms/form_factory'
 import is_validation_error from '@/http/is_validation_error'
 import api from '@/http/api'
@@ -37,7 +36,6 @@ import { hasAnyPermission } from '@/auth_utils'
 export default {
     name: 'GcepGeneList',
     components: {
-        EditButton
     },
     props: {
         group: {

@@ -11,7 +11,7 @@
                         <div class="text-white bg-green-600 rounded-xl px-2">
                             Appproved: {{dateApproved}}
                         </div>
-                        <edit-button class="text-black" @click="initEditApprovalDate"></edit-button>
+                        <edit-icon-button class="text-black" @click="initEditApprovalDate"></edit-icon-button>
                     </div>
                     <div class="flex space-x-1" v-else>
                         <date-input v-model="newApprovalDate"></date-input>
@@ -66,7 +66,6 @@ import { formatDate } from '@/date_utils'
 import ApplicationLog from '@/components/applications/ApplicationLog'
 import DocumentManager from '@/components/applications/documents/DocumentManager'
 import ApproveStepForm from '@/components/applications/ApproveStepForm'
-import EditButton from '@/components/buttons/EditIconButton'
 import RemoveButton from '@/components/buttons/RemoveButton'
 import is_validation_error from '@/http/is_validation_error'
 
@@ -75,7 +74,6 @@ export default {
         ApplicationLog,
         DocumentManager,
         ApproveStepForm,
-        EditButton,
         RemoveButton
     },
     props: {

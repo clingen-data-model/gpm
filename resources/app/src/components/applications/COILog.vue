@@ -48,14 +48,13 @@
 
 </template>
 <script>
-import IconRefresh from '@/components/icons/IconRefresh';
+
 import CoiDetail from '@/components/applications/CoiDetail';
 import CoiLegacyUpload from '@/components/applications/CoiLegacyUpload';
 import AddContactControl from '@/components/contacts/AddContactControl.vue'
 
 export default {
     components: {
-        IconRefresh,
         CoiDetail,
         CoiLegacyUpload,
         AddContactControl,

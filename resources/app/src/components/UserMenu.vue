@@ -6,7 +6,7 @@
                 ref="menuButton" 
                 @click.stop="toggleMenu"
             >
-                <chevron-down></chevron-down>
+                <icon-cheveron-down></icon-cheveron-down>
                 {{user.name}}
             </div>
             <transition name="slide-fade-down">            
@@ -39,13 +39,10 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import ChevronDown from '@/components/icons/IconCheveronDown'
+
 
 export default {
     name: 'UserMenu',
-    components: {
-        ChevronDown
-    },
     props: {
         
     },

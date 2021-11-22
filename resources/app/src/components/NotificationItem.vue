@@ -5,19 +5,16 @@
                 {{notification.message}}
             </strong>
             <button @click="$emit('removeClicked')">
-                <close-icon></close-icon>
+                <icon-close></icon-close>
             </button>
         </div>
     </static-alert>
 </template>
 <script>
-import CloseIcon from '@/components/icons/IconClose'
+
 
 export default {
     name: 'NotificationItem',
-    components: {
-        CloseIcon
-    },
     emits: ['removeClicked'],
     props: {
         notification: {

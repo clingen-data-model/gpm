@@ -9,7 +9,7 @@
                     class="btn btn-xs flex-grow-0"
                     v-if="(hasPermission('people-manage') || userIsPerson(person))"
                 >
-                    <edit-icon width="16" heigh="16"></edit-icon>
+                    <icon-edit width="16" heigh="16" />
                 </router-link>
 
             </h1>
@@ -46,7 +46,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import {formatDateTime as formatDate} from '@/date_utils'
-import EditIcon from '@/components/icons/IconEdit'
+
 import TabsContainer from '../TabsContainer.vue'
 import MembershipList from './MembershipList.vue'
 import PersonProfile from '@/components/people/PersonProfile'
@@ -55,7 +55,6 @@ import CoiList from '@/components/people/CoiList'
 export default {
     name: 'PersonDetail',
     components: { 
-        EditIcon, 
         TabsContainer,
         MembershipList,
         PersonProfile,

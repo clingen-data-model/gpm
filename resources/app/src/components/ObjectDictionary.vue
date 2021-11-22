@@ -1,8 +1,8 @@
 <template>
     <div v-if="filteredObj">
-        <dict-row v-for="(value, key) in filteredObj" :key="key" :label="key">
+        <dictionary-row v-for="(value, key) in filteredObj" :key="key" :label="key">
             {{value}}
-        </dict-row>
+        </dictionary-row>
     </div>
 </template>
 <script>

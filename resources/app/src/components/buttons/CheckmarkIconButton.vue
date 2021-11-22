@@ -4,12 +4,9 @@
     </button>
 </template>
 <script>
-import IconCheckmark from '@/components/icons/IconCheckmark'
+
 
 export default {
-    components: {
-        IconCheckmark,
-    },
     props: {
     },
     data() {

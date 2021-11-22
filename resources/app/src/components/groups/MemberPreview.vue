@@ -11,9 +11,9 @@
             </div>
             <div class="flex-1 md:flex flex-wrap">
                 <div class="flex-1 mr-8">
-                    <dict-row label="Email">{{member.person.email}}</dict-row>
-                    <dict-row label="Institution">{{member.person.institution_id ? member.person.institution.name : '--'}}</dict-row>
-                    <dict-row label="Credentials">{{member.person.credentials}}</dict-row>
+                    <dictionary-row label="Email">{{member.person.email}}</dictionary-row>
+                    <dictionary-row label="Institution">{{member.person.institution_id ? member.person.institution.name : '--'}}</dictionary-row>
+                    <dictionary-row label="Credentials">{{member.person.credentials}}</dictionary-row>
                     <object-dictionary
                         :obj="member"
                         :only="['expertise', 'notes']"
@@ -26,10 +26,10 @@
                     <h4>Biocurator Training:</h4>
                     <div v-if="member.hasRole('biocurator')"  class="ml-2">
                         <dictionary-row label="Level 1 training">
-                            <checkmark class="text-green-700" v-if="member.training_level_1"/>
+                            <icon-checkmark class="text-green-700" v-if="member.training_level_1"/>
                         </dictionary-row>
                         <dictionary-row label="Level 2 training">
-                            <checkmark class="text-green-700" v-if="member.training_level_2"/>
+                            <icon-checkmark class="text-green-700" v-if="member.training_level_2"/>
                         </dictionary-row>
                     </div>
                     <div class="mt-2">
@@ -60,15 +60,13 @@ import GroupMember from '@/domain/group_member';
 import Group from '@/domain/group';
 import ProfilePicture from '@/components/people/ProfilePicture'
 import {formatDate} from '@/date_utils'
-import Checkmark from '@/components/icons/IconCheckmark'
-import ExclamationIcon from '@/components/icons/IconExclamation'
+
+
 
 export default {
     name: 'MemberPreview',
     components: {
         ProfilePicture,
-        Checkmark,
-        ExclamationIcon
     },
     props: {
         member: {

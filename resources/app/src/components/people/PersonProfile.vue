@@ -1,5 +1,14 @@
 <template>
     <div>
+
+        <button 
+            class="btn btn-sm float-right" 
+            @click="editPerson"
+        >
+            Edit Info
+        </button>
+
+
         <dictionary-row 
             v-for="key in ['name', 'email']"
             :key="key"
@@ -10,16 +19,16 @@
 
         <section class="mt-4 border-t pt-4">
             <h3>Profile</h3>
-            <dict-row label="Institution">{{person.institutionName}}</dict-row>
-            <dict-row label="Credentials">{{person.credentials}}</dict-row>
-            <dict-row label="Primary Occupation">{{person.primaryOccupationName}}</dict-row>
-            <dict-row label="Biography">{{person.biography}}</dict-row>
-            <dict-row label="ORCID">{{person.orcid_id}}</dict-row>
-            <dict-row label="Hypothes.is ID">{{person.hypothesis_id}}</dict-row>
+            <dictionary-row label="Institution">{{person.institutionName}}</dictionary-row>
+            <dictionary-row label="Credentials">{{person.credentials}}</dictionary-row>
+            <dictionary-row label="Primary Occupation">{{person.primaryOccupationName}}</dictionary-row>
+            <dictionary-row label="Biography">{{person.biography}}</dictionary-row>
+            <dictionary-row label="ORCID">{{person.orcid_id}}</dictionary-row>
+            <dictionary-row label="Hypothes.is ID">{{person.hypothesis_id}}</dictionary-row>
         </section>
 
         <section class="mt-4 border-t pt-4">
-            <dict-row label="Address">
+            <dictionary-row label="Address">
                 <p v-if="person.street1">{{person.street1}}</p>
                 <p v-if="person.street2">{{person.street2}}</p>
                 <p>
@@ -28,27 +37,27 @@
                     <span v-if="person.zip">{{person.zip}}</span>
                 </p>
                 <p v-if="person.country">{{person.country.name}}</p>
-            </dict-row>
-            <dict-row label="Phone">{{person.phone}}</dict-row>
+            </dictionary-row>
+            <dictionary-row label="Phone">{{person.phone}}</dictionary-row>
         </section>
 
         <section class="mt-4 border-t pt-4" v-if="userIsPerson(person) || hasPermission('people-manage')">
             <h3>Demographics</h3>
-            <dict-row label="Primary Occupation">{{person.primaryOccupationName}}</dict-row>
-            <dict-row label="Race">{{person.raceName}}</dict-row>
-            <dict-row label="Ethnicity">{{person.ethnicityName}}</dict-row>
-            <dict-row label="Gender">{{person.genderName}}</dict-row>
+            <dictionary-row label="Primary Occupation">{{person.primaryOccupationName}}</dictionary-row>
+            <dictionary-row label="Race">{{person.raceName}}</dictionary-row>
+            <dictionary-row label="Ethnicity">{{person.ethnicityName}}</dictionary-row>
+            <dictionary-row label="Gender">{{person.genderName}}</dictionary-row>
         </section>
 
         <section class="mt-4 border-t pt-4" v-if="hasPermission('people-manage')">
             <h3>Metadata</h3>
-            <dict-row label="Uuid">{{person.uuid}}</dict-row>
-            <dict-row label="Numeric ID">{{person.id}}</dict-row>
+            <dictionary-row label="Uuid">{{person.uuid}}</dictionary-row>
+            <dictionary-row label="Numeric ID">{{person.id}}</dictionary-row>
 
-            <dict-row v-if="person.user_id" label="User ID">{{person.user_id}}</dict-row>
-            <dict-row v-else label="Invite Code">
+            <dictionary-row v-if="person.user_id" label="User ID">{{person.user_id}}</dictionary-row>
+            <dictionary-row v-else label="Invite Code">
                 {{person.invite ? person.invite.code : null}}
-            </dict-row>
+            </dictionary-row>
             
             <dictionary-row 
                 v-for="key in ['created_at', 'updated_at']"

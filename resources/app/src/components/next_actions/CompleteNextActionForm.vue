@@ -1,13 +1,13 @@
 <template>
     <div>
-        <dict-row label="Action">
+        <dictionary-row label="Action">
             <div v-html="nextAction.entry"></div>
-        </dict-row>
-        <object-dict 
+        </dictionary-row>
+        <object-dictionary 
             :obj="nextAction"
             :show="['date_created', 'step', 'target_date']"
             :dates="['target_date', 'date_created']"
-        ></object-dict>
+        ></object-dictionary>
 
         <input-row  label="Date Completed" v-model="dateCompleted" type="date" :errors="errors.date_completed"></input-row>
         

@@ -34,13 +34,12 @@
     }
 </style>
 <script>
-import CheveronDown from './icons/IconCheveronDown'
+
 import {Teleport, Transition} from 'vue'
 
 export default {
     name: 'DropdownMenu',
     components: {
-        CheveronDown,
         Teleport,
         Transition
     },
@@ -115,7 +114,7 @@ export default {
                         onClick={this.toggleMenu}
                     >
                         <span v-show={!this.hideCheveron}>
-                            <cheveron-down></cheveron-down>
+                            <icon-cheveron-down />
                         </span>
                         {this.$slots.label ? this.$slots.label() : this.label}
                     </div>

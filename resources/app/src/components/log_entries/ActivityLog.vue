@@ -49,10 +49,10 @@
 <script>
 import { ref, reactive, computed } from 'vue'
 import { useStore } from 'vuex';
-import IconEdit from '@/components/icons/IconEdit'
-import IconTrash from '@/components/icons/IconTrash'
-import LogEntryForm from '@/components/ActivityLogEntryForm'
-import ActivityLogDeleteConfirmation from '@/components/ActivityLogDeleteConfirmation'
+
+
+import LogEntryForm from '@/components/log_entries/ActivityLogEntryForm'
+import ActivityLogDeleteConfirmation from '@/components/log_entries/ActivityLogDeleteConfirmation'
 
 const fields = [
     {
@@ -82,8 +82,6 @@ const fields = [
 
 export default {
     components: {
-        IconEdit,
-        IconTrash,
         LogEntryForm,
         ActivityLogDeleteConfirmation
     },

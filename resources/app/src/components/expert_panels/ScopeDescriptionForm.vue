@@ -2,10 +2,10 @@
     <div>
         <header class="flex justify-between items-center">
             <h4>Description of Scope</h4>
-            <edit-button 
+            <edit-icon-button 
                 v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing"
                 @click="showForm"
-            ></edit-button>
+            ></edit-icon-button>
         </header>
         <div class="mt-2">
             <transition name="fade" mode="out-in">
@@ -30,15 +30,11 @@
 import {ref, onMounted} from 'vue'
 import {useStore} from 'vuex'
 import Group from '@/domain/group'
-import EditButton from '@/components/buttons/EditIconButton'
 import is_validation_error from '../../http/is_validation_error'
 import { hasAnyPermission } from '@/auth_utils'
 
 export default {
     name: 'scopeDescriptionForm',
-    components: {
-        EditButton
-    },
     props: {
         group: {
             type: Group,

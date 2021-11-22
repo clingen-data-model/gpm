@@ -24,14 +24,14 @@
             </template>
             <template v-slot:cell-action="{item}">
                 <div class="flex space-x-1">
-                    <edit-button @click="$router.push({name: 'EditNextAction', params: {uuid: application.uuid, id: item.id}})"></edit-button>
+                    <edit-icon-button @click="$router.push({name: 'EditNextAction', params: {uuid: application.uuid, id: item.id}})"></edit-icon-button>
                     <trash-icon-button @click="initiateDelete(item)"></trash-icon-button>
-                    <checkmark-icon 
+                    <icon-checkmark 
                         width="20" 
                         height="20"
                         :class="{'text-green-500': Boolean(item.date_completed), 'text-gray-300': !Boolean(item.date_completed)}"
                         v-if="Boolean(item.date_completed)"
-                    ></checkmark-icon>
+                    />
                     <checkmark-button
                         v-else
                         @click.prevent="startCompleting(item)"
@@ -57,17 +57,13 @@
 <script>
 import CompleteNextActionForm from '@/components/next_actions/CompleteNextActionForm'
 import {mapGetters} from 'vuex'
-import EditButton from '@/components/buttons/EditIconButton'
 import CheckmarkButton from '@/components/buttons/CheckmarkIconButton'
-import CheckmarkIcon from '@/components/icons/IconCheckmark'
 import TrashIconButton from '@/components/buttons/TrashIconButton.vue'
 
 export default {
     name: 'NextActions',
     components: {
         CompleteNextActionForm,
-        EditButton,
-        CheckmarkIcon,
         CheckmarkButton,
         TrashIconButton,
     },
