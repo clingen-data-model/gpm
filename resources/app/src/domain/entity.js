@@ -14,6 +14,7 @@ class Entity {
     constructor(attributes = {}) {
 
         this.attributes = {...this.constructor.defaults, ...attributes}
+        this.original = {};
 
         for (let attr in this.attributes) {
             this.defineAttributeGettersAndSetters(attr)
@@ -23,6 +24,7 @@ class Entity {
     defineAttributeGettersAndSetters(attr) 
     {
         let setter = (value) => {
+            this.original[attr] = this.attributes[attr];
             this.attributes[attr] = value
         }
 
@@ -33,6 +35,7 @@ class Entity {
         if (this.constructor.dates.includes(attr)) {
             getter = () => (this.attributes[attr]) ? new Date(Date.parse(this.attributes[attr])) : null;
             setter = (value) => {
+                this.original[attr] = this.attributs[attr];
                 this.attributes[attr] = (value) ? new Date(Date.parse(value)) : null;
             }
         }
@@ -65,6 +68,48 @@ class Entity {
 
     getAttributes() {
         return this.attributes;
+    }
+
+    getOriginal() {
+        return this.original;
+    }
+
+    clearOriginal() {
+        this.original = {};
+    }
+
+    isDirty (attribute = null) {
+        if (attribute) {
+            return Boolean(this.original[attribute]);
+        }
+        return Object.keys(this.original).length > 0;
+    }
+
+    getDirty (attribute = null) {
+        if (!this.isDirty(attribute)) {
+            return {};
+        }
+        let keys = Object.keys(this.original);
+        if (attribute) {
+            if (Array.isArray(attribute)) {
+                keys = attribute
+            }
+            if (typeof attribute == 'string') {
+                keys = [attribute];
+            }
+        }
+
+        const dirty = {};
+        keys.forEach(key => {
+            dirty[key] = {original: this.original[key], new: this.attributes[key]}
+        });
+
+        return dirty;
+    }
+
+    revertDirty () {
+        this.attributes = {...this.attributes, ...this.original};
+        this.clearOriginal();
     }
 
 }
