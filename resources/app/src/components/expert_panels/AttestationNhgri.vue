@@ -16,10 +16,12 @@
 
         <p class="my-4">
             <input-row label="" :vertical="true">
-                <div class="flex space-x-2">
-                    <div class="pt-1"><input type="checkbox" v-model="attestation" id="nhgri-checkbox"></div>
-                    <label class="font-bold" for="nhgri-checkbox">I understand that once a variant is approved in the VCI it will become publicly available in the Evidence Repository. They should not be held for publication.</label>
-                </div>
+                <checkbox 
+                    :disabled="disabled" 
+                    v-model="nhgriAttestationDate" 
+                    id="nhgri-checkbox" 
+                    label="I understand that once a variant is approved in the VCI it will become publicly available in the Evidence Repository. They should not be held for publication."
+                />
             </input-row>
         </p>
 
@@ -34,8 +36,6 @@
             </a> 
             and refer to guidance on submissions to a preprint server (e.g. bioRxiv or medRxiv).
         </p>
-
-        <button class="btn" @click="submit" :disabled="!attestation" v-if="showSubmit">Submit</button>
     </div>
 </template>
 <script>
@@ -49,7 +49,7 @@ export default {
             type: Object,
             required: true,
         },
-        showSubmit: {
+        disabled: {
             type: Boolean,
             required: false,
             default: false
@@ -61,17 +61,20 @@ export default {
             errors: {}
         }
     },
-    watch: {
-        group: {
-            handler (to) {
-                this.attestation = Boolean(to.expert_panel.nhgri_attestation_date)
+    computed: {
+        nhgriAttestationDate: {
+            get: function () {
+                return Boolean(this.group.expert_panel.nhgri_attestation_date);
             },
-            immediate: true,
-            deep: true
+            set: function (value) {
+                const groupCopy = this.group.clone();
+                groupCopy.expert_panel.nhgri_attestation_date = value ? new Date() : null;
+                this.$emit('input', groupCopy);
+            }
         }
     },
     methods: {
-        async submit () {
+        async save () {
             if (this.attestation) {
                 try {
                     await api.post(`/api/groups/${this.group.uuid}/application/attestations/nhgri`, {'attestation': this.attestation})
