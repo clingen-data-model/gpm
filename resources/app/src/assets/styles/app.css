@@ -92,16 +92,20 @@ textarea.sm {
 
 }
 
+.btn-xs {
+    @apply text-xs px-2 py-0.5;
+}
+
 .btn-sm {
-    @apply text-sm
+    @apply text-sm;
 }
 
 .btn-lg {
-    @apply text-lg
+    @apply px-4 py-1.5 text-lg;
 }
 
-.btn-xs {
-    @apply text-xs px-2 py-0.5;
+.btn-xl {
+    @apply px-6 py-2 text-2xl;
 }
 
 .btn.gray {
