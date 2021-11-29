@@ -23,15 +23,11 @@
                 </div>
             </input-row>
         </div>
-        <p class="text-sm">For all variants approved by either of the processes described above, a summary of approved variants should be sent to ensure that any members absent from a call have an opportunity to review each variant. The summary should be emailed to the full VCEP after the call and should summarize decisions that were made and invite feedback within a week.</p>
-
-        <button-row @submit="save" @cancel="cancel" submit-text="Save" v-if="!hideSubmission"></button-row>
+        <p class="text-sm mb-0">For all variants approved by either of the processes described above, a summary of approved variants should be sent to ensure that any members absent from a call have an opportunity to review each variant. The summary should be emailed to the full VCEP after the call and should summarize decisions that were made and invite feedback within a week.</p>
     </div>
 </template>
 <script>
-import {useStore} from 'vuex';
-import {watch} from 'vue';
-import {protocolId, meetingFrequency, errors, syncData, saveProtocolData} from '@/composables/curation_protocol_updates'
+import {computed} from 'vue';
 
 export default {
     name: 'VcepOngoingPlansForm',
@@ -40,40 +36,44 @@ export default {
             type: Object,
             required:true
         },
-        hideSubmission: {
+        errors: {
+            type: Object,
+            required: false,
+            default: () => ({})
+        },
+        editing: {
             type: Boolean,
             required: false,
-            default: false
-        },
+            default: true
+        }
     },
-     setup(props) {
-        const store = useStore();
+     setup(props, context) {
+        const protocolId = computed({
+            get: function () {
+                return props.group.expert_panel.curation_review_protocol_id;
+            },
+            set: function (value) {
+                const groupClone = props.group.clone();
+                groupClone.expert_panel.curation_review_protocol_id = value;
 
-        const save = async () => {
-            try {
-                await saveProtocolData(props.group);
-                await store.dispatch('groups/find', props.group.uuid);
-                store.commit('pushSuccess', 'Curation/Review protocol saved.')
-            } catch (error) {
-                console.log(error);
+                context.emit('update:group', groupClone);
             }
-        }
-
-        watch(() => props.group, 
-            () => syncData(props.group), 
-            { immediate: true }
-        );
-
-        const cancel = () => {
-            syncData(props.group);
-        }
+        });
+        const meetingFrequency = computed({
+            get: function () {
+                return props.group.expert_panel.meeting_frequency;
+            },
+            set: function (value) {
+                const groupClone = props.group.clone();
+                groupClone.expert_panel.meeting_frequency = value;
+                
+                context.emit('update:group', groupClone);
+            }
+        });
 
         return {
             protocolId,
             meetingFrequency,
-            errors,
-            save,
-            cancel
         }
     }
 }

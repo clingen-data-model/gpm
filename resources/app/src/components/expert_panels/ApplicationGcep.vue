@@ -94,37 +94,19 @@ export default {
         }
     },
     watch: {
-        group: function (to) {
-            this.workingCopy = to.clone()
+        group: {
+            handler: function (to, from) {
+                if (to != from) {
+                    this.workingCopy = to.clone()
+                }
+            },
+            immediate: true
         }
     },
     methods: {
         async save () {
-            const promises = [];
-            promises.push(this.submitReferencedForms);
-
-            const data = {
-                scope_description: this.workingCopy.expert_panel.scope_description,
-
-            }
-
-            promises.push(submitFormData('PUT', `/api/groups/gcep/application`, data))
+            this.$emit('update:group', this.workingCopy);
         },
-        async submitReferencedForms () {
-            const promises = [];
-
-            Object.keys(this.$refs).forEach(key => {
-                console.log(`Saving data for ${key}`);
-                promises.push(this.$refs[key].save());
-            })
-
-            return promises;
-        },
-        onAppComponentInput (evt) {
-             const data = evt.target.value;
-             console.log(data);
-            //  this.componentData = {...this.componentData, ...data}
-         }
     },
     setup (props, context) {
         return {
