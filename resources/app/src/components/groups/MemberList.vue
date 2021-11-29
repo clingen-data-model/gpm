@@ -284,7 +284,7 @@ export default {
             </div>
         </transition>
         
-        <div class="mt-3">
+        <div class="mt-3 py-2 w-full overflow-auto">
             <data-table 
                 :fields="fieldsForGroupType" 
                 :data="filteredMembers" 
@@ -346,12 +346,8 @@ export default {
                 This group does not yet have any members.
             </div>
         </div>
-        <!-- <dev-todo :items="[
-            '~ Store filter state in url.',
-        ]" class="mt-4"></dev-todo> -->
         <teleport to='body'>
             <modal-dialog v-model="showConfirmRetire" size="xs" :title="`Retire ${selectedMemberName}?`">
-                <!-- <h3>Retire {{selectedMemberName}}?</h3> -->
                 <p class="text-lg">
                     Are you sure you want to retire {{selectedMemberName}} from this group?
                 </p>
