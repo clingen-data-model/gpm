@@ -1,6 +1,6 @@
 import Entity from '@/domain/entity'
 import GroupMember from '@/domain/group_member'
-import config from '@/configs.json'
+import configs from '@/configs.json'
 
 class Group extends Entity {
     static dates = [
@@ -19,6 +19,15 @@ class Group extends Entity {
         group_type_id: null,
         expert_panel: {
             type: {},
+            utilize_gt: null,
+            utilize_gci: null,
+            curations_publicly_available: null,
+            pub_policy_reviewed: null,
+            draft_manuscripts: null,
+            recuration_process_review: null,
+            biocurator_training: null,
+            biocurator_mailing_list: null,
+            gci_training_date: null,
         },
         type: {},
     };
@@ -66,7 +75,7 @@ class Group extends Entity {
     }
 
     get statusColor () {
-        return config.groups.statusColors[this.group_status_id];
+        return configs.groups.statusColors[this.group_status_id];
     }
 
     addMembers (members) {
@@ -107,7 +116,7 @@ class Group extends Entity {
             roleId = role.id
         }
         if (typeof role == 'string') {
-            const matchingRole = config.groups.roles[role];
+            const matchingRole = configs.groups.roles[role];
             if (!matchingRole) {
                 throw new Error(`No role matching ${role}`);
             }
@@ -121,11 +130,11 @@ class Group extends Entity {
     }
     
     isEp() {
-        return this.attributes.group_type_id === config.groups.types.ep.id;
+        return this.attributes.group_type_id === configs.groups.types.ep.id;
     }
 
     isWorkingGroup() {
-        return this.attributes.group_type_id === config.groups.types.wg.id;
+        return this.attributes.group_type_id === configs.groups.types.wg.id;
     }
 
     isWg() {
@@ -133,7 +142,7 @@ class Group extends Entity {
     }
 
     isCdwg() {
-        return this.attributes.group_type_id === config.groups.types.cdwg.id;
+        return this.attributes.group_type_id === configs.groups.types.cdwg.id;
     }
 
     isVcep() {
@@ -144,9 +153,16 @@ class Group extends Entity {
         return this.isEp() && this.expert_panel && this.expert_panel.expert_panel_type_id == 1;
     }
 
+    isApplying () {
+        return this.isEp() && this.expert_panel 
+            && this.group_status_id == configs.groups.statuses['pending-approval'].id
+    }
+
     clone(){
         const members = this.members;
-        return new (this.constructor.self)({...this.attributes, members});
+        const clone = super.clone({...this.attributes, members});
+
+        return clone;
     }
 }
 
