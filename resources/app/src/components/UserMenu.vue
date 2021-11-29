@@ -17,18 +17,25 @@
                     class="absolute right-0 -top-3 pt-11 bg-white border w-48 z-10 shadow" 
                 >
                     <ul>
-                        <li class="hover:bg-blue-100 cursor-pointer border-b border-t">
-                            <router-link :to="{name: 'Dashboard'}" @click="showMenu = false" class="p-3 block">Dashboard</router-link>
+                        <li class="menu-item">
+                            <router-link :to="{name: 'Dashboard'}" @click="showMenu = false">Dashboard</router-link>
                         </li>
-                        <li class="hover:bg-blue-100 cursor-pointer border-t border-gray-300">
-                            <button class="p-3 block w-full cursor-pointer text-right" @click="logout">
+                        <li class="menu-item">
+                            <button @click="logout">
                                 Log out
                             </button>
                         </li>
-                        <li class="hover:bg-blue-100 cursor-pointer border-t-4 border-gray-300">
-                            <router-link :to="{name: 'mail-log'}" @click="showMenu = false" class="p-3 block">Mail log</router-link>
+                    </ul>
+                    <ul>
+                        <li class="menu-item">
+                            <router-link :to="{name: 'InviteAdmin'}">
+                                Invites
+                            </router-link>
+                        </li> 
+                        <li class="menu-item">
+                            <router-link :to="{name: 'mail-log'}" @click="showMenu = false">Mail log</router-link>
                         </li>
-                        <li class="hover:bg-blue-100 cursor-pointer border-t border-gray-300">
+                        <li class="menu-item">
                             <a href="/dev/logs" class="p-3 block">System Log</a>
                         </li>
                     </ul>
@@ -77,3 +84,22 @@ export default {
     }
 }
 </script>
+<style lang="postcss" scoped>
+    ul {
+        @apply border-t-4 first:border-none
+    }
+    .menu-item {
+        @apply hover:bg-blue-100 cursor-pointer border-t border-gray-300;
+    }
+    .menu-item:first-child {
+        @apply border-b;
+    }
+    .menu-item > a,
+    .menu-item > button {
+         @apply p-3 block;
+    }
+
+    .menu-item > button {
+        @apply block w-full cursor-pointer text-right text-blue-500;
+    }
+</style>
