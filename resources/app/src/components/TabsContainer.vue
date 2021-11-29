@@ -51,9 +51,18 @@ export default {
             default: 0
         }
     },
+    emits: [
+        'update:modelValue',
+        'tab-changed'
+    ],
     data() {
         return {
             tabs: [],
+        }
+    },
+    computed: {
+        activeTab() {
+            return this.tabs.find(t => t.active === true) || {};
         }
     },
     watch: {
@@ -74,6 +83,7 @@ export default {
             this.tabs.forEach(t => t.active = false)
             this.tabs[idx].active = true
             this.$emit('update:modelValue', idx);
+            this.$emit('tab-changed', this.tabs[idx].label);
             this.updateRouteQuery(this.tabs[idx].label);
         },
 
@@ -88,7 +98,15 @@ export default {
         },
         
         activateTabFromRoute () {
-            if (Object.keys(this.$route.query).includes('tab')) {
+            
+            const activeTabLabel = this.activeTab.label 
+                                    ? this.activeTab.label.toLowerCase() 
+                                    : null;
+
+            if (
+                activeTabLabel != this.$route.query.tab 
+                && Object.keys(this.$route.query).includes('tab')
+            ) {
                 this.activateTabWithLabel(this.$route.query.tab);
             }
         },
