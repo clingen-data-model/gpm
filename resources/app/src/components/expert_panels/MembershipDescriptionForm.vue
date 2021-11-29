@@ -4,14 +4,19 @@
             <h4>Description of Expertise</h4>
             <edit-icon-button 
                 v-if="hasAnyPermission(['groups-manage'], ['edit-info', group]) && !editing"
-                @click="showForm"
+                @click="$emit('update:editing', true)"
             ></edit-icon-button>
         </header>
         <div class="mt-4">
             <transition name="fade" mode="out-in">
-                <input-row :vertical="true" label="Describe the expertise of VCEP members who regularly use the ACMG/AMP guidelines to classify variants and/or review variants during clinical laboratory case sign-out." v-if="editing" :errors="errors.membership_description">
+                <input-row 
+                    :vertical="true" 
+                    label="Describe the expertise of VCEP members who regularly use the ACMG/AMP guidelines to classify variants and/or review variants during clinical laboratory case sign-out." 
+                    v-if="editing" 
+                    :errors="errors.membership_description"
+                >
                     <textarea class="w-full" rows="10" v-model="membershipDescription"></textarea>
-                    <button-row @submit="save" @cancel="hideForm"></button-row>
+                    <!-- <button-row @submit="save" @cancel="hideForm"></button-row> -->
                 </input-row>
                 <div v-else>
                     <markdown-block 
@@ -26,10 +31,7 @@
     </div>
 </template>
 <script>
-import {ref, onMounted} from 'vue'
-import {useStore} from 'vuex'
 import Group from '@/domain/group'
-import is_validation_error from '../../http/is_validation_error'
 
 export default {
     name: 'MembershipDescriptionForm',
@@ -37,70 +39,35 @@ export default {
         group: {
             type: Group,
             required: true
+        },
+        editing: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        errors: {
+            type: Object,
+            required: false,
+            default: () => ({})
         }
     },
     emits: [
-        'editing',
+        'update:editing',
+        'update:group',
         'saved',
         'canceled',
     ],
-    setup (props, context) {
-        const store = useStore();
-
-        let errors = ref({});
-        const editing = ref(false)
-        const hideForm = () => {
-            editing.value = false;
-            errors.value = {};
-        }
-        const showForm = () => {
-            errors.value = {};
-            editing.value = true;
-            context.emit('editing');
-        }
-        const cancel = () => {
-            hideForm();
-            context.emit('canceled');
-        }
-        const membershipDescription = ref(null)
-        const syncDescription = () => {
-            const {membership_description} = props.group.expert_panel;
-            membershipDescription.value = membership_description;
-        }
-        const save = async () => {
-            try {
-                store.dispatch(
-                    'groups/membershipDescriptionUpdate', 
-                    {
-                        uuid: props.group.uuid, 
-                        membershipDescription: membershipDescription.value
-                    }
-                );
-                hideForm();
-                context.emit('saved');
-            } catch (error) {
-                if (is_validation_error(error)) {
-                    errors.value = error.response.data.errors
-                }
+    computed: {
+        membershipDescription: { 
+            get: function () {
+                return this.group.expert_panel.membership_description
+            }, 
+            set: function (value) {
+                const groupCopy = this.group.clone();
+                groupCopy.expert_panel.membership_description = value;
+                this.$emit('update:group', groupCopy);
             }
         }
-        
-
-        onMounted(() => {
-            syncDescription();
-        })
-
-        return {
-            editing,
-            showForm,
-            hideForm,
-            cancel,
-            errors,
-            membershipDescription,
-            syncDescription,
-            save
-        }
-
-    },
+    }
 }
 </script>

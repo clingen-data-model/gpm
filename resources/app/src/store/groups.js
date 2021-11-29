@@ -44,7 +44,8 @@ export const getters = {
 
 export const mutations = {
     addItem (state, item) {
-        const group = new Group(item);
+        const group = Object.prototype.hasOwnProperty.call(item, 'attributes')
+                        ? item : new Group(item);
         const idx = state.items.findIndex(i => i.id == item.id);
         if (idx > -1) {
             state.items.splice(idx, 1, group)

@@ -4,14 +4,17 @@
             <h4>Description of Scope</h4>
             <edit-icon-button 
                 v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing"
-                @click="showForm"
+                @click="$emit('update:editing', true)"
             ></edit-icon-button>
         </header>
         <div class="mt-2">
             <transition name="fade" mode="out-in">
                 <input-row :vertical="true" label="Describe the scope of work of the Expert Panel including the disease area(s), genes being addressed, and any specific rational for choosing the condition(s)." v-if="editing" :errors="errors.scope_description">
-                    <textarea class="w-full" rows="10" v-model="scopeDescription"></textarea>
-                    <button-row @submit="save" @cancel="hideForm"></button-row>
+                    <textarea 
+                        class="w-full" 
+                        rows="10" 
+                        v-model="scopeDescription"
+                    />
                 </input-row>
                 <div v-else>
                     <markdown-block 
@@ -27,11 +30,7 @@
     </div>
 </template>
 <script>
-import {ref, onMounted} from 'vue'
-import {useStore} from 'vuex'
 import Group from '@/domain/group'
-import is_validation_error from '../../http/is_validation_error'
-import { hasAnyPermission } from '@/auth_utils'
 
 export default {
     name: 'scopeDescriptionForm',
@@ -39,71 +38,35 @@ export default {
         group: {
             type: Group,
             required: true
+        },
+        editing: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+        errors: {
+            type: Object,
+            required: false,
+            default: () => ({})
         }
     },
     emits: [
-        'editing',
+        'update:editing',
         'saved',
         'canceled',
+        'input',
     ],
-    setup (props, context) {
-        const store = useStore();
-
-        let errors = ref({});
-        const editing = ref(false)
-        const hideForm = () => {
-            editing.value = false;
-            errors.value = {};
-        }
-        const showForm = () => {
-            if (hasAnyPermission(['ep-applications-manage', ['application-edit', props.group]])) {
-                errors.value = {};
-                editing.value = true;
-                context.emit('editing');
+    computed: {
+        scopeDescription: { 
+            get: function () {
+                return this.group.expert_panel.scope_description
+            }, 
+            set: function (value) {
+                const groupCopy = this.group.clone();
+                groupCopy.expert_panel.scope_description = value;
+                this.$emit('input', groupCopy);
             }
         }
-        const cancel = () => {
-            hideForm();
-            context.emit('canceled');
-        }
-        const scopeDescription = ref(null)
-        const syncDescription = () => {
-            const {scope_description} = props.group.expert_panel;
-            scopeDescription.value = scope_description;
-        }
-        const save = async () => {
-            try {
-                store.dispatch(
-                    'groups/scopeDescriptionUpdate', 
-                    {
-                        uuid: props.group.uuid, 
-                        scopeDescription: scopeDescription.value
-                    }
-                );
-                hideForm();
-                context.emit('saved');
-            } catch (error) {
-                if (is_validation_error(error)) {
-                    errors.value = error.response.data.errors
-                }
-            }
-        }
-
-        onMounted(() => {
-            syncDescription();
-        })
-
-        return {
-            editing,
-            showForm,
-            hideForm,
-            cancel,
-            errors,
-            scopeDescription,
-            syncDescription,
-            save,
-        }
-
-    },
+    }
 }
 </script>

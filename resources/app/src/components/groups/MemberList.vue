@@ -228,10 +228,7 @@ export default {
                 return 'text-red-700';
             }
             return 'text-yellow-500';
-        },
-        async getMembers () {
-            // TODO: extract to groups store module and add members to the group in the store so updates
-        }
+        }    
     }
 }
 </script>

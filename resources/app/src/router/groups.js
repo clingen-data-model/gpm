@@ -10,6 +10,9 @@ const MemberForm = () =>
 const GeneDiseaseForm = () =>
     import ( /* webpackChunkName: "group-detail" */ '@/components/expert_panels/GeneDiseaseForm.vue')
 
+const GroupApplication = () =>
+    import ( /* webpackChunkName: "group-application" */ '@/views/groups/GroupApplication.vue')
+
 const hasGroupPermission = async (to, permission) => {
     if (store.getters.currentUser.hasPermission('groups-manage')) {
         return true;
@@ -80,7 +83,7 @@ export default [
                 },
                 props: true,
                 beforeEnter: async (to) => {
-                    return await hasGroupPermission(to, 'members-invite')
+                    return await hasGroupPermission(to, 'members-invite', ['groups-manage'])
                 }
             },
             {
@@ -95,9 +98,23 @@ export default [
                 },
                 props: true,
                 beforeEnter: async (to) => {
-                    return await hasGroupPermission(to, 'members-update')
+                    return await hasGroupPermission(to, 'members-update', ['groups-manage'])
                 }
             },
         ],
     },
+    {
+        name: 'GroupApplication',
+        path: '/groups/:uuid/application',
+        components: {
+            default: GroupApplication
+        },
+        meta: {
+            protected: true
+        },
+        props: true,
+        beforeEnter: async (to) => {
+            return await hasGroupPermission(to, 'application-edit')
+        }
+    }
 ]
