@@ -9,12 +9,11 @@ class Entity {
         'created_at',
         'deleted_at'
     ]
-    static self = Entity
-
+    
     constructor(attributes = {}) {
 
-        this.attributes = {...this.constructor.defaults, ...attributes}
-        this.original = {};
+        this.attributes = {...this.constructor.defaults, ...attributes};
+        this.original = {...this.constructor.defaults, ...attributes};
 
         for (let attr in this.attributes) {
             this.defineAttributeGettersAndSetters(attr)
@@ -24,7 +23,6 @@ class Entity {
     defineAttributeGettersAndSetters(attr) 
     {
         let setter = (value) => {
-            this.original[attr] = this.attributes[attr];
             this.attributes[attr] = value
         }
 
@@ -35,7 +33,6 @@ class Entity {
         if (this.constructor.dates.includes(attr)) {
             getter = () => (this.attributes[attr]) ? new Date(Date.parse(this.attributes[attr])) : null;
             setter = (value) => {
-                this.original[attr] = this.attributs[attr];
                 this.attributes[attr] = (value) ? new Date(Date.parse(value)) : null;
             }
         }
@@ -63,26 +60,32 @@ class Entity {
     }
 
     clone(){
-        return new (this.constructor.self)(this.attributes);
+        return new this.constructor(this.attributes);
     }
 
     getAttributes() {
         return this.attributes;
     }
 
+    /**
+     * 
+     * TODO: dirty & original need to support nested objects.  currently this is not the case.
+     */
     getOriginal() {
         return this.original;
     }
 
-    clearOriginal() {
+    clearChanges() {
         this.original = {};
     }
 
     isDirty (attribute = null) {
         if (attribute) {
-            return Boolean(this.original[attribute]);
+            return this.original[attribute] != this.attributes[attribute];
         }
-        return Object.keys(this.original).length > 0;
+        return Object.keys(this.original).some(key => {
+            return this.original[key] != this.attributes[key];
+        });
     }
 
     getDirty (attribute = null) {
@@ -101,15 +104,22 @@ class Entity {
 
         const dirty = {};
         keys.forEach(key => {
-            dirty[key] = {original: this.original[key], new: this.attributes[key]}
+            if (this.isDirty(key)) {
+                dirty[key] = {original: this.original[key], new: this.attributes[key]}
+            }
         });
 
         return dirty;
     }
 
     revertDirty () {
+        console.log('entity.revertDirty');
         this.attributes = {...this.attributes, ...this.original};
-        this.clearOriginal();
+        console.log({
+            attributes: this.attributes.expert_panel.curation_review_protocol_id, 
+            original: this.original.expert_panel.curation_review_protocol_id
+        });
+        this.clearChanges();
     }
 
 }

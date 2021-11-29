@@ -8,11 +8,12 @@ describe('entity', () => {
         entity = new Entity({a: 1, b: 2});
     });
 
-    it('knows if attributes have been updated', () => {
+    it('knows if attributes HAVE NOT been updated', () => {
         expect(entity.isDirty()).to.be.false;
+    });
 
+    it('knows if attributes HAVE been updated', () => {
         entity.a = 500;
-
         expect(entity.isDirty()).to.be.true;
     });
 
@@ -38,6 +39,8 @@ describe('entity', () => {
 
     it('can revert all changed attributes to original values', () => {
         entity.a = 500;
+
+        expect(entity.a).to.equal(500);
         
         entity.revertDirty();
 
