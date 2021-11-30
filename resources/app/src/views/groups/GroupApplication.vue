@@ -8,7 +8,13 @@
                 {{group.displayName}}
             </router-link>
             <h1 class="border-b flex justify-between items-start">
-                {{group.displayName}} - Application
+                <div>
+                    {{group.displayName}} - Application
+                    <div v-if="hasPermission('groups-manage')">
+                        <note>group.id: {{group.id}}</note>
+                        <note>expert_panel.id: {{group.expert_panel.id}}</note>
+                    </div>
+                </div>
                 <button class="btn btn-sm" @click="$refs.application.save">Save</button>
             </h1>
         </header>
@@ -71,7 +77,7 @@ export default {
             return null;
         },
         group () {
-            const group = this.$store.getters['groups/currentItem'];
+            const group = this.$store.getters['groups/currentItem'] || new Group();
             console.log({group})
             return group || new Group();
         }

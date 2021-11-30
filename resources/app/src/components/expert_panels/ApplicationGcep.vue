@@ -27,21 +27,20 @@
             <hr>
 
             <p>Describe the scope of work of the Expert Panel: disease area(s) of focus and gene list being addressed.</p>
-            <scope-description-form v-model:group="workingCopy" />
+            <scope-description-form />
         </app-section>
 
         <app-section title="Attestations">
-            <attestation-gcep v-model:group="workingCopy" ref="gcepAttestation" />
-            <gcep-ongoing-plans-form v-model:group="workingCopy" ref="ongongPlans" />
+            <attestation-gcep ref="gcepAttestation" />
+            <gcep-ongoing-plans-form />
         </app-section>
 
         <app-section title="NHGRI Data Availability">
-            <attestation-nhgri v-model:group="workingCopy" ref="nhgri"></attestation-nhgri>
+            <attestation-nhgri ref="nhgri"></attestation-nhgri>
         </app-section>
         <button class="btn btn-xl" @click="submit" :disabled="requirementsUnmet">
             Submit for Approval
         </button>
-
     </div>
 </template>
 <script>
@@ -50,7 +49,6 @@ import {errors, resetErrors, submitFormData} from '@/forms/form_factory'
 import ApplicationSection from '@/components/expert_panels/ApplicationSection'
 import AttestationGcep from '@/components/expert_panels/AttestationGcep'
 import AttestationNhgri from '@/components/expert_panels/AttestationNhgri'
-import BasicInfoForm from '@/components/expert_panels/BasicInfoForm'
 import GcepGeneList from '@/components/expert_panels/GcepGeneList';
 import GroupForm from '@/components/groups/GroupForm'
 import MemberList from '@/components/groups/MemberList';
@@ -65,24 +63,15 @@ export default {
         'app-section': ApplicationSection,
         AttestationGcep,
         AttestationNhgri,
-        BasicInfoForm,
         GcepGeneList,
         GroupForm,
         GcepOngoingPlansForm,
         MemberList,
         ScopeDescriptionForm,
     },
-    props: {
-        group: {
-            type: Object,
-            required: true,
-            default: () => ({})
-        },
-    },
     data() {
         return {
-            workingCopy: new Group,
-            componentData: {}
+            componentData: {},
         }
     },
     computed: {
@@ -91,21 +80,20 @@ export default {
         },
         requirementsUnmet () {
             return !this.meetsRequirements;
-        }
-    },
-    watch: {
+        },
         group: {
-            handler: function (to, from) {
-                if (to != from) {
-                    this.workingCopy = to.clone()
-                }
+            get: function () {
+                return this.$store.getters['groups/currentItem'] || new Group();
             },
-            immediate: true
+            set: function (value) {
+                this.$store.commit('groups/addItem', value);
+            }
         }
     },
     methods: {
         async save () {
-            this.$emit('update:group', this.workingCopy);
+            // await this.$store.dispatch('updateGcepApplication', this.group.expert_panel);
+            this.$emit('saved');
         },
     },
     setup (props, context) {

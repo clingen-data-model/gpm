@@ -29,6 +29,10 @@ export const getters = {
         const item = state.items[state.currentItemIdx]
         return item;
     },
+    currentItemOrNew: state => {
+        const item = state.items[state.currentItemIdx] || new Group();
+        return item;
+    },
     getItemByUuid: (state) => (uuid) => {
         const item = state.items.find(i => i.uuid == uuid);
         return item;
