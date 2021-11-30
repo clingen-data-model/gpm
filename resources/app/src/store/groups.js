@@ -26,11 +26,8 @@ export const getters = {
         return state.items.filter(item => item.group_type_id == 1);
     },
     currentItem: state => {
-        if (state.currentItemIdx === null) {
-            return new Group();
-        }
-
-        return state.items[state.currentItemIdx]
+        const item = state.items[state.currentItemIdx]
+        return item;
     },
     getItemByUuid: (state) => (uuid) => {
         const item = state.items.find(i => i.uuid == uuid);
@@ -44,6 +41,9 @@ export const getters = {
 
 export const mutations = {
     addItem (state, item) {
+        if (!item.id) {
+            throw new Error(404)
+        }
         const group = Object.prototype.hasOwnProperty.call(item, 'attributes')
                         ? item : new Group(item);
         const idx = state.items.findIndex(i => i.id == item.id);
@@ -66,6 +66,10 @@ export const mutations = {
     },
 
     clearCurrentItemIdx(state) {
+        state.currentItemIdx = null;
+    },
+
+    clearCurrentItem(state) {
         state.currentItemIdx = null;
     },
 
