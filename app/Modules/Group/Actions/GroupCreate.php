@@ -3,6 +3,7 @@ namespace App\Modules\Group\Actions;
 
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Auth;
 use Lorisleiva\Actions\ActionRequest;
@@ -60,7 +61,16 @@ class GroupCreate
            'name' => 'required|max:255',
            'group_type_id' => 'required', // TODO: should check for existence when we merge vcep/gcep into group
            'group_status_id' => 'required|exists:group_statuses,id',
-           'parent_id' => 'nullable|exists:groups,id'
+           'parent_id' => [
+                            'nullable',
+                            function ($attribute, $value, $fail) {
+                                if ($value != 0) {
+                                    if (!DB::table('groups')->where('id', $value)->exists()) {
+                                        $fail('The selected parent is not valid.');
+                                    }
+                                }
+                            }
+                        ]
         ];
     }
 
