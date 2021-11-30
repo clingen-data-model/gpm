@@ -2,7 +2,7 @@
     <div :class="{'border-l border-red-800 px-2': hasErrors}" class="input-row my-3">
         <div :class="{'sm:flex': !vertical}">
             <div class="flex-none" :class="labelContainerClass" v-show="showLabel">
-                <slot name="label" v-if="label">
+                <slot name="label" v-if="hasLabel">
                     <label :class="{'text-red-800': hasErrors}">{{label}}{{colon}}</label>
                 </slot>
             </div>
@@ -119,6 +119,9 @@ export default {
         },
         showLabel () {
             return !this.hideLabel;
+        },
+        hasLabel () {
+            return this.label || this.$slots.label
         }
     },
     methods: {
