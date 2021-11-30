@@ -119,8 +119,8 @@ export default {
     watch: {
         group: {
             immediate: true,
-            handler: function () {
-                if (this.group.id) {
+            handler: function (to, from) {
+                if ((to.id && (!from || to.id != from.id))) {
                     this.$store.dispatch('groups/getMembers', {group: this.group});
                 }
             }
