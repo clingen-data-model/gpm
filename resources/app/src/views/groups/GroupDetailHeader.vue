@@ -38,11 +38,13 @@
     </header>
 </template>
 <script>
+import Group from '@/domain/group'
+
 export default {
     name: 'GroupDetailHeader',
     props: {
         group: {
-            type: Object,
+            type: Group,
             required: true,
         }
     },
