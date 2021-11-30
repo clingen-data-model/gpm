@@ -35,7 +35,9 @@
         </tabs-container>
 
         <modal-dialog v-model="showCreateForm" title="Create a New Group" size="sm">
-            <group-form :group="{}"></group-form>
+            <submission-wrapper @submitted="$refs.groupForm.save()" @canceled="$refs.groupForm.cancel()">
+                <group-form ref='groupForm' @canceled="showCreateForm=false" @saved="showCreateForm = false"></group-form>
+            </submission-wrapper>
         </modal-dialog>
     </div>
 </template>
@@ -44,11 +46,13 @@ import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
 import {computed, onMounted } from 'vue'
 import GroupForm from '@/components/groups/GroupForm'
+import SubmissionWrapper from '@/components/groups/SubmissionWrapper'
 
 export default {
     name: 'ComponentName',
     components: {
         GroupForm,
+        SubmissionWrapper
     },
     props: {
         
@@ -73,10 +77,6 @@ export default {
                     label: 'WGs',
                     filter: g => g.isWg()
                 }
-                // {
-                //     label: 'Working Groups',
-                //     filter: g => g.isWg()
-                // }
             ],
             sort: {
                 field: 'id',
@@ -105,24 +105,6 @@ export default {
                     sortable: true,
                     label: 'status'
                 },
-                // {
-                //     name: 'type',
-                //     label: 'Type',
-                //     sortable: true,
-                //     resolveSort: (group) => {
-                //         if (group.isEp()) {
-                //             return group.expert_panel.type.name;
-                //         }
-                //         return group.type.name;
-                //     },
-                //     resolveValue: (group) => {
-                //         if (group.isEp()) {
-                //             return group.expert_panel.type.name.toUpperCase();
-                //         }
-
-                //         return group.type.name.toUpperCase();
-                //     }
-                // }
             ]
         }
     },
