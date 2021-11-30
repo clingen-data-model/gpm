@@ -17,11 +17,9 @@
                 Sidebar
             </section>
             <div class="bg-white flex-1 -mt-4">
-                <!-- <div class="border-b px-4 py-2">
-                    
-                </div> -->
                 <section id="body" class="py-4 px-4" v-remaining-height>
-                    <component :is="applicationComponent" :group="group" ref="application"></component>
+                    <!-- <component :is="applicationComponent" v-model:group="group" ref="application"></component> -->
+                    <application-gcep ref="application"></application-gcep>
                 </section>
             </div>
             
@@ -29,15 +27,19 @@
     </div>
 </template>
 <script>
-import ApplicationGcep from '@/components/expert_panels/ApplicationGcep';
+import {ref, watch} from 'vue'
+import {useStore} from 'vuex'
+// import ApplicationGcep from '@/components/expert_panels/ApplicationGcep';
 import ApplicationVcep from '@/components/expert_panels/ApplicationVcep';
+import Group from '@/domain/group';
+import ApplicationGcep from '../../components/expert_panels/ApplicationGcep.vue';
 
 export default {
     name: 'GroupApplication',
-    components: [
+    components: {
         ApplicationGcep,
         ApplicationVcep,
-    ],
+    },
     props: {
         uuid: {
             type: String,
@@ -58,22 +60,27 @@ export default {
                     })
 
             }
-        }
+        },
     },
     computed: {
-        group () {
-            return this.$store.getters['groups/currentItem'] ?? {};
-        },
         applicationComponent () {
             if (this.group && this.group.expert_panel) {
                 return this.group.isVcep() ? ApplicationVcep : ApplicationGcep;
             }
 
             return null;
+        },
+        group () {
+            const group = this.$store.getters['groups/currentItem'];
+            console.log({group})
+            return group || new Group();
         }
     },
     methods: {
 
+    },
+    beforeUnmount() {
+        this.$store.commit('groups/clearCurrentItem')
     },
 }
 </script>
