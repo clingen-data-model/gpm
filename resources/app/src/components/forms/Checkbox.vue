@@ -1,7 +1,7 @@
 <template>
     <div class="flex space-x-2 mb-2">
         <slot name="input">
-            <input type="checkbox" v-model="val" :id="checkboxId" class="mt-1" :disabled="disabled">
+            <input type="checkbox" v-model="val" :id="checkboxId" class="mt-1" :disabled="disabled" :value="value">
         </slot>
         <label :for="checkboxId">
             <slot>
@@ -25,6 +25,10 @@ export default {
             type: Boolean,
             required: false,
             default: false
+        },
+        value: {
+            required: false,
+            default: () => true
         }
     },
     emits: [
