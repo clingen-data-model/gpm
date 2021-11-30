@@ -173,7 +173,7 @@ export default {
 
         const group = computed ({
             get: function() {
-                return store.getters['groups/currentItem'] || {}
+                return store.getters['groups/currentItem'] || new Group()
             },
             set: function (value) {
                 store.commit('groups/addItem', value);
@@ -296,6 +296,9 @@ export default {
     },
     mounted() {
         this.showModal = Boolean(this.$route.meta.showModal)
-    }
+    },
+    beforeUnmount() {
+        this.$store.commit('groups/clearCurrentItem');
+    },
 }
 </script>
