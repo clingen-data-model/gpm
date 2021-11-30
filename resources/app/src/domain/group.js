@@ -1,11 +1,10 @@
 import Entity from '@/domain/entity'
 import GroupMember from '@/domain/group_member'
+import ExpertPanel from '@/domain/expert_panel'
 import configs from '@/configs.json'
 
 class Group extends Entity {
     static dates = [
-        'date_completed',
-        'date_initiated',
         'created_at',
         'updated_at',
         'deleted_at'
@@ -17,24 +16,17 @@ class Group extends Entity {
         name: null,
         parent_id: null,
         group_type_id: null,
-        expert_panel: {
-            type: {},
-            utilize_gt: null,
-            utilize_gci: null,
-            curations_publicly_available: null,
-            pub_policy_reviewed: null,
-            draft_manuscripts: null,
-            recuration_process_review: null,
-            biocurator_training: null,
-            biocurator_mailing_list: null,
-            gci_training_date: null,
-        },
+        group_status_id: null,
+        expert_panel: new ExpertPanel(),
         type: {},
+        members: []
     };
 
     constructor(attributes = {}) {
         const members = attributes.members ? [...attributes.members] : [];
+        const expertPanel = attributes.expert_panel ? {...attributes.expert_panel} : {};
         delete(attributes.members);
+        delete(attributes.expert_panel);
 
         super(attributes);
 
@@ -42,6 +34,8 @@ class Group extends Entity {
         if (members) {
             members.forEach(m => this.addMember(m))
         }
+
+        this.expert_panel = new ExpertPanel(expertPanel)
     }
 
     get coordinators () {
@@ -159,8 +153,13 @@ class Group extends Entity {
     }
 
     clone(){
-        const members = this.members;
-        const clone = super.clone({...this.attributes, members});
+        const attributes = {
+            ...this.attributes, 
+            members: [this.members.map(m => m.attributes)], 
+            expert_panel: this.expert_panel.attributes
+        };
+
+        const clone = super.clone(attributes);
 
         return clone;
     }
