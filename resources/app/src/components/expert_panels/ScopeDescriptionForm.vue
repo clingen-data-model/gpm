@@ -13,14 +13,15 @@
                     <textarea 
                         class="w-full" 
                         rows="10" 
-                        v-model="scopeDescription"
+                        v-model="group.expert_panel.scope_description"
                     />
                 </input-row>
                 <div v-else>
                     <markdown-block 
-                        v-if="scopeDescription" 
-                        :markdown="scopeDescription">
+                        v-if="group.expert_panel.scope_description" 
+                        :markdown="group.expert_panel.scope_description">
                     </markdown-block>
+                    
                     <p class="well cursor-pointer" v-else @click="showForm">
                         A description of expertise has not yet been provided.
                     </p>
@@ -35,10 +36,6 @@ import Group from '@/domain/group'
 export default {
     name: 'scopeDescriptionForm',
     props: {
-        group: {
-            type: Group,
-            required: true
-        },
         editing: {
             type: Boolean,
             required: false,
@@ -52,11 +49,20 @@ export default {
     },
     emits: [
         'update:editing',
+        'update:group',
         'saved',
         'canceled',
         'input',
     ],
     computed: {
+        group: {
+            get () {
+                return this.$store.getters['groups/currentItem'] || new Group();
+            },
+            set (value) {
+                this.$store.commit('groups/addItem', value);
+            }
+        },
         scopeDescription: { 
             get: function () {
                 return this.group.expert_panel.scope_description
@@ -64,7 +70,7 @@ export default {
             set: function (value) {
                 const groupCopy = this.group.clone();
                 groupCopy.expert_panel.scope_description = value;
-                this.$emit('input', groupCopy);
+                this.$emit('update:group', groupCopy);
             }
         }
     }

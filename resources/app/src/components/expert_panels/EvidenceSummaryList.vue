@@ -47,12 +47,6 @@ export default {
         EvidenceSummary,
         EvidenceSummaryForm
     },
-    props: {
-        group: {
-            type: Object,
-            required: true
-        }
-    },
     emits: [
         'summaries-added'
     ],
@@ -67,12 +61,20 @@ export default {
         }
     },
     computed: {
+        group: {
+            get () {
+                return this.$store.getters['groups/currentItemOrNew'];
+            }, 
+            set (value) {
+                this.$store.commit('groups/addItem', value)
+            }
+        },
         meetsRequirements() {
             return this.summaries.length > 4;
         },
         adding () {
             return this.newSummaries.length > 0;
-        }
+        },
     },
     watch: {
         group: {

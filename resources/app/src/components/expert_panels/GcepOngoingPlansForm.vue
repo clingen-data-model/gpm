@@ -6,25 +6,25 @@
             <input-row label="" :errors="errors.curation_review_protocol_id" vertical>
                 <div>
                     <label class="block mt-2 flex items-top space-x-2">
-                        <input type="radio" v-model="protocolId" value="1" class="mt-1">
+                        <input type="radio" v-model="group.expert_panel.curation_review_protocol_id" value="1" class="mt-1">
                         <div>Single biocurator curation with comprehensive GCEP review (presentation of all data on calls with GCEP votes). Note: definitive genes may be expedited with brief summaries.</div>
                     </label>
                     <label class="block mt-2 flex items-top space-x-2">
-                        <input type="radio" v-model="protocolId" value="2" class="mt-1">
+                        <input type="radio" v-model="group.expert_panel.curation_review_protocol_id" value="2" class="mt-1">
                         <p>Paired review (biocurator &amp; domain expert) with expedited GCEP review. Expert works closely with a curator on the initial summation of the information for expedited GCEP review (brief summary on a call with GCEP voting and/or electronic voting by GCEP). Definitive genes can move directly from biocurator to expedited GCEP review.</p>
                     </label>
                     <label class="block mt-2 flex items-top space-x-2">
-                        <input type="radio" v-model="protocolId" value="3" class="mt-1">
+                        <input type="radio" v-model="group.expert_panel.curation_review_protocol_id" value="3" class="mt-1">
                         <p>Dual biocurator review with expedited GCEP review for concordant genes and full review for discordant genes.</p>
                     </label>
                     <div class="flex space-x-2 items-start mt-3">
                         <label class="block flex items-top space-x-2">
-                            <input type="radio" v-model="protocolId" value="100" class="mt-1">
+                            <input type="radio" v-model="group.expert_panel.curation_review_protocol_id" value="100" class="mt-1">
                             <p>Other</p>
                         </label>
                         <transition name="slide-fade-down">
-                            <input-row class="flex-1 mt-0" v-if="protocolId == 100" label="Details" :label-width="0" v-model="protocolOther" :errors="errors.curation_review_protocol_other">
-                                <textarea rows="2" v-model="protocolOther" class="w-full"></textarea>
+                            <input-row class="flex-1 mt-0" v-if="group.expert_panel.curation_review_protocol_id == 100" label="Details" :label-width="0" v-model="group.expert_panel.curation_review_protocol_other" :errors="errors.curation_review_protocol_other">
+                                <textarea rows="2" v-model="group.expert_panel.curation_review_protocol_other" class="w-full"></textarea>
                             </input-row>
                         </transition>
                     </div>
@@ -50,34 +50,15 @@ export default {
             type: Object,
             required: false,
             default: () => ({})
-        },
-        group: {
-            type: Object,
-            required: false,
-            default: () => (new Group())
         }
     },
     computed: {
-        protocolId: {
-            get: function () {
-                return this.group.expert_panel.curation_review_protocol_id;
+        group: {
+            get () {
+                return this.$store.getters['groups/currentItemOrNew'];
             },
-            set: function (value) {
-                const groupClone = this.group.clone();
-                groupClone.expert_panel.curation_review_protocol_id = value;
-
-                this.$emit('update:group', groupClone);
-            }
-        },
-        protocolOther: {
-            get: function () {
-                return this.group.expert_panel.curation_review_protocol_other;
-            },
-            set: function (value) {
-                const groupClone = this.group.clone();
-                groupClone.expert_panel.curation_review_protocol_other = value;
-                
-                this.$emit('update:group', groupClone);
+            set (value) {
+                this.$store.commit('groups/addItem', value);
             }
         }
     }

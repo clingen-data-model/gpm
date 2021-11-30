@@ -3,7 +3,7 @@
         <h3>Plans for Ongoing Variant Review and Reanalysis and Discrepancy Resolution</h3>
         <div class="mb-4">
             <input-row 
-                v-model="meetingFrequency" 
+                v-model="group.expert_panel.meeting_frequency" 
                 label="Meeting/call frequency" 
                 :errors="errors.meeting_frequency"
                 placeholder="Once per week"
@@ -13,11 +13,11 @@
             <input-row label="VCEP Standardized Review Process" :errors="errors.curation_review_protocol_id" vertical>
                 <div>
                     <label class="block mt-2 flex items-top space-x-2">
-                        <input type="radio" v-model="protocolId" value="1" class="mt-1">
+                        <input type="radio" v-model="group.expert_panel.curation_review_protocol_id" value="1" class="mt-1">
                         <p>Process #1: Biocurator review followed by VCEP discussion</p>
                     </label>
                     <label class="block mt-2 flex items-top space-x-2">
-                        <input type="radio" v-model="protocolId" value="2" class="mt-1">
+                        <input type="radio" v-model="group.expert_panel.curation_review_protocol_id" value="2" class="mt-1">
                        <p>Process #2: Paired biocurator/expert review followed by expedited VCEP approval</p>
                     </label>
                 </div>
@@ -27,15 +27,10 @@
     </div>
 </template>
 <script>
-import {computed} from 'vue';
 
 export default {
     name: 'VcepOngoingPlansForm',
     props: {
-        group: {
-            type: Object,
-            required:true
-        },
         errors: {
             type: Object,
             required: false,
@@ -47,33 +42,14 @@ export default {
             default: true
         }
     },
-     setup(props, context) {
-        const protocolId = computed({
-            get: function () {
-                return props.group.expert_panel.curation_review_protocol_id;
-            },
-            set: function (value) {
-                const groupClone = props.group.clone();
-                groupClone.expert_panel.curation_review_protocol_id = value;
-
-                context.emit('update:group', groupClone);
+    computed: {
+        group: {
+            get () {
+                return this.$store.getters['groups/currentItemOrNew'];
+            }, 
+            set (value) {
+                this.$store.commit('groups/addItem', value)
             }
-        });
-        const meetingFrequency = computed({
-            get: function () {
-                return props.group.expert_panel.meeting_frequency;
-            },
-            set: function (value) {
-                const groupClone = props.group.clone();
-                groupClone.expert_panel.meeting_frequency = value;
-                
-                context.emit('update:group', groupClone);
-            }
-        });
-
-        return {
-            protocolId,
-            meetingFrequency,
         }
     }
 }

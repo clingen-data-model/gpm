@@ -64,6 +64,13 @@ class ExpertPanel extends Entity
         review_protocol: {},
     };
 
+    get nhgriSigned () {
+        return Boolean(this.attributes['nhgri_attestation_date']);
+    }
+    set nhgriSigned (value) {
+        this.attributes['nhgri_attestation_date'] = value ? new Date() : null;
+    }
+
 }
 
 export default ExpertPanel;

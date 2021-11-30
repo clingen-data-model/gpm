@@ -15,7 +15,6 @@
             >
                 <textarea id="" class="w-full" rows="5" v-model="genesAsText" placeholder="ABC, DEF1, BEAN"></textarea>
             </input-row>
-            <button-row @submit="save" @cancel="cancel" submit-text="Save"></button-row>
         </div>
         <div v-else>
             <p v-if="genesAsText" style="text-indent: 1rem;">{{genesAsText}}</p>
@@ -26,52 +25,74 @@
     </div>
 </template>
 <script>
-import {ref, watch, onMounted} from 'vue';
+import {ref, watch, computed, onMounted} from 'vue';
 import {useStore} from 'vuex';
 import formFactory from '@/forms/form_factory'
 import is_validation_error from '@/http/is_validation_error'
 import api from '@/http/api'
 import { hasAnyPermission } from '@/auth_utils'
+import Group from '@/domain/group'
 
 export default {
     name: 'GcepGeneList',
     components: {
     },
     props: {
-        group: {
-            required: true,
-            type: Object
+        editing: {
+            type: Boolean,
+            required: false,
+            default: true
         }
     },
     emits: [
         'saved',
         'canceled',
-        'editing'
+        'update:editing'
     ],
     setup(props, context) {
         const store = useStore();
 
-        const {errors, editing, hideForm, showForm: baseShowForm, cancel: baseCancel} = formFactory(props, context)
-        const cancel = () => {
-            getGenes();
-            baseCancel();
-        }
         const loading = ref(false);
         const genesAsText = ref(null);
+
+        const {errors, resetErrors, submitForm} = formFactory(props, context)
+
+        const group = computed({
+            get() {
+                return store.getters['groups/currentItem'] || new Group();
+            },
+            set (value) {
+                store.commit('groups/addItem', value)
+            }
+        });
+
+        const hideForm = () => {
+            context.emit('update:editing', false);
+            errors.value = {};
+        }
+        const cancel = () => {
+            resetErrors();
+            getGenes();
+            hideForm();
+            context.emit('canceled');
+        }
+
         const syncGenesAsText = () => {
-            genesAsText.value = props.group.expert_panel.genes 
-                    ? props.group.expertPanel.genes.join(', ')
-                    : null
-            };
+            genesAsText.value = group.value.expert_panel.genes 
+                ? group.value.expertPanel.genes.join(', ')
+                : null
+        };
         const getGenes = async () => {
+            if (!group.value.uuid) {
+                return;
+            }
             loading.value = true;
             try {
-                const genes = await api.get(`/api/groups/${props.group.uuid}/application/genes`)
+                const genes = await api.get(`/api/groups/${group.value.uuid}/application/genes`)
                                 .then(response => response.data);
 
                 genesAsText.value = genes.map(g => g.gene_symbol).join(", ");
             } catch (error) {
-                console.log(error);
                 store.commit('pushError', error.response.data);
             }
             loading.value = false;
@@ -83,8 +104,9 @@ export default {
                                 .split(new RegExp(/[, \n]/))
                                 .filter(i => i !== '')
                             : [];
+
             try {
-                await api.post(`/api/groups/${props.group.uuid}/application/genes`, {genes});
+                await api.post(`/api/groups/${group.value.uuid}/application/genes`, {genes});
                 hideForm();
                 context.emit('saved')
                 getGenes();
@@ -114,25 +136,33 @@ export default {
         };
 
         const showForm = () => {
-            if (hasAnyPermission(['ep-applications-manage', ['application-edit', props.group]])) {
-                baseShowForm();
+            if (hasAnyPermission(['ep-applications-manage', ['application-edit', group]])) {
+                resetErrors();
+                console.log('emitting update:editing')
+                context.emit('update:editing', true);
             }
         }
 
+        watch(() => store.getters['groups/currentItem'], (to, from) => {
+            if (to.id && (!from || to.id != from.id)) {
+                syncGenesAsText();
+                getGenes();
+            }
+        })
+
         onMounted(() => {
-            syncGenesAsText();
             getGenes();
         })
 
-        watch(() => props.group.expert_panel.genes, () => {
+        watch(() => group.value.expert_panel.genes, () => {
             syncGenesAsText();
         })
 
         return {
+            group,
             genesAsText,
             loading,
             errors,
-            editing,
             hideForm,
             showForm,
             cancel,

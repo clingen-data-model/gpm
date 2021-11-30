@@ -6,42 +6,42 @@
         <ul class="ml-4 mt-2">
             <li>
                 <input-row :errors="errors.utilize_gt" :hide-label="true">
-                    <checkbox v-model="utilize_gt" :disabled="disabled">
+                    <checkbox v-model="group.expert_panel.utilize_gt" :disabled="disabled">
                         This GCEP will utilize the ClinGen Gene Tracker for documentation of all precuration information, consistent with the current Lumping and Splitting working group guidance, for gene-disease relationships.
                     </checkbox>
                 </input-row>
             </li>
             <li>
                 <input-row :errors="errors.utilize_gci" :hide-label="true">
-                    <checkbox v-model="utilize_gci" :disabled="disabled">
+                    <checkbox v-model="group.expert_panel.utilize_gci" :disabled="disabled">
                         All curations completed by this group will be made publicly available through the ClinGen website immediately upon completion.
                     </checkbox>
                 </input-row>
             </li>
             <li>
                 <input-row :errors="errors.curations_publicly_available" :hide-label="true">
-                    <checkbox v-model="curations_publicly_available" :disabled="disabled">
+                    <checkbox v-model="group.expert_panel.curations_publicly_available" :disabled="disabled">
                         VCEPs are expected to re-review any LB classifications when new evidence is available or when requested by the public via the ClinGen website.
                     </checkbox>
                 </input-row>
             </li>
             <li>
                 <input-row :errors="errors.pub_policy_reviewed" :hide-label="true">
-                    <checkbox v-model="pub_policy_reviewed" :disabled="disabled">
+                    <checkbox v-model="group.expert_panel.pub_policy_reviewed" :disabled="disabled">
                         The <a href="https://clinicalgenome.org/site/assets/files/3752/clingen_publication_policy_apr2019.pdf" target="pub-policy">ClinGen publication policy</a> has been reviewed and a manuscript concept sheet will be submitted to the NHGRI and  ClinGen Steering Committee before the group prepares a publication for submission.
                     </checkbox>
                 </input-row>
             </li>
             <li>
                 <input-row :errors="errors.draft_manuscripts" :hide-label="true">
-                    <checkbox v-model="draft_manuscripts" :disabled="disabled">
+                    <checkbox v-model="group.expert_panel.draft_manuscripts" :disabled="disabled">
                         Draft manuscripts will be submitted to the ClinGen Gene Curation WG for review prior to submission. Email: <a href="mailto:genecuration@clinicalgenome.org">mailto:genecuration@clinicalgenome.org</a>
                     </checkbox>
                 </input-row>
             </li>
             <li>
                 <input-row :errors="errors.recuration_process_review" :hide-label="true">
-                    <checkbox v-model="recuration_process_review" :disabled="disabled">
+                    <checkbox v-model="group.expert_panel.recuration_process_review" :disabled="disabled">
                         The ClinGen Gene-Disease Validity Recuration process has been reviewed, link found <a href="https://clinicalgenome.org/site/assets/files/2164/clingen_standard_gene-disease_validity_recuration_procedures_v1.pdf">here</a>.
                     </checkbox>
                 </input-row>
@@ -55,7 +55,7 @@
         <ul class="ml-4 mt-2">
             <li>
                 <input-row :errors="errors.biocurator_training" :hide-label="true">
-                    <checkbox v-model="biocurator_training" :disabled="disabled">
+                    <checkbox v-model="group.expert_panel.biocurator_training" :disabled="disabled">
                         Biocurators have received all appropriate training. 
                     </checkbox>
                 </input-row>
@@ -65,14 +65,14 @@
                     <checkbox v-model="gci_training" :disabled="disabled">
                         Biocurators are trained on the use of the Gene Curation Interface (GCI).
                         <transition name="slide-fade-down"><label class="block" v-if="gci_training">
-                            Date: <date-input type="text" v-model="gci_training_date" /></label>
+                            Date: <date-input type="text" v-model="group.expert_panel.gci_training_date" /></label>
                         </transition>
                     </checkbox>
                 </input-row>
             </li>
             <li>
                 <input-row :errors="errors.biocurator_mailing_list" :hide-label="true">
-                    <checkbox v-model="biocurator_mailing_list" :disabled="disabled">
+                    <checkbox v-model="group.expert_panel.biocurator_mailing_list" :disabled="disabled">
                         Biocurators have joined the Biocurator WG mailing list.
                         <br>The calls occur on the 2nd and 4th Thursdays from 12-1pm.
                     </checkbox>
@@ -82,17 +82,13 @@
     </div>
 </template>
 <script>
-import {computed} from 'vue'
+import Group from '@/domain/group'
 import api from '@/http/api'
 import is_validation_error from '../../http/is_validation_error'
 
 export default {
     name: 'AttestationGcep',
     props: {
-        group: {
-            type: Object,
-            required: true
-        },
         disabled: {
             type: Boolean,
             required: false,
@@ -106,6 +102,14 @@ export default {
         }
     },
     computed: {
+        group: {
+            get () {
+                return this.$store.getters['groups/currentItemOrNew'];
+            },
+            set (value) {
+                this.$store.commit('groups/addItem', value)
+            }
+        },
         gciTrainingErrors () {
             const trainingErrors = this.errors.gci_training ?? [];
             const dateErrors = this.errors.gci_training_date ?? [];
@@ -116,7 +120,8 @@ export default {
         async save () {
             try {
                 this.errors = {};
-                await api.post(`/api/groups/${this.group.uuid}/application/attestations/gcep`, this.attestation)
+                await api.post(`/api/groups/${this.group.uuid}/application/attestations/gcep`,
+                this.group.expert_panel)
             } catch (error) {
                 if (is_validation_error(error)) {
                     this.errors = error.response.data.errors;
@@ -124,42 +129,5 @@ export default {
             }
         }
     },
-    setup (props, context) {
-        const attstFields = [
-            'utilize_gt',
-            'utilize_gci',
-            'curations_publicly_available',
-            'pub_policy_reviewed',
-            'draft_manuscripts',
-            'recuration_process_review',
-            'biocurator_training',
-            'gci_training_date',
-            'biocurator_mailing_list',
-        ];
-
-        const fieldComputed = {};
-        attstFields.forEach(field => {
-            fieldComputed[field] = computed({
-                get: function () {
-                    if (!props.group || props.group.expert_panel) {
-                        return null;
-                    }
-                    return props.group.expert_panel[field]
-                },
-                set: function (value) {
-                    const groupCopy = props.group.clone();
-                    if (groupCopy.expert_panel) {
-                        groupCopy.expert_panel[field] = value;
-                        context.emit('input', groupCopy);
-                    }
-                }
-            });
-        });
-
-        return {
-            ...fieldComputed
-        }
-
-    }
 }
 </script>

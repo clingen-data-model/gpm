@@ -15,7 +15,6 @@
                 >
                     <membership-description-form
                         ref="membershipDescriptionFormRef"
-                        v-model:group="group"
                         class="mt-8"
                         v-model:editing="editingExpertise"
                         :errors="errors"
@@ -29,7 +28,7 @@
                     @canceled="$refs.groupGeneListRef.cancel()"
                     :show-controls="editingGenes"
                 >
-                    <component ref="groupGeneListRef" :is="groupGeneList" :group="group" v-model:editing="editingGenes" />
+                    <component ref="groupGeneListRef" :is="groupGeneList" v-model:editing="editingGenes" />
                 </submission-wrapper>
                 <br> 
                 <submission-wrapper 
@@ -39,7 +38,6 @@
                     :show-controls="editingScopeDescription"
                 >
                     <scope-description-form 
-                        v-model:group="group"
                         ref="scopeDescriptionRef"
                         v-model:editing="editingScopeDescription"
                         :errors="errors"
@@ -55,7 +53,6 @@
                     <component
                         ref="ongoingPlansForm"
                         :is="ongoingPlansFormComponent"
-                        :group="group"
                         :errors="errors"
                         class="pb-2"
                     />
@@ -70,9 +67,9 @@
                 Group documents will go here.
             </tab-item>
             <tab-item label="Attestations">
-                <attestation-gcep :group="group" class="pb-2 mb-4 border-b" v-if="group.isGcep()" :disabled="true" />
-                <attestation-reanalysis :group="group" class="pb-2 mb-4 border-b"  v-if="group.isVcep()" :disabled="true" />                
-                <attestation-nhgri :group="group" class="pb-2 mb-4 border-b" :disabled="true" />
+                <attestation-gcep class="pb-2 mb-4 border-b" v-if="group.isGcep()" :disabled="true" />
+                <attestation-reanalysis class="pb-2 mb-4 border-b"  v-if="group.isVcep()" :disabled="false" />                
+                <attestation-nhgri class="pb-2 mb-4 border-b" :disabled="true" />
             </tab-item>
             <tab-item label="Log" :visible="hasPermission('groups-manage')">
                 <activity-log
@@ -91,8 +88,6 @@
             <modal-dialog v-model="showInfoEdit" @closed="showInfoEdit = false" title="Edit Group Info" size="sm">
                 <submission-wrapper @submitted="$refs.infoForm.save()" @canceled="$refs.infoForm.cancel()">
                     <group-form 
-                        :group="group"
-                        ref="infoForm" 
                         @canceled="showInfoEdit = false"
                         @saved="showInfoEdit = false"
                     />

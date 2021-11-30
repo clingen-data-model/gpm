@@ -142,12 +142,6 @@ export default {
         GeneSearchSelect,
         DiseaseSearchSelect,
     },
-    props: {
-        group: {
-            required: true,
-            type: Object
-        }
-    },
     emits: [
         'saved',
         'canceled',
@@ -155,6 +149,12 @@ export default {
     ],
     setup(props, context) {
         const store = useStore();
+
+        const group = computed(() => {
+            return store.getters['groups/currentItemOrNew'];
+        });
+
+
         const newGenes = ref([]);
         const addNewGene = () => {
             newGenes.value.push({gene: null, disease: null});
@@ -209,7 +209,7 @@ export default {
                 for (let idx = 0; idx < genes.value.length; idx++) {
                     if (genes.value[idx].toDelete) {
                         try {
-                            await api.delete(`/api/groups/${props.group.uuid}/application/genes/${gene.id}`)
+                            await api.delete(`/api/groups/${group.value.uuid}/application/genes/${gene.id}`)
                             await getGenes();
                         } catch (error) {
                             store.commit('pushError', error.response.data);
@@ -229,12 +229,13 @@ export default {
         const getGenes = async () => {
             loading.value = true;
             try {
-                genes.value = await api.get(`/api/groups/${props.group.uuid}/application/genes`)
+                genes.value = await api.get(`/api/groups/${group.value.uuid}/application/genes`)
                                 .then(response => {
                                     return response.data;
                                 });
             } catch (error) {
-                this.$store.commit('pushError', error.response.data);
+                console.log(error);
+                store.commit('pushError', error.response.data);
             }
             loading.value = false;
         }
@@ -246,7 +247,7 @@ export default {
                                             .filter(ng => !isEqual(ng, {gene: null, disease: null}))
                                             .map(scope => ({ hgnc_id: scope.gene.hgnc_id, mondo_id: scope.disease.mondo_id}));
 
-                await api.post(`/api/groups/${props.group.uuid}/application/genes`, {genes: filteredGenes});
+                await api.post(`/api/groups/${group.value.uuid}/application/genes`, {genes: filteredGenes});
                     await getGenes();
                 }
                 clearNewGenes();
@@ -263,7 +264,7 @@ export default {
             try {
                 gene.hgnc_id = gene.gene.hgnc_id;
                 gene.mondo_id = gene.disease.mondo_id;
-                await api.put(`/api/groups/${props.group.uuid}/application/genes/${gene.id}`, gene);
+                await api.put(`/api/groups/${group.value.uuid}/application/genes/${gene.id}`, gene);
                 await getGenes();
                 delete(gene.edit);
             } catch (error) {
@@ -281,7 +282,7 @@ export default {
         }
 
         const canEdit = computed(() => {
-            return hasAnyPermission(['ep-applications-manage', ['application-edit', props.group]])
+            return hasAnyPermission(['ep-applications-manage', ['application-edit', group]])
         })
 
         onMounted(() => {

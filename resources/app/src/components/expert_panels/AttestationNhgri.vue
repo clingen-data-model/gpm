@@ -18,7 +18,7 @@
             <input-row label="" :vertical="true">
                 <checkbox 
                     :disabled="disabled" 
-                    v-model="nhgriAttestationDate" 
+                    v-model="this.group.expert_panel.nhgriSigned" 
                     id="nhgri-checkbox" 
                     label="I understand that once a variant is approved in the VCI it will become publicly available in the Evidence Repository. They should not be held for publication."
                 />
@@ -45,10 +45,6 @@ import is_validation_error from '../../http/is_validation_error';
 export default {
     name: 'NHGRIDataAvailability',
     props: {
-        group: {
-            type: Object,
-            required: true,
-        },
         disabled: {
             type: Boolean,
             required: false,
@@ -58,20 +54,28 @@ export default {
     data() {
         return {
             attestation: null,
-            errors: {}
+            errors: {},
         }
     },
     computed: {
-        nhgriAttestationDate: {
-            get: function () {
-                return Boolean(this.group.expert_panel.nhgri_attestation_date);
+        group: {
+            get () {
+                return this.$store.getters['groups/currentItemOrNew'];
             },
-            set: function (value) {
-                const groupCopy = this.group.clone();
-                groupCopy.expert_panel.nhgri_attestation_date = value ? new Date() : null;
-                this.$emit('input', groupCopy);
+            set (value) {                
+                this.$store.commit('groups/addItem', value);
             }
-        }
+        },
+        // fuckingFuck: {
+        //     get () {
+        //         return this.$store.getters['groups/currentItemOrNew'].expert_panel.nhgri_attestation_date;
+        //     },
+        //     set (value) {
+        //         const clone = this.$store.getters['groups/currentItemOrNew'].clone();
+        //         // clone.expert_panel.nhgri_attestation_date = value ? new Date() : null;
+        //         // console.log(clone.expert_panel.nhgri_attestation_date);
+        //     }
+        // }
     },
     methods: {
         async save () {
