@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import Group from '@/domain/group'
 import GroupMember from '@/domain/group_member'
+import ExpertPanel from '@/domain/expert_panel'
 import config from '@/configs.json'
 
 
@@ -36,12 +37,25 @@ describe('group entity', () => {
         expect(group.members).to.be.eql([new GroupMember(louise2)])
     });
 
-    it('includes members in clode', () => {
+    it('includes members in clone', () => {
         const group = new Group();
         const louise = {id: 1, uuid: 'abcd', email: 'louise@bobsburgers.com'};
         group.addMember(louise);
 
         const groupClone = group.clone();
         expect(groupClone.members).to.eql([new GroupMember(louise)])
+    });
+
+    it('instantiates ExpertPanel w/ expert_panel data', () => {
+        const group = new Group({
+            expert_panel: {
+                id: 1,
+                uuid: 'test-uuid',
+                'long_base_name': 'Long Base Name',
+                'short_base_name': 'Short Name',
+            }
+        });
+
+        expect(group.expert_panel).to.be.instanceOf(ExpertPanel)
     })
 });
