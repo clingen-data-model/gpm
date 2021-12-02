@@ -1,4 +1,4 @@
-<style lang="postcss" scope>
+<style lang="postcss" scoped>
     table {
         @apply w-full;
     }
