@@ -265,12 +265,7 @@ export const actions = {
             expertPanel.curation_review_protocol_other = null;
         }
 
-        await api.put(`/api/groups/${uuid}/application/curation-review-protocols`, {
-            curation_review_protocol_id: expertPanel.curation_review_protocol_id,
-            curation_review_protocol_other: expertPanel.curation_review_protocol_other,
-            meeting_frequency: expertPanel.meeting_frequency,
-            expert_panel_type_id: expertPanel.expert_panel_type_id,
-        })
+        await api.put(`/api/groups/${uuid}/application/curation-review-protocols`, expertPanel.attributes)
         .then(response => {
             commit('addItem', response.data.data);
             return response;

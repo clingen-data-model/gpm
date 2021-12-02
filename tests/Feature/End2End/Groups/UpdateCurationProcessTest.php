@@ -77,11 +77,17 @@ class UpdateCurationProcessTest extends TestCase
     public function priveleged_user_can_update_curation_protocol_information()
     {
         $this->makeRequest()
-            ->assertStatus(200);
+            ->assertStatus(200)
+            ->assertJsonFragment([
+                'curation_review_process_notes' => 'These are some notes.'
+            ]);
     
         $this->assertDatabaseHas('expert_panels', [
             'curation_review_protocol_id' => config('expert_panels.curation_protocols.single-biocurator.id'),
-            'meeting_frequency' => '2 times a month.'
+            'meeting_frequency' => '2 times a month.',
+            'curation_review_process_notes' => 'These are some notes.',
+            'id' => $this->expertPanel->id,
+            'long_base_name' => $this->expertPanel->long_base_name
         ]);
     }
     
@@ -92,7 +98,9 @@ class UpdateCurationProcessTest extends TestCase
     {
         $data = $data ?? [
             'curation_review_protocol_id' => config('expert_panels.curation_protocols.single-biocurator.id'),
-            'meeting_frequency' => '2 times a month.'
+            'meeting_frequency' => '2 times a month.',
+            'curation_review_process_notes' => 'These are some notes.',
+            'long_base_name' => 'I should not get updated.'
         ];
         $url = '/api/groups/'.$this->expertPanel->group->uuid.'/application/curation-review-protocols';
         return $this->json('put', $url, $data);
