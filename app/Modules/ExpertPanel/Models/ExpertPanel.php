@@ -2,25 +2,20 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
-use App\Models\Cdwg;
 use App\Models\HasUuid;
 use App\Models\Document;
-use Illuminate\Support\Carbon;
 use App\Models\Contracts\HasNotes;
-use Illuminate\Support\Facades\DB;
 use App\Modules\Group\Models\Group;
 use App\Models\Contracts\HasMembers;
 use App\Modules\Person\Models\Person;
 use App\Models\Contracts\HasDocuments;
 use App\Models\Contracts\HasLogEntries;
 use App\Models\Contracts\RecordsEvents;
-use App\Modules\ExpertPanel\Models\Coi;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\ExpertPanel\Models\Gene;
 use App\Modules\ExpertPanel\Models\CoiV1;
 use App\Modules\Group\Models\GroupMember;
 use Database\Factories\ExpertPanelFactory;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\ExpertPanel\Models\NextAction;
 use App\Models\Traits\HasNotes as TraitsHasNotes;
@@ -28,14 +23,12 @@ use App\Modules\ExpertPanel\Models\EvidenceSummary;
 use App\Modules\ExpertPanel\Models\ExpertPanelType;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use App\Modules\ExpertPanel\Models\EvidenceSummaries;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Modules\Group\Models\Contracts\BelongsToGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Modules\ExpertPanel\Models\SpecificationRuleSet;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
-use App\Models\Traits\HasDocuments as TraitsHasDocuments;
 use App\Models\Traits\HasLogEntries as HasLogEntriesTraits;
 use App\Modules\ExpertPanel\Models\CurationReviewProtocol;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -52,11 +45,8 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     use TraitsHasNotes;
     use TraitsBelongsToGroup;
     use TraitsRecordsEvents;
-    // use TraitsHasDocuments;
     use TraitsHasMembers;
     use HasLogEntriesTraits;
-
-    // protected $table = 'applications';
 
     protected $fillable = [
         'group_id',
@@ -80,6 +70,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'preprint_attestation_date',
         'curation_review_protocol_id',
         'curation_review_protocol_other',
+        'curation_review_process_notes',
         'meeting_frequency',
         'reanalysis_conflicting',
         'reanalysis_review_lp',
