@@ -17,7 +17,13 @@ class CurationReviewProtocolUpdate
 
     public function handle(Group $group, $data): Group
     {
-        $group->expertPanel->update($data);
+        $data = collect($data);
+        $group->expertPanel->update([
+            'curation_review_protocol_id' => $data->get('curation_review_protocol_id'),
+            'curation_review_protocol_other' => $data->get('curation_review_protocol_other'),
+            'meeting_frequency' => $data->get('meeting_frequency'),
+            'curation_review_process_notes' => $data->get('curation_review_process_notes'),
+        ]);
         return $group;
     }
 
@@ -28,7 +34,14 @@ class CurationReviewProtocolUpdate
             throw new AuthorizationException('You do not have permission to update this EPs curation review protocol.');
         }
 
-        return new GroupResource($this->handle($group, $request->all()));
+        $data = $request->only([
+            'curation_review_protocol_id',
+            'curation_review_protocol_other',
+            'meeting_frequency',
+            'curation_review_process_notes',
+        ]);
+
+        return new GroupResource($this->handle($group, $data));
     }
 
     public function rules()

@@ -24,6 +24,10 @@
             </input-row>
         </div>
         <p class="text-sm mb-0">For all variants approved by either of the processes described above, a summary of approved variants should be sent to ensure that any members absent from a call have an opportunity to review each variant. The summary should be emailed to the full VCEP after the call and should summarize decisions that were made and invite feedback within a week.</p>
+
+        <input-row label="Curation and Review Process Notes" :vertical="true" label-class="font-bold">
+            <textarea class="w-full h-20" v-model="group.expert_panel.curation_review_process_notes"></textarea>
+        </input-row>
     </div>
 </template>
 <script>

@@ -44,6 +44,7 @@ class ExpertPanel extends Entity
         nhgri_attestation_date: null,
         curation_review_protocol_id: null,
         curation_review_protocol_other: null,
+        curation_review_process_notes: null,
         meeting_frequency: null,
         reanalysis_conflicting: null,
         reanalysis_review_lp: null,
