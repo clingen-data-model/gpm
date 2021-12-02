@@ -38,6 +38,7 @@
         <app-section title="NHGRI Data Availability">
             <attestation-nhgri ref="nhgri"></attestation-nhgri>
         </app-section>
+        
         <button class="btn btn-xl" @click="submit" :disabled="requirementsUnmet">
             Submit for Approval
         </button>
@@ -55,8 +56,6 @@ import MemberList from '@/components/groups/MemberList';
 import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm';
 import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm';
 
-import Group from '@/domain/group'
-
 export default {
     name: 'ApplicationGcep',
     components: {
@@ -69,11 +68,6 @@ export default {
         MemberList,
         ScopeDescriptionForm,
     },
-    data() {
-        return {
-            componentData: {},
-        }
-    },
     computed: {
         meetsRequirements () {
             return false;
@@ -83,7 +77,7 @@ export default {
         },
         group: {
             get: function () {
-                return this.$store.getters['groups/currentItem'] || new Group();
+                return this.$store.getters['groups/currentItemOrNew'];
             },
             set: function (value) {
                 this.$store.commit('groups/addItem', value);
