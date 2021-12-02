@@ -57,8 +57,12 @@
                         class="pb-2"
                     />
                 </submission-wrapper>
-                
-                <evidence-summaries :group="group" class="pb-2 mb-4 border-b" v-if="group.isVcep()"></evidence-summaries>
+                <section v-if="group.isVcep()">
+                    <header>  
+                        <h3>Example Evidence Summaries</h3>
+                    </header>
+                    <evidence-summaries :group="group" class="pb-2 mb-4 border-b" />
+                </section>
             </tab-item>
             <tab-item :visible="group.isVcep()" label="Specifications">
                 Specifiations info from CSPEC will go here.
@@ -68,7 +72,7 @@
             </tab-item>
             <tab-item label="Attestations">
                 <attestation-gcep class="pb-2 mb-4 border-b" v-if="group.isGcep()" :disabled="true" />
-                <attestation-reanalysis class="pb-2 mb-4 border-b"  v-if="group.isVcep()" :disabled="false" />                
+                <attestation-reanalysis class="pb-2 mb-4 border-b"  v-if="group.isVcep()" :disabled="true" />                
                 <attestation-nhgri class="pb-2 mb-4 border-b" :disabled="true" />
             </tab-item>
             <tab-item label="Log" :visible="hasPermission('groups-manage')">

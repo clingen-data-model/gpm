@@ -1,8 +1,5 @@
 <template>
     <div>
-        <header>  
-            <h3>Example Evidence Summaries</h3>
-        </header>
         <ul v-if="summaries.length > 0">
             <transition-group name="slide-fade-down">            
                 <li class="my-4 flex" v-for="(summary, idx) in summaries" :key="idx">
