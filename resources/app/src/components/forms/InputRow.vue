@@ -3,7 +3,7 @@
         <div :class="{'sm:flex': !vertical}">
             <div class="flex-none" :class="labelContainerClass" v-show="showLabel">
                 <slot name="label" v-if="hasLabel">
-                    <label :class="{'text-red-800': hasErrors}">{{label}}{{colon}}</label>
+                    <label :class="resolvedLabelClass">{{label}}{{colon}}</label>
                 </slot>
             </div>
             <div class="flex-grow">
@@ -91,6 +91,11 @@ export default {
             required: false,
             default: false,
             type: Boolean
+        },
+        labelClass: {
+            required: false,
+            default: null,
+            type: String
         }
     },
     emits: [
@@ -122,7 +127,18 @@ export default {
         },
         hasLabel () {
             return this.label || this.$slots.label
-        }
+        },
+        resolvedLabelClass () {
+            const classes = [];
+            if (this.hasErrors) {
+               classes.push('text-red-800');
+            }
+            if (this.labelClass) {
+                classes.push(this.labelClass);
+            }
+
+            return classes.join(' ');
+        },
     },
     methods: {
         emitValue(evt) {
