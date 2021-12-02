@@ -10,11 +10,13 @@
             <h1 class="border-b flex justify-between items-start">
                 <div>
                     {{group.displayName}} - Application
-                    <div v-if="hasPermission('groups-manage')">
-                        <note>group.id: {{group.id}}</note>
-                        <note>expert_panel.id: {{group.expert_panel.id}}</note>
-                    </div>
+                    <span v-if="hasPermission('groups-manage')">
+                        <note class="inline">group: {{group.id}}</note>
+                        <span class="note">&nbsp;|&nbsp;</span>
+                        <note class="inline">expert_panel: {{group.expert_panel.id}}</note>
+                    </span>
                 </div>
+                
                 <button class="btn btn-sm" @click="$refs.application.save">Save</button>
             </h1>
         </header>
@@ -24,8 +26,7 @@
             </section>
             <div class="bg-white flex-1 -mt-4">
                 <section id="body" class="py-4 px-4" v-remaining-height>
-                    <!-- <component :is="applicationComponent" v-model:group="group" ref="application"></component> -->
-                    <application-gcep ref="application"></application-gcep>
+                    <component :is="applicationComponent" ref="application"></component>
                 </section>
             </div>
             
@@ -70,8 +71,12 @@ export default {
     },
     computed: {
         applicationComponent () {
-            if (this.group && this.group.expert_panel) {
-                return this.group.isVcep() ? ApplicationVcep : ApplicationGcep;
+            if (this.group && this.group.isVcep()) {
+                return ApplicationVcep;
+            }
+
+            if (this.group && this.group.isGcep()) {
+                return ApplicationGcep;
             }
 
             return null;
