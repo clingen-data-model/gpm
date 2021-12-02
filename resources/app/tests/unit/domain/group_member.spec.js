@@ -87,4 +87,83 @@ describe('GroupMember entity', () => {
         });
         expect(curator2.trainingComplete()).to.be.true;
     })
+
+    it('can add a role by object to the roles list', () => {
+        const member  = new GroupMember();
+        member.addRole(configs.groups.roles.biocurator);
+
+        expect(member.roles.length).to.equal(1);
+        expect(member.roles[0]).to.eq(configs.groups.roles.biocurator)
+    });
+
+    it('can add a role by name to the roles list', () => {
+        const member  = new GroupMember();
+        member.addRole('biocurator');
+
+        expect(member.roles.length).to.equal(1);
+        expect(member.roles[0]).to.eq(configs.groups.roles.biocurator)
+    });
+
+    it('can add a role by id to the roles list', () => {
+        const member  = new GroupMember();
+        member.addRole(configs.groups.roles.biocurator.id);
+
+        expect(member.roles.length).to.equal(1);
+        expect(member.roles[0]).to.eq(configs.groups.roles.biocurator)
+    });
+
+    it('can remove a role by object', () => {
+        const member  = new GroupMember();
+        member.roles = [configs.groups.roles.biocurator];
+        expect(member.roles.length).to.equal(1);
+
+        member.removeRole(configs.groups.roles.biocurator);
+
+        expect(member.roles.length).to.equal(0);
+    })
+
+    it('can remove a role by id', () => {
+        const member  = new GroupMember();
+        member.roles = [configs.groups.roles.biocurator];
+        expect(member.roles.length).to.equal(1);
+
+        member.removeRole(configs.groups.roles.biocurator.id);
+
+        expect(member.roles.length).to.equal(0);
+    })
+
+    it('can remove a role by name', () => {
+        const member  = new GroupMember();
+        member.roles = [configs.groups.roles.biocurator];
+        expect(member.roles.length).to.equal(1);
+        expect(member.roles[0].name).to.equal('biocurator');
+
+        member.removeRole('biocurator');
+
+        expect(member.roles.length).to.equal(0);
+    })
+
+    it('can get newly assigned roles', () => {
+        const member = new GroupMember({roles: [
+            configs.groups.roles.biocurator
+        ]});
+
+        member.addRole(configs.groups.roles.chair);
+
+        expect(member.addedRoles.length).to.equal(1);
+        expect(member.addedRoles.map(r => r.id)[0]).to.equal(configs.groups.roles.chair.id);
+    })
+    
+    it('can get newly removed roles', () => {
+        const member = new GroupMember({roles: [
+            configs.groups.roles.biocurator,
+            configs.groups.roles.chair
+        ]});
+        
+        member.removeRole(configs.groups.roles.chair);
+        
+        expect(member.removedRoles.length).to.equal(1);
+        expect(member.removedRoles.map(r => r.id)[0]).to.equal(configs.groups.roles.chair.id);
+    })
+
 })

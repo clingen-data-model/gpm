@@ -3,6 +3,30 @@ import Person from './person'
 import configs from '@/configs.json'
 import { arrayContains } from '@/utils';
 
+const groupRoles = configs.groups.roles;
+
+const matchRole = (role) => {
+    let matchedRole = role;
+    if (typeof matchedRole == 'string') {
+        matchedRole = Object.values(groupRoles)
+                        .find(r => r.name == role);
+    }
+    if (typeof matchedRole == 'number') {
+        matchedRole = Object.values(groupRoles)
+                        .find(r => r.id == role);
+    }
+
+    if (typeof matchedRole != 'object' || !matchedRole || !Object.values(groupRoles).includes(matchedRole)) {
+        let errorRole = role;
+        if (typeof role == 'object') {
+            errorRole = JSON.stringify(role);
+        }
+        throw new Error(`Role not found for identifier ${errorRole}`);
+    }
+
+    return matchedRole;
+}
+
 class GroupMember extends Entity {
     static dates = [
         'start_date',
@@ -75,6 +99,23 @@ class GroupMember extends Entity {
         return !this.isActive;
     }
 
+    get roleIds () {
+        return this.roles.map(r => r.id)
+    }
+
+    get roleNames () {
+        return this.roles.map(r => r.name)
+    }
+
+    get addedRoles () {
+        const originalRoles = this.original.roles;
+        return this.roles.filter(r => !originalRoles.map(or => or.id).includes(r.id));
+    }
+
+    get removedRoles () {
+        const originalRoles = this.original.roles;
+        return originalRoles.filter(or => !this.roles.map(r => r.id).includes(or.id));
+    }
 
     matchesKeyword (keyword) {
         if (this.person.matchesKeyword(keyword)) {
@@ -82,6 +123,20 @@ class GroupMember extends Entity {
         }
 
         return false;
+    }
+
+    addRole (role) {
+        if (!this.hasRole(role)) {
+            this.roles.push(matchRole(role))
+        }
+    }
+
+    removeRole (role) {
+        if (this.hasRole(role)) {
+            const matchedRole = matchRole(role);
+            const roleIdx = this.roles.findIndex(r => r.id == matchedRole.id);
+            this.roles.splice(roleIdx, 1);
+        }
     }
 
     hasRole (role) {
