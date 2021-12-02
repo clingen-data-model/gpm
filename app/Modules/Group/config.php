@@ -67,6 +67,10 @@ return [
             'id' => 105,
             'name' => 'core-approval-member'
         ],
+        'biocurator-trainer' => [
+            'id' => 106,
+            'name' => 'biocurator-trainer'
+        ],
     ],
     'permissions' => [
         'info-edit' => [
