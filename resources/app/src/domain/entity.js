@@ -12,12 +12,34 @@ class Entity {
     
     constructor(attributes = {}) {
 
-        this.attributes = {...this.constructor.defaults, ...attributes};
-        this.original = {...this.constructor.defaults, ...attributes};
+        this.attributes = {};
+        this.setAttributes({...this.constructor.defaults, ...attributes});
+        this.original = {};
+        this.setOriginal(this.attributes);
 
         for (let attr in this.attributes) {
             this.defineAttributeGettersAndSetters(attr)
         }
+    }
+
+    setAttributes(attributes) {
+        this.attributes = {...attributes};
+        Object.keys(this.attributes)
+            .forEach(key => {
+                if (typeof this.attributes[key] == 'object' && this.attributes[key]) {
+                    this.attributes[key] = JSON.parse(JSON.stringify(this.attributes[key]));
+                }
+            })
+    }
+
+    setOriginal(attributes) {
+        this.original = {...attributes};
+        Object.keys(this.original)
+            .forEach(key => {
+                if (typeof this.original[key] == 'object' && this.original[key]) {
+                    this.original[key] = JSON.parse(JSON.stringify(this.original[key]));
+                }
+            })
     }
 
     defineAttributeGettersAndSetters(attr) 
@@ -115,10 +137,6 @@ class Entity {
     revertDirty () {
         console.log('entity.revertDirty');
         this.attributes = {...this.attributes, ...this.original};
-        console.log({
-            attributes: this.attributes.expert_panel.curation_review_protocol_id, 
-            original: this.original.expert_panel.curation_review_protocol_id
-        });
         this.clearChanges();
     }
 
