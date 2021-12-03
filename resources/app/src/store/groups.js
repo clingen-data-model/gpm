@@ -136,6 +136,12 @@ export const actions = {
         
     },
 
+    async findAndSetCurrent ({dispatch, commit}, uuid) {
+        const response = await dispatch('find', uuid)
+        commit('setCurrentItemIndexByUuid', uuid)
+        return response;
+    },
+
     async memberAdd ({commit}, {uuid, personId, roleIds, data}) {
         const url = `${baseUrl}/${uuid}/members`
         
@@ -150,7 +156,7 @@ export const actions = {
             });
     },
 
-    async getMembers ({commit}, {group}) {
+    async getMembers ({commit}, group) {
         const members = await api.get(`${baseUrl}/${group.uuid}/members`)
                          .then(response => response.data.data);
 
@@ -200,6 +206,25 @@ export const actions = {
                     commit('addMemberToGroup', response.data.data);
                     return response;
                 });
+    },
+
+    async memberSyncRoles ({ dispatch }, {group, member}) {
+        const promises = [];
+        if (member.addedRoles.length > 0) {
+            promises.push(dispatch(
+                'memberAssignRole', 
+                {uuid: group.uuid, memberId: member.id, roleIds: member.addedRoles.map(role => role.id)}
+            ));
+        }
+        
+        member.removedRoles.forEach(role => {
+            promises.push(dispatch(
+                'memberRemoveRole', 
+                {uuid: group.uuid, memberId: member.id, roleId: role.id}
+            ));
+        })
+
+        return promises;
     },
 
     async memberGrantPermission ({ commit }, {uuid, memberId, permissionIds}) {
@@ -270,8 +295,34 @@ export const actions = {
             commit('addItem', response.data.data);
             return response;
         });
-    }
+    },
     
+    getSpecifications({ commit }, group) {
+        // if (!group.isVcep()) {
+        //     throw new Error('Can not retreive specfications. Only VCEPS have specifications.');
+        // }
+
+        console.log("IMPLEMENT groups/getSpecifications action.");
+        group.expert_panel.specifications = [
+            {
+                gene_symbol: 'ABC1',
+                disease_name: 'Beans for lunch',
+                status: {
+                    name: 'blah',
+                    id: 1,
+                    color: 'blue'
+                },
+                updated_at: '2021-11-01T00:00:00Z'
+            }
+        ];
+        commit('addItem', group);
+        // return api.get(`${baseUrl}/${group.uuid}/specifications`)
+        //         .then(response => {
+                    
+        //             commit('appendAttribute')
+        //             return response;
+        //         })
+    },
 };
 
 export default {
