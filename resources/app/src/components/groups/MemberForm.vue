@@ -330,31 +330,8 @@ export default {
                 }
             )
 
-            await this.syncRoles(group, member);
+            await this.$store.dispatch('groups/memberSyncRoles', {group, member});
             await this.syncPermissions(group, member);
-        },
-
-        syncRoles(group, member) {
-            const originalMember = group.findMember(this.memberId);
-
-            const existingRoleIds = originalMember.roles.map(r => r.id);
-            const assignedRoleIds = member.roles.map(r => r.id);
-            const newRoleIds = assignedRoleIds.filter(r => !existingRoleIds.includes(r));
-            const removedRoleIds = existingRoleIds.filter(r => !assignedRoleIds.includes(r));
-            
-            if (newRoleIds.length > 0) {
-                this.$store.dispatch(
-                    'groups/memberAssignRole', 
-                    {uuid: group.uuid, memberId: this.memberId, roleIds: newRoleIds}
-                );
-            }
-            
-            removedRoleIds.forEach(roleId => {
-                this.$store.dispatch(
-                    'groups/memberRemoveRole', 
-                    {uuid: group.uuid, memberId: this.memberId, roleId: roleId}
-                )
-            })
         },
 
         async syncPermissions(group, member) {
