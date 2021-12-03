@@ -77,7 +77,6 @@ export default {
             handler: function (to) {
                 this.$store.dispatch('groups/find', to)
                     .then(() => {
-                        console.log('got group');
                         this.$store.commit('groups/setCurrentItemIndexByUuid', this.uuid)
                     })
 
@@ -98,7 +97,6 @@ export default {
         },
         group () {
             const group = this.$store.getters['groups/currentItem'] || new Group();
-            console.log({group})
             return group || new Group();
         }
     },
