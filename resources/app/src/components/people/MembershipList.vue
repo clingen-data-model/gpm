@@ -79,7 +79,9 @@ export default {
         memberships () {
             if (this.person.memberships) {
                 return this.person.memberships.map(m => {
-                    m.group = new Group(m.group);
+                    if (m.group) {
+                        m.group = new Group(m.group);
+                    }
                     return m;
                 })
             }
