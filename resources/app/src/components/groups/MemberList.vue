@@ -10,12 +10,6 @@ export default {
     components: {
         MemberPreview,
     },
-    props: {
-        group: {
-            type: Object,
-            required: true
-        }
-    },
     data() {
         return {
             showFilter: false,
@@ -84,6 +78,10 @@ export default {
         }
     },
     computed: {
+        group () {
+            return this.$store.getters['groups/currentItemOrNew'];
+        },
+        
         filteredMembers () {
             if (!this.group.members) {
                 return [];
@@ -119,9 +117,10 @@ export default {
     watch: {
         group: {
             immediate: true,
-            handler: function (to, from) {
+            handler (to, from) {
                 if ((to.id && (!from || to.id != from.id))) {
-                    this.$store.dispatch('groups/getMembers', {group: this.group});
+                    console.log('MemberList.group: ', this.group);
+                    this.$store.dispatch('groups/getMembers', this.group);
                 }
             }
         }
