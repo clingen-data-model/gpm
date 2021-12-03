@@ -6,11 +6,13 @@ use App\Models\Contracts\HasNotes;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\ExpertPanel\Models\Ruleset;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Contracts\BelongsToExpertPanel;
 use App\Models\Traits\HasNotes as HasNotesTrait;
+use App\Modules\Group\Models\Traits\BelongsToGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Modules\ExpertPanel\Models\SpecificationStatus;
-use App\Models\Traits\BelongsToExpertPanel as TraitsBelongsToExpertPanel;
+use App\Modules\ExpertPanel\Models\Contracts\BelongsToExpertPanel;
+use App\Modules\ExpertPanel\Models\Traits\BelongsToExpertPanel as TraitsBelongsToExpertPanel;
+use App\Modules\Group\Models\Contracts\BelongsToGroup as ContractsBelongsToGroup;
 
 /**
  * @property int $id
@@ -22,9 +24,9 @@ use App\Models\Traits\BelongsToExpertPanel as TraitsBelongsToExpertPanel;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class Specifcation extends Model implements HasNotes, BelongsToExpertPanel
+class Specification extends Model implements HasNotes, BelongsToExpertPanel, ContractsBelongsToGroup
 {
-    use HasFactory, SoftDeletes, HasNotesTrait,TraitsBelongsToExpertPanel;
+    use HasFactory, SoftDeletes, HasNotesTrait, BelongsToGroup, TraitsBelongsToExpertPanel;
 
     /**
      * The attributes that are mass assignable.

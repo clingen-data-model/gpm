@@ -39,13 +39,8 @@ class PersonServiceProvider extends ModuleServiceProvider
         Event::listen(PersonInvited::class, [InviteSendNotification::class, 'listen']);
     }
 
-    protected function getRoutesPath()
+    protected function getModulePath()
     {
-        return __DIR__.'/../routes';
-    }
-
-    protected function getEventPath()
-    {
-        return __DIR__.'/../Events';
+        return (__DIR__.'/..');
     }
 }

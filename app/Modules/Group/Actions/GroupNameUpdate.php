@@ -29,7 +29,7 @@ class GroupNameUpdate
     public function asController(ActionRequest $request, Group $group)
     {
         $group = $this->handle($group, $request->name);
-        $group->load('expertPanel');
+        $group->load('expertPanel', 'members', 'members.person');
         return new GroupResource($group);
     }
 

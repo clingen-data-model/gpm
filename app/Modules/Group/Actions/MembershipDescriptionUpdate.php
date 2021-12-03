@@ -36,7 +36,7 @@ class MembershipDescriptionUpdate
             throw new AuthorizationException('You do not have permission to update this Expert Panel.');
         }
         $group = $this->handle($group, $request->membership_description);
-        $group->load('expertPanel', 'members', 'members.person');
+        // $group->load('expertPanel', 'members', 'members.person');
 
         return new GroupResource($group);
     }
@@ -52,5 +52,4 @@ class MembershipDescriptionUpdate
     {
         return ['required' => 'This field is required.'];
     }
-    
 }

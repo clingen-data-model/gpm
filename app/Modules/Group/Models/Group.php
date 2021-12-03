@@ -75,6 +75,16 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         'status',
     ];
 
+    public static function booted()
+    {
+        static::deleted(function (Group $group) {
+            $group->members->each->delete();
+            if ($group->expertPanel) {
+                $group->expertPanel->delete();
+            }
+        });
+    }
+
     /**
      * RELATIONS
      */

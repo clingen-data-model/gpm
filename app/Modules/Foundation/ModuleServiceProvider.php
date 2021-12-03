@@ -11,6 +11,7 @@ use RecursiveDirectoryIterator;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Lorisleiva\Actions\Facades\Actions;
 
 abstract class ModuleServiceProvider extends ServiceProvider
 {
@@ -44,6 +45,7 @@ abstract class ModuleServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->loadRoutes();
+        $this->registerCommands();
     }
 
     protected function registerPolicies()
@@ -77,10 +79,13 @@ abstract class ModuleServiceProvider extends ServiceProvider
             }
         }
     }
+    
 
-    protected function getRoutesPath()
+    protected function registerCommands()
     {
-        return __DIR__.'/../routes';
+        if ($this->app->runningInConsole()) {
+            Actions::registerCommands($this->getActionsPath());
+        }
     }
 
     protected function loadRoutes()
@@ -97,5 +102,20 @@ abstract class ModuleServiceProvider extends ServiceProvider
         }
     }
 
-    abstract protected function getEventPath();
+    abstract protected function getModulePath();
+    
+    protected function getEventPath()
+    {
+        return $this->getModulePath().'/Events';
+    }
+
+    protected function getRoutesPath()
+    {
+        return $this->getModulePath().'/routes';
+    }
+
+    protected function getActionsPath()
+    {
+        return $this->getModulePath().'/Actions';
+    }
 }

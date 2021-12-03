@@ -37,6 +37,10 @@ return [
         'removed' => [
             'id' => 4,
             'name' => 'removed'
+        ],
+        'inactive' => [
+            'id' => 5,
+            'name' => 'inactive'
         ]
 
     ],

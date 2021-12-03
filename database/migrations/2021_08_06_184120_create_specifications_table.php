@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSpecifcationsTable extends Migration
+class CreateSpecificationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,7 @@ class CreateSpecifcationsTable extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::create('specifcations', function (Blueprint $table) {
+        Schema::create('specifications', function (Blueprint $table) {
             $table->string('cspec_id')->primary();
             $table->foreignId('expert_panel_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('status_id')->constrained('specification_statuses')->cascadeOnDelete()->cascadeOnUpdate();

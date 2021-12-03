@@ -109,6 +109,7 @@ abstract class TestCase extends BaseTestCase
 
     protected function setupUser($userData = null, $permissions = [])
     {
+        $userData = $userData ?? [];
         $user = User::factory()->create($userData);
         if (count($permissions)) {
             $user->syncPermissions($permissions);

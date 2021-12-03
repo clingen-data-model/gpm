@@ -6,6 +6,7 @@ use App\Modules\Group\Actions\MemberAdd;
 use App\Modules\Group\Actions\GeneRemove;
 use App\Modules\Group\Actions\GeneUpdate;
 use App\Modules\Group\Actions\GroupCreate;
+use App\Modules\Group\Actions\GroupDelete;
 use App\Modules\Group\Actions\MemberInvite;
 use App\Modules\Group\Actions\MemberRemove;
 use App\Modules\Group\Actions\MemberRetire;
@@ -47,6 +48,7 @@ Route::group([
     Route::post('/', GroupCreate::class);
     
     Route::get('/{uuid}', [GroupController::class, 'show']);
+    Route::delete('/{group:uuid}', GroupDelete::class);
     Route::put('/{group:uuid}/parent', ParentUpdate::class);
     Route::put('/{group:uuid}/name', GroupNameUpdate::class);
     Route::put('/{group:uuid}/status', GroupStatusUpdate::class);

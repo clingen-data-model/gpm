@@ -140,6 +140,15 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'full_name'
     ];
 
+    public static function booted()
+    {
+        static::deleted(function ($expertPanel) {
+            $expertPanel->evidenceSummaries->each->delete();
+            $expertPanel->specifications->each->delete();
+        });
+    }
+    
+
     // Domain methods
     
     public function setApprovalDate(int $step, string $date)
@@ -327,7 +336,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function Specifications(): HasMany
+    public function specifications(): HasMany
     {
         return $this->hasMany(Specification::class);
     }

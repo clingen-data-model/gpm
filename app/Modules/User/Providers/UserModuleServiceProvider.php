@@ -33,8 +33,8 @@ class UserModuleServiceProvider extends ModuleServiceProvider
     }
     
 
-    protected function getEventPath()
+    protected function getModulePath()
     {
-        return (__DIR__.'/../Events');
+        return (__DIR__.'/..');
     }
 }

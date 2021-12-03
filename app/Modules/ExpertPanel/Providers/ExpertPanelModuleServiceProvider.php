@@ -45,13 +45,8 @@ class ExpertPanelModuleServiceProvider extends ModuleServiceProvider
         );
     }
 
-    protected function getRoutesPath()
+    protected function getModulePath()
     {
-        return __DIR__.'/../routes';
-    }
-
-    protected function getEventPath()
-    {
-        return (__DIR__.'/../Events');
+        return (__DIR__.'/..');
     }
 }
