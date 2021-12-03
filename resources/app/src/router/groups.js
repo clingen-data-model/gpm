@@ -17,9 +17,12 @@ const hasGroupPermission = async (to, permission) => {
     if (store.getters.currentUser.hasPermission('groups-manage')) {
         return true;
     }
+
     if (!store.getters['groups/currentItem'] || store.getters['groups/currentItem'].uuid != to.params.uuid) {
-        await store.dispatch('find', to.params.uuid);
+        const rsp = await store.dispatch('groups/findAndSetCurrent', to.params.uuid);
+        console.log(rsp);
     }
+    
     const group = store.getters['groups/currentItem'];
 
     if (store.getters.currentUser.hasGroupPermission(permission, group)) {
