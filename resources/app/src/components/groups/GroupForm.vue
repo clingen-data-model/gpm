@@ -81,7 +81,7 @@
                 <select v-model="group.parent_id" class="w-full">
                     <option :value="null">Select...</option>
                     <option :value="0">None</option>
-                    <option v-for="parent in groups" :key="parent.id" :value="parent.id">
+                    <option v-for="parent in parents" :key="parent.id" :value="parent.id">
                         {{parent.displayName}}
                     </option>
                 </select>
@@ -91,6 +91,7 @@
 </template>
 <script>
 import is_validation_error from '@/http/is_validation_error'
+import {api} from '@/http'
 import Group from '@/domain/group'
 import configs from '@/configs'
 import formFactory from '@/forms/form_factory'
@@ -111,6 +112,7 @@ export default {
             ],
             groupStatuses: configs.groups.statuses,
             newGroup: new Group(),
+            parents: []
         }
     },
     computed: {
@@ -123,6 +125,7 @@ export default {
                 return this.newGroup;
             },
             set (value) {
+                console.log('setting group in GroupForm');
                 try {
                     this.$store.commit('groups/addItem', value);
                 } catch (e) {
@@ -130,9 +133,9 @@ export default {
                 }
             }
         },
-        groups () {
-            return this.$store.getters['groups/all'];
-        },
+        // groups () {
+        //     return this.$store.getters['groups/all'];
+        // },
         canSetType() {
             return this.hasPermission('groups-manage') && !this.group.id 
         },
@@ -274,10 +277,18 @@ export default {
                 this.resetData();
             }
             this.$emit('canceled');
+        },
+        async getParentOptions () {
+            this.parents = await api.get(`/api/groups/`)
+                        .then(response => {
+                            return response.data
+                                .filter(group => group.id != this.group.id)
+                                .map(g => new Group(g))
+                        });
         }
     },
     beforeMount() {
-        this.$store.dispatch('groups/getItems');
+        this.getParentOptions();
         this.$store.dispatch('cdwgs/getAll');
     },
     setup (props, context) {
