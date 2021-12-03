@@ -116,20 +116,16 @@ export default {
     computed: {
         group: {
             get() {
-                const group = this.$store.getters['groups/currentItem'];
+                const group = this.$store.getters['groups/currentItemOrNew'];
                 if (group) {
-                    console.log('got a group from the store')
                     return group;
                 }
-                console.log('use this.newGroup b/c no group in the store.')
                 return this.newGroup;
             },
             set (value) {
-                console.log('set', value)
                 try {
                     this.$store.commit('groups/addItem', value);
                 } catch (e) {
-                    console.log('no id so update newgroup')
                     this.newGroup = value;
                 }
             }
@@ -144,9 +140,12 @@ export default {
             if (!this.group.type) {
                 return "🐇🥚";
             }
-            return (this.group.type.id < 3) 
-                ? this.group.type.name.toUpperCase() 
-                : this.group.expert_panel.type.name.toUpperCase();
+            if (this.group.type.name) {
+                return (this.group.type.id < 3) 
+                    ? this.group.type.name.toUpperCase() 
+                    : this.group.expert_panel.type.name.toUpperCase();
+            }
+            return null;
         },
         affiliationIdPlaceholder () {
             return 50000
@@ -204,13 +203,11 @@ export default {
         },
         saveGroupData () {
             const promises = [];
-            console.log(this.group.isDirty)
             if (this.group.isDirty('parent_id')) {
                 promises.push(this.saveParent());
             }
 
             if (this.group.isDirty('name')) {
-                console.log('name is dirty.  save new name.')
                 promises.push(this.saveName())
             }
 
@@ -223,7 +220,6 @@ export default {
         async saveEpData() {
             const promises = []
             if (this.namesDirty) {
-                console.log('update names')
                 const {long_base_name, short_base_name} = this.group.expert_panel;
                 promises.push(this.submitFormData({
                     method: 'put',
@@ -255,7 +251,6 @@ export default {
             })
         },
         saveName () {
-            console.log('saveName', this.group.uuid, this.grou);
             return this.submitFormData({
                 method: 'put',
                 url: `/api/groups/${this.group.uuid}/name`,
@@ -275,7 +270,6 @@ export default {
             }
         },
         cancel() {
-            console.log('cancel!');
             if (this.group.uuid) {
                 this.resetData();
             }

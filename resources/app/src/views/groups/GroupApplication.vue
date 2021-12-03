@@ -22,14 +22,27 @@
         </header>
         <div class="flex">
             <section id="appliation-sidebar" class="lg:w-1/4 xl:w-1/5 border-r -mt-4 pt-4 pr-4" v-remaining-height>
-                Sidebar
+                <ol>
+                    <li>Definition</li>
+                    <li>Draft Specifications</li>
+                    <li>Pilot Specifications</li>
+                    <li>Sustained Curation</li>
+                </ol>
             </section>
             <div class="bg-white flex-1 -mt-4">
                 <section id="body" class="py-4 px-4" v-remaining-height>
                     <component :is="applicationComponent" ref="application"></component>
                 </section>
             </div>
-            
+            <div id="documentation-drawer" class="mt-4">
+                <div v-if="showDocumentation" class="lg:w-1/4 border-r pt-4 pl-4">
+                    <button class="btn btn-xs" @click="showDocumentation = false">X</button>
+                    Documentation
+                </div>
+                <div v-else>
+                    <icon-info @click="showDocumentation = true"/>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -55,6 +68,7 @@ export default {
     },
     data() {
         return {
+            showDocumentation: false
         }
     },
     watch: {
@@ -63,6 +77,7 @@ export default {
             handler: function (to) {
                 this.$store.dispatch('groups/find', to)
                     .then(() => {
+                        console.log('got group');
                         this.$store.commit('groups/setCurrentItemIndexByUuid', this.uuid)
                     })
 

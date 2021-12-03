@@ -1,0 +1,88 @@
+<style lang="postcss" scoped>
+    th {
+        @apply bg-white border-0
+    }
+    th[colgroup=biocurator],
+    td[colgroup=biocurator]
+    {
+        @apply bg-blue-50;
+    }
+</style>
+<template>
+    <div>
+        <table class="text-sm">
+            <thead>
+                <tr>
+                    <th colspan="2">&nbsp;</th>
+                    <th colspan="1" colgroup="biocurator">&nbsp;</th>
+                    <th colspan="2" colgroup="biocurator" class="text-center">Training</th>
+                    <th colspan="2">&nbsp;</th>
+                </tr>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th colgroup="biocurator" class="w-24">Biocurator</th>
+                    <th colgroup="biocurator" class="w-20">Level 1</th>
+                    <th colgroup="biocurator" class="w-20">Level 2</th>
+                    <th>Biocurator Trainer</th>
+                    <th>
+                        Core Approval Member
+                        <icon-info class="inline-block" :width="16" :height="16" />
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <member-designation-row 
+                    :member="member"
+                    v-for="member in group.members"
+                    :key="member.id"
+                    :ref="`memberRow${member.id}`"
+                />
+            </tbody>
+        </table>
+        <div class="flex items-center mt-2 pt-2 border-t">
+            <icon-info :width="14" :height="14" />
+            &nbsp;
+            <div>Core approval members are responsible for ongoing final approval of variant classifications.</div>
+        </div>
+    </div>
+</template>
+<script>
+import MemberDesignationRow from './MemberDesignationRow.vue'
+export default {
+    name: 'MemberDesignationForm',
+    components: {
+        MemberDesignationRow,
+    },
+    data() {
+        return {
+        }
+    },
+    computed: {
+        group: {
+            get() {
+                return this.$store.getters['groups/currentItemOrNew'];
+            }
+        }
+    },
+    watch: {
+        group: {
+            immediate: true,
+            async handler (to, from) {
+                if ((to.id && (!from || to.id != from.id))) {
+                    this.$store.dispatch('groups/getMembers', this.group);
+                }
+            }
+        }
+    },
+    methods: {
+        getMembers () {
+            this.$store.dispatch('groups/getMembers', {group: this.group})
+        },
+        save () {
+            console.log(this.$options.name+'.save');
+            return Object.keys(this.$refs).map(key => this.$refs[key].save());
+        }
+    },
+}
+</script>

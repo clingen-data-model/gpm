@@ -65,7 +65,7 @@
                 </section>
             </tab-item>
             <tab-item :visible="group.isVcep()" label="Specifications">
-                Specifiations info from CSPEC will go here.
+                <cspec-summary />
             </tab-item>
             <tab-item label="Documents">
                 Group documents will go here.
@@ -115,6 +115,7 @@ import ApplicationSummary from '@/components/groups/ApplicationSummary'
 import AttestationGcep from '@/components/expert_panels/AttestationGcep'
 import AttestationNhgri from '@/components/expert_panels/AttestationNhgri'
 import AttestationReanalysis from '@/components/expert_panels/AttestationReanalysis'
+import CspecSummary from '@/components/expert_panels/CspecSummary'
 import EvidenceSummaries from '@/components/expert_panels/EvidenceSummaryList'
 import GcepGeneList from '@/components/expert_panels/GcepGeneList'
 import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm'
@@ -138,6 +139,7 @@ export default {
         AttestationGcep,
         AttestationNhgri,
         AttestationReanalysis,
+        CspecSummary,
         GroupForm,
         GroupDetailHeader,
         EvidenceSummaries,
