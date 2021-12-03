@@ -1,7 +1,5 @@
 import Group from '@/domain/group';
-import api from '@/http/api';
-// import { v4 as uuid4 } from 'uuid';
-import queryStringFromParams from "../http/query_string_from_params";
+import { api, queryStringFromParams } from '@/http';
 
 const baseUrl = '/api/groups';
 const getApplicationUrl = (uuid) => `${baseUrl}/${uuid}/application`;
@@ -263,13 +261,15 @@ export const actions = {
         });
     },
 
-    async membershipDescriptionUpdate({ commit }, {uuid, membershipDescription}) {
+    async membershipDescriptionUpdate({commit, getters}, {uuid, membershipDescription}) {
         return await api.put(
             `${getApplicationUrl(uuid)}/membership-description`, 
             { membership_description: membershipDescription }
         )
         .then(response => {
-            commit('addItem', response.data.data)
+            const item = getters.getItemByUuid(uuid);
+            item.memberDescription = response.data.data.expert_panel.memberDescription;
+            commit('addItem', item)
             return response;
         })
     },
@@ -280,7 +280,9 @@ export const actions = {
             { scope_description: scopeDescription }
         )
         .then(response => {
-            commit('addItem', response.data.data)
+            const item = getters.getItemByUuid(uuid);
+            item.memberDescription = response.data.data.expert_panel.scopeDescription;
+            commit('addItem', item)
             return response;
         })
     },
