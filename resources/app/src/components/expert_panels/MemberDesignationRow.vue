@@ -25,7 +25,6 @@
         <td>
             <input type="checkbox" v-model="coreApprovalMember">
         </td>
-        <!-- <td>{{workingCopy.original.roles}}</td> -->
     </tr>
 </template>
 <script>
@@ -89,6 +88,7 @@ export default {
         initWorkingCopy() {
             this.workingCopy = new GroupMember();
         },
+        
         syncWorkingCopy (member) {
             if (member.id) {
                 this.workingCopy = member.clone();
@@ -96,59 +96,53 @@ export default {
         },
 
         toggleRole (hasRole, roleName) {
+            console.log({hasRole, roleName});
             if (hasRole) {
+                console.log('adding role...')
                 this.workingCopy.addRole(roleName);
                 return;
             }
 
             this.workingCopy.removeRole(roleName);
         },
+
         save () {
             const promises = [];
+            
+            promises.push(this.updateTrainingInfo());
+            promises.push(this.syncRoles());
+
+            return promises;
+        },
+
+        updateTrainingInfo () {
             if (this.workingCopy.isDirty('training_level_1') || this.workingCopy.isDirty('training_level_2')) {
-                console.log(`Update training info for ${this.workingCopy.person.name}`)
-                promises.push(
-                    this.$store.dispatch(
-                        'groups/memberUpdate', 
-                        {
-                            groupUuid: this.group.uuid, 
-                            memberId: this.workingCopy.id, 
-                            data: {
-                                training_level_1: this.workingCopy.training_level_1,
-                                training_level_2: this.workingCopy.training_level_2,
-                            }
+                return this.$store.dispatch(
+                    'groups/memberUpdate', 
+                    {
+                        groupUuid: this.group.uuid, 
+                        memberId: this.workingCopy.id, 
+                        data: {
+                            training_level_1: this.workingCopy.training_level_1,
+                            training_level_2: this.workingCopy.training_level_2,
                         }
-                    )
+                    }
                 )
             }
-
-            if (this.workingCopy.isDirty('roles')) {
-                console.log('sync roles!')
-                promises.push(this.syncRoles());
-            }
-            return promises;
         },
+
         syncRoles() {
-            const promises = [];
-            const newRoleIds = this.workingCopy.addedRoles.map(r => r.id);
-            const removedRoleIds = this.workingCopy.removedRoles.map(r => r.id);
-            
-            if (newRoleIds.length > 0) {
-                promises.push(this.$store.dispatch(
-                    'groups/memberAssignRole', 
-                    {uuid: this.group.uuid, memberId: this.workingCopy.id, roleIds: newRoleIds}
-                ));
+            if (this.workingCopy.isDirty('roles')) {
+                return this.$store.dispatch(
+                        'groups/memberSyncRoles', 
+                        {
+                            group: this.group, 
+                            member: this.workingCopy
+                        }
+                    );
             }
-            
-            removedRoleIds.forEach(roleId => {
-                promises.push(this.$store.dispatch(
-                    'groups/memberRemoveRole', 
-                    {uuid: this.group.uuid, memberId: this.workingCopy.id, roleId: roleId}
-                ));
-            });
-
-            return promises;
         },
+
 
     }
 }
