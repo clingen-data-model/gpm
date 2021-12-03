@@ -42,8 +42,12 @@ class GroupModuleServiceProvider extends ModuleServiceProvider
         parent::boot();
         $this->registerPolicies();
         $this->mergeConfigFrom(
-            __DIR__.'/../config.php',
+            __DIR__.'/../groups.php',
             'groups'
+        );
+        $this->mergeConfigFrom(
+            __DIR__.'/../specifications.php',
+            'specifications'
         );
     }
 

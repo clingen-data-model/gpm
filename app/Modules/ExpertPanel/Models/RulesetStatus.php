@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class SpecificationRuleStatus extends Model
+class RulesetStatus extends Model
 {
     use HasFactory;
 

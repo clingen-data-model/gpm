@@ -2,13 +2,15 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
-use App\Models\Contracts\BelongsToExpertPanel;
 use App\Models\Contracts\HasNotes;
-use App\Models\Traits\BelongsToExpertPanel as TraitsBelongsToExpertPanel;
 use Illuminate\Database\Eloquent\Model;
+use App\Modules\ExpertPanel\Models\Ruleset;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Contracts\BelongsToExpertPanel;
 use App\Models\Traits\HasNotes as HasNotesTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Modules\ExpertPanel\Models\SpecificationStatus;
+use App\Models\Traits\BelongsToExpertPanel as TraitsBelongsToExpertPanel;
 
 /**
  * @property int $id
@@ -51,9 +53,9 @@ class Specifcation extends Model implements HasNotes, BelongsToExpertPanel
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function specificationRules()
+    public function rulesets()
     {
-        return $this->hasMany(\App\Models\SpecificationRules::class);
+        return $this->hasMany(Ruleset::class);
     }
 
     /**
@@ -61,6 +63,6 @@ class Specifcation extends Model implements HasNotes, BelongsToExpertPanel
      */
     public function status()
     {
-        return $this->belongsTo(\App\Models\SpecificationStatus::class);
+        return $this->belongsTo(SpecificationStatus::class);
     }
 }

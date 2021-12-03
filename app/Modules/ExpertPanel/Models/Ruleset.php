@@ -2,9 +2,10 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Modules\ExpertPanel\Models\RulesetStatus;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -15,9 +16,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class SpecificationRuleSet extends Model
+class Ruleset extends Model
 {
     use HasFactory, SoftDeletes;
+
+    protected $table = 'specification_rulesets';
 
     /**
      * The attributes that are mass assignable.
@@ -46,7 +49,7 @@ class SpecificationRuleSet extends Model
      */
     public function specification()
     {
-        return $this->belongsTo(\App\Models\Specification::class, 'specification_id', 'cspec_id');
+        return $this->belongsTo(Specification::class, 'specification_id', 'cspec_id');
     }
 
     /**
@@ -54,6 +57,6 @@ class SpecificationRuleSet extends Model
      */
     public function status()
     {
-        return $this->belongsTo(\App\Models\SpecificationRulesetStatus::class);
+        return $this->belongsTo(RulesetStatus::class);
     }
 }

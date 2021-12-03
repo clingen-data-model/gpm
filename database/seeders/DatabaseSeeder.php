@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
         $seederClasses = [];
         $seederClasses = array_merge($seederClasses, [
             GroupRoleAndPermissionsSeeder::class,
+            RulesetStatusSeeder::class,
             RolesAndPermissionsSeeder::class,
             UsersTableSeeder::class,
             CdwgsTableSeeder::class,
