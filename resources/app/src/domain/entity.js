@@ -1,3 +1,4 @@
+import {cloneDeep} from 'lodash'
 class Entity {
     static defaults = {
         'created_at': null,
@@ -23,23 +24,11 @@ class Entity {
     }
 
     setAttributes(attributes) {
-        this.attributes = {...attributes};
-        Object.keys(this.attributes)
-            .forEach(key => {
-                if (typeof this.attributes[key] == 'object' && this.attributes[key]) {
-                    this.attributes[key] = JSON.parse(JSON.stringify(this.attributes[key]));
-                }
-            })
+        this.attributes = cloneDeep(attributes);
     }
 
     setOriginal(attributes) {
-        this.original = {...attributes};
-        Object.keys(this.original)
-            .forEach(key => {
-                if (typeof this.original[key] == 'object' && this.original[key]) {
-                    this.original[key] = JSON.parse(JSON.stringify(this.original[key]));
-                }
-            })
+        this.original = cloneDeep(attributes);
     }
 
     defineAttributeGettersAndSetters(attr) 
