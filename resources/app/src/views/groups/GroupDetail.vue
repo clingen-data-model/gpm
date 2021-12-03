@@ -92,6 +92,7 @@
             <modal-dialog v-model="showInfoEdit" @closed="showInfoEdit = false" title="Edit Group Info" size="sm">
                 <submission-wrapper @submitted="$refs.infoForm.save()" @canceled="$refs.infoForm.cancel()">
                     <group-form 
+                        ref="infoForm"
                         @canceled="showInfoEdit = false"
                         @saved="showInfoEdit = false"
                     />
