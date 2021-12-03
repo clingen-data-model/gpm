@@ -3,7 +3,10 @@
         <header class="pb-4">
             <note>People</note>
             <h1 class="flex justify-between items-center">
-                {{person.name}}
+                <div>
+                    {{person.name}}
+                    <note>ID: {{person.id}}</note>
+                </div>
                 <router-link 
                     :to="`/people/${uuid}/edit`"
                     class="btn btn-xs flex-grow-0"
