@@ -65,6 +65,15 @@ class ExpertPanel extends Entity
         review_protocol: {},
     };
 
+    constructor (attributes = {}) {
+        const specifications = attributes.specifications ? [...attributes.specifications] : [];
+        delete(attributes.specifications);
+
+        super(attributes);
+
+        this.specfications = specifications;
+    }
+
     get nhgriSigned () {
         return Boolean(this.attributes['nhgri_attestation_date']);
     }
