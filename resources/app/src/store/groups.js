@@ -134,6 +134,14 @@ export const actions = {
         
     },
 
+    delete ({commit, getters}, uuid) {
+        return api.delete(`${baseUrl}/${uuid}`)
+            .then(() => {
+                const item = getters.getItemByUuid(uuid);
+                commit('removeItem', item);
+            });
+    },
+
     async findAndSetCurrent ({dispatch, commit}, uuid) {
         const response = await dispatch('find', uuid)
         commit('setCurrentItemIndexByUuid', uuid)
