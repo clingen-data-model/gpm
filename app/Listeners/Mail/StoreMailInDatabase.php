@@ -3,6 +3,7 @@
 namespace App\Listeners\Mail;
 
 use App\Models\Email;
+use App\Modules\Person\Models\Person;
 use Illuminate\Mail\Events\MessageSent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -37,5 +38,12 @@ class StoreMailInDatabase
             'subject' => $event->message->getSubject(),
             'body' => $event->message->getBody(),
         ]);
+
+        foreach ($event->message->getTo() as $email => $name) {
+            $person = Person::findByEmail($email);
+            if ($person) {
+                $person->emails()->attach($person->id);
+            }
+        }
     }
 }

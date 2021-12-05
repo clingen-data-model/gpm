@@ -2,6 +2,7 @@
 
 namespace App\Modules\Person\Models;
 
+use App\Models\Email;
 use App\Models\HasUuid;
 use App\Models\HasEmail;
 use App\Modules\User\Models\User;
@@ -159,6 +160,16 @@ class Person extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * The emails that belong to the Person
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function emails(): BelongsToMany
+    {
+        return $this->belongsToMany(Email::class, 'email_person', 'person_id', 'email_id');
     }
 
 

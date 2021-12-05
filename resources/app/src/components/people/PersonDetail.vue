@@ -40,6 +40,19 @@
             </tab-item>
             <tab-item label="Training &amp; Attestations">
             </tab-item>
+            <tab-item label="Email Log">
+                <div class="w-3/4 my-4 p-4 border" v-for="email in sortedMailLog" :key="email.id">
+                    <dictionary-row label="Date/Time">
+                        {{formatDate(email.created_at)}}
+                    </dictionary-row>
+                    <dictionary-row label="Subject">
+                        {{email.subject}}
+                    </dictionary-row>
+                    <dictionary-row label="Body">
+                        <div v-html="email.body"></div>
+                    </dictionary-row>
+                </div>
+            </tab-item>
         </tabs-container>
         <modal-dialog v-model="showModal" :title="$route.meta.title">
             <router-view name="modal"></router-view>
@@ -71,6 +84,7 @@ export default {
     },
     data() {
         return {
+            emails: []
         }
     },
     watch: {
@@ -95,6 +109,15 @@ export default {
                 }
                 this.$router.push({name: 'PersonDetail', params: {uuid: this.person.uuid}})
             }
+        },
+        sortedMailLog () {
+            return [...this.person.mailLog].sort((a,b) => {
+                if (a.created_at == b.created_at) {
+                    return 0;
+                }
+                return (Date.parse(a.created_at) > Date.parse(b.created_at))
+                    ? -1 : 1;
+            })
         }
     },
     methods: {
@@ -104,8 +127,9 @@ export default {
             formatDate: formatDate
         }
     },
-    mounted() {
-        this.$store.dispatch('people/getPerson', {uuid: this.uuid})
+    async mounted() {
+        await this.$store.dispatch('people/getPerson', {uuid: this.uuid})
+        this.$store.dispatch('people/getMail', this.person);
     }
 }
 </script>
