@@ -10,6 +10,7 @@ use App\Modules\Person\Http\Controllers\Api\InviteController;
 use App\Modules\Person\Http\Controllers\Api\PeopleController;
 use App\Modules\Person\Http\Controllers\Api\TimezoneController;
 use App\Modules\Person\Http\Controllers\Api\PersonEmailController;
+use App\Modules\Person\Http\Controllers\Api\PersonNotificationController;
 
 Route::group([
     'prefix' => 'api/people',
@@ -25,7 +26,8 @@ Route::group([
         Route::put('/{uuid}', [PeopleController::class, 'update']);
         
         Route::put('/{uuid}/profile', ProfileUpdate::class);
-        Route::get('/{person:uuid}/email', [PersonEmailController::class, 'list']);
+        Route::get('/{person:uuid}/email', [PersonEmailController::class, 'index']);
+        Route::get('/{person:uuid}/notifications/unread', [PersonNotificationController::class, 'unread']);
     });
 
     Route::get('/invites/{code}', InviteValidateCode::class);

@@ -13,14 +13,10 @@ use App\Modules\Person\Jobs\UpdatePerson;
 use App\Modules\Person\Http\Requests\PersonUpdateRequest;
 use App\Modules\Person\Http\Requests\PersonCreationRequest;
 
-class PersonEmailController extends Controller
+class PersonNotificationController extends Controller
 {
-    public function __construct(private Dispatcher $commandBus)
+    public function unread(Request $request, Person $person)
     {
-    }
-
-    public function index(Request $request, Person $person)
-    {
-        return $person->emails;
+        return $person->unreadNotifications;
     }
 }
