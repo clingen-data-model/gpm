@@ -83,6 +83,10 @@
                 ></activity-log>
                 <button class="btn btn-xs mt-1" @click="getLogEntries">Refresh</button>
             </tab-item>
+            <tab-item label="Admin" :visible="hasPermission('groups-manage')">
+                <h2 class="mb-4">Here be dragons.  Proceed with caution.</h2>
+                <button class="btn btn red" @click="initDelete">Delete Group</button>
+            </tab-item>
         </tabs-container>
 
         <teleport to="body">
@@ -97,6 +101,17 @@
                         @saved="showInfoEdit = false"
                     />
                 </submission-wrapper>
+            </modal-dialog>
+            <modal-dialog v-model="showConfirmDelete" title="Delete This Group?">
+                <div class="text-lg">
+                    <p>
+                        You are about to delete {{group.displayName}} and all associated data.  
+                    </p>
+                    <p>This cannot be undone.</p>
+                </div>
+                <button-row 
+                    submit-text="Delete this group."
+                    @submitted="deleteGroup" @canceled="showConfirmDelete = false"></button-row>
             </modal-dialog>
         </teleport>
 
@@ -165,6 +180,7 @@ export default {
             editingExpertise: false,
             editingScopeDescription: false,
             editingGenes: false,
+            showConfirmDelete: false,
             ongoingPlansErrors: {},
             errors: {}
         }
@@ -294,10 +310,19 @@ export default {
             if (tabName == 'Log' && hasPermission('groups-manage')) {
                 this.getLogEntries();
             }
+        },
+        initDelete() {
+            this.showConfirmDelete = true;
+        },
+        deleteGroup () {
+            this.$store.dispatch('groups/delete', this.group.uuid);
+            this.$store.commit('pushSuccess', 'Group deleted.');
+            this.$router.push({name: 'GroupList'})
         }
     },
     mounted() {
-        this.showModal = Boolean(this.$route.meta.showModal)
+        this.showModal = Boolean(this.$route.meta.showModal);
+        this.showConfirmDelete = false;
     },
     beforeUnmount() {
         this.$store.commit('groups/clearCurrentItem');
