@@ -12,7 +12,7 @@
         <dictionary-row 
             v-for="key in ['name', 'email']"
             :key="key"
-            :label="key"
+            :label="titleCase(key)"
         >
             {{person[key]}}
         </dictionary-row>
