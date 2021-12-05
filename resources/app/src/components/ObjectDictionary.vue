@@ -1,6 +1,6 @@
 <template>
     <div v-if="filteredObj">
-        <dictionary-row v-for="(value, key) in filteredObj" :key="key" :label="key">
+        <dictionary-row v-for="(value, key) in filteredObj" :key="key" :label="titleCase(key)">
             {{value}}
         </dictionary-row>
     </div>
