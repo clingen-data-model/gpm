@@ -135,8 +135,16 @@ export const actions = {
             .then(response => {
                 commit('addItem', response.data);
             })
-    }
+    },
 
+    async getMail (commit, person) {
+        api.get(`/api/people/${person.uuid}/email`)
+                    .then(response => {
+                        this.data = response.data;
+                        person.mailLog = response.data;
+                        commit('addItem', person);
+                    })
+    }
 };
 
 export default {
