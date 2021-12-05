@@ -87,7 +87,15 @@ export default {
         });
         const needsCoi = computed(() => {
             return props.person.memberships
-                    .filter(m => (m.cois === null || m.cois.length === 0) && m.group.expert_panel);
+                    .filter(m => {
+                        if (m.cois === null || m.cois.length === 0) {
+                            console.log({m});
+                            if (m.group.expert_panel) {
+                                return true
+                            }
+                        }
+                        return false;
+                    });
         });
         const coiFields = [
             {
