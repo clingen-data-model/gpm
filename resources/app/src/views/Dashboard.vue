@@ -1,6 +1,13 @@
 <template>
     <div>
-        <h1>Dashboard</h1>
+        <h1>
+            Dashboard
+            <div class="note font-normal">
+                User ID: {{user.id}}
+                |
+                Person ID: {{user.person ? user.person.id : 'no person!!'}}
+            </div>
+        </h1>
         <transition-group tag="div" name="slide-fade-down">
             <notification-item 
                 v-for="notification in notifications" :key="notification.id"
