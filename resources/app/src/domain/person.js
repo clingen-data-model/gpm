@@ -34,6 +34,14 @@ class Person extends Entity {
     ]
     
     constructor(attributes = {}) {
+        if (attributes instanceof Person) {
+            attributes = {
+                ...attributes.attributes, 
+                memberships: [attributes.memberships.map(m => m.attributes)], 
+            };
+        }
+
+
         const memberships = attributes.memberships || [];
         delete(attributes.memberships);
 
