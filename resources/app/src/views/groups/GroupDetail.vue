@@ -118,7 +118,7 @@
     </div>
 </template>
 <script>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted} from 'vue'
 import { useStore } from 'vuex'
 
 import Group from '@/domain/group';
@@ -276,7 +276,7 @@ export default {
                     uuid: this.group.uuid, 
                     membershipDescription: this.group.expert_panel.membership_description
                 }
-            ).then(response => {
+            ).then(() => {
                 this.$store.commit('pushSuccess', 'Description of expertise updated.')
             });
         },
@@ -295,14 +295,14 @@ export default {
         saveOngoingPlansForm () {
             const {uuid, expert_panel: expertPanel} = this.group;
             return this.$store.dispatch('groups/curationReviewProtocolUpdate', {uuid, expertPanel})
-                    .then(response => {
+                    .then(() => {
                         this.$store.commit('pushSuccess', 'Curation review protocol updated.')
                     });
         },
         revertGroupChanges () {
             this.errors = {};
             return this.$store.dispatch('groups/find', this.group.uuid)
-                    .then(response => {
+                    .then(() => {
                         this.$store.commit('pushInfo', 'Update canceled.')
                     });
         },
