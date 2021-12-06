@@ -72,6 +72,7 @@ class ExpertPanel extends Entity
         super(attributes);
 
         this.specfications = specifications;
+        this.genes = [];
     }
 
     get nhgriSigned () {

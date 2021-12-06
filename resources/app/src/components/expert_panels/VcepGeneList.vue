@@ -227,12 +227,12 @@ export default {
         }
         
         const getGenes = async () => {
+            if (!group.value.uuid)  {
+                return;
+            }
             loading.value = true;
             try {
-                genes.value = await api.get(`/api/groups/${group.value.uuid}/application/genes`)
-                                .then(response => {
-                                    return response.data;
-                                });
+                genes.value = await store.dispatch('groups/getGenes', group.value);
             } catch (error) {
                 console.log(error);
                 store.commit('pushError', error.response.data);
@@ -290,6 +290,7 @@ export default {
         });
 
         return {
+            group,
             genes,
             newGenes,
             orderedGenes,

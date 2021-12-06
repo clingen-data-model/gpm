@@ -78,7 +78,10 @@ export default {
         }
 
         const syncGenesAsText = () => {
-            genesAsText.value = group.value.expert_panel.genes 
+            if (!group.value.expert_panel) {
+                return;
+            }
+            genesAsText.value = group.value.expert_panel.genes
                 ? group.value.expertPanel.genes.join(', ')
                 : null
         };
@@ -88,10 +91,8 @@ export default {
             }
             loading.value = true;
             try {
-                const genes = await api.get(`/api/groups/${group.value.uuid}/application/genes`)
-                                .then(response => response.data);
-
-                genesAsText.value = genes.map(g => g.gene_symbol).join(", ");
+                await store.dispatch('groups/getGenes', group.value);
+                genesAsText.value = group.value.expert_panel.genes.map(g => g.gene_symbol).join(", ");
             } catch (error) {
                 store.commit('pushError', error.response.data);
             }
@@ -145,7 +146,7 @@ export default {
 
         watch(() => store.getters['groups/currentItem'], (to, from) => {
             if (to.id && (!from || to.id != from.id)) {
-                syncGenesAsText();
+                // syncGenesAsText();
                 getGenes();
             }
         })
@@ -155,7 +156,7 @@ export default {
         })
 
         watch(() => group.value.expert_panel.genes, () => {
-            syncGenesAsText();
+            // syncGenesAsText();
         })
 
         return {
