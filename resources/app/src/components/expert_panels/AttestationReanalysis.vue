@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h3>Reanalysis &amp; Discrepancy Resolution</h3>
         <p>
             Expert Panels are expected to keep their variant interpretations up-to-date and to expedite the re-review of variants that have a conflicting assertion submitted to ClinVar after the Expert Panel submission. Please check all 3 boxes below to attest that the VCEP will follow the ClinGen-approved schedule described below <strong><em>or</em></strong> describe other plans at the bottom of the section.
         </p>

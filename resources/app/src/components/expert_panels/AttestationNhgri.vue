@@ -1,7 +1,5 @@
 <template>
     <div>
-        <h3>NHGRI Data Availability</h3>
-
         <p>
             Curated variants and genes are expected to be approved and posted for the community as soon as possible as described in Section 2.4 
             <a 

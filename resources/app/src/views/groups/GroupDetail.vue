@@ -72,7 +72,10 @@
             </tab-item>
             <tab-item label="Attestations">
                 <attestation-gcep class="pb-2 mb-4 border-b" v-if="group.isGcep()" :disabled="true" />
+
+                <h3>Reanalysis &amp; Discrepancy Resolution</h3>
                 <attestation-reanalysis class="pb-2 mb-4 border-b"  v-if="group.isVcep()" :disabled="true" />                
+                <h3>NHGRI Data Availability</h3>
                 <attestation-nhgri class="pb-2 mb-4 border-b" :disabled="true" />
             </tab-item>
             <tab-item label="Log" :visible="hasPermission('groups-manage')">
