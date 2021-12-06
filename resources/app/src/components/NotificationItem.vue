@@ -2,20 +2,20 @@
     <static-alert variant="warning">
         <div class="flex items-center justify-between px-4">
             <strong>
-                {{notification.message}}
+                {{notification.data.message}}
             </strong>
-            <button @click="$emit('removeClicked')">
+            <button @click="markRead">
                 <icon-close></icon-close>
             </button>
         </div>
     </static-alert>
 </template>
 <script>
-
+import {api} from '@/http'
 
 export default {
     name: 'NotificationItem',
-    emits: ['removeClicked'],
+    emits: ['removed'],
     props: {
         notification: {
             required: true,
@@ -31,7 +31,10 @@ export default {
 
     },
     methods: {
-
+        async markRead () {
+            await api.put(`/api/notifications/${this.notification.id}`)
+            this.$emit('removed');
+        }
     }
 }
 </script>

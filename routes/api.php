@@ -2,6 +2,7 @@
 
 use App\Models\DocumentType;
 use Illuminate\Http\Request;
+use App\Actions\NotificationMarkRead;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CdwgController;
@@ -42,6 +43,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/mail-log', [MailLogController::class, 'index']);
     Route::get('/email-drafts/{applicationUuid}/{approvedStepNumber}', [MailDraftController::class, 'show']);
+
+    Route::put('/notifications/{notificationId}', NotificationMarkRead::class);
 });
 
 Route::get('/cdwgs', [CdwgController::class, 'index']);

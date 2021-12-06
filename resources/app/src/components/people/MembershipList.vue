@@ -10,8 +10,7 @@
     </div>
 </template>
 <script>
-import Person from '@/domain/person'
-import Group from '@/domain/group'
+import Group from '@/domain'
 
 export default {
     name: 'MembershipList',

@@ -13,7 +13,8 @@
                 v-for="notification in notifications" :key="notification.id"
                 :notification="notification"
                 class="mt-2"
-                @removeClicked="removeNotification(notification)"
+                @removed="removeNotification(notification)"
+                :variant="notification.data.type"
             ></notification-item>
             <static-alert 
                 v-for="membership in user.person.membershipsWithPendingCois" 
@@ -70,6 +71,7 @@
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
 import {ref, computed, onMounted, watch} from 'vue'
+import {api} from '@/http'
 import NotificationItem from '@/components/NotificationItem'
 import CoiList from '@/components/people/CoiList'
 import PersonProfile from '@/components/people/PersonProfile'
@@ -118,10 +120,8 @@ export default {
         const notifications = ref([]);
         const getNotifications = async () => {
             loadingNotifications.value = true;
-            await setTimeout(() => {
-                // notifications.value.push({id: 1, message: 'This is a dummy notification.'});
-                // notifications.value.push({id: 2, message: 'Start getting notificaitons from the server!'});
-            }, 1000);
+            notifications.value = await api.get(`/api/people/${user.value.person.uuid}/notifications/unread`)
+                                .then(response => response.data)
             loadingNotifications.value = false;
         }
         const removeNotification = (notification) => {
