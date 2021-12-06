@@ -119,7 +119,6 @@ export default {
             immediate: true,
             handler (to, from) {
                 if ((to.id && (!from || to.id != from.id))) {
-                    console.log('MemberList.group: ', this.group);
                     this.$store.dispatch('groups/getMembers', this.group);
                 }
             }
