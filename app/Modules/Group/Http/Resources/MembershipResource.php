@@ -16,7 +16,7 @@ class MembershipResource extends JsonResource
     {
         $data = parent::toArray($request);
         $data['cois'] = $this->whenLoaded('cois', $this->cois);
-        $data['latestCoi'] = $this->whenLoaded('latestCoi', $this->cois);
+        $data['latest_coi'] = $this->whenLoaded('latestCoi', $this->latestCoi);
         if ($this->relationLoaded('cois') || $this->relationLoaded('latestCoi')) {
             $data['coi_needed'] = $this->coiNeeded;
             $data['coi_last_completed'] = $this->coiLastCompleted;
