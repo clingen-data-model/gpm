@@ -46,13 +46,13 @@ class PeopleController extends Controller
         $person = Person::findByUuidOrFail($uuid);
         $person->load([
             'memberships',
-            'memberships.group',
-            'memberships.roles',
-            'memberships.permissions',
-            'memberships.group.type',
             'memberships.cois',
-            'memberships.latestCoi',
+            'memberships.group',
             'memberships.group.expertPanel',
+            'memberships.group.type',
+            'memberships.latestCoi',
+            'memberships.permissions',
+            'memberships.roles',
             'institution',
             'primaryOccupation',
             'country',
