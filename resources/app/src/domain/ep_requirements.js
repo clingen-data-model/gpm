@@ -18,7 +18,7 @@ export const chairs = new Requirement(
 );
 export const coordinators = new Requirement(
     '1+ Coordinator', 
-    group => group.cooridnators.length > 1
+    group => group.coordinators.length > 1
 );
 export const coisComplete = new Requirement(
     'All members completed COI', 
@@ -38,7 +38,7 @@ export const expertiseDescription = new Requirement(
 );
 
 export const genes = new Requirement('1+ genes in scope', group => group.expert_panel.genes.length > 0);
-export const scopeDescription = new Requirement('Description of scope', group => Boolean(group.scope_description));
+export const scopeDescription = new Requirement('Description of scope', group => Boolean(group.expert_panel.scope_description));
 
 export const curationProcess = new Requirement(
     'Plans for sustained curation', 
@@ -71,6 +71,18 @@ class EpRequirements {
                 isMet: req.isMet(group)
             }
         });
+    }
+
+    metRequirements (group, sections = null) {
+        const requirements = this.getRequirementsFor(sections);
+        
+        return requirements.filter(req => req.isMet(group));
+    }
+
+    unmetRequirements (group, sections = null) {
+        const requirements = this.getRequirementsFor(sections);
+        
+        return requirements.filter(req => !req.isMet(group));
     }
 
     getRequirementsFor(sections = null) {
