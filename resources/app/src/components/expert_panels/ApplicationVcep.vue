@@ -1,12 +1,12 @@
 <template>
     <div>
-        <div class="application-step" id="definition" v-if="currentStep == 1">
-            <app-section title="Basic Information">
+        <div class="application-step" id="definition">
+            <app-section title="Basic Information" name="basicInfo">
                 <group-form 
                     :group="group" ref="groupForm"
                 />
             </app-section>
-            <app-section v-if="group" title="Membership">
+            <app-section v-if="group" title="Membership" name="membership">
                 <p>
                     Expert Panels are expected to represent the diversity of expertise and backgrounds in the field and should refer to 
                     <a href="https://clinicalgenome.org/site/assets/files/3635/variant_curation_expert_panel_vcep_protocol_version_9-2.pdf" target="vcep-protocol">Section 2.1 of the VCEP Protocol</a> and the <a href="https://diversity.nih.gov/sites/coswd/files/images/SWD_Toolkit_Interactive-updated_508.pdf" target="nih-workforce-diversity">NIH Scientific Workforce Diversity Toolkit</a> for guidance to complete the Member List below. Please list the VCEP Chair(s) and Coordinator(s) first.
@@ -15,26 +15,32 @@
                 <hr>
                 <membership-description-form :editing="true" />
             </app-section>
-            <app-section title="Scope of Work">
+            <app-section title="Scope of Work" name="scope">
                 <vcep-gene-list :group="group" ref="geneList" />
                 <hr>
                 <scope-description-form />
             </app-section>
+            <app-section title="Reanalysis & Discrepancy Resolution">
+                <attestation-reanalysis></attestation-reanalysis>
+            </app-section>
+            <app-section title="NHGRI Data Availability">
+                <attestation-nhgri></attestation-nhgri>
+            </app-section>
         </div>
 
-        <div class="application-step" id="draft-specifications" v-if="currentStep == 2">
+        <div class="application-step" id="draft-specifications">
             <app-section title="Draft Specifications">
                 <cspec-summary></cspec-summary>
             </app-section>
         </div>
 
-        <div class="application-step" id="pilot-specifications" v-if="currentStep == 3">
+        <div class="application-step" id="pilot-specifications">
             <app-section title="Pilot Specifications">
                 <cspec-summary />
             </app-section>
         </div>
 
-        <div class="application-step" id="sustained-curation" v-if="currentStep == 4">
+        <div class="application-step" id="sustained-curation">
             <app-section title="Curation and Review Process">
                 <vcep-ongoing-plans-form />
             </app-section>
@@ -54,9 +60,10 @@
     </div>
 </template>
 <script>
-import is_validation_error from '@/http/is_validation_error'
+import {isValidationError} from '@/http'
 import ApplicationSection from '@/components/expert_panels/ApplicationSection'
 import AttestationNhgri from '@/components/expert_panels/AttestationNhgri'
+import AttestationReanalysis from '@/components/expert_panels/AttestationReanalysis'
 import CspecSummary from '@/components/expert_panels/CspecSummary'
 import EvidenceSummaryList from '@/components/expert_panels/EvidenceSummaryList'
 import GroupForm from '@/components/groups/GroupForm'
@@ -72,6 +79,7 @@ export default {
     components: {
         'app-section': ApplicationSection,
         AttestationNhgri,
+        AttestationReanalysis,
         CspecSummary,
         EvidenceSummaryList,
         GroupForm,
@@ -109,7 +117,7 @@ export default {
             try {
                 await Promise.all(promises);
             } catch (error) {
-                if (is_validation_error(error)) {
+                if (isValidationError(error)) {
                     this.errors = error.response.data.errors;
                     return;
                 }
