@@ -48,7 +48,7 @@
         <div class="well" v-else>You are not required to complete conflict of interest disclsoure</div>
         <teleport to="body">
             <modal-dialog v-model="showResponseDialog" size="xl">
-                <coi-detail :coi="currentCoi" v-if="currentCoi"></coi-detail>
+                <coi-detail :membership="currentCoi" v-if="currentCoi"></coi-detail>
             </modal-dialog>
         </teleport>
     </div>
@@ -74,8 +74,7 @@ export default {
     setup (props) {
         
         const cois = computed(() => {
-            return props.person.memberships
-                .filter(m => m.cois !== null && m.cois.length > 0)
+            return props.person.membershipsWithCompletedCois
                 .map(m => {
                     return m.cois.map(coi => {
                         coi.group = m.group;

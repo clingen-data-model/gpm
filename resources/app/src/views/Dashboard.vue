@@ -15,6 +15,28 @@
                 class="mt-2"
                 @removeClicked="removeNotification(notification)"
             ></notification-item>
+            <static-alert 
+                v-for="membership in user.person.membershipsWithPendingCois" 
+                :key="membership.id"
+                class="mt-2 font-bold"
+                variant="warning"
+            >
+                You have a pending Conflict of Interest Disclosure for {{membership.group.name}}.
+                <br>
+                <br>
+                <router-link 
+                    :to="{
+                        name: 'alt-coi', 
+                        params: {
+                            name: membership.group.name, 
+                            code: membership.group.expert_panel.coi_code
+                        }
+                    }"
+                    class="btn"
+                >
+                    Complete this COI Disclosure
+                </router-link>
+            </static-alert>
         </transition-group>
         <tabs-container class="mt-8">
             <tab-item label="Your Groups">
@@ -97,8 +119,8 @@ export default {
         const getNotifications = async () => {
             loadingNotifications.value = true;
             await setTimeout(() => {
-                notifications.value.push({id: 1, message: 'This is a dummy notification.'});
-                notifications.value.push({id: 2, message: 'Start getting notificaitons from the server!'});
+                // notifications.value.push({id: 1, message: 'This is a dummy notification.'});
+                // notifications.value.push({id: 2, message: 'Start getting notificaitons from the server!'});
             }, 1000);
             loadingNotifications.value = false;
         }
