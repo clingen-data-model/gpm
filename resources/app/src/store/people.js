@@ -19,7 +19,7 @@ export const getters = {
     getPersonWithUuid: (state, uuid) => state.items.find(i => i.uuid == uuid),
     indexForPersonWithUuid: (state, uuid) => state.items.findIndex(i => i.uuid == uuid),
     currentItem: state => {
-        if (state.currentItemIdx === null) {
+        if (typeof state.currentItemIdx == 'undefined' || state.currentItemIdx == null || state.currentItemIdx < 0) {
             return new Person();
         }
 
@@ -53,7 +53,9 @@ export const mutations = {
     },
     setCurrentItemIndex(state, item) {
         const idx = state.items.findIndex(i => i.uuid == item.uuid);
-        state.currentItemIdx = idx;
+        if (idx > -1) {
+            state.currentItemIdx = idx;
+        }
     },
 };
 
@@ -115,11 +117,11 @@ export const actions = {
             });
     },
 
-    async getPerson({ commit }, {uuid, params}) {
+    async getPerson({commit}, {uuid, params}) {
         await api.get(`${baseUrl}/${uuid}`+queryStringFromParams(params))
             .then(response => {
-                commit('addItem', response.data)
-                commit('setCurrentItemIndex', response.data)
+                commit('addItem', response.data.data)
+                commit('setCurrentItemIndex', response.data.data)
             });
     },
 
@@ -137,7 +139,10 @@ export const actions = {
             })
     },
 
-    async getMail (commit, person) {
+    async getMail ({commit}, person) {
+        if(person.uuid == null) {
+            return false;
+        }
         api.get(`/api/people/${person.uuid}/email`)
                     .then(response => {
                         this.data = response.data;

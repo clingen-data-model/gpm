@@ -1,26 +1,27 @@
 import Entity from './entity';
+import GroupMember from './group_member';
 
 class Person extends Entity {
     static defaults = {
-        uuid: '',
-        first_name: '',
-        last_name: '',
-        email: '',
-        phone:'',
+        uuid: null,
+        first_name: null,
+        last_name: null,
+        email: null,
+        phone:null,
         institution_id: null,
         institution: {},
         primary_occupation_id: null,
         primary_occupation: {},
-        credentials: '',
+        credentials: null,
         race_id: null,
         race: {},
-        race_other: '',
+        race_other: null,
         ethnicity_id: null,
         ethnicity: {},
-        ethnicity_other: '',
+        ethnicity_other: null,
         gender_id: null,
         gender: {},
-        gender_other: '',
+        gender_other: null,
         created_at: null,
         updated_at: null,
         deleted_at: null
@@ -31,6 +32,15 @@ class Person extends Entity {
         'updated_at',
         'deleted_at'
     ]
+    
+    constructor(attributes = {}) {
+        const memberships = attributes.memberships || [];
+        delete(attributes.memberships);
+
+        super({...attributes});
+
+        this.memberships = memberships.map(m => new GroupMember(m));
+    }
 
     get institutionName () {
         return this.institution ? this.institution.name : null;
@@ -59,6 +69,26 @@ class Person extends Entity {
             return this.gender_other;
         }
         return this.gender ? this.gender.name : null
+    }
+
+    get membershipsWithPendingCois () {
+        return this.memberships.filter(m => m.coi_needed);
+    }
+
+    get membershipsWithCompletedCois () {
+        return this.memberships.filter(m => !m.coi_needed);
+    }
+
+    get completedCois () {
+        return this.membershipsWithCompletedCois.map(m => m.cois).flat();
+    }
+
+    get hasPendingCois () {
+        return this.membershipsWithPendingCois.length  > 0;
+    }
+
+    get hasCompletedCois () {
+        return this.membershipsWithCompletedCois.length > 0;
     }
 
     matchesKeyword(keyword) {

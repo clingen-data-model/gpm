@@ -13,6 +13,7 @@ use Database\Factories\GroupMemberFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Models\Traits\HasNotes as HasNotesTrait;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Modules\Group\Models\Contracts\BelongsToGroup;
@@ -121,6 +122,16 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
         return $this->hasMany(Coi::class);
     }
 
+    /**
+     * Get the latestCoi associated with the GroupMember
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function latestCoi(): HasOne
+    {
+        return $this->hasOne(Coi::class)->latestOfMany();
+    }
+
 
     public function scopeContact($query)
     {
@@ -148,6 +159,20 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
                     ->first();
         return $latestCoi ? $latestCoi->completed_at : null;
     }
+
+    public function getCoiNeededAttribute()
+    {
+        if ($this->cois->count() == 0) {
+            return true;
+        }
+
+        if ($this->coiLastCompleted->lt(Carbon::today()->subYear())) {
+            return true;
+        }
+
+        return false;
+    }
+    
     
     
 

@@ -1,11 +1,11 @@
 <template>
     <div>
         <div v-if="person.memberships.length > 0">
-            <div v-if="needsCoi.length > 0">
+            <div v-if="person.hasPendingCois">
                 <h3>You must complete a Conflict of Interest Disclosure for the following memberships:</h3>
                 <div class="my-2">
                     <router-link 
-                        v-for="membership in needsCoi" 
+                        v-for="membership in person.membershipsWithPendingCois" 
                         :key="membership.id" 
                         class="block my-0 font-bold p-2 border border-gray-300 first:rounded-t-lg last:rounded-b-lg cursor-pointer hover:bg-blue-50 link"
                         :to="getCoiRoute(membership)" 
@@ -14,16 +14,16 @@
                     </router-link>
                 </div>
             </div>
-            <section v-if="cois.length > 0">
+            <section v-if="person.hasCompletedCois">
                 <h3>Completed Conflict of Interest Disclosures</h3>
                 <data-table 
                     :fields="fields" 
-                    :data="cois" 
+                    :data="person.membershipsWithCompletedCois" 
                     v-model:sort="coiSort"
                     class="my-2"
                 >
                     <template v-slot:cell-actions="{item}">
-                        <div v-if="item.completed_at">
+                        <div v-if="item.coi_last_completed">
                             <button 
                                 class="btn btn-xs" 
                                 @click="showCoiResponse(item)" 
@@ -41,11 +41,11 @@
                     </template>
                 </data-table>
             </section>
-            <div v-if="needsCoi.length == 0 && cois.length == 0" class="well">
+            <div v-if="!person.hasPending && !person.completedCois" class="well">
                 None of your memberships require a conflict of interest disclosure
             </div>
         </div>
-        <div class="well" v-else>You are not required to complet conflict of interest disclsoure</div>
+        <div class="well" v-else>You are not required to complete conflict of interest disclsoure</div>
         <teleport to="body">
             <modal-dialog v-model="showResponseDialog" size="xl">
                 <coi-detail :coi="currentCoi" v-if="currentCoi"></coi-detail>
@@ -86,10 +86,12 @@ export default {
                 .flat()
         });
         const needsCoi = computed(() => {
+            if (!props.person.memberships) {
+                return false;
+            }
             return props.person.memberships
                     .filter(m => {
                         if (m.cois === null || m.cois.length === 0) {
-                            console.log({m});
                             if (m.group.expert_panel) {
                                 return true
                             }
@@ -105,7 +107,7 @@ export default {
                 sortable: true
             },
             {
-                name: 'completed_at',
+                name: 'coi_last_completed',
                 label: 'Completed',
                 sortable: false,
                 type: Date,

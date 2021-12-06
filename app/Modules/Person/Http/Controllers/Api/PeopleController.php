@@ -12,6 +12,7 @@ use App\Modules\Person\Jobs\CreatePerson;
 use App\Modules\Person\Jobs\UpdatePerson;
 use App\Modules\Person\Http\Requests\PersonUpdateRequest;
 use App\Modules\Person\Http\Requests\PersonCreationRequest;
+use App\Modules\Person\Http\Resources\PersonDetailResource;
 
 class PeopleController extends Controller
 {
@@ -44,12 +45,13 @@ class PeopleController extends Controller
     {
         $person = Person::findByUuidOrFail($uuid);
         $person->load([
-            'memberships', 
-            'memberships.group', 
-            'memberships.roles', 
-            'memberships.permissions', 
+            'memberships',
+            'memberships.group',
+            'memberships.roles',
+            'memberships.permissions',
             'memberships.group.type',
             'memberships.cois',
+            'memberships.latestCoi',
             'memberships.group.expertPanel',
             'institution',
             'primaryOccupation',
@@ -59,7 +61,7 @@ class PeopleController extends Controller
             'gender',
             'invite'
         ]);
-        return $person;
+        return new PersonDetailResource($person);
     }
 
     public function update($uuid, PersonUpdateRequest $request)
