@@ -43,6 +43,7 @@ class GroupMember extends Entity {
         roles: [],
         permissions: [],
         coi_last_completed: null,
+        coi_needed: null,
         expertise: null,
         notes: null,
         training_level_1: null,
