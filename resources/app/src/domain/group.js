@@ -23,9 +23,18 @@ class Group extends Entity {
     };
 
     constructor(attributes = {}) {
+        if (attributes instanceof Group) {
+            attributes = {
+                ...attributes.attributes, 
+                members: [attributes.members.map(m => m.attributes)], 
+                expert_panel: attributes.expert_panel.attributes
+            };
+        }
+
         const members = attributes.members ? [...attributes.members] : [];
-        const expertPanel = attributes.expert_panel ? {...attributes.expert_panel} : {};
         delete(attributes.members);
+
+        const expertPanel = attributes.expert_panel ? {...attributes.expert_panel} : {};
         delete(attributes.expert_panel);
 
         super(attributes);
