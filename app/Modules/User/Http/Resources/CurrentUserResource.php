@@ -6,6 +6,7 @@ use App\Http\Resources\RoleResource;
 use App\Http\Resources\PermissionResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Modules\Group\Http\Resources\MemberResource;
+use App\Modules\Person\Http\Resources\PersonDetailResource;
 
 class CurrentUserResource extends JsonResource
 {
@@ -24,6 +25,7 @@ class CurrentUserResource extends JsonResource
                                 : collect();
         $data['memberships'] = $this->whenLoaded('person', MemberResource::collection($this->person->memberships));
         // unset($data['person']['memberships']);
+        $data['person'] = $this->whenLoaded('person', new PersonDetailResource($this->person));
 
         return $data;
     }
