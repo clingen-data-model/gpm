@@ -1,14 +1,8 @@
 <template>
     <div>
-        <popper arrow>
+        <popper arrow hover>
             <template v-slot:content>
-                <ul>
-                    <li v-for="(req, idx) in evaledRequirements" :key="idx" class="flex space-x-2">
-                        <icon-checkmark class="text-green-600" v-if="req.isMet"></icon-checkmark>
-                        <icon-exclamation class="text-yellow-400" v-else></icon-exclamation>
-                        <div>{{req.label}}</div>
-                    </li>
-                </ul>
+                <requirements-item  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
             </template>
             <badge :color="badgeColor" class="cursor-pointer">
                 {{badgeText}}
@@ -19,9 +13,13 @@
 <script>
 import {VcepRequirements, GcepRequirements} from '@/domain/index'
 import configs from '@/configs'
+import RequirementsItem from './RequirementsItem'
 
 export default {
     name: 'RequirementsBadge',
+    components: {
+        RequirementsItem
+    },
     props: {
         section: {
             type: String,
@@ -42,7 +40,7 @@ export default {
         },
         badgeColor () {
             if (this.meetsRequirements) {
-                return 'blue';
+                return 'green';
             }
             return 'yellow'
         },
@@ -67,7 +65,6 @@ export default {
         group: {
             immediate: true,
             handler: function (to) {
-                console.log({to})
                 if (!to.expert_panel) {
                     return;
                 }

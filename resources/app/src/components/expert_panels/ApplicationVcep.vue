@@ -54,13 +54,23 @@
             </app-section>
         </div>
 
-        <button class="btn btn-xl" @click="submit" :disabled="requirementsUnmet">
-            Submit for Approval
-        </button>
+        <popper hover arrow>
+            <template v-slot:content>
+                <requirements-item  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
+            </template>
+            <div class="relative">
+                <button class="btn btn-xl" @click="submit">
+                    Submit for Approval
+                </button>
+                <!-- Add mask above button if requirements are unmet b/c vue3-popper doesn't respond to disabled components. -->
+                <div v-if="requirementsUnmet" class="bg-white opacity-50 absolute top-0 bottom-0 left-0 right-0"></div>
+            </div>
+        </popper>
     </div>
 </template>
 <script>
 import {isValidationError} from '@/http'
+import {VcepRequirements} from '@/domain'
 import ApplicationSection from '@/components/expert_panels/ApplicationSection'
 import AttestationNhgri from '@/components/expert_panels/AttestationNhgri'
 import AttestationReanalysis from '@/components/expert_panels/AttestationReanalysis'
@@ -73,6 +83,9 @@ import MembershipDescriptionForm from '@/components/expert_panels/MembershipDesc
 import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm';
 import VcepGeneList from '@/components/expert_panels/VcepGeneList';
 import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm';
+import RequirementsItem from '@/components/expert_panels/RequirementsItem'
+
+const requirements = new VcepRequirements();
 
 export default {
     name: 'ApplicationCcep',
@@ -86,6 +99,7 @@ export default {
         MemberDesignationForm,
         MemberList,
         MembershipDescriptionForm,
+        RequirementsItem,
         ScopeDescriptionForm,
         VcepGeneList,
         VcepOngoingPlansForm,
@@ -100,13 +114,16 @@ export default {
             }
         },
         meetsRequirements () {
-            return false;
+            return requirements.meetsRequirements(this.group);
         },
         requirementsUnmet () {
-            return !this.meetsRequirements;
+            return !requirements.meetsRequirements(this.group);
         },
         currentStep () {
             return this.group.expert_panel.current_step;
+        },
+        evaledRequirements () {
+            return requirements.checkRequirements(this.group);
         }
     },
     methods: {
