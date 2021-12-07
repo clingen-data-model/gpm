@@ -282,13 +282,15 @@ export const actions = {
         })
     },
 
-    async scopeDescriptionUpdate({ commit }, {uuid, scopeDescription}) {
+    async scopeDescriptionUpdate({ commit, getters }, {uuid, scopeDescription}) {
+        
         return await api.put(
             `${getApplicationUrl(uuid)}/scope-description`, 
             { scope_description: scopeDescription }
         )
         .then(response => {
             const item = getters.getItemByUuid(uuid);
+            console.log(item);
             item.memberDescription = response.data.data.expert_panel.scopeDescription;
             commit('addItem', item)
             return response;
@@ -334,10 +336,11 @@ export const actions = {
         //         })
     },
 
-    getGenes ({ commit, getters }, group) {
+    getGenes ({ commit, getters,}, group) {
         return api.get(`/api/groups/${group.uuid}/application/genes`)
             .then(response => {
                 const item = getters.getItemByUuid(group.uuid)
+                console.log(item);
                 item.expert_panel.genes = response.data;
                 commit('addItem', item);
                 return response.data;
