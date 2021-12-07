@@ -68,7 +68,7 @@ export default {
                 if (!to.expert_panel) {
                     return;
                 }
-                if (to.expert_panel.type.name == 'GCEP') {
+                if (to.expert_panel.type.name == 'gcep') {
                     this.requirements = new GcepRequirements();
                     return;
                 }
