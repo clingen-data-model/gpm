@@ -28,6 +28,9 @@ app.directive('click-outside', ClickOutside)
 import RemainingHeight from '@/directives/remaining_height'
 app.directive('remaining-height', RemainingHeight)
 
+import Popper from "vue3-popper"
+app.component('popper', Popper);
+
 import {formatDate} from '@/date_utils'
 
 import {userCan, hasPermission, hasAnyPermission, hasRole, userIsPerson} from '@/auth_utils'

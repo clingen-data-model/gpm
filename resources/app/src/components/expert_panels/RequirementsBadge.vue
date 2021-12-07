@@ -17,15 +17,11 @@
     </div>
 </template>
 <script>
-import Popper from "vue3-popper"
 import {VcepRequirements, GcepRequirements} from '@/domain/index'
 import configs from '@/configs'
 
 export default {
     name: 'RequirementsBadge',
-    components: {
-        Popper
-    },
     props: {
         section: {
             type: String,
