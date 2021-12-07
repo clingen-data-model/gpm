@@ -100,6 +100,8 @@ export default {
                     && m.group.expert_panel.coi_code === this.code
             });
 
+            console.log(membership);
+
             if (membership) {
                 return membership.id;
             }
@@ -147,6 +149,8 @@ export default {
             } catch (error) {
                 if (is_validation_error(error)) {
                     this.errors = error.response.data.errors
+                } else {
+                    this.$store.commit('pushError', `You can not complete a COI for ${this.epName} because you are not a member.`)
                 }
             }
             this.saving = false;
