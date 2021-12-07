@@ -44,6 +44,11 @@
                 </div>
             </div>
         </div>
+        <teleport to="body">
+            <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="this.$route.meta.title">
+                <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
+            </modal-dialog>
+        </teleport>
     </div>
 </template>
 <script>
@@ -68,10 +73,17 @@ export default {
     },
     data() {
         return {
-            showDocumentation: false
+            showDocumentation: false,
+            showModal: false
         }
     },
     watch: {
+        $route: function () {
+            this.showModal = this.$route.meta.showModal 
+                                ? Boolean(this.$route.meta.showModal) 
+                                : false;
+        },
+
         uuid: {
             immediate: true,
             handler: function (to) {
@@ -101,7 +113,18 @@ export default {
         }
     },
     methods: {
-
+        hideModal () {
+            this.$router.replace({name: 'GroupApplication', params: {uuid: this.uuid}});
+        },
+        handleModalClosed (evt) {
+            this.clearModalForm(evt);
+            this.$router.push({name: 'GroupApplication', params: {uuid: this.uuid}});
+        },
+        clearModalForm () {
+            if (typeof this.$refs.modalView.clearForm === 'function') {
+                this.$refs.modalView.clearForm();
+            }
+        },
     },
     beforeUnmount() {
         this.$store.commit('groups/clearCurrentItem')

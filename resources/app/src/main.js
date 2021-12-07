@@ -34,6 +34,9 @@ import {userCan, hasPermission, hasAnyPermission, hasRole, userIsPerson} from '@
 
 import objectUid from '@/object_uid'
 
+app.config.globalProperties.append = (path, pathToAppend) =>
+  path + (path.endsWith('/') ? '' : '/') + pathToAppend
+  
 app.use(store)
     .mixin({
         methods: {

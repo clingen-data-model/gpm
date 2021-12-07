@@ -164,7 +164,7 @@ export default {
             return formatDate(date)
         },
         editMember (member) {
-            this.$router.push({name: 'EditMember', params: {uuid: this.group.uuid, memberId: member.id}})
+            this.$router.push(this.append(this.$route.path, `members/${member.id}`))
         },
         confirmRetireMember (member) {
             this.showConfirmRetire = true;
@@ -248,7 +248,7 @@ export default {
             <router-link 
                 class="btn btn-xs" 
                 ref="addMemberButton" 
-                :to="{name: 'AddMember'}" 
+                :to="append($route.path, 'members/add')" 
                 v-if="hasAnyPermission([['members-invite', group], 'groups-manage'])"
             >Add Member</router-link>
         </head>

@@ -76,10 +76,10 @@ export default [
         children: [
             {
                 name: 'AddMember',
-                path: '/groups/:uuid/members/add',
+                path: 'members/add',
                 component: MemberForm,
                 meta: {
-                    default: GroupDetail,
+                    // default: GroupDetail,
                     showModal: true,
                     protected: true,
                     title: 'Add Group Member'
@@ -91,10 +91,10 @@ export default [
             },
             {
                 name: 'EditMember',
-                path: '/groups/:uuid/members/:memberId',
+                path: 'members/:memberId',
                 component: MemberForm,
                 meta: {
-                    default: GroupDetail,
+                    // default: GroupDetail,
                     showModal: true,
                     protected: true,
                     title: 'Add Group Member'
@@ -118,6 +118,38 @@ export default [
         props: true,
         beforeEnter: async (to) => {
             return await hasGroupPermission(to, 'application-edit')
-        }
+        },
+        children: [
+            {
+                name: 'AppAddMember',
+                path: 'members/add',
+                component: MemberForm,
+                meta: {
+                    // default: GroupDetail,
+                    showModal: true,
+                    protected: true,
+                    title: 'Add Group Member'
+                },
+                props: true,
+                beforeEnter: async (to) => {
+                    return await hasGroupPermission(to, 'members-invite', ['groups-manage'])
+                }
+            },
+            {
+                name: 'AppEditMember',
+                path: 'members/:memberId',
+                component: MemberForm,
+                meta: {
+                    // default: GroupDetail,
+                    showModal: true,
+                    protected: true,
+                    title: 'Add Group Member'
+                },
+                props: true,
+                beforeEnter: async (to) => {
+                    return await hasGroupPermission(to, 'members-update', ['groups-manage'])
+                }
+            },
+        ],
     }
 ]
