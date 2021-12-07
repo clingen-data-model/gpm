@@ -34,7 +34,7 @@
                     <component :is="applicationComponent" ref="application"></component>
                 </section>
             </div>
-            <div id="documentation-drawer" class="mt-4">
+            <!-- <div id="documentation-drawer" class="mt-4">
                 <div v-if="showDocumentation" class="lg:w-1/4 border-r pt-4 pl-4">
                     <button class="btn btn-xs" @click="showDocumentation = false">X</button>
                     Documentation
@@ -42,7 +42,7 @@
                 <div v-else>
                     <icon-info @click="showDocumentation = true"/>
                 </div>
-            </div>
+            </div> -->
         </div>
         <teleport to="body">
             <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="this.$route.meta.title">
