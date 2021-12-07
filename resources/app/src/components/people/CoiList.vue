@@ -1,24 +1,65 @@
 <template>
     <div>
         <div v-if="person.memberships.length > 0">
-            <div v-if="person.hasPendingCois">
-                <h3>You must complete a Conflict of Interest Disclosure for the following memberships:</h3>
-                <div class="my-2">
-                    <router-link 
-                        v-for="membership in person.membershipsWithPendingCois" 
-                        :key="membership.id" 
-                        class="block my-0 font-bold p-2 border border-gray-300 first:rounded-t-lg last:rounded-b-lg cursor-pointer hover:bg-blue-50 link"
-                        :to="getCoiRoute(membership)" 
-                    >
-                        {{membership.group.name}}
-                    </router-link>
+            <div v-if="person.hasPendingCois" class="mb-4">
+                <div v-if="userIsPerson(person)">
+                    <h3>You must complete a Conflict of Interest Disclosure for the following memberships:</h3>
+                    <div class="my-2">
+                        <router-link 
+                            v-for="membership in person.membershipsWithPendingCois" 
+                            :key="membership.id" 
+                            class="block my-0 font-bold p-2 border border-gray-300 first:rounded-t-lg last:rounded-b-lg cursor-pointer hover:bg-blue-50 link"
+                            :to="getCoiRoute(membership)" 
+                        >
+                            {{membership.group.name}}
+                        </router-link>
+                    </div>
+                </div>
+                <div v-else>
+                    <h3>Outstanding COI disclosures:</h3>
+                    <ul>
+                        <li
+                            class="list-disc ml-6"
+                            v-for="membership in person.membershipsWithPendingCois" 
+                            :key="membership.id"
+                        >
+                            {{membership.group.name}}
+                        </li>
+                    </ul>
                 </div>
             </div>
             <section v-if="person.hasCompletedCois">
-                <h3>Completed Conflict of Interest Disclosures</h3>
+                <h3>Completed &amp; Current COI Disclosures</h3>
                 <data-table 
                     :fields="fields" 
                     :data="person.membershipsWithCompletedCois" 
+                    v-model:sort="coiSort"
+                    class="my-2"
+                >
+                    <template v-slot:cell-actions="{item}">
+                        <div v-if="item.coi_last_completed">
+                            <button 
+                                class="btn btn-xs" 
+                                @click="showCoiResponse(item)" 
+                            >View response</button>
+                            &nbsp;
+                            <router-link
+                                v-if="userIsPerson(person)"
+                                :to="{
+                                    name: 'alt-coi', 
+                                    params: {code: item.group.expert_panel.coi_code, name: this.kebabCase(item.group.name)}
+                                }" 
+                                class="btn btn-xs"
+                            >Update COI</router-link>
+                        </div>
+                    </template>
+                </data-table>
+            </section>
+            <section v-if="person.hasOutdatedCois">
+                <h3>Past COI Disclosures</h3>
+                <data-table 
+                    :fields="fields" 
+                    :data="person.membershipsWithOutdatedCois" 
                     v-model:sort="coiSort"
                     class="my-2"
                 >
@@ -119,7 +160,7 @@ export default {
             };
 
             const idField ={
-                name: 'id',
+                name: 'latest_coi.id',
                 label: 'ID',
                 sortable: true
             }
@@ -137,6 +178,10 @@ export default {
             return coiFields;
         })
         const coiSort = ref({
+            field: 'group.name',
+            desc: false
+        })
+        const outdatedSort = ref({
             field: 'group.name',
             desc: false
         })

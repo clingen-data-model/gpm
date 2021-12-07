@@ -21,7 +21,7 @@
                     />
                 </submission-wrapper>
             </tab-item>
-            <tab-item label="Scope" v-show="group.isEp()">
+            <tab-item label="Scope" :visible="group.isEp()">
                 <submission-wrapper 
                     v-if="group.isEp()" 
                     @submitted="$refs.groupGeneListRef.save()" 
@@ -32,7 +32,7 @@
                 </submission-wrapper>
                 <br> 
                 <submission-wrapper 
-                    v-if="group.isEp()" 
+                    :visible="group.isEp()"
                     @submitted="submitForm('saveScopeDescription', 'editingScopeDescription')" 
                     @canceled="cancelForm('editingScopeDescription')"
                     :show-controls="editingScopeDescription"
@@ -44,7 +44,7 @@
                     />
                 </submission-wrapper>
             </tab-item>
-            <tab-item label="Sustained Curation" v-show="group.isEp()">
+            <tab-item label="Sustained Curation" :visible="group.isEp()">
                 <submission-wrapper
                     @submitted="submitForm('saveOngoingPlansForm')"
                     @canceled="cancelForm()"
@@ -57,7 +57,7 @@
                         class="pb-2"
                     />
                 </submission-wrapper>
-                <section v-if="group.isVcep()">
+                <section :visible="group.isVcep()">
                     <header>  
                         <h3>Example Evidence Summaries</h3>
                     </header>
@@ -70,7 +70,7 @@
             <tab-item label="Documents">
                 Group documents will go here.
             </tab-item>
-            <tab-item label="Attestations">
+            <tab-item label="Attestations" :visible="group.isEp()">
                 <attestation-gcep class="pb-2 mb-4 border-b" v-if="group.isGcep()" :disabled="true" />
 
                 <h3>Reanalysis &amp; Discrepancy Resolution</h3>
@@ -78,7 +78,7 @@
                 <h3>NHGRI Data Availability</h3>
                 <attestation-nhgri class="pb-2 mb-4 border-b" :disabled="true" />
             </tab-item>
-            <tab-item label="Log" :visible="hasPermission('groups-manage')">
+            <tab-item label="Log">
                 <activity-log
                     :log-entries="logEntries"
                     :api-url="`/api/groups/${group.uuid}/activity-logs`"

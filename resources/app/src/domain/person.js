@@ -87,6 +87,10 @@ class Person extends Entity {
         return this.memberships.filter(m => !m.coi_needed);
     }
 
+    get membershipsWithOutdatedCois () {
+        return this.memberships.filter(m => m.coi_needed && m.cois.length > 0);
+    }
+
     get completedCois () {
         return this.membershipsWithCompletedCois.map(m => m.cois).flat();
     }
@@ -97,6 +101,10 @@ class Person extends Entity {
 
     get hasCompletedCois () {
         return this.membershipsWithCompletedCois.length > 0;
+    }
+
+    get hasOutdatedCois () {
+        return this.membershipsWithOutdatedCois.length > 0;
     }
 
     matchesKeyword(keyword) {
