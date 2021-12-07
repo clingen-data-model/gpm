@@ -1,8 +1,9 @@
 <template>
     <div>
+        <!-- <pre>{{group.expert_panel.evidence_summaries}}</pre> -->
         <ul v-if="summaries.length > 0">
             <transition-group name="slide-fade-down">            
-                <li class="my-4 flex" v-for="(summary, idx) in summaries" :key="idx">
+                <li class="my-4 flex" v-for="(summary, idx) in group.expert_panel.evidence_summaries" :key="idx">
                     <div class="text-lg pr-4">{{idx+1}}</div>
                     <evidence-summary 
                         :summary="summary" 
@@ -84,13 +85,10 @@ export default {
         }
     },
     methods: {
-        addEvidenceSummary () {
-        },
         async getEvidenceSummaries () {
             this.loading = true;
             try {
-                this.summaries = await api.get(`/api/groups/${this.group.uuid}/application/evidence-summaries`)
-                                    .then(response => response.data.data);
+                this.summaries = await this.$store.dispatch('groups/getEvidenceSummaries', this.group)
             } catch (error) {
                 console.log(error);
             }
@@ -108,7 +106,8 @@ export default {
             this.newSummaries = [];
         },
         handleSavedSummary(newSummary) {
-            this.mergeSummary(newSummary);
+            // this.mergeSummary(newSummary);
+            this.getEvidenceSummaries();
             this.clearNewSummaries();
             this.$emit('summaries-added');
         },
@@ -117,6 +116,7 @@ export default {
             if (idx > -1) {
                 this.summaries.splice(idx, 1);
             }
+            this.getEvidenceSummaries();
         },
         cancelAdd () {
             this.clearNewSummaries();

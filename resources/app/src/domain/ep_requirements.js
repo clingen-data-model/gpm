@@ -14,19 +14,21 @@ export const shortName = new Requirement('Short Base Name', group => Boolean(gro
 
 export const chairs = new Requirement(
     '1+ Co-chairs', 
-    group => group.chairs.length > 1
+    group => group.chairs.length > 0
 );
 export const coordinators = new Requirement(
     '1+ Coordinator', 
-    group => group.coordinators.length > 1
+    group => group.coordinators.length > 0
 );
+
+//TODO: why no workee
 export const coisComplete = new Requirement(
     'All members completed COI', 
-    group => group.members.filter(member => member.coi_needed).length == 0
+    group => group.members.filter(member => member.needsCoi).length == 0
 );
 export const diversityOfExpertise = new Requirement(
-    'Diveristy of Expertise', 
-    group => (true)
+    'Diveristy of Expertise (need def)', 
+    group => (false)
 );
 export const institutions = new Requirement(
     '3+ institutions represented', 
@@ -50,9 +52,10 @@ export const nhgri = new Requirement('NHGRI Attestation', group => Boolean(group
 
 export const gcepAttestation = new Requirement('GCEP processes Attestation', group => Boolean(group.expert_panel.gcep_attestation_date));
 
-export const reanalysisAttestation = new Requirement('GCEP processes Attestation', group => Boolean(group.expert_panel.reanalysis_attestation_date));
+export const reanalysisAttestation = new Requirement('Reanalysis & discrepany resolution', group => Boolean(group.expert_panel.reanalysis_attestation_date));
 
-export const evidenceSummaries = new Requirement('5+ Example Evidence Summaries', group => group.expert_panel.evidence_summaries.length > 4);
+// export const exampleSummaries = new Requirement('5+ Example Evidence Summaries', group => group.expert_panel.evidence_summaries.length > 4);
+export const exampleSummaries = new Requirement('5+ Example Evidence Summaries', group => true);
 
 class EpRequirements {
     static requirements = {};
@@ -147,10 +150,11 @@ export class VcepRequirements extends EpRequirements {
             scopeDescription
         ],
         curationReviewProcess: [
+            meetingFrequency,
             curationProcess,
         ],
         evidenceSummaries: [
-            evidenceSummaries
+            exampleSummaries
         ],
         reanalysis: [
             reanalysisAttestation

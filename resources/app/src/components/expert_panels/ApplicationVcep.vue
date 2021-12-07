@@ -20,10 +20,10 @@
                 <hr>
                 <scope-description-form />
             </app-section>
-            <app-section title="Reanalysis & Discrepancy Resolution">
+            <app-section title="Reanalysis & Discrepancy Resolution" name="reanalysis">
                 <attestation-reanalysis></attestation-reanalysis>
             </app-section>
-            <app-section title="NHGRI Data Availability">
+            <app-section title="NHGRI Data Availability" name="nhgri">
                 <attestation-nhgri></attestation-nhgri>
             </app-section>
         </div>
@@ -40,12 +40,12 @@
             </app-section>
         </div>
 
-        <div class="application-step" id="sustained-curation">
-            <app-section title="Curation and Review Process">
+        <div class="application-step" id="sustained-curation" >
+            <app-section title="Curation and Review Process" name="curationReviewProcess">
                 <vcep-ongoing-plans-form />
             </app-section>
 
-            <app-section title="Example Evidence Summaries">
+            <app-section title="Example Evidence Summaries" name="evidenceSummaries">
                 <evidence-summary-list />
             </app-section>
 

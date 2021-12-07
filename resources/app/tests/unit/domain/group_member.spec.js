@@ -166,4 +166,31 @@ describe('GroupMember entity', () => {
         expect(member.removedRoles.map(r => r.id)[0]).to.equal(configs.groups.roles.chair.id);
     })
 
+    it('knows it needs a COI if coi_last_completed is not set', () => {
+        const member = new GroupMember();
+        expect(member.needsCoi).to.be.true;
+    });
+
+    it('knows it needs a COI if coi_last_completed is more than 1 year old', () => {
+        const member = new GroupMember();
+
+        const today = new Date();
+        const lastYear = new Date();
+        lastYear.setFullYear(today.getFullYear()-1);
+        member.coi_last_completed = lastYear;
+
+        expect(member.needsCoi).to.be.true;
+    });
+
+    it('knows it does not need a COI if coi_last_completed_is less than 1 year old', () => {
+        const member = new GroupMember();
+
+        const today = new Date();
+        const yesterday = new Date();
+        yesterday.setDate(today.getDate()-364)
+        member.coi_last_completed = yesterday;
+
+        expect(member.needsCoi).to.be.false;
+    });
+
 })

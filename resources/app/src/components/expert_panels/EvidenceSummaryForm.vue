@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="flex space-x-2">
-            <input-row class="mt-0 mb-0" :vertical="true" label="Gene">
+            <input-row class="mt-0 mb-0" :vertical="true" label="Gene" :errors="errors.gene_id">
                 <select v-model="summaryClone.gene_id">
                     <option :value="null">Select...</option>
                     <option v-for="gene in groupGenes" 
@@ -10,12 +10,25 @@
                     >{{gene.gene.gene_symbol}}</option>
                 </select>
             </input-row>
-            <input-row class="mt-0 mb-0" v-model="summaryClone.variant" :vertical="true" label="Variant"></input-row>
+            <input-row 
+                class="mt-0 mb-0" 
+                v-model="summaryClone.variant" 
+                :vertical="true" 
+                label="Variant" 
+                :errors="errors.variant"
+            />
         </div>
-        <input-row class="mt-0 mb-0" label="Summary" :vertical="true" >
+        <input-row class="mt-0 mb-0" label="Summary" :vertical="true" :errors="errors.summary">
             <textarea rows="5" class="w-full" v-model="summaryClone.summary"></textarea>
         </input-row>
-        <input-row class="mt-0" v-model="summaryClone.vci_url" label="VCI URL" :vertical="true" input-class="w-full"></input-row>
+        <input-row 
+            class="mt-0" 
+            v-model="summaryClone.vci_url" 
+            label="VCI URL" 
+            :vertical="true" 
+            input-class="w-full" 
+            :errors="errors.vci_url"
+        />
         <button-row submit-text="save" @submit="save" @cancel="cancel"></button-row>
     </div>
 </template>
@@ -43,7 +56,8 @@ export default {
     data() {
         return {
             groupGenes: [],
-            summaryClone: {gene: {}}
+            summaryClone: {gene: {}},
+            errors: {}
         }
     },
     computed: {

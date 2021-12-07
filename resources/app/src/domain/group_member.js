@@ -118,6 +118,22 @@ class GroupMember extends Entity {
         return originalRoles.filter(or => !this.roles.map(r => r.id).includes(or.id));
     }
 
+    get needsCoi () {
+        if (!this.latestCoiDate) {
+            return true;
+        }
+
+        const today = new Date();
+        const yearAgo = new Date();
+        yearAgo.setFullYear(today.getFullYear()-1);
+
+        if (this.latestCoiDate.valueOf() <= yearAgo.valueOf()) {
+            return true;
+        }
+
+        return false;
+    }
+
     matchesKeyword (keyword) {
         if (this.person.matchesKeyword(keyword)) {
             return true;

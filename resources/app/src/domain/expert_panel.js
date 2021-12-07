@@ -55,14 +55,15 @@ class ExpertPanel extends Entity
         utilize_gci: null,
         curations_publicly_available: null,
         pub_policy_reviewed: null,
-        draft_manuscripts: null,
-        recuration_process_review: null,
         biocurator_training: null,
         biocurator_mailing_list: null,
+        draft_manuscripts: null,
         gci_training_date: null,
         gcep_attestation_date: null,
-        type: {},
+        recuration_process_review: null,
         review_protocol: {},
+        type: {},
+        evidence_summaries: []
     };
 
     constructor (attributes = {}) {
