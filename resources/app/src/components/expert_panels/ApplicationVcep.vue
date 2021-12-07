@@ -113,14 +113,14 @@ export default {
                 this.$store.commit('groups/addItem', value);
             }
         },
+        currentStep () {
+            return this.group.expert_panel.current_step;
+        },
         meetsRequirements () {
             return requirements.meetsRequirements(this.group);
         },
         requirementsUnmet () {
             return !requirements.meetsRequirements(this.group);
-        },
-        currentStep () {
-            return this.group.expert_panel.current_step;
         },
         evaledRequirements () {
             return requirements.checkRequirements(this.group);

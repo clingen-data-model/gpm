@@ -117,7 +117,6 @@ export class GcepRequirements extends EpRequirements {
             coisComplete,
             diversityOfExpertise,
             institutions,
-            // expertiseDescription,
         ],
         scope: [
             genes,
@@ -126,6 +125,8 @@ export class GcepRequirements extends EpRequirements {
         attestations: [
             gcepAttestation,
             curationProcess,
+        ],
+        nhgri: [
             nhgri
         ]
     }

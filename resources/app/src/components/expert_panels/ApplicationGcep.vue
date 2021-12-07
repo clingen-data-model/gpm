@@ -1,17 +1,17 @@
 <template>
     <div>
-        <app-section title="Basic Information">
+        <app-section title="Basic Information" name="basicInfo">
             <group-form 
                 :group="group" ref="groupForm"
              />
         </app-section>
-        <app-section v-if="group" title="Membership">
+        <app-section v-if="group" title="Membership" name="membership">
             <p>
                 Expert Panels are expected to represent the diversity of expertise in the field, including all major areas of expertise (clinical, diagnostic laboratory, and basic research).  Membership should include representation from three or more institutions and will encompass disease/gene expert members as well as biocurators. Biocurators do not have to be gene/disease experts and will be primarily responsible for assembling the available evidence for subsequent expert member review. For role, suggested examples include: primary biocurator, expert reviewer, etc.
             </p>
             <member-list :group="group" />
         </app-section>
-        <app-section title="Scope of Work">
+        <app-section title="Scope of Work" name="scope">
             <p>
                 It is expected that the expert panel will utilize 
                 <a target="lumping-splitting-guidelines"
@@ -30,18 +30,27 @@
             <scope-description-form />
         </app-section>
 
-        <app-section title="Attestations">
+        <app-section title="Attestations" name="attestations">
             <attestation-gcep ref="gcepAttestation" />
             <gcep-ongoing-plans-form />
         </app-section>
 
-        <app-section title="NHGRI Data Availability">
+        <app-section title="NHGRI Data Availability" name="nhgri">
             <attestation-nhgri ref="nhgri"></attestation-nhgri>
         </app-section>
         
-        <button class="btn btn-xl" @click="submit" :disabled="requirementsUnmet">
-            Submit for Approval
-        </button>
+        <popper hover arrow>
+            <template v-slot:content>
+                <requirements-item  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
+            </template>
+            <div class="relative">
+                <button class="btn btn-xl" @click="submit">
+                    Submit for Approval
+                </button>
+                <!-- Add mask above button if requirements are unmet b/c vue3-popper doesn't respond to disabled components. -->
+                <div v-if="requirementsUnmet" class="bg-white opacity-50 absolute top-0 bottom-0 left-0 right-0"></div>
+            </div>
+        </popper>
     </div>
 </template>
 <script>
@@ -55,6 +64,10 @@ import GroupForm from '@/components/groups/GroupForm'
 import MemberList from '@/components/groups/MemberList';
 import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm';
 import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm';
+import RequirementsItem from '@/components/expert_panels/RequirementsItem'
+import {GcepRequirements} from '@/domain'
+
+const requirements = new GcepRequirements();
 
 export default {
     name: 'ApplicationGcep',
@@ -67,14 +80,9 @@ export default {
         GcepOngoingPlansForm,
         MemberList,
         ScopeDescriptionForm,
+        RequirementsItem,
     },
     computed: {
-        meetsRequirements () {
-            return false;
-        },
-        requirementsUnmet () {
-            return !this.meetsRequirements;
-        },
         group: {
             get: function () {
                 return this.$store.getters['groups/currentItemOrNew'];
@@ -82,6 +90,15 @@ export default {
             set: function (value) {
                 this.$store.commit('groups/addItem', value);
             }
+        },
+        meetsRequirements () {
+            return requirements.meetsRequirements(this.group);
+        },
+        requirementsUnmet () {
+            return !requirements.meetsRequirements(this.group);
+        },
+        evaledRequirements () {
+            return requirements.checkRequirements(this.group);
         }
     },
     methods: {
