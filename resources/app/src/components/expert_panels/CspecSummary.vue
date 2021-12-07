@@ -85,14 +85,12 @@ export default {
     },
     watch: {
         group (to, from) {
-            console.log({to, from})
             // if (!from || to.id != from.id) {
                 this.$store.dispatch('groups/getSpecifications', to)
             // }
         }
     },
     mounted() {
-        console.log('mounted');
         this.$store.dispatch('groups/getSpecifications', this.group)
     }
 }
