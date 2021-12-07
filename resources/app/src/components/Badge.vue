@@ -1,5 +1,5 @@
 <template>
-    <span class="rounded-xl px-2 py-1 text-white text-xs font-bold" :class="`bg-${color}-600`">
+    <span class="rounded-xl px-2 py-1 text-white text-xs font-bold" :class="`bg-${color}-400`">
         <slot></slot>
     </span>
 </template>
