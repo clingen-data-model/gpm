@@ -1,12 +1,12 @@
 <template>
     <div>
-        <div class="application-step" id="definition">
-            <app-section title="Basic Information" name="basicInfo">
+        <application-step id="definition" title="Group Definition">
+            <app-section title="Basic Information" id="basicInfo">
                 <group-form 
                     :group="group" ref="groupForm"
                 />
             </app-section>
-            <app-section v-if="group" title="Membership" name="membership">
+            <app-section v-if="group" title="Membership" id="membership">
                 <p>
                     Expert Panels are expected to represent the diversity of expertise and backgrounds in the field and should refer to 
                     <a href="https://clinicalgenome.org/site/assets/files/3635/variant_curation_expert_panel_vcep_protocol_version_9-2.pdf" target="vcep-protocol">Section 2.1 of the VCEP Protocol</a> and the <a href="https://diversity.nih.gov/sites/coswd/files/images/SWD_Toolkit_Interactive-updated_508.pdf" target="nih-workforce-diversity">NIH Scientific Workforce Diversity Toolkit</a> for guidance to complete the Member List below. Please list the VCEP Chair(s) and Coordinator(s) first.
@@ -15,44 +15,44 @@
                 <hr>
                 <membership-description-form :editing="true" />
             </app-section>
-            <app-section title="Scope of Work" name="scope">
+            <app-section title="Scope of Work" id="scope">
                 <vcep-gene-list :group="group" ref="geneList" />
                 <hr>
                 <scope-description-form />
             </app-section>
-            <app-section title="Reanalysis & Discrepancy Resolution" name="reanalysis">
+            <app-section title="Reanalysis & Discrepancy Resolution" id="reanalysis">
                 <attestation-reanalysis></attestation-reanalysis>
             </app-section>
-            <app-section title="NHGRI Data Availability" name="nhgri">
+            <app-section title="NHGRI Data Availability" id="nhgri">
                 <attestation-nhgri></attestation-nhgri>
             </app-section>
-        </div>
+        </application-step>
 
-        <div class="application-step" id="draft-specifications">
-            <app-section title="Draft Specifications">
+        <application-step id="draft-specifications" title="Draft Specifications">
+            <app-section>
                 <cspec-summary></cspec-summary>
             </app-section>
-        </div>
+        </application-step>
 
-        <div class="application-step" id="pilot-specifications">
-            <app-section title="Pilot Specifications">
-                <cspec-summary />
+        <application-step id="pilot-specifications" title="Pilot Specifications">
+            <app-section>
+                <cspec-summary></cspec-summary>
             </app-section>
-        </div>
+        </application-step>
 
-        <div class="application-step" id="sustained-curation" >
-            <app-section title="Curation and Review Process" name="curationReviewProcess">
+        <application-step id="sustained-curation" title="Sustained Curation">
+            <app-section title="Curation and Review Process" id="curationReviewProcess">
                 <vcep-ongoing-plans-form />
             </app-section>
 
-            <app-section title="Example Evidence Summaries" name="evidenceSummaries">
+            <app-section title="Example Evidence Summaries" id="evidenceSummaries">
                 <evidence-summary-list />
             </app-section>
 
-            <app-section title="Designation of Biocurators, Biocurator Trainer(s) and Core Approval Members">
+            <app-section title="Designation of Biocurators, Biocurator Trainer(s) and Core Approval Members" id="designations">
                 <member-designation-form ref="designationForm" />
             </app-section>
-        </div>
+        </application-step>
 
         <popper hover arrow>
             <template v-slot:content>
@@ -72,6 +72,7 @@
 import {isValidationError} from '@/http'
 import {VcepRequirements} from '@/domain'
 import ApplicationSection from '@/components/expert_panels/ApplicationSection'
+import ApplicationStep from '@/components/expert_panels/ApplicationStep'
 import AttestationNhgri from '@/components/expert_panels/AttestationNhgri'
 import AttestationReanalysis from '@/components/expert_panels/AttestationReanalysis'
 import CspecSummary from '@/components/expert_panels/CspecSummary'
@@ -91,6 +92,7 @@ export default {
     name: 'ApplicationCcep',
     components: {
         'app-section': ApplicationSection,
+        ApplicationStep,
         AttestationNhgri,
         AttestationReanalysis,
         CspecSummary,
@@ -140,7 +142,10 @@ export default {
                 }
                 throw error;
             }
-        }
+        },
+        // scrollTo (identifier) {
+        //     document.getElementById(identifier).scrollIntoView({behavior: 'smooth'});
+        // }
     }
 }
 </script>

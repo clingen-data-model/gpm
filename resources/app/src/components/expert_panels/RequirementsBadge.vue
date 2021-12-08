@@ -1,5 +1,6 @@
 <template>
-    <div>
+    <div v-if="hasRequirements">
+        <!-- <pre>{{hasRequirements}}</pre> -->
         <popper arrow hover>
             <template v-slot:content>
                 <requirements-item  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
@@ -59,6 +60,9 @@ export default {
                 return 'loading...'
             }
             return this.requirements.checkRequirements(this.group, this.section);
+        },
+        hasRequirements () {
+            return this.requirements && this.requirements.sectionHasRequirements(this.section);
         }
     },
     watch: {
@@ -73,6 +77,7 @@ export default {
                     return;
                 }
                 this.requirements = new VcepRequirements();
+                console.log(this.hasRequirements);
             }
         }
     },

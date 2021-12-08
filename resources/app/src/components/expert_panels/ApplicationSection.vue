@@ -11,7 +11,7 @@ export default {
             type: String,
             required: false
         },
-        name: {
+        id: {
             type: String,
             required: false
         }
@@ -21,30 +21,38 @@ export default {
             get () {
                 return this.$store.getters['groups/currentItemOrNew'];
             }
+        },
+        name () {
+            return this.id;
         }
-        
-    }
+    },
 }
 </script>
 <template>
-    <div class="application-section">
-        <header class="mb-2 flex justify-between">
-            <slot name="title">
-                <h2>{{title}}</h2>
-            </slot>
-            <requirements-badge v-if="name" :section="name" :group="group"></requirements-badge>
-        </header>
-        <div>
-            <slot></slot>
+    <div :id="id" class="section-wrapper">
+        <div class="application-section">
+            <header class="mb-2 flex justify-between">
+                <slot name="title">
+                    <h2>{{title}}</h2>
+                </slot>
+                <requirements-badge v-if="name" :section="name" :group="group"></requirements-badge>
+            </header>
+            <div>
+                <slot></slot>
+            </div>
         </div>
     </div>
 </template>
 
 <style lang="postcss" scoped>
-    .application-section {
-        @apply my-4 border border-gray-300 bg-white p-4
+    .section-wrapper {
+        @apply border-b border-gray-200 bg-white py-4 px-6
     }
-    .application-section:first-child {
-        @apply mt-0;
+    .section-wrapper:last-child {
+        @apply border-b-0
     }
+
+    /* .section-wrapper:first-child {
+        @apply pt-0;
+    } */
 </style>

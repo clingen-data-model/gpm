@@ -1,48 +1,40 @@
 <template>
     <div>
-        <header>
-            <router-link class="note"
-                :to="{name: 'GroupDetail', params: {uuid: group.uuid}}"
-                v-if="group.uuid"
+        <header class="flex items-center pb-2 border-b z-20">
+            <button 
+                class="-mb-4 bg-transparent mr-4 outline-none focus:outline-none" 
+                @click="showApplicationToc = !showApplicationToc"
             >
-                {{group.displayName}}
-            </router-link>
-            <h1 class="border-b flex justify-between items-start">
-                <div>
-                    {{group.displayName}} - Application
-                    <span v-if="hasPermission('groups-manage')">
-                        <note class="inline">group: {{group.id}}</note>
-                        <span class="note">&nbsp;|&nbsp;</span>
-                        <note class="inline">expert_panel: {{group.expert_panel.id}}</note>
-                    </span>
-                </div>
-                
-                <button class="btn btn-sm" @click="$refs.application.save">Save</button>
-            </h1>
+                <icon-menu></icon-menu>
+            </button>
+            <div class="flex-1">
+                <router-link class="note"
+                    :to="{name: 'GroupDetail', params: {uuid: group.uuid}}"
+                    v-if="group.uuid"
+                >
+                    {{group.displayName}}
+                </router-link>
+                <h1 class="border-b-0 flex justify-between items-start mb-0">
+                    <div>
+                        {{group.displayName}} - Application
+                        <span v-if="hasPermission('groups-manage')">
+                            <note class="inline">group: {{group.id}}</note>
+                            <span class="note">&nbsp;|&nbsp;</span>
+                            <note class="inline">expert_panel: {{group.expert_panel.id}}</note>
+                        </span>
+                    </div>
+                    
+                    <button class="btn btn-sm" @click="$refs.application.save">Save</button>
+                </h1>
+            </div>
         </header>
-        <div class="flex">
-            <section id="appliation-sidebar" class="lg:w-1/4 xl:w-1/5 border-r -mt-4 pt-4 pr-4" v-remaining-height>
-                <ol>
-                    <li>Definition</li>
-                    <li>Draft Specifications</li>
-                    <li>Pilot Specifications</li>
-                    <li>Sustained Curation</li>
-                </ol>
-            </section>
-            <div class="bg-white flex-1 -mt-4">
-                <section id="body" class="py-4 px-4" v-remaining-height>
+        <div class="md:flex">
+            <application-menu :menu="applicationMenu" :is-collapsed="!showApplicationToc"></application-menu>
+            <div class=" flex-1">
+                <section id="body" class="px-4" v-remaining-height>
                     <component :is="applicationComponent" ref="application"></component>
                 </section>
             </div>
-            <!-- <div id="documentation-drawer" class="mt-4">
-                <div v-if="showDocumentation" class="lg:w-1/4 border-r pt-4 pl-4">
-                    <button class="btn btn-xs" @click="showDocumentation = false">X</button>
-                    Documentation
-                </div>
-                <div v-else>
-                    <icon-info @click="showDocumentation = true"/>
-                </div>
-            </div> -->
         </div>
         <teleport to="body">
             <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="this.$route.meta.title">
@@ -52,18 +44,36 @@
     </div>
 </template>
 <script>
-import {ref, watch} from 'vue'
-import {useStore} from 'vuex'
-// import ApplicationGcep from '@/components/expert_panels/ApplicationGcep';
-import ApplicationVcep from '@/components/expert_panels/ApplicationVcep';
-import Group from '@/domain/group';
+// included with relative link path b/c alias won't resolve for ApplicationGcep 🤷‍♀️
 import ApplicationGcep from '../../components/expert_panels/ApplicationGcep.vue';
+import ApplicationVcep from '@/components/expert_panels/ApplicationVcep';
+import ApplicationMenu from '@/components/layout/ApplicationMenu';
+import Group from '@/domain/group';
+import MenuItem from '@/MenuItem.js';
+
+const goToAnchor = (anchor) => {
+    location.href = "#";
+    location.href = `#${anchor}`
+}
+
+const goToSection = (section) => {
+    return () => {
+        goToAnchor(section)
+    }
+}
+
+const goToPage = (page) => {
+    return () => {
+        goToAnchor(page)
+    }
+}
 
 export default {
     name: 'GroupApplication',
     components: {
         ApplicationGcep,
         ApplicationVcep,
+        ApplicationMenu,
     },
     props: {
         uuid: {
@@ -74,7 +84,8 @@ export default {
     data() {
         return {
             showDocumentation: false,
-            showModal: false
+            showModal: false,
+            showApplicationToc: true
         }
     },
     watch: {
@@ -110,6 +121,46 @@ export default {
         group () {
             const group = this.$store.getters['groups/currentItem'] || new Group();
             return group || new Group();
+        },
+        applicationMenu () {
+            return [
+                new MenuItem({
+                    label: 'Group Definition',
+                    contents: [
+                        new MenuItem({label: 'Basic Information', handler: goToSection('basicInfo')}),
+                        new MenuItem({label: 'Scope Definition', handler: goToSection('scope')}),
+                        new MenuItem({label: 'Reanalysis & Discrepancy Resolution', handler: goToSection('reanalysis')}),
+                        new MenuItem({label: 'NHGRI Data Availability', handler: goToSection('nhgri')}),
+                    ],
+                    handler: goToPage('definition'),
+                }),
+                new MenuItem({
+                    label: 'Draft Specifications',
+                    handler: goToPage('draft-specifications'),
+                }),
+                new MenuItem({
+                    label: 'Pilot Specifications',
+                    handler: goToPage('pilot-specifications'),
+                }),
+                new MenuItem({
+                    label: 'Sustained Curation',
+                    handler: goToPage('sustained-curation'),
+                    contents: [
+                        new MenuItem({
+                            label: 'Curation and Review Process',
+                            handler: goToSection('curationReviewProcess'),
+                        }),
+                        new MenuItem({
+                            label: 'Evidence Summaries',
+                            handler: goToSection('evidenceSummaries'),
+                        }),
+                        new MenuItem({
+                            label: 'Member Designation',
+                            handler: goToSection('designations'),
+                        }),
+                    ]
+                })
+            ]
         }
     },
     methods: {
@@ -131,3 +182,20 @@ export default {
     },
 }
 </script>
+<style lang="postcss" scoped>
+    .application-content {
+        @apply md:w-3/4 flex-auto;
+    }
+    .application-nav {
+        @apply flex-initial pt-4 mr-4;
+        transition: all .75s ease;
+    }
+    .application-nav.expanded {
+        width: 25%;
+    }
+    .application-nav.collapsed {
+        width: 0px;
+        margin-right: 0px;
+        border: none;
+    }
+</style>

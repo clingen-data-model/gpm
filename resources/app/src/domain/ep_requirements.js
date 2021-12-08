@@ -94,14 +94,19 @@ class EpRequirements {
         }
 
         if (Array.isArray(sections)) {
-            return sections.map(section => this.constructor.requirements[section])
+            return sections
+                .filter(section => this.sectionHasRequirements(section))
+                .map(section => this.constructor.requirements[section])
                 .flat();
         }
 
-        if (typeof sections == 'string') {
+        if (typeof sections == 'string' && this.sectionHasRequirements(sections)) {
             return this.constructor.requirements[sections]
         }
+    }
 
+    sectionHasRequirements(section) {
+        return Object.keys(this.constructor.requirements).includes(section);
     }
 }
 
