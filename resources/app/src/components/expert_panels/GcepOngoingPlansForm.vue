@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h3>Plans for Ongoing Gene Review and Reanalysis and Discrepancy Resolution</h3>
         <p>Three examples of ClinGen-approved curation and review protocols are below (additional details may be requested from the CDWG Oversight Committee).  Check or describe the curation and review protocol that this Expert Panel will use.</p>
         <div class="mb-4">
             <input-row label="" :errors="errors.curation_review_protocol_id" vertical>

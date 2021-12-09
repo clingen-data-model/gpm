@@ -22,6 +22,7 @@
                 </submission-wrapper>
             </tab-item>
             <tab-item label="Scope" :visible="group.isEp()">
+                <h3>Plans for Ongoing Gene Review and Reanalysis and Discrepancy Resolution</h3>
                 <submission-wrapper 
                     v-if="group.isEp()" 
                     @submitted="$refs.groupGeneListRef.save()" 

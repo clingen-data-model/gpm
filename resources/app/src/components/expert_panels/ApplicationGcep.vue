@@ -35,7 +35,7 @@
                 <attestation-gcep ref="gcepAttestation" />
             </app-section>
 
-            <app-section id="reanalysis">
+            <app-section id="reanalysis" title="Plans for Ongoing Gene Review and Reanalysis and Discrepancy Resolution">
                 <gcep-ongoing-plans-form />
             </app-section>
 

@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h3>Plans for Ongoing Variant Review and Reanalysis and Discrepancy Resolution</h3>
         <div class="mb-4">
             <input-row 
                 v-model="group.expert_panel.meeting_frequency" 

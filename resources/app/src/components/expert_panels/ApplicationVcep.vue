@@ -41,7 +41,7 @@
         </application-step>
 
         <application-step id="sustained-curation" title="Sustained Curation">
-            <app-section title="Curation and Review Process" id="curationReviewProcess">
+            <app-section title="Plans for Ongoing Gene Review and Reanalysis and Discrepancy Resolution" id="curationReviewProcess">
                 <vcep-ongoing-plans-form />
             </app-section>
 
