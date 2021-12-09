@@ -1,6 +1,6 @@
 <template>
     <div class="application-step" id="pilot-specifications">
-        <div class="header">
+        <div class="header" v-if="title">
             <h2>{{title}}</h2>
         </div>
         <div class="step-contents">
@@ -40,10 +40,12 @@ export default {
     }
 
     .application-step > .header{
-        @apply border border-gray-300 border-b-0 py-2 px-4 bg-gray-200 rounded-t
+        @apply py-2 px-4;
+        @apply bg-gray-50 border-t border-b;
+        /* @apply border border-gray-300 border-b-0 */
     }
 
     .application-step > .step-contents {
-        @apply pb-4 border border-gray-300;
+        @apply pb-4;
     }
 </style>
