@@ -1,43 +1,48 @@
 <template>
     <div>
-        <app-section title="Basic Information" name="basicInfo">
-            <group-form 
-                :group="group" ref="groupForm"
-             />
-        </app-section>
-        <app-section v-if="group" title="Membership" name="membership">
-            <p>
-                Expert Panels are expected to represent the diversity of expertise in the field, including all major areas of expertise (clinical, diagnostic laboratory, and basic research).  Membership should include representation from three or more institutions and will encompass disease/gene expert members as well as biocurators. Biocurators do not have to be gene/disease experts and will be primarily responsible for assembling the available evidence for subsequent expert member review. For role, suggested examples include: primary biocurator, expert reviewer, etc.
-            </p>
-            <member-list :group="group" />
-        </app-section>
-        <app-section title="Scope of Work" name="scope">
-            <p>
-                It is expected that the expert panel will utilize 
-                <a target="lumping-splitting-guidelines"
-                    href="https://clinicalgenome.org/working-groups/lumping-and-splitting/">ClinGen Lumping and Splitting guidance</a> 
-                during pre-curation and should use the 
-                <a target="gene-tracker" href="https://gene-tracker.clinicalgenome.org/">Gene Tracker</a>
-                to enter their precuration information. Focus should be on the canonical disease, and splitting into multiple phenotypes should be avoided. The precurations will be published to
-                <a href="https://clinicalgenome.org">clinicalgenome.org</a>.
-            </p>
-            
-            <gcep-gene-list :group="group" ref="geneList" />
-            
-            <hr>
+        <application-step>
+            <app-section title="Basic Information" id="basicInfo">
+                <group-form 
+                    :group="group" ref="groupForm"
+                />
+            </app-section>
+            <app-section v-if="group" title="Membership" id="membership">
+                <p>
+                    Expert Panels are expected to represent the diversity of expertise in the field, including all major areas of expertise (clinical, diagnostic laboratory, and basic research).  Membership should include representation from three or more institutions and will encompass disease/gene expert members as well as biocurators. Biocurators do not have to be gene/disease experts and will be primarily responsible for assembling the available evidence for subsequent expert member review. For role, suggested examples include: primary biocurator, expert reviewer, etc.
+                </p>
+                <member-list :group="group" />
+            </app-section>
+            <app-section title="Scope of Work" id="scope">
+                <p>
+                    It is expected that the expert panel will utilize 
+                    <a target="lumping-splitting-guidelines"
+                        href="https://clinicalgenome.org/working-groups/lumping-and-splitting/">ClinGen Lumping and Splitting guidance</a> 
+                    during pre-curation and should use the 
+                    <a target="gene-tracker" href="https://gene-tracker.clinicalgenome.org/">Gene Tracker</a>
+                    to enter their precuration information. Focus should be on the canonical disease, and splitting into multiple phenotypes should be avoided. The precurations will be published to
+                    <a href="https://clinicalgenome.org">clinicalgenome.org</a>.
+                </p>
+                
+                <gcep-gene-list :group="group" ref="geneList" />
+                
+                <hr>
 
-            <p>Describe the scope of work of the Expert Panel: disease area(s) of focus and gene list being addressed.</p>
-            <scope-description-form />
-        </app-section>
+                <!-- <p>Describe the scope of work of the Expert Panel: disease area(s) of focus and gene list being addressed.</p> -->
+                <scope-description-form />
+            </app-section>
 
-        <app-section title="Attestations" name="attestations">
-            <attestation-gcep ref="gcepAttestation" />
-            <gcep-ongoing-plans-form />
-        </app-section>
+            <app-section title="Attestations" id="attestations">
+                <attestation-gcep ref="gcepAttestation" />
+            </app-section>
 
-        <app-section title="NHGRI Data Availability" name="nhgri">
-            <attestation-nhgri ref="nhgri"></attestation-nhgri>
-        </app-section>
+            <app-section id="reanalysis">
+                <gcep-ongoing-plans-form />
+            </app-section>
+
+            <app-section title="NHGRI Data Availability" id="nhgri">
+                <attestation-nhgri ref="nhgri"></attestation-nhgri>
+            </app-section>
+        </application-step>
         
         <popper hover arrow>
             <template v-slot:content>
@@ -55,8 +60,10 @@
 </template>
 <script>
 import {errors, resetErrors, submitFormData} from '@/forms/form_factory'
+import {isValidationError} from '@/http'
 
 import ApplicationSection from '@/components/expert_panels/ApplicationSection'
+import ApplicationStep from '@/components/expert_panels/ApplicationStep'
 import AttestationGcep from '@/components/expert_panels/AttestationGcep'
 import AttestationNhgri from '@/components/expert_panels/AttestationNhgri'
 import GcepGeneList from '@/components/expert_panels/GcepGeneList';
@@ -73,6 +80,7 @@ export default {
     name: 'ApplicationGcep',
     components: {
         'app-section': ApplicationSection,
+        ApplicationStep,
         AttestationGcep,
         AttestationNhgri,
         GcepGeneList,
@@ -102,9 +110,18 @@ export default {
         }
     },
     methods: {
-        async save () {
-            // await this.$store.dispatch('updateGcepApplication', this.group.expert_panel);
-            this.$emit('saved');
+        async save() {
+            const promises = Object.keys(this.$refs).map(key => this.$refs[key].save());
+
+            try {
+                await Promise.all(promises);
+            } catch (error) {
+                if (isValidationError(error)) {
+                    this.errors = error.response.data.errors;
+                    return;
+                }
+                throw error;
+            }
         },
     },
     setup (props, context) {

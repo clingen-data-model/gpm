@@ -130,7 +130,6 @@ export default {
     },
     methods: {
         async save() {
-            console.log('ApplicationVcep.methods.save', Object.keys(this.$refs))
             const promises = Object.keys(this.$refs).map(key => this.$refs[key].save());
 
             try {
@@ -143,9 +142,6 @@ export default {
                 throw error;
             }
         },
-        // scrollTo (identifier) {
-        //     document.getElementById(identifier).scrollIntoView({behavior: 'smooth'});
-        // }
     }
 }
 </script>
