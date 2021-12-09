@@ -1,7 +1,6 @@
 class MenuItem {
     constructor(label, route = null, contents = null, handler = null) {
         if (typeof label === 'object') {
-            console.log(label);
             this.label = label.label;
             this.route = label.route || null;
             this.contents = label.contents;
