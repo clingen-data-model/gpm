@@ -340,7 +340,6 @@ export const actions = {
         return api.get(`/api/groups/${group.uuid}/application/genes`)
             .then(response => {
                 const item = getters.getItemByUuid(group.uuid)
-                console.log(item);
                 item.expert_panel.genes = response.data;
                 commit('addItem', item);
                 return response.data;
