@@ -1,12 +1,12 @@
 <template>
     <div>
         <header class="flex items-center pb-2 border-b z-20">
-            <button 
+            <!-- <button 
                 class="-mb-4 bg-transparent mr-4 outline-none focus:outline-none" 
                 @click="showApplicationToc = !showApplicationToc"
             >
                 <icon-menu></icon-menu>
-            </button>
+            </button> -->
             <div class="flex-1">
                 <router-link class="note"
                     :to="{name: 'GroupDetail', params: {uuid: group.uuid}}"
@@ -29,7 +29,7 @@
             </div>
         </header>
         <div class="md:flex">
-            <application-menu :menu="applicationMenu" :is-collapsed="!showApplicationToc"></application-menu>
+            <application-menu class="mt-4" :menu="applicationMenu" :is-collapsed="!showApplicationToc"></application-menu>
             <div class=" flex-1">
                 <section id="body" class="px-4" v-remaining-height>
                     <component :is="applicationComponent" ref="application"></component>
@@ -49,24 +49,7 @@ import ApplicationGcep from '../../components/expert_panels/ApplicationGcep.vue'
 import ApplicationVcep from '@/components/expert_panels/ApplicationVcep';
 import ApplicationMenu from '@/components/layout/ApplicationMenu';
 import Group from '@/domain/group';
-import MenuItem from '@/MenuItem.js';
-
-const goToAnchor = (anchor) => {
-    location.href = "#";
-    location.href = `#${anchor}`
-}
-
-const goToSection = (section) => {
-    return () => {
-        goToAnchor(section)
-    }
-}
-
-const goToPage = (page) => {
-    return () => {
-        goToAnchor(page)
-    }
-}
+import {vcepMenu, gcepMenu} from '@/domain'
 
 export default {
     name: 'GroupApplication',
@@ -123,44 +106,7 @@ export default {
             return group || new Group();
         },
         applicationMenu () {
-            return [
-                new MenuItem({
-                    label: 'Group Definition',
-                    contents: [
-                        new MenuItem({label: 'Basic Information', handler: goToSection('basicInfo')}),
-                        new MenuItem({label: 'Scope Definition', handler: goToSection('scope')}),
-                        new MenuItem({label: 'Reanalysis & Discrepancy Resolution', handler: goToSection('reanalysis')}),
-                        new MenuItem({label: 'NHGRI Data Availability', handler: goToSection('nhgri')}),
-                    ],
-                    handler: goToPage('definition'),
-                }),
-                new MenuItem({
-                    label: 'Draft Specifications',
-                    handler: goToPage('draft-specifications'),
-                }),
-                new MenuItem({
-                    label: 'Pilot Specifications',
-                    handler: goToPage('pilot-specifications'),
-                }),
-                new MenuItem({
-                    label: 'Sustained Curation',
-                    handler: goToPage('sustained-curation'),
-                    contents: [
-                        new MenuItem({
-                            label: 'Curation and Review Process',
-                            handler: goToSection('curationReviewProcess'),
-                        }),
-                        new MenuItem({
-                            label: 'Evidence Summaries',
-                            handler: goToSection('evidenceSummaries'),
-                        }),
-                        new MenuItem({
-                            label: 'Member Designation',
-                            handler: goToSection('designations'),
-                        }),
-                    ]
-                })
-            ]
+            return this.group.isVcep() ? vcepMenu : gcepMenu;
         }
     },
     methods: {
