@@ -32,7 +32,12 @@ export const diversityOfExpertise = new Requirement(
 );
 export const institutions = new Requirement(
     '3+ institutions represented', 
-    group => new Set(group.members.map(m => m.person.institution_id)).size > 2
+    group => {
+        const institutionIds = group.members
+                                .filter(m => m.person.institution_id != null)
+                                .map(m => m.person.institution_id);        
+        return new Set(institutionIds).size > 2
+    }
 );
 export const expertiseDescription = new Requirement(
     'Description of expertise',
@@ -129,6 +134,8 @@ export class GcepRequirements extends EpRequirements {
         ],
         attestations: [
             gcepAttestation,
+        ],
+        reanalysis: [
             curationProcess,
         ],
         nhgri: [
