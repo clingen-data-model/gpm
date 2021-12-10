@@ -3,7 +3,7 @@
         <card :title="verifying ? `Loading COI Form` : `COI Form not found`" v-if="!codeIsValid">
             <div v-if="!verifying">We couldn't find this COI.</div>
         </card>
-        <card :title="coiTitle"  class="w-3/4 mx-auto relative" v-if="codeIsValid">
+        <card :title="coiTitle"  class="max-w-xl mx-auto relative" v-if="codeIsValid">
             <div v-if="saved">
                 Thanks for completing the conflict of interest form for {{epName}}!
                 <small v-if="$store.getters.isAuthed">
