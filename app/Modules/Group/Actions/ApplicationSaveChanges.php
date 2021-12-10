@@ -29,7 +29,6 @@ class ApplicationSaveChanges
     public function handle(Group $group, $data): Group
     {
         $data = collect($data);
-        $group = $this->memberDescription->handle($group, $data->get('membership_description'));
         $group = $this->scopeDescription->handle($group, $data->get('scope_description'));
         $group = $this->curationReviewProtocol->handle($group, $data);
         if ($group->isGcep) {
@@ -37,6 +36,7 @@ class ApplicationSaveChanges
         }
         $group = $this->nhgriAttestation->handle($group, Carbon::parse($data->get('nhgri_attestation_date')));
         if ($group->isVcep) {
+            $group = $this->memberDescription->handle($group, $data->get('membership_description'));
             $group = $this->reanalysisAttestation
                         ->handle(
                             $group,
