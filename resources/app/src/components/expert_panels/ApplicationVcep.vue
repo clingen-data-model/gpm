@@ -131,6 +131,7 @@ export default {
     methods: {
         async save() {
             const promises = Object.keys(this.$refs).map(key => this.$refs[key].save());
+            promises.push(this.saveUpdates());
 
             try {
                 await Promise.all(promises);
@@ -142,6 +143,12 @@ export default {
                 throw error;
             }
         },
+        saveUpdates () {
+            if (this.group.expert_panel.isDirty()) {
+                return this.$store.dispatch('groups/saveApplicationData', this.group)
+                        .then(() => this.$store.commit('pushSuccess', 'Application updated'));
+            }
+        }
     }
 }
 </script>
