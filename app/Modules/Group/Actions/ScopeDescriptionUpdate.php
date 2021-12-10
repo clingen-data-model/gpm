@@ -14,7 +14,7 @@ class ScopeDescriptionUpdate
 {
     use AsAction;
 
-    public function handle(Group $group, string $description): Group
+    public function handle(Group $group, ?string $description): Group
     {
         if (!$group->isExpertPanel) {
             throw ValidationException::withMessages(['scope_description' => ['A description of scope can only be set for expert panels.']]);
