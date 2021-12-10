@@ -22,26 +22,36 @@ class AttestationReanalysisStore
 
     public function handle(
         Group $group,
-        Carbon $attestationDate,
-        bool $reanalysis_conflicting,
-        bool $reanalysis_review_lp,
-        bool $reanalysis_review_lb,
+        ?bool $reanalysis_conflicting,
+        ?bool $reanalysis_review_lp,
+        ?bool $reanalysis_review_lb,
         ?String $reanalysis_other,
     ) {
         if (!$group->isEp) {
             throw ValidationException::withMessages(['group' => 'Only expert panels have Reanalysis & Discrepancy Resolution attestations.']);
         }
 
+        if (!is_null($group->expertPanel->reanalysis_attestation_date)) {
+            return $group;
+        }
+
         $group->expertPanel->reanalysis_conflicting = $reanalysis_conflicting;
         $group->expertPanel->reanalysis_review_lp = $reanalysis_review_lp;
         $group->expertPanel->reanalysis_review_lb = $reanalysis_review_lb;
         $group->expertPanel->reanalysis_other = $reanalysis_other;
-        $group->expertPanel->reanalysis_attestation_date = $attestationDate;
+
+        $attestationDate = Carbon::now();
+        if ($this->attestationCompleted($group)) {
+            $group->expertPanel->reanalysis_attestation_date = $attestationDate;
+        }
+
         $group->expertPanel->save();
         $group->touch();
         
-        $event = new AttestationSigned($group, 'Reanalysis', $attestationDate);
-        Event::dispatch($event);
+        if ($this->attestationCompleted($group)) {
+            $event = new AttestationSigned($group, 'Reanalysis', $attestationDate);
+            Event::dispatch($event);
+        }
         
         return $group;
     }
@@ -58,7 +68,6 @@ class AttestationReanalysisStore
 
         $this->handle(
             $group,
-            $attestationDate,
             ...$request->only('reanalysis_conflicting', 'reanalysis_review_lp', 'reanalysis_review_lb', 'reanalysis_other')
         );
 
@@ -81,5 +90,21 @@ class AttestationReanalysisStore
             'reanalysis_other.required_without_all' => 'This field is required when no other options are checked.',
             'required_without' => 'This is required unless you explain differences.'
         ];
+    }
+
+    private function attestationCompleted($group)
+    {
+        if (
+            (
+                $group->expertPanel->reanalysis_conflicting
+                && $group->expertPanel->reanalysis_review_lp
+                && $group->expertPanel->reanalysis_review_lb
+            )
+            || $group->expertPanel->reanalysis_other
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }

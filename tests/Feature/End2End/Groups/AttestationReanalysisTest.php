@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Actions\AttestationReanalysisStore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AttestationReanalysisTest extends TestCase
@@ -96,6 +97,32 @@ class AttestationReanalysisTest extends TestCase
             logName: 'groups'
         );
     }
+
+    /**
+     * @test
+     */
+    public function handler_does_not_set_attestation_date_if_requirements_not_met()
+    {
+        $data = [
+            'reanalysis_conflicting' => false,
+            'reanalysis_review_lp' => false,
+            'reanalysis_review_lb' => true,
+            'reanalysis_other' => null
+        ];
+
+        $action = app()->make(AttestationReanalysisStore::class);
+        $group = $action->handle($this->expertPanel->group, ...$data);
+
+        $this->assertDatabaseHas('expert_panels', [
+            'id' => $this->expertPanel->id,
+            'reanalysis_conflicting' => false,
+            'reanalysis_review_lp' => false,
+            'reanalysis_review_lb' => true,
+            'reanalysis_other' => null,
+            'reanalysis_attestation_date' => null,
+        ]);
+    }
+    
     
 
     private function submitRequest($data = null)

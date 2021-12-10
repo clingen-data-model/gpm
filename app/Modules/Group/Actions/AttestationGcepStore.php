@@ -22,28 +22,50 @@ class AttestationGcepStore
 
     public function handle(
         Group $group,
-        Carbon $attestationDate,
-        Carbon $gciTrainingDate,
+        array $data
     ) {
         if (!$group->isGcep) {
-            throw ValidationException::withMessages(['group' => 'Only expert panels have Reanalysis & Discrepancy Resolution attestations.']);
+            throw ValidationException::withMessages(['group' => 'Only GCEPs have GCEP Attestations.']);
         }
 
-        $group->expertPanel->utilize_gt = true;
-        $group->expertPanel->utilize_gci = true;
-        $group->expertPanel->curations_publicly_available = true;
-        $group->expertPanel->pub_policy_reviewed = true;
-        $group->expertPanel->draft_manuscripts = true;
-        $group->expertPanel->recuration_process_review = true;
-        $group->expertPanel->biocurator_training = true;
-        $group->expertPanel->biocurator_mailing_list = true;
-        $group->expertPanel->gci_training_date = $gciTrainingDate;
-        $group->expertPanel->gcep_attestation_date = $attestationDate;
+        $data = collect($data);
+
+        $attestationFields = [
+            'utilize_gt',
+            'utilize_gci',
+            'curations_publicly_available',
+            'pub_policy_reviewed',
+            'draft_manuscripts',
+            'recuration_process_review',
+            'biocurator_training',
+            'biocurator_mailing_list',
+            'gci_training_date',
+        ];
+
+        if (!is_null($group->expertPanel->gcep_attestation_date)) {
+            return $group;
+        }
+
+        $allTrue = true;
+        foreach ($attestationFields as $fieldName) {
+            $group->expertPanel->{$fieldName} = $data->get($fieldName);
+
+            if (!$data->get($fieldName)) {
+                $allTrue = false;
+            }
+        }
+
+        if ($allTrue) {
+            $group->expertPanel->gcep_attestation_date = Carbon::now();
+        }
+
         $group->expertPanel->save();
         $group->touch();
         
-        $event = new AttestationSigned($group, 'GCEP', $attestationDate);
-        Event::dispatch($event);
+        if ($allTrue) {
+            $event = new AttestationSigned($group, 'GCEP', Carbon::now());
+            Event::dispatch($event);
+        }
         
         return $group;
     }
@@ -56,13 +78,12 @@ class AttestationGcepStore
             throw new AuthorizationException('You do not have permission to sign attestations for this group.');
         }
 
-        $attestationDate = Carbon::now();
-        $gciTrainingDate = Carbon::parse($request->gci_training_date);
+        $data = $request->all();
+        $data['gci_training_date'] = Carbon::parse($request->gci_training_date);
 
         $this->handle(
             group: $group,
-            attestationDate: $attestationDate,
-            gciTrainingDate: $gciTrainingDate
+            data: $data
         );
 
         return new GroupResource($group);

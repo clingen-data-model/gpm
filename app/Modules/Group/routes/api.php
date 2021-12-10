@@ -24,6 +24,7 @@ use App\Modules\Group\Actions\EvidenceSummaryDelete;
 use App\Modules\Group\Actions\EvidenceSummaryUpdate;
 use App\Modules\Group\Actions\ExpertPanelNameUpdate;
 use App\Modules\Group\Actions\NhgriAttestationStore;
+use App\Modules\Group\Actions\ApplicationSaveChanges;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Group\Actions\MemberRevokePermission;
 use App\Modules\Group\Actions\ScopeDescriptionUpdate;
@@ -62,7 +63,8 @@ Route::group([
     });
 
     // APPLICATION - DEPRECATED (USE {uuid}/expert-panel)
-    Route::group(['prefix' => '/{uuid}/application'], function () {
+    Route::group(['prefix' => '/{group:uuid}/application'], function () {
+        Route::put('/', ApplicationSaveChanges::class);
         Route::put('/membership-description', MembershipDescriptionUpdate::class);
         Route::put('/scope-description', ScopeDescriptionUpdate::class);
         Route::put('/curation-review-protocols', CurationReviewProtocolUpdate::class);

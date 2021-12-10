@@ -46,11 +46,11 @@ class GroupController extends Controller
         $group->load([
             'type',
             'status',
-            // 'members',
-            // 'members.person',
-            // 'members.roles',
-            // 'members.permissions',
-            // 'members.cois',
+            'members',
+            'members.person',
+            'members.roles',
+            'members.permissions',
+            'members.cois',
             'expertPanel',
         ]);
 
