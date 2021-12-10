@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="flex justify-center">
-                <button class="dev-nav-button" @click="goBack">&lt;</button>
+                <!-- <button class="dev-nav-button" @click="goBack">&lt;</button> -->
                 <div>
                     <div class="onboarding-container" :style="`width: ${currentStepWidth}`">
                         <keep-alive>
@@ -19,17 +19,17 @@
                                 ></component>
                             </transition>
                         </keep-alive>
-                        <dev-component class="mt-4">
+                        <!-- <dev-component class="mt-4">
                             <collapsible title="invite">
                                 <pre>{{invite}}</pre>
                             </collapsible>
-                        </dev-component>
+                        </dev-component> -->
                     </div>
                     <p>
                         <router-link class="block link pt-2" :to="{name: 'login'}">&lt; Log In</router-link>
                     </p>
                 </div>
-                <button @click="goForward" class="dev-nav-button">&gt;</button>
+                <!-- <button @click="goForward" class="dev-nav-button">&gt;</button> -->
         </div>
     </div>
 </template>
