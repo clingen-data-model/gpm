@@ -35,21 +35,24 @@ class GenesAdd
         return $group;
     }
 
-    public function asController(ActionRequest $request, $groupUuid)
+    public function asController(ActionRequest $request, Group $group)
     {
-        $group = Group::findByUuidOrFail($groupUuid);
-        if (Auth::user()->cannot('addGene', $group)) {
-            throw new AuthorizationException('You do not have permission to add genes to this expert panel\'s scope');
-        }
-
         $this->handle($group, $request->genes);
         return $group->fresh()->load('expertPanel.genes');
     }
 
-    public function rules(): array
+    public function authorize(ActionRequest $request): bool
+    {
+        if (Auth::user()->cannot('addGene', $request->group)) {
+            return false;
+        }
+        return true;
+    }
+    
+    public function rules(ActionRequest $request): array
     {
         $gtConn = config('database.gt_db_connection');
-        $group = Group::findByUuidOrFail(request()->uuid);
+        $group = $request->group;
         if ($group->isVcep) {
             return [
                 'genes' => 'required|array|min:1',
@@ -69,8 +72,6 @@ class GenesAdd
 
     public function getValidationMessages(): array
     {
-        $gtConn = config('database.gt_db_connection');
-        $group = Group::findByUuidOrFail(request()->uuid);
         return [
             'required' => 'This field is required.',
             'exists' => 'Your selection is invalid.',
@@ -78,5 +79,4 @@ class GenesAdd
             'regex' => 'Your selection selection should have a mondo_id with the format "MONDO:#######".'
         ];
     }
-    
 }

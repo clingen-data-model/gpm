@@ -42,7 +42,6 @@ class UpdateGeneTest extends TestCase
     {
         $this->user->revokePermissionTo('ep-applications-manage');
 
-        // Sanctum::actingAs($this->user);
         $this->json('PUT', $this->url, ['hgnc_id' => 12345, 'mondo_id' => 'MONDO:9876543'])
             ->assertStatus(403);
 

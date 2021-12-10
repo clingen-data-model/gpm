@@ -33,15 +33,10 @@ class GeneUpdate
         return $group;
     }
 
-    public function asController(ActionRequest $request, $groupUuid, $geneId)
+    public function asController(ActionRequest $request, Group $group, $geneId)
     {
-        $group = Group::findByUuidOrFail($groupUuid);
         $gene = $group->expertPanel->genes()->findOrFail($geneId);
 
-        if (Auth::user()->cannot('updateGene', $group)) {
-            throw new AuthorizationException('You do not have permission to update this group\'s gene-list.');
-        }
-        
         if (!$group->isEp) {
             throw ValidationException::withMessages(['group' => ['Only expert panels have a gene list.  You can not update a gene on a '.$group->type->full_name]]);
         }
@@ -53,14 +48,24 @@ class GeneUpdate
         return new GroupResource($group);
     }
 
-    public function rules(): array
+    public function authorize(ActionRequest $request, Group $group): bool
+    {
+        if (Auth::user()->cannot('updateGene', $group)) {
+            return false;
+        }
+
+        return true;
+    }
+    
+
+    public function rules(ActionRequest $request): array
     {
         $connectionName = config('database.gt_db_connection');
         $rules = [
             'hgnc_id' => 'required|numeric|exists:'.$connectionName.'.genes,hgnc_id',
         ];
 
-        $group = Group::findByUuidOrFail(request()->uuid);
+        $group = $request->group;
         if ($group->isVcep) {
             $rules['mondo_id'] = 'required|regex:/MONDO:\d\d\d\d\d\d\d/i|exists:'.$connectionName.'.diseases,mondo_id';
         }
@@ -79,5 +84,4 @@ class GeneUpdate
             'mondo_id.exists' => 'The selected disease is invalid.',
         ];
     }
-    
 }

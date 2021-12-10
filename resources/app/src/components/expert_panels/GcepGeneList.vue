@@ -107,7 +107,7 @@ export default {
                             : [];
 
             try {
-                await api.post(`/api/groups/${group.value.uuid}/application/genes`, {genes});
+                await api.post(`/api/groups/${group.value.uuid}/expert-panel/genes`, {genes});
                 hideForm();
                 context.emit('saved')
                 getGenes();

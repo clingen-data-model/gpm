@@ -62,33 +62,7 @@ Route::group([
         Route::delete('/{logEntryId}', [ActivityLogsController::class, 'destroy']);
     });
 
-    // APPLICATION - DEPRECATED (USE {uuid}/expert-panel)
-    Route::group(['prefix' => '/{group:uuid}/application'], function () {
-        Route::put('/', ApplicationSaveChanges::class);
-        Route::put('/membership-description', MembershipDescriptionUpdate::class);
-        Route::put('/scope-description', ScopeDescriptionUpdate::class);
-        Route::put('/curation-review-protocols', CurationReviewProtocolUpdate::class);
-
-        Route::post('/attestations/nhgri', AttestationNhgriStore::class);
-        Route::post('/attestations/reanalysis', AttestationReanalysisStore::class);
-        Route::post('/attestations/gcep', AttestationGcepStore::class);
-
-        // GENES
-        Route::group(['prefix' => '/genes'], function () {
-            Route::get('/', [GeneListController::class, 'index']);
-            Route::post('/', GenesAdd::class);
-            Route::put('/{gene_id}', GeneUpdate::class);
-            Route::delete('/{gene_id}', GeneRemove::class);
-        });
-    
-        // EVIDENCE SUMMARIES
-        Route::group(['prefix' => '/evidence-summaries'], function () {
-            Route::get('/', [EvidenceSummaryController::class, 'index']);
-            Route::post('/', EvidenceSummaryAdd::class);
-            Route::put('/{summaryId}', EvidenceSummaryUpdate::class);
-            Route::delete('/{summaryId}', EvidenceSummaryDelete::class);
-        });
-    });
+    Route::put('/{group:uuid}/application/', ApplicationSaveChanges::class);
 
     // MEMBERS
     Route::group(['prefix' => '/{uuid}/members'], function () {
@@ -106,7 +80,7 @@ Route::group([
     });
 
     // EXPERT PANEL INFO
-    Route::group(['prefix' => '/{uuid}/expert-panel'], function () {
+    Route::group(['prefix' => '/{group:uuid}/expert-panel'], function () {
         Route::put('/curation-review-protocols', CurationReviewProtocolUpdate::class);
         Route::put('/membership-description', MembershipDescriptionUpdate::class);
         Route::put('/name', ExpertPanelNameUpdate::class);

@@ -32,7 +32,7 @@ class PersonDetailTest extends TestCase
         $person = Person::factory()->create();
         $this->json('GET', '/api/people/'.$person->uuid)
             ->assertStatus(200)
-            ->assertJson($person->toArray());
+            ->assertJsonFragment($person->toArray());
     }
 
     /**
