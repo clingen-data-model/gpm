@@ -90,7 +90,7 @@
     </div>
 </template>
 <script>
-import is_validation_error from '@/http/is_validation_error'
+import isValidationError from '@/http'
 import {api} from '@/http'
 import Group from '@/domain/group'
 import configs from '@/configs'
@@ -125,7 +125,6 @@ export default {
                 return this.newGroup;
             },
             set (value) {
-                console.log('setting group in GroupForm');
                 try {
                     this.$store.commit('groups/addItem', value);
                 } catch (e) {
@@ -133,9 +132,6 @@ export default {
                 }
             }
         },
-        // groups () {
-        //     return this.$store.getters['groups/all'];
-        // },
         canSetType() {
             return this.hasPermission('groups-manage') && !this.group.id 
         },
@@ -183,7 +179,7 @@ export default {
                 this.$store.commit('pushSuccess', 'Group created.');
                 this.$router.push({name: 'AddMember', params: {uuid: newGroup.uuid}});
             } catch (error) {
-                if (is_validation_error(error)) {
+                if (isValidationError(error)) {
                     this.errors = error.response.data.errors;
                 }
             }
