@@ -1,6 +1,6 @@
 import {v4 as uuid4} from 'uuid'
 
-class Alert {
+export class Alert {
     static types = [
         'info',
         'success',
@@ -15,12 +15,14 @@ class Alert {
         }
         this.type = type
         this.uuid = uuid4()
+
     }
 }
 
 export default {
     state: {
         alerts: [],
+        timeouts: [],
     },
     getters: {
         info: state => state.alerts.filter(a => a.type == 'info'),
@@ -30,7 +32,8 @@ export default {
     },
     mutations: {
         pushAlert(state, {message, type}) {
-            state.alerts.push(new Alert(message, type));
+            const alert = new Alert(message, type);
+            state.alerts.push(alert);
         },
         pushError(state, message) {
             state.alerts.push(new Alert(message, 'error'));
