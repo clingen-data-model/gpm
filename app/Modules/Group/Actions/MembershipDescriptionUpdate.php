@@ -20,6 +20,10 @@ class MembershipDescriptionUpdate
             throw ValidationException::withMessages(['membership_description' => ['A membership description can only be set for VCEPs.']]);
         }
 
+        if ($group->expertPanel->membership_description == $description) {
+            return $group;
+        }
+
         $group->expertPanel->update([
             'membership_description' => $description
         ]);

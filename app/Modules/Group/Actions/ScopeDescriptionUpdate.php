@@ -20,6 +20,10 @@ class ScopeDescriptionUpdate
             throw ValidationException::withMessages(['scope_description' => ['A description of scope can only be set for expert panels.']]);
         }
 
+        if ($group->expertPanel->scope_description == $description) {
+            return $group;
+        }
+
         $group->expertPanel->update([
             'scope_description' => $description
         ]);
@@ -52,5 +56,4 @@ class ScopeDescriptionUpdate
     {
         return ['required' => 'This field is required.'];
     }
-    
 }
