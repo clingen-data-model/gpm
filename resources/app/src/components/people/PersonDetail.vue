@@ -38,8 +38,8 @@
             <tab-item label="Documents">
                 docs
             </tab-item>
-            <tab-item label="Training &amp; Attestations">
-            </tab-item>
+            <!-- <tab-item label="Training &amp; Attestations">
+            </tab-item> -->
             <tab-item label="Email Log">
                 <div class="w-3/4 my-4 p-4 border" v-for="email in sortedMailLog" :key="email.id">
                     <dictionary-row label="Date/Time">
