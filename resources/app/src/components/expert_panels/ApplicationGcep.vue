@@ -32,7 +32,7 @@
             </app-section>
 
             <app-section title="Attestations" id="attestations">
-                <attestation-gcep ref="gcepAttestation" />
+                <attestation-gcep />
             </app-section>
 
             <app-section id="reanalysis" title="Plans for Ongoing Gene Review and Reanalysis and Discrepancy Resolution">
@@ -40,7 +40,7 @@
             </app-section>
 
             <app-section title="NHGRI Data Availability" id="nhgri">
-                <attestation-nhgri ref="nhgri"></attestation-nhgri>
+                <attestation-nhgri />
             </app-section>
         </application-step>
         
@@ -112,7 +112,7 @@ export default {
     methods: {
         async save() {
             const promises = Object.keys(this.$refs).map(key => this.$refs[key].save());
-
+            promises.push(this.saveUpdates());
             try {
                 await Promise.all(promises);
             } catch (error) {
@@ -121,6 +121,12 @@ export default {
                     return;
                 }
                 throw error;
+            }
+        },
+        saveUpdates () {
+            if (this.group.expert_panel.isDirty()) {
+                return this.$store.dispatch('groups/saveApplicationData', this.group)
+                        .then(() => this.$store.commit('pushSuccess', 'Application updated'));
             }
         },
     },
