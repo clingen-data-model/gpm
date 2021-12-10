@@ -11,7 +11,7 @@
             row-class="cursor-pointer"
             v-model:sort="sort"
         >
-            <template v-slot:cell-uuid="item">
+            <!-- <template v-slot:cell-uuid="item">
                 <button 
                     class="btn btn-xs" 
                     @click.stop="goToEditPerson(item.item)"
@@ -20,7 +20,7 @@
                     Edit
                 </button>
                 <span v-else></span>
-            </template>
+            </template> -->
         </data-table>
     </div>
 </template>
@@ -39,11 +39,6 @@ const fields = [
                     sortable: true,
                     type: String
                 },
-                {
-                    name: 'uuid',
-                    label: '',
-                    sortable: false
-                }
             ];
 
 export default {
