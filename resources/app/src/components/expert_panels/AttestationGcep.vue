@@ -98,7 +98,6 @@ export default {
     data() {
         return {
             errors: {},
-            gci_training: null
         }
     },
     computed: {
@@ -115,6 +114,9 @@ export default {
             const dateErrors = this.errors.gci_training_date ?? [];
             return [...trainingErrors, ...dateErrors];
         },
+        gci_training () {
+            return Boolean(this.group.expert_panel.gci_training_date)
+        }
     },
     methods: {
         async save () {
