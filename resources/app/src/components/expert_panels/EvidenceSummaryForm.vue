@@ -107,7 +107,7 @@ export default {
             summary.editing = true;
         },
         async getGroupGenes () {
-            this.groupGenes = await api.get(`/api/groups/${this.group.uuid}/application/genes`)
+            this.groupGenes = await api.get(`/api/groups/${this.group.uuid}/expert-panel/genes`)
                                 .then(response => response.data);
         },
         initSummaryClone () {

@@ -337,7 +337,7 @@ export const actions = {
     },
 
     getGenes ({ commit, getters,}, group) {
-        return api.get(`/api/groups/${group.uuid}/application/genes`)
+        return api.get(`/api/groups/${group.uuid}/expert-panel/genes`)
             .then(response => {
                 const item = getters.getItemByUuid(group.uuid)
                 item.expert_panel.genes = response.data;
@@ -354,6 +354,14 @@ export const actions = {
                 commit('addItem', item);
                 return response.data.data
             })
+    },
+
+    saveApplicationData ({dispatch}, group) {
+        return api.put(`/api/groups/${group.uuid}/application`, group.expert_panel.attributes)
+            .then(response => { 
+                dispatch('find', group.uuid);
+                return response;
+            });
     }
 };
 
