@@ -129,6 +129,9 @@ export default {
                         .then(() => this.$store.commit('pushSuccess', 'Application updated'));
             }
         },
+        submit () {
+            console.log('submit');
+        }
     },
     setup (props, context) {
         return {

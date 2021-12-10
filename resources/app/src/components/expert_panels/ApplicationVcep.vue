@@ -148,6 +148,9 @@ export default {
                 return this.$store.dispatch('groups/saveApplicationData', this.group)
                         .then(() => this.$store.commit('pushSuccess', 'Application updated'));
             }
+        },
+        submit () {
+            console.log('submit');
         }
     }
 }
