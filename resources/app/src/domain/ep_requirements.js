@@ -21,14 +21,13 @@ export const coordinators = new Requirement(
     group => group.coordinators.length > 0
 );
 
-//TODO: why no workee
 export const coisComplete = new Requirement(
     'All members completed COI', 
     group => group.members.filter(member => member.needsCoi).length == 0
 );
 export const diversityOfExpertise = new Requirement(
     'Diveristy of Expertise (need def)', 
-    group => (false)
+    group => (true)
 );
 export const institutions = new Requirement(
     '3+ institutions represented', 
@@ -49,7 +48,7 @@ export const scopeDescription = new Requirement('Description of scope', group =>
 
 export const curationProcess = new Requirement(
     'Plans for sustained curation', 
-    group => Boolean(group.expert_panel.curation_review_process_id)
+    group => Boolean(group.expert_panel.curation_review_protocol_id)
 );
 export const meetingFrequency = new Requirement('Meeting frequency', group => Boolean(group.expert_panel.meeting_frequency));
 
