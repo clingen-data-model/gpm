@@ -15,11 +15,18 @@ export default {
         alert: {
             required: true,
             type: Alert
+        },
+        timeout: {
+            type: Number,
+            required: false,
+            default: 10
         }
     },
     data() {
         return {
-            timer: null
+            timer: null,
+            countdown: 0,
+            interval: null,
         }
     },
     computed: {
@@ -27,19 +34,19 @@ export default {
     },
     methods: {
         startTimer () {
-            console.log('starting timer')
+            this.interval = setInterval( () => this.countdown -= 1, 1000)
             this.timer = setTimeout( () => {
                 this.clearAlert();
-            }, 5000)
+            }, this.timeout*1000)
         },
         clearAlert () {
-            console.log('clearAlert')
             this.$store.commit('removeAlert', this.alert.uuid);
+            clearInterval(this.interval);
         },
         clearTimer () {
-            console.log('clearTimer')
             if (this.timer) {
                 clearTimeout(this.timer);
+                clearInterval(this.interval);
             }
         },
         clearAlertAndTimer() {
@@ -49,6 +56,7 @@ export default {
     },
     mounted() {
         this.startTimer();
+        this.countdown = this.timeout;
     }
 }
 </script>
