@@ -56,6 +56,18 @@ app.use(store)
         }
     })
     .mixin(objectUid)
+    .mixin({
+        mounted () {
+            if (this.id) {
+                if (this.$route.hash) {
+                    if (this.$route.hash.substr(1) == this.id) {
+                        location.href = '#';
+                        location.href = this.$route.hash;
+                    }
+                }
+            }
+        }
+    })
     .use(router)
     .use(CKEditor)
     .mount('#app')
