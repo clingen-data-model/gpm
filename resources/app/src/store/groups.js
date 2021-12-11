@@ -302,7 +302,7 @@ export const actions = {
             expertPanel.curation_review_protocol_other = null;
         }
 
-        await api.put(`/api/groups/${uuid}/application/curation-review-protocols`, expertPanel.attributes)
+        await api.put(`/api/groups/${uuid}/expert-panel/curation-review-protocols`, expertPanel.attributes)
         .then(response => {
             commit('addItem', response.data.data);
             return response;
@@ -347,7 +347,7 @@ export const actions = {
     },
     
     getEvidenceSummaries ({commit, getters}, group) {
-        return api.get(`/api/groups/${group.uuid}/application/evidence-summaries`)
+        return api.get(`/api/groups/${group.uuid}/expert-panel/evidence-summaries`)
             .then(response => {
                 const item = getters.getItemByUuid(group.uuid)
                 item.expert_panel.evidence_summaries = response.data.data;

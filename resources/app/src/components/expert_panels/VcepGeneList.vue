@@ -209,7 +209,7 @@ export default {
                 for (let idx = 0; idx < genes.value.length; idx++) {
                     if (genes.value[idx].toDelete) {
                         try {
-                            await api.delete(`/api/groups/${group.value.uuid}/application/genes/${gene.id}`)
+                            await api.delete(`/api/groups/${group.value.uuid}/expert-panel/genes/${gene.id}`)
                             await getGenes();
                         } catch (error) {
                             store.commit('pushError', error.response.data);
@@ -247,7 +247,7 @@ export default {
                                             .filter(ng => !isEqual(ng, {gene: null, disease: null}))
                                             .map(scope => ({ hgnc_id: scope.gene.hgnc_id, mondo_id: scope.disease.mondo_id}));
 
-                await api.post(`/api/groups/${group.value.uuid}/application/genes`, {genes: filteredGenes});
+                await api.post(`/api/groups/${group.value.uuid}/expert-panel/genes`, {genes: filteredGenes});
                     await getGenes();
                 }
                 clearNewGenes();
@@ -264,7 +264,7 @@ export default {
             try {
                 gene.hgnc_id = gene.gene.hgnc_id;
                 gene.mondo_id = gene.disease.mondo_id;
-                await api.put(`/api/groups/${group.value.uuid}/application/genes/${gene.id}`, gene);
+                await api.put(`/api/groups/${group.value.uuid}/expert-panel/genes/${gene.id}`, gene);
                 await getGenes();
                 delete(gene.edit);
             } catch (error) {
