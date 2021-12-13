@@ -42,6 +42,7 @@
     </div>
 
     <alert-viewer></alert-viewer>
+    <issue-report-form />
 
     <!-- <teleport to="body">
       <footer class="w-full border-t mt-4 bg-gray-100">
@@ -59,16 +60,18 @@
 <script>
 import UserMenu from './components/UserMenu'
 import AlertViewer from './components/alerts/AlertViewer'
+import IssueReportForm from '@/components/IssueReportForm'
 import { mapGetters } from 'vuex'
 
 export default {
   components: {
     UserMenu,
-    AlertViewer
+    AlertViewer,
+    IssueReportForm,
   },
   data() {
     return {
-      showLogin: false
+      showLogin: false,
     }
   },
   computed: {
@@ -87,7 +90,7 @@ export default {
     },
     refreshCurrentRoute() {
       this.$router.push(this.$route)
-    }
+    },
   },
   mounted() {
     this.getLookupResources()
