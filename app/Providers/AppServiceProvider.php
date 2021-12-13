@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\URL;
+use GuzzleHttp\Client;
 use App\Services\HgncLookup;
-use App\Services\HgncLookupInterface;
 use App\Services\MondoLookup;
+use GuzzleHttp\ClientInterface;
+use Illuminate\Support\Facades\URL;
+use App\Services\HgncLookupInterface;
 use App\Services\MondoLookupInterface;
 use Infrastructure\Service\MessageBus;
 use Illuminate\Support\ServiceProvider;
@@ -37,5 +39,9 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme(config('app.url_scheme'));
         }
         Actions::registerCommands('app/Actions');
+
+        $this->app->bind(ClientInterface::class, function () {
+            return new Client();
+        });
     }
 }
