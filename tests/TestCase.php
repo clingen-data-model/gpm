@@ -118,6 +118,12 @@ abstract class TestCase extends BaseTestCase
         return $user;
     }
 
+    protected function setupUserWithPerson($userData = null, $permissions = [], $personData = [])
+    {
+        $user = $this->setupUser($userData, $permissions);
+        $person = $user->person()->save(Person::factory()->make());
+    }
+
     protected function getLongString()
     {
         return 'something longer than 255 characters so that we can test the maximum length validation.  If we don\'t validate the length of the string some verbose pontificator will inevitably think their group is so important that it needs a name longer that 255 characters.';
