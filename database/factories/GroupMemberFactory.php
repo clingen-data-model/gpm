@@ -28,7 +28,7 @@ class GroupMemberFactory extends Factory
             'group_id' => Group::factory(),
             'person_id' => Person::factory(),
             'start_date' => $this->faker->dateTime(),
-            'end_date' => $this->faker->dateTime(),
+            'end_date' => null,
             'is_contact' => 0
         ];
     }

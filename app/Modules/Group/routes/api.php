@@ -19,6 +19,7 @@ use App\Modules\Group\Actions\MemberRemoveRole;
 use App\Modules\Group\Actions\GroupStatusUpdate;
 use App\Modules\Group\Actions\EvidenceSummaryAdd;
 use App\Modules\Group\Actions\AttestationGcepStore;
+use App\Modules\Group\Actions\ApplicationSubmitStep;
 use App\Modules\Group\Actions\AttestationNhgriStore;
 use App\Modules\Group\Actions\EvidenceSummaryDelete;
 use App\Modules\Group\Actions\EvidenceSummaryUpdate;
@@ -63,6 +64,7 @@ Route::group([
     });
 
     Route::put('/{group:uuid}/application/', ApplicationSaveChanges::class);
+    Route::post('/{group:uuid}/application/submission', ApplicationSubmitStep::class);
 
     // MEMBERS
     Route::group(['prefix' => '/{uuid}/members'], function () {

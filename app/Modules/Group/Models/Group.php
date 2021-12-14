@@ -17,11 +17,13 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Models\Traits\HasNotes as HasNotesTrait;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Modules\Group\Models\Contracts\HasSubmissions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Traits\HasDocuments as HasDocumentsTrait;
-use App\Models\Traits\HasLogEntries as HasLogEntriesTraits;
 use App\Models\Traits\RecordsEvents as RecordsEventsTrait;
+use App\Models\Traits\HasLogEntries as HasLogEntriesTraits;
 use App\Modules\Group\Models\Traits\HasMembers as HasMembersTrait;
+use App\Modules\Group\Models\Traits\HasSubmissions as HasSubmissionsTrait;
 
 /**
  * @property int $id
@@ -34,7 +36,7 @@ use App\Modules\Group\Models\Traits\HasMembers as HasMembersTrait;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDocuments, HasLogEntries
+class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDocuments, HasLogEntries, HasSubmissions
 {
     use HasFactory;
     use SoftDeletes;
@@ -44,6 +46,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     use HasUuid;
     use HasDocumentsTrait;
     use HasLogEntriesTraits;
+    use HasSubmissionsTrait;
 
     /**
      * The attributes that are mass assignable.

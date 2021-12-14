@@ -122,6 +122,8 @@ abstract class TestCase extends BaseTestCase
     {
         $user = $this->setupUser($userData, $permissions);
         $person = $user->person()->save(Person::factory()->make());
+
+        return $user;
     }
 
     protected function getLongString()
