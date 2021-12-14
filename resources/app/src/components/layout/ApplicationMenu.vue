@@ -16,7 +16,7 @@
     >
         <ul class="menu-items">
             <li v-for="(item, idx) in menu" :key="idx">
-                <menu-item :item="item"></menu-item>
+                <menu-item :item="item" class="block"></menu-item>
             </li>
         </ul>
     </div>

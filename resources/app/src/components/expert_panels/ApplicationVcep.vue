@@ -1,6 +1,9 @@
 <template>
     <div>
-        <application-step id="definition" title="Group Definition">
+        <application-step 
+            id="definition" 
+            title="Group Definition"
+        >
             <app-section title="Basic Information" id="basicInfo">
                 <group-form 
                     :group="group" ref="groupForm"
@@ -28,19 +31,37 @@
             </app-section>
         </application-step>
 
-        <application-step id="draft-specifications" title="Draft Specifications">
+        <application-step id="specifications-development" title="Specifications Development" :disabled="group.expert_panel.current_step < 2">
             <app-section>
                 <cspec-summary></cspec-summary>
             </app-section>
         </application-step>
 
-        <application-step id="pilot-specifications" title="Pilot Specifications">
+        <!-- <application-step 
+            id="draft-specifications" 
+            title="Draft Specifications" 
+            :disabled="group.expert_panel.current_step < 2"
+        >
             <app-section>
                 <cspec-summary></cspec-summary>
             </app-section>
         </application-step>
 
-        <application-step id="sustained-curation" title="Sustained Curation">
+        <application-step 
+            id="pilot-specifications" 
+            title="Pilot Specifications"
+            :disabled="group.expert_panel.current_step < 3"
+        >
+            <app-section>
+                <cspec-summary></cspec-summary>
+            </app-section>
+        </application-step> -->
+
+        <application-step 
+            id="sustained-curation" 
+            title="Sustained Curation"
+            :disabled="group.expert_panel.current_step < 4"
+        >
             <app-section title="Plans for Ongoing Gene Review and Reanalysis and Discrepancy Resolution" id="curationReviewProcess">
                 <vcep-ongoing-plans-form />
             </app-section>

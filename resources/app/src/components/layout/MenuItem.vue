@@ -42,16 +42,9 @@
                 </ul>
             </transition>
         </div>
-        <div v-else class="label">
-            <router-link v-if="item.hasRoute" :to="item.route" class="block">
-                {{label}}
-            </router-link>
-            <div v-else @click="handleClick()">
-                {{label}}
-            </div>
+        <div v-else class="label" @click="handleClick()">
+            {{label}}
         </div>
-
-        
     </div>
 </template>
 <script>
@@ -99,6 +92,10 @@ export default {
         handleClick () {
             if (this.item.hasHandler) {
                 this.item.handler();
+                return;
+            }
+            if (this.item.hasRoute) {
+                this.$router.push(this.item.route);
             }
         }
     },

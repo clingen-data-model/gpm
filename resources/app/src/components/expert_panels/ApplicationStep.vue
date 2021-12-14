@@ -1,10 +1,14 @@
 <template>
-    <div class="application-step" id="pilot-specifications">
+    <div class="application-step" :id="id">
         <div class="header" v-if="title">
-            <h2>{{title}}</h2>
+            <h2 :class="{'text-gray-400': disabled}">
+                {{title}}
+                <icon-lock v-if="disabled" class="inline"></icon-lock>
+            </h2>
         </div>
-        <div class="step-contents">
+        <div class="step-contents relative">
             <slot></slot>
+            <div class="z-20 absolute top-0 bottom-0 left-0 right-0 bg-white bg-opacity-50" v-if="disabled" />
         </div>
     </div>
 </template>
@@ -16,19 +20,19 @@ export default {
             type: String,
             required: false,
             default: null
+        },
+        disabled: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        id: {
+            type: String,
+            required: true
         }
     },
-    data() {
-        return {
-            
-        }
+    mounted() {
     },
-    computed: {
-
-    },
-    methods: {
-
-    }
 }
 </script>
 <style lang="postcss" scoped>

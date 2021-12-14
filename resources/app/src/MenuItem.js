@@ -1,10 +1,11 @@
 class MenuItem {
-    constructor(label, route = null, contents = null, handler = null) {
+    constructor(label, id, route = null, contents = null, handler = null) {
         if (typeof label === 'object') {
             this.label = label.label;
             this.route = label.route || null;
             this.contents = label.contents;
             this.handler = label.handler;
+            this.id = label.id;
             return    
         }
 
@@ -12,6 +13,7 @@ class MenuItem {
         this.route = route;
         this.contents = contents;
         this.handler = handler;
+        this.id = id
     }
 
     get hasContents() {

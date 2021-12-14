@@ -58,8 +58,36 @@ export const gcepAttestation = new Requirement('GCEP processes Attestation', gro
 
 export const reanalysisAttestation = new Requirement('Reanalysis & discrepany resolution', group => Boolean(group.expert_panel.reanalysis_attestation_date));
 
-// export const exampleSummaries = new Requirement('5+ Example Evidence Summaries', group => group.expert_panel.evidence_summaries.length > 4);
-export const exampleSummaries = new Requirement('5+ Example Evidence Summaries', group => true);
+export const exampleSummaries = new Requirement('5+ Example Evidence Summaries', group => group.expert_panel.evidence_summaries.length > 4);
+
+export const draftApprovedSpecifications = new Requirement(
+    '1+ Approved piloted, specifications document.',
+    group => group.expert_panel.approvedDraftSpecifications.length > 0
+)
+
+export const pilotedApprovedSpecifications = new Requirement(
+    '1+ Approved piloted, specifications document.',
+    group => group.expert_panel.approvedPilotedSpecifications.length > 0
+)
+
+export const minimumBiocurators = new Requirement(
+    '1+ trained biocurators.',
+    group => group.biocurators
+                .filter(biocurator => {
+                    return biocurator.training_level_1 
+                        && biocurator.training_level_2
+                }).length > 0
+);
+
+export const biocuratorTrainers = new Requirement(
+    '1+ biocurator trainers.',
+    group => group.biocuratorTrainers.length < 0
+);
+
+export const coreApprovalMembers = new Requirement(
+    '1+ core approval members',
+    group => group.expert_panel.coreApprovalMembers.length > 1
+)
 
 class EpRequirements {
     static requirements = {};
@@ -111,6 +139,14 @@ class EpRequirements {
 
     sectionHasRequirements(section) {
         return Object.keys(this.constructor.requirements).includes(section);
+    }
+
+    getSections () {
+        return this.constructor.requirements;
+    }
+
+    getSteps() {
+        return []
     }
 }
 
