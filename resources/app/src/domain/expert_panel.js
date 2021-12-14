@@ -83,6 +83,30 @@ class ExpertPanel extends Entity
         this.attributes['nhgri_attestation_date'] = value ? new Date() : null;
     }
 
+    get approvedDraftSpecifications () {
+        return [];
+    }
+
+    get approvedPilotedSpecifications () {
+        return [];
+    }
+
+    get definitionIsApproved () {
+        return this.step_1_approval_date !== null
+    }
+
+    get draftSpecificationsIsApproved () {
+        return this.step_2_approval_date !== null
+    }
+
+    get pilotSpecificationsIsApproved () {
+        return this.step_3_approval_date !== null
+    }
+
+    get sustainedCurationIsApproved () {
+        return this.step_3_approval_date !== null
+    }
+
 }
 
 export default ExpertPanel;
