@@ -1,6 +1,5 @@
 <template>
     <div v-if="hasRequirements">
-        <!-- <pre>{{hasRequirements}}</pre> -->
         <popper arrow hover>
             <template v-slot:content>
                 <requirements-item  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
@@ -49,11 +48,8 @@ export default {
             if (!this.requirements) {
                 return 'loading...'
             }
-            if (this.meetsRequirements) {
-                return 'Meets Requirements';
-            }
-            const unmetCount = this.requirements.unmetRequirements(this.group, this.section).length;
-            return `${unmetCount} requirement${unmetCount > 1 ? 's' : ''} to meet`
+            const metCount = this.requirements.metRequirements(this.group, this.section).length;
+            return `Requirements: ${metCount} / ${this.requirements.getRequirementsFor(this.section).length}`;
         },
         evaledRequirements() {
             if (!this.requirements) {
@@ -77,7 +73,6 @@ export default {
                     return;
                 }
                 this.requirements = new VcepRequirements();
-                console.log(this.hasRequirements);
             }
         }
     },
