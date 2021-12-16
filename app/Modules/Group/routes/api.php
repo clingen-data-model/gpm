@@ -37,6 +37,7 @@ use App\Modules\Group\Http\Controllers\Api\GroupController;
 use App\Modules\Group\Http\Controllers\Api\GeneListController;
 use App\Modules\Group\Http\Controllers\Api\ActivityLogsController;
 use App\Modules\Group\Http\Controllers\Api\EvidenceSummaryController;
+use App\Modules\Group\Http\Controllers\Api\GroupSubmissionsController;
 
 // Route::post('/{{group_uuid}}/members', MemberAdd::class);
 
@@ -64,6 +65,7 @@ Route::group([
     });
 
     Route::put('/{group:uuid}/application/', ApplicationSaveChanges::class);
+    Route::get('/{group:uuid}/application/submission', [GroupSubmissionsController::class, 'index']);
     Route::post('/{group:uuid}/application/submission', ApplicationSubmitStep::class);
 
     // MEMBERS

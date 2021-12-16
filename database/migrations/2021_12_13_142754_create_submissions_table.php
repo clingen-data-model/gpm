@@ -22,7 +22,7 @@ class CreateSubmissionsTable extends Migration
             $table->unsignedBigInteger('submission_status_id')->default(1);
             $table->foreign('submission_status_id')->references('id')->on('submission_statuses')->cascadeOnDelete();
             $table->dateTime('approved_at')->nullable();
-            $table->text('notes');
+            $table->text('notes')->nullable();
             $table->unsignedBigInteger('submitter_id');
             $table->foreign('submitter_id')->references('id')->on('people')->cascadeOnDelete();
             $table->timestamps();
