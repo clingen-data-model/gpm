@@ -226,6 +226,6 @@ class AttestationGcepTest extends TestCase
             'gcep_attestation_date' => Carbon::now()
         ];
 
-        return $this->json('POST', '/api/groups/'.$this->expertPanel->group->uuid.'/application/attestations/gcep', $data);
+        return $this->json('POST', '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/attestations/gcep', $data);
     }
 }
