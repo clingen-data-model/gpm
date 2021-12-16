@@ -39,10 +39,10 @@ class StoreMailInDatabase
             'body' => $event->message->getBody(),
         ]);
 
-        foreach ($event->message->getTo() as $email => $name) {
-            $person = Person::findByEmail($email);
+        foreach ($event->message->getTo() as $address => $name) {
+            $person = Person::findByEmail($address);
             if ($person) {
-                $person->emails()->attach($person->id);
+                $person->emails()->attach($email->id);
             }
         }
     }
