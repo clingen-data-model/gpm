@@ -14,9 +14,10 @@ class ApplicationSubmitStep
 {
     use AsController;
     
-    public function handle(Group $group, String $notes, Person $submitter): Submission
+    public function handle(Group $group, Person $submitter, ?String $notes): Submission
     {
         $submissionType = $this->resolveSubmissionType($group);
+        
         if ($group->hasApprovedSubmissionFor($submissionType->id)) {
             $message = 'This group\'s '.$submissionType->name.' has already been approved.';
             throw ValidationException::withMessages(['group' => $message]);
@@ -42,8 +43,7 @@ class ApplicationSubmitStep
 
     public function asController(ActionRequest $request, Group $group)
     {
-
-        $submission = $this->handle($group, $request->notes, $request->user()->person);
+        $submission = $this->handle($group, $request->user()->person, $request->notes);
         return $submission;
     }
 
