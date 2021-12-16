@@ -14,6 +14,10 @@ class CreateRolePermissionsView extends Migration
      */
     public function up()
     {
+        if (app()->environment('testing')) {
+            return;
+        }
+
         DB::statement(
             "CREATE OR REPLACE VIEW role_permissions_view AS
                 SELECT r.name AS 'role', p.name AS 'permission' 
@@ -30,6 +34,10 @@ class CreateRolePermissionsView extends Migration
      */
     public function down()
     {
+        if (app()->environment('testing')) {
+            return;
+        }
+
         DB::statement('DROP VIEW IF EXISTS `view_user_data`;
         SQL;');
     }
