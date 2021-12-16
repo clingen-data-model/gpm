@@ -181,10 +181,6 @@ export default {
             field: 'group.name',
             desc: false
         })
-        const outdatedSort = ref({
-            field: 'group.name',
-            desc: false
-        })
         const getCoiRoute = (membership) => {
             return {
                 name: 'alt-coi', 

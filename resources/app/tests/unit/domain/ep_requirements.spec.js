@@ -1,68 +1,79 @@
 import {expect} from 'chai'
+import configs from '@/configs'
+import {requirements, Group, GroupMember} from '@/domain'
 
-import {GcepRequirements, VcepRequirements, Group} from '@/domain'
+const {groups} = configs;
 
-const gcepReqs = new GcepRequirements();
-describe('GcepRequirements', () => {
-    it ('can get all requirements', () => {
-        expect(gcepReqs.getRequirementsFor())
-            .to
-            .eql(Object.values(GcepRequirements.requirements).flat());
+let testGroup = new Group();
+describe('minimumBiocurators', () => {
+    beforeEach(() => {
+        testGroup = new Group();
     });
 
-    it ('can get requirements for a single section', () => {
-        expect(gcepReqs.getRequirementsFor('basicInfo'))
-            .to
-            .eql(GcepRequirements.requirements.basicInfo);
+    it('is not met when the group has zero trained biocurators', () => {
+        expect(requirements.minimumBiocurators.isMet(testGroup)).to.be.false;
+
+        testGroup.addMember(new GroupMember({
+            roles: [
+                groups.roles.biocurator
+            ],
+            training_level_1: true,
+            training_level_2: false,
+        }));
+
+        expect(requirements.minimumBiocurators.isMet(testGroup)).to.be.false;
     });
 
-    it ('can get requirements for multiple sections', () => {
-        expect(gcepReqs.getRequirementsFor(['basicInfo', 'membership']))
-            .to
-            .eql([
-                ...GcepRequirements.requirements.basicInfo, 
-                ...GcepRequirements.requirements.membership
-            ]);
+    it('is met when the group has at least one biocurator', () => {
+
+        testGroup.addMember(new GroupMember({
+            roles: [
+                groups.roles.biocurator
+            ],
+            training_level_1: true,
+            training_level_2: true,
+        }))
+
+        expect(requirements.minimumBiocurators.isMet(testGroup)).to.be.true;
+    });
+});
+
+describe('biocuratorTrainers', () => {
+    beforeEach(() => {
+        testGroup = new Group();
     });
 
-    it ('knows if the group meets requirements for a section', () => {
-        const group = new Group({
-            name: 'bird cat group',
-            expert_panel: {
-                long_base_name: 'bird GCEP',
-                short_base_name: ''
-            }
-        });
-
-        expect(gcepReqs.meetsRequirements(group, 'basicInfo')).to.be.false;
-
-        group.expert_panel.short_base_name = 'BRD';
-
-        expect(gcepReqs.meetsRequirements(group, 'basicInfo')).to.be.true;
+    it('is not met when the group has zero biocurator trainers', () => {
+        expect(requirements.biocuratorTrainers.isMet(testGroup)).to.be.false;
     });
 
-    it ('gets messages and requirement met/unment', () => {
-        const group = new Group({
-            name: 'Bird group',
-            expert_panel: {
-                long_base_name: 'Birds GCEP',
-                short_base_name: ''
-            }
-        });
+    it('is met when the group has at least one biocurator trainer', () => {
+        testGroup.addMember(new GroupMember({
+            roles: [
+                groups.roles['biocurator-trainer']
+            ]
+        }));
 
-        expect(gcepReqs.checkRequirements(group, 'basicInfo'))
-            .to
-            .eql([
-                {
-                    label: 'Long Base Name',
-                    isMet: true
-                },
-                {
-                    label: 'Short Base Name',
-                    isMet: false
-                }
-            ])
+        expect(requirements.biocuratorTrainers.isMet(testGroup)).to.be.true;
+    });
+});
 
+describe('coreApprovalMembers', () => {
+    beforeEach(() => {
+        testGroup = new Group();
+    });
 
+    it('is not met when the group has zero core approval members', () => {
+        expect(requirements.coreApprovalMembers.isMet(testGroup)).to.be.false;
+    });
+
+    it('is met when the group has at least one core approval member', () => {
+        testGroup.addMember(new GroupMember({
+            roles: [
+                groups.roles['core-approval-member']
+            ]
+        }));
+
+        expect(requirements.coreApprovalMembers.isMet(testGroup)).to.be.true;
     });
 });

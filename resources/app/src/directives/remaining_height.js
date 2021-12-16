@@ -4,6 +4,6 @@ export default {
         const elementOffset = rect.top;
         let offset = (binding.value) ? binding.value : (elementOffset+36);
         el.style.height = `calc(100vh - ${offset}px)`
-        el.style.overflow = 'auto'       
+        el.style.overflow = 'auto'
     }
 }

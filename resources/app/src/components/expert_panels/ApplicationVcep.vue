@@ -3,6 +3,7 @@
         <application-step 
             id="definition" 
             title="Group Definition"
+            :disabled="group.expert_panel.hasPendingSubmission"
         >
             <app-section title="Basic Information" id="basicInfo">
                 <group-form 
@@ -31,16 +32,22 @@
             </app-section>
         </application-step>
 
-        <application-step id="specifications-development" title="Specifications Development" :disabled="group.expert_panel.current_step < 2">
+        <!-- <application-step 
+            id="specifications-development" 
+            title="Specifications Development" 
+            :disabled="group.expert_panel.current_step < 2 || group.expert_panel.hasPendingSubmission"
+            :no-submit="true"
+        >
             <app-section>
                 <cspec-summary></cspec-summary>
             </app-section>
         </application-step>
-
-        <!-- <application-step 
+        -->
+        <application-step 
             id="draft-specifications" 
             title="Draft Specifications" 
-            :disabled="group.expert_panel.current_step < 2"
+            :disabled="group.expert_panel.current_step < 2  || group.expert_panel.hasPendingSubmission"
+            :no-submit="true"
         >
             <app-section>
                 <cspec-summary></cspec-summary>
@@ -50,17 +57,18 @@
         <application-step 
             id="pilot-specifications" 
             title="Pilot Specifications"
-            :disabled="group.expert_panel.current_step < 3"
+            :disabled="group.expert_panel.current_step < 3  || group.expert_panel.hasPendingSubmission"
+            :no-submit="true"
         >
             <app-section>
                 <cspec-summary></cspec-summary>
             </app-section>
-        </application-step> -->
+        </application-step>
 
         <application-step 
             id="sustained-curation" 
             title="Sustained Curation"
-            :disabled="group.expert_panel.current_step < 4"
+            :disabled="group.expert_panel.current_step < 4 || group.expert_panel.hasPendingSubmission"
         >
             <app-section title="Plans for Ongoing Gene Review and Reanalysis and Discrepancy Resolution" id="curationReviewProcess">
                 <vcep-ongoing-plans-form />
@@ -74,24 +82,11 @@
                 <member-designation-form ref="designationForm" />
             </app-section>
         </application-step>
-
-        <popper hover arrow>
-            <template v-slot:content>
-                <requirements-item  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
-            </template>
-            <div class="relative">
-                <button class="btn btn-xl" @click="submit">
-                    Submit for Approval
-                </button>
-                <!-- Add mask above button if requirements are unmet b/c vue3-popper doesn't respond to disabled components. -->
-                <div v-if="requirementsUnmet" class="bg-white opacity-50 absolute top-0 bottom-0 left-0 right-0"></div>
-            </div>
-        </popper>
     </div>
 </template>
 <script>
+import {VcepApplication} from '@/domain'
 import {isValidationError} from '@/http'
-import {VcepRequirements} from '@/domain'
 import ApplicationSection from '@/components/expert_panels/ApplicationSection'
 import ApplicationStep from '@/components/expert_panels/ApplicationStep'
 import AttestationNhgri from '@/components/expert_panels/AttestationNhgri'
@@ -105,12 +100,9 @@ import MembershipDescriptionForm from '@/components/expert_panels/MembershipDesc
 import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm';
 import VcepGeneList from '@/components/expert_panels/VcepGeneList';
 import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm';
-import RequirementsItem from '@/components/expert_panels/RequirementsItem'
-
-const requirements = new VcepRequirements();
 
 export default {
-    name: 'ApplicationCcep',
+    name: 'ApplicationVcep',
     components: {
         'app-section': ApplicationSection,
         ApplicationStep,
@@ -122,10 +114,14 @@ export default {
         MemberDesignationForm,
         MemberList,
         MembershipDescriptionForm,
-        RequirementsItem,
         ScopeDescriptionForm,
         VcepGeneList,
         VcepOngoingPlansForm,
+    },
+    data () {
+        return {
+            application: VcepApplication
+        }
     },
     computed: {
         group: {
@@ -139,15 +135,6 @@ export default {
         currentStep () {
             return this.group.expert_panel.current_step;
         },
-        meetsRequirements () {
-            return requirements.meetsRequirements(this.group);
-        },
-        requirementsUnmet () {
-            return !requirements.meetsRequirements(this.group);
-        },
-        evaledRequirements () {
-            return requirements.checkRequirements(this.group);
-        }
     },
     methods: {
         async save() {
@@ -169,9 +156,6 @@ export default {
                 return this.$store.dispatch('groups/saveApplicationData', this.group)
                         .then(() => this.$store.commit('pushSuccess', 'Application updated'));
             }
-        },
-        submit () {
-            console.log('submit');
         }
     }
 }

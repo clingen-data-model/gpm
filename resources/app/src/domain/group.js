@@ -57,6 +57,21 @@ class Group extends Entity {
                 .filter(m => m.isActive)
     }
 
+    get biocurators () {
+        return this.findMembersWithRole('biocurator')
+                .filter(m => m.isActive)
+    }
+
+    get biocuratorTrainers () {
+        return this.findMembersWithRole('biocurator-trainer')
+                .filter(m => m.isActive)
+    }
+
+    get coreApprovalMembers () {
+        return this.findMembersWithRole('core-approval-member')
+                .filter(m => m.isActive)
+    }
+
     get activeMembers () {
         return this.members.filter(m => m.isActive)
     }

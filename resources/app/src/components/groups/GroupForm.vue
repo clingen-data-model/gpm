@@ -90,7 +90,7 @@
     </div>
 </template>
 <script>
-import isValidationError from '@/http'
+import {isValidationError} from '@/http'
 import {api} from '@/http'
 import Group from '@/domain/group'
 import configs from '@/configs'

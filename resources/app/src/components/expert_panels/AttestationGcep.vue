@@ -82,9 +82,7 @@
     </div>
 </template>
 <script>
-import Group from '@/domain/group'
-import api from '@/http/api'
-import is_validation_error from '../../http/is_validation_error'
+import {api, isValidationError} from '@/http'
 
 export default {
     name: 'AttestationGcep',
@@ -110,8 +108,8 @@ export default {
             }
         },
         gciTrainingErrors () {
-            const trainingErrors = this.errors.gci_training ?? [];
-            const dateErrors = this.errors.gci_training_date ?? [];
+            const trainingErrors = this.errors.gci_training || [];
+            const dateErrors = this.errors.gci_training_date || [];
             return [...trainingErrors, ...dateErrors];
         },
         gci_training () {
@@ -125,7 +123,7 @@ export default {
                 await api.post(`/api/groups/${this.group.uuid}/application/attestations/gcep`,
                 this.group.expert_panel.attributes)
             } catch (error) {
-                if (is_validation_error(error)) {
+                if (isValidationError(error)) {
                     this.errors = error.response.data.errors;
                 }
             }

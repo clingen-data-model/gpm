@@ -1,5 +1,7 @@
 import Entity from './entity'
+import configs from '@/configs'
 
+const {submissions} = configs;
 class ExpertPanel extends Entity
 {
     static dates = [
@@ -70,10 +72,17 @@ class ExpertPanel extends Entity
         const specifications = attributes.specifications ? [...attributes.specifications] : [];
         delete(attributes.specifications);
 
+        const genes = attributes.genes ? [...attributes.genes] : [];
+        delete(attributes.genes);
+
+        const submissions = attributes.submissions ? [...attributes.submissions] : [];
+        delete(attributes.submissions);
+
         super(attributes);
 
         this.specfications = specifications;
-        this.genes = [];
+        this.genes = genes;
+        this.submissions = submissions;
     }
 
     get nhgriSigned () {
@@ -91,9 +100,12 @@ class ExpertPanel extends Entity
         return [];
     }
 
-    get definitionIsApproved () {
+    get defIsApproved () {
         return this.step_1_approval_date !== null
     }
+    // get definitionIsApproved () {
+    //     return this.step_1_approval_date !== null
+    // }
 
     get draftSpecificationsIsApproved () {
         return this.step_2_approval_date !== null
@@ -104,9 +116,27 @@ class ExpertPanel extends Entity
     }
 
     get sustainedCurationIsApproved () {
-        return this.step_3_approval_date !== null
+        return this.step_4_approval_date !== null
     }
 
+    get pendingSubmission () {
+        return this.submissions.find(submission => submission.submission_status_id == submissions.statuses.pending.id) || {};
+    }
+
+    get hasPendingSubmission () {
+        return this.submissions
+                .filter(submission => submission.submission_status_id == submissions.statuses.pending.id)
+                .length > 0
+    }
+
+    get hasCompletedSubmission () {
+        return this.submissions
+                .filter(submission => submission.submission_status_id == submissions.statuses.approved.id)
+    }
+
+    hasPendingSubmissionForStep(stepName) {
+        return this.hasPendingSubmission && this.pendingSubmission.type.name == stepName;
+    }
 }
 
 export default ExpertPanel;

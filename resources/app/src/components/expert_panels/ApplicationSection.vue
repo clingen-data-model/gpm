@@ -1,5 +1,6 @@
 <script>
 import RequirementsBadge from '@/components/expert_panels/RequirementsBadge'
+import {GcepApplication, VcepApplication} from '@/domain'
 
 export default {
     name: 'ApplicationSection',
@@ -14,7 +15,7 @@ export default {
         id: {
             type: String,
             required: false
-        }
+        },
     },
     computed: {
         group: {
@@ -22,8 +23,11 @@ export default {
                 return this.$store.getters['groups/currentItemOrNew'];
             }
         },
-        name () {
-            return this.id;
+        application () {
+            return this.group.isVcep() ? VcepApplication : GcepApplication;
+        },
+        section () {
+            return this.application.getSection(this.id);
         }
     },
 }
@@ -35,7 +39,7 @@ export default {
                 <slot name="title">
                     <h2>{{title}}</h2>
                 </slot>
-                <requirements-badge v-if="name" :section="name" :group="group"></requirements-badge>
+                <requirements-badge v-if="id" :section="section" :group="group"></requirements-badge>
             </header>
             <div>
                 <slot></slot>

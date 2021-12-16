@@ -2,7 +2,7 @@ import Group from '@/domain/group';
 import { api, queryStringFromParams } from '@/http';
 
 const baseUrl = '/api/groups';
-const getApplicationUrl = (uuid) => `${baseUrl}/${uuid}/application`;
+const getApplicationUrl = (uuid) => `${baseUrl}/${uuid}/expert-panel`;
 
 export const getters = {
     groups: state => state.items,
@@ -302,7 +302,7 @@ export const actions = {
             expertPanel.curation_review_protocol_other = null;
         }
 
-        await api.put(`/api/groups/${uuid}/expert-panel/curation-review-protocols`, expertPanel.attributes)
+        await api.put(`${getApplicationUrl(uuid)}/curation-review-protocols`, expertPanel.attributes)
         .then(response => {
             commit('addItem', response.data.data);
             return response;
@@ -337,7 +337,7 @@ export const actions = {
     },
 
     getGenes ({ commit, getters,}, group) {
-        return api.get(`/api/groups/${group.uuid}/expert-panel/genes`)
+        return api.get(`${getApplicationUrl(group.uuid)}/genes`)
             .then(response => {
                 const item = getters.getItemByUuid(group.uuid)
                 item.expert_panel.genes = response.data;
@@ -347,7 +347,7 @@ export const actions = {
     },
     
     getEvidenceSummaries ({commit, getters}, group) {
-        return api.get(`/api/groups/${group.uuid}/expert-panel/evidence-summaries`)
+        return api.get(`${getApplicationUrl(group.uuid)}/evidence-summaries`)
             .then(response => {
                 const item = getters.getItemByUuid(group.uuid)
                 item.expert_panel.evidence_summaries = response.data.data;
@@ -357,11 +357,29 @@ export const actions = {
     },
 
     saveApplicationData ({dispatch}, group) {
-        return api.put(`/api/groups/${group.uuid}/application`, group.expert_panel.attributes)
+        return api.put(`${baseUrl}/${group.uuid}/application`, group.expert_panel.attributes)
             .then(response => { 
                 dispatch('find', group.uuid);
                 return response;
             });
+    },
+
+    submitApplicationStep ({commit}, {group, notes}) {
+        return api.post(`${baseUrl}/${group.uuid}/application/submission`, {notes})
+            .then(response => {
+                group.expert_panel.submissions.push(response.data);
+                commit('addItem', group);
+                return response;
+            })
+    },
+
+    getSubmissions ({commit}, group) {
+        return api.get(`${baseUrl}/${group.uuid}/application/submission`)
+            .then(response => {
+                group.expert_panel.submissions = response.data;
+                commit('addItem', group);
+                return response;
+            })
     }
 };
 

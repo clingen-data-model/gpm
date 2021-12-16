@@ -1,127 +1,251 @@
-import AttestationGcep from '@/components/expert_panels/AttestationGcep'
-import AttestationNhgri from '@/components/expert_panels/AttestationNhgri'
-import AttestationReanalysis from '@/components/expert_panels/AttestationReanalysis'
-import CspecSummary from '@/components/expert_panels/CspecSummary'
-import EvidenceSummaryList from '@/components/expert_panels/EvidenceSummaryList'
-import GroupForm from '@/components/groups/GroupForm';
-import MemberDesignationForm from '@/components/expert_panels/MemberDesignationForm';
-import MemberList from '@/components/groups/MemberList';
-import MembershipDescriptionForm from '@/components/expert_panels/MembershipDescriptionForm';
-import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm';
-import VcepGeneList from '@/components/expert_panels/VcepGeneList';
-import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm';
+// import AttestationGcep from '@/components/expert_panels/AttestationGcep'
+// import AttestationNhgri from '@/components/expert_panels/AttestationNhgri'
+// import AttestationReanalysis from '@/components/expert_panels/AttestationReanalysis'
+// import CspecSummary from '@/components/expert_panels/CspecSummary'
+// import EvidenceSummaryList from '@/components/expert_panels/EvidenceSummaryList'
+// import GroupForm from '@/components/groups/GroupForm';
+// import MemberDesignationForm from '@/components/expert_panels/MemberDesignationForm';
+// import MemberList from '@/components/groups/MemberList';
+// import MembershipDescriptionForm from '@/components/expert_panels/MembershipDescriptionForm';
+// import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm';
+// import VcepGeneList from '@/components/expert_panels/VcepGeneList';
+// import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm';
 
-import {
-    longName,
-    shortName,
-    chairs,
-    coordinators,
-    coisComplete,
-    diversityOfExperience,
-    institutions,
-    expertiseDescription,
-    genes,
-    scopeDescription,
-    curationProcess,
-    meetingFrequency,
-    nhgri,
-    gcepAttestation,
-    reanalysisAttestation,
-    exampleSummaries,
-    pilotedApprovedSpecifications,
-    minimumBiocurators,
-    biocuratorTrainers,
-    coreApprovalMembers
-} from '@/domain/ep_requirements'
+import {requirements} from '@/domain'
 
-export const vcepApplication = {
+export class RequirementEvaluator {
+    get hasRequirements () {
+        return this.requirements.length > 0;
+    }
+
+    evaluateRequirements (group) {
+        return this.requirements.map(req => {
+            return {
+                label: req.label,
+                isMet: req.isMet(group)
+            }
+        });
+    }
+
+    meetsRequirements (group) {
+        return this.requirements.every(req => req.isMet(group));
+    }
+
+    metRequirements (group) {
+        return this.requirements.filter(req => req.isMet(group));
+    }
+
+    unmetRequirements (group) {
+        return this.requirements.filter(req => !req.isMet(group));
+    }
+}
+export class ApplicationSection extends RequirementEvaluator {
+    constructor (name, title, requirements, components) {
+        super();
+        this.name = name;
+        this.title = title;
+        this.requirements = requirements;
+        this.components = components;
+    }
+
+}
+export class ApplicationStep extends RequirementEvaluator{
+    constructor (name, sections, title, completeFunction, disabledFunction) {
+        super();
+        this.name = name;
+        this.sections = sections;
+        this.title = title;
+        this.completeFunction = completeFunction;
+        this.disabledFunction = disabledFunction;
+
+        this.sections.forEach(sctn => {
+            Object.defineProperty(
+                this,
+                sctn.name,
+                {
+                    get: () => {
+                        return this.sections.find((sct => sct.name == sctn.name));
+                    }
+                }
+            );
+        });
+    }
+
+    get requirements () {
+        return this.sections
+                    .map(sct => sct.requirements)
+                    .flat();
+    }
+
+    isComplete (group) {
+        if (!this.completeFunction) {
+            return false;
+        }
+
+        return this.completeFunction(group);
+    }
+
+    isDisabled (group) {
+        if (!this.disabledFunction) {
+            return false;
+        }
+        return this.disabledFunction(group);
+    }
+}
+export class ApplicationDefinition extends RequirementEvaluator{
+    constructor (steps) {
+        super();
+        this.steps = steps;
+        this.steps.forEach(step => {
+            Object.defineProperty(
+                this, 
+                step.name, 
+                { 
+                    get: () => {
+                        return this.steps.find(st => st.name == step.name)
+                    }
+                }
+            );
+        });
+    }
+
+    get sections () {
+        return this.steps.map(step => step.sections).flat();
+    }
+
+    get requirements () {
+        return this.sections.map(sct => sct.requirements).flat();
+    }
+
+    getStep(stepIdentifier) {
+        if (isNaN(stepIdentifier)) {
+            const step = this.steps.find(step => step.name == stepIdentifier);
+            if (!step) {
+                throw Error(`Step with name ${stepIdentifier} not found.`);
+            }
+            return step;
+        }
+        return this.steps[stepIdentifier-1];
+    }
+
+    getSection(sectionName) {
+        return this.sections.find(sct => sct.name == sectionName);
+    }
+
+    getCurrentStep(group) {
+        return this.getStep(group.expert_panel.current_step);
+    }
+}
+
+export const applicationDefinitionFactory = (config) => {
+    const steps = Object.keys(config.steps).map(stepKey => {
+        const step = config.steps[stepKey];
+        const sections  = Object.keys(step.sections).map(sectKey => {
+            const section = step.sections[sectKey];
+            return new ApplicationSection(sectKey, section.name, section.requirements, section.components)
+        });
+        return new ApplicationStep(stepKey, sections, step.name, step.completed, step.disabled);
+    })
+    return new ApplicationDefinition(steps);
+}
+
+export const VcepApplication = applicationDefinitionFactory({
     steps: {
-        definition: {
+        'definition': {
             name: 'Group Definition',
             sections: {
                 basicInfo: {
                     name: 'Basic Information',
                     requirements: [
-                        longName,
-                        shortName
+                        requirements.longName,
+                        requirements.shortName
                     ],
-                    components: [
-                        GroupForm,
-                    ]
+                    // components: [
+                    //     GroupForm,
+                    // ]
                 },
                 membership: {
                     name: 'Membership',
                     requirements: [
-                        chairs,
-                        coordinators,
-                        coisComplete,
-                        diversityOfExpertise,
-                        institutions,
-                        expertiseDescription,            
+                        requirements.chairs,
+                        requirements.coordinators,
+                        requirements.coisComplete,
+                        requirements.institutions,
+                        requirements.expertiseDescription,            
                     ],
-                    components: [
-                        MemberList,
-                        MembershipDescriptionForm        
-                    ]
+                    // components: [
+                        // MemberList,
+                        // MembershipDescriptionForm        
+                    // ]
                 },
                 scope: {
                     name: 'Scope of Work',
                     requirements: [
-                        genes,
-                        scopeDescription
+                        requirements.genes,
+                        requirements.scopeDescription
                     ],
-                    components: [
-                        ScopeDescriptionForm,
-                        VcepGeneList
-                    ]
+                    // components: [
+                        // ScopeDescriptionForm,
+                        // VcepGeneList
+                    // ]
                 },
                 reanalysis: {
                     name: 'Reanalysis & Discrepency Resolution',
                     requirements: [
-                        reanalysisAttestation
+                        requirements.reanalysisAttestation
                     ],
-                    components: [
-                        AttestationReanalysis,
-                    ]
+                    // components: [
+                        // AttestationReanalysis,
+                    // ]
                 },
                 nhgri: {
-                    label: 'NHGRI Data Availability',
+                    name: 'NHGRI Data Availability',
                     requirements: [
-                        nhgri
+                        requirements.nhgri
                     ],
-                    components: [
-                        AttestationNhgri
-                    ]
+                    // components: [
+                        // AttestationNhgri
+                    // ]
                 }
         
             },
-            completed: group => group.expert_panel.defitionIsApproved,
+            completed: group => group.expert_panel.defIsApproved,
+            disabled: () => false,
         },
         'draft-specifications': {
             name: 'Draft Specifications',
             sections: {
-                requirements: [
-                    pilotedDraftSpecifications
-                ],
-                components: [
-                    CspecSummary
-                ]
+                draftSpecs: {
+                    name: 'Draft Specfications',
+                    title: null,
+                    requirements: [
+                        requirements.pilotedDraftSpecifications
+                    ],
+                }
+                // components: [
+                    // CspecSummary
+                // ]
             },
-            completed: group => group.expert_panel.draftSpecificationsIsApproved,
-            disabled: (group) => !group.expert_panel.definitionIsApproved,
+            completed: group => {
+                return group.expert_panel.draftSpecificationsIsApproved
+            },
+            disabled: group => !group.expert_panel.defIsApproved,
         },
         'pilot-specifications': {
             name: 'Specifications Pilot',
             sections: {
-                requirements: [
-                    pilotedApprovedSpecifications
-                ],
-                components: [
-                    CspecSummary
-                ]
+                pilotSpecs: {
+                    name: 'Pilot Specifications',
+                    requirements: [
+                        requirements.pilotedApprovedSpecifications
+                    ],
+                }
+                // components: [
+                    // CspecSummary
+                // ]
             },
             completed: group => group.expert_panel.pilotSpecificationsIsApproved,
-            disabled: (group) => !group.expert_panel.draftSpecificationsIsApproved,
+            disabled: group => !group.expert_panel.draftSpecificationsIsApproved,
         },
         'sustained-curation': {
             name: 'Sustained Curation',
@@ -129,109 +253,107 @@ export const vcepApplication = {
                 curationReviewProcess: {
                     name: 'Curation and Review Process',
                     requirements: [
-                        meetingFrequency,
-                        curationProcess
+                        requirements.meetingFrequency,
+                        requirements.curationProcess
                     ],
-                    components: [
-                        VcepOngoingPlansForm
-                    ]
+                    // components: [
+                        // VcepOngoingPlansForm
+                    // ]
                 },
                 evidenceSummaries: {
                     name: 'Example Evidence Summaries',
                     requirements: [
-                        exampleSummaries
+                        requirements.exampleSummaries
                     ],
-                    components: [
-                        EvidenceSummaryList
-                    ]
+                    // components: [
+                        // EvidenceSummaryList
+                    // ]
                 },
                 designations: {
                     name: 'Member Designation',
                     requirements: [
-                        minimumBiocurators,
-                        biocuratorTrainers,
-                        coreApprovalMembers
+                        requirements.minimumBiocurators,
+                        requirements.biocuratorTrainers,
+                        requirements.coreApprovalMembers
                     ],
-                    components: [
-                        MemberDesignationForm
-                    ]
-                },
-    
+                    // components: [
+                        // MemberDesignationForm
+                    // ]
+                },    
             },
             completed: group => group.expert_panel.sustainedCurationIsApproved,
-            disabled: (group) => !group.expert_panel.pilotSpecificationsIsApproved,
-        }
-        
+            disabled: group => !group.expert_panel.pilotSpecificationsIsApproved,
+        }        
     }
-}
+});
 
-export const gcepApplication = {
+export const GcepApplication = applicationDefinitionFactory({
     steps: {
         definition: {
+            title: 'Group Definition',
             sections: {
                 basicInfo: {
                     name: 'Basic Information',
                     requirements: [
-                        longName,
-                        shortName
+                        requirements.longName,
+                        requirements.shortName
                     ],
-                    components: [
-                        GroupForm,
-                    ]
+                    // components: [
+                        // GroupForm,
+                    // ]
                 },
                 membership: {
                     name: 'Membership',
                     requirements: [
-                        chairs,
-                        coisComplete,
-                        coordinators,
-                        institutions,
-                        diversityOfExpertise,
+                        requirements.chairs,
+                        requirements.coisComplete,
+                        requirements.coordinators,
+                        requirements.institutions,
                     ],
-                    components: [
-                        MemberList,
-                    ]
+                    // components: [
+                        // MemberList,
+                    // ]
                 },
                 scope: {
                     name: 'Scope of Work',
                     requirements: [
-                        genes,
-                        scopeDescription
+                        requirements.genes,
+                        requirements.scopeDescription
                     ],
-                    components: [
-                        ScopeDescriptionForm,
-                        GcepGeneList
-                    ]
+                    // components: [
+                        // ScopeDescriptionForm,
+                        // GcepGeneList
+                    // ]
                 },
                 attestations: {
                     name: 'Attestations',
                     requirements: [
-                        gcepAttestation
+                        requirements.gcepAttestation
                     ],
-                    components: [
-                        AttestationGcep,
-                    ]
+                    // components: [
+                    //     AttestationGcep,
+                    // ]
                 },
                 curationReviewProcess: {
                     name: 'Curation and Review Process',
                     requirements: [
-                        curationProcess
+                        requirements.curationProcess
                     ],
-                    components: [
-                        GcepOngoingPlansForm
-                    ]
+                    // components: [
+                    //     GcepOngoingPlansForm
+                    // ]
                 },
                 nhgri: {
                     name: 'NHGRI Data Availability',
                     requirements: [
-                        nhgri
+                        requirements.nhgri
                     ],
-                    components: [
-                        AttestationNhgri
-                    ]
+                    // components: [
+                    //     AttestationNhgri
+                    // ]
                 }
         
             }
         },
     }
-}
+});

@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <application-step>
+    <div class="relative">
+        <application-step id="definition" :disabled="group.expert_panel.hasPendingSubmission">
             <app-section title="Basic Information" id="basicInfo">
                 <group-form 
                     :group="group" ref="groupForm"
@@ -27,7 +27,6 @@
                 
                 <hr>
 
-                <!-- <p>Describe the scope of work of the Expert Panel: disease area(s) of focus and gene list being addressed.</p> -->
                 <scope-description-form />
             </app-section>
 
@@ -35,7 +34,7 @@
                 <attestation-gcep />
             </app-section>
 
-            <app-section id="reanalysis" title="Plans for Ongoing Gene Review and Reanalysis and Discrepancy Resolution">
+            <app-section id="curationReviewProcess" title="Plans for Ongoing Gene Review and Reanalysis and Discrepancy Resolution">
                 <gcep-ongoing-plans-form />
             </app-section>
 
@@ -43,19 +42,6 @@
                 <attestation-nhgri />
             </app-section>
         </application-step>
-        
-        <popper hover arrow>
-            <template v-slot:content>
-                <requirements-item  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
-            </template>
-            <div class="relative">
-                <button class="btn btn-xl" @click="submit">
-                    Submit for Approval
-                </button>
-                <!-- Add mask above button if requirements are unmet b/c vue3-popper doesn't respond to disabled components. -->
-                <div v-if="requirementsUnmet" class="bg-white opacity-50 absolute top-0 bottom-0 left-0 right-0"></div>
-            </div>
-        </popper>
     </div>
 </template>
 <script>
@@ -71,10 +57,6 @@ import GroupForm from '@/components/groups/GroupForm'
 import MemberList from '@/components/groups/MemberList';
 import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm';
 import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm';
-import RequirementsItem from '@/components/expert_panels/RequirementsItem'
-import {GcepRequirements} from '@/domain'
-
-const requirements = new GcepRequirements();
 
 export default {
     name: 'ApplicationGcep',
@@ -88,7 +70,6 @@ export default {
         GcepOngoingPlansForm,
         MemberList,
         ScopeDescriptionForm,
-        RequirementsItem,
     },
     computed: {
         group: {
@@ -99,15 +80,6 @@ export default {
                 this.$store.commit('groups/addItem', value);
             }
         },
-        meetsRequirements () {
-            return requirements.meetsRequirements(this.group);
-        },
-        requirementsUnmet () {
-            return !requirements.meetsRequirements(this.group);
-        },
-        evaledRequirements () {
-            return requirements.checkRequirements(this.group);
-        }
     },
     methods: {
         async save() {
@@ -129,11 +101,8 @@ export default {
                         .then(() => this.$store.commit('pushSuccess', 'Application updated'));
             }
         },
-        submit () {
-            console.log('submit');
-        }
     },
-    setup (props, context) {
+    setup () {
         return {
             errors, 
             resetErrors, 

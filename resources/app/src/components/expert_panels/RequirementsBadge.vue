@@ -11,8 +11,6 @@
     </div>
 </template>
 <script>
-import {VcepRequirements, GcepRequirements} from '@/domain/index'
-import configs from '@/configs'
 import RequirementsItem from './RequirementsItem'
 
 export default {
@@ -22,13 +20,12 @@ export default {
     },
     props: {
         section: {
-            type: String,
+            type: Object,
             required: true
         }
     },
     data () {
         return {
-            requirements: null,
         }
     },
     computed: {
@@ -36,7 +33,7 @@ export default {
             return this.$store.getters['groups/currentItemOrNew']
         },
         meetsRequirements () {
-            return this.requirements && this.requirements.meetsRequirements(this.group, this.section);
+            return this.section.meetsRequirements(this.group);
         },
         badgeColor () {
             if (this.meetsRequirements) {
@@ -45,35 +42,14 @@ export default {
             return 'yellow'
         },
         badgeText () {
-            if (!this.requirements) {
-                return 'loading...'
-            }
-            const metCount = this.requirements.metRequirements(this.group, this.section).length;
-            return `Requirements: ${metCount} / ${this.requirements.getRequirementsFor(this.section).length}`;
+            const metCount = this.section.metRequirements(this.group).length;
+            return `Requirements: ${metCount} / ${this.section.requirements.length}`;
         },
         evaledRequirements() {
-            if (!this.requirements) {
-                return 'loading...'
-            }
-            return this.requirements.checkRequirements(this.group, this.section);
+            return this.section.evaluateRequirements(this.group);
         },
         hasRequirements () {
-            return this.requirements && this.requirements.sectionHasRequirements(this.section);
-        }
-    },
-    watch: {
-        group: {
-            immediate: true,
-            handler: function (to) {
-                if (!to.expert_panel) {
-                    return;
-                }
-                if (to.expert_panel.type.name == 'gcep') {
-                    this.requirements = new GcepRequirements();
-                    return;
-                }
-                this.requirements = new VcepRequirements();
-            }
+            return this.section.hasRequirements;
         }
     },
     methods: {

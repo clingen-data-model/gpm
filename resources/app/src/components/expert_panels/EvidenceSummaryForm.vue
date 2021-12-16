@@ -82,7 +82,7 @@ export default {
     methods: {
         async save () {
             try {
-                let url = `/api/groups/${this.group.uuid}/application/evidence-summaries`;
+                let url = `/api/groups/${this.group.uuid}/expert-panel/evidence-summaries`;
                 let method = 'post';
                 if (this.summaryClone.id) {
                     url += `/${this.summaryClone.id}`
@@ -92,6 +92,7 @@ export default {
                                             .then (response => response.data.data);
 
                 this.$emit('saved', newSummary);
+                this.$store.commit('pushSuccess', 'Saved example evidence summary');
                 this.editing = false;
             } catch (error) {
                 if (is_validation_error(error)) {

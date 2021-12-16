@@ -15,8 +15,8 @@
         class="app-menu overflow-y-auto"
     >
         <ul class="menu-items">
-            <li v-for="(item, idx) in menu" :key="idx">
-                <menu-item :item="item" class="block"></menu-item>
+            <li v-for="(item, idx) in application.steps" :key="idx">
+                <menu-item :item="item" class="block" :is-current-step="isCurrentStep(item)"></menu-item>
             </li>
         </ul>
     </div>
@@ -29,7 +29,7 @@ export default {
         MenuItem
     },
     props: {
-        menu: {
+        application: {
             required: true,
             type: Object
         },
@@ -44,10 +44,15 @@ export default {
         }
     },
     computed: {
-
+        group () {
+            return this.$store.getters['groups/currentItemOrNew']
+        }
+        
     },
     methods: {
-
+        isCurrentStep(item) {
+            return item.name == this.application.getCurrentStep(this.group).name
+        }
     }
 }
 </script>

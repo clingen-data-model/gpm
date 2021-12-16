@@ -24,14 +24,38 @@
                         </span>
                     </div>
                     
-                    <button class="btn btn-sm" @click="$refs.application.save">Save</button>
+                    <button 
+                        v-if="!group.expert_panel.hasPendingSubmission"
+                        @click="$refs.application.save" 
+                        class="btn btn-sm" 
+                    >Save</button>
                 </h1>
             </div>
         </header>
         <div class="md:flex">
-            <application-menu class="mt-4" :menu="applicationMenu" :is-collapsed="!showApplicationToc"></application-menu>
+            <application-menu 
+                class="mt-4" 
+                :application="application" 
+                :is-collapsed="!showApplicationToc"
+            ></application-menu>
             <div class=" flex-1">
                 <section id="body" class="px-4" v-remaining-height>
+                    <static-alert 
+                        v-if="group.expert_panel.hasPendingSubmission"
+                        class="relative mt-4 px-4 z-50" 
+                        variant="success"
+                    >
+                        <p class="text-lg">Your application was submitted on {{formatDate(group.expert_panel.pendingSubmission.created_at)}}.</p>
+                        <p>You cannot update your application while waiting approval.</p>
+                        <p>The approval committee will respond soon.</p>
+                        <p>
+                            Please contact 
+                            <a href="mailto:cdwg_oversightcommittee@clinicalgenome.org">
+                                the ClinGen CDWG Oversight Committee
+                            </a>
+                            if you have any questions.
+                        </p>
+                    </static-alert>
                     <component :is="applicationComponent" ref="application"></component>
                 </section>
             </div>
@@ -49,7 +73,7 @@ import ApplicationGcep from '../../components/expert_panels/ApplicationGcep.vue'
 import ApplicationVcep from '@/components/expert_panels/ApplicationVcep';
 import ApplicationMenu from '@/components/layout/ApplicationMenu';
 import Group from '@/domain/group';
-import {vcepMenu, gcepMenu} from '@/domain'
+import {VcepApplication,  GcepApplication} from '@/domain'
 
 export default {
     name: 'GroupApplication',
@@ -80,11 +104,12 @@ export default {
 
         uuid: {
             immediate: true,
-            handler: function (to) {
-                this.$store.dispatch('groups/find', to)
+            handler: async function (to) {
+                await this.$store.dispatch('groups/find', to)
                     .then(() => {
                         this.$store.commit('groups/setCurrentItemIndexByUuid', this.uuid)
-                    })
+                    });
+                await this.$store.dispatch('groups/getSubmissions', this.group);
 
             }
         },
@@ -105,8 +130,8 @@ export default {
             const group = this.$store.getters['groups/currentItem'] || new Group();
             return group || new Group();
         },
-        applicationMenu () {
-            return this.group.isVcep() ? vcepMenu : gcepMenu;
+        application () {
+            return this.group.isVcep() ? VcepApplication : GcepApplication;
         }
     },
     methods: {
