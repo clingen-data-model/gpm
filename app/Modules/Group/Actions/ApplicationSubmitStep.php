@@ -4,6 +4,7 @@ namespace App\Modules\Group\Actions;
 
 use Exception;
 use App\Models\Submission;
+use App\Modules\Group\Events\ApplicationStepSubmitted;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
 use Lorisleiva\Actions\ActionRequest;
@@ -38,6 +39,8 @@ class ApplicationSubmitStep
         // 2. change the model's wasRecentlyCreated attriute to true so the response status is 201.
         $submission->wasRecentlyCreated = true;
         
+        event(new ApplicationStepSubmitted($group, $submission));
+
         return $submission;
     }
 
@@ -64,6 +67,4 @@ class ApplicationSubmitStep
                 break;
         }
     }
-    
-    
 }

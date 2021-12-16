@@ -6,11 +6,16 @@ use Tests\TestCase;
 use App\Models\Permission;
 use App\Models\Submission;
 use Laravel\Sanctum\Sanctum;
+use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
+use Illuminate\Support\Facades\Event;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Modules\Group\Events\ApplicationStepSubmitted;
+use App\Modules\Group\Notifications\ApplicationSubmissionNotification;
 
 /**
  * @group submissions
@@ -92,6 +97,69 @@ class SubmitApplicationStepTest extends TestCase
                 'notes' => 'Notes from the submitter!'
             ]);
     }
+
+    /**
+     * @test
+     */
+    public function fires_ApplicationStepSubmitted_event()
+    {
+        Event::fake(ApplicationStepSubmitted::class);
+        $this->makeRequest()
+            ->assertStatus(201);
+
+        Event::assertDispatched(ApplicationStepSubmitted::class);
+    }
+    
+    /**
+     * @test
+     */
+    public function records_ApplicationStepSubmitted_activity()
+    {
+        $this->makeRequest()
+            ->assertStatus(201);
+
+        $this->assertDatabaseHas('activity_log', [
+            'subject_type' => Group::class,
+            'subject_id' => $this->expertPanel->group_id,
+            'activity_type' => 'application-step-submitted'
+        ]);
+    }
+    
+
+    /**
+     * @test
+     */
+    public function superAdmins_receive_notification_of_approved()
+    {
+        $admin = $this->setupUser();
+        $admin->person()->save(Person::factory()->make());
+        $admin->assignRole('super-admin');
+        
+        Notification::fake(ApplicationSubmissionNotification::class);
+        
+        $this->makeRequest();
+
+        Notification::assertSentTo($admin->person, ApplicationSubmissionNotification::class);
+    }
+
+    /**
+     * @test
+     */
+    public function notification_store_in_database()
+    {
+        $admin = $this->setupUser();
+        $admin->person()->save(Person::factory()->make());
+        $admin->assignRole('super-admin');
+        
+        $this->makeRequest();
+
+        $this->assertDatabaseHas('notifications', [
+            'type' => ApplicationSubmissionNotification::class,
+            'notifiable_type' => Person::class,
+            'notifiable_id' => $admin->person->id
+        ]);
+    }
+    
     
     
     private function makeRequest($data = null)
@@ -101,7 +169,6 @@ class SubmitApplicationStepTest extends TestCase
         ];
 
         $url = '/api/groups/'.$this->expertPanel->group->uuid.'/application/submission';
-
         return $this->json('post', $url, $data);
     }
     

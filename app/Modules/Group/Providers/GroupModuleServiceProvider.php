@@ -10,11 +10,13 @@ use App\Modules\Foundation\ClassGetter;
 use Illuminate\Support\ServiceProvider;
 use App\Modules\Group\Policies\GroupPolicy;
 use App\Modules\Foundation\ModuleServiceProvider;
+use App\Modules\Group\Events\ApplicationStepSubmitted;
+use App\Modules\Group\Actions\ApplicationSubmissionNotificationSend;
 
 class GroupModuleServiceProvider extends ModuleServiceProvider
 {
     protected $listeners = [
-        // EventClass::class => [ListenerClass::class]
+        ApplicationStepSubmitted::class => [ApplicationSubmissionNotificationSend::class]
     ];
 
     protected $policies = [
