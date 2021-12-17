@@ -144,7 +144,6 @@ import GroupDetailHeader from './GroupDetailHeader';
 import MemberList from '@/components/groups/MemberList';
 import MembershipDescriptionForm from '@/components/expert_panels/MembershipDescriptionForm'
 import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm'
-import SubmissionWrapper from '@/components/groups/SubmissionWrapper'
 import VcepGeneList from '@/components/expert_panels/VcepGeneList'
 import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm'
 import VcepOngoingPlansFormVue from '../../components/expert_panels/VcepOngoingPlansForm.vue';
@@ -168,7 +167,6 @@ export default {
         MemberList,
         MembershipDescriptionForm,
         ScopeDescriptionForm,
-        SubmissionWrapper,
         VcepGeneList,
         VcepOngoingPlansForm,
     },

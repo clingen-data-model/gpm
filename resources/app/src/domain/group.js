@@ -19,6 +19,7 @@ class Group extends Entity {
         group_status_id: null,
         expert_panel: new ExpertPanel(),
         type: {},
+        parent: {},
     };
 
     constructor(attributes = {}) {

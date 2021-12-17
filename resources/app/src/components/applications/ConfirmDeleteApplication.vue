@@ -39,20 +39,14 @@ export default {
             return this.group.expert_panel;
         }
     },
-    watch: {
-        application: function () {
-            if (!this.application.uuid) {
-                this.$store.dispatch('applications/getApplication', {appUuid: this.uuid});
-            }
-        }
-    },
     methods: {
         cancelDelete() {
             this.$router.go(-1);
         },
         async commitDelete() {
-            await this.$store.dispatch('applications/deleteApplication', {application: this.application});
-            this.$router.push({name: 'ApplicationsIndex'})
+            this.$store.dispatch('groups/delete', this.group.uuid);
+            this.$store.commit('pushSuccess', 'Application deleted.');
+            this.$router.push({name: 'ApplicationsIndex'});
         }
     }
 }

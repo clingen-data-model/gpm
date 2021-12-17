@@ -23,10 +23,15 @@ registerComponentsInContext(require.context('@/components/forms', false, /\.vue$
 registerComponentsInContext(require.context('@/components/icons', false, /\.vue$/i))        
 registerComponentsInContext(require.context('@/components/buttons', false, /\.vue$/i))        
 
+import SubmissionWrapper from '@/components/groups/SubmissionWrapper';
+app.component('submission-wrapper', SubmissionWrapper);
+
 import ClickOutside from './directives/click_outside'
 app.directive('click-outside', ClickOutside)
 import RemainingHeight from '@/directives/remaining_height'
 app.directive('remaining-height', RemainingHeight)
+
+
 
 import Popper from "vue3-popper"
 app.component('popper', Popper);
