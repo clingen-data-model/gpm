@@ -7,7 +7,6 @@
             type="date" 
             ref="logdate"
         ></input-row>
-        <!-- <step-input v-model="newEntry.step" :errors="errors.step" v-if="application.expert_panel_type_id == 2"></step-input> -->
         <input-row label="Entry" :errors="errors.entry">
             <rich-text-editor v-model="newEntry.entry"></rich-text-editor>
         </input-row>
@@ -19,7 +18,6 @@
 </template>
 <script>
 import { ref, watch } from 'vue'
-// import StepInput from '@/components/forms/StepInput'
 import RichTextEditor from '@/components/forms/RichTextEditor'
 import {saveEntry, updateEntry, fetchEntries} from '@/adapters/log_entry_repository'
 
@@ -27,7 +25,6 @@ import {saveEntry, updateEntry, fetchEntries} from '@/adapters/log_entry_reposit
 export default {
     name: 'LogEntryForm',
     components: {
-        // StepInput,
         RichTextEditor
     },
     props: {

@@ -418,7 +418,19 @@ export const actions = {
                 }
                 return response.data;
             });
-    }
+    },
+
+    getLogEntries({ commit }, { group }) {
+
+    },
+
+    // eslint-disable-next-line
+    async addLogEntry({ dispatch }, { group, logEntryData }) {
+        const url = `/api/groups/${group.uuid}/log-entries`
+        await api.post(url, logEntryData)
+            .then(() => {
+            })
+    },
 };
 
 export default {

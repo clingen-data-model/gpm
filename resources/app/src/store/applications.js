@@ -132,6 +132,7 @@ export default {
                 });
         },
 
+        // eslint-disable-next-line
         async addNextAction({ commit }, { application, nextActionData }) {
             if (!nextActionData.uuid) {
                 nextActionData.uuid = uuid4();
@@ -144,6 +145,7 @@ export default {
                 })
         },
 
+        // eslint-disable-next-line
         async updateNextAction({ dispatch }, { application, updatedAction }) {
             if (!updatedAction.uuid) {
                 updatedAction.uuid = uuid4();
@@ -177,6 +179,7 @@ export default {
                     return response;
                 })
         },
+
         // eslint-disable-next-line
         async addLogEntry({ dispatch }, { application, logEntryData }) {
             const url = `/api/applications/${application.uuid}/log-entries`

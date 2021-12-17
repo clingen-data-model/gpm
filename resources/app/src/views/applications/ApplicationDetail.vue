@@ -3,7 +3,16 @@
         <static-alert variant="danger" v-if="group.contacts.length == 0" class="mb-4">
             <strong>Warning!!</strong> There are currently no contacts connected to this application!
         </static-alert >
-        <card :title="`${application.full_name} - Current Step: ${application.current_step}`">
+        <router-link class="note"
+            :to="{name: 'GroupDetail', params: {uuid: group.uuid}}"
+            v-if="group.uuid"
+        >
+            {{group.displayName}}
+        </router-link>
+        <card>
+            <template v-slot:title>
+                <h2>{{application.full_name}} - Current Step: {{application.current_step}}</h2>
+            </template>
             <template v-slot:header-right>
                 <div class="flex space-x-2">
                     <router-link :to="{name: 'NextAction'}" class="btn btn-sm">Add Next Action</router-link>

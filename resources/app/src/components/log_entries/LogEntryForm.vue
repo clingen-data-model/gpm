@@ -17,7 +17,7 @@ import {mapGetters} from 'vuex'
 import { formatDate } from '@/date_utils'
 import StepInput from '@/components/forms/StepInput'
 import RichTextEditor from '@/components/forms/RichTextEditor'
-
+import {logEntries, saveEntry, updateEntry} from '@/adapters/log_entry_repository'
 
 export default {
     name: 'LogEntryForm',
@@ -74,8 +74,8 @@ export default {
             if (this.id === null) {
                 return null;
             }
-            if (this.application.log_entries) {
-                return this.application.log_entries.find(i => i.id == this.id);
+            if (this.logEntries) {
+                return this.logEntries.find(i => i.id == this.id);
             }
         },
         initNewEntry () {
@@ -103,15 +103,9 @@ export default {
         async save() {
             try {
                 if (this.newEntry.id) {
-                    await this.$store.dispatch(
-                        'applications/updateLogEntry', 
-                        {
-                            application: this.application, 
-                            updatedEntry: this.newEntry,
-                        }
-                    );
+                    updateEntry(`/api/groups/${this.group.uuid}/activity-logs/${this.newEntry.id}`, this.newEntry);
                 } else {
-                    await this.$store.dispatch('applications/addLogEntry', {application: this.application, logEntryData: this.newEntry})
+                    saveEntry(`/api/groups/${this.group.uuid}/activity-logs`, this.newEntry)
                 }
                 this.initNewEntry();
                 this.$emit('saved');
@@ -125,6 +119,11 @@ export default {
     },
     mounted() {
         this.$el.querySelectorAll('input')[0].focus();
+    },
+    setup (props) {
+        return {
+            logEntries
+        }
     }
 }
 </script>
