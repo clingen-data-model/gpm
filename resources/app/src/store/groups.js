@@ -1,3 +1,4 @@
+import { v4 as uuid4 } from 'uuid';
 import Group from '@/domain/group';
 import { api, queryStringFromParams } from '@/http';
 
@@ -380,6 +381,43 @@ export const actions = {
                 commit('addItem', group);
                 return response;
             })
+    },
+
+    getNextActions( {commit}, group) {
+        return api.get(`${baseUrl}/${group.uuid}/next-actions`)
+            .then( response => {
+                group.expert_panel.nextActions = response.data;
+                commit('addItem', group);
+                return response;
+            });
+    },
+
+    getDocuments ({commit}, group) {
+        return api.get(`${baseUrl}/${group.uuid}/documents`)
+            .then(response  => {
+                // Attach documents to expert_panel for backwards compatibility - 2021-12-18
+                group.expert_panel.documents = response.data.filter(doc => doc.document_type_id < 8);
+                // Attach documents to group for forward compatibility - 2021-12-18
+                group.documents = response.data;
+                commit('addItem', group);
+                return response;
+            });
+    },
+
+    addDocument ({commit}, {group, data}) {
+        if (!data.has('uuid')) {
+            data.append('uuid', uuid4())
+        }
+    
+        return api.post(`/api/applications/${group.expert_panel.uuid}/documents`, data)
+            .then(response => {
+                group.documents.push(response.data);
+                if (response.data.document_type_id < 8) {
+                    group.expert_panel.documents.push(response.data);
+                    commit('addItem', group);
+                }
+                return response.data;
+            });
     }
 };
 

@@ -19,7 +19,6 @@ class Group extends Entity {
         group_status_id: null,
         expert_panel: new ExpertPanel(),
         type: {},
-        members: []
     };
 
     constructor(attributes = {}) {
@@ -34,8 +33,13 @@ class Group extends Entity {
         const members = attributes.members ? [...attributes.members] : [];
         delete(attributes.members);
 
+        const documents = attributes.documents ? [...attributes.documents] : [];
+        delete(attributes.documents);
+
         const expertPanel = attributes.expert_panel ? {...attributes.expert_panel} : {};
         delete(attributes.expert_panel);
+
+        // const documents = attributes.documents ? [...attributes.documents] : [];
 
         super(attributes);
 
@@ -43,8 +47,10 @@ class Group extends Entity {
         if (members) {
             members.forEach(m => this.addMember(m))
         }
-
         this.expert_panel = new ExpertPanel(expertPanel)
+
+        this.documents = documents;
+
     }
 
     get coordinators () {
@@ -95,6 +101,15 @@ class Group extends Entity {
     get statusColor () {
         return configs.groups.statusColors[this.group_status_id];
     }
+
+    get contacts () {
+        return this.members.filter(m => Boolean(m.is_contact))
+    }
+
+    get hasContacts() {
+        return (this.contacts.length > 0);
+    }
+
 
     addMembers (members) {
         members.forEach(m => {

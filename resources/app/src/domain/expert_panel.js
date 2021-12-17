@@ -78,11 +78,15 @@ class ExpertPanel extends Entity
         const submissions = attributes.submissions ? [...attributes.submissions] : [];
         delete(attributes.submissions);
 
+        const documents = attributes.documents ? [...attributes.documents] : [];
+        delete(attributes.documents);
+
         super(attributes);
 
         this.specfications = specifications;
         this.genes = genes;
         this.submissions = submissions;
+        this.documents = documents;
     }
 
     get nhgriSigned () {
@@ -103,10 +107,6 @@ class ExpertPanel extends Entity
     get defIsApproved () {
         return this.step_1_approval_date !== null
     }
-    // get definitionIsApproved () {
-    //     return this.step_1_approval_date !== null
-    // }
-
     get draftSpecificationsIsApproved () {
         return this.step_2_approval_date !== null
     }
@@ -134,8 +134,120 @@ class ExpertPanel extends Entity
                 .filter(submission => submission.submission_status_id == submissions.statuses.approved.id)
     }
 
+    get isCompleted() {
+        if (this.attributes.date_completed) {
+            return true;
+        }
+
+        return false;
+    }
+
+    get isGcep() {
+        return this.expert_panel_type_id == 1;
+    }
+
+    get isVcep() {
+        return this.expert_panel_type_id == 2;
+    }
+
+    get steps() {
+        if (this.expert_panel_type_id == 1) {
+            return [1];
+        }
+        if (this.expert_panel_type_id == 2 || this.expert_panel_type_id === null) {
+            return [1, 2, 3, 4];
+        }
+
+        throw new Error('Unknown expert_panel_type_id found when determining applicaiton steps.');
+    }
+
+    get pendingNextActions() {
+        if (!this.next_actions) {
+            return [];
+        }
+        return this.next_actions.filter(na => na.date_completed === null);
+    }
+
+    get pendingActionsByAssignee() {
+        const naAssignees = Object.values(configs.nextActions.assignees).map(na => na.id);
+        let groups = {};
+        for (let i in naAssignees) {
+            const item = naAssignees[i];
+            groups[item] = [];
+        }
+        if (!this.next_actions) {
+            return groups;
+        }
+
+        for (const na in this.pendingNextActions) {
+            const assignedTo = this.pendingNextActions[na].assigned_to;
+            groups[assignedTo].push(this.pendingNextActions[na]);
+        }
+        return groups
+    }
+
     hasPendingSubmissionForStep(stepName) {
         return this.hasPendingSubmission && this.pendingSubmission.type.name == stepName;
+    }
+
+
+    isWaitingOnCdwgOc() {
+        return this.pendingActionsAssigneeCounts.cdwg_oc > 0;
+    }
+
+    isWaitingOnExpertPanel() {
+        return this.pendingActionsAssigneeCounts.expert_panel > 0;
+    }
+
+    stepIsApproved(stepNumber) {
+        if (!stepNumber) {
+            return false;
+        }
+        if (!this.steps.includes(stepNumber)) {
+            throw new Error(`Step ${stepNumber} out of bounds`)
+        }
+
+        return Boolean(this[`step_${stepNumber}_approval_date`]);
+    }
+
+    approvalDateForStep(stepNumber) {
+        if (!this.steps.includes(stepNumber)) {
+            throw new Error(`Step ${stepNumber} out of bounds`)
+        }
+
+        const stepKey = `step_${stepNumber}_approval_date`;
+
+        return (this[stepKey]) ?
+            new Date(Date.parse(this[stepKey])) :
+            null;
+    }
+
+    firstDocumentOfType(docTypeId) {
+        const typeDocs = this.documents
+            .filter(d => d.document_type_id == docTypeId)
+            .sort((a, b) => {
+                if (a.date_reviewed == b.date_reviewed) {
+                    return (a.version > b.version) ? 1 : -1;
+                }
+
+                return (a.date_reviewed > b.date_reviewed) ? 1 : -1;
+            });
+
+        return typeDocs[0] || {}
+    }
+
+    finalDocumentOfType(docTypeId) {
+        const typeDocs = this.documents
+            .filter(d => d.document_type_id == docTypeId)
+            .sort((a, b) => {
+                if (a.date_reviewed == b.date_reviewed) {
+                    return (a.version > b.version) ? 1 : -1;
+                }
+
+                return (a.date_reviewed > b.date_reviewed) ? 1 : -1;
+            });
+
+        return typeDocs[(typeDocs.length - 1)] || {}
     }
 }
 
