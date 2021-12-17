@@ -31,7 +31,7 @@ class UpdateGeneTest extends TestCase
             'mondo_id' => 'MONDO:9876543',
             'gene_symbol' => uniqid()
         ]);
-        $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/application/genes/'.$this->gene1->id;
+        $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/genes/'.$this->gene1->id;
         Sanctum::actingAs($this->user);
     }
 

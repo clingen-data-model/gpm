@@ -102,7 +102,7 @@ class UpdateCurationProcessTest extends TestCase
             'curation_review_process_notes' => 'These are some notes.',
             'long_base_name' => 'I should not get updated.'
         ];
-        $url = '/api/groups/'.$this->expertPanel->group->uuid.'/application/curation-review-protocols';
+        $url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/curation-review-protocols';
         return $this->json('put', $url, $data);
     }
 }

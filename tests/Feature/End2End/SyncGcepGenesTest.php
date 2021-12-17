@@ -33,7 +33,7 @@ class SyncGcepGenesTest extends TestCase
         $this->user->givePermissionTo('ep-applications-manage');
 
         $this->expertPanel = ExpertPanel::factory()->gcep()->create();
-        $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/application/genes';
+        $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/genes';
         Sanctum::actingAs($this->user);
     }
 

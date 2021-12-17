@@ -21,7 +21,7 @@ class UpdateScopeDescriptionTest extends TestCase
         $this->expertPanel = ExpertPanel::factory()->create(['expert_panel_type_id' => config('expert_panels.types.vcep.id')]);
         $this->user = User::factory()->create();
         $this->user->givePermissionTo('ep-applications-manage');
-        $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/application/scope-description';
+        $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/scope-description';
     }
 
     /**

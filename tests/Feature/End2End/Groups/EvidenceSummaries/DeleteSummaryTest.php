@@ -33,7 +33,7 @@ class DeleteSummaryTest extends TestCase
         ]);
         Sanctum::actingAs($this->user);
 
-        $this->url = '/api/groups/'.$this->vcep->group->uuid.'/application/evidence-summaries/'.$this->evidenceSummary->id;
+        $this->url = '/api/groups/'.$this->vcep->group->uuid.'/expert-panel/evidence-summaries/'.$this->evidenceSummary->id;
     }
 
     /**

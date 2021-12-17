@@ -34,7 +34,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
             'mondo_id' => 'MONDO:1234567',
             'gene_symbol' => uniqid()
         ]);
-        $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/application/genes';
+        $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/genes';
     }
 
     /**
