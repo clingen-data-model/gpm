@@ -132,14 +132,15 @@ export default {
                 });
         },
 
-        async addNextAction({ dispatch }, { application, nextActionData }) {
+        async addNextAction({ commit }, { application, nextActionData }) {
             if (!nextActionData.uuid) {
                 nextActionData.uuid = uuid4();
             }
 
             return await api.post(`${baseUrl}/${application.uuid}/next-actions`, nextActionData)
-                .then(() => {
-                    dispatch('getApplication', application.uuid)
+                .then(response => {
+                    application.nextActions.push(response.data);
+                    return response;
                 })
         },
 
@@ -149,8 +150,10 @@ export default {
             }
 
             return await api.put(`${baseUrl}/${application.uuid}/next-actions/${updatedAction.id}`, updatedAction)
-                .then(() => {
-                    dispatch('getApplication', application.uuid);
+                .then(response => {
+                    const naIdx = application.nextActions.findIndex(na => na.id == response.data.id)
+                    application.nextActions[naIdx] = response.data;
+                    return response;
                 });
         
         },
@@ -158,16 +161,20 @@ export default {
         async deleteNextAction({ dispatch }, {application, nextAction}) {
            const url = `/api/applications/${application.uuid}/next-actions/${nextAction.id}`
             await api.delete(url)
-                .then(() => {
-                    dispatch('getApplication', application.uuid);
-                })
-        },
+                .then(response => {
+                    const naIdx = application.nextActions.findIndex(na => na.id == nextAction.id)
+                    application.nextActions.splice(naIdx, 1);
+                    return response;
+                });
+    },
         // eslint-disable-next-line
         async completeNextAction({ dispatch }, { application, nextAction, dateCompleted }) {
             const url = `/api/applications/${application.uuid}/next-actions/${nextAction.uuid}/complete`;
             await api.post(url, { date_completed: dateCompleted })
-                .then(() => {
-                    dispatch('getApplication', application.uuid)
+                .then(response => {
+                    const naIdx = application.nextActions.findIndex(na => na.id == response.data.id)
+                    application.nextActions[naIdx] = response.data;
+                    return response;
                 })
         },
         // eslint-disable-next-line

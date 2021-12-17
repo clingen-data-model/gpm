@@ -81,7 +81,12 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({application: 'applications/currentItem'}),
+        ...mapGetters({
+            group: 'groups/currentItemOrNew'
+        }),
+        application () {
+            return this.group.expert_panel;
+        },
         title () {
             return this.newAction.id ? 'Update Action' : 'Add Next Action';
         },

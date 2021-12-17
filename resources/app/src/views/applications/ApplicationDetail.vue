@@ -1,6 +1,6 @@
 <template>
     <div>
-        <static-alert variant="danger" v-if="application.contacts.length == 0" class="mb-4">
+        <static-alert variant="danger" v-if="group.contacts.length == 0" class="mb-4">
             <strong>Warning!!</strong> There are currently no contacts connected to this application!
         </static-alert >
         <card :title="`${application.full_name} - Current Step: ${application.current_step}`">
@@ -34,15 +34,12 @@
                     <application-log :uuid="application.uuid"></application-log>
                 </tab-item>
 
-                <!-- <tab-item label="Dev Tools">
-                    <pre>{{this.application}}</pre>
-                </tab-item> -->
-                <tab-item label="Advanced">
+                <!-- <tab-item label="Advanced">
                     <h2 class="block-title">Advanced actions and controls</h2>
                     <router-link :to="{name: 'ConfirmDeleteApplication'}" class="btn red">
                         Delete Application and all associated information.
                     </router-link>
-                </tab-item>
+                </tab-item> -->
             </tabs-container>
 
         </card>
@@ -91,8 +88,11 @@ export default {
     },
     computed: {
         ...mapGetters({
-            application: 'applications/currentItem'
+            group: 'groups/currentItemOrNew'
         }),
+        application () {
+            return this.group.expert_panel;
+        },
         hasPendingNextAction () {
             if (typeof this.application == 'undefined') {
                 return false;
@@ -114,9 +114,15 @@ export default {
                 this.$refs.modalView.clearForm();
             }
         },
+        async getGroup () {
+            await this.$store.dispatch('groups/findAndSetCurrent', this.uuid);
+            this.$store.dispatch('groups/getDocuments', this.group);
+            this.$store.dispatch('groups/getNextActions', this.group);
+
+        }
     },
     mounted() {
-        this.$store.dispatch('applications/getApplication', this.uuid);
+        this.getGroup();
         this.showModal = Boolean(this.$route.meta.showModal)
     }
 }

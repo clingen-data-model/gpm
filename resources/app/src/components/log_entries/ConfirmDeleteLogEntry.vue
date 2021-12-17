@@ -49,8 +49,11 @@ export default {
     },
     computed: {
         ...mapGetters({
-            application: 'applications/currentItem'
+            group: 'groups/currentItemOrNew'
         }),
+        application () {
+            return this.group.expert_panel;
+        },
         logEntry () {
             const logEntry = this.application.log_entries.find(entry => entry.id == this.id);
             return logEntry || {};

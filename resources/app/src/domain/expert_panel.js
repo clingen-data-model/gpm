@@ -81,12 +81,20 @@ class ExpertPanel extends Entity
         const documents = attributes.documents ? [...attributes.documents] : [];
         delete(attributes.documents);
 
+        const nextActions = attributes.next_actions ? [...attributes.next_actions] : [];
+        delete(attributes.next_actions);
+
         super(attributes);
 
         this.specfications = specifications;
         this.genes = genes;
         this.submissions = submissions;
         this.documents = documents;
+        this.nextActions = nextActions;
+    }
+
+    get next_actions () {
+        return this.nextActions
     }
 
     get nhgriSigned () {

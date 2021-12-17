@@ -7,7 +7,7 @@
         :document-gets-reviewed="true"
         approve-button-label="Approve Scope and Membership"
     >
-        <coi-log class="mb-6" :application="application">
+        <coi-log class="mb-6" :group="group">
         </coi-log>
     </base-step>
 </template>
@@ -28,8 +28,11 @@ export default {
     },
     computed: {
         ...mapGetters({
-            application: 'applications/currentItem'
-        })
+            group: 'groups/currentItemOrNew'
+        }),
+        application () {
+            return this.group.expert_panel;
+        },
     },
     methods: {
     }

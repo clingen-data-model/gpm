@@ -92,9 +92,11 @@ export default {
     ],
     computed: {
         ...mapGetters({
-            application: 'applications/currentItem',
-            people: 'people/all',
+            group: 'groups/currentItemOrNew'
         }),
+        application () {
+            return this.group.expert_panel;
+        },
         suggestedPeople() {
             let people = [];
             const searchFields = ['email', 'first_name', 'last_name'];
@@ -173,7 +175,7 @@ export default {
             }
         },
         isAlreadyContact(person) {
-            return this.application.contacts.map(c => c.id).includes(person.id)
+            return this.group.contacts.map(c => c.id).includes(person.id)
         }
     },
     mounted () {

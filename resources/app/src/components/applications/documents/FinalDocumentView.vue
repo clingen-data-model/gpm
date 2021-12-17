@@ -56,10 +56,6 @@ export default {
         RemoveButton
     },
     props: {
-        application: {
-            type: Object,
-            required: true
-        },
         documentTypeId: {
             type: Number,
             required: true
@@ -80,6 +76,12 @@ export default {
         }
     },
     computed: {
+        group () {
+            return this.$store.getters['groups/currentItemOrNew'];
+        },
+        application () {
+            return this.group.expert_panel;
+        },
         finalDocument() {
             return this.application.finalDocumentOfType(this.documentTypeId);
         },

@@ -16,10 +16,10 @@
             <div v-show="notifyContacts">
                 <h4 class="font-bold border-b">Email</h4>
                 <dictionary-row label="To">
-                    <static-alert v-if="application.contacts.length == 0" class="flex-1" variant="danger">
+                    <static-alert v-if="!group.hasContacts" class="flex-1" variant="danger">
                         There are no contacts to notify!!
                     </static-alert>
-                    <ul v-if="application.contacts.length > 0">
+                    <ul v-if="group.hasContacts">
                         <li v-for="contact in email.to" :key="contact.email">
                             <router-link 
                                 :to="{name: 'PersonDetail', params: {uuid: contact.uuid}}"
@@ -89,8 +89,11 @@ export default {
     },
     computed: {
         ...mapGetters({
-            application: 'applications/currentItem'
+            group: 'groups/currentItemOrNew'
         }),
+        application () {
+            return this.group.expert_panel;
+        },
         emailCced () {
             return this.application.current_step == 1 || this.application.current_step == 4
         },

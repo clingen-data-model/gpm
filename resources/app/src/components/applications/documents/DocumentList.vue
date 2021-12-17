@@ -96,10 +96,6 @@ export default {
         TrashButton,
     },
     props: {
-        application: {
-            type: Object,
-            required: true
-        },
         documentTypeId: {
             type: Number,
             required: true
@@ -166,6 +162,13 @@ export default {
         }
     },
     computed: {
+        group () {
+            return this.$store.getters['groups/currentItemOrNew']
+        },
+        application () {
+            return this.group.expert_panel
+        },
+        
         filteredFields () {
             let clonedFields = [...this.fields]
             if (!this.showVersion) {
@@ -183,7 +186,7 @@ export default {
             return clonedFields
         },
         filteredDocuments() {
-            if (this.application && this.application.documents) {
+            if (this.application.documents) {
                 return this.application.documents.filter(d =>  d.document_type_id == this.documentTypeId)
             }
             return [];

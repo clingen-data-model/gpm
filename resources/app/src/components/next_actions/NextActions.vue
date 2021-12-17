@@ -117,9 +117,12 @@ export default {
         }
     },
     computed: {
-        ...mapGetters ({
-            application: 'applications/currentItem'
+        ...mapGetters({
+            group: 'groups/currentItemOrNew'
         }),
+        application () {
+            return this.group.expert_panel;
+        },
         filteredNextActions () {
             if (!this.nextActions) {
                 return [];

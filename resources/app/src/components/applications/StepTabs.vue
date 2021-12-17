@@ -1,9 +1,10 @@
 <template>
     <div>
-        <div v-if="this.application.expert_panel_type_id == 1">
+        <div v-if="application.isGcep">
             <step-one></step-one>
         </div>
-        <tabs-container tab-location="right" v-model="activeIndex" v-if="this.application.expert_panel_type_id == 2">
+        
+            <tabs-container tab-location="right" v-model="activeIndex" v-if="this.application.expert_panel_type_id == 2">
             <tab-item label="Step 1 - Define">
                 <step-one></step-one>
             </tab-item>
@@ -41,8 +42,11 @@ export default {
     },
     computed: {
         ...mapGetters({
-            application: 'applications/currentItem'
+            group: 'groups/currentItemOrNew'
         }),
+        application () {
+            return this.group.expert_panel;
+        },
         activeIndex: {
             deep: true,
             get() {

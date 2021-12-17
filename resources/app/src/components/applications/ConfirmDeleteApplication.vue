@@ -33,8 +33,11 @@ export default {
     },
     computed: {
         ...mapGetters({
-            application: 'applications/currentItem'
-        })
+            group: 'groups/currentItemOrNew'
+        }),
+        application () {
+            return this.group.expert_panel;
+        }
     },
     watch: {
         application: function () {

@@ -3,7 +3,7 @@
         <div class="align-baseline">
             <button 
                 class="btn btn-xs" 
-                :class="{'blue': (application.contacts.length == 0)}"
+                :class="{'blue': (!group.hasContacts)}"
                 @click="initiateAddContact"
             >
                 <slot>Add Contact</slot>
@@ -41,8 +41,11 @@ export default {
     },
     computed: {
         ...mapGetters({
-            application: 'applications/currentItem'
-        })
+            group: 'groups/currentItemOrNew'
+        }),
+        application () {
+            return this.group.expert_panel;
+        }
     },
     watch: {
         showForm: function () {
