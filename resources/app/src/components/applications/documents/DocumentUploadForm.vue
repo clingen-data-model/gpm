@@ -26,7 +26,7 @@
     </form-container>
 </template>
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapState } from 'vuex';
 import {formatDate} from '../../../date_utils'
 import is_validation_error from '../../../http/is_validation_error';
 
