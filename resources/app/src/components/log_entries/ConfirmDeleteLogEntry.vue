@@ -29,7 +29,7 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import isValidationError from '@/http'
+import {isValidationError} from '@/http'
 import {logEntries, deleteEntry} from '@/adapters/log_entry_repository'
 
 export default {
