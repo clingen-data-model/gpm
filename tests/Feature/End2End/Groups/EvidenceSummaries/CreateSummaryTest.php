@@ -33,7 +33,7 @@ class CreateSummaryTest extends TestCase
         );
         Sanctum::actingAs($this->user);
 
-        $this->url = '/api/groups/'.$this->vcep->group->uuid.'/application/evidence-summaries';
+        $this->url = '/api/groups/'.$this->vcep->group->uuid.'/expert-panel/evidence-summaries';
     }
 
     /**
