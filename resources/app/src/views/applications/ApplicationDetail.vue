@@ -64,7 +64,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import ApplicationLog from '@/components/applications/ApplicationLog'
-import EpAttributesForm from '@/components/applications/EpAttributesForm'
+// import EpAttributesForm from '@/components/applications/EpAttributesForm'
 // import NextActionBanner from '@/components/next_actions/NextActionBanner'
 import NextActions from '@/components/next_actions/NextActions'
 import ProgressChart from '@/components/applications/ProgressChart'
@@ -75,7 +75,7 @@ export default {
     name: 'ApplicationDetail',
     components: {
         ApplicationLog,
-        EpAttributesForm,
+        // EpAttributesForm,
         NextActions,
         ProgressChart,
         StepTabs,
