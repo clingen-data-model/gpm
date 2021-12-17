@@ -37,10 +37,8 @@ class ExpertPanelNameUpdate
         return $group;
     }
 
-    public function asController(ActionRequest $request, $groupUuid)
+    public function asController(ActionRequest $request, Group $group)
     {
-        $group = Group::findByUuidOrFail($groupUuid);
-        
         if (Auth::user()->cannot('update', $group)) {
             throw new AuthorizationException('You do not have permission to update the expert panel\'s name.');
         }
@@ -54,7 +52,7 @@ class ExpertPanelNameUpdate
 
     public function rules()
     {
-        $expertPanel = Group::findByUuidOrFail(request()->route('uuid'))->expertPanel;
+        $expertPanel = request()->group->expertPanel;
 
         return [
             'long_base_name' => [
