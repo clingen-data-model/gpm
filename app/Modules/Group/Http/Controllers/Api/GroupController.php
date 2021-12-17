@@ -21,7 +21,7 @@ class GroupController extends Controller
                 'expertPanel',
                 'coordinators',
                 'coordinators.roles',
-                'coordinators.person'
+                'coordinators.person',
             ],
             sortFunction: function ($query, $field, $dir) {
                 if ($field == 'type') {
@@ -51,6 +51,7 @@ class GroupController extends Controller
             'members.roles',
             'members.permissions',
             'members.cois',
+            'parent',
             'expertPanel',
         ]);
 
