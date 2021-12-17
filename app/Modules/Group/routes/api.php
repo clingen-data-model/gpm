@@ -37,6 +37,7 @@ use App\Modules\Group\Http\Controllers\Api\GroupController;
 use App\Modules\Group\Http\Controllers\Api\GeneListController;
 use App\Modules\Group\Http\Controllers\Api\ActivityLogsController;
 use App\Modules\Group\Http\Controllers\Api\EvidenceSummaryController;
+use App\Modules\Group\Http\Controllers\Api\GroupRelationsController;
 use App\Modules\Group\Http\Controllers\Api\GroupSubmissionsController;
 
 // Route::post('/{{group_uuid}}/members', MemberAdd::class);
@@ -49,6 +50,9 @@ Route::group([
 ], function () {
     Route::get('/', [GroupController::class, 'index']);
     Route::post('/', GroupCreate::class);
+
+    Route::get('/{group:uuid}/documents', [GroupRelationsController::class, 'documents']);
+    Route::get('/{group:uuid}/next-actions', [GroupRelationsController::class, 'nextActions']);
     
     Route::get('/{uuid}', [GroupController::class, 'show']);
     Route::delete('/{group:uuid}', GroupDelete::class);
