@@ -7,6 +7,7 @@ use Illuminate\Support\Carbon;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Modules\Group\Actions\GroupCreate;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Events\ApplicationInitiated;
 use App\Modules\ExpertPanel\Http\Requests\InitiateApplicationRequest;
@@ -14,6 +15,11 @@ use App\Modules\ExpertPanel\Http\Requests\InitiateApplicationRequest;
 class ExpertPanelCreate
 {
     use AsAction;
+
+    public function __construct(GroupCreate $createGroup)
+    {
+        $this->createGroup = $createGroup;
+    }
 
     /**
      * Create a new job instance.
@@ -31,13 +37,12 @@ class ExpertPanelCreate
             $date_initiated = Carbon::now();
         }
         
-        // TODO: extract to action.
-        $group = Group::create([
+        $group = $this->createGroup->handle([
             'uuid' => $uuid,
             'name' => $working_name,
             'group_type_id' => config('groups.types.ep.id'),
             'group_status_id' => config('groups.statuses.pending-approval.id'),
-            'parent_id' => $cdwg_id,
+            'parent_id' => $cdwg_id
         ]);
 
         $expertPanel = new ExpertPanel();
@@ -49,12 +54,12 @@ class ExpertPanelCreate
         $expertPanel->cdwg_id = $cdwg_id;
         $expertPanel->current_step = 1;
 
-        $expertPanel->save();
+        $group->expertPanel()->save($expertPanel);
     
         Event::dispatch(new ApplicationInitiated($expertPanel));
 
 
-        return $expertPanel;
+        return $group;
     }
 
     public function asController(InitiateApplicationRequest $request)
@@ -62,7 +67,8 @@ class ExpertPanelCreate
         $data = $request->except('contacts');
         $data['cdwg_id'] = $request->cdwg_id;
         $data['date_initiated'] = $request->date_initiated ? Carbon::parse($request->date_initiated) : null;
-        $expertPanel = $this->handle(...$data);
-        return response($expertPanel, 200);
+        $group = $this->handle(...$data);
+        $group->load('expertPanel');
+        return response($group, 200);
     }
 }

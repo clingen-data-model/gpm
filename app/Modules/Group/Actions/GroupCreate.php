@@ -19,7 +19,7 @@ class GroupCreate
     public function handle($data): Group
     {
         $group = Group::create([
-            'uuid' => Uuid::uuid4(),
+            'uuid' => isset($data['uuid']) ? $data['uuid'] : Uuid::uuid4(),
             'name' => $data['name'],
             'group_type_id' => $data['group_type_id'] > 2 ? config('groups.types.ep.id') : $data['group_type_id'],
             'group_status_id' => $data['group_status_id'],
