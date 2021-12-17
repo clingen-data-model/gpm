@@ -8,8 +8,8 @@ const NextActionForm = () =>
     import ( /* webpackChunkName: "next-action-form" */ '@/components/next_actions/NextActionForm')
 const LogEntryForm = () =>
     import ( /* webpackChunkName: "log-entry-form" */ '@/components/log_entries/LogEntryForm')
-const NewContactForm = () =>
-    import ( /* webpackChunkName: "new-contact-form" */ '@/components/contacts/NewContactForm')
+const MemberForm = () =>
+    import ( /* webpackChunkName: "new-contact-form" */ '@/components/groups/MemberForm')
 const ConfirmDeleteLogEntry = () =>
     import ( /* webpackChunkName: "confirm-delete-log-entry" */ '@/components/log_entries/ConfirmDeleteLogEntry')
 const ConfirmDeleteNextAction = () =>
@@ -140,13 +140,14 @@ export default [{
             },
             {
                 name: 'AddContact',
-                path: 'add-contact',
-                component: NewContactForm,
+                path: 'add-member',
+                component: MemberForm,
                 meta: {
                     showModal: true,
                     protected: true,
                     permissions: ['ep-applications-manage'],
-                }
+                },
+                props: true
             },
             {
                 name: 'ConfirmDeleteApplication',

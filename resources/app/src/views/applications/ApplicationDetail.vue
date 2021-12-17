@@ -1,6 +1,6 @@
 <template>
     <div>
-        <static-alert variant="danger" v-if="group.contacts.length == 0" class="mb-4">
+        <static-alert variant="danger" v-if="!group.hasContacts" class="mb-4">
             <strong>Warning!!</strong> There are currently no contacts connected to this application!
         </static-alert >
         <router-link class="note"
@@ -22,29 +22,10 @@
             
             <div class="md:flex md:space-x-4">
                 <!-- <ep-attributes-form :application="application" class=" flex-1"></ep-attributes-form> -->
-                <div>
-                    <div class="flex justify-between border-b pb-2 min-w-fit">
-                        <h3>Base Information</h3>
-                        <button class="btn btn-xs" @click="showInfoEdit = true">Edit</button>
-                    </div>
-                    <dictionary-row label="Long Base Name">{{application.long_base_name}}</dictionary-row>
-                    <dictionary-row label="Short Base Name">{{application.short_base_name}}</dictionary-row>
-                    <dictionary-row label="Affiliation ID">{{application.affiliation_id}}</dictionary-row>
-                    <dictionary-row label="CDWG">{{group.parent.name}}</dictionary-row>
-                    <dictionary-row label="Website URL">
-                        <a 
-                            :href="`https://clinicalgenome.org/affiliation/application.affiliation_id`" 
-                            v-if="application.stepIsApproved(1)"
-                        >
-                        https://clinicalgenome.org/affiliation/{{application.affiliation_id}}
-                        </a>
-                        <span v-else>https://clinicalgenome.org/affiliation/{{application.affiliation_id}}</span>
-                    </dictionary-row>
-                </div>
+                <basic-info-data></basic-info-data>
                 <div class="flex-1 space-y-2 md:border-l md:px-4 md:py-2">
                     <next-actions :next-actions="application.next_actions" v-if="application.next_actions"></next-actions>
                 </div>
-
             </div>
 
             <progress-chart 
@@ -75,16 +56,6 @@
             <modal-dialog v-model="showModal" @closed="handleModalClosed">
                 <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
             </modal-dialog>
-
-            <modal-dialog v-model="showInfoEdit" @closed="showInfoEdit = false" title="Edit Group Info" size="sm">
-                <submission-wrapper @submitted="$refs.infoForm.save()" @canceled="$refs.infoForm.cancel()">
-                    <group-form 
-                        ref="infoForm"
-                        @canceled="showInfoEdit = false"
-                        @saved="showInfoEdit = false"
-                    />
-                </submission-wrapper>
-            </modal-dialog>
         </teleport>
 
         <note>{{application.id}}</note>
@@ -98,17 +69,17 @@ import EpAttributesForm from '@/components/applications/EpAttributesForm'
 import NextActions from '@/components/next_actions/NextActions'
 import ProgressChart from '@/components/applications/ProgressChart'
 import StepTabs from '@/components/applications/StepTabs'
-import GroupForm from '@/components/groups/GroupForm';
+import BasicInfoData from '@/components/applications/BasicInfoData'
 
 export default {
     name: 'ApplicationDetail',
     components: {
         ApplicationLog,
         EpAttributesForm,
-        GroupForm,
         NextActions,
         ProgressChart,
-        StepTabs
+        StepTabs,
+        BasicInfoData
     },
     props: {
         uuid: {
@@ -118,8 +89,7 @@ export default {
     },
     data() {
         return {
-            showModal: false,
-            showInfoEdit: false
+            showModal: false
         }
     },
     watch: {
