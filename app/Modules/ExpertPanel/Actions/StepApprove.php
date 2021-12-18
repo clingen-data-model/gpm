@@ -72,6 +72,7 @@ class StepApprove
         $submission = $expertPanel
                         ->group
                         ->submissions()
+                        ->pending()
                         ->ofType(config('submissions.types-by-step')[$approvedStep]['id'])
                         ->first();
         if (!$submission) {

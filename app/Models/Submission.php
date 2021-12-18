@@ -92,4 +92,9 @@ class Submission extends Model
         }
         return $query->where('submission_type_id', $typeId);
     }
+
+    public function scopePending($query)
+    {
+        return $query->where('submission_status_id', config('submissions.statuses.pending'));
+    }
 }
