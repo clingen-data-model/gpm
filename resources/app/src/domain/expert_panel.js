@@ -137,6 +137,10 @@ class ExpertPanel extends Entity
                 .length > 0
     }
 
+    get hasPendingSubmissionForCurrentStep () {
+        return this.hasPendingSubmission && this.pendingSubmission.type.name == this.currentStepName;
+    }
+
     get hasCompletedSubmission () {
         return this.submissions
                 .filter(submission => submission.submission_status_id == submissions.statuses.approved.id)
@@ -169,6 +173,22 @@ class ExpertPanel extends Entity
         throw new Error('Unknown expert_panel_type_id found when determining applicaiton steps.');
     }
 
+    get currentStepName() {
+        switch (this.current_step) {
+            case 1:
+                return 'Definition';
+            case 2: 
+                return 'Draft Specifications';
+                return 'Definition';
+            case 3: 
+                return 'Pilot Specifications';
+            case 4: 
+                return 'Sustained Curation';
+            default:
+                throw new Error('Unknown step '.this.current_step);
+        }
+    }
+
     get pendingNextActions() {
         if (!this.next_actions) {
             return [];
@@ -193,6 +213,7 @@ class ExpertPanel extends Entity
         }
         return groups
     }
+
 
     hasPendingSubmissionForStep(stepName) {
         return this.hasPendingSubmission && this.pendingSubmission.type.name == stepName;

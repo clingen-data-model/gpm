@@ -88,9 +88,6 @@ export default {
         group () {
             return this.$store.getters['groups/currentItemOrNew'];
         },
-        appDef () {
-            return (this.group.isVcep) ? VcepApplication : GcepApplication;
-        },
         meetsRequirements () {
             return this.step.meetsRequirements(this.group);
         },

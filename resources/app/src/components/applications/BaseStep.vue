@@ -45,6 +45,17 @@
             class="border border-l-0 border-r-0 py-4 mb-6" 
             v-if="!application.stepIsApproved(step)"
         >
+            <static-alert 
+                variant="info" 
+                v-if="application.hasPendingSubmissionForCurrentStep"
+                class="mb-4"
+            >
+                This step was submitted by <strong>{{application.pendingSubmission.submitter.name}}</strong> on 
+                <strong>{{formatDate(application.pendingSubmission.created_at)}}</strong> with the following notes:
+                <blockquote>
+                    {{application.pendingSubmission.notes}}
+                </blockquote>
+            </static-alert>
             <button 
                 class="btn btn-lg w-full" 
                 @click="startApproveStep"
@@ -53,9 +64,15 @@
             >
                 {{approveButtonLabel}}
             </button>
-            <modal-dialog v-model="showApproveForm" size="xl" @closed="$refs.approvestepform.clearForm()">
-                <approve-step-form  ref="approvestepform" @saved="hideApproveForm" @canceled="hideApproveForm"></approve-step-form>
-            </modal-dialog>
+            <teleport to="body">
+                <modal-dialog v-model="showApproveForm" size="xl" @closed="$refs.approvestepform.clearForm()">
+                    <approve-step-form  
+                        ref="approvestepform" 
+                        @saved="hideApproveForm" 
+                        @canceled="hideApproveForm"
+                    />
+                </modal-dialog>
+            </teleport>
         </div>
 
         <slot></slot>

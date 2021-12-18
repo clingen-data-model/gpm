@@ -131,6 +131,7 @@ export default {
             await this.$store.dispatch('groups/findAndSetCurrent', this.uuid);
             this.$store.dispatch('groups/getDocuments', this.group);
             this.$store.dispatch('groups/getNextActions', this.group);
+            this.$store.dispatch('groups/getSubmissions', this.group);
 
         }
     },

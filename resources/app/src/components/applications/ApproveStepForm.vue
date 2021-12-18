@@ -1,16 +1,26 @@
 <template>
     <form-container>
         <h2>Approve Step {{application.current_step}}</h2>
-        
+
         <input-row v-model="dateApproved" type="date" :errors="errors.date_approved" label="Date Approved"></input-row>
 
         <dictionary-row label="">
             <div>
-                <label class="text-sm block">
-                    <input type="checkbox" v-model="notifyContacts" :value="true"> Send notification email to contacts
+                <label class="text-sm">
+                    <input type="checkbox" v-model="notifyContacts" :value="true"> 
+                    <div>Send notification email to contacts</div>
                 </label>
             </div>
         </dictionary-row>
+        <static-alert
+            v-if="!application.hasPendingSubmissionForCurrentStep"
+            variant="warning"
+        >
+            The expert panel has not yet submitted the application for approval.  
+            <br>
+            You can approve this application but be aware that it is not part of the "normal" application workflow.
+        </static-alert>
+        
         
         <transition name="slide-fade-down">
             <div v-show="notifyContacts">
