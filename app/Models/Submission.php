@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\SubmissionType;
 use App\Models\SubmissionStatus;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
@@ -79,5 +80,16 @@ class Submission extends Model
     public function submitter(): BelongsTo
     {
         return $this->belongsTo(Person::class, 'submitter_id');
+    }
+
+    # SCOPES
+
+    public function scopeOfType($query, $type)
+    {
+        $typeId = $type;
+        if (is_object($type) && get_class($type) == SubmissionType::class) {
+            $typeId = $type->id;
+        }
+        return $query->where('submission_type_id', $typeId);
     }
 }

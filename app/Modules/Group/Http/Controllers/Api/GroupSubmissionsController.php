@@ -13,6 +13,6 @@ class GroupSubmissionsController extends Controller
 {
     public function index(Request $request, Group $group)
     {
-        return $group->submissions;
+        return $group->submissions()->with('submitter')->get();
     }
 }

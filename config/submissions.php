@@ -1,19 +1,28 @@
 <?php
 
+$definitionType = [
+    'id' => 1,
+    'name' => 'Definition',
+    'description' => 'VCEP step 1 and GCEP appliation'
+];
+$sustainedCurationType = [
+    'id' => 2,
+    'name' => 'Sustained Curation',
+    'description' => 'VCEP step 4'
+];
+
 return [
     'types' => [
         'application' => [
-            'definition' => [
-                'id' => 1, 
-                'name' => 'Definition',
-                'description' => 'VCEP step 1 and GCEP appliation'
-            ],
-            'sustained-curation' => [
-                'id' => 2,
-                'name' => 'Sustained Curation',
-                'description' => 'VCEP step 4'
-            ]
+            'definition' => $definitionType,
+            'sustained-curation' => $sustainedCurationType
         ]
+    ],
+    'types-by-step' => [
+        1 => $definitionType,
+        2 => null,
+        3 => null,
+        4 => $sustainedCurationType
     ],
     'statuses' => [
         'pending' => [

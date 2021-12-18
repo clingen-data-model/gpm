@@ -39,46 +39,76 @@ class StepApprove
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         $dateApproved = $dateApproved ? Carbon::parse($dateApproved) : Carbon::now();
 
-        $defaultMail = (new ApplicationStepApprovedNotification($expertPanel, $expertPanel->current_step, false))
-                        ->toMail($expertPanel->contacts->first());
-
-        $subject = $subject ?? $defaultMail->subject;
-        $body = $body ?? $defaultMail->render();
-        $ccAddresses = $defaultMail->cc;
-
         $stepManager = app()->make(StepManagerFactory::class)($expertPanel);
         
         if (! $stepManager->canApprove()) {
             throw new UnmetStepRequirementsException($expertPanel, $stepManager->getUnmetRequirements());
         }
 
-        $approvedStep = $expertPanel->current_step;
-        $expertPanel->setApprovalDate($approvedStep, $dateApproved);
+        $expertPanel->setApprovalDate($expertPanel->current_step, $dateApproved);
 
+        $approvedStep = $expertPanel->current_step;
         if (!$stepManager->isLastStep()) {
             $expertPanel->current_step++;
         }
         
         $expertPanel->save();
 
-        Event::dispatch(new StepApproved(
-            application: $expertPanel,
-            step: $approvedStep,
-            dateApproved: $dateApproved
-        ));
-        
+        $this->approveSubmission($expertPanel, $dateApproved, $approvedStep);
+
+        $this->dispatchEvent($expertPanel, $expertPanel->current_step, $dateApproved);
+
         if ($stepManager->isLastStep()) {
             $this->applicationCompleteAction->handle($expertPanel, $dateApproved);
         }
 
         if ($notifyContacts) {
-            $this->notifyContactsAction->handle(
-                expertPanel: $expertPanel,
-                subject: $subject,
-                body: $body,
-                attachments: $attachments,
-                ccAddresses: $ccAddresses
-            );
+            $this->notifyContacts($expertPanel, $subject, $body, $attachments);
         }
+    }
+
+    private function approveSubmission($expertPanel, $dateApproved, $approvedStep)
+    {
+        $submission = $expertPanel
+                        ->group
+                        ->submissions()
+                        ->ofType(config('submissions.types-by-step')[$approvedStep]['id'])
+                        ->first();
+        if (!$submission) {
+            return;
+        }
+
+        $submission->update([
+            'submission_status_id' => config('submissions.statuses.approved.id'),
+            'approved_at' => $dateApproved
+        ]);
+    }
+    
+
+    private function notifyContacts($expertPanel, $subject, $body, $attachments)
+    {
+        $defaultMail = (new ApplicationStepApprovedNotification($expertPanel, $expertPanel->current_step, false))
+        ->toMail($expertPanel->contacts->first());
+
+        $subject = $subject ?? $defaultMail->subject;
+        $body = $body ?? $defaultMail->render();
+        $ccAddresses = $defaultMail->cc;
+
+        $this->notifyContactsAction->handle(
+            expertPanel: $expertPanel,
+            subject: $subject,
+            body: $body,
+            attachments: $attachments,
+            ccAddresses: $ccAddresses
+        );
+    }
+
+    private function dispatchEvent($expertPanel, $approvedStep, $dateApproved)
+    {
+        Event::dispatch(new StepApproved(
+            application: $expertPanel,
+            step: $approvedStep,
+            dateApproved: $dateApproved
+        ));
     }
 }
