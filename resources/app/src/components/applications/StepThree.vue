@@ -32,8 +32,13 @@
                 :step="3"
                 class="mb-6"
             ></document-manager>
-
         </template>        
+        <template v-slot:sections>
+            <div class="appliation-section">
+                <h2>Pilot Specifications</h2>
+                <cspec-summary></cspec-summary>
+            </div>
+        </template>
     </base-step>
 </template>
 <script>
@@ -41,12 +46,14 @@ import {mapGetters} from 'vuex'
 import {formatDate} from '@/date_utils'
 import BaseStep from '@/components/applications/BaseStep'
 import DocumentManager from '@/components/applications/documents/DocumentManager'
+import CspecSummary from '@/components/expert_panels/CspecSummary'
 
 export default {
     name: 'StepThree',
     components: {
         BaseStep,
-        DocumentManager
+        DocumentManager,
+        CspecSummary
     },
     props: {
         

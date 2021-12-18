@@ -20,7 +20,12 @@
                     </div>
                 </div>
             </div>
-            <slot name="document">
+            <div class="border-b mb-2 pb-2">
+                <button class="btn btn-xs" @click="toggleDocuments">{{docsToggleText}}</button>
+                &nbsp;
+                <button class="btn btn-xs" @click="toggleSections">{{sectionsToggleText}}</button>
+            </div>
+            <slot name="document" v-if="showDocuments">
                 <document-manager
                     :title="documentName"
                     class="border-b"
@@ -29,6 +34,9 @@
                     :getsReviewd="documentGetsReviewed"
                     :step="step"
                 ></document-manager>
+            </slot>
+            <slot name="sections" v-if="showSections">
+                Step sections here!
             </slot>
         </div>
 
@@ -53,7 +61,7 @@
         <slot></slot>
 
         <slot name="log">
-            <div class="mb-6">
+            <div class="mb-6 mt-4 border-t pt-4">
                 <h3 class="mb-2">Step {{step}} Progress Log</h3>
                 <application-log :step="step"></application-log>
             </div>
@@ -112,7 +120,9 @@ export default {
         return {
             showApproveForm: false,
             editApprovalDate: false,
-            newApprovalDate: null
+            newApprovalDate: null,
+            showDocuments: true,
+            showSections: true,
         }
     },
     computed: {
@@ -131,9 +141,21 @@ export default {
             }
 
             return null;
+        },
+        docsToggleText () {
+            return this.showDocuments ? 'Hide Documents' : 'Show Documents';
+        },
+        sectionsToggleText () {
+            return this.showSections ? 'Hide Sections' : 'Show Sections';
         }
     },
     methods: {
+        toggleDocuments () {
+            this.showDocuments = !this.showDocuments;
+        },
+        toggleSections () {
+            this.showSections = !this.showSections;
+        },
         startApproveStep () {
             this.showApproveForm = true;
         },

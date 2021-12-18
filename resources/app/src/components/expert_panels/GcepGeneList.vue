@@ -3,7 +3,7 @@
         <h4 class="flex justify-between mb-2">
             Gene List
             <edit-icon-button 
-                v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing"
+                v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing && !readonly"
                 @click="showForm"
             ></edit-icon-button>
         </h4>
@@ -42,6 +42,11 @@ export default {
             type: Boolean,
             required: false,
             default: true
+        },
+        readonly: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     },
     emits: [

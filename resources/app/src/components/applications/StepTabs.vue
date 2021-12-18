@@ -3,18 +3,21 @@
         <div v-if="application.isGcep">
             <step-one></step-one>
         </div>
-        
-            <tabs-container tab-location="right" v-model="activeIndex" v-if="this.application.expert_panel_type_id == 2">
-            <tab-item label="Step 1 - Define">
+            <tabs-container 
+                tab-location="right" 
+                v-model="activeIndex" 
+                v-if="this.application.expert_panel_type_id == 2"
+            >
+            <tab-item label="Group Definition">
                 <step-one></step-one>
             </tab-item>
-            <tab-item label="Step 2 - Draft Rules">
+            <tab-item label="Draft Specifications">
                 <step-two></step-two>
             </tab-item>
-            <tab-item label="Step 3 - Pilot Rules">
+            <tab-item label="Pilot Specfications">
                 <step-three></step-three>
             </tab-item>
-            <tab-item label="Step 4 - Final Approval">
+            <tab-item label="Sustained Curation">
                 <step-four></step-four>
             </tab-item>
         </tabs-container>

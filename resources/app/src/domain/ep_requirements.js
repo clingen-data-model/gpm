@@ -62,13 +62,13 @@ export const pilotedApprovedSpecifications = new Requirement(
 )
 
 export const minimumBiocurators = new Requirement(
-    '1+ trained biocurators.',
+    '3+ trained biocurators.',
     group => {
         return group.biocurators
                 .filter(biocurator => {
                     return biocurator.training_level_1 
                         && biocurator.training_level_2
-                }).length > 0
+                }).length > 2
     }
 );
 

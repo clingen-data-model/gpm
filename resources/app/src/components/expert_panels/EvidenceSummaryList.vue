@@ -11,6 +11,7 @@
                         @saved="handleSavedSummary" 
                         @deleted="handleDeleted"
                         class="flex-1"
+                        :readonly="readonly"
                     ></evidence-summary>
                 </li>
             </transition-group>
@@ -29,7 +30,7 @@
                 ></evidence-summary-form>
             </li>
         </ul>
-        <div v-show="!adding">
+        <div v-show="!adding && canEdit">
             <button class="btn btn-xs" @click="startNewSummary" v-show="!adding">Add Summary</button>
         </div>
     </div>
@@ -48,6 +49,13 @@ export default {
     emits: [
         'summaries-added'
     ],
+    props: {
+        readonly: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
+    },
     data() {
         return {
             newSummaries: [],
@@ -73,6 +81,10 @@ export default {
         adding () {
             return this.newSummaries.length > 0;
         },
+        canEdit () {
+            return this.hasAnyPermission(['ep-applications-manage', ['application-edit', this.group]])
+                && !this.readonly
+        }
     },
     watch: {
         group: {

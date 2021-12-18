@@ -7,17 +7,28 @@
                 :errors="errors.meeting_frequency"
                 placeholder="Once per week"
                 :label-width="44"
+                :disabled="!canEdit"
             >
             </input-row>
             <input-row label="VCEP Standardized Review Process" :errors="errors.curation_review_protocol_id" vertical>
                 <div>
                     <label class="block mt-2 flex items-top space-x-2">
-                        <input type="radio" v-model="group.expert_panel.curation_review_protocol_id" value="1" class="mt-1">
-                        <p>Process #1: Biocurator review followed by VCEP discussion</p>
+                        <input type="radio" 
+                            v-model="group.expert_panel.curation_review_protocol_id" 
+                            value="1" 
+                            class="mt-1"
+                            :disabled="!canEdit"
+                        >
+                        Process #1: Biocurator review followed by VCEP discussion
                     </label>
                     <label class="block mt-2 flex items-top space-x-2">
-                        <input type="radio" v-model="group.expert_panel.curation_review_protocol_id" value="2" class="mt-1">
-                       <p>Process #2: Paired biocurator/expert review followed by expedited VCEP approval</p>
+                        <input type="radio" 
+                            v-model="group.expert_panel.curation_review_protocol_id" 
+                            value="2" 
+                            class="mt-1"
+                            :disabled="!canEdit"
+                        >
+                       Process #2: Paired biocurator/expert review followed by expedited VCEP approval
                     </label>
                 </div>
             </input-row>
@@ -25,7 +36,14 @@
         <p class="text-sm mb-0">For all variants approved by either of the processes described above, a summary of approved variants should be sent to ensure that any members absent from a call have an opportunity to review each variant. The summary should be emailed to the full VCEP after the call and should summarize decisions that were made and invite feedback within a week.</p>
 
         <input-row label="Curation and Review Process Notes" :vertical="true" label-class="font-bold">
-            <textarea class="w-full h-20" v-model="group.expert_panel.curation_review_process_notes"></textarea>
+            <textarea 
+                v-if="canEdit"
+                class="w-full h-20" 
+                v-model="group.expert_panel.curation_review_process_notes" 
+            />
+            <blockquote v-else>
+                {{group.expert_panel.curation_review_process_notes}}
+            </blockquote>
         </input-row>
     </div>
 </template>
@@ -43,7 +61,12 @@ export default {
             type: Boolean,
             required: false,
             default: true
-        }
+        },
+        readonly: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
     },
     computed: {
         group: {
@@ -53,6 +76,13 @@ export default {
             set (value) {
                 this.$store.commit('groups/addItem', value)
             }
+        },
+        canEdit () {
+            return this.hasAnyPermission([
+                'ep-applications-manage',
+                ['application-edit', this.group]
+            ])
+            && !this.readonly;
         }
     }
 }

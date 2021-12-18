@@ -6,7 +6,7 @@
             >
                 <header class="flex justify-between">
                     <h4>{{summary.gene.gene_symbol}} - {{summary.variant}}</h4>
-                    <dropdown-menu :hide-cheveron="true" class="relative">
+                    <dropdown-menu :hide-cheveron="true" class="relative" v-if="canEdit">
                         <template v-slot:label>
                             <button class="btn btn-xs">&hellip;</button>
                         </template>
@@ -49,6 +49,11 @@ export default {
         group: {
             required: true,
             type: Object
+        },
+        readonly: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     },
     emits: [
@@ -63,7 +68,10 @@ export default {
         }
     },
     computed: {
-
+        canEdit () {
+            return this.hasAnyPermission(['ep-applications-manage', ['application-edit', this.group]]) 
+                && !this.readonly
+        }
     },
     methods: {
         handleSaved(newSummary) {

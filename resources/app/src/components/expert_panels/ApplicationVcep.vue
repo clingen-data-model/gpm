@@ -70,7 +70,7 @@
             title="Sustained Curation"
             :disabled="group.expert_panel.current_step < 4 || group.expert_panel.hasPendingSubmission"
         >
-            <app-section title="Plans for Ongoing Gene Review and Reanalysis and Discrepancy Resolution" id="curationReviewProcess">
+            <app-section title="Plans for Ongoing Review and Reanalysis and Discrepancy Resolution" id="curationReviewProcess">
                 <vcep-ongoing-plans-form />
             </app-section>
 

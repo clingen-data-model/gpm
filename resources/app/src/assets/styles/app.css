@@ -70,6 +70,64 @@ textarea.sm {
     @apply px-1 py-0.5 text-sm;
 }
 
+label {
+    @apply space-x-2;
+    display: flex;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  flex-grow: 0;
+  flex-shrink: 0;
+  color: #666;
+  appearance: none;
+  background-color: #fff;
+  margin: 0;
+  font: inherit;
+  width: 1.1rem;
+  height: 1.1rem;
+  padding: 0;
+  border: 0.125rem solid currentColor;
+  transform: translateY(0.15rem);
+  display: grid;
+  place-content: center;
+  /* margin-right: .5rem; */
+}
+
+input[type="radio"] {
+    border-radius: 50%;
+}
+
+input[type="radio"]::before,
+input[type="checkbox"]::before {
+  content: "";
+  width: .55rem;
+  height: .55rem;
+  background-color: currentColor;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--form-control-color);
+}
+
+input[type="radio"]::before {
+    border-radius: 50%;
+}
+
+input[type="radio"]:checked,
+input[type="checkbox"]:checked {
+        @apply text-blue-600;
+
+}
+input[type="radio"]:checked::before,
+input[type="checkbox"]:checked::before  {
+  transform: scale(1);
+}
+
+
+blockquote {
+    @apply border-l-8 border-gray-200 pl-2;
+}
+
 .note {
     @apply text-xs text-gray-400
 }
@@ -217,4 +275,12 @@ textarea.sm {
 
 .block-title {
     @apply pb-2 border-b mb-2;
+}
+
+.application-section {
+    @apply py-2 border-b my-2;
+}
+
+.muted {
+    @apply text-gray-400;
 }

@@ -142,6 +142,13 @@ export default {
         GeneSearchSelect,
         DiseaseSearchSelect,
     },
+    props: {
+        readonly: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
+    },
     emits: [
         'saved',
         'canceled',
@@ -283,6 +290,7 @@ export default {
 
         const canEdit = computed(() => {
             return hasAnyPermission(['ep-applications-manage', ['application-edit', group]])
+                && !props.readonly
         })
 
         onMounted(() => {

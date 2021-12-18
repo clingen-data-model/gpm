@@ -43,14 +43,15 @@
                     v-for="member in group.members"
                     :key="member.id"
                     :ref="`memberRow${member.id}`"
+                    :readonly="readonly"
                 />
             </tbody>
         </table>
-        <div class="flex items-center mt-2 pt-2 border-t">
+        <!-- <div class="flex items-center mt-2 pt-2 border-t">
             <icon-info :width="14" :height="14" />
             &nbsp;
             <div>Core approval members are responsible for ongoing final approval of variant classifications.</div>
-        </div>
+        </div> -->
     </div>
 </template>
 <script>
@@ -60,8 +61,11 @@ export default {
     components: {
         MemberDesignationRow,
     },
-    data() {
-        return {
+    props: {
+        readonly: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     },
     computed: {
@@ -69,6 +73,13 @@ export default {
             get() {
                 return this.$store.getters['groups/currentItemOrNew'];
             }
+        },
+        canEdit () {
+            return this.hasAnyPermission([
+                        'ep-applications-manage',
+                        ['application-edit', this.group]
+                    ]) 
+                    && !this.readonly;
         }
     },
     watch: {

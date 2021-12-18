@@ -11,19 +11,19 @@
         <td>{{workingCopy.person.first_name}}</td>
         <td>{{workingCopy.person.last_name}}</td>
         <td colgroup="biocurator">
-            <input type="checkbox" v-model="biocurator">
+            <input type="checkbox" v-model="biocurator" :disabled="!canEdit">
         </td>
         <td colgroup="biocurator">
-            <input type="checkbox" v-model="workingCopy.training_level_1">
+            <input type="checkbox" v-model="workingCopy.training_level_1" :disabled="!canEdit">
         </td>
         <td colgroup="biocurator">
-            <input type="checkbox" v-model="workingCopy.training_level_2">
+            <input type="checkbox" v-model="workingCopy.training_level_2" :disabled="!canEdit">
         </td>
         <td>
-            <input type="checkbox" v-model="biocuratorTrainer">
+            <input type="checkbox" v-model="biocuratorTrainer" :disabled="!canEdit">
         </td>
         <td>
-            <input type="checkbox" v-model="coreApprovalMember">
+            <input type="checkbox" v-model="coreApprovalMember" :disabled="!canEdit">
         </td>
     </tr>
 </template>
@@ -39,6 +39,11 @@ export default {
         member: {
             type: GroupMember,
             required: true
+        },
+        readonly: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     },
     data() {
@@ -74,7 +79,13 @@ export default {
                 this.toggleRole(value, 'core-approval-member')
             }
         },
-        
+        canEdit () {
+            return this.hasAnyPermission([
+                        'ep-applications-manage',
+                        ['application-edit', this.group]
+                    ]) 
+                    && !this.readonly;
+        }        
     },
     watch: {
         member: {
