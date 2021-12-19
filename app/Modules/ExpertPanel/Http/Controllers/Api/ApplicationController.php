@@ -90,7 +90,7 @@ class ApplicationController extends Controller
             $query->withTrashed();
         }
 
-        return new ExpertPanelCollection($query->paginate(20));
+        return new ExpertPanelCollection($query->get());
     }
 
     /**
