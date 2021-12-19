@@ -4,7 +4,7 @@ namespace Tests\Feature\End2End\Groups\Submissions;
 
 use Tests\TestCase;
 use App\Models\Permission;
-use App\Models\Submission;
+use App\Modules\Group\Models\Submission;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;

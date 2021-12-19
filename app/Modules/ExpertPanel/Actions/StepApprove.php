@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\Concerns\AsAction;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Events\StepApproved;
+use App\Modules\Group\Actions\SubmissionApprove;
 use App\Modules\ExpertPanel\Actions\NotifyContacts;
 use App\Modules\ExpertPanel\Service\StepManagerFactory;
 use App\Modules\ExpertPanel\Actions\ApplicationComplete;
@@ -19,7 +20,8 @@ class StepApprove
 
     public function __construct(
         private NotifyContacts $notifyContactsAction,
-        private ApplicationComplete $applicationCompleteAction
+        private ApplicationComplete $applicationCompleteAction,
+        private SubmissionApprove $approveSubmission,
     ) {
     }
 
@@ -40,11 +42,11 @@ class StepApprove
         $dateApproved = $dateApproved ? Carbon::parse($dateApproved) : Carbon::now();
 
         $stepManager = app()->make(StepManagerFactory::class)($expertPanel);
-        
+
         if (! $stepManager->canApprove()) {
             throw new UnmetStepRequirementsException($expertPanel, $stepManager->getUnmetRequirements());
         }
-
+        
         $expertPanel->setApprovalDate($expertPanel->current_step, $dateApproved);
 
         $approvedStep = $expertPanel->current_step;
@@ -54,8 +56,11 @@ class StepApprove
         
         $expertPanel->save();
 
-        $this->approveSubmission($expertPanel, $dateApproved, $approvedStep);
-
+        $submission = $this->getSubmission($expertPanel, $approvedStep);
+        if ($submission) {
+            $this->approveSubmission->handle($submission, $dateApproved);
+        }
+        
         $this->dispatchEvent($expertPanel, $expertPanel->current_step, $dateApproved);
 
         if ($stepManager->isLastStep()) {
@@ -67,22 +72,14 @@ class StepApprove
         }
     }
 
-    private function approveSubmission($expertPanel, $dateApproved, $approvedStep)
+    private function getSubmission($expertPanel, $approvedStep)
     {
-        $submission = $expertPanel
-                        ->group
-                        ->submissions()
-                        ->pending()
-                        ->ofType(config('submissions.types-by-step')[$approvedStep]['id'])
-                        ->first();
-        if (!$submission) {
-            return;
-        }
-
-        $submission->update([
-            'submission_status_id' => config('submissions.statuses.approved.id'),
-            'approved_at' => $dateApproved
-        ]);
+        return $expertPanel
+            ->group
+            ->submissions()
+            ->pending()
+            ->ofType(config('submissions.types-by-step')[$approvedStep]['id'])
+            ->first();
     }
     
 

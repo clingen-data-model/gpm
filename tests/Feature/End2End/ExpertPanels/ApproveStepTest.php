@@ -4,7 +4,7 @@ namespace Tests\Feature\End2End\ExpertPanels;
 
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
-use App\Models\Submission;
+use App\Modules\Group\Models\Submission;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
@@ -13,6 +13,7 @@ use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Models\Group;
 use App\Notifications\UserDefinedMailNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -172,6 +173,66 @@ class ApproveStepTest extends TestCase
             'id' => $submission->id,
             'submission_status_id' => config('submissions.statuses.approved.id'),
             'approved_at' => Carbon::now(),
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function records_submission_approved_if_exists()
+    {
+        $person = Person::factory()->create();
+        $submission = Submission::factory()->create([
+            'group_id' => $this->expertPanel->group_id,
+            'submission_type_id' => config('submissions.types.application.definition.id'),
+            'submitter_id' => $person->id,
+        ]);
+
+        Sanctum::actingAs($this->user);
+        $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/current-step/approve', [
+            'date_approved' => Carbon::now(),
+            'notify_contacts' => false,
+        ])->assertStatus(200);
+
+        // $this->assertDatabaseHas('activity_log', [
+        //     'activity_type' => 'submission-approved',
+        //     'subject_id' => $this->expertPanel->group_id,
+        //     'subject_type' => Group::class,
+        //     'description' => 'Step 1 approved'
+        // ]);
+
+        $this->assertDatabaseMissing('activity_log', [
+            'activity_type' => 'step-approved',
+            'subject_id' => $this->expertPanel->group_id,
+            'subject_type' => Group::class,
+            'description' => 'Step 1 approved'
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function group_status_set_to_active_when_last_step_is_approved()
+    {
+        $this->expertPanel->current_step = 4;
+        $this->expertPanel->save();
+
+        $person = Person::factory()->create();
+        $submission = Submission::factory()->create([
+            'group_id' => $this->expertPanel->group_id,
+            'submission_type_id' => config('submissions.types.application.sustained-curation.id'),
+            'submitter_id' => $person->id,
+        ]);
+
+        Sanctum::actingAs($this->user);
+        $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/current-step/approve', [
+            'date_approved' => Carbon::now(),
+            'notify_contacts' => false,
+        ])->assertStatus(200);
+
+        $this->assertDatabaseHas('groups', [
+            'id' => $this->expertPanel->group_id,
+            'group_status_id' => config('groups.statuses.active.id')
         ]);
     }
 }

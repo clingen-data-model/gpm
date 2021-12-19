@@ -5,13 +5,16 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Auth;
 use Lorisleiva\Actions\ActionRequest;
 use App\Modules\Group\Models\GroupStatus;
+use Lorisleiva\Actions\Concerns\AsListener;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Events\GroupStatusUpdated;
 use App\Modules\Group\Http\Resources\GroupResource;
+use App\Modules\ExpertPanel\Events\ApplicationCompleted;
 
 class GroupStatusUpdate
 {
     use AsController;
+    use AsListener;
 
     public function handle(Group $group, GroupStatus $groupStatus): Group
     {
@@ -26,6 +29,12 @@ class GroupStatusUpdate
         event(new GroupStatusUpdated($group, $groupStatus, $oldStatus));
 
         return $group;
+    }
+
+    public function asListener(ApplicationCompleted $event)
+    {
+        $activeStatus = GroupStatus::find(config('groups.statuses.active.id'));
+        $this->handle($event->application->group, $activeStatus);
     }
 
     public function asController(ActionRequest $request, Group $group)
