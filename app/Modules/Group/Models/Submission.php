@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Models;
+namespace App\Modules\Group\Models;
 
-use App\Models\SubmissionType;
-use App\Models\SubmissionStatus;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
 use Illuminate\Database\Eloquent\Model;
+use Database\Factories\SubmissionFactory;
+use App\Modules\Group\Models\SubmissionType;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Modules\Group\Models\SubmissionStatus;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -96,5 +97,10 @@ class Submission extends Model
     public function scopePending($query)
     {
         return $query->where('submission_status_id', config('submissions.statuses.pending'));
+    }
+
+    protected static function newFactory()
+    {
+        return new SubmissionFactory();
     }
 }

@@ -14,31 +14,37 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class ApplicationStepSubmitted extends GroupEvent
+class SubmissionApproved extends GroupEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    public Group $group;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(public Group $group, public Submission $submission)
+    public function __construct(public Submission $submission)
     {
+        $this->group = $submission->group;
     }
 
-    public function getLogEntry(): string
-    {
-        $submitterName = Auth::user() ? Auth::user()->name : 'system';
-        return $this->submission->type->name.' application submitted for approval by '.$submitterName.'.';
-    }
-    
-    public function getProperties(): ?array
+    public function getProperties():array
     {
         return [
-            'submission' => $this->submission->toArray(),
-            'date_submitted' => $this->submission->created_at
+            'submission' => $this->submission->toArray()
         ];
+    }
+
+    public function getLogEntry():string
+    {
+        return 'Step '.$this->getStep().' approved';
+    }
+    
+    public function getStep()
+    {
+        return max(($this->group->expertPanel->current_step - 1), 1);
     }
 
     /**

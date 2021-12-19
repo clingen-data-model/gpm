@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Submission;
-use App\Models\SubmissionType;
+use App\Modules\Group\Models\Submission;
+use App\Modules\Group\Models\SubmissionType;
 use App\Modules\Group\Models\Group;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

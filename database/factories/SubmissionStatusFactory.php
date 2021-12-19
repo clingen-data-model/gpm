@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\SubmissionStatus;
+use App\Modules\Group\Models\SubmissionStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SubmissionStatusFactory extends Factory

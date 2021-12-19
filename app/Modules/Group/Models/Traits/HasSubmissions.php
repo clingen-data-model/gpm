@@ -2,7 +2,7 @@
 
 namespace App\Modules\Group\Models\Traits;
 
-use App\Models\Submission;
+use App\Modules\Group\Models\Submission;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 

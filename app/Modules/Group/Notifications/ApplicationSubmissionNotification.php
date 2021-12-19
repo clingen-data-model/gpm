@@ -2,7 +2,7 @@
 
 namespace App\Modules\Group\Notifications;
 
-use App\Models\Submission;
+use App\Modules\Group\Models\Submission;
 use Illuminate\Bus\Queueable;
 use App\Modules\Group\Models\Group;
 use Illuminate\Notifications\Notification;

@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Database\Seeders\Seeder;
-use App\Models\SubmissionType;
-use App\Models\SubmissionStatus;
+use App\Modules\Group\Models\SubmissionType;
+use App\Modules\Group\Models\SubmissionStatus;
 
 class SubmissionTypeAndStatusSeeder extends Seeder
 {

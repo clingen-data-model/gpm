@@ -3,7 +3,7 @@
 namespace App\Modules\Group\Actions;
 
 use Exception;
-use App\Models\Submission;
+use App\Modules\Group\Models\Submission;
 use App\Modules\Group\Events\ApplicationStepSubmitted;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
