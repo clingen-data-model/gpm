@@ -75,40 +75,12 @@ export default {
     },
     actions: {
         async getApplications({ commit, state, dispatch }, params, fresh = false) {
-            if (fresh || state.lastFetch === null) {
-                commit('setLastParams', params);
-                await appRepo.all(params)
-                    .then(data => {
-                        data.forEach(item => {
-                            commit('addApplication', item)
-                        })
-                        commit('setLastFetch', new Date())
-                        state.lastFetchBy = 'getApplications';
-                    });
-                return;
-            }
-
-            dispatch('getApplicationsSinceLastFetch', params);
-        },
-
-        async getApplicationsSinceLastFetch({ commit, state }, params = null) {
-            if (params === null) {
-                params = state.lastParams
-            }
-
-            if (!params.where) {
-                params.where = {}
-            }
-            params.where.since = state.lastFetch.toISOString()
-
-            await appRepo.all(params)
+            appRepo.all(params)
                 .then(data => {
                     data.forEach(item => {
                         commit('addApplication', item)
                     })
-                })
-            commit('setLastFetch', new Date)
-            state.lastFetchBy = 'getApplications';
+                });
         },
 
         async initiateApplication({ commit, dispatch }, appData) {
