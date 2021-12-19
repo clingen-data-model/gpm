@@ -111,6 +111,10 @@ class Group extends Entity {
         return (this.contacts.length > 0);
     }
 
+    get isApplying () {
+        return this.expert_panel.isApplying
+    }
+
 
     addMembers (members) {
         members.forEach(m => {
@@ -185,11 +189,6 @@ class Group extends Entity {
 
     isGcep() {
         return this.isEp() && this.expert_panel && this.expert_panel.expert_panel_type_id == 1;
-    }
-
-    isApplying () {
-        return this.isEp() && this.expert_panel 
-            && this.group_status_id == configs.groups.statuses['pending-approval'].id
     }
 
     clone(){

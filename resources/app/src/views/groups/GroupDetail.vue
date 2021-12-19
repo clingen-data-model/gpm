@@ -2,7 +2,10 @@
     <div>
         <group-detail-header :group="group" @showEdit="showEdit"></group-detail-header>
         
-        <application-summary :group="group" v-if="group.id && group.isApplying()"></application-summary>
+        <application-summary 
+            :group="group" 
+            v-if="group.isApplying"
+        />
 
         <tabs-container @tab-changed="handleTabChange">
             <tab-item label="Members">
@@ -55,10 +58,9 @@
                         ref="ongoingPlansForm"
                         :is="ongoingPlansFormComponent"
                         :errors="errors"
-                        class="pb-2"
                     />
                 </submission-wrapper>
-                <section :visible="group.isVcep()">
+                <section v-if="group.isVcep()">
                     <header>  
                         <h3>Example Evidence Summaries</h3>
                     </header>

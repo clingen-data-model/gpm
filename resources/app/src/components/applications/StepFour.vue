@@ -6,6 +6,7 @@
         :document-gets-reviewed="true"
         approve-button-label="Approve Sustained Curation"
         title="Sustained Curation"
+        @stepApproved="$emit('stepApproved')"
     >
         <template v-slot:sections>
             <div class="applicaiton-section">
@@ -41,6 +42,7 @@ export default {
     props: {
         
     },
+    emits: ['stepApproved'],
     data() {
         return {
             

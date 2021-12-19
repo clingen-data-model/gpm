@@ -7,6 +7,7 @@
             :document-type="1" 
             :document-gets-reviewed="true"
             approve-button-label="Approve Scope and Membership"
+            @stepApproved="handleApproved"
         >
             <template v-slot:sections>
                 <div class="application-section">
@@ -95,6 +96,7 @@ export default {
         ApplicationSection,
         GcepOngoingPlansForm
     },
+    emits: ['stepApproved'],
     data() {
         return {
         }
@@ -111,6 +113,9 @@ export default {
         }
     },
     methods: {
+        handleApproved() {
+            this.$emit('stepApproved')
+        }
     }
 }
 </script>

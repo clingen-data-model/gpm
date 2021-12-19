@@ -35,7 +35,7 @@
 
             <tabs-container>
                 <tab-item label="Application">
-                    <step-tabs :application="application"></step-tabs>
+                    <step-tabs :application="application" @stepApproved="getGroup"></step-tabs>
                 </tab-item>
 
                 <tab-item label="Application Log">
@@ -132,8 +132,7 @@ export default {
             this.$store.dispatch('groups/getDocuments', this.group);
             this.$store.dispatch('groups/getNextActions', this.group);
             this.$store.dispatch('groups/getSubmissions', this.group);
-
-        }
+        },
     },
     mounted() {
         this.getGroup();

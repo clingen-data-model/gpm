@@ -68,7 +68,7 @@
                 <modal-dialog v-model="showApproveForm" size="xl" @closed="$refs.approvestepform.clearForm()">
                     <approve-step-form  
                         ref="approvestepform" 
-                        @saved="hideApproveForm" 
+                        @saved="handleApproved" 
                         @canceled="hideApproveForm"
                     />
                 </modal-dialog>
@@ -178,6 +178,11 @@ export default {
         },
         approveStep () {
             this.$store.dispatch('applications/approveCurrentStep', {application: this.application, step: this.step})
+            this.$emit('stepApproved')
+        },
+        handleApproved () {
+            this.hideApproveForm();
+            this.$emit('stepApproved');
         },
         hideApproveForm () {
             this.showApproveForm = false;

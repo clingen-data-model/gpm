@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-if="application.isGcep">
-            <step-one></step-one>
+            <step-one @stepApproved="handleApproved"></step-one>
         </div>
             <tabs-container 
                 tab-location="right" 
@@ -9,16 +9,16 @@
                 v-if="this.application.expert_panel_type_id == 2"
             >
             <tab-item label="Group Definition">
-                <step-one></step-one>
+                <step-one @stepApproved="handleApproved"></step-one>
             </tab-item>
             <tab-item label="Draft Specifications">
-                <step-two></step-two>
+                <step-two @stepApproved="handleApproved"></step-two>
             </tab-item>
             <tab-item label="Pilot Specfications">
-                <step-three></step-three>
+                <step-three @stepApproved="handleApproved"></step-three>
             </tab-item>
             <tab-item label="Sustained Curation">
-                <step-four></step-four>
+                <step-four @stepApproved="handleApproved"></step-four>
             </tab-item>
         </tabs-container>
 
@@ -38,6 +38,7 @@ export default {
         StepThree,
         StepFour,
     },
+    emits: ['stepApproved'],
     data() {
         return {
             activeStep: 1
@@ -61,6 +62,11 @@ export default {
 
         } 
     },
+    methods: {
+        handleApproved () {
+            this.$emit('stepApproved')
+        }
+    }
     // watch: {
     //     application: {
     //         deep: true,
