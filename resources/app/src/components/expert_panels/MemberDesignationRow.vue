@@ -29,9 +29,6 @@
 </template>
 <script>
 import GroupMember from '@/domain/group_member'
-import configs from '@/configs'
-
-const roles = configs.groups.roles;
 
 export default {
     name: 'ComponentName',

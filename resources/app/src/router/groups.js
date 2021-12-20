@@ -7,8 +7,8 @@ const GroupDetail = () =>
 const MemberForm = () =>
     import ( /* webpackChunkName: "group-detail" */ '@/components/groups/MemberForm.vue')
 
-const GeneDiseaseForm = () =>
-    import ( /* webpackChunkName: "group-detail" */ '@/components/expert_panels/GeneDiseaseForm.vue')
+// const GeneDiseaseForm = () =>
+//     import ( /* webpackChunkName: "group-detail" */ '@/components/expert_panels/GeneDiseaseForm.vue')
 
 const GroupApplication = () =>
     import ( /* webpackChunkName: "group-application" */ '@/views/groups/GroupApplication.vue')
@@ -19,8 +19,7 @@ const hasGroupPermission = async (to, permission) => {
     }
 
     if (!store.getters['groups/currentItem'] || store.getters['groups/currentItem'].uuid != to.params.uuid) {
-        const rsp = await store.dispatch('groups/findAndSetCurrent', to.params.uuid);
-        console.log(rsp);
+        await store.dispatch('groups/findAndSetCurrent', to.params.uuid);
     }
     
     const group = store.getters['groups/currentItem'];
@@ -33,22 +32,22 @@ const hasGroupPermission = async (to, permission) => {
     return false;
 }
 
-const canUpdateApplication = async (to) => {
-    if (store.getters.currentUser.hasPermission('ep-applications-manage')) {
-        return true;
-    }
-    if (!store.getters['groups/currentItem'] || store.getters['groups/currentItem'].uuid != to.params.uuid) {
-        await store.dispatch('find', to.params.uuid);
-    }
-    const group = store.getters['groups/currentItem'];
+// const canUpdateApplication = async (to) => {
+//     if (store.getters.currentUser.hasPermission('ep-applications-manage')) {
+//         return true;
+//     }
+//     if (!store.getters['groups/currentItem'] || store.getters['groups/currentItem'].uuid != to.params.uuid) {
+//         await store.dispatch('find', to.params.uuid);
+//     }
+//     const group = store.getters['groups/currentItem'];
 
-    if (store.getters.currentUser.hasGroupPermission('application-edit', group)) {
-        return true;
-    }
+//     if (store.getters.currentUser.hasGroupPermission('application-edit', group)) {
+//         return true;
+//     }
 
-    store.commit('pushError', 'Permission denied');
-    return false;
-}
+//     store.commit('pushError', 'Permission denied');
+//     return false;
+// }
 
 export default [
     {

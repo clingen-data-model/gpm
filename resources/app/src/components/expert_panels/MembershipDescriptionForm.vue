@@ -31,8 +31,6 @@
     </div>
 </template>
 <script>
-import Group from '@/domain/group'
-
 export default {
     name: 'MembershipDescriptionForm',
     props: {

@@ -179,7 +179,6 @@ class ExpertPanel extends Entity
                 return 'Definition';
             case 2: 
                 return 'Draft Specifications';
-                return 'Definition';
             case 3: 
                 return 'Pilot Specifications';
             case 4: 

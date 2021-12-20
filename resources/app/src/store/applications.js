@@ -74,7 +74,7 @@ export default {
         }
     },
     actions: {
-        async getApplications({ commit, state, dispatch }, params, fresh = false) {
+        async getApplications({ commit }, params) {
             appRepo.all(params)
                 .then(data => {
                     data.forEach(item => {
@@ -132,6 +132,7 @@ export default {
         
         },
 
+        // eslint-disable-next-line
         async deleteNextAction({ dispatch }, {application, nextAction}) {
            const url = `/api/applications/${application.uuid}/next-actions/${nextAction.id}`
             await api.delete(url)

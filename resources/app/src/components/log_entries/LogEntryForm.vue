@@ -120,7 +120,7 @@ export default {
     mounted() {
         this.$el.querySelectorAll('input')[0].focus();
     },
-    setup (props) {
+    setup () {
         return {
             logEntries
         }
