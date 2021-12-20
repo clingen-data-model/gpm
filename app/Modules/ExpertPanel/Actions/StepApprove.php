@@ -61,7 +61,7 @@ class StepApprove
             $this->approveSubmission->handle($submission, $dateApproved);
         }
         
-        $this->dispatchEvent($expertPanel, $expertPanel->current_step, $dateApproved);
+        $this->dispatchEvent($expertPanel, $approvedStep, $dateApproved);
 
         if ($stepManager->isLastStep()) {
             $this->applicationCompleteAction->handle($expertPanel, $dateApproved);
