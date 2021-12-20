@@ -1,6 +1,7 @@
 import { v4 as uuid4 } from 'uuid';
 import Group from '@/domain/group';
 import { api, queryStringFromParams } from '@/http';
+import { clone } from 'lodash';
 
 const baseUrl = '/api/groups';
 const getApplicationUrl = (uuid) => `${baseUrl}/${uuid}/expert-panel`;
@@ -360,7 +361,7 @@ export const actions = {
     saveApplicationData ({dispatch}, group) {
         // delete group b/c it's not needed for the request and interferes
         // with laravel's route-model binding.
-        const expertPanelAttributes = _.clone(group.expert_panel.attributes);
+        const expertPanelAttributes = clone(group.expert_panel.attributes);
         delete(expertPanelAttributes.group);
         
         return api.put(`${baseUrl}/${group.uuid}/application`, expertPanelAttributes)
