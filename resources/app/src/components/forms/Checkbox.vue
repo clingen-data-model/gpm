@@ -1,14 +1,14 @@
 <template>
-    <div class="flex space-x-2 mb-2">
+    <label class="mb-2">
         <slot name="input">
             <input type="checkbox" v-model="val" :id="checkboxId" class="mt-1" :disabled="disabled" :value="value">
         </slot>
-        <label :for="checkboxId">
+        <div>
             <slot>
                 {{label}}
             </slot>
-        </label>
-    </div>
+        </div>
+    </label>
 </template>
 <script>
 export default {
