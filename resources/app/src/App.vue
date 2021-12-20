@@ -205,6 +205,8 @@ input[type="radio"] {
 input[type="radio"]::before,
 input[type="checkbox"]::before {
   content: "";
+  flex-grow: 0;
+  flex-shrink: 0;
   width: .55rem;
   height: .55rem;
   background-color: currentColor;
