@@ -39,8 +39,9 @@ class ProfileUpdate
     public function asController(ProfileUpdateRequest $request, $personUuid)
     {
         $person = Person::findByUuidOrFail($personUuid);
-        $person->load('institution', 'primaryOccupation', 'race', 'ethnicity', 'gender');
+        $person = $this->handle($person, $request->all());
 
-        return $this->handle($person, $request->all());
+        $person->load('institution', 'primaryOccupation', 'race', 'ethnicity', 'gender');
+        return $person;
     }
 }
