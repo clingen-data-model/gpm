@@ -32,7 +32,9 @@ class DataMigration
    
     private function migrateApplications($cdwgs)
     {
-        $applicationsData = DB::table('applications')->get()
+        $applicationsData = DB::table('applications')
+            ->whereNull('deleted_at')
+            ->get()
             ->map(function ($row) use ($cdwgs) {
                 $group = $this->createGroupForApplication($row, $cdwgs);
                 $approvalDates = json_decode($row->approval_dates, true);
