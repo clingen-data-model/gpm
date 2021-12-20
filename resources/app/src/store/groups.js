@@ -358,7 +358,12 @@ export const actions = {
     },
 
     saveApplicationData ({dispatch}, group) {
-        return api.put(`${baseUrl}/${group.uuid}/application`, group.expert_panel.attributes)
+        // delete group b/c it's not needed for the request and interferes
+        // with laravel's route-model binding.
+        const expertPanelAttributes = _.clone(group.expert_panel.attributes);
+        delete(expertPanelAttributes.group);
+        
+        return api.put(`${baseUrl}/${group.uuid}/application`, expertPanelAttributes)
             .then(response => { 
                 dispatch('find', group.uuid);
                 return response;
