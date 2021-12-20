@@ -16,7 +16,9 @@
                     <div v-if="group.isVcep()">
                         <h3>Description of Expertise</h3>
                         <blockquote>
-                            {{application.membership_description}}
+                            <span v-if="application.membership_description">{{application.membership_description}}</span>
+                            <span v-else class="muted">{{'Pending...'}}</span>
+
                         </blockquote>
                     </div>
                 </div>
