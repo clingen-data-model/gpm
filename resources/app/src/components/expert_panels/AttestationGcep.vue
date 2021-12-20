@@ -61,13 +61,16 @@
                 </input-row>
             </li>
             <li>
-                <input-row :errors="gciTrainingErrors" :hide-label="true">
-                    <checkbox v-model="gci_training" :disabled="disabled">
-                        Biocurators are trained on the use of the Gene Curation Interface (GCI).
-                        <transition name="slide-fade-down"><label class="block" v-if="gci_training">
-                            Date: <date-input type="text" v-model="group.expert_panel.gci_training_date" /></label>
-                        </transition>
-                    </checkbox>
+                <checkbox v-model="gci_training" :disabled="disabled">
+                    Biocurators are trained on the use of the Gene Curation Interface (GCI).
+                </checkbox>
+                <input-row v-model="group.expert_panel.gci_training_date"
+                    v-show="gci_training" 
+                    :errors="gciTrainingErrors"
+                    label="Biocurators are trained on the use of the Gene Curation Interface (GCI) on."
+                    vertical
+                    type="date"
+                >
                 </input-row>
             </li>
             <li>
@@ -96,6 +99,7 @@ export default {
     data() {
         return {
             errors: {},
+            gci_training: false
         }
     },
     computed: {
@@ -112,8 +116,16 @@ export default {
             const dateErrors = this.errors.gci_training_date || [];
             return [...trainingErrors, ...dateErrors];
         },
-        gci_training () {
+        gci_training_comp () {
             return Boolean(this.group.expert_panel.gci_training_date)
+        }
+    },
+    watch: {
+        group: {
+            immediate: true,
+            handler: function (to) {
+                this.gci_training = Boolean(to.expert_panel.gci_training_date)
+            }
         }
     },
     methods: {
