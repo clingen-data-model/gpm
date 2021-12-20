@@ -4,6 +4,7 @@
         <edit-icon-button 
             class="btn btn-sm float-right" 
             @click="editPerson"
+            v-if="userIsPerson(person) || hasPermission('people-manage')"
         >
             Edit Info
         </edit-icon-button>
