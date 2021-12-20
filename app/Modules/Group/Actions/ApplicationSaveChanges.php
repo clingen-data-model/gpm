@@ -57,8 +57,8 @@ class ApplicationSaveChanges
         return new GroupResource($group);
     }
 
-    public function authorize(ActionRequest $request, Group $group): bool
+    public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->can('updateApplicationAttribute', $group);
+        return $request->user()->can('updateApplicationAttribute', $request->group);
     }
 }
