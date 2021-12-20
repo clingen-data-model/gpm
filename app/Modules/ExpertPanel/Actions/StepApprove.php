@@ -74,12 +74,14 @@ class StepApprove
 
     private function getSubmission($expertPanel, $approvedStep)
     {
-        return $expertPanel
-            ->group
-            ->submissions()
-            ->pending()
-            ->ofType(config('submissions.types-by-step')[$approvedStep]['id'])
-            ->first();
+        if (isset(config('submissions.types-by-step')[$approvedStep])) {
+            return $expertPanel
+                ->group
+                ->submissions()
+                ->pending()
+                ->ofType(config('submissions.types-by-step')[$approvedStep]['id'])
+                ->first();
+        }
     }
     
 
