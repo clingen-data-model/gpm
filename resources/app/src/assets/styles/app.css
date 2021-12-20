@@ -71,8 +71,7 @@ textarea.sm {
 }
 
 label {
-    @apply space-x-2;
-    display: flex;
+    @apply flex space-x-2 items-center;
 }
 
 input[type="radio"],
@@ -88,10 +87,8 @@ input[type="checkbox"] {
   height: 1.1rem;
   padding: 0;
   border: 0.125rem solid currentColor;
-  transform: translateY(0.15rem);
   display: grid;
   place-content: center;
-  /* margin-right: .5rem; */
 }
 
 input[type="radio"] {
@@ -101,6 +98,8 @@ input[type="radio"] {
 input[type="radio"]::before,
 input[type="checkbox"]::before {
   content: "";
+  flex-grow: 0;
+  flex-shrink: 0;
   width: .55rem;
   height: .55rem;
   background-color: currentColor;
@@ -124,8 +123,9 @@ input[type="checkbox"]:checked::before  {
 }
 
 
-blockquote {
-    @apply border-l-8 border-gray-200 pl-2;
+blockquote{
+    @apply border-l-4 ml-2 pl-2 mt-0;
+    border-color: inherit;
 }
 
 .note {
