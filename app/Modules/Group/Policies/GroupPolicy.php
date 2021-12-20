@@ -184,4 +184,10 @@ class GroupPolicy
         return $user->hasPermissionTo('ep-applications-manage')
             || $user->hasGroupPermissionTo('application-edit', $group);
     }
+
+    public function viewGroupLogs(User $user, Group $group)
+    {
+        return $user->hasAnyPermission('groups-manage', 'ep-applications-manage')
+            || $user->person->isMemberOf($group);
+    }
 }
