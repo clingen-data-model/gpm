@@ -16,6 +16,7 @@ COPY ./resources/surveys/coi.json /usr/surveys/coi.json
 
 # build the app
 ENV BUILD_ENV=docker
+ENV NODE_OPTIONS=--openssl-legacy-provider
 RUN npm run build
 
 # Final stage
