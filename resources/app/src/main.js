@@ -38,7 +38,7 @@ app.component('popper', Popper);
 
 import {formatDate} from '@/date_utils'
 
-import {userCan, hasPermission, hasAnyPermission, hasRole, userIsPerson} from '@/auth_utils'
+import {userCan, hasPermission, hasAnyPermission, hasRole, userIsPerson, userInGroup} from '@/auth_utils'
 
 import objectUid from '@/object_uid'
 
@@ -60,6 +60,7 @@ app.use(store)
             camelCase,
             snakeCase,
             kebabCase,
+            userInGroup,
         }
     })
     .mixin(objectUid)

@@ -81,7 +81,7 @@
                 <h3>NHGRI Data Availability</h3>
                 <attestation-nhgri class="pb-2 mb-4 border-b" :disabled="true" />
             </tab-item>
-            <tab-item label="Log">
+            <tab-item label="Log" :visible="hasPermission('groups-manage') || userInGroup(group)">
                 <activity-log
                     :log-entries="logEntries"
                     :api-url="`/api/groups/${group.uuid}/activity-logs`"
