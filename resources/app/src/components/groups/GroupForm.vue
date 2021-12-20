@@ -118,7 +118,7 @@ export default {
     computed: {
         group: {
             get() {
-                const group = this.$store.getters['groups/currentItemOrNew'];
+                const group = this.$store.getters['groups/currentItem'];
                 if (group) {
                     return group;
                 }
