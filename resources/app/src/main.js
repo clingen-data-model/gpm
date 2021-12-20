@@ -42,6 +42,8 @@ import {userCan, hasPermission, hasAnyPermission, hasRole, userIsPerson} from '@
 
 import objectUid from '@/object_uid'
 
+import "./assets/styles/popper-theme.css"
+
 app.config.globalProperties.append = (path, pathToAppend) =>
   path + (path.endsWith('/') ? '' : '/') + pathToAppend
   

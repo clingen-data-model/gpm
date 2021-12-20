@@ -47,10 +47,12 @@
                 <h3>
                     Demographics
                 </h3>
-                <popper hover arrow>
-                    <template v-slot:content>Only you and administrators can see this information</template>
-                    <icon-info class="text-gray-500"></icon-info>
-                </popper>
+                <div>
+                    <popper hover arrow>
+                        <template v-slot:content>Only you and administrators can see this information.</template>
+                        <icon-info class="text-gray-500" width="12" height="12"></icon-info>
+                    </popper>
+                </div>
             </header>    
             <dictionary-row class="pb-2" label-class="w-40" label="Primary Occupation">{{person.primaryOccupationName}}</dictionary-row>
             <dictionary-row class="pb-2" label-class="w-40" label="Race">{{person.raceName}}</dictionary-row>
@@ -64,8 +66,10 @@
             <dictionary-row class="pb-2" label-class="w-40" label="Numeric ID">{{person.id}}</dictionary-row>
 
             <dictionary-row class="pb-2" label-class="w-40" v-if="person.user_id" label="User ID">{{person.user_id}}</dictionary-row>
-            <dictionary-row class="pb-2" label-class="w-40" v-else label="Invite Code">
-                {{person.invite ? person.invite.code : null}}
+            <dictionary-row class="pb-2" label-class="w-40" v-if="person.invite" label="Invite Code">
+                {{person.invite.code}}
+                &nbsp;
+                <span v-if="person.invite.redeemed_at"> redeemed on {{formatDate(person.invite.redeemed_at)}}</span>
             </dictionary-row>
             
             <dictionary-row class="pb-2" label-class="w-40" 
