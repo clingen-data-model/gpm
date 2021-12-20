@@ -12,23 +12,23 @@
             </input-row>
             <input-row label="VCEP Standardized Review Process" :errors="errors.curation_review_protocol_id" vertical>
                 <div>
-                    <label class="block mt-2 flex items-top space-x-2">
+                    <label class="mt-2">
                         <input type="radio" 
                             v-model="group.expert_panel.curation_review_protocol_id" 
                             value="1" 
                             class="mt-1"
                             :disabled="!canEdit"
                         >
-                        Process #1: Biocurator review followed by VCEP discussion
+                        <div>Process #1: Biocurator review followed by VCEP discussion</div>
                     </label>
-                    <label class="block mt-2 flex items-top space-x-2">
+                    <label class="mt-2">
                         <input type="radio" 
                             v-model="group.expert_panel.curation_review_protocol_id" 
                             value="2" 
                             class="mt-1"
                             :disabled="!canEdit"
                         >
-                       Process #2: Paired biocurator/expert review followed by expedited VCEP approval
+                       <div>Process #2: Paired biocurator/expert review followed by expedited VCEP approval</div>
                     </label>
                 </div>
             </input-row>

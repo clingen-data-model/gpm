@@ -50,19 +50,13 @@
                 </input-row>
 
                 <dictionary-row label="">
-                    <label>
-                        <input type="checkbox" v-model="newMember.is_contact">
-                        Receives notifications about group
-                    </label>
+                    <checkbox v-model="newMember.is_contact" label="Receives notifications about group" />
                 </dictionary-row>
 
                 <div class="border-t mt-4 pt-2">
                     <h3>Group Roles</h3>
                     <div class="flex flex-col h-24 flex-wrap">
-                        <label v-for="role in roles" :key="role.id">
-                            <input type="checkbox" v-model="newMember.roles" :value="role">
-                            {{role.name}}
-                        </label>
+                        <checkbox v-for="role in roles" :key="role.id" v-model="newMember.roles" :value="role" :label="titleCase(role.name)" />
                     </div>
                     <transition name="fade-down">
                         <div 
@@ -70,10 +64,12 @@
                             class="border-t mt-2 pt-2 pl-2"
                         >
                             <h4>Training</h4>
-                            <label class="block" v-for="num in [1, 2]" :key="num">
-                                <input type="checkbox" v-model="newMember[`training_level_${num}`]" :value="1">
-                                {{`Level ${num}`}}
-                            </label>
+                            <checkbox 
+                                v-for="num in [1, 2]" :key="num" 
+                                v-model="newMember[`training_level_${num}`]" 
+                                :value="1"
+                                :label="`Level ${num}`"
+                            />
                         </div>
                     </transition>
                 </div>
@@ -88,34 +84,24 @@
                         </h3>
                     </template>
                     <div class="flex flex-col h-24 flex-wrap">
-                        <div 
+                        <checkbox
                             v-for="permission in permissions" 
                             :key="permission.id"
-                        >
-                            <input type="checkbox"
-                                v-model="newMember.permissions" 
-                                :value="permission"
-                                v-if="!newMember.hasPermissionThroughRole(permission)"
-                                :id="`permission-${permission.id}`"
-                            >
-                            <input type="checkbox"
-                                :value="permission"
-                                v-else
-                                :checked="true"
-                                :disabled="true"
-                                style="background-color: red"
-                                :id="`permission-${permission.id}`"
-                                title="granted with role"
-                            >
-                            <label :for="`permission-${permission.id}`" title="granted with role">&nbsp;{{permission.name}}</label>
-                        </div>
+                            v-model="newMember.permissions" 
+                            :value="permission"
+                            :disabled="newMember.hasPermissionThroughRole(permission)"
+                            :checked="newMember.hasPermissionThroughRole(permission)"
+                            :id="`permission-${permission.id}`"
+                            :title="newMember.hasPermissionThroughRole(permission) ? `granted with role` : `grant permission`"
+                            :label="permission.name"
+                        />
                     </div>
                     <div class="px-2 py-1 bg-gray-100 border relative text-xs">
                         <div class="flex space-x-2">
                         <strong>Legend: </strong>
-                            <div><input type="checkbox">&nbsp;<label>Not granted</label></div>
-                            <div><input type="checkbox" checked>&nbsp;<label>Granted</label></div>
-                            <div><input type="checkbox" checked disabled>&nbsp;<label>Granted w/ role</label></div>
+                            <checkbox label="Not granted" />
+                            <checkbox checked="true" label="Granted" />
+                            <checkbox checked="true" disabled="true" label="Granted w/ role" />
                         </div>
                         <div class="absolute top-0 left-0 w-full h-full bg-pink-500 opacity-0">&nbsp;</div>
                     </div>
@@ -187,7 +173,7 @@ export default {
     },
     setup () {
         const store = useStore();
-        let group = computed(() => store.getters['groups/currentItem'] || {});
+        let group = computed(() => store.getters['groups/currentItemOrNew'] || {});
         let people = computed(() => store.getters['people/all'] || {});
         const roles = groups.roles;
         const permissions = groups.permissions;

@@ -272,6 +272,20 @@
                 }
             }
         },
+        "typesByStep": {
+            "1": {
+                "id": 1,
+                "name": "Definition",
+                "description": "VCEP step 1 and GCEP appliation"
+            },
+            "2": null,
+            "3": null,
+            "4": {
+                "id": 2,
+                "name": "Sustained Curation",
+                "description": "VCEP step 4"
+            }
+        },
         "statuses": {
             "pending": {
                 "id": 1,

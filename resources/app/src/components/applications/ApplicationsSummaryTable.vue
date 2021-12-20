@@ -3,10 +3,10 @@
         <div class="flex justify-between">
             <div class="mb-1 flex space-x-2">
                 <label>Filter: <input type="text" class="sm" v-model="filter" placeholder="filter"></label>
-                <label>
-                    <input type="checkbox" v-model="showCompleted">
-                    Show completed
-                </label>
+                <checkbox 
+                    v-model="showCompleted"
+                    label="Show completed"
+                />
             </div>
         </div>
         <data-table 

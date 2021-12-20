@@ -17,13 +17,14 @@
                         </option>
                     </select>
                 </label>
-                <label class="block">
-                    <input type="checkbox" v-model="showCompleted">
-                    Show completed
-                </label>
-
-                <!-- <label class="block"><input type="checkbox" v-model="showDeleted">Show Deleted</label> -->
-
+                <checkbox 
+                    v-model="showCompleted"
+                    label="Show completed"
+                />
+                <!-- <checkbox 
+                    v-model="showDeleted"
+                    label="Show Deleted"
+                /> -->
             </div>
             <div>
                 <button class="btn btn-xs" :class="{blue: showAllInfo == 0}" @click="showAllInfo = 0">Summary</button>

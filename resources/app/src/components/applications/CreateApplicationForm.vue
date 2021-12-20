@@ -18,7 +18,7 @@
         
         <input-row label="EP Type" :errors="errors.expert_panel_type_id">
             <div>
-                <div
+                <label :for="`ep-${epType.id}-radio`"
                     v-for="epType in epTypes" 
                     :key="epType.id" 
                 >
@@ -28,17 +28,18 @@
                         v-model="app.expert_panel_type_id"
                         :id="`ep-${epType.id}-radio`"
                     >
-                    &nbsp;
-                    <label :for="`ep-${epType.id}-radio`">{{epType.name}}</label>
-                </div>
+                    <div>{{epType.name}}</div>
+                </label>
             </div>
         </input-row>
         <input-row :errors="errors.date_initiated">
             <div>
                 <div>
-                    <input type="checkbox" v-model="showInitiationDate" id="show-initiation-checkbox">
-                    &nbsp;
-                    <label for="show-initiation-checkbox">Backdate this initiation</label>
+                    <checkbox 
+                        v-model="showInitiationDate" 
+                        id="show-initiation-checkbox"
+                        label="Backdate this initiation"
+                    />
                 </div>
                 <input-row 
                     type="date" 

@@ -12,6 +12,9 @@
                     <!-- Add mask above button if requirements are unmet b/c vue3-popper doesn't respond to disabled components. -->
                     <div v-if="!meetsRequirements" class="bg-white opacity-50 absolute top-0 bottom-0 left-0 right-0"></div>
                 </div>
+                <dev-component v-if="hasRole('super-user')">
+                    <button @click="bypassRequirements">Bypass Requirements</button>
+                </dev-component>
             </popper>
         </div>
         <teleport to="body">
@@ -45,7 +48,6 @@
     </div>
 </template>
 <script>
-import {GcepApplication, VcepApplication} from '@/domain'
 import RequirementsItem from '@/components/expert_panels/RequirementsItem'
 import {isValidationError} from '@/http'
 import configs from '@/configs'
@@ -81,7 +83,8 @@ export default {
         return {
             showSubmissionConfirmation: false,
             notes: null,
-            errors: {}
+            errors: {},
+            bypassReqs: false
         }
     },
     computed: {
@@ -89,6 +92,9 @@ export default {
             return this.$store.getters['groups/currentItemOrNew'];
         },
         meetsRequirements () {
+            if (this.bypassReqs) {
+                return true;
+            }
             return this.step.meetsRequirements(this.group);
         },
         requirementsUnmet () {
@@ -114,6 +120,9 @@ export default {
         }
     },
     methods: {
+        bypassRequirements () {
+            this.bypassReqs = true;
+        },
         initSubmission () {
             this.showSubmissionConfirmation = true;
             this.notes = null;

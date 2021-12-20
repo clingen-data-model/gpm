@@ -1,7 +1,14 @@
 <template>
     <label class="mb-2">
         <slot name="input">
-            <input type="checkbox" v-model="val" :id="checkboxId" class="mt-1" :disabled="disabled" :value="value">
+            <input 
+                type="checkbox" 
+                v-model="val" 
+                :id="checkboxId" 
+                class="mt-1" 
+                :disabled="$attrs.disabled" 
+                :value="value"
+                :checked="$attrs.checked">
         </slot>
         <div>
             <slot>
@@ -21,11 +28,11 @@ export default {
         label: {
             required: false
         },
-        disabled: {
-            type: Boolean,
-            required: false,
-            default: false
-        },
+        // disabled: {
+        //     type: Boolean,
+        //     required: false,
+        //     default: false
+        // },
         value: {
             required: false,
             default: () => true

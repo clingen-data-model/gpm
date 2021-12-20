@@ -175,8 +175,7 @@ textarea.sm {
 }
 
 label {
-    @apply space-x-2;
-    display: flex;
+    @apply flex space-x-2 items-center;
 }
 
 input[type="radio"],
@@ -192,10 +191,8 @@ input[type="checkbox"] {
   height: 1.1rem;
   padding: 0;
   border: 0.125rem solid currentColor;
-  transform: translateY(0.15rem);
   display: grid;
   place-content: center;
-  /* margin-right: .5rem; */
 }
 
 input[type="radio"] {
