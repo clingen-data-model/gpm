@@ -49,6 +49,6 @@ class ApplicationCompleteTest extends TestCase
         ]);
     
         $this->action->handle($expertPanel, Carbon::parse('2020-01-01'));
-        $this->assertLoggedActivity($expertPanel, 'Application completed.');
+        $this->assertLoggedActivity($expertPanel->group, 'Application completed.');
     }
 }

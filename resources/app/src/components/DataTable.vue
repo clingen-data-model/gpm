@@ -1,45 +1,37 @@
-<style lang="postcss" scope>
+<style lang="postcss" scoped>
     table {
         @apply w-full;
     }
-    tbody tr {
-        @apply bg-white odd:bg-gray-100 hover:bg-blue-100 hover:border-blue-300
+    tbody{
+        @apply bg-white odd:bg-gray-100 border-0 hover:border-blue-300 hover:bg-blue-100
     }
-    tr:first-child > th{
-        @apply border-t-0
+    tr > th {
+        @apply text-left border border-gray-300 px-3
     }
-    th:first-child,
-    td:first-child {
-        @apply border-l-0;
+    tr:not(.details) > td {
+        @apply text-left p-1 px-3 border align-top;
     }
-
-    /* tr:last-child > td{
-        @apply border-b-0
-    } */
-    th:last-child,
-    td:last-child {
-        @apply border-r-0
+    tr.details > td {
+        @apply border-none p-0;
     }
-
     th.sorted, td.sorted  {
         @apply bg-blue-100 hover:bg-blue-100
     }
 </style>
 
 <template>
-    <div class="shadow-inner border bg-gray-50">
+    <div class="shadow-inner bg-gray-50">
         <table class="border-none">
             <thead>
                 <slot name="thead">
                 <tr class="bg-gray-200">
                     <th v-for="field in fields.filter(f => !f.hideHeader)" :key="field.name"
-                        class="text-left border border-gray-300 px-3"
                         :title="field.sortable ? `Click to sort` : ``"
                         :class="getHeaderClass(field)"
                         @click="field.sortable && updateSort(field)"
                         :colspan="(field.colspan ? field.colspan : 1)"
                     >
-                        <div class="block py-1 flex justify-between place-items-center">
+                        <div class="py-1 flex justify-between place-items-center">
                             <div>
                                 <slot :name="`header-${field.name}`" :item="{field}">
                                     {{this.getFieldLabel(field)}}
@@ -63,12 +55,11 @@
                 </tr>
                 </slot>
             </thead>
-            <tbody>
-                <tr v-for="item in sortedFilteredData" :key="item.uuid" :class="rowClass" @click="handleRowClick(item)">
+            <tbody v-for="item in sortedFilteredData" :key="item.uuid">
+                <tr :class="resolveRowClass(item)" @click="handleRowClick(item)">
                     <td 
                         v-for="field in fields" 
                         :key="field.name"
-                        class="text-left p-1 px-3 border align-top"
                         :class="getCellClass(field)"
                     >
                         <slot :name="getSlotName(field)" :item="item" :field="field" :value="resolveDisplayAttribute(item, field)">
@@ -76,24 +67,36 @@
                         </slot>
                     </td>
                 </tr>
+                <transition name="fade-slide-down">
+                    <tr class="details" :class="rowClass(item)" v-if="detailRows && item.showDetails">
+                        <td :colspan="fields.length">
+                            <slot name="detail" :item="item">
+                                <object-dictionary :obj="item"></object-dictionary>
+                            </slot>
+                        </td>
+                    </tr>
+                </transition>
             </tbody>
         </table>
     </div>
 </template>
 <script>
 import { formatDate } from '@/date_utils'
-import IconCheveronDown from '@/components/icons/IconCheveronDown'
-import IconCheveronUp from '@/components/icons/IconCheveronUp'
+
+
+import {titleCase} from '@/utils'
 
 /**
  * 
  */
 export default {
     name: 'DataTable',
-    components: {
-        IconCheveronDown,
-        IconCheveronUp
-    },
+    emits: [
+        'rowClick',
+        'update:sort',
+        'sort',
+        'sorted'
+    ],
     props: {
         data: {
             required: false,
@@ -129,12 +132,23 @@ export default {
         },
         rowClass: {
             required: false,
-            type: [String,null],
+            type: [String, Function, null],
             default: null
         },
         sort: {
             required: false,
-            type: Object
+            type: Object,
+            default: () => {
+                return {
+                    field: 'id',
+                    desc: false
+                }
+            }
+        },
+        detailRows: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     },
     data() {
@@ -304,18 +318,19 @@ export default {
             return false;
         },
         handleRowClick(item) {
+            this.$emit('rowClick', item);
             if (this.rowClickHandler) {
                 this.rowClickHandler(item);
             }
         },
         getFieldLabel(field) {
             if (typeof field.label == 'undefined' || field.label === null ) {
-                return field.name
+                return titleCase(field.name)
             }
             return field.label
         },
         getHeaderClass(field) {
-            const classes = field.class || [];
+            const classes = field.class ? [...field.class] : [];
             if (field.sortable) {
                 classes.push('cursor-pointer underline hover:bg-gray-300');
             }
@@ -337,7 +352,15 @@ export default {
 
         getSlotName(field) {
             return `cell-${field.name.replace(' ', '_').replace('.', '_')}`
+        },
+
+        resolveRowClass(item) {
+            if (typeof this.rowClass == 'function') {
+                return this.rowClass(item);
+            }
+
+            return this.rowClass;
         }
-    }
+    },
 }
 </script>

@@ -20,6 +20,10 @@ class CreateInstitutionsTable extends Migration
             $table->uuid('uuid');
             $table->string('name')->unique();
             $table->string('abbreviation')->nullable()->unique();
+            $table->string('url')->nullable();
+            $table->string('address')->nullable();
+            $table->unsignedBigInteger('country_id')->nullable();
+            $table->unsignedInteger('website_id')->nullable();
             $table->timestamps();
         });
 

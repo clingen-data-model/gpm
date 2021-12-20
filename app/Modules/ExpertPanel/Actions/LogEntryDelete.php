@@ -4,6 +4,7 @@ namespace App\Modules\ExpertPanel\Actions;
 
 use App\Models\Activity;
 use InvalidArgumentException;
+use App\Actions\LogEntryDelete as AppLogEntryDelete;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Illuminate\Validation\ValidationException;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
@@ -11,6 +12,12 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 class LogEntryDelete
 {
     use AsAction;
+
+    public function __construct(private AppLogEntryDelete $logEntryDelete)
+    {
+        //code
+    }
+    
 
     /**
      * Create a new job instance.
@@ -20,14 +27,11 @@ class LogEntryDelete
     public function handle(string $expertPanelUuid, Int $logEntryId)
     {
         $logEntry = ExpertPanel::findByUuidOrFail($expertPanelUuid)
+                        ->group
                         ->logEntries()
                         ->findOrFail($logEntryId);
 
-        if (!is_null($logEntry->activity_type)) {
-            throw new InvalidArgumentException('Only manual log entries can be deleted.');
-        }
-
-        $logEntry->delete();
+        $this->logEntryDelete->handle(logEntry: $logEntry);
     }
 
     public function asController(string $expertPanelUuid, int $logEntryId)

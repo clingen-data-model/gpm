@@ -2,13 +2,16 @@
 
 namespace App\Modules\Foundation;
 
+use Exception;
 use RegexIterator;
 use App\Listeners\RecordEvent;
 use RecursiveIteratorIterator;
 use App\Events\RecordableEvent;
 use RecursiveDirectoryIterator;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Lorisleiva\Actions\Facades\Actions;
 
 abstract class ModuleServiceProvider extends ServiceProvider
 {
@@ -42,6 +45,20 @@ abstract class ModuleServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->loadRoutes();
+        $this->registerCommands();
+    }
+
+    protected function registerPolicies()
+    {
+        foreach ($this->policies as $key => $value) {
+            if (!class_exists($key)) {
+                throw new Exception('You are trying to register a policy for a class that does not exist: '.$key);
+            }
+            if (!class_exists($key)) {
+                throw new Exception('You are trying to register a policy that does not exist: '.$value);
+            }
+            Gate::policy($key, $value);
+        }
     }
 
     private function registerRecordableEventListeners()
@@ -60,12 +77,15 @@ abstract class ModuleServiceProvider extends ServiceProvider
             foreach ($listeners as $listener) {
                 Event::listen($event, [$listener, 'handle']);
             }
-        }        
+        }
     }
+    
 
-    protected function getRoutesPath()
+    protected function registerCommands()
     {
-        return __DIR__.'/../routes';
+        if ($this->app->runningInConsole()) {
+            Actions::registerCommands($this->getActionsPath());
+        }
     }
 
     protected function loadRoutes()
@@ -82,5 +102,20 @@ abstract class ModuleServiceProvider extends ServiceProvider
         }
     }
 
-    protected abstract function getEventPath();
+    abstract protected function getModulePath();
+    
+    protected function getEventPath()
+    {
+        return $this->getModulePath().'/Events';
+    }
+
+    protected function getRoutesPath()
+    {
+        return $this->getModulePath().'/routes';
+    }
+
+    protected function getActionsPath()
+    {
+        return $this->getModulePath().'/Actions';
+    }
 }

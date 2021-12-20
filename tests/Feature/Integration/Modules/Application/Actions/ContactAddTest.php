@@ -40,7 +40,7 @@ class ContactAddTest extends TestCase
         $this->action->handle($this->expertPanel->uuid, $this->person->uuid);
 
         $this->assertDatabaseHas('activity_log', [
-            'subject_id' => $this->expertPanel->id,
+            'subject_id' => $this->expertPanel->group->id,
             'activity_type' => 'contact-added',
             'properties->person->uuid' => $this->person->uuid
         ]);

@@ -43,10 +43,9 @@ class CreateExpertPanelsV2 extends Migration
             $table->datetime('date_completed')->nullable();
             $table->string('coi_code', 24)->unique();
             $table->string('hypothesis_group')->nullable();
-            $table->text('member_description')->nullable();
+            $table->text('membership_description')->nullable();
             $table->text('scope_description')->nullable();
             $table->dateTime('nhgri_attestation_date')->nullable();
-            $table->dateTime('preprint_attestation_date')->nullable();
             $table->foreignId('curation_review_protocol_id')
                 ->nullable()
                 ->constrained()
@@ -54,11 +53,25 @@ class CreateExpertPanelsV2 extends Migration
                 ->cascadeOnUpdate()
                 ;
             $table->text('curation_review_protocol_other')->nullable();
-            $table->foreignId('reanalysis_discrepency_resolution_id')->nullable()
-                ->constrained()
-                ->cascadeOnDelete()
-                ->cascadeOnUpdate()
-                ;
+            $table->string('meeting_frequency')->nullable();
+            $table->boolean('reanalysis_conflicting')->nullable();
+            $table->boolean('reanalysis_review_lp')->nullable();
+            $table->boolean('reanalysis_review_lb')->nullable();
+            $table->text('reanalysis_other')->nullable();
+            $table->dateTime('reanalysis_attestation_date')->nullable();
+
+            $table->boolean('utilize_gt')->nullable();
+            $table->boolean('utilize_gci')->nullable();
+            $table->boolean('curations_publicly_available')->nullable();
+            $table->boolean('pub_policy_reviewed')->nullable();
+            $table->boolean('draft_manuscripts')->nullable();
+            $table->boolean('recuration_process_review')->nullable();
+            $table->boolean('biocurator_training')->nullable();
+            $table->boolean('biocurator_mailing_list')->nullable();
+            $table->dateTime('gci_training_date')->nullable();
+            $table->dateTime('gcep_attestation_date')->nullable();
+    
+
             $table->timestamps();
             $table->softDeletes();
         });

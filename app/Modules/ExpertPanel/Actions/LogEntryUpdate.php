@@ -22,7 +22,7 @@ class LogEntryUpdate
         ?int $step = null
     ) {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
-        $logEntry = $expertPanel->logEntries()->findOrFail($logEntryId);
+        $logEntry = $expertPanel->group->logEntries()->findOrFail($logEntryId);
 
         $logEntry->created_at = Carbon::parse($logDate);
         $logEntry->description = $entry;

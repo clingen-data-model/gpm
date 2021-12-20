@@ -1,28 +1,38 @@
 <template>
     <form-container>
         <h2>Approve Step {{application.current_step}}</h2>
-        
+
         <input-row v-model="dateApproved" type="date" :errors="errors.date_approved" label="Date Approved"></input-row>
 
         <dictionary-row label="">
             <div>
-                <label class="text-sm block">
-                    <input type="checkbox" v-model="notifyContacts" :value="true"> Send notification email to contacts
+                <label class="text-sm">
+                    <input type="checkbox" v-model="notifyContacts" :value="true"> 
+                    <div>Send notification email to contacts</div>
                 </label>
             </div>
         </dictionary-row>
+        <static-alert
+            v-if="!application.hasPendingSubmissionForCurrentStep"
+            variant="warning"
+        >
+            The expert panel has not yet submitted the application for approval.  
+            <br>
+            You can approve this application but be aware that it is not part of the "normal" application workflow.
+        </static-alert>
+        
         
         <transition name="slide-fade-down">
             <div v-show="notifyContacts">
                 <h4 class="font-bold border-b">Email</h4>
                 <dictionary-row label="To">
-                    <static-alert v-if="application.contacts.length == 0" class="flex-1" variant="danger">
+                    <static-alert v-if="!group.hasContacts" class="flex-1" variant="danger">
                         There are no contacts to notify!!
                     </static-alert>
-                    <ul v-if="application.contacts.length > 0">
+                    <ul v-if="group.hasContacts">
                         <li v-for="contact in email.to" :key="contact.email">
                             <router-link 
-                                :to="{name: 'person-detail', params: {uuid: contact.uuid}}"
+                                :to="{name: 'PersonDetail', params: {uuid: contact.uuid}}"
                                 class="text-blue-600 hover:underline" 
                                 target="person"
                             >
@@ -89,8 +99,11 @@ export default {
     },
     computed: {
         ...mapGetters({
-            application: 'applications/currentItem'
+            group: 'groups/currentItemOrNew'
         }),
+        application () {
+            return this.group.expert_panel;
+        },
         emailCced () {
             return this.application.current_step == 1 || this.application.current_step == 4
         },

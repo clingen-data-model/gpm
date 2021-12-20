@@ -1,6 +1,5 @@
 <template>
     <form-container>
-        <!-- <pre>{{documentTypes}}</pre> -->
         <h2 class="pb-2 border-b mb-4">Upload {{documentType.long_name}} document(s)</h2>
 
         <input-row label="Document" :errors="errors.file">
@@ -33,10 +32,6 @@ import is_validation_error from '../../../http/is_validation_error';
 
 export default {
     props: {
-        application: {
-            type: Object,
-            required: true
-        },
         documentTypeId: {
             type: Number,
             required: true
@@ -64,6 +59,12 @@ export default {
         ...mapState({
             documentTypes: state => state.doctypes.items
         }),
+        group () {
+            return this.$store.getters['groups/currentItemOrNew']
+        },
+        application () {
+            return this.group.expert_panel
+        },
         isReviewed () {
             return Boolean(this.newDocument.date_reviewed)
         },
@@ -86,9 +87,8 @@ export default {
                         data.append(key, val);
                     })
                 data.append('file', this.$refs.fileInput.files[0]);
-
-                await this.$store.dispatch('applications/addDocument', 
-                        {application: this.application, documentData: data}
+                await this.$store.dispatch('groups/addDocument', 
+                        {group: this.group, data}
                     )
 
                 this.clearForm();

@@ -25,7 +25,7 @@ class StepApproveTest extends TestCase
         app()->make(StepApprove::class)->handle($expertPanel->uuid, $dateApproved);
 
         $this->assertLoggedActivity(
-            $expertPanel,
+            $expertPanel->group,
             'Step 1 approved',
             [
                 'date_approved' => $dateApproved->toIsoString(),

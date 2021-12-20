@@ -2,12 +2,13 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Database\Factories\CoiFactory;
-use Hamcrest\Type\IsObject;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
+use App\Modules\Group\Models\GroupMember;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Coi extends Model
@@ -15,13 +16,18 @@ class Coi extends Model
     use HasFactory;
 
     public $fillable = [
-        'application_id',
-        'email',
+        'uuid',
+        'group_member_id',
+        'expert_panel_id',
+        'completed_at',
         'data'
     ];
 
     public $casts = [
-        'data' => 'object'
+        'data' => 'object',
+        'group_member_id' => 'integer',
+        'expert_panel_id' => 'integer',
+        'completed_at' => 'datetime'
     ];
     
     public $appends = [
@@ -38,7 +44,6 @@ class Coi extends Model
             ->map(function ($value, $key) use ($coiDef) {
                 $questions = collect($coiDef->questions)->keyBy('name');
                 if (!isset($questions[$key])) {
-                    Log::debug('key, questions->keys(): ', ['keys'=> $key, 'questions'=>$questions->keys()->toArray()]);
                     return;
                 }
                 return [
@@ -49,7 +54,7 @@ class Coi extends Model
             ->filter()
             ->toArray();
 
-        $responseData['application_id'] = $this->expertPanel_id;
+        $responseData['expert_panel_id'] = $this->expertPanel_id;
         
         return $responseData;
     }
@@ -77,6 +82,18 @@ class Coi extends Model
         return $humanReadable;
     }
     
+    /**
+     * RELATIONS
+     */
+    /**
+     * Get the GroupMember that owns the Coi
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function groupMember(): BelongsTo
+    {
+        return $this->belongsTo(GroupMember::class);
+    }
 
     /**
      * SCOPES
@@ -87,7 +104,7 @@ class Coi extends Model
         if ($expertPanel instanceof ExpertPanel) {
             $id = $expertPanel->id;
         }
-        return $query->where('application_id', $id);
+        return $query->where('expert_panel_id', $id);
     }
     
 

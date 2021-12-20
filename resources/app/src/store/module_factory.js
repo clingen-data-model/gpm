@@ -52,7 +52,7 @@ export default function (config = {}) {
             setLastParams(state, params) {
                 state.lastParams = params;
             },
-            setCurrentItemIdx(state, item) {
+            setCurrentItemIndex(state, item) {
                 const idx = state.items.findIndex(i => i.uuid == item.uuid);
                 state.currentItemIdx = idx;
             },

@@ -91,8 +91,8 @@ class UpdateNextActionTest extends TestCase
         )->assertStatus(200);
         
         $this->assertDatabaseHas('activity_log', [
-            'subject_type' => get_class($this->expertPanel),
-            'subject_id' => $this->expertPanel->id,
+            'subject_type' => get_class($this->expertPanel->group),
+            'subject_id' => $this->expertPanel->group->id,
             'description' => 'Updated next action '.$this->nextAction->id,
             'properties->previous_data->date_created' => '2020-01-01T00:00:00.000000Z'
         ]);

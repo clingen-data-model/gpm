@@ -15,10 +15,10 @@
                 &nbsp;
                 <a :href="mailtoLink" 
                     class="btn btn-xs"
-                    v-show="application.hasContacts"
+                    v-show="group.hasContacts"
                     ref="mailtobutton"
                 >Send url to contacts.</a>
-                <add-contact-control class="inline-block" v-show="!application.hasContacts"></add-contact-control>
+                <add-contact-control class="inline-block" v-show="!group.hasContacts"></add-contact-control>
                 &nbsp;
                 <button class="btn btn-xs" @click="downloadReport">get coi report</button>
             </div>
@@ -28,10 +28,10 @@
                 @click="refresh"
             ></icon-refresh>
         </div>
-        <div v-if="!hasCois" class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200">
+        <!-- <div v-if="!hasCois" class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200">
             No Conflict of interest surveys completed
-        </div>
-        <div v-if="hasCois">
+        </div> -->
+        <!-- <div v-if="hasCois">
             <data-table
                 :fields="fields"
                 :data="application.cois"
@@ -41,27 +41,26 @@
                 </template>
             </data-table>
             <modal-dialog v-model="showResponseDialog" size="xl">
-                <coi-detail :response="currentResponse" v-if="currentResponse"></coi-detail>
+                <coi-detail :coi="currentCoi" v-if="currentCoi"></coi-detail>
             </modal-dialog>
-        </div>
+        </div> -->
     </div>
 
 </template>
 <script>
-import IconRefresh from '@/components/icons/IconRefresh';
+
 import CoiDetail from '@/components/applications/CoiDetail';
 import CoiLegacyUpload from '@/components/applications/CoiLegacyUpload';
 import AddContactControl from '@/components/contacts/AddContactControl.vue'
 
 export default {
     components: {
-        IconRefresh,
         CoiDetail,
         CoiLegacyUpload,
         AddContactControl,
     },
     props: {
-        application: {
+        group: {
             required: true,
             type: Object
         }
@@ -69,7 +68,7 @@ export default {
     data() {
         return {
             showResponseDialog: false,
-            currentResponse: null,
+            currentCoi: null,
             fields: [
                 {
                     name: 'data.first_name',
@@ -102,16 +101,19 @@ export default {
         }
     },
     computed: {
+        application() {
+            return this.group.expert_panel;
+        },
         hasCois() {
             return this.application.cois && this.application.cois.length > 0;
         },
         mailtoLink() {
-            return `mailto:${this.application.contacts.map(p => p.email).join(';')}?subject=Your COI Link for your Expert Panel Application&body=Your expert panel's COI form: ${this.$store.state.hostname}${this.application.coi_url}.`
+            return `mailto:${this.group.contacts.map(p => p.email).join(';')}?subject=Your COI Link for your Expert Panel Application&body=Your expert panel's COI form: ${this.$store.state.hostname}${this.application.coi_url}.`
         }
     },
     methods: {
-        showResponse(response) {
-            this.currentResponse = response.response_document;
+        showResponse(coi) {
+            this.currentCoi = coi;
             this.showResponseDialog = true;
         },
         async refresh() {

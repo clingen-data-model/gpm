@@ -85,9 +85,9 @@ class ExpertPanelDetailTest extends TestCase
     public function loads_latestLogEntry_by_default()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $this->json('get', '/api/applications/'.$this->uuid)
-            ->assertStatus(200)
-            ->assertJsonFragment(['description' => 'TEst me', 'uuid' => $this->uuid]);
+        $response = $this->json('get', '/api/applications/'.$this->uuid)
+            ->assertStatus(200);
+        $response->assertJsonFragment(['description' => 'TEst me']);
     }
 
     /**

@@ -15,10 +15,11 @@ class CreateSpecificationRuleStatusesTable extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::create('specification_rule_statuses', function (Blueprint $table) {
+        Schema::create('ruleset_statuses', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->text('description')->nullable();
+            $table->string('color')->default('blue');
             $table->timestamps();
         });
 

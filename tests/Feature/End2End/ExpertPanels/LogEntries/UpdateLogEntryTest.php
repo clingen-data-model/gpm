@@ -24,8 +24,8 @@ class UpdateLogEntryTest extends TestCase
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->baseUrl = '/api/applications/'.$this->expertPanel->uuid.'/log-entries';
 
-        (new LogEntryAdd)->handle($this->expertPanel->uuid, '2020-01-01', 'test test test');
-        $this->logEntry = $this->expertPanel->fresh()->latestLogEntry;
+        app()->make(LogEntryAdd::class)->handle($this->expertPanel->uuid, '2020-01-01', 'test test test');
+        $this->logEntry = $this->expertPanel->group->fresh()->latestLogEntry;
     }
     
 
@@ -48,7 +48,7 @@ class UpdateLogEntryTest extends TestCase
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('activity_log', [
-            'id' => (string)$this->expertPanel->fresh()->latestLogEntry->id,
+            'id' => (string)$this->expertPanel->fresh()->group->latestLogEntry->id,
             'description' => 'puppies are cute',
             'created_at' => $this->logEntry->created_at->format('Y-m-d H:i:s'),
             'properties->entry' => 'puppies are cute',

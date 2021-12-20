@@ -27,9 +27,11 @@
         <div class="ml-4">
         </div>
 
-        <label class="ml-36">
-            <input type="checkbox" v-model="completed"> This is already completed
-        </label>
+        <checkbox  
+            v-model="completed" 
+            label="This is already completed"
+            class="ml-36"
+        />
 
         <input-row label="Date Completed" :errors="errors.date_completed" class="ml-36" v-if="completed">
             <input type="date" v-model="newAction.date_completed">
@@ -81,7 +83,12 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({application: 'applications/currentItem'}),
+        ...mapGetters({
+            group: 'groups/currentItemOrNew'
+        }),
+        application () {
+            return this.group.expert_panel;
+        },
         title () {
             return this.newAction.id ? 'Update Action' : 'Add Next Action';
         },

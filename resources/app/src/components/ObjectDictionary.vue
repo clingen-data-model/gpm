@@ -1,8 +1,8 @@
 <template>
     <div v-if="filteredObj">
-        <dict-row v-for="(value, key) in filteredObj" :key="key" :label="key">
+        <dictionary-row v-for="(value, key) in filteredObj" :key="key" :label="titleCase(key)">
             {{value}}
-        </dict-row>
+        </dictionary-row>
     </div>
 </template>
 <script>
@@ -50,17 +50,36 @@ export default {
             if (this.show) {
                 return this.getShow()
             }
+            if (this.except) {
+                return this.getExcept();
+            }
+            if (this.only) {
+                return this.getOnly(this.only)
+            }
             return this.obj
         }
     },
     methods: {
-        getShow() {
+        getOnly(only) {
             const show = {};
-            this.show.forEach(key => {
+            only.forEach(key => {
                 const formatted = this.format(key, this.obj[key]);
                 show[this.titleCase(key)] =  formatted || '--'
             })
             return show
+        },
+        getShow() {
+            return this.getOnly(this.show);
+        },
+        getExcept() {
+            const except = {}
+            Object.keys(this.obj)
+                .forEach(key => {
+                    if (!this.except.includes(key)) {
+                        except[key] = this.format(this.obj[key]);
+                    }
+                })
+            return except;
         },
         titleCase(label) {
             return label.split('_').map(word => {

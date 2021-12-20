@@ -14,6 +14,6 @@ class GroupStatusSeeder extends Seeder
      */
     public function run()
     {
-        $this->seedFromSimpleArray(config('groups.statuses'), GroupStatus::class);
+        $this->seedFromConfig('groups.statuses', GroupStatus::class);
     }
 }

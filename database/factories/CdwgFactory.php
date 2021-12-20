@@ -25,7 +25,7 @@ class CdwgFactory extends Factory
             'uuid' => $this->faker->uuid,
             'name' => uniqid().' CDWG',
             'group_type_id' => config('groups.types.cdwg.id'),
-            'group_status_id' => config('groups.statuses.active')
+            'group_status_id' => config('groups.statuses.active.id')
         ];
     }
 }

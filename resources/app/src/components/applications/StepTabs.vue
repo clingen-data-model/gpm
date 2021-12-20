@@ -1,20 +1,24 @@
 <template>
     <div>
-        <div v-if="this.application.expert_panel_type_id == 1">
-            <step-one></step-one>
+        <div v-if="application.isGcep">
+            <step-one @stepApproved="handleApproved"></step-one>
         </div>
-        <tabs-container tab-location="right" v-model="activeIndex" v-if="this.application.expert_panel_type_id == 2">
-            <tab-item label="Step 1 - Define">
-                <step-one></step-one>
+            <tabs-container 
+                tab-location="right" 
+                v-model="activeIndex" 
+                v-if="this.application.expert_panel_type_id == 2"
+            >
+            <tab-item label="Group Definition">
+                <step-one @stepApproved="handleApproved"></step-one>
             </tab-item>
-            <tab-item label="Step 2 - Draft Rules">
-                <step-two></step-two>
+            <tab-item label="Draft Specifications">
+                <step-two @stepApproved="handleApproved"></step-two>
             </tab-item>
-            <tab-item label="Step 3 - Pilot Rules">
-                <step-three></step-three>
+            <tab-item label="Pilot Specfications">
+                <step-three @stepApproved="handleApproved"></step-three>
             </tab-item>
-            <tab-item label="Step 4 - Final Approval">
-                <step-four></step-four>
+            <tab-item label="Sustained Curation">
+                <step-four @stepApproved="handleApproved"></step-four>
             </tab-item>
         </tabs-container>
 
@@ -34,6 +38,7 @@ export default {
         StepThree,
         StepFour,
     },
+    emits: ['stepApproved'],
     data() {
         return {
             activeStep: 1
@@ -41,8 +46,11 @@ export default {
     },
     computed: {
         ...mapGetters({
-            application: 'applications/currentItem'
+            group: 'groups/currentItemOrNew'
         }),
+        application () {
+            return this.group.expert_panel;
+        },
         activeIndex: {
             deep: true,
             get() {
@@ -54,6 +62,11 @@ export default {
 
         } 
     },
+    methods: {
+        handleApproved () {
+            this.$emit('stepApproved')
+        }
+    }
     // watch: {
     //     application: {
     //         deep: true,

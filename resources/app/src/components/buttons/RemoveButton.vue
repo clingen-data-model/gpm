@@ -16,11 +16,8 @@
     </button>
 </template>
 <script>
-import IconClose from '@/components/icons/IconClose'
+
 export default {
-    components: {
-        IconClose,
-    },
     props: {
         size: {
             required: false,

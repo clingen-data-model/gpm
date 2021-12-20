@@ -7,13 +7,13 @@ export default {
     mutations: {},
     actions: {
         // eslint-disable-next-line
-        async storeCoi ({commit}, {code, coiData}) {
-            await api.post(`/api/coi/${code}`, coiData);
+        async storeCoi ({commit}, {code, groupMemberId, coiData}) {
+            const data = {...coiData, ...{group_member_id: groupMemberId}};
+            await api.post(`/api/coi/${code}`, data);
         },
 
         // eslint-disable-next-line
         async storeLegacyCoi ({commit}, {application, coiData}) {
-
             await application_repository.addDocument(application, coiData)
                 .then(async document => {
                     const data = {

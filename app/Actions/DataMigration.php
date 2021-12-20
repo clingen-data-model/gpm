@@ -38,6 +38,7 @@ class DataMigration
                 $approvalDates = json_decode($row->approval_dates, true);
 
                 $data = [
+                    'id' => $row->id,
                     'uuid' => $row->uuid,
                     'group_id' => $group->id,
                     'short_base_name' => $row->short_base_name,
@@ -77,57 +78,32 @@ class DataMigration
             });
     }
 
-    private function migrateActivityLogs($rows, $expertPanel)
+    private function migrateActivityLogs($logEntries, $expertPanel)
     {
-        foreach ($rows as $row) {
-            $subjectType = ExpertPanel::class;
-            $subjectId = $expertPanel->id;
+        foreach ($logEntries as $logEntry) {
+            $subjectType = Group::class;
+            $subjectId = $expertPanel->group_id;
 
-            if (substr($row->description, 0, 1) == '<') {
-                $props = json_decode($row->properties);
-                $data = [
-                    'entry' => $row->description,
-                    'subject_type' => $subjectType,
-                    'subject_id' => $subjectId,
-                    'author_type' => $row->causer_type,
-                    'author_id' => $row->causer_id,
-                    'log_date' => $row->created_at,
-                    'created_at' => $row->created_at,
-                    'updated_at' => $row->updated_at,
-                    'metadata' => [
-                        'step' => $props->step
-                    ]
-                ];
-
-                LogEntry::firstOrCreate(
-                    ['entry' => $row->description],
-                    $data
-                );
+            // Handle custom logs that were entered via ckeditor
+            if (substr($logEntry->description, 0, 1) == '<') {
+                $props = json_decode($logEntry->properties);
+                DB::table('activity_log')
+                    ->where('id', $logEntry->id)
+                    ->update([
+                        'subject_type' => $subjectType,
+                        'subject_id' => $subjectId,
+                    ]);
                 continue;
             }
 
-            if (
-                in_array($row->activity_type, ['contact-added']) ||
-                substr($row->description, 0, 12) == 'Added contact'
-            ) {
-                $subjectType = Group::class;
-                $subjectId = $expertPanel->group_id;
-            }
-
-            $activityType = $this->parseActivityType($row);
-
-            $mapped = [
-                'type' => $activityType,
-                'log_name' => $row->log_name,
-                'subject_type' => $subjectType,
-                'subject_id' => $subjectId,
-                'payload' => $row->properties
-            ];
-            Event::withTrashed()
-                ->firstOrCreate(
-                    ['id' => $row->id],
-                    $mapped
-                );
+            $activityType = $this->parseActivityType($logEntry);
+            DB::table('activity_log')
+                ->where('id', $logEntry->id)
+                ->update([
+                    'subject_type' => $subjectType,
+                    'subject_id' => $subjectId,
+                    'activity_type' => $activityType,
+                ]);
         };
     }
    
@@ -155,7 +131,9 @@ class DataMigration
                     '/(^Added next action.+)/',
                     '/(^Attributes updated:.+)/',
                     '/(^COI form completed.+)/',
-                    '/(^scope version marked final$)/',
+                    '/(^scope version \d marked final\.?$)/',
+                    '/(^Added version \d of .+.$)/',
+                    '/(^Application completed\.$)/'
                 ];
                 $replacements = [
                     'contact-added',
@@ -163,6 +141,9 @@ class DataMigration
                     'attributes-updated',
                     'coi-completed',
                     'document-marked-final',
+                    'document-added',
+                    'document-added',
+                    'application-completed'
                 ];
                 return preg_replace($patterns, $replacements, $row->description);
         }
@@ -184,7 +165,7 @@ class DataMigration
                     [
                         'group_id' => $group->id,
                         'person_id' => $row->person_id,
-                        'v1_contact' => 1
+                        'is_contact' => 1
                     ],
                 );
         });
@@ -195,6 +176,9 @@ class DataMigration
         $rows->each(function ($row) use ($expertPanel) {
             $uuid = Uuid::uuid4();
             $data = json_decode($row->data);
+            if ($data->email === "Legacy Coi") {
+                return;
+            }
             $person = Person::withTrashed()->firstOrCreate(
                 ['email' => $data->email],
                 [
@@ -216,14 +200,16 @@ class DataMigration
             );
             $coi = new Coi;
             $coi->setTable('cois_v2')
-                // ->withTrashed()
                 ->firstOrCreate(
                     ['group_member_id' => $groupMember->id],
                     [
                         'uuid' => Uuid::uuid4(),
                         'expert_panel_id' => $expertPanel->id,
                         'group_member_id' => $groupMember->id,
-                        'data' => $row->data
+                        'data' => json_decode($row->data),
+                        'completed_at' => $row->created_at,
+                        'created_at' => $row->created_at,
+                        'updated_at' => $row->updated_at,
                     ]
                 );
         });
@@ -270,7 +256,6 @@ class DataMigration
             $document = new Document;
             $document->setTable('documents_v2')->withTrashed()->firstOrCreate(['uuid' => $doc->uuid], $mapped);
 
-            dump($doc->document_type_id.' - v'.$doc->version.': '.$doc->date_received);
             if ($doc->document_type_id == config('documents.types.scope.id') && $doc->version == 1) {
                 $expertPanel->step_1_received_date = $doc->date_received;
             }
@@ -292,8 +277,8 @@ class DataMigration
                             'name' => $row->working_name,
                             'group_type_id' => config('groups.types.ep.id'),
                             'group_status_id' => ($row->date_completed)
-                                                    ? config('groups.statuses.active')
-                                                    : config('groups.statuses.pending-approval'),
+                                                    ? config('groups.statuses.active.id')
+                                                    : config('groups.statuses.pending-approval.id'),
                             'parent_id' => $cdwgs->get($row->cdwg_id) ? $cdwgs->get($row->cdwg_id)->id : null,
                             'created_at' => $row->created_at,
                             'updated_at' => $row->updated_at,
@@ -314,7 +299,7 @@ class DataMigration
                 [
                     'name' => $row->name,
                     'group_type_id' => config('groups.types.cdwg.id'),
-                    'group_status_id' => config('groups.statuses.active'),
+                    'group_status_id' => config('groups.statuses.active.id'),
                     'created_at' => $row->created_at,
                     'updated_at' => $row->updated_at,
                     'deleted_at' => null

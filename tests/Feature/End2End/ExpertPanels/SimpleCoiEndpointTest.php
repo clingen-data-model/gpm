@@ -3,7 +3,7 @@
 namespace Tests\Feature\End2End\ExpertPanels;
 
 use Carbon\Carbon;
-use App\Modules\ExpertPanel\Models\Coi;
+use App\Modules\ExpertPanel\Models\CoiV1 as Coi;
 use Tests\TestCase;
 use App\Models\Document;
 use Illuminate\Support\Str;
@@ -12,6 +12,7 @@ use App\Modules\User\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
@@ -55,9 +56,7 @@ class SimpleCoiEndpointTest extends TestCase
     {
         $this->json('POST', '/api/coi/'.$this->expertPanel->coi_code, [])
             ->assertStatus(422)
-            ->assertJsonFragment(['email' => ['This field is required.']])
-            ->assertJsonFragment(['first_name' => ['This field is required.']])
-            ->assertJsonFragment(['last_name' => ['This field is required.']])
+            ->assertJsonFragment(['group_member_id' => ['Storing a COI requires a group member id']])
             ->assertJsonFragment(['work_fee_lab' => ['This field is required.']])
             ->assertJsonFragment(['contributions_to_gd_in_ep' => ['This field is required.']])
             ->assertJsonFragment(['independent_efforts' => ['This field is required.']])
@@ -66,10 +65,6 @@ class SimpleCoiEndpointTest extends TestCase
         $this->json('POST', '/api/coi/'.$this->expertPanel->coi_code, ['contributions_to_gd_in_ep' => 1])
             ->assertStatus(422)
             ->assertJsonFragment(['contributions_to_genes' => ['This field is required.']]);
-
-        $this->json('POST', '/api/coi/'.$this->expertPanel->coi_code, ['email' => 'bob'])
-            ->assertStatus(422)
-            ->assertJsonFragment(['email' => ['The email must be a valid email address.']]);
     }
     
     /**
@@ -77,10 +72,9 @@ class SimpleCoiEndpointTest extends TestCase
      */
     public function stores_valid_coi_response()
     {
+        $groupMember = GroupMember::factory()->create();
         $data = [
-            'email' => 'elenor@medplace.com',
-            'first_name' => 'elenor',
-            'last_name' => 'shelstrop',
+            'group_member_id' => $groupMember->id,
             'work_fee_lab' => 0,
             'contributions_to_gd_in_ep' => 1,
             'contributions_to_genes' => 'beans',
@@ -88,12 +82,20 @@ class SimpleCoiEndpointTest extends TestCase
             'coi' => 'no coi',
         ];
 
+        
         $this->json('POST', '/api/coi/'.$this->expertPanel->coi_code, $data)
-            ->assertStatus(200);
+        ->assertStatus(200);
+
+        unset($data['group_member_id']);
 
         $this->assertDatabaseHas('cois', [
+            'group_member_id' => $groupMember->id,
             'expert_panel_id' => $this->expertPanel->id,
-            'data' => json_encode($data)
+            'data->work_fee_lab' => 0,
+            'data->contributions_to_gd_in_ep' => 1,
+            'data->contributions_to_genes' => 'beans',
+            'data->independent_efforts' => 'None',
+            'data->coi' => 'no coi'
         ]);
     }
     

@@ -32,7 +32,7 @@ abstract class ExpertPanelEvent extends RecordableEvent
 
     public function getSubject():Model
     {
-        return $this->application;
+        return $this->application->group;
     }
 
     public function getLogDate():Carbon
@@ -44,6 +44,4 @@ abstract class ExpertPanelEvent extends RecordableEvent
     {
         return $this->application->current_step;
     }
-    
-    
 }

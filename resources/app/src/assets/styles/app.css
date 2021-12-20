@@ -5,6 +5,19 @@
     @apply text-gray-500 underline
 }
 
+/**
+ * "sticky" footer technique lifted from 
+ * https://css-tricks.com/a-clever-sticky-footer-technique/
+ **/
+html, body {
+    height: 100%;
+}
+
+body > footer {
+    position: sticky;
+    top: 100vh;
+}
+
 body {
     @apply bg-gray-50;
     font-size: .9rem;
@@ -26,8 +39,19 @@ h3 {
     @apply text-lg;
 }
 
+hr {
+    @apply my-4
+}
+
 input[type=file]{
     @apply border-none p-0;
+}
+
+a[href]:not(.btn,.note) {
+    @apply text-blue-500;
+}
+a[href]:not(.btn) {
+    @apply hover:underline
 }
 
 input,
@@ -46,6 +70,78 @@ textarea.sm {
     @apply px-1 py-0.5 text-sm;
 }
 
+label {
+    @apply space-x-2;
+    display: flex;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  flex-grow: 0;
+  flex-shrink: 0;
+  color: #666;
+  appearance: none;
+  background-color: #fff;
+  margin: 0;
+  font: inherit;
+  width: 1.1rem;
+  height: 1.1rem;
+  padding: 0;
+  border: 0.125rem solid currentColor;
+  transform: translateY(0.15rem);
+  display: grid;
+  place-content: center;
+  /* margin-right: .5rem; */
+}
+
+input[type="radio"] {
+    border-radius: 50%;
+}
+
+input[type="radio"]::before,
+input[type="checkbox"]::before {
+  content: "";
+  width: .55rem;
+  height: .55rem;
+  background-color: currentColor;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--form-control-color);
+}
+
+input[type="radio"]::before {
+    border-radius: 50%;
+}
+
+input[type="radio"]:checked,
+input[type="checkbox"]:checked {
+        @apply text-blue-600;
+
+}
+input[type="radio"]:checked::before,
+input[type="checkbox"]:checked::before  {
+  transform: scale(1);
+}
+
+
+blockquote {
+    @apply border-l-8 border-gray-200 pl-2;
+}
+
+.note {
+    @apply text-xs text-gray-400
+}
+.link {
+    @apply text-blue-500 hover:underline;
+}
+
+.nav-item { 
+    @apply border-r-2 border-gray-400  pr-2 mr-2 align-middle;
+}
+.nav-item:last-child {
+    @apply border-r-0;
+}
+
 .btn {
     @apply px-3 py-1 rounded border border-gray-300 focus:outline-none cursor-pointer;
     @apply bg-gradient-to-b from-white to-gray-100 hover:to-gray-200;
@@ -54,16 +150,20 @@ textarea.sm {
 
 }
 
+.btn-xs {
+    @apply text-xs px-2 py-0.5;
+}
+
 .btn-sm {
-    @apply text-sm
+    @apply text-sm;
 }
 
 .btn-lg {
-    @apply text-lg
+    @apply px-4 py-1.5 text-lg;
 }
 
-.btn-xs {
-    @apply text-xs px-2 py-0.5;
+.btn-xl {
+    @apply px-6 py-2 text-2xl;
 }
 
 .btn.gray {
@@ -93,11 +193,52 @@ textarea.sm {
     @apply border-red-800;
 }
 
-/* Transitions */
-
 
 .alert-item {
     transition: transform 0.8s ease;
+}
+
+.well {
+    @apply border border-gray-300 text-gray-600 bg-gray-200 rounded p-2;
+}
+
+.markdown {
+
+}
+.markdown a {
+    @apply text-blue-500 underline
+}
+
+.markdown p {
+    @apply mb-2;
+}
+
+.markdown ul {
+    list-style: disc;
+}
+
+.markdown ol {
+    list-style: decimal;
+    @apply mb-2
+}
+
+.markdown ul > li,
+.markdown ol > li {
+    @apply ml-4;
+}
+
+/* Transitions */
+.fade-enter-active {
+    transition: all 0.3s ease-out;
+}
+  
+.fade-leave-active {
+    transition: all 0.3s ease-out;
+}
+  
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
 }
 
 .slide-fade-enter-active {
@@ -114,33 +255,32 @@ textarea.sm {
     opacity: 0;
 }
 
+.fade-slide-down-enter-active,
 .slide-fade-down-enter-active {
     transition: all 0.3s ease-out;
 }
   
+.fade-slide-down-leave-active,
 .slide-fade-down-leave-active {
     transition: all 0.3s ease-out;
 }
   
+.fade-slide-down-enter-from,
+.fade-slide-down-leave-to,
 .slide-fade-down-enter-from,
 .slide-fade-down-leave-to {
     transform: translateY(-20px);
     opacity: 0;
 }
 
-.alert-info {
-    @apply bg-blue-300 text-blue-700;
-}
-.alert-success {
-    @apply bg-green-300 text-green-700;
-}
-.alert-warning {
-    @apply bg-yellow-300 text-yellow-700;
-}
-.alert-error {
-    @apply bg-red-300 text-red-700;
-}
-
 .block-title {
     @apply pb-2 border-b mb-2;
+}
+
+.application-section {
+    @apply py-2 border-b my-2;
+}
+
+.muted {
+    @apply text-gray-400;
 }

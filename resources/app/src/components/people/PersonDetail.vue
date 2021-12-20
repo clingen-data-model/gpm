@@ -1,30 +1,63 @@
 <template>
     <div>
-        <card :title="cardTitle">
-            <template v-slot:header-right>
+        <header class="pb-4">
+            <note>People</note>
+            <h1 class="flex justify-between items-center">
+                <div>
+                    {{person.name}}
+                    <note>ID: {{person.id}}</note>
+                </div>
                 <router-link 
                     :to="`/people/${uuid}/edit`"
-                    class="btn btn-xs"
+                    class="btn btn-xs flex-grow-0"
+                    v-if="(hasPermission('people-manage') || userIsPerson(person))"
                 >
-                    Edit
+                    <icon-edit width="16" heigh="16" />
                 </router-link>
-            </template>
-            <dictionary-row 
-                v-for="key in ['name', 'email', 'phone']"
-                :key="key"
-                :label="key"
-            >
-                {{person[key]}}
+
+            </h1>
+            <dictionary-row label="Email">
+                <template v-slot:label><strong>Email:</strong></template>
+                {{person.email}}
             </dictionary-row>
-            <dictionary-row 
-                v-for="key in ['created_at', 'updated_at']"
-                :key="key"
-                :label="key"
-            >
-                {{formatDate(person[key])}}
+            <dictionary-row label="Institution">
+                <template v-slot:label><strong>Institution:</strong></template>
+                {{person.institution ? person.institution.name : null}}
             </dictionary-row>
-        </card>
-        <modal-dialog v-model="showModal">
+        </header>
+        <tabs-container>
+            <tab-item label="groups">
+                <membership-list :person="person"></membership-list>
+            </tab-item>
+            <tab-item label="Info">
+                <person-profile :person="person"></person-profile>
+            </tab-item>
+            <tab-item label="Conflict of Interest">
+                <coi-list :person="person"></coi-list>
+            </tab-item>
+            <tab-item label="Documents">
+                docs
+            </tab-item>
+            <!-- <tab-item label="Training &amp; Attestations">
+            </tab-item> -->
+            <tab-item label="Email Log">
+                <div v-if="sortedMailLog.length == 0" class="well">
+                    {{titleCase(person.first_name)}} has not received any mail via the GPM.
+                </div>
+                <div class="w-3/4 my-4 p-4 border" v-for="email in sortedMailLog" :key="email.id">
+                    <dictionary-row label="Date/Time">
+                        {{formatDate(email.created_at)}}
+                    </dictionary-row>
+                    <dictionary-row label="Subject">
+                        {{email.subject}}
+                    </dictionary-row>
+                    <dictionary-row label="Body">
+                        <div v-html="email.body"></div>
+                    </dictionary-row>
+                </div>
+            </tab-item>
+        </tabs-container>
+        <modal-dialog v-model="showModal" :title="$route.meta.title">
             <router-view name="modal"></router-view>
         </modal-dialog>
     </div>
@@ -33,7 +66,19 @@
 import { mapGetters } from 'vuex'
 import {formatDateTime as formatDate} from '@/date_utils'
 
+import TabsContainer from '../TabsContainer.vue'
+import MembershipList from './MembershipList.vue'
+import PersonProfile from '@/components/people/PersonProfile'
+import CoiList from '@/components/people/CoiList'
+
 export default {
+    name: 'PersonDetail',
+    components: { 
+        TabsContainer,
+        MembershipList,
+        PersonProfile,
+        CoiList,
+    },
     props: {
         uuid: {
             required: true,
@@ -42,7 +87,7 @@ export default {
     },
     data() {
         return {
-            // showModal: false
+            emails: []
         }
     },
     watch: {
@@ -57,31 +102,37 @@ export default {
         ...mapGetters({
             person: 'people/currentItem'
         }),
-        cardTitle () {
-            return 'Person: '+this.person.name
-        },
         showModal: {
             get() {
                 return this.$route.meta.showModal
             },
             set(value) {
                 if (value) {
-                    this.$router.push({name: 'person-edit', params: {uuid: this.person.uuid}})
+                    this.$router.push({name: 'PersonEdit', params: {uuid: this.person.uuid}})
                 }
-                this.$router.push({name: 'person-detail', params: {uuid: this.person.uuid}})
+                this.$router.push({name: 'PersonDetail', params: {uuid: this.person.uuid}})
             }
+        },
+        sortedMailLog () {
+            return [...this.person.mailLog].sort((a,b) => {
+                if (a.created_at == b.created_at) {
+                    return 0;
+                }
+                return (Date.parse(a.created_at) > Date.parse(b.created_at))
+                    ? -1 : 1;
+            })
         }
     },
     methods: {
-
     },
     setup() {
         return {
             formatDate: formatDate
         }
     },
-    mounted() {
-        this.$store.dispatch('people/getPerson', {uuid: this.uuid})
+    async mounted() {
+        await this.$store.dispatch('people/getPerson', {uuid: this.uuid})
+        this.$store.dispatch('people/getMail', this.person);
     }
 }
 </script>

@@ -7,15 +7,16 @@
     <div v-if="response">
         <h2 class="block-title">
             COI response for 
-            {{response.first_name.response}} {{response.last_name.response}}
+            <span v-if="coi.data.first_name">{{titleCase(`${coi.data.first_name} ${coi.data.last_name}`)}} in </span>
+            {{membership.group.name}}
         </h2>
-        <div class="text-sm response-data">            
+        <div class="text-sm response-data">
             <dictionary-row label="Name" label-class="font-bold">
-                {{response.first_name.response}} {{response.last_name.response}}
+                {{coi.data.first_name}} {{coi.data.last_name}}
             </dictionary-row>
 
             <dictionary-row label="Email" label-class="font-bold">
-                {{response.email.response}}
+                {{coi.data.email}}
             </dictionary-row>
 
             <dictionary-row label="COI File" v-if="response.document_uuid"  label-class="font-bold">
@@ -87,7 +88,7 @@
 <script>
 export default {
     props: {
-        response: {
+        membership: {
             type: Object || null,
             required: true
         }
@@ -98,8 +99,14 @@ export default {
         }
     },
     computed: {
+        coi () {
+            return this.membership.latest_coi;
+        },
         isLegacy() {
             return false;
+        },
+        response () {
+            return this.coi.response_document
         }
     },
     methods: {

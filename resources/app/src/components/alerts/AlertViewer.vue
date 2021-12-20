@@ -1,34 +1,19 @@
 <template>
-    <div class="fixed right-4 bottom-4 w-64">
+    <div class="fixed right-4 top-8 w-64 z-50">
       <ul>
         <transition-group name="slide-fade" tag="li">
-          <div v-for="alert in $store.state.alerts.alerts" :key="alert.uuid"
-            class="flex justify-between rounded px-3 py-2 my-2 alert-item" 
-            :class="`alert-${alert.type}`"
-          >
-            {{alert.message}}
-            <button @click="$store.commit('removeAlert', alert.uuid)" class="hover:underline">x</button>
-          </div>
+          <alert v-for="alert in $store.state.alerts.alerts" :key="alert.uuid" :alert="alert"></alert>
         </transition-group>
       </ul>
     </div>
 
 </template>
 <script>
+import Alert from './Alert'
 export default {
-    props: {
-        
-    },
-    data() {
-        return {
-            
-        }
-    },
-    computed: {
-
-    },
-    methods: {
-
+    name: 'AlertViewer',
+    components: {
+      Alert
     }
 }
 </script>

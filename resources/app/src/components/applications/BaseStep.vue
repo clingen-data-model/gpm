@@ -11,7 +11,7 @@
                         <div class="text-white bg-green-600 rounded-xl px-2">
                             Appproved: {{dateApproved}}
                         </div>
-                        <edit-button class="text-black" @click="initEditApprovalDate"></edit-button>
+                        <edit-icon-button class="text-black" @click="initEditApprovalDate"></edit-icon-button>
                     </div>
                     <div class="flex space-x-1" v-else>
                         <date-input v-model="newApprovalDate"></date-input>
@@ -20,7 +20,12 @@
                     </div>
                 </div>
             </div>
-            <slot name="document">
+            <div class="border-b mb-2 pb-2">
+                <button class="btn btn-xs" @click="toggleDocuments">{{docsToggleText}}</button>
+                &nbsp;
+                <button class="btn btn-xs" @click="toggleSections">{{sectionsToggleText}}</button>
+            </div>
+            <slot name="document" v-if="showDocuments">
                 <document-manager
                     :title="documentName"
                     class="border-b"
@@ -30,6 +35,9 @@
                     :step="step"
                 ></document-manager>
             </slot>
+            <slot name="sections" v-if="showSections">
+                Step sections here!
+            </slot>
         </div>
 
         <!-- Approve step -->
@@ -37,6 +45,17 @@
             class="border border-l-0 border-r-0 py-4 mb-6" 
             v-if="!application.stepIsApproved(step)"
         >
+            <static-alert 
+                variant="info" 
+                v-if="application.hasPendingSubmissionForCurrentStep"
+                class="mb-4"
+            >
+                This step was submitted by <strong>{{application.pendingSubmission.submitter.name}}</strong> on 
+                <strong>{{formatDate(application.pendingSubmission.created_at)}}</strong> with the following notes:
+                <blockquote>
+                    {{application.pendingSubmission.notes}}
+                </blockquote>
+            </static-alert>
             <button 
                 class="btn btn-lg w-full" 
                 @click="startApproveStep"
@@ -45,15 +64,21 @@
             >
                 {{approveButtonLabel}}
             </button>
-            <modal-dialog v-model="showApproveForm" size="xl" @closed="$refs.approvestepform.clearForm()">
-                <approve-step-form  ref="approvestepform" @saved="hideApproveForm" @canceled="hideApproveForm"></approve-step-form>
-            </modal-dialog>
+            <teleport to="body">
+                <modal-dialog v-model="showApproveForm" size="xl" @closed="$refs.approvestepform.clearForm()">
+                    <approve-step-form  
+                        ref="approvestepform" 
+                        @saved="handleApproved" 
+                        @canceled="hideApproveForm"
+                    />
+                </modal-dialog>
+            </teleport>
         </div>
 
         <slot></slot>
 
         <slot name="log">
-            <div class="mb-6">
+            <div class="mb-6 mt-4 border-t pt-4">
                 <h3 class="mb-2">Step {{step}} Progress Log</h3>
                 <application-log :step="step"></application-log>
             </div>
@@ -66,7 +91,6 @@ import { formatDate } from '@/date_utils'
 import ApplicationLog from '@/components/applications/ApplicationLog'
 import DocumentManager from '@/components/applications/documents/DocumentManager'
 import ApproveStepForm from '@/components/applications/ApproveStepForm'
-import EditButton from '@/components/buttons/EditIconButton'
 import RemoveButton from '@/components/buttons/RemoveButton'
 import is_validation_error from '@/http/is_validation_error'
 
@@ -75,7 +99,6 @@ export default {
         ApplicationLog,
         DocumentManager,
         ApproveStepForm,
-        EditButton,
         RemoveButton
     },
     props: {
@@ -114,13 +137,18 @@ export default {
         return {
             showApproveForm: false,
             editApprovalDate: false,
-            newApprovalDate: null
+            newApprovalDate: null,
+            showDocuments: true,
+            showSections: true,
         }
     },
     computed: {
         ...mapGetters({
-            application: 'applications/currentItem'
+            group: 'groups/currentItemOrNew'
         }),
+        application () {
+            return this.group.expert_panel;
+        },
         isCurrentStep () {
             return this.step == this.application.current_step
         },
@@ -130,14 +158,31 @@ export default {
             }
 
             return null;
+        },
+        docsToggleText () {
+            return this.showDocuments ? 'Hide Documents' : 'Show Documents';
+        },
+        sectionsToggleText () {
+            return this.showSections ? 'Hide Sections' : 'Show Sections';
         }
     },
     methods: {
+        toggleDocuments () {
+            this.showDocuments = !this.showDocuments;
+        },
+        toggleSections () {
+            this.showSections = !this.showSections;
+        },
         startApproveStep () {
             this.showApproveForm = true;
         },
         approveStep () {
             this.$store.dispatch('applications/approveCurrentStep', {application: this.application, step: this.step})
+            this.$emit('stepApproved')
+        },
+        handleApproved () {
+            this.hideApproveForm();
+            this.$emit('stepApproved');
         },
         hideApproveForm () {
             this.showApproveForm = false;

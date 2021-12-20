@@ -2,11 +2,14 @@
 
 namespace App\Modules\Person\Jobs;
 
+use Laravel\Sanctum\Sanctum;
+use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Modules\Person\Events\PersonDataUpdated;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class UpdatePerson
 {
@@ -24,8 +27,7 @@ class UpdatePerson
     public function __construct(
         string $uuid,
         array $attributes
-    )
-    {
+    ) {
         $this->person = Person::findByUuidOrFail($uuid);
         $this->attributes = array_filter($attributes);
     }
@@ -37,6 +39,9 @@ class UpdatePerson
      */
     public function handle()
     {
+        if (\Auth::user()->cannot('update', $this->person)) {
+            throw new AuthorizationException('You do not have permission to update this person\'s profile.');
+        }
         if (count($this->attributes) == 0) {
             return;
         }

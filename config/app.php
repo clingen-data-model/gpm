@@ -105,4 +105,8 @@ return [
 
         'GraphQL' => \Rebing\GraphQL\Support\Facades\GraphQL::class,
     ],
+    'jira' => [
+        'user' => env('JIRA_USER'),
+        'token' => env('JIRA_API_TOKEN')
+    ]
 ];

@@ -23,8 +23,7 @@ class CreatePerson
         private string $last_name,
         private string $email,
         private ?string $phone = null,
-    )
-    {
+    ) {
         //
     }
 
@@ -38,13 +37,12 @@ class CreatePerson
         DB::transaction(function () {
             $person = Person::create([
                 'uuid' => $this->uuid,
-                'first_name' => $this->first_name, 
+                'first_name' => $this->first_name,
                 'last_name' => $this->last_name,
                 'email' => $this->email,
                 'phone' => $this->phone,
             ]);
             Event::dispatch(new PersonCreated($person));
         });
-
     }
 }

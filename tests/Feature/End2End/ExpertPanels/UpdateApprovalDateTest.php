@@ -73,7 +73,7 @@ class UpdateApprovalDateTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('activity_log', [
-            'subject_id' => $this->expertPanel->id,
+            'subject_id' => $this->expertPanel->group->id,
             'description' => 'Approval date updated to 2021-04-22T04:00:00.000000Z for step 1'
         ]);
     }

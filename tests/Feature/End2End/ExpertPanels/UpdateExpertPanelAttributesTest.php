@@ -33,7 +33,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
         $data = [
             'long_base_name' => 'Test Expert Panel Base Name GCEP',
             'short_base_name' => 'Test EP GCEP',
-            'affiliation_id' => '400001',
+            'affiliation_id' => '40001',
             'cdwg_id' => $this->cdwg->id,
         ];
 
@@ -55,7 +55,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
         $data = [
             'long_base_name' => 'Test Expert Panel Base Name',
             'short_base_name' => 'Test EP',
-            'affiliation_id' => '400001',
+            'affiliation_id' => '40001',
             'cdwg_id' => $this->cdwg->id,
             'group' => [
                 'name' => 'New Test Working Name',
@@ -103,7 +103,87 @@ class UpdateExpertPanelAttributesTest extends TestCase
                 'cdwg_id' => ['The selected cdwg id is invalid.'],
                 'long_base_name' => ['The long base name may not be greater than 255 characters.'],
                 'short_base_name' => ['The short base name may not be greater than 15 characters.'],
-                'affiliation_id' => ['The affiliation id may not be greater than 8 characters.'],
+                'affiliation_id' => ['The affiliation id must be 5 digits.'],
             ]);
+    }
+
+    /**
+     * @test
+     */
+    public function validates_long_base_name_must_be_unique_for_type_if_not_null()
+    {
+        $nullLongName = ExpertPanel::factory()->gcep()->create();
+        $existingGcep = ExpertPanel::factory()->gcep()->create(['long_base_name' => 'Early is a bad dog']);
+        
+        $expertPanel = ExpertPanel::factory()->gcep()->create();
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->json('PUT', '/api/applications/'.$expertPanel->uuid, [
+            'cdwg_id' => 1,
+            'long_base_name' => null,
+            'short_base_name' => 'blah',
+            'affiliation_id' => '40001',
+        ])
+        ->assertStatus(200);
+
+
+        $this->json('PUT', '/api/applications/'.$expertPanel->uuid, [
+                'cdwg_id' => 1,
+                'long_base_name' => $existingGcep->long_base_name,
+                'short_base_name' => 'blah',
+                'affiliation_id' => '40001',
+            ])
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                'long_base_name' => ['The long base name has already been taken.'],
+            ]);
+
+        $expertPanel->update(['long_base_name' => 'Bird']);
+        $this->json('PUT', '/api/applications/'.$expertPanel->uuid, [
+            'cdwg_id' => 1,
+            'long_base_name' => 'Bird',
+            'short_base_name' => 'blah',
+            'affiliation_id' => '40001',
+        ])
+        ->assertStatus(200);
+    }
+
+    /**
+     * @test
+     */
+    public function validates_short_base_name_must_be_unique_for_type_if_not_null()
+    {
+        $nullShortName = ExpertPanel::factory()->gcep()->create();
+        $existingGcep = ExpertPanel::factory()->gcep()->create(['short_base_name' => 'Early']);
+        
+        $expertPanel = ExpertPanel::factory()->gcep()->create();
+        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->json('PUT', '/api/applications/'.$expertPanel->uuid, [
+            'cdwg_id' => 1,
+            'long_base_name' => null,
+            'short_base_name' => null,
+            'affiliation_id' => '40001',
+        ])
+        ->assertStatus(200);
+
+
+        $this->json('PUT', '/api/applications/'.$expertPanel->uuid, [
+                'cdwg_id' => 1,
+                'long_base_name' => $existingGcep->long_base_name,
+                'short_base_name' => 'Early',
+                'affiliation_id' => '40001',
+            ])
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                'short_base_name' => ['The short base name has already been taken.'],
+            ]);
+
+        $expertPanel->update(['short_base_name' => 'Bird']);
+        $this->json('PUT', '/api/applications/'.$expertPanel->uuid, [
+            'cdwg_id' => 1,
+            'short_base_name' => 'Bird',
+            'long_base_name' => 'blah',
+            'affiliation_id' => '40001',
+        ])
+        ->assertStatus(200);
     }
 }

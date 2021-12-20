@@ -7,7 +7,6 @@
 <template>
     <div>
         <h2>You are about to delete the following log entry:</h2>
-
         <div class="border-y py-2">
         <blockquote>
             <div v-html="logEntry.description"></div>
@@ -30,9 +29,8 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import { formatDate } from '@/date_utils'
-import is_validation_error from '@/http/is_validation_error'
-
+import {isValidationError} from '@/http'
+import {logEntries, deleteEntry} from '@/adapters/log_entry_repository'
 
 export default {
     name: 'ConfirmDeleteLogEntry',
@@ -49,14 +47,17 @@ export default {
     },
     computed: {
         ...mapGetters({
-            application: 'applications/currentItem'
+            group: 'groups/currentItemOrNew'
         }),
+        application () {
+            return this.group.expert_panel;
+        },
         logEntry () {
-            const logEntry = this.application.log_entries.find(entry => entry.id == this.id);
+            const logEntry = this.logEntries.find(entry => entry.id == this.id);
             return logEntry || {};
         },
         logDate () {
-            return formatDate(this.logEntry.properties.log_date)
+            return this.formatDate(this.logEntry.properties.log_date)
         },
         flattenedErrors () {
             return Object.values(this.errors).flat();
@@ -76,15 +77,21 @@ export default {
         async deleteEntry()
         {
             try {
-                await this.$store.dispatch('applications/deleteLogEntry', {application: this.application, logEntry: this.logEntry});
+                // await this.$store.dispatch('applications/deleteLogEntry', {application: this.application, logEntry:  this.logEntry});
+                await deleteEntry(`/api/groups/${this.group.uuid}/activity-logs`, this.id)
                 this.$router.go(-1);
             } catch ( error ) {
-                if (is_validation_error(error)) {
+                if (isValidationError(error)) {
                     this.errors = error.response.data.errors;
                 }
                 this.errors = {a: error.message};
                 
             }
+        }
+    },
+    setup () {
+        return {
+            logEntries
         }
     }
 }

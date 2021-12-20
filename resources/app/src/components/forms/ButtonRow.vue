@@ -31,16 +31,20 @@ export default {
         'cancelClicked',
         'submitClicked',
         'canceled',
-        'submitted'
+        'submitted',
+        'submit',
+        'cancel',
     ],
     methods: {
         cancel () {
             this.$emit('cancelClicked');
             this.$emit('canceled');
+            this.$emit('cancel');
         },
         submit () {
             this.$emit('submitClicked');
             this.$emit('submitted');
+            this.$emit('submit');
         }
     }
 }

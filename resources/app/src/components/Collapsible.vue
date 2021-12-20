@@ -1,0 +1,68 @@
+<template>
+    <div class="collapsible-container">
+        <div class="collapsible-header" @click="expanded = !expanded">
+            <div class="flex items-center">
+                <icon-cheveron-right v-if="!expanded" class="-ml-1" />
+                <icon-cheveron-down v-if="expanded" class="-ml-1" />
+                <slot name="title">
+                    <strong>{{title}}</strong>
+                </slot>
+            </div>
+        </div>
+        <transition name="slide-fade-down">
+            <div v-show="opened">
+                <slot></slot>
+            </div>
+        </transition>
+    </div>
+</template>
+<script>
+export default {
+    name: 'Collapsible',
+    props: {
+        modelValue: {
+            type: Boolean,
+            required: false,
+            default: null
+        },
+        title: {
+            type: String,
+            required: false,
+            default: null,
+        }
+    },
+    emits: [
+        'expanded',
+        'collapsed',
+        'update:modelUpdate'
+    ],
+    data() {
+        return {
+            opened: false
+        }
+    },
+    computed: {
+        valueSet () {
+            return this.modelValue !== null;
+        },
+        expanded: {
+            get () {
+                return this.valueSet ? this.modelValue : this.opened;
+            },
+            set (value) {
+                this.opened = value;
+                this.$emit('update:modelUpdate', value);
+
+                if (this.opened) {
+                    this.$emit('expanded');
+                } else {
+                    this.$emit('collapsed');
+                }
+            }
+        }
+    },
+    methods: {
+
+    }
+}
+</script>

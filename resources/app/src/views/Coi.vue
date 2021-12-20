@@ -3,7 +3,7 @@
         <card :title="verifying ? `Loading COI Form` : `COI Form not found`" v-if="!codeIsValid">
             <div v-if="!verifying">We couldn't find this COI.</div>
         </card>
-        <card :title="coiTitle"  class="w-3/4 mx-auto relative" v-if="codeIsValid">
+        <card :title="coiTitle"  class="max-w-xl mx-auto relative" v-if="codeIsValid">
             <div v-if="saved">
                 Thanks for completing the conflict of interest form for {{epName}}!
                 <small v-if="$store.getters.isAuthed">
@@ -93,6 +93,20 @@ export default {
         },
         coiTitle() {
             return survey.name+' for '+this.epName;
+        },
+        groupMemberId() {
+            const membership = this.$store.getters.currentUser.memberships.find(m => {
+                return m.group.expert_panel
+                    && m.group.expert_panel.coi_code === this.code
+            });
+
+            console.log(membership);
+
+            if (membership) {
+                return membership.id;
+            }
+
+            throw new Error('Could not find membership to EP that matches the code.');
         }
     },
     methods: {
@@ -119,24 +133,38 @@ export default {
         async storeResponse() {
             this.saving = true;
             try {
-                await this.$store.dispatch('storeCoi', {code: this.code, coiData: this.response});
+                await this.$store.dispatch(
+                    'storeCoi', 
+                    {
+                        code: this.code, 
+                        groupMemberId: this.groupMemberId,
+                        coiData: this.response, 
+                    }
+                );
                 this.saved = true;
+                this.$store.dispatch('forceGetCurrentUser');
                 if (this.$store.getters.isAuthed) {
-                    setInterval(() => {this.redirectCountdown--}, 1000)
-                    setTimeout(() => {
-                        this.$router.go(-1)
-                    }, 5000)
+                    this.countDownToRedirect()
                 }
             } catch (error) {
                 if (is_validation_error(error)) {
                     this.errors = error.response.data.errors
+                } else {
+                    this.$store.commit('pushError', `You can not complete a COI for ${this.epName} because you are not a member.`)
                 }
             }
             this.saving = false;
+        },
+        countDownToRedirect () {
+            setInterval(() => {this.redirectCountdown--}, 1000)
+            setTimeout(() => {
+                this.$router.go(-1)
+            }, 5000)
         }
     },
-    mounted() {
+    async mounted() {
         this.verifyCode();
+        await this.$store.dispatch('getCurrentUser')
     }
 }
 </script>

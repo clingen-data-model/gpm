@@ -35,6 +35,7 @@
 
 </style>
 <script>
+import {isEqual} from 'lodash'
 
 export default {
     name: 'TabsContainer',
@@ -50,14 +51,31 @@ export default {
             default: 0
         }
     },
+    emits: [
+        'update:modelValue',
+        'tab-changed'
+    ],
     data() {
         return {
             tabs: [],
         }
     },
+    computed: {
+        activeTab() {
+            return this.tabs.find(t => t.active === true) || {};
+        }
+    },
     watch: {
         modelValue: function (newValue) {
             this.activateTab(newValue)
+        },
+        '$route.query': {
+            immediate: true,
+            handler: function (to, from) {
+                if (!isEqual(to, from)) {
+                    this.activateTabFromRoute();
+                }
+            }
         }
     },
     methods: {
@@ -65,6 +83,37 @@ export default {
             this.tabs.forEach(t => t.active = false)
             this.tabs[idx].active = true
             this.$emit('update:modelValue', idx);
+            this.$emit('tab-changed', this.tabs[idx].label);
+            this.updateRouteQuery(this.tabs[idx].label);
+        },
+
+        activateTabWithLabel (routeLabel) {
+            const normalized = routeLabel.toLowerCase();
+            const idx = this.tabs
+                .map(t => t.label.toLowerCase())
+                .findIndex(label => label == normalized);
+            if (idx > 0) {
+                this.activateTab(idx);
+            }
+        },
+        
+        activateTabFromRoute () {
+            
+            const activeTabLabel = this.activeTab.label 
+                                    ? this.activeTab.label.toLowerCase() 
+                                    : null;
+
+            if (
+                activeTabLabel != this.$route.query.tab 
+                && Object.keys(this.$route.query).includes('tab')
+            ) {
+                this.activateTabWithLabel(this.$route.query.tab);
+            }
+        },
+
+        updateRouteQuery(label) {
+            const newQuery = {...this.$route.query, ...{tab: label.toLowerCase()}};
+            this.$router.replace({path: this.$route.path, query: newQuery})
         },
 
         setActiveIndex () {
@@ -74,34 +123,43 @@ export default {
             if (this.modelValue && this.tabs.length > this.modelValue) {
                 this.activateTab(this.modelValue);
             }
-
-            // if (this.tabs.length > 0 && this.tabs.findIndex(t => t.active) < 0) {
-            //     this.tabs[this.modelValue].active = true;
-            // }
+            if (Object.keys(this.$route.query).includes('tab')) {
+                this.activateTabFromRoute();
+            }
         },
         addTab (tab) {
             this.tabs.push(tab);
             this.setActiveIndex();
         },
+        
+        removeTab (tab) {
+            const idx = this.tabs.findIndex(i => tab ==i)
+            if (idx > -1) {
+                this.tabs.splice(idx, 1);
+            }
+        },
+
         renderTabs () {
-            return this.tabs.map((tab, idx) => {
-                if (!tab) return
+            return this.tabs
+                .map((tab, idx) => {
+                    if (!tab || !tab.visible) return
 
-                const tabClasses = ['tab'];
-                if (tab.active) {
-                    tabClasses.push('active');
-                }
+                    const tabClasses = ['tab', 'cursor-pointer'];
+                    if (tab.active) {
+                        tabClasses.push('active');
+                    }
 
-                return (
-                    <li class={tabClasses.join(' ')} onClick={ () => this.activateTab(idx) }>
-                        {tab.label}
-                    </li>
-                )
-            })
+                    return (
+                        <li class={tabClasses.join(' ')} onClick={ () => this.activateTab(idx) }>
+                            {tab.label}
+                        </li>
+                    )
+                })
         },
     },
     render() {
         const tabList = this.renderTabs();
+        
         const containerClass = [];
         const tabsClass = ['tabs'];
         if (this.tabLocation == 'top') {

@@ -2,12 +2,17 @@
 
 use App\Models\DocumentType;
 use Illuminate\Http\Request;
+use App\Actions\FeedbackSubmit;
+use App\Actions\NotificationMarkRead;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CdwgController;
-use App\Http\Controllers\Api\MailDraftController;
 use App\Http\Controllers\Api\PeopleController;
 use App\Http\Controllers\Api\MailLogController;
+use App\Http\Controllers\Api\MailDraftController;
+use App\Http\Controllers\Api\GeneLookupController;
+use App\Http\Controllers\Api\DiseaseLookupController;
+use App\Modules\User\Http\Controllers\CurrentUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,11 +40,21 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-    Route::get('/current-user', function (Request $request) {
-        return $request->user();
-    });
+    Route::get('/current-user', [CurrentUserController::class, 'show']);
 
-    Route::get('/mail-log', [MailLogController::class, 'index']);
+    Route::post('/feedback', FeedbackSubmit::class);
+
     Route::get('/email-drafts/{applicationUuid}/{approvedStepNumber}', [MailDraftController::class, 'show']);
+    Route::get('/mail-log', [MailLogController::class, 'index']);
+
+    Route::put('/notifications/{notificationId}', NotificationMarkRead::class);
+    
 });
+
 Route::get('/cdwgs', [CdwgController::class, 'index']);
+
+Route::get('/diseases/search', [DiseaseLookupController::class, 'search']);
+Route::get('/diseases/{mondo_id}', [DiseaseLookupController::class, 'show']);
+
+Route::get('/genes/search', [GeneLookupController::class, 'search']);
+Route::get('/genes/{hgnc_id}', [GeneLookupController::class, 'show']);

@@ -38,16 +38,12 @@ class InitiationTest extends TestCase
 
         $response->assertStatus(200);
 
-        $expectedAttributes = array_merge(
-            $data,
-            [
-                'working_name' => $data['working_name'].' '.ExpertPanelType::find($data['expert_panel_type_id'])->display_name,
-                'date_initiated'=>'2020-01-01T00:00:00.000000Z',
-                'current_step' => 1
-            ]
-        );
-        unset($expectedAttributes['cdwg_id']);
-        $response->assertJson($expectedAttributes);
+        $response->assertJsonFragment([
+            'uuid' => $data['uuid'],
+            'long_base_name' => $data['working_name'],
+            'date_initiated' => '2020-01-01T00:00:00.000000Z',
+            'current_step' => 1
+        ]);
     }
 
     /**

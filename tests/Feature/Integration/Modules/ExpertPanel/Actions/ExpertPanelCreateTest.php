@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Integration\Modules\Application\Jobs;
+namespace Tests\Feature\Integration\Modules\ExpetPanel\Jobs;
 
 use Tests\TestCase;
 use App\Modules\User\Models\User;
@@ -82,7 +82,7 @@ class ExpertPanelCreateTest extends TestCase
         $properties = array_merge($expertPanel->only(['uuid','working_name','cdwg_id','expert_panel_type_id','date_initiated','coi_code', 'created_at', 'updated_at']), ['step' => 1]);
 
         $this->assertLoggedActivity(
-            $expertPanel,
+            $expertPanel->group,
             'Application initiated',
             // $properties,  // comment out properties b/c can't get a match.
             null,

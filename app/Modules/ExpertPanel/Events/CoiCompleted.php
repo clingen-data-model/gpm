@@ -27,7 +27,9 @@ class CoiCompleted extends ExpertPanelEvent
 
     public function getLogEntry(): String
     {
-        return 'COI form completed by '.$this->coi->data->email;
+        return ($this->coi->groupMember)
+            ? 'COI form completed by '.$this->coi->groupMember->person->email
+            : 'Legacy COI uploaded';
     }
     
     public function getProperties(): array

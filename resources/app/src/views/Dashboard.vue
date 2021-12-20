@@ -1,0 +1,205 @@
+<template>
+    <div>
+        <h1>
+            Dashboard
+            <div class="note font-normal">
+                User ID: {{user.id}}
+                |
+                Person ID: {{user.person ? user.person.id : 'no person!!'}}
+            </div>
+        </h1>
+        <transition-group tag="div" name="slide-fade-down">
+            <notification-item 
+                v-for="notification in notifications" :key="notification.id"
+                :notification="notification"
+                class="mt-2"
+                @removed="removeNotification(notification)"
+                :variant="notification.data.type"
+            ></notification-item>
+            <static-alert 
+                v-for="membership in user.person.membershipsWithPendingCois" 
+                :key="membership.id"
+                class="mt-2 font-bold"
+                variant="warning"
+            >
+                You have a pending Conflict of Interest Disclosure for {{membership.group.name}}.
+                <br>
+                <br>
+                <router-link 
+                    :to="{
+                        name: 'alt-coi', 
+                        params: {
+                            name: membership.group.name, 
+                            code: membership.group.expert_panel.coi_code
+                        }
+                    }"
+                    class="btn"
+                >
+                    Complete this COI Disclosure
+                </router-link>
+            </static-alert>
+        </transition-group>
+        <tabs-container class="mt-8">
+            <tab-item label="Your Groups">
+                <div class="well" v-if="!groups.length">You are not assigned to any groups.</div>
+                <data-table
+                    v-else
+                    :data="groups"
+                    :fields="groupFields"
+                    v-model:sort="groupSort"
+                    @rowClick="navigateToGroup"
+                    row-class="cursor-pointer"
+                >
+                    <template v-slot:cell-status_name="{value}">
+                        <badge :color="groupBadgeColor(value)">{{value}}</badge>
+                    </template>
+                </data-table>
+            </tab-item>
+
+            <tab-item label="Your Info">
+                <person-profile :person="personFromStore"></person-profile>
+            </tab-item>
+
+            <tab-item label="COIs">
+                <coi-list :person="user.person"></coi-list>
+            </tab-item>
+
+        </tabs-container>
+    </div>
+</template>
+<script>
+import {useStore} from 'vuex'
+import {useRouter} from 'vue-router'
+import {ref, computed, onMounted, watch} from 'vue'
+import {api} from '@/http'
+import NotificationItem from '@/components/NotificationItem'
+import CoiList from '@/components/people/CoiList'
+import PersonProfile from '@/components/people/PersonProfile'
+import Person from "@/domain/person"
+import Group from "@/domain/group"
+
+export default {
+    name: 'Dashboard',
+    components: {
+        CoiList,
+        NotificationItem,
+        PersonProfile
+    },
+    data() {
+        return {
+        }
+    },
+    props: {
+        
+    },
+    setup () {
+        const store = useStore();
+        const router = useRouter();
+        const user = computed(() => {
+            return store.getters['currentUser']
+        });
+        const personFromStore = computed(() => {
+            return store.getters['people/currentItem'] || new Person();
+        })
+        const loadPersonInStore = () => {
+            if (user.value.id && user.value.person && user.value.person.id) {
+                store.commit('people/addItem', user.value.person);
+                store.commit('people/setCurrentItemIndex', user.value.person);
+            }
+        }
+        watch(() => user, () => {
+            loadPersonInStore();
+        });
+        onMounted(() => {
+            loadPersonInStore();
+        });
+
+        // NOTIFICATIONS
+        // TODO: Extract to modules
+        const loadingNotifications = ref(false);
+        const notifications = ref([]);
+        const getNotifications = async () => {
+            loadingNotifications.value = true;
+            notifications.value = await api.get(`/api/people/${user.value.person.uuid}/notifications/unread`)
+                                .then(response => response.data)
+            loadingNotifications.value = false;
+        }
+        const removeNotification = (notification) => {
+            const index = notifications.value.findIndex((item) => item.id == notification.id);
+            if (index > -1) {
+                notifications.value.splice(index, 1);
+            }
+        }
+
+
+        // GROUPS
+        // TODO: Get groups by search with TONS of info.
+        // TODO: Extract that work to a module.
+        const groups = computed(() => {
+            return user.value.memberships
+                    .map(m => m.group)
+                    .filter(g => g !== null)
+                    .map(group => new Group(group))
+        });
+        const groupFields = ref([
+            {
+                name: 'displayName',
+                sortable: true,
+                type: String
+            },
+            {
+                name: 'status.name',
+                label: 'Status',
+                sortable: true,
+                type: String
+            },
+            {
+                name: 'info',
+                sortable: false,
+                type: String
+            }
+        ]);
+        const groupSort = ref({
+            field: 'displayName',
+            desc: false
+        });
+        const groupBadgeColor = (status) => {
+            const map = {
+                Active: 'green',
+                'Pending-Approval': 'blue',
+                Retired: 'yellow',
+                Removed: 'red'
+            }
+            return map[status] || 'blue'
+        };
+
+
+        // TODO: extract to module.
+        // TODO: Get coi data on demand
+
+        onMounted(() => {
+            getNotifications();
+        })
+
+        return {
+            user,
+            personFromStore,
+            loadingNotifications,
+            notifications,
+            groups,
+            groupSort,
+            groupFields,
+            groupBadgeColor,
+            getNotifications,
+            removeNotification,
+            navigateToGroup: (item) => {
+                router.push({
+                    name: 'GroupDetail',
+                    params: {uuid: item.uuid}
+                })
+            }
+        }
+        
+    }
+}
+</script>

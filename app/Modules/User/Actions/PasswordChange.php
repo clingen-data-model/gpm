@@ -13,16 +13,17 @@ class PasswordChange
     use AsObject;
     use AsCommand;
 
-    public string $commandSignature = 'user:change-password {user_id}';
-    public string $commandDescription = 'Changes a user password given uuid, numeric id, or email address';
+    public string $commandSignature = 'user:change-password {user_id} {--random : Generate a new randome password for the user}';
+    public string $commandDescription = 'Changes a user password given an id or email address';
 
     public function handle($user, $newPassword): User
     {
+        $userId = $user;
         if (!$user instanceof User) {
             if (is_string($user)) {
                 $user = User::findByEmail($user);
                 if (!$user) {
-                    $user = User::findByUuid($user);
+                    $user = User::find($userId);
                 }
             }
             if (is_int($user)) {
@@ -39,6 +40,12 @@ class PasswordChange
 
     public function asCommand(Command $command): void
     {
+        if ($command->option('random')) {
+            $user = $this->handle($command->argument('user_id'), uniqid());
+            $command->info('Random password generated for user '.$user->email);
+            return;
+        }
+        
         $newPassword = $command->secret('New password');
         if (empty($newPassword)) {
             $command->error('You must enter a password.');

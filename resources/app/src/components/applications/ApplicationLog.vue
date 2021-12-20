@@ -33,10 +33,12 @@
     </div>
 </template>
 <script>
-import {mapGetters} from 'vuex';
-import IconEdit from '@/components/icons/IconEdit'
-import IconTrash from '@/components/icons/IconTrash'
+import {computed, watch} from 'vue'
+import {useStore} from 'vuex';
+
+
 import LogEntryForm from '@/components/log_entries/LogEntryForm'
+import {logEntries, fetchEntries} from '@/adapters/log_entry_repository';
 
 
 const fields = [
@@ -67,8 +69,6 @@ const fields = [
 
 export default {
     components: {
-        IconEdit,
-        IconTrash,
         LogEntryForm
     },
     props: {
@@ -80,7 +80,6 @@ export default {
     data() {
         return {
             fields: fields,
-            logEntries: [],
             sort: {
                 field: 'created_at',
                 desc: true
@@ -90,19 +89,16 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({
-            application: 'applications/currentItem'
-        }),
         hasLogEntries(){
             return this.filteredLogEntries.length > 0;
         },
         filteredLogEntries() {
-            if(this.application && this.application.log_entries && this.step) {
-                return this.application.log_entries.filter(entry => entry.properties.step == this.step);
+            if(this.logEntries && this.step) {
+                return this.logEntries.filter(entry => entry.properties.step == this.step);
             }
 
-            if (this.application && this.application.log_entries) {
-                return this.application.log_entries;
+            if (this.logEntries) {
+                return this.logEntries;
             }
 
             return []
@@ -117,7 +113,9 @@ export default {
     },
     methods: {
         async getLogEntries() {
-            await this.$store.dispatch('applications/getApplication', this.application.uuid)
+            async () => {
+                await fetchEntries();
+            }    
         },
         editLogEntry(entry) {
             this.editingEntry = true;
@@ -126,6 +124,29 @@ export default {
     },
     mounted() {
         // this.getLogEntries()
+    },
+    setup () {
+        const store  = useStore();
+        const group = computed(() => {
+            return store.getters['groups/currentItemOrNew']
+        })
+
+        const application = computed(() => {
+            return group.value.expert_panel;
+        })
+
+        watch(group, () => {
+            if (group.value.uuid) {
+                fetchEntries(`/api/groups/${group.value.uuid}/activity-logs`)
+            }
+        }, {
+            immediate: true
+        })
+        return {
+            group,
+            application,
+            logEntries
+        }
     }
 }
 </script>

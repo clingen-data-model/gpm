@@ -73,7 +73,7 @@ class CompleteNextActionTest extends TestCase
         );
 
         $this->assertDatabaseHas('activity_log', [
-            'subject_id' => $this->expertPanel->id,
+            'subject_id' => $this->expertPanel->group->id,
             'description' => 'Next action completed: '.$nextAction->entry
         ]);
     }

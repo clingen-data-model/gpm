@@ -7,7 +7,7 @@
     <div class="dictionary-row" :class="{'flex': !vertical}">
         <div :class="fullLabelClass" class="flex-shrink-0">
             <slot name="label" v-if="label">
-                <label>{{label}}{{colon}}</label>
+                <label class="font-bold">{{label}}{{colon}}</label>
             </slot>
         </div>
         <slot>
@@ -17,6 +17,7 @@
 </template>
 <script>
 export default {
+    name: 'DictionaryRow',
     props: {
         label: {
             type: String,

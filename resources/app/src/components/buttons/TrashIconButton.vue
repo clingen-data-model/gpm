@@ -4,12 +4,9 @@
     </button>
 </template>
 <script>
-import IconTrash from '@/components/icons/IconTrash'
+
 
 export default {
-    components: {
-        IconTrash,
-    },
     props: {
     },
     data() {

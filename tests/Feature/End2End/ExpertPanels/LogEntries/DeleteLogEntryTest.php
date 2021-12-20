@@ -33,9 +33,10 @@ class DeleteLogEntryTest extends TestCase
             dateApproved: '2020-01-01',
             notifyContacts: false
         );
-        $this->autoEntry = $this->expertPanel->fresh()->latestLogEntry;
-        (new LogEntryAdd)->handle($this->expertPanel->uuid, '2021-01-01', 'test test test');
-        $this->logEntry = $this->expertPanel->logEntries->last();
+        $this->autoEntry = $this->expertPanel->group->fresh()->latestLogEntry;
+
+        app()->make(LogEntryAdd::class)->handle($this->expertPanel->uuid, '2021-01-01', 'test test test');
+        $this->logEntry = $this->expertPanel->group->logEntries->last();
     }
 
     /**
@@ -44,7 +45,10 @@ class DeleteLogEntryTest extends TestCase
     public function prevents_deleting_typed_log_entries()
     {
         Sanctum::actingAs($this->user);
-        $response = $this->json('delete', '/api/applications/'.$this->expertPanel->uuid.'/log-entries/'.$this->autoEntry->id);
+        $response = $this->json(
+            'delete',
+            '/api/applications/'.$this->expertPanel->uuid.'/log-entries/'.$this->autoEntry->id
+        );
 
         $response->assertStatus(422)
             ->assertJson([

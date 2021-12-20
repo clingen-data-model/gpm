@@ -3,7 +3,7 @@
 namespace App\Modules\ExpertPanel\Http\Controllers\Api;
 
 use Carbon\Carbon;
-use App\Modules\ExpertPanel\Models\Coi;
+use App\Modules\ExpertPanel\Models\CoiV1 as Coi;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

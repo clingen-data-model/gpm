@@ -14,14 +14,14 @@ trait HasUuid
     }
     
 
-    public static function findByUuid($uuid)
+    public static function findByUuid($uuid, $columns = '*')
     {
-        return static::where('uuid', $uuid)->first();
+        return static::where('uuid', $uuid)->first($columns);
     }
 
-    public static function findByUuidOrFail($uuid)
+    public static function findByUuidOrFail($uuid, $columns = '*')
     {
-        $model = static::where('uuid', $uuid)->sole();
+        $model = static::where('uuid', $uuid)->sole($columns);
 
         return $model;
     }

@@ -7,6 +7,7 @@ use App\Models\Contracts\HasNotes;
 use App\Models\Contracts\HasMembers;
 use Database\Factories\GroupFactory;
 use App\Models\Contracts\HasDocuments;
+use App\Models\Contracts\HasLogEntries;
 use App\Models\Contracts\RecordsEvents;
 use App\Modules\Group\Models\GroupType;
 use Illuminate\Database\Eloquent\Model;
@@ -14,10 +15,15 @@ use App\Modules\Group\Models\GroupStatus;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Models\Traits\HasNotes as HasNotesTrait;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Modules\Group\Models\Contracts\HasSubmissions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Traits\HasDocuments as HasDocumentsTrait;
 use App\Models\Traits\RecordsEvents as RecordsEventsTrait;
+use App\Models\Traits\HasLogEntries as HasLogEntriesTraits;
 use App\Modules\Group\Models\Traits\HasMembers as HasMembersTrait;
+use App\Modules\Group\Models\Traits\HasSubmissions as HasSubmissionsTrait;
 
 /**
  * @property int $id
@@ -30,7 +36,7 @@ use App\Modules\Group\Models\Traits\HasMembers as HasMembersTrait;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDocuments
+class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDocuments, HasLogEntries, HasSubmissions
 {
     use HasFactory;
     use SoftDeletes;
@@ -39,6 +45,8 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     use RecordsEventsTrait;
     use HasUuid;
     use HasDocumentsTrait;
+    use HasLogEntriesTraits;
+    use HasSubmissionsTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -65,11 +73,29 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         'parent_id' => 'integer',
     ];
 
+    protected $with = [
+        'type',
+        'status',
+    ];
+
+    public static function booted()
+    {
+        static::deleted(function (Group $group) {
+            $group->members->each->delete();
+            if ($group->expertPanel) {
+                $group->expertPanel->delete();
+            }
+        });
+    }
+
+    /**
+     * RELATIONS
+     */
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function expertPanel()
+    public function expertPanel(): HasOne
     {
         return $this->hasOne(ExpertPanel::class);
     }
@@ -77,12 +103,12 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function groupType()
+    public function groupType(): BelongsTo
     {
         return $this->belongsTo(GroupType::class);
     }
 
-    public function type()
+    public function type(): BelongsTo
     {
         return $this->groupType();
     }
@@ -90,15 +116,25 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function groupStatus()
+    public function groupStatus(): BelongsTo
     {
         return $this->belongsTo(GroupStatus::class);
     }
 
     /**
+     * Get the status that owns the Group
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function parent()
+    public function status(): BelongsTo
+    {
+        return $this->groupStatus();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(Group::class);
     }
@@ -126,7 +162,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         return $query->ofType(config('groups.types.wg.id'));
     }
 
-    public function scopeExpertPanel($query)
+    public function scopeTypeExpertPanel($query)
     {
         return $query->ofType(config('groups.types.expert_panel.id'));
     }
@@ -146,6 +182,48 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
                     $q->Gcep();
                 });
     }
+
+    /**
+     * ACCESSORS
+     */
+    public function getCoiCodeAttribute()
+    {
+        if ($this->expertPanel) {
+            return $this->expertPanel->coi_code;
+        }
+        return null;
+    }
+
+    public function getIsExpertPanelAttribute(): bool
+    {
+        return $this->group_type_id == config('groups.types.ep.id');
+    }
+
+    public function getIsEpAttribute(): bool
+    {
+        return $this->getIsExpertPanelAttribute();
+    }
+    
+
+    public function getIsVcepAttribute(): bool
+    {
+        return $this->isExpertPanel && $this->expertPanel->isVcep;
+    }
+
+    public function getIsGcepAttribute(): bool
+    {
+        return $this->isExpertPanel && $this->expertPanel->isGcep;
+    }
+
+    public function getFullTypeAttribute()
+    {
+        if ($this->isExpertPanel) {
+            return $this->expertPanel->type;
+        }
+
+        return $this->type;
+    }
+
 
     protected static function newFactory()
     {

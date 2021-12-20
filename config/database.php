@@ -33,12 +33,21 @@ return [
     |
     */
 
+    'gt_db_connection' => env('GT_DB_CONNECTION', 'genetracker'),
     'connections' => [
 
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DATABASE_URL'),
-            'database' => env('DB_DATABASE', database_path('database.sqlite')),
+            'database' => env('DB_DATABASE', database_path('epam.sqlite')),
+            'prefix' => '',
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+        ],
+
+        'gt_sqlite' => [
+            'driver' => 'sqlite',
+            'url' => env('GT_DATABASE_URL'),
+            'database' => env('GT_DB_DATABASE', database_path('gt.sqlite')),
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
@@ -65,10 +74,10 @@ return [
 
         'genetracker' => [
             'driver' => 'mysql',
-            'url' => env('DATABASE_URL'),
+            'url' => env('GT_DATABASE_URL'),
             'host' => env('GT_DB_HOST', '127.0.0.1'),
             'port' => env('GT_DB_PORT', '3306'),
-            'database' => env('GT_DB_DATABASE', 'gene_tracker'),
+            'database' => env('GT_DB_DATABASE', 'forge'),
             'username' => env('GT_DB_USERNAME', 'forge'),
             'password' => env('GT_DB_PASSWORD', ''),
             'unix_socket' => env('GT_DB_SOCKET', ''),

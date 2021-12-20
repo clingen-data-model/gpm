@@ -12,6 +12,7 @@ use App\Modules\ExpertPanel\Jobs\AddContact;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -63,24 +64,36 @@ abstract class TestCase extends BaseTestCase
     }
 
     protected function assertLoggedActivity(
-        $expertPanel,
+        $subject,
         $description,
         $properties = null,
         $causer_type = null,
-        $causer_id = null
+        $causer_id = null,
+        $activity_type = null,
+        $logName = 'applications'
     ) {
         $data = [
-            'log_name' => 'applications',
+            'log_name' => $logName,
             'description' => $description,
-            'subject_type' => ExpertPanel::class,
-            'subject_id' => (string)$expertPanel->id,
-            'causer_type' => $causer_type,
-            'causer_id' => $causer_id,
+            'subject_type' => get_class($subject),
+            'subject_id' => $subject->id,
         ];
+
+        if ($causer_type) {
+            $data['causer_type'] = $causer_type;
+        }
+
+        if ($causer_id) {
+            $data['causer_id'] = $causer_id;
+        }
+
+        if ($activity_type) {
+            $data['activity_type'] = $activity_type;
+        }
 
         if ($properties) {
             if (!isset($properties['step'])) {
-                $properties['step'] = $expertPanel->current_step;
+                $properties['step'] = $subject->current_step;
             }
             foreach ($properties as $key => $val) {
                 $dbVal = $val;
@@ -92,5 +105,29 @@ abstract class TestCase extends BaseTestCase
         }
 
         $this->assertDatabaseHas('activity_log', $data);
+    }
+
+    protected function setupUser($userData = null, $permissions = [])
+    {
+        $userData = $userData ?? [];
+        $user = User::factory()->create($userData);
+        if (count($permissions)) {
+            $user->syncPermissions($permissions);
+        }
+
+        return $user;
+    }
+
+    protected function setupUserWithPerson($userData = null, $permissions = [], $personData = [])
+    {
+        $user = $this->setupUser($userData, $permissions);
+        $person = $user->person()->save(Person::factory()->make());
+
+        return $user;
+    }
+
+    protected function getLongString()
+    {
+        return 'something longer than 255 characters so that we can test the maximum length validation.  If we don\'t validate the length of the string some verbose pontificator will inevitably think their group is so important that it needs a name longer that 255 characters.';
     }
 }

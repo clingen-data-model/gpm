@@ -3,16 +3,20 @@
 namespace App\Modules\Person\Providers;
 
 use App\Listeners\RecordEvent;
-use App\Events\RecordableEvent;
+use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Event;
-use App\Modules\Foundation\ClassGetter;
-use Illuminate\Support\ServiceProvider;
-use App\Modules\Person\Events\PersonEvent;
-use App\Modules\Person\Events\PersonDataUpdated;
+use App\Modules\Group\Events\MemberInvited;
+use App\Modules\Person\Events\PersonInvited;
+use App\Modules\Person\Policies\PersonPolicy;
 use App\Modules\Foundation\ModuleServiceProvider;
+use App\Modules\Person\Actions\InviteSendNotification;
 
 class PersonServiceProvider extends ModuleServiceProvider
 {
+    protected $policies = [
+        Person::class => PersonPolicy::class,
+    ];
+
     /**
      * Register services.
      *
@@ -31,15 +35,12 @@ class PersonServiceProvider extends ModuleServiceProvider
     public function boot()
     {
         parent::boot();
+        $this->registerPolicies();
+        Event::listen(PersonInvited::class, [InviteSendNotification::class, 'listen']);
     }
 
-    protected function getRoutesPath()
+    protected function getModulePath()
     {
-        return __DIR__.'/../routes';
-    }
-
-    protected function getEventPath()
-    {
-        return __DIR__.'/../Events';
+        return (__DIR__.'/..');
     }
 }

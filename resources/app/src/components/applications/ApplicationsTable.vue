@@ -17,13 +17,14 @@
                         </option>
                     </select>
                 </label>
-                <label class="block">
-                    <input type="checkbox" v-model="showCompleted">
-                    Show completed
-                </label>
-
-                <!-- <label class="block"><input type="checkbox" v-model="showDeleted">Show Deleted</label> -->
-
+                <checkbox 
+                    v-model="showCompleted"
+                    label="Show completed"
+                />
+                <!-- <checkbox 
+                    v-model="showDeleted"
+                    label="Show Deleted"
+                /> -->
             </div>
             <div>
                 <button class="btn btn-xs" :class="{blue: showAllInfo == 0}" @click="showAllInfo = 0">Summary</button>
@@ -91,7 +92,7 @@ export default {
                     sortable: true,
                 },
                 {
-                    name: 'name',
+                    name: 'full_name',
                     label: 'Name',
                     type: String,
                     sortable: true
@@ -321,7 +322,10 @@ export default {
         this.getApplications()
     },
     setup() {
-        const {sort, filter} = sortAndFilter();
+        const {sort, filter} = sortAndFilter({
+            field: 'full_name',
+            desc: false
+        });
         // const showAllInfo = computedQueryParam('showAllInfo');
 
         return {

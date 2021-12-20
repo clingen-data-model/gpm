@@ -35,7 +35,4 @@ class CheckAuthTest extends TestCase
         $this->json('GET', '/api/authenticated')
             ->assertStatus(200);
     }
-    
-    
-    
 }

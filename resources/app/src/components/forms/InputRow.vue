@@ -1,9 +1,9 @@
 <template>
-    <div :class="{'border-l border-red-800 px-2': hasErrors}" class="input-row">
-        <div class="my-3" :class="{'sm:flex': !vertical}">
-            <div class="flex-none" :class="{'w-36': !vertical, 'my-1': vertical}">
-                <slot name="label" v-if="label">
-                    <label :class="{'text-red-800': hasErrors}">{{label}}{{colon}}</label>
+    <div :class="{'border-l border-red-800 px-2': hasErrors}" class="input-row my-3">
+        <div :class="{'sm:flex': !vertical}">
+            <div class="flex-none" :class="labelContainerClass" v-show="showLabel">
+                <slot name="label" v-if="hasLabel">
+                    <label :class="resolvedLabelClass">{{label}}{{colon}}</label>
                 </slot>
             </div>
             <div class="flex-grow">
@@ -13,9 +13,10 @@
                         :modelValue="modelValue" 
                         @update:modelValue="emitValue" 
                         :disabled="disabled"
-                        @change="$emit('change')"
+                        @change="$emit('change', modelValue)"
                         ref="input"
                         :name="name"
+                        :class="inputClass"
                     ></date-input>
                     <input 
                         v-else
@@ -24,9 +25,9 @@
                         @input="$emit('update:modelValue', $event.target.value)"
                         :placeholder="placeholder"
                         :disabled="disabled"
-                        @change="$emit('change')"
+                        @change="$emit('change', $event.target.value)"
                         ref="input"
-                        class="w-"
+                        :class="inputClass"
                         :name="name"
                     >
                 </slot>
@@ -37,12 +38,8 @@
     </div>
 </template>
 <script>
-import InputErrors from './InputErrors'
 
 export default {
-    components: {
-        InputErrors
-    },
     props: {
         vertical: {
             type: Boolean,
@@ -56,6 +53,11 @@ export default {
         label: {
             type: String,
             required: false
+        },
+        labelWidth: {
+            type: Number,
+            required: false,
+            default: 36
         },
         type: {
             type: String,
@@ -79,6 +81,21 @@ export default {
             required: false,
             default: null,
             type: String
+        },
+        inputClass: {
+            required: false,
+            default: null,
+            type: String
+        },
+        hideLabel: {
+            required: false,
+            default: false,
+            type: Boolean
+        },
+        labelClass: {
+            required: false,
+            default: null,
+            type: String
         }
     },
     emits: [
@@ -94,6 +111,33 @@ export default {
         },
         hasErrors () {
             return this.errors.length > 0;
+        },
+        labelContainerClass () {
+            const classes = [];
+            if (this.vertical) {
+                classes.push('my-1');
+            } else {
+                classes.push(`w-${this.labelWidth}`);
+            }
+
+            return classes.join(' ');
+        },
+        showLabel () {
+            return !this.hideLabel;
+        },
+        hasLabel () {
+            return this.label || this.$slots.label
+        },
+        resolvedLabelClass () {
+            const classes = [];
+            if (this.hasErrors) {
+               classes.push('text-red-800');
+            }
+            if (this.labelClass) {
+                classes.push(this.labelClass);
+            }
+
+            return classes.join(' ');
         },
     },
     methods: {

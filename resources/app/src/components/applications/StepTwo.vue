@@ -6,21 +6,31 @@
         :document-gets-reviewed="false"
         approve-button-label="Approve Draft Specifications"
         title="Draft ACMG Guideline Specifications"
+        @stepApproved="$emit('stepApproved')"
     >
+        <template v-slot:sections>
+            <div class="appliation-section">
+                <h2>Draft Specifications</h2>
+                <cspec-summary></cspec-summary>
+            </div>
+        </template>
     </base-step>
 </template>
 <script>
 import {mapGetters} from 'vuex'
 import BaseStep from '@/components/applications/BaseStep'
+import CspecSummary from '@/components/expert_panels/CspecSummary'
 
 export default {
     name: 'StepTwo',
     components: {
-        BaseStep
+        BaseStep,
+        CspecSummary
     },
     props: {
         
     },
+    emits: ['stepApproved'],
     data() {
         return {
             
@@ -28,8 +38,11 @@ export default {
     },
     computed: {
         ...mapGetters({
-            application: 'applications/currentItem'
-        })
+            group: 'groups/currentItemOrNew'
+        }),
+        application () {
+            return this.group.expert_panel;
+        },
     },
     methods: {
 

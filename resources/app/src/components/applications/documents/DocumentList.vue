@@ -81,9 +81,9 @@
     </div>
 </template>
 <script>
-import IconDownload from '../../icons/IconDownload';
-import IconCheckmark from '../../icons/IconCheckmark';
-import IconEdit from '../../icons/IconEdit';
+
+
+
 import TrashButton from '@/components/buttons/TrashIconButton';
 import DocumentReviewedForm from './DocumentReviewedForm';
 import DocumentEditForm from './DocumentEditForm';
@@ -91,18 +91,11 @@ import is_validation_error from '../../../http/is_validation_error';
 
 export default {
     components: {
-        IconDownload,
-        IconCheckmark,
         DocumentReviewedForm,
         DocumentEditForm,
-        IconEdit,
         TrashButton,
     },
     props: {
-        application: {
-            type: Object,
-            required: true
-        },
         documentTypeId: {
             type: Number,
             required: true
@@ -169,6 +162,13 @@ export default {
         }
     },
     computed: {
+        group () {
+            return this.$store.getters['groups/currentItemOrNew']
+        },
+        application () {
+            return this.group.expert_panel
+        },
+        
         filteredFields () {
             let clonedFields = [...this.fields]
             if (!this.showVersion) {
@@ -186,7 +186,7 @@ export default {
             return clonedFields
         },
         filteredDocuments() {
-            if (this.application && this.application.documents) {
+            if (this.application.documents) {
                 return this.application.documents.filter(d =>  d.document_type_id == this.documentTypeId)
             }
             return [];

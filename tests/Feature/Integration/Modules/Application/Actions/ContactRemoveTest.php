@@ -37,9 +37,6 @@ class ContactRemoveTest extends TestCase
 
         (new ContactRemove)->handle($expertPanel->uuid, $person->uuid);
 
-        $this->assertDatabaseHas('activity_log', [
-            'subject_id' => $expertPanel->id,
-            'description' => 'Removed contact '.$person->name
-        ]);
+        $this->assertLoggedActivity($expertPanel->group, 'Removed contact '.$person->name);
     }
 }

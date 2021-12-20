@@ -1,7 +1,7 @@
 <template>
     <div>
         <contact-row 
-            v-for="contact in application.contacts" :key="contact.id"
+            v-for="contact in group.contacts" :key="contact.id"
             :contact="contact"
         ></contact-row>
         <add-contact-control @new-contact-initiated="propagateEvent($event)"></add-contact-control>
@@ -29,8 +29,11 @@ export default {
     },
     computed: {
         ...mapGetters({
-            application: 'applications/currentItem'
-        })
+            group: 'groups/currentItemOrNew'
+        }),
+        application () {
+            return this.group.expert_panel;
+        }
     },
     methods: {
         propagateEvent() {

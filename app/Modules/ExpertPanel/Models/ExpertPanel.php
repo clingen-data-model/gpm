@@ -2,25 +2,24 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
-use App\Models\Cdwg;
 use App\Models\HasUuid;
 use App\Models\Document;
-use Illuminate\Support\Carbon;
 use App\Models\Contracts\HasNotes;
-use Illuminate\Support\Facades\DB;
 use App\Modules\Group\Models\Group;
 use App\Models\Contracts\HasMembers;
 use App\Modules\Person\Models\Person;
 use App\Models\Contracts\HasDocuments;
+use App\Models\Contracts\HasLogEntries;
 use App\Models\Contracts\RecordsEvents;
-use App\Modules\ExpertPanel\Models\Coi;
 use Illuminate\Database\Eloquent\Model;
+use App\Modules\ExpertPanel\Models\Gene;
+use App\Modules\ExpertPanel\Models\CoiV1;
 use App\Modules\Group\Models\GroupMember;
 use Database\Factories\ExpertPanelFactory;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\ExpertPanel\Models\NextAction;
 use App\Models\Traits\HasNotes as TraitsHasNotes;
+use App\Modules\ExpertPanel\Models\EvidenceSummary;
 use App\Modules\ExpertPanel\Models\ExpertPanelType;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -30,13 +29,14 @@ use App\Modules\Group\Models\Contracts\BelongsToGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Modules\ExpertPanel\Models\SpecificationRuleSet;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
-use App\Models\Traits\HasDocuments as TraitsHasDocuments;
+use App\Models\Traits\HasLogEntries as HasLogEntriesTraits;
+use App\Modules\ExpertPanel\Models\CurationReviewProtocol;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use App\Models\Traits\RecordsEvents as TraitsRecordsEvents;
 use App\Modules\Group\Models\Traits\HasMembers as TraitsHasMembers;
 use App\Modules\Group\Models\Traits\BelongsToGroup as TraitsBelongsToGroup;
 
-class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup, RecordsEvents, HasDocuments
+class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup, RecordsEvents, HasDocuments, HasLogEntries
 {
     use HasFactory;
     use HasTimestamps;
@@ -45,10 +45,8 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     use TraitsHasNotes;
     use TraitsBelongsToGroup;
     use TraitsRecordsEvents;
-    // use TraitsHasDocuments;
     use TraitsHasMembers;
-
-    // protected $table = 'applications';
+    use HasLogEntriesTraits;
 
     protected $fillable = [
         'group_id',
@@ -65,14 +63,31 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'step_4_approval_date',
         'date_completed',
         'hypothesis_group',
-        'member_description',
+        'membership_description',
         'scope_description',
         'coi_code',
         'nhgri_attestation_date',
         'preprint_attestation_date',
-        'curtion_review_protocol',
+        'curation_review_protocol_id',
         'curation_review_protocol_other',
-        'reanalysis_discrepency_resolution_id',
+        'curation_review_process_notes',
+        'meeting_frequency',
+        'reanalysis_conflicting',
+        'reanalysis_review_lp',
+        'reanalysis_review_lb',
+        'reanalysis_other',
+        'reanalysis_attestation_date',
+
+        'utilize_gt',
+        'utilize_gci',
+        'curations_publicly_available',
+        'pub_policy_reviewed',
+        'draft_manuscripts',
+        'recuration_process_review',
+        'biocurator_training',
+        'gci_training_date',
+        'biocurator_mailing_list',
+
         'cdwg_id',
         'working_name',
     ];
@@ -88,27 +103,53 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'date_completed',
         'nhgri_attestation_date',
         'preprint_attestation_date',
+        'reanalysis_attestation_date',
+        'gci_training_date',
+        'gcep_attesation_date',
+
     ];
 
     protected $casts = [
         'id' => 'integer',
         'group_id' => 'integer',
         'expert_panel_type_id' => 'integer',
-        'curtion_review_protocol' => 'integer',
+        'curtion_review_protocol_id' => 'integer',
         'reanalysis_discrepency_resolution_id' => 'integer',
-        'current_step' => 'integer'
+        'current_step' => 'integer',
+        'reanalysis_conflicting' => 'boolean',
+        'reanalysis_review_lp' => 'boolean',
+        'reanalysis_review_lb' => 'boolean',
+        'utilize_gt' => 'boolean',
+        'utilize_gci' => 'boolean',
+        'curations_publicly_available' => 'boolean',
+        'pub_policy_reviewed' => 'boolean',
+        'draft_manuscripts' => 'boolean',
+        'recuration_process_review' => 'boolean',
+        'biocurator_training' => 'boolean',
+        'biocurator_mailing_list' => 'boolean',
     ];
 
     protected $with = [
-        'type',
-        'group'
+        'type'
     ];
 
     protected $appends = [
         'working_name',
         'name',
-        'coi_url'
+        'coi_url',
+        'full_long_base_name',
+        'full_short_base_name',
+        'full_name'
     ];
+
+    public static function booted()
+    {
+        static::deleted(function ($expertPanel) {
+            $expertPanel->evidenceSummaries->each->delete();
+            $expertPanel->specifications->each->delete();
+        });
+    }
+    
 
     // Domain methods
     
@@ -123,7 +164,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         $member = GroupMember::firstOrCreate([
             'person_id' => $person->id,
             'group_id' => $this->group_id,
-            'v1_contact' => 1
+            'is_contact' => 1
         ]);
         $this->touch();
     }
@@ -180,18 +221,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
             ->first();
     }
 
-    public function logEntries()
-    {
-        return $this->morphMany(config('activitylog.activity_model'), 'subject');
-    }
-
-    public function latestLogEntry()
-    {
-        return $this->morphOne(config('activitylog.activity_model'), 'subject')
-                ->where('description', 'not like', 'Added next action:%')
-                ->orderBy('created_at', 'desc');
-    }
-
     public function nextActions()
     {
         return $this->hasMany(NextAction::class);
@@ -206,7 +235,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
     public function cois()
     {
-        return $this->hasMany(Coi::class, 'expert_panel_id');
+        return $this->hasMany(CoiV1::class, 'expert_panel_id');
     }
 
     /**
@@ -214,7 +243,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
      */
     public function genes()
     {
-        return $this->hasMany(\App\Modules\ExpertPanels\Models\Gene::class);
+        return $this->hasMany(Gene::class);
     }
 
     /**
@@ -222,7 +251,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
      */
     public function evidenceSummaries()
     {
-        return $this->hasMany(\App\Modules\ExpertPanels\Models\EvidenceSummaries::class);
+        return $this->hasMany(EvidenceSummary::class);
     }
 
     /**
@@ -309,7 +338,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function Specifications(): HasMany
+    public function specifications(): HasMany
     {
         return $this->hasMany(Specification::class);
     }
@@ -334,7 +363,15 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $this->hasManyThrough(Document::class, Group::class);
     }
 
-
+    /**
+     * Get the curationReviewProtocol that owns the ExpertPanel
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function curationReviewProtocol(): BelongsTo
+    {
+        return $this->belongsTo(CurationReviewProtocol::class);
+    }
 
     // Access methods
 
@@ -367,12 +404,35 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $results->version;
     }
 
+    /**
+     * ACCESSORS
+     */
+
+    public function getIsVcepAttribute(): bool
+    {
+        return $this->expert_panel_type_id == config('expert_panels.types.vcep.id');
+    }
+
+    public function getIsGcepAttribute(): bool
+    {
+        return $this->expert_panel_type_id == config('expert_panels.types.gcep.id');
+    }
+
+
     public function getNameAttribute()
     {
         if (!$this->relationLoaded('group')) {
             $this->load('group');
         }
         return $this->long_base_name ?? $this->working_name;
+    }
+
+    public function getFullNameAttribute()
+    {
+        if (!$this->relationLoaded('group')) {
+            $this->load('group');
+        }
+        return $this->full_long_base_name ?? $this->working_name;
     }
 
     public function setWorkingNameAttribute($value)
@@ -388,14 +448,14 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     }
     
 
-    public function getLongBaseNameAttribute()
+    public function getFullLongBaseNameAttribute()
     {
         return isset($this->attributes['long_base_name'])
             ? $this->addEpTypeSuffix($this->attributes['long_base_name'])
             : null;
     }
 
-    public function getShortBaseNameAttribute()
+    public function getFullShortBaseNameAttribute()
     {
         return isset($this->attributes['short_base_name'])
             ? $this->addEpTypeSuffix($this->attributes['short_base_name'])

@@ -4,11 +4,13 @@ import applicationRoutes from './applications'
 import peopleRoutes from './people'
 import authRoutes from './auth'
 import cdwgRoutes from './cdwgs'
+import groupRoutes from './groups'
+import adminRoutes from './admin'
 
 const routes = [
-    { name: 'home',
+    { name: 'Dashboard',
         path: '/',
-        redirect: '/applications',
+        component: () => import (/* webpackChunkName "dashboard" */ '@/views/Dashboard'),
         meta: {
             protected: true
         }
@@ -33,20 +35,28 @@ const routes = [
         ]
     },    
     ...applicationRoutes,
+    ...groupRoutes,
     ...peopleRoutes,
     ...authRoutes,
     ...cdwgRoutes,
+    ...adminRoutes,
     {
         name: 'coi',
         path: '/coi/:code',
         component: () => import (/* webpackChunkName "coi-survey" */ '@/views/Coi.vue'),
-        props: true
+        props: true,
+        meta: {
+            protected: true
+        }
     },
     {
         name: 'alt-coi',
         path: '/expert-panels/:name/coi/:code',
         component: () => import (/* webpackChunkName "coi-survey" */ '@/views/Coi.vue'),
-        props: true
+        props: true,
+        meta: {
+            protected: true
+        }
     },
     { name: 'about',
         path: '/about',
@@ -85,17 +95,26 @@ router.beforeEach(async (to, from, next) => {
     } catch (error) {
         console.log(error);
     }
-
+    
     if (!to.name.includes('login') && !store.getters.isAuthed) {
         next({name: 'login', query: { redirect: to.fullPath }});
         return;
     }
 
     if (to.name == 'login' && store.getters.isAuthed) {
-        next({name: 'home'})
+        next({name: 'Dashboard'})
         return;
     }
 
+    if (to.meta.permissions && Array.isArray(to.meta.permissions) && to.meta.permissions.length > 0) {
+        if (store.getters.currentUser.hasAnyPermission(to.meta.permissions)) {
+            next();
+            return;
+        }
+        router.replace({name: 'Dashboard'})
+        store.commit('pushError', 'You don\'t have permission to access '+to.path)
+    }
+    
     next();
 })
 

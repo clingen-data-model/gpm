@@ -43,7 +43,7 @@ class CdwgsTableSeeder extends Seeder
                 [
                     'uuid' => Uuid::uuid4(),
                     'group_type_id' => config('groups.types.cdwg.id'),
-                    'group_status_id' => config('groups.statuses.active')
+                    'group_status_id' => config('groups.statuses.active.id')
                 ]
             );
         }

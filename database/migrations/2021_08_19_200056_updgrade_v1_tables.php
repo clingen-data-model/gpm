@@ -34,7 +34,10 @@ class UpdgradeV1Tables extends Migration
                             return (array)$coi;
                         })
                         ->toArray();
-        DB::table('cois_temp')->insert($coiData);
+        foreach ($coiData as $row) {
+            DB::table('cois_temp')->insert($row);
+        }
+        // DB::table('cois_temp')->insert($coiData);
         Schema::dropIfExists('cois');
         Schema::rename('cois_temp', 'cois');
 
@@ -54,17 +57,26 @@ class UpdgradeV1Tables extends Migration
      */
     public function down()
     {
-        Schema::create('cois_temp', function ($table) {
-            $table->id();
-            $table->foreignId('application_id')
-                ->constrained()
-                ->cascadeOnDelete()
-                ->cascadeOnUpdate();
-            $table->json('data');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('cois_temp')) {
+            Schema::create('cois_temp', function ($table) {
+                $table->id();
+                $table->foreignId('application_id')
+                    ->constrained()
+                    ->cascadeOnDelete()
+                    ->cascadeOnUpdate();
+                $table->json('data');
+                $table->timestamps();
+            });
+        }
 
-        DB::table('cois_temp')->insert(DB::table('cois')->get()->toArray());
+        $cois = DB::table('cois')->get()->map(function ($i) {
+            $i->application_id = $i->expert_panel_id;
+            unset($i->expert_panel_id);
+            return (array)$i;
+        })->toArray();
+
+        DB::table('cois_temp')->insert($cois);
+        
         Schema::dropIfExists('cois');
         Schema::rename('cois_temp', 'cois');
 

@@ -1,10 +1,9 @@
-// eslint-disable-next-line
-import store from '@/store/index'
-import people from '@/store/people'
-import axios from '@/http/api'
-import Person from '../../../src/domain/person';
+import { expect } from 'chai'
+import {getters, mutations, actions} from '@/store/people'
+import { testAction } from '../test_utils'
+import api from '@/http/api'
 
-jest.mock("axios");
+import Person from '../../../src/domain/person';
 
 describe('people store getters', () => {
     const state = {
@@ -13,22 +12,22 @@ describe('people store getters', () => {
             { uuid: 4567, email: 'rick@citadel.rick' }
         ]
     }
-    test('personWithUuid returns item in state.items with uuid', () => {
-        const person = people.getters.personWithUuid(state, 4567)
-        expect(person).toEqual({uuid: 4567,email: 'rick@citadel.rick'})
+    it('personWithUuid returns item in state.items with uuid', () => {
+        const person = getters.getPersonWithUuid(state, 4567)
+        expect(person).to.eql({uuid: 4567,email: 'rick@citadel.rick'})
     });
 
-    test('indexForPersonWithUuid returns index of person in state.items', () => {
-        const idx = people.getters.indexForPersonWithUuid(state, 1234);
-        expect(idx).toBe(0)
+    it('indexForPersonWithUuid returns index of person in state.items', () => {
+        const idx = getters.indexForPersonWithUuid(state, 1234);
+        expect(idx).to.equal(0)
 
-        const idx2 = people.getters.indexForPersonWithUuid(state, 4567);
-        expect(idx2).toBe(1)
+        const idx2 = getters.indexForPersonWithUuid(state, 4567);
+        expect(idx2).to.equal(1)
     })
 })
 
 describe('people store mutations', () => {
-    test('addItem adds new people to its items', () => {
+    it('addItem adds new people to its items', () => {
         const state = {
             items: []
         }
@@ -40,13 +39,14 @@ describe('people store mutations', () => {
             phone: '555-555-5555'
         }
 
-        people.mutations.addItem(state, personData);
+        expect(state.items.length).to.equal(0)
+        mutations.addItem(state, personData);
 
-        expect(state.items.length).toEqual(1)
-        expect(state.items[0]).toEqual(new Person(personData))
+        expect(state.items.length).to.equal(1);
+        expect(state.items[0]).to.eql(new Person(personData));
     });
 
-    test('addItem replaces an item with the same uuid', () => {
+    it('addItem replaces an item with the same uuid', () => {
         const state = {
             items: [{
                 uuid: 123456,
@@ -64,15 +64,16 @@ describe('people store mutations', () => {
             phone: '555-555-5555'
         }
 
-        people.mutations.addItem(state, personData);
+        mutations.addItem(state, personData);
 
-        expect(state.items.length).toEqual(1)
-        expect(state.items[0]).toEqual(new Person(personData))
+        expect(state.items.length).to.equal(1)
+        expect(state.items[0]).to.eql(new Person(personData))
     })
 })
 
 describe('people store actions', () => {
-    test('it can create a person and call addItem mutation', async () => {
+
+    it('it can create a person and call addItem mutation', async () => {
         let body = {};
         let url = '';
         const data =  {
@@ -82,14 +83,21 @@ describe('people store actions', () => {
             email: 'bob@dobbs.com',
             phone: '555-555-5555'
         }
-        axios.post.mockImplementationOnce(() => Promise.resolve({data: data}));
-
-        const commit = jest.fn();
 
         const personData = {...data};
+        personData.id = 666;
+        const MockAdapter = require("axios-mock-adapter");
+        const mock = new MockAdapter(api);
 
-        await people.actions.createPerson( { commit }, personData);
+        mock.onPost("/api/people", data).reply(200, personData);
 
-        expect(commit).toHaveBeenCalledWith('addItem', data)
+        testAction(
+            actions.createPerson, 
+            data, 
+            {items: []}, 
+            [
+                { type: 'addPerson', payload: personData}
+            ]
+        )
     });
 });
