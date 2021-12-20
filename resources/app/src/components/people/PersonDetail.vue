@@ -41,6 +41,9 @@
             <!-- <tab-item label="Training &amp; Attestations">
             </tab-item> -->
             <tab-item label="Email Log">
+                <div v-if="sortedMailLog.length == 0" class="well">
+                    {{titleCase(person.first_name)}} has not received any mail via the GPM.
+                </div>
                 <div class="w-3/4 my-4 p-4 border" v-for="email in sortedMailLog" :key="email.id">
                     <dictionary-row label="Date/Time">
                         {{formatDate(email.created_at)}}

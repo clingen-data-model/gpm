@@ -143,11 +143,12 @@ export const actions = {
         if(person.uuid == null) {
             return false;
         }
-        api.get(`/api/people/${person.uuid}/email`)
+        return api.get(`/api/people/${person.uuid}/email`)
                     .then(response => {
-                        this.data = response.data;
+                        // this.data = response.data;
                         person.mailLog = response.data;
-                        commit('addItem', person);
+                        // commit('addItem', person);
+                        return response;
                     })
     }
 };

@@ -45,9 +45,13 @@ class Person extends Entity {
         const memberships = attributes.memberships || [];
         delete(attributes.memberships);
 
+        const mailLog = attributes.mailLog || [];
+        delete(attributes.mailLog);
+
         super({...attributes});
 
         this.memberships = memberships.map(m => new GroupMember(m));
+        this.mailLog = mailLog;
     }
 
     get institutionName () {
