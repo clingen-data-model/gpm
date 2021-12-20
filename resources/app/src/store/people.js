@@ -139,15 +139,14 @@ export const actions = {
             })
     },
 
+    // eslint-disable-next-line
     async getMail ({commit}, person) {
         if(person.uuid == null) {
             return false;
         }
         return api.get(`/api/people/${person.uuid}/email`)
                     .then(response => {
-                        // this.data = response.data;
                         person.mailLog = response.data;
-                        // commit('addItem', person);
                         return response;
                     })
     }

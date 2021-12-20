@@ -21,7 +21,7 @@
 </template>
 <script>
 import isValidationError from '@/http/is_validation_error'
-import {onMounted, ref} from 'vue'
+import {onMounted} from 'vue'
 import {getLookups, profileFields, demographicFields} from '@/forms/profile_form';
 
 export default {

@@ -28,10 +28,10 @@
                 @click="refresh"
             ></icon-refresh>
         </div>
-        <!-- <div v-if="!hasCois" class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200">
+        <div v-if="!hasCois" class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200">
             No Conflict of interest surveys completed
-        </div> -->
-        <!-- <div v-if="hasCois">
+        </div>
+        <div v-if="hasCois">
             <data-table
                 :fields="fields"
                 :data="application.cois"
@@ -43,7 +43,7 @@
             <modal-dialog v-model="showResponseDialog" size="xl">
                 <coi-detail :coi="currentCoi" v-if="currentCoi"></coi-detail>
             </modal-dialog>
-        </div> -->
+        </div>
     </div>
 
 </template>

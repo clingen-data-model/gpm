@@ -117,7 +117,7 @@
     </div>
 </template>
 <script>
-import {ref, reactive, computed} from 'vue'
+// import {ref, reactive, computed} from 'vue'
 import {debounce} from 'lodash'
 
 function inView(elem)
@@ -178,9 +178,6 @@ export default {
     emits: [
         'update:modelValue',
     ],
-    setup(props) {
-
-    },
     data() {
         return {
             searchText: '',
@@ -218,10 +215,10 @@ export default {
         },
     },
     watch: {
-        searchText: function (to) {
+        searchText: function () {
             this.search(this.searchText, this.options);
         },
-        filteredOptions: function (to) {
+        filteredOptions: function () {
             this.cursorPosition = 0;
         }
     },
@@ -280,7 +277,7 @@ export default {
                 this.currentKey = 'ArrowDown';
             }
         },
-        cancelKeydownTimer(evt) {
+        cancelKeydownTimer() {
             if (this.keydownTimer) {
                 clearInterval(this.keydownTimer);
                 this.currentKey = null;

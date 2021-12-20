@@ -1,14 +1,14 @@
 <script>
 // import {ref, watch} from 'vue';
 import InputRow from '@/components/forms/InputRow'
-import SearchSelect from '@/components/forms/SearchSelect'
+// import SearchSelect from '@/components/forms/SearchSelect'
 import { titleCase } from '@/utils'
 
 export default {
     name: 'DataForm',
     components: {
         InputRow,
-        SearchSelect,
+        // SearchSelect,
     },
     props: {
         fields: {

@@ -420,10 +420,6 @@ export const actions = {
             });
     },
 
-    getLogEntries({ commit }, { group }) {
-
-    },
-
     // eslint-disable-next-line
     async addLogEntry({ dispatch }, { group, logEntryData }) {
         const url = `/api/groups/${group.uuid}/log-entries`
