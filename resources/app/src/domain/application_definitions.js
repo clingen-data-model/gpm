@@ -219,7 +219,7 @@ export const VcepApplication = applicationDefinitionFactory({
                     name: 'Draft Specfications',
                     title: null,
                     requirements: [
-                        requirements.pilotedDraftSpecifications
+                        requirements.draftApprovedSpecifications
                     ],
                 }
                 // components: [
