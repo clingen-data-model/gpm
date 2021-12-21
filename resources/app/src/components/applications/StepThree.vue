@@ -6,36 +6,42 @@
         @stepApproved="$emit('stepApproved')"
     >
         <template v-slot:document>
-            <document-manager 
-                :application="application"
-                :document-type-id="3"
-                :getsReviewd="false"
-                :step="3"
-                class="mb-4"
-                title="Final Specifications"
-            ></document-manager>
-
-            <document-manager 
-                title="Pilot Classifications"
-                :application="application"
-                :document-type-id="4"
-                :getsReviewd="false"
-                :step="3"
-                class="mb-6"
-            ></document-manager>
-
-            <document-manager 
-                title="Additional Documents"
-                :application="application"
-                :document-type-id="7"
-                :getsReviewd="false"
-                :show-version="false"
-                :step="3"
-                class="mb-6"
-            ></document-manager>
+            <div>
+                <div class="mt-4 p-4 border rounded-xl bg-gray-50">
+                    <document-manager 
+                        :application="application"
+                        :document-type-id="3"
+                        :getsReviewd="false"
+                        :step="3"
+                        class="mb-4"
+                        title="Final Specifications"
+                    ></document-manager>
+                </div>
+                <div class="mt-4 p-4 border rounded-xl bg-gray-50">
+                    <document-manager 
+                        title="Pilot Classifications"
+                        :application="application"
+                        :document-type-id="4"
+                        :getsReviewd="false"
+                        :step="3"
+                        class="mb-6"
+                    ></document-manager>
+                </div>
+                <div class="mt-4 p-4 border rounded-xl bg-gray-50">
+                    <document-manager 
+                        title="Additional Documents"
+                        :application="application"
+                        :document-type-id="7"
+                        :getsReviewd="false"
+                        :show-version="false"
+                        :step="3"
+                        class="mb-6"
+                    ></document-manager>
+                </div>
+            </div>
         </template>        
         <template v-slot:sections>
-            <div class="appliation-section">
+            <div class="application-section">
                 <h2>Pilot Specifications</h2>
                 <cspec-summary></cspec-summary>
             </div>

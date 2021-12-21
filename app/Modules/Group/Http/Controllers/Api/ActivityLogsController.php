@@ -27,7 +27,9 @@ class ActivityLogsController extends Controller
 
     public function index(Request $request, $groupUuid)
     {
-        if (!Auth::user()->hasPermissionTo('groups-manage')) {
+        $group = Group::where('uuid', $groupUuid)->sole();
+
+        if (Auth::user()->cannot('viewGroupLogs', $group)) {
             throw new AuthorizationException('You do not have access to view this groups activity logs.');
         }
         

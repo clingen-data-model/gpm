@@ -32,12 +32,13 @@
                             ></textarea>
 
                             <div v-if="question.type == 'multiple-choice'">
-                                <label v-for="option in question.options" :key="option.value" class="block">
+                                <label v-for="option in question.options" :key="option.value" class="mb-1">
                                     <input type="radio" 
                                         :value="option.value" 
                                         :name="question.name"
-                                        v-model="response[question.name]">
-                                    {{option.label}}
+                                        v-model="response[question.name]"
+                                    >
+                                    <div>{{option.label}}</div>
                                 </label>
                             </div>
 

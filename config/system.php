@@ -15,7 +15,7 @@ return [
             'scope' => 'system'
        ],
        'admin' => [
-           'id' => 3, 
+           'id' => 3,
            'name' => 'admin',
            'guard_name' => 'web',
            'scope' => 'system'
@@ -26,6 +26,24 @@ return [
         'users-manage' => [
             'id' => 1,
             'name' => 'users-manage',
+            'guard_name' => 'web',
+            'scope' => 'system'
+        ],
+        'logs-view' => [
+            'id' => 2,
+            'name' => 'logs-view',
+            'guard_name' => 'web',
+            'scope' => 'system'
+        ],
+        'mail-log-view' => [
+            'id' => 3,
+            'name' => 'mail-log-view',
+            'guard_name' => 'web',
+            'scope' => 'system'
+        ],
+        'invites-view' => [
+            'id' => 4,
+            'name' => 'invites-view',
             'guard_name' => 'web',
             'scope' => 'system'
         ],
@@ -46,12 +64,12 @@ return [
             'name' => 'ep-applications-manage',
             'guard_name' => 'web',
             'scope' => 'system'
-        ]
+        ],
     ],
 
     'role_permissions' => [
-        'super-user' => [1,10,20,30],
-        'super-admin' => [1,10,20,30],
-        'admin' => [10,20]
+        'super-user' => [1,2,3,4,10,20,30],
+        'super-admin' => [1,3,4,10,20,30],
+        'admin' => [3,4,10,20]
     ]
 ];

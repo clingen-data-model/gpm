@@ -69,7 +69,9 @@
         <button-row
           @submitted="submitIssue"
           @canceled="cancelSubmission"
+          v-if="!saving"
         ></button-row>
+        <div v-if="saving" class="pt-2 mt-2 border-t text-gray-500">Saving&hellip;</div>
       </modal-dialog>
     </teleport>
   </div>
@@ -90,6 +92,7 @@ export default {
       severity: "15555",
       description: null,
       summary: null,
+      saving: false
     };
   },
   computed: {
@@ -112,6 +115,7 @@ export default {
     },
     async submitIssue() {
       try {
+        this.saving = true;
         await api.post("/api/feedback", {
           url: this.url,
           type: this.type,
@@ -119,6 +123,7 @@ export default {
           description: this.description,
           summary: this.summary,
         });
+        this.saving = false;
         this.$store.commit("pushSuccess", "Your problem has been reported.");
         this.showReportIssue = false;
       } catch (error) {

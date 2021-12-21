@@ -199,6 +199,24 @@
                 "guard_name": "web",
                 "scope": "system"
             },
+            "logs-view": {
+                "id": 2,
+                "name": "logs-view",
+                "guard_name": "web",
+                "scope": "system"
+            },
+            "mail-log-view": {
+                "id": 3,
+                "name": "mail-log-view",
+                "guard_name": "web",
+                "scope": "system"
+            },
+            "invites-view": {
+                "id": 4,
+                "name": "invites-view",
+                "guard_name": "web",
+                "scope": "system"
+            },
             "group-manage": {
                 "id": 10,
                 "name": "groups-manage",
@@ -221,17 +239,24 @@
         "rolePermissions": {
             "super-user": [
                 1,
+                2,
+                3,
+                4,
                 10,
                 20,
                 30
             ],
             "super-admin": [
                 1,
+                3,
+                4,
                 10,
                 20,
                 30
             ],
             "admin": [
+                3,
+                4,
                 10,
                 20
             ]

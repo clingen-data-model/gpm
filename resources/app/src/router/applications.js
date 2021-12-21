@@ -139,13 +139,26 @@ export default [{
                 props: true
             },
             {
-                name: 'AddContact',
-                path: 'add-member',
+                name: 'AddMemberToApplication',
+                path: 'members/add',
                 component: MemberForm,
                 meta: {
+                    title: 'Add Group Member',
                     showModal: true,
                     protected: true,
                     permissions: ['ep-applications-manage'],
+                },
+                props: true
+            },
+            {
+                name: 'EditMemberOnApplication',
+                path: 'members/:memberId',
+                component: MemberForm,
+                meta: {
+                    // default: GroupDetail,
+                    showModal: true,
+                    protected: true,
+                    title: 'Add Group Member'
                 },
                 props: true
             },

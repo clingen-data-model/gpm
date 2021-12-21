@@ -9,7 +9,7 @@
         @stepApproved="$emit('stepApproved')"
     >
         <template v-slot:sections>
-            <div class="appliation-section">
+            <div class="application-section">
                 <h2>Draft Specifications</h2>
                 <cspec-summary></cspec-summary>
             </div>

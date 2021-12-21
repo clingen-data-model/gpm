@@ -1,35 +1,39 @@
 <template>
     <div>
         <div class="flex justify-center">
-                <!-- <button class="dev-nav-button" @click="goBack">&lt;</button> -->
-                <div>
-                    <div class="onboarding-container" :style="`width: ${currentStepWidth}`">
-                        <keep-alive>
-                            <transition :name="animationDirection" mode="out-in">        
-                                <component 
-                                    :is="currentStepComponent" 
-                                    v-bind:invite="invite" 
-                                    v-bind:person="invite.person"
-                                    v-bind:code="invite.coi_code"
-                                    ref="stepForm"
-                                    @codeverified="handleCodeVerified"
-                                    @ok="goForward"
-                                    @saved="goForward"
-                                    @back="goBack"
-                                ></component>
-                            </transition>
-                        </keep-alive>
-                        <!-- <dev-component class="mt-4">
-                            <collapsible title="invite">
-                                <pre>{{invite}}</pre>
-                            </collapsible>
-                        </dev-component> -->
-                    </div>
-                    <p>
-                        <router-link class="block link pt-2" :to="{name: 'login'}">&lt; Log In</router-link>
-                    </p>
+            <static-alert variant="info" v-if="this.$store.getters.isAuthed" class="lg:w-1/4 md:w-1/2">
+                <p>Hi, {{this.$store.state.user.name}}.</p> 
+                
+                <p>
+                    It looks like you've alreay redeemed your invite.
+                </p>
+
+                <p>
+                    <a href="/">Return to your dashboard</a> to see a list of your groups, pending COIs and more.
+                </p>
+            </static-alert>
+            <div v-else>
+                <div class="onboarding-container" :style="`width: ${currentStepWidth}`">
+                    <keep-alive>
+                        <transition :name="animationDirection" mode="out-in">        
+                            <component 
+                                :is="currentStepComponent" 
+                                v-bind:invite="invite" 
+                                v-bind:person="invite.person"
+                                v-bind:code="invite.coi_code"
+                                ref="stepForm"
+                                @codeverified="handleCodeVerified"
+                                @ok="goForward"
+                                @saved="goForward"
+                                @back="goBack"
+                            ></component>
+                        </transition>
+                    </keep-alive>
                 </div>
-                <!-- <button @click="goForward" class="dev-nav-button">&gt;</button> -->
+                <p>
+                    <router-link class="block link pt-2" :to="{name: 'login'}">&lt; Log In</router-link>
+                </p>
+            </div>
         </div>
     </div>
 </template>

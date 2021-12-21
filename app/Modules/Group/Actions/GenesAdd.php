@@ -43,10 +43,7 @@ class GenesAdd
 
     public function authorize(ActionRequest $request): bool
     {
-        if (Auth::user()->cannot('addGene', $request->group)) {
-            return false;
-        }
-        return true;
+        return Auth::user()->can('addGene', $request->group);
     }
     
     public function rules(ActionRequest $request): array

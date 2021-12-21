@@ -49,4 +49,11 @@ trait IsGroupMember
 
         return $permissions->contains($permission);
     }
+
+    public function isMemberOf(Group $group): bool
+    {
+        return $this->memberships()
+                ->where('group_id', $group->id)
+                ->count() > 0;
+    }
 }

@@ -2,7 +2,9 @@
     <div v-if="hasRequirements">
         <popper arrow hover>
             <template v-slot:content>
-                <requirements-item  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
+                <div>
+                    <requirements-item  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
+                </div>
             </template>
             <badge :color="badgeColor" class="cursor-pointer">
                 {{badgeText}}

@@ -27,15 +27,15 @@
                         </li>
                     </ul>
                     <ul>
-                        <li class="menu-item">
+                        <li class="menu-item" v-if="hasPermission('invites-view')">
                             <router-link :to="{name: 'InviteAdmin'}">
                                 Invites
                             </router-link>
                         </li> 
-                        <li class="menu-item">
+                        <li class="menu-item" v-if="hasPermission('mail-log-view')">
                             <router-link :to="{name: 'mail-log'}" @click="showMenu = false">Mail log</router-link>
                         </li>
-                        <li class="menu-item">
+                        <li class="menu-item" v-if="hasPermission('logs-view')">
                             <a href="/dev/logs" class="p-3 block">System Log</a>
                         </li>
                     </ul>

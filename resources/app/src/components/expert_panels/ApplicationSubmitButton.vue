@@ -3,7 +3,9 @@
         <div v-if="!group.expert_panel.hasPendingSubmission" class="p-4">
             <popper hover arrow>
                 <template v-slot:content>
-                    <requirements-item  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
+                    <div>
+                        <requirements-item  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
+                    </div>
                 </template>
                 <div class="relative">
                     <button class="btn btn-xl" @click="initSubmission">

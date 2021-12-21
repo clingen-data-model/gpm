@@ -194,14 +194,7 @@ class ApproveStepTest extends TestCase
             'notify_contacts' => false,
         ])->assertStatus(200);
 
-        // $this->assertDatabaseHas('activity_log', [
-        //     'activity_type' => 'submission-approved',
-        //     'subject_id' => $this->expertPanel->group_id,
-        //     'subject_type' => Group::class,
-        //     'description' => 'Step 1 approved'
-        // ]);
-
-        $this->assertDatabaseMissing('activity_log', [
+        $this->assertDatabaseHas('activity_log', [
             'activity_type' => 'step-approved',
             'subject_id' => $this->expertPanel->group_id,
             'subject_type' => Group::class,

@@ -248,7 +248,7 @@ export default {
             <router-link 
                 class="btn btn-xs" 
                 ref="addMemberButton" 
-                :to="append($route.path, 'members/add')" 
+                :to="append($route.path, 'members/add')"
                 v-if="hasAnyPermission([['members-invite', group], 'groups-manage'])"
             >Add Member</router-link>
         </head>
@@ -346,7 +346,6 @@ export default {
                 <p class="text-lg">
                     Are you sure you want to retire {{selectedMemberName}} from this group?
                 </p>
-
                 <button-row @submit="retireMember" @cancel="cancelRetire" submit-text="Retire Member"></button-row>
             </modal-dialog>
             <modal-dialog v-model="showConfirmRemove" size="xs" :title="`Remove ${selectedMemberName}?`">

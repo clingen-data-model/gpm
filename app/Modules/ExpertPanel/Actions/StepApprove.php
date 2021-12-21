@@ -61,7 +61,7 @@ class StepApprove
             $this->approveSubmission->handle($submission, $dateApproved);
         }
         
-        $this->dispatchEvent($expertPanel, $expertPanel->current_step, $dateApproved);
+        $this->dispatchEvent($expertPanel, $approvedStep, $dateApproved);
 
         if ($stepManager->isLastStep()) {
             $this->applicationCompleteAction->handle($expertPanel, $dateApproved);
@@ -74,12 +74,14 @@ class StepApprove
 
     private function getSubmission($expertPanel, $approvedStep)
     {
-        return $expertPanel
-            ->group
-            ->submissions()
-            ->pending()
-            ->ofType(config('submissions.types-by-step')[$approvedStep]['id'])
-            ->first();
+        if (isset(config('submissions.types-by-step')[$approvedStep])) {
+            return $expertPanel
+                ->group
+                ->submissions()
+                ->pending()
+                ->ofType(config('submissions.types-by-step')[$approvedStep]['id'])
+                ->first();
+        }
     }
     
 

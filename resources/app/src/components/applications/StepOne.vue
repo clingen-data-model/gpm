@@ -11,12 +11,13 @@
         >
             <template v-slot:sections>
                 <div class="application-section">
-                    <h2>Membership</h2>
                     <member-list />
                     <div v-if="group.isVcep()">
                         <h3>Description of Expertise</h3>
                         <blockquote>
-                            {{application.membership_description}}
+                            <span v-if="application.membership_description">{{application.membership_description}}</span>
+                            <span v-else class="muted">{{'Pending...'}}</span>
+
                         </blockquote>
                     </div>
                 </div>

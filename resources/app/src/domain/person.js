@@ -67,7 +67,7 @@ class Person extends Entity {
 
     get raceName () {
         if (this.race_id == 100) {
-            return this.race_other;
+            return this.race_other || 'Other';
         }
         return this.race ? this.race.name : null
     }

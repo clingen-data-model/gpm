@@ -38,6 +38,7 @@ class CurrentUserController extends Controller
             'person.race',
             'person.gender',
             'person.primaryOccupation',
+            'person.institution',
             'preferences'
         ]);
 

@@ -31,34 +31,9 @@
                         </li>
                     </ul>
                 </div>
-                <!-- <div v-if="currentStep > pageIdx+1">
-                    <badge color="green">Approved</badge>
-                </div> -->
-                <!-- <icon-lock v-if="currentStep < pageIdx+1" class="inline text-gray-400" :height="14" :width="14"/>  -->
             </li>
         </ul>
-        <!-- <div v-else>
-            <static-alert class="alert text-lg">
-                <div v-if="group.isVcep()">
-                    <h2>The VCEP application has 4 steps.</h2>
-                </div>
-                <h3><span v-if="group.isVcep()">1. </span>Define your {{group.expert_panel.type.full_name}}:</h3>
-                <ol class="list-decimal pl-8">
-                    <li>Choose your long and short base names.</li>
-                    <li>Add members to your expert panel and assign them roles and permissions.</li>
-                    <li>Describe your scope of work.</li>
-                    <li>Members fill out their profile and complete conflict of interest disclosures.</li>
-                    <li>Agree to follow the ClinGen operating guidelines.</li>
-                </ol>
-                <h3 v-if="group.isVcep()">
-                    2. Draft your Specifications.
-                </h3>
-                <ol class="list-decimal pl-8">
-                    <li>Go to the CSPEC Registry</li>
-                </ol>
-            </static-alert>
-        </div> -->
-        <div class="mt-4">
+        <div class="mt-4" v-if="hasAnyPermission(['ep-applications-manage', ['application-edit', group]])">
             <router-link v-if="group.uuid" :to="applicationRoute">
                 <button class="btn blue btn-lg">Go to application</button>
             </router-link>
