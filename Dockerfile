@@ -1,23 +1,23 @@
-FROM node:latest as builder
+# FROM node:latest as builder
 
-# Set the working directory
-WORKDIR /usr/src
+# # Set the working directory
+# WORKDIR /usr/src
 
-# Copy package.json & lock file
-COPY resources/app/package*.json .
-# COPY resources/app/package-lock.json .
+# # Copy package.json & lock file
+# COPY resources/app/package*.json .
+# # COPY resources/app/package-lock.json .
 
-# Install dependencies
-RUN npm install
+# # Install dependencies
+# RUN npm install
 
-# Copy source to working directory (/usr/src/app)
-COPY ./resources/app ./
-COPY ./resources/surveys/coi.json /usr/surveys/coi.json
+# # Copy source to working directory (/usr/src/app)
+# COPY ./resources/app ./
+# COPY ./resources/surveys/coi.json /usr/surveys/coi.json
 
-# build the app
-ENV BUILD_ENV=docker
-ENV NODE_OPTIONS=--openssl-legacy-provider
-RUN npm run build
+# # build the app
+# ENV BUILD_ENV=docker
+# ENV NODE_OPTIONS=--openssl-legacy-provider
+# RUN npm run build
 
 # Final stage
 FROM jward3/php:8.0-apache
@@ -63,8 +63,8 @@ RUN mkdir -p /.config/psysh \
 COPY . /srv/app
 
 # Copy over the build artifacts from the node build container.
-COPY --from=builder /usr/src/dist ./public
-COPY --from=builder /usr/src/dist/index.html ./resources/views/app.blade.php
+# COPY --from=builder /usr/src/dist ./public
+# COPY --from=builder /usr/src/dist/index.html ./resources/views/app.blade.php
 
 # Change ownership of files so non-root user can use them.
 RUN chgrp -R 0 /srv/app \

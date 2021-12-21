@@ -56,7 +56,7 @@ documentation/**/*
 README.md
 
 # Clientside assets are built before repo commit
-package*.json
-public/js
-public/css
-public/precache-manifest*
+# package*.json
+# public/js
+# public/css
+# public/precache-manifest*
