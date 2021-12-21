@@ -43,7 +43,7 @@ export default {
   methods: {
     handleApplicationInitiated(applicationData) {
       this.showModal = false;
-      this.$router.push({name: 'AddContact', params: {uuid: applicationData.uuid}})
+      this.$router.push({name: 'AddMemberToApplication', params: {uuid: applicationData.uuid}})
     }
   }
 }

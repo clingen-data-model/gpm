@@ -53,7 +53,11 @@
         </card>
 
         <teleport to="body">
-            <modal-dialog v-model="showModal" @closed="handleModalClosed">
+            <modal-dialog 
+                v-model="showModal" 
+                @closed="handleModalClosed"
+                :title="$route.meta.title"
+            >
                 <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
             </modal-dialog>
         </teleport>

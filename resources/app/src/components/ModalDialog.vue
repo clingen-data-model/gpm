@@ -12,19 +12,17 @@
         <div 
             :class="modalClass"
         >
-            <header class="px-4 border-b pb-2 mb-2" ref="header" v-if="hasHeader">
+            <header class="flex border-b pt-2 pb-2 mb-2 justify-between items-center" ref="header">
+                <div class="px-4 pt-2">
+                    <slot name="header">
+                        <h2 class="" v-if="title">{{title}}</h2>
+                    </slot>
+                </div>
                 <button 
-                    @click="close" class="btn btn-xs gray float-right"
+                    @click="close" class="bock btn btn-xs gray mx-2"
                     v-if="!hideClose"
                 >X</button>
-                <slot name="header">
-                    <h2 class="" v-if="title">{{title}}</h2>
-                </slot>
             </header>
-            <button 
-                @click="close" class="btn btn-xs gray float-right mr-4"
-                v-else-if="!hideClose"
-            >X</button>
 
             <section class="overflow-auto px-4 pb-4" ref="panelbody">
                 <slot name="default" />
@@ -113,7 +111,6 @@ export default {
                 'mb-auto',
                 'rounded-lg',
                 'shadow-md',
-                'pt-4',
                 this.width
             ];
             return classes.join(' ');
