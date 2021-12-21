@@ -1,6 +1,7 @@
 <template>
     <div>
-        <div v-if="invite.person.user.id">
+        <pre></pre>
+        <div v-if="invite.person.user_id">
             <login-form @authenticated="redeemForExistingUser"></login-form>
         </div>
         <div v-else>
