@@ -275,7 +275,7 @@ export default {
             this.$emit('canceled');
         },
         async getParentOptions () {
-            this.parents = await api.get(`/api/groups/`)
+            this.parents = await api.get(`/api/groups`)
                         .then(response => {
                             return response.data
                                 .filter(group => group.id != this.group.id)
