@@ -3,7 +3,7 @@
         <div class="mb-6">
 
             <div class="flex justify-between text-lg font-bold pb-2 mb-2 border-b">
-                <div class="flex space-x-4">
+                <div class="flex space-x-2">
                     <h2>
                         {{title}}
                     </h2>
@@ -27,22 +27,28 @@
                     <button class="btn btn-xs" @click="toggleSections">{{sectionsToggleText}}</button>
                 </div>
             </div>
-            <slot name="document" v-if="showDocuments">
-                <div
-                  class="mt-4 p-4 border rounded-xl bg-gray-50"
-                >
-                    <document-manager
-                        :title="documentName"
-                        :application="application"
-                        :document-type-id="documentType"
-                        :getsReviewd="documentGetsReviewed"
-                        :step="step"
-                    ></document-manager>
+            <transition name="slide-fade-down">
+                <div v-if="showDocuments">
+                <slot name="document">
+                    <div class="mt-4 p-4 border rounded-xl bg-gray-50">
+                        <document-manager
+                            :title="documentName"
+                            :application="application"
+                            :document-type-id="documentType"
+                            :getsReviewd="documentGetsReviewed"
+                            :step="step"
+                        ></document-manager>
+                    </div>
+                </slot>
+                <hr class="border-gray-200 border-4">
                 </div>
-            </slot>
-            <slot name="sections" v-if="showSections">
-                Step sections here!
-            </slot>
+            </transition>
+
+            <transition name="slide-fade-down">
+                <slot name="sections" v-if="showSections">
+                    Step sections here!
+                </slot>
+            </transition>
         </div>
 
         <!-- Approve step -->
