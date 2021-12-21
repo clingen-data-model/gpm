@@ -59,15 +59,6 @@
     </div>
 </template>
 <script>
-import Group from '@/domain/group'
-
-const attributes = [
-    'curation_review_protocol_id',
-    'curation_review_protocol_other',
-    'meeting_frequency',
-    'expert_panel_type_id'
-];
-
 export default {
     name: 'GcepOngoingPlansForm',
     props: {
