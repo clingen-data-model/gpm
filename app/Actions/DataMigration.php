@@ -44,7 +44,7 @@ class DataMigration
                     'uuid' => $row->uuid,
                     'group_id' => $group->id,
                     'short_base_name' => $row->short_base_name,
-                    'long_base_name' => $row->long_base_name,
+                    'long_base_name' => $row->long_base_name ?? $row->working_name,
                     'expert_panel_type_id' => $row->ep_type_id,
                     'cdwg_id' => $cdwgs->get($row->cdwg_id) ? $cdwgs->get($row->cdwg_id)->id : null,
                     'affiliation_id' => $row->affiliation_id,
