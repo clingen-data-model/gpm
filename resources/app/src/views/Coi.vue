@@ -3,6 +3,9 @@
         <card :title="verifying ? `Loading COI Form` : `COI Form not found`" v-if="!codeIsValid">
             <div v-if="!verifying">We couldn't find this COI.</div>
         </card>
+        <card title="There's a problem" v-if="!groupMemberId">
+            We can't see to find your membership id.  Please try refreshing.
+        </card>
         <card :title="coiTitle"  class="max-w-xl mx-auto relative" v-if="codeIsValid">
             <div v-if="saved">
                 Thanks for completing the conflict of interest form for {{epName}}!
@@ -96,18 +99,16 @@ export default {
             return survey.name+' for '+this.epName;
         },
         groupMemberId() {
-            const membership = this.$store.getters.currentUser.memberships.find(m => {
+            const membership = this.$store.getters.currentUser.person.memberships.find(m => {
                 return m.group.expert_panel
                     && m.group.expert_panel.coi_code === this.code
             });
-
-            console.log(membership);
 
             if (membership) {
                 return membership.id;
             }
 
-            throw new Error('Could not find membership to EP that matches the code.');
+            return null;
         }
     },
     methods: {
@@ -125,7 +126,6 @@ export default {
             api.get(`/api/coi/${this.code}/application`)
                 .then(response => {
                     this.epName = response.data.name
-
                 })
                 .then(() => {
                     this.verifying = false;
