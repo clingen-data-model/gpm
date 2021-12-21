@@ -1,13 +1,18 @@
+let outputDir = '../../public';
+let indexPath = '../resources/views/app.blade.php';
+
+const isDockerBuild = () => process.env.BUILD_ENV === 'docker';
+const isProduction = () => process.env.NODE_ENV === 'production';
+
+if (isDockerBuild() && isProduction()) {
+    outputDir = './dist';
+    indexPath = './index.html';
+}
+
 module.exports = {
     devServer: {
         proxy: 'http://localhost:8080'
     },
-
-    outputDir: process.env.NODE_ENV === 'production' && process.env.BUILD_ENV === 'docker'
-        ? './dist'
-        : '../../public',
-
-    indexPath: process.env.NODE_ENV === 'production' && !process.env.BUILD_ENV === 'docker'
-        ? '../resources/views/app.blade.php'
-        : 'index.html',
+    outputDir: outputDir,
+    indexPath: indexPath,
 }
