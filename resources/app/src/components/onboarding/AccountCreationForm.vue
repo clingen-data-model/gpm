@@ -9,20 +9,12 @@
         <input-row label="Password" 
             v-model="password" type="password" 
             :errors="errors.password" 
-<<<<<<< HEAD
-            :label-width-class="w-24"
-=======
             label-width-class="w-24"
->>>>>>> 9ce56a2 (Accommodate purgeCSS algorithm.)
         ></input-row>
         <input-row label="Confirm Password" 
             v-model="password_confirmation" type="password" 
             :errors="errors.password_confirmation" 
-<<<<<<< HEAD
-            :label-width-class="w-24"
-=======
             label-width-class="w-24"
->>>>>>> 9ce56a2 (Accommodate purgeCSS algorithm.)
         ></input-row>
         <div class="flex flex-row-reverse">
             <button class="btn blue" @click="createAccount">Next</button>
