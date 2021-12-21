@@ -1,7 +1,8 @@
 <template>
     <div>
+        <pre>{{}}</pre>
         <div class="flex justify-center">
-            <static-alert variant="info" v-if="this.$store.getters.isAuthed" class="lg:w-1/4 md:w-1/2">
+            <static-alert variant="info" v-if="!canContinue" class="lg:w-1/4 md:w-1/2">
                 <p>Hi, {{this.$store.state.user.name}}.</p> 
                 
                 <p>
@@ -88,7 +89,15 @@ export default {
         },
         currentStepWidth () {
             return stepWidths[this.currentStepIdx]
+        },
+        canContinue () {
+            return !this.$store.getters.isAuthed
+                || (
+                    this.$store.getters.isAuthed && 
+                    !this.$store.getters.currentUser.person.timezone
+                );
         }
+
     },
     watch: {
         invite: {
@@ -104,7 +113,7 @@ export default {
             handler: function (to) {
                 this.invite.code = to
             }
-        }
+        },
     },
     methods: {
         handleCodeVerified (invite) {

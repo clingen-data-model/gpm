@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Modules\Person\Actions\InviteRedeem;
+use App\Modules\Person\Actions\InviteRedeemForExistingUser;
 use App\Modules\Person\Actions\ProfileUpdate;
 use App\Modules\Person\Actions\InviteValidateCode;
 use App\Modules\Person\Actions\MarkNotificationRead;
@@ -33,6 +34,7 @@ Route::group([
 
     Route::get('/invites/{code}', InviteValidateCode::class);
     Route::put('/invites/{code}', InviteRedeem::class);
+    Route::put('/existing-user/invites/{code}', InviteRedeemForExistingUser::class);
     
     Route::get('/lookups/timezones', [TimezoneController::class, 'index'])
         ->name('people.timezones.index');

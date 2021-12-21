@@ -66,10 +66,27 @@ export default {
         },
         goToNext() {
             if (this.page == 'profile') {
+                if (!this.validateProfile()) {
+                    return;
+                }
                 this.page = 'demographics';
                 return;
             }
             this.save();
+        },
+        validateProfile() {
+            this.errors = {};
+            let returnValue = true;
+            if (!this.profile.institution_id) {
+                this.errors.institution_id = ['This field is required.']
+                returnValue = false;
+            }
+            if (!this.profile.timezone) {
+                this.errors.timezone = ['This field is required'];
+                returnValue = false;
+            }
+
+            return returnValue
         }
     },
     setup () {
