@@ -255,8 +255,8 @@ export default {
         <transition name="slide-fade-down">
             <div v-show="showFilter" class="flex justify-between px-2 space-x-2 bg-blue-200 rounded-lg"                v-if="group.members.length > 0">
                 <div class="flex-1">
-                    <input-row label="Keyword" type="text" v-model="filters.keyword" :label-width="20"></input-row>
-                    <input-row label="Role" :label-width="20">
+                    <input-row label="Keyword" type="text" v-model="filters.keyword" label-width-class="w-20"></input-row>
+                    <input-row label="Role" label-width-class="w-20">
                     <select v-model="filters.roleId">
                         <option :value="null">Select&hellip;</option>
                         <option 

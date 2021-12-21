@@ -284,7 +284,3 @@ blockquote{
 .muted {
     @apply text-gray-400;
 }
-
-.w-36 {
-    width: 9rem;
-}

@@ -4,17 +4,17 @@
         <input-row label="Email" 
             v-model="email" 
             :errors="errors.email" 
-            :label-width="24"
+            label-width-class="w-24"
         ></input-row>
         <input-row label="Password" 
             v-model="password" type="password" 
             :errors="errors.password" 
-            :label-width="24"
+            label-width-class="w-24"
         ></input-row>
         <input-row label="Confirm Password" 
             v-model="password_confirmation" type="password" 
             :errors="errors.password_confirmation" 
-            :label-width="24"
+            label-width-class="w-24"
         ></input-row>
         <div class="flex flex-row-reverse">
             <button class="btn blue" @click="createAccount">Next</button>

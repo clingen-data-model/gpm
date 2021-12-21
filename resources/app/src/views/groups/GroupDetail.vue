@@ -150,7 +150,7 @@ import VcepGeneList from '@/components/expert_panels/VcepGeneList'
 import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm'
 import VcepOngoingPlansFormVue from '../../components/expert_panels/VcepOngoingPlansForm.vue';
 
-import isValidationError from '../../http';
+import {isValidationError} from '../../http';
 
 export default {
     name: 'GroupDetail',
