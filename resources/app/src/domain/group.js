@@ -84,13 +84,11 @@ class Group extends Entity {
     }
 
     get typeName () {
-        return this.expert_panel && this.expert_panel.id ? this.expert_panel.type.display_name : this.type.name;
+        return this.expert_panel.type.display_name || this.type.name;
     }
 
     get displayName () {
-        return this.expert_panel && this.expert_panel.id 
-            ? this.expert_panel.full_long_base_name
-            : this.name;
+        return this.expert_panel.full_long_base_name || this.name;
     }
 
     get displayStatus () {
