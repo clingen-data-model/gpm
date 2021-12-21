@@ -61,6 +61,7 @@
                 </button-row>
             </div>
         </card>
+        <note class="container">GroupMemberId: {{groupMemberId}}</note>
     </div>
 </template>
 <script>
