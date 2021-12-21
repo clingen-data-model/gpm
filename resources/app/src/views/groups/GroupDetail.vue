@@ -150,7 +150,7 @@ import VcepGeneList from '@/components/expert_panels/VcepGeneList'
 import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm'
 import VcepOngoingPlansFormVue from '../../components/expert_panels/VcepOngoingPlansForm.vue';
 
-import is_validation_error from '../../http/is_validation_error';
+import isValidationError from '../../http';
 
 export default {
     name: 'GroupDetail',
@@ -195,7 +195,7 @@ export default {
 
         const group = computed ({
             get: function() {
-                return store.getters['groups/currentItem'] || new Group()
+                return store.getters['groups/currentItemOrNew']
             },
             set: function (value) {
                 store.commit('groups/addItem', value);
@@ -218,9 +218,13 @@ export default {
         }
 
         onMounted(async () => {
-            await store.dispatch('groups/find', props.uuid)
+            store.dispatch('groups/find', props.uuid)
                 .then(() => {
                     store.commit('groups/setCurrentItemIndexByUuid', props.uuid)
+                    store.dispatch('groups/getGenes', group.value);
+                    if (group.value.isVcep()) {
+                        store.dispatch('groups/getEvidenceSummaries', group.value);
+                    }
                 })
         });
 
@@ -266,7 +270,7 @@ export default {
                 await this[saveMethod].apply(this.group);
                 this[modelAttr] = false;
             } catch (error) {
-                if (is_validation_error(error)) {
+                if (isValidationError(error)) {
                     this.errors = error.response.data.errors;
                     return;
                 }
