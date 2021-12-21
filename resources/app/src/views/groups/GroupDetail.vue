@@ -127,8 +127,6 @@
 import { ref, computed, onMounted} from 'vue'
 import { useStore } from 'vuex'
 
-import Group from '@/domain/group';
-
 import {logEntries, fetchEntries} from '@/adapters/log_entry_repository';
 import {hasPermission} from '@/auth_utils'
 
