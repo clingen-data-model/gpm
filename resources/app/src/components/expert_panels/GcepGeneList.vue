@@ -30,7 +30,6 @@ import {useStore} from 'vuex';
 import formFactory from '@/forms/form_factory'
 import is_validation_error from '@/http/is_validation_error'
 import api from '@/http/api'
-import { hasAnyPermission } from '@/auth_utils'
 import Group from '@/domain/group'
 
 export default {
@@ -49,22 +48,36 @@ export default {
             default: false
         }
     },
+    computed: {
+        canEdit () {
+            return this.hasAnyPermission(['groups-manage', ['application-edit', this.group]]);
+        }
+    },
     emits: [
         'saved',
         'canceled',
         'update:editing'
     ],
+    methods: {
+        showForm () {
+            if (this.canEdit) {
+                this.resetErrors();
+                this.$emit('update:editing', true);
+            }
+        }
+
+    },
     setup(props, context) {
         const store = useStore();
 
         const loading = ref(false);
         const genesAsText = ref(null);
 
-        const {errors, resetErrors, submitForm} = formFactory(props, context)
+        const {errors, resetErrors} = formFactory(props, context)
 
         const group = computed({
             get() {
-                return store.getters['groups/currentItem'] || new Group();
+                return store.getters['groups/currentItemOrNew'];
             },
             set (value) {
                 store.commit('groups/addItem', value)
@@ -141,13 +154,6 @@ export default {
             }
         };
 
-        const showForm = () => {
-            if (hasAnyPermission(['ep-applications-manage', ['application-edit', group]])) {
-                resetErrors();
-                console.log('emitting update:editing')
-                context.emit('update:editing', true);
-            }
-        }
 
         watch(() => store.getters['groups/currentItem'], (to, from) => {
             if (to.id && (!from || to.id != from.id)) {
@@ -169,14 +175,12 @@ export default {
             genesAsText,
             loading,
             errors,
+            resetErrors,
             hideForm,
-            showForm,
             cancel,
             syncGenesAsText,
             save,
         }
-    },
-    methods: {
     }
 }
 </script>
