@@ -6,7 +6,7 @@
                 label="Meeting/call frequency" 
                 :errors="errors.meeting_frequency"
                 placeholder="Once per week"
-                :label-width="44"
+                :label-width-class="w-44"
                 :disabled="!canEdit"
             >
             </input-row>

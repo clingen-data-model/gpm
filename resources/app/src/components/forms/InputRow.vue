@@ -54,10 +54,19 @@ export default {
             type: String,
             required: false
         },
-        labelWidth: {
-            type: Number,
+        // purgeCSS purges "unused" classes
+        // this means any otherwise onused width
+        // class will be purged and will not apply
+        // when we generate the class based on a number
+        // labelWidth: {
+        //     type: Number,
+        //     required: false,
+        //     default: 36
+        // },
+        labelWidthClass: {
+            type: String,
             required: false,
-            default: 36
+            default: 'w-36'
         },
         type: {
             type: String,
@@ -117,7 +126,7 @@ export default {
             if (this.vertical) {
                 classes.push('my-1');
             } else {
-                classes.push(`w-${this.labelWidth}`);
+                classes.push(this.labelWidthClass);
             }
 
             return classes.join(' ');

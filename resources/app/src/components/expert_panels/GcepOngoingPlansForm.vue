@@ -38,8 +38,18 @@
                             <p>Other</p>
                         </label>
                         <transition name="slide-fade-down">
-                            <input-row class="flex-1 mt-0" v-if="group.expert_panel.curation_review_protocol_id == 100" label="Details" :label-width="0" v-model="group.expert_panel.curation_review_protocol_other" :errors="errors.curation_review_protocol_other">
-                                <textarea rows="2" v-model="group.expert_panel.curation_review_protocol_other" class="w-full"></textarea>
+                            <input-row 
+                                class="flex-1 mt-0"
+                                v-if="group.expert_panel.curation_review_protocol_id == 100"
+                                :label-width-class="w-0"
+                                v-model="group.expert_panel.curation_review_protocol_other"
+                                :errors="errors.curation_review_protocol_other"
+                            >
+                                <textarea 
+                                    rows="2" 
+                                    v-model="group.expert_panel.curation_review_protocol_other" 
+                                    class="w-full"
+                                />
                             </input-row>
                         </transition>
                     </div>
