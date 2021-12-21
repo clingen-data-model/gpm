@@ -278,7 +278,7 @@ blockquote{
 }
 
 .application-section {
-    @apply py-2 border-b my-2;
+    @apply pt-2 pb-6 border-b my-2;
 }
 
 .muted {

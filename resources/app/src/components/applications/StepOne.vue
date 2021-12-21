@@ -11,7 +11,6 @@
         >
             <template v-slot:sections>
                 <div class="application-section">
-                    <h2>Membership</h2>
                     <member-list />
                     <div v-if="group.isVcep()">
                         <h3>Description of Expertise</h3>

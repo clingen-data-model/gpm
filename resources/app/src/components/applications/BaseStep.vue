@@ -3,37 +3,42 @@
         <div class="mb-6">
 
             <div class="flex justify-between text-lg font-bold pb-2 mb-2 border-b">
-                <h2>
-                    {{title}}
-                </h2>
-                <div v-if="dateApproved">
-                    <div class="flex space-x-1" v-if="!editApprovalDate">
-                        <div class="text-white bg-green-600 rounded-xl px-2">
-                            Appproved: {{dateApproved}}
+                <div class="flex space-x-4">
+                    <h2>
+                        {{title}}
+                    </h2>
+                    <div v-if="dateApproved">
+                        <div class="flex space-x-1" v-if="!editApprovalDate">
+                            <div class="text-white bg-green-600 rounded-xl px-2">
+                                Appproved: {{dateApproved}}
+                            </div>
+                            <edit-icon-button class="text-black" @click="initEditApprovalDate"></edit-icon-button>
                         </div>
-                        <edit-icon-button class="text-black" @click="initEditApprovalDate"></edit-icon-button>
-                    </div>
-                    <div class="flex space-x-1" v-else>
-                        <date-input v-model="newApprovalDate"></date-input>
-                        <button class="btn blue" @click="updateApprovalDate">Save</button>
-                        <remove-button @click="editApprovalDate = false"></remove-button>
+                        <div class="flex space-x-1" v-else>
+                            <date-input v-model="newApprovalDate"></date-input>
+                            <button class="btn blue" @click="updateApprovalDate">Save</button>
+                            <remove-button @click="editApprovalDate = false"></remove-button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="border-b mb-2 pb-2">
-                <button class="btn btn-xs" @click="toggleDocuments">{{docsToggleText}}</button>
-                &nbsp;
-                <button class="btn btn-xs" @click="toggleSections">{{sectionsToggleText}}</button>
+                <div>
+                    <button class="btn btn-xs" @click="toggleDocuments">{{docsToggleText}}</button>
+                    &nbsp;
+                    <button class="btn btn-xs" @click="toggleSections">{{sectionsToggleText}}</button>
+                </div>
             </div>
             <slot name="document" v-if="showDocuments">
-                <document-manager
-                    :title="documentName"
-                    class="border-b"
-                    :application="application"
-                    :document-type-id="documentType"
-                    :getsReviewd="documentGetsReviewed"
-                    :step="step"
-                ></document-manager>
+                <div
+                  class="mt-4 p-4 border rounded-xl bg-gray-50"
+                >
+                    <document-manager
+                        :title="documentName"
+                        :application="application"
+                        :document-type-id="documentType"
+                        :getsReviewd="documentGetsReviewed"
+                        :step="step"
+                    ></document-manager>
+                </div>
             </slot>
             <slot name="sections" v-if="showSections">
                 Step sections here!
@@ -164,6 +169,16 @@ export default {
         },
         sectionsToggleText () {
             return this.showSections ? 'Hide Sections' : 'Show Sections';
+        }
+    },
+    watch: {
+        group: {
+            immediate: true,
+            handler (to) {
+                if(!to.hasDocumentsOfType(this.documentType)) {
+                    this.showDocuments = false;
+                }
+            }
         }
     },
     methods: {

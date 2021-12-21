@@ -189,6 +189,14 @@ class Group extends Entity {
         return this.isEp() && this.expert_panel && this.expert_panel.expert_panel_type_id == 1;
     }
 
+    documentsOfType(docTypeId) {
+        return this.documents.filter(d =>  d.document_type_id == docTypeId)
+    }
+
+    hasDocumentsOfType(docTypeId) {
+        return this.documentsOfType(docTypeId).length
+    }
+
     clone(){
         const attributes = {
             ...this.attributes, 
