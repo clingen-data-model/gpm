@@ -12,9 +12,13 @@ class UpgradeForV2
 
     public function handle()
     {
-        Artisan::call('migrate');
-        Artisan::call('db:seed');
+        dump('migrating...');
+        Artisan::call('migrate', ['--no-interaction'=>true, '--force'=>true]);
+        dump('seeding...');
+        Artisan::call('db:seed', ['--no-interaction'=>true, '--force'=>true]);
+        dump('link users to people...');
         Artisan::call('users:link-to-person');
+        dump('create invites...');
         Artisan::call('people:create-invites');
     }
 }
