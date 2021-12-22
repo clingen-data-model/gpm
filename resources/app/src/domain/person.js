@@ -78,7 +78,7 @@ class Person extends Entity {
 
     get genderName () {
         if (this.gender_id == 100) {
-            return this.gender_other;
+            return this.gender_other || 'Not specified.';
         }
         return this.gender ? this.gender.name : null
     }

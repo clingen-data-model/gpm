@@ -53,6 +53,7 @@
                     @submitted="submitForm('saveOngoingPlansForm')"
                     @canceled="cancelForm()"
                      class="pb-4"
+                     :showControls="hasAnyPermission(['ep-applications-manage',['application-edit', group]])"
                 >
                     <component
                         ref="ongoingPlansForm"

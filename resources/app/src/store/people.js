@@ -133,9 +133,10 @@ export const actions = {
     },
 
     async updateProfile({ commit }, {uuid, attributes}) {
-        await api.put(`${baseUrl}/${uuid}/profile`, attributes)
+        return api.put(`${baseUrl}/${uuid}/profile`, attributes)
             .then(response => {
                 commit('addItem', response.data);
+                return response
             })
     },
 
