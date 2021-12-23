@@ -8,6 +8,7 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Event;
 use App\Modules\Foundation\ClassGetter;
 use Illuminate\Support\ServiceProvider;
+use App\Modules\Group\Events\MemberAdded;
 use App\Modules\Group\Policies\GroupPolicy;
 use App\Modules\ExpertPanel\Events\StepApproved;
 use App\Modules\Group\Actions\GroupStatusUpdate;
@@ -20,7 +21,8 @@ class GroupModuleServiceProvider extends ModuleServiceProvider
 {
     protected $listeners = [
         ApplicationStepSubmitted::class => [ApplicationSubmissionNotificationSend::class],
-        ApplicationCompleted::class => [GroupStatusUpdate::class]
+        ApplicationCompleted::class => [GroupStatusUpdate::class],
+        // MemberAdded::class => []
     ];
 
     protected $policies = [

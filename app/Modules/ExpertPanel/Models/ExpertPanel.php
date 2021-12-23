@@ -447,7 +447,12 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $this->addEpTypeSuffix($this->group->name);
     }
     
-
+    public function getDisplayNameAttribute()
+    {
+        return $this->getFullLongBaseNameAttribute();
+    }
+    
+    
     public function getFullLongBaseNameAttribute()
     {
         return isset($this->attributes['long_base_name'])

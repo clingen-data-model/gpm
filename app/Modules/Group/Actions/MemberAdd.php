@@ -12,9 +12,11 @@ use Spatie\Permission\Contracts\Role;
 use App\Modules\Group\Events\MemberAdded;
 use App\Modules\Group\Models\GroupMember;
 use Lorisleiva\Actions\Concerns\AsObject;
+use Illuminate\Support\Facades\Notification;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Group\Http\Resources\MemberResource;
+use App\Modules\Group\Notifications\AddedToGroupNotification;
 
 class MemberAdd
 {
@@ -36,6 +38,8 @@ class MemberAdd
         $groupMember = GroupMember::create($memberData);
 
         Event::dispatch(new MemberAdded($groupMember));
+
+        Notification::send($person, new AddedToGroupNotification($group));
 
         return $groupMember;
     }

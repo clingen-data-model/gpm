@@ -14,8 +14,10 @@ use Illuminate\Support\Facades\Event;
 use App\Modules\Group\Events\MemberAdded;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Modules\Group\Notifications\AddedToGroupNotification;
 
 /**
  * @group groups
@@ -30,7 +32,10 @@ class AddGroupMemberTest extends TestCase
     {
         parent::setup();
         $this->seed();
-        $this->setupEntities();
+        $this->group = Group::factory()->create(['group_type_id'=> 1]);
+        $this->person = Person::factory()->create();
+        $this->user = $this->setupUser();
+
         $this->admin = User::factory()->create();
         $this->role = config('permission.models.role')::factory()
                         ->create(['scope' => 'group']);
@@ -153,6 +158,18 @@ class AddGroupMemberTest extends TestCase
             'person_id' => $this->person->id,
             'is_contact' => 1
         ]);
+    }
+    
+    /**
+     * @test
+     */
+    public function person_is_notified_of_being_added_to_group()
+    {
+        Notification::fake(AddedToGroupNotificaiton::class);
+        $this->callCreateEndpoint()
+            ->assertStatus(201);
+
+        Notification::assertSentTo($this->person, AddedToGroupNotification::class);
     }
     
 

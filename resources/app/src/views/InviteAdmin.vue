@@ -1,9 +1,17 @@
 <template>
     <div>
-        <note>Admin</note>
-        <h1>Invites</h1>
+        <div class="flex justify-between">
+            <div>
+                <note>Admin</note>
+                <h1>Invites</h1>
+            </div>
+            <div>
+                <pre>{{searchTerm}}</pre>
+                <input type="text" v-model="searchTerm" placeholder="filter by name or email">
+            </div>
+        </div>
         <data-table
-            :data="invites"
+            :data="filteredInvites"
             :fields="fields"
             v-model:sort="tableSort"
             class="text-sm"
@@ -40,6 +48,7 @@ export default {
             tableSort: {field: 'id', desc: false},
             invites: [],
             showConfirmation: false,
+            searchTerm: null,
             fields: [
                 {
                     name: 'id',
@@ -82,6 +91,20 @@ export default {
                     type: String
                 }
             ]
+        }
+    },
+    computed: {
+        filteredInvites () {
+            if (!this.searchTerm) {
+                return this.invites;
+            }
+            const filter = new RegExp(`.*${this.searchTerm}.*`);
+            return this.invites.filter(invite => {
+                return invite.first_name.match(filter)
+                    || invite.last_name.match(filter)
+                    || `${invite.first_name} ${invite.last_name}`.match(filter)
+                    || invite.email.match(filter);
+            });
         }
     },
     methods: {
