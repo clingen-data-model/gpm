@@ -52,10 +52,8 @@ export default {
                 await this.$store.dispatch(
                         'people/updateProfile', 
                         {uuid: this.person.uuid, attributes: this.profile}
-                    )                
-                    .then(() => {
-                        this.$store.dispatch('getCurrentUser', {force: true})
-                    })
+                    );
+                await this.$store.dispatch('forceGetCurrentUser', {force: true})
                     
                 this.$emit('saved');
             } catch (error) {
