@@ -24,7 +24,6 @@
                         :document-type-id="4"
                         :getsReviewd="false"
                         :step="3"
-                        class="mb-6"
                     ></document-manager>
                 </div>
                 <div class="mt-4 p-4 border rounded-xl bg-gray-50">
@@ -35,7 +34,6 @@
                         :getsReviewd="false"
                         :show-version="false"
                         :step="3"
-                        class="mb-6"
                     ></document-manager>
                 </div>
             </div>
