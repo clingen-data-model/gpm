@@ -220,9 +220,11 @@ export default {
             store.dispatch('groups/find', props.uuid)
                 .then(() => {
                     store.commit('groups/setCurrentItemIndexByUuid', props.uuid)
-                    store.dispatch('groups/getGenes', group.value);
-                    if (group.value.isVcep()) {
-                        store.dispatch('groups/getEvidenceSummaries', group.value);
+                    if (group.value.isEp()) {                        
+                        store.dispatch('groups/getGenes', group.value);
+                        if (group.value.isVcep()) {
+                            store.dispatch('groups/getEvidenceSummaries', group.value);
+                        }
                     }
                 })
         });
