@@ -19,11 +19,10 @@ return [
     'consume' => env('DX_CONSUME', true),
     'topics' => [
         'incoming' => [
-            // 'gene-validity-events' => env('DX_INCOMING_GCI', 'gene_validity_events'),
+            'cspec-general-demo' => env('DX_INCOMING_CSPEC', 'cspec-general')
         ],
         'outgoing' => [
-            // 'precuration-events' => env('DX_OUTGOING_PRECURATION', 'gt-precuration-events'),
-            // 'gt-gci-sync' => env('DX_OUTGOING_GT_GCI_SYNC', 'gt-gci'),
+            'gpm-applications-demo' => env('DX_OUTGOING_GPM_APPLICATIONS', 'gpm-applications')
         ]
     ],
 ];
