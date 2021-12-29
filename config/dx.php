@@ -19,10 +19,10 @@ return [
     'consume' => env('DX_CONSUME', true),
     'topics' => [
         'incoming' => [
-            'cspec-general-demo' => env('DX_INCOMING_CSPEC', 'cspec-general')
+            'cspec-general' => env('DX_INCOMING_CSPEC', 'cspec-general-demo')
         ],
         'outgoing' => [
-            'gpm-applications-demo' => env('DX_OUTGOING_GPM_APPLICATIONS', 'gpm-applications')
+            'gpm-applications' => env('DX_OUTGOING_GPM_APPLICATIONS', 'gpm-applications-demo')
         ]
     ],
 ];

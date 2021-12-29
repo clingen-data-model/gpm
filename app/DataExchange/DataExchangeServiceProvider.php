@@ -6,6 +6,7 @@ use ReflectionClass;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\Finder\Finder;
 use App\DataExchange\Kafka\KafkaConfig;
 use App\DataExchange\Kafka\KafkaConsumer;
@@ -21,6 +22,7 @@ class DataExchangeServiceProvider extends ServiceProvider
 {
     protected $listen = [
         \App\DataExchange\Events\Created::class => [
+            \App\Listeners\StreamMessages\PushMessage::class
         ],
         \App\DataExchange\Events\Received::class => [
         ],
@@ -55,7 +57,7 @@ class DataExchangeServiceProvider extends ServiceProvider
                 return new MessageLogger();
             }
             
-            \Log::warning('No DataExchange driver set.  Defaulting to log driver');
+            Log::warning('No DataExchange driver set.  Defaulting to log driver');
             return new MessageLogger();
         });
 
