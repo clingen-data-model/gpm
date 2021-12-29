@@ -4,6 +4,7 @@ namespace App\DataExchange\Jobs;
 
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use App\DataExchange\Models\StreamMessage;
@@ -45,7 +46,7 @@ class PushMessage implements ShouldQueue
             ]);
         } catch (StreamingServiceDisabledException $e) {
             if (config('dx.warn-disabled', true)) {
-                \Log::warning($e->getMessage());
+                Log::warning($e->getMessage());
             }
         } catch (StreamingServiceException $e) {
             report($e);
