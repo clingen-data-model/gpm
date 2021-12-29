@@ -23,6 +23,7 @@ class StreamMessage extends Model
     ];
 
     protected $casts = [
+        'id' => 'int',
         'message' => 'array'
     ];
     
