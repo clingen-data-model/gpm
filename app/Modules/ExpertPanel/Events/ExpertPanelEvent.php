@@ -12,6 +12,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Ramsey\Uuid\Type\Integer;
 
+/**
+ * @property App\Modules\Group\Models\Group $group
+ */
 abstract class ExpertPanelEvent extends RecordableEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
@@ -43,5 +46,10 @@ abstract class ExpertPanelEvent extends RecordableEvent
     public function getStep()
     {
         return $this->application->current_step;
+    }
+
+    public function __get($key)
+    {
+        return $key == 'group' ? $this->application->group : null;
     }
 }
