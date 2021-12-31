@@ -23,7 +23,7 @@ class ListActivityLogsTest extends TestCase
         parent::setup();
         $this->seed();
 
-        $this->user = User::factory()->create();
+        $this->user = $this->setupUserWithPerson();
         $this->group = Group::factory()->create();
         $this->url = '/api/groups/'.$this->group->uuid.'/activity-logs/';
 
