@@ -38,24 +38,25 @@ class AddGenesToVcepTest extends TestCase
         
         app()->bind(HgncLookupInterface::class, function ($app) {
             return new class implements HgncLookupInterface {
-                public function findSymbolById($hgncId): string{
+                public function findSymbolById($hgncId): string
+                {
                     return 'ABC1';
                 }
-                public function findHgncIdBySymbol($geneSymbol): int {
+                public function findHgncIdBySymbol($geneSymbol): int
+                {
                     return 12345;
                 }
             };
         });
 
         app()->bind(MondoLookupInterface::class, function ($app) {
-            return new class implements MondoLookupInterface{
-                public function findNameByMondoId($hgncId): string {
+            return new class implements MondoLookupInterface {
+                public function findNameByMondoId($hgncId): string
+                {
                     return 'gladiola syndrome';
                 }
             };
         });
-
-
     }
 
     /**
@@ -149,7 +150,7 @@ class AddGenesToVcepTest extends TestCase
 
         $genesData = [
             ['hgnc_id'=>12345, 'mondo_id' => 'MONDO:9876543'],
-            ['hgnc_id'=>789012, 'mondo_id' => 'MONDO:8901234']
+            // ['hgnc_id'=>789012, 'mondo_id' => 'MONDO:8901234']
         ];
 
         Sanctum::actingAs($this->user);
@@ -160,8 +161,16 @@ class AddGenesToVcepTest extends TestCase
         $this->assertDatabaseHas(
             'activity_log',
             [
+                'activity_type' => 'genes-added',
                 'subject_id' => $this->expertPanel->group_id,
-                'properties' => json_encode(['genes' => $genesData, 'activity_type' => 'genes-added'])
+                'properties->genes' => json_encode([
+                        [
+                            'hgnc_id' => $genesData[0]['hgnc_id'],
+                            'gene_symbol' => 'ABC1',
+                            'mondo_id' => $genesData[0]['mondo_id'],
+                            'disease_name' => 'gladiola syndrome',
+                        ],
+                    ])
             ]
         );
     }
