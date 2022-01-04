@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Integration\Modules\ExpetPanel\Jobs;
+namespace Tests\Feature\Integration\Modules\ExpertPanel\Actions;
 
 use Tests\TestCase;
 use App\Modules\User\Models\User;
