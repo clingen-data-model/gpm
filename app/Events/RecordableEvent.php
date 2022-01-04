@@ -5,10 +5,15 @@ namespace App\Events;
 use App\Events\Event;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
 
-abstract class RecordableEvent extends Event
+abstract class RecordableEvent implements Event
 {
+    use Dispatchable, InteractsWithSockets, SerializesModels;
+
     abstract public function getLogEntry():string;
 
     public function getActivityType():string

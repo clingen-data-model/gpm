@@ -7,8 +7,9 @@ use App\Modules\Group\Events\GroupEvent;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use App\Modules\Groups\Events\PublishableApplicationEvent;
 
-class GeneAddedApproved extends GroupEvent
+class GeneAddedApproved extends GroupEvent implements PublishableApplicationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

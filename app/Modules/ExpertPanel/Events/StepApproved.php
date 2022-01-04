@@ -7,13 +7,14 @@ use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\PresenceChannel;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Events\Dispatchable;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Support\Carbon as SupportCarbon;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use App\Modules\Groups\Events\PublishableApplicationEvent;
 
-class StepApproved extends ExpertPanelEvent
+class StepApproved extends ExpertPanelEvent implements PublishableApplicationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
