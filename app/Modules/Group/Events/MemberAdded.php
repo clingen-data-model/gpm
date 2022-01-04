@@ -2,31 +2,25 @@
 
 namespace App\Modules\Group\Events;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use App\Modules\Group\Events\GroupEvent;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\PresenceChannel;
+use App\Modules\Group\Events\GroupMemberEvent;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Support\Carbon;
 
-class MemberAdded extends GroupEvent
-//  extends GroupEvent
+class MemberAdded extends GroupMemberEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
-     * Create a new event instance.
-     *
-     * @return void
+     * CONSTRUCTOR of parent sets group instance var to $groupMembe->group;
      */
-    public function __construct(public GroupMember $groupMember)
-    {
-        $this->group = $this->groupMember->group;
-    }
 
     public function getLogEntry(): string
     {

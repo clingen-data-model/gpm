@@ -14,7 +14,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class MemberPermissionRevoked extends GroupEvent
+class MemberPermissionRevoked extends GroupMemberEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -25,6 +25,7 @@ class MemberPermissionRevoked extends GroupEvent
      */
     public function __construct(public GroupMember $groupMember, public Permission $permission)
     {
+        parent::__construct($groupMember);
     }
 
     public function getSubject(): Model

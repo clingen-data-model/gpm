@@ -14,7 +14,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class MemberRoleRemoved extends GroupEvent
+class MemberRoleRemoved extends GroupMemberEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -26,7 +26,7 @@ class MemberRoleRemoved extends GroupEvent
      */
     public function __construct(public GroupMember $groupMember, public Role $role)
     {
-        $this->group = $groupMember->group;
+        parent::__construct($groupMember);
     }
 
     public function getLogEntry(): string

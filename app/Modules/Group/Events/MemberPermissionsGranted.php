@@ -14,7 +14,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Database\Eloquent\Model;
 
-class MemberPermissionsGranted extends GroupEvent
+class MemberPermissionsGranted extends GroupMemberEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -25,7 +25,7 @@ class MemberPermissionsGranted extends GroupEvent
      */
     public function __construct(public GroupMember $groupMember, public Collection $permissions)
     {
-        //
+        parent::__construct($groupMember);
     }
 
     public function getLogEntry(): string

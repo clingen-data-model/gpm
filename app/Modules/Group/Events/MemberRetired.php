@@ -14,7 +14,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class MemberRetired extends GroupEvent
+class MemberRetired extends GroupMemberEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

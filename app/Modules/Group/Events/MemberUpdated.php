@@ -13,7 +13,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Support\Carbon;
 
-class MemberUpdated extends GroupEvent
+class MemberUpdated extends GroupMemberEvent
 //  extends GroupEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
@@ -25,7 +25,7 @@ class MemberUpdated extends GroupEvent
      */
     public function __construct(public GroupMember $groupMember, public array $data)
     {
-        $this->group = $this->groupMember->group;
+        parent::__construct($groupMember);
     }
 
     public function getLogEntry(): string

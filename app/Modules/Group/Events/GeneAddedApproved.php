@@ -8,7 +8,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 
-class GenesAddedApproved extends GroupEvent
+class GeneAddedApproved extends GroupEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -17,7 +17,7 @@ class GenesAddedApproved extends GroupEvent
      *
      * @return void
      */
-    public function __construct(public Group $group, array $gene)
+    public function __construct(public Group $group, public array $gene)
     {
     }
 

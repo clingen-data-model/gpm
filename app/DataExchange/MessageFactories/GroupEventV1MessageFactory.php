@@ -6,12 +6,13 @@ use Exception;
 use ReflectionClass;
 use App\Events\Event;
 use Illuminate\Support\Str;
-use App\Modules\ExpertPanel\Events\StepApproved;
-use App\Modules\Group\Events\GeneAddedApproved;
-use App\Modules\Group\Events\GeneRemovedApproved;
 use App\Modules\Group\Events\MemberAdded;
+use App\Modules\Group\Events\MemberRemoved;
+use App\Modules\Group\Events\GeneAddedApproved;
 use App\Modules\Group\Events\MemberRoleRemoved;
+use App\Modules\ExpertPanel\Events\StepApproved;
 use App\Modules\Group\Events\MemberRoleAssigned;
+use App\Modules\Group\Events\GeneRemovedApproved;
 use App\Modules\Group\Events\MemberPermissionRevoked;
 use App\Modules\Group\Events\MemberPermissionsGranted;
 use App\DataExchange\MessageFactories\MessageFactoryInterface;
@@ -67,9 +68,15 @@ class GroupEventV1MessageFactory implements MessageFactoryInterface
                 return 'gene-removed';
             case MemberAdded::class:
             case MemberRemoved::class:
+            case MemberRetired::class:
+            case MemberRoleAssigned::class:
+            case MemberRoleRemoved::class:
+            case MemberPermissionRevoked::class:
                 $reflect = new ReflectionClass($event);
                 return Str::kebab($reflect->getShortName());
                 break;
+            case MemberPermissionsGranted::class:
+                return 'member-permission-granted';
             default:
                 return null;
         }
@@ -95,23 +102,22 @@ class GroupEventV1MessageFactory implements MessageFactoryInterface
 
     private function buildMessage($event)
     {
+        $eventClass = get_class($event);
         $message = [
             'expert_panel' => [
                 'id' => $event->group->uuid,
                 'name' => $event->group->displayName,
-                'type' => $event->group->fullType,
+                'type' => $event->group->fullType->name,
                 'affiliation_id' => $event->group->expertPanel->affiliation_id
             ]
         ];
 
-        $eventClass = get_class($event);
-
         if (in_array($eventClass, static::GENE_EVENTS)) {
-            $message['genes'] = $event->gene;
+            $message['genes'] = [$this->makeGeneData($event->gene)];
         }
 
         if (in_array($eventClass, static::MEMBER_EVENTS)) {
-            $message['members'] = $this->makeMemberData($event->groupMember);
+            $message['members'] = [$this->makeMemberData($event->groupMember)];
         }
 
         if ($eventClass == StepApproved::class && $event->step == 1) {
@@ -119,15 +125,17 @@ class GroupEventV1MessageFactory implements MessageFactoryInterface
                                     ->members
                                     ->map(function ($member) {
                                         return $this->makeMemberData($member);
-                                    });
+                                    })
+                                    ->toArray();
             
-            $messages['scope']['statement'] = $event->group->expertPanel->scope_description;
-            $messages['scope']['genes'] = $event->group
+            $message['scope']['statement'] = $event->group->expertPanel->scope_description;
+            $message['scope']['genes'] = $event->group
                                     ->expertPanel
                                     ->genes
                                     ->map(function ($gene) {
                                         return $this->makeGeneData($gene);
-                                    });
+                                    })
+                                    ->toArray();
         }
 
         return $message;
@@ -147,6 +155,10 @@ class GroupEventV1MessageFactory implements MessageFactoryInterface
 
     private function makeGeneData($gene): array
     {
+        if (is_array($gene) && count($gene) == 1) {
+            $gene = $gene[0];
+        }
+
         $returnValue = $gene->only([
                             'hgnc_id',
                             'gene_symbol',
