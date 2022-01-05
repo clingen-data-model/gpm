@@ -503,6 +503,27 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     {
         return '/expert-panels/'.urlencode($this->name).'/coi/'.$this->coi_code;
     }
+
+    public function getDefinitionIsApprovedAttribute(): bool
+    {
+        return (bool)$this->step_1_approval_date;
+    }
+    
+    public function getHasApprovedDraftAtribute(): bool
+    {
+        return !is_null($this->step_2_approval_date);
+    }
+    
+    public function getHasApprovedPilotAtribute(): bool
+    {
+        return !is_null($this->step_3_approval_date);
+    }
+    
+    public function getSustainedCurationIsApprovedAtribute(): bool
+    {
+        return !is_null($this->step_4_approval_date);
+    }
+    
     
     
 
