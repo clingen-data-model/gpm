@@ -64,9 +64,9 @@ class ApplicationEventV1MessageFactory implements MessageFactoryInterface
             case StepApproved::class:
                 return $this->resolveStepApprovalEventType($event);
             case GeneAddedApproved::class:
-                return 'gene-added';
+                return 'gene_added';
             case GeneRemovedApproved::class:
-                return 'gene-removed';
+                return 'gene_removed';
             case MemberAdded::class:
             case MemberRemoved::class:
             case MemberRetired::class:
@@ -74,10 +74,10 @@ class ApplicationEventV1MessageFactory implements MessageFactoryInterface
             case MemberRoleRemoved::class:
             case MemberPermissionRevoked::class:
                 $reflect = new ReflectionClass($event);
-                return Str::kebab($reflect->getShortName());
+                return Str::snake($reflect->getShortName());
                 break;
             case MemberPermissionsGranted::class:
-                return 'member-permission-granted';
+                return 'member_permission_granted';
             default:
                 return null;
         }
