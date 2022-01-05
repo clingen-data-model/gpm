@@ -22,9 +22,9 @@ use App\Modules\Group\Events\GeneRemovedApproved;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Events\MemberPermissionRevoked;
 use App\Modules\Group\Events\MemberPermissionsGranted;
-use App\DataExchange\MessageFactories\GroupEventV1MessageFactory;
+use App\DataExchange\MessageFactories\ApplicationEventV1MessageFactory;
 
-class GroupEventV1MessageFactoryTest extends TestCase
+class ApplicationEventV1MessageFactoryTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -38,7 +38,7 @@ class GroupEventV1MessageFactoryTest extends TestCase
         
         $this->expertPanel->load('genes', 'group', 'group.members', 'group.members.person');
         
-        $this->factory = new GroupEventV1MessageFactory();
+        $this->factory = new ApplicationEventV1MessageFactory();
     }
 
     /**
@@ -64,7 +64,7 @@ class GroupEventV1MessageFactoryTest extends TestCase
         $event = new MemberAdded($this->expertPanel->group->members->first());
         
         $message = $this->factory->makeFromEvent($event);
-        $this->assertEquals('member-added', $message['event_type']);
+        $this->assertEquals('member_added', $message['event_type']);
         $this->assertExpertPanelInMessage($message);
         $this->assertMembersInMessage([$this->expertPanel->group->members->first()], $message);
     }
@@ -78,7 +78,7 @@ class GroupEventV1MessageFactoryTest extends TestCase
         $event = new MemberRoleAssigned($this->expertPanel->group->members->first(), $roles);
         $message = $this->factory->makeFromEvent($event);
 
-        $this->assertEquals('member-role-assigned', $message['event_type']);
+        $this->assertEquals('member_role_assigned', $message['event_type']);
         $this->assertMembersInMessage([$this->expertPanel->group->members->first()], $message);
     }
     
@@ -91,7 +91,7 @@ class GroupEventV1MessageFactoryTest extends TestCase
         $event = new MemberRoleRemoved($this->expertPanel->group->members->first(), $roles->first());
         $message = $this->factory->makeFromEvent($event);
 
-        $this->assertEquals('member-role-removed', $message['event_type']);
+        $this->assertEquals('member_role_removed', $message['event_type']);
         $this->assertMembersInMessage([$this->expertPanel->group->members->first()], $message);
     }
     
@@ -104,7 +104,7 @@ class GroupEventV1MessageFactoryTest extends TestCase
         $event = new MemberPermissionsGranted($this->expertPanel->group->members->first(), $permissions);
         $message = $this->factory->makeFromEvent($event);
 
-        $this->assertEquals('member-permission-granted', $message['event_type']);
+        $this->assertEquals('member_permission_granted', $message['event_type']);
         $this->assertMembersInMessage([$this->expertPanel->group->members->first()], $message);
     }
     
@@ -117,7 +117,7 @@ class GroupEventV1MessageFactoryTest extends TestCase
         $event = new MemberPermissionRevoked($this->expertPanel->group->members->first(), $permissions->first());
         $message = $this->factory->makeFromEvent($event);
 
-        $this->assertEquals('member-permission-revoked', $message['event_type']);
+        $this->assertEquals('member_permission_revoked', $message['event_type']);
         $this->assertMembersInMessage([$this->expertPanel->group->members->first()], $message);
     }
 
@@ -131,7 +131,7 @@ class GroupEventV1MessageFactoryTest extends TestCase
         $event = new MemberRemoved($this->expertPanel->group->members->first());
         
         $message = $this->factory->makeFromEvent($event);
-        $this->assertEquals('member-removed', $message['event_type']);
+        $this->assertEquals('member_removed', $message['event_type']);
         $this->assertExpertPanelInMessage($message);
         $this->assertMembersInMessage([$this->expertPanel->group->members->first()], $message);
     }
@@ -143,7 +143,7 @@ class GroupEventV1MessageFactoryTest extends TestCase
     {
         $event = new GeneAddedApproved($this->expertPanel->group, [$this->expertPanel->genes->first()]);
         $message = $this->factory->makeFromEvent($event);
-        $this->assertEquals('gene-added', $message['event_type']);
+        $this->assertEquals('gene_added', $message['event_type']);
         $this->assertExpertPanelInMessage($message);
         $this->assertGenesInMessage([$this->expertPanel->genes->first()], $message);
     }
@@ -155,7 +155,7 @@ class GroupEventV1MessageFactoryTest extends TestCase
     {
         $event = new GeneRemovedApproved($this->expertPanel->group, $this->expertPanel->genes->first());
         $message = $this->factory->makeFromEvent($event);
-        $this->assertEquals('gene-removed', $message['event_type']);
+        $this->assertEquals('gene_removed', $message['event_type']);
         $this->assertExpertPanelInMessage($message);
         $this->assertGenesInMessage([$this->expertPanel->genes->first()], $message);
     }

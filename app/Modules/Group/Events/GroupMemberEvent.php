@@ -3,9 +3,8 @@
 namespace App\Modules\Group\Events;
 
 use App\Modules\Group\Models\GroupMember;
-use App\Modules\Groups\Events\PublishableApplicationEvent;
 
-abstract class GroupMemberEvent extends GroupEvent implements PublishableApplicationEvent
+abstract class GroupMemberEvent extends GroupEvent
 {
     public function __construct(public GroupMember $groupMember)
     {

@@ -11,8 +11,9 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use App\Modules\Groups\Events\PublishableApplicationEvent;
 
-class MemberRoleAssigned extends GroupMemberEvent
+class MemberRoleAssigned extends GroupMemberEvent implements PublishableApplicationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

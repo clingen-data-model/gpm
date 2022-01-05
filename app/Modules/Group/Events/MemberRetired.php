@@ -13,20 +13,11 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use App\Modules\Groups\Events\PublishableApplicationEvent;
 
-class MemberRetired extends GroupMemberEvent
+class MemberRetired extends GroupMemberEvent implements PublishableApplicationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
-    public function __construct(public GroupMember $groupMember)
-    {
-        //
-    }
 
     public function getLogEntry(): string
     {

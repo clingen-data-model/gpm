@@ -14,7 +14,6 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Support\Carbon;
 
 class MemberUpdated extends GroupMemberEvent
-//  extends GroupEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
