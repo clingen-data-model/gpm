@@ -2,8 +2,6 @@
 
 namespace App\DataExchange\MessageFactories;
 
-use App\Curation;
-use Carbon\Carbon;
 use App\Events\Event;
 
 interface MessageFactoryInterface
@@ -13,6 +11,4 @@ interface MessageFactoryInterface
         array $message,
         ?string $schemaVersion = '1.0.0'
     ): array;
-    
-    public function makeFromEvent(Event $event): array;
 }

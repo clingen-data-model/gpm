@@ -15,9 +15,10 @@ use App\Modules\Group\Events\MemberRoleAssigned;
 use App\Modules\Group\Events\GeneRemovedApproved;
 use App\Modules\Group\Events\MemberPermissionRevoked;
 use App\Modules\Group\Events\MemberPermissionsGranted;
+use App\Modules\Groups\Events\PublishableApplicationEvent;
 use App\DataExchange\MessageFactories\MessageFactoryInterface;
 
-class GroupEventV1MessageFactory implements MessageFactoryInterface
+class ApplicationEventV1MessageFactory implements MessageFactoryInterface
 {
     const GENE_EVENTS = [
         GeneAddedApproved::class,
@@ -48,7 +49,7 @@ class GroupEventV1MessageFactory implements MessageFactoryInterface
         return $message;
     }
 
-    public function makeFromEvent(Event $event): array
+    public function makeFromEvent(PublishableApplicationEvent $event): array
     {
         return $this->make(
             eventType: $this->resolveEventType($event),
@@ -57,7 +58,7 @@ class GroupEventV1MessageFactory implements MessageFactoryInterface
         );
     }
 
-    private function resolveEventType(Event $event): string
+    private function resolveEventType(PublishableApplicationEvent $event): string
     {
         switch (get_class($event)) {
             case StepApproved::class:
