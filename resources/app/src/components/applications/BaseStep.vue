@@ -29,25 +29,27 @@
             </div>
             <transition name="slide-fade-down">
                 <div v-if="showDocuments">
-                <slot name="document">
-                    <div class="mt-4 p-4 border rounded-xl bg-gray-50">
-                        <document-manager
-                            :title="documentName"
-                            :application="application"
-                            :document-type-id="documentType"
-                            :getsReviewd="documentGetsReviewed"
-                            :step="step"
-                        ></document-manager>
-                    </div>
-                </slot>
-                <hr class="border-gray-200 border-4">
+                    <slot name="document">
+                        <div class="mt-4 p-4 border rounded-xl bg-gray-50">
+                            <document-manager
+                                :title="documentName"
+                                :application="application"
+                                :document-type-id="documentType"
+                                :getsReviewd="documentGetsReviewed"
+                                :step="step"
+                            ></document-manager>
+                        </div>
+                    </slot>
+                    <hr class="border-gray-200 border-4">
                 </div>
             </transition>
 
             <transition name="slide-fade-down">
-                <slot name="sections" v-if="showSections">
-                    Step sections here!
-                </slot>
+                <div>
+                    <slot name="sections" v-if="showSections">
+                        Step sections here!
+                    </slot>
+                </div>
             </transition>
         </div>
 
