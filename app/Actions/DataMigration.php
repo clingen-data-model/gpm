@@ -202,8 +202,8 @@ class DataMigration
             );
             $coi = new Coi;
             $coi->setTable('cois_v2')
-                ->firstOrCreate(
-                    ['group_member_id' => $groupMember->id],
+                ->create(
+                    // ['group_member_id' => $groupMember->id],
                     [
                         'uuid' => Uuid::uuid4(),
                         'expert_panel_id' => $expertPanel->id,
