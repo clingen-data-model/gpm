@@ -11,7 +11,7 @@ use App\Modules\Group\Events\GenesAdded;
 use App\Modules\Group\Events\GeneRemoved;
 use Illuminate\Validation\ValidationException;
 
-class GeneListGcepSync
+class GenesSyncToGcep
 {
     public function __construct(private HgncLookupInterface $hgncLookup)
     {
@@ -49,15 +49,14 @@ class GeneListGcepSync
     private function addNewGenes($group, $addedGeneSymbols)
     {
         if ($addedGeneSymbols->count() > 0) {
-            $saveData = $addedGeneSymbols->map(function ($gs) {
+            $genes = $addedGeneSymbols->map(function ($gs) {
                 return new Gene([
                     'hgnc_id' => $this->hgncLookup->findHgncIdBySymbol($gs),
                     'gene_symbol' => $gs
                 ]);
             });
-            $group->expertPanel->genes()->saveMany($saveData);
-            event(new GenesAdded($group, $saveData->toArray()));
+            $group->expertPanel->genes()->saveMany($genes);
+            event(new GenesAdded($group, $genes));
         }
     }
-
 }

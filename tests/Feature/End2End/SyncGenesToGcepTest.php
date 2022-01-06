@@ -18,7 +18,7 @@ use Tests\Traits\SeedsHgncGenesAndDiseases;
  * @group expert-panels
  * @group gene-list
  */
-class SyncGcepGenesTest extends TestCase
+class SyncGenesToGcepTest extends TestCase
 {
     use RefreshDatabase;
     use SeedsHgncGenesAndDiseases;
@@ -146,13 +146,11 @@ class SyncGcepGenesTest extends TestCase
         $this->assertDatabaseHas('activity_log', [
             'subject_id' => $this->expertPanel->group->id,
             'activity_type' => 'genes-added',
-            // 'properties->genes' => ['DEF', 'EFG']
         ]);
 
         $this->assertDatabaseHas('activity_log', [
             'subject_id' => $this->expertPanel->group->id,
             'activity_type' => 'gene-removed',
-            // 'properties->genes' => ['ABC']
         ]);
     }
 }

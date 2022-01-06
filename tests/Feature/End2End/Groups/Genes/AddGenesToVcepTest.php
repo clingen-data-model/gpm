@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\End2End\Groups\Genes;
 
+use App\Models\Activity;
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
@@ -9,6 +10,7 @@ use App\Services\HgncLookupInterface;
 use App\Services\MondoLookupInterface;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
 
@@ -145,6 +147,7 @@ class AddGenesToVcepTest extends TestCase
      */
     public function activity_logged()
     {
+        Carbon::setTestNow('2022-01-01');
         $this->seedGenes(['hgnc_id' => 789012, 'gene_symbol' => 'ABC12']);
         $this->seedDiseases(['mondo_id' => 'MONDO:8901234', 'name' => 'fartsalot']);
 
@@ -158,20 +161,13 @@ class AddGenesToVcepTest extends TestCase
             'genes' => $genesData
         ])->assertStatus(200);
 
-        $this->assertDatabaseHas(
-            'activity_log',
-            [
-                'activity_type' => 'genes-added',
-                'subject_id' => $this->expertPanel->group_id,
-                'properties->genes' => json_encode([
-                        [
-                            'hgnc_id' => $genesData[0]['hgnc_id'],
-                            'gene_symbol' => 'ABC1',
-                            'mondo_id' => $genesData[0]['mondo_id'],
-                            'disease_name' => 'gladiola syndrome',
-                        ],
-                    ])
-            ]
-        );
+        $logEntry = Activity::where([
+            'activity_type' => 'genes-added',
+            'subject_id' => $this->expertPanel->group_id,
+        ])->first();
+        $this->assertNotNull($logEntry);
+        $this->assertEquals('ABC1', $logEntry->properties['genes'][0]['gene_symbol']);
+        $this->assertEquals($genesData[0]['mondo_id'], $logEntry->properties['genes'][0]['mondo_id']);
+        $this->assertEquals('gladiola syndrome', $logEntry->properties['genes'][0]['disease_name']);
     }
 }

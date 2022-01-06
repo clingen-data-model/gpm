@@ -30,19 +30,16 @@ class GenesAddToVcep
             throw ValidationException::withMessages(['group' => 'The group is not a VCEP.']);
         }
 
-        $genes = array_map(function ($gene) {
-            return [
+        $genes = collect(array_map(function ($gene) {
+            return new Gene([
                 'hgnc_id' => $gene['hgnc_id'],
                 'gene_symbol' => $this->hgncLookup->findSymbolById($gene['hgnc_id']),
                 'mondo_id' => $gene['mondo_id'],
                 'disease_name' => $this->mondoLookup->findNameByMondoId($gene['mondo_id'])
-            ];
-        }, $genes);
+            ]);
+        }, $genes));
 
-        foreach ($genes as $gene) {
-            $group->expertPanel->genes()
-                ->create($gene);
-        }
+        $group->expertPanel->genes()->saveMany($genes);
         event(new GenesAdded($group, $genes));
         
         return $group;

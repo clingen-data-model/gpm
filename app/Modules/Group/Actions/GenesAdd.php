@@ -5,7 +5,7 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Auth;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsObject;
-use App\Modules\Group\Actions\GeneListGcepSync;
+use App\Modules\Group\Actions\GenesSyncToGcep;
 use App\Modules\Group\Actions\GenesAddToVcep;
 use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
@@ -16,7 +16,7 @@ class GenesAdd
     use AsController;
     use AsObject;
 
-    public function __construct(private GenesAddToVcep $addGenesToVcep, private GeneListGcepSync $addGenesToGcep)
+    public function __construct(private GenesAddToVcep $addGenesToVcep, private GenesSyncToGcep $addGenesToGcep)
     {
     }
 

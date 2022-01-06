@@ -9,6 +9,8 @@ use Illuminate\Support\Carbon;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Actions\GenesAdd;
 use App\Modules\ExpertPanel\Models\Gene;
+use App\Modules\Group\Events\GenesAdded;
+use App\Modules\Group\Events\GeneRemoved;
 use App\Modules\Group\Events\MemberAdded;
 use App\Modules\Group\Models\GroupMember;
 use Database\Factories\GroupMemberFactory;
@@ -139,9 +141,9 @@ class ApplicationEventV1MessageFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_a_gene_added_message_when_new_gene_approved()
+    public function it_creates_a_gene_added_message_when_new_gene_added_to_scope()
     {
-        $event = new GeneAddedApproved($this->expertPanel->group, [$this->expertPanel->genes->first()]);
+        $event = new GenesAdded($this->expertPanel->group, collect([$this->expertPanel->genes->first()]));
         $message = $this->factory->makeFromEvent($event);
         $this->assertEquals('gene_added', $message['event_type']);
         $this->assertExpertPanelInMessage($message);
@@ -153,7 +155,7 @@ class ApplicationEventV1MessageFactoryTest extends TestCase
      */
     public function it_creates_a_gene_removeded_message_when_removed_gene_approved()
     {
-        $event = new GeneRemovedApproved($this->expertPanel->group, $this->expertPanel->genes->first());
+        $event = new GeneRemoved($this->expertPanel->group, $this->expertPanel->genes->first());
         $message = $this->factory->makeFromEvent($event);
         $this->assertEquals('gene_removed', $message['event_type']);
         $this->assertExpertPanelInMessage($message);

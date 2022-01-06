@@ -10,7 +10,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use App\Modules\Groups\Events\PublishableApplicationEvent;
 
-class GeneRemovedApproved extends GroupEvent implements PublishableApplicationEvent
+class GeneRemovedApproved extends GroupEvent // implements PublishableApplicationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

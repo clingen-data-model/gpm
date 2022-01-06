@@ -6,6 +6,10 @@ use Exception;
 use ReflectionClass;
 use App\Events\Event;
 use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
+use App\Modules\Group\Events\GenesAdded;
+use App\Modules\Group\Events\GeneRemoved;
 use App\Modules\Group\Events\MemberAdded;
 use App\Modules\Group\Events\MemberRemoved;
 use App\Modules\Group\Events\GeneAddedApproved;
@@ -21,8 +25,10 @@ use App\DataExchange\MessageFactories\MessageFactoryInterface;
 class ApplicationEventV1MessageFactory implements MessageFactoryInterface
 {
     const GENE_EVENTS = [
-        GeneAddedApproved::class,
-        GeneRemovedApproved::class
+        // GeneAddedApproved::class,
+        // GeneRemovedApproved::class
+        GenesAdded::class,
+        GeneRemoved::class
     ];
 
     const MEMBER_EVENTS = [
@@ -63,10 +69,14 @@ class ApplicationEventV1MessageFactory implements MessageFactoryInterface
         switch (get_class($event)) {
             case StepApproved::class:
                 return $this->resolveStepApprovalEventType($event);
-            case GeneAddedApproved::class:
+            // Cases commented until V2.x
+            // case GeneAddedApproved::class:
+            //     return 'gene_added';
+            // case GeneRemovedApproved::class:
+            //     return 'gene_removed';
+            case GenesAdded::class:
                 return 'gene_added';
-            case GeneRemovedApproved::class:
-                return 'gene_removed';
+            case GeneRemoved::class:
             case MemberAdded::class:
             case MemberRemoved::class:
             case MemberRetired::class:
@@ -114,7 +124,7 @@ class ApplicationEventV1MessageFactory implements MessageFactoryInterface
         ];
 
         if (in_array($eventClass, static::GENE_EVENTS)) {
-            $message['genes'] = [$this->makeGeneData($event->gene)];
+            $message['genes'] = $this->makeGeneData($event->gene);
         }
 
         if (in_array($eventClass, static::MEMBER_EVENTS)) {
@@ -130,13 +140,7 @@ class ApplicationEventV1MessageFactory implements MessageFactoryInterface
                                     ->toArray();
             
             $message['scope']['statement'] = $event->group->expertPanel->scope_description;
-            $message['scope']['genes'] = $event->group
-                                    ->expertPanel
-                                    ->genes
-                                    ->map(function ($gene) {
-                                        return $this->makeGeneData($gene);
-                                    })
-                                    ->toArray();
+            $message['scope']['genes'] = $this->makeGeneData($event->group->expertPanel->genes);
         }
 
         return $message;
@@ -154,25 +158,27 @@ class ApplicationEventV1MessageFactory implements MessageFactoryInterface
         ];
     }
 
-    private function makeGeneData($gene): array
+    private function makeGeneData($genes): array
     {
-        if (is_array($gene) && count($gene) == 1) {
-            $gene = $gene[0];
+        if (! $genes instanceof Collection) {
+            $genes = collect([$genes]);
         }
 
-        $returnValue = $gene->only([
-                            'hgnc_id',
-                            'gene_symbol',
-                        ]);
-        if ($gene->mondo_id) {
-            $returnValue['mondo_id'] = $gene->mondo_id;
-        }
+        return $genes->map(function ($gene) {
+            $item = $gene->only([
+                'hgnc_id',
+                'gene_symbol',
+            ]);
+            if ($gene->mondo_id) {
+                $item['mondo_id'] = $gene->mondo_id;
+            }
 
-        if ($gene->mondo_id) {
-            $returnValue['disease_entity'] = $gene->mondo_id;
-            $returnValue['disease_name'] = $gene->disease_name;
-        }
+            if ($gene->mondo_id) {
+                $item['disease_entity'] = $gene->mondo_id;
+                $item['disease_name'] = $gene->disease_name;
+            }
 
-        return $returnValue;
+            return $item;
+        })->toArray();
     }
 }
