@@ -30,7 +30,6 @@ import {useStore} from 'vuex';
 import formFactory from '@/forms/form_factory'
 import is_validation_error from '@/http/is_validation_error'
 import api from '@/http/api'
-import Group from '@/domain/group'
 
 export default {
     name: 'GcepGeneList',
