@@ -4,9 +4,14 @@ namespace App\Modules\Group\Providers;
 
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Event;
+use App\Modules\Group\Events\GenesAdded;
+use App\Modules\Group\Events\GeneRemoved;
 use App\Modules\Group\Policies\GroupPolicy;
+use App\Modules\Group\Actions\NotifyGenesAdded;
+use App\Modules\Group\Actions\GenesChangeNotify;
 use App\Modules\Group\Actions\GroupStatusUpdate;
 use App\Modules\Foundation\ModuleServiceProvider;
+use App\Modules\Group\Actions\NotifyGenesRemoved;
 use App\Modules\Group\Actions\EventApplicationPublish;
 use App\Modules\Group\Events\ApplicationStepSubmitted;
 use App\Modules\ExpertPanel\Events\ApplicationCompleted;
@@ -18,6 +23,8 @@ class GroupModuleServiceProvider extends ModuleServiceProvider
     protected $listeners = [
         ApplicationStepSubmitted::class => [ApplicationSubmissionNotificationSend::class],
         ApplicationCompleted::class => [GroupStatusUpdate::class],
+        GenesAdded::class => [NotifyGenesAdded::class],
+        GeneRemoved::class => [NotifyGenesRemoved::class],
     ];
 
     protected $policies = [

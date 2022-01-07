@@ -2,17 +2,21 @@
 
 namespace Tests\Feature\End2End\Groups\Genes;
 
-use App\Models\Activity;
+use Carbon\Carbon;
 use Tests\TestCase;
+use App\Models\Activity;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
+use Illuminate\Support\Facades\Mail;
 use App\Services\HgncLookupInterface;
 use App\Services\MondoLookupInterface;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Modules\Group\Mail\GeneAddedMail;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Notification;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Mail\GeneAddedToVcepMail;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group groups

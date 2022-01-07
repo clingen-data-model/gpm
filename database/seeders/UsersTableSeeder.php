@@ -45,7 +45,6 @@ class UsersTableSeeder extends Seeder
                 'email' => 'laura_milko@med.unc.edu',
                 'role' => 'super-admin'
             ]
-
         ];
 
         foreach ($users as $userData) {
