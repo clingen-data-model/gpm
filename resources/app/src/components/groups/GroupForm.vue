@@ -169,7 +169,7 @@ export default {
                     this.$emit('saved');
 
                     this.$store.dispatch('groups/find', this.group.uuid);
-                    this.$store.commit('pushSuccess', 'Group info updated.');
+                    // this.$store.commit('pushSuccess', 'Group info updated.');
                     return;
                 } 
 
