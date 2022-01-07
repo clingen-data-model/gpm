@@ -1,4 +1,4 @@
-import {cloneDeep} from 'lodash'
+import {cloneDeep, isEqual} from 'lodash'
 class Entity {
     static defaults = {
         'created_at': null,
@@ -15,6 +15,7 @@ class Entity {
 
         this.attributes = {};
         this.setAttributes({...this.constructor.defaults, ...attributes});
+
         this.original = {};
         this.setOriginal(this.attributes);
 
@@ -95,7 +96,7 @@ class Entity {
             return this.original[attribute] != this.attributes[attribute];
         }
         return Object.keys(this.original).some(key => {
-            return this.original[key] != this.attributes[key];
+            return !isEqual(this.original[key], this.attributes[key]);
         });
     }
 
