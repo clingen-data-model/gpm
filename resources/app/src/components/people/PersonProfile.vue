@@ -48,10 +48,10 @@
                     Demographics
                 </h3>
                 <div>
-                    <popper hover arrow>
+                    <popover hover arrow>
                         <template v-slot:content>Only you and administrators can see this information.</template>
                         <icon-info class="text-gray-500" width="12" height="12"></icon-info>
-                    </popper>
+                    </popover>
                 </div>
             </header>    
             <dictionary-row class="pb-2" label-class="w-40" label="Primary Occupation">{{person.primaryOccupationName}}</dictionary-row>

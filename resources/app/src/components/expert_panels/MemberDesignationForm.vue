@@ -27,13 +27,13 @@
                     <th>Biocurator Trainer</th>
                     <th>
                         Core Approval Member
-                        <popper 
+                        <popover 
                             arrow 
                             content="Core approval members are responsible for ongoing final approval of variant classifications."
                             hover
                         >
                             <icon-info class="inline-block cursor-pointer" :width="16" :height="16" />
-                        </popper>
+                        </popover>
                     </th>
                 </tr>
             </thead>
