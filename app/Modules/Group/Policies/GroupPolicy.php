@@ -190,4 +190,10 @@ class GroupPolicy
         return $user->hasAnyPermission('groups-manage', 'ep-applications-manage')
             || ($user->person && $user->person->isMemberOf($group));
     }
+
+    public function manageGroupDocuments(User $user, Group $group): bool
+    {
+        return $user->hasAnyPermission('groups-manage', 'ep-applications-manage')
+            || ($user->person && $user->person->isMemberOf($group));
+    }
 }

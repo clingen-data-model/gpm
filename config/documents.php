@@ -50,6 +50,13 @@ return [
             'long_name' => 'additional pilot',
             'is_versioned' => true,
             'application_document' => true,
+        ],
+        'miscellaneous' => [
+            'id' => 100,
+            'name' => 'miscellaneous',
+            'long_name' => 'miscellaneous',
+            'is_versioned' => false,
+            'application_document' => false,
         ]
     ]
 ];
