@@ -410,7 +410,7 @@ export const actions = {
             });
     },
 
-    addDocument ({commit}, {group, data}) {
+    addApplicationDocument ({commit}, {group, data}) {
         if (!data.has('uuid')) {
             data.append('uuid', uuid4())
         }
@@ -425,6 +425,42 @@ export const actions = {
                 return response.data;
             });
     },
+
+    addDocument ({commit}, {group, data}) {
+        console.log({group, data})
+        if (!data.has('uuid')) {
+            data.append('uuid', uuid4());
+        }
+
+        return api.post(`${baseUrl}/${group.uuid}/documents`, data)
+                .then(response => {
+                    group.documents.push(response.data);
+                    if (response.data.document_type_id < 8) {
+                        group.expert_panel.documents.push(response.data);
+                        commit('addItem', group);
+                    }    
+                    return response.data;
+                });
+    },
+
+    async updateDocument({ commit }, { group, document }) {
+        return api.put(`/api/groups/${group.uuid}/documents/${document.uuid}`, document)
+            .then((response) => {
+                const idx = group.documents.findIndex(doc => doc.id == document.id);
+                group.documents[idx] = response.data;
+                return response;
+            });
+    },
+
+    async deleteDocument( { commit }, {group, document}) {
+        await api.delete(`/api/applications/${group.expert_panel.uuid}/documents/${document.uuid}`)
+            .then(response => {
+                const docIdx = group.documents.indexOf(document);
+                group.documents.splice(docIdx, 1);
+                return response;
+            });
+    },
+    
 
     // eslint-disable-next-line
     async addLogEntry({ dispatch }, { group, logEntryData }) {

@@ -1,24 +1,22 @@
 <template>
     <form-container>
-        <h2 class="pb-2 border-b mb-4">Upload {{documentType.long_name}} document(s)</h2>
-
         <input-row label="Document" :errors="errors.file">
             <input type="file" ref="fileInput">
         </input-row>
-        
-        <input-row 
-            label="Date Received" 
-            type="date" 
-            v-model="newDocument.date_received" 
-            :errors="errors.date_receoved"
-        ></input-row>
+
+        <input-row label="Type" :errors="errors.document_type_id">
+            <select v-model="newDocument.document_type_id">
+                <option :value="null">Select...</option>
+                <option :value="type.id" v-for="type in documentTypes" :key="type.id">
+                    {{type.long_name}}
+                </option>
+            </select>
+        </input-row>
 
         <input-row :errors="errors.notes" label="Notes">
             <textarea name="notes" v-model="newDocument.notes" cols="30" rows="10"></textarea>
         </input-row>
         
-        <!-- <input-row label="Date Reviewed" type="date" v-model="newDocument.date_reviewed" :errors="errors.date_reviewed"></input-row> -->
-
         <button-row>
             <button class="btn white" @click="cancel">Cancel</button>
             <button class="btn blue" @click="save">Save</button>
@@ -27,28 +25,19 @@
 </template>
 <script>
 import { mapState } from 'vuex';
-import {formatDate} from '../../../date_utils'
-import is_validation_error from '../../../http/is_validation_error';
+import isValidationError from '@/http';
 
 export default {
     props: {
-        documentTypeId: {
-            type: Number,
+        saveFunction: {
+            type: Function,
             required: true
-        },
-        step: {
-            type: Number,
-            required: false,
-            default: null
-        },
+        }
     },
     data() {
         return {
             newDocument: {
                 file: null,
-                date_received: new Date(),
-                date_reviewed: null,
-                step: this.step,
                 document_type_id: this.documentTypeId,
                 notes: null
             },
@@ -87,14 +76,12 @@ export default {
                         data.append(key, val);
                     })
                 data.append('file', this.$refs.fileInput.files[0]);
-                await this.$store.dispatch('groups/addApplicationDocument', 
-                        {group: this.group, data}
-                    )
+                await this.saveFunction(data);
 
                 this.clearForm();
                 this.$emit('saved');
             } catch (error) {
-                if (is_validation_error(error)) {
+                if (isValidationError(error)) {
                     this.errors = error.response.data.errors
                     return;
                 }
@@ -113,9 +100,6 @@ export default {
             this.$refs.fileInput.value = null;
             this.newDocument = {
                 file: null,
-                date_received: formatDate(new Date()),
-                date_reviewed: null,
-                step: this.step,
                 document_type_id: this.documentTypeId,
                 notes: null
             }

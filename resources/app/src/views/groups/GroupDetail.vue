@@ -71,9 +71,11 @@
             <tab-item :visible="group.isVcep()" label="Specifications">
                 <cspec-summary />
             </tab-item>
+
             <tab-item label="Documents">
-                Group documents will go here.
+                <group-documents></group-documents>
             </tab-item>
+
             <tab-item label="Attestations" :visible="group.isEp()">
                 <attestation-gcep class="pb-2 mb-4 border-b" v-if="group.isGcep()" :disabled="true" />
 
@@ -148,6 +150,7 @@ import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionFor
 import VcepGeneList from '@/components/expert_panels/VcepGeneList'
 import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm'
 import VcepOngoingPlansFormVue from '../../components/expert_panels/VcepOngoingPlansForm.vue';
+import GroupDocuments from './GroupDocuments';
 
 import {isValidationError} from '../../http';
 
@@ -160,6 +163,7 @@ export default {
         AttestationNhgri,
         AttestationReanalysis,
         CspecSummary,
+        GroupDocuments,
         GroupForm,
         GroupDetailHeader,
         EvidenceSummaries,
@@ -222,6 +226,7 @@ export default {
                     store.commit('groups/setCurrentItemIndexByUuid', props.uuid)
                     if (group.value.isEp()) {                        
                         store.dispatch('groups/getGenes', group.value);
+                        store.dispatch('groups/getDocuments', group.value);
                         if (group.value.isVcep()) {
                             store.dispatch('groups/getEvidenceSummaries', group.value);
                         }
