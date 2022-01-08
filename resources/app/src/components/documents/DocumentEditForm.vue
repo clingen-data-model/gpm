@@ -20,7 +20,7 @@
     </form-container>
 </template>
 <script>
-import isValidationError from '@/http';
+import { isValidationError } from '@/http';
 import {mapState} from 'vuex'
 export default {
     name: 'DocumentEditForm',
