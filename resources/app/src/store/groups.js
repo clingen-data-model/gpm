@@ -443,6 +443,7 @@ export const actions = {
                 });
     },
 
+    // eslint-disable-next-line
     async updateDocument({ commit }, { group, document }) {
         return api.put(`/api/groups/${group.uuid}/documents/${document.uuid}`, document)
             .then((response) => {
@@ -452,6 +453,7 @@ export const actions = {
             });
     },
 
+    // eslint-disable-next-line
     async deleteDocument( { commit }, {group, document}) {
         await api.delete(`/api/applications/${group.expert_panel.uuid}/documents/${document.uuid}`)
             .then(response => {

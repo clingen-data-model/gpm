@@ -25,7 +25,7 @@
 </template>
 <script>
 import { mapState } from 'vuex';
-import isValidationError from '@/http';
+import { isValidationError } from '@/http';
 
 export default {
     props: {
