@@ -13,7 +13,7 @@ class GroupRelationsController extends Controller
 {
     public function documents(Request $request, Group $group)
     {
-        return $group->documents;
+        return $group->documents()->with('type')->get();
     }
 
     public function nextActions(Request $request, Group $group)

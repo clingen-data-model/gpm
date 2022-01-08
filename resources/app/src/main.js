@@ -33,10 +33,11 @@ app.directive('remaining-height', RemainingHeight)
 
 
 
-import Popper from "vue3-popper"
-app.component('popper', Popper);
+import PopOver from "@/components/PopOver"
+app.component('popper', PopOver);
+app.component('popover', PopOver);
 
-import {formatDate} from '@/date_utils'
+import {formatDate, formatDateTime, formatTime} from '@/date_utils'
 
 import {userCan, hasPermission, hasAnyPermission, hasRole, userIsPerson, userInGroup} from '@/auth_utils'
 
@@ -56,6 +57,8 @@ app.use(store)
             hasRole,
             userIsPerson,
             formatDate,
+            formatDateTime,
+            formatTime,
             titleCase,
             camelCase,
             snakeCase,

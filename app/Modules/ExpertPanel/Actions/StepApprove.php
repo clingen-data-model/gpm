@@ -68,7 +68,7 @@ class StepApprove
         }
 
         if ($notifyContacts) {
-            $this->notifyContacts($expertPanel, $subject, $body, $attachments);
+            $this->notifyContacts($expertPanel, $approvedStep, $subject, $body, $attachments);
         }
     }
 
@@ -85,9 +85,13 @@ class StepApprove
     }
     
 
-    private function notifyContacts($expertPanel, $subject, $body, $attachments)
+    private function notifyContacts($expertPanel, $approvedStep, $subject, $body, $attachments)
     {
-        $defaultMail = (new ApplicationStepApprovedNotification($expertPanel, $expertPanel->current_step, false))
+        $defaultMail = (new ApplicationStepApprovedNotification(
+            $expertPanel,
+            $approvedStep,
+            false
+        ))
         ->toMail($expertPanel->contacts->first());
 
         $subject = $subject ?? $defaultMail->subject;

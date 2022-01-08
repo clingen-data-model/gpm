@@ -17,7 +17,6 @@ class Group extends Entity {
         parent_id: null,
         group_type_id: null,
         group_status_id: null,
-        expert_panel: new ExpertPanel(),
         type: {},
         parent: {},
     };
@@ -40,8 +39,6 @@ class Group extends Entity {
         const expertPanel = attributes.expert_panel ? {...attributes.expert_panel} : {};
         delete(attributes.expert_panel);
 
-        // const documents = attributes.documents ? [...attributes.documents] : [];
-
         super(attributes);
 
         this.members = [];
@@ -49,7 +46,6 @@ class Group extends Entity {
             members.forEach(m => this.addMember(m))
         }
         this.expert_panel = new ExpertPanel(expertPanel)
-
         this.documents = documents;
 
     }
@@ -112,7 +108,6 @@ class Group extends Entity {
     get isApplying () {
         return this.expert_panel.isApplying
     }
-
 
     addMembers (members) {
         members.forEach(m => {

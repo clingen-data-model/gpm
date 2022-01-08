@@ -118,9 +118,17 @@ export default {
         VcepGeneList,
         VcepOngoingPlansForm,
     },
+    emits: [
+        'autosaved',
+        'saving',
+        'saved'
+    ],
     data () {
         return {
-            application: VcepApplication
+            application: VcepApplication,
+            AutoSaveInterval: null,
+            autosaveTime: 10000,
+            saving: false
         }
     },
     computed: {
@@ -138,11 +146,14 @@ export default {
     },
     methods: {
         async save() {
+            this.$emit('saving');
+
             const promises = Object.keys(this.$refs).map(key => this.$refs[key].save());
             promises.push(this.saveUpdates());
 
             try {
                 await Promise.all(promises);
+                this.$emit('saved');
             } catch (error) {
                 if (isValidationError(error)) {
                     this.errors = error.response.data.errors;
@@ -153,10 +164,32 @@ export default {
         },
         saveUpdates () {
             if (this.group.expert_panel.isDirty()) {
-                return this.$store.dispatch('groups/saveApplicationData', this.group)
-                        .then(() => this.$store.commit('pushSuccess', 'Application updated'));
+                return this.$store.dispatch('groups/saveApplicationData', this.group);
             }
+        },
+        async autosave () {
+            if (this.applicationIsDirty()) {
+                await this.save();
+                this.$emit('autosaved');
+                return;
+            }
+        },
+        async startAutoSave () {
+            this.AutoSaveInterval = setInterval(() => this.autosave(), this.autosaveTime)
+        },
+        stopAutoSave() {
+            clearInterval(this.AutoSaveInterval);
+        },
+        applicationIsDirty () {
+            return  this.group.expert_panel.isDirty() 
+                || this.group.isDirty()
         }
-    }
+    },
+    // mounted() {
+    //     this.startAutoSave();
+    // },
+    // beforeUnmount() {
+    //     this.stopAutoSave();
+    // },
 }
 </script>

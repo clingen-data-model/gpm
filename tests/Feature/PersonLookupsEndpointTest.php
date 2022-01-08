@@ -8,7 +8,7 @@ use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class CountryEndpointTest extends TestCase
+class PersonLookupsEndpointTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -63,5 +63,4 @@ class CountryEndpointTest extends TestCase
         $response->assertJsonFragment([['id' => 5, 'name' => 'Gender Variant/Non-conforming']]);
         $response->assertJsonFragment([['id' => 1, 'name' => 'Female']]);
     }
-    
 }

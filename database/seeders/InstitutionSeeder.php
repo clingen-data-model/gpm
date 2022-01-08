@@ -82,6 +82,9 @@ class InstitutionSeeder extends Seeder
             ];
         }, $institutions);
 
+        if (app()->environment('testing')) {
+            return $items->take(10);
+        }
         return $items;
     }
     

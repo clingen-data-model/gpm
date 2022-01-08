@@ -329,7 +329,9 @@ export default {
                                 <div @click="confirmRemoveMember(item)">Remove from group</div>
                             </dropdown-item>
                         </dropdown-menu>
-                        <icon-notification v-if="item.is_contact" :width="12" :height="12" icon-name="Is a group contact" @click.stop=""/>
+                        <popover hover arrow content="Receives notifications about this group." placement="top">
+                            <icon-notification v-if="item.is_contact" :width="12" :height="12" icon-name="Is a group contact" @click.stop=""/>
+                        </popover>
                     </div>
                 </template>
 

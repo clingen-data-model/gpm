@@ -2,18 +2,6 @@
     <div>
         <pre>{{}}</pre>
         <div class="flex justify-center">
-            <static-alert variant="info" v-if="!canContinue" class="lg:w-1/4 md:w-1/2">
-                <p>Hi, {{this.$store.state.user.name}}.</p> 
-                
-                <p>
-                    It looks like you've alreay redeemed your invite.
-                </p>
-
-                <p>
-                    <a href="/">Return to your dashboard</a> to see a list of your groups, pending COIs and more.
-                </p>
-            </static-alert>
-            <div v-else>
                 <div class="onboarding-container" :style="`width: ${currentStepWidth}`">
                     <keep-alive>
                         <transition :name="animationDirection" mode="out-in">        
@@ -32,10 +20,9 @@
                     </keep-alive>
                 </div>
                 <p>
-                    <router-link class="block link pt-2" :to="{name: 'login'}">&lt; Log In</router-link>
+                    <router-link class="block link pt-2" :to="{name: 'login'}" v-if="!this.$store.getters.isAuthed">&lt; Log In</router-link>
                 </p>
             </div>
-        </div>
     </div>
 </template>
 <script>

@@ -11,8 +11,9 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use App\Modules\Groups\Events\PublishableApplicationEvent;
 
-class MemberRoleAssigned extends GroupEvent
+class MemberRoleAssigned extends GroupMemberEvent implements PublishableApplicationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -23,7 +24,7 @@ class MemberRoleAssigned extends GroupEvent
      */
     public function __construct(public GroupMember $groupMember, public Collection $roles)
     {
-        $this->group = $groupMember->group;
+        parent::__construct($groupMember);
     }
 
     public function getLogEntry(): string

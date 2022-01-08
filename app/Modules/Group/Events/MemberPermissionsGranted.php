@@ -5,6 +5,7 @@ namespace App\Modules\Group\Events;
 use Illuminate\Support\Collection;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Database\Eloquent\Model;
 use App\Modules\Group\Events\GroupEvent;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -12,9 +13,9 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Database\Eloquent\Model;
+use App\Modules\Groups\Events\PublishableApplicationEvent;
 
-class MemberPermissionsGranted extends GroupEvent
+class MemberPermissionsGranted extends GroupMemberEvent implements PublishableApplicationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -25,7 +26,7 @@ class MemberPermissionsGranted extends GroupEvent
      */
     public function __construct(public GroupMember $groupMember, public Collection $permissions)
     {
-        //
+        parent::__construct($groupMember);
     }
 
     public function getLogEntry(): string

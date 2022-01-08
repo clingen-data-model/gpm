@@ -2,25 +2,29 @@
 
 namespace App\Modules\Group\Providers;
 
-use App\Listeners\RecordEvent;
-use App\Events\RecordableEvent;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Event;
-use App\Modules\Foundation\ClassGetter;
-use Illuminate\Support\ServiceProvider;
+use App\Modules\Group\Events\GenesAdded;
+use App\Modules\Group\Events\GeneRemoved;
 use App\Modules\Group\Policies\GroupPolicy;
-use App\Modules\ExpertPanel\Events\StepApproved;
+use App\Modules\Group\Actions\NotifyGenesAdded;
+use App\Modules\Group\Actions\GenesChangeNotify;
 use App\Modules\Group\Actions\GroupStatusUpdate;
 use App\Modules\Foundation\ModuleServiceProvider;
+use App\Modules\Group\Actions\NotifyGenesRemoved;
+use App\Modules\Group\Actions\EventApplicationPublish;
 use App\Modules\Group\Events\ApplicationStepSubmitted;
 use App\Modules\ExpertPanel\Events\ApplicationCompleted;
+use App\Modules\Groups\Events\PublishableApplicationEvent;
 use App\Modules\Group\Actions\ApplicationSubmissionNotificationSend;
 
 class GroupModuleServiceProvider extends ModuleServiceProvider
 {
     protected $listeners = [
         ApplicationStepSubmitted::class => [ApplicationSubmissionNotificationSend::class],
-        ApplicationCompleted::class => [GroupStatusUpdate::class]
+        ApplicationCompleted::class => [GroupStatusUpdate::class],
+        GenesAdded::class => [NotifyGenesAdded::class],
+        GeneRemoved::class => [NotifyGenesRemoved::class],
     ];
 
     protected $policies = [
@@ -47,6 +51,17 @@ class GroupModuleServiceProvider extends ModuleServiceProvider
     {
         parent::boot();
         $this->registerPolicies();
+
+        $eventClasses = array_merge(
+            $this->classGetter->atPath($this->getEventPath()),
+            $this->classGetter->atPath(app_path('Modules/ExpertPanel/Events'))
+        );
+        foreach ($eventClasses as $class) {
+            if (array_key_exists(PublishableApplicationEvent::class, class_implements($class))) {
+                Event::listen($class, [EventApplicationPublish::class, 'handle']);
+            }
+        }
+
         $this->mergeConfigFrom(
             __DIR__.'/../groups.php',
             'groups'

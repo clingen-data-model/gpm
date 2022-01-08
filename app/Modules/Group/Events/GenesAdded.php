@@ -1,14 +1,16 @@
 <?php
 namespace App\Modules\Group\Events;
 
+use Illuminate\Support\Collection;
 use App\Modules\Group\Models\Group;
 use Illuminate\Queue\SerializesModels;
 use App\Modules\Group\Events\GroupEvent;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use App\Modules\Groups\Events\PublishableApplicationEvent;
 
-class GenesAdded extends GroupEvent
+class GenesAdded extends GroupEvent implements PublishableApplicationEvent, GeneEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -17,7 +19,7 @@ class GenesAdded extends GroupEvent
      *
      * @return void
      */
-    public function __construct(public Group $group, public array $genes)
+    public function __construct(public Group $group, public Collection $genes)
     {
     }
 
@@ -39,5 +41,12 @@ class GenesAdded extends GroupEvent
     public function broadcastOn()
     {
         return new PrivateChannel('channel-name');
+    }
+
+    public function __get($key)
+    {
+        if ($key == 'gene') {
+            return $this->genes;
+        }
     }
 }

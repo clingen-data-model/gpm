@@ -7,7 +7,7 @@
 </style>
 <template>
   <div v-if="$store.getters.isAuthed">
-    <popper hover arrow class="report-issue-container" placement="left">
+    <popover hover arrow class="report-issue-container" placement="left">
         <template v-slot:content>
             <div class="whitespace-no-wrap w-28 text-xs">Report a problem</div>
         </template>
@@ -26,7 +26,7 @@
             >
                 <icon-bug />
             </button>
-    </popper>
+    </popover>
     <teleport to="body">
       <modal-dialog title="Report a problem" v-model="showReportIssue">
         <input-row

@@ -1,23 +1,25 @@
 <template>
     <div>
         <div v-if="!group.expert_panel.hasPendingSubmission" class="p-4">
-            <popper hover arrow>
+            <popover hover arrow>
                 <template v-slot:content>
                     <div>
                         <requirements-item  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
                     </div>
                 </template>
-                <div class="relative">
-                    <button class="btn btn-xl" @click="initSubmission">
-                        Submit for Approval
-                    </button>
-                    <!-- Add mask above button if requirements are unmet b/c vue3-popper doesn't respond to disabled components. -->
-                    <div v-if="!meetsRequirements" class="bg-white opacity-50 absolute top-0 bottom-0 left-0 right-0"></div>
+                <div>
+                    <div class="relative">
+                        <button class="btn btn-xl" @click="initSubmission">
+                            Submit for Approval
+                        </button>
+                        <!-- Add mask above button if requirements are unmet b/c vue3-popover doesn't respond to disabled components. -->
+                        <div v-if="!meetsRequirements" class="bg-white opacity-50 absolute top-0 bottom-0 left-0 right-0"></div>
+                    </div>
+                    <dev-component v-if="hasRole('super-user')">
+                        <button @click="bypassRequirements">Bypass Requirements</button>
+                    </dev-component>
                 </div>
-                <dev-component v-if="hasRole('super-user')">
-                    <button @click="bypassRequirements">Bypass Requirements</button>
-                </dev-component>
-            </popper>
+            </popover>
         </div>
         <teleport to="body">
             <transition name="fade">

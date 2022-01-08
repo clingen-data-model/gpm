@@ -4,22 +4,22 @@
             <h2 :class="{'text-gray-400': disabled}">
                 {{title}}
                 <div class="inline" v-if="disabled">
-                    <popper arrow hover>
+                    <popover arrow hover>
                         <template #content>
                             <small class="text-sm" v-html="lockedContent"></small>
                         </template>
                         <icon-lock class="inline" />
-                    </popper>
+                    </popover>
                 </div>
             </h2>
             <div class="inline" v-if="approved">
-                <popper hover arrow>
+                <popover hover arrow>
                     <template #content>
                         Make changes from the the <router-link :to="{name: 'GroupDetail', parmas:{uuid: group.uuid}}">group's detail screen</router-link>
                         <br><small>Changes may require re-approval.</small>
                     </template>
                     <badge color="green">Approved</badge>
-                </popper>
+                </popover>
             </div>
             <badge v-if="underReview" color="yellow">Under Review</badge>
         </div>

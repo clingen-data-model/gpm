@@ -30,6 +30,9 @@ export default {
     methods: {
         redirect() {
             let route = {name: 'Dashboard'};
+            if (this.$route.query.redirect) {
+                route = this.$route.query.redirect;
+            }
             if (this.$route.redirectedFrom && this.$route.redirectedFrom.name !== 'login') {
                 route = this.$route.redirectedFrom
             }

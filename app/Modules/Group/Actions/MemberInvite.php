@@ -38,7 +38,6 @@ class MemberInvite
             unset($data['role_ids']);
         }
 
-        $personData = $data;
         $personUuid = Uuid::uuid4();
         $person = $this->createPerson->handle(
             uuid: $personUuid,

@@ -23,4 +23,10 @@ class DocumentType extends Model
         'is_versioned' => 'boolean',
         'application_document' => 'boolean'
     ];
+
+    protected $hidden = [
+        'created_at',
+        'deleted_at',
+        'updated_at'
+    ];
 }

@@ -2,15 +2,21 @@
 
 namespace Tests\Feature\End2End\Groups\Genes;
 
+use Carbon\Carbon;
 use Tests\TestCase;
+use App\Models\Activity;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
+use Illuminate\Support\Facades\Mail;
 use App\Services\HgncLookupInterface;
 use App\Services\MondoLookupInterface;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Modules\Group\Mail\GeneAddedMail;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Notification;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Mail\GeneAddedToVcepMail;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group groups
@@ -38,24 +44,25 @@ class AddGenesToVcepTest extends TestCase
         
         app()->bind(HgncLookupInterface::class, function ($app) {
             return new class implements HgncLookupInterface {
-                public function findSymbolById($hgncId): string{
+                public function findSymbolById($hgncId): string
+                {
                     return 'ABC1';
                 }
-                public function findHgncIdBySymbol($geneSymbol): int {
+                public function findHgncIdBySymbol($geneSymbol): int
+                {
                     return 12345;
                 }
             };
         });
 
         app()->bind(MondoLookupInterface::class, function ($app) {
-            return new class implements MondoLookupInterface{
-                public function findNameByMondoId($hgncId): string {
+            return new class implements MondoLookupInterface {
+                public function findNameByMondoId($hgncId): string
+                {
                     return 'gladiola syndrome';
                 }
             };
         });
-
-
     }
 
     /**
@@ -144,12 +151,13 @@ class AddGenesToVcepTest extends TestCase
      */
     public function activity_logged()
     {
+        Carbon::setTestNow('2022-01-01');
         $this->seedGenes(['hgnc_id' => 789012, 'gene_symbol' => 'ABC12']);
         $this->seedDiseases(['mondo_id' => 'MONDO:8901234', 'name' => 'fartsalot']);
 
         $genesData = [
             ['hgnc_id'=>12345, 'mondo_id' => 'MONDO:9876543'],
-            ['hgnc_id'=>789012, 'mondo_id' => 'MONDO:8901234']
+            // ['hgnc_id'=>789012, 'mondo_id' => 'MONDO:8901234']
         ];
 
         Sanctum::actingAs($this->user);
@@ -157,12 +165,13 @@ class AddGenesToVcepTest extends TestCase
             'genes' => $genesData
         ])->assertStatus(200);
 
-        $this->assertDatabaseHas(
-            'activity_log',
-            [
-                'subject_id' => $this->expertPanel->group_id,
-                'properties' => json_encode(['genes' => $genesData, 'activity_type' => 'genes-added'])
-            ]
-        );
+        $logEntry = Activity::where([
+            'activity_type' => 'genes-added',
+            'subject_id' => $this->expertPanel->group_id,
+        ])->first();
+        $this->assertNotNull($logEntry);
+        $this->assertEquals('ABC1', $logEntry->properties['genes'][0]['gene_symbol']);
+        $this->assertEquals($genesData[0]['mondo_id'], $logEntry->properties['genes'][0]['mondo_id']);
+        $this->assertEquals('gladiola syndrome', $logEntry->properties['genes'][0]['disease_name']);
     }
 }

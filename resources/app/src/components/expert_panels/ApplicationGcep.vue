@@ -23,7 +23,7 @@
                     <a href="https://clinicalgenome.org">clinicalgenome.org</a>.
                 </p>
                 
-                <gcep-gene-list :group="group" ref="geneList" />
+                <gcep-gene-list :group="group" ref="geneList" @geneschanged="genesChanged = true" />
                 
                 <hr>
 
@@ -71,6 +71,19 @@ export default {
         MemberList,
         ScopeDescriptionForm,
     },
+    data () {
+        return {
+            AutoSaveInterval: null,
+            autosaveTime: 10000,
+            genesChanged: false,
+            saving: false,
+        }
+    },
+    emits: [
+        'autosaved',
+        'saved',
+        'saving',
+    ],
     computed: {
         group: {
             get: function () {
@@ -83,10 +96,15 @@ export default {
     },
     methods: {
         async save() {
+            this.$emit('saving');
+
             const promises = Object.keys(this.$refs).map(key => this.$refs[key].save());
             promises.push(this.saveUpdates());
+            
             try {
                 await Promise.all(promises);
+                this.$emit('saved');
+                this.genesChanged = false;
             } catch (error) {
                 if (isValidationError(error)) {
                     this.errors = error.response.data.errors;
@@ -96,11 +114,32 @@ export default {
             }
         },
         saveUpdates () {
-            if (this.group.expert_panel.isDirty()) {
+            if (this.applicationIsDirty()) {
                 return this.$store.dispatch('groups/saveApplicationData', this.group)
-                        .then(() => this.$store.commit('pushSuccess', 'Application updated'));
+                        .then(() => {
+                            this.$emit('saved');
+                        });
             }
         },
+        async autosave () {
+            if (this.applicationIsDirty()) {
+                await this.save();
+                this.$emit('autosaved');
+                return;
+            }
+        },
+        async startAutoSave () {
+            this.AutoSaveInterval = setInterval(() => this.autosave(), this.autosaveTime)
+        },
+        stopAutoSave() {
+            clearInterval(this.AutoSaveInterval);
+        },
+        applicationIsDirty () {
+            return  this.group.expert_panel.isDirty() 
+                || this.group.isDirty()
+                || this.genesChanged
+        }
+
     },
     setup () {
         return {
@@ -108,8 +147,12 @@ export default {
             resetErrors, 
             submitFormData
         }
-    }
+    },
+    // mounted() {
+    //     this.startAutoSave();
+    // },
+    // beforeUnmount() {
+    //     this.stopAutoSave();
+    // },
 }
 </script>
-<style lang="postcss">
-</style>

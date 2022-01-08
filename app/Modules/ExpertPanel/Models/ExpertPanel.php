@@ -447,7 +447,12 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $this->addEpTypeSuffix($this->group->name);
     }
     
-
+    public function getDisplayNameAttribute()
+    {
+        return $this->getFullLongBaseNameAttribute();
+    }
+    
+    
     public function getFullLongBaseNameAttribute()
     {
         return isset($this->attributes['long_base_name'])
@@ -498,6 +503,27 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     {
         return '/expert-panels/'.urlencode($this->name).'/coi/'.$this->coi_code;
     }
+
+    public function getDefinitionIsApprovedAttribute(): bool
+    {
+        return (bool)$this->step_1_approval_date;
+    }
+    
+    public function getHasApprovedDraftAtribute(): bool
+    {
+        return !is_null($this->step_2_approval_date);
+    }
+    
+    public function getHasApprovedPilotAtribute(): bool
+    {
+        return !is_null($this->step_3_approval_date);
+    }
+    
+    public function getSustainedCurationIsApprovedAtribute(): bool
+    {
+        return !is_null($this->step_4_approval_date);
+    }
+    
     
     
 

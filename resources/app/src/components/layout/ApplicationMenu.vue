@@ -12,13 +12,18 @@
 <template>
     <div 
         :class="{collapsed: isCollapsed}"
-        class="app-menu overflow-y-auto"
+        class="app-menu overflow-y-auto relative"
     >
         <ul class="menu-items">
             <li v-for="(item, idx) in application.steps" :key="idx">
                 <menu-item :item="item" class="block" :is-current-step="isCurrentStep(item)"></menu-item>
             </li>
         </ul>
+        <div class="">
+            <slot name="footer">
+
+            </slot>
+        </div>
     </div>
 </template>
 <script>

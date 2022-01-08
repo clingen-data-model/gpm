@@ -5,6 +5,7 @@ use App\Modules\Group\Actions\GenesAdd;
 use App\Modules\Group\Actions\MemberAdd;
 use App\Modules\Group\Actions\GeneRemove;
 use App\Modules\Group\Actions\GeneUpdate;
+use App\Modules\Group\Actions\DocumentAdd;
 use App\Modules\Group\Actions\GroupCreate;
 use App\Modules\Group\Actions\GroupDelete;
 use App\Modules\Group\Actions\MemberInvite;
@@ -12,6 +13,7 @@ use App\Modules\Group\Actions\MemberRemove;
 use App\Modules\Group\Actions\MemberRetire;
 use App\Modules\Group\Actions\MemberUpdate;
 use App\Modules\Group\Actions\ParentUpdate;
+use App\Modules\Group\Actions\DocumentUpdate;
 use App\Modules\Group\Actions\GroupNameUpdate;
 use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Group\Actions\MemberRemoveRole;
@@ -33,8 +35,8 @@ use App\Modules\Group\Actions\CurationReviewProtocolUpdate;
 use App\Modules\Group\Http\Controllers\Api\GroupController;
 use App\Modules\Group\Http\Controllers\Api\GeneListController;
 use App\Modules\Group\Http\Controllers\Api\ActivityLogsController;
-use App\Modules\Group\Http\Controllers\Api\EvidenceSummaryController;
 use App\Modules\Group\Http\Controllers\Api\GroupRelationsController;
+use App\Modules\Group\Http\Controllers\Api\EvidenceSummaryController;
 use App\Modules\Group\Http\Controllers\Api\GroupSubmissionsController;
 
 // Route::post('/{{group_uuid}}/members', MemberAdd::class);
@@ -48,7 +50,13 @@ Route::group([
     Route::get('/', [GroupController::class, 'index']);
     Route::post('/', GroupCreate::class);
 
-    Route::get('/{group:uuid}/documents', [GroupRelationsController::class, 'documents']);
+    Route::group(['prefix' => '{group:uuid}/documents'], function () {
+        Route::get('/', [GroupRelationsController::class, 'documents']);
+        Route::post('/', DocumentAdd::class);
+        Route::put('/{document:uuid}', DocumentUpdate::class);
+    });
+
+
     Route::get('/{group:uuid}/next-actions', [GroupRelationsController::class, 'nextActions']);
     
     Route::get('/{uuid}', [GroupController::class, 'show']);

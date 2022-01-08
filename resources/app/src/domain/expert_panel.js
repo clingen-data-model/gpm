@@ -214,11 +214,9 @@ class ExpertPanel extends Entity
     }
 
     get isApplying () {
-        // console.log('expert_panel.isApplying: ', this.date_completed);
         return !this.date_completed;
     }
-
-
+    
     hasPendingSubmissionForStep(stepName) {
         return this.hasPendingSubmission && this.pendingSubmission.type.name == stepName;
     }

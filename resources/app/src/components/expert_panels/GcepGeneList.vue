@@ -13,7 +13,13 @@
                 label="List the gene symbols for the genes the Expert Panel plans to curate.  Separate genes by commas, spaces, or new lines."
                 :errors="errors.genes"
             >
-                <textarea id="" class="w-full" rows="5" v-model="genesAsText" placeholder="ABC, DEF1, BEAN"></textarea>
+                <textarea 
+                    v-model="genesAsText"
+                    class="w-full" 
+                    rows="5" 
+                    placeholder="ABC, DEF1, BEAN"
+                    @input="$emit('geneschanged')"
+                ></textarea>
             </input-row>
         </div>
         <div v-else>
@@ -30,7 +36,6 @@ import {useStore} from 'vuex';
 import formFactory from '@/forms/form_factory'
 import is_validation_error from '@/http/is_validation_error'
 import api from '@/http/api'
-import Group from '@/domain/group'
 
 export default {
     name: 'GcepGeneList',
@@ -56,7 +61,8 @@ export default {
     emits: [
         'saved',
         'canceled',
-        'update:editing'
+        'update:editing',
+        'geneschanged'
     ],
     methods: {
         showForm () {

@@ -37,7 +37,14 @@
                 class="mt-4" 
                 :application="application" 
                 :is-collapsed="!showApplicationToc"
-            ></application-menu>
+            >
+                <template v-slot:footer>
+                    <div class="p-2 border-t text-sm text-center bottom-0">
+                        <div v-if="saving">Saving...</div>
+                        <div v-else>Last saved at {{formatTime(lastSavedAt)}}</div>
+                    </div>
+                </template>
+            </application-menu>
             <div class=" flex-1">
                 <section id="body" class="px-4" v-remaining-height>
                     <static-alert 
@@ -56,7 +63,12 @@
                             if you have any questions.
                         </p>
                     </static-alert>
-                    <component :is="applicationComponent" ref="application"></component>
+                    <component 
+                        :is="applicationComponent" 
+                        ref="application"
+                        @saved="updateLastSavedAt"
+                        @saving="saving = true"
+                    ></component>
                 </section>
             </div>
         </div>
@@ -92,7 +104,9 @@ export default {
         return {
             showDocumentation: false,
             showModal: false,
-            showApplicationToc: true
+            showApplicationToc: true,
+            lastSavedAt: new Date(),
+            saving: false
         }
     },
     watch: {
@@ -147,10 +161,23 @@ export default {
                 this.$refs.modalView.clearForm();
             }
         },
+        updateLastSavedAt () {
+            this.saving = false;
+            this.lastSavedAt = new Date();
+        },
     },
     beforeUnmount() {
         this.$store.commit('groups/clearCurrentItem')
     },
+    beforeRouteLeave() {
+        if (this.$refs.application.applicationIsDirty()) {
+            const confirm = window.confirm('You have unsaved changes. If you continue your changes may be lost.');
+
+            if (!confirm) {
+                return false;
+            }
+        }
+    }
 }
 </script>
 <style lang="postcss" scoped>

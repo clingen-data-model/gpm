@@ -188,6 +188,12 @@ class GroupPolicy
     public function viewGroupLogs(User $user, Group $group)
     {
         return $user->hasAnyPermission('groups-manage', 'ep-applications-manage')
-            || $user->person->isMemberOf($group);
+            || ($user->person && $user->person->isMemberOf($group));
+    }
+
+    public function manageGroupDocuments(User $user, Group $group): bool
+    {
+        return $user->hasAnyPermission('groups-manage', 'ep-applications-manage')
+            || ($user->person && $user->person->isMemberOf($group));
     }
 }

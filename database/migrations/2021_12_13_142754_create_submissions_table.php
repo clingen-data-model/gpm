@@ -17,14 +17,21 @@ class CreateSubmissionsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('group_id');
             $table->foreign('group_id')->references('id')->on('groups')->cascadeOnDelete();
+            
             $table->unsignedBigInteger('submission_type_id');
             $table->foreign('submission_type_id')->references('id')->on('submission_types')->cascadeOnDelete();
+            
             $table->unsignedBigInteger('submission_status_id')->default(1);
             $table->foreign('submission_status_id')->references('id')->on('submission_statuses')->cascadeOnDelete();
+
+            $table->json('data')->nullable();
+            
             $table->dateTime('approved_at')->nullable();
             $table->text('notes')->nullable();
+            
             $table->unsignedBigInteger('submitter_id');
             $table->foreign('submitter_id')->references('id')->on('people')->cascadeOnDelete();
+            
             $table->timestamps();
             $table->softDeletes();
         });

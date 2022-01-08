@@ -1,6 +1,6 @@
 <template>
     <div v-if="hasRequirements">
-        <popper arrow hover>
+        <popover arrow hover>
             <template v-slot:content>
                 <div>
                     <requirements-item  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
@@ -9,7 +9,7 @@
             <badge :color="badgeColor" class="cursor-pointer">
                 {{badgeText}}
             </badge>
-        </popper>
+        </popover>
     </div>
 </template>
 <script>
@@ -59,16 +59,3 @@ export default {
     }
 }
 </script>
-
-<style>
-  :root {
-    --popper-theme-background-color: #ffffff;
-    --popper-theme-background-color-hover: #fff;
-    --popper-theme-text-color: #333;
-    --popper-theme-border-width: 0px;
-    --popper-theme-border-style: solid;
-    --popper-theme-border-radius: 6px;
-    --popper-theme-padding: 1rem;
-    --popper-theme-box-shadow: 0 6px 30px -6px rgba(0, 0, 0, 0.5);
-  }
-</style>

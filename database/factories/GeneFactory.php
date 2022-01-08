@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Model;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Models\Gene;
 use Illuminate\Database\Eloquent\Factories\Factory;

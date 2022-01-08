@@ -21,15 +21,17 @@ class Submission extends Model
         'group_id',
         'submission_type_id',
         'submission_status_id',
+        'data',
         'approved_at',
         'notes',
-        'submitter_id'
+        'submitter_id',
     ];
 
     protected $casts = [
         'group_id' => 'integer',
         'submission_type_id' => 'integer',
         'submission_status_id' => 'integer',
+        'data' => 'array',
         'approved_at' => 'datetime',
         'submitter_id' => 'integer',
     ];

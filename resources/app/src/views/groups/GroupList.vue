@@ -15,7 +15,12 @@
                     row-class="cursor-pointer active:bg-blue-100"
                 >
                     <template v-slot:cell-displayStatus="{item}">
-                        <badge class="text-xs" :color="item.statusColor">{{item.displayStatus}}</badge>
+                        <badge class="text-xs" :color="item.statusColor">
+                            {{item.displayStatus}}
+                            <span v-if="item.status.id == 1 && item.isEp()">
+                                - Step {{item.expert_panel.current_step}}
+                            </span>
+                        </badge>
                     </template>
                     <template v-slot:cell-coordinators="{value}">
                         <div v-if="value.length == 0"></div>

@@ -87,7 +87,7 @@ export default {
                         data.append(key, val);
                     })
                 data.append('file', this.$refs.fileInput.files[0]);
-                await this.$store.dispatch('groups/addDocument', 
+                await this.$store.dispatch('groups/addApplicationDocument', 
                         {group: this.group, data}
                     )
 

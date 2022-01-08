@@ -224,6 +224,15 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         return $this->type;
     }
 
+    public function getDisplayNameAttribute()
+    {
+        if ($this->isExpertPanel) {
+            return $this->expertPanel->displayName;
+        }
+
+        return $this->name;
+    }
+
 
     protected static function newFactory()
     {
