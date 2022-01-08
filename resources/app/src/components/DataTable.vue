@@ -68,7 +68,7 @@
                     </td>
                 </tr>
                 <transition name="fade-slide-down">
-                    <tr class="details" :class="rowClass(item)" v-if="detailRows && item.showDetails">
+                    <tr class="details" :class="resolveRowClass(item)" v-if="detailRows && item.showDetails">
                         <td :colspan="fields.length">
                             <slot name="detail" :item="item">
                                 <object-dictionary :obj="item"></object-dictionary>
