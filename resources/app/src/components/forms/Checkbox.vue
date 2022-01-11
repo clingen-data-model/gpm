@@ -28,11 +28,6 @@ export default {
         label: {
             required: false
         },
-        // disabled: {
-        //     type: Boolean,
-        //     required: false,
-        //     default: false
-        // },
         value: {
             required: false,
             default: () => true
