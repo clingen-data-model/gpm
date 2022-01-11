@@ -29,6 +29,7 @@ class GroupCreate
         if ($group->isEp) {
             $expertPanel = new ExpertPanel([
                 'long_base_name' => $data['name'],
+                'short_base_name' => $data['short_base_name'],
                 'group_id' => $group->id,
                 'cdwg_id' => $this->resolveParentId($data['parent_id']),
                 'expert_panel_type_id' => ($data['group_type_id'] - 2),
@@ -47,7 +48,7 @@ class GroupCreate
 
     public function asController(ActionRequest $request)
     {
-        $data = $request->only('name', 'group_type_id', 'group_status_id', 'parent_id');
+        $data = $request->only('name', 'group_type_id', 'group_status_id', 'parent_id', 'long_base_name', 'short_base_name');
 
         $group = $this->handle($data);
         $group->load('expertPanel');
@@ -59,6 +60,8 @@ class GroupCreate
     {
         return [
            'name' => 'required|max:255',
+           'long_base_name' => 'max:255',
+           'short_base_name' => 'max:16',
            'group_type_id' => 'required', // TODO: should check for existence when we merge vcep/gcep into group
            'group_status_id' => 'required|exists:group_statuses,id',
            'parent_id' => [
