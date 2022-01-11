@@ -289,7 +289,7 @@ export default {
         }
 
         const canEdit = computed(() => {
-            return hasAnyPermission(['ep-applications-manage', ['application-edit', group]])
+            return hasAnyPermission(['ep-applications-manage', ['application-edit', group.value]])
                 && !props.readonly
         })
 

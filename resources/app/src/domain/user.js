@@ -55,6 +55,7 @@ class User extends Entity {
         if (!Array.isArray(permissions)) {
             throw new Error('user.hasAnyArray expected array got '+(typeof permissions));
         }
+        
         return permissions.map(p => {
             let perm = p;
             let group = null;

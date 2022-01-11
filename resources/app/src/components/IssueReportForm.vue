@@ -63,7 +63,7 @@
             v-model="description"
             class="w-full"
             rows="10"
-            placeholder="Please tell us what you were doing, what you expected to happen, and what actually happened."
+            placeholder="Please tell us what you expected to happen, and what actually happened, and the steps we should take to reproduce the problem."
           ></textarea>
         </input-row>
         <button-row
@@ -90,7 +90,7 @@ export default {
       url: null,
       type: "Bug",
       severity: "15555",
-      description: null,
+      description: "What I expected:\n\nSteps to reproduce:\n",
       summary: null,
       saving: false
     };
@@ -107,7 +107,7 @@ export default {
     },
     initForm() {
       this.severity = null;
-      this.description = null;
+      this.description = "What I expected:\n\n\nSteps to reproduce:\n\n\nAdditional information:\n\n";
       this.summary = null;
       this.url = this.$route.path;
 
