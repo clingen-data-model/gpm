@@ -23,6 +23,8 @@ class MemberAdd
     use AsController;
     use AsObject;
 
+    private $sendNotification = true;
+
     public function __construct(private MemberAssignRole $assignRoleAction)
     {
     }
@@ -39,9 +41,23 @@ class MemberAdd
 
         Event::dispatch(new MemberAdded($groupMember));
 
-        Notification::send($person, new AddedToGroupNotification($group));
+        if ($this->sendNotification) {
+            Notification::send($person, new AddedToGroupNotification($group));
+        }
 
         return $groupMember;
+    }
+
+    public function cancelNotification(): static
+    {
+        $this->sendNotification = false;
+        return $this;
+    }
+
+    public function sendNotification(): static
+    {
+        $this->sendNotification = true;
+        return $this;
     }
 
     public function asController(ActionRequest $request, string $groupUuid)

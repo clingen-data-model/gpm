@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Person\Notifications\InviteNotification;
+use App\Modules\Group\Notifications\AddedToGroupNotification;
 
 /**
  * @group groups
@@ -220,6 +221,7 @@ class InviteMemberTest extends TestCase
         
         $newPerson = Person::orderBy('id', 'desc')->first();
         Notification::assertSentTo($newPerson, InviteNotification::class);
+        Notification::assertNotSentTo($newPerson, AddedToGroupNotification::class);
     }
 
     /**
