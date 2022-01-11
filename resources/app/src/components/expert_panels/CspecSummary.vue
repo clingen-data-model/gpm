@@ -1,7 +1,9 @@
 <template>
     <div>
-        <!-- <pre>{{ {specifications: group.expert_panel.specifications} }}</pre> -->
-        <div class="well" v-if="!hasSpecifications">
+        <div class="font-bold text-lg mb-4"> 
+            COMING SOON: Summary of CSPEC specfications display here. 
+        </div>
+        <!-- <div class="well" v-if="!hasSpecifications">
             No specifications on record.
         </div>
         <div v-else>
@@ -20,15 +22,15 @@
                     <badge :color="item.status.color">{{item.status.name}}</badge>
                 </template>
             </data-table>
-            <a 
-                href="https://cspec.genome.network/"
-                class="btn btn-xl blue"
-                target="cspec"
-            >
-                Go to the CSpec Registry
-                <icon-external-link class="inline"></icon-external-link>
-            </a>
-        </div>
+        </div> -->
+        <a 
+            href="https://cspec.genome.network/"
+            class="btn btn-xl blue"
+            target="cspec"
+        >
+            Go to the CSpec Registry
+            <icon-external-link class="inline"></icon-external-link>
+        </a>
     </div>
 </template>
 <script>
