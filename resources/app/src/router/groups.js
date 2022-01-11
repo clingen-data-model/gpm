@@ -13,6 +13,9 @@ const MemberForm = () =>
 const GroupApplication = () =>
     import ( /* webpackChunkName: "group-application" */ '@/views/groups/GroupApplication.vue')
 
+const AnnualReviewForm = () =>
+    import ( /* webpackChunkName: "annual-review" */ '@/views/AnnualReviewForm.vue')
+
 const hasGroupPermission = async (to, permission) => {
     if (store.getters.currentUser.hasPermission('groups-manage')) {
         return true;
@@ -31,23 +34,6 @@ const hasGroupPermission = async (to, permission) => {
     store.commit('pushError', 'Permission denied');
     return false;
 }
-
-// const canUpdateApplication = async (to) => {
-//     if (store.getters.currentUser.hasPermission('ep-applications-manage')) {
-//         return true;
-//     }
-//     if (!store.getters['groups/currentItem'] || store.getters['groups/currentItem'].uuid != to.params.uuid) {
-//         await store.dispatch('find', to.params.uuid);
-//     }
-//     const group = store.getters['groups/currentItem'];
-
-//     if (store.getters.currentUser.hasGroupPermission('application-edit', group)) {
-//         return true;
-//     }
-
-//     store.commit('pushError', 'Permission denied');
-//     return false;
-// }
 
 export default [
     {
@@ -140,6 +126,50 @@ export default [
                 component: MemberForm,
                 meta: {
                     // default: GroupDetail,
+                    showModal: true,
+                    protected: true,
+                    title: 'Add Group Member'
+                },
+                props: true,
+                beforeEnter: async (to) => {
+                    return await hasGroupPermission(to, 'members-update', ['groups-manage'])
+                }
+            },
+        ],
+    },
+    {
+        name: 'AnnualReview',
+        path: '/groups/:uuid/annual-review',
+        components: {
+            default: AnnualReviewForm
+        },
+        meta: {
+            protected: true
+        },
+        props: true,
+        beforeEnter: async (to) => {
+            return await hasGroupPermission(to, 'application-edit')
+        },
+        children: [
+            {
+                name: 'ReviewAddMember',
+                path: 'members/add',
+                component: MemberForm,
+                meta: {
+                    showModal: true,
+                    protected: true,
+                    title: 'Add Group Member'
+                },
+                props: true,
+                beforeEnter: async (to) => {
+                    return await hasGroupPermission(to, 'members-invite', ['groups-manage'])
+                }
+            },
+            {
+                name: 'ReviewEditMember',
+                path: 'members/:memberId',
+                component: MemberForm,
+                meta: {
                     showModal: true,
                     protected: true,
                     title: 'Add Group Member'
