@@ -20,7 +20,7 @@
                         </select>
                     </label>
                 </div>
-                <button class="btn btn-xs" @click="initUpload">Upload</button>
+                <button class="btn btn-xs" @click="initUpload" v-if="canManage">Upload</button>
             </div>
         </slot>
         <data-table 
@@ -47,7 +47,7 @@
                 </span>
             </template>
             <template v-slot:cell-actions="{item}">
-                <dropdown-menu hideCheveron>
+                <dropdown-menu hideCheveron v-if="canManage">
                     <template #label> <button class="btn btn-xs">&hellip;</button></template>
                     <dropdown-item @click="initDownload(item)">Download</dropdown-item>
                     <dropdown-item @click="initUpdate(item)">Update</dropdown-item>
@@ -57,7 +57,7 @@
             <template v-slot:detail="{item}">
                 <div class="px-4 pb-4 border">
                     <object-dictionary :obj="item.metadata" />
-                    <div class="flex space-x-2 pt-2 border-t">                    
+                    <div class="flex space-x-2 pt-2 border-t" v-if="canManage">                    
                         <button class="btn btn-xs" @click="initDownload(item)">Download</button>
                         <button class="btn btn-xs" @click="initUpdate(item)">Update</button>
                         <button class="btn btn-xs red" @click="initDelete(item)">Delete</button>
@@ -126,6 +126,10 @@ export default {
         documentDeleter: {
             type: Function,
             required: false
+        },
+        canManage: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
@@ -192,7 +196,7 @@ export default {
                 })
             }
             return documents
-        }
+        },
     },
     methods: {
         toggleItemDetails(item) {
