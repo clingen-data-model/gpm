@@ -12,6 +12,7 @@ use App\Modules\Group\Events\GenesAdded;
 use App\Modules\Group\Events\GeneRemoved;
 use App\Modules\Group\Events\MemberAdded;
 use App\Modules\Group\Events\MemberRemoved;
+use App\Modules\Group\Events\MemberRetired;
 use App\Modules\Group\Events\GeneAddedApproved;
 use App\Modules\Group\Events\MemberRoleRemoved;
 use App\Modules\ExpertPanel\Events\StepApproved;
