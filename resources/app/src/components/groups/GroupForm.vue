@@ -185,11 +185,29 @@ export default {
             }
         },
         createGroup () {
-            let {name, parent_id, group_type_id, group_status_id} = this.group.attributes;
+            let {
+                name, 
+                parent_id, 
+                group_type_id, 
+                group_status_id
+            } = this.group.attributes;
+
+            const {short_base_name} = this.group.expert_panel;
+
             if (name === null && this.group.expert_panel) {
                 name = this.group.expert_panel.long_base_name;
             }
-            return this.$store.dispatch('groups/create', {name, parent_id, group_type_id, group_status_id});
+
+            return this.$store.dispatch(
+                'groups/create', 
+                {
+                    name,
+                    parent_id,
+                    group_type_id,
+                    group_status_id,
+                    short_base_name
+                }
+            );
         },
         updateGroup () {
             const promises = [];
