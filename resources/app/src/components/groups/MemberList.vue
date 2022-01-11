@@ -170,12 +170,12 @@ export default {
             this.showConfirmRetire = true;
             this.selectedMember = member;
         },
-        async retireMember (member) {
+        async retireMember () {
             try {
                 await this.$store.dispatch('groups/memberRetire', {
                     uuid: this.group.uuid,
-                    memberId: member.id,
-                    startDate: member.start_date, 
+                    memberId: this.selectedMember.id,
+                    startDate: this.selectedMember.start_date, 
                     endDate: new Date().toISOString()
                 });
                 this.cancelRetire();
