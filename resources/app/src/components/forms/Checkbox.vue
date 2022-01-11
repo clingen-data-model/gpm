@@ -4,11 +4,11 @@
             <input 
                 type="checkbox" 
                 v-model="val" 
-                :id="checkboxId" 
                 class="mt-1" 
-                :disabled="$attrs.disabled" 
                 :value="value"
-                :checked="$attrs.checked">
+                :id="checkboxId"
+                v-bind="$attrs"
+            >
         </slot>
         <div>
             <slot>
