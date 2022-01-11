@@ -100,8 +100,8 @@
                         <div class="flex space-x-2">
                         <strong>Legend: </strong>
                             <checkbox label="Not granted" />
-                            <checkbox :checked="true" label="Granted" />
-                            <checkbox :checked="true" disabled label="Granted w/ role" />
+                            <checkbox :value="1" v-model="legendValues" label="Granted" />
+                            <checkbox :value="2" v-model="legendValues" disabled label="Granted w/ role" />
                         </div>
                         <div class="absolute top-0 left-0 w-full h-full bg-pink-500 opacity-0">&nbsp;</div>
                     </div>
@@ -158,7 +158,8 @@ export default {
         return {
             newMember: new GroupMember(),
             errors: {},
-            suggestedPeople: []
+            suggestedPeople: [],
+            legendValues: [1,2],
         }
     },
     computed: {
