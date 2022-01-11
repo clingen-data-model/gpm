@@ -128,7 +128,7 @@ class Group extends Entity {
     removeMember(member) {
         const idx = this.members.findIndex(m => m.id == member.id);
         if (idx > -1) {
-            splice(this.members[idx], 1);
+            this.members.splice(this.members[idx], 1);
             return;
         }
     }
