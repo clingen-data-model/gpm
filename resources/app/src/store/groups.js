@@ -144,10 +144,12 @@ export const actions = {
             });
     },
 
-    async findAndSetCurrent ({dispatch, commit}, uuid) {
-        const response = await dispatch('find', uuid)
-        commit('setCurrentItemIndexByUuid', uuid)
-        return response;
+    findAndSetCurrent ({dispatch, commit}, uuid) {
+        return dispatch('find', uuid)
+            .then(response => {
+                commit('setCurrentItemIndexByUuid', uuid)
+                return response;
+            })
     },
 
     async memberAdd ({commit}, {uuid, personId, roleIds, data}) {
@@ -304,11 +306,7 @@ export const actions = {
             expertPanel.curation_review_protocol_other = null;
         }
 
-        await api.put(`${getApplicationUrl(uuid)}/curation-review-protocols`, expertPanel.attributes)
-        .then(response => {
-            commit('addItem', response.data.data);
-            return response;
-        });
+        return api.put(`${getApplicationUrl(uuid)}/curation-review-protocols`, expertPanel.attributes)
     },
     
     getSpecifications({ commit }, group) {
