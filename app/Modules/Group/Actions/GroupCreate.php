@@ -23,14 +23,14 @@ class GroupCreate
             'name' => $data['name'],
             'group_type_id' => $data['group_type_id'] > 2 ? config('groups.types.ep.id') : $data['group_type_id'],
             'group_status_id' => $data['group_status_id'],
-            'parent_id' => isset($data['parent_id']) ? $data['parent_id'] : null
+            'parent_id' => $this->resolveParentId($data['parent_id']),
         ]);
 
         if ($group->isEp) {
             $expertPanel = new ExpertPanel([
                 'long_base_name' => $data['name'],
                 'group_id' => $group->id,
-                'cdwg_id' => isset($data['parent_id']) ? $data['parent_id'] : null,
+                'cdwg_id' => $this->resolveParentId($data['parent_id']),
                 'expert_panel_type_id' => ($data['group_type_id'] - 2),
                 'date_initiated' => Carbon::now(),
                 'coi_code' => bin2hex(random_bytes(12)),
@@ -85,5 +85,10 @@ class GroupCreate
             'required' => 'This field is required.',
             'exists' => 'The selection is invalid.'
         ];
+    }
+
+    private function resolveParentId($parentId): ?int
+    {
+        return isset($parentId) && $parentId > 0 ? $parentId : null;
     }
 }
