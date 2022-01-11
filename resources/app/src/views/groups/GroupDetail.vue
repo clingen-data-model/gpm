@@ -68,7 +68,7 @@
                     <evidence-summaries :group="group" class="pb-2 mb-4 border-b" />
                 </section>
             </tab-item>
-            <tab-item :visible="group.isVcep()" label="Specifications">
+            <tab-item label="Specifications" :visible="group.isVcep()">
                 <cspec-summary />
             </tab-item>
 
@@ -77,6 +77,7 @@
             </tab-item>
 
             <tab-item label="Attestations" :visible="group.isEp()">
+                <note>The attestations below are read only.  Attestations can only be completed during the application process.</note>
                 <attestation-gcep class="pb-2 mb-4 border-b" v-if="group.isGcep()" :disabled="true" />
 
                 <h3>Reanalysis &amp; Discrepancy Resolution</h3>
@@ -97,6 +98,7 @@
                 <button class="btn btn red" @click="initDelete">Delete Group</button>
             </tab-item>
         </tabs-container>
+        <br><br>
 
         <teleport to="body">
             <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="this.$route.meta.title">
