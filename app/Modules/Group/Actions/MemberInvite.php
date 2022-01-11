@@ -50,13 +50,15 @@ class MemberInvite
         $this->invitePerson->handle(person: $person, inviter: $group);
         
         $isContact = isset($data['is_contact']) ? $data['is_contact'] : false;
-        $newMember = $this->addMember->handle($group, $person, [
-            'is_contact' => $isContact,
-            'expertise' => isset($data['expertise']) ? $data['expertise'] : null,
-            'notes' => isset($data['notes']) ? $data['notes'] : null,
-            'training_level_1' => isset($data['training_level_1']) ? $data['training_level_1'] : null,
-            'training_level_2' => isset($data['training_level_2']) ? $data['training_level_2'] : null,
-        ]);
+        $newMember = $this->addMember
+                        ->cancelNotification()
+                        ->handle($group, $person, [
+                            'is_contact' => $isContact,
+                            'expertise' => isset($data['expertise']) ? $data['expertise'] : null,
+                            'notes' => isset($data['notes']) ? $data['notes'] : null,
+                            'training_level_1' => isset($data['training_level_1']) ? $data['training_level_1'] : null,
+                            'training_level_2' => isset($data['training_level_2']) ? $data['training_level_2'] : null,
+                        ]);
 
         if ($roleIds) {
             $newMember = $this->assignRole->handle($newMember, $roleIds);

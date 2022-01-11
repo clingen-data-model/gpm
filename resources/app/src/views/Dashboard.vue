@@ -77,6 +77,7 @@ import CoiList from '@/components/people/CoiList'
 import PersonProfile from '@/components/people/PersonProfile'
 import Person from "@/domain/person"
 import Group from "@/domain/group"
+import configs from '@/configs'
 
 export default {
     name: 'Dashboard',
@@ -151,13 +152,14 @@ export default {
                 name: 'status.name',
                 label: 'Status',
                 sortable: true,
+                resolveValue: (item) => {
+                    if (item.status.id == configs.groups.statuses['pending-approval'].id) {
+                        return item.status.name+' - '+item.expert_panel.currentStepName;
+                    }
+                    return item.status.name;
+                },
                 type: String
             },
-            {
-                name: 'info',
-                sortable: false,
-                type: String
-            }
         ]);
         const groupSort = ref({
             field: 'displayName',

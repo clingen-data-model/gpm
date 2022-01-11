@@ -29,7 +29,7 @@ class GroupCreate
         if ($group->isEp) {
             $expertPanel = new ExpertPanel([
                 'long_base_name' => $data['name'],
-                'short_base_name' => $data['short_base_name'],
+                'short_base_name' => isset($data['short_base_name']) ? $data['short_base_name'] : null,
                 'group_id' => $group->id,
                 'cdwg_id' => $this->resolveParentId($data['parent_id']),
                 'expert_panel_type_id' => ($data['group_type_id'] - 2),

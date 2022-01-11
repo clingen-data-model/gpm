@@ -7,14 +7,7 @@
             We can't see to find your membership id.  Please try refreshing.
         </card>
         <card :title="coiTitle"  class="max-w-xl mx-auto relative" v-if="codeIsValid">
-            <div v-if="saved">
-                Thanks for completing the conflict of interest form for {{epName}}!
-                <small v-if="$store.getters.isAuthed">
-                    <p>You'll be redirected back in {{redirectCountdown}} seconds.</p>
-                    <button @click="$router.go(-1)" class="text-blue-500">Go back</button>
-                </small>
-            </div>
-            <div v-else class="relative">
+            <div class="relative">
                 <div 
                     v-for="question in survey.questions"
                     :key="question.name"
@@ -145,9 +138,7 @@ export default {
                 );
                 this.saved = true;
                 this.$store.dispatch('forceGetCurrentUser');
-                if (this.$store.getters.isAuthed) {
-                    this.countDownToRedirect()
-                }
+                this.$router.push({name: 'Dashboard'});
             } catch (error) {
                 if (is_validation_error(error)) {
                     this.errors = error.response.data.errors
@@ -157,12 +148,6 @@ export default {
             }
             this.saving = false;
         },
-        countDownToRedirect () {
-            setInterval(() => {this.redirectCountdown--}, 1000)
-            setTimeout(() => {
-                this.$router.go(-1)
-            }, 5000)
-        }
     },
     async mounted() {
         this.verifyCode();

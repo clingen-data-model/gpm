@@ -47,11 +47,11 @@
                 </span>
             </template>
             <template v-slot:cell-actions="{item}">
-                <dropdown-menu hideCheveron v-if="canManage">
+                <dropdown-menu hideCheveron>
                     <template #label> <button class="btn btn-xs">&hellip;</button></template>
                     <dropdown-item @click="initDownload(item)">Download</dropdown-item>
-                    <dropdown-item @click="initUpdate(item)">Update</dropdown-item>
-                    <dropdown-item @click="initDelete(item)">Delete</dropdown-item>
+                    <dropdown-item @click="initUpdate(item)" v-if="canManage">Update</dropdown-item>
+                    <dropdown-item @click="initDelete(item)" v-if="canManage">Delete</dropdown-item>
                 </dropdown-menu>
             </template>
             <template v-slot:detail="{item}">
