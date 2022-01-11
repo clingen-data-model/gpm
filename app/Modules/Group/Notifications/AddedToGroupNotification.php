@@ -58,6 +58,7 @@ class AddedToGroupNotification extends Notification
     public function toArray($notifiable)
     {
         return [
+            'message' => 'You have been added to '.$this->group->displayName.'.',
             'group' => $this->group->toArray()
         ];
     }
