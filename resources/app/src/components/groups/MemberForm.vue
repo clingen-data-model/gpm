@@ -100,8 +100,8 @@
                         <div class="flex space-x-2">
                         <strong>Legend: </strong>
                             <checkbox label="Not granted" />
-                            <checkbox checked="true" label="Granted" />
-                            <checkbox checked="true" disabled="true" label="Granted w/ role" />
+                            <checkbox checked label="Granted" />
+                            <checkbox checked disabled label="Granted w/ role" />
                         </div>
                         <div class="absolute top-0 left-0 w-full h-full bg-pink-500 opacity-0">&nbsp;</div>
                     </div>
