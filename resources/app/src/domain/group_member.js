@@ -168,7 +168,7 @@ class GroupMember extends Entity {
         return arrayContains(permission, this.attributes.permissions);
     }
 
-    hasPermissionThroughRole (permission) {        
+    hasPermissionThroughRole (permission) {
         let permId = permission;
         if (typeof permId == 'object') {
             permId = permission.id
