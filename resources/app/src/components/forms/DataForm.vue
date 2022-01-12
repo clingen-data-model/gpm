@@ -67,7 +67,7 @@ export default {
         <div v-for="field in fields" :key="field.name">
             <div v-if="evalShow(field)">
                 <input-row 
-                    v-if="selectOrTextarea(field) || searchSelect(field)" 
+                    v-if="selectOrTextarea(field) || searchSelect(field) || field.type == 'component'" 
                     :label="getFieldLabel(field)"
                     :class="field.class"
                     :errors="errors[field.name]"
@@ -83,6 +83,7 @@ export default {
                         class="w-full"
                         rows="5"
                     ></textarea>
+                    <component v-else-if="field.type == 'component'" :is="field.component" v-model="dataClone[field.name]"></component>
                 </input-row>
                 <input-row v-else 
                     :label="getFieldLabel(field)" 
