@@ -1,11 +1,11 @@
 import {ref, computed} from 'vue';
 import api from '@/http/api';
 import {kebabCase} from '@/utils'
+import TimezoneSearchSelect from '@/components/forms/TimezoneSearchSelect'
+import InstitutionSearchSelect from '@/components/forms/InstitutionSearchSelect'
 
 export const lookups = ref({
-    institutions:[],
     countries:[],
-    timezones:[],
     primaryOccupations:[],
     races:[],
     ethnicities:[],
@@ -19,8 +19,8 @@ export const profileFields = computed(() => [
     {
         name: 'institution_id',
         label: 'Institution',
-        type: 'select',
-        options: lookups.value.institutions
+        type: 'component',
+        component: InstitutionSearchSelect
     },
     { name: 'credentials', type: 'textarea'},
     { name: 'biography', type: 'textarea'},
@@ -28,8 +28,8 @@ export const profileFields = computed(() => [
     { 
         name: 'timezone', 
         label: 'Timezone',
-        type: 'select', 
-        options: lookups.value.timezones
+        type: 'component', 
+        component: TimezoneSearchSelect
     },
 ]);
 
@@ -104,14 +104,6 @@ export const demographicFields = computed(() => [
 
 export const getLookups = () => {
     Object.keys(lookups.value).forEach(lkup => {
-        if (lkup == 'timezones') {
-            api.get(`/api/people/lookups/timezones`)
-                .then(response => {
-                    lookups.value.timezones = response.data.data.map(i => ({value: i, label: i}));
-                })
-
-            return;
-        }
         api.get(`/api/people/lookups/${kebabCase(lkup)}`)
             .then(response => {
                 lookups.value[lkup] = response.data.data.map(i => ({value: i.id, label: i.name}));

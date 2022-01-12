@@ -132,11 +132,11 @@ class UpdateProfileTest extends TestCase
         $response = $this->json('PUT', $this->url, []);
         $response->assertStatus(422);
         $response->assertJsonFragment([
-            'institution_id' => ['The institution id field is required.'],
-            'primary_occupation_id' => ['The primary occupation id field is required.'],
-            'gender_id' => ['The gender id field is required.'],
-            'country_id' => ['The country id field is required.'],
-            'timezone' => ['The timezone field is required.'],
+            'institution_id' => ['This is required.'],
+            'primary_occupation_id' => ['This is required.'],
+            'gender_id' => ['This is required.'],
+            'country_id' => ['This is required.'],
+            'timezone' => ['This is required.'],
         ]);
     }
 
@@ -174,11 +174,11 @@ class UpdateProfileTest extends TestCase
         Sanctum::actingAs($this->user);
         $this->json('PUT', $this->url, $data)
             ->assertJsonFragment([
-                'institution_id' => ['The selected institution id is invalid.'],
-                'race_id' => ['The selected race id is invalid.'],
-                'primary_occupation_id' => ['The selected primary occupation id is invalid.'],
-                'gender_id' => ['The selected gender id is invalid.'],
-                'country_id' => ['The selected country id is invalid.'],
+                'institution_id' => ['The selection is invalid.'],
+                'race_id' => ['The selection is invalid.'],
+                'primary_occupation_id' => ['The selection is invalid.'],
+                'gender_id' => ['The selection is invalid.'],
+                'country_id' => ['The selection is invalid.'],
             ]);
     }
 

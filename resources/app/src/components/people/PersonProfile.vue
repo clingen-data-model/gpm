@@ -29,6 +29,9 @@
         </section>
 
         <section class="mt-4 border-t pt-4">
+            <dictionary-row class="pb-2" label="Timezone">
+                {{person.timezone}}
+            </dictionary-row>
             <dictionary-row class="pb-2" label-class="w-40" label="Address">
                 <p v-if="person.street1">{{person.street1}}</p>
                 <p v-if="person.street2">{{person.street2}}</p>

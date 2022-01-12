@@ -22,10 +22,17 @@
 <script>
 import isValidationError from '@/http/is_validation_error'
 import {onMounted} from 'vue'
-import {getLookups, profileFields, demographicFields} from '@/forms/profile_form';
+import {getLookups, profileFields, demographicFields, lookups} from '@/forms/profile_form';
+import InstitutionSearchSelect from '@/components/forms/InstitutionSearchSelect'
+import TimezoneSearchSelect from '@/components/forms/TimezoneSearchSelect'
+        
 
 export default {
     name: 'ProfileForm',
+    components: {
+        InstitutionSearchSelect,
+        TimezoneSearchSelect
+    },
     props: {
         person: {
             type: Object,
@@ -40,7 +47,9 @@ export default {
         return {
             errors: {},
             profile: {},
-            page: 'profile'
+            page: 'profile',
+            institutionId: null,
+            timezone: null
         }
     },
     computed: {
@@ -66,6 +75,7 @@ export default {
                         this.$store.commit('pushSuccess', 'Your profile has been updated.')
                     })
                     
+                this.errors = {};
                 this.$emit('saved');
             } catch (error) {
                 if (isValidationError(error)) {
@@ -75,6 +85,7 @@ export default {
         },
         cancel () {
             this.initProfile();
+            this.errors = {};
             this.$emit('canceled');
         }
     },
@@ -85,6 +96,7 @@ export default {
             profileFields,
             demographicFields,
             getLookups,
+            lookups,
         }
     },
     async mounted () {

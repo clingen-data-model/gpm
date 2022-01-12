@@ -1,34 +1,19 @@
 <template>
     <div class="flex space-x-1 items-start">
-        <!-- <div>
+        <div>
             <label for="region-select" class="block text-xs">Region:</label>
             <select id="region-select" v-model="region" class="input-cl">
                 <option :value="region" v-for="region in regions" :key="region">
                     {{region}}
                 </option>
             </select>
-        </div> -->
+        </div>
         <div>
-            <!-- <label for="city-search-select" class="block text-xs">City:</label> -->
-            <search-select 
-                id="city-search-select"
-                v-model="selectedTimezone" 
-                :search-function="search"
-                style="z-index: 2"
-                placeholder="Name of Closest City"
-                @update:modelValue="searchText = null"
-            >
-                <template v-slot:selection-label="{selection}">
-                    <div>
-                        {{selection}}
-                    </div>
-                </template>
-                <template v-slot:option="{option}">
-                    <div>
-                        {{option}}
-                    </div>
-                </template>
-            </search-select>
+            <label for="city-search-select" class="block text-xs">City:</label>
+            <select id="city-search-select" v-model="city" :disabled="!this.region">
+                <option value="null">Select...</option>
+                <option  v-for="{name} in regionCities" :key="name" :value="name">{{name}}</option>
+            </select>
         </div>
     </div>
 </template>
@@ -46,6 +31,9 @@ export default {
             required: true,
         },
     },
+    emits: [
+        'update:modelValue'
+    ],
     data() {
         return {
             timezones: [],
@@ -56,12 +44,47 @@ export default {
         }
     },
     computed: {
-        selectedTimezone: {
-            get () {
-                return this.modelValue;
-            },
-            set (value) {
-                this.$emit('update:modelValue', value);
+        regionCities () {
+            return this.cities.filter(c => {
+                return c.region == this.region;
+            })
+        }
+    },
+    watch: {
+        city (to) {
+            const newValue = this.region+'/'+to.replace(' ', '_');
+            if (!this.timezones.indexOf(newValue)) {
+                return;
+            }
+            this.$emit('update:modelValue', newValue);
+        },
+        region (to) {
+            if (to == 'UTC') {
+                this.$emit('update:modelValue', to);
+            }
+
+            const newValue = to+'/'+this.city;
+
+            if (!this.timezones.indexOf(newValue)) {
+                return;
+            }
+            this.$emit('update:modelValue', newValue);
+        },
+        modelValue: {
+            immediate: true,
+            handler (to) {
+                if (!to) {
+                    return;
+                }
+
+                const [region, ...cityParts] = to.split('/');
+                const city = cityParts.join('/').replace('_', ' ');
+                if (region != this.region) {
+                    this.region = region;
+                }
+                if (city != this.city) {
+                    this.city = city;
+                }
             }
         }
     },
@@ -71,15 +94,22 @@ export default {
                 return [];
             }
             const pattern = new RegExp(`.*${searchText}.*`, 'i');
-            return this.timezones.filter(tz => {
-                return (tz.match(pattern));
-            })
+            return this.cities
+                .filter(c => {
+                    if (this.region) {
+                        return c.region == this.region;
+                    }
+                    return true;
+                })
+                .filter(c => {
+                    return (c.name.match(pattern));
+                })
         },
         setRegionsAndCities(timezones) {
             timezones.forEach(tz => {
-                const [region, ...city] = tz.split('/', 1);
+                const [region, ...city] = tz.split('/');
                 this.regions.push(region);
-                this.cities.push(city.join('/'));
+                this.cities.push({region: region, name: city.join('/').replace('_', ' ')});
             })
             this.regions = [...(new Set(this.regions))];
         }
@@ -87,9 +117,8 @@ export default {
     mounted () {
         api.get('/api/people/lookups/timezones')
             .then(response => {
-                this.timezones = response.data.data
-                this.setRegionsAndCities(response.data.data);
-                this.setCities(response.data.data)
+                this.timezones = response.data.data.filter(tz => tz != 'UTC')
+                this.setRegionsAndCities(this.timezones);
             })
     }
 }
