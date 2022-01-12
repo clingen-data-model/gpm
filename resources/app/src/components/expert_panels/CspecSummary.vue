@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="font-bold text-lg mb-4"> 
-            COMING SOON: Summary of CSPEC specfications display here. 
+            COMING SOON: Summary of CSpec specfications display here. 
         </div>
         <!-- <div class="well" v-if="!hasSpecifications">
             No specifications on record.

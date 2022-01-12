@@ -117,7 +117,7 @@ export default {
                 case 4: 
                     return 'VCEP Sustained Curation Plans'
                 default:
-                    // alert('Specifications approval is handled in the CSPEC registry.  Please go there to develope your AMCG/AMP Guideline Specifications.')
+                    // alert('Specifications approval is handled in the CSpec registry.  Please go there to develope your AMCG/AMP Guideline Specifications.')
                     break;
             }
             return submissions.types.applications
