@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Modules\Person\Models\Institution;
 use App\Modules\Person\Actions\InviteReset;
 use App\Modules\Person\Actions\InviteRedeem;
 use App\Modules\Person\Actions\ProfileUpdate;
@@ -19,6 +20,14 @@ Route::group([
     'prefix' => 'api/people',
     'middleware' => ['api']
 ], function () {
+    Route::get('/institutions', function (Request $request) {
+        return Institution::select('name', 'abbreviation', 'id')->get();
+    });
+
+    Route::get('/timezones', function (Request $request) {
+        return Institution::select('name', 'abbreviation', 'id')->get();
+    });
+
     Route::group([
         'middleware' => ['auth:sanctum']
     ], function () {
