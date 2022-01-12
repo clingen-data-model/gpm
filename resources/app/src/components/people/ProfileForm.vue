@@ -23,16 +23,9 @@
 import isValidationError from '@/http/is_validation_error'
 import {onMounted} from 'vue'
 import {getLookups, profileFields, demographicFields, lookups} from '@/forms/profile_form';
-import InstitutionSearchSelect from '@/components/forms/InstitutionSearchSelect'
-import TimezoneSearchSelect from '@/components/forms/TimezoneSearchSelect'
-        
 
 export default {
     name: 'ProfileForm',
-    components: {
-        InstitutionSearchSelect,
-        TimezoneSearchSelect
-    },
     props: {
         person: {
             type: Object,
