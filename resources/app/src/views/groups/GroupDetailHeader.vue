@@ -14,7 +14,7 @@
                 @click="$emit('showEdit')"
                 class="btn btn-xs" 
             >
-                Edit
+                Edit Group Info
             </button>
         </h1>
         <dictionary-row label="Chairs:">
