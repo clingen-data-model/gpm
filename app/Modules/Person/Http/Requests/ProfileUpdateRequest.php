@@ -39,7 +39,7 @@ class ProfileUpdateRequest extends FormRequest
 
         if ($person->user_id == Auth::user()->id) {
             foreach ($rules as $field => $rule) {
-                $rules[$field][] = 'required';
+                array_unshift($rules[$field], 'required');
             }
             return $rules;
         }
@@ -48,5 +48,13 @@ class ProfileUpdateRequest extends FormRequest
             $rules[$field][] = 'nullable';
         }
         return $rules;
+    }
+
+    public function messages(): array
+    {
+        return [
+            'required' => 'This is required.',
+            'exists' => 'The selection is invalid.'
+        ];
     }
 }
