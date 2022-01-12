@@ -68,6 +68,11 @@ class ApplicationStepApprovedNotification extends Notification
             foreach (config('expert-panels.notifications.cc.recipients') as $cc) {
                 $mailMessage->cc($cc[0], $cc[1]);
             }
+
+            // Also CC ClinVar if this is step 4.
+            if ($this->approvedStep == 4) {
+                $mailMessage->cc('clinvar@ncbi.nlm.nih.gov', 'ClinVar');
+            }
         }
         return $mailMessage;
     }

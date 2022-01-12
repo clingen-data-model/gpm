@@ -4,13 +4,15 @@ namespace Tests\Feature\Integration\Notificaitons;
 
 use Tests\TestCase;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Foundation\Testing\WithFaker;
+
 use App\Modules\ExpertPanel\Actions\StepApprove;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Illuminate\Support\Facades\Notification;
 use App\Notifications\UserDefinedMailNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Notification;
+use App\Modules\Application\Notifications\ApplicationStepApprovedNotification;
 
 class NotifyStepApprovedTest extends TestCase
 {
@@ -99,20 +101,23 @@ class NotifyStepApprovedTest extends TestCase
 
         $this->expertPanel->current_step = 4;
         $this->expertPanel->save();
-
+        
         Notification::fake();
-
         StepApprove::run(
             expertPanelUuid: $this->expertPanel->uuid,
             dateApproved: '2020-01-01',
             notifyContacts: true,
         );
-
+        
+        $expectedCcs = config('expert-panels.notifications.cc.recipients');
+        array_push($expectedCcs, ['clinvar@ncbi.nlm.nih.gov', 'ClinVar']);
+        
+        
         Notification::assertSentTo(
             $this->expertPanel->contacts->pluck('person'),
             UserDefinedMailNotification::class,
-            function ($notification) {
-                return $notification->ccAddresses == config('expert-panels.notifications.cc.recipients');
+            function ($notification) use ($expectedCcs) {
+                return $notification->ccAddresses == $expectedCcs;
             }
         );
     }
