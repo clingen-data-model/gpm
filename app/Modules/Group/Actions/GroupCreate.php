@@ -23,7 +23,7 @@ class GroupCreate
             'name' => $data['name'],
             'group_type_id' => $data['group_type_id'] > 2 ? config('groups.types.ep.id') : $data['group_type_id'],
             'group_status_id' => $data['group_status_id'],
-            'parent_id' => $this->resolveParentId($data['parent_id']),
+            'parent_id' => $this->resolveParentId($data),
         ]);
 
         if ($group->isEp) {
@@ -31,7 +31,7 @@ class GroupCreate
                 'long_base_name' => $data['name'],
                 'short_base_name' => isset($data['short_base_name']) ? $data['short_base_name'] : null,
                 'group_id' => $group->id,
-                'cdwg_id' => $this->resolveParentId($data['parent_id']),
+                'cdwg_id' => $this->resolveParentId($data),
                 'expert_panel_type_id' => ($data['group_type_id'] - 2),
                 'date_initiated' => Carbon::now(),
                 'coi_code' => bin2hex(random_bytes(12)),
@@ -90,8 +90,8 @@ class GroupCreate
         ];
     }
 
-    private function resolveParentId($parentId): ?int
+    private function resolveParentId($data): ?int
     {
-        return isset($parentId) && $parentId > 0 ? $parentId : null;
+        return isset($data['parent_id']) && $data['parent_id'] > 0 ? $data['parent_id'] : null;
     }
 }

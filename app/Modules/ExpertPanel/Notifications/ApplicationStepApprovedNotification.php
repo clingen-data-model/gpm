@@ -45,10 +45,10 @@ class ApplicationStepApprovedNotification extends Notification
     public function toMail($notifiable)
     {
         $stepMessages = [
-            1 => 'applications.email.approval.initial_approval',
-            2 => 'applications.email.approval.vcep_step_2_approval',
-            3 => 'applications.email.approval.vcep_step_3_approval',
-            4 => 'applications.email.approval.vcep_step_4_approval',
+            1 => 'email.applications.approval.initial_approval',
+            2 => 'email.applications.approval.vcep_step_2_approval',
+            3 => 'email.applications.approval.vcep_step_3_approval',
+            4 => 'email.applications.approval.vcep_step_4_approval',
         ];
 
         if (!isset($stepMessages[$this->approvedStep])) {

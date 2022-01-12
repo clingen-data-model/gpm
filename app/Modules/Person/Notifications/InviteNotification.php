@@ -41,7 +41,7 @@ class InviteNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->view('person.email.invite', ['invite' => $this->invite]);
+                    ->view('email.person.invite', ['invite' => $this->invite]);
     }
 
     /**

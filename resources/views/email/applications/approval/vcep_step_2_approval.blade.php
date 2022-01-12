@@ -1,4 +1,4 @@
-@extends('applications.email.approval.layout')
+@extends('email.applications.approval.layout')
 
 @section('content')
     <p>
