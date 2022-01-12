@@ -1,3 +1,4 @@
+@extends('email.layout')
 <h1>Heads up:</h1>
 <p>
     {{$group->displayName}} has added the following genes to their approved scope:
@@ -14,8 +15,10 @@
     Note that the GPM is not yet integrated with the VCI.
 @endif
 
-Please make sure this gets the appropriate review and attention.
+<p>Please make sure this gets the appropriate review and attention.</p>
 
+<p>
 Thanks!
-
+<br>
 GPM Bot.
+</p>

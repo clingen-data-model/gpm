@@ -1,5 +1,6 @@
+@extends('email.layout')
 <p>
-    Hi {{$invite->first_name}},
+    Greetings!
 </p>
 
 <p>
@@ -15,7 +16,7 @@
 </p>
 
 <p>
-    Thanks,
+    Thanks,<br>
     The ClinGen Team
 </p>
 

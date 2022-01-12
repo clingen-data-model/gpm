@@ -1,3 +1,4 @@
+@extends('email.layout')
 <p>Hi {{$notifiable->first_name}},</p>
 
 <p>
@@ -22,5 +23,6 @@
 
 <p>
     Cheers,
+    <br>
     GPM Bot
 </p>

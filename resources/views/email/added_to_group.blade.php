@@ -1,7 +1,10 @@
-Hi {{$notifiable->first_name}},
+@extends('email.layout')
+{{-- <p>Hi {{$notifiable->first_name}},</p> --}}
+<p>Hi there!</p>
 
 <p>We wanted to let you know that you've been added to the {{$group->displayName}} group.</p>
 
+<p>
 @if ($group->isEp)
     Please complete your 
     <a href="{{url('/expert-panels/'.$group->expertPanel->fullShortBaseName.'/coi/'.$group->expertPanel->coi_code)}}">
@@ -11,9 +14,9 @@ Hi {{$notifiable->first_name}},
 @else
     You can see more details in the <a href="{{url('/')}}">ClinGen Group &amp; Personel System</a>.
 @endif
+</p>
 
-
-
-Thanks,
+<p>
+Thanks,<br />
 GPMbot
-
+</p>

@@ -1,3 +1,4 @@
+@extends('email.layout')
 <p>Dear {{$expertPanel->long_base_name}} Leaders,</p>
 
 @yield('content')
@@ -10,3 +11,4 @@
     <br>
     <a href="mailto:{{config('mail.from.address')}}">{{config('mail.from.address')}}</a>
 </p>
+<hr>
