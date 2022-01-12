@@ -6,12 +6,14 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\ClientInterface;
 use Illuminate\Validation\Rule;
 use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsJob;
 use GuzzleHttp\Exception\GuzzleException;
-use Lorisleiva\Actions\Concerns\AsController;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class FeedbackSubmit
 {
-    use AsController;
+    use AsAction;
+    use AsJob;
 
     const JIRA_CREATE_URI = 'https://broadinstitute.atlassian.net/rest/api/2/issue';
     const JIRA_BOARD_URI = 'https://broadinstitute.atlassian.net/rest/agile/1.0/board/828/issue';
@@ -67,7 +69,11 @@ class FeedbackSubmit
     {
         $data = $request->only('summary', 'description', 'url', 'type', 'severity');
         $data['user'] = $request->user()->name.'<'.$request->user()->email.'>';
-        return $this->handle(...$data);
+        // return $this->handle(...$data);
+
+        static::dispatch(...$data);
+
+        return true;
     }
 
     public function rules()
