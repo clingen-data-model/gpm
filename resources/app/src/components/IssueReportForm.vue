@@ -38,7 +38,7 @@
         <input-row label="Type">
           <select v-model="type" class="w-full">
             <option value="Bug">Bug</option>
-            <option value="Story">Enhancement</option>
+            <option value="Task">Enhancement</option>
           </select>
         </input-row>
         <input-row
@@ -112,6 +112,7 @@ export default {
       this.url = this.$route.path;
 
       this.errors = {};
+      this.saving = false;
     },
     async submitIssue() {
       try {
@@ -129,6 +130,7 @@ export default {
       } catch (error) {
         if (isValidationError(error)) {
           this.errors = error.response.data.errors;
+          this.saving = false;
           return;
         }
         throw error;

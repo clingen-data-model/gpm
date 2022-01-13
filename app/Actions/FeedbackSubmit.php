@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsJob;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class FeedbackSubmit
@@ -30,27 +31,35 @@ class FeedbackSubmit
         $type,
         $severity
     ) {
-        $issueResponse = $this->http->request('post', 'https://broadinstitute.atlassian.net/rest/api/2/issue', [
-            'headers' => [
-                'Authorization' => 'Basic '.base64_encode(config('app.jira.user').':'.config('app.jira.token')),
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json'
-            ],
-            'json' => [
-                "fields" => [
-                    "project" => ["key" => "GPMEP"],
-                    "issuetype" => ["name" => $type],
-                    'summary' => $summary,
-                    'description' => $description,
-                    'customfield_18050' => $user,
-                    'customfield_18049' => $url,
-                    'customfield_18006' => ['id' => $severity]
-                ]
+        $issueFields = [
+            "fields" => [
+                "project" => ["key" => "GPMEP"],
+                "issuetype" => ["name" => $type],
+                'summary' => $summary,
+                'description' => $description,
+                'customfield_18050' => $user,
+                'customfield_18049' => $url,
             ]
-        ]);
+        ];
 
+        if ($type == 'Bug') {
+            $issueFields['fields']['customfield_18006'] = $severity;
+        }
+
+
+        try {
+            $issueResponse = $this->http->request('post', 'https://broadinstitute.atlassian.net/rest/api/2/issue', [
+                'headers' => [
+                    'Authorization' => 'Basic '.base64_encode(config('app.jira.user').':'.config('app.jira.token')),
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json'
+                ],
+                'json' => $issueFields
+            ]);
+        } catch (RequestException $e) {
+            return;
+        }
         $responseObj = json_decode($issueResponse->getBody()->getContents());
-
         $issueKey = $responseObj->key;
 
         $this->http->request('POST', self::JIRA_BOARD_URI, [
@@ -82,13 +91,8 @@ class FeedbackSubmit
             'summary' => 'required',
             'description' => 'required',
             'url' => 'required',
-            'type' => 'required|in:Bug,Story',
-            'severity' => [
-                Rule::requiredIf(function () {
-                    return request()->type == 'Bug';
-                }),
-                Rule::in(collect(config('feedback.severities'))->pluck('id')->toArray())
-            ]
+            'type' => 'required|in:Bug,Task',
+            'severity' => 'required_if:type,Bug',
         ];
     }
 }
