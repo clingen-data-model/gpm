@@ -3,7 +3,15 @@ import Entity from '@/domain/entity'
 
 
 let entity = {};
-const attributes = {a: 1, b: 2, c: [1, 2, 3], d: {ape: 'chimp', bat: 'fruit'}, created_at: null, updated_at: null, deleted_at=null};
+const attributes = {
+    a: 1, b: 2, c: [1, 2, 3], 
+    d: {
+        ape: 'chimp', 
+        bat: 'fruit'}, 
+        created_at: null, 
+        updated_at: null, 
+        deleted_at: null
+    };
 describe('entity', () => {
     beforeEach(function () {
         entity = new Entity(attributes);
