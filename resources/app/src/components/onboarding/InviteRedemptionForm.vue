@@ -94,6 +94,12 @@ export default {
     },
     mounted() {
         this.syncCode();
+    },
+    beforeMount () {
+        if (this.$store.getters.currentUser.id !== null) {
+            this.$store.commit('pushError', 'You can\'t redeem an invite b/c you\'re already logged in.');
+            this.$router.replace({name: 'Dashboard'})
+        }
     }
 }
 </script>

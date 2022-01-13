@@ -1,6 +1,5 @@
 <template>
     <div>
-        <pre>{{}}</pre>
         <div class="flex justify-center">
                 <div class="onboarding-container" :style="`width: ${currentStepWidth}`">
                     <keep-alive>
@@ -138,9 +137,6 @@ export default {
                 }
             }
         }
-    },
-    mounted () {
-        // this.selectStep();
     }
 }
 </script>
