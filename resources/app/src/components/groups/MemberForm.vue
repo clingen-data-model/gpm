@@ -228,6 +228,7 @@ export default {
             try {
                 if (!this.newMember.isPersisted()) {
                     if (!this.newMember.person.isPersisted()) {
+                        console.log('inviting member')
                         await this.inviteNewMember(this.group, this.newMember);
                     }
                     if (this.newMember.person.isPersisted()) {
@@ -240,64 +241,54 @@ export default {
                 this.clearForm();
                 this.$emit('saved');
             } catch (error) {
+                console.log(error);
                 if (is_validation_error(error)) {
                     this.errors = error.response.data.errors
                 }
+                throw error;
             }
         },
         async inviteNewMember (group, member) {
-            try {
-                const response = await this.$store.dispatch('groups/memberInvite', {
-                    uuid: group.uuid,
-                    data: {
-                        firstName: member.person.first_name,
-                        lastName: member.person.last_name,
-                        email: member.person.email,
-                        roleIds: member.roles.map(r => r.id),
-                        isContact: member.is_contact,
-                        expertise: member.expertise,
-                        notes: member.notes,
-                        training_level_1: member.training_level_1,
-                        training_level_2: member.training_level_2,
-                    }
-                })
-            
-                if (member.permissions.length > 0) {
-                    await this.$store.dispatch('groups/memberGrantPermission', {
-                        uuid: group.uuid,
-                        memberId: response.data.id,
-                        permissionIds: member.permissions.map(p => p.id)
-                    });
-                }
-            } catch (error)  {
-                if (is_validation_error(error)) {
-                    this.errors = error.response.data.errors
-                }
-            }
-        },
-        async addPersonAsMember(group, member) {
-            try { 
-                const memberData = await this.$store.dispatch('groups/memberAdd', {
-                    uuid: group.uuid,
-                    personId: member.person_id,
+            const response = await this.$store.dispatch('groups/memberInvite', {
+                uuid: group.uuid,
+                data: {
+                    firstName: member.person.first_name,
+                    lastName: member.person.last_name,
+                    email: member.person.email,
                     roleIds: member.roles.map(r => r.id),
                     isContact: member.is_contact,
                     expertise: member.expertise,
                     notes: member.notes,
                     training_level_1: member.training_level_1,
                     training_level_2: member.training_level_2,
-                })
-                if (member.permissions.length > 0) {
-                    await this.$store.dispatch('groups/memberGrantPermission', {
-                        uuid: group.uuid,
-                        memberId: memberData.id,
-                        permissionIds: member.permissions.map(p => p.id)
-                    });
                 }
-            } catch (error) {
-                if (is_validation_error(error)) {
-                    this.errors = error.response.data.errors
-                }
+            })
+        
+            if (member.permissions.length > 0) {
+                await this.$store.dispatch('groups/memberGrantPermission', {
+                    uuid: group.uuid,
+                    memberId: response.data.id,
+                    permissionIds: member.permissions.map(p => p.id)
+                });
+            }
+        },
+        async addPersonAsMember(group, member) {
+            const memberData = await this.$store.dispatch('groups/memberAdd', {
+                uuid: group.uuid,
+                personId: member.person_id,
+                roleIds: member.roles.map(r => r.id),
+                isContact: member.is_contact,
+                expertise: member.expertise,
+                notes: member.notes,
+                training_level_1: member.training_level_1,
+                training_level_2: member.training_level_2,
+            })
+            if (member.permissions.length > 0) {
+                await this.$store.dispatch('groups/memberGrantPermission', {
+                    uuid: group.uuid,
+                    memberId: memberData.id,
+                    permissionIds: member.permissions.map(p => p.id)
+                });
             }
         },
 
