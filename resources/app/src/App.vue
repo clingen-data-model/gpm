@@ -32,14 +32,15 @@
       </div>
     </header>
 
-    <div class="my-3 md:flex space-x-4 container mx-auto mb-1">
-      <!-- <div class="w-80 border">
-
-      </div> -->
-      <div class='flex-1'>
-        <router-view />
+    <div class="my-3 container mx-auto">
+      <div class="md:flex space-x-4 mb-4">
+        <div class='flex-1'>
+          <router-view />
+        </div>
       </div>
+      <impersonate-control />
     </div>
+
 
     <alert-viewer></alert-viewer>
     <issue-report-form />
@@ -61,6 +62,7 @@
 import UserMenu from './components/UserMenu'
 import AlertViewer from './components/alerts/AlertViewer'
 import IssueReportForm from '@/components/IssueReportForm'
+import ImpersonateControl from '@/components/ImpersonateControl'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -68,6 +70,7 @@ export default {
     UserMenu,
     AlertViewer,
     IssueReportForm,
+    ImpersonateControl,
   },
   data() {
     return {

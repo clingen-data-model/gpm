@@ -1,29 +1,30 @@
 <template>
-    <div class="relative top-0 right-0 text-right">
+    <div class="relative -top-3 right-0 text-right">
         <div v-show="isAuthed">
-            <div class="flex flex-row-reverse align-middle -mb-3 pb-3 pr-2 relative z-20 cursor-pointer"
-                :class="{'w-48': menuOpen}"
+            <div class="flex flex-row-reverse align-middle -mb-7 pt-3 pb-3 pr-2 relative z-20 cursor-pointer w-48"
+                :class="{'w-48': menuOpen, 'bg-yellow-300': user.is_impersonating}"
                 ref="menuButton" 
                 @click.stop="toggleMenu"
             >
                 <icon-cheveron-down></icon-cheveron-down>
-                {{user.name}}
+                {{user.name}} <span v-if="user.is_impersonating">*</span>
             </div>
             <transition name="slide-fade-down">            
                 <div 
                     v-show="menuOpen" 
                     v-click-outside="{exclude: ['menuButton'], handler: handleOutsideClick}"
                     ref="dropdownMenu"
-                    class="absolute right-0 -top-3 pt-11 bg-white border w-48 z-10 shadow" 
+                    class="absolute right-0 top-0 pt-11 bg-white border w-48 z-10 shadow" 
                 >
                     <ul>
                         <li class="menu-item">
                             <router-link :to="{name: 'Dashboard'}" @click="showMenu = false">Dashboard</router-link>
                         </li>
                         <li class="menu-item">
-                            <button @click="logout">
+                            <button @click="logout" v-if="!user.is_impersonating">
                                 Log out
                             </button>
+                            <impersonate-control v-else class="my-4 mx-2"/>
                         </li>
                     </ul>
                     <ul>
@@ -39,6 +40,7 @@
                             <a href="/dev/logs" class="p-3 block">System Log</a>
                         </li>
                     </ul>
+                    <div v-if="user.is_impersonating" class="border-t bg-yellow-300 text-center font-bold p-2">You are impersonating this user.</div>
                 </div>
             </transition>
         </div>
@@ -46,12 +48,12 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
-
+import ImpersonateControl from '@/components/ImpersonateControl'
 
 export default {
     name: 'UserMenu',
-    props: {
-        
+    components: {
+        ImpersonateControl
     },
     data() {
         return {

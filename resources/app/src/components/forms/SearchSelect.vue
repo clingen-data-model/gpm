@@ -1,123 +1,4 @@
-<style scoped>
-    .search-select-component {
-        position: relative;
-        overflow: visible;
-        height: 2.5rem
-    }
-
-    .search-select-container {
-        @apply border border-gray-300 leading-6 px-2 flex items-center flex-wrap py-1 rounded bg-white;
-    }
-
-    .search-select-container > input {
-        border: none;
-    }
-    
-    .search-select-container > .selection {
-        @apply bg-gray-500 text-white flex mr-1 rounded-sm text-sm;
-    }
-
-    .search-select-container > .selection.disabled {
-        background: #aaa;
-    }
-
-    .search-select-container > .selection > * {
-        /* @apply px-2 leading-6; */
-        padding-left: .5rem;
-        padding-right: .5rem;
-        /* line-height: 1.5rem; */
-    }
-
-    .search-select-container > .selection > label {
-        margin-bottom: 0;
-    }
-
-    .search-select-container > .selection > button {
-        /* @apply border-l border-gray-400; */
-        border-width: 0 0 0 1px;
-        background-color: transparent;
-        color: white;
-    }
-    
-    .search-select-container .input {
-        /* @apply border-none block outline-none focus:outline-none p-0 flex-1; */
-        display: block;
-        width: 100%;
-        outline: none;
-        padding: 0px;
-        flex-grow: 1;
-        z-index: 5
-    }
-
-    .result-container {
-        position:relative;
-    }
-
-    .option-list {
-        background: #efefef;
-        box-shadow: 0 0 5px #666;
-        list-style:none;
-        margin: 0 .5rem;
-        padding: 0;
-        overflow: auto;
-    }
-
-    .filtered-option {
-        /* @apply hover:bg-blue-200 cursor-pointer focus:bg-blue-200; */
-        cursor:pointer;
-        margin:0;
-        padding: .25rem .5rem;
-    }
-    .filtered-option:hover {
-        background-color: lightblue;
-    }
-    .filtered-option.highlighted {
-        background-color: lightblue;
-    } 
-        /* 
-*/
-</style>
-
-<template>
-    <div class="search-select-component">
-        <div class="search-select-container border">
-            <div class="selection" :class="{disabled: disabled}" v-if="hasSelection">
-                <label>
-                    <slot name="selection-label" :selection="modelValue">
-                        {{modelValue}}
-                    </slot>
-                </label>  
-                <button @click="removeSelection()" :disabled="disabled">x</button>
-            </div>
-            <input 
-                type="text" 
-                v-model="searchText" 
-                ref="input" 
-                class="input" 
-                v-show="showInput" 
-                @keydown="startKeydownTimer"
-                @keyup="handleKeyEvent"
-                :placeholder="placeholder"
-                :disabled="disabled"
-            >
-        </div>
-        <div v-show="hasOptions" class="result-container">
-            <ul class="option-list" :style="`max-height: ${optionsListHeight}px`">
-                <li v-for="(opt, idx) in filteredOptions" 
-                    :key="idx" 
-                    class="filtered-option"
-                    :class="{highlighted: (idx === cursorPosition)}"
-                    :id="`option-${idx}`"
-                    @click="setSelection(opt)"
-                >
-                    <slot :option="opt" :index="idx" name="option">{{opt}}</slot>
-                </li>
-            </ul>
-        </div>
-    </div>
-</template>
 <script>
-// import {ref, reactive, computed} from 'vue'
 import {debounce} from 'lodash'
 
 function inView(elem)
@@ -139,25 +20,30 @@ function inView(elem)
 
 }
 
+/**
+ * Props: []
+ * @slot selection-label - The label that will be displayed for the selected Item
+ * @slot option - The label shown for  displayed option.
+ */
 export default {
     name: 'SearchSelect',
     props: {
-        throttle: {
-            required: false,
-            type: Number,
-            default: 250,
+        modelValue: {
+            required: true
         },
         searchFunction: {
             required: false,
             type: Function,
             default: null
         },
-        modelValue: {
-            required: true
-        },
         options: {
             required: false,
             default: () => []
+        },
+        throttle: {
+            required: false,
+            type: Number,
+            default: 250,
         },
         optionsHeight: {
             required: false,
@@ -237,13 +123,13 @@ export default {
             this.$refs.input.focus();
         },
         setSelection(selection) {
-            console.info('setSelection', selection);
+            // console.info('setSelection', selection);
             this.$emit('update:modelValue', selection);
-            console.log('emitted')
+            // console.log('emitted')
             this.clearInput();
-            console.log('clearedInput')
+            // console.log('clearedInput')
             this.resetCursor();
-            console.log('resetCursor')
+            // console.log('resetCursor')
         },
         clearInput() {
             console.debug('clearInput');
@@ -336,12 +222,13 @@ export default {
     },
     created() {
         this.search = debounce( async (searchText, options) => {
-            if (!this.searchFunction)  {
-                if (searchText === '') {
-                    return [];
-                }
+            if (searchText == '' || searchText === null || typeof searchText == 'undefined') {
+                return [];
+            }
 
-                return this.defaultSearchFunction(searchText, options);
+            if (!this.searchFunction)  {
+                this.filteredOptions = this.defaultSearchFunction(searchText, options);
+                return;
             }
 
             this.filteredOptions = await this.searchFunction(searchText, options);
@@ -349,3 +236,120 @@ export default {
     }
 }
 </script>
+<template>
+    <div class="search-select-component">
+        <div class="search-select-container border">
+            <div class="selection" :class="{disabled: disabled}" v-if="hasSelection">
+                <label>
+                    <slot name="selection-label" :selection="modelValue">
+                        {{modelValue}}
+                    </slot>
+                </label>  
+                <button @click="removeSelection()" :disabled="disabled">x</button>
+            </div>
+            <input 
+                type="text" 
+                v-model="searchText" 
+                ref="input" 
+                class="input" 
+                v-show="showInput" 
+                @keydown="startKeydownTimer"
+                @keyup="handleKeyEvent"
+                :placeholder="placeholder"
+                :disabled="disabled"
+            >
+        </div>
+        <div v-show="hasOptions" class="result-container">
+            <ul class="option-list" :style="`max-height: ${optionsListHeight}px`">
+                <li v-for="(opt, idx) in filteredOptions" 
+                    :key="idx" 
+                    class="filtered-option"
+                    :class="{highlighted: (idx === cursorPosition)}"
+                    :id="`option-${idx}`"
+                    @click="setSelection(opt)"
+                >
+                    <slot :option="opt" :index="idx" name="option">{{opt}}</slot>
+                </li>
+            </ul>
+        </div>
+    </div>
+</template>
+<style scoped>
+    .search-select-component {
+        position: relative;
+        overflow: visible;
+        height: 2.5rem
+    }
+
+    .search-select-container {
+        @apply border border-gray-300 leading-6 px-2 flex items-center flex-wrap py-1 rounded bg-white;
+    }
+
+    .search-select-container > input {
+        border: none;
+    }
+    
+    .search-select-container > .selection {
+        @apply bg-gray-500 text-white flex mr-1 rounded-sm text-sm;
+    }
+
+    .search-select-container > .selection.disabled {
+        background: #aaa;
+    }
+
+    .search-select-container > .selection > * {
+        /* @apply px-2 leading-6; */
+        padding-left: .5rem;
+        padding-right: .5rem;
+        /* line-height: 1.5rem; */
+    }
+
+    .search-select-container > .selection > label {
+        margin-bottom: 0;
+    }
+
+    .search-select-container > .selection > button {
+        /* @apply border-l border-gray-400; */
+        border-width: 0 0 0 1px;
+        background-color: transparent;
+        color: white;
+    }
+    
+    .search-select-container .input {
+        /* @apply border-none block outline-none focus:outline-none p-0 flex-1; */
+        display: block;
+        width: 100%;
+        outline: none;
+        padding: 0px;
+        flex-grow: 1;
+        z-index: 5
+    }
+
+    .result-container {
+        position:relative;
+    }
+
+    .option-list {
+        background: #efefef;
+        box-shadow: 0 0 5px #666;
+        list-style:none;
+        margin: 0 .5rem;
+        padding: 0;
+        overflow: auto;
+    }
+
+    .filtered-option {
+        /* @apply hover:bg-blue-200 cursor-pointer focus:bg-blue-200; */
+        cursor:pointer;
+        margin:0;
+        padding: .25rem .5rem;
+    }
+    .filtered-option:hover {
+        background-color: lightblue;
+    }
+    .filtered-option.highlighted {
+        background-color: lightblue;
+    } 
+        /* 
+*/
+</style>
