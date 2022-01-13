@@ -96,7 +96,7 @@ export default {
     },
     methods: {
         impersonateSelected() {
-            if (this.selecteduser) {
+            if (this.selectedUser) {
                 this.$emit('impersonated');
                 this.showProgress = true;
                 impersonate(this.selectedUser.id)
