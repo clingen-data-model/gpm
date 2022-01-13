@@ -50,7 +50,7 @@
         </ul>
 
         <p>
-            Biocurators are expected to become familiar with the ClinGen training materials located on <a href="https://clinicalgenome.org/docs/?doc-type=training-materials#list_documentation_table" target="clinicalgenome">clinicalgenome.org</a> website. Biocurators are requested to join the mailing list for ClinGen Biocurator Working Group WG, and expected to attend those calls that focus on gene curation SOP and/or framework updates.
+            Biocurators are expected to become familiar with the ClinGen training materials located on <a href="https://clinicalgenome.org/docs/?doc-type=training-materials#list_documentation_table" target="clinicalgenome">clinicalgenome.org</a> website. Biocurators are requested to join the mailing list for ClinGen Biocurator Working Group, and expected to attend those calls that focus on gene curation SOP and/or framework updates.
         </p>
         <ul class="ml-4 mt-2">
             <li>
