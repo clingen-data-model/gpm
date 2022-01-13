@@ -24,7 +24,11 @@
                             <button @click="logout" v-if="!user.is_impersonating">
                                 Log out
                             </button>
-                            <impersonate-control v-else class="my-4 mx-2"/>
+                        </li>
+                        <li class="menu-item">
+                            <div class="py-4 mx-2">
+                            <impersonate-control/>
+                            </div>
                         </li>
                     </ul>
                     <ul>

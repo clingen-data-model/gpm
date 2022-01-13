@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="canImpersonate">
+        <div v-if="canImpersonate || user.is_impersonating">
             <button v-if="!user.is_impersonating"
                 @click="showSelector = !showSelector"
                 class="btn btn-xs border" 
