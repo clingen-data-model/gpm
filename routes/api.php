@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\MailLogController;
 use App\Http\Controllers\Api\MailDraftController;
 use App\Http\Controllers\Api\GeneLookupController;
 use App\Http\Controllers\Api\DiseaseLookupController;
+use App\Http\Controllers\ImpersonateSearchController;
 use App\Modules\User\Http\Controllers\CurrentUserController;
 
 /*
@@ -48,7 +49,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/mail-log', [MailLogController::class, 'index']);
 
     Route::put('/notifications/{notificationId}', NotificationMarkRead::class);
-    
+
+    Route::get('/impersonate/search', [ImpersonateSearchController::class, 'index']);
 });
 
 Route::get('/cdwgs', [CdwgController::class, 'index']);

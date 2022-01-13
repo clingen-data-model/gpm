@@ -15,6 +15,8 @@ use App\Http\Controllers\DocumentController;
 |
 */
 Route::get('/{any}', [ViewController::class, 'app'])
-    ->where('any', '^(?!(api|sanctum|dev|documents|report|downloads)).*$');
+    ->where('any', '^(?!(api|sanctum|impersonate|dev|documents|report|downloads)).*$');
 
 Route::get('/documents/{uuid?}', [DocumentController::class, 'show'])->middleware('auth:sanctum');
+
+Route::impersonate();

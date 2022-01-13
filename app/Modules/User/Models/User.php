@@ -6,13 +6,16 @@ use App\Models\HasEmail;
 use Laravel\Sanctum\HasApiTokens;
 use App\Modules\Group\Models\Group;
 use Database\Factories\UserFactory;
+use Illuminate\Support\Facades\Auth;
 use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Cache;
 use Spatie\Permission\Traits\HasRoles;
 use App\Modules\User\Models\Preference;
 use Illuminate\Notifications\Notifiable;
+use Lab404\Impersonate\Models\Impersonate;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
+use Lab404\Impersonate\Services\ImpersonateManager;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
@@ -20,6 +23,7 @@ use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
 class User extends Authenticatable implements CanResetPassword
 {
     use HasFactory, Notifiable, CanResetPasswordTrait, HasApiTokens, HasEmail, HasRoles;
+    use Impersonate;
 
     /**
      * The attributes that are mass assignable.
@@ -108,7 +112,53 @@ class User extends Authenticatable implements CanResetPassword
     {
         return (bool)$this->person;
     }
-     
+
+    /**
+     * IMPERSONATE
+     */
+
+    public function canImpersonate()
+    {
+        return $this->hasAnyRole('super-user', 'super-admin', 'admin');
+    }
+
+    public function canBeImpersonated()
+    {
+        // No one can impersonate a super-user
+        if ($this->hasRole('super-user')) {
+            return false;
+        }
+
+        // Super-user can impersonate anyone (except another super-user)
+        if (Auth::user()->hasRole('super-user')) {
+            return true;
+        }
+
+        // Admin can impersonate anyone except super-user, super-admin, or another admin
+        if (Auth::user()->hasRole('admin') && $this->hasAnyRole(['super-user', 'super-admin', 'admin'])) {
+            return false;
+        }
+        if (Auth::user()->roles->intersect($this->roles)->count() > 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getImpersonatedByAttribute()
+    {
+        if ($this->isImpersonated()) {
+            return app(ImpersonateManager::class)->getImpersonator();
+        }
+
+        return null;
+    }
+
+    public function getIsImpersonatingAttribute()
+    {
+        return app(ImpersonateManager::class)->isImpersonating();
+    }
+    
 
     // Factory support
     protected static function newFactory()

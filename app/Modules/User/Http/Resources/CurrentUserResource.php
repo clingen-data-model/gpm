@@ -26,6 +26,7 @@ class CurrentUserResource extends JsonResource
         $data['memberships'] = $this->whenLoaded('person', MemberResource::collection($this->person->memberships));
         // unset($data['person']['memberships']);
         $data['person'] = $this->whenLoaded('person', new PersonDetailResource($this->person));
+        $data['is_impersonating'] = $this->isImpersonating;
 
         return $data;
     }
