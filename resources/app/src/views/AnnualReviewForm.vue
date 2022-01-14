@@ -11,73 +11,103 @@
         <app-section title="Submitter Information">
             <submitter-information v-model="annualReview" :errors="errors" />
         </app-section>
-        <app-section title="Membership">
-            <p>
-                 Please list the entire membership of the Expert Panel and indicate which, if any, members have been added or removed. 
-                 
-                 <note>If changes are made to an Expert Panel Co-chair(s) or coordinator, please report them directly to the <a href="cdwg_oversightcommittee@clinicalgenome.org">Clinical Domain Working Group Oversight Committee</a> when they occur.</note>
-            </p>
-            <member-list />
-        </app-section>
 
-        <template v-if="group.isGcep()">
-            <app-section title="Use of GCI and GeneTracker Systems">
-                <gci-gt-use v-model="annualReview" :errors="errors" />
-            </app-section>
-            <app-section title="Summary of total numbers of genes curated">
-                <gene-curation-totals v-model="annualReview" :errors="errors" />
-            </app-section>
-            <app-section title="Changes to plans for ongoing curation">
-                <gcep-ongoing-plans-form 
-                    v-model="annualReview"
-                    :errors="errors"
-                    @updated="saveOngoingPlans"
-                />
-            </app-section>
-            <app-section title="Gene Re-curation/Re-review">
-                <gcep-rereview-form v-model="annualReview" :errors="errors"></gcep-rereview-form>
-            </app-section>
-            <app-section title="Goals for next year">
-                <input-row label="Describe the Expert Panel’s plans and goals for the next year. Also, please indicate if the co-chairs plan to continue leading the EP for the next year." :errors="errors.goals" vertical>
-                    <textarea v-model="annualReview.goals" rows="5" class="w-full"></textarea>
-                </input-row>
-            </app-section>
-        </template>
-
-        <template v-if="group.isVcep()">
-
-        </template>
-
-        <app-section title="Additional Funding">
-            <input-row label="Please describe any thoughts, ideas, or plans for soliciting funding or personnel (in addition to any existing funding/support you may have)." :errors="errors.additional_funding" vertical>
-                <textarea v-model="annualReview.additional_funding" rows="5" class="w-full"></textarea>
-            </input-row>
-        </app-section>
-
-        <app-section title="Webpage Updates">
-            <input-row :errors="errors.website_attestation" vertical>
-                <template v-slot:label>
+        <transition name="slide-fade-down">
+            <div v-if="group.isVcep() || group.isGcep() && annualReview.ep_activity == 'active' ">
+                <app-section title="Membership">
                     <p>
-                        Please review your ClinGen EP webpage, including Expert Panel Status, description, membership, COI and relevant document including publications. Please contact <a href="mailto:dazzarit@broadinstitute.org">Danielle Azzariti</a> with any questions."
+                        Please list the entire membership of the Expert Panel.
                     </p>
+                    <p v-if="group.isVcep()">
+                        Note: If changes are made to an Expert Panel Co-chair(s) or coordinator, please report them directly to the <a href="cdwg_oversightcommittee@clinicalgenome.org">Clinical Domain Working Group Oversight Committee</a> when they occur. All current EP members must complete a Conflict of Interest (COI) survey each year. If all members of your EP have filled out the EPAM generated COI survey, some of the information will be auto populated.
+                    </p>
+
+                    <member-list />
+
+                    <input-row 
+                        vertical 
+                        label="Please attest that your membership is up to date" 
+                        :errors="errors.membership_attestation"
+                    >
+                        <div class="ml-4">
+                            <radio-button v-model="annualReview.membership_attestation" value="I have reviewed and made the appropriate updates to membership as needed.">
+                                I have reviewed and made the appropriate updates to membership as needed.
+                            </radio-button>
+                            <radio-button v-model="annualReview.membership_attestation" value="I have reviewed and there are no changes needed.">
+                                I have reviewed and there are no changes needed.
+                            </radio-button>
+                        </div>
+                    </input-row>
+                </app-section>
+
+                <template v-if="group.isGcep()">
+                    <app-section title="Use of GCI and GeneTracker Systems">
+                        <gci-gt-use v-model="annualReview" :errors="errors" />
+                    </app-section>
+
+                    <app-section title="Summary of total numbers of genes curated">
+                        <gene-curation-totals v-model="annualReview" :errors="errors" />
+                    </app-section>
+
+                    <app-section title="Changes to plans for ongoing curation">
+                        <gcep-ongoing-plans-update-form v-model="annualReview" :errors="errors" @updated="saveOngoingPlans"></gcep-ongoing-plans-update-form>
+                    </app-section>
+
+                    <app-section title="Gene Re-curation/Re-review">
+                        <gcep-rereview-form v-model="annualReview" :errors="errors"></gcep-rereview-form>
+                    </app-section>
                 </template>
-                <checkbox 
-                    label="I attest that the information on the webpage is up-to-date and accurate." 
-                    v-model="annualReview.website_attestation"
-                />
-            </input-row>
-            <hr>
-            <button class="btn btn-lg" @click="submit">Submit annual update</button>
-            <br>
-        </app-section>
 
-        <template v-if="group.isVcep() && group.expert_panel.defIsApproved">
-            
-        </template>
+                <app-section v-if="group.isVcep()" title="Use of Variant Curation Interface (VCI)">
+                    <vci-use v-model="annualReview" :errors="errors"></vci-use>
+                </app-section>
 
-        <template v-if="group.isVcep() && group.expert_panel.pilotSpecificationsIsApproved">
+                <app-section title="Goals for next year">
+                    <goals-form v-model="annualReview" :errors="errors" />
+                </app-section>
 
-        </template>
+
+                <app-section title="Additional Funding">
+                    <funding-form v-model="annualReview" :errors="errors" />
+                </app-section>
+
+                <app-section title="Webpage Updates">
+                    <input-row :errors="errors.website_attestation" vertical>
+                        <template v-slot:label>
+                            <p>
+                                Please review your ClinGen EP webpage, including Expert Panel Status, description, membership, COI and relevant documentation, including publications. See the <a href="https://docs.google.com/document/d/1GeyR1CBqlzLHOdlPLJt0uA29Z-2ysmTX1dtH9PDmqRo/edit?usp=sharing">Coordinator Resource Document</a> for instructions on how to update web pages.
+                            </p>
+                        </template>
+                        <checkbox 
+                            label="I attest that the information on the webpage is up-to-date and accurate." 
+                            v-model="annualReview.website_attestation"
+                        />
+                    </input-row>
+                </app-section>
+
+                <template v-if="group.isVcep() && group.expert_panel.defIsApproved">
+                    <app-section title="Progress on Rule Specification">
+                        <specification-progress v-model="annualReview" :errors="errors" />
+                    </app-section>
+
+                    <app-section title="Summary of total number of variants curated">
+                        <vcep-totals v-model="annualReview" :errors="errors" />
+                    </app-section>
+                </template>
+
+                <template v-if="group.isVcep() && group.expert_panel.pilotSpecificationsIsApproved">
+                    <app-section title="Changes to plans for variant curation workflow">
+                        <vcep-ongoing-plans-update-form v-model="annualReview" :errors="errors"></vcep-ongoing-plans-update-form>
+                    </app-section>
+                </template>
+
+                <hr>
+                <button class="btn btn-lg" @click="submit">Submit annual update</button>
+                <br>
+            </div>
+        </transition>
+
+
 
         <teleport to='body'>
             <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="this.$route.meta.title">
@@ -93,10 +123,15 @@ import GeneCurationTotals from '@/components/annual_review/GeneCurationTotals'
 import ApplicationSection from '@/components/expert_panels/ApplicationSection'
 import MemberList from '@/components/groups/MemberList'
 import {debounce} from 'lodash'
-import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm'
+import VcepOngoingPlansUpdateForm from '@/components/annual_review/VcepOngoingPlansUpdateForm'
 import VcepRereviewForm from '@/components/annual_review/VcepRereviewForm'
-import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm'
 import GcepRereviewForm from '@/components/annual_review/GcepRereviewForm'
+import GoalsForm from '@/components/annual_review/GoalsForm'
+import FundingForm from '@/components/annual_review/FundingForm'
+import GcepOngoingPlansUpdateForm from '@/components/annual_review/GcepOngoingPlansUpdateForm'
+import VciUse from '@/components/annual_review/VciUse'
+import SpecificationProgress from '@/components/annual_review/SpecificationProgress'
+import VcepTotals from '@/components/annual_review/VcepTotals'
 
 export default {
     name: 'AnnualReviewForm',
@@ -105,11 +140,16 @@ export default {
         SubmitterInformation,
         MemberList,
         GciGtUse,
-        GcepOngoingPlansForm,
         GeneCurationTotals,
-        VcepOngoingPlansForm,
+        VcepOngoingPlansUpdateForm,
         GcepRereviewForm,
         VcepRereviewForm,
+        GoalsForm,
+        FundingForm,
+        GcepOngoingPlansUpdateForm,
+        VciUse,
+        SpecificationProgress,
+        VcepTotals,
     },
     props: {
         uuid: {
@@ -130,9 +170,6 @@ export default {
     computed: {
         group () {
             return this.$store.getters['groups/currentItemOrNew'];
-        },
-        ongoingCurationPlansForm () {
-            return this.group.isVcep() ? VcepOngoingPlansForm : GcepOngoingPlansForm
         },
         rereviewForm () {
             return this.group.isVcep() ? VcepRereviewForm : GcepRereviewForm;

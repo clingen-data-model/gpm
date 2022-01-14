@@ -1,12 +1,13 @@
 <template>
     <div>
         <p>
+            In reviewing the GCEPs progress over the last year ({{lastYear}}), please answer the following questions. Note, This information can be accessed from the GCI, GeneTracker, and in some instances (e.g. published curations) from the ClinGen website.
             This information can be downloaded from the <a href="https://gene-tracker.clinicalgenome.org">Gene Tracker</a> or the <a href="https://curation.clinicalgenome.org/dashboard">Gene Curation Interface</a>. 
             <br>
-            Please cross reference ww.clinicalgenome.org for published records."	
+            Please cross reference <a href="https://clinicalgenome.org/">clinicalgenome.org</a> for published records.
         </p>
         <input-row 
-            label="Approved and posted on the ClinGen Website." 
+            label="Approved and published on the ClinGen Website." 
             type="number" 
             v-model="workingCopy.published_count"
             :errors="errors.published_count" 
@@ -14,7 +15,7 @@
             input-class="w-16"
         />
         <input-row 
-            label="Approved and pending posting on the Clingen Website." 
+            label="Approved and pending publishing on the Clingen Website." 
             type="number" 
             v-model="workingCopy.approved_unpublished_count"
             :errors="errors.approved_unpublished_count" 
@@ -44,6 +45,11 @@ export default {
         errors: {
             required: true,
             type: Object
+        }
+    },
+    computed: {
+        lastYear () {
+            return (new Date()).getFullYear() -1;
         }
     },
     setup (props, context) {

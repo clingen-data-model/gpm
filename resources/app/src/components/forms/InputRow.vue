@@ -1,7 +1,7 @@
 <template>
     <div :class="{'border-l border-red-800 px-2': hasErrors}" class="input-row my-3">
         <div :class="{'sm:flex': !vertical}">
-            <div class="flex-none" :class="labelContainerClass" v-show="showLabel">
+            <div class="flex-none label-container" :class="labelContainerClass" v-show="showLabel">
                 <slot name="label" v-if="hasLabel">
                     <label :class="resolvedLabelClass">{{label}}{{colon}}</label>
                 </slot>
