@@ -317,23 +317,3 @@ export default {
     }
 }
 </script>
-<style lang="postcss" scope>
-    table {
-        @apply w-full;
-    }
-    thead > tr {
-         @apply bg-gray-200;
-    }
-    tbody > tr {
-        @apply bg-white odd:bg-gray-100 border-0 hover:border-blue-300 hover:bg-blue-100
-    }
-    tr > th {
-        @apply text-left border border-gray-300 px-3
-    }
-    tr > td {
-        @apply text-left p-1 px-3 border align-top;
-    }
-    th.sorted, td.sorted  {
-        @apply bg-blue-100 hover:bg-blue-100
-    }
-</style>
