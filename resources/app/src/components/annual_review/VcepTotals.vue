@@ -30,21 +30,19 @@
     </div>
 </template>
 <script>
-import setupWorkingMirror from '@/composables/setup_working_mirror'
+import mirror from '@/composables/setup_working_mirror'
 import {clone} from 'lodash'
 
 export default {
     name: 'GeneCurationTotals',
     props: {
-        modelValue: {
-            required: true,
-            type: Object
-        },
+        ...mirror.props,
         errors: {
-            required: true,
-            type: Object
-        }
+            type: Object,
+            required: true
+        },
     },
+    emits: [ ...mirror.emits ],
     data () {
         return {
             newGene: {}
@@ -68,7 +66,7 @@ export default {
         }
     },
     setup (props, context) {
-        const { workingCopy } = setupWorkingMirror(props, context);
+        const { workingCopy } = mirror.setup(props, context);
         return {
             workingCopy
         };

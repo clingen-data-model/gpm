@@ -69,19 +69,18 @@
     }
 </style>
 <script>
-import setupWorkingMirror from '@/composables/setup_working_mirror'
+import mirror from '@/composables/setup_working_mirror'
 
 export default {
     name: 'SubmitterInformation',
     props: {
-        modelValue: {
+        ...mirror.props,
+        errors: {
             type: Object,
             required: true
-        }
+        },
     },
-    emits: [
-        'update:modelValue',
-    ],
+    emits: [ ...mirror.emits, ],
     data () {
         return {
             grants: ['Broad/Geisinger', 'Stanford/Baylor', 'UNC', 'Unsure'],
@@ -96,7 +95,7 @@ export default {
         }
     },
     setup(props, context) {
-        const {workingCopy} = setupWorkingMirror(props, context);
+        const {workingCopy} = mirror.setup(props, context);
 
         return {
             workingCopy

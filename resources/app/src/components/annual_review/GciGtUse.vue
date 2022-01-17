@@ -60,26 +60,23 @@
     </div>
 </template>
 <script>
-import setupWorkingMirror from '@/composables/setup_working_mirror'
+import mirror from '@/composables/setup_working_mirror'
 
 export default {
-    name: 'GciGtUse',
+    name: 'GcGtUse',
     props: {
-        modelValue: {
-            required: true,
-            type: Object
-        },
+        ...mirror.props,
         errors: {
-            required: true,
-            type: Object
-        }
+            type: Object,
+            required: true
+        },
     },
-    setup (props, context) {
-
-        const { workingCopy } = setupWorkingMirror(props, context);
+    emits: [ ...mirror.emits ],
+    setup(props, context) {
+        const {workingCopy} = mirror.setup(props, context);
         return {
             workingCopy
-        };
-    },
+        }
+    }
 }
 </script>

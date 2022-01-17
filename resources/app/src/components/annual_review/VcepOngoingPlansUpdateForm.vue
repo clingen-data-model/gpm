@@ -20,40 +20,24 @@
     </div>
 </template>
 <script>
-import setupWorkingMirror from '@/composables/setup_working_mirror'
 import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm'
+import mirror from '@/composables/setup_working_mirror'
 
 export default {
-    name: 'GCEPReviewForm',
+    name: 'VcepOngoingPlansUpdateForm',
     components: {
-        VcepOngoingPlansForm,
+        VcepOngoingPlansForm
     },
-    emits: [
-        'updated'
-    ],
     props: {
-        modelValue: {
-            type: Object,
-            required: true
-        },
+        ...mirror.props,
         errors: {
             type: Object,
             required: true
-        }
-    },
-    data() {
-        return {
-            
-        }
-    },
-    computed: {
-        group () {
-            return this.$store.getters['groups/currentItemOrNew'];
         },
     },
+    emits: [ ...mirror.emits ],
     setup(props, context) {
-        const {workingCopy} = setupWorkingMirror(props, context);
-        console.log(workingCopy)
+        const {workingCopy} = mirror.setup(props, context);
         return {
             workingCopy
         }

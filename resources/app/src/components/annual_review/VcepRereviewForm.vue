@@ -17,26 +17,23 @@
     </div>
 </template>
 <script>
-import setupWorkingMirror from '@/composables/setup_working_mirror';
+import mirror from '@/composables/setup_working_mirror'
 
 export default {
-    name: 'VcepRereview',
+    name: 'VcepRereviewForm',
     props: {
-        modelValue: {
-            type: Object,
-            required: true
-        },
+        ...mirror.props,
         errors: {
             type: Object,
             required: true
-        }
+        },
     },
-    emits: [
-        'update:modelValue'
-    ],
+    emits: [ ...mirror.emits ],
     setup(props, context) {
-        return setupWorkingMirror(props, context)
+        const {workingCopy} = mirror.setup(props, context);
+        return {
+            workingCopy
+        }
     }
-
 }
 </script>
