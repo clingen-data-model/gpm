@@ -78,7 +78,7 @@
                 <evidence-summary-list />
             </app-section>
 
-            <app-section title="Designation of Biocurators, Biocurator Trainer(s) and Core Approval Members" id="designations">
+            <app-section title="Member Designation" id="designations">
                 <member-designation-form ref="designationForm" />
             </app-section>
         </application-step>
