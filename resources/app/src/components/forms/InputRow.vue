@@ -18,6 +18,33 @@
                         :name="name"
                         :class="inputClass"
                     ></date-input>
+                    <textarea 
+                        v-if="type == 'large-text'"
+                        :modelValue="modelValue" 
+                        @update:modelValue="emitValue" 
+                        :disabled="disabled"
+                        @change="$emit('change', modelValue)"
+                        ref="input"
+                        :name="name"
+                        :class="inputClass"
+                        class="w-full"
+                        rows="5"
+                        :placeholder="placeholder"
+                    ></textarea>
+                    <div 
+                        v-else-if="type == 'radio-group'"
+                        class="radio-group"
+                        :class="{'ml-4': vertical}"
+                    >
+                        <radio-button 
+                            v-for="option in options"
+                            :key="option.value"
+                            :modelValue="modelValue" 
+                            @update:modelValue="emitValue" 
+                            :label="option.label || option.value" 
+                            :value="option.value"
+                        />
+                    </div>
                     <input 
                         v-else
                         :type="type" 
@@ -41,21 +68,30 @@
 
 export default {
     props: {
-        vertical: {
-            type: Boolean,
-            default: false
+        type: {
+            type: String,
+            required: false,
+            default: 'text'
+        },
+        modelValue: {
+            required: false,
+            default: null
         },
         errors: {
             type: Array,
             required: false,
             default: () => []
         },
+        options: {
+            type: Array,
+            required: false
+        },
         label: {
             type: String,
             required: false
         },
         // purgeCSS purges "unused" classes
-        // this means any otherwise onused width
+        // this means any otherwise unused width
         // class will be purged and will not apply
         // when we generate the class based on a number
         // labelWidth: {
@@ -67,15 +103,6 @@ export default {
             type: String,
             required: false,
             default: 'w-36'
-        },
-        type: {
-            type: String,
-            required: false,
-            default: 'text'
-        },
-        modelValue: {
-            required: false,
-            default: null
         },
         placeholder: {
             required: false,
@@ -105,7 +132,11 @@ export default {
             required: false,
             default: null,
             type: String
-        }
+        },
+        vertical: {
+            type: Boolean,
+            default: false
+        },
     },
     emits: [
         'update:modelValue',
