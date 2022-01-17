@@ -1,7 +1,19 @@
 import {cloneDeep, isEqual} from 'lodash';
 import {ref, watch} from 'vue';
 
-export default (props, context) => {
+export const mirrorProps = {
+    modelValue: {
+        type: Object,
+        required: true
+    }
+};
+
+export const mirrorEmits = [
+    'update:modelValue'
+];
+
+
+export const setupMirror = (props, context) => {
     const workingCopy = ref({});
     watch(() => props.modelValue, function (to) {
         if (!isEqual(to, workingCopy.value)) {
@@ -19,3 +31,9 @@ export default (props, context) => {
         workingCopy,
     }
 }
+
+export default {
+    props: mirrorProps,
+    emits: mirrorEmits,
+    setup: setupMirror
+};
