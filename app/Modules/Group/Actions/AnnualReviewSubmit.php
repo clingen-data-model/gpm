@@ -29,9 +29,8 @@ class AnnualReviewSubmit
         $validator = $this->makeDataValidator($annualReview);
         if ($validator->fails()) {
             return response([
-                'message' => 'There are unmet requirements.',
-                'requirement_violations' => $validator->errors()
-            ], 400);
+                'errors' => $validator->errors()
+            ], 422);
         }
 
         return $this->handle($annualReview);
@@ -71,17 +70,17 @@ class AnnualReviewSubmit
                 'exists:group_members,id',
             ],
             'grant' => 'required|in:Broad/Geisinger,Stanford/Baylor,UNC,Unsure',
-            'membership_attestation' => 'required',
-            'ongoing_plans_updated' => 'required|in:yes,no',
-            'ongoing_plans_update_details' => 'required_if:ongoing_plans_updated,yes',
-            'goals' => 'required',
-            'cochair_commitment' => 'required|in:yes,no',
-            'cochair_commitment_details' => 'required_if:cochair_commitment,yes',
-            'applied_for_funding' => 'required|in:yes,no',
-            'funding' => 'required_if:applied_for_funding,yes',
-            'funding_other_details' => 'required_if:funding,other',
-            'funding_thoughts' => 'required_if:applied_for_funding,no',
-            'website_attestation' => 'accepted'
+            'membership_attestation' => 'exclude_if:ep_activity,inactive|required',
+            'ongoing_plans_updated' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
+            'ongoing_plans_update_details' => 'exclude_if:ep_activity,inactive|required_if:ongoing_plans_updated,yes',
+            'goals' => 'exclude_if:ep_activity,inactive|required',
+            'cochair_commitment' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
+            'cochair_commitment_details' => 'exclude_if:ep_activity,inactive|required_if:cochair_commitment,no',
+            'applied_for_funding' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
+            'funding' => 'exclude_if:ep_activity,inactive|required_if:applied_for_funding,yes',
+            'funding_other_details' => 'exclude_if:ep_activity,inactive|required_if:funding,other',
+            'funding_thoughts' => 'exclude_if:ep_activity,inactive|required_if:applied_for_funding,no',
+            'website_attestation' => 'exclude_if:ep_activity,inactive|accepted'
         ];
 
         if ($annualReview->expertPanel->isGcep) {
@@ -90,17 +89,17 @@ class AnnualReviewSubmit
                 [
                     'ep_activity' => 'required|in:active,inactive',
                     'submitted_inactive_form' => 'nullable|required_if:ep_activity,inactive|in:yes,no',
-                    'gci_use' => 'required|in:yes,no',
-                    'gci_use_details' => 'required_if:gci_use,no',
-                    'published_count' => 'required|numeric',
-                    'approved_unpublished_count' => 'required|numeric',
-                    'in_progress_count' => 'required|numeric',
-                    'gt_gene_list' => 'required|in:yes,no',
-                    'gt_gene_list_details' => 'required_if:gt_gene_list,no',
-                    'gt_precuration_info' => 'required|in:yes,no',
-                    'gt_precuration_info_details' => 'required_if:gt_precuration_info,no',
-                    'recuration_begun' => 'required|in:yes,no',
-                    'recuration_designees' => 'required',
+                    'gci_use' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
+                    'gci_use_details' => 'exclude_if:ep_activity,inactive|required_if:gci_use,no',
+                    'gt_gene_list' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
+                    'gt_gene_list_details' => 'exclude_if:ep_activity,inactive|required_if:gt_gene_list,no',
+                    'gt_precuration_info' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
+                    'gt_precuration_info_details' => 'exclude_if:ep_activity,inactive|required_if:gt_precuration_info,no',
+                    'published_count' => 'exclude_if:ep_activity,inactive|required|numeric',
+                    'approved_unpublished_count' => 'exclude_if:ep_activity,inactive|required|numeric',
+                    'in_progress_count' => 'exclude_if:ep_activity,inactive|required|numeric',
+                    'recuration_begun' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
+                    'recuration_designees' => 'exclude_if:ep_activity,inactive|required',
 
                 ]
             );
@@ -108,7 +107,7 @@ class AnnualReviewSubmit
         if ($annualReview->expertPanel->isVcep) {
             $requirements = array_merge($requirements, [
                 'vci_use' => 'required|in:yes,no',
-                'vci_use_details' => 'required_if:gci_use,no',
+                'vci_use_details' => 'required_if:vci_use,no',
                 'vcep_totals' => 'required|json', //need to do more in depth validation somewhere.
                 'variant_workflow_changes' => 'required|in:yes,no',
                 'variant_workflow_changes_details' => 'required_if:variant_workflow_changes,yes',
