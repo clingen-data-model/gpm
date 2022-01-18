@@ -196,4 +196,9 @@ class GroupPolicy
         return $user->hasAnyPermission('groups-manage', 'ep-applications-manage')
             || ($user->person && $user->person->isMemberOf($group));
     }
+
+    public function manageAnnualReview(User $user, Group $group): bool
+    {
+        return $user->hasAnyPermission('groups-manage', 'ep-applications-manage');
+    }
 }

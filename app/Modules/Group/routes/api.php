@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\AnnualReview;
 use Illuminate\Support\Facades\Route;
 use App\Modules\Group\Actions\GenesAdd;
 use App\Modules\Group\Actions\MemberAdd;
@@ -15,9 +16,11 @@ use App\Modules\Group\Actions\MemberUpdate;
 use App\Modules\Group\Actions\ParentUpdate;
 use App\Modules\Group\Actions\DocumentUpdate;
 use App\Modules\Group\Actions\GroupNameUpdate;
+use App\Modules\Group\Actions\AnnualReviewSave;
 use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Group\Actions\MemberRemoveRole;
 use App\Modules\Group\Actions\GroupStatusUpdate;
+use App\Modules\Group\Actions\AnnualReviewSubmit;
 use App\Modules\Group\Actions\EvidenceSummaryAdd;
 use App\Modules\Group\Actions\AttestationGcepStore;
 use App\Modules\Group\Actions\ApplicationSubmitStep;
@@ -119,7 +122,25 @@ Route::group([
             Route::put('/{summaryId}', EvidenceSummaryUpdate::class);
             Route::delete('/{summaryId}', EvidenceSummaryDelete::class);
         });
+
+        Route::group(['prefix' => '/annual-reviews'], function () {
+            Route::get('/', function (\App\Modules\Group\Models\Group $group) {
+                if (!$group->isEp) {
+                    return response('This group does not have annual review.', 404);
+                }
+                $review = $group->expertPanel->latestAnnualReview;
+                if (!$review) {
+                    $review = AnnualReview::create(['expert_panel_id' => $group->expertPanel->id]);
+                }
+    
+                return $review;
+            });
+            Route::put('/{review}', AnnualReviewSave::class);
+            Route::post('/{review}', AnnualReviewSubmit::class);
+        });
     });
+
+
 
     Route::post('/{uuid}/invites', MemberInvite::class);
 });

@@ -4,6 +4,7 @@ namespace App\Modules\ExpertPanel\Models;
 
 use App\Models\HasUuid;
 use App\Models\Document;
+use App\Models\AnnualReview;
 use App\Models\Contracts\HasNotes;
 use App\Modules\Group\Models\Group;
 use App\Models\Contracts\HasMembers;
@@ -19,6 +20,7 @@ use Database\Factories\ExpertPanelFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\ExpertPanel\Models\NextAction;
 use App\Models\Traits\HasNotes as TraitsHasNotes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Modules\ExpertPanel\Models\EvidenceSummary;
 use App\Modules\ExpertPanel\Models\ExpertPanelType;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -29,9 +31,9 @@ use App\Modules\Group\Models\Contracts\BelongsToGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Modules\ExpertPanel\Models\SpecificationRuleSet;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
-use App\Models\Traits\HasLogEntries as HasLogEntriesTraits;
 use App\Modules\ExpertPanel\Models\CurationReviewProtocol;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use App\Models\Traits\HasLogEntries as HasLogEntriesTraits;
 use App\Models\Traits\RecordsEvents as TraitsRecordsEvents;
 use App\Modules\Group\Models\Traits\HasMembers as TraitsHasMembers;
 use App\Modules\Group\Models\Traits\BelongsToGroup as TraitsBelongsToGroup;
@@ -372,6 +374,22 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     {
         return $this->belongsTo(CurationReviewProtocol::class);
     }
+
+    /**
+     * Get all of the annualReviews for the ExpertPanel
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function annualReviews(): HasMany
+    {
+        return $this->hasMany(AnnualReview::class);
+    }
+
+    public function latestAnnualReview(): HasOne
+    {
+        return $this->hasOne(AnnualReview::class)->latestOfMany();
+    }
+    
 
     // Access methods
 
