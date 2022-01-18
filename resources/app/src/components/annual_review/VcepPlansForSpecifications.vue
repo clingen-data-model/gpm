@@ -34,7 +34,6 @@ export default {
 
 <template>
     <application-section title="Plans for rule specification of additional genes">
-            <!-- v-if="group.expert_panel.genes.length > 1" -->
         <input-row
             v-model="workingCopy.specification_plans"
             :errors="errors.specification_plans"
@@ -44,7 +43,6 @@ export default {
             vertical
         />
         <input-row 
-            v-if="workingCopy.specification_plans=='yes'" 
             v-model="workingCopy.specification_plans_details" 
             :errors="errors.specification_plans_details" 
             type="large-text" 

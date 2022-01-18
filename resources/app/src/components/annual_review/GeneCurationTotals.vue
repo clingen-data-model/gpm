@@ -45,6 +45,12 @@ export default {
         },
     },
     emits: [  ...mirror.emits ],
+    computed: {
+        lastYear () {
+            return (new Date()).getFullYear()-1;
+        }
+        
+    },
     setup(props, context) {
         const {workingCopy} = mirror.setup(props, context);
         return {

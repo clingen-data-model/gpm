@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <application-section title="Variant Re-review">
         <p>
             Variant Curation Expert Panels are expected to keep their variant interpretations up-to-date and to expedite the re-review of variants that have a conflicting assertion submitted to ClinVar after the Expert Panel submission. Please describe progress in each of the following activities and describe any reasons expectations have not been met.
         </p>
@@ -27,13 +27,17 @@
                 </input-row>
             </li>
         </ul>
-    </div>
+    </application-section>
 </template>
 <script>
 import mirror from '@/composables/setup_working_mirror'
+import ApplicationSection from '@/components/expert_panels/ApplicationSection'
 
 export default {
     name: 'VariantReanalysis',
+    components: {
+        ApplicationSection
+    },
     props: {
         ...mirror.props,
         errors: {

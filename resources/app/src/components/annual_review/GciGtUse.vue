@@ -4,57 +4,57 @@
         <input-row 
             label="Does your Expert Panel use the GCI for all gene curation activities?"
             vertical :errors="errors.gci_use"
-        >
-            <div class="radio-group">
-                <radio-button v-model="workingCopy.gci_use" label="Yes, use the GCI for all curation activities" :value="1" />
-                <radio-button v-model="workingCopy.gci_use" label="No" :value="0" />
-            </div>
-        </input-row>
+            type="radio-group"
+            v-model="workingCopy.gt_gci_use"
+            :options="[{value:'yes'},{value:'no'}]"
+        />
         <transition name="slide-fade-down">
             <input-row 
                 v-if="workingCopy.gci_use === 0"
-                v-model="workingCopy.gci_use_no_explanation" 
-                :errors="errors.gci_use_no_explanation"
+                v-model="workingCopy.gci_use_details" 
+                :errors="errors.gci_use_details"
                 label="Please explain"
-                class="ml-6" 
+                class="ml-4" 
+                type="large-text"
+                vertical
             />
         </transition>
         <hr>
         <input-row
             vertical
             label="Our complete gene list (genes previously approved or currently under consideration) has been added to the GeneTracker?"
-        >
-            <div class="radio-group">
-                <radio-button v-model="workingCopy.gt_gene_list" label="Yes, use the GCI for all curation activities" :value="1" />
-                <radio-button v-model="workingCopy.gt_gene_list" label="No" :value="0" />
-            </div>
-        </input-row>
+            type="radio-group"
+            v-model="workingCopy.gt_gene_list"
+            :options="[{value:'yes'},{value:'no'}]"
+        />
         <transition name="slide-fade-down">
             <input-row 
                 v-if="workingCopy.gt_gene_list === 0"
-                v-model="workingCopy.gt_gene_list_explanation" 
-                :errors="errors.gt_gene_list_explanation"
+                v-model="workingCopy.gt_gene_list_details" 
+                :errors="errors.gt_gene_list_details"
                 label="Please explain"
-                class="ml-6" 
+                class="ml-4" 
+                type="large-text"
+                vertical
             />
         </transition>
         <hr>
         <input-row
             label="All application precuration information has been added to the GeneTracker."
             vertical
-        >
-            <div class="radio-group">
-                <radio-button v-model="workingCopy.gt_precuration_info" label="Yes, use the GCI for all curation activities" :value="1" />
-                <radio-button v-model="workingCopy.gt_precuration_info" label="No" :value="0" />
-            </div>
-        </input-row>
+            type="radio-group"
+            v-model="workingCopy.gt_precuration_info"
+            :options="[{value:'yes'},{value:'no'}]"
+        />
         <transition name="slide-fade-down">
             <input-row 
                 v-if="workingCopy.gt_precuration_info === 0"
-                v-model="workingCopy.gt_precuration_info_explanation" 
-                :errors="errors.gt_precuration_info_explanation"
+                v-model="workingCopy.gt_precuration_info_details" 
+                :errors="errors.gt_precuration_info_details"
                 label="Please explain"
-                class="ml-6" 
+                class="ml-4" 
+                type="large-text"
+                vertical
             />
         </transition>
     </div>

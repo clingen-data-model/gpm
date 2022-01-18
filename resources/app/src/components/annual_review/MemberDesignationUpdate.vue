@@ -1,13 +1,15 @@
 <template>
-    <div>
+    <application-section title="Member Designation">
         <member-designation-form
             v-model="workingCopy"
             :errors="errors"
             @updated="$emit('updated')"
+            ref="memberDesignationForm"
         />
         <hr>
         <input-row vertical 
             label="Does this represent a change from previous years?"
+            v-model="workingCopy.member_designation_changed"
             :errors="errors.member_designation_changed"
             type="radio-group"
             :options="[
@@ -16,16 +18,18 @@
             ]"
         >
         </input-row>
-    </div>
+    </application-section>
 </template>
 <script>
 import MemberDesignationForm from '@/components/expert_panels/MemberDesignationForm'
 import mirror from '@/composables/setup_working_mirror'
+import ApplicationSection from '@/components/expert_panels/ApplicationSection'
 
 export default {
     name: 'MemberDesignationUpdate',
     components: {
-        MemberDesignationForm
+        MemberDesignationForm,
+        ApplicationSection
     },
     props: {
         ...mirror.props,
@@ -39,6 +43,11 @@ export default {
         const {workingCopy} = mirror.setup(props, context);
         return {
             workingCopy
+        }
+    },
+    methods: {
+        save () {
+            this.$refs.memberDesignationForm.save();
         }
     }
 }

@@ -16,25 +16,23 @@
 
         <input-row 
             label="Do the co-chairs plan to continue leading the EP for the next year?"
+            v-model="workingCopy.cochair_commitment"
+            type="radio-group"
             :errors="errors.cochair_commitment"
+            :options="[{value: 'yes'}, {value: 'no'}]"
             vertical
-        >
-            <div class="ml-4">
-                <radio-button v-model="workingCopy.cochair_commitment" value="yes">Yes</radio-button>
-                <radio-button v-model="workingCopy.cochair_commitment" value="no">No</radio-button>
-                <transition name="slide-fade-down">                                
-                    <input-row 
-                        label="Please explain" 
-                        :errors="workingCopy.cochair_commitment_details" 
-                        vertical
-                        class="ml-4"
-                        v-if="workingCopy.cochair_commitment == 'no'"
-                    >
-                        <textarea rows="5" v-model="workingCopy.cochair_commitment_details" class="w-full"></textarea>
-                    </input-row>
-                </transition>
-            </div>
-        </input-row>
+        />
+        <transition name="slide-fade-down">                                
+            <input-row 
+                label="Please explain" 
+                v-model="workingCopy.cochair_commitment_details"
+                type="large-text"
+                :errors="errors.cochair_commitment_details" 
+                vertical
+                class="ml-4"
+                v-if="workingCopy.cochair_commitment == 'no'"
+            />
+        </transition>
     </div>
 </template>
 

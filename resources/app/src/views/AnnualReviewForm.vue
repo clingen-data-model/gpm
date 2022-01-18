@@ -3,7 +3,6 @@ import ApplicationSection from '@/components/expert_panels/ApplicationSection'
 import SubmitterInformation from '@/components/annual_review/SubmitterInformation'
 import GciGtUse from '@/components/annual_review/GciGtUse'
 import GeneCurationTotals from '@/components/annual_review/GeneCurationTotals'
-import MemberList from '@/components/groups/MemberList'
 import {debounce} from 'lodash'
 import VcepOngoingPlansUpdateForm from '@/components/annual_review/VcepOngoingPlansUpdateForm'
 import VcepRereviewForm from '@/components/annual_review/VcepRereviewForm'
@@ -17,13 +16,14 @@ import VcepTotals from '@/components/annual_review/VcepTotals'
 import VariantReanalysis from '@/components/annual_review/VariantReanalysis'
 import MemberDesignationUpdate from '@/components/annual_review/MemberDesignationUpdate'
 import VcepPlansForSpecifications from '@/components/annual_review/VcepPlansForSpecifications'
+import VariantCurationWorkflow from '@/components/annual_review/VariantCurationWorkflow'
+import MembershipUpdate from '@/components/annual_review/MembershipUpdate'
 
 export default {
     name: 'AnnualReviewForm',
     components: {
         'app-section': ApplicationSection,
         SubmitterInformation,
-        MemberList,
         GciGtUse,
         GeneCurationTotals,
         VcepOngoingPlansUpdateForm,
@@ -38,6 +38,8 @@ export default {
         VariantReanalysis,
         MemberDesignationUpdate,
         VcepPlansForSpecifications,
+        VariantCurationWorkflow,
+        MembershipUpdate
     },
     props: {
         uuid: {
@@ -48,7 +50,49 @@ export default {
     data() {
         return {
             annualReview: {
-                submitter_id: null
+                submitter_id: null,
+                grant: null,
+                ep_activity: null,
+                submitted_inactive_form: null,
+                membership_attestation: null,
+                applied_for_funding: null,
+                funding: null,
+                funding_other_details: null,
+                funding_thoughts: null,
+                website_attestation: null,
+                ongoing_plans_updated: null,
+                ongoing_plans_update_details: null,
+                //GCEP
+                gci_use: null,
+                gci_use_details: null,
+                gt_gene_list: null,
+                gt_gene_list_details: null,
+                gt_precuration_info: null,
+                gt_precuration_info_details: null,
+                published_count: null,
+                approved_unpublished_count: null,
+                in_progress_count: null,
+                recuration_begun: null,
+                recuration_designees: null,
+                //VCEP
+                vci_use: null,
+                vci_use_details: null,
+                goals: null,
+                cochair_commitment: null,
+                cochair_commitment_details: null,
+                sepcification_progress: null,
+                specification_url: null,
+                variant_counts: [],
+                variant_workflow_changes: null,
+                variant_workflow_changes_details: null,
+                specification_progress: null,
+                specification_progress_url: null,
+                specification_plans: null,
+                specification_plans_details: null,
+                rereview_discrepencies_progress: null,
+                rereview_lp_and_vus_progress: null,
+                rereview_lb_progress: null,
+                member_designation_changed: null,
             },
             errors: {},
             throttle: 1000,
@@ -112,6 +156,7 @@ export default {
     created () {
         this.debounceSave = debounce(() => {
             console.log('debounceSave', this.annualReview);
+            console.log('Remember to submit refs', this.$refs)
         }, this.throttle);
 
         this.saveOngoingPlans = debounce(() => {
@@ -126,7 +171,12 @@ export default {
 }
 </script>
 <template>
-    <div class="annual-review">
+    <div class="annual-review flex">
+        <div class="w-1/3 overflow-hidden flex-shrink-0 flex-grow-0">
+            <pre>{{annualReview}}</pre>
+        </div> -->
+        <div class="overflow-scroll" v-remaining-height>
+        <!-- <div> -->
         <router-link class="note"
             :to="{name: 'GroupDetail', params: {uuid: group.uuid}}"
             v-if="group.uuid"
@@ -135,37 +185,12 @@ export default {
         </router-link>
 
         <h1>{{group.displayName}} - Annual Review for {{year}}</h1>
-        <app-section title="Submitter Information">
-            <submitter-information v-model="annualReview" :errors="errors" />
-        </app-section>
+
+        <submitter-information v-model="annualReview" :errors="errors" />
 
         <transition name="slide-fade-down">
             <div v-if="group.isVcep() || group.isGcep() && annualReview.ep_activity == 'active' ">
-                <app-section title="Membership">
-                    <p>
-                        Please list the entire membership of the Expert Panel.
-                    </p>
-                    <p v-if="group.isVcep()">
-                        Note: If changes are made to an Expert Panel Co-chair(s) or coordinator, please report them directly to the <a href="cdwg_oversightcommittee@clinicalgenome.org">Clinical Domain Working Group Oversight Committee</a> when they occur. All current EP members must complete a Conflict of Interest (COI) survey each year. If all members of your EP have filled out the EPAM generated COI survey, some of the information will be auto populated.
-                    </p>
-
-                    <member-list />
-
-                    <input-row 
-                        vertical 
-                        label="Please attest that your membership is up to date" 
-                        :errors="errors.membership_attestation"
-                    >
-                        <div class="ml-4">
-                            <radio-button v-model="annualReview.membership_attestation" value="I have reviewed and made the appropriate updates to membership as needed.">
-                                I have reviewed and made the appropriate updates to membership as needed.
-                            </radio-button>
-                            <radio-button v-model="annualReview.membership_attestation" value="I have reviewed and there are no changes needed.">
-                                I have reviewed and there are no changes needed.
-                            </radio-button>
-                        </div>
-                    </input-row>
-                </app-section>
+                <membership-update v-model="annualReview" :errors="errors" />
 
                 <template v-if="group.isGcep()">
                     <app-section title="Use of GCI and GeneTracker Systems">
@@ -192,7 +217,6 @@ export default {
                 <app-section title="Goals for next year">
                     <goals-form v-model="annualReview" :errors="errors" />
                 </app-section>
-
 
                 <app-section title="Additional Funding">
                     <funding-form v-model="annualReview" :errors="errors" />
@@ -226,42 +250,19 @@ export default {
 
                 <template v-if="group.isVcep() && group.expert_panel.pilotSpecificationsIsApproved">
                     <dev-component>Begin Questions for sustained curation</dev-component>
-                    <app-section title="Changes to plans for variant curation workflow">
-                        <input-row 
-                            v-model="annualReview.variant_workflow_changes"
-                            type="radio-group"
-                            label="Has the Expert Panel has made any changes to its workflow?"
-                            :errors="errors.variant_workflow_changes"
-                            :options="[
-                                {value: 'Yes'},
-                                {value: 'No' }, 
-                            ]"
-                            vertical
-                        ></input-row>
-                        <transition name="slide-fade-down">
-                            <input-row 
-                                v-if="annualReview.variant_workflow_changes == 'Yes'"
-                                v-model="annualReview.variant_workflow_changes_details"
-                                type="large-text"
-                                label="Please explain"
-                                :errors="errors.variant_workflow_changes_details"
-                                vertical
-                                class="ml-4"
-                            ></input-row>
-                        </transition>
-                    </app-section>
                     
-                    <app-section title="Variant Re-review">
-                        <variant-reanalysis v-model="annualReview" :errors="errors" />
-                    </app-section>
+                    <variant-curation-workflow v-model="annualReview" :errors="errors" />
                     
-                    <app-section title="Sustained Variant Curation">
-                        <vcep-ongoing-plans-update-form v-model="annualReview" :errors="errors" />
-                    </app-section>
+                    <variant-reanalysis v-model="annualReview" :errors="errors" />
+
+                    <vcep-ongoing-plans-update-form v-model="annualReview" :errors="errors" />
                     
-                    <app-section title="Member Designation">
-                        <member-designation-update v-model="annualReview" :errors="errors" />
-                    </app-section>
+                    <member-designation-update 
+                        v-model="annualReview" 
+                        :errors="errors"
+                        @updated="debounceSave"
+                        ref="memberDesignationUpdate"
+                    />
 
                     <vcep-plans-for-specifications 
                         v-model="annualReview" 
@@ -276,7 +277,7 @@ export default {
                 <br>
             </div>
         </transition>
-
+</div>
         <teleport to='body'>
             <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="this.$route.meta.title">
                 <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>

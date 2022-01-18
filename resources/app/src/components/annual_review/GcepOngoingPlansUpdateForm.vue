@@ -8,15 +8,19 @@
         <input-row vertical 
             label="Does this current review method represent a change from previous years?"
             :errors="errors.ongoing_plans_updated"
-        >
-            <div class="ml-4">
-                <radio-button v-model="workingCopy.ongoing_plans_updated" value="yes">Yes</radio-button>
-                <input-row v-if="workingCopy.ongoing_plans_updated == 'yes'" class="ml-4" label="Please explain" :errors="errors.ongoing_plans_update_details" vertical>
-                    <textarea rows="5" class="w-full" v-model="workingCopy.ongoing_plans_update_details"></textarea>
-                </input-row>
-                <radio-button v-model="workingCopy.ongoing_plans_updated" value="no">No</radio-button>
-            </div>
-        </input-row>
+            type="radio-group"
+            v-model="workingCopy.ongoing_plans_updated"
+            :options="[{value:'yes'},{value:'no'}]"
+        />
+        <input-row 
+            v-if="workingCopy.ongoing_plans_updated == 'yes'" 
+            class="ml-4" 
+            label="Please explain" 
+            :errors="errors.ongoing_plans_update_details" 
+            vertical
+            type="large-text"
+            v-model="workingCopy.ongoing_plans_update_details"
+        />
     </div>
 </template>
 <script>

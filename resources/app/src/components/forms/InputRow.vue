@@ -20,8 +20,8 @@
                     ></date-input>
                     <textarea 
                         v-if="type == 'large-text'"
-                        :modelValue="modelValue" 
-                        @update:modelValue="emitValue" 
+                        :value="modelValue" 
+                        @input="$emit('update:modelValue', $event.target.value)"
                         :disabled="disabled"
                         @change="$emit('change', modelValue)"
                         ref="input"
@@ -182,6 +182,7 @@ export default {
     },
     methods: {
         emitValue(evt) {
+            console.log(evt);
             this.$emit('update:modelValue', evt)
         },
         focus() {

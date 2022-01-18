@@ -11,19 +11,19 @@
         <td>{{workingCopy.person.first_name}}</td>
         <td>{{workingCopy.person.last_name}}</td>
         <td colgroup="biocurator">
-            <input type="checkbox" v-model="biocurator" :disabled="!canEdit">
+            <input type="checkbox" v-model="biocurator" :disabled="!canEdit" @input="emitUpdated">
         </td>
         <td colgroup="biocurator">
-            <input type="checkbox" v-model="workingCopy.training_level_1" :disabled="!canEdit">
+            <input type="checkbox" v-model="workingCopy.training_level_1" :disabled="!canEdit" @input="emitUpdated">
         </td>
         <td colgroup="biocurator">
-            <input type="checkbox" v-model="workingCopy.training_level_2" :disabled="!canEdit">
+            <input type="checkbox" v-model="workingCopy.training_level_2" :disabled="!canEdit" @input="emitUpdated">
         </td>
         <td>
-            <input type="checkbox" v-model="biocuratorTrainer" :disabled="!canEdit">
+            <input type="checkbox" v-model="biocuratorTrainer" :disabled="!canEdit" @input="emitUpdated">
         </td>
         <td>
-            <input type="checkbox" v-model="coreApprovalMember" :disabled="!canEdit">
+            <input type="checkbox" v-model="coreApprovalMember" :disabled="!canEdit" @input="emitUpdated">
         </td>
     </tr>
 </template>
@@ -43,6 +43,9 @@ export default {
             default: false
         }
     },
+    emits: [
+        'updated'
+    ],
     data() {
         return {
             workingCopy: new GroupMember(),
@@ -104,9 +107,7 @@ export default {
         },
 
         toggleRole (hasRole, roleName) {
-            console.log({hasRole, roleName});
             if (hasRole) {
-                console.log('adding role...')
                 this.workingCopy.addRole(roleName);
                 return;
             }
@@ -151,6 +152,9 @@ export default {
             }
         },
 
+        emitUpdated () {
+            this.$emit('updated', this.workingCopy)
+        }
 
     }
 }

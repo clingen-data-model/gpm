@@ -7,7 +7,7 @@
     }
 </style>
 <template>
-    <div>
+    <application-section title="Submitter Information">
         <dictionary-row label="Expert Panel">{{group.displayName}}</dictionary-row>
         <dictionary-row label="Affilation ID">{{group.expert_panel.affiliation_id}}</dictionary-row>
 
@@ -51,8 +51,8 @@
                 vertical
             >
                 <div class="ml-4">
-                    <radio-button v-model="workingCopy.submitted_inactive_form" :value="1">Yes</radio-button>
-                    <radio-button v-model="workingCopy.submitted_inactive_form" :value="0">No</radio-button>
+                    <radio-button v-model="workingCopy.submitted_inactive_form" :value="yes">Yes</radio-button>
+                    <radio-button v-model="workingCopy.submitted_inactive_form" :value="no">No</radio-button>
                 </div>
             </input-row>
         </transition>
@@ -61,7 +61,7 @@
                 You must complete and submit the <a href="https://docs.google.com/document/d/13m4xeuh-GDHbYciQYHu1CiE_6HI-Xz_6_-yp8q2Ybp4/edit?usp=sharing">ClinGene Inactive GCEP Form</a>
             </p>        
         </transition>
-    </div>
+    </application-section>
 </template>
 <style lang="postcss" scoped>
     .input-row .label-container label {
@@ -70,9 +70,13 @@
 </style>
 <script>
 import mirror from '@/composables/setup_working_mirror'
+import ApplicationSection from '@/components/expert_panels/ApplicationSection'
 
 export default {
     name: 'SubmitterInformation',
+    components: {
+        ApplicationSection
+    },
     props: {
         ...mirror.props,
         errors: {
