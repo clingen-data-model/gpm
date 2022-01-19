@@ -5,7 +5,7 @@
             type="radio-group"
             :options="[{value: 'yes'}, {value: 'no'}]"
             label="Have you applied for external funding for your EP?" 
-            :errors="errors.applied_for_additional_funding" 
+            :errors="errors.applied_for_funding" 
             vertical
         />
 
