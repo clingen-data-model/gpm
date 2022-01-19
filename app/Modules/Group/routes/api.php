@@ -133,6 +133,8 @@ Route::group([
                 if (!$review) {
                     return response('not found', 404);
                 }
+
+                $review->load(['submitter', 'window', 'submitter.person']);
     
                 return $review;
             });
