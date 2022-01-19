@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Carbon\Carbon;
 use App\Models\AnnualReview;
 use App\Modules\Group\Models\GroupMember;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
@@ -24,9 +25,14 @@ class AnnualReviewFactory extends Factory
     public function definition()
     {
         $expertPanel = ExpertPanel::factory()->create();
-        // $groupMember = GroupMember::factory()->create(['group_id', $expertPanel->group_id]);
+        $annualReviewWindow = AnnualReview::create([
+                                'for_year' => Carbon::now()->year-1,
+                                'start' => Carbon::tomorrow(),
+                                'end' => Carbon::tomorrow()->addDays(7)
+                            ]);
         return [
             'expert_panel_id' => $expertPanel->id,
+            'annual_review_window_id' => $annualReviewWindow->id,
             'data' => $this->createData()
         ];
     }

@@ -20,6 +20,7 @@ use App\Modules\Group\Actions\AnnualReviewSave;
 use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Group\Actions\MemberRemoveRole;
 use App\Modules\Group\Actions\GroupStatusUpdate;
+use App\Modules\Group\Actions\AnnualReviewCreate;
 use App\Modules\Group\Actions\AnnualReviewSubmit;
 use App\Modules\Group\Actions\EvidenceSummaryAdd;
 use App\Modules\Group\Actions\AttestationGcepStore;
@@ -130,11 +131,12 @@ Route::group([
                 }
                 $review = $group->expertPanel->latestAnnualReview;
                 if (!$review) {
-                    $review = AnnualReview::create(['expert_panel_id' => $group->expertPanel->id]);
+                    return response('not found', 404);
                 }
     
                 return $review;
             });
+            Route::post('/', AnnualReviewCreate::class);
             Route::put('/{review}', AnnualReviewSave::class);
             Route::post('/{review}', AnnualReviewSubmit::class);
         });

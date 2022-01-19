@@ -45,6 +45,20 @@
                             :value="option.value"
                         />
                     </div>
+                    <select v-else-if="type=='select'"
+                        :value="modelValue"
+                        @input="$emit('update:modelValue', $event.target.value)"
+                        v-bind="$attrs.disabled"
+                    >
+                        <option value="">Select&hellip;</option>
+                        <template v-for="option in options" :key="option.value">
+                            <slot name="option-label" v-bind="option">
+                                <option :value="option.value">
+                                    {{option.label || option.value}}
+                                </option>
+                            </slot>
+                        </template>
+                    </select>
                     <input 
                         v-else
                         :type="type" 

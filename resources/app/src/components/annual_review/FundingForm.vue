@@ -11,19 +11,12 @@
 
         <input-row 
             v-if="workingCopy.applied_for_funding == 'yes'"
-            label="" :errors="errors.funding"
-            class="ml-4" 
-            vertical
-        >
-            <select v-model="workingCopy.funding">
-                <option value="NIH U24">NIH U24</option>
-                <option value="Professional society">Professional society</option>
-                <option value="Patient Advocacy Group">Patient Advocacy Group</option>
-                <option value="Pharma">Pharma</option>
-                <option value="Industry">Industry</option>
-                <option value="Other">Other</option>
-            </select>
-        </input-row>
+            label="Funding Type" :errors="errors.funding"
+            class="ml-4"
+            type="select"
+            v-model="workingCopy.funding"
+            :options="fundingOptions"
+        />
 
         <input-row 
             v-if="workingCopy.funding == 'Other'" 
@@ -58,6 +51,18 @@ export default {
             type: Object,
             required: true
         },
+    },
+    data() {
+        return {
+            fundingOptions: [
+                {value: 'NIH U24'},
+                {value: 'Professional society'},
+                {value: 'Patient Advocacy Group'},
+                {value: 'Pharma'},
+                {value: 'Industry'},
+                {value: 'Other'},
+            ]
+        }
     },
     emits: [ ...mirror.emits ],
     setup(props, context) {

@@ -11,12 +11,13 @@
         <dictionary-row label="Expert Panel">{{group.displayName}}</dictionary-row>
         <dictionary-row label="Affilation ID">{{group.expert_panel.affiliation_id}}</dictionary-row>
 
-        <input-row label="Submitting member">
-            <select v-model="workingCopy.submitter_id">
-                <option :value="null">Select...</option>
-                <option v-for="member in members" :key="member.id" :value="member.id">{{member.person.name}}</option>
-            </select>
-        </input-row>
+        <input-row 
+            label="Submitting member"
+            v-model="workingCopy.submitter_id"
+            type="select"
+            :options="members.map(m => ({value: m.id, label:m.person.name}))"
+        />
+
         <dictionary-row label="EP Coordinator(s)">
             <span class="csv-item" 
                 v-for="coordinator in group.coordinators" :key="coordinator.id"
@@ -24,43 +25,38 @@
             <span v-if="group.coordinators.length == 0" class="text-red-600">No coordinators on file for this expert panel.</span>
         </dictionary-row>
 
-        <input-row label="Liaising ClinGen grant?">
-            <select v-model="workingCopy.grant">
-                <option :value="null">Select...</option>
-                <option v-for="grant in grants" :key="grant" :value="grant">{{grant}}</option>
-            </select>
-        </input-row>
+        <input-row 
+            label="Liaising ClinGen grant"
+            v-model="workingCopy.grant"
+            type="select"
+            :options="grants.map(g => ({value: g}))"
+            :errors="errors.grant"
+        />
         
         <input-row v-if="this.group.isGcep()"
             label="What is the current activity status of the EP?"
+            v-model="workingCopy.ep_activity"
+            type="radio-group"
+            :options="activityOptions"
             vertical
-        >
-            <div class="ml-4">
-                <radio-button v-model="workingCopy.ep_activity" value="active">
-                    Active - Group meets on a routine basis and/or is on hiatus but planning to reconvene to recurate.
-                </radio-button>
-                <radio-button v-model="workingCopy.ep_activity" value="inactive">
-                    Inactive - The group is no longer routinely meeting, and plans to, or has, transferred the responsibility of re-curating has been to a different GCEP.
-                </radio-button>
-            </div>
-        </input-row>
+        />
 
         <transition name="slide-fade-down">
             <input-row v-if="workingCopy.ep_activity == 'inactive'"
                 label="Have you submitted an Inactive GCEP form to the CDWG Oversight Committee?"
+                v-model="workingCopy.submitted_inactive_form"
+                type="radio-group"
+                :options="[{value: 'yes'}, {value: 'no'}]"
                 vertical
-            >
-                <div class="ml-4">
-                    <radio-button v-model="workingCopy.submitted_inactive_form" :value="yes">Yes</radio-button>
-                    <radio-button v-model="workingCopy.submitted_inactive_form" :value="no">No</radio-button>
-                </div>
-            </input-row>
+            />
         </transition>
+
         <transition name="slide-fade-down">
-            <p v-if="workingCopy.submitted_inactive_form == 0">
+            <p v-if="workingCopy.submitted_inactive_form == 'no'" class="ml-4 alert-warning p-2 rounded-lg">
                 You must complete and submit the <a href="https://docs.google.com/document/d/13m4xeuh-GDHbYciQYHu1CiE_6HI-Xz_6_-yp8q2Ybp4/edit?usp=sharing">ClinGene Inactive GCEP Form</a>
             </p>        
         </transition>
+
     </application-section>
 </template>
 <style lang="postcss" scoped>
@@ -88,6 +84,10 @@ export default {
     data () {
         return {
             grants: ['Broad/Geisinger', 'Stanford/Baylor', 'UNC', 'Unsure'],
+            activityOptions: [
+                {value: 'active', label: 'Active - Group meets on a routine basis and/or is on hiatus but planning to reconvene to recurate.'},
+                {value: 'inactive', label: 'Inactive - The group is no longer routinely meeting, and plans to, or has, transferred the responsibility of re-curating has been to a different GCEP.'}
+            ]
         };
     },
     computed: {

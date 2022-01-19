@@ -28,6 +28,17 @@ class AnnualReview extends Model
         'completed_at' => 'datetime'
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+            if (is_null($model->annual_review_window_id)) {
+                $model->annual_review_window_id = AnnualReviewWindow::orderBy('start_date', 'desc')->first()->id;
+            }
+        });
+    }
+
     /**
      * RELATIONS
      */
@@ -40,6 +51,16 @@ class AnnualReview extends Model
     public function expertPanel(): BelongsTo
     {
         return $this->belongsTo(ExpertPanel::class);
+    }
+
+    /**
+     * Get the window that owns the AnnualReview
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function window(): BelongsTo
+    {
+        return $this->belongsTo(AnnualReviewWindow::class);
     }
 
     /**
