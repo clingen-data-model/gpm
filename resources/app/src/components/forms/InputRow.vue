@@ -41,7 +41,7 @@
                             :key="option.value"
                             :modelValue="modelValue" 
                             @update:modelValue="emitValue" 
-                            :label="option.label || option.value" 
+                            :label="option.label || sentenceCase(option.value)" 
                             :value="option.value"
                         />
                     </div>
@@ -54,7 +54,7 @@
                         <template v-for="option in options" :key="option.value">
                             <slot name="option-label" v-bind="option">
                                 <option :value="option.value">
-                                    {{option.label || option.value}}
+                                    {{option.label || sentenceCase(option.value)}}
                                 </option>
                             </slot>
                         </template>
