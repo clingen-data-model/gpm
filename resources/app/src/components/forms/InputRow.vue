@@ -196,7 +196,6 @@ export default {
     },
     methods: {
         emitValue(evt) {
-            console.log(evt);
             this.$emit('update:modelValue', evt)
         },
         focus() {
