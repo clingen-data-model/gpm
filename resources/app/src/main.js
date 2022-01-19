@@ -5,7 +5,7 @@ import router from './router'
 import store from './store'
 
 import CKEditor from '@ckeditor/ckeditor5-vue'
-import {titleCase, camelCase, snakeCase, kebabCase} from '@/utils'
+import {titleCase, camelCase, snakeCase, kebabCase, sentenceCase} from '@/utils'
 
 
 const app = createApp(App)
@@ -64,6 +64,7 @@ app.use(store)
             snakeCase,
             kebabCase,
             userInGroup,
+            sentenceCase
         }
     })
     .mixin(objectUid)
