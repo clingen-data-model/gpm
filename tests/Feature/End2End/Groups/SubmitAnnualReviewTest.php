@@ -20,7 +20,7 @@ class SubmitAnnualReviewTest extends TestCase
         parent::setup();
         $this->seed();
 
-        $this->user = $this->setupUser(permissions: ['groups-manage']);
+        $this->user = $this->setupUser(permissions: ['annual-reviews-manage']);
         $this->expertPanel = ExpertPanel::factory()->gcep()->create();
         $this->coordinator = GroupMember::factory()
                                 ->create(['group_id' => $this->expertPanel->group->id])
@@ -35,7 +35,7 @@ class SubmitAnnualReviewTest extends TestCase
      */
     public function unprivileged_user_cannot_save_annual_review()
     {
-        $this->user->revokePermissionTo('groups-manage');
+        $this->user->revokePermissionTo('annual-reviews-manage');
 
         $annualReview = AnnualReview::factory()->create(['expert_panel_id' => $this->expertPanel->id]);
 
@@ -180,7 +180,7 @@ class SubmitAnnualReviewTest extends TestCase
             'applied_for_funding',
             'website_attestation',
             'vci_use',
-            'vcep_totals',
+            'variant_counts',
             'variant_workflow_changes',
             'rereview_discrepencies_progress',
             'rereview_lp_and_vus_progress',

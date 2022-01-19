@@ -57,7 +57,7 @@ class CreateAnnualReviewTest extends TestCase
      */
     public function priveleged_user_can_create_via_post()
     {
-        $user = $this->setupUser(permissions: ['groups-manage']);
+        $user = $this->setupUser(permissions: ['annual-reviews-manage']);
         Sanctum::actingAs($user);
 
         $this->makeRequest()
