@@ -1,5 +1,8 @@
 <template>
-    <div :class="{'border-l border-red-800 px-2': hasErrors}" class="input-row my-3">
+    <div 
+        :class="{'border-l border-red-800 px-2': hasErrors}" 
+        class="input-row my-3"
+    >
         <div :class="{'sm:flex': !vertical}">
             <div class="flex-none label-container" :class="labelContainerClass" v-show="showLabel">
                 <slot name="label" v-if="hasLabel">
@@ -13,6 +16,7 @@
                         :modelValue="modelValue" 
                         @update:modelValue="emitValue" 
                         :disabled="disabled"
+                        :readonly="$attrs.readonly"
                         @change="$emit('change', modelValue)"
                         ref="input"
                         :name="name"
@@ -23,6 +27,7 @@
                         :value="modelValue" 
                         @input="$emit('update:modelValue', $event.target.value)"
                         :disabled="disabled"
+                        :readonly="$attrs.readonly"
                         @change="$emit('change', modelValue)"
                         ref="input"
                         :name="name"
@@ -43,12 +48,16 @@
                             @update:modelValue="emitValue" 
                             :label="option.label || sentenceCase(option.value)" 
                             :value="option.value"
+                            :disabled="disabled"
+                            :readonly="$attrs.readonly"
                         />
                     </div>
                     <select v-else-if="type=='select'"
                         :value="modelValue"
                         @input="$emit('update:modelValue', $event.target.value)"
                         v-bind="$attrs.disabled"
+                        :disabled="disabled"
+                        :readonly="$attrs.readonly"
                     >
                         <option value="">Select&hellip;</option>
                         <template v-for="option in options" :key="option.value">
@@ -66,6 +75,7 @@
                         @input="$emit('update:modelValue', $event.target.value)"
                         :placeholder="placeholder"
                         :disabled="disabled"
+                        :readonly="$attrs.readonly"
                         @change="$emit('change', $event.target.value)"
                         ref="input"
                         :class="inputClass"
@@ -73,7 +83,7 @@
                     >
                 </slot>
                 <slot name="after-input"></slot>
-                <input-errors class="text-xs" :errors="errors"></input-errors>
+                <input-errors class="text-xs" :errors="errors || []"></input-errors>
             </div>
         </div>
     </div>
@@ -123,9 +133,8 @@ export default {
             value: null
         },
         disabled: {
-            required: false,
+            type: Boolean,
             default: false,
-            type: Boolean
         },
         name: {
             required: false,
@@ -201,7 +210,6 @@ export default {
         focus() {
             this.$refs.input.focus();
         }
-
     }
 }
 </script>

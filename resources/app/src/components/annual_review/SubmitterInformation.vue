@@ -16,6 +16,7 @@
             v-model="workingCopy.submitter_id"
             type="select"
             :options="members.map(m => ({value: m.id, label:m.person.name}))"
+            :disabled="isComplete"
         />
 
         <dictionary-row label="EP Coordinator(s)">
@@ -31,6 +32,7 @@
             type="select"
             :options="grants.map(g => ({value: g}))"
             :errors="errors.grant"
+            :disabled="isComplete"
         />
         
         <input-row v-if="this.group.isGcep()"
@@ -39,6 +41,8 @@
             type="radio-group"
             :options="activityOptions"
             vertical
+            :errors="errors.ep_activity"
+            :disabled="isComplete"
         />
 
         <transition name="slide-fade-down">
@@ -47,6 +51,7 @@
                 v-model="workingCopy.submitted_inactive_form"
                 type="radio-group"
                 :options="[{value: 'yes'}, {value: 'no'}]"
+                :disabled="isComplete"
                 vertical
             />
         </transition>
@@ -96,6 +101,9 @@ export default {
         },
         members () {
             return this.group.members.filter(m => m !== null);
+        },
+        isComplete () {
+            return Boolean(this.modelValue.completed_at);
         }
     },
     setup(props, context) {

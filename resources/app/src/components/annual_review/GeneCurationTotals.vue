@@ -6,7 +6,8 @@
             <br>
             Please cross reference <a href="https://clinicalgenome.org/">clinicalgenome.org</a> for published records.
         </p>
-        <input-row 
+        <input-row
+            :disabled="isComplete" 
             label="Approved and published on the ClinGen Website." 
             type="number" 
             v-model="workingCopy.published_count"
@@ -14,7 +15,8 @@
             labelWidthClass="w-80"
             input-class="w-16"
         />
-        <input-row 
+        <input-row
+            :disabled="isComplete" 
             label="Approved and pending publishing on the Clingen Website." 
             type="number" 
             v-model="workingCopy.approved_unpublished_count"
@@ -22,7 +24,8 @@
             labelWidthClass="w-80"
             input-class="w-16"
         />
-        <input-row 
+        <input-row
+            :disabled="isComplete" 
             label="In progress in the GCI." 
             type="number" 
             v-model="workingCopy.in_progress_count"
@@ -48,8 +51,10 @@ export default {
     computed: {
         lastYear () {
             return (new Date()).getFullYear()-1;
+        },
+        isComplete () {
+            return Boolean(this.modelValue.completed_at);
         }
-        
     },
     setup(props, context) {
         const {workingCopy} = mirror.setup(props, context);

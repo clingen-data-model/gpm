@@ -20,6 +20,7 @@ import VcepPlansForSpecifications from '@/components/annual_review/VcepPlansForS
 import VariantCurationWorkflow from '@/components/annual_review/VariantCurationWorkflow'
 import MembershipUpdate from '@/components/annual_review/MembershipUpdate'
 
+
 export default {
     name: 'AnnualReviewForm',
     components: {
@@ -40,7 +41,7 @@ export default {
         MemberDesignationUpdate,
         VcepPlansForSpecifications,
         VariantCurationWorkflow,
-        MembershipUpdate
+        MembershipUpdate,
     },
     props: {
         uuid: {
@@ -111,8 +112,17 @@ export default {
             return this.group.isVcep() ? VcepRereviewForm : GcepRereviewForm;
         },
         year () {
-            const thisYear = (new Date()).getFullYear()-1;
+            const thisYear = this.annualReview.window ? this.annualReview.window.for_year : (new Date()).getFullYear()-1;
             return thisYear;
+        },
+        hasErrors () {
+            return Object.keys(this.errors).length > 0;
+        },
+        window () {
+            return this.annualReview.window || {}
+        },
+        dueDateAlertVariant () {
+            return 'info';
         }
 
     },
@@ -180,13 +190,13 @@ export default {
                         id: response.data.id,
                         completed_at: response.data.completed_at,
                         submitter_id: response.data.submitter_id,
+                        submitter: response.data.submitter,
+                        window: response.data.window
                     }
                     this.lastSaved = new Date(Date.parse(response.data.updated_at));
                 });
-        }
-    },
-    created () {
-        this.debounceSave = debounce(async () => {
+        },
+        async save() {
             try {
                 if (!this.annualReview.id) {
                     return;
@@ -206,6 +216,11 @@ export default {
                 }
                 throw error
             }
+        }
+    },
+    created () {
+        this.debounceSave = debounce(async () => {
+            this.save();
         }, this.throttle);
 
         this.saveOngoingPlans = debounce(() => {
@@ -221,6 +236,10 @@ export default {
 </script>
 <template>
     <div class="annual-review relative">
+        <static-alert :variant="dueDateAlertVariant" class="mb-4" v-if="!annualReview.completed_at">
+            The annual review for {{window.for_year}}
+            is due on {{formatDate(window.end)}}
+        </static-alert>
         <router-link class="note"
             :to="{name: 'GroupList'}"
         >
@@ -247,96 +266,99 @@ export default {
             </note>
         </h1>
 
-        <submitter-information v-model="annualReview" :errors="errors" />
+        <static-alert variant="success" class="mb-4" v-if="annualReview.completed_at">
+            Your annual review was submitted on {{formatDate(annualReview.completed_at)}}
+        </static-alert>
 
-        <transition name="slide-fade-down">
-            <div v-if="group.isVcep() || group.isGcep() && annualReview.ep_activity == 'active' ">
-                <membership-update v-model="annualReview" :errors="errors" />
+            <submitter-information v-model="annualReview" :errors="errors" />
 
-                <template v-if="group.isGcep()">
-                    <app-section title="Use of GCI and GeneTracker Systems">
-                        <gci-gt-use v-model="annualReview" :errors="errors" />
+            <transition name="slide-fade-down">
+                <div v-if="group.isVcep() || group.isGcep() && annualReview.ep_activity == 'active' ">
+                    <membership-update v-model="annualReview" :errors="errors" />
+
+                    <template v-if="group.isGcep()">
+                        <app-section title="Use of GCI and GeneTracker Systems">
+                            <gci-gt-use v-model="annualReview" :errors="errors" />
+                        </app-section>
+
+                        <app-section title="Summary of total numbers of genes curated">
+                            <gene-curation-totals v-model="annualReview" :errors="errors" />
+                        </app-section>
+
+                        <app-section title="Changes to plans for ongoing curation">
+                            <gcep-ongoing-plans-update-form v-model="annualReview" :errors="errors" @updated="saveOngoingPlans"></gcep-ongoing-plans-update-form>
+                        </app-section>
+
+                        <app-section title="Gene Re-curation/Re-review">
+                            <gcep-rereview-form v-model="annualReview" :errors="errors"></gcep-rereview-form>
+                        </app-section>
+                    </template>
+
+                    <app-section v-if="group.isVcep()" title="Use of Variant Curation Interface (VCI)">
+                        <vci-use v-model="annualReview" :errors="errors"></vci-use>
                     </app-section>
 
-                    <app-section title="Summary of total numbers of genes curated">
-                        <gene-curation-totals v-model="annualReview" :errors="errors" />
+                    <app-section title="Goals for next year">
+                        <goals-form v-model="annualReview" :errors="errors" />
                     </app-section>
 
-                    <app-section title="Changes to plans for ongoing curation">
-                        <gcep-ongoing-plans-update-form v-model="annualReview" :errors="errors" @updated="saveOngoingPlans"></gcep-ongoing-plans-update-form>
+                    <app-section title="Additional Funding">
+                        <funding-form v-model="annualReview" :errors="errors" />
                     </app-section>
 
-                    <app-section title="Gene Re-curation/Re-review">
-                        <gcep-rereview-form v-model="annualReview" :errors="errors"></gcep-rereview-form>
-                    </app-section>
-                </template>
+                    <website-attestation v-model="annualReview" :errors="errors" />
+                    
+                    <template v-if="group.isVcep() && group.expert_panel.defIsApproved">
+                        <!-- <dev-component>Begin questions for specifcation-ed VCEPS</dev-component> -->
+                        <app-section title="Progress on Rule Specification">
+                            <specification-progress v-model="annualReview" :errors="errors" />
+                        </app-section>
 
-                <app-section v-if="group.isVcep()" title="Use of Variant Curation Interface (VCI)">
-                    <vci-use v-model="annualReview" :errors="errors"></vci-use>
-                </app-section>
+                        <app-section title="Summary of total number of variants curated">
+                            <vcep-totals v-model="annualReview" :errors="errors" />
+                        </app-section>
+                        <!-- <dev-component>End questions for specifcation-ed VCEPS</dev-component> -->
+                    </template>
 
-                <app-section title="Goals for next year">
-                    <goals-form v-model="annualReview" :errors="errors" />
-                </app-section>
+                    <template v-if="group.isVcep() && group.expert_panel.pilotSpecificationsIsApproved">
+                        <!-- <dev-component>Begin Questions for sustained curation</dev-component> -->
+                        
+                        <variant-curation-workflow v-model="annualReview" :errors="errors" />
+                        
+                        <variant-reanalysis v-model="annualReview" :errors="errors" />
 
-                <app-section title="Additional Funding">
-                    <funding-form v-model="annualReview" :errors="errors" />
-                </app-section>
-
-                <app-section title="Webpage Updates">
-                    <input-row :errors="errors.website_attestation" vertical>
-                        <template v-slot:label>
-                            <p>
-                                Please review your ClinGen EP webpage, including Expert Panel Status, description, membership, COI and relevant documentation, including publications. See the <a href="https://docs.google.com/document/d/1GeyR1CBqlzLHOdlPLJt0uA29Z-2ysmTX1dtH9PDmqRo/edit?usp=sharing">Coordinator Resource Document</a> for instructions on how to update web pages.
-                            </p>
-                        </template>
-                        <checkbox 
-                            label="I attest that the information on the webpage is up-to-date and accurate." 
-                            v-model="annualReview.website_attestation"
+                        <vcep-ongoing-plans-update-form v-model="annualReview" :errors="errors" />
+                        
+                        <member-designation-update 
+                            v-model="annualReview" 
+                            :errors="errors"
+                            @updated="debounceSave"
+                            ref="memberDesignationUpdate"
                         />
-                    </input-row>
-                </app-section>
 
-                <template v-if="group.isVcep() && group.expert_panel.defIsApproved">
-                    <dev-component>Begin questions for specifcation-ed VCEPS</dev-component>
-                    <app-section title="Progress on Rule Specification">
-                        <specification-progress v-model="annualReview" :errors="errors" />
-                    </app-section>
+                        <vcep-plans-for-specifications 
+                            v-model="annualReview" 
+                            :errors="errors" 
+                        />
 
-                    <app-section title="Summary of total number of variants curated">
-                        <vcep-totals v-model="annualReview" :errors="errors" />
-                    </app-section>
-                    <dev-component>End questions for specifcation-ed VCEPS</dev-component>
-                </template>
+                        <!-- <dev-component>End Questions for sustained curation</dev-component> -->
+                    </template>
 
-                <template v-if="group.isVcep() && group.expert_panel.pilotSpecificationsIsApproved">
-                    <dev-component>Begin Questions for sustained curation</dev-component>
-                    
-                    <variant-curation-workflow v-model="annualReview" :errors="errors" />
-                    
-                    <variant-reanalysis v-model="annualReview" :errors="errors" />
+                </div>
+            </transition>
+            <hr>
+            <button class="btn btn-lg" @click="submit" v-if="!annualReview.completed_at">Submit annual update</button>
+            <static-alert variant="danger mt-4" v-if="hasErrors">
+                There are problems with your annual review that must be corrected before you can submit.  
+                <br>
+                Please see items highlighted in red above.
+            </static-alert>
 
-                    <vcep-ongoing-plans-update-form v-model="annualReview" :errors="errors" />
-                    
-                    <member-designation-update 
-                        v-model="annualReview" 
-                        :errors="errors"
-                        @updated="debounceSave"
-                        ref="memberDesignationUpdate"
-                    />
+            <static-alert variant="success" v-if="annualReview.completed_at">
+                Thank you for submitting your annual review.
+            </static-alert>
 
-                    <vcep-plans-for-specifications 
-                        v-model="annualReview" 
-                        :errors="errors" 
-                    />
-
-                    <dev-component>End Questions for sustained curation</dev-component>
-                </template>
-
-            </div>
-        </transition>
-        <hr>
-        <button class="btn btn-lg" @click="submit">Submit annual update</button>
+        <br>
         <br>
 
         <teleport to='body'>

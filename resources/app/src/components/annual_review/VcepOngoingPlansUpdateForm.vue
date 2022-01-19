@@ -4,6 +4,7 @@
             v-model="workingCopy"
             :errors="errors"
             @updated="$emit('updated')"
+            :readonly="isComplete"
         />
         <input-row vertical 
             label="Does this current review method represent a change from previous years?"
@@ -11,6 +12,7 @@
             type="radio-group"
             v-model="workingCopy.ongoing_plans_updated"
             :options="[{value:'yes'},{value:'no'}]"
+            :disabled="isComplete"
         />
         <input-row 
             v-if="workingCopy.ongoing_plans_updated == 'yes'" 
@@ -20,6 +22,7 @@
             vertical
             type="large-text"
             v-model="workingCopy.ongoing_plans_update_details"
+            :disabled="isComplete"
         />
     </application-section>
 </template>
@@ -40,6 +43,11 @@ export default {
             type: Object,
             required: true
         },
+    },
+    computed: {
+        isComplete () {
+            return Boolean(this.modelValue.completed_at);
+        }
     },
     emits: [ ...mirror.emits ],
     setup(props, context) {

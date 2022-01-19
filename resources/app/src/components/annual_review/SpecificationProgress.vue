@@ -1,6 +1,7 @@
 <template>
     <div>
         <input-row 
+            :disabled="isComplete"
             v-model="workingCopy.specification_progress"
             type="radio-group"
             :options="[{value:'yes'},{value:'no'}]"
@@ -10,6 +11,7 @@
         />
         <transition name="slide-fade-down">
             <input-row 
+                :disabled="isComplete"
                 label="Link to approved specification in Cspec" 
                 :errors="errors.specification_url" 
                 vertical
@@ -33,6 +35,11 @@ export default {
         },
     },
     emits: [ ...mirror.emits ],
+    computed: {
+        isComplete () {
+            return Boolean(this.modelValue.completed_at)
+        }
+    },
     setup(props, context) {
         const {workingCopy} = mirror.setup(props, context);
         return {

@@ -3,6 +3,7 @@
         <p>Gene Curation Expert Panels are expected to review current clinical validity classifications for their approved genes based on the guidance provided in the <a href="https://clinicalgenome.org/site/assets/files/2164/clingen_standard_gene-disease_validity_recuration_procedures_v1.pdf">Gene-Disease Validity Recuration Process document</a>. Please indicate the following:</p>
 
         <input-row 
+            :disabled="isComplete"
             label="Have you begun recuration?"
             v-model="workingCopy.recuration_begun"
             type="radio-group"
@@ -12,6 +13,7 @@
         />
 
         <input-row 
+            :disabled="isComplete"
             v-model="workingCopy.recuration_designees"
             :errors="errors.recuration_designees"
             type="large-text"
@@ -35,6 +37,11 @@ export default {
             type: Object,
             required: true
         },
+    },
+    computed: {
+        isComplete () {
+            return Boolean(this.modelValue.completed_at)
+        }
     },
     emits: [ ...mirror.emits ],
     setup(props, context) {

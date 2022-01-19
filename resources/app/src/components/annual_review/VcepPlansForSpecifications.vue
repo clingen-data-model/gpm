@@ -20,6 +20,9 @@ export default {
     computed: {
         group () {
             return this.$store.getters['groups/currentItemOrNew'];
+        },
+        isComplete () {
+            return Boolean(this.modelValue.completed_at);
         }
     },
     setup(props, context) {
@@ -34,6 +37,7 @@ export default {
 <template>
     <application-section title="Plans for rule specification of additional genes">
         <input-row
+            :disabled="isComplete"
             v-model="workingCopy.specification_plans"
             :errors="errors.specification_plans"
             label="Are you planning to start the rule specification process for  anew gene in the coming year?"
@@ -42,6 +46,7 @@ export default {
             vertical
         />
         <input-row
+            :disabled="isComplete"
             v-if="workingCopy.specification_plans == 'yes'"
             v-model="workingCopy.specification_plans_details" 
             :errors="errors.specification_plans_details" 

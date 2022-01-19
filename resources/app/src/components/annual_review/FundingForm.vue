@@ -1,6 +1,7 @@
 <template>
     <div>
         <input-row 
+            :disabled="isComplete"
             v-model="workingCopy.applied_for_funding"
             type="radio-group"
             :options="[{value: 'yes'}, {value: 'no'}]"
@@ -10,6 +11,7 @@
         />
 
         <input-row 
+            :disabled="isComplete"
             v-if="workingCopy.applied_for_funding == 'yes'"
             label="Funding Type" :errors="errors.funding"
             class="ml-4"
@@ -19,6 +21,7 @@
         />
 
         <input-row 
+            :disabled="isComplete"
             v-if="workingCopy.funding == 'Other'" 
             type="large-text" 
             v-model="workingCopy.funding_other_details" 
@@ -29,6 +32,7 @@
         />
 
         <input-row 
+            :disabled="isComplete"
             v-model="workingCopy.funding_thoughts"
             type="large-text"
             v-if="workingCopy.applied_for_funding == 'no'"
@@ -65,6 +69,11 @@ export default {
         }
     },
     emits: [ ...mirror.emits ],
+    computed: {
+        isComplete () {
+            return Boolean(this.modelValue.completed_at)
+        }
+    },
     setup(props, context) {
         const {workingCopy} = mirror.setup(props, context);
         return {

@@ -5,14 +5,17 @@
             :errors="errors"
             @updated="$emit('updated')"
         />
-        <input-row vertical 
+        <input-row 
+            :disabled="isComplete"
             label="Does this current review method represent a change from previous years?"
             :errors="errors.ongoing_plans_updated"
             type="radio-group"
             v-model="workingCopy.ongoing_plans_updated"
             :options="[{value:'yes'},{value:'no'}]"
+            vertical 
         />
         <input-row 
+            :disabled="isComplete"
             v-if="workingCopy.ongoing_plans_updated == 'yes'" 
             class="ml-4" 
             label="Please explain" 
@@ -45,6 +48,9 @@ export default {
         group () {
             return this.$store.getters['groups/currentItemOrNew'];
         },
+        isComplete () {
+            return Boolean(this.modelValue.completed_at);
+        }
     },
     setup(props, context) {
         const {workingCopy} = mirror.setup(props, context);

@@ -5,6 +5,7 @@
             :errors="errors"
             @updated="$emit('updated')"
             ref="memberDesignationForm"
+            :readonly="isComplete"
         />
         <hr>
         <input-row vertical 
@@ -16,6 +17,7 @@
                 {value: 'yes', label: 'Yes'},
                 {value: 'no', label: 'No'}
             ]"
+            :disabled="isComplete"
         >
         </input-row>
     </application-section>
@@ -43,6 +45,11 @@ export default {
         const {workingCopy} = mirror.setup(props, context);
         return {
             workingCopy
+        }
+    },
+    computed: {
+        isComplete () {
+            return Boolean(this.modelValue.completed_at);
         }
     },
     methods: {

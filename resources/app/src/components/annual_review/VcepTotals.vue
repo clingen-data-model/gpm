@@ -7,51 +7,55 @@
                     <th>In ClinVar</th>
                     <th>Approved in VCI<br><small>(Not in ClinVar)</small></th>
                     <th>Provisionally approved</th>
-                    <th></th>
+                    <th v-if="!isComplete"></th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="(variant, idx) in variantCounts" :key="variant.gene">
                     <td>
-                        <input 
+                        <input
+                            :disabled="isComplete"
                             type="text" 
                             v-model="variant.gene_symbol"
                             placeholder="HGNC gene symbol"
                             :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.gene_symbol`)}"
                         >
-                        <input-errors :errors="errors[`variant_counts.${idx}.gene_symbol`]"></input-errors>
+                        <input-errors :errors="errors[`variant_counts.${idx}.gene_symbol`] || []"></input-errors>
                     </td>
                     <td>
-                        <input 
+                        <input
+                            :disabled="isComplete"
                             type="number" 
                             v-model="variant.in_clinvar"
                             :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.in_clinvar`)}"
                         >
-                        <input-errors :errors="errors[`variant_counts.${idx}.in_clinvar`]"></input-errors>
+                        <input-errors :errors="errors[`variant_counts.${idx}.in_clinvar`] || []"></input-errors>
                     </td>
                     <td>
-                        <input 
+                        <input
+                            :disabled="isComplete"
                             type="number" 
                             v-model="variant.gci_approved"
                             :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.gci_approved`)}"
                         >
-                        <input-errors :errors="errors[`variant_counts.${idx}.gci_approved`]"></input-errors>
+                        <input-errors :errors="errors[`variant_counts.${idx}.gci_approved`] || []"></input-errors>
                     </td>
                     <td>
-                        <input 
+                        <input
+                            :disabled="isComplete"
                             type="number" 
                             v-model="variant.provisionally_approved"
                             :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.provisionally_approved`)}"
                         >
-                        <input-errors :errors="errors[`variant_counts.${idx}.provisionally_approved`]"></input-errors>
+                        <input-errors :errors="errors[`variant_counts.${idx}.provisionally_approved`] || []"></input-errors>
                     </td>
-                    <th>
+                    <th v-if="!isComplete">
                         <trash-icon-button @click="removeGeneAtIndex(idx)"></trash-icon-button>
                     </th>
                 </tr>
             </tbody>
         </table>
-        <button class="btn btn-xs" @click="addGene">AddGene</button>
+        <button class="btn btn-xs" @click="addGene" v-if="!isComplete">AddGene</button>
     </input-row>
 </template>
 <script>
@@ -66,7 +70,7 @@ const defaultGene = {
 }
 
 export default {
-    name: 'GeneCurationTotals',
+    name: 'VcepTotals',
     props: {
         ...mirror.props,
         errors: {
@@ -83,6 +87,9 @@ export default {
     computed: {
         lastYear () {
             return (new Date()).getFullYear() -1;
+        },
+        isComplete () {
+            return Boolean(this.modelValue.completed_at)
         }
     },
     watch: {
