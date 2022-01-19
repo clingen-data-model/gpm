@@ -5,12 +5,12 @@
             label="Does your Expert Panel use the GCI for all gene curation activities?"
             vertical :errors="errors.gci_use"
             type="radio-group"
-            v-model="workingCopy.gt_gci_use"
+            v-model="workingCopy.gci_use"
             :options="[{value:'yes'},{value:'no'}]"
         />
         <transition name="slide-fade-down">
             <input-row 
-                v-if="workingCopy.gci_use === 0"
+                v-if="workingCopy.gci_use === 'no'"
                 v-model="workingCopy.gci_use_details" 
                 :errors="errors.gci_use_details"
                 label="Please explain"
@@ -29,7 +29,7 @@
         />
         <transition name="slide-fade-down">
             <input-row 
-                v-if="workingCopy.gt_gene_list === 0"
+                v-if="workingCopy.gt_gene_list === 'no'"
                 v-model="workingCopy.gt_gene_list_details" 
                 :errors="errors.gt_gene_list_details"
                 label="Please explain"
@@ -48,7 +48,7 @@
         />
         <transition name="slide-fade-down">
             <input-row 
-                v-if="workingCopy.gt_precuration_info === 0"
+                v-if="workingCopy.gt_precuration_info === 'no'"
                 v-model="workingCopy.gt_precuration_info_details" 
                 :errors="errors.gt_precuration_info_details"
                 label="Please explain"
