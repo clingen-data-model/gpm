@@ -2,13 +2,13 @@
     <label class="mb-2">
         <slot name="input">
             <input 
-                type="radio" 
+                type="radio"
                 v-model="val" 
                 :id="radioId" 
                 class="mt-1" 
                 :disabled="$attrs.disabled" 
                 :value="value"
-                :checked="$attrs.checked">
+                >
         </slot>
         <div>
             <slot>
