@@ -1,7 +1,6 @@
 <script>
 import ApplicationSection from '@/components/expert_panels/ApplicationSection'
 import mirror from '@/composables/setup_working_mirror'
-import InputRow from '../forms/InputRow.vue';
 
 export default {
     name: 'VcepPlansForSpecifications',
@@ -42,7 +41,8 @@ export default {
             :options="[{value: 'yes', label: 'Yes'}, {value: 'no', label: 'No'}]"
             vertical
         />
-        <input-row 
+        <input-row
+            v-if="workingCopy.specification_plans == 'yes'"
             v-model="workingCopy.specification_plans_details" 
             :errors="errors.specification_plans_details" 
             type="large-text" 
