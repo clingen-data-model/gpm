@@ -1,9 +1,10 @@
 <script>
+import { debounce } from 'lodash'
+import { api, isValidationError } from '@/http'
 import ApplicationSection from '@/components/expert_panels/ApplicationSection'
 import SubmitterInformation from '@/components/annual_review/SubmitterInformation'
 import GciGtUse from '@/components/annual_review/GciGtUse'
 import GeneCurationTotals from '@/components/annual_review/GeneCurationTotals'
-import {debounce} from 'lodash'
 import VcepOngoingPlansUpdateForm from '@/components/annual_review/VcepOngoingPlansUpdateForm'
 import VcepRereviewForm from '@/components/annual_review/VcepRereviewForm'
 import GcepRereviewForm from '@/components/annual_review/GcepRereviewForm'
@@ -96,7 +97,7 @@ export default {
             },
             errors: {},
             throttle: 1000,
-            showModal: false
+            showModal: false,
         }
     },
     computed: {
@@ -137,8 +138,15 @@ export default {
         }
     },
     methods: {
-        submit () {
-            console.log('submit');
+        async submit () {
+            try {
+                await api.post(`/api/groups/${this.group.uuid}/expert-panel/annual-reviews/${this.annualReview.id}`)
+            } catch (error) {
+                if (isValidationError(error)) {
+                    this.errors = error.response.data.errors
+                }
+                throw error
+            }
         },
         hideModal () {
             this.$router.replace({name: 'AnnualReview', params: {uuid: this.uuid}});
@@ -152,11 +160,35 @@ export default {
                 this.$refs.modalView.clearForm();
             }
         },
+        getAnnualReview () {
+            api.get(`/api/groups/${this.group.uuid}/expert-panel/annual-reviews`)
+                .then(response => {
+                    this.annualReview = {
+                        ...this.annualReview, 
+                        ...response.data.data,
+                        id: response.data.id,
+                        completed_at: response.data.completed_at,
+                        submitter_id: response.data.submitter_id,
+                    }
+                });
+        }
     },
     created () {
-        this.debounceSave = debounce(() => {
-            console.log('debounceSave', this.annualReview);
-            console.log('Remember to submit refs', this.$refs)
+        this.debounceSave = debounce(async () => {
+            try {
+                if (!this.annualReview.id) {
+                    return;
+                }
+                await api.put(
+                    `/api/groups/${this.group.uuid}/expert-panel/annual-reviews/${this.annualReview.id}`, 
+                    this.annualReview
+                );
+            } catch (error) {
+                if (isValidationError(error)) {
+                    this.errors = error.response.data.errors
+                }
+                throw error
+            }
         }, this.throttle);
 
         this.saveOngoingPlans = debounce(() => {
@@ -164,19 +196,19 @@ export default {
             return this.$store.dispatch('groups/curationReviewProtocolUpdate', {uuid, expertPanel});
         }, 5000);
     },
-    mounted () {
-        this.$store.dispatch('groups/findAndSetCurrent', this.uuid)
-            .then(response => console.log('got group', response.data.data));
+    async mounted () {
+        await this.$store.dispatch('groups/findAndSetCurrent', this.uuid);
+        this.getAnnualReview();
     }
 }
 </script>
 <template>
     <div class="annual-review flex">
-        <div class="w-1/3 overflow-hidden flex-shrink-0 flex-grow-0">
+        <!-- <div class="w-1/4 overflow-x-hidden flex-shrink-0 flex-grow-0">
             <pre>{{annualReview}}</pre>
-        </div> -->
-        <div class="overflow-scroll" v-remaining-height>
-        <!-- <div> -->
+        </div>
+        <div class="overflow-scroll w-3/4 overflow-x-hidden" v-remaining-height> -->
+        <div>
         <router-link class="note"
             :to="{name: 'GroupDetail', params: {uuid: group.uuid}}"
             v-if="group.uuid"
@@ -184,7 +216,10 @@ export default {
             {{group.displayName}}
         </router-link>
 
-        <h1>{{group.displayName}} - Annual Review for {{year}}</h1>
+        <h1>
+            {{group.displayName}} - Annual Review for {{year}}
+            <note>AnnualReview ID: {{annualReview.id}}</note>
+        </h1>
 
         <submitter-information v-model="annualReview" :errors="errors" />
 
@@ -272,12 +307,12 @@ export default {
                     <dev-component>End Questions for sustained curation</dev-component>
                 </template>
 
-                <hr>
-                <button class="btn btn-lg" @click="submit">Submit annual update</button>
-                <br>
             </div>
         </transition>
-</div>
+        <hr>
+        <button class="btn btn-lg" @click="submit">Submit annual update</button>
+        <br>
+    </div>
         <teleport to='body'>
             <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="this.$route.meta.title">
                 <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
