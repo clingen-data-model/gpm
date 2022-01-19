@@ -55,6 +55,7 @@ class AnnualReviewSubmit
             [
                     'required' => 'This is required.',
                     'required_if' => 'This is required.',
+                    'required_with' => 'This is required.',
                     'in' => 'The selection is invalid.',
                     'numeric' => 'This must be a number.',
                     'accepted' => 'This is required.'
@@ -108,7 +109,6 @@ class AnnualReviewSubmit
             $requirements = array_merge($requirements, [
                 'vci_use' => 'required|in:yes,no',
                 'vci_use_details' => 'required_if:vci_use,no',
-                'vcep_totals' => 'required|json', //need to do more in depth validation somewhere.
                 'variant_workflow_changes' => 'required|in:yes,no',
                 'variant_workflow_changes_details' => 'required_if:variant_workflow_changes,yes',
                 'rereview_discrepencies_progress' => 'required',
@@ -117,6 +117,15 @@ class AnnualReviewSubmit
                 'member_designation_changed' => 'required|in:yes,no',
                 'specification_plans' => 'required|in:yes,no',
                 'specification_plans_details' => 'required_if:specification_plans,yes',
+
+                'variant_counts' => 'required|array|min:1',
+                'variant_counts.*.gene_symbol' => 'required_with:variant_counts.*.in_clinvar,variant_counts.*.gci_approved,variant_counts.*.provisionally_approved',
+
+                'variant_counts.*.in_clinvar' => 'required_with:variant_counts.*.gene_symbol,variant_counts.*.gci_approved,variant_counts.*.provisionally_approved',
+
+                'variant_counts.*.gci_approved' => 'required_with:variant_counts.*.gene_symbol,variant_counts.*.in_clinvar,variant_counts.*.provisionally_approved',
+
+                'variant_counts.*.provisionally_approved' => 'required_with:variant_counts.*.gene_symbol,variant_counts.*.in_clinvar,variant_counts.*.gci_approved',
             ]);
         }
         return $requirements;

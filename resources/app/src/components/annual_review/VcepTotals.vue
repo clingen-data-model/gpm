@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <input-row label="" :errors="errors.variant_counts" vertical>
         <table>
             <thead>
                 <tr>
@@ -7,31 +7,63 @@
                     <th>In ClinVar</th>
                     <th>Approved in VCI<br><small>(Not in ClinVar)</small></th>
                     <th>Provisionally approved</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="gene in workingCopy.variant_counts" :key="gene.gene">
+                <tr v-for="(variant, idx) in variantCounts" :key="variant.gene">
                     <td>
-                        {{gene.gene}}
+                        <input 
+                            type="text" 
+                            v-model="variant.gene_symbol"
+                            placeholder="HGNC gene symbol"
+                            :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.gene_symbol`)}"
+                        >
+                        <input-errors :errors="errors[`variant_counts.${idx}.gene_symbol`]"></input-errors>
                     </td>
-                    <td><input type="number" v-model="gene.in_clinvar"></td>
-                    <td><input type="number" v-model="gene.gci_approved"></td>
-                    <td><input type="number" v-model="gene.provisionaly_approved"></td>
-                </tr>
-                <tr>
-                    <td><input type="text" v-model="newGene.gene" placeholder="HGNC gene symbol"/></td>
-                    <td><input type="number" v-model="newGene.in_clinvar" placeholder="total #"></td>
-                    <td><input type="number" v-model="newGene.gci_approved" placeholder="total #"></td>
-                    <td><input type="number" v-model="newGene.provisionaly_approved" placeholder="total #"></td>
+                    <td>
+                        <input 
+                            type="number" 
+                            v-model="variant.in_clinvar"
+                            :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.in_clinvar`)}"
+                        >
+                        <input-errors :errors="errors[`variant_counts.${idx}.in_clinvar`]"></input-errors>
+                    </td>
+                    <td>
+                        <input 
+                            type="number" 
+                            v-model="variant.gci_approved"
+                            :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.gci_approved`)}"
+                        >
+                        <input-errors :errors="errors[`variant_counts.${idx}.gci_approved`]"></input-errors>
+                    </td>
+                    <td>
+                        <input 
+                            type="number" 
+                            v-model="variant.provisionally_approved"
+                            :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.provisionally_approved`)}"
+                        >
+                        <input-errors :errors="errors[`variant_counts.${idx}.provisionally_approved`]"></input-errors>
+                    </td>
+                    <th>
+                        <trash-icon-button @click="removeGeneAtIndex(idx)"></trash-icon-button>
+                    </th>
                 </tr>
             </tbody>
         </table>
         <button class="btn btn-xs" @click="addGene">AddGene</button>
-    </div>
+    </input-row>
 </template>
 <script>
 import mirror from '@/composables/setup_working_mirror'
-import {clone} from 'lodash'
+import {clone, cloneDeep, isEqual, debounce} from 'lodash'
+
+const defaultGene = {
+    gene_symbol: null,
+    in_clinvar: null,
+    gci_approved: null,
+    provisionaly_approved: null
+}
 
 export default {
     name: 'GeneCurationTotals',
@@ -45,7 +77,7 @@ export default {
     emits: [ ...mirror.emits ],
     data () {
         return {
-            newGene: {}
+            variantCounts: []
         }
     },
     computed: {
@@ -53,17 +85,48 @@ export default {
             return (new Date()).getFullYear() -1;
         }
     },
+    watch: {
+        modelValue: {
+            deep: true,
+            immediate: true,
+            handler (to) {
+                console.log('watch.modelValue');
+                if (!isEqual(to.variant_counts, this.variantCounts)) {
+                    console.log('syncing variantCounts from modelValue');
+                    this.variantCounts = cloneDeep(to.variant_counts)
+                }
+            }
+        },
+        variantCounts: {
+            deep: true,
+            handler: function (to) {
+                console.log('variantCounts updated', to)
+                if (!isEqual(to, this.modelValue.variant_counts)) {
+                    this.debounceSyncModel();
+                }
+            }
+        }
+    },
     methods: {
         addGene () {
-            if (!this.newGene.gene) {
-                return;
-            }
             if (!this.workingCopy.variant_counts) {
                 this.workingCopy.variant_counts = [];
             }
-            this.workingCopy.variant_counts.push(clone(this.newGene));
+            this.workingCopy.variant_counts.push(clone(defaultGene));
             this.newGene = {};
+        },
+        removeGeneAtIndex (idx) {
+            this.variantCounts.splice(idx, 1);
+        },
+        hasErrorFor (key) {
+            return this.errors[key] && this.errors[key].length > 0;
         }
+    },
+    created () {
+        this.debounceSyncModel = debounce(() => {
+            this.workingCopy.variant_counts = cloneDeep(this.variantCounts);
+            this.$emit('update:modelValue', this.workingCopy);
+        }, 1500);
     },
     setup (props, context) {
         const { workingCopy } = mirror.setup(props, context);

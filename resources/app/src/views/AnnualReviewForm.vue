@@ -146,6 +146,7 @@ export default {
     methods: {
         async submit () {
             this.saving = true;
+            this.errors = {};
             try {
                 await api.post(`/api/groups/${this.group.uuid}/expert-panel/annual-reviews/${this.annualReview.id}`)
                 this.saving = false;
