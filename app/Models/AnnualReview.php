@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Modules\Group\Models\GroupMember;
 use Illuminate\Support\Facades\Validator;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -60,7 +61,7 @@ class AnnualReview extends Model
      */
     public function window(): BelongsTo
     {
-        return $this->belongsTo(AnnualReviewWindow::class);
+        return $this->belongsTo(AnnualReviewWindow::class, 'annual_review_window_id');
     }
 
     /**
