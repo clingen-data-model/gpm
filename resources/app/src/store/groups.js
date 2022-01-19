@@ -200,11 +200,12 @@ export const actions = {
                 })
     },
 
-    async memberAssignRole ( {commit}, {uuid, memberId, roleIds}) {
+    async memberAssignRole ( context, {uuid, memberId, roleIds}) {
         const url= `${baseUrl}/${uuid}/members/${memberId}/roles`
         return await api.post(url, {role_ids: roleIds})
             .then(response => {
-                commit('addMemberToGroup', response.data.data);
+                context.getters.getItemByUuid(uuid).findMember(memberId)
+                    .addRoles(roleIds);
                 return response.data
             });
     },

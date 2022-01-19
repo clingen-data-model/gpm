@@ -148,12 +148,20 @@ class GroupMember extends Entity {
         }
     }
 
+    addRoles (roles) {
+        roles.forEach(r => this.addRole(r));
+    }
+
     removeRole (role) {
         if (this.hasRole(role)) {
             const matchedRole = matchRole(role);
             const roleIdx = this.roles.findIndex(r => r.id == matchedRole.id);
             this.roles.splice(roleIdx, 1);
         }
+    }
+
+    removeRoles (roles) {
+        roles.forEach(r => this.removeRole(r));
     }
 
     hasRole (role) {

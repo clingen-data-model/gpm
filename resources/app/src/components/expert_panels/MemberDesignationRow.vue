@@ -11,24 +11,25 @@
         <td>{{workingCopy.person.first_name}}</td>
         <td>{{workingCopy.person.last_name}}</td>
         <td colgroup="biocurator">
-            <input type="checkbox" v-model="biocurator" :disabled="!canEdit" @input="emitUpdated">
+            <input type="checkbox" v-model="biocurator" :disabled="!canEdit" @input="debounceSave">
         </td>
         <td colgroup="biocurator">
-            <input type="checkbox" v-model="workingCopy.training_level_1" :disabled="!canEdit" @input="emitUpdated">
+            <input type="checkbox" v-model="workingCopy.training_level_1" :disabled="!canEdit" @input="debounceSave">
         </td>
         <td colgroup="biocurator">
-            <input type="checkbox" v-model="workingCopy.training_level_2" :disabled="!canEdit" @input="emitUpdated">
+            <input type="checkbox" v-model="workingCopy.training_level_2" :disabled="!canEdit" @input="debounceSave">
         </td>
         <td>
-            <input type="checkbox" v-model="biocuratorTrainer" :disabled="!canEdit" @input="emitUpdated">
+            <input type="checkbox" v-model="biocuratorTrainer" :disabled="!canEdit" @input="debounceSave">
         </td>
         <td>
-            <input type="checkbox" v-model="coreApprovalMember" :disabled="!canEdit" @input="emitUpdated">
+            <input type="checkbox" v-model="coreApprovalMember" :disabled="!canEdit" @input="debounceSave">
         </td>
     </tr>
 </template>
 <script>
 import GroupMember from '@/domain/group_member'
+import {debounce} from 'lodash'
 
 export default {
     name: 'ComponentName',
@@ -141,6 +142,7 @@ export default {
         },
 
         syncRoles() {
+            console.log('syncRoles');
             if (this.workingCopy.isDirty('roles')) {
                 return this.$store.dispatch(
                         'groups/memberSyncRoles', 
@@ -151,11 +153,14 @@ export default {
                     );
             }
         },
-
         emitUpdated () {
             this.$emit('updated', this.workingCopy)
         }
-
+    },
+    created () {
+        this.debounceSave = debounce(() => {
+            this.save();
+        }, 1000)
     }
 }
 </script>

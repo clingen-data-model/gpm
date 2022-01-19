@@ -97,9 +97,6 @@ export default {
         getMembers () {
             this.$store.dispatch('groups/getMembers', {group: this.group})
         },
-        save () {
-            return Object.keys(this.$refs).map(key => this.$refs[key].save());
-        },
         handleMemberUpdate () {
             this.$emit('updated');
         }
