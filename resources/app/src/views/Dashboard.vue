@@ -16,29 +16,31 @@
                 @removed="removeNotification(notification)"
                 :variant="notification.data.type"
             ></notification-item>
-            <static-alert 
-                v-for="membership in user.person.membershipsWithPendingCois" 
-                :key="membership.id"
-                class="mt-2 font-bold"
-                variant="warning"
-            >
-                You have a pending Conflict of Interest Disclosure for {{membership.group.name}}.
-                <br>
-                <br>
-                <router-link 
-                    :to="{
-                        name: 'alt-coi', 
-                        params: {
-                            name: membership.group.name, 
-                            code: membership.group.expert_panel.coi_code
-                        }
-                    }"
-                    class="btn"
-                >
-                    Complete this COI Disclosure
-                </router-link>
-            </static-alert>
         </transition-group>
+
+        <static-alert 
+            v-for="membership in user.person.membershipsWithPendingCois" 
+            :key="membership.id"
+            class="mt-2 font-bold"
+            variant="warning"
+        >
+            You have a pending Conflict of Interest Disclosure for {{membership.group.name}}.
+            <br>
+            <br>
+            <router-link 
+                :to="{
+                    name: 'alt-coi', 
+                    params: {
+                        name: membership.group.name, 
+                        code: membership.group.expert_panel.coi_code
+                    }
+                }"
+                class="btn"
+            >
+                Complete this COI Disclosure
+            </router-link>
+        </static-alert>
+
         <tabs-container class="mt-8">
             <tab-item label="Your Groups">
                 <div class="well" v-if="!groups.length">You are not assigned to any groups.</div>
