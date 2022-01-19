@@ -98,6 +98,9 @@ export default {
             errors: {},
             throttle: 1000,
             showModal: false,
+            loading: false,
+            saving: false,
+            lastSaved: null
         }
     },
     computed: {
@@ -114,8 +117,11 @@ export default {
 
     },
     watch: {
-        annualReview: function () {
-            this.debounceSave();
+        annualReview: {
+            handler: function (to) {
+                this.debounceSave();
+            },
+            deep: true
         },
         'group.expert_panel.curation_review_protocol_id': {
             handler (from) {
@@ -139,11 +145,15 @@ export default {
     },
     methods: {
         async submit () {
+            this.saving = true;
             try {
                 await api.post(`/api/groups/${this.group.uuid}/expert-panel/annual-reviews/${this.annualReview.id}`)
+                this.saving = false;
             } catch (error) {
+                this.saving = false;
                 if (isValidationError(error)) {
                     this.errors = error.response.data.errors
+                    return;
                 }
                 throw error
             }
@@ -170,6 +180,7 @@ export default {
                         completed_at: response.data.completed_at,
                         submitter_id: response.data.submitter_id,
                     }
+                    this.lastSaved = new Date(Date.parse(response.data.updated_at));
                 });
         }
     },
@@ -179,11 +190,16 @@ export default {
                 if (!this.annualReview.id) {
                     return;
                 }
+
+                this.saving = true;
                 await api.put(
                     `/api/groups/${this.group.uuid}/expert-panel/annual-reviews/${this.annualReview.id}`, 
                     this.annualReview
                 );
+                this.saving = false;
+                this.lastSaved = new Date();
             } catch (error) {
+                this.saving = false;
                 if (isValidationError(error)) {
                     this.errors = error.response.data.errors
                 }
@@ -203,22 +219,31 @@ export default {
 }
 </script>
 <template>
-    <div class="annual-review flex">
-        <!-- <div class="w-1/4 overflow-x-hidden flex-shrink-0 flex-grow-0">
-            <pre>{{annualReview}}</pre>
-        </div>
-        <div class="overflow-scroll w-3/4 overflow-x-hidden" v-remaining-height> -->
-        <div>
+    <div class="annual-review relative">
+        <router-link class="note"
+            :to="{name: 'GroupList'}"
+        >
+                Groups
+        </router-link>
+        <span class="note"> > </span>
         <router-link class="note"
             :to="{name: 'GroupDetail', params: {uuid: group.uuid}}"
             v-if="group.uuid"
         >
-            {{group.displayName}}
+                {{group.displayName}}
         </router-link>
 
         <h1>
             {{group.displayName}} - Annual Review for {{year}}
-            <note>AnnualReview ID: {{annualReview.id}}</note>
+            <note class="font-normal">
+                Group ID: {{group.id}}
+                |
+                ExpertPanel ID: {{group.expert_panel.id}}
+                |
+                AnnualReview ID: {{annualReview.id}}
+                |
+                Last Saved: {{formatDateTime(lastSaved)}}
+            </note>
         </h1>
 
         <submitter-information v-model="annualReview" :errors="errors" />
@@ -312,7 +337,7 @@ export default {
         <hr>
         <button class="btn btn-lg" @click="submit">Submit annual update</button>
         <br>
-    </div>
+
         <teleport to='body'>
             <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="this.$route.meta.title">
                 <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
