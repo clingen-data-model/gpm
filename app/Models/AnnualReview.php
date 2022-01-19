@@ -34,7 +34,7 @@ class AnnualReview extends Model
 
         static::saving(function ($model) {
             if (is_null($model->annual_review_window_id)) {
-                $model->annual_review_window_id = AnnualReviewWindow::orderBy('start_date', 'desc')->first()->id;
+                $model->annual_review_window_id = AnnualReviewWindow::orderBy('start', 'desc')->first()->id;
             }
         });
     }
