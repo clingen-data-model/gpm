@@ -1,25 +1,29 @@
 <script>
 import { debounce } from 'lodash'
 import { api, isValidationError } from '@/http'
+
+// Common Components
 import ApplicationSection from '@/components/expert_panels/ApplicationSection'
 import SubmitterInformation from '@/components/annual_review/SubmitterInformation'
-import GciGtUse from '@/components/annual_review/GciGtUse'
-import GeneCurationTotals from '@/components/annual_review/GeneCurationTotals'
-import VcepOngoingPlansUpdateForm from '@/components/annual_review/VcepOngoingPlansUpdateForm'
-import VcepRereviewForm from '@/components/annual_review/VcepRereviewForm'
-import GcepRereviewForm from '@/components/annual_review/GcepRereviewForm'
 import GoalsForm from '@/components/annual_review/GoalsForm'
 import FundingForm from '@/components/annual_review/FundingForm'
-import GcepOngoingPlansUpdateForm from '@/components/annual_review/GcepOngoingPlansUpdateForm'
-import VciUse from '@/components/annual_review/VciUse'
-import SpecificationProgress from '@/components/annual_review/SpecificationProgress'
-import VcepTotals from '@/components/annual_review/VcepTotals'
-import VariantReanalysis from '@/components/annual_review/VariantReanalysis'
 import MemberDesignationUpdate from '@/components/annual_review/MemberDesignationUpdate'
-import VcepPlansForSpecifications from '@/components/annual_review/VcepPlansForSpecifications'
-import VariantCurationWorkflow from '@/components/annual_review/VariantCurationWorkflow'
 import MembershipUpdate from '@/components/annual_review/MembershipUpdate'
 
+// GCEP Components
+import GciGtUse from '@/components/annual_review/GciGtUse'
+import GcepRereviewForm from '@/components/annual_review/GcepRereviewForm'
+import GcepOngoingPlansUpdateForm from '@/components/annual_review/GcepOngoingPlansUpdateForm'
+import GeneCurationTotals from '@/components/annual_review/GeneCurationTotals'
+
+// VCEP Components
+import VariantCurationWorkflow from '@/components/annual_review/VariantCurationWorkflow'
+import VciUse from '@/components/annual_review/VciUse'
+import VcepOngoingPlansUpdateForm from '@/components/annual_review/VcepOngoingPlansUpdateForm'
+import VcepPlansForSpecifications from '@/components/annual_review/VcepPlansForSpecifications'
+import VcepTotals from '@/components/annual_review/VcepTotals'
+import VariantReanalysis from '@/components/annual_review/VariantReanalysis'
+import SpecificationProgress from '@/components/annual_review/SpecificationProgress'
 
 export default {
     name: 'AnnualReviewForm',
@@ -30,7 +34,6 @@ export default {
         GeneCurationTotals,
         VcepOngoingPlansUpdateForm,
         GcepRereviewForm,
-        VcepRereviewForm,
         GoalsForm,
         FundingForm,
         GcepOngoingPlansUpdateForm,
@@ -108,9 +111,6 @@ export default {
         group () {
             return this.$store.getters['groups/currentItemOrNew'];
         },
-        rereviewForm () {
-            return this.group.isVcep() ? VcepRereviewForm : GcepRereviewForm;
-        },
         year () {
             const thisYear = this.annualReview.window ? this.annualReview.window.for_year : (new Date()).getFullYear()-1;
             return thisYear;
@@ -128,7 +128,7 @@ export default {
     },
     watch: {
         annualReview: {
-            handler: function (to) {
+            handler: function () {
                 this.debounceSave();
             },
             deep: true
@@ -158,7 +158,9 @@ export default {
             this.saving = true;
             this.errors = {};
             try {
-                await api.post(`/api/groups/${this.group.uuid}/expert-panel/annual-reviews/${this.annualReview.id}`)
+                const updatedAnnualReview = await api.post(`/api/groups/${this.group.uuid}/expert-panel/annual-reviews/${this.annualReview.id}`)
+                    .then(response => response.data);
+                this.annualReview.completed_at = updatedAnnualReview.completed_at;
                 this.saving = false;
             } catch (error) {
                 this.saving = false;

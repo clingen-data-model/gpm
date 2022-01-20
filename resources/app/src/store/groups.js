@@ -302,6 +302,7 @@ export const actions = {
         })
     },
 
+    // eslint-disable-next-line
     async curationReviewProtocolUpdate({ commit }, {uuid, expertPanel}) {
         if (expertPanel.curation_review_protocol_id != 100) {
             expertPanel.curation_review_protocol_other = null;
