@@ -37,7 +37,7 @@ import PopOver from "@/components/PopOver"
 app.component('popper', PopOver);
 app.component('popover', PopOver);
 
-import {formatDate, formatDateTime, formatTime} from '@/date_utils'
+import {formatDate, formatDateTime, formatTime, addDays, yearAgo} from '@/date_utils'
 
 import {userCan, hasPermission, hasAnyPermission, hasRole, userIsPerson, userInGroup} from '@/auth_utils'
 
@@ -59,6 +59,8 @@ app.use(store)
             formatDate,
             formatDateTime,
             formatTime,
+            addDays,
+            yearAgo,
             titleCase,
             camelCase,
             snakeCase,
