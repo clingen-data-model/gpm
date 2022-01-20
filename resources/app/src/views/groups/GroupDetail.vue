@@ -1,5 +1,10 @@
 <template>
     <div>
+
+        <annual-review-alert :group="group"
+            v-if="hasAnyPermission(['annual-reviews-mange', ['annual-review-manage', group]])"
+        />
+
         <group-detail-header :group="group" @showEdit="showEdit"></group-detail-header>
         
         <application-summary 
@@ -153,6 +158,7 @@ import VcepGeneList from '@/components/expert_panels/VcepGeneList'
 import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm'
 import VcepOngoingPlansFormVue from '../../components/expert_panels/VcepOngoingPlansForm.vue';
 import GroupDocuments from './GroupDocuments';
+import AnnualReviewAlert from '@/components/groups/AnnualReviewAlert'
 
 import {isValidationError} from '../../http';
 
@@ -176,6 +182,7 @@ export default {
         ScopeDescriptionForm,
         VcepGeneList,
         VcepOngoingPlansForm,
+        AnnualReviewAlert
     },
     props: {
         uuid: {
