@@ -20,7 +20,7 @@
         </tabs-container>
     </div>
 </template>
-<style>
+<style lang="postcss" scoped>
     .radio-group > label {
         @apply border border-gray-400 px-2 py-1 mb-0;
     }
