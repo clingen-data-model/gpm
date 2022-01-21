@@ -48,9 +48,7 @@ class SaveAnnualReviewTest extends TestCase
         $this->makeRequest()
             ->assertStatus(200);
 
-        $expectedData = $this->makeRequestData();
-        unset($expectedData['expert_panel_id']);
-        unset($expectedData['submitter_id']);
+        $expectedData = $this->makeRequestData()['data'];
 
         $this->assertDatabaseHas('annual_reviews', [
             'id' => $this->annualReview->id,
@@ -65,18 +63,19 @@ class SaveAnnualReviewTest extends TestCase
      */
     public function does_not_save_data_field_not_in_list()
     {
-        $data = $expectedData = $this->makeRequestData();
-        unset($expectedData['expert_panel_id']);
-        unset($expectedData['submitter_id']);
-        $data['farts'] = 'yes';
-        $this->makeRequest($data)
+        $expectedData = $this->makeRequestData();
+
+        $submitData = $expectedData;
+        $submitData['data']['farts'] = 'yes';
+        dump($submitData);
+        $this->makeRequest($submitData)
             ->assertStatus(200);
 
         $this->assertDatabaseHas('annual_reviews', [
             'id' => $this->annualReview->id,
             'expert_panel_id' => $this->expertPanel->id,
             'submitter_id' => $this->coordinator->id,
-            'data' => json_encode($expectedData),
+            'data' => json_encode($expectedData['data']),
         ]);
                 
         $this->assertDatabaseMissing('annual_reviews', [
@@ -100,9 +99,11 @@ class SaveAnnualReviewTest extends TestCase
         return [
             'expert_panel_id' => $this->expertPanel->id,
             'submitter_id' => $this->coordinator->id,
-            'grant' => 'UNC',
-            'gci_use' => 'yes',
-            'published_count' => 10
+            'data' => [
+                'grant' => 'UNC',
+                'gci_use' => 'yes',
+                'published_count' => 10
+            ]
         ];
     }
 }

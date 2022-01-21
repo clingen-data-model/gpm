@@ -12,12 +12,9 @@ class AnnualReviewSave
 {
     use AsController;
 
-    public function handle(AnnualReview $annualReview, $data): AnnualReview
+    public function handle(AnnualReview $annualReview, $submitterId, $data): AnnualReview
     {
-        if (isset($data['submitter_id'])) {
-            $annualReview->submitter_id = $data['submitter_id'];
-            unset($data['submitter_id']);
-        }
+        $annualReview->submitter_id = $submitterId;
         $annualReview->data = $data;
         $annualReview->save();
         
@@ -27,8 +24,14 @@ class AnnualReviewSave
     public function asController(ActionRequest $request, $groupUuid, $annualReviewId)
     {
         $group = Group::findByUuidOrFail($groupUuid);
-        $annualReview = $group->expertPanel->annualReviews()->find($annualReviewId);
-        return $this->handle($annualReview, $request->only($this->getDataFields()));
+        $annualReview = $group->expertPanel
+                            ->annualReviews()
+                            ->find($annualReviewId);
+        $submitterId = $request->get('submitter_id');
+        $data = collect($request->get('data'))
+                    ->only($this->getDataFields())
+                    ->toArray();
+        return $this->handle($annualReview, $submitterId, $data);
     }
 
     public function authorize(ActionRequest $request)
