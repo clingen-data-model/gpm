@@ -142,7 +142,13 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'full_long_base_name',
         'full_short_base_name',
         'full_name',
-        'display_name'
+        'display_name',
+        'is_vcep',
+        'is_gcep',
+        'definition_is_approved',
+        'has_approved_draft',
+        'has_approved_pilot',
+        'sustained_curation_is_approved',
     ];
 
     public static function booted()
@@ -531,17 +537,17 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return (bool)$this->step_1_approval_date;
     }
     
-    public function getHasApprovedDraftAtribute(): bool
+    public function getHasApprovedDraftAttribute(): bool
     {
         return !is_null($this->step_2_approval_date);
     }
     
-    public function getHasApprovedPilotAtribute(): bool
+    public function getHasApprovedPilotAttribute(): bool
     {
         return !is_null($this->step_3_approval_date);
     }
     
-    public function getSustainedCurationIsApprovedAtribute(): bool
+    public function getSustainedCurationIsApprovedAttribute(): bool
     {
         return !is_null($this->step_4_approval_date);
     }
