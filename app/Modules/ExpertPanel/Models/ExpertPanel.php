@@ -141,7 +141,8 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'coi_url',
         'full_long_base_name',
         'full_short_base_name',
-        'full_name'
+        'full_name',
+        'display_name'
     ];
 
     public static function booted()
@@ -462,6 +463,9 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     public function getWorkingNameAttribute()
     {
         $this->ensureGroupLoaded();
+        if (!$this->group) {
+            return $this->addEpTypeSuffix($this->long_base_name);
+        }
         return $this->addEpTypeSuffix($this->group->name);
     }
     

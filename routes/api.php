@@ -4,6 +4,7 @@ use App\Models\DocumentType;
 use Illuminate\Http\Request;
 use App\Actions\FeedbackSubmit;
 use App\Actions\NotificationMarkRead;
+use App\Http\Controllers\Api\AnnualReviewController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CdwgController;
@@ -51,6 +52,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/notifications/{notificationId}', NotificationMarkRead::class);
 
     Route::get('/impersonate/search', [ImpersonateSearchController::class, 'index']);
+
+    Route::group(['prefix' => '/annual-reviews'], function () {
+        Route::get('', [AnnualReviewController::class, 'index']);
+        Route::get('/windows', [AnnualReviewController::class, 'windows']);
+        Route::post('/export', [AnnualReviewController::class, 'export']);
+        Route::get('/{id}', [AnnualReviewController::class, 'show']);
+    });
 });
 
 Route::get('/cdwgs', [CdwgController::class, 'index']);

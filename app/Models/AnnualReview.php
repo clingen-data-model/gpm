@@ -71,7 +71,7 @@ class AnnualReview extends Model
      */
     public function submitter(): BelongsTo
     {
-        return $this->belongsTo(GroupMember::class);
+        return $this->belongsTo(GroupMember::class, 'submitter_id');
     }
 
     public function getMembers()
@@ -104,5 +104,109 @@ class AnnualReview extends Model
     public function getForYearAttribute()
     {
         return $this->created_at->year - 1;
+    }
+
+    public function getIsGcepAttribute()
+    {
+        return $this->expertPanel->expert_panel_type_id === 1;
+    }
+
+    public function getIsVcepAttribute()
+    {
+        return $this->expertPanel->expert_panel_type_id === 2;
+    }
+    
+
+    public function toCsvArray(): array
+    {
+        $result = [
+                'record_id' => $this->id,
+                'expert_panel' => $this->expertPanel->displayName,
+                'submitter_name' => $this->submitter
+                    ? $this->submitter->person->name
+                    : null,
+                'submitter_email' => $this->submitter
+                    ? $this->submitter->person->email
+                    : null,
+                'grant' => $this->getDataOrNull('grant'),
+                'submitted_inactive_form' => $this->getDataOrNull('submitted_inactive_form'),
+                'membership_attestation' => $this->getDataOrNull('membership_attestation'),
+                'applied_for_funding' => $this->getDataOrNull('applied_for_funding'),
+                'funding' => $this->getDataOrNull('funding'),
+                'funding_other_details' => $this->getDataOrNull('funding_other_details'),
+                'funding_thoughts' => $this->getDataOrNull('funding_thoughts'),
+                'website_attestation' => $this->getDataOrNull('website_attestation'),
+                'ongoing_plans_updated' => $this->getDataOrNull('ongoing_plans_updated'),
+                'ongoing_plans_update_details' => $this->getDataOrNull('ongoing_plans_update_details'),
+                'goals' => $this->getDataOrNull('goals'),
+        ];
+
+        if ($this->isGcep) {
+            $result = array_merge(
+                $result,
+                [
+                    'ep_activity' => $this->getDataOrNull('ep_activity'),
+                    'gci_use' => $this->getDataOrNull('gci_use'),
+                    'gci_use_details' => $this->getDataOrNull('gci_use_details'),
+                    'gt_gene_list' => $this->getDataOrNull('gt_gene_list'),
+                    'gt_gene_list_details' => $this->getDataOrNull('gt_gene_list_details'),
+                    'gt_precuration_info' => $this->getDataOrNull('gt_precuration_info'),
+                    'gt_precuration_info_details' => $this->getDataOrNull('gt_precuration_info_details'),
+                    'published_count' => $this->getDataOrNull('published_count'),
+                    'approved_unpublished_count' => $this->getDataOrNull('approved_unpublished_count'),
+                    'in_progress_count' => $this->getDataOrNull('in_progress_count'),
+                    'recuration_begun' => $this->getDataOrNull('recuration_begun'),
+                    'recuration_designees' => $this->getDataOrNull('recuration_designees'),
+                ]
+            );
+        }
+
+        if ($this->isVcep) {
+            $variantCounts = $this->getDataOrNull('variant_counts');
+            if ($variantCounts) {
+                $string = '';
+                foreach ($variantCounts as $gene) {
+                    $string .= $gene['gene_symbol'].' - in_clinvar: '.$gene['in_clinvar'].', gci_approved: '.$gene['gci_approved'].', provisionally_approved: '.$gene['provisionally_approved'];
+                }
+                $variantCounts = $string;
+            }
+
+            $result = array_merge(
+                $result,
+                [
+                    'vci_use' => $this->getDataOrNull('vci_use'),
+                    'vci_use_details' => $this->getDataOrNull('vci_use_details'),
+                    'cochair_commitment' => $this->getDataOrNull('cochair_commitment'),
+                    'cochair_commitment_details' => $this->getDataOrNull('cochair_commitment_details'),
+                    'sepcification_progress' => $this->getDataOrNull('sepcification_progress'),
+                    'specification_url' => $this->getDataOrNull('specification_url'),
+                    'variant_counts' => $variantCounts,
+                    'variant_workflow_changes' => $this->getDataOrNull('variant_workflow_changes'),
+                    'variant_workflow_changes_details' => $this->getDataOrNull('variant_workflow_changes_details'),
+                    'specification_progress' => $this->getDataOrNull('specification_progress'),
+                    'specification_progress_url' => $this->getDataOrNull('specification_progress_url'),
+                    'specification_plans' => $this->getDataOrNull('specification_plans'),
+                    'specification_plans_details' => $this->getDataOrNull('specification_plans_details'),
+                    'rereview_discrepencies_progress' => $this->getDataOrNull('rereview_discrepencies_progress'),
+                    'rereview_lp_and_vus_progress' => $this->getDataOrNull('rereview_lp_and_vus_progress'),
+                    'rereview_lb_progress' => $this->getDataOrNull('rereview_lb_progress'),
+                    'member_designation_changed' => $this->getDataOrNull('member_designation_changed'),
+                ],
+            );
+        }
+
+        return $result;
+    }
+
+    private function getDataOrNull($key)
+    {
+        if (!$this->data) {
+            return null;
+        }
+        if (array_key_exists($key, $this->data)) {
+            return $this->data[$key];
+        }
+
+        return null;
     }
 }
