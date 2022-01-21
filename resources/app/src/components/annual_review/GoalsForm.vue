@@ -1,7 +1,7 @@
 <template>
     <div>
         <input-row 
-            v-model="workingCopy.goals"
+            v-model="workingCopy.data.goals"
             type="large-text"
             :errors="errors.goals" 
             vertical
@@ -9,7 +9,7 @@
         >
             <template v-slot:label>
                 Describe the Expert Panel’s plans and goals for the next year, for example, finishing curations, working on manuscript, etc.
-                <div v-if="group.isVcep()">
+                <div v-if="workingCopy.expert_panel.is_vcep">
                     Please include:
                     <ul class="list-decimal pl-8">
                         <li>Progress on resolving discrepancies between existing ClinVar submitters in addition to noting other priorities.</li>
@@ -21,7 +21,7 @@
 
         <input-row 
             label="Do the co-chairs plan to continue leading the EP for the next year?"
-            v-model="workingCopy.cochair_commitment"
+            v-model="workingCopy.data.cochair_commitment"
             type="radio-group"
             :errors="errors.cochair_commitment"
             :options="[{value: 'yes'}, {value: 'no'}]"
@@ -31,12 +31,12 @@
         <transition name="slide-fade-down">                                
             <input-row 
                 label="Please explain" 
-                v-model="workingCopy.cochair_commitment_details"
+                v-model="workingCopy.data.cochair_commitment_details"
                 type="large-text"
                 :errors="errors.cochair_commitment_details" 
                 vertical
                 class="ml-4"
-                v-if="workingCopy.cochair_commitment == 'no'"
+                v-if="workingCopy.data.cochair_commitment == 'no'"
                 :disabled="isComplete"
             />
         </transition>
@@ -57,9 +57,6 @@ export default {
     },
     emits: [ ...mirror.emits ],
     computed: {
-        group () {
-            return this.$store.getters['groups/currentItemOrNew'];
-        },
         isComplete () {
             return Boolean(this.modelValue.completed_at)
         }

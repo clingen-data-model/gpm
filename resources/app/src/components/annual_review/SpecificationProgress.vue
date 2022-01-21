@@ -2,7 +2,7 @@
     <div>
         <input-row 
             :disabled="isComplete"
-            v-model="workingCopy.specification_progress"
+            v-model="workingCopy.data.specification_progress"
             type="radio-group"
             :options="[{value:'yes'},{value:'no'}]"
             :errors="errors.specification_progress" 
@@ -16,8 +16,8 @@
                 :errors="errors.specification_url" 
                 vertical
                 class="ml-4"
-                v-if="workingCopy.specification_progress == 'yes'"
-                v-model="workingCopy.specification_url"
+                v-if="workingCopy.data.specification_progress == 'yes'"
+                v-model="workingCopy.data.specification_url"
             />
         </transition>
     </div>

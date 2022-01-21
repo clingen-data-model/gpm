@@ -2,7 +2,7 @@
     <application-section title="Changes to plans for variant curation workflow">
         <input-row 
             :disabled="isComplete"
-            v-model="workingCopy.variant_workflow_changes"
+            v-model="workingCopy.data.variant_workflow_changes"
             type="radio-group"
             label="Has the Expert Panel has made any changes to its workflow?"
             :errors="errors.variant_workflow_changes"
@@ -12,8 +12,8 @@
         <transition name="slide-fade-down">
             <input-row 
                 :disabled="isComplete"
-                v-show="workingCopy.variant_workflow_changes == 'yes'"
-                v-model="workingCopy.variant_workflow_changes_details"
+                v-show="workingCopy.data.variant_workflow_changes == 'yes'"
+                v-model="workingCopy.data.variant_workflow_changes_details"
                 type="large-text"
                 label="Please explain"
                 :errors="errors.variant_workflow_changes_details"

@@ -2,7 +2,7 @@
     <div>
         <input-row 
             :disabled="isComplete"
-            v-model="workingCopy.applied_for_funding"
+            v-model="workingCopy.data.applied_for_funding"
             type="radio-group"
             :options="[{value: 'yes'}, {value: 'no'}]"
             label="Have you applied for external funding for your EP?" 
@@ -12,19 +12,19 @@
 
         <input-row 
             :disabled="isComplete"
-            v-if="workingCopy.applied_for_funding == 'yes'"
+            v-if="workingCopy.data.applied_for_funding == 'yes'"
             label="Funding Type" :errors="errors.funding"
             class="ml-4"
             type="select"
-            v-model="workingCopy.funding"
+            v-model="workingCopy.data.funding"
             :options="fundingOptions"
         />
 
         <input-row 
             :disabled="isComplete"
-            v-if="workingCopy.funding == 'Other'" 
+            v-if="workingCopy.data.funding == 'Other'" 
             type="large-text" 
-            v-model="workingCopy.funding_other_details" 
+            v-model="workingCopy.data.funding_other_details" 
             :errors="errors.funding_other_details"
             placeholder="details"
             class="ml-8"
@@ -33,9 +33,9 @@
 
         <input-row 
             :disabled="isComplete"
-            v-model="workingCopy.funding_thoughts"
+            v-model="workingCopy.data.funding_thoughts"
             type="large-text"
-            v-if="workingCopy.applied_for_funding == 'no'"
+            v-if="workingCopy.data.applied_for_funding == 'no'"
             label="Please describe any thoughts, ideas, or plans for soliciting funding or personnel (in addition to any existing funding/support you may have)." 
             :errors="errors.funding_thoughts" 
             vertical 

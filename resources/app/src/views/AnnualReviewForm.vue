@@ -55,49 +55,61 @@ export default {
     data() {
         return {
             annualReview: {
+                expert_panel: {
+                    group: {
+                        members: [],
+                        coordinators: []
+                    }
+                },
+                window: {},
                 submitter_id: null,
-                grant: null,
-                ep_activity: null,
-                submitted_inactive_form: null,
-                membership_attestation: null,
-                applied_for_funding: null,
-                funding: null,
-                funding_other_details: null,
-                funding_thoughts: null,
-                website_attestation: null,
-                ongoing_plans_updated: null,
-                ongoing_plans_update_details: null,
-                //GCEP
-                gci_use: null,
-                gci_use_details: null,
-                gt_gene_list: null,
-                gt_gene_list_details: null,
-                gt_precuration_info: null,
-                gt_precuration_info_details: null,
-                published_count: null,
-                approved_unpublished_count: null,
-                in_progress_count: null,
-                recuration_begun: null,
-                recuration_designees: null,
-                //VCEP
-                vci_use: null,
-                vci_use_details: null,
-                goals: null,
-                cochair_commitment: null,
-                cochair_commitment_details: null,
-                sepcification_progress: null,
-                specification_url: null,
-                variant_counts: [],
-                variant_workflow_changes: null,
-                variant_workflow_changes_details: null,
-                specification_progress: null,
-                specification_progress_url: null,
-                specification_plans: null,
-                specification_plans_details: null,
-                rereview_discrepencies_progress: null,
-                rereview_lp_and_vus_progress: null,
-                rereview_lb_progress: null,
-                member_designation_changed: null,
+                submitter: {
+                    person: {},
+                },
+                data: {
+                    grant: null,
+                    ep_activity: null,
+                    submitted_inactive_form: null,
+                    membership_attestation: null,
+                    applied_for_funding: null,
+                    funding: null,
+                    funding_other_details: null,
+                    funding_thoughts: null,
+                    website_attestation: null,
+                    ongoing_plans_updated: null,
+                    ongoing_plans_update_details: null,
+                    //GCEP
+                    gci_use: null,
+                    gci_use_details: null,
+                    gt_gene_list: null,
+                    gt_gene_list_details: null,
+                    gt_precuration_info: null,
+                    gt_precuration_info_details: null,
+                    published_count: null,
+                    approved_unpublished_count: null,
+                    in_progress_count: null,
+                    recuration_begun: null,
+                    recuration_designees: null,
+                    //VCEP
+                    vci_use: null,
+                    vci_use_details: null,
+                    goals: null,
+                    cochair_commitment: null,
+                    cochair_commitment_details: null,
+                    sepcification_progress: null,
+                    specification_url: null,
+                    variant_counts: [],
+                    variant_workflow_changes: null,
+                    variant_workflow_changes_details: null,
+                    specification_progress: null,
+                    specification_progress_url: null,
+                    specification_plans: null,
+                    specification_plans_details: null,
+                    rereview_discrepencies_progress: null,
+                    rereview_lp_and_vus_progress: null,
+                    rereview_lb_progress: null,
+                    member_designation_changed: null,
+                }
             },
             errors: {},
             throttle: 1000,
@@ -123,8 +135,13 @@ export default {
         },
         dueDateAlertVariant () {
             return 'info';
+        },
+        expertPanel () {
+            return this.annualReview.expert_panel || {};
+        },
+        groupDetailRoute () {
+            return {name: 'GroupDetail', params: {uuid: this.group.uuid}}
         }
-
     },
     watch: {
         annualReview: {
@@ -183,32 +200,21 @@ export default {
                 this.$refs.modalView.clearForm();
             }
         },
-        getAnnualReview () {
-            api.get(`/api/groups/${this.group.uuid}/expert-panel/annual-reviews`)
+        async getAnnualReview () {
+            this.annualReview = await api.get(`/api/groups/${this.group.uuid}/expert-panel/annual-reviews`)
                 .then(response => {
-                    this.annualReview = {
-                        ...this.annualReview, 
-                        ...response.data.data,
-                        id: response.data.id,
-                        completed_at: response.data.completed_at,
-                        submitter_id: response.data.submitter_id,
-                        submitter: response.data.submitter,
-                        window: response.data.window
-                    }
-                    this.lastSaved = new Date(Date.parse(response.data.updated_at));
+                    const mergedData = {...this.annualReview.data, ...response.data.data}
+                    const reviewData = response.data;
+                    reviewData.data = mergedData;
+                    return reviewData;
                 });
+            this.lastSaved = new Date(Date.parse(this.annualReview.updated_at));
         },
         async save() {
+            if (!this.annualReview.id)  return;
             try {
-                if (!this.annualReview.id) {
-                    return;
-                }
-
                 this.saving = true;
-                await api.put(
-                    `/api/groups/${this.group.uuid}/expert-panel/annual-reviews/${this.annualReview.id}`, 
-                    this.annualReview
-                );
+                await api.put( `/api/groups/${this.group.uuid}/expert-panel/annual-reviews/${this.annualReview.id}`,  this.annualReview);
                 this.saving = false;
                 this.lastSaved = new Date();
             } catch (error) {
@@ -221,9 +227,7 @@ export default {
         }
     },
     created () {
-        this.debounceSave = debounce(async () => {
-            this.save();
-        }, this.throttle);
+        this.debounceSave = debounce(async () => this.save(), this.throttle);
 
         this.saveOngoingPlans = debounce(() => {
             const {uuid, expert_panel: expertPanel} = this.group;
@@ -232,7 +236,7 @@ export default {
     },
     async mounted () {
         await this.$store.dispatch('groups/findAndSetCurrent', this.uuid);
-        this.getAnnualReview();
+        await this.getAnnualReview();
     }
 }
 </script>
@@ -242,16 +246,9 @@ export default {
             The annual review for {{window.for_year}}
             is due on {{formatDate(window.end)}}
         </static-alert>
-        <router-link class="note"
-            :to="{name: 'GroupList'}"
-        >
-                Groups
-        </router-link>
+        <router-link class="note" :to="{name: 'GroupList'}">Groups</router-link>
         <span class="note"> > </span>
-        <router-link class="note"
-            :to="{name: 'GroupDetail', params: {uuid: group.uuid}}"
-            v-if="group.uuid"
-        >
+        <router-link v-if="group.uuid" class="note" :to="groupDetailRoute">
                 {{group.displayName}}
         </router-link>
 
@@ -275,10 +272,10 @@ export default {
             <submitter-information v-model="annualReview" :errors="errors" />
 
             <transition name="slide-fade-down">
-                <div v-if="group.isVcep() || group.isGcep() && annualReview.ep_activity == 'active' ">
+                <div v-if="expertPanel.is_vcep || (expertPanel.is_gcep && annualReview.data.ep_activity == 'active') ">
                     <membership-update v-model="annualReview" :errors="errors" />
 
-                    <template v-if="group.isGcep()">
+                    <template v-if="expertPanel.is_gcep">
                         <app-section title="Use of GCI and GeneTracker Systems">
                             <gci-gt-use v-model="annualReview" :errors="errors" />
                         </app-section>
@@ -296,7 +293,7 @@ export default {
                         </app-section>
                     </template>
 
-                    <app-section v-if="group.isVcep()" title="Use of Variant Curation Interface (VCI)">
+                    <app-section v-if="expertPanel.is_vcep" title="Use of Variant Curation Interface (VCI)">
                         <vci-use v-model="annualReview" :errors="errors"></vci-use>
                     </app-section>
 
@@ -310,7 +307,8 @@ export default {
 
                     <website-attestation v-model="annualReview" :errors="errors" />
                     
-                    <template v-if="group.isVcep() && group.expert_panel.defIsApproved">
+                    <template 
+                        v-if="expertPanel.is_vcep && expertPanel.definition_is_approved">
                         <!-- <dev-component>Begin questions for specifcation-ed VCEPS</dev-component> -->
                         <app-section title="Progress on Rule Specification">
                             <specification-progress v-model="annualReview" :errors="errors" />
@@ -322,7 +320,7 @@ export default {
                         <!-- <dev-component>End questions for specifcation-ed VCEPS</dev-component> -->
                     </template>
 
-                    <template v-if="group.isVcep() && group.expert_panel.pilotSpecificationsIsApproved">
+                    <template v-if="expertPanel.is_vcep && expertPanel.has_approved_pilot">
                         <!-- <dev-component>Begin Questions for sustained curation</dev-component> -->
                         
                         <variant-curation-workflow v-model="annualReview" :errors="errors" />

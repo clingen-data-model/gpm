@@ -5,7 +5,7 @@
         <input-row 
             :disabled="isComplete"
             label="Have you begun recuration?"
-            v-model="workingCopy.recuration_begun"
+            v-model="workingCopy.data.recuration_begun"
             type="radio-group"
             :options="[{value:'yes'},{value:'no'}]"
             :errors="errors.recuration_begun" 
@@ -14,7 +14,7 @@
 
         <input-row 
             :disabled="isComplete"
-            v-model="workingCopy.recuration_designees"
+            v-model="workingCopy.data.recuration_designees"
             :errors="errors.recuration_designees"
             type="large-text"
             placeholder="First Last, Email"

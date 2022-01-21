@@ -10,18 +10,18 @@
             label="Does this current review method represent a change from previous years?"
             :errors="errors.ongoing_plans_updated"
             type="radio-group"
-            v-model="workingCopy.ongoing_plans_updated"
+            v-model="workingCopy.data.ongoing_plans_updated"
             :options="[{value:'yes'},{value:'no'}]"
             :disabled="isComplete"
         />
         <input-row 
-            v-if="workingCopy.ongoing_plans_updated == 'yes'" 
+            v-if="workingCopy.data.ongoing_plans_updated == 'yes'" 
             class="ml-4" 
             label="Please explain" 
             :errors="errors.ongoing_plans_update_details" 
             vertical
             type="large-text"
-            v-model="workingCopy.ongoing_plans_update_details"
+            v-model="workingCopy.data.ongoing_plans_update_details"
             :disabled="isComplete"
         />
     </application-section>

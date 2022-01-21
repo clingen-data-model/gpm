@@ -5,15 +5,15 @@
             :disabled="isComplete" 
             label="Does your Expert Panel use the GCI for all gene curation activities?"
             vertical :errors="errors.gci_use"
-            type="radio-group"
-            v-model="workingCopy.gci_use"
+             type="radio-group"
+            v-model="workingCopy.data.gci_use"
             :options="[{value:'yes'},{value:'no'}]"
         />
         <transition name="slide-fade-down">
             <input-row
                 :disabled="isComplete" 
-                v-if="workingCopy.gci_use === 'no'"
-                v-model="workingCopy.gci_use_details" 
+                v-if="workingCopy.data.gci_use === 'no'"
+                v-model="workingCopy.data.gci_use_details" 
                 :errors="errors.gci_use_details"
                 label="Please explain"
                 class="ml-4" 
@@ -27,14 +27,14 @@
             vertical
             label="Our complete gene list (genes previously approved or currently under consideration) has been added to the GeneTracker?"
             type="radio-group"
-            v-model="workingCopy.gt_gene_list"
+            v-model="workingCopy.data.gt_gene_list"
             :options="[{value:'yes'},{value:'no'}]"
         />
         <transition name="slide-fade-down">
             <input-row
                 :disabled="isComplete" 
-                v-if="workingCopy.gt_gene_list === 'no'"
-                v-model="workingCopy.gt_gene_list_details" 
+                v-if="workingCopy.data.gt_gene_list === 'no'"
+                v-model="workingCopy.data.gt_gene_list_details" 
                 :errors="errors.gt_gene_list_details"
                 label="Please explain"
                 class="ml-4" 
@@ -48,14 +48,14 @@
             label="All application precuration information has been added to the GeneTracker."
             vertical
             type="radio-group"
-            v-model="workingCopy.gt_precuration_info"
+            v-model="workingCopy.data.gt_precuration_info"
             :options="[{value:'yes'},{value:'no'}]"
         />
         <transition name="slide-fade-down">
             <input-row
                 :disabled="isComplete" 
-                v-if="workingCopy.gt_precuration_info === 'no'"
-                v-model="workingCopy.gt_precuration_info_details" 
+                v-if="workingCopy.data.gt_precuration_info === 'no'"
+                v-model="workingCopy.data.gt_precuration_info_details" 
                 :errors="errors.gt_precuration_info_details"
                 label="Please explain"
                 class="ml-4" 

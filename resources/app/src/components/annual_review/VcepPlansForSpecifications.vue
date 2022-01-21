@@ -18,9 +18,6 @@ export default {
         ...mirror.emits
     ],
     computed: {
-        group () {
-            return this.$store.getters['groups/currentItemOrNew'];
-        },
         isComplete () {
             return Boolean(this.modelValue.completed_at);
         }
@@ -38,7 +35,7 @@ export default {
     <application-section title="Plans for rule specification of additional genes">
         <input-row
             :disabled="isComplete"
-            v-model="workingCopy.specification_plans"
+            v-model="workingCopy.data.specification_plans"
             :errors="errors.specification_plans"
             label="Are you planning to start the rule specification process for  anew gene in the coming year?"
             type="radio-group"
@@ -47,8 +44,8 @@ export default {
         />
         <input-row
             :disabled="isComplete"
-            v-if="workingCopy.specification_plans == 'yes'"
-            v-model="workingCopy.specification_plans_details" 
+            v-if="workingCopy.data.specification_plans == 'yes'"
+            v-model="workingCopy.data.specification_plans_details" 
             :errors="errors.specification_plans_details" 
             type="large-text" 
             label="What are your plans?" 

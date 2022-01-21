@@ -8,8 +8,8 @@
 </style>
 <template>
     <application-section title="Submitter Information">
-        <dictionary-row label="Expert Panel">{{group.displayName}}</dictionary-row>
-        <dictionary-row label="Affilation ID">{{group.expert_panel.affiliation_id}}</dictionary-row>
+        <dictionary-row label="Expert Panel">{{workingCopy.expert_panel.display_name}}</dictionary-row>
+        <dictionary-row label="Affilation ID">{{workingCopy.expert_panel.affiliation_id}}</dictionary-row>
 
         <input-row 
             label="Submitting member"
@@ -21,23 +21,23 @@
 
         <dictionary-row label="EP Coordinator(s)">
             <span class="csv-item" 
-                v-for="coordinator in group.coordinators" :key="coordinator.id"
+                v-for="coordinator in coordinators" :key="coordinator.id"
             >{{coordinator.person.name}}</span>
-            <span v-if="group.coordinators.length == 0" class="text-red-600">No coordinators on file for this expert panel.</span>
+            <span v-if="coordinators.length == 0" class="text-red-600">No coordinators on file for this expert panel.</span>
         </dictionary-row>
 
         <input-row 
             label="Liaising ClinGen grant"
-            v-model="workingCopy.grant"
+            v-model="workingCopy.data.grant"
             type="select"
             :options="grants.map(g => ({value: g}))"
             :errors="errors.grant"
             :disabled="isComplete"
         />
         
-        <input-row v-if="this.group.isGcep()"
+        <input-row v-if="this.workingCopy.expert_panel.is_gcep"
             label="What is the current activity status of the EP?"
-            v-model="workingCopy.ep_activity"
+            v-model="workingCopy.data.ep_activity"
             type="radio-group"
             :options="activityOptions"
             vertical
@@ -46,9 +46,9 @@
         />
 
         <transition name="slide-fade-down">
-            <input-row v-if="workingCopy.ep_activity == 'inactive'"
+            <input-row v-if="workingCopy.data.ep_activity == 'inactive'"
                 label="Have you submitted an Inactive GCEP form to the CDWG Oversight Committee?"
-                v-model="workingCopy.submitted_inactive_form"
+                v-model="workingCopy.data.submitted_inactive_form"
                 type="radio-group"
                 :options="[{value: 'yes'}, {value: 'no'}]"
                 :disabled="isComplete"
@@ -57,7 +57,7 @@
         </transition>
 
         <transition name="slide-fade-down">
-            <p v-if="workingCopy.submitted_inactive_form == 'no'" class="ml-4 alert-warning p-2 rounded-lg">
+            <p v-if="workingCopy.data.submitted_inactive_form == 'no'" class="ml-4 alert-warning p-2 rounded-lg">
                 You must complete and submit the <a href="https://docs.google.com/document/d/13m4xeuh-GDHbYciQYHu1CiE_6HI-Xz_6_-yp8q2Ybp4/edit?usp=sharing">ClinGene Inactive GCEP Form</a>
             </p>        
         </transition>
@@ -96,11 +96,11 @@ export default {
         };
     },
     computed: {
-        group () {
-            return this.$store.getters['groups/currentItemOrNew']
-        },
         members () {
-            return this.group.members.filter(m => m !== null);
+            return this.workingCopy.expert_panel.group.members.filter(m => m !== null);
+        },
+        coordinators () {
+            return this.workingCopy.expert_panel.group.coordinators;
         },
         isComplete () {
             return Boolean(this.modelValue.completed_at);

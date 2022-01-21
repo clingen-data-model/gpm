@@ -3,7 +3,7 @@
                     <p>
                         Please list the entire membership of the Expert Panel.
                     </p>
-                    <p v-if="group.isVcep()">
+                    <p v-if="workingCopy.expert_panel.is_vcep">
                         Note: If changes are made to an Expert Panel Co-chair(s) or coordinator, please report them directly to the <a href="mailto:cdwg_oversightcommittee@clinicalgenome.org">Clinical Domain Working Group Oversight Committee</a> when they occur. All current EP members must complete a Conflict of Interest (COI) survey each year. If all members of your EP have filled out the EPAM generated COI survey, some of the information will be auto populated.
                     </p>
 
@@ -16,7 +16,7 @@
                         label="Please attest that your membership is up to date" 
                         :errors="errors.membership_attestation"
                         type="radio-group"
-                        v-model="workingCopy.membership_attestation"
+                        v-model="workingCopy.data.membership_attestation"
                         :options="[
                             {value: 'I have reviewed and made the appropriate updates to membership as needed.'},
                             {value: 'I have reviewed and there are no changes needed.'}

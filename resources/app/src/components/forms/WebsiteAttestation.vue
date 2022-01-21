@@ -8,7 +8,7 @@
                 </template>
                 <checkbox 
                     label="I attest that the information on the webpage is up-to-date and accurate." 
-                    v-model="workingCopy.website_attestation"
+                    v-model="workingCopy.data.website_attestation"
                     :disabled="isComplete"
                 />
             </input-row>
@@ -34,9 +34,6 @@ export default {
         ...mirror.emits
     ],
     computed: {
-        group () {
-            return this.$store.getters['groups/currentItemOrNew'];
-        },
         isComplete () {
             return Boolean(this.modelValue.completed_at)
         }

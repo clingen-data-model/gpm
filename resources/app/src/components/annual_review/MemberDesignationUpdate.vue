@@ -10,7 +10,7 @@
         <hr>
         <input-row vertical 
             label="Does this represent a change from previous years?"
-            v-model="workingCopy.member_designation_changed"
+            v-model="workingCopy.data.member_designation_changed"
             :errors="errors.member_designation_changed"
             type="radio-group"
             :options="[

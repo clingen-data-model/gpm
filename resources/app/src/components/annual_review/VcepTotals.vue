@@ -116,10 +116,10 @@ export default {
     },
     methods: {
         addGene () {
-            if (!this.workingCopy.variant_counts) {
-                this.workingCopy.variant_counts = [];
+            if (!this.workingCopy.data.variant_counts) {
+                this.workingCopy.data.variant_counts = [];
             }
-            this.workingCopy.variant_counts.push(clone(defaultGene));
+            this.workingCopy.data.variant_counts.push(clone(defaultGene));
             this.newGene = {};
         },
         removeGeneAtIndex (idx) {
@@ -131,7 +131,7 @@ export default {
     },
     created () {
         this.debounceSyncModel = debounce(() => {
-            this.workingCopy.variant_counts = cloneDeep(this.variantCounts);
+            this.workingCopy.data.variant_counts = cloneDeep(this.variantCounts);
             this.$emit('update:modelValue', this.workingCopy);
         }, 1500);
     },
