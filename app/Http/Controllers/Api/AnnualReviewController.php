@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\AnnualReview;
 use Illuminate\Http\Request;
 use App\Models\AnnualReviewWindow;
+use App\Modules\Group\Models\Group;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Response;
 
@@ -32,18 +33,22 @@ class AnnualReviewController extends Controller
     public function show($id)
     {
         $annualReview = AnnualReview::findOrFail($id);
-        return $annualReview->load([
-            'expertPanel' => function ($query) {
-                $query->select(['id', 'expert_panel_type_id', 'long_base_name', 'group_id']);
-            },
-            'submitter' => function ($query) {
-                $query->select(['id', 'person_id']);
-            },
-            'submitter.person' => function ($query) {
-                $query->select('id', 'first_name', 'last_name', 'email');
-            },
-            'window',
-        ]);
+        return $annualReview->loadForUse();
+    }
+
+    public function showLatestForGroup(Group $group)
+    {
+        if (!$group->isEp) {
+            return response('This group does not have annual review.', 404);
+        }
+        $review = $group->expertPanel->latestAnnualReview;
+        if (!$review) {
+            return response('not found', 404);
+        }
+
+        $review->loadForUse();
+
+        return $review;
     }
 
     public function windows(Request $request)

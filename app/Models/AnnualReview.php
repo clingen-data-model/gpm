@@ -198,6 +198,34 @@ class AnnualReview extends Model
         return $result;
     }
 
+    public function loadForUse()
+    {
+        $this->load([
+            'expertPanel' => function ($query) {
+                $query->select(['id', 'expert_panel_type_id', 'long_base_name', 'group_id', 'affiliation_id']);
+            },
+            'expertPanel.group' => function ($query) {
+                $query->select(['id', 'group_type_id', 'name', 'uuid']);
+            },
+            'expertPanel.group.members',
+            'expertPanel.group.members.person',
+            'expertPanel.group.members.person' => function ($query) {
+                $query->select('id', 'first_name', 'last_name', 'email');
+            },
+            'expertPanel.group.coordinators',
+            'expertPanel.group.coordinators.person',
+            'submitter' => function ($query) {
+                $query->select(['id', 'person_id']);
+            },
+            'submitter.person' => function ($query) {
+                $query->select('id', 'first_name', 'last_name', 'email');
+            },
+            'window',
+        ]);
+
+        return $this;
+    }
+
     private function getDataOrNull($key)
     {
         if (!$this->data) {

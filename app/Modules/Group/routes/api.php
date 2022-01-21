@@ -24,6 +24,7 @@ use App\Modules\Group\Actions\AnnualReviewCreate;
 use App\Modules\Group\Actions\AnnualReviewSubmit;
 use App\Modules\Group\Actions\EvidenceSummaryAdd;
 use App\Modules\Group\Actions\AttestationGcepStore;
+use App\Http\Controllers\Api\AnnualReviewController;
 use App\Modules\Group\Actions\ApplicationSubmitStep;
 use App\Modules\Group\Actions\AttestationNhgriStore;
 use App\Modules\Group\Actions\EvidenceSummaryDelete;
@@ -125,19 +126,7 @@ Route::group([
         });
 
         Route::group(['prefix' => '/annual-reviews'], function () {
-            Route::get('/', function (\App\Modules\Group\Models\Group $group) {
-                if (!$group->isEp) {
-                    return response('This group does not have annual review.', 404);
-                }
-                $review = $group->expertPanel->latestAnnualReview;
-                if (!$review) {
-                    return response('not found', 404);
-                }
-
-                $review->load(['submitter', 'window', 'submitter.person']);
-    
-                return $review;
-            });
+            Route::get('/', [AnnualReviewController::class, 'showLatestForGroup']);
             Route::post('/', AnnualReviewCreate::class);
             Route::put('/{review}', AnnualReviewSave::class);
             Route::post('/{review}', AnnualReviewSubmit::class);
