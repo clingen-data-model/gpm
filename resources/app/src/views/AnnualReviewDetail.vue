@@ -7,14 +7,14 @@
 <script>
 import {api} from '@/http'
 import AnnualReviewForm from '@/views/AnnualReviewForm'
-import formDef from '@/forms/annual_review'
-import DataForm from '@/components/forms/DataForm'
+// import formDef from '@/forms/annual_review'
+// import DataForm from '@/components/forms/DataForm'
 
 export default {
     name: 'AnnualReviewDetail',
     components: {
         AnnualReviewForm,
-        DataForm
+        // DataForm
     },
     props: {
         id: {
@@ -35,7 +35,7 @@ export default {
                 window: {}
             },
             errors: {},
-            formDef: formDef
+            // formDef: formDef
         }
     },
     computed: {
