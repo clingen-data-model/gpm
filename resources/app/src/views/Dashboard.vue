@@ -181,6 +181,7 @@ export default {
 
         onMounted(() => {
             getNotifications();
+            store.dispatch('forceGetCurrentUser');
         })
 
         return {
