@@ -315,7 +315,7 @@ export default {
                 alert ('The application for '+item.name+' has been deleted.  Details cannot be viewed.');
                 return;
             }
-            this.$router.push({name: 'ApplicationDetail', params: {uuid: item.uuid}})
+            this.$router.push({name: 'ApplicationDetail', params: {uuid: item.group.uuid}})
         },
     },
     mounted () {
