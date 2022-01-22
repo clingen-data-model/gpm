@@ -62,6 +62,7 @@ class ExpertPanelNameUpdate
                     ->ignore($expertPanel->id)
                     ->where(function ($query) use ($expertPanel) {
                         $query->whereNotNull('long_base_name')
+                            ->whereNull('deleted_at')
                             ->where('expert_panel_type_id', $expertPanel->expert_panel_type_id);
                     })
             ],
@@ -72,6 +73,7 @@ class ExpertPanelNameUpdate
                     ->ignore($expertPanel->id)
                     ->where(function ($query) use ($expertPanel) {
                         $query->whereNotNull('short_base_name')
+                            ->whereNull('deleted_at')
                             ->where('expert_panel_type_id', $expertPanel->expert_panel_type_id);
                     })
             ],
