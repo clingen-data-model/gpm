@@ -15,6 +15,7 @@ use App\Modules\Group\Models\GroupMember;
 use Lorisleiva\Actions\Concerns\AsAction;
 use App\Modules\ExpertPanel\Models\NextAction;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Carbon\Carbon;
 
 class DataMigration
 {
@@ -60,6 +61,30 @@ class DataMigration
                     'coi_code' => $row->coi_code,
                     'current_step' => $row->current_step
                 ];
+
+                if ($row->ep_type_id === 1 && isset($approvalDates['step 1']) && $approvalDates['step 1']) {
+                    $approvalDate = Carbon::parse($approvalDates['step 1']);
+                    $data['utilize_gt'] = 1;
+                    $data['utilize_gci'] = 1;
+                    $data['curations_publicly_available'] = 1;
+                    $data['pub_policy_reviewed'] = 1;
+                    $data['draft_manuscripts'] = 1;
+                    $data['recuration_process_review'] = 1;
+                    $data['biocurator_training'] = 1;
+                    $data['biocurator_mailing_list'] = 1;
+                    $data['gci_training_date'] = $approvalDate;
+                    $data['gcep_attestation_date'] = $approvalDate;
+                    $data['nhgri_attestation_date'] = $approvalDate;
+                }
+                
+                if ($row->ep_type_id === 2 && isset($approvalDates['step 4']) && $approvalDates['step 4']) {
+                    $approvalDate = Carbon::parse($approvalDates['step 4']);
+                    $data['reanalysis_conflicting'] = 1;
+                    $data['reanalysis_review_lp'] = 1;
+                    $data['reanalysis_review_lb'] = 1;
+                    $data['reanalysis_attestation_date'] = $approvalDates['step 4'];
+                    $data['nhgri_attestation_date'] = $approvalDates['step 4'];
+                }
 
                 $expertPanel = ExpertPanel::withTrashed()->firstOrCreate(['group_id' => $group->id], $data);
 
