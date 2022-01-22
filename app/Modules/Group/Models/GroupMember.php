@@ -133,6 +133,11 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
     }
 
 
+    public function scopeIsContact($query)
+    {
+        return $query->where('is_contact', 1);
+    }
+    
     public function scopeContact($query)
     {
         return $query->where('is_contact', 1);
