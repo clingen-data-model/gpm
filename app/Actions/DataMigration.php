@@ -276,7 +276,7 @@ class DataMigration
                     ->firstOrCreate(
                         ['uuid' => $row->uuid],
                         [
-                            'name' => $row->working_name,
+                            'name' => $row->long_base_name ?? $row->working_name,
                             'group_type_id' => config('groups.types.ep.id'),
                             'group_status_id' => ($row->date_completed)
                                                     ? config('groups.statuses.active.id')
