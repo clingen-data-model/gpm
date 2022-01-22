@@ -53,6 +53,8 @@ class GroupController extends Controller
             'members.cois',
             'parent',
             'expertPanel',
+            'expertPanel.genes',
+            'expertPanel.genes.gene',
         ]);
 
         return new GroupResource($group);
