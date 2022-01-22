@@ -144,10 +144,12 @@ export const actions = {
             });
     },
 
-    async findAndSetCurrent ({dispatch, commit}, uuid) {
-        const response = await dispatch('find', uuid)
-        commit('setCurrentItemIndexByUuid', uuid)
-        return response;
+    findAndSetCurrent ({dispatch, commit}, uuid) {
+        return dispatch('find', uuid)
+            .then(response => {
+                commit('setCurrentItemIndexByUuid', uuid)
+                return response;
+            })
     },
 
     async memberAdd ({commit}, {uuid, personId, roleIds, data}) {
@@ -198,11 +200,12 @@ export const actions = {
                 })
     },
 
-    async memberAssignRole ( {commit}, {uuid, memberId, roleIds}) {
+    async memberAssignRole ( context, {uuid, memberId, roleIds}) {
         const url= `${baseUrl}/${uuid}/members/${memberId}/roles`
         return await api.post(url, {role_ids: roleIds})
             .then(response => {
-                commit('addMemberToGroup', response.data.data);
+                context.getters.getItemByUuid(uuid).findMember(memberId)
+                    .addRoles(roleIds);
                 return response.data
             });
     },
@@ -299,16 +302,13 @@ export const actions = {
         })
     },
 
+    // eslint-disable-next-line
     async curationReviewProtocolUpdate({ commit }, {uuid, expertPanel}) {
         if (expertPanel.curation_review_protocol_id != 100) {
             expertPanel.curation_review_protocol_other = null;
         }
 
-        await api.put(`${getApplicationUrl(uuid)}/curation-review-protocols`, expertPanel.attributes)
-        .then(response => {
-            commit('addItem', response.data.data);
-            return response;
-        });
+        return api.put(`${getApplicationUrl(uuid)}/curation-review-protocols`, expertPanel.attributes)
     },
     
     getSpecifications({ commit }, group) {

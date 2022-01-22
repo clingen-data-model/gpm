@@ -44,6 +44,10 @@ class DatabaseSeeder extends Seeder
             SubmissionTypeAndStatusSeeder::class,
         ]);
 
+        if (app()->environment('testing')) {
+            array_push($seederClasses, AnnualReviewWindowSeeder::class);
+        }
+        
         foreach ($seederClasses as $seederClass) {
             $seeder = new $seederClass();
             $seeder->run();

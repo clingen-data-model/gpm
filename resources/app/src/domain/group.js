@@ -116,7 +116,7 @@ class Group extends Entity {
     }
 
     addMember(member) {
-        const idx = this.members.findIndex(m => m.id == member.id);
+        const idx = this.members.findIndex(m => m && m.id == member.id);
         if (idx > -1) {
             this.members.splice(idx, 1, new GroupMember(member))
             return;
@@ -128,7 +128,7 @@ class Group extends Entity {
     removeMember(member) {
         const idx = this.members.findIndex(m => m.id == member.id);
         if (idx > -1) {
-            delete(this.members[idx]);
+            this.members.splice(this.members[idx], 1);
             return;
         }
     }

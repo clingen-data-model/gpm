@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\AnnualReview;
 use Illuminate\Support\Facades\Route;
 use App\Modules\Group\Actions\GenesAdd;
 use App\Modules\Group\Actions\MemberAdd;
@@ -15,11 +16,15 @@ use App\Modules\Group\Actions\MemberUpdate;
 use App\Modules\Group\Actions\ParentUpdate;
 use App\Modules\Group\Actions\DocumentUpdate;
 use App\Modules\Group\Actions\GroupNameUpdate;
+use App\Modules\Group\Actions\AnnualReviewSave;
 use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Group\Actions\MemberRemoveRole;
 use App\Modules\Group\Actions\GroupStatusUpdate;
+use App\Modules\Group\Actions\AnnualReviewCreate;
+use App\Modules\Group\Actions\AnnualReviewSubmit;
 use App\Modules\Group\Actions\EvidenceSummaryAdd;
 use App\Modules\Group\Actions\AttestationGcepStore;
+use App\Http\Controllers\Api\AnnualReviewController;
 use App\Modules\Group\Actions\ApplicationSubmitStep;
 use App\Modules\Group\Actions\AttestationNhgriStore;
 use App\Modules\Group\Actions\EvidenceSummaryDelete;
@@ -121,7 +126,16 @@ Route::group([
             Route::put('/{summaryId}', EvidenceSummaryUpdate::class);
             Route::delete('/{summaryId}', EvidenceSummaryDelete::class);
         });
+
+        Route::group(['prefix' => '/annual-reviews'], function () {
+            Route::get('/', [AnnualReviewController::class, 'showLatestForGroup']);
+            Route::post('/', AnnualReviewCreate::class);
+            Route::put('/{review}', AnnualReviewSave::class);
+            Route::post('/{review}', AnnualReviewSubmit::class);
+        });
     });
+
+
 
     Route::post('/{uuid}/invites', MemberInvite::class);
 });

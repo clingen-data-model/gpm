@@ -1,7 +1,10 @@
 <template>
-    <div :class="{'border-l border-red-800 px-2': hasErrors}" class="input-row my-3">
+    <div 
+        :class="{'border-l border-red-800 px-2': hasErrors}" 
+        class="input-row my-3"
+    >
         <div :class="{'sm:flex': !vertical}">
-            <div class="flex-none" :class="labelContainerClass" v-show="showLabel">
+            <div class="flex-none label-container" :class="labelContainerClass" v-show="showLabel">
                 <slot name="label" v-if="hasLabel">
                     <label :class="resolvedLabelClass">{{label}}{{colon}}</label>
                 </slot>
@@ -13,11 +16,58 @@
                         :modelValue="modelValue" 
                         @update:modelValue="emitValue" 
                         :disabled="disabled"
+                        :readonly="$attrs.readonly"
                         @change="$emit('change', modelValue)"
                         ref="input"
                         :name="name"
                         :class="inputClass"
                     ></date-input>
+                    <textarea 
+                        v-if="type == 'large-text'"
+                        :value="modelValue" 
+                        @input="$emit('update:modelValue', $event.target.value)"
+                        :disabled="disabled"
+                        :readonly="$attrs.readonly"
+                        @change="$emit('change', modelValue)"
+                        ref="input"
+                        :name="name"
+                        :class="inputClass"
+                        class="w-full"
+                        rows="5"
+                        :placeholder="placeholder"
+                    ></textarea>
+                    <div 
+                        v-else-if="type == 'radio-group'"
+                        class="radio-group"
+                        :class="{'ml-4': vertical}"
+                    >
+                        <radio-button 
+                            v-for="option in options"
+                            :key="option.value"
+                            :modelValue="modelValue" 
+                            @update:modelValue="emitValue" 
+                            :label="option.label || sentenceCase(option.value)" 
+                            :value="option.value"
+                            :disabled="disabled"
+                            :readonly="$attrs.readonly"
+                        />
+                    </div>
+                    <select v-else-if="type=='select'"
+                        :value="modelValue"
+                        @input="$emit('update:modelValue', $event.target.value)"
+                        v-bind="$attrs.disabled"
+                        :disabled="disabled"
+                        :readonly="$attrs.readonly"
+                    >
+                        <option value="">Select&hellip;</option>
+                        <template v-for="option in options" :key="option.value">
+                            <slot name="option-label" v-bind="option">
+                                <option :value="option.value">
+                                    {{option.label || sentenceCase(option.value)}}
+                                </option>
+                            </slot>
+                        </template>
+                    </select>
                     <input 
                         v-else
                         :type="type" 
@@ -25,6 +75,7 @@
                         @input="$emit('update:modelValue', $event.target.value)"
                         :placeholder="placeholder"
                         :disabled="disabled"
+                        :readonly="$attrs.readonly"
                         @change="$emit('change', $event.target.value)"
                         ref="input"
                         :class="inputClass"
@@ -32,7 +83,7 @@
                     >
                 </slot>
                 <slot name="after-input"></slot>
-                <input-errors class="text-xs" :errors="errors"></input-errors>
+                <input-errors class="text-xs" :errors="errors || []"></input-errors>
             </div>
         </div>
     </div>
@@ -41,21 +92,30 @@
 
 export default {
     props: {
-        vertical: {
-            type: Boolean,
-            default: false
+        type: {
+            type: String,
+            required: false,
+            default: 'text'
+        },
+        modelValue: {
+            required: false,
+            default: null
         },
         errors: {
             type: Array,
             required: false,
             default: () => []
         },
+        options: {
+            type: Array,
+            required: false
+        },
         label: {
             type: String,
             required: false
         },
         // purgeCSS purges "unused" classes
-        // this means any otherwise onused width
+        // this means any otherwise unused width
         // class will be purged and will not apply
         // when we generate the class based on a number
         // labelWidth: {
@@ -68,23 +128,13 @@ export default {
             required: false,
             default: 'w-36'
         },
-        type: {
-            type: String,
-            required: false,
-            default: 'text'
-        },
-        modelValue: {
-            required: false,
-            default: null
-        },
         placeholder: {
             required: false,
             value: null
         },
         disabled: {
-            required: false,
+            type: Boolean,
             default: false,
-            type: Boolean
         },
         name: {
             required: false,
@@ -105,7 +155,11 @@ export default {
             required: false,
             default: null,
             type: String
-        }
+        },
+        vertical: {
+            type: Boolean,
+            default: false
+        },
     },
     emits: [
         'update:modelValue',
@@ -156,7 +210,6 @@ export default {
         focus() {
             this.$refs.input.focus();
         }
-
     }
 }
 </script>

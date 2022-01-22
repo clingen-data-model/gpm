@@ -33,7 +33,25 @@ const routes = [
                         import ( /* webpackChunkName: "application-summary" */ '@/views/SummaryVcep.vue'),
             },
         ]
-    },    
+    },
+    {
+        name: 'AnnualReviewsList',
+        path: '/annual-reviews',
+        component: () => import (/* webpackChunkName "annual-reviews" */ '@/views/AnnualReviewsList'),
+        meta: {
+            protected: true,
+            permissions: ['annual-reviews-manage']
+        },
+    },
+    {
+        name: 'AnnualReviewDetail',
+        path: '/annual-reviews/:id',
+        component: () => import (/* webpackChunkName "annual-reviews" */ '@/views/AnnualReviewDetail'),
+        props: true,
+        meta: {
+            protected: true,
+        }
+    },
     ...applicationRoutes,
     ...groupRoutes,
     ...peopleRoutes,

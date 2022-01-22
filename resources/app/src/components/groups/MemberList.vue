@@ -10,6 +10,12 @@ export default {
     components: {
         MemberPreview,
     },
+    props: {
+        readonly: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
             showFilter: false,
@@ -74,7 +80,7 @@ export default {
             ],
             selectedMember: null,
             hideAlumns: true,
-            members: []
+            members: [],
         }
     },
     computed: {
@@ -170,12 +176,12 @@ export default {
             this.showConfirmRetire = true;
             this.selectedMember = member;
         },
-        async retireMember (member) {
+        async retireMember () {
             try {
                 await this.$store.dispatch('groups/memberRetire', {
                     uuid: this.group.uuid,
-                    memberId: member.id,
-                    startDate: member.start_date, 
+                    memberId: this.selectedMember.id,
+                    startDate: this.selectedMember.start_date, 
                     endDate: new Date().toISOString()
                 });
                 this.cancelRetire();
@@ -249,7 +255,7 @@ export default {
                 class="btn btn-xs" 
                 ref="addMemberButton" 
                 :to="append($route.path, 'members/add')"
-                v-if="hasAnyPermission([['members-invite', group], 'groups-manage'])"
+                v-if="hasAnyPermission([['members-invite', group], 'groups-manage']) && !readonly"
             >Add Member</router-link>
         </head>
         <transition name="slide-fade-down">
@@ -309,7 +315,7 @@ export default {
                 </template>
                 <template v-slot:cell-actions="{item}">
                     <div class="flex space-x-2 items-center">
-                        <dropdown-menu :hide-cheveron="true" class="relative" v-if="hasAnyMemberPermission()">
+                        <dropdown-menu :hide-cheveron="true" class="relative" v-if="hasAnyMemberPermission() && !readonly">
                             <template v-slot:label>
                                 <button class="btn btn-xs">&hellip;</button>
                             </template>

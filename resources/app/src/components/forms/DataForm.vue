@@ -1,98 +1,45 @@
 <script>
-// import {ref, watch} from 'vue';
-import InputRow from '@/components/forms/InputRow'
-// import SearchSelect from '@/components/forms/SearchSelect'
-import { titleCase } from '@/utils'
+import DataFormField from '@/components/forms/DataFormField'
+import mirror from '@/composables/setup_working_mirror'
 
 export default {
     name: 'DataForm',
     components: {
-        InputRow,
-        // SearchSelect,
+        DataFormField
     },
     props: {
-        fields: {
-            type: Array,
-            required: true,
-        },
-        modelValue: {
-            // type: Object,
-            required: true
-        },
+        ...mirror.props,
         errors: {
             type: Object,
             required: false,
             default: () => ({})
-        }
+        },
+        fields: {
+            type: Array,
+            required: true,
+        },
     },
     emits: [
-        'update:modelValue'
+        ...mirror.emits
     ],
-    computed: {
-        dataClone: {
-            deep: true,
-            immediate: true,
-            get () {
-                return this.modelValue;
-            },
-            set (value) {
-                this.$emit(value)
-            }
+    setup(props, context) {
+        const {workingCopy} = mirror.setup(props, context);
+        return {
+            workingCopy
         }
-    },
-    methods: {
-        getFieldLabel (field) {
-            return (field.label ? titleCase(field.label) : titleCase(field.name))
-        },
-        selectOrTextarea (field) {
-            return ['textarea', 'select'].includes(field.type);
-        },
-        searchSelect (field) {
-            return field.type == 'search-select'
-        },
-        emitChange() {
-            this.$emit('update:modelValue', this.dataClone);
-        },
-        evalShow(field) {
-            if (field.show) {
-                return field.show(this.dataClone);
-            }
-            return true;
-        }
-    },
+    }
 }
 </script>
 <template>
     <div class="data-form">
         <div v-for="field in fields" :key="field.name">
-            <div v-if="evalShow(field)">
-                <input-row 
-                    v-if="selectOrTextarea(field) || searchSelect(field) || field.type == 'component'" 
-                    :label="getFieldLabel(field)"
-                    :class="field.class"
-                    :errors="errors[field.name]"
-                >
-                    <select v-if="field.type == 'select'"
-                        v-model="dataClone[field.name]" 
-                    >
-                        <option :value="null">Select...</option>
-                        <option v-for="option in field.options" :key="option.value" :value="option.value">{{option.label}}</option>
-                    </select>
-                    <textarea v-else-if="field.type == 'textarea'" 
-                        v-model="dataClone[field.name]" 
-                        class="w-full"
-                        rows="5"
-                    ></textarea>
-                    <component v-else-if="field.type == 'component'" :is="field.component" v-model="dataClone[field.name]"></component>
-                </input-row>
-                <input-row v-else 
-                    :label="getFieldLabel(field)" 
-                    v-model="dataClone[field.name]" 
-                    :type="field.type || 'text'"
-                    :placeholder="field.placeholder || null"
-                    :errors="errors[field.name]"
-                ></input-row>
-            </div>
+
+            <data-form-field
+                v-model="workingCopy"
+                :field="field"
+                :errors="errors" 
+            />
+
         </div>
     </div>
 </template>

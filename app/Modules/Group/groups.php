@@ -105,8 +105,12 @@ return [
             'id' => 1007,
             'name' => 'application-edit'
         ],
+        'annual-review-manage' => [
+            'id' => 1008,
+            'name' => 'annual-review-manage'
+        ]
     ],
     'role_permissions' => [
-        'coordinator' => [1001,1002,1003,1004,1005,1006, 1007]
+        'coordinator' => [1001,1002,1003,1004,1005,1006, 1007, 1008]
     ],
 ];

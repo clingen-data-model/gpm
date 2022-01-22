@@ -16,29 +16,33 @@
                 @removed="removeNotification(notification)"
                 :variant="notification.data.type"
             ></notification-item>
-            <static-alert 
-                v-for="membership in user.person.membershipsWithPendingCois" 
-                :key="membership.id"
-                class="mt-2 font-bold"
-                variant="warning"
-            >
-                You have a pending Conflict of Interest Disclosure for {{membership.group.name}}.
-                <br>
-                <br>
-                <router-link 
-                    :to="{
-                        name: 'alt-coi', 
-                        params: {
-                            name: membership.group.name, 
-                            code: membership.group.expert_panel.coi_code
-                        }
-                    }"
-                    class="btn"
-                >
-                    Complete this COI Disclosure
-                </router-link>
-            </static-alert>
         </transition-group>
+
+        <annual-review-alert v-for="group in coordinatingGroups" :key="group.id" :group="group" />
+
+        <static-alert 
+            v-for="membership in user.person.membershipsWithPendingCois" 
+            :key="membership.id"
+            class="mt-2"
+            variant="warning"
+        >
+            You have a pending <strong>COI</strong> disclosure for <strong>{{membership.group.name}}</strong>.
+            <br>
+            <br>
+            <router-link 
+                :to="{
+                    name: 'alt-coi', 
+                    params: {
+                        name: membership.group.name, 
+                        code: membership.group.expert_panel.coi_code
+                    }
+                }"
+                class="btn font-bold"
+            >
+                Complete this COI Disclosure
+            </router-link>
+        </static-alert>
+
         <tabs-container class="mt-8">
             <tab-item label="Your Groups">
                 <div class="well" v-if="!groups.length">You are not assigned to any groups.</div>
@@ -72,6 +76,7 @@ import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
 import {ref, computed, onMounted, watch} from 'vue'
 import {api} from '@/http'
+import AnnualReviewAlert from '@/components/groups/AnnualReviewAlert';
 import NotificationItem from '@/components/NotificationItem'
 import CoiList from '@/components/people/CoiList'
 import PersonProfile from '@/components/people/PersonProfile'
@@ -84,7 +89,8 @@ export default {
     components: {
         CoiList,
         NotificationItem,
-        PersonProfile
+        PersonProfile,
+        AnnualReviewAlert
     },
     data() {
         return {
@@ -142,6 +148,15 @@ export default {
                     .filter(g => g !== null)
                     .map(group => new Group(group))
         });
+
+        const coordinatingGroups = computed(() => {
+            return user.value.memberships
+                    .filter(m => m.hasPermission('annual-review-manage'))
+                    .map(m => m.group)
+                    .filter(g => g !== null)
+                    .map(group => new Group(group))
+        });
+
         const groupFields = ref([
             {
                 name: 'displayName',
@@ -190,6 +205,7 @@ export default {
             loadingNotifications,
             notifications,
             groups,
+            coordinatingGroups,
             groupSort,
             groupFields,
             groupBadgeColor,

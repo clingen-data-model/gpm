@@ -44,6 +44,7 @@
                     :key="member.id"
                     :ref="`memberRow${member.id}`"
                     :readonly="readonly"
+                    @updated="handleMemberUpdate"
                 />
             </tbody>
         </table>
@@ -96,9 +97,8 @@ export default {
         getMembers () {
             this.$store.dispatch('groups/getMembers', {group: this.group})
         },
-        save () {
-            console.log(this.$options.name+'.save');
-            return Object.keys(this.$refs).map(key => this.$refs[key].save());
+        handleMemberUpdate () {
+            this.$emit('updated');
         }
     },
 }

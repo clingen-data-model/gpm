@@ -22,8 +22,8 @@ export const profileFields = computed(() => [
         type: 'component',
         component: InstitutionSearchSelect
     },
-    { name: 'credentials', type: 'textarea'},
-    { name: 'biography', type: 'textarea'},
+    { name: 'credentials', type: 'large-text'},
+    { name: 'biography', type: 'large-text'},
     { name: 'phone'},
     { 
         name: 'timezone', 

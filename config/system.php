@@ -65,11 +65,17 @@ return [
             'guard_name' => 'web',
             'scope' => 'system'
         ],
+        'annual-reviews-manage' => [
+            'id' => 40,
+            'name' => 'annual-reviews-manage',
+            'guard_name' => 'web',
+            'scope' => 'system'
+        ]
     ],
 
     'role_permissions' => [
-        'super-user' => [1,2,3,4,10,20,30],
-        'super-admin' => [1,3,4,10,20,30],
+        'super-user' => [1,2,3,4,10,20,30,40],
+        'super-admin' => [1,3,4,10,20,30,40],
         'admin' => [3,4,10,20]
     ]
 ];

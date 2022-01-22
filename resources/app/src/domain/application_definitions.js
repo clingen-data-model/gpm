@@ -1,16 +1,3 @@
-// import AttestationGcep from '@/components/expert_panels/AttestationGcep'
-// import AttestationNhgri from '@/components/expert_panels/AttestationNhgri'
-// import AttestationReanalysis from '@/components/expert_panels/AttestationReanalysis'
-// import CspecSummary from '@/components/expert_panels/CspecSummary'
-// import EvidenceSummaryList from '@/components/expert_panels/EvidenceSummaryList'
-// import GroupForm from '@/components/groups/GroupForm';
-// import MemberDesignationForm from '@/components/expert_panels/MemberDesignationForm';
-// import MemberList from '@/components/groups/MemberList';
-// import MembershipDescriptionForm from '@/components/expert_panels/MembershipDescriptionForm';
-// import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm';
-// import VcepGeneList from '@/components/expert_panels/VcepGeneList';
-// import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm';
-
 import {requirements} from '@/domain'
 
 export class RequirementEvaluator {

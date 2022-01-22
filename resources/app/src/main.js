@@ -5,7 +5,7 @@ import router from './router'
 import store from './store'
 
 import CKEditor from '@ckeditor/ckeditor5-vue'
-import {titleCase, camelCase, snakeCase, kebabCase} from '@/utils'
+import {titleCase, camelCase, snakeCase, kebabCase, sentenceCase} from '@/utils'
 
 
 const app = createApp(App)
@@ -37,7 +37,7 @@ import PopOver from "@/components/PopOver"
 app.component('popper', PopOver);
 app.component('popover', PopOver);
 
-import {formatDate, formatDateTime, formatTime} from '@/date_utils'
+import {formatDate, formatDateTime, formatTime, addDays, yearAgo} from '@/date_utils'
 
 import {userCan, hasPermission, hasAnyPermission, hasRole, userIsPerson, userInGroup} from '@/auth_utils'
 
@@ -59,11 +59,14 @@ app.use(store)
             formatDate,
             formatDateTime,
             formatTime,
+            addDays,
+            yearAgo,
             titleCase,
             camelCase,
             snakeCase,
             kebabCase,
             userInGroup,
+            sentenceCase
         }
     })
     .mixin(objectUid)

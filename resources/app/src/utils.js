@@ -30,6 +30,10 @@ export const camelCase = string => {
     return parts.map(str => str.charAt(0).toUpperCase()+str.slice(1)).join('');
 }
 
+export const sentenceCase = str => {
+    return str.charAt(0).toUpperCase()+str.slice(1);
+}
+
 export const arrayContains = (needle, haystack) => {
     if (!haystack) {
         return false;
