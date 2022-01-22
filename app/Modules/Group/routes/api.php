@@ -33,6 +33,7 @@ use App\Modules\Group\Actions\AttestationReanalysisStore;
 use App\Modules\Group\Actions\MembershipDescriptionUpdate;
 use App\Modules\Group\Actions\CurationReviewProtocolUpdate;
 use App\Modules\Group\Http\Controllers\Api\GroupController;
+use App\Modules\Group\Actions\ExpertPanelAffiliationIdUpdate;
 use App\Modules\Group\Http\Controllers\Api\GeneListController;
 use App\Modules\Group\Http\Controllers\Api\ActivityLogsController;
 use App\Modules\Group\Http\Controllers\Api\GroupRelationsController;
@@ -98,6 +99,7 @@ Route::group([
         Route::put('/membership-description', MembershipDescriptionUpdate::class);
         Route::put('/name', ExpertPanelNameUpdate::class);
         Route::put('/scope-description', ScopeDescriptionUpdate::class);
+        Route::put('/affiliation-id', ExpertPanelAffiliationIdUpdate::class);
 
         // ATTESTATIONS
         Route::post('/attestations/nhgri', AttestationNhgriStore::class);

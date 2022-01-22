@@ -157,13 +157,17 @@ export default {
                 || this.group.expert_panel.isDirty('short_base_name');
         },
         affiliationIdDirty () {
+            console.log({
+                new: this.group.expert_panel.attributes.affiliation_id,
+                original: this.group.expert_panel.original.affiliation_id
+            });
             return this.group.expert_panel.isDirty('affiliation_id');
         }
     },
     methods: {
         async save() {
+            this.resetErrors();
             try {
-                this.resetErrors();
                 if (this.group.id) {
                     await this.updateGroup();
                     this.$emit('saved');
@@ -182,6 +186,7 @@ export default {
                 if (isValidationError(error)) {
                     this.errors = error.response.data.errors;
                 }
+                throw error;
             }
         },
         createGroup () {
@@ -249,7 +254,7 @@ export default {
                 promises.push(this.submitFormData({
                     method: 'put',
                     url: `/api/groups/${this.group.uuid}/expert-panel/affiliation-id`, 
-                    data: { affiliation_id: this.affiliationId }
+                    data: { affiliation_id: this.group.expert_panel.affiliation_id }
                 }));
             }
 
