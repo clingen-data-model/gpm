@@ -23,19 +23,26 @@
                 </template>
             </data-table>
         </div> -->
-        <a 
-            href="https://cspec.genome.network/"
+        <button 
+            @click="goToCspec"
             class="btn btn-xl blue"
             target="cspec"
+            :disabled="readonly"
         >
             Go to the CSpec Registry
             <icon-external-link class="inline"></icon-external-link>
-        </a>
+        </button>
     </div>
 </template>
 <script>
 export default {
     name: 'Cspec Summary',
+    props: {
+        readonly: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
             sort: {
@@ -90,6 +97,11 @@ export default {
             // if (!from || to.id != from.id) {
                 this.$store.dispatch('groups/getSpecifications', to)
             // }
+        }
+    },
+    methods: {
+        goToCspec () {
+            window.location = 'https://cspec.genome.network/'
         }
     },
     mounted() {

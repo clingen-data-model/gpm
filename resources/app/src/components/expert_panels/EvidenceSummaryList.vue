@@ -1,6 +1,5 @@
 <template>
     <div>
-        <!-- <pre>{{group.expert_panel.evidence_summaries}}</pre> -->
         <ul v-if="summaries.length > 0">
             <transition-group name="slide-fade-down">            
                 <li class="my-4 flex" v-for="(summary, idx) in group.expert_panel.evidence_summaries" :key="idx">
@@ -17,7 +16,7 @@
             </transition-group>
         </ul>
         <div class="well text-center" v-else-if="loading">Loading...</div>
-        <div class="well text-center cursor-pointer" v-else @click="startNewSummary">No example evidence summaries have been added.</div>
+        <div class="well text-center" :class="{'cursor-pointer': !readonly}" v-else @click="startNewSummary">No example evidence summaries have been added.</div>
         <ul v-show="adding">
             <li class="my-4 flex" v-for="(newSummary, idx) in newSummaries" :key="idx">
                 <div class="text-lg pr-4">{{(idx+1+summaries.length)}}</div>
@@ -108,6 +107,9 @@ export default {
             
         },
         startNewSummary() {
+            if (this.readonly) {
+                return;
+            }
             this.newSummaries.push({
                 gene: null,
                 variant: null,

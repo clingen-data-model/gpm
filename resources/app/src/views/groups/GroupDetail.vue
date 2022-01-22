@@ -48,28 +48,45 @@
                     />
                 </submission-wrapper>
             </tab-item>
-            <tab-item label="Sustained Curation" :visible="group.isEp()">
+            <tab-item label="Sustained Curation" :visible="group.isEp()" class="relative">
+                <div class="bg-white bg-opacity-50 absolute top-0 left-0 right-0 bottom-0" v-if="!group.expert_panel.pilotSpecificationsIsApproved"></div>
+                <static-alert variant="info" v-if="!group.expert_panel.pilotSpecificationsIsApproved">
+                    You can complete these sections after your first Specifications Pilot has been approved.
+                </static-alert>
                 <submission-wrapper
                     @submitted="submitForm('saveOngoingPlansForm')"
                     @canceled="cancelForm()"
                      class="pb-4"
-                     :showControls="hasAnyPermission(['ep-applications-manage',['application-edit', group]])"
+                     :showControls="
+                        hasAnyPermission(['ep-applications-manage',['application-edit', group]])
+                        && group.expert_panel.pilotSpecificationsIsApproved
+                    "
                 >
                     <component
                         ref="ongoingPlansForm"
                         :is="ongoingPlansFormComponent"
                         :errors="errors"
+                        :readonly="!group.expert_panel.pilotSpecificationsIsApproved"
                     />
                 </submission-wrapper>
                 <section v-if="group.isVcep()">
                     <header>  
                         <h3>Example Evidence Summaries</h3>
                     </header>
-                    <evidence-summaries :group="group" class="pb-2 mb-4 border-b" />
+                    <evidence-summaries 
+                        :group="group" 
+                        :readonly="!group.expert_panel.pilotSpecificationsIsApproved"
+                        class="pb-2 mb-4 border-b" 
+                    />
                 </section>
             </tab-item>
             <tab-item label="Specifications" :visible="group.isVcep()">
-                <cspec-summary />
+                <div class="relative">
+                    <static-alert variant="info" v-if="!group.expert_panel.pilotSpecificationsIsApproved">
+                        You can complete these sections after your first Specifications Pilot has been approved.
+                    </static-alert>
+                    <cspec-summary :readonly="!group.expert_panel.pilotSpecificationsIsApproved" />
+                </div>
             </tab-item>
 
             <tab-item label="Documents">
