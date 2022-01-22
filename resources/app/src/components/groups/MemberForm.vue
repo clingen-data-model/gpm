@@ -56,7 +56,7 @@
                 <div class="border-t mt-4 pt-2">
                     <h3>Group Roles</h3>
                     <div class="flex flex-col h-24 flex-wrap">
-                        <checkbox v-for="role in roles" :key="role.id" v-model="newMember.roles" :value="role" :label="titleCase(role.name)" />
+                        <checkbox v-for="role in roles" :key="role.id" v-model="newMember.roles" :value="role" :label="titleCase(role.name)" @input="handleRoleChange" />
                     </div>
                     <transition name="fade-down">
                         <div 
@@ -189,6 +189,14 @@ export default {
     watch: {
         group () {
             this.syncMember();
+        },
+        'newMember.roles': {
+            deep: true,
+            handler (to, from) {
+                if (to.map(r => r.name).includes('coordinator') && !from.map(r => r.name).includes('coordinator')) {
+                    this.newMember.is_contact = true;
+                }
+            }
         }
     },
     methods: {
@@ -357,6 +365,14 @@ export default {
         isAlreadyMember(person) {
             return this.group.members.map(m => m.person.id).includes(person.id)
         },
+
+        handleRoleChange () {
+            // setTimeout(() => {
+            //     if (this.newMember.hasRole('coordinator')) {
+            //         this.newMember.is_contact = true;
+            //     }
+            // }, 1)
+        }
     },
     mounted () {
         this.$store.dispatch('people/getAll', {});
