@@ -4,9 +4,11 @@
             Groups
             <button v-if="hasPermission('groups-manage')" class="btn btn-xs" @click="startCreateGroup">Create a group</button>
         </h1>
-        <tabs-container>
+        <tabs-container @tab-changed="getGroupsForType">
             <tab-item v-for="def in tabDefinitions" :label="def.label" :key="def.label">
-                <data-table 
+                <div class="text-center w-full" v-if="loading">Loading...</div>
+                <data-table
+                    v-else 
                     :data="filteredGroups.filter(def.filter)" 
                     :fields="fields" 
                     v-model:sort="sort"
@@ -64,22 +66,33 @@ export default {
     },
     data() {
         return {
+            loading: false,
             showCreateForm: false,
+            loadedFor: {
+                'VCEPs': false,
+                'GCEPs': false,
+                'CDWGs': false,
+                'WGs': false,
+            },
             tabDefinitions:[
                 {
                     label: 'VCEPs',
-                    filter: g => g.isVcep()
+                    typeId: 4,
+                    filter: g => g.isVcep(),
                 },
                 {
                     label: 'GCEPs',
+                    typeId: 3,
                     filter: g => g.isGcep()
                 },
                 {
                     label: 'CDWGs',
+                    typeId: 2,
                     filter: g => g.isCdwg()
                 },
                 {
                     label: 'WGs',
+                    typeId: 1,
                     filter: g => g.isWg()
                 }
             ],
@@ -116,7 +129,18 @@ export default {
     methods: {
         startCreateGroup () {
             this.showCreateForm = true;
+        },
+        async getGroupsForType (tabLabel) {
+            const typeTab = this.tabDefinitions.find(t => t.label === tabLabel);
+            if (this.loadedFor[tabLabel]) {
+                return;
+            }
+            this.loading = true;
+            await this.$store.dispatch('groups/getItems', {where: {group_type_id: typeTab.typeId}});
+            this.loadedFor[tabLabel] = true;
+            this.loading = false;
         }
+
     },
     setup() {
         const store = useStore();
@@ -131,10 +155,6 @@ export default {
             })
         }
 
-        onMounted(() => {
-            store.dispatch('groups/getItems')
-        })
-        
         return {
             groups,
             filteredGroups,

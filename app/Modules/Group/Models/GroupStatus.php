@@ -34,6 +34,8 @@ class GroupStatus extends Model
         'id' => 'integer',
     ];
 
+    protected $hidden = ['created_at', 'updated_at'];
+
     protected static function newFactory()
     {
         return new GroupStatusFactory();

@@ -397,6 +397,29 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $this->hasOne(AnnualReview::class)->latestOfMany();
     }
     
+    /**
+     * SCOPES
+     */
+
+    public function scopeDefinitionApproved($query)
+    {
+        return $query->whereNotNull('step_1_approval_date');
+    }
+
+    public function scopeDraftApproved($query)
+    {
+        return $query->whereNotNull('step_2_approval_date');
+    }
+
+    public function scopePilotApproved($query)
+    {
+        return $query->whereNotNull('step_3_approval_date');
+    }
+
+    public function scopeSustainedCurationApproved($query)
+    {
+        return $query->whereNotNull('step_4_approval_date');
+    }
 
     // Access methods
 
@@ -563,9 +586,9 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
     private function ensureGroupLoaded()
     {
-        if (!$this->relationLoaded('group')) {
-            $this->load('group');
-            return;
-        }
+        // if (!$this->relationLoaded('group')) {
+        //     $this->load('group');
+        //     return;
+        // }
     }
 }

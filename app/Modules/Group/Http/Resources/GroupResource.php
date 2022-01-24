@@ -17,7 +17,9 @@ class GroupResource extends JsonResource
     public function toArray($request)
     {
         $data = parent::toArray($request);
+        $data['type'] = $this->whenLoaded('type', new GroupTypeResource($data['type']));
         $data['members'] = $this->whenLoaded('members', MemberResource::collection($this->members));
+        $data['coordinators'] = $this->whenLoaded('coordinators', MemberResource::collection($this->members));
         return $data;
     }
 }

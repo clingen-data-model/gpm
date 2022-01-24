@@ -18,10 +18,28 @@ class GroupController extends Controller
             defaultWith: [
                 'type',
                 'status',
-                'expertPanel',
+                'expertPanel' => function ($query) {
+                    $query->select([
+                        'id',
+                        'uuid',
+                        'long_base_name',
+                        'short_base_name',
+                        'expert_panel_type_id',
+                        'group_id',
+                        'step_1_approval_date',
+                        'step_2_approval_date',
+                        'step_3_approval_date',
+                        'step_4_approval_date',
+                        'date_completed',
+                    ]);
+                },
                 'coordinators',
-                'coordinators.roles',
-                'coordinators.person',
+                'coordinators.roles' => function ($query) {
+                    $query->select(['id', 'name']);
+                },
+                'coordinators.person' => function ($query) {
+                    $query->select(['id', 'email', 'first_name', 'last_name', 'user_id', 'uuid']);
+                },
             ],
             sortFunction: function ($query, $field, $dir) {
                 if ($field == 'type') {
@@ -37,6 +55,7 @@ class GroupController extends Controller
                 return $query->orderBy($field, $dir);
             }
         );
+
         return $searchService->search($request->all());
     }
 
