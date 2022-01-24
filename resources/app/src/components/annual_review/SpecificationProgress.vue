@@ -2,22 +2,41 @@
     <div>
         <input-row 
             :disabled="isComplete"
+            label="Link to approved specification in Cspec" 
+            :errors="errors.specification_url" 
+            vertical
+            class="ml-4"
+            v-model="workingCopy.data.specification_url"
+        />
+        <input-row 
+            :disabled="isComplete"
             v-model="workingCopy.data.specification_progress"
             type="radio-group"
-            :options="[{value:'yes'},{value:'no'}]"
+            :options="[
+                {   value: 'in-progress.',  
+                    label:'VCEP specifications to the ACMG/AMP guidelines in progress.'
+                },
+                {
+                    value: 'no-changes',
+                    label: 'No Changes to the ClinGen-approved VCEP specifications to the ACMG/AMP guidelines (for ClinGen 3-star VCEPs only).'
+                },
+                {
+                    value: 'changes-made',
+                    label: 'We have made changes to the ClinGen-approved  VCEP specification to the ACMG/AMP guidelines(for ClinGen 3-star VCEPs only)'
+                }
+            ]"
             :errors="errors.specification_progress" 
             vertical
-            label="Please indicate whether you have made any changes or additions to your ACMG/AMP specifications for the gene(s) of interest, including evidence and rationale to support the rule specifications."
+            label="Have you made any changes or additions to your ACMG/AMP specifications for the gene(s) of interest, including evidence and rationale to support the rule specifications."
         />
         <transition name="slide-fade-down">
             <input-row 
-                :disabled="isComplete"
-                label="Link to approved specification in Cspec" 
-                :errors="errors.specification_url" 
+                v-if="workingCopy.specification_progress === 'changes-made'"
+                label="Describe changes" 
+                v-model="workingCopy.specification_progress_details" 
+                :errors="errors.specification_progress_details"
+                type="large-text"
                 vertical
-                class="ml-4"
-                v-if="workingCopy.data.specification_progress == 'yes'"
-                v-model="workingCopy.data.specification_url"
             />
         </transition>
     </div>
