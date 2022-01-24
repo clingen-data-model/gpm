@@ -18,7 +18,12 @@
             ></notification-item>
         </transition-group>
 
-        <annual-review-alert v-for="group in coordinatingGroups" :key="group.id" :group="group" />
+        <annual-review-alert 
+            v-for="group in coordinatingGroups" :key="group.id" 
+            :group="group"
+            :show-group-name="true"
+            class="mb-2"
+        />
 
         <static-alert 
             v-for="membership in user.person.membershipsWithPendingCois" 

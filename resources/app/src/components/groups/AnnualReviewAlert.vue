@@ -1,7 +1,10 @@
 <template>
-    <static-alert :variant="variant"  v-if="isPending">
+    <static-alert :variant="variant"  v-if="isPending && annualReview.id">
+        <pre>{{showGroupname}}</pre>
         <p>
-            You have an <strong>annual review for {{window.for_year}}</strong> due on <strong>{{formatDate(window.end)}}</strong>.
+            <span v-if="showGroupName"><strong>{{group.displayName}}</strong> has</span>
+            <span v-else>You have</span>
+            an <strong>annual review for {{window.for_year}}</strong> due on <strong>{{formatDate(window.end)}}</strong>.
         </p>
         <router-link 
             class="btn font-bold" 
@@ -20,6 +23,10 @@ export default {
         group: {
             type: Object,
             required: true,
+        },
+        showGroupName: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
@@ -61,6 +68,11 @@ export default {
             if (!this.group.uuid) {
                 return;
             }
+
+            if (!this.group.expert_panel.definition_is_approved) {
+                return;
+            }
+
             this.loading = true;
             await api.get(`/api/groups/${this.group.uuid}/expert-panel/annual-reviews`)
                 .then(response => {
@@ -68,9 +80,6 @@ export default {
                 });
             this.loading = false;
         }
-    },
-    mounted () {
-        this.getAnnualReview();
     }
 }
 </script>
