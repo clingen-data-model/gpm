@@ -1,5 +1,5 @@
 <template>
-    <application-section title="">
+    <application-section title="Webpage Updates">
             <input-row :errors="errors.website_attestation" vertical>
                 <template v-slot:label>
                     <p>
