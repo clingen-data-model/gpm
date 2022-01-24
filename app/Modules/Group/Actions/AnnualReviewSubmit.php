@@ -72,8 +72,6 @@ class AnnualReviewSubmit
             ],
             'grant' => 'required|in:Broad/Geisinger,Stanford/Baylor,UNC,Unsure',
             'membership_attestation' => 'exclude_if:ep_activity,inactive|required',
-            'ongoing_plans_updated' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
-            'ongoing_plans_update_details' => 'exclude_if:ep_activity,inactive|required_if:ongoing_plans_updated,yes',
             'goals' => 'exclude_if:ep_activity,inactive|required',
             'cochair_commitment' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
             'cochair_commitment_details' => 'exclude_if:ep_activity,inactive|required_if:cochair_commitment,no',
@@ -88,7 +86,9 @@ class AnnualReviewSubmit
             $requirements = array_merge(
                 $requirements,
                 [
-                    'ep_activity' => 'required|in:active,inactive',
+                    'ongoing_plans_updated' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
+                    'ongoing_plans_update_details' => 'exclude_if:ep_activity,inactive|required_if:ongoing_plans_updated,yes',
+                            'ep_activity' => 'required|in:active,inactive',
                     'submitted_inactive_form' => 'nullable|required_if:ep_activity,inactive|in:yes,no',
                     'gci_use' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
                     'gci_use_details' => 'exclude_if:ep_activity,inactive|required_if:gci_use,no',
@@ -137,6 +137,9 @@ class AnnualReviewSubmit
                     'member_designation_changed' => 'required|in:yes,no',
                     'specification_plans' => 'required|in:yes,no',
                     'specification_plans_details' => 'required_if:specification_plans,yes',
+                    'ongoing_plans_updated' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
+                    'ongoing_plans_update_details' => 'exclude_if:ep_activity,inactive|required_if:ongoing_plans_updated,yes',
+        
                 ]);
             }
         }
