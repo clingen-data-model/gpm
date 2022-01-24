@@ -33,14 +33,16 @@
                 {{person.timezone}}
             </dictionary-row>
             <dictionary-row class="pb-2" label-class="w-40" label="Address">
-                <p v-if="person.street1">{{person.street1}}</p>
-                <p v-if="person.street2">{{person.street2}}</p>
-                <p>
-                    <span v-if="person.city">{{person.city}},</span>
-                    <span v-if="person.state">{{person.state}}</span>
-                    <span v-if="person.zip">{{person.zip}}</span>
-                </p>
-                <p v-if="person.country">{{person.country.name}}</p>
+                <div>
+                    <div v-if="person.street1">{{person.street1}}</div>
+                    <div v-if="person.street2">{{person.street2}}</div>
+                    <div>
+                        <span v-if="person.city">{{person.city}},</span> <span v-if="person.state">{{person.state}}</span> <span v-if="person.zip">{{person.zip}}</span>
+                    </div>
+                </div>
+            </dictionary-row>
+            <dictionary-row class="pb-2" label-class="w-40" label="Country">
+                {{person.country ? person.country.name : ''}}
             </dictionary-row>
             <dictionary-row class="pb-2" label-class="w-40" label="Phone">{{person.phone}}</dictionary-row>
         </section>

@@ -3,6 +3,7 @@ import api from '@/http/api';
 import {kebabCase} from '@/utils'
 import TimezoneSearchSelect from '@/components/forms/TimezoneSearchSelect'
 import InstitutionSearchSelect from '@/components/forms/InstitutionSearchSelect'
+import AddressInput from '@/components/forms/AddressInput'
 
 export const lookups = ref({
     countries:[],
@@ -24,6 +25,18 @@ export const profileFields = computed(() => [
     },
     { name: 'credentials', type: 'large-text'},
     { name: 'biography', type: 'large-text'},
+    {
+        name: '*', // specifies passing entire modelValue to component.
+        type: 'component',
+        label: 'Address',
+        component: AddressInput
+    },
+    { 
+        name: 'country_id', 
+        label: 'Country',
+        type: 'select', 
+        options: lookups.value.countries
+    },
     { name: 'phone'},
     { 
         name: 'timezone', 
@@ -34,12 +47,6 @@ export const profileFields = computed(() => [
 ]);
 
 export const demographicFields = computed(() => [
-    { 
-        name: 'country_id', 
-        label: 'Country',
-        type: 'select', 
-        options: lookups.value.countries
-    },
     {
         name: 'primary_occupation_id',
         label: 'Primary Occupation',

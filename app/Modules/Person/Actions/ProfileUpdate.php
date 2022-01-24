@@ -41,7 +41,16 @@ class ProfileUpdate
         $person = Person::findByUuidOrFail($personUuid);
         $person = $this->handle($person, $request->all());
 
-        $person->load('institution', 'primaryOccupation', 'race', 'ethnicity', 'gender', 'memberships', 'memberships.group');
+        $person->load(
+            'institution',
+            'primaryOccupation',
+            'race',
+            'ethnicity',
+            'gender',
+            'memberships',
+            'memberships.group',
+            'country'
+        );
         return $person;
     }
 }

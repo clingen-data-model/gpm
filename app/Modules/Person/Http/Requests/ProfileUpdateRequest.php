@@ -35,10 +35,18 @@ class ProfileUpdateRequest extends FormRequest
             'gender_id' => ['exists:genders,id'],
             'country_id' => ['exists:countries,id'],
             'timezone' => [Rule::in(DateTimeZone::listIdentifiers())],
+            'street1' => ['nullable','max:255'],
+            'street2' => ['nullable','max:255'],
+            'city' => ['nullable','max:255'],
+            'state' => ['nullable','max:255'],
+            'zip' => ['nullable','max:255'],
         ];
 
         if ($person->user_id == Auth::user()->id) {
             foreach ($rules as $field => $rule) {
+                if (in_array('nullable', $rule)) {
+                    continue;
+                }
                 array_unshift($rules[$field], 'required');
             }
             return $rules;

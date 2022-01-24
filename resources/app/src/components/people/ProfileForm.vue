@@ -6,7 +6,6 @@
             v-model="profile" 
             :errors="errors"
         ></data-form>
-
         <hr class="my-4">
 
         <h3>Demographics</h3>
@@ -63,6 +62,7 @@ export default {
             this.profile = {...this.person.attributes};
         },
         async save () {
+            console.log('ProfileForm.save')
             try {
                 await this.$store.dispatch(
                         'people/updateProfile', 
