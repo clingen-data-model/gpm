@@ -101,8 +101,9 @@ export default {
                     variant_counts: [],
                     variant_workflow_changes: null,
                     variant_workflow_changes_details: null,
-                    specification_progress: null,
                     specification_progress_url: null,
+                    specification_progress: null,
+                    specification_progress_details: null,
                     specification_plans: null,
                     specification_plans_details: null,
                     rereview_discrepencies_progress: null,
@@ -308,7 +309,7 @@ export default {
                     <website-attestation v-model="annualReview" :errors="errors" />
                     
                     <template 
-                        v-if="expertPanel.is_vcep && expertPanel.definition_is_approved">
+                        v-if="expertPanel.is_vcep && expertPanel.has_approved_draft">
                         <!-- <dev-component>Begin questions for specifcation-ed VCEPS</dev-component> -->
                         <app-section title="Progress on Rule Specification">
                             <specification-progress v-model="annualReview" :errors="errors" />
@@ -320,7 +321,7 @@ export default {
                         <!-- <dev-component>End questions for specifcation-ed VCEPS</dev-component> -->
                     </template>
 
-                    <template v-if="expertPanel.is_vcep && expertPanel.has_approved_pilot">
+                    <template v-if="expertPanel.is_vcep && expertPanel.sustained_curation_is_approved">
                         <!-- <dev-component>Begin Questions for sustained curation</dev-component> -->
                         
                         <variant-curation-workflow v-model="annualReview" :errors="errors" />

@@ -70,8 +70,7 @@
                     label="Biocurators are trained on the use of the Gene Curation Interface (GCI) on."
                     vertical
                     type="date"
-                >
-                </input-row>
+                />
             </li>
             <li>
                 <input-row :errors="errors.biocurator_mailing_list" :hide-label="true">
