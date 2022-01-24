@@ -1,7 +1,7 @@
 <template>
     <div>
         <header class="pb-4">
-            <note>People</note>
+            <router-link class="note" to="/people">People</router-link>
             <h1 class="flex justify-between items-center">
                 <div>
                     {{person.name}}
