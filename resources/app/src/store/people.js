@@ -135,9 +135,7 @@ export const actions = {
     async updateProfile({ commit, getters }, {uuid, attributes}) {
         return api.put(`${baseUrl}/${uuid}/profile`, attributes)
             .then(response => {
-                // commit('addItem', response.data);
-                const person = getters.personWithUuid(uuid);
-                person.mergeAttributes(attributes);
+                commit('addItem', response.data);
                 return response
             })
     },

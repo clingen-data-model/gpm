@@ -53,9 +53,14 @@ export default {
             return this.page == 'profile' ? 'Please fill out your profile' : 'Please share your demographic information.'
         }
     },
+    watch: {
+        person (to) {
+            this.initProfile();
+        }
+    },
     methods: {
         initProfile () {
-            this.profile = {...this.$store.getters['people/currentItem'].attributes};
+            this.profile = {...this.person.attributes};
         },
         async save () {
             try {
