@@ -27,7 +27,7 @@ class GroupCreated extends GroupEvent
 
     public function getLogEntry(): string
     {
-        return strtoupper($this->group->groupType->name).' "'.$this->group->name.'" created.';
+        return strtoupper($this->group->type->name).' "'.$this->group->name.'" created.';
     }
     
     /**

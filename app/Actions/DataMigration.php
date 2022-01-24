@@ -297,12 +297,17 @@ class DataMigration
 
     private function createGroupForApplication($row, $cdwgs)
     {
+        $typeId = ($row->ep_type_id == 2)
+                    ? config('groups.types.vcep.id')
+                    : config('groups.types.gcep.id');
+
+
         $group = Group::withTrashed()
                     ->firstOrCreate(
                         ['uuid' => $row->uuid],
                         [
                             'name' => $row->long_base_name ?? $row->working_name,
-                            'group_type_id' => config('groups.types.ep.id'),
+                            'group_type_id' => $typeId,
                             'group_status_id' => ($row->date_completed)
                                                     ? config('groups.statuses.active.id')
                                                     : config('groups.statuses.pending-approval.id'),

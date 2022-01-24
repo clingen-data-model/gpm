@@ -68,11 +68,17 @@
                 "fullname": "Clinical Domain Working Group",
                 "description": "A Clinical Domain Working Group that oversees Expert Panels."
             },
-            "ep": {
+            "gcep": {
                 "id": 3,
-                "name": "ep",
-                "fullname": "Expert Panel",
-                "description": "An Expert Panel"
+                "name": "gcep",
+                "fullname": "Gene Curation Expert Panel",
+                "description": "A Gene curation expert panel"
+            },
+            "vcep": {
+                "id": 4,
+                "name": "vcep",
+                "fullname": "Variant Curation Expert Panel",
+                "description": "A Variant curation expert panel"
             }
         },
         "statuses": {

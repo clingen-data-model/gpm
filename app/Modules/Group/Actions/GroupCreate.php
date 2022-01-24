@@ -21,7 +21,7 @@ class GroupCreate
         $group = Group::create([
             'uuid' => isset($data['uuid']) ? $data['uuid'] : Uuid::uuid4(),
             'name' => $data['name'],
-            'group_type_id' => $data['group_type_id'] > 2 ? config('groups.types.ep.id') : $data['group_type_id'],
+            'group_type_id' => $data['group_type_id'],
             'group_status_id' => $data['group_status_id'],
             'parent_id' => $this->resolveParentId($data),
         ]);

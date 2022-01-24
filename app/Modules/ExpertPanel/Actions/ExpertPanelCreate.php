@@ -37,10 +37,12 @@ class ExpertPanelCreate
             $date_initiated = Carbon::now();
         }
         
+        $groupTypeId = $expert_panel_type_id+2;
+
         $group = $this->createGroup->handle([
             'uuid' => $uuid,
             'name' => $working_name,
-            'group_type_id' => config('groups.types.ep.id'),
+            'group_type_id' => $groupTypeId,
             'group_status_id' => config('groups.statuses.pending-approval.id'),
             'parent_id' => $cdwg_id
         ]);

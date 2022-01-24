@@ -29,14 +29,15 @@ class ExpertPanelFactory extends Factory
      */
     public function definition()
     {
+        $groupTypeId = $this->faker->randomElement([config('groups.types.gcep.id'), config('groups.types.vcep.id')]);
         return [
             'uuid' => Uuid::uuid4()->toString(),
             'group_id' => Group::factory()
                             ->create([
                                 'name' => 'group '.uniqid(),
-                                'group_type_id' => config('groups.types.ep.id')
+                                'group_type_id' => $groupTypeId
                             ])->id,
-            'expert_panel_type_id' => $this->getRandomConfigValue('expert_panels.types')['id'],
+            'expert_panel_type_id' => $groupTypeId - 2,
             'date_initiated' => Carbon::now(),
             'current_step' => 1,
             'coi_code' => bin2hex(random_bytes(12)),

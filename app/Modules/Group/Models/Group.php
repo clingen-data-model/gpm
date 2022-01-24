@@ -103,14 +103,14 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function groupType(): BelongsTo
-    {
-        return $this->belongsTo(GroupType::class);
-    }
-
+    // public function groupType(): BelongsTo
+    // {
+    // }
+    
     public function type(): BelongsTo
     {
-        return $this->groupType();
+        return $this->belongsTo(GroupType::class, 'group_type_id');
+        // return $this->groupType();
     }
     
     /**
@@ -196,7 +196,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
     public function getIsExpertPanelAttribute(): bool
     {
-        return $this->group_type_id == config('groups.types.ep.id');
+        return in_array($this->group_type_id, [config('groups.types.gcep.id'),config('groups.types.vcep.id')]);
     }
 
     public function getIsEpAttribute(): bool

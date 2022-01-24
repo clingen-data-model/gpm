@@ -161,7 +161,8 @@ class Group extends Entity {
     }
     
     isEp() {
-        return this.attributes.group_type_id === configs.groups.types.ep.id;
+        return this.attributes.group_type_id === configs.groups.types.gcep.id
+            || this.attributes.group_type_id === configs.groups.types.vcep.id;
     }
 
     isWorkingGroup() {

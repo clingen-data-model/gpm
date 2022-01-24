@@ -7,7 +7,7 @@ import config from '@/configs.json'
 
 describe('group entity', () => {
     it('can tell if it is an expert panel', () => {
-        const group = new Group({'group_type_id': config.groups.types.ep.id})
+        const group = new Group({'group_type_id': config.groups.types.gcep.id})
         expect(group.isEp()).to.be.true;
     });
 
