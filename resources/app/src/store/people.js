@@ -15,9 +15,9 @@ export const state = () => ({
 export const getters = {
     people: state => state.items,
     all: state => state.items,
-    personWithUuid: (state, uuid) => state.items.find(i => i.uuid == uuid),
-    getPersonWithUuid: (state, uuid) => state.items.find(i => i.uuid == uuid),
-    indexForPersonWithUuid: (state, uuid) => state.items.findIndex(i => i.uuid == uuid),
+    personWithUuid: (state) => (uuid) => state.items.find(i => i.uuid == uuid),
+    getPersonWithUuid: (state) => (uuid) => state.items.find(i => i.uuid == uuid),
+    indexForPersonWithUuid: (state) => (uuid) => state.items.findIndex(i => i.uuid == uuid),
     currentItem: state => {
         if (typeof state.currentItemIdx == 'undefined' || state.currentItemIdx == null || state.currentItemIdx < 0) {
             return new Person();
@@ -117,7 +117,7 @@ export const actions = {
             });
     },
 
-    async getPerson({commit}, {uuid, params}) {
+    async getPerson({commit, getters, state}, {uuid, params}) {
         await api.get(`${baseUrl}/${uuid}`+queryStringFromParams(params))
             .then(response => {
                 commit('addItem', response.data.data)
@@ -132,10 +132,12 @@ export const actions = {
             })
     },
 
-    async updateProfile({ commit }, {uuid, attributes}) {
+    async updateProfile({ commit, getters }, {uuid, attributes}) {
         return api.put(`${baseUrl}/${uuid}/profile`, attributes)
             .then(response => {
-                commit('addItem', response.data);
+                // commit('addItem', response.data);
+                const person = getters.personWithUuid(uuid);
+                person.mergeAttributes(attributes);
                 return response
             })
     },
