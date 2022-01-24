@@ -157,6 +157,9 @@ export default {
                 })
         },
     },
+    mounted () {
+        this.$emit('tab-changed', this.activeTab.label);
+    },
     render() {
         const tabList = this.renderTabs();
         
