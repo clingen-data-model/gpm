@@ -16,8 +16,8 @@ class CreateAnnualReviewsForAllTest extends TestCase
     {
         parent::setup();
         $this->seed();
-        $this->expertPanel1 = ExpertPanel::factory()->create();
-        $this->expertPanel2 = ExpertPanel::factory()->create();
+        $this->expertPanel1 = ExpertPanel::factory()->create(['step_1_approval_date' => '2020-01-01']);
+        $this->expertPanel2 = ExpertPanel::factory()->create(['step_1_approval_date' => '2020-01-01']);
     }
 
     /**

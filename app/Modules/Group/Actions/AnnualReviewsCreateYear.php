@@ -29,9 +29,11 @@ class AnnualReviewsCreateYear
         
         $window->save();
 
-        $annualReviews = ExpertPanel::all()->map(function ($ep) {
-            return $this->reviewCreate->handle($ep);
-        });
+        $annualReviews = ExpertPanel::definitionApproved()
+            ->get()
+            ->map(function ($ep) {
+                return $this->reviewCreate->handle($ep);
+            });
 
         return [
             $window,
