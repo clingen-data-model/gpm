@@ -205,9 +205,13 @@ export default {
                                         return p.matchesKeyword(this.newMember.person.first_name)
                                                 || p.matchesKeyword(this.newMember.person.last_name)
                                                 || p.matchesKeyword(this.newMember.person.email)
-                                    }).filter(p => {
-                                        return !this.isAlreadyMember(p)
+                                    }).map(p => {
+                                        p.alreadyMember = this.isAlreadyMember(p);
+                                        return p;
                                     });
+                                    // .filter(p => {
+                                    //     return !this.isAlreadyMember(p)
+                                    // });
 
             this.suggestedPeople = Array.from(new Set(suggestedPeople));
         },
