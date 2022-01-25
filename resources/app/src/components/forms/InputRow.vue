@@ -23,7 +23,7 @@
                         :class="inputClass"
                     ></date-input>
                     <textarea 
-                        v-if="type == 'large-text'"
+                        v-else-if="type == 'large-text'"
                         :value="modelValue" 
                         @input="$emit('update:modelValue', $event.target.value)"
                         :disabled="disabled"
