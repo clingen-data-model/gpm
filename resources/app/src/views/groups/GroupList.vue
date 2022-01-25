@@ -20,7 +20,7 @@
                         <badge class="text-xs" :color="item.statusColor">
                             {{item.displayStatus}}
                             <span v-if="item.status.id == 1 && item.isEp()">
-                                - Step {{item.expert_panel.current_step}}
+                                - {{item.expert_panel.currentStepName}}
                             </span>
                         </badge>
                     </template>
