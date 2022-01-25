@@ -31,6 +31,7 @@ class GroupController extends Controller
                         'step_3_approval_date',
                         'step_4_approval_date',
                         'date_completed',
+                        'current_step'
                     ]);
                 },
                 'coordinators',
