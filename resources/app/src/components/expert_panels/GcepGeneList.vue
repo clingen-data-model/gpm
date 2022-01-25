@@ -9,18 +9,14 @@
         </h4>
         <div v-if="editing">
             <input-row 
-                :vertical="true"
+                v-model="genesAsText"
+                type="large-text"
                 label="List the gene symbols for the genes the Expert Panel plans to curate.  Separate genes by commas, spaces, or new lines."
                 :errors="errors.genes"
-            >
-                <textarea 
-                    v-model="genesAsText"
-                    class="w-full" 
-                    rows="5" 
-                    placeholder="ABC, DEF1, BEAN"
-                    @input="$emit('geneschanged')"
-                ></textarea>
-            </input-row>
+                @update:modelValue="$emit('geneschanged'); $emit('update')"
+                placeholder="ABC, DEF1, BEAN"
+                vertical
+            />
         </div>
         <div v-else>
             <p v-if="genesAsText" style="text-indent: 1rem;">{{genesAsText}}</p>
@@ -62,7 +58,8 @@ export default {
         'saved',
         'canceled',
         'update:editing',
-        'geneschanged'
+        'geneschanged',
+        'update'
     ],
     methods: {
         showForm () {

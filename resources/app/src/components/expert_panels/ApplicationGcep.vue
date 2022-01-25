@@ -4,6 +4,7 @@
             <app-section title="Basic Information" id="basicInfo">
                 <group-form 
                     :group="group" ref="groupForm"
+                    @update="handleUpdate"
                 />
             </app-section>
             <app-section v-if="group" title="Membership" id="membership">
@@ -23,29 +24,36 @@
                     <a href="https://clinicalgenome.org">clinicalgenome.org</a>.
                 </p>
                 
-                <gcep-gene-list :group="group" ref="geneList" @geneschanged="genesChanged = true" />
+                <gcep-gene-list 
+                    :group="group" 
+                    ref="geneList" 
+                    @geneschanged="genesChanged = true"
+                    @update="handleUpdate"
+                />
                 
                 <hr>
 
-                <scope-description-form />
+                <scope-description-form @update="handleUpdate" />
             </app-section>
 
             <app-section title="Attestations" id="attestations">
-                <attestation-gcep />
+                <attestation-gcep @update="handleUpdate" />
             </app-section>
 
             <app-section id="curationReviewProcess" title="Plans for Ongoing Gene Review and Reanalysis and Discrepancy Resolution">
-                <gcep-ongoing-plans-form />
+                <gcep-ongoing-plans-form @update="handleUpdate" />
             </app-section>
 
             <app-section title="NHGRI Data Availability" id="nhgri">
-                <attestation-nhgri />
+                <attestation-nhgri @update="handleUpdate" />
             </app-section>
         </application-step>
     </div>
 </template>
 <script>
-import {errors, resetErrors, submitFormData} from '@/forms/form_factory'
+import {debounce} from 'lodash'
+
+import {errors} from '@/forms/form_factory'
 import {isValidationError} from '@/http'
 
 import ApplicationSection from '@/components/expert_panels/ApplicationSection'
@@ -71,19 +79,17 @@ export default {
         MemberList,
         ScopeDescriptionForm,
     },
-    data () {
-        return {
-            AutoSaveInterval: null,
-            autosaveTime: 10000,
-            genesChanged: false,
-            saving: false,
-        }
-    },
     emits: [
         'autosaved',
         'saved',
         'saving',
     ],
+    data () {
+        return {
+            genesChanged: false,
+            saving: false,
+        }
+    },
     computed: {
         group: {
             get: function () {
@@ -98,7 +104,12 @@ export default {
         async save() {
             this.$emit('saving');
 
-            const promises = Object.keys(this.$refs).map(key => this.$refs[key].save());
+            const promises = Object.keys(this.$refs)
+                                .map(key => {
+                                    if (this.$refs[key] && this.$refs[key].save) {
+                                        return this.$refs[key].save();
+                                    }
+                                });
             promises.push(this.saveUpdates());
             
             try {
@@ -122,37 +133,32 @@ export default {
             }
         },
         async autosave () {
+            console.log('autosave...')
             if (this.applicationIsDirty()) {
                 await this.save();
                 this.$emit('autosaved');
                 return;
             }
-        },
-        async startAutoSave () {
-            this.AutoSaveInterval = setInterval(() => this.autosave(), this.autosaveTime)
-        },
-        stopAutoSave() {
-            clearInterval(this.AutoSaveInterval);
+            console.log('application is not dirty');
         },
         applicationIsDirty () {
             return  this.group.expert_panel.isDirty() 
                 || this.group.isDirty()
                 || this.genesChanged
+        },
+        handleUpdate () {
+            console.log('handleUpdate');
+            this.debounceAutoSave();
         }
 
     },
     setup () {
         return {
-            errors, 
-            resetErrors, 
-            submitFormData
+            errors
         }
     },
-    // mounted() {
-    //     this.startAutoSave();
-    // },
-    // beforeUnmount() {
-    //     this.stopAutoSave();
-    // },
+    created() {
+        this.debounceAutoSave = debounce(this.autosave, 2000)
+    },
 }
 </script>

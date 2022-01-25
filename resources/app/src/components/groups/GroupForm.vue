@@ -1,13 +1,14 @@
 <template>
     <div>
-        <input-row label="Type" v-if="canSetType">
-            <select v-model="group.group_type_id" class="w-full">
-                <option :value="null">Select&hellip;</option>
-                <option v-for="type in groupTypes" :key="type.id" :value="type.id">
-                    {{type.fullname}}
-                </option>
-            </select>
-        </input-row>
+        <input-row 
+            v-if="canSetType"
+            v-model="group.group_type_id"
+            :errors="errors.group_type_id"
+            type="select"
+            :options="typeOptions"
+            label="Type" 
+        />
+
         <dictionary-row label="Type" v-else>
             {{typeDisplayName}}
         </dictionary-row>
@@ -16,18 +17,20 @@
             <div v-if="group.group_type_id > 2 && group.expert_panel">
                 <input-row 
                     label="Long Base Name" 
-                    v-model="group.expert_panel.long_base_name" 
+                    v-model="group.expert_panel.long_base_name"
+                    @update:modelValue="emitUpdate"
                     placeholder="Long base name"
                     :errors="errors.long_base_name"
                     input-class="w-full"
-                ></input-row>
+                />
                 <input-row 
                     label="Short Base Name" 
                     v-model="group.expert_panel.short_base_name" 
+                    @update:modelValue="emitUpdate"
                     placeholder="Short base name"
                     :errors="errors.short_base_name"
                     input-class="w-full"
-                ></input-row>
+                />
                 <div v-if="hasAnyPermission(['groups-manage'])">
                     <input-row 
                         label="Affiliation ID" 
@@ -35,6 +38,7 @@
                         :placeholder="affiliationIdPlaceholder"
                         :errors="errors.affiliation_id"  
                         input-class="w-full"
+                        @update:modelValue="emitUpdate"
                     >
                         <template v-slot:label>
                             Affiliation ID
@@ -54,42 +58,41 @@
                     label="Name" 
                     input-class="w-full"
                     :errors="errors.name"
+                    @update:modelValue="emitUpdate"
                 />
             </div>
         </transition>
         <div v-if="hasPermission('groups-manage')">
-            <input-row :errors="errors.group_status_id">
+            <input-row 
+                v-model="group.group_status_id"
+                type="select"
+                :options="statusOptions"
+                :errors="errors.group_status_id"
+                @update:modelValue="emitUpdate"
+            >
                 <template v-slot:label>
                     Status:
                     <note>admin-only</note>
                 </template>
-                <select v-model="group.group_status_id" class="w-full"
-                    
-                >
-                    <option :value="null"></option>
-                    <option v-for="status in groupStatuses" :key="status.id" :value="status.id">
-                        {{titleCase(status.name)}}
-                    </option>
-                </select>
             </input-row>
 
-            <input-row :errors="errors.parent_id"  >
+            <input-row
+                v-model="group.parent_id"
+                type="select"
+                :options="parentOptions"
+                :errors="errors.parent_id"
+                @update:modelValue="emitUpdate"
+            >
                 <template v-slot:label>
                     Parent group:
                     <note>admin-only</note>
                 </template>
-                <select v-model="group.parent_id" class="w-full">
-                    <option :value="null">Select...</option>
-                    <option :value="0">None</option>
-                    <option v-for="parent in parents" :key="parent.id" :value="parent.id">
-                        {{parent.displayName}}
-                    </option>
-                </select>
             </input-row>
         </div>
     </div>
 </template>
 <script>
+import {sortBy} from 'lodash'
 import {isValidationError} from '@/http'
 import {api} from '@/http'
 import Group from '@/domain/group'
@@ -100,7 +103,8 @@ export default {
     name: 'GroupForm',
     emits: [
         'canceled',
-        'saved'
+        'saved',
+        'update'
     ],
     data() {
         return {
@@ -132,6 +136,12 @@ export default {
                 }
             }
         },
+        statusOptions () {
+            return Object.values(this.groupStatuses).map(status => ({value: status.id, label: this.titleCase(status.name)}))
+        },
+        typeOptions () {
+            return this.groupTypes.map(type => ({value: type.id, label: type.fullname}));
+        },
         canSetType() {
             return this.hasPermission('groups-manage') && !this.group.id 
         },
@@ -162,6 +172,14 @@ export default {
                 original: this.group.expert_panel.original.affiliation_id
             });
             return this.group.expert_panel.isDirty('affiliation_id');
+        },
+        parentOptions () {
+            const options = [{value: 0, label: 'None'}];
+            this.parents.forEach(parent => {
+                options.push({value: parent.id, label: parent.displayName})
+            })
+
+            return sortBy(options, 'label');
         }
     },
     methods: {
@@ -172,7 +190,7 @@ export default {
                     await this.updateGroup();
                     this.$emit('saved');
 
-                    this.$store.dispatch('groups/find', this.group.uuid);
+                    // this.$store.dispatch('groups/find', this.group.uuid);
                     // this.$store.commit('pushSuccess', 'Group info updated.');
                     return;
                 } 
@@ -304,6 +322,9 @@ export default {
                                 .filter(group => group.id != this.group.id)
                                 .map(g => new Group(g))
                         });
+        },
+        emitUpdate () {
+            this.$emit('update');
         }
     },
     beforeMount() {

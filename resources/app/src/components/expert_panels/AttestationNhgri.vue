@@ -16,7 +16,7 @@
             <input-row label="" :vertical="true">
                 <checkbox 
                     :disabled="disabled" 
-                    v-model="this.group.expert_panel.nhgriSigned" 
+                    v-model="attestation" 
                     id="nhgri-checkbox" 
                     label="I understand that once a variant is approved in the VCI it will become publicly available in the Evidence Repository. They should not be held for publication."
                 />
@@ -49,9 +49,11 @@ export default {
             default: false
         }
     },
+    emits: [
+        'update'
+    ],
     data() {
         return {
-            attestation: null,
             errors: {},
         }
     },
@@ -64,16 +66,19 @@ export default {
                 this.$store.commit('groups/addItem', value);
             }
         },
-        // fuckingFuck: {
-        //     get () {
-        //         return this.$store.getters['groups/currentItemOrNew'].expert_panel.nhgri_attestation_date;
-        //     },
-        //     set (value) {
-        //         const clone = this.$store.getters['groups/currentItemOrNew'].clone();
-        //         // clone.expert_panel.nhgri_attestation_date = value ? new Date() : null;
-        //         // console.log(clone.expert_panel.nhgri_attestation_date);
-        //     }
-        // }
+        attestation: {
+            get () {
+                return Boolean(this.group.expert_panel.nhgri_attestation_date);
+            },
+            set (value) {
+                if (value) {
+                    this.group.expert_panel.nhgri_attestation_date = new Date();
+                } else {
+                    this.group.expert_panel.nhgri_attestation_date = null;
+                }
+                this.$emit('update');                
+            }
+        }
     },
     methods: {
         async save () {

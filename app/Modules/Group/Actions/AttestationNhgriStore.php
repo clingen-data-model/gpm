@@ -19,13 +19,13 @@ class AttestationNhgriStore
     use AsObject;
     use AsController;
 
-    public function handle(Group $group, Carbon $attestationDate)
+    public function handle(Group $group, ?Carbon $attestationDate = null)
     {
         if (!$group->isEp) {
             throw ValidationException::withMessages(['group' => 'Only expert panels have NHGRI attestations.']);
         }
 
-        if ($group->expertPanel->nhgri_attestation_date) {
+        if ($group->expertPanel->nhgri_attestation_date && $attestationDate) {
             return $group;
         }
 
@@ -47,7 +47,10 @@ class AttestationNhgriStore
             throw new AuthorizationException('You do not have permission to sign attestations for this group.');
         }
 
-        $attestationDate = Carbon::now();
+        $attestationDate = null;
+        if ($request->attestation) {
+            $attestationDate = Carbon::now();
+        }
 
         $this->handle($group, $attestationDate);
 

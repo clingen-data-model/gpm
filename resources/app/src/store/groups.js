@@ -366,7 +366,7 @@ export const actions = {
         
         return api.put(`${baseUrl}/${group.uuid}/application`, expertPanelAttributes)
             .then(response => { 
-                dispatch('find', group.uuid);
+                // dispatch('find', group.uuid);
                 return response;
             });
     },

@@ -34,7 +34,12 @@ class ApplicationSaveChanges
         if ($group->isGcep) {
             $group = $this->gcepAttestation->handle($group, $data->toArray());
         }
-        $group = $this->nhgriAttestation->handle($group, Carbon::parse($data->get('nhgri_attestation_date')));
+
+        $nhgriAttestationDate = $data->get('nhgri_attestation_date') ?
+                                    Carbon::parse($data->get('nhgri_attestation_date'))
+                                    : null;
+        $group = $this->nhgriAttestation->handle($group, $nhgriAttestationDate);
+
         if ($group->isVcep) {
             $group = $this->memberDescription->handle($group, $data->get('membership_description'));
             $group = $this->reanalysisAttestation

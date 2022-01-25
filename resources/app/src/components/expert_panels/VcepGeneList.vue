@@ -80,7 +80,7 @@
                         </transition-group>
                     </tbody>
                 </transition-group>
-                <transition name="slide-fade-down">
+                <!-- <transition name="slide-fade-down">
                     <thead v-if="newGenes.length > 0">
                         <tr>
                             <td colspan="5" class="bg-white border-white h-4"></td>
@@ -90,25 +90,25 @@
                             <td colspan="4">Disesase</td>
                         </tr>
                     </thead>
-                </transition>
+                </transition> -->
 
-                <tbody>
-                    <transition-group name="slide-fade-down">                
-                        <tr v-for="(newGene, idx) in newGenes" :key="idx">
+                <tbody v-if="canEdit">
+                    <!-- <transition-group name="slide-fade-down">                 -->
+                        <tr>
                             <td>
-                                <input-row label="" :errors="errors[`genes.${idx}.hgnc_id`]" :vertical="true">
-                                    <gene-search-select v-model="newGene.gene"></gene-search-select>
+                                <input-row label="" :errors="errors[`genes.0.hgnc_id`]" :vertical="true">
+                                    <gene-search-select v-model="newGene.gene" @update:modelValue="debounceSave" />
                                 </input-row>
                             </td>
                             <td colspan="4">
-                                <input-row label="" :errors="errors[`diseases.${idx}.hgnc_id`]" :vertical="true">
-                                    <disease-search-select v-model="newGene.disease"></disease-search-select>
+                                <input-row label="" :errors="errors[`diseases.0.hgnc_id`]" :vertical="true">
+                                    <disease-search-select v-model="newGene.disease" @update:modelValue="debounceSave" />
                                 </input-row>
                             </td>
                         </tr>
-                    </transition-group>
+                    <!-- </transition-group> -->
                 </tbody>
-                <tr v-if="canEdit">
+                <!-- <tr v-if="canEdit">
                     <td colspan="5" class="border-white">
                         <div class="-mx-2 my-2 flex space-x-2">
                             <button @click="addNewGene" class="btn btn-xs">Add Gene/Disease Pair</button>
@@ -120,7 +120,7 @@
                             </transition>
                         </div>
                     </td>
-                </tr>
+                </tr> -->
             </table>
         </div>
     </div>
@@ -128,6 +128,7 @@
 <script>
 import api from '@/http/api'
 import {ref, computed, onMounted} from 'vue';
+import {debounce} from 'lodash'
 import {useStore} from 'vuex';
 import GeneSearchSelect from '@/components/forms/GeneSearchSelect'
 import DiseaseSearchSelect from '@/components/forms/DiseaseSearchSelect'
@@ -162,10 +163,7 @@ export default {
         });
 
 
-        const newGenes = ref([]);
-        const addNewGene = () => {
-            newGenes.value.push({gene: null, disease: null});
-        }
+        const newGene = ref({gene: null, disease: null});
 
         const loading = ref(false);
         const errors = ref({});
@@ -181,8 +179,8 @@ export default {
             return sortedGenes;
         })
 
-        const clearNewGenes = () => {
-            newGenes.value = [];
+        const clearNewGene = () => {
+            newGene.value = {gene: null, disease: null};
             errors.value = {};
         }
 
@@ -249,15 +247,19 @@ export default {
 
         const save = async () => {
             try {
-                if (newGenes.value.length > 0) {
-                    const filteredGenes = newGenes.value
-                                            .filter(ng => !isEqual(ng, {gene: null, disease: null}))
-                                            .map(scope => ({ hgnc_id: scope.gene.hgnc_id, mondo_id: scope.disease.mondo_id}));
+                if (newGene.value.gene !== null && newGene.value.disease !== null) {
 
-                await api.post(`/api/groups/${group.value.uuid}/expert-panel/genes`, {genes: filteredGenes});
+                    await api.post(`/api/groups/${group.value.uuid}/expert-panel/genes`, {
+                        genes: [{
+                            hgnc_id: newGene.value.gene.hgnc_id,
+                            mondo_id: newGene.value.disease.mondo_id
+                        }]
+                    });
                     await getGenes();
+
+                    clearNewGene();
                 }
-                clearNewGenes();
+
                 errors.value = {};
                 context.emit('saved')
             } catch (error) {
@@ -266,6 +268,8 @@ export default {
                 }
             }
         };
+
+        const debounceSave = debounce(save, 2000)
 
         const updateGene = async (gene) => {
             try {
@@ -285,7 +289,7 @@ export default {
         }
 
         const cancel = () => {
-            clearNewGenes();
+            clearNewGene();
         }
 
         const canEdit = computed(() => {
@@ -300,14 +304,14 @@ export default {
         return {
             group,
             genes,
-            newGenes,
+            newGene,
             orderedGenes,
             errors,
             loading,
-            addNewGene,
             updateGene,
             updateCancel,
             save,
+            debounceSave,
             cancel,
             edit, 
             remove,

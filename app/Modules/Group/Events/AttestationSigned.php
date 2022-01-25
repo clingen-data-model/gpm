@@ -22,14 +22,18 @@ class AttestationSigned extends GroupEvent
      *
      * @return void
      */
-    public function __construct(public Group $group, public String $attestationName, public Carbon $signedAt)
+    public function __construct(public Group $group, public String $attestationName, public ?Carbon $signedAt)
     {
     }
 
     public function getLogEntry(): string
     {
         $submitterName = Auth::user() ? Auth::user()->name : 'system';
-        return $this->attestationName.' attestation submitted by '.$submitterName.' on '.$this->signedAt->format('Y-m-d').' at '.$this->signedAt->format('H:i:s').'.';
+        if ($this->signedAt) {
+            return $this->attestationName.' attestation submitted by '.$submitterName.' on '.$this->signedAt->format('Y-m-d').' at '.$this->signedAt->format('H:i:s').'.';
+        }
+
+        return $this->attestationName.' attestation signature removed by '.$submitterName.' on '.Carbon::now()->format('Y-m-d').'.';
     }
     
     public function getProperties(): ?array
@@ -42,7 +46,8 @@ class AttestationSigned extends GroupEvent
 
     public function getLogDate(): Carbon
     {
-        return $this->signedAt;
+        $logDate = $this->signedAt ?? Carbon::now();
+        return $logDate;
     }
 
     public function getActivityType(): string

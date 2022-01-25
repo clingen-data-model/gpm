@@ -9,13 +9,15 @@
         </header>
         <div class="mt-2">
             <transition name="fade" mode="out-in">
-                <input-row :vertical="true" label="Describe the scope of work of the Expert Panel including the disease area(s), genes being addressed, and any specific rational for choosing the condition(s)." v-if="editing" :errors="errors.scope_description">
-                    <textarea 
-                        class="w-full" 
-                        rows="10" 
-                        v-model="group.expert_panel.scope_description"
-                    />
-                </input-row>
+                <input-row 
+                    v-if="editing"
+                    v-model="group.expert_panel.scope_description"
+                    :errors="errors.scope_description"
+                    type="large-text"
+                    label="Describe the scope of work of the Expert Panel including the disease area(s), genes being addressed, and any specific rational for choosing the condition(s)."
+                    vertical
+                    @update:modelValue="$emit('update')"
+                />
                 <div v-else>
                     <markdown-block 
                         v-if="group.expert_panel.scope_description" 
@@ -50,9 +52,7 @@ export default {
     emits: [
         'update:editing',
         'update:group',
-        'saved',
-        'canceled',
-        'input',
+        'update'
     ],
     computed: {
         group: {

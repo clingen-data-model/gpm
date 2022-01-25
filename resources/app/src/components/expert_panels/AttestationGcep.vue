@@ -6,42 +6,42 @@
         <ul class="ml-4 mt-2">
             <li>
                 <input-row :errors="errors.utilize_gt" :hide-label="true">
-                    <checkbox v-model="group.expert_panel.utilize_gt" :disabled="disabled">
+                    <checkbox v-model="group.expert_panel.utilize_gt" :disabled="disabled" @update:modelValue="$emit('update')">
                         This GCEP will utilize the ClinGen Gene Tracker for documentation of all precuration information, consistent with the current Lumping and Splitting working group guidance, for gene-disease relationships.
                     </checkbox>
                 </input-row>
             </li>
             <li>
                 <input-row :errors="errors.utilize_gci" :hide-label="true">
-                    <checkbox v-model="group.expert_panel.utilize_gci" :disabled="disabled">
+                    <checkbox v-model="group.expert_panel.utilize_gci" :disabled="disabled" @update:modelValue="$emit('update')">
                         All curations completed by this group will be made publicly available through the ClinGen website immediately upon completion.
                     </checkbox>
                 </input-row>
             </li>
             <li>
                 <input-row :errors="errors.curations_publicly_available" :hide-label="true">
-                    <checkbox v-model="group.expert_panel.curations_publicly_available" :disabled="disabled">
+                    <checkbox v-model="group.expert_panel.curations_publicly_available" :disabled="disabled" @update:modelValue="$emit('update')">
                         VCEPs are expected to re-review any LB classifications when new evidence is available or when requested by the public via the ClinGen website.
                     </checkbox>
                 </input-row>
             </li>
             <li>
                 <input-row :errors="errors.pub_policy_reviewed" :hide-label="true">
-                    <checkbox v-model="group.expert_panel.pub_policy_reviewed" :disabled="disabled">
+                    <checkbox v-model="group.expert_panel.pub_policy_reviewed" :disabled="disabled" @update:modelValue="$emit('update')">
                         The <a href="https://clinicalgenome.org/site/assets/files/3752/clingen_publication_policy_apr2019.pdf" target="pub-policy">ClinGen publication policy</a> has been reviewed and a manuscript concept sheet will be submitted to the NHGRI and  ClinGen Steering Committee before the group prepares a publication for submission.
                     </checkbox>
                 </input-row>
             </li>
             <li>
                 <input-row :errors="errors.draft_manuscripts" :hide-label="true">
-                    <checkbox v-model="group.expert_panel.draft_manuscripts" :disabled="disabled">
+                    <checkbox v-model="group.expert_panel.draft_manuscripts" :disabled="disabled" @update:modelValue="$emit('update')">
                         Draft manuscripts will be submitted to the ClinGen Gene Curation WG for review prior to submission. Email: <a href="mailto:genecuration@clinicalgenome.org">mailto:genecuration@clinicalgenome.org</a>
                     </checkbox>
                 </input-row>
             </li>
             <li>
                 <input-row :errors="errors.recuration_process_review" :hide-label="true">
-                    <checkbox v-model="group.expert_panel.recuration_process_review" :disabled="disabled">
+                    <checkbox v-model="group.expert_panel.recuration_process_review" :disabled="disabled" @update:modelValue="$emit('update')">
                         The ClinGen Gene-Disease Validity Recuration process has been reviewed, link found <a href="https://clinicalgenome.org/site/assets/files/2164/clingen_standard_gene-disease_validity_recuration_procedures_v1.pdf">here</a>.
                     </checkbox>
                 </input-row>
@@ -55,16 +55,16 @@
         <ul class="ml-4 mt-2">
             <li>
                 <input-row :errors="errors.biocurator_training" :hide-label="true">
-                    <checkbox v-model="group.expert_panel.biocurator_training" :disabled="disabled">
+                    <checkbox v-model="group.expert_panel.biocurator_training" :disabled="disabled" @update:modelValue="$emit('update')">
                         Biocurators have received all appropriate training. 
                     </checkbox>
                 </input-row>
             </li>
             <li>
-                <checkbox v-model="gci_training" :disabled="disabled">
+                <checkbox v-model="gci_training" :disabled="disabled" @update:modelValue="$emit('update')">
                     Biocurators are trained on the use of the Gene Curation Interface (GCI).
                 </checkbox>
-                <input-row v-model="group.expert_panel.gci_training_date"
+                <input-row v-model="group.expert_panel.gci_training_date" @update:modelValue="$emit('update')"
                     v-show="gci_training" 
                     :errors="gciTrainingErrors"
                     label="Biocurators are trained on the use of the Gene Curation Interface (GCI) on."
@@ -74,7 +74,7 @@
             </li>
             <li>
                 <input-row :errors="errors.biocurator_mailing_list" :hide-label="true">
-                    <checkbox v-model="group.expert_panel.biocurator_mailing_list" :disabled="disabled">
+                    <checkbox v-model="group.expert_panel.biocurator_mailing_list" :disabled="disabled" @update:modelValue="$emit('update')">
                         Biocurators have joined the Biocurator WG mailing list.
                         <br>The calls occur on the 2nd and 4th Thursdays from 12-1pm.
                     </checkbox>
@@ -95,6 +95,9 @@ export default {
             default: false
         }
     },
+    emits: [
+        'udpate'
+    ],
     data() {
         return {
             errors: {},

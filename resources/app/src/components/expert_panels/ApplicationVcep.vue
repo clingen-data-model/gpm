@@ -8,6 +8,7 @@
             <app-section title="Basic Information" id="basicInfo">
                 <group-form 
                     :group="group" ref="groupForm"
+                    @update="handleUpdate"
                 />
             </app-section>
             <app-section v-if="group" title="Membership" id="membership">
@@ -17,18 +18,18 @@
                 </p>
                 <member-list :group="group" />
                 <hr>
-                <membership-description-form :editing="true" />
+                <membership-description-form :editing="true" @update="handleUpdate"/>
             </app-section>
             <app-section title="Scope of Work" id="scope">
-                <vcep-gene-list :group="group" ref="geneList" />
+                <vcep-gene-list :group="group" ref="geneList" @update="handleUpdate"/>
                 <hr>
-                <scope-description-form />
+                <scope-description-form @update="handleUpdate"/>
             </app-section>
             <app-section title="Reanalysis & Discrepancy Resolution" id="reanalysis">
-                <attestation-reanalysis></attestation-reanalysis>
+                <attestation-reanalysis @update="handleUpdate"></attestation-reanalysis>
             </app-section>
             <app-section title="NHGRI Data Availability" id="nhgri">
-                <attestation-nhgri></attestation-nhgri>
+                <attestation-nhgri @update="handleUpdate"></attestation-nhgri>
             </app-section>
         </application-step>
 
@@ -71,7 +72,7 @@
             :disabled="group.expert_panel.current_step < 4 || group.expert_panel.hasPendingSubmission"
         >
             <app-section title="Plans for Ongoing Review and Reanalysis and Discrepancy Resolution" id="curationReviewProcess">
-                <vcep-ongoing-plans-form />
+                <vcep-ongoing-plans-form @update="handleUpdate"/>
             </app-section>
 
             <app-section title="Example Evidence Summaries" id="evidenceSummaries">
@@ -85,7 +86,9 @@
     </div>
 </template>
 <script>
-import {VcepApplication} from '@/domain'
+import {debounce} from 'lodash'
+
+import {errors} from '@/forms/form_factory'
 import {isValidationError} from '@/http'
 import ApplicationSection from '@/components/expert_panels/ApplicationSection'
 import ApplicationStep from '@/components/expert_panels/ApplicationStep'
@@ -120,15 +123,13 @@ export default {
     },
     emits: [
         'autosaved',
+        'saved',
         'saving',
-        'saved'
     ],
     data () {
         return {
-            application: VcepApplication,
-            AutoSaveInterval: null,
-            autosaveTime: 10000,
-            saving: false
+            genesChanged: false,
+            saving: false,
         }
     },
     computed: {
@@ -140,20 +141,23 @@ export default {
                 this.$store.commit('groups/addItem', value);
             }
         },
-        currentStep () {
-            return this.group.expert_panel.current_step;
-        },
     },
     methods: {
         async save() {
             this.$emit('saving');
 
-            const promises = Object.keys(this.$refs).map(key => this.$refs[key].save());
+            const promises = Object.keys(this.$refs)
+                                .map(key => {
+                                    if (this.$refs[key] && this.$refs[key].save) {
+                                        return this.$refs[key].save();
+                                    }
+                                });
             promises.push(this.saveUpdates());
-
+            
             try {
                 await Promise.all(promises);
                 this.$emit('saved');
+                this.genesChanged = false;
             } catch (error) {
                 if (isValidationError(error)) {
                     this.errors = error.response.data.errors;
@@ -163,33 +167,40 @@ export default {
             }
         },
         saveUpdates () {
-            if (this.group.expert_panel.isDirty()) {
-                return this.$store.dispatch('groups/saveApplicationData', this.group);
+            if (this.applicationIsDirty()) {
+                return this.$store.dispatch('groups/saveApplicationData', this.group)
+                        .then(() => {
+                            this.$emit('saved');
+                        });
             }
         },
         async autosave () {
+            console.log('autosave...')
             if (this.applicationIsDirty()) {
                 await this.save();
                 this.$emit('autosaved');
                 return;
             }
-        },
-        async startAutoSave () {
-            this.AutoSaveInterval = setInterval(() => this.autosave(), this.autosaveTime)
-        },
-        stopAutoSave() {
-            clearInterval(this.AutoSaveInterval);
+            console.log('application is not dirty');
         },
         applicationIsDirty () {
             return  this.group.expert_panel.isDirty() 
                 || this.group.isDirty()
+                || this.genesChanged
+        },
+        handleUpdate () {
+            console.log('handleUpdate');
+            this.debounceAutoSave();
+        }
+
+    },
+    setup () {
+        return {
+            errors
         }
     },
-    // mounted() {
-    //     this.startAutoSave();
-    // },
-    // beforeUnmount() {
-    //     this.stopAutoSave();
-    // },
+    created() {
+        this.debounceAutoSave = debounce(this.autosave, 2000)
+    },
 }
 </script>

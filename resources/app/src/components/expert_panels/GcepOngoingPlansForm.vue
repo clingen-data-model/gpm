@@ -9,6 +9,7 @@
                             v-model="group.expert_panel.curation_review_protocol_id" 
                             value="1" 
                             :disabled="!canEdit"
+                            @input="$emit('update')"
                         >
                         <div>Single biocurator curation with comprehensive GCEP review (presentation of all data on calls with GCEP votes). Note: definitive genes may be expedited with brief summaries.</div>
                     </label>
@@ -17,6 +18,7 @@
                             v-model="group.expert_panel.curation_review_protocol_id" 
                             value="2" 
                             :disabled="!canEdit"
+                            @input="$emit('update')"
                         >
                         <p>Paired review (biocurator &amp; domain expert) with expedited GCEP review. Expert works closely with a curator on the initial summation of the information for expedited GCEP review (brief summary on a call with GCEP voting and/or electronic voting by GCEP). Definitive genes can move directly from biocurator to expedited GCEP review.</p>
                     </label>
@@ -25,6 +27,7 @@
                             v-model="group.expert_panel.curation_review_protocol_id" 
                             value="3" 
                             :disabled="!canEdit"
+                            @input="$emit('update')"
                         >
                         <p>Dual biocurator review with expedited GCEP review for concordant genes and full review for discordant genes.</p>
                     </label>
@@ -33,7 +36,8 @@
                             <input type="radio" 
                                 v-model="group.expert_panel.curation_review_protocol_id" 
                                 value="100" 
-                                    :disabled="!canEdit"
+                                :disabled="!canEdit"
+                                @input="$emit('update')"
                             >
                             <p>Other</p>
                         </label>
@@ -44,13 +48,9 @@
                                 label-width-class="w-0"
                                 v-model="group.expert_panel.curation_review_protocol_other"
                                 :errors="errors.curation_review_protocol_other"
-                            >
-                                <textarea 
-                                    rows="2" 
-                                    v-model="group.expert_panel.curation_review_protocol_other" 
-                                    class="w-full"
-                                />
-                            </input-row>
+                                type="large-text"
+                                @update:modelValue="$emit('update')"
+                            />
                         </transition>
                     </div>
                 </div>
