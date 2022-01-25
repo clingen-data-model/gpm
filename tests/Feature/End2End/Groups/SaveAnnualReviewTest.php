@@ -67,7 +67,6 @@ class SaveAnnualReviewTest extends TestCase
 
         $submitData = $expectedData;
         $submitData['data']['farts'] = 'yes';
-        dump($submitData);
         $this->makeRequest($submitData)
             ->assertStatus(200);
 
