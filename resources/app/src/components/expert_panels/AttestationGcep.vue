@@ -13,15 +13,23 @@
             </li>
             <li>
                 <input-row :errors="errors.utilize_gci" :hide-label="true">
-                    <checkbox v-model="group.expert_panel.utilize_gci" :disabled="disabled" @update:modelValue="$emit('update')">
-                        All curations completed by this group will be made publicly available through the ClinGen website immediately upon completion.
+                    <checkbox 
+                        v-model="group.expert_panel.utilize_gci" 
+                        :disabled="disabled"  
+                        @update:modelValue="$emit('update')"
+                    >
+                        This GCEP will utilize the ClinGen Gene Curation Interface for documentation of all gene-disease validity classifications.
                     </checkbox>
                 </input-row>
             </li>
             <li>
                 <input-row :errors="errors.curations_publicly_available" :hide-label="true">
-                    <checkbox v-model="group.expert_panel.curations_publicly_available" :disabled="disabled" @update:modelValue="$emit('update')">
-                        VCEPs are expected to re-review any LB classifications when new evidence is available or when requested by the public via the ClinGen website.
+                    <checkbox 
+                        v-model="group.expert_panel.curations_publicly_available" 
+                        :disabled="disabled"
+                        @update:modelValue="$emit('update')"
+                    >
+                        All curations completed by this group will be made publicly available through the ClinGen website immediately upon completion.
                     </checkbox>
                 </input-row>
             </li>
@@ -46,12 +54,12 @@
                     </checkbox>
                 </input-row>
             </li>
-
         </ul>
 
         <p>
             Biocurators are expected to become familiar with the ClinGen training materials located on <a href="https://clinicalgenome.org/docs/?doc-type=training-materials#list_documentation_table" target="clinicalgenome">clinicalgenome.org</a> website. Biocurators are requested to join the mailing list for ClinGen Biocurator Working Group, and expected to attend those calls that focus on gene curation SOP and/or framework updates.
         </p>
+
         <ul class="ml-4 mt-2">
             <li>
                 <input-row :errors="errors.biocurator_training" :hide-label="true">
@@ -67,9 +75,9 @@
                 <input-row v-model="group.expert_panel.gci_training_date" @update:modelValue="$emit('update')"
                     v-show="gci_training" 
                     :errors="gciTrainingErrors"
-                    label="Biocurators are trained on the use of the Gene Curation Interface (GCI) on."
-                    vertical
+                    label="Date Trained"
                     type="date"
+                    class="ml-6"
                 />
             </li>
             <li>
