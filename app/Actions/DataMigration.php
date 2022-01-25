@@ -310,7 +310,7 @@ class DataMigration
                             'group_type_id' => $typeId,
                             'group_status_id' => ($row->date_completed)
                                                     ? config('groups.statuses.active.id')
-                                                    : config('groups.statuses.pending-approval.id'),
+                                                    : config('groups.statuses.applying.id'),
                             'parent_id' => $cdwgs->get($row->cdwg_id) ? $cdwgs->get($row->cdwg_id)->id : null,
                             'created_at' => $row->created_at,
                             'updated_at' => $row->updated_at,

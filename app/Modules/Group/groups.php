@@ -28,9 +28,9 @@ return [
         ]
     ],
     'statuses' => [
-        'pending-approval' => [
+        'applying' => [
             'id' => 1,
-            'name' => 'pending-approval',
+            'name' => 'applying',
         ],
         'active' => [
             'id' => 2,

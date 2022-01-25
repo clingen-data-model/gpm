@@ -173,7 +173,7 @@ export default {
                 label: 'Status',
                 sortable: true,
                 resolveValue: (item) => {
-                    if (item.status.id == configs.groups.statuses['pending-approval'].id) {
+                    if (item.status.id == configs.groups.statuses['applying'].id) {
                         return item.status.name+' - '+item.expert_panel.currentStepName;
                     }
                     return item.status.name;
@@ -188,7 +188,7 @@ export default {
         const groupBadgeColor = (status) => {
             const map = {
                 Active: 'green',
-                'Pending-Approval': 'blue',
+                Applying: 'blue',
                 Retired: 'yellow',
                 Removed: 'red'
             }
