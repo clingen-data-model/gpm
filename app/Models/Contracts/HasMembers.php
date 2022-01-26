@@ -9,4 +9,5 @@ interface HasMembers
     public function members():Relation;
     public function chairs(): Relation;
     public function coordinators(): Relation;
+    public function getHasCoordinatorAttribute(): bool;
 }

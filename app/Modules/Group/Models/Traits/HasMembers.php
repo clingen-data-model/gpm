@@ -32,4 +32,9 @@ trait HasMembers
         return $this->members()
             ->role('coordinator');
     }
+
+    public function getHasCoordinatorAttribute():bool
+    {
+        return $this->coordinators->count() > 0;
+    }
 }
