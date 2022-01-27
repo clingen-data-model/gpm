@@ -29,7 +29,8 @@ class UserModuleServiceProvider extends ModuleServiceProvider
 
     public function boot()
     {
-        Actions::registerCommands(__DIR__.'/../Actions');
+        parent::boot();
+        // Actions::registerCommands(__DIR__.'/../Actions');
     }
     
 

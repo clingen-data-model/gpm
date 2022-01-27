@@ -59,7 +59,7 @@ return [
             'guard_name' => 'web',
             'scope' => 'system'
         ],
-        'ep-manage-application' => [
+        'ep-applications-manage' => [
             'id' => 30,
             'name' => 'ep-applications-manage',
             'guard_name' => 'web',

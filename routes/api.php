@@ -4,14 +4,15 @@ use App\Models\DocumentType;
 use Illuminate\Http\Request;
 use App\Actions\FeedbackSubmit;
 use App\Actions\NotificationMarkRead;
-use App\Http\Controllers\Api\AnnualReviewController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CdwgController;
+use App\Http\Controllers\Api\RolesController;
 use App\Http\Controllers\Api\PeopleController;
 use App\Http\Controllers\Api\MailLogController;
 use App\Http\Controllers\Api\MailDraftController;
 use App\Http\Controllers\Api\GeneLookupController;
+use App\Http\Controllers\Api\AnnualReviewController;
 use App\Http\Controllers\Api\DiseaseLookupController;
 use App\Http\Controllers\ImpersonateSearchController;
 use App\Modules\User\Http\Controllers\CurrentUserController;
@@ -59,6 +60,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/export', [AnnualReviewController::class, 'export']);
         Route::get('/{id}', [AnnualReviewController::class, 'show']);
     });
+
+    Route::get('/roles', [RolesController::class, 'index']);
 });
 
 Route::get('/cdwgs', [CdwgController::class, 'index']);
