@@ -78,10 +78,10 @@ class ExpertPanelTest extends TestCase
                         'version' => 2
                     ]);
         
-        $expertPanel->documents()->save($document1);
-        $expertPanel->documents()->save($document2);
+        $expertPanel->group->documents()->save($document1);
+        $expertPanel->group->documents()->save($document2);
 
-        $this->assertEquals($expertPanel->documents->count(), 2);
+        $this->assertEquals($expertPanel->group->documents->count(), 2);
         $this->assertEquals($expertPanel->firstScopeDocument->id, $document1->id);
     }
     
@@ -102,10 +102,10 @@ class ExpertPanelTest extends TestCase
                         'version' => 2
                     ]);
         
-        $expertPanel->documents()->save($document1);
-        $expertPanel->documents()->save($document2);
+        $expertPanel->group->documents()->save($document1);
+        $expertPanel->group->documents()->save($document2);
 
-        $this->assertEquals($expertPanel->documents->count(), 2);
+        $this->assertEquals($expertPanel->group->documents->count(), 2);
 
         $this->assertEquals($expertPanel->firstFinalDocument->id, $document1->id);
     }

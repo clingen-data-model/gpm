@@ -23,7 +23,8 @@ class RevokeMemberPermissionTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        
+        $this->seed();
+
         $this->user = User::factory()->create();
         Sanctum::actingAs($this->user);
         
@@ -79,6 +80,4 @@ class RevokeMemberPermissionTest extends TestCase
             'properties->permission->name' => $this->permissions->first()->name
         ]);
     }
-    
-    
 }

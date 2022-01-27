@@ -76,7 +76,8 @@ class ExpertPanelDetailTest extends TestCase
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $this->json('get', '/api/applications/'.$this->uuid)
             ->assertStatus(200)
-            ->assertJsonFragment(['working_name' => $this->expertPanel->working_name, 'uuid' => $this->uuid]);
+            ->assertJsonFragment(['working_name' => $this->expertPanel->group->name])
+            ->assertJsonFragment(['uuid' => $this->uuid]);
     }
 
     /**

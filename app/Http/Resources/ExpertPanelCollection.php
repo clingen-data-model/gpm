@@ -17,8 +17,6 @@ class ExpertPanelCollection extends ResourceCollection
     public function toArray($request)
     {
         $data = parent::toArray($request);
-        // $data['log_entries'] = $this->whenLoaded('group.logEntries', $this->group->logEntries);
-        // $data['log_entries'] = $this->whenLoaded('group.latestLogEntry', $this->group->latestLogEntry);
 
         return $data;
     }

@@ -60,19 +60,11 @@ class ApplicationController extends Controller
 
         if ($request->has('with')) {
             $relations = $request->with;
+            
             if (is_string($relations)) {
                 $relations = array_map(fn ($i) => trim($i), explode(',', $request->with));
             }
 
-            $realRelationships = [
-                'documents' => 'group.documents'
-            ];
-            foreach ($realRelationships as $rel => $realRel) {
-                $idx = array_search($rel, $relations);
-                if ($idx !== false) {
-                    $relations[$idx] = $realRel;
-                }
-            }
             $query->with($relations);
         }
 
@@ -90,7 +82,7 @@ class ApplicationController extends Controller
             $query->withTrashed();
         }
 
-        return new ExpertPanelCollection($query->get());
+        return ExpertPanelResource::collection($query->get());
     }
 
     /**

@@ -26,54 +26,21 @@ class PersonEndpointTest extends TestCase
         ])->create();
         $this->user = User::factory()->create();
         $this->user->givePermissionTo('people-manage');
+        $this->people = Person::factory(2)->create();
         Sanctum::actingAs($this->user);
     }
-    
+
     /**
      * @test
      */
-    public function it_can_update_a_person_record()
+    public function authed_user_can_get_a_person()
     {
-        $person = Person::factory()->create();
-
-        Sanctum::actingAs($this->user);
-        $this->json('PUT', '/api/people/'.$person->uuid, [
-            'first_name' => 'Beano',
-            'last_name'=>$person->last_name,
-            'email' => $person->email,
-        ])
+        $person = $this->people->first();
+        $this->json('get', '/api/people/'.$person->uuid)
             ->assertStatus(200)
-            ->assertJson(['first_name' => 'Beano']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_validates_data_before_updating_a_person()
-    {
-        $person = Person::factory()->create();
-        $url = '/api/people/'.$person->uuid;
-        
-        Sanctum::actingAs($this->user);
-        $this->json('PUT', $url, [])
-        ->assertStatus(422)
-        ->assertJsonFragment([
-            'errors' => [
-                'email' => ['The email field is required.'],
-                'first_name' => ['The first name field is required.'],
-                'last_name' => ['The last name field is required.'],
-                // 'phone' => ['The phone field is required.'] // Phone was determined to be optional by stakeholders.
-            ]
-        ]);
-        $otherPerson = Person::factory()->create();
-                
-        Sanctum::actingAs($this->user);
-        $this->json('PUT', $url, [
-            'email' => $otherPerson->email
-        ])
-        ->assertStatus(422)
-        ->assertJsonFragment([
-            'email' => ['The email has already been taken.']
-        ]);
+            ->assertJsonFragment([
+                'id' => $person->id,
+                'uuid' => $person->uuid,
+            ]);
     }
 }

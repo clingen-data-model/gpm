@@ -30,7 +30,7 @@ class DeleteDocumentTest extends TestCase
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->document = Document::factory()->make();
 
-        $this->expertPanel->documents()->save($this->document);
+        $this->expertPanel->group->documents()->save($this->document);
         $this->docUrl = '/api/applications/'.$this->expertPanel->uuid.'/documents/'.$this->document->uuid;
         Carbon::setTestNow('2021-02-01');
     }

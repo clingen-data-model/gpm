@@ -45,7 +45,7 @@ class ApplicationDocumentAdd
         
         $document->version = 1 + $expertPanel->getLatestVersionForDocument($document->document_type_id);
 
-        $expertPanel->documents()->save($document);
+        $expertPanel->group->documents()->save($document);
 
         $this->updateOrTouchExpertPanel($expertPanel, $document);
 

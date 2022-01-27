@@ -70,14 +70,14 @@ class IndexTest extends TestCase
     public function sorts_results_by_last_activity()
     {
         $this->expertPanels->each(function ($app) {
-            $app->logEntries()->create([
+            $app->group->logEntries()->create([
                 'description' => 'test',
                 'created_at' => $this->faker->dateTimeBetween('-30 days', 'now'),
                 'updated_at' => $this->faker->dateTimeBetween('-30 days', 'now'),
             ]);
         });
 
-        $this->expertPanels->load('logEntries');
+        $this->expertPanels->load('group.logEntries');
 
 
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
@@ -116,7 +116,7 @@ class IndexTest extends TestCase
         $response = $this->json('GET', self::URL.'?sort[field]=name&sort[dir]=desc');
         foreach ($this->expertPanels as $ep) {
             $response->assertJsonFragment([
-                    'working_name' => $ep->name
+                    'working_name' => $ep->group->name
             ]);
         }
     }
@@ -132,7 +132,7 @@ class IndexTest extends TestCase
         $ep = $this->expertPanels->first();
         $docs = $ep->group->documents()->save($document);
 
-        $response = $this->json('GET', self::URL.'?sort[field]=name&sort[dir]=desc&with=documents');
+        $response = $this->json('GET', self::URL.'?sort[field]=name&sort[dir]=desc&with=group,group.documents');
         $response->assertOk();
         $this->assertObjectHasAttribute('documents', json_decode($response->content())->data[0]->group);
         $this->assertEquals($document->uuid, json_decode($response->content())->data[0]->documents[0]->uuid);

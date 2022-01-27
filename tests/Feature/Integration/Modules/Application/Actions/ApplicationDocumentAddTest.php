@@ -37,7 +37,7 @@ class ApplicationDocumentAddTest extends TestCase
             document_type_id: $this->document->document_type_id,
         );
 
-        $this->assertEquals($this->expertPanel->documents->first()->version, 1);
+        $this->assertEquals($this->expertPanel->group->documents->first()->version, 1);
 
         $document2 = Document::factory()->make(['document_type_id' => 1]);
 
@@ -49,7 +49,7 @@ class ApplicationDocumentAddTest extends TestCase
             document_type_id: $document2->document_type_id,
         );
 
-        $this->assertEquals($this->expertPanel->fresh()->documents()->count(), 2);
+        $this->assertEquals($this->expertPanel->fresh()->group->documents()->count(), 2);
     }
     
     /**

@@ -9,8 +9,6 @@ use App\Models\Contracts\HasNotes;
 use App\Modules\Group\Models\Group;
 use App\Models\Contracts\HasMembers;
 use App\Modules\Person\Models\Person;
-use App\Models\Contracts\HasDocuments;
-use App\Models\Contracts\HasLogEntries;
 use App\Models\Contracts\RecordsEvents;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\ExpertPanel\Models\Gene;
@@ -24,9 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Modules\ExpertPanel\Models\EvidenceSummary;
 use App\Modules\ExpertPanel\Models\ExpertPanelType;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Modules\Group\Models\Contracts\BelongsToGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Modules\ExpertPanel\Models\SpecificationRuleSet;
@@ -38,7 +34,7 @@ use App\Models\Traits\RecordsEvents as TraitsRecordsEvents;
 use App\Modules\Group\Models\Traits\HasMembers as TraitsHasMembers;
 use App\Modules\Group\Models\Traits\BelongsToGroup as TraitsBelongsToGroup;
 
-class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup, RecordsEvents, HasDocuments, HasLogEntries
+class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup, RecordsEvents
 {
     use HasFactory;
     use HasTimestamps;
@@ -48,7 +44,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     use TraitsBelongsToGroup;
     use TraitsRecordsEvents;
     use TraitsHasMembers;
-    use HasLogEntriesTraits;
 
     protected $fillable = [
         'group_id',
@@ -91,7 +86,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'biocurator_mailing_list',
 
         'cdwg_id',
-        'working_name',
+        // 'working_name',
     ];
 
     protected $dates = [
@@ -136,7 +131,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     ];
 
     protected $appends = [
-        'working_name',
+        // 'working_name',
         'name',
         'coi_url',
         'full_long_base_name',
@@ -185,19 +180,9 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $this->belongsTo(Group::class);
     }
 
-    public function expertPanelType()
-    {
-        return $this->belongsTo(ExpertPanelType::class);
-    }
-
-    public function epType()
-    {
-        return $this->expertPanelType();
-    }
-
     public function type()
     {
-        return $this->expertPanelType();
+        return $this->belongsTo(ExpertPanelType::class, 'expert_panel_type_id');
     }
 
     public function contacts()
@@ -206,15 +191,9 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
             ->contact();
     }
 
-    public function documents(): MorphMany
-    {
-        $this->ensureGroupLoaded();
-        return $this->group->documents();
-    }
-
     public function getFirstScopeDocumentAttribute()
     {
-        return $this->documents()
+        return $this->group->documents()
                 ->type(config('documents.types.scope.id'))
                 ->isVersion(1)
                 ->first()
@@ -224,7 +203,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
     public function getFirstFinalDocumentAttribute()
     {
-        return $this->documents()
+        return $this->group->documents()
             ->type(config('documents.types.final-app.id'))
             ->isVersion(1)
             ->first();
@@ -306,40 +285,9 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function parentGroup(): BelongsTo
-    {
-        $this->ensureGroupLoaded();
-        return $this->group->parent();
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function cdwg(): BelongsTo
     {
         return $this->belongsTo(Group::class, 'cdwg_id');
-    }
-
-    /**
-     * Get all of the Members for the ExpertPanel
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
-     */
-    public function members(): Relation
-    {
-        $this->ensureGroupLoaded();
-        return $this->group->members();
-    }
-    
-    /**
-     * Get all of the Members for the ExpertPanel
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
-     */
-    public function biocurators(): Relation
-    {
-        return $this->members()
-            ->role('biocurator');
     }
 
     /**
@@ -360,16 +308,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     public function specificationRuleSets(): HasManyThrough
     {
         return $this->hasManyThrough(SpecificationRuleSet::class, Specification::class);
-    }
-
-    /**
-     * Get all of the documents for the ExpertPanel
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
-     */
-    public function documentsNew(): HasManyThrough
-    {
-        return $this->hasManyThrough(Document::class, Group::class);
     }
 
     /**
@@ -435,12 +373,12 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
     public static function latestLogEntryForUuid($uuid)
     {
-        return static::findByUuid($uuid)->latestLogEntry;
+        return static::findByUuid($uuid)->group->latestLogEntry;
     }
 
     public function getLatestVersionForDocument($DocumentTypeId)
     {
-        $results = $this->documents()
+        $results = $this->group->documents()
             ->where('document_type_id', $DocumentTypeId)
             ->orderBy('metadata->version', 'desc')
             ->first();
@@ -469,35 +407,14 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
     public function getNameAttribute()
     {
-        if (!$this->relationLoaded('group')) {
-            $this->load('group');
-        }
-        return $this->long_base_name ?? $this->working_name;
+        return $this->long_base_name;
     }
 
     public function getFullNameAttribute()
     {
-        if (!$this->relationLoaded('group')) {
-            $this->load('group');
-        }
-        return $this->full_long_base_name ?? $this->working_name;
+        return $this->full_long_base_name;
     }
 
-    public function setWorkingNameAttribute($value)
-    {
-        $this->ensureGroupLoaded();
-        $this->group->name = $this->trimEpTypeSuffix($value);
-    }
-    
-    public function getWorkingNameAttribute()
-    {
-        $this->ensureGroupLoaded();
-        if (!$this->group) {
-            return $this->addEpTypeSuffix($this->long_base_name);
-        }
-        return $this->addEpTypeSuffix($this->group->name);
-    }
-    
     public function getDisplayNameAttribute()
     {
         return $this->getFullLongBaseNameAttribute();
@@ -538,7 +455,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
     private function addEpTypeSuffix($string)
     {
-        return $string.' '.$this->epType->display_name;
+        return $string.' '.$this->type->display_name;
     }
     
     public function getClingenUrlAttribute()
@@ -582,13 +499,5 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     protected static function newFactory()
     {
         return new ExpertPanelFactory();
-    }
-
-    private function ensureGroupLoaded()
-    {
-        // if (!$this->relationLoaded('group')) {
-        //     $this->load('group');
-        //     return;
-        // }
     }
 }

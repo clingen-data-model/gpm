@@ -17,7 +17,7 @@ class ApplicationDocumentMarkFinal
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         $document = Document::findByUuidOrFail($documentUuid);
 
-        $prevFinal = $expertPanel
+        $prevFinal = $expertPanel->group
             ->documents()
             ->type($document->document_type_id)
             ->final()

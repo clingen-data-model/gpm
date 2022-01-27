@@ -15,7 +15,7 @@ class ApplicationDocumentDelete
         string $documentUuid
     ) {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
-        $document = $expertPanel->documents()->where('uuid', $documentUuid)->sole();
+        $document = $expertPanel->group->documents()->where('uuid', $documentUuid)->sole();
 
         $document->delete();
 

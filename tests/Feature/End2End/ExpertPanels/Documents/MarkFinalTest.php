@@ -26,7 +26,7 @@ class MarkFinalTest extends TestCase
         $this->user = User::factory()->create();
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->document = Document::factory()->make();
-        $this->expertPanel->documents()->save($this->document);
+        $this->expertPanel->group->documents()->save($this->document);
         $this->docUrl = '/api/applications/'.$this->expertPanel->uuid.'/documents/'.$this->document->uuid.'/final';
         Carbon::setTestNow('2021-02-01');
     }
@@ -51,7 +51,7 @@ class MarkFinalTest extends TestCase
     {
         Sanctum::actingAs($this->user);
         $d = Document::factory()->make(['metadata'=>['is_final' => 1], 'document_type_id' => $this->document->document_type_id]);
-        $document = $this->expertPanel->documents()->save($d);
+        $document = $this->expertPanel->group->documents()->save($d);
 
         $this->call('POST', $this->docUrl)
             ->assertStatus(200)

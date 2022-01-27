@@ -39,7 +39,7 @@ class UpdateProfileTest extends TestCase
         $this->perm = Permission::factory()->create(['name' => 'people-manage']);
         $this->groupPerm = Permission::factory()->create(['name' => 'members-update', 'scope' => 'group']);
 
-        $this->url = '/api/people/'.$this->person->uuid.'/profile';
+        Sanctum::actingAs($this->user);
     }
 
     /**
@@ -47,25 +47,13 @@ class UpdateProfileTest extends TestCase
      */
     public function a_person_can_update_their_own_profile_info()
     {
-        [$institution, $race, $primaryOcc, $gender, $country] = $this->setupLookups();
-
-        $data = [
-            'institution_id' => $institution->id,
-            'race_id' => $race->id,
-            'primary_occupation_id' => $primaryOcc->id,
-            'gender_id' => $gender->id,
-            'country_id' => $country->id,
-            'orcid_id' => 12345,
-            'hypothesis_id' => 12345,
-            'biography' => $this->faker->paragraph(),
-            'timezone' => $this->faker->timezone()
-        ];
+        $data = $this->getDefaultData();
 
         $this->person->update(['user_id' => $this->user->id]);
-        Sanctum::actingAs($this->user);
-        $response = $this->json('PUT', $this->url, $data);
-        $response->assertStatus(200);
-        $response->assertJsonFragment($data);
+        
+        $this->makeRequest($data)
+            ->assertStatus(200)
+            ->assertJsonFragment($data);
 
         $this->assertDatabaseHas('people', $data);
     }
@@ -75,24 +63,34 @@ class UpdateProfileTest extends TestCase
      */
     public function a_user_who_can_update_others_profile_can_update_a_profile()
     {
-        [$institution, $race, $primaryOcc, $gender, $country] = $this->setupLookups();
-
-        $data = [
-            'institution_id' => $institution->id,
-            'race_id' => $race->id,
-            'primary_occupation_id' => $primaryOcc->id,
-            'gender_id' => $gender->id,
-            'country_id' => $country->id,
-            'orcid_id' => 12345,
-            'hypothesis_id' => 12345,
-            'biography' => $this->faker->paragraph(),
-            'timezone' => $this->faker->timezone()
-        ];
         $this->user->givePermissionTo($this->perm);
-        Sanctum::actingAs($this->user);
-        $response = $this->json('PUT', $this->url, $data);
-        $response->assertStatus(200);
+
+        $this->makeRequest()
+            ->assertStatus(200);
     }
+
+    /**
+     * @test
+     */
+    public function associated_user_name_and_email_updated_when_person_updated()
+    {
+        $this->person->update(['user_id' => $this->user->id]);
+        
+        $data = $this->getDefaultData();
+        $data['first_name'] = 'beans';
+        $data['last_name'] = 'mccradden';
+        $data['email'] = 'beans@beans.com';
+        
+        $this->makeRequest($data)
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('users', [
+            'id' => $this->user->id,
+            'name' => 'beans mccradden',
+            'email' => 'beans@beans.com'
+        ]);
+    }
+    
     
     /**
      * @test
@@ -106,8 +104,7 @@ class UpdateProfileTest extends TestCase
         $userMember = MemberAdd::run($group, $userPerson);
         MemberGrantPermissions::run($userMember, collect([$this->groupPerm]));
 
-        Sanctum::actingAs($this->user->fresh());
-        $this->json('PUT', $this->url, ['biography' => 'I like beans and George Wendt.'])
+        $this->makeRequest(['biography' => 'I like beans and George Wendt.'])
             ->assertStatus(403);
     }
     
@@ -117,10 +114,9 @@ class UpdateProfileTest extends TestCase
     public function another_user_without_permission_cannot_update_profile()
     {
         Sanctum::actingAs($this->user);
-        $this->json('PUT', $this->url, ['biography' => 'I like beans and George Wendt.'])
+        $this->makeRequest()
             ->assertStatus(403);
     }
-    
 
     /**
      * @test
@@ -128,16 +124,15 @@ class UpdateProfileTest extends TestCase
     public function validates_required_if_user_cannot_update_another_persons_profile()
     {
         $this->person->update(['user_id' => $this->user->id]);
-        Sanctum::actingAs($this->user);
-        $response = $this->json('PUT', $this->url, []);
-        $response->assertStatus(422);
-        $response->assertJsonFragment([
-            'institution_id' => ['This is required.'],
-            'primary_occupation_id' => ['This is required.'],
-            'gender_id' => ['This is required.'],
-            'country_id' => ['This is required.'],
-            'timezone' => ['This is required.'],
-        ]);
+        $response = $this->makeRequest([])
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                'institution_id' => ['This is required.'],
+                'primary_occupation_id' => ['This is required.'],
+                'gender_id' => ['This is required.'],
+                'country_id' => ['This is required.'],
+                'timezone' => ['This is required.'],
+            ]);
     }
 
     /**
@@ -147,10 +142,14 @@ class UpdateProfileTest extends TestCase
     {
         $this->user->givePermissionTo($this->perm);
 
-        Sanctum::actingAs($this->user);
-        $response = $this->json('PUT', $this->url, ['biography' => 'I\'m a little teapot.']);
-        $response->assertStatus(200);
-        $response->assertJsonFragment(['biography' => 'I\'m a little teapot.']);
+        $this->makeRequest([
+            'first_name' => $this->person->first_name,
+            'last_name' => $this->person->last_name,
+            'email' => $this->person->email,
+            'biography' => 'I\'m a little teapot.'
+        ])
+        ->assertStatus(200)
+        ->assertJsonFragment(['biography' => 'I\'m a little teapot.']);
     }
 
     /**
@@ -171,8 +170,7 @@ class UpdateProfileTest extends TestCase
         ];
 
         $this->user->givePermissionTo($this->perm);
-        Sanctum::actingAs($this->user);
-        $this->json('PUT', $this->url, $data)
+        $this->makeRequest($data)
             ->assertJsonFragment([
                 'institution_id' => ['The selection is invalid.'],
                 'race_id' => ['The selection is invalid.'],
@@ -181,6 +179,76 @@ class UpdateProfileTest extends TestCase
                 'country_id' => ['The selection is invalid.'],
             ]);
     }
+
+    /**
+     * @test
+     */
+    public function validates_email_is_unique_to_people()
+    {
+        $this->user->givePermissionTo('people-manage');
+        Person::factory()->create(['email' => 'beans@beans.com']);
+
+        $this->makeRequest([
+            'first_name' => $this->person->first_name,
+            'last_name' => $this->person->last_name,
+            'email' => 'beans@beans.com',
+            'biography' => 'I\'m a little teapot.'
+        ])
+        ->assertStatus(422)
+        ->assertJsonFragment([
+            'email' => ['Somebody is already using that email address.']
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function validates_email_is_unique_to_users()
+    {
+        $this->user->givePermissionTo('people-manage');
+        User::factory()->create(['email' => 'beans@beans.com']);
+
+        $this->makeRequest([
+            'first_name' => $this->person->first_name,
+            'last_name' => $this->person->last_name,
+            'email' => 'beans@beans.com',
+            'biography' => 'I\'m a little teapot.'
+        ])
+        ->assertStatus(422)
+        ->assertJsonFragment([
+            'email' => ['Somebody is already using that email address.']
+        ]);
+    }
+    
+
+    private function makeRequest($data = null)
+    {
+        $data = $data ?? $this->getDefaultData();
+
+        return $this->json('PUT', '/api/people/'.$this->person->uuid.'/profile', $data);
+    }
+
+    private function getDefaultData(): array
+    {
+        [$institution, $race, $primaryOcc, $gender, $country] = $this->setupLookups();
+
+        return [
+            'first_name' => $this->person->first_name,
+            'last_name' => $this->person->last_name,
+            'email' => $this->person->email,
+            'institution_id' => $institution->id,
+            'race_id' => $race->id,
+            'primary_occupation_id' => $primaryOcc->id,
+            'gender_id' => $gender->id,
+            'country_id' => $country->id,
+            'orcid_id' => 12345,
+            'hypothesis_id' => 12345,
+            'biography' => $this->faker->paragraph(),
+            'timezone' => $this->faker->timezone()
+        ];
+    }
+    
+    
 
     private function setupLookups()
     {
