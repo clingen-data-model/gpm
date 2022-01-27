@@ -24,7 +24,6 @@
                                     <span v-if="loading">Loading...</span>
                                     <div v-else>
                                         <p>There are no gene/disease pairs in the gene list.</p>
-                                        <button class="btn blue btn-sm" @click="addNewGene" v-if="canEdit">Add a gene/disease pair</button>
                                     </div>
                                 </div>
                             </td>
@@ -50,13 +49,13 @@
                                                     <button class="btn btn-xs">&hellip;</button>
                                                 </template>
                                                 <dropdown-item @click="edit(gene)">Edit</dropdown-item>
-                                                <dropdown-item @click="remove(gene)">Remove</dropdown-item>
+                                                <dropdown-item @click="confirmRemove(gene)">Remove</dropdown-item>
                                             </dropdown-menu>
 
-                                            <div v-if="gene.toDelete">
+                                            <!-- <div v-if="gene.toDelete">
                                                 <note>set for deletion in {{gene.removeCountdown}} seconds.</note>
                                                 <button @click="cancelPendingRemove(gene)" class="btn btn-xs">Cancel</button>
-                                            </div>
+                                            </div> -->
                                         </div>
                                     </td>
                                 </template>
@@ -80,20 +79,8 @@
                         </transition-group>
                     </tbody>
                 </transition-group>
-                <!-- <transition name="slide-fade-down">
-                    <thead v-if="newGenes.length > 0">
-                        <tr>
-                            <td colspan="5" class="bg-white border-white h-4"></td>
-                        </tr>
-                        <tr>
-                            <td>HGNC Symbol</td>
-                            <td colspan="4">Disesase</td>
-                        </tr>
-                    </thead>
-                </transition> -->
 
                 <tbody v-if="canEdit">
-                    <!-- <transition-group name="slide-fade-down">                 -->
                         <tr>
                             <td>
                                 <input-row label="" :errors="errors[`genes.0.hgnc_id`]" :vertical="true">
@@ -106,23 +93,18 @@
                                 </input-row>
                             </td>
                         </tr>
-                    <!-- </transition-group> -->
                 </tbody>
-                <!-- <tr v-if="canEdit">
-                    <td colspan="5" class="border-white">
-                        <div class="-mx-2 my-2 flex space-x-2">
-                            <button @click="addNewGene" class="btn btn-xs">Add Gene/Disease Pair</button>
-                            <transition name="fade">
-                                <div class="flex space-x-2">
-                                    <button class="btn btn-xs" @click="cancel"  v-if="newGenes.length > 0">Cancel</button>
-                                    <button class="btn btn-xs blue" @click="save"  v-if="newGenes.length > 0">Save</button>
-                                </div>
-                            </transition>
-                        </div>
-                    </td>
-                </tr> -->
             </table>
         </div>
+        <modal-dialog v-model="showConfirmRemove" title="Confirm gene/disease pair delete.">
+            <p>You are about to delete the gene/disease pair {{selectedGene.gene.gene_symbol}}/{{selectedGene.disease.name}}.  Are you sure you want to continue?</p>
+            <button-row 
+                submit-text="Yes, delete it." 
+                cancel-text="No, cancel"
+                @submitted="remove(selectedGene)"
+                @canceled="cancelRemove"
+            ></button-row>
+        </modal-dialog>
     </div>
 </template>
 <script>
@@ -133,7 +115,6 @@ import {useStore} from 'vuex';
 import GeneSearchSelect from '@/components/forms/GeneSearchSelect'
 import DiseaseSearchSelect from '@/components/forms/DiseaseSearchSelect'
 import is_validation_error from '@/http/is_validation_error'
-import {isEqual} from 'lodash'
 import {hasAnyPermission} from '@/auth_utils'
 
 
@@ -157,6 +138,9 @@ export default {
     ],
     setup(props, context) {
         const store = useStore();
+
+        const showConfirmRemove = ref(false);
+        const selectedGene = ref({gene: {}, disease: {}});
 
         const group = computed(() => {
             return store.getters['groups/currentItemOrNew'];
@@ -207,28 +191,24 @@ export default {
             clearRemovalFlags(gene);
         }
 
-        const remove = (gene) => {
-            clearRemoveCountdown(gene);
-            gene.toDelete = true;
-            gene.removeTimeout = setTimeout(async () => {
-                for (let idx = 0; idx < genes.value.length; idx++) {
-                    if (genes.value[idx].toDelete) {
-                        try {
-                            await api.delete(`/api/groups/${group.value.uuid}/expert-panel/genes/${gene.id}`)
-                            await getGenes();
-                        } catch (error) {
-                            store.commit('pushError', error.response.data);
-                        }
-                    }
-                }
-                clearRemoveCountdown(gene)
-            }, 10000);
+        const confirmRemove = (gene) => {
+            selectedGene.value = gene;
+            showConfirmRemove.value = true;
+        }
 
-            gene.removeCountdown = 10;
-            gene.removeInterval = setInterval(() => {
-                gene.removeCountdown -= 1;
-            }, 1000);
-            
+        const remove = async (gene) => {
+            try {
+                await api.delete(`/api/groups/${group.value.uuid}/expert-panel/genes/${gene.id}`)
+                await getGenes();
+                cancelRemove();
+            } catch (error) {
+                store.commit('pushError', error.response.data);
+            }
+        }
+
+        const cancelRemove = () => {
+            selectedGene.value = {gene: {}, disease: {}};
+            showConfirmRemove.value = false;
         }
         
         const getGenes = async () => {
@@ -269,7 +249,7 @@ export default {
             }
         };
 
-        const debounceSave = debounce(save, 2000)
+        const debounceSave = debounce(save, 500)
 
         const updateGene = async (gene) => {
             try {
@@ -316,7 +296,11 @@ export default {
             edit, 
             remove,
             cancelPendingRemove,
-            canEdit
+            canEdit,
+            showConfirmRemove,
+            confirmRemove,
+            cancelRemove,
+            selectedGene,
         }        
     }
 }
