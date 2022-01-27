@@ -8,6 +8,7 @@
                 :value="value"
                 :id="checkboxId"
                 v-bind="$attrs"
+                @change="propagateChange"
             >
         </slot>
         <div>
@@ -49,6 +50,11 @@ export default {
                 this.$emit('update:modelValue', val)
             }
         }
+    },
+    methods: {
+        propagateChange (evt) {
+            this.$emit('change', evt);
+        } 
     }
 }
 </script>

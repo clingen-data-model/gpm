@@ -6,6 +6,7 @@ import authRoutes from './auth'
 import cdwgRoutes from './cdwgs'
 import groupRoutes from './groups'
 import adminRoutes from './admin'
+import userRoutes from './users'
 
 const routes = [
     { name: 'Dashboard',
@@ -58,6 +59,7 @@ const routes = [
     ...authRoutes,
     ...cdwgRoutes,
     ...adminRoutes,
+    ...userRoutes,
     {
         name: 'coi',
         path: '/coi/:code',

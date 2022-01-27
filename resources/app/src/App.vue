@@ -25,6 +25,11 @@
                 :to="{name: 'GroupList'}" 
                 class="link nav-item"
               >Groups</router-link>
+              <router-link 
+                :to="{name: 'UserList'}" 
+                class="link nav-item"
+                v-if="hasPermission('users-manage')"
+              >Users</router-link>
               <!-- <router-link 
                 to="/guides-and-documentation" 
                 class="link nav-item"

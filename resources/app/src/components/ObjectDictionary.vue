@@ -81,11 +81,6 @@ export default {
                 })
             return except;
         },
-        titleCase(label) {
-            return label.split('_').map(word => {
-                    return word.charAt(0).toUpperCase()+word.substr(1)
-                }).join(' ');
-        },
         format(key, value) {
             if (!value) {
                 return value;
