@@ -163,6 +163,13 @@ export default {
                 this.currentKey = 'ArrowDown';
             }
         },
+        handleKeyDown (evt) {
+            if (evt.key == 'Tab') {
+                this.handleKeyEvent(evt);
+                return;
+            }
+            this.startKeydownTimer(evt);
+        },
         cancelKeydownTimer() {
             if (this.keydownTimer) {
                 clearInterval(this.keydownTimer);
@@ -205,6 +212,10 @@ export default {
 
                 if (['Enter'].indexOf(evt.key) > -1) {
                     evt.preventDefault();
+                    this.setSelection(this.filteredOptions[this.cursorPosition])
+                }
+                if (['Tab'].indexOf(evt.key) > -1) {
+                    // evt.preventDefault();
                     this.setSelection(this.filteredOptions[this.cursorPosition])
                 }
                 if (evt.key == 'Escape') {
@@ -253,7 +264,7 @@ export default {
                 ref="input" 
                 class="input" 
                 v-show="showInput" 
-                @keydown="startKeydownTimer"
+                @keydown="handleKeyDown"
                 @keyup="handleKeyEvent"
                 :placeholder="placeholder"
                 :disabled="disabled"
