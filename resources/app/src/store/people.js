@@ -1,6 +1,5 @@
 import {api, queryStringFromParams} from '@/http';
 import Person from '@/domain/person'
-import { v4 as uuid4 } from 'uuid';
 
 const baseUrl = '/api/people';
 
@@ -59,7 +58,6 @@ export const mutations = {
 };
 
 export const actions = {
-    // eslint-disable-next-line
     async all({ dispatch }, params) {
         dispatch('getAll', {params})
     },
@@ -104,11 +102,12 @@ export const actions = {
             })
     },
 
+    // eslint-disable-next-line
     async createPerson({ commit }, personData) {
         console.error('people/createPerson action is no longer implemented. Person creation currently happens when adding members to groups.');
     },
 
-    async getPerson({commit, getters, state}, {uuid, params}) {
+    async getPerson({commit}, {uuid, params}) {
         await api.get(`${baseUrl}/${uuid}`+queryStringFromParams(params))
             .then(response => {
                 commit('addItem', response.data.data)
@@ -123,7 +122,7 @@ export const actions = {
             })
     },
 
-    async updateProfile({ commit, getters }, {uuid, attributes}) {
+    async updateProfile({ commit }, {uuid, attributes}) {
         return api.put(`${baseUrl}/${uuid}/profile`, attributes)
             .then(response => {
                 commit('addItem', response.data);
