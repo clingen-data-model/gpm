@@ -28,35 +28,34 @@ class ApplicationController extends Controller
     public function index(Request $request)
     {
         $query = ExpertPanel::query()
-                    ->select('expert_panels.*')
-                    ->with('nextActions', 'group', 'group.parent', 'group.logEntries', 'cdwg');
+                    ->select('expert_panels.*');
 
-        if ($request->has('sort')) {
-            $field = $request->sort['field'];
-            $dir = $request->sort['dir'] ?? 'asc';
+        // if ($request->has('sort')) {
+        //     $field = $request->sort['field'];
+        //     $dir = $request->sort['dir'] ?? 'asc';
 
-            if ($field == 'name') {
-                $query->leftJoin('groups', 'expert_panels.group_id', '=', 'groups.id');
-                $query->orderBy('groups.name', $dir);
-            } elseif ($field == 'cdwg.name') {
-                $query->leftJoin('groups', 'expert_panels.group_id', '=', 'groups.id');
-                $query->leftJoin('groups as parents', 'groups.parent_id', '=', 'parents.id');
-                $query->orderBy('parents.name', $dir);
-            } elseif ($field == 'latestLogEntry.created_at') {
-                $subQuery = DB::table('activity_log')
-                                ->select('subject_id', DB::raw('MAX(created_at) as latest_activity_at'))
-                                ->where('subject_type', ExpertPanel::class)
-                                ->groupBy('subject_id');
+        //     if ($field == 'name') {
+        //         $query->leftJoin('groups', 'expert_panels.group_id', '=', 'groups.id');
+        //         $query->orderBy('groups.name', $dir);
+        //     } elseif ($field == 'cdwg.name') {
+        //         $query->leftJoin('groups', 'expert_panels.group_id', '=', 'groups.id');
+        //         $query->leftJoin('groups as parents', 'groups.parent_id', '=', 'parents.id');
+        //         $query->orderBy('parents.name', $dir);
+        //     } elseif ($field == 'latestLogEntry.created_at') {
+        //         $subQuery = DB::table('activity_log')
+        //                         ->select('subject_id', DB::raw('MAX(created_at) as latest_activity_at'))
+        //                         ->where('subject_type', ExpertPanel::class)
+        //                         ->groupBy('subject_id');
 
-                $query->leftJoinSub($subQuery, 'latest_activity', function ($join) {
-                    $join->on('latest_activity.subject_id', '=', 'expert_panels.id');
-                })
-                ->addSelect('latest_activity.latest_activity_at as latest_activity_at')
-                ->orderBy('latest_activity_at', $dir);
-            } else {
-                $query->orderBy($field, $dir);
-            }
-        }
+        //         $query->leftJoinSub($subQuery, 'latest_activity', function ($join) {
+        //             $join->on('latest_activity.subject_id', '=', 'expert_panels.id');
+        //         })
+        //         ->addSelect('latest_activity.latest_activity_at as latest_activity_at')
+        //         ->orderBy('latest_activity_at', $dir);
+        //     } else {
+        //         $query->orderBy($field, $dir);
+        //     }
+        // }
 
         if ($request->has('with')) {
             $relations = $request->with;
@@ -68,20 +67,21 @@ class ApplicationController extends Controller
             $query->with($relations);
         }
 
-        if ($request->has('where')) {
-            foreach ($request->where as $key => $value) {
-                if ($key == 'since') {
-                    $query->where('updated_at', '>', Carbon::parse($value));
-                    continue;
-                }
-                $query->where($key, $value);
-            }
-        }
+        // if ($request->has('where')) {
+        //     foreach ($request->where as $key => $value) {
+        //         if ($key == 'since') {
+        //             $query->where('updated_at', '>', Carbon::parse($value));
+        //             continue;
+        //         }
+        //         $query->where($key, $value);
+        //     }
+        // }
 
-        if ($request->has('showDeleted')) {
-            $query->withTrashed();
-        }
+        // if ($request->has('showDeleted')) {
+        //     $query->withTrashed();
+        // }
 
+        // return $query->get();
         return ExpertPanelResource::collection($query->get());
     }
 

@@ -17,21 +17,7 @@
 </template>
 <script>
 export default {
-    name: 'ComponentName',
-    props: {
-        
-    },
-    data() {
-        return {
-            
-        }
-    },
-    computed: {
-
-    },
-    methods: {
-
-    }
+    name: 'ApplicationSummary',
 }
 </script>
 <style lang="postcss" scoped>

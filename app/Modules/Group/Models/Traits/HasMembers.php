@@ -33,6 +33,11 @@ trait HasMembers
             ->role('coordinator');
     }
 
+    public function contacts(): Relation
+    {
+        return $this->members()->isContact();
+    }
+    
     public function getHasCoordinatorAttribute():bool
     {
         return $this->coordinators->count() > 0;

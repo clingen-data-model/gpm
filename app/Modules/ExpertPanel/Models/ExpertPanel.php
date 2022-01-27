@@ -191,24 +191,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
             ->contact();
     }
 
-    public function getFirstScopeDocumentAttribute()
-    {
-        return $this->group->documents()
-                ->type(config('documents.types.scope.id'))
-                ->isVersion(1)
-                ->first()
-            ;
-        ;
-    }
-
-    public function getFirstFinalDocumentAttribute()
-    {
-        return $this->group->documents()
-            ->type(config('documents.types.final-app.id'))
-            ->isVersion(1)
-            ->first();
-    }
-
     public function nextActions()
     {
         return $this->hasMany(NextAction::class);
@@ -394,6 +376,24 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
      * ACCESSORS
      */
 
+    public function getFirstScopeDocumentAttribute()
+    {
+        return $this->group->documents()
+                ->type(config('documents.types.scope.id'))
+                ->isVersion(1)
+                ->first()
+            ;
+        ;
+    }
+
+    public function getFirstFinalDocumentAttribute()
+    {
+        return $this->group->documents()
+            ->type(config('documents.types.final-app.id'))
+            ->isVersion(1)
+            ->first();
+    }
+
     public function getIsVcepAttribute(): bool
     {
         return $this->expert_panel_type_id == config('expert_panels.types.vcep.id');
@@ -457,6 +457,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     {
         return $string.' '.$this->type->display_name;
     }
+
     
     public function getClingenUrlAttribute()
     {
@@ -466,7 +467,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
         return 'https://clinicalgenome.org/affiliation/'.$this->affiliation_id;
     }
-
     public function getCoiUrlAttribute()
     {
         return '/expert-panels/'.urlencode($this->name).'/coi/'.$this->coi_code;

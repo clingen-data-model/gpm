@@ -22,8 +22,8 @@
         >
             <template v-slot:cell-contacts="{item}">
                 <ul>
-                    <li v-for="c in item.contacts" :key="c.id">
-                        <small><a :href="`mailto:${c.email}`" class="text-blue-500">{{c.name}}</a></small>
+                    <li v-for="member in item.group.contacts" :key="member.id">
+                        <small><a :href="`mailto:${member.person.email}`" class="text-blue-500">{{member.person.name}}</a></small>
                     </li>
                 </ul>
             </template>
@@ -60,12 +60,15 @@ export default {
                     sortable: true
                 },
                 {
-                    name: 'cdwg.name',
+                    name: 'group.parent.name',
                     label: 'CDWG',
                     type: String,
                     sortable: true,
                     resolveValue (item) {
-                        return item.cdwg ? item.cdwg.name : '';
+                        if (item.group && item.group.parent) {
+                            return item.group.parent.name
+                        }
+                        return '';
                     }
                 },
                 {
@@ -89,7 +92,7 @@ export default {
                     step: 1
                 },
                 {
-                    name: 'first_scope_document.date_received',
+                    name: 'step_1_received_date',
                     label: this.expert_panel_type_id == 2 ? 'Step 1 Received' : 'Application Received',
                     type: Date,
                     sortable: true,
@@ -98,7 +101,7 @@ export default {
 
                 },
                 {
-                    name: 'approval_dates.step 1',
+                    name: 'step_1_approval_date',
                     label: this.expert_panel_type_id == 2 ? 'Step 1 Approved' : 'Application Approved',
                     type: Date,
                     sortable: true,
@@ -106,7 +109,7 @@ export default {
                     step: 1
                 },
                 {
-                    name: 'approval_dates.step 2',
+                    name: 'step_2_approval_date',
                     label: 'Step 2 Approved',
                     type: Date,
                     sortable: true,
@@ -114,7 +117,7 @@ export default {
                     step: 2
                 },
                 {
-                    name: 'approval_dates.step 3',
+                    name: 'step_3_approval_date',
                     label: 'Step 3 Approved',
                     type: Date,
                     sortable: true,
@@ -122,7 +125,7 @@ export default {
                     step: 3
                 },
                 {
-                    name: 'first_final_document.date_received',
+                    name: 'step_4_received_date',
                     label: 'Step 4 Received',
                     type: Date,
                     sortable: true,
@@ -130,7 +133,7 @@ export default {
                     step: 4
                 },
                 {
-                    name: 'approval_dates.step 4',
+                    name: 'step_4_approval_date',
                     label: 'Step 4 Approved',
                     type: Date,
                     sortable: true,
@@ -203,12 +206,12 @@ export default {
             const params = {
                 with: [
                     'group',
+                    'group.parent',
                     'group.latestLogEntry',
                     'latestPendingNextAction',
                     'type',
-                    'contacts',
-                    'firstScopeDocument',
-                    'firstFinalDocument'
+                    'group.contacts',
+                    'group.contacts.person',
                 ],
             }
 
