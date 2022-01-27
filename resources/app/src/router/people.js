@@ -3,7 +3,6 @@ import store from '../store/index'
 
 const PersonDetail = () => import (/* person-detail */ '@/components/people/PersonDetail')
 const PersonEdit = () => import (/* person-detail */ '@/views/PersonEdit')
-// const PersonForm = () => import (/* person-detail */ '@/components/people/PersonForm')
 const PeopleIndex = () => import (/* people-index */ '@/views/PeopleIndex')
 const OnboardingWizard = () => import (/* onboarding-wizard */ '@/views/OnboardingWizard')
 

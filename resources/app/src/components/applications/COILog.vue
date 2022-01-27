@@ -7,21 +7,6 @@
             ></coi-legacy-upload>
         </div>
         <div class="my-2 flex justify-between">
-            <div>
-                COI URL: 
-                <router-link :to="application.coi_url" class="text-blue-500">
-                    {{$store.state.hostname}}{{application.coi_url}}
-                </router-link>
-                &nbsp;
-                <a :href="mailtoLink" 
-                    class="btn btn-xs"
-                    v-show="group.hasContacts"
-                    ref="mailtobutton"
-                >Send url to contacts.</a>
-                <add-contact-control class="inline-block" v-show="!group.hasContacts"></add-contact-control>
-                &nbsp;
-                <button class="btn btn-xs" @click="downloadReport">get coi report</button>
-            </div>
             <icon-refresh 
                 :height="14" :width="14" 
                 :class="{'animate-spin': refreshing}"
@@ -51,13 +36,11 @@
 
 import CoiDetail from '@/components/applications/CoiDetail';
 import CoiLegacyUpload from '@/components/applications/CoiLegacyUpload';
-import AddContactControl from '@/components/contacts/AddContactControl.vue'
 
 export default {
     components: {
         CoiDetail,
         CoiLegacyUpload,
-        AddContactControl,
     },
     props: {
         group: {

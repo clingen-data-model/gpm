@@ -41,9 +41,8 @@ class PeopleController extends Controller
         return $person;
     }
     
-    public function show($uuid)
+    public function show(Person $person)
     {
-        $person = Person::findByUuidOrFail($uuid);
         $person->load([
             'memberships',
             'memberships.cois',
@@ -62,15 +61,5 @@ class PeopleController extends Controller
             'invite'
         ]);
         return new PersonDetailResource($person);
-    }
-
-    public function update($uuid, PersonUpdateRequest $request)
-    {
-        $data = $request->only('first_name', 'last_name', 'email', 'phone');
-        $this->commandBus->dispatch(new UpdatePerson(uuid: $uuid, attributes: $data));
-
-        $person = Person::findByUuidOrFail($uuid);
-
-        return $person;
     }
 }

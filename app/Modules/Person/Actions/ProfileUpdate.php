@@ -25,20 +25,24 @@ class ProfileUpdate
         if (Auth::guest()) {
             abort(403);
         }
-        // if (!$policy->update(Auth::user(), $person)) {
-        if (Auth::user()->cannot('update', $person)) {
-            abort(403, 'You do not have permission to update this person\'s profile.');
-        }
         $person->update($data);
+
+        $personUser = $person->user;
+        if ($person->user_id) {
+            $person->user->update([
+                'name' => $person->first_name. ' '.$person->last_name,
+                'email' => $person->email
+            ]);
+        }
 
         Event::dispatch(new ProfileUpdated($person, $data));
 
         return $person;
     }
 
-    public function asController(ProfileUpdateRequest $request, $personUuid)
+    public function asController(ActionRequest $request, Person $person)
     {
-        $person = Person::findByUuidOrFail($personUuid);
+        // $person = Person::findByUuidOrFail($personUuid);
         $person = $this->handle($person, $request->all());
 
         $person->load(
@@ -52,5 +56,61 @@ class ProfileUpdate
             'country'
         );
         return $person;
+    }
+
+    public function authorize(ActionRequest $request): bool
+    {
+        return Auth::user()->can('update', $request->person);
+    }
+
+    public function rules(ActionRequest $request)
+    {
+        $rules = [
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('people', 'email')
+                    ->ignore($request->person->id),
+                Rule::unique('users', 'email')
+                    ->ignore($request->person->user_id),
+            ],
+            'first_name' => ['required','max:255'],
+            'last_name' => ['required','max:255'],
+            'institution_id' => ['exists:institutions,id'],
+            'race_id' => ['exists:races,id'],
+            'primary_occupation_id' => ['exists:primary_occupations,id'],
+            'gender_id' => ['exists:genders,id'],
+            'country_id' => ['exists:countries,id'],
+            'timezone' => [Rule::in(DateTimeZone::listIdentifiers())],
+            'street1' => ['nullable','max:255'],
+            'street2' => ['nullable','max:255'],
+            'city' => ['nullable','max:255'],
+            'state' => ['nullable','max:255'],
+            'zip' => ['nullable','max:255'],
+        ];
+
+        if ($request->person->user_id == Auth::user()->id) {
+            foreach ($rules as $field => $rule) {
+                if (in_array('nullable', $rule)) {
+                    continue;
+                }
+                array_unshift($rules[$field], 'required');
+            }
+            return $rules;
+        }
+
+        foreach ($rules as $field => $rule) {
+            $rules[$field][] = 'nullable';
+        }
+        return $rules;
+    }
+
+    public function getValidationMessages(): array
+    {
+        return [
+            'required' => 'This is required.',
+            'exists' => 'The selection is invalid.',
+            'email.unique' => 'Somebody is already using that email address.'
+        ];
     }
 }

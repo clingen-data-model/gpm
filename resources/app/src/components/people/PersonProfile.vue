@@ -107,7 +107,6 @@
 <script>
 import Person from '@/domain/person'
 
-// import PersonForm from '@/components/people/PersonForm'
 import ProfileForm from '@/components/people/ProfileForm'
 
 export default {

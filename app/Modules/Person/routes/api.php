@@ -32,12 +32,12 @@ Route::group([
         'middleware' => ['auth:sanctum']
     ], function () {
         Route::get('/', [PeopleController::class, 'index']);
-        Route::post('/', [PeopleController::class, 'store']);
         Route::get('/invites/', [InviteController::class, 'index']);
-        Route::get('/{uuid}', [PeopleController::class, 'show']);
-        Route::put('/{uuid}', [PeopleController::class, 'update']);
+
+        Route::get('/{person:uuid}', [PeopleController::class, 'show']);
+        Route::put('/{person:uuid}/profile', ProfileUpdate::class);
+        // No post route b/c person creation currently happens when adding members to groups.
         
-        Route::put('/{uuid}/profile', ProfileUpdate::class);
         Route::get('/{person:uuid}/email', [PersonEmailController::class, 'index']);
         Route::get('/{person:uuid}/notifications/unread', [PersonNotificationController::class, 'unread']);
     });

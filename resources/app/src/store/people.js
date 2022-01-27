@@ -1,7 +1,6 @@
-import api from '@/http/api';
+import {api, queryStringFromParams} from '@/http';
 import Person from '@/domain/person'
 import { v4 as uuid4 } from 'uuid';
-import queryStringFromParams from '@/http/query_string_from_params'
 
 const baseUrl = '/api/people';
 
@@ -106,15 +105,7 @@ export const actions = {
     },
 
     async createPerson({ commit }, personData) {
-        if (!personData.uuid) {
-            personData.uuid = uuid4()
-        }
-
-        await api.post(baseUrl, personData)
-            .then(response => {
-                commit('addItem', response.data);
-                return response.data;
-            });
+        console.error('people/createPerson action is no longer implemented. Person creation currently happens when adding members to groups.');
     },
 
     async getPerson({commit, getters, state}, {uuid, params}) {

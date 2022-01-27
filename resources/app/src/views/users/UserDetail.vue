@@ -57,7 +57,7 @@
 </template>
 <script>
 import User from '@/domain/user'
-import {api, isValidationError} from '@/http'
+import {api} from '@/http'
 import configs from '@/configs'
 
 export default {
