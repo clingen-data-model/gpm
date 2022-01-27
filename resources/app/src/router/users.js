@@ -1,5 +1,15 @@
 import store from '@/store/index'
 
+const hasPermission = async (permission) => {
+    console.log(permission);
+    if (store.getters.currentUser.hasPermission(permission)) {
+        return true;
+    }
+
+    store.commit('pushError', 'Permission denied');
+    return false;
+}
+
 export default [
     {
         name: 'UserList',
@@ -10,7 +20,10 @@ export default [
         meta: {
             protected: true,
         },
-        props: true
+        props: true,
+        beforeEnter () {
+            return hasPermission('users-manage');
+        }
     },
     {
         name: 'UserDetail',
@@ -21,6 +34,9 @@ export default [
         props: true,
         meta: {
             protected: true
+        },
+        async beforeEnter (to) {
+            return hasPermission('users-manage');
         }
     }
 ]
