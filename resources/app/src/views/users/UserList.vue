@@ -6,10 +6,16 @@
                 Filter: &nbsp;<input type="text" v-model="filter" placeholder="name, email">
             </div>
         </div>
-        <data-table :fields="fields" :data="filteredUsers" v-model:sort="sort">
-            <template v-slot:cell-actions="{item}">
+        <data-table 
+            :fields="fields" 
+            :data="filteredUsers" 
+            v-model:sort="sort" 
+            @rowClick="goToUser"
+            row-class="cursor-pointer"
+        >
+            <!-- <template v-slot:cell-actions="{item}">
                 <router-link :to="`/users/${item.id}`">Edit</router-link>
-            </template>
+            </template> -->
         </data-table>
     </div>
 </template>
@@ -61,6 +67,9 @@ export default {
         async getUsers () {
             this.users = await api.get('/api/users')
                                 .then(response => response.data);
+        },
+        goToUser (user) {
+            this.$router.push({name: 'UserDetail', params: {id: user.id}})
         }
     },
     setup() {

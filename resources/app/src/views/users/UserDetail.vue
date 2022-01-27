@@ -3,7 +3,7 @@
         <h1>{{user.person.name || 'loading...'}}</h1>
 
         <object-dictionary :obj="userInfo"></object-dictionary>
-        <button class="btn btn-xs" @click="initEdit">Edit system roles &amp; permissions</button>
+        <button class="btn btn-xs" @click="initEdit" v-if="canEditUser">Edit system roles &amp; permissions</button>
 
         <h2 class="mt-8 mb-2">Memberships</h2>
         <data-table :fields="membershipFields" :data="membershipInfo"></data-table>
@@ -134,6 +134,30 @@ export default {
                 return false;
             });
         },
+        canEditUser () {
+            const currentUser = this.$store.getters.currentUser;
+            if (!this.hasPermission('users-manage')) {
+                return false;
+            }
+
+            if (this.currentUserIsUser) {
+                return true;
+            }
+
+            if (currentUser.hasRole('super-user')) {
+                return true;
+            }
+
+            if (currentUser.hasRole('super-admin') && this.user.hasRole('admin')) {
+                return true;
+            }
+
+            return false;
+            
+        },
+        currentUserIsUser () {
+            return this.$store.getters.currentUser.id == this.user.id;
+        }
     },
     watch: {
         id: {

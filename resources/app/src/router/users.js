@@ -35,7 +35,7 @@ export default [
         meta: {
             protected: true
         },
-        async beforeEnter (to) {
+        async beforeEnter () {
             return hasPermission('users-manage');
         }
     }
