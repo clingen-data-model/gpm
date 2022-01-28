@@ -10,7 +10,6 @@
         Conflict of Interest Disclosure
     </a> 
     for this group.
-    {{-- to become a full member of the expert panel. --}}
 @else
     You can see more details in the <a href="{{url('/')}}">ClinGen Group &amp; Personnel Management System</a>.
 @endif
@@ -28,7 +27,7 @@
         @endforeach
         </ul>
     @else
-    the coordinator, <a href="mailto:{{$coordinators->first()->person->email}}">{{$coordinators->first()->person->name}}</a>
+    the coordinator, <a href="mailto:{{$group->coordinators->first()->person->email}}">{{$group->coordinators->first()->person->name}}</a>
     @endif 
 @endif
 
