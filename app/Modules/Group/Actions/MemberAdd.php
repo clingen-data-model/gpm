@@ -48,21 +48,8 @@ class MemberAdd
         return $groupMember;
     }
 
-    public function cancelNotification(): static
+    public function asController(ActionRequest $request, Group $group)
     {
-        $this->sendNotification = false;
-        return $this;
-    }
-
-    public function sendNotification(): static
-    {
-        $this->sendNotification = true;
-        return $this;
-    }
-
-    public function asController(ActionRequest $request, string $groupUuid)
-    {
-        $group = Group::findByUuidOrFail($groupUuid);
         $person = Person::findOrFail($request->person_id);
         $roles = config('permission.models.role')::find($request->role_ids);
 
@@ -77,6 +64,24 @@ class MemberAdd
         return new MemberResource($member);
     }
 
+    public function authorize(ActionRequest $request): bool
+    {
+        return $request->user()->can('inviteMembers', $request->group);
+    }
+
+    public function cancelNotification(): static
+    {
+        $this->sendNotification = false;
+        return $this;
+    }
+
+    public function sendNotification(): static
+    {
+        $this->sendNotification = true;
+        return $this;
+    }
+
+ 
     public function rules(): array
     {
         return [

@@ -7,6 +7,7 @@ import cdwgRoutes from './cdwgs'
 import groupRoutes from './groups'
 import adminRoutes from './admin'
 import userRoutes from './users'
+import MemberForm from '@/components/groups/MemberForm'
 
 const routes = [
     { name: 'Dashboard',
@@ -51,7 +52,37 @@ const routes = [
         props: true,
         meta: {
             protected: true,
-        }
+        },
+        children: [
+            {
+                name: 'AnnualReviewAddMember',
+                path: 'members/add',
+                component: MemberForm,
+                meta: {
+                    showModal: true,
+                    protected: true,
+                    title: 'Add Group Member'
+                },
+                props: true,
+                // beforeEnter: async (to) => {
+                //     return store.getters.currentUser.hasPermission('annual-reviews-manage');
+                // }
+            },
+            {
+                name: 'AnnualReviewEditMember',
+                path: 'members/:memberId',
+                component: MemberForm,
+                meta: {
+                    showModal: true,
+                    protected: true,
+                    title: 'Add Group Member'
+                },
+                props: true,
+                // beforeEnter: async (to) => {
+                //     return store.getters.currentUser.hasPermission('annual-reviews-manage');
+                // }
+            },
+        ],
     },
     ...applicationRoutes,
     ...groupRoutes,

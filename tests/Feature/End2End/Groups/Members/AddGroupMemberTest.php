@@ -34,7 +34,8 @@ class AddGroupMemberTest extends TestCase
         $this->seed();
         $this->group = Group::factory()->create(['group_type_id'=> 1]);
         $this->person = Person::factory()->create();
-        $this->user = $this->setupUser();
+        $this->user = $this->setupUser(permissions: ['groups-manage']);
+        Sanctum::actingAs($this->user);
 
         $this->admin = User::factory()->create();
         $this->role = config('permission.models.role')::factory()
@@ -50,15 +51,59 @@ class AddGroupMemberTest extends TestCase
             'person_id' => $this->person->id,
             'role_id' => $this->role->id,
         ];
-        $url = '/api/groups/'.uniqid().'/members';
 
-        Sanctum::actingAs($this->admin);
-        $response = $this->json(
-            'POST',
-            $url,
-            $data
-        );
-        $response->assertStatus(404);
+        $url = '/api/groups/'.'blahblahblah'.'/members';
+
+        $response = $this->json('POST', $url, $data)->assertStatus(404);
+    }
+    
+    /**
+     * @test
+     */
+    public function unprivileged_user_cannot_add_a_group_member()
+    {
+        $this->user->revokePermissionTo('groups-manage');
+
+        $this->makeRequest()
+            ->assertStatus(403);
+    }
+
+    /**
+     * @test
+     */
+    public function user_with_epApplicationsManage_permission_can_add_group_member()
+    {
+        $this->user->revokePermissionTo('groups-manage');
+        $this->user->givePermissionTo('ep-applications-manage');
+        
+        $this->makeRequest()
+            ->assertStatus(201);
+    }
+    
+    /**
+     * @test
+     */
+    public function user_with_annualReviewsManage_permission_can_add_group_member()
+    {
+        $this->user->revokePermissionTo('groups-manage');
+        $this->user->givePermissionTo('annual-reviews-manage');
+        $this->makeRequest()
+            ->assertStatus(201);
+    }
+    
+
+    /**
+     * @test
+     */
+    public function user_with_with_group_inviteMembers_permission_can_add_group_member()
+    {
+        $this->user->revokePermissionTo('groups-manage');
+        $groupMember = GroupMember::factory()->create(['group_id' => $this->group->id]);
+        $groupMember->givePermissionTo('members-invite');
+        $groupMember->person->update(['user_id' => $this->user->id]);
+
+        $this->makeRequest()
+            ->assertStatus(201);
     }
     
 
@@ -67,7 +112,7 @@ class AddGroupMemberTest extends TestCase
      */
     public function can_add_member_to_expert_panel()
     {
-        $response = $this->callCreateEndpoint();
+        $response = $this->makeRequest();
         $response->assertStatus(201);
 
         $this->assertDatabaseHas('group_members', [
@@ -82,7 +127,7 @@ class AddGroupMemberTest extends TestCase
     public function returns_new_member_with_person_roles_and_start_date()
     {
         Carbon::setTestNow('2021-10-07');
-        $response = $this->callCreateEndpoint();
+        $response = $this->makeRequest();
         $response->assertStatus(201);
         $response->assertJsonFragment([
             'person_id' => $this->person->id,
@@ -103,7 +148,7 @@ class AddGroupMemberTest extends TestCase
     {
         $role2 = ModelsRole::factory()->create(['scope' => 'group']);
 
-        $response = $this->callCreateEndpoint(personId: null, roleIds: [$this->role->id, $role2->id]);
+        $response = $this->makeRequest(personId: null, roleIds: [$this->role->id, $role2->id]);
         $response->assertStatus(201);
 
         $this->assertDatabaseHas('model_has_roles', [
@@ -124,7 +169,7 @@ class AddGroupMemberTest extends TestCase
     public function fires_MemberAdded_event()
     {
         Event::fake();
-        $this->callCreateEndpoint()
+        $this->makeRequest()
             ->assertStatus(201);
         Event::assertDispatched(MemberAdded::class, function ($event) {
             return $event->groupMember->person_id == $this->person->id
@@ -137,7 +182,7 @@ class AddGroupMemberTest extends TestCase
      */
     public function member_added_activity_logged()
     {
-        $this->callCreateEndpoint();
+        $this->makeRequest();
 
         $this->assertDatabaseHas('activity_log', [
             'subject_type' => Group::class,
@@ -151,7 +196,7 @@ class AddGroupMemberTest extends TestCase
      */
     public function saves_is_contact_attribute()
     {
-        $this->callCreateEndpoint(isContact: true);
+        $this->makeRequest(isContact: true);
 
         $this->assertDatabaseHas('group_members', [
             'group_id' => $this->group->id,
@@ -166,14 +211,14 @@ class AddGroupMemberTest extends TestCase
     public function person_is_notified_of_being_added_to_group()
     {
         Notification::fake(AddedToGroupNotificaiton::class);
-        $this->callCreateEndpoint()
+        $this->makeRequest()
             ->assertStatus(201);
 
         Notification::assertSentTo($this->person, AddedToGroupNotification::class);
     }
     
 
-    private function callCreateEndpoint($personId = null, ?array $roleIds = null, bool $isContact = false)
+    private function makeRequest($personId = null, ?array $roleIds = null, bool $isContact = false)
     {
         $data = $data ?? [
             'person_id' => $personId ?? $this->person->id,
@@ -183,7 +228,6 @@ class AddGroupMemberTest extends TestCase
 
         $url = '/api/groups/'.$this->group->uuid.'/members';
 
-        Sanctum::actingAs($this->admin);
         $response = $this->json(
             'POST',
             $url,

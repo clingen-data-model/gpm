@@ -84,7 +84,7 @@ Route::group([
     Route::post('/{group:uuid}/application/submission', ApplicationSubmitStep::class);
 
     // MEMBERS
-    Route::group(['prefix' => '/{uuid}/members'], function () {
+    Route::group(['prefix' => '/{group:uuid}/members'], function () {
         Route::get('/', [GroupController::class, 'members']);
         Route::post('/', MemberAdd::class);
         Route::delete('/{member_id}', MemberRemove::class);
