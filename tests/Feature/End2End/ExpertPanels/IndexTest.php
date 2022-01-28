@@ -107,39 +107,6 @@ class IndexTest extends TestCase
             ->assertJsonCount(2, 'data');
     }
 
-    /**
-     * @test
-     */
-    public function returns_group_name_as_working_name()
-    {
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $response = $this->json('GET', self::URL.'?sort[field]=name&sort[dir]=desc');
-        foreach ($this->expertPanels as $ep) {
-            $response->assertJsonFragment([
-                    'working_name' => $ep->group->name
-            ]);
-        }
-    }
-    
-
-    /**
-     * @test
-     */
-    public function can_eager_load_documents()
-    {
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $document = Document::factory()->make();
-        $ep = $this->expertPanels->first();
-        $docs = $ep->group->documents()->save($document);
-
-        $response = $this->json('GET', self::URL.'?sort[field]=name&sort[dir]=desc&with=group,group.documents');
-        $response->assertOk();
-        $this->assertObjectHasAttribute('documents', json_decode($response->content())->data[0]->group);
-        $this->assertEquals($document->uuid, json_decode($response->content())->data[0]->documents[0]->uuid);
-    }
-    
-    
-
     private function assertResultsSorted(Collection $expected, $response)
     {
         $response->assertOk();
