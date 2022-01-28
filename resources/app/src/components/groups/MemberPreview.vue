@@ -23,21 +23,24 @@
                         </dictionary-row>
                 </div>
                 <div class="flex-1 mr-4">
-                    <h4>Biocurator Training:</h4>
-                    <div v-if="member.hasRole('biocurator')"  class="ml-2">
-                        <dictionary-row label="Level 1 training">
-                            <icon-checkmark class="text-green-700" v-if="member.training_level_1"/>
-                        </dictionary-row>
-                        <dictionary-row label="Level 2 training">
-                            <icon-checkmark class="text-green-700" v-if="member.training_level_2"/>
-                        </dictionary-row>
-                    </div>
                     <div class="mt-2">
                         <h4>Roles:</h4>
                         <div class="ml-2">
                             {{member.roles.length > 0 ? member.roles.map(i => titleCase(i.name)).join(', ') : '--'}}
                         </div>
                     </div>
+                    <div v-if="member.hasRole('biocurator')">
+                        <h4>Biocurator Training:</h4>
+                        <div class="ml-2">
+                            <dictionary-row label="Level 1 training">
+                                <icon-checkmark class="text-green-700" v-if="member.training_level_1"/>
+                            </dictionary-row>
+                            <dictionary-row label="Level 2 training">
+                                <icon-checkmark class="text-green-700" v-if="member.training_level_2"/>
+                            </dictionary-row>
+                        </div>
+                    </div>
+
                     <div class="mt-2">
                         <h4>Extra Permissions:</h4>
                         <div class="ml-2">
