@@ -3,17 +3,17 @@
         <input-row 
             :disabled="isComplete"
             label="Link to approved specification in Cspec" 
-            :errors="errors.specification_url" 
+            :errors="errors.specification_progress_url" 
             vertical
             class="ml-4"
-            v-model="workingCopy.data.specification_url"
+            v-model="workingCopy.data.specification_progress_url"
         />
         <input-row 
             :disabled="isComplete"
             v-model="workingCopy.data.specification_progress"
             type="radio-group"
             :options="[
-                {   value: 'in-progress.',  
+                {   value: 'in-progress',  
                     label:'VCEP specifications to the ACMG/AMP guidelines in progress.'
                 },
                 {

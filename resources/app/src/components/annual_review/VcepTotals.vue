@@ -97,17 +97,14 @@ export default {
             deep: true,
             immediate: true,
             handler (to) {
-                console.log('watch.modelValue');
-                if (!isEqual(to.variant_counts, this.variantCounts)) {
-                    console.log('syncing variantCounts from modelValue');
-                    this.variantCounts = cloneDeep(to.variant_counts)
+                if (!isEqual(to.data.variant_counts, this.variantCounts)) {
+                    this.variantCounts = cloneDeep(to.data.variant_counts)
                 }
             }
         },
         variantCounts: {
             deep: true,
             handler: function (to) {
-                console.log('variantCounts updated', to)
                 if (!isEqual(to, this.modelValue.variant_counts)) {
                     this.debounceSyncModel();
                 }

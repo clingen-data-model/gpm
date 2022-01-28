@@ -202,7 +202,7 @@ class AnnualReview extends Model
     {
         $this->load([
             'expertPanel' => function ($query) {
-                $query->select(['id', 'expert_panel_type_id', 'long_base_name', 'group_id', 'affiliation_id']);
+                $query->select(['id', 'expert_panel_type_id', 'long_base_name', 'group_id', 'affiliation_id', 'step_1_approval_date','step_2_approval_date','step_3_approval_date','step_4_approval_date']);
             },
             'expertPanel.group' => function ($query) {
                 $query->select(['id', 'group_type_id', 'name', 'uuid']);
