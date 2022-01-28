@@ -23,10 +23,10 @@ export const setupMirror = (props, context) => {
         if (!isEqual(to, workingCopy.value)) {
             workingCopy.value = cloneDeep(to);
         }
-    }, {immediate: true});
+    }, {immediate: true, deep: true});
 
     watch(() => workingCopy, function (to) {
-        if (!isEqual(to, props.modelValue)) {
+        if (!isEqual(to.value, props.modelValue)) {
             context.emit('update:modelValue', to.value);
         }
     }, {deep: true});
