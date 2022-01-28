@@ -65,7 +65,7 @@ class DeleteGroupTest extends TestCase
         $this->assertDatabaseHas('group_members', [
             'id' => $groupMember->id,
             'group_id' => $this->group->id,
-            'deleted_at' => Carbon::now(),
+            'deleted_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
     }
 
