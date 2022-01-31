@@ -12,6 +12,12 @@ class PersonUnlinkUser
 
     public function handle(Person $person)
     {
+        if (is_null($person->user)) {
+            return $person;
+        }
+        
+        dd($person->user);
+
         $user = $person->user;
         $person->update(['user_id' => null]);
 

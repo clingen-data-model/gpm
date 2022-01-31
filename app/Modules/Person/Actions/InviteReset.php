@@ -25,6 +25,9 @@ class InviteReset
         $person = $invite->person;
         $user = $invite->person->user;
 
+        if(is_null($user)) {
+            return $invite;
+        }
         $this->unlinkUser->handle($person);
         $this->deleteUser->handle($user);
 
