@@ -1,13 +1,14 @@
 <template>
     <div class="w-full space-y-1">
-        <input type="text" v-model="workingCopy.street1" placeholder="street 1" class="block w-full">
+        <input type="text" v-model="workingCopy.street1" placeholder="street 1" class="w-full">
         <input-errors class="text-xs" :errors="errors.street1 || []"></input-errors>
-        <input type="text" v-model="workingCopy.street2" placeholder="street 2" class="block w-full">
+        <input type="text" v-model="workingCopy.street2" placeholder="street 2" class="w-full">
         <input-errors class="text-xs" :errors="errors.street2 || []"></input-errors>
+
         <div class="flex space-x-1">
-            <input type="text" v-model="workingCopy.city" placeholder="City">
-            <input type="text" v-model="workingCopy.state" placeholder="State">
-            <input type="text" v-model="workingCopy.zip" placeholder="Postal Code">
+            <input type="text" v-model="workingCopy.city" placeholder="City" class="w-1/3 shrink">
+            <input type="text" v-model="workingCopy.state" placeholder="State" class="w-1/3 shrink">
+            <input type="text" v-model="workingCopy.zip" placeholder="Postal Code" class="w-1/3 shrink">
         </div>
         <input-errors class="text-xs" :errors="addressErrors"></input-errors>
     </div>
