@@ -3,16 +3,30 @@ namespace App\Modules\Person\Actions;
 
 use App\Modules\Person\Models\Invite;
 use Lorisleiva\Actions\ActionRequest;
+use App\Modules\User\Actions\UserDelete;
 use Lorisleiva\Actions\Concerns\AsController;
+use App\Modules\Person\Actions\PersonUnlinkUser;
 
 class InviteReset
 {
     use AsController;
+
+    public function __construct(private PersonUnlinkUser $unlinkUser, private UserDelete $deleteUser)
+    {
+        //code
+    }
+    
+
+
     public function handle(Invite $invite, $data)
     {
         $invite->update(['redeemed_at' => null]);
 
-        // Event::dispatch(new InviteReset($invite, $user));
+        $person = $invite->person;
+        $user = $invite->person->user;
+
+        $this->unlinkUser->handle($person);
+        $this->deleteUser->handle($user);
 
         return $invite;
     }
