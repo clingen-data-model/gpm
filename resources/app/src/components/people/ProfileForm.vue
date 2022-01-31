@@ -8,12 +8,12 @@
         ></data-form>
         <hr class="my-4">
 
-        <h3>Demographics</h3>
+        <!-- <h3>Demographics</h3>
         <data-form 
             :fields="demographicFields" 
             v-model="profile" 
             :errors="errors"
-        ></data-form>
+        ></data-form> -->
 
         <button-row @submitted="save" @canceled="cancel()" submit-text="Save"></button-row>
     </div>

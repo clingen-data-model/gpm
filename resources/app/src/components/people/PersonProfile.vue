@@ -47,7 +47,7 @@
             <dictionary-row class="pb-2" label-class="w-40" label="Phone">{{person.phone}}</dictionary-row>
         </section>
 
-        <section class="mt-4 border-t pt-4" v-if="userIsPerson(person) || hasPermission('people-manage')">
+        <!-- <section class="mt-4 border-t pt-4" v-if="userIsPerson(person) || hasPermission('people-manage')">
             <header class="flex items-center space-x-2">
                 <h3>
                     Demographics
@@ -63,7 +63,7 @@
             <dictionary-row class="pb-2" label-class="w-40" label="Race">{{person.raceName}}</dictionary-row>
             <dictionary-row class="pb-2" label-class="w-40" label="Ethnicity">{{person.ethnicityName}}</dictionary-row>
             <dictionary-row class="pb-2" label-class="w-40" label="Gender">{{person.genderName}}</dictionary-row>
-        </section>
+        </section> -->
 
         <section class="mt-4 border-t pt-4" v-if="hasPermission('people-manage')">
             <h3>Metadata</h3>

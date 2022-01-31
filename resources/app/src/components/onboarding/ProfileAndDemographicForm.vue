@@ -1,6 +1,6 @@
 <template>
     <div>
-        <p class="text-lg font-bold">Please fill out your profile</p>
+        <p class="text-lg font-bold">{{title}}</p>
         <data-form 
             :fields="fields" 
             v-model="profile" 
@@ -8,6 +8,7 @@
         ></data-form>
         <div class="flex flex-row-reverse justify-between">
             <button class="btn blue" @click="goToNext">Next &gt;</button>
+            <button class="link" @click="page = 'profile'" v-if="page == 'demographics'">&lt; Back to profile</button>
         </div>
         <dev-component class="mt-4">
             <collapsible>{{person}}</collapsible>
@@ -17,7 +18,7 @@
 <script>
 import isValidationError from '@/http/is_validation_error'
 import {onMounted} from 'vue'
-import {getLookups, profileFields} from '@/forms/profile_form';
+import {getLookups, profileFields, demographicFields} from '@/forms/profile_form';
 
 export default {
     name: 'ProfileForm',
@@ -31,8 +32,15 @@ export default {
         return {
             errors: {},
             profile: {},
-            page: 'profile',
-            fields: profileFields
+            page: 'profile'
+        }
+    },
+    computed: {
+        fields () {
+            return (this.page == 'profile') ? this.profileFields : this.demographicFields;
+        },
+        title () {
+            return this.page == 'profile' ? 'Please fill out your profile' : 'Please share your demographic information.'
         }
     },
     methods: {
@@ -55,7 +63,11 @@ export default {
             }
         },
         goToNext() {
-            if (!this.validateProfile()) {
+            if (this.page == 'profile') {
+                if (!this.validateProfile()) {
+                    return;
+                }
+                this.page = 'demographics';
                 return;
             }
             this.save();
@@ -80,6 +92,7 @@ export default {
 
         return {
             profileFields,
+            demographicFields,
             getLookups,
         }
     },

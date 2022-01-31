@@ -128,8 +128,8 @@ class UpdateProfileTest extends TestCase
             ->assertStatus(422)
             ->assertJsonFragment([
                 'institution_id' => ['This is required.'],
-                'primary_occupation_id' => ['This is required.'],
-                'gender_id' => ['This is required.'],
+                // 'primary_occupation_id' => ['This is required.'],
+                // 'gender_id' => ['This is required.'],
                 'country_id' => ['This is required.'],
                 'timezone' => ['This is required.'],
             ]);
@@ -173,9 +173,9 @@ class UpdateProfileTest extends TestCase
         $this->makeRequest($data)
             ->assertJsonFragment([
                 'institution_id' => ['The selection is invalid.'],
-                'race_id' => ['The selection is invalid.'],
-                'primary_occupation_id' => ['The selection is invalid.'],
-                'gender_id' => ['The selection is invalid.'],
+                // 'race_id' => ['The selection is invalid.'],
+                // 'primary_occupation_id' => ['The selection is invalid.'],
+                // 'gender_id' => ['The selection is invalid.'],
                 'country_id' => ['The selection is invalid.'],
             ]);
     }
