@@ -138,6 +138,15 @@ export default [
         ],
     },
     {
+        name: 'ReviewApplication',
+        path: '/groups/:uuid/application/review',
+        component: () =>  import ( /* webpackChunkName: "application-review" */ '@/components/expert_panels/ApplicationResponse.vue'),
+        props: true,
+        meta: {
+            protected: true
+        }
+    },
+    {
         name: 'AnnualReview',
         path: '/groups/:uuid/annual-review',
         components: {

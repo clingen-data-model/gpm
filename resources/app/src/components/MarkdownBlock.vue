@@ -13,7 +13,9 @@ export default {
     },
     computed: {
         rendered () {
-            return purify.sanitize(marked(this.markdown))
+            if (!this.markdown) return null;
+
+            return purify.sanitize(marked(this.markdown));
         }
     },
     methods: {

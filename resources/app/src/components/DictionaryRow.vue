@@ -32,6 +32,10 @@ export default {
             type: Number,
             default: 9
         },
+        labelWidthClass: {
+            type: String,
+            default: 'w-36'
+        },
         labelClass: {
             type: String,
             required: false
@@ -52,7 +56,7 @@ export default {
         fullLabelClass () {
             const classList = [];
             if (!this.vertical) {
-                classList.push('w-'+(this.labelWidth*4).toString())
+                classList.push(this.labelWidthClass)
             }
             if (this.vertical) {
                 classList.push('mb-1')

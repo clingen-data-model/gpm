@@ -20,8 +20,9 @@
                 />
                 <div v-else>
                     <markdown-block 
-                        v-if="group.expert_panel.membership_description" :markdown="group.expert_panel.membership_description">
-                    </markdown-block>
+                        v-if="group.expert_panel.membership_description" 
+                        :markdown="group.expert_panel.membership_description"
+                    />
                     <p class="well" v-else>
                         A description of expertise has not yet been provided.
                     </p>

@@ -1,6 +1,11 @@
 <template>
     <div v-if="filteredObj">
-        <dictionary-row v-for="(value, key) in filteredObj" :key="key" :label="titleCase(key)">
+        <dictionary-row 
+            v-for="(value, key) in filteredObj" 
+            :key="key" 
+            :label="titleCase(key)"
+            :label-width-class="labelWidthClass"
+        >
             {{value}}
         </dictionary-row>
     </div>
@@ -35,6 +40,11 @@ export default {
             type: Array,
             required: false,
             default: () => []
+        },
+        labelWidthClass: {
+            type: String,
+            required: false,
+            default: 'w-36'
         }
     },
     data() {
