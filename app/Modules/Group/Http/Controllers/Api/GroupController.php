@@ -75,6 +75,8 @@ class GroupController extends Controller
             'expertPanel',
             'expertPanel.genes',
             'expertPanel.genes.gene',
+            'expertPanel.genes.disease',
+            'expertPanel.curationReviewProtocol'
         ]);
 
         return new GroupResource($group);
