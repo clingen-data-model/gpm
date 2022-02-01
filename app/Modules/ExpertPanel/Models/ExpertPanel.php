@@ -31,6 +31,7 @@ use App\Modules\ExpertPanel\Models\CurationReviewProtocol;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use App\Models\Traits\HasLogEntries as HasLogEntriesTraits;
 use App\Models\Traits\RecordsEvents as TraitsRecordsEvents;
+use App\Modules\ExpertPanel\Models\ReanalysisDiscrepencyResolution;
 use App\Modules\Group\Models\Traits\HasMembers as TraitsHasMembers;
 use App\Modules\Group\Models\Traits\BelongsToGroup as TraitsBelongsToGroup;
 
@@ -246,14 +247,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     public function curtionReviewProtocol()
     {
         return $this->belongsTo(\App\Modules\ExpertPanels\Models\CurtionReviewProtocol::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function reanalysisDiscrepencyResolution()
-    {
-        return $this->belongsTo(\App\Modules\ExpertPanels\Models\ReanalysisDiscrepencyResolutions::class);
     }
 
     /**
