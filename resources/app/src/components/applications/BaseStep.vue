@@ -25,6 +25,9 @@
                     <button class="btn btn-xs" @click="toggleDocuments">{{docsToggleText}}</button>
                     &nbsp;
                     <button class="btn btn-xs" @click="toggleSections">{{sectionsToggleText}}</button>
+                    &nbsp;
+                    <button class="btn btn-xs" @click="goToPrintable">Printable Application</button>
+
                 </div>
             </div>
             <transition name="slide-fade-down">
@@ -77,6 +80,7 @@
             >
                 {{approveButtonLabel}}
             </button>
+
             <teleport to="body">
                 <modal-dialog v-model="showApproveForm" size="xl" @closed="$refs.approvestepform.clearForm()">
                     <approve-step-form  
@@ -196,6 +200,10 @@ export default {
         toggleSections () {
             this.showSections = !this.showSections;
         },
+        goToPrintable () {
+            const printWindow = window.open(`/groups/${this.group.uuid}/application/review`);
+        },
+
         startApproveStep () {
             this.showApproveForm = true;
         },

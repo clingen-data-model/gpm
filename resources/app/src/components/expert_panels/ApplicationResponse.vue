@@ -8,7 +8,14 @@
             </router-link>
         </div>
         <div class="application-step">
-            <h1>{{group.displayName}} - Group Definition</h1>
+            <h1 class="flex items-center justify-between">
+                {{group.displayName}} - Group Definition
+                <button class="btn btn-sm print:hidden" @click="print">
+                    <strong>Print</strong>
+                    &nbsp;
+                    <icon-printer class="inline-block"></icon-printer>
+                </button>
+            </h1>
             <definition-review></definition-review>
         </div>
         <div class="step-break">
@@ -65,14 +72,21 @@ export default {
                 this.$store.dispatch('groups/getMembers', this.group);
             }
         }
+    },
+    methods: {
+        print () {
+            window.print();
+        }
     }
 }
 </script>
 <style lang="postcss">
+    .application-review {
+        max-width: 800px;
+    }
     .application-review section {
         @apply mt-8 bg-white p-4 border-b border-gray-200 bg-white;
         @apply print:mt-0 print:px-0 print:border-b-0;
-        max-width: 800px;
     }
 
     .application-review .step-break {
