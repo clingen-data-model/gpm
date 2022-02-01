@@ -91,11 +91,21 @@ export default {
                 })
         },
         async getApplication({ commit }, appUuid) {
-            await appRepo.find(appUuid, { with: ['group.logEntries', 'group.documents', 'contacts', 'logEntries.causer', 'cois', 'group.documents.type', 'nextActions'] })
-                .then(item => {
-                    commit('addApplication', item)
-                    commit('setCurrentItemIndex', item)
-                });
+            await appRepo.find(appUuid, { 
+                with: [
+                    'group.logEntries', 
+                    'group.documents', 
+                    'contacts', 
+                    'group.logEntries.causer', 
+                    'cois', 
+                    'group.documents.type', 
+                    'nextActions'
+                ] 
+            })
+            .then(item => {
+                commit('addApplication', item)
+                commit('setCurrentItemIndex', item)
+            });
         },
         async updateEpAttributes({ dispatch }, application) {
             await appRepo.updateEpAttributes(application)
