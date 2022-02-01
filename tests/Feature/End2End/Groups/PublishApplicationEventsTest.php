@@ -6,13 +6,16 @@ use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Carbon;
 use App\Modules\Person\Models\Person;
+use App\Modules\Group\Actions\GenesAdd;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Traits\SeedsHgncGenesAndDiseases;
 
 class PublishApplicationEventsTest extends TestCase
 {
     use RefreshDatabase;
+    use SeedsHgncGenesAndDiseases;
     
     public function setup():void
     {
@@ -20,7 +23,7 @@ class PublishApplicationEventsTest extends TestCase
         $this->seed();
 
         $this->user = $this->setupUser(null, ['ep-applications-manage']);
-        $this->expertPanel = ExpertPanel::factory()->create();
+        $this->expertPanel = ExpertPanel::factory()->gcep()->create();
         $this->group = $this->expertPanel->group;
 
         Sanctum::actingAs($this->user);
@@ -69,6 +72,35 @@ class PublishApplicationEventsTest extends TestCase
         ]);
     }
 
+    /**
+     * @test
+     */
+    public function it_should_not_publish_GeneAdded_when_def_not_yet_approved()
+    {
+        $this->addGene();
+
+        $this->assertDatabaseMissing('stream_messages', [
+            'topic' => config('dx.topics.outgoing.gpm-applications'),
+            'message->event_type' => 'gene_added',
+        ]);
+    }
+    
+
+    /**
+     * @test
+     */
+    public function it_publishes_GeneAdded_when_gene_added_and_def_already_approved()
+    {
+        $this->approveEpDef();
+        $this->addGene();
+
+        $this->assertDatabaseHas('stream_messages', [
+            'topic' => config('dx.topics.outgoing.gpm-applications'),
+            'message->event_type' => 'gene_added',
+            'sent_at' => null,
+        ]);
+    }
+
     private function addPerson()
     {
         $person = Person::factory()->create();
@@ -78,6 +110,14 @@ class PublishApplicationEventsTest extends TestCase
             'is_contact' => 0
         ]);
     }
+
+    private function addGene($genes = null)
+    {
+        $genes = $this->seedGenes([['hgnc_id' => 678, 'gene_symbol'=>'BCD'], ['hgnc_id' => 12345, 'gene_symbol' => 'ABC1']]);
+        $action = app()->make(GenesAdd::class);
+        $action->handle($this->expertPanel->group, $genes->pluck('gene_symbol'));
+    }
+    
 
     private function approveEpDef()
     {

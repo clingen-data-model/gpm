@@ -3,6 +3,7 @@
 namespace App\Modules\Group\Actions;
 
 use App\Modules\Group\Models\Group;
+use App\Modules\Group\Events\GeneEvent;
 use App\DataExchange\Models\StreamMessage;
 use App\Modules\Group\Events\GroupMemberEvent;
 use App\DataExchange\Actions\StreamMessageCreate;
@@ -36,7 +37,7 @@ class EventApplicationPublish
         }
 
         if (
-            $this->isGroupMemberEvent($event)
+            $this->isGroupMemberOrGeneEvent($event)
             && !$this->definitionIsApproved($event->group)
         ) {
             return false;
@@ -51,8 +52,20 @@ class EventApplicationPublish
     }
     
 
+    private function isGroupMemberOrGeneEvent($event): bool
+    {
+        return $this->isGroupMemberEvent($event) || $this->isGeneEvent($event);
+    }
+    
+
     private function isGroupMemberEvent($event): bool
     {
         return $event instanceof GroupMemberEvent;
     }
+
+    private function isGeneEvent($event): bool
+    {
+        return $event instanceof GeneEvent;
+    }
+    
 }
