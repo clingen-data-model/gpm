@@ -29,7 +29,6 @@ use App\Modules\ExpertPanel\Models\SpecificationRuleSet;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use App\Modules\ExpertPanel\Models\CurationReviewProtocol;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use App\Models\Traits\HasLogEntries as HasLogEntriesTraits;
 use App\Models\Traits\RecordsEvents as TraitsRecordsEvents;
 use App\Modules\ExpertPanel\Models\ReanalysisDiscrepencyResolution;
 use App\Modules\Group\Models\Traits\HasMembers as TraitsHasMembers;
