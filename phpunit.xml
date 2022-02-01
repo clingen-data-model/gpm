@@ -36,5 +36,6 @@
         <server name="SESSION_DRIVER" value="array"/>
         <server name="TELESCOPE_ENABLED" value="false"/>
         <server name="LOG_LEVEL" value="error"/>
+        <server name="DX_ENABLE_PUSH" value="false"/>
     </php>
 </phpunit>
