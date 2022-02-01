@@ -9,7 +9,9 @@
         @stepApproved="$emit('stepApproved')"
     >
         <template v-slot:sections>
-            <div class="applicaiton-section">
+
+            <sustained-curation-review />
+            <!-- <div class="applicaiton-section">
                 <h2>Plans for Ongoing Review and Reanalysis and Discrepancy Resolution</h2>
                 <vcep-ongoing-plans-form readonly />
             </div>
@@ -20,24 +22,26 @@
             <div class="application-section">
                 <h2>Member Designation</h2>
                 <member-designation-form readonly />
-            </div>
+            </div> -->
         </template>
     </base-step>
 </template>
 <script>
 import {mapGetters} from 'vuex'
 import BaseStep from '@/components/applications/BaseStep'
-import EvidenceSummaryList from '@/components/expert_panels/EvidenceSummaryList'
-import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm'
-import MemberDesignationForm from '@/components/expert_panels/MemberDesignationForm';
+// import EvidenceSummaryList from '@/components/expert_panels/EvidenceSummaryList'
+// import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm'
+// import MemberDesignationForm from '@/components/expert_panels/MemberDesignationForm';
+import SustainedCurationReview from '@/components/expert_panels/SustainedCurationReview'
 
 export default {
     name: 'StepFour',
     components: {
         BaseStep,
-        EvidenceSummaryList,
-        VcepOngoingPlansForm,
-        MemberDesignationForm,
+        // EvidenceSummaryList,
+        // VcepOngoingPlansForm,
+        // MemberDesignationForm,
+        SustainedCurationReview
     },
     props: {
         

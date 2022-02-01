@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="application-review">
         <base-step 
             :step="1" 
             document-name="Scope and Membership Application" 
@@ -10,7 +10,8 @@
             @stepApproved="handleApproved"
         >
             <template v-slot:sections>
-                <div class="application-section">
+                <definition-review />
+                <!-- <div class="application-section">
                     <member-list />
                     <div v-if="group.isVcep()">
                         <h3>Description of Expertise</h3>
@@ -70,7 +71,7 @@
                         <span v-else class="muted">{{'Pending...'}}</span>
                     </dictionary-row>
                 </div>
-
+ -->
 
             </template>
 
@@ -87,6 +88,7 @@ import ApplicationSection from '@/components/expert_panels/ApplicationSection'
 import GcepGeneList from '@/components/expert_panels/GcepGeneList'
 import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm';
 import VcepGeneList from '@/components/expert_panels/VcepGeneList'
+import DefinitionReview from '@/components/expert_panels/DefinitionReview'
 
 export default {
     name: 'StepOne',
@@ -95,7 +97,8 @@ export default {
         CoiLog,
         MemberList,
         ApplicationSection,
-        GcepOngoingPlansForm
+        GcepOngoingPlansForm,
+        DefinitionReview
     },
     emits: ['stepApproved'],
     data() {
