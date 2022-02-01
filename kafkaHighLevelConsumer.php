@@ -15,8 +15,6 @@ foreach ($argv as $idx => $arg) {
         $value = true;
         if (preg_match('/=/', $name)) {
             [$name, $value] = explode('=', $name);
-        } elseif (isset($argv[$idx+1])) {
-            $value = $argv[$idx+1];
         }
         $options[$name] = $value;
         continue;
@@ -53,7 +51,7 @@ function rSortByKeys($array)
 }
 
 
-function commitoff($consumer, $topicPartition, $offset, $attempt = 0)
+function commitOffset($consumer, $topicPartition, $offset, $attempt = 0)
 {
     if ($offset >= 0) {
         echo "Committing offset set to $offset for topic ".$topicPartition->getTopic()." on partition ".$topicPartition->getPartition()."...\n";
@@ -225,7 +223,7 @@ while (true) {
 
             $filePath = $messageDir.'/'.$filename.'.json';
 
-            file_put_contents($filePath, $message->payload);
+            file_put_contents($filePath, json_encode(json_decode($message->payload), JSON_PRETTY_PRINT));
 
             echo(json_encode([
                 'len' => $message->len,
