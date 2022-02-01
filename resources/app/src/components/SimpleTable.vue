@@ -1,5 +1,5 @@
 <template>
-    <table class="text-sm">
+    <table>
         <thead>
             <tr>
                 <th v-for="heading in headings" :key="heading">{{titleCase(heading)}}</th>

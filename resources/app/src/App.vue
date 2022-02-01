@@ -1,6 +1,6 @@
 <template>
   <div id="epam-app-root">
-    <header id="nav" class="border-b bg-gray-100">
+    <header id="nav" class="border-b bg-gray-100 print:hidden">
       <div class="container mx-auto py-3 flex">
         <div id="main-menu" class="flex-grow">
           <div class="inline-block pr-3">
@@ -48,12 +48,12 @@
           <router-view />
         </div>
       </div>
-      <impersonate-control />
+      <impersonate-control class="print:hidden" />
     </div>
 
 
     <alert-viewer></alert-viewer>
-    <issue-report-form />
+    <issue-report-form class="print:hidden" />
 
     <!-- <teleport to="body">
       <footer class="w-full border-t mt-4 bg-gray-100">

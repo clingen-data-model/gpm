@@ -65,6 +65,15 @@ class Group extends Entity {
                 .filter(m => m.isActive)
     }
 
+    get trainedBiocurators () {
+        return this.findMembersWithRole('biocurator')
+                .filter(m => {
+                    return m.isActive
+                        && m.training_level_1
+                        && m.training_level_2
+                })
+    }
+
     get biocuratorTrainers () {
         return this.findMembersWithRole('biocurator-trainer')
                 .filter(m => m.isActive)

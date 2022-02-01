@@ -1,101 +1,60 @@
 <template>
-    <div>
-        <h1>Applicaiton for {{group.displayName}}</h1>
-        <section>
-            <h2>Basic Information</h2>
-            <object-dictionary :obj="basicInfo" labelWidthClass="w-40" />
-        </section>
+    <div class="application-review">
+        <div class="print:hidden">
+            <router-link :to="{name: 'GroupList'}" class="note">Groups</router-link>
+            <span class="note"> &gt; </span>
+            <router-link v-if="group.uuid" :to="{name: 'GroupDetail', params: {uuid: group.uuid}}" class="note">
+                {{group.displayName}}
+            </router-link>
+        </div>
+        <div class="application-step">
+            <h1>{{group.displayName}} - Group Definition</h1>
+            <definition-review></definition-review>
+        </div>
+        <div class="step-break">
+            End of Group Definition Application.
+        </div>
 
-        <section>
-            <h2>Membership</h2>
-            <simple-table :data="members" key-by="id" />
+        <div class="application-step print:hidden">
+            <h1 v-if="expertPanel.definition_is_approved" class="print:hidden" >
+                {{group.displayName}} - Draft and Pilot Specifications
+            </h1>
+            <section v-if="expertPanel.definition_is_approved" class="print:hidden" >
+                <cspec-summary></cspec-summary>
+            </section>
+        </div>
 
-            <div v-if="isVcep">
-                <h4>Expertise of VCEP members</h4>
-                <markdown-block :markdown="expertPanel.membership_description" />
-            </div>
-        </section>
+        <div class="step-break">
+            End of Specification Draft and Pilot.
+        </div>
 
-        <section>
-            <h2>Scope of Work</h2>
-            <h4>Genes</h4>
-            <p>{{expertPanel.genes.map(g => g.gene.gene_symbol).join(', ')}}</p>
-            <!-- <simple-table v-if="isVcep" :data="expertPanel.genes.map(g => ({id: g.id,gene: g.gene.gene_symbol, disease: g.disease.name}))" :key-by="'id'" :hide-columns="['id']" /> -->
+        <div class="application-step  page-break">
+            <h1 v-if="expertPanel.has_approved_pilot">
+                {{group.displayName}} - Sustained Curation
+            </h1>
 
-            <h4>Description of scope</h4>
-            <markdown-block :markdown="expertPanel.scope_description" />
-        </section>
-
-        <section v-if="isGcep">
-            <h2>Attestations</h2>
-            <dictionary-row label="GCEP Attestation Signed">
-                {{formatDate(expertPanel.gcep_attestation_date)}}
-            </dictionary-row>
-            <dictionary-row label="GCI Training Date">
-                {{formatDate(expertPanel.gci_training_date)}}
-            </dictionary-row>
-            <dictionary-row label="NHGRI Attestation Signed">
-                {{formatDate(expertPanel.gci_training_date)}}
-            </dictionary-row>
-        </section>
-        <!-- <section v-if="isGcep">
-            <h2>Plans for Ongoing Review and Descrepency Resolution</h2>
-            <p>{{expertPanel.curation_review_protocol.full_name}}</p>
-            <p v-if="expertPanel.curation_review_protocol_id == 100">
-                {{expertPanel.curation_review_protocol_other}}
-            </p>
-        </section> -->
-
-        <section v-if="isVcep">
-
-        </section>
+            <sustained-curation-review />
+        </div>
     </div>
 </template>
 <script>
+import DefinitionReview from '@/components/expert_panels/DefinitionReview'
+import SustainedCurationReview from '@/components/expert_panels/SustainedCurationReview'
+import CspecSummary from '@/components/expert_panels/CspecSummary'
+import ApplicationStepReview from '@/components/expert_panels/ApplicationStepReview'
+
 export default {
-    name: 'ComponentName',
+    name: 'ApplicationResponse',
+    extends: ApplicationStepReview,
+    components: {
+        DefinitionReview,
+        CspecSummary,
+        SustainedCurationReview
+    },
     props: {
         uuid: {
             type: String,
             required: true
-        }
-    },
-    data() {
-        return {
-            
-        }
-    },
-    computed: {
-        group () {
-            return this.$store.getters['groups/currentItemOrNew'];
-        },
-        expertPanel () {
-            return this.group.expert_panel;
-        },
-        isGcep () {
-            return this.group.isGcep();
-        },
-        isVcep () {
-            return this.group.isVcep();
-        },
-        basicInfo () {
-            return {
-                type: this.group.type.name,
-                long_base_name: this.expertPanel.long_base_name,
-                short_base_name: this.expertPanel.short_base_name,
-                CDWG: this.group.parent.name,
-            }
-        },
-        members () {
-            return this.group.members.map(m => ({
-                id: m.id,
-                name: m.person.name,
-                institution: m.person.institution ? m.person.institution.name : null,
-                credentials: m.person.credentials,
-                expertise: m.expertise,
-                roles: m.roles.map(r => r.name).join(', '),
-                coi_completed: this.formatDate(m.coi_last_completed)
-            }));
         }
     },
     watch: {
@@ -106,24 +65,33 @@ export default {
                 this.$store.dispatch('groups/getMembers', this.group);
             }
         }
-    },
-    methods: {
-
     }
 }
 </script>
-<style scoped lang="postcss">
-    section {
-        @apply mt-8;
+<style lang="postcss">
+    .application-review section {
+        @apply mt-8 bg-white p-4 border-b border-gray-200 bg-white;
+        @apply print:mt-0 print:px-0 print:border-b-0;
         max-width: 800px;
     }
-    section:first-child {
+
+    .application-review .step-break {
+        @apply border-t border-b font-bold text-center py-4 my-4 bg-gray-100 print:hidden;
+        max-width: 800px;
+    }
+    .application-review section:first-child {
         @apply mt-0
     }
-    h2 {
-        @apply mb-2
+    .application-review h2 {
+        @apply mb-2 border-b pb-1;
+        @apply print:border-b-0;
     }
-    h4 {
-        @apply mb-1
+    .application-review h3 {
+        @apply mb-1;
+    }
+    @media print {
+        .page-break {
+            page-break-before: always;
+        }
     }
 </style>

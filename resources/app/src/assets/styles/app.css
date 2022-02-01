@@ -29,6 +29,7 @@ h1, h2, h3, h4, h5 {
 
 h1 {
     @apply text-2xl pb-2 mb-4 border-b;
+    @apply print:mb-1 print:border-b-0;
 }
 
 h2{
@@ -122,9 +123,10 @@ input[type="checkbox"]:checked::before  {
   transform: scale(1);
 }
 
-
+ 
 blockquote{
     @apply border-l-4 ml-2 pl-2 mt-0;
+    @apply print:border-l-0 print:ml-0 print:pl-0 print:mt-0;
     border-color: inherit;
 }
 
