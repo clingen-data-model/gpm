@@ -15,6 +15,8 @@ foreach ($argv as $idx => $arg) {
         $value = true;
         if (preg_match('/=/', $name)) {
             [$name, $value] = explode('=', $name);
+        } elseif (isset($argv[$idx+1])) {
+            $value = $argv[$idx+1];
         }
         $options[$name] = $value;
         continue;
@@ -51,7 +53,7 @@ function rSortByKeys($array)
 }
 
 
-function commitOffset($consumer, $topicPartition, $offset, $attempt = 0)
+function commitoff($consumer, $topicPartition, $offset, $attempt = 0)
 {
     if ($offset >= 0) {
         echo "Committing offset set to $offset for topic ".$topicPartition->getTopic()." on partition ".$topicPartition->getPartition()."...\n";
@@ -212,7 +214,10 @@ while (true) {
     $message = $consumer->consume(10000);
     switch ($message->err) {
         case RD_KAFKA_RESP_ERR_NO_ERROR:
-            $payload = rSortByKeys(json_decode($message->payload));
+            $payload = json_decode($message->payload);
+            if (is_array($payload)) {
+                $payload = rSortByKeys($payload);
+            }
 
             $a = json_decode($message->payload, true);
 

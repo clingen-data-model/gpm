@@ -17,13 +17,14 @@ foreach ($argv as $idx => $arg) {
         $value = true;
         if (preg_match('/=/', $name)) {
             [$name, $value] = explode('=', $name);
+        } elseif (isset($argv[$idx+1])) {
+            $value = $argv[$idx+1];
         }
         $options[$name] = $value;
         continue;
     }
     $arguments[] = $arg;
 }
-
 $topic = isset($options['topic']) ? $options['topic'] : '';
 
 $conf = new RdKafka\Conf();
@@ -62,17 +63,12 @@ $conf->setDrMsgCb(function ($kafka, $message) {
     }
 });
 
-// Configure the group.id. All consumer with the same group.id will consume
-// different partitions.
-// $conf->set('group.id', $group);
-
-// Initial list of Kafka brokers
 $conf->set('security.protocol', 'sasl_ssl');
 $conf->set('sasl.mechanism', 'PLAIN');
 $conf->set('sasl.username', env('DX_USERNAME'));
 $conf->set('sasl.password', env('DX_PASSWORD'));
 $conf->set('group.id', env('DX_GROUP'));
-// $conf->set('metadata.broker.list', env('DX_BROKER'));
+$conf->set('metadata.broker.list', env('DX_BROKER'));
 
 
 $rk = new RdKafka\Producer($conf);
@@ -89,8 +85,10 @@ while (true) {
     if (in_array($line, ['quit', 'exit'])) {
         break;
     }
+    dump(trim($line));
+    $topic->produce(RD_KAFKA_PARTITION_UA, 0, json_encode(['test' => trim($line)]), Uuid::uuid4()->toString());
+    
     echo "tried to produce message '$line'\n";
-    $topic->produce(RD_KAFKA_PARTITION_UA, 0, trim($line), Uuid::uuid4()->toString());
     $rk->poll(0);
 }
 
