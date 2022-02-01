@@ -201,7 +201,7 @@ export default {
             this.showSections = !this.showSections;
         },
         goToPrintable () {
-            const printWindow = window.open(`/groups/${this.group.uuid}/application/review`);
+            window.open(`/groups/${this.group.uuid}/application/review`);
         },
 
         startApproveStep () {

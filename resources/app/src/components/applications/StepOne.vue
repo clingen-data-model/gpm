@@ -82,22 +82,22 @@
 <script>
 import {mapGetters} from 'vuex'
 import BaseStep from '@/components/applications/BaseStep'
-import CoiLog from '@/components/applications/COILog'
-import MemberList from '@/components/groups/MemberList'
-import ApplicationSection from '@/components/expert_panels/ApplicationSection'
-import GcepGeneList from '@/components/expert_panels/GcepGeneList'
-import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm';
-import VcepGeneList from '@/components/expert_panels/VcepGeneList'
+// import CoiLog from '@/components/applications/COILog'
+// import MemberList from '@/components/groups/MemberList'
+// import ApplicationSection from '@/components/expert_panels/ApplicationSection'
+// import GcepGeneList from '@/components/expert_panels/GcepGeneList'
+// import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm';
+// import VcepGeneList from '@/components/expert_panels/VcepGeneList'
 import DefinitionReview from '@/components/expert_panels/DefinitionReview'
 
 export default {
     name: 'StepOne',
     components: {
         BaseStep,
-        CoiLog,
-        MemberList,
-        ApplicationSection,
-        GcepOngoingPlansForm,
+        // CoiLog,
+        // MemberList,
+        // ApplicationSection,
+        // GcepOngoingPlansForm,
         DefinitionReview
     },
     emits: ['stepApproved'],
@@ -112,9 +112,9 @@ export default {
         application () {
             return this.group.expert_panel;
         },
-        geneList () {
-            return this.group.isVcep() ? VcepGeneList : GcepGeneList;
-        }
+        // geneList () {
+        //     return this.group.isVcep() ? VcepGeneList : GcepGeneList;
+        // }
     },
     methods: {
         handleApproved() {
