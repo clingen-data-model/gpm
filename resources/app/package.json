@@ -31,7 +31,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-utils": "^25.2.1",
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^25.2.1",
-    "@tailwindcss/postcss7-compat": "^2.0.2",
+    "@tailwindcss/postcss7-compat": "^2",
     "@testing-library/vue": "^6.4.2",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
@@ -47,6 +47,6 @@
     "chai": "^4.1.2",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.0.0-0",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2"
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2"
   }
 }
