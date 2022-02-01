@@ -11,6 +11,7 @@ use Symfony\Component\Finder\Finder;
 use App\DataExchange\Kafka\KafkaConfig;
 use App\DataExchange\Kafka\KafkaConsumer;
 use App\DataExchange\Kafka\KafkaProducer;
+use App\DataExchange\Listeners\PushMessage;
 use App\DataExchange\Contracts\MessagePusher;
 use App\DataExchange\Contracts\MessageConsumer;
 use App\DataExchange\MessagePushers\MessageLogger;
@@ -22,7 +23,7 @@ class DataExchangeServiceProvider extends ServiceProvider
 {
     protected $listen = [
         \App\DataExchange\Events\Created::class => [
-            \App\Listeners\StreamMessages\PushMessage::class
+            PushMessage::class
         ],
         \App\DataExchange\Events\Received::class => [
         ],
