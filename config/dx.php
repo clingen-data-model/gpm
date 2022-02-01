@@ -22,7 +22,7 @@ return [
             'cspec-general' => env('DX_INCOMING_CSPEC', 'cspec-general-demo')
         ],
         'outgoing' => [
-            'gpm-applications' => env('DX_OUTGOING_GPM_APPLICATIONS', 'gpm-applications-demo')
+            'gpm-applications' => env('DX_OUTGOING_GPM_GENERAL_EVENTS', 'gpm-general-events')
         ]
     ],
 ];
