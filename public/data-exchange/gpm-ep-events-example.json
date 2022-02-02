@@ -13,8 +13,8 @@
             "description": "All specification scopes and pilot classifications for gene/diseases in the appoved scope have been given final approval in the CSPEC Registry."
         },
         {
-            "name": "ep_final_approval",
-            "description": "Step 1 or Step 4 approval for GCEPS and VCEPS respectively.  Indicates plans for review have been approved and all necessary attestations have been completed by approved membership.  EP is now fully approved."
+            "name": "sustained_curation_approved",
+            "description": "Step 4 approval for VCEPS respectively.  Indicates plans for review have been approved and all necessary attestations have been completed by approved membership.  EP is now fully approved."
         },
         {
             "name": "gene_added",
@@ -30,15 +30,19 @@
         },
         {
             "name": "member_removed",
-            "description": "EP has added a new member."
+            "description": "EP has removed a new member completely."
+        },
+        {
+            "name": "member_retired",
+            "description": "EP has retired a member, who is now considered alumni."
         },
         {
             "name": "member_role_assigned",
-            "description": ""
+            "description": "Role given to user."
         },
         {
             "name": "member_role_removed",
-            "description": ""
+            "description": "Role removed from user."
         },
         {
             "name": "member_permission_granted",
