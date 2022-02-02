@@ -16,12 +16,11 @@
             <app-section title="Scope of Work" id="scope">
                 <p>
                     It is expected that the expert panel will utilize 
-                    <a target="lumping-splitting-guidelines"
-                        href="https://clinicalgenome.org/working-groups/lumping-and-splitting/">ClinGen Lumping and Splitting guidance</a> 
+                    <lumping-and-splitting-link /> 
                     during pre-curation and should use the 
-                    <a target="gene-tracker" href="https://gene-tracker.clinicalgenome.org/">Gene Tracker</a>
+                    <gene-tracker-link />
                     to enter their precuration information. Focus should be on the canonical disease, and splitting into multiple phenotypes should be avoided. The precurations will be published to
-                    <a target="clinicalgenome.org" href="https://clinicalgenome.org">clinicalgenome.org</a>.
+                    <website-link />.
                 </p>
                 
                 <gcep-gene-list 

@@ -36,28 +36,29 @@
             <li>
                 <input-row :errors="errors.pub_policy_reviewed" :hide-label="true">
                     <checkbox v-model="group.expert_panel.pub_policy_reviewed" :disabled="disabled" @update:modelValue="emitUpdate(), checkCompleteness()">
-                        The <a href="https://clinicalgenome.org/site/assets/files/3752/clingen_publication_policy_apr2019.pdf" target="pub-policy">ClinGen publication policy</a> has been reviewed and a manuscript concept sheet will be submitted to the NHGRI and  ClinGen Steering Committee before the group prepares a publication for submission.
+                        The <publication-policy-link /> has been reviewed and a manuscript concept sheet will be submitted to the NHGRI and  ClinGen Steering Committee before the group prepares a publication for submission.
                     </checkbox>
                 </input-row>
             </li>
             <li>
                 <input-row :errors="errors.draft_manuscripts" :hide-label="true">
                     <checkbox v-model="group.expert_panel.draft_manuscripts" :disabled="disabled" @update:modelValue="emitUpdate(), checkCompleteness()">
-                        Draft manuscripts will be submitted to the ClinGen Gene Curation WG for review prior to submission. Email: <a href="mailto:genecuration@clinicalgenome.org">mailto:genecuration@clinicalgenome.org</a>
+                        Draft manuscripts will be submitted to the ClinGen Gene Curation WG for review prior to submission. 
+                        Email: <a href="mailto:genecuration@clinicalgenome.org">genecuration@clinicalgenome.org</a>
                     </checkbox>
                 </input-row>
             </li>
             <li>
                 <input-row :errors="errors.recuration_process_review" :hide-label="true">
                     <checkbox v-model="group.expert_panel.recuration_process_review" :disabled="disabled" @update:modelValue="emitUpdate(), checkCompleteness()">
-                        The ClinGen Gene-Disease Validity Recuration process has been reviewed, link found <a href="https://clinicalgenome.org/site/assets/files/2164/clingen_standard_gene-disease_validity_recuration_procedures_v1.pdf" target="gcep-recuration-procedure">here</a>.
+                        The ClinGen <gcep-recuration-process-link>Gene-Disease Validity Recuration Process</gcep-recuration-process-link> has been reviewed.
                     </checkbox>
                 </input-row>
             </li>
         </ul>
 
         <p>
-            Biocurators are expected to become familiar with the ClinGen training materials located on <a href="https://clinicalgenome.org/docs/?doc-type=training-materials#list_documentation_table" target="clinicalgenome">clinicalgenome.org</a> website. Biocurators are requested to join the mailing list for ClinGen Biocurator Working Group, and expected to attend those calls that focus on gene curation SOP and/or framework updates.
+            Biocurators are expected to become familiar with the ClinGen <training-materials-link /> located on <training-materials-link>ClinicalGenome.org</training-materials-link>. Biocurators are requested to join the mailing list for ClinGen Biocurator Working Group, and expected to attend those calls that focus on gene curation SOP and/or framework updates.
         </p>
 
         <ul class="ml-4 mt-2">

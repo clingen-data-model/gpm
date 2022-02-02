@@ -1,14 +1,7 @@
 <template>
     <div>
         <p v-if="group.isVcep()">
-            Curated variants and genes are expected to be approved and posted for the community as soon as possible as described in Section 2.4 
-            <a 
-                class="link" 
-                target="vcep-protocol" 
-                href="https://clinicalgenome.org/site/assets/files/3635/variant_curation_expert_panel_vcep_protocol_version_9-2.pdf"
-            >
-                VCEP Protocol
-            </a>. 
+            Curated variants and genes are expected to be approved and posted for the community as soon as possible as described in Section 2.4 of the <vcep-protocol-link />. 
             Note that upon approval, a VCEP must finalize their set of variants for upload to the ClinGen Evidence Repository within 30 days.
         </p>
         <p v-if="group.isGcep()">
@@ -28,13 +21,7 @@
 
         <p v-if="group.isVcep()">
             Please review the 
-            <a
-                class="link"
-                target="pub-policy"
-                href="https://clinicalgenome.org/site/assets/files/6737/clingen_publication_policy_june2021_final.pdf"
-            >
-                ClinGen Publication Policy
-            </a> 
+            <publication-policy-link />
             and refer to guidance on submissions to a preprint server (e.g. bioRxiv or medRxiv).
         </p>
         <p v-if="group.isGcep()">

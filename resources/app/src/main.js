@@ -17,6 +17,7 @@ const registerComponentsInContext = (context => {
     });    
 })
 registerComponentsInContext(require.context('@/components', false, /\.vue$/i))        
+registerComponentsInContext(require.context('@/components/links', false, /\.vue$/i))        
 registerComponentsInContext(require.context('@/components/alerts', false, /\.vue$/i))        
 registerComponentsInContext(require.context('@/components/dev', false, /\.vue$/i))        
 registerComponentsInContext(require.context('@/components/forms', false, /\.vue$/i))        

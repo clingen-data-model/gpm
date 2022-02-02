@@ -14,7 +14,10 @@
             <app-section v-if="group" title="Membership" id="membership">
                 <p>
                     Expert Panels are expected to represent the diversity of expertise and backgrounds in the field and should refer to 
-                    <a href="https://clinicalgenome.org/site/assets/files/3635/variant_curation_expert_panel_vcep_protocol_version_9-2.pdf" target="vcep-protocol">Section 2.1 of the VCEP Protocol</a> and the <a href="https://diversity.nih.gov/sites/coswd/files/images/SWD_Toolkit_Interactive-updated_508.pdf" target="nih-workforce-diversity">NIH Scientific Workforce Diversity Toolkit</a> for guidance to complete the Member List below. Please list the VCEP Chair(s) and Coordinator(s) first.
+                    <vcep-protocol-link>Section 2.1 of the VCEP Protocol</vcep-protocol-link> 
+                    and the 
+                    <nih-diversity-toolkit-link /> 
+                    for guidance to complete the Member List below. Please list the VCEP Chair(s) and Coordinator(s) first.
                 </p>
                 <member-list :group="group" />
                 <hr>
