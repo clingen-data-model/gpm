@@ -1,6 +1,6 @@
 <template>
     <div>
-        <p>
+        <p v-if="group.isVcep()">
             Curated variants and genes are expected to be approved and posted for the community as soon as possible as described in Section 2.4 
             <a 
                 class="link" 
@@ -11,6 +11,9 @@
             </a>. 
             Note that upon approval, a VCEP must finalize their set of variants for upload to the ClinGen Evidence Repository within 30 days.
         </p>
+        <p v-if="group.isGcep()">
+            Curated genes and variants are expected to be approved and posted for the community as soon as possible and should not wait for the publication of a manuscript.
+        </p>
 
         <p class="my-4">
             <input-row label="" :vertical="true">
@@ -18,12 +21,12 @@
                     :disabled="disabled" 
                     v-model="attestation" 
                     id="nhgri-checkbox" 
-                    label="I understand that once a variant is approved in the VCI it will become publicly available in the Evidence Repository. They should not be held for publication."
+                    :label="checkboxLabel"
                 />
             </input-row>
         </p>
 
-        <p>
+        <p v-if="group.isVcep()">
             Please review the 
             <a
                 class="link"
@@ -33,6 +36,9 @@
                 ClinGen Publication Policy
             </a> 
             and refer to guidance on submissions to a preprint server (e.g. bioRxiv or medRxiv).
+        </p>
+        <p v-if="group.isGcep()">
+            <em>It is expected that, whenever possible, Expert Panel manuscripts will be pre-published (e.g. medRXiv) . If the authors do not anticipate submitting their manuscript to a prepublication resource they must provide a written justification.</em>
         </p>
     </div>
 </template>
@@ -78,6 +84,13 @@ export default {
                 }
                 this.$emit('update');                
             }
+        },
+        checkboxLabel () {
+            if (this.group.isVcep()) {
+                return "I understand that once a variant is approved in the VCI it will become publicly available in the Evidence Repository. They should not be held for publication."
+            }
+
+            return "Please check box to confirm your understanding that once a gene is approved in the GCI, the group should utilize the “publish” functionality within the GCI to make the curation publicly available on the ClinGen website (https://clinicalgenome.org/). They should not be held for publication."
         }
     },
     methods: {
