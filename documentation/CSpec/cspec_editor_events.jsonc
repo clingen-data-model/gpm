@@ -16,7 +16,6 @@
     "currentStatus": "RulesClassification",
     "event": "proposal-approved",
     "description": "A CSpec document and scopes are in agreement with GPM and a document is ready to proceed to Rules classification. This event requires GMP notification of the Step 1 approval - ep_definition_approved"
-    // TJ: do you expect this to happen automatically? YES, based on info from EPAM
   },
   {
     "previousStatus": "RulesClassification",

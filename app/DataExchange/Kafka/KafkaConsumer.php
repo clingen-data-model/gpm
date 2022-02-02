@@ -3,14 +3,15 @@ declare(strict_types=1);
 
 namespace App\DataExchange\Kafka;
 
+use App\DataExchange\Events\Received;
 use App\DataExchange\Contracts\MessageConsumer;
-use  App\DataExchange\Kafka\ErrorMessageHandler;
-use  App\DataExchange\Kafka\NoNewMessageHandler;
-use  App\DataExchange\Kafka\StoreMessageHandler;
-use Illuminate\Contracts\Events\Dispatcher;
+use App\DataExchange\Kafka\ErrorMessageHandler;
+use App\DataExchange\Kafka\NoNewMessageHandler;
+use App\DataExchange\Kafka\StoreMessageHandler;
+use App\DataExchange\Kafka\NoActionMessageHandler;
+use App\DataExchange\Actions\IncomingMessageProcess;
+use App\DataExchange\Kafka\SuccessfulMessageHandler;
 use App\DataExchange\Exceptions\StreamingServiceException;
-use  App\DataExchange\Kafka\NoActionMessageHandler;
-use  App\DataExchange\Kafka\SuccessfulMessageHandler;
 use App\DataExchange\Exceptions\StreamingServiceEndOfFIleException;
 
 /**
@@ -18,15 +19,11 @@ use App\DataExchange\Exceptions\StreamingServiceEndOfFIleException;
  */
 class KafkaConsumer implements MessageConsumer
 {
-    protected $kafkaConsumer;
     protected $topics = [];
     protected $listening = false;
-    protected $eventDispatcher;
 
-    public function __construct(\RdKafka\KafkaConsumer $kafkaConsumer, Dispatcher $eventDispatcher)
+    public function __construct(private \RdKafka\KafkaConsumer $kafkaConsumer, private IncomingMessageProcess $processor)
     {
-        $this->kafkaConsumer = $kafkaConsumer;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function __get($key)
@@ -93,11 +90,9 @@ class KafkaConsumer implements MessageConsumer
         $handlerChain = $this->getMessageHandlerChain();
         while (true) {
             $message = $this->kafkaConsumer->consume(10000);
-            // if ($message->err == 0) {
-            //     \Log::debug(['offset'=> $message->offset, 'err_code' => $message->err, 'payload' => $message->payload]);
-            // }
             try {
-                $handlerChain->handle($message);
+                // $handlerChain->handle($message);
+                $this->processor->handle($message);
             } catch (StreamingServiceEndOfFIleException $e) {
                 continue;
             } catch (StreamingServiceException $th) {
@@ -122,7 +117,7 @@ class KafkaConsumer implements MessageConsumer
         while (true) {
             $message = $this->kafkaConsumer->consume(10000);
             try {
-                $handlerChain->handle($message);
+                // $handlerChain->handle($message);
             } catch (StreamingServiceEndOfFIleException $e) {
                 break;
             } catch (StreamingServiceException $th) {

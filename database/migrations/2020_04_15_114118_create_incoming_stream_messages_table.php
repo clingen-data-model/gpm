@@ -22,7 +22,6 @@ class CreateIncomingStreamMessagesTable extends Migration
             $table->bigInteger('timestamp')->nullable();
             $table->integer('error_code');
             $table->json('payload')->nullable();
-            $table->uuid('gdm_uuid')->nullable();
             $table->timestamps();
 
             $table->index('key');
