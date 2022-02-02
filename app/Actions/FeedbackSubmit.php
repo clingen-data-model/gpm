@@ -43,9 +43,11 @@ class FeedbackSubmit
         ];
 
         if ($type == 'Bug') {
-            $issueFields['fields']['customfield_18006'] = $severity;
+            // Unable to figure out why the field options are causing errors so just omitting.
+            // $issueFields['fields']['customfield_18006'] = $severity;
+            $severityString = collect(config('feedback.severities'))->keyBy('id')->get($severity)['name'];
+            $issueFields['fields']['description'] = "\n**Severity:** ".$severityString."\n\n".$issueFields['fields']['description'];
         }
-
 
         try {
             $issueResponse = $this->http->request('post', 'https://broadinstitute.atlassian.net/rest/api/2/issue', [
@@ -57,6 +59,7 @@ class FeedbackSubmit
                 'json' => $issueFields
             ]);
         } catch (RequestException $e) {
+            \Log::error($e->getMessage());
             return;
         }
         $responseObj = json_decode($issueResponse->getBody()->getContents());
