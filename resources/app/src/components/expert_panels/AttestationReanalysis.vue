@@ -6,28 +6,28 @@
         <ul class="ml-4 mt-2">
             <li>
                 <input-row :errors="errors.reanalysis_conflicting" :hide-label="true">
-                    <checkbox v-model="group.expert_panel.reanalysis_conflicting" :disabled="disabled" @update:modelValue="$emit('update')">
+                    <checkbox v-model="group.expert_panel.reanalysis_conflicting" :disabled="disabled" @update:modelValue="$emit('update'), checkCompleteness()">
                         VCEPs are expected to reassess any newly submitted conflicting assertion in ClinVar from a one star submitter or above and attempt to resolve or address the conflict within 6 months of being notified about the conflict from ClinGen. Please reach out to the submitter if you need additional information about the conflicting assertion.
                     </checkbox>
                 </input-row>
             </li>
             <li>
                 <input-row :errors="errors.reanalysis_review_lp" :hide-label="true">
-                    <checkbox v-model="group.expert_panel.reanalysis_review_lp" :disabled="disabled" @update:modelValue="$emit('update')">
+                    <checkbox v-model="group.expert_panel.reanalysis_review_lp" :disabled="disabled" @update:modelValue="$emit('update'), checkCompleteness()">
                         VCEPs are expected to re-review all LP and VUS classifications made by the EP at least every 2 years to see if new evidence has emerged to re-classify the variants
                     </checkbox>
                 </input-row>
             </li>
             <li>
                 <input-row :errors="errors.reanalysis_review_lb" :hide-label="true">
-                    <checkbox v-model="group.expert_panel.reanalysis_review_lb" :disabled="disabled" @update:modelValue="$emit('update')">
+                    <checkbox v-model="group.expert_panel.reanalysis_review_lb" :disabled="disabled" @update:modelValue="$emit('update'), checkCompleteness()">
                         VCEPs are expected to re-review any LB classifications when new evidence is available or when requested by the public via the ClinGen website.
                     </checkbox>
                 </input-row>
             </li>
             <li>
                 <input-row :errors="errors.reanalysis_other" :hide-label="true">
-                    <checkbox v-model="otherCheckbox" :disabled="disabled" @update:modelValue="$emit('update')">
+                    <checkbox v-model="otherCheckbox" :disabled="disabled" @update:modelValue="$emit('update'), checkCompleteness()">
                         Plans differ from the expectations above.
                     </checkbox>
                     <transition name="slide-fade-down">
@@ -38,7 +38,7 @@
                                 class="w-full"
                                 id="reanalysis-other-textarea"
                                 :disabled="disabled"
-                                @update:modelValue="$emit('update')"
+                                @update:modelValue="$emit('update'), checkCompleteness()"
                             ></textarea>
                         </div>
                     </transition>
@@ -96,6 +96,22 @@ export default {
                     this.errors = error.response.data.errors;
                 }
             }
+        },
+        checkCompleteness () {
+            const checkedStandard = this.group.expert_panel.reanalysis_conflicting
+                && this.group.expert_panel.reanalysis_review_lp
+                && this.group.expert_panel.reanalysis_review_lb;
+            if (checkedStandard
+                ||  (
+                    this.otherCheckbox 
+                    && Boolean(this.group.expert_panel.reanalysis_other)
+                )
+                && this.group.expert_panel.gcep_attestation_date === null
+            ) {
+                this.group.expert_panel.reanalysis_attestation_date = new Date();
+                return;
+            }
+            this.group.expert_panel.reanalysis_attestation_date = null;
         }
     }
 }
