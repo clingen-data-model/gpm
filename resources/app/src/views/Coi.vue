@@ -4,7 +4,7 @@
             <div v-if="!verifying">We couldn't find this COI.</div>
         </card>
         <card title="There's a problem" v-if="!groupMemberId">
-            We can't see to find your membership id.  Please try refreshing.
+            We can't seem to find your membership id.  Please try refreshing.
         </card>
         <card :title="coiTitle"  class="max-w-xl mx-auto relative" v-if="codeIsValid">
             <div class="relative">
