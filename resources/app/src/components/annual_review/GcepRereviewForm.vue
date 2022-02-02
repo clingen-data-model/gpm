@@ -1,6 +1,6 @@
 <template>
     <div>
-        <p>Gene Curation Expert Panels are expected to review current clinical validity classifications for their approved genes based on the guidance provided in the <a href="https://clinicalgenome.org/site/assets/files/2164/clingen_standard_gene-disease_validity_recuration_procedures_v1.pdf">Gene-Disease Validity Recuration Process document</a>. Please indicate the following:</p>
+        <p>Gene Curation Expert Panels are expected to review current clinical validity classifications for their approved genes based on the guidance provided in the <a target="gcep-recuration-process" href="https://clinicalgenome.org/site/assets/files/2164/clingen_standard_gene-disease_validity_recuration_procedures_v1.pdf">Gene-Disease Validity Recuration Process document</a>. Please indicate the following:</p>
 
         <input-row 
             :disabled="isComplete"
@@ -21,7 +21,7 @@
             vertical
         >
             <template v-slot:label>
-                The GCEP recuration designee(s) is designated to monitor for recuration updates, on a yearly basis, according to the <a href="https://clinicalgenome.org/site/assets/files/2164/clingen_standard_gene-disease_validity_recuration_procedures_v1.pdf">Gene-Disease Validity Recuration Process document</a>. Please list the name(s) of your GCEP recuration designee(s).
+                The GCEP recuration designee(s) is designated to monitor for recuration updates, on a yearly basis, according to the <a target="gcep-recuration-process" href="https://clinicalgenome.org/site/assets/files/2164/clingen_standard_gene-disease_validity_recuration_procedures_v1.pdf">Gene-Disease Validity Recuration Process document</a>. Please list the name(s) of your GCEP recuration designee(s).
             </template>
         </input-row>
     </div>

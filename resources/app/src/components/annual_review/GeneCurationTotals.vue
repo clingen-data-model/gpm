@@ -2,9 +2,9 @@
     <div>
         <p>
             In reviewing the GCEPs progress over the last year ({{lastYear}}), please answer the following questions. Note, This information can be accessed from the GCI, GeneTracker, and in some instances (e.g. published curations) from the ClinGen website.
-            This information can be downloaded from the <a href="https://gene-tracker.clinicalgenome.org">Gene Tracker</a> or the <a href="https://curation.clinicalgenome.org/dashboard">Gene Curation Interface</a>. 
+            This information can be downloaded from the <a target="gene-tracker" href="https://gene-tracker.clinicalgenome.org">Gene Tracker</a> or the <a target="gci" href="https://curation.clinicalgenome.org/dashboard">Gene Curation Interface</a>. 
             <br>
-            Please cross reference <a href="https://clinicalgenome.org/">clinicalgenome.org</a> for published records.
+            Please cross reference <a target="clinicalgenome.org" href="https://clinicalgenome.org/">clinicalgenome.org</a> for published records.
         </p>
         <input-row
             :disabled="isComplete" 

@@ -50,7 +50,7 @@
             <li>
                 <input-row :errors="errors.recuration_process_review" :hide-label="true">
                     <checkbox v-model="group.expert_panel.recuration_process_review" :disabled="disabled" @update:modelValue="emitUpdate(), checkCompleteness()">
-                        The ClinGen Gene-Disease Validity Recuration process has been reviewed, link found <a href="https://clinicalgenome.org/site/assets/files/2164/clingen_standard_gene-disease_validity_recuration_procedures_v1.pdf">here</a>.
+                        The ClinGen Gene-Disease Validity Recuration process has been reviewed, link found <a href="https://clinicalgenome.org/site/assets/files/2164/clingen_standard_gene-disease_validity_recuration_procedures_v1.pdf" target="gcep-recuration-procedure">here</a>.
                     </checkbox>
                 </input-row>
             </li>

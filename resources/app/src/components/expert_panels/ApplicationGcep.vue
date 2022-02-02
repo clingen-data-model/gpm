@@ -21,7 +21,7 @@
                     during pre-curation and should use the 
                     <a target="gene-tracker" href="https://gene-tracker.clinicalgenome.org/">Gene Tracker</a>
                     to enter their precuration information. Focus should be on the canonical disease, and splitting into multiple phenotypes should be avoided. The precurations will be published to
-                    <a href="https://clinicalgenome.org">clinicalgenome.org</a>.
+                    <a target="clinicalgenome.org" href="https://clinicalgenome.org">clinicalgenome.org</a>.
                 </p>
                 
                 <gcep-gene-list 

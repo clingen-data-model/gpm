@@ -14,7 +14,7 @@
                 class="mb-6"
             >
                 <template v-slot:cell-id="{item}">
-                    <a :href="`https://cspec.genome.network/cspec/ui/svi/ruleset/${item.id}`" class="btn btn-xs">
+                    <a :href="`https://cspec.genome.network/cspec/ui/svi/ruleset/${item.id}`" target="cspec" class="btn btn-xs">
                         Go to rules
                     </a>
                 </template>

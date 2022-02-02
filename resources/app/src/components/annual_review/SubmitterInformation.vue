@@ -58,7 +58,7 @@
 
         <transition name="slide-fade-down">
             <p v-if="workingCopy.data.submitted_inactive_form == 'no'" class="ml-4 alert-warning p-2 rounded-lg">
-                You must complete and submit the <a href="https://docs.google.com/document/d/13m4xeuh-GDHbYciQYHu1CiE_6HI-Xz_6_-yp8q2Ybp4/edit?usp=sharing">ClinGene Inactive GCEP Form</a>
+                You must complete and submit the <a href="https://docs.google.com/document/d/13m4xeuh-GDHbYciQYHu1CiE_6HI-Xz_6_-yp8q2Ybp4/edit?usp=sharing" target="inacive-form">ClinGene Inactive GCEP Form</a>
             </p>        
         </transition>
 
