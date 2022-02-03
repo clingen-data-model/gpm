@@ -4,8 +4,8 @@
             ref="input"
             type="date"
             class="date-input"
-            :value="formattedDate" 
-            @input="handleDateInput"
+            :value="date" 
+            @input="handleInput"
             @change="$emit('change')"
             :disabled="disabled"
         >
@@ -32,25 +32,38 @@ export default {
         }
     },
     computed: {
-        formattedDate () {
-            if (!this.modelValue) {
-                return null;
-            }
-            const fmtdt = this.formatDate(this.modelValue)
-            return fmtdt
-        }
+        date: {
+            get () {
+                let date = null;
+                if (!this.modelValue) {
+                    date = null;
+                } else if (this.modelValue instanceof Date) {
+                    date = new Date(this.modelValue.getTime());
+                } else {
+                    date = new Date(Date.parse(this.modelValue));
+                }
+                // const date = (!(this.modelValue instanceof Date)) new Date(Date.parse(this.modelValue));
+                return date && new Date(date.getTime()+(date.getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
+            },
+        } 
     },
     methods: {
-        handleDateInput(event) {
-            return this.accountForTimezone(event.target.value);
+        handleInput (event) {
+            const value = event.target.valueAsDate;
+            if (!value) {
+                this.$emit('update:modelValue', value);
+                return;
+            }
+            if (value.valueOf() > new Date(Date.parse('1900-01-01'))) {
+                this.$emit('update:modelValue', value.toISOString());
+            }
         },
         accountForTimezone(dateString) {
-            if (dateString === null) {
-                return dateString;
-            }
-            const date = new Date(Date.parse(dateString));
-            const adjustedDate = new Date(date.getTime() + date.getTimezoneOffset()*60*1000);
-            this.$emit('update:modelValue', adjustedDate.toISOString())
+            if (dateString === null) return dateString;
+            
+            const dateObj = new Date(Date.parse(dateString));
+            const adjustedDate = new Date(dateObj.getTime() + dateObj.getTimezoneOffset()*60*1000);
+            return adjustedDate;
         },
         formatDate(date) {
             if (date === null) {
