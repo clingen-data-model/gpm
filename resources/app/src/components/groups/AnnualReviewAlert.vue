@@ -1,18 +1,22 @@
 <template>
     <static-alert :variant="variant"  v-if="isPending && annualReview.id">
-        <pre>{{showGroupname}}</pre>
-        <p>
-            <span v-if="showGroupName"><strong>{{group.displayName}}</strong> has</span>
-            <span v-else>You have</span>
-            an <strong>annual review for {{window.for_year}}</strong> due on <strong>{{formatDate(window.end)}}</strong>.
-        </p>
-        <router-link 
-            class="btn font-bold" 
-            :to="{name: 'AnnualReview', params: {uuid: group.uuid}}"
-            v-if="group.uuid"
-        >
-            Complete the Annual review
-        </router-link>
+        <div class="flex space-x-2 items-center mb-3">
+            <icon-review height="30" width="30"></icon-review>
+            <div>
+                <p>
+                    <span v-if="showGroupName"><strong>{{group.displayName}}</strong> has</span>
+                    <span v-else>You have</span>
+                    an <strong>annual review for {{window.for_year}}</strong> due on <strong>{{formatDate(window.end)}}</strong>.
+                </p>
+                <router-link 
+                    class="btn font-bold" 
+                    :to="{name: 'AnnualReview', params: {uuid: group.uuid}}"
+                    v-if="group.uuid"
+                >
+                    Complete the Annual review
+                </router-link>
+            </div>
+        </div>
     </static-alert>
 </template>
 <script>

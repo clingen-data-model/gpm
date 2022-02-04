@@ -28,24 +28,25 @@
         <static-alert 
             v-for="membership in user.person.membershipsWithPendingCois" 
             :key="membership.id"
-            class="mt-2"
+            class="pb-3 mt-2 flex space-x-2 items-center"
             variant="warning"
         >
-            You have a pending <strong>COI</strong> disclosure for <strong>{{membership.group.name}}</strong>.
-            <br>
-            <br>
-            <router-link 
-                :to="{
-                    name: 'alt-coi', 
-                    params: {
-                        name: membership.group.name, 
-                        code: membership.group.expert_panel.coi_code
-                    }
-                }"
-                class="btn font-bold"
-            >
-                Complete this COI Disclosure
-            </router-link>
+            <icon-coi height="30" width="30"></icon-coi>
+            <div>
+                <p>You have a pending <strong>COI</strong> disclosure for <strong>{{membership.group.name}}</strong>.</p>
+                <router-link 
+                    :to="{
+                        name: 'alt-coi', 
+                        params: {
+                            name: membership.group.name, 
+                            code: membership.group.expert_panel.coi_code
+                        }
+                    }"
+                    class="btn font-bold"
+                >
+                    Complete this COI Disclosure
+                </router-link>
+            </div>
         </static-alert>
 
         <tabs-container class="mt-8">
