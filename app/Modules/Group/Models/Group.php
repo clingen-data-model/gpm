@@ -24,6 +24,8 @@ use App\Models\Traits\RecordsEvents as RecordsEventsTrait;
 use App\Models\Traits\HasLogEntries as HasLogEntriesTraits;
 use App\Modules\Group\Models\Traits\HasMembers as HasMembersTrait;
 use App\Modules\Group\Models\Traits\HasSubmissions as HasSubmissionsTrait;
+use App\Tasks\Contracts\TaskAssignee;
+use App\Tasks\Models\TaskAssignee as TaskAssigneeTrait;
 
 /**
  * @property int $id
@@ -36,7 +38,7 @@ use App\Modules\Group\Models\Traits\HasSubmissions as HasSubmissionsTrait;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDocuments, HasLogEntries, HasSubmissions
+class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDocuments, HasLogEntries, HasSubmissions, TaskAssignee
 {
     use HasFactory;
     use SoftDeletes;
@@ -47,6 +49,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     use HasDocumentsTrait;
     use HasLogEntriesTraits;
     use HasSubmissionsTrait;
+    use TaskAssigneeTrait;
 
     /**
      * The attributes that are mass assignable.

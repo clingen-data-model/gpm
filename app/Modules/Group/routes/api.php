@@ -39,6 +39,7 @@ use App\Modules\Group\Actions\MembershipDescriptionUpdate;
 use App\Modules\Group\Actions\CurationReviewProtocolUpdate;
 use App\Modules\Group\Http\Controllers\Api\GroupController;
 use App\Modules\Group\Actions\ExpertPanelAffiliationIdUpdate;
+use App\Modules\Group\Actions\SustainedCurationReviewComplete;
 use App\Modules\Group\Http\Controllers\Api\GeneListController;
 use App\Modules\Group\Http\Controllers\Api\ActivityLogsController;
 use App\Modules\Group\Http\Controllers\Api\GroupRelationsController;
@@ -64,8 +65,9 @@ Route::group([
 
 
     Route::get('/{group:uuid}/next-actions', [GroupRelationsController::class, 'nextActions']);
+    Route::get('/{group:uuid}/tasks', [GroupRelationsController::class, 'tasks']);
     
-    Route::get('/{uuid}', [GroupController::class, 'show']);
+    Route::get('/{group:uuid}', [GroupController::class, 'show']);
     Route::delete('/{group:uuid}', GroupDelete::class);
     Route::put('/{group:uuid}/parent', ParentUpdate::class);
     Route::put('/{group:uuid}/name', GroupNameUpdate::class);
@@ -105,6 +107,7 @@ Route::group([
         Route::put('/name', ExpertPanelNameUpdate::class);
         Route::put('/scope-description', ScopeDescriptionUpdate::class);
         Route::put('/affiliation-id', ExpertPanelAffiliationIdUpdate::class);
+        Route::put('/sustained-curation-reviews', SustainedCurationReviewComplete::class);
 
         // ATTESTATIONS
         Route::post('/attestations/nhgri', AttestationNhgriStore::class);
@@ -127,6 +130,7 @@ Route::group([
             Route::delete('/{summaryId}', EvidenceSummaryDelete::class);
         });
 
+        // ANNUAL REVIEWS
         Route::group(['prefix' => '/annual-reviews'], function () {
             Route::get('/', [AnnualReviewController::class, 'showLatestForGroup']);
             Route::post('/', AnnualReviewCreate::class);
