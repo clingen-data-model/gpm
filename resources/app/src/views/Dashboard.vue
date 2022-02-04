@@ -25,29 +25,12 @@
             class="mb-2"
         />
 
-        <static-alert 
+        <coi-alert
             v-for="membership in user.person.membershipsWithPendingCois" 
             :key="membership.id"
-            class="pb-3 mt-2 flex space-x-2 items-center"
-            variant="warning"
-        >
-            <icon-coi height="30" width="30"></icon-coi>
-            <div>
-                <p>You have a pending <strong>COI</strong> disclosure for <strong>{{membership.group.name}}</strong>.</p>
-                <router-link 
-                    :to="{
-                        name: 'alt-coi', 
-                        params: {
-                            name: membership.group.name, 
-                            code: membership.group.expert_panel.coi_code
-                        }
-                    }"
-                    class="btn font-bold"
-                >
-                    Complete this COI Disclosure
-                </router-link>
-            </div>
-        </static-alert>
+            :membership="membership"
+            class="mb-2"
+        />
 
         <tabs-container class="mt-8">
             <tab-item label="Your Groups">
