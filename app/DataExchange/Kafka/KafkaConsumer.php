@@ -10,6 +10,7 @@ use App\DataExchange\Kafka\NoNewMessageHandler;
 use App\DataExchange\Kafka\StoreMessageHandler;
 use App\DataExchange\Kafka\NoActionMessageHandler;
 use App\DataExchange\Actions\IncomingMessageProcess;
+use App\DataExchange\DxMessage;
 use App\DataExchange\Kafka\SuccessfulMessageHandler;
 use App\DataExchange\Exceptions\StreamingServiceException;
 use App\DataExchange\Exceptions\StreamingServiceEndOfFIleException;
@@ -91,8 +92,7 @@ class KafkaConsumer implements MessageConsumer
         while (true) {
             $message = $this->kafkaConsumer->consume(10000);
             try {
-                // $handlerChain->handle($message);
-                $this->processor->handle($message);
+                $this->processor->handle(DxMessage::createFromRdKafkaMessage($message));
             } catch (StreamingServiceEndOfFIleException $e) {
                 continue;
             } catch (StreamingServiceException $th) {

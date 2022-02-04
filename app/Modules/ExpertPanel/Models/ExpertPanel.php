@@ -9,6 +9,7 @@ use App\Models\Contracts\HasNotes;
 use App\Modules\Group\Models\Group;
 use App\Models\Contracts\HasMembers;
 use App\Modules\Person\Models\Person;
+use App\Tasks\Contracts\TaskAssignee;
 use App\Models\Contracts\RecordsEvents;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\ExpertPanel\Models\Gene;
@@ -25,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Modules\Group\Models\Contracts\BelongsToGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Tasks\Models\TaskAssignee as TaskAssigneeTrait;
 use App\Modules\ExpertPanel\Models\SpecificationRuleSet;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use App\Modules\ExpertPanel\Models\CurationReviewProtocol;
@@ -334,6 +336,16 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     }
 
     // Access methods
+
+    public static function findByAffiliationId($affiliationId)
+    {
+        return static::where('affiliation_id', $affiliationId)->first();
+    }
+
+    public static function findByAffiliationIdOrFail($affiliationId)
+    {
+        return static::where('affiliation_id', $affiliationId)->sole();
+    }
 
     public static function findByCoiCode($code)
     {
