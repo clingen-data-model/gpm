@@ -12,7 +12,7 @@ class TaskServiceProvider extends ModuleServiceProvider
         parent::boot();
         
         $this->mergeConfigFrom(
-            __DIR__.'/../configs/Tasks.php',
+            __DIR__.'/../configs/tasks.php',
             'tasks'
         );
     }
