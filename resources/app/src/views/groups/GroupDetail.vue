@@ -116,6 +116,17 @@
                 <button class="btn btn-xs mt-1" @click="getLogEntries">Refresh</button>
             </tab-item>
             <tab-item label="Admin" :visible="hasPermission('groups-manage')">
+                <h2 class="pb-2 border-b mb-4">Application</h2>
+                <progress-chart 
+                    :application="group.expert_panel" 
+                    class="pb-4 border-b border-gray-300 mb-6"
+                ></progress-chart>
+                <step-tabs 
+                    :application="group.expert_panel" 
+                    @stepApproved="getGroup" 
+                    v-if="group.isEp()"
+                />
+                <hr>
                 <h2 class="mb-4">Here be dragons.  Proceed with caution.</h2>
                 <button class="btn btn red" @click="initDelete">Delete Group</button>
             </tab-item>
@@ -157,6 +168,7 @@ import { useStore } from 'vuex'
 import {logEntries, fetchEntries} from '@/adapters/log_entry_repository';
 import {hasPermission} from '@/auth_utils'
 
+// import ApplicationDetail from '@/views/applications/ApplicationDetail'
 import ActivityLog from '@/components/log_entries/ActivityLog'
 import ApplicationSummary from '@/components/groups/ApplicationSummary'
 import AttestationGcep from '@/components/expert_panels/AttestationGcep'
@@ -176,12 +188,16 @@ import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansFor
 import VcepOngoingPlansFormVue from '../../components/expert_panels/VcepOngoingPlansForm.vue';
 import GroupDocuments from './GroupDocuments';
 import AnnualReviewAlert from '@/components/groups/AnnualReviewAlert'
+import StepTabs from '@/components/applications/StepTabs'
+import ProgressChart from '@/components/applications/ProgressChart'
+
 
 import {isValidationError} from '../../http';
 
 export default {
     name: 'GroupDetail',
     components: {
+        // ApplicationDetail,
         ActivityLog,
         ApplicationSummary,
         AttestationGcep,
@@ -199,7 +215,9 @@ export default {
         ScopeDescriptionForm,
         VcepGeneList,
         VcepOngoingPlansForm,
-        AnnualReviewAlert
+        AnnualReviewAlert,
+        StepTabs,
+        ProgressChart
     },
     props: {
         uuid: {
@@ -246,7 +264,7 @@ export default {
             await fetchEntries(`/api/groups/${props.uuid}/activity-logs`);
         }
 
-        onMounted(async () => {
+        const getGroup = () => {
             store.dispatch('groups/find', props.uuid)
                 .then(() => {
                     store.commit('groups/setCurrentItemIndexByUuid', props.uuid)
@@ -258,6 +276,10 @@ export default {
                         }
                     }
                 })
+        }
+
+        onMounted(async () => {
+            getGroup();
         });
 
         return {
@@ -267,6 +289,7 @@ export default {
             ongoingPlansFormComponent,
             logEntries,
             getLogEntries,
+            getGroup,
         }
     },
     watch: {
