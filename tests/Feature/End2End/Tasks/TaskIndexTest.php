@@ -80,7 +80,7 @@ class TaskIndexTest extends TestCase
         if ($queryString) {
             $url .= '?'.$queryString;
         }
-        dump($url);
+
         return $this->json('get', $url);
     }
 }
