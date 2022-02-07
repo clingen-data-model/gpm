@@ -163,7 +163,7 @@ class AnnualReview extends Model
 
         if ($this->isVcep) {
             $variantCounts = $this->getDataOrNull('variant_counts');
-            if ($variantCounts) {
+            if (!is_null($variantCounts)) {
                 $string = '';
                 foreach ($variantCounts as $gene) {
                     $string .= $gene['gene_symbol'].' - in_clinvar: '.$gene['in_clinvar'].', gci_approved: '.$gene['gci_approved'].', provisionally_approved: '.$gene['provisionally_approved'];
