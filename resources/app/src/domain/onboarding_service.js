@@ -1,5 +1,4 @@
 import api from '@/http/api'
-// import queryStringFromParams from '@/http/query_string_from_params'
 
 export const validateCode = async (code) => {
     try {
