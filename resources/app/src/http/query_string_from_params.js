@@ -25,7 +25,13 @@ const queryStringFromParams = function(params = {}, paginate) {
             Object.keys(parsedParams[param])
                 .forEach(key => {
                     const val = parsedParams[param][key];
-                    queryStringParts.push(`${encodeURIComponent(param)}[${key}]=${val}`)
+                    if (Array.isArray(val)) {
+                        val.forEach((v,idx) => {
+                            queryStringParts.push(`${encodeURIComponent(param)}[${key}][${idx}]=${v}`)
+                        })
+                    } else {
+                        queryStringParts.push(`${encodeURIComponent(param)}[${key}]=${val}`)
+                    }
                 })
         } else {
             queryStringParts.push(encodeURIComponent(param) + '=' + encodeURIComponent(parsedParams[param]));
