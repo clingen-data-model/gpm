@@ -42,7 +42,7 @@
       </div>
     </header>
 
-    <div class="my-3 container mx-auto">
+    <div class="my-6 container mx-auto">
       <div class="md:flex space-x-4 mb-4">
         <div class='flex-1'>
           <router-view />
