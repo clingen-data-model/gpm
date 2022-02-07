@@ -3,10 +3,17 @@
 
         <annual-review-alert :group="group"
             v-if="hasAnyPermission(['annual-reviews-mange', ['annual-review-manage', group]])"
+            class="mb-2"
+        />
+
+        <sustained-curation-review-alert 
+            v-if="needsToReviewSustainedCuration && hasAnyPermission(['ep-applications-manage', ['application-edit', group]])" 
+            :group="group" 
+            class="mb-2"
         />
 
         <group-detail-header :group="group" @showEdit="showEdit"></group-detail-header>
-        
+
         <application-summary 
             :group="group" 
             v-if="group.isApplying"
@@ -168,7 +175,6 @@ import { useStore } from 'vuex'
 import {logEntries, fetchEntries} from '@/adapters/log_entry_repository';
 import {hasPermission} from '@/auth_utils'
 
-// import ApplicationDetail from '@/views/applications/ApplicationDetail'
 import ActivityLog from '@/components/log_entries/ActivityLog'
 import ApplicationSummary from '@/components/groups/ApplicationSummary'
 import AttestationGcep from '@/components/expert_panels/AttestationGcep'
@@ -185,11 +191,11 @@ import MembershipDescriptionForm from '@/components/expert_panels/MembershipDesc
 import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm'
 import VcepGeneList from '@/components/expert_panels/VcepGeneList'
 import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm'
-import VcepOngoingPlansFormVue from '../../components/expert_panels/VcepOngoingPlansForm.vue';
 import GroupDocuments from './GroupDocuments';
 import AnnualReviewAlert from '@/components/groups/AnnualReviewAlert'
 import StepTabs from '@/components/applications/StepTabs'
 import ProgressChart from '@/components/applications/ProgressChart'
+import SustainedCurationReviewAlert from '@/components/alerts/SustainedCurationReviewAlert'
 
 
 import {isValidationError} from '../../http';
@@ -217,7 +223,8 @@ export default {
         VcepOngoingPlansForm,
         AnnualReviewAlert,
         StepTabs,
-        ProgressChart
+        ProgressChart,
+        SustainedCurationReviewAlert
     },
     props: {
         uuid: {
@@ -257,7 +264,7 @@ export default {
         })
         
         const ongoingPlansFormComponent = computed(() => {
-            return group.value.isVcep() ? VcepOngoingPlansFormVue : GcepOngoingPlansForm;
+            return group.value.isVcep() ? VcepOngoingPlansForm : GcepOngoingPlansForm;
         });
 
         const getLogEntries = async () => {
@@ -274,9 +281,14 @@ export default {
                         if (group.value.isVcep()) {
                             store.dispatch('groups/getEvidenceSummaries', group.value);
                         }
+                        store.dispatch('groups/getPendingTasks', group.value);
                     }
                 })
         }
+
+        const needsToReviewSustainedCuration = computed(() => {
+            return group.value.pendingTasks && group.value.pendingTasks.filter(pt => pt.task_type_id === 1).length > 0;
+        })
 
         onMounted(async () => {
             getGroup();
@@ -288,6 +300,7 @@ export default {
             showModal,
             ongoingPlansFormComponent,
             logEntries,
+            needsToReviewSustainedCuration,
             getLogEntries,
             getGroup,
         }

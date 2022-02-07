@@ -7,9 +7,6 @@ const GroupDetail = () =>
 const MemberForm = () =>
     import ( /* webpackChunkName: "group-detail" */ '@/components/groups/MemberForm.vue')
 
-// const GeneDiseaseForm = () =>
-//     import ( /* webpackChunkName: "group-detail" */ '@/components/expert_panels/GeneDiseaseForm.vue')
-
 const GroupApplication = () =>
     import ( /* webpackChunkName: "group-application" */ '@/views/groups/GroupApplication.vue')
 
@@ -36,8 +33,7 @@ const hasGroupPermission = async (to, permission) => {
 }
 
 export default [
-    {
-        name: 'GroupList',
+    { name: 'GroupList',
         path: '/groups',
         components:  {
             default: GroupList
@@ -47,8 +43,7 @@ export default [
         },
         props: true
     },
-    {
-        name: 'GroupDetail',
+    { name: 'GroupDetail',
         path: '/groups/:uuid',
         components: {
             default: GroupDetail
@@ -91,8 +86,7 @@ export default [
             },
         ],
     },
-    {
-        name: 'GroupApplication',
+    { name: 'GroupApplication',
         path: '/groups/:uuid/application',
         components: {
             default: GroupApplication
@@ -137,8 +131,7 @@ export default [
             },
         ],
     },
-    {
-        name: 'ReviewApplication',
+    { name: 'ReviewApplication',
         path: '/groups/:uuid/application/review',
         component: () =>  import ( /* webpackChunkName: "application-review" */ '@/components/expert_panels/ApplicationResponse.vue'),
         props: true,
@@ -146,8 +139,7 @@ export default [
             protected: true
         }
     },
-    {
-        name: 'AnnualReview',
+    { name: 'AnnualReview',
         path: '/groups/:uuid/annual-review',
         components: {
             default: AnnualReviewForm
@@ -189,5 +181,18 @@ export default [
                 }
             },
         ],
-    }
+    },
+    { name: 'SustainedCurationReview',
+        path: '/groups/:uuid/sustained-curation-review',
+        components: {
+            default: () => import(/* webpackchunkname: "sustained-curation-review" */ '@/views/groups/SustainedCurationReview')
+        },
+        meta: {
+            protected: true
+        },
+        props: true,
+        beforeEnter: async (to) => {
+            return await hasGroupPermission(to, 'application-edit')
+        },
+    },
 ]

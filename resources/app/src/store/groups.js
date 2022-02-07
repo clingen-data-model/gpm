@@ -472,7 +472,7 @@ export const actions = {
             })
     },
 
-    getPendingTasks( {commit, getters}, group) {
+    getPendingTasks( {getters}, group) {
         const url = `${baseUrl}/${group.uuid}/tasks?pending`;
         return api.get(url)
             .then(response => {
@@ -481,6 +481,22 @@ export const actions = {
                 return response;
             });
     },
+
+    completeSustainedCurationReview( {getters}, group) {
+        const url = `${baseUrl}/${group.uuid}/expert-panel/sustained-curation-reviews`;
+        return api.put(url)
+                .then(response => {
+                    const groupInStore = getters.getItemByUuid(group.uuid);
+                    const pendingTasks = groupInStore.pendingTasks || [];
+                    response.data.forEach((task) => {
+                        const pendingTaskIdx = pendingTasks.indexOf(pt => pt.id === task.id);
+                        if (pendingTaskIdx > -1 && task.completed_at) {
+                            delete(groupInStore.pendingTasks[pendingTaskIdx]);
+                        }
+                    });
+                    return response;
+                });
+    }
 };
 
 export default {

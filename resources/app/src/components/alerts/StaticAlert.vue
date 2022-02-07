@@ -13,7 +13,7 @@
     }
 </style>
 <template>
-    <div class="border p-2 rounded" :class="variant">
+    <div class="border p-2 rounded text-md-lg" :class="variant">
         <slot></slot>
     </div>
 </template>
@@ -33,7 +33,6 @@ export default {
         }
     },
     computed: {
-
     },
     methods: {
 
