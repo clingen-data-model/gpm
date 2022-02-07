@@ -1,19 +1,8 @@
 <template>
     <div>
         <header class="flex items-center pb-2 border-b z-20">
-            <!-- <button 
-                class="-mb-4 bg-transparent mr-4 outline-none focus:outline-none" 
-                @click="showApplicationToc = !showApplicationToc"
-            >
-                <icon-menu></icon-menu>
-            </button> -->
             <div class="flex-1">
-                <router-link class="note"
-                    :to="{name: 'GroupDetail', params: {uuid: group.uuid}}"
-                    v-if="group.uuid"
-                >
-                    {{group.displayName}}
-                </router-link>
+                <group-breadcrumbs :group="group" />
                 <h1 class="border-b-0 flex justify-between items-start mb-0">
                     <div>
                         {{group.displayName}} - Application

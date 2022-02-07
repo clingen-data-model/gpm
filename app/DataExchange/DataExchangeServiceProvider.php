@@ -14,8 +14,10 @@ use App\DataExchange\Kafka\KafkaProducer;
 use App\DataExchange\Listeners\PushMessage;
 use App\DataExchange\Contracts\MessagePusher;
 use App\DataExchange\Contracts\MessageConsumer;
+use App\DataExchange\Actions\IncomingMessageStore;
 use App\DataExchange\MessagePushers\MessageLogger;
 use App\DataExchange\MessagePushers\DisabledPusher;
+use App\DataExchange\Actions\ProcessIncomingMessage;
 use App\DataExchange\MessageFactories\MessageFactoryInterface;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -26,6 +28,7 @@ class DataExchangeServiceProvider extends ServiceProvider
             PushMessage::class
         ],
         \App\DataExchange\Events\Received::class => [
+            // IncomingMessageStore::class,
         ],
     ];
 

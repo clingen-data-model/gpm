@@ -50,7 +50,7 @@
                 </input-row>
 
                 <dictionary-row label="">
-                    <checkbox v-model="newMember.is_contact" label="Receives notifications about group" />
+                    <checkbox v-model="newMember.is_contact" label="Receives notifications about this group" />
                 </dictionary-row>
 
                 <div class="border-t mt-4 pt-2">

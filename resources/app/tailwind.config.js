@@ -6,6 +6,9 @@ module.exports = {
     darkMode: false, // or 'media' or 'class'
     theme: {
         extend: {
+            fontSize: {
+                'md-lg': '1.01rem'
+            },
             width: {
                 '36': '9rem',
             },

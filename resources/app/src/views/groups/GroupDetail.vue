@@ -3,10 +3,17 @@
 
         <annual-review-alert :group="group"
             v-if="hasAnyPermission(['annual-reviews-mange', ['annual-review-manage', group]])"
+            class="mb-2"
+        />
+
+        <sustained-curation-review-alert 
+            v-if="needsToReviewSustainedCuration && hasAnyPermission(['ep-applications-manage', ['application-edit', group]])" 
+            :group="group" 
+            class="mb-2"
         />
 
         <group-detail-header :group="group" @showEdit="showEdit"></group-detail-header>
-        
+
         <application-summary 
             :group="group" 
             v-if="group.isApplying"
@@ -116,6 +123,17 @@
                 <button class="btn btn-xs mt-1" @click="getLogEntries">Refresh</button>
             </tab-item>
             <tab-item label="Admin" :visible="hasPermission('groups-manage')">
+                <h2 class="pb-2 border-b mb-4">Application</h2>
+                <progress-chart 
+                    :application="group.expert_panel" 
+                    class="pb-4 border-b border-gray-300 mb-6"
+                ></progress-chart>
+                <step-tabs 
+                    :application="group.expert_panel" 
+                    @stepApproved="getGroup" 
+                    v-if="group.isEp()"
+                />
+                <hr>
                 <h2 class="mb-4">Here be dragons.  Proceed with caution.</h2>
                 <button class="btn btn red" @click="initDelete">Delete Group</button>
             </tab-item>
@@ -173,15 +191,19 @@ import MembershipDescriptionForm from '@/components/expert_panels/MembershipDesc
 import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm'
 import VcepGeneList from '@/components/expert_panels/VcepGeneList'
 import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm'
-import VcepOngoingPlansFormVue from '../../components/expert_panels/VcepOngoingPlansForm.vue';
 import GroupDocuments from './GroupDocuments';
 import AnnualReviewAlert from '@/components/groups/AnnualReviewAlert'
+import StepTabs from '@/components/applications/StepTabs'
+import ProgressChart from '@/components/applications/ProgressChart'
+import SustainedCurationReviewAlert from '@/components/alerts/SustainedCurationReviewAlert'
+
 
 import {isValidationError} from '../../http';
 
 export default {
     name: 'GroupDetail',
     components: {
+        // ApplicationDetail,
         ActivityLog,
         ApplicationSummary,
         AttestationGcep,
@@ -199,7 +221,10 @@ export default {
         ScopeDescriptionForm,
         VcepGeneList,
         VcepOngoingPlansForm,
-        AnnualReviewAlert
+        AnnualReviewAlert,
+        StepTabs,
+        ProgressChart,
+        SustainedCurationReviewAlert
     },
     props: {
         uuid: {
@@ -239,14 +264,14 @@ export default {
         })
         
         const ongoingPlansFormComponent = computed(() => {
-            return group.value.isVcep() ? VcepOngoingPlansFormVue : GcepOngoingPlansForm;
+            return group.value.isVcep() ? VcepOngoingPlansForm : GcepOngoingPlansForm;
         });
 
         const getLogEntries = async () => {
             await fetchEntries(`/api/groups/${props.uuid}/activity-logs`);
         }
 
-        onMounted(async () => {
+        const getGroup = () => {
             store.dispatch('groups/find', props.uuid)
                 .then(() => {
                     store.commit('groups/setCurrentItemIndexByUuid', props.uuid)
@@ -256,8 +281,17 @@ export default {
                         if (group.value.isVcep()) {
                             store.dispatch('groups/getEvidenceSummaries', group.value);
                         }
+                        store.dispatch('groups/getPendingTasks', group.value);
                     }
                 })
+        }
+
+        const needsToReviewSustainedCuration = computed(() => {
+            return group.value.pendingTasks && group.value.pendingTasks.filter(pt => pt.task_type_id === 1).length > 0;
+        })
+
+        onMounted(async () => {
+            getGroup();
         });
 
         return {
@@ -266,7 +300,9 @@ export default {
             showModal,
             ongoingPlansFormComponent,
             logEntries,
+            needsToReviewSustainedCuration,
             getLogEntries,
+            getGroup,
         }
     },
     watch: {

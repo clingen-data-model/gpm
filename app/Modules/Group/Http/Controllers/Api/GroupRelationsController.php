@@ -20,4 +20,15 @@ class GroupRelationsController extends Controller
     {
         return $group->expertPanel->nextActions;
     }
+
+    public function tasks(Request $request, Group $group)
+    {
+        $query = $group->tasks();
+        if ($request->has('pending')) {
+            $query->pending();
+        } elseif ($request->has('completed')) {
+            $query->completed();
+        }
+        return $query->get();
+    }
 }

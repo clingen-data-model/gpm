@@ -32,11 +32,12 @@ app.directive('click-outside', ClickOutside)
 import RemainingHeight from '@/directives/remaining_height'
 app.directive('remaining-height', RemainingHeight)
 
-
-
 import PopOver from "@/components/PopOver"
 app.component('popper', PopOver);
 app.component('popover', PopOver);
+import GroupBreadcrumbs from '@/components/groups/GroupBreadcrumbs'
+app.component('group-breadcrumbs', GroupBreadcrumbs);
+
 
 import {formatDate, formatDateTime, formatTime, addDays, yearAgo} from '@/date_utils'
 

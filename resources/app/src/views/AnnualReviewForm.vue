@@ -247,11 +247,7 @@ export default {
             The annual review for {{window.for_year}}
             is due on {{formatDate(window.end)}}
         </static-alert>
-        <router-link class="note" :to="{name: 'GroupList'}">Groups</router-link>
-        <span class="note"> > </span>
-        <router-link v-if="group.uuid" class="note" :to="groupDetailRoute">
-                {{group.displayName}}
-        </router-link>
+        <group-breadcrumbs :group="group" />
 
         <h1>
             {{group.displayName}} - Annual Review for {{year}}

@@ -19,11 +19,10 @@ class StoreMessageHandler extends AbstractMessageHandler
             'offset' => $message->offset,
             'error_code' => $message->err,
             'payload' => $payload,
-            'gdm_uuid' => $this->hasUuid($message->payload) ? $payload->report_id : null
         ]);
 
         if ($storedMessage->payload != $payload) {
-            Log::warning('We got a message from the gene_validity_events with a key that already exists and a payload that is different', ['storedMessage->payload' => $storedMessage->payload, 'payload' => $payload]);
+            Log::warning('We got a message from the '.$message->topic.' with a key that already exists and a payload that is different', ['storedMessage->payload' => $storedMessage->payload, 'payload' => $payload]);
             die;
         }
 

@@ -18,6 +18,13 @@
             ></notification-item>
         </transition-group>
 
+        <sustained-curation-review-alert
+            v-for="task in sustainedCurationReviews" 
+            :key="task.id"
+            :group="task.assignee"
+            class="mb-2"
+        />
+
         <annual-review-alert 
             v-for="group in coordinatingGroups" :key="group.id" 
             :group="group"
@@ -25,28 +32,12 @@
             class="mb-2"
         />
 
-        <static-alert 
+        <coi-alert
             v-for="membership in user.person.membershipsWithPendingCois" 
             :key="membership.id"
-            class="mt-2"
-            variant="warning"
-        >
-            You have a pending <strong>COI</strong> disclosure for <strong>{{membership.group.name}}</strong>.
-            <br>
-            <br>
-            <router-link 
-                :to="{
-                    name: 'alt-coi', 
-                    params: {
-                        name: membership.group.name, 
-                        code: membership.group.expert_panel.coi_code
-                    }
-                }"
-                class="btn font-bold"
-            >
-                Complete this COI Disclosure
-            </router-link>
-        </static-alert>
+            :membership="membership"
+            class="mb-2"
+        />
 
         <tabs-container class="mt-8">
             <tab-item label="Your Groups">
@@ -80,7 +71,7 @@
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
 import {ref, computed, onMounted, watch} from 'vue'
-import {api} from '@/http'
+import {api, queryStringFromParams} from '@/http'
 import AnnualReviewAlert from '@/components/groups/AnnualReviewAlert';
 import NotificationItem from '@/components/NotificationItem'
 import CoiList from '@/components/people/CoiList'
@@ -195,17 +186,41 @@ export default {
             return map[status] || 'blue'
         };
 
+        const sustainedCurationReviews = ref([]);
+        const getSustainedCurationReviewTasks = async () => {
+            const params = {
+                with: ['assignee'],
+                where: {
+                    task_type_id: 1,
+                    assignee_type: 'App\\Modules\\Group\\Models\\Group',
+                    assignee_id: [...(new Set(coordinatingGroups.value.map(cg => cg.id)))],
+                    pending: 1
+                }
+            }
+            const queryString = queryStringFromParams(params);
+            const url = `/api/tasks${queryString}`;
+            sustainedCurationReviews.value = await api.get(url)
+                                                .then(response => {
+                                                    const uniqueTasks = {};
+                                                    response.data.forEach(task => {
+                                                        uniqueTasks[task.assignee_id] = task;
+                                                    })
+                                                    return uniqueTasks;
+                                                });
+        }
 
         // TODO: extract to module.
         // TODO: Get coi data on demand
 
-        onMounted(() => {
+        onMounted(async () => {
             getNotifications();
-            store.dispatch('forceGetCurrentUser');
+            await store.dispatch('forceGetCurrentUser');
+            await getSustainedCurationReviewTasks();
         })
 
         return {
             user,
+            sustainedCurationReviews,
             personFromStore,
             loadingNotifications,
             notifications,

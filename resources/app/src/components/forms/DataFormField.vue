@@ -68,7 +68,10 @@ export default {
     },
     methods: {
         getFieldLabel (field) {
-            return (field.label ? field.label : titleCase(field.name))
+            if (typeof field.label === 'undefined') {
+                return titleCase(field.name);
+            }
+            return field.label
         },
         resolveOptions (field) {
             if (Array.isArray(field.options)) {
