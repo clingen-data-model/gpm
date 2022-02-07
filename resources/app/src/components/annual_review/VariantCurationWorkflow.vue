@@ -4,7 +4,7 @@
             :disabled="isComplete"
             v-model="workingCopy.data.variant_workflow_changes"
             type="radio-group"
-            label="Has the Expert Panel has made any changes to its workflow?"
+            label="Has the Expert Panel made any changes to its workflow?"
             :errors="errors.variant_workflow_changes"
             :options="[{value: 'yes'},{value: 'no' }]"
             vertical
