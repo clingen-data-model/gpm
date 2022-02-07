@@ -159,7 +159,7 @@ const store = createStore({
                         }
                     })
             }
-        }
+        },
     },
     modules: {
         alerts: Alerts,
