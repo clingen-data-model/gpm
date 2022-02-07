@@ -471,6 +471,16 @@ export const actions = {
             .then(() => {
             })
     },
+
+    getPendingTasks( {commit, getters}, group) {
+        const url = `${baseUrl}/${group.uuid}/tasks?pending`;
+        return api.get(url)
+            .then(response => {
+                const groupInStore = getters.getItemByUuid(group.uuid);
+                groupInStore.pendingTasks = response.data;
+                return response;
+            });
+    },
 };
 
 export default {
