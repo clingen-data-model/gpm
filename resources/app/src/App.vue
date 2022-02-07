@@ -48,24 +48,30 @@
           <router-view />
         </div>
       </div>
-      <impersonate-control class="print:hidden" />
+      <!-- <impersonate-control class="print:hidden" /> -->
     </div>
 
 
     <alert-viewer></alert-viewer>
     <issue-report-form class="print:hidden" />
 
-    <!-- <teleport to="body">
-      <footer class="w-full border-t mt-4 bg-gray-100">
+    <teleport to="body">
+      <!-- <footer class="w-full border-t mt-4 bg-gray-100">
         <div class="container mx-auto py-3 flex" id="footer-content">
             
         </div>
         <div class="container mx-auto py-3" id="debug-info" v-if="hasRole('super-user')">
         </div>
-      </footer>
-    </teleport> -->
+      </footer> -->
+      <div v-if="hasRole('super-user')" class="container mx-auto note border-t mt-4 pt-4">
+          <span v-if="systemInfo && systemInfo.build_name">Build: {{systemInfo.build_name}}</span>
+          <span v-if="systemInfo.build_name && systemInfo.build_commit"> | </span>
+          <span v-if="systemInfo && systemInfo.build_commit">Commit: {{systemInfo.build_commit}}</span>
+      </div>
+ 
+    </teleport>
+    <!-- This is a comment test -->
   </div>
-  
 </template>
 
 <script>
@@ -74,6 +80,7 @@ import AlertViewer from './components/alerts/AlertViewer'
 import IssueReportForm from '@/components/IssueReportForm'
 import ImpersonateControl from '@/components/ImpersonateControl'
 import { mapGetters } from 'vuex'
+import configs from '@/configs';
 
 export default {
   components: {
@@ -85,6 +92,7 @@ export default {
   data() {
     return {
       showLogin: false,
+      systemInfo: configs.systemInfo
     }
   },
   computed: {
