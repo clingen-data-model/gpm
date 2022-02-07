@@ -78,7 +78,6 @@
 import UserMenu from './components/UserMenu'
 import AlertViewer from './components/alerts/AlertViewer'
 import IssueReportForm from '@/components/IssueReportForm'
-import ImpersonateControl from '@/components/ImpersonateControl'
 import { mapGetters } from 'vuex'
 import configs from '@/configs';
 
@@ -87,7 +86,6 @@ export default {
     UserMenu,
     AlertViewer,
     IssueReportForm,
-    ImpersonateControl,
   },
   data() {
     return {
