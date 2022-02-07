@@ -1,6 +1,6 @@
 <template>
     <header class="pb-4">
-        <router-link class="note" :to="{name: 'GroupList'}">Groups</router-link>
+        <group-breadcrumbs />
         <h1 class="flex justify-between items-center">
             <div>
                 {{group.displayName}} <badge :color="group.statusColor" class="text-xs">{{group.status ? group.status.name : 'loading...'}}</badge>
