@@ -46,10 +46,6 @@ use App\Modules\Group\Http\Controllers\Api\GroupRelationsController;
 use App\Modules\Group\Http\Controllers\Api\EvidenceSummaryController;
 use App\Modules\Group\Http\Controllers\Api\GroupSubmissionsController;
 
-// Route::post('/{{group_uuid}}/members', MemberAdd::class);
-
-
-
 Route::group([
     'prefix' => 'api/groups',
     'middleware' => ['api', 'auth:sanctum']
