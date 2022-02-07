@@ -22,7 +22,7 @@
                 },
                 {
                     value: 'changes-made',
-                    label: 'We have made changes to the ClinGen-approved  VCEP specification to the ACMG/AMP guidelines(for ClinGen 3-star VCEPs only)'
+                    label: 'We have made changes to the ClinGen-approved VCEP specification to the ACMG/AMP guidelines (for ClinGen 3-star VCEPs only)'
                 }
             ]"
             :errors="errors.specification_progress" 
