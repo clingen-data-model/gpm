@@ -29,8 +29,10 @@
 
         <modal-dialog v-model="showDetail">
             <dictionary-row label="To" label-class="font-bold" class="mb-1 border-b">
-                <div v-for="(name, address) in currentEmail.to" :key="address">
-                    {{address}}
+                <div class="flex-none">
+                    <div v-for="(name, address) in currentEmail.to" :key="address">
+                        {{address}}
+                    </div>
                 </div>
             </dictionary-row>
             <dictionary-row label="From" label-class="font-bold" class="mb-1 border-b">
