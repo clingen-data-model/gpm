@@ -17,16 +17,17 @@ class UserDefinedMailable extends Mailable
      * @return void
      */
     public function __construct(
-        public String $subject,
+        String $subject,
         public String $body,
         public ?String $fromEmail = null,
         public ?String $fromName = null,
-        public ?array $attachments = [],
+        ?array $attachments = [],
         public ?array $ccAddresses = [],
         public ?array $bccAddresses = [],
         public ?string $replyToEmail = null,
         public ?string $replyToName = null,
     ) {
+        $this->subject = $subject;
     }
 
     /**
@@ -63,7 +64,7 @@ class UserDefinedMailable extends Mailable
                 ]);
             }
         }
-        return view('email.user_defined_email')
+        return $this->view('email.user_defined_email')
             ->with([
                 'body' => $this->body
             ]);

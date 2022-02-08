@@ -4,17 +4,18 @@ namespace Tests\Feature\End2End\ExpertPanels;
 
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
-use App\Modules\Group\Models\Submission;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Carbon;
+use App\Mail\UserDefinedMailable;
 use App\Modules\User\Models\User;
+use App\Modules\Group\Models\Group;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
 use App\Modules\Person\Models\Person;
+use App\Modules\Group\Models\Submission;
 use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\Group\Models\Group;
-use App\Notifications\UserDefinedMailNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ApproveStepTest extends TestCase
@@ -87,28 +88,31 @@ class ApproveStepTest extends TestCase
     /**
      * @test
      */
-    public function sends_no_notifications_if_not_specified()
+    public function sends_no_mail_if_not_specified()
     {
         $approvalData = [
             'date_approved' => Carbon::now(),
             'notify_contacts' => 'false'
         ];
 
-        Notification::fake();
+        Mail::fake();
         Sanctum::actingAs($this->user);
         $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/current-step/approve', $approvalData)
             ->assertStatus(200);
 
-        Notification::assertNothingSent();
+        Mail::assertNotSent(UserDefinedMailable::class);
     }
 
     /**
      * @test
      */
-    public function sends_notification_to_contacts_if_specified()
+    public function sends_mail_to_contacts_if_specified()
     {
-        $person = Person::factory()->create();
-        ContactAdd::run($this->expertPanel->uuid, $person->uuid);
+        $person1 = Person::factory()->create();
+        ContactAdd::run($this->expertPanel->uuid, $person1->uuid);
+
+        $person2 = Person::factory()->create();
+        ContactAdd::run($this->expertPanel->uuid, $person2->uuid);
 
 
         $subject = 'This is a <strong>test</strong> custom message';
@@ -121,23 +125,36 @@ class ApproveStepTest extends TestCase
             'body' => $body
         ];
 
-        Notification::fake();
+        Mail::fake();
+
         Sanctum::actingAs($this->user);
         $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/current-step/approve', $approvalData)
             ->assertStatus(200);
 
-        Notification::assertSentTo(
-            $person,
-            UserDefinedMailNotification::class,
-            function ($notification) use ($body, $subject) {
-                return $notification->subject == $subject
-                    && $notification->body == $body
-                    && $notification->attachments == []
+        Mail::assertSent(
+            UserDefinedMailable::class,
+            function ($mail) use ($body, $subject, $person1, $person2) {
+                return $mail->subject == $subject
+                    && $mail->body == $body
+                    && $mail->attachments == []
+                    && $mail->hasTo($person1->email)
+                    && $mail->hasTo($person2->email)
                 ;
             }
         );
+    }
 
-        $mailable = (new UserDefinedMailNotification(subject: $subject, body: $body))->toMail($person);
+    /**
+     * @test
+     */
+    public function test_mailable_content()
+    {
+        $subject = 'This is a <strong>test</strong> custom message';
+        $body = '<p>this is the body of a <em>custom message<em>.</p>';
+
+        $mailable = (new UserDefinedMailable(subject: $subject, body: $body));
+
+        // dd($mailable->render());
 
         $view = View::make(
             'email.user_defined_email',

@@ -2,6 +2,8 @@
 
 namespace App\Modules\ExpertPanel\Actions;
 
+use App\Mail\UserDefinedMailable;
+use Illuminate\Support\Facades\Mail;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
@@ -24,14 +26,21 @@ class NotifyContacts
                         ->get()
                         ->pluck('person');
         
-        Notification::send(
-            $contacts,
-            new UserDefinedMailNotification(
-                subject: $subject,
-                body: $body,
-                attachments: $attachments,
-                ccAddresses: $ccAddresses
-            )
-        );
+        $mail = Mail::to($contacts->pluck('email'))
+                    ->send(new UserDefinedMailable(
+                        subject: $subject,
+                        body: $body,
+                        attachments: $attachments,
+                        ccAddresses: $ccAddresses
+                    ));
+        // Notification::send(
+        //     $contacts,
+        //     new UserDefinedMailNotification(
+        //         subject: $subject,
+        //         body: $body,
+        //         attachments: $attachments,
+        //         ccAddresses: $ccAddresses
+        //     )
+        // );
     }
 }
