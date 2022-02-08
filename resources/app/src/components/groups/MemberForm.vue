@@ -285,16 +285,19 @@ export default {
             }
         },
         async addPersonAsMember(group, member) {
-            const memberData = await this.$store.dispatch('groups/memberAdd', {
+            const data = {
                 uuid: group.uuid,
                 personId: member.person_id,
                 roleIds: member.roles.map(r => r.id),
-                isContact: member.is_contact,
-                expertise: member.expertise,
-                notes: member.notes,
-                training_level_1: member.training_level_1,
-                training_level_2: member.training_level_2,
-            })
+                data: {
+                    is_contact: member.is_contact,
+                    expertise: member.expertise,
+                    notes: member.notes,
+                    training_level_1: member.training_level_1,
+                    training_level_2: member.training_level_2,
+                }
+            };
+            const memberData = await this.$store.dispatch('groups/memberAdd', data);
             if (member.permissions.length > 0) {
                 await this.$store.dispatch('groups/memberGrantPermission', {
                     uuid: group.uuid,
