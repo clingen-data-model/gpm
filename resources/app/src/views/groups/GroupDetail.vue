@@ -142,7 +142,7 @@
                 </section>
                 <section class="border my-4 p-4 rounded" v-if="$store.state.systemInfo.env !== 'production'">
                     <h2 class="mb-4">Dev tools <span class="text-gray-500"> - don't use if you don't know.</span></h2>
-                    <button class="btn" v-if="group.expert_panel.has_approved_pilot" @click="fakeCspecPilotApproved">
+                    <button class="btn" v-if="group.isVcep() && group.expert_panel.has_approved_pilot" @click="fakeCspecPilotApproved">
                         Fake a Pilot Approved Message
                     </button>
                 </section>
