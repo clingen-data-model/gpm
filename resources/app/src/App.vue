@@ -64,9 +64,11 @@
         </div>
       </footer> -->
       <div v-if="hasRole('super-user')" class="container mx-auto note border-t mt-4 pt-4">
-          <span v-if="systemInfo && systemInfo.build_name">Build: {{systemInfo.build_name}}</span>
-          <span v-if="systemInfo.build_name && systemInfo.build_commit"> | </span>
-          <span v-if="systemInfo && systemInfo.build_commit">Commit: {{systemInfo.build_commit}}</span>
+          Build: {{$store.state.systemInfo.build.name}}
+          |
+          Commit: {{$store.state.systemInfo.build.commit || '--'}}
+          |
+          Env: {{$store.state.systemInfo.env}}
       </div>
  
     </teleport>

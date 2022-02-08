@@ -140,7 +140,7 @@
                     <h2 class="mb-4 text-red-800">Here be dragons.  Proceed with caution.</h2>
                     <button class="btn btn red" @click="initDelete">Delete Group</button>
                 </section>
-                <section class="border my-4 p-4 rounded">
+                <section class="border my-4 p-4 rounded" v-if="$store.state.systemInfo.env !== 'production'">
                     <h2 class="mb-4">Dev tools <span class="text-gray-500"> - don't use if you don't know.</span></h2>
                     <button class="btn" v-if="group.expert_panel.has_approved_pilot" @click="fakeCspecPilotApproved">
                         Fake a Pilot Approved Message
@@ -407,9 +407,14 @@ export default {
         },
         async fakeCspecPilotApproved () {
             console.log('fake-pilot-approved')
-            await api.post(`/api/groups/${this.uuid}/dev/fake-pilot-approved`);
-            console.log('getPendingTasks')
-            this.$store.dispatch('groups/getPendingTasks', this.group);
+            try {
+                await api.post(`/api/groups/${this.uuid}/dev/fake-pilot-approved`);
+                this.$store.dispatch('groups/getPendingTasks', this.group);
+            } catch (e) {
+                if (e.response.status == 418 ) {
+                    this.$store.commit('pushError', e.response.data);
+                }
+            }
         }
     },
     mounted() {

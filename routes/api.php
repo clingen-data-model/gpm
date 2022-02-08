@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\MailDraftController;
 use App\Http\Controllers\Api\GeneLookupController;
 use App\Http\Controllers\Api\AnnualReviewController;
 use App\Http\Controllers\Api\DiseaseLookupController;
+use App\Http\Controllers\Api\SystemInfoController;
 use App\Http\Controllers\ImpersonateSearchController;
 use App\Modules\User\Http\Controllers\CurrentUserController;
 
@@ -40,6 +41,7 @@ Route::get('/document-types', function () {
 Route::get('/authenticated', [AuthController::class, 'isAuthenticated']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('/system-info', [SystemInfoController::class, 'index']);
     Route::get('/user', function (Request $request) {
         return $request->user();
     });

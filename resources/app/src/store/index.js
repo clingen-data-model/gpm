@@ -97,6 +97,7 @@ const store = createStore({
         features: {
             legacyCoi: process.env.VUE_APP_LEGACY_COI == 'true',
         },
+        systemInfo: {build: {}},
     },
     getters: {
         currentUser: (state) => state.user,
@@ -105,14 +106,15 @@ const store = createStore({
     },  
     mutations: mutations,
     actions: {
-        async getCurrentUser({commit, state}) {
+        async getCurrentUser({commit, dispatch, state}) {
             if (!state.authenticated || state.user.id === null) {
                 try {
                     await axios.get('/api/current-user')
                         .then(response => {
                             commit('setCurrentUser', response.data.data)
                         })
-                } catch (error) {
+                        dispatch('getSystemInfo');
+                    } catch (error) {
                     commit('clearCurrentUser');
                 }
             }
@@ -160,6 +162,15 @@ const store = createStore({
                     })
             }
         },
+        getSystemInfo ({state}) {
+            if (state.authenticated) {
+                axios.get('/api/system-info')
+                    .then(response => {
+                        state.systemInfo = response.data
+                    })
+                
+            }
+        }
     },
     modules: {
         alerts: Alerts,

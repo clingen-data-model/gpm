@@ -3,6 +3,10 @@
 return [
     'name' => env('APP_NAME', 'EPAM'),
     'env' => env('APP_ENV', 'production'),
+    'build' => [
+        'name' => env('OPENSHIFT_BUILD_NAME', 'dev'),
+        'commit' => env('OPENSHIFT_BUILD_COMMIT', null),
+    ],
     'debug' => (bool) env('APP_DEBUG', false),
     'url' => env('APP_URL', 'http://localhost'),
     'asset_url' => env('ASSET_URL', null),

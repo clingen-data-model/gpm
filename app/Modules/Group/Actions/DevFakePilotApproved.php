@@ -13,7 +13,7 @@ class DevFakePilotApproved
     public function handle(Group $group)
     {
         if (app()->environment('production')) {
-            throw new \Exception('Refusing to create a task to review sustained curation b/c you are in a production system.');
+            return response('Refusing to create a task to review sustained curation b/c you are in a production system.', 418);
         }
 
         $action = app()->make(TaskCreate::class);

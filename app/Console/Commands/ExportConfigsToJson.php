@@ -44,12 +44,7 @@ class ExportConfigsToJson extends Command
 
         $this->info('Exporting '.implode(', ', $configs).' to JSON.');
 
-        $export = [
-            'systemInfo' => [
-                'build_name' => env('OPENSHIFT_BUILD_NAME', 'dev'),
-                'build_commit' => env('OPENSHIFT_BUILD_COMMIT', null),
-            ]
-        ];
+        $export = [];
 
         foreach ($configs as $config) {
             $config = trim($config);
