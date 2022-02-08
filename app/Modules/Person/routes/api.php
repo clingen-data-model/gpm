@@ -21,7 +21,7 @@ Route::group([
     'middleware' => ['api']
 ], function () {
     Route::get('/institutions', function (Request $request) {
-        return Institution::select('name', 'abbreviation', 'id')->get();
+        return Institution::select('name', 'abbreviation', 'id', 'url')->get();
     });
 
     Route::get('/timezones', function (Request $request) {

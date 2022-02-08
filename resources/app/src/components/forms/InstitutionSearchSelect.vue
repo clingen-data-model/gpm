@@ -75,6 +75,7 @@ export default {
             return this.institutions.filter(i => {
                 return (i.name &&  i.name.match(pattern))
                     || (i.abbreviation && i.abbreviation.match(pattern))
+                    || (i.url && i.url.match(pattern))
             })
         }
     },
