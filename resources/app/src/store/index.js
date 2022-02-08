@@ -36,7 +36,7 @@ axios.interceptors.response.use(
                 if (error.response.data.includes('The request to access this resource was rejected.')) {
                     const matches = error.response.data.match(/Reference this support identifier:\s*(\d+)/)
                     const supportId = matches[1] || null;
-                    store.commit('pushError', 'UNC\'s security filters thinks you\'re up to no good. But I\'m sure you didn\'t mean anything by it.  Please contact support and let them know you ran into a problem. Support ID: '+supportId)
+                    store.commit('pushError', 'UNC\'s security filters thinks you\'re up to no good. But I\'m sure you didn\'t mean anything by it.  Please contact support at https://help.unc.edu and click the "Report an Issue" button and let them know you ran into a problem.  Be sure to include the followng support ID: '+supportId)
                 } else {
                     store.commit('pushError', 'You do not have permission to complete that action.  If you think this is an error please contact support.')
                 }

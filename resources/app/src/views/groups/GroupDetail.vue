@@ -123,19 +123,29 @@
                 <button class="btn btn-xs mt-1" @click="getLogEntries">Refresh</button>
             </tab-item>
             <tab-item label="Admin" :visible="hasPermission('groups-manage')">
-                <h2 class="pb-2 border-b mb-4">Application</h2>
-                <progress-chart 
-                    :application="group.expert_panel" 
-                    class="pb-4 border-b border-gray-300 mb-6"
-                ></progress-chart>
-                <step-tabs 
-                    :application="group.expert_panel" 
-                    @stepApproved="getGroup" 
-                    v-if="group.isEp()"
-                />
-                <hr>
-                <h2 class="mb-4">Here be dragons.  Proceed with caution.</h2>
-                <button class="btn btn red" @click="initDelete">Delete Group</button>
+                <div v-if="group.isApplying">
+                    <h2 class="pb-2 border-b mb-4">Application</h2>
+                    <progress-chart 
+                        :application="group.expert_panel" 
+                        class="pb-4 border-b border-gray-300 mb-6"
+                    ></progress-chart>
+                    <step-tabs 
+                        :application="group.expert_panel" 
+                        @stepApproved="getGroup" 
+                        v-if="group.isEp()"
+                    />
+                    <hr>
+                </div>
+                <section class="border my-4 p-4 bg-red-100 border-red-200 rounded">
+                    <h2 class="mb-4 text-red-800">Here be dragons.  Proceed with caution.</h2>
+                    <button class="btn btn red" @click="initDelete">Delete Group</button>
+                </section>
+                <section class="border my-4 p-4 rounded">
+                    <h2 class="mb-4">Dev tools <span class="text-gray-500"> - don't use if you don't know.</span></h2>
+                    <button class="btn" v-if="group.expert_panel.has_approved_pilot" @click="fakeCspecPilotApproved">
+                        Fake a Pilot Approved Message
+                    </button>
+                </section>
             </tab-item>
         </tabs-container>
         <br><br>
@@ -198,7 +208,7 @@ import ProgressChart from '@/components/applications/ProgressChart'
 import SustainedCurationReviewAlert from '@/components/alerts/SustainedCurationReviewAlert'
 
 
-import {isValidationError} from '../../http';
+import {api, isValidationError} from '../../http';
 
 export default {
     name: 'GroupDetail',
@@ -394,6 +404,12 @@ export default {
             this.$store.dispatch('groups/delete', this.group.uuid);
             this.$store.commit('pushSuccess', 'Group deleted.');
             this.$router.push({name: 'GroupList'})
+        },
+        async fakeCspecPilotApproved () {
+            console.log('fake-pilot-approved')
+            await api.post(`/api/groups/${this.uuid}/dev/fake-pilot-approved`);
+            console.log('getPendingTasks')
+            this.$store.dispatch('groups/getPendingTasks', this.group);
         }
     },
     mounted() {

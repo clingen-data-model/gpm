@@ -214,7 +214,7 @@ class ExpertPanel extends Entity
     }
 
     get isApplying () {
-        return !this.date_completed;
+        return this.date_completed === null;
     }
     
     hasPendingSubmissionForStep(stepName) {

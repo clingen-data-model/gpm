@@ -45,6 +45,7 @@ use App\Modules\Group\Http\Controllers\Api\ActivityLogsController;
 use App\Modules\Group\Http\Controllers\Api\GroupRelationsController;
 use App\Modules\Group\Http\Controllers\Api\EvidenceSummaryController;
 use App\Modules\Group\Http\Controllers\Api\GroupSubmissionsController;
+use App\Modules\Group\Actions\DevFakePilotApproved;
 
 Route::group([
     'prefix' => 'api/groups',
@@ -52,6 +53,10 @@ Route::group([
 ], function () {
     Route::get('/', [GroupController::class, 'index']);
     Route::post('/', GroupCreate::class);
+
+    Route::post('/{group:uuid}/dev/fake-pilot-approved', DevFakePilotApproved::class);
+
+
 
     Route::group(['prefix' => '{group:uuid}/documents'], function () {
         Route::get('/', [GroupRelationsController::class, 'documents']);
@@ -134,8 +139,6 @@ Route::group([
             Route::post('/{review}', AnnualReviewSubmit::class);
         });
     });
-
-
 
     Route::post('/{uuid}/invites', MemberInvite::class);
 });
