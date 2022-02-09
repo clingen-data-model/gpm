@@ -42,7 +42,9 @@ axios.interceptors.response.use(
                 }
                 break;
             case 404:
-                store.commit('pushError', 'We can\'t find what you\'re looking for.');
+                if (error.config.headers['X-Ignore-Missing'] !== 1) {
+                    store.commit('pushError', 'We couldn\'t find something you\'re looking for.');
+                }
                 break;
 //             case 422:
 //                 store.commit('pushError', 'There was a problem with your submission');

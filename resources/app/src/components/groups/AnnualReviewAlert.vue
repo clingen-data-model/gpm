@@ -68,7 +68,7 @@ export default {
         }
     },
     methods: {
-        async getAnnualReview () {
+        getAnnualReview () {
             if (!this.group.uuid) {
                 return;
             }
@@ -78,7 +78,7 @@ export default {
             }
 
             this.loading = true;
-            await api.get(`/api/groups/${this.group.uuid}/expert-panel/annual-reviews`)
+            api.get(`/api/groups/${this.group.uuid}/expert-panel/annual-reviews`, {headers: {'X-Ignore-Missing': 1} })
                 .then(response => {
                     this.annualReview = response.data
                 });
