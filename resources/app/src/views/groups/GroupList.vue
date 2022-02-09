@@ -85,16 +85,17 @@ export default {
                     typeId: 3,
                     filter: g => g.isGcep()
                 },
-                {
-                    label: 'CDWGs',
-                    typeId: 2,
-                    filter: g => g.isCdwg()
-                },
-                {
-                    label: 'WGs',
-                    typeId: 1,
-                    filter: g => g.isWg()
-                }
+                // Commented out for Feb. 2022 release.
+                // {
+                //     label: 'CDWGs',
+                //     typeId: 2,
+                //     filter: g => g.isCdwg()
+                // },
+                // {
+                //     label: 'WGs',
+                //     typeId: 1,
+                //     filter: g => g.isWg()
+                // }
             ],
             sort: {
                 field: 'id',
