@@ -22,7 +22,7 @@
             <h3>Profile</h3>
             <dictionary-row class="pb-2" label-class="w-40" label="Institution">{{person.institutionName}}</dictionary-row>
             <dictionary-row class="pb-2" label-class="w-40" label="Credentials">{{person.credentials}}</dictionary-row>
-            <dictionary-row class="pb-2" label-class="w-40" label="Primary Occupation">{{person.primaryOccupationName}}</dictionary-row>
+            <!-- <dictionary-row class="pb-2" label-class="w-40" label="Primary Occupation">{{person.primaryOccupationName}}</dictionary-row> -->
             <dictionary-row class="pb-2" label-class="w-40" label="Biography">{{person.biography}}</dictionary-row>
             <!-- <dictionary-row class="pb-2" label-class="w-40" label="ORCID">{{person.orcid_id}}</dictionary-row>
             <dictionary-row class="pb-2" label-class="w-40" label="Hypothes.is ID">{{person.hypothesis_id}}</dictionary-row> -->
