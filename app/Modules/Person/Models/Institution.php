@@ -33,6 +33,7 @@ class Institution extends Model
         'address',
         'country_id',
         'website_id',
+        'approved'
     ];
 
     /**
@@ -51,6 +52,19 @@ class Institution extends Model
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
+    }
+    
+    /**
+     * SCOPES
+     */
+    public function scopeIsApproved($query)
+    {
+        return $query->where('approved', 1);
+    }
+    
+    public function scopeNeedsApproval($query)
+    {
+        return $query->where('approved', '!=', 1);
     }
     
 

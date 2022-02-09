@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\Person\Actions\InstitutionCreate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Modules\Person\Models\Institution;
@@ -46,15 +47,23 @@ Route::group([
     Route::put('/invites/{code}', InviteRedeem::class);
     Route::put('/existing-user/invites/{code}', InviteRedeemForExistingUser::class);
     Route::put('/invites/{code}/reset', InviteReset::class);
-    
+
+    // Lookups
     Route::get('/lookups/timezones', [TimezoneController::class, 'index'])
         ->name('people.timezones.index');
 
-    // index
     Route::get('/lookups/{model}', [ApiController::class, 'index'])
     ->name('people.catchall.index');
     
-    // show
     Route::get('/lookups/{model}/{id}', [ApiController::class, 'show'])
         ->name('people.catchall.show');
+});
+
+Route::group([
+    'prefix' => 'api/institutions',
+    'middleware' => ['api']
+], function () {
+    Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::post('/', InstitutionCreate::class);
+    });
 });
