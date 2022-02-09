@@ -20,17 +20,31 @@
                     {{option}}
                 </div>
             </template>
+            <template v-slot:additionalOption>
+                <button class="font-bold link cursor-pointer" @click="initAddNew">Add your institution</button>
+            </template>
         </search-select>
+        <teleport to='body'>
+            <modal-dialog title="Add an institution" v-model="showAddForm">
+                <institution-form 
+                    :name="formName"
+                    @saved="useNewInstitution" 
+                    @canceled="cancelNewInstitution" 
+                />
+            </modal-dialog>
+        </teleport>
     </div>
 </template>
 <script>
 import api from '@/http/api'
 import SearchSelect from '@/components/forms/SearchSelect'
+import InstitutionForm from '@/components/InstitutionForm'
 
 export default {
-    name: 'DiseaseSearchSelect',
+    name: 'InstitutionSearchSelect',
     components: {
         SearchSelect,
+        InstitutionForm
     },
     props: {
         modelValue: {
@@ -39,7 +53,9 @@ export default {
     },
     data() {
         return {
-            institutions: []
+            institutions: [],
+            showAddForm: false,
+            formName: null,
         }
     },
     computed: {
@@ -62,28 +78,42 @@ export default {
                 }
 
                 this.selectedInstitutionId = null;
-
             }
         }
     },
     methods: {
         search (searchText) {
-            if (!searchText || searchText.length < 2) {
+            if (!searchText || searchText.length < 1) {
                 return [];
             }
+            this.formName = searchText;
             const pattern = new RegExp(`.*${searchText}.*`, 'i');
             return this.institutions.filter(i => {
                 return (i.name &&  i.name.match(pattern))
                     || (i.abbreviation && i.abbreviation.match(pattern))
                     || (i.url && i.url.match(pattern))
             })
+        },
+        initAddNew () {
+            this.showAddForm = true;
+        },
+        useNewInstitution (newInst) {
+            this.institutions.push(newInst);
+            this.selectedInstitution = newInst;
+            this.showAddForm = false;
+        },
+        cancelNewInstitution () {
+            this.showAddForm = false;
+        },
+        getInstitutions () {
+            api.get('/api/people/institutions')
+                .then(response => {
+                    this.institutions = response.data
+                })
         }
     },
     mounted () {
-        api.get('/api/people/institutions')
-            .then(response => {
-                this.institutions = response.data
-            })
+        this.getInstitutions()
     }
 }
 </script>
