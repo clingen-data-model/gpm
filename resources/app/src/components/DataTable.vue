@@ -198,12 +198,11 @@ export default {
                     return data.sort(this.realSort.field.sortFunction)
                 }
                 
-                switch (sortType) {
-                    case Date:
-                        return data.sort(this.dateSort)
-                    default:
-                        return data.sort(this.textAndNumberSort)
-                }                
+                if (sortType == Date) {
+                    return data.sort(this.dateSort)
+                }
+
+                return data.sort(this.textAndNumberSort)
             }
             return []
         },
@@ -291,14 +290,21 @@ export default {
         },
         dateSort(a, b) {
             const coefficient = this.realSort.desc ? -1 : 1;
-            const aVal = new Date(Date.parse(a[this.sortField.name])).getTime();
-            const bVal = new Date(Date.parse(b[this.sortField.name])).getTime();
-            if (aVal == bVal) {
-                if (a.id > b.id) {
-                    return 1*coefficient;
-                }
-                return -1*coefficient;
+
+            let aVal = Date.parse(this.resolveSortAttribute(a, this.sortField));
+            if (isNaN(parseFloat(aVal))) {
+                aVal = 0;
             }
+
+            let bVal = Date.parse(this.resolveSortAttribute(b, this.sortField));
+            if (isNaN(parseFloat(bVal))) {
+                bVal = 0;
+            }
+            
+            if (aVal === bVal) {
+                return 0;
+            }
+
             return coefficient * ((aVal > bVal) ? 1 : -1);
         },
         defaultFilter(item, term) {

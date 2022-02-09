@@ -121,7 +121,7 @@ export default {
                 {
                     name: 'latest_log_entry.created_at',
                     label: 'Last Activity',
-                    type: String,
+                    type: Date,
                     sortable: true,
                     resolveValue (item) {
                         if (item && item.group && item.group.latest_log_entry) {
