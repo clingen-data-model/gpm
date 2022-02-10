@@ -33,7 +33,7 @@ class ApplicationStepApprovedNotification extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['database'];
     }
 
     /**
@@ -85,8 +85,17 @@ class ApplicationStepApprovedNotification extends Notification
      */
     public function toArray($notifiable)
     {
+        $message = 'Congratulations! ' . $this->expertPanel->displayName . ' was approved for '.config('expert-panels.steps')[$this->approvedStep].' on '.$this->expertPanel->getApprovalDateForStep($this->approvedStep)->format('m/d/Y').'.';
+
+        if ($this->wasLastStep) {
+            $message = 'Congratulations! ' . $this->expertPanel->displayName . ' was given final approval on '.$this->expertPanel->getApprovalDateForStep($this->approvedStep)->format('m/d/Y').'!';
+        }
+
         return [
-            //
+            'expert_panel' => $this->expertPanel,
+            'date_approved' => $this->approvedStep,
+            'message' => $message,
+            'type' => 'success'
         ];
     }
 }

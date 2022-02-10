@@ -2,14 +2,16 @@
 
 namespace Tests\Feature\Integration\DX\Actions;
 
-use App\DataExchange\Actions\ClassifiedRulesApprovedProcessor;
-use App\DataExchange\Exceptions\DataSynchronizationException;
-use App\DataExchange\Models\IncomingStreamMessage;
+use Carbon\Carbon;
 use Tests\TestCase;
+use Faker\Provider\el_CY\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Carbon\Carbon;
+use App\DataExchange\Models\IncomingStreamMessage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\DataExchange\Exceptions\DataSynchronizationException;
+use App\DataExchange\Actions\ClassifiedRulesApprovedProcessor;
+use App\Modules\Group\Models\GroupMember;
 
 class ClassifiedRulesApprovedProcessorTest extends TestCase
 {
@@ -22,6 +24,7 @@ class ClassifiedRulesApprovedProcessorTest extends TestCase
         $this->seed();
 
         $this->expertPanel = ExpertPanel::factory()->vcep()->create(['affiliation_id' => '50666']);
+        // $groupMember = GroupMember::factory()->create(['group_id' => $this->expertPanel->group_id, 'is_contact' => 1]);
         $this->message = IncomingStreamMessage::factory()->draftApproved()->make();
         
         $payload = (array)$this->message->payload;

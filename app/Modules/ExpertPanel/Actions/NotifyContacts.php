@@ -8,6 +8,7 @@ use Lorisleiva\Actions\Concerns\AsAction;
 use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Notifications\UserDefinedMailNotification;
+use App\Modules\ExpertPanel\Notifications\ApplicationStepApprovedNotification;
 
 class NotifyContacts
 {
@@ -26,21 +27,29 @@ class NotifyContacts
                         ->get()
                         ->pluck('person');
         
+        $mailable = new UserDefinedMailable(
+            // subject: $subject,
+            body: $body,
+        );
+
+        $mailable->subject($subject);
+
+        if (count($ccAddresses) > 0) {
+            foreach ($ccAddresses as $cc) {
+                $mailable->cc(...$cc);
+            }
+        }
+
+        if (count($attachments) > 0) {
+            foreach ($attachments as $attachment) {
+                $mailable->attach($attachment->getPath(), [
+                    'as' => $attachment->getOriginalName(),
+                ]);
+            }
+        }
+
+
         $mail = Mail::to($contacts->pluck('email'))
-                    ->send(new UserDefinedMailable(
-                        subject: $subject,
-                        body: $body,
-                        attachments: $attachments,
-                        ccAddresses: $ccAddresses
-                    ));
-        // Notification::send(
-        //     $contacts,
-        //     new UserDefinedMailNotification(
-        //         subject: $subject,
-        //         body: $body,
-        //         attachments: $attachments,
-        //         ccAddresses: $ccAddresses
-        //     )
-        // );
+                    ->send($mailable);
     }
 }

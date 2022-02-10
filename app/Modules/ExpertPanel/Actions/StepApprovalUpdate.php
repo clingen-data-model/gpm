@@ -21,7 +21,7 @@ class StepApprovalUpdate
     public function handle(string $expertPanelUuid, int $step, string $dateApproved)
     {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
-        $expertPanel->setApprovalDate($step, Carbon::parse($dateApproved));
+        $expertPanel->{'step_'.$step.'_approval_date'} = $dateApproved;
 
         DB::transaction(function () use ($expertPanel, $step, $dateApproved) {
             $expertPanel->save();

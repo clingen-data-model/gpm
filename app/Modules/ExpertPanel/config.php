@@ -11,5 +11,11 @@ return [
                 ['clingen-helpdesk@lists.stanford.edu', 'GCI/VCI Support'],
             ]
         ]
+    ],
+    'steps' => [
+        1 => 'Group Definition',
+        2 => 'Draft Specifications',
+        3 => 'Pilot Specifications',
+        4 => 'Sustained Curation'
     ]
 ];

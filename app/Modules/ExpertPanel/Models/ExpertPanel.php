@@ -5,6 +5,7 @@ namespace App\Modules\ExpertPanel\Models;
 use App\Models\HasUuid;
 use App\Models\Document;
 use App\Models\AnnualReview;
+use Illuminate\Support\Carbon;
 use App\Models\Contracts\HasNotes;
 use App\Modules\Group\Models\Group;
 use App\Models\Contracts\HasMembers;
@@ -159,12 +160,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
     // Domain methods
     
-    public function setApprovalDate(int $step, string $date)
-    {
-        $approvalDateAttribute = 'step_'.$step.'_approval_date';
-        $this->{$approvalDateAttribute} = $date;
-    }
-
     public function addContact(Person $person)
     {
         $member = GroupMember::firstOrCreate([
@@ -494,6 +489,12 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     public function getSustainedCurationIsApprovedAttribute(): bool
     {
         return !is_null($this->step_4_approval_date);
+    }
+    
+
+    public function getApprovalDateForStep($stepNumber): Carbon
+    {
+        return $this->{'step_'.$stepNumber.'_approval_date'};
     }
     
     

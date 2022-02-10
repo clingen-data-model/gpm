@@ -45,20 +45,20 @@ class CompleteApplicationTest extends TestCase
     public function vcep_application_completed_when_step4_approved()
     {
         $expertPanel = ExpertPanel::factory()->vcep()->create();
-        app()->make(StepApprove::class)->handle($expertPanel->uuid, Carbon::parse('2021-01-02'));
+        app()->make(StepApprove::class)->handle($expertPanel, Carbon::parse('2021-01-02'));
         // $expertPanel->approveCurrentStep(Carbon::parse('2021-01-02'));
         $expertPanel = $expertPanel->fresh();
         $this->assertEquals(2, $expertPanel->current_step);
         $this->assertNull($expertPanel->date_completed);
 
         // $expertPanel->approveCurrentStep(Carbon::parse('2021-01-03'));
-        app()->make(StepApprove::class)->handle($expertPanel->uuid, Carbon::parse('2021-01-03'));
+        app()->make(StepApprove::class)->handle($expertPanel, Carbon::parse('2021-01-03'));
         $expertPanel = $expertPanel->fresh();
         $this->assertEquals(3, $expertPanel->current_step);
         $this->assertNull($expertPanel->date_completed);
         
         // $expertPanel->approveCurrentStep(Carbon::parse('2021-01-04'));
-        app()->make(StepApprove::class)->handle($expertPanel->uuid, Carbon::parse('2021-01-04'));
+        app()->make(StepApprove::class)->handle($expertPanel, Carbon::parse('2021-01-04'));
         $expertPanel = $expertPanel->fresh();
         $this->assertEquals(4, $expertPanel->current_step);
         $this->assertNull($expertPanel->date_completed);

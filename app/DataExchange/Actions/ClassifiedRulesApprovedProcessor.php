@@ -31,7 +31,7 @@ class ClassifiedRulesApprovedProcessor
         }
 
         $this->approveStepAction->handle(
-            expertPanelUuid: $expertPanel->uuid,
+            expertPanel: $expertPanel,
             dateApproved: Carbon::createFromTimestamp($message->timestamp),
             notifyContacts: true
         );

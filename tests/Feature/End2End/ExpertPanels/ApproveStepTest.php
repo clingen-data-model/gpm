@@ -16,6 +16,7 @@ use App\Modules\Group\Models\Submission;
 use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Notifications\ApplicationStepApprovedNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ApproveStepTest extends TestCase
@@ -147,14 +148,40 @@ class ApproveStepTest extends TestCase
     /**
      * @test
      */
+    public function sends_database_notification_to_contacts_if_specified()
+    {
+        $person1 = Person::factory()->create();
+        ContactAdd::run($this->expertPanel->uuid, $person1->uuid);
+
+        $person2 = Person::factory()->create();
+        ContactAdd::run($this->expertPanel->uuid, $person2->uuid);
+
+        $approvalData = [
+            'date_approved' => Carbon::now(),
+            'notify_contacts' => true,
+        ];
+
+        Notification::fake();
+
+        Sanctum::actingAs($this->user);
+        $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/current-step/approve', $approvalData)
+            ->assertStatus(200);
+
+        Notification::assertSentTo($person1, ApplicationStepApprovedNotification::class);
+        Notification::assertSentTo($person2, ApplicationStepApprovedNotification::class);
+    }
+    
+
+    /**
+     * @test
+     */
     public function test_mailable_content()
     {
         $subject = 'This is a <strong>test</strong> custom message';
         $body = '<p>this is the body of a <em>custom message<em>.</p>';
 
-        $mailable = (new UserDefinedMailable(subject: $subject, body: $body));
-
-        // dd($mailable->render());
+        $mailable = (new UserDefinedMailable(body: $body));
+        $mailable->subject($subject);
 
         $view = View::make(
             'email.user_defined_email',

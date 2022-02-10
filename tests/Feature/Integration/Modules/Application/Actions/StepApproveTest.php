@@ -22,7 +22,7 @@ class StepApproveTest extends TestCase
         $expertPanel = ExpertPanel::factory()->create(['current_step' => 1]);
 
         $dateApproved = Carbon::today();
-        app()->make(StepApprove::class)->handle($expertPanel->uuid, $dateApproved);
+        app()->make(StepApprove::class)->handle($expertPanel, $dateApproved);
 
         $this->assertLoggedActivity(
             $expertPanel->group,

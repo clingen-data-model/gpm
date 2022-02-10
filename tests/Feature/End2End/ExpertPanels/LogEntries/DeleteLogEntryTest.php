@@ -29,7 +29,7 @@ class DeleteLogEntryTest extends TestCase
         $this->baseUrl = '/api/applications/'.$this->expertPanel->uuid.'/log-entries';
 
         app()->make(StepApprove::class)->handle(
-            expertPanelUuid: $this->expertPanel->uuid,
+            expertPanel: $this->expertPanel,
             dateApproved: '2020-01-01',
             notifyContacts: false
         );
