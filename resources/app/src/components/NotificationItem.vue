@@ -1,5 +1,5 @@
 <template>
-    <static-alert variant="warning">
+    <static-alert :variant="variant">
         <div class="flex items-center justify-between px-4">
             <strong>
                 {{notification.data.message}}
@@ -28,7 +28,9 @@ export default {
         }
     },
     computed: {
-
+        variant () {
+            return this.notification.data.type || 'info';
+        }
     },
     methods: {
         async markRead () {
