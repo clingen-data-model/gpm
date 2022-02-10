@@ -358,7 +358,8 @@ export const actions = {
             })
     },
 
-    saveApplicationData ({dispatch}, group) {
+    // eslint-disable-next-line 
+    saveApplicationData ({commit}, group) {
         // delete group b/c it's not needed for the request and interferes
         // with laravel's route-model binding.
         const expertPanelAttributes = clone(group.expert_panel.attributes);
@@ -366,7 +367,6 @@ export const actions = {
         
         return api.put(`${baseUrl}/${group.uuid}/application`, expertPanelAttributes)
             .then(response => { 
-                // dispatch('find', group.uuid);
                 return response;
             });
     },
