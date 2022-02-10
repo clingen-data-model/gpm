@@ -51,7 +51,7 @@
 <script>
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
-import {computed, onMounted } from 'vue'
+import {computed} from 'vue'
 import GroupForm from '@/components/groups/GroupForm'
 import SubmissionWrapper from '@/components/groups/SubmissionWrapper'
 
