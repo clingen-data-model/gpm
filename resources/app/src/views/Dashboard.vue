@@ -12,9 +12,8 @@
             <notification-item 
                 v-for="notification in notifications" :key="notification.id"
                 :notification="notification"
-                class="mt-2"
+                class="mb-2"
                 @removed="removeNotification(notification)"
-                :variant="notification.data.type"
             ></notification-item>
         </transition-group>
 
@@ -90,6 +89,7 @@ export default {
     },
     data() {
         return {
+            testInst: null
         }
     },
     props: {
