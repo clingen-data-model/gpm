@@ -93,10 +93,8 @@ export default {
         }
     },
     watch: {
-        group (to, from) {
-            // if (!from || to.id != from.id) {
-                this.$store.dispatch('groups/getSpecifications', to)
-            // }
+        group (to) {
+            this.$store.dispatch('groups/getSpecifications', to)
         }
     },
     methods: {

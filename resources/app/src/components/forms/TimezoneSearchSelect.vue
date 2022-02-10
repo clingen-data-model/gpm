@@ -19,13 +19,9 @@
 </template>
 <script>
 import api from '@/http/api'
-import SearchSelect from '@/components/forms/SearchSelect'
 
 export default {
     name: 'DiseaseSearchSelect',
-    components: {
-        SearchSelect,
-    },
     props: {
         modelValue: {
             required: true,

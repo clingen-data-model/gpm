@@ -35,7 +35,6 @@
     </div>
 </template>
 <script>
-import api from '@/http/api'
 import EvidenceSummary from '@/components/expert_panels/EvidenceSummary'
 import EvidenceSummaryForm from '@/components/expert_panels/EvidenceSummaryForm'
 
@@ -119,8 +118,7 @@ export default {
         clearNewSummaries() {
             this.newSummaries = [];
         },
-        handleSavedSummary(newSummary) {
-            // this.mergeSummary(newSummary);
+        handleSavedSummary() {
             this.getEvidenceSummaries();
             this.clearNewSummaries();
             this.$emit('summaries-added');

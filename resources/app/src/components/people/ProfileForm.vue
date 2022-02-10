@@ -53,7 +53,7 @@ export default {
         }
     },
     watch: {
-        person (to) {
+        person () {
             this.initProfile();
         }
     },

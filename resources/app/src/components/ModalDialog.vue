@@ -137,7 +137,7 @@ export default {
         },
         setBodyMaxHeight () {
             const bodyBoundingRect = this.$refs.panelbody.getBoundingClientRect();
-            const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
+            // const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
             this.$refs.panelbody.style.maxHeight = `calc(90vh - ${(bodyBoundingRect.y)}px)`
         },
     },
