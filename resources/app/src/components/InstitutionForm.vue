@@ -6,7 +6,7 @@
 </template>
 <script>
 import {fields, getCountries, countries, createInstitution} from '@/forms/institution_form'
-import {api, isValidationError} from '@/http'
+import {isValidationError} from '@/http'
 
 export default {
     name: 'Institution',
