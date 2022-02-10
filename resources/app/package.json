@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "serve": "npm run export-configs; vue-cli-service serve",
-    "build": "rm -rf ../../../public/assets/app/{js,css,img} && vue-cli-service build --no-clean",
-    "watch": "rm -rf ../../../public/assets/app/{js,css,img} && vue-cli-service build --no-clean --watch",
+    "build": "rm -rf ../../public/assets/app/{js,css,img} && vue-cli-service build --no-clean",
+    "watch": "rm -rf ../../public/assets/app/{js,css,img} && vue-cli-service build --no-clean --watch",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "npm run export-configs; vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
@@ -35,7 +35,6 @@
     "@testing-library/vue": "^6.4.2",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
-    "@vue/cli-plugin-pwa": "~4.5.0",
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-unit-mocha": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",

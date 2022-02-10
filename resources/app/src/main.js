@@ -1,11 +1,21 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import './registerServiceWorker'
 import router from './router'
 import store from './store'
 
 import CKEditor from '@ckeditor/ckeditor5-vue'
 import {titleCase, camelCase, snakeCase, kebabCase, sentenceCase} from '@/utils'
+
+// Remove all service workers
+console.log('removing service workers');
+if(window.navigator && navigator.serviceWorker) {
+    navigator.serviceWorker.getRegistrations()
+    .then(function(registrations) {
+      for(let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
 
 
 const app = createApp(App)
