@@ -244,7 +244,7 @@ export default {
 <template>
     <div class="annual-update relative">
         <static-alert :variant="dueDateAlertVariant" class="mb-4" v-if="!annualReview.completed_at">
-            The annual update for {{window.for_year}}
+            This annual update for {{window.for_year}}
             is due on {{formatDate(window.end)}}
         </static-alert>
         <group-breadcrumbs :group="group" />
