@@ -4,12 +4,14 @@ import { api } from '@/http'
 import sortAndFilter from '@/composables/router_aware_sort_and_filter'
 import MemberPreview from '@/components/groups/MemberPreview'
 import CoiDetail from '@/components/applications/CoiDetail'
+import CoiReport from '@/components/groups/CoiReport'
 
 export default {
     name: 'MemberList',
     components: {
         MemberPreview,
         CoiDetail,
+        CoiReport
     },
     props: {
         readonly: {
@@ -83,7 +85,8 @@ export default {
             hideAlumns: true,
             members: [],
             showCoiDetail: false,
-            coi: null
+            coi: null,
+            showCoiReport: false
         }
     },
     computed: {
@@ -233,7 +236,11 @@ export default {
             console.log('viewCoi', coiId)
             this.showCoiDetail = true;
             this.coi = await api.get(`/api/cois/${coiId}`).then(response => response.data);
-        }  
+        },
+        downloadCoiReport() {
+            const reportUrl = `/report/${this.group.expert_panel.coi_code}`
+            window.location = reportUrl;
+        },
     }
 }
 </script>
@@ -252,12 +259,18 @@ export default {
                     <icon-filter></icon-filter>
                 </button>
             </div>
-            <router-link 
-                class="btn btn-xs" 
-                ref="addMemberButton" 
-                :to="append($route.path, 'members/add')"
-                v-if="hasAnyPermission([['members-invite', group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage']) && !readonly"
-            >Add Member</router-link>
+            <div class="flex space-x-2 items-baseline">
+                <router-link 
+                    class="btn btn-xs" 
+                    ref="addMemberButton" 
+                    :to="append($route.path, 'members/add')"
+                    v-if="hasAnyPermission([['members-invite', group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage']) && !readonly"
+                >Add Member</router-link>
+                <div v-if="group.isEp()">
+                    <!-- <button class="btn btn-xs" @click="showCoiReport = true">Get COI report</button> -->
+                    <a class="btn btn-xs" :href="`/report/groups/${group.uuid}/coi-report`">Get COI Report</a>
+                </div>
+            </div>
         </head>
         <transition name="slide-fade-down">
             <div v-show="showFilter" class="flex justify-between px-2 space-x-2 bg-blue-200 rounded-lg"                v-if="group.members.length > 0">
@@ -286,7 +299,7 @@ export default {
             </div>
         </transition>
         
-        <div class="mt-3 py-2 w-full overflow-auto">
+        <div class="mt-3 py-2 w-full overflow-x-auto">
             <data-table 
                 :fields="fieldsForGroupType" 
                 :data="filteredMembers" 
@@ -367,6 +380,9 @@ export default {
             </modal-dialog>
             <modal-dialog v-model="showCoiDetail" size="xl">
                 <coi-detail :coi="coi" v-if="coi" :group="group"></coi-detail>
+            </modal-dialog>
+            <modal-dialog size="xxl" v-model="showCoiReport" :title="`COI Report for ${group.displayName}`">
+                <coi-report :group="group"></coi-report>
             </modal-dialog>
         </teleport>
     </div>

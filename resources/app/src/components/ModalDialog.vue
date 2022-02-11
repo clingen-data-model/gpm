@@ -92,7 +92,11 @@ export default {
                 case 'lg': 
                     return 'lg:w-2/3'
                 case 'xl':
-                    return 'lg:w-3/4'           
+                    return 'lg:w-3/4'
+                case 'xxl': 
+                    return 'lg:w-11/12'
+                case 'full':
+                    return 'w-full'           
                 default:
                     return 'lg:w-1/2'
             }

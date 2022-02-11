@@ -107,7 +107,7 @@ export default {
         mailToContacts() {
             this.$refs.mailtobutton.click()
         },
-        downloadReport() {
+        getReport() {
             const reportUrl = `/report/${this.application.coi_code}`
             window.location = reportUrl;
         },

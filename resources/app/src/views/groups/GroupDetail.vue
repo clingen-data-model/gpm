@@ -49,6 +49,7 @@
           />
         </submission-wrapper>
       </tab-item>
+      
       <tab-item label="Scope" :visible="group.isEp()">
         <h3>
           Plans for Ongoing Gene Review and Reanalysis and Discrepancy
@@ -82,9 +83,8 @@
           />
         </submission-wrapper>
       </tab-item>
-      <tab-item
-        label="Sustained Curation"
-        :visible="group.isEp()"
+
+      <tab-item label="Sustained Curation" :visible="group.isEp()"
         class="relative"
       >
         <div
@@ -127,6 +127,7 @@
           />
         </section>
       </tab-item>
+
       <tab-item label="Specifications" :visible="group.isVcep()">
         <div class="relative">
           <static-alert
@@ -166,10 +167,8 @@
         <h3>NHGRI Data Availability</h3>
         <attestation-nhgri class="pb-2 mb-4 border-b" :disabled="true" />
       </tab-item>
-      <tab-item
-        label="Log"
-        :visible="hasPermission('groups-manage') || userInGroup(group)"
-      >
+      
+      <tab-item label="Log" :visible="hasPermission('groups-manage') || userInGroup(group)">
         <activity-log
           :log-entries="logEntries"
           :api-url="`/api/groups/${group.uuid}/activity-logs`"
@@ -177,6 +176,7 @@
         ></activity-log>
         <button class="btn btn-xs mt-1" @click="getLogEntries">Refresh</button>
       </tab-item>
+
       <tab-item label="Admin" :visible="hasPermission('groups-manage')">
         <div v-if="group.isApplying">
           <h2 class="pb-2 border-b mb-4">Application</h2>
