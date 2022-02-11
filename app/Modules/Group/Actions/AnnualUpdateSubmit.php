@@ -129,14 +129,14 @@ class AnnualUpdateSubmit
 
             if ($annualReview->expertPanel->sustainedCurationIsApproved) {
                 $requirements = array_merge($requirements, [
-                    'variant_workflow_changes' => 'required|in:yes,no',
-                    'variant_workflow_changes_details' => 'required_if:variant_workflow_changes,yes',
+                    // 'variant_workflow_changes' => 'required|in:yes,no',
+                    // 'variant_workflow_changes_details' => 'required_if:variant_workflow_changes,yes',
                     'rereview_discrepencies_progress' => 'required',
                     'rereview_lp_and_vus_progress' => 'required',
                     'rereview_lb_progress' => 'required',
                     'member_designation_changed' => 'required|in:yes,no',
-                    'specification_plans' => 'required|in:yes,no',
-                    'specification_plans_details' => 'required_if:specification_plans,yes',
+                    // 'specification_plans' => 'required|in:yes,no',
+                    // 'specification_plans_details' => 'required_if:specification_plans,yes',
                     'ongoing_plans_updated' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
                     'ongoing_plans_update_details' => 'exclude_if:ep_activity,inactive|required_if:ongoing_plans_updated,yes',
         

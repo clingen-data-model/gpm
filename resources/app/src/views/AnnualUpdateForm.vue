@@ -282,7 +282,7 @@ export default {
                         </app-section>
 
                         <app-section title="Changes to plans for ongoing curation">
-                            <gcep-ongoing-plans-update-form v-model="annualReview" :errors="errors" @updated="saveOngoingPlans"></gcep-ongoing-plans-update-form>
+                            <gcep-ongoing-plans-update-form v-model="annualReview" :errors="errors" @updated="saveOngoingPlanws"></gcep-ongoing-plans-update-form>
                         </app-section>
 
                         <app-section title="Gene Re-curation/Re-review">
@@ -320,7 +320,7 @@ export default {
                     <template v-if="expertPanel.is_vcep && expertPanel.sustained_curation_is_approved">
                         <!-- <dev-component>Begin Questions for sustained curation</dev-component> -->
                         
-                        <variant-curation-workflow v-model="annualReview" :errors="errors" />
+                        <!-- <variant-curation-workflow v-model="annualReview" :errors="errors" /> -->
                         
                         <variant-reanalysis v-model="annualReview" :errors="errors" />
 
@@ -333,10 +333,10 @@ export default {
                             ref="memberDesignationUpdate"
                         />
 
-                        <vcep-plans-for-specifications 
+                        <!-- <vcep-plans-for-specifications 
                             v-model="annualReview" 
                             :errors="errors" 
-                        />
+                        /> -->
 
                         <!-- <dev-component>End Questions for sustained curation</dev-component> -->
                     </template>
