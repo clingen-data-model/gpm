@@ -30,5 +30,8 @@ class UpgradeForV2
         Artisan::call('users:link-to-person');
         dump('create invites...');
         Artisan::call('people:create-invites');
+
+        dump('Import VCEP Scopes...');
+        Artisan::call('dev:import-cspec-scope');
     }
 }

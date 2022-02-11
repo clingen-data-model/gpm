@@ -10,10 +10,6 @@ class Disease extends Model
     use HasFactory;
 
     protected $table = 'diseases';
-    protected $primaryKey = 'hgnc_id';
-
-    public function getConnectionName()
-    {
-        return config('database.gt_db_connection');
-    }
+    protected $primaryKey = 'mondo_id';
+    protected $connection = 'genetracker';
 }
