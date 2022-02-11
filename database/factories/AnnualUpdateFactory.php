@@ -3,20 +3,20 @@
 namespace Database\Factories;
 
 use Carbon\Carbon;
-use App\Models\AnnualReview;
-use App\Models\AnnualReviewWindow;
+use App\Models\AnnualUpdate;
+use App\Models\AnnualUpdateWindow;
 use App\Modules\Group\Models\GroupMember;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class AnnualReviewFactory extends Factory
+class AnnualUpdateFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = AnnualReview::class;
+    protected $model = AnnualUpdate::class;
 
     /**
      * Define the model's default state.
@@ -26,14 +26,14 @@ class AnnualReviewFactory extends Factory
     public function definition()
     {
         $expertPanel = ExpertPanel::factory()->create();
-        $annualReviewWindow = AnnualReviewWindow::create([
+        $annualReviewWindow = AnnualUpdateWindow::create([
                                 'for_year' => Carbon::now()->year-1,
                                 'start' => Carbon::tomorrow(),
                                 'end' => Carbon::tomorrow()->addDays(7)
                             ]);
         return [
             'expert_panel_id' => $expertPanel->id,
-            'annual_review_window_id' => $annualReviewWindow->id,
+            'annual_update_window_id' => $annualReviewWindow->id,
             'data' => $this->createData()
         ];
     }

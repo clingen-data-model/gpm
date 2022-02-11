@@ -24,7 +24,7 @@
             class="mb-2"
         />
 
-        <annual-review-alert 
+        <annual-update-alert 
             v-for="group in coordinatingGroups" :key="group.id" 
             :group="group"
             :show-group-name="true"
@@ -71,7 +71,7 @@ import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
 import {ref, computed, onMounted, watch} from 'vue'
 import {api, queryStringFromParams} from '@/http'
-import AnnualReviewAlert from '@/components/groups/AnnualReviewAlert';
+import AnnualUpdateAlert from '@/components/groups/AnnualUpdateAlert';
 import NotificationItem from '@/components/NotificationItem'
 import CoiList from '@/components/people/CoiList'
 import PersonProfile from '@/components/people/PersonProfile'
@@ -85,7 +85,7 @@ export default {
         CoiList,
         NotificationItem,
         PersonProfile,
-        AnnualReviewAlert
+        AnnualUpdateAlert
     },
     data() {
         return {
@@ -147,7 +147,7 @@ export default {
 
         const coordinatingGroups = computed(() => {
             return user.value.memberships
-                    .filter(m => m.hasPermission('annual-review-manage'))
+                    .filter(m => m.hasPermission('annual-update-manage'))
                     .map(m => m.group)
                     .filter(g => g !== null)
                     .map(group => new Group(group))

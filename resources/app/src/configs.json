@@ -170,9 +170,9 @@
                 "id": 1007,
                 "name": "application-edit"
             },
-            "annual-review-manage": {
+            "annual-update-manage": {
                 "id": 1008,
-                "name": "annual-review-manage"
+                "name": "annual-update-manage"
             }
         },
         "rolePermissions": {
@@ -252,9 +252,9 @@
                 "guard_name": "web",
                 "scope": "system"
             },
-            "annual-reviews-manage": {
+            "annual-updates-manage": {
                 "id": 40,
-                "name": "annual-reviews-manage",
+                "name": "annual-updates-manage",
                 "guard_name": "web",
                 "scope": "system"
             }

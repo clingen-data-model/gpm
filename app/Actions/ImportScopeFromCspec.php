@@ -35,6 +35,7 @@ class ImportScopeFromCspec
                 || !isset($sviContent->data->ldFor)
                 || !isset($sviContent->data->ldFor->Organization)
             ) {
+                break;
                 continue;
             }
             $hgncId = $this->getHgncId($sviContent->data->ld->Gene[0]->entContent->HGNC);

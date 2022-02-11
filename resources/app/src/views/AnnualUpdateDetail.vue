@@ -1,19 +1,19 @@
 <template>
     <div>
-        <annual-review-form :uuid="annualReview.expert_panel.group.uuid" v-if="annualReview.expert_panel.group.uuid"/>
+        <annual-update-form :uuid="annualReview.expert_panel.group.uuid" v-if="annualReview.expert_panel.group.uuid"/>
 
     </div>
 </template>
 <script>
 import {api} from '@/http'
-import AnnualReviewForm from '@/views/AnnualReviewForm'
-// import formDef from '@/forms/annual_review'
+import AnnualUpdateForm from '@/views/AnnualUpdateForm'
+// import formDef from '@/forms/annual_update'
 // import DataForm from '@/components/forms/DataForm'
 
 export default {
-    name: 'AnnualReviewDetail',
+    name: 'AnnualUpdateDetail',
     components: {
-        AnnualReviewForm,
+        AnnualUpdateForm,
         // DataForm
     },
     props: {
@@ -51,15 +51,15 @@ export default {
         
     },
     methods: {
-        async getAnnualReview () {
-            this.annualReview = await api.get(`/api/annual-reviews/${this.id}`)
+        async getAnnualUpdate () {
+            this.annualReview = await api.get(`/api/annual-updates/${this.id}`)
                 .then(response => {
                     return response.data;
                 });
         },
     },
     async mounted () {
-        await this.getAnnualReview();
+        await this.getAnnualUpdate();
     }
 }
 </script>

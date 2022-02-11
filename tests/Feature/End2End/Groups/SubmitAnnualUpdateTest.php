@@ -4,14 +4,14 @@ namespace Tests\Feature\End2End\Groups;
 
 use Carbon\Carbon;
 use Tests\TestCase;
-use App\Models\AnnualReview;
+use App\Models\AnnualUpdate;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class SubmitAnnualReviewTest extends TestCase
+class SubmitAnnualUpdateTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -20,7 +20,7 @@ class SubmitAnnualReviewTest extends TestCase
         parent::setup();
         $this->seed();
 
-        $this->user = $this->setupUser(permissions: ['annual-reviews-manage']);
+        $this->user = $this->setupUser(permissions: ['annual-updates-manage']);
         $this->expertPanel = ExpertPanel::factory()->gcep()->create();
         $this->coordinator = GroupMember::factory()
                                 ->create(['group_id' => $this->expertPanel->group->id])
@@ -33,11 +33,11 @@ class SubmitAnnualReviewTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_save_annual_review()
+    public function unprivileged_user_cannot_save_annual_update()
     {
-        $this->user->revokePermissionTo('annual-reviews-manage');
+        $this->user->revokePermissionTo('annual-updates-manage');
 
-        $annualReview = AnnualReview::factory()->create(['expert_panel_id' => $this->expertPanel->id]);
+        $annualReview = AnnualUpdate::factory()->create(['expert_panel_id' => $this->expertPanel->id]);
 
         $this->makeRequest($annualReview)
             ->assertStatus(403);
@@ -48,7 +48,7 @@ class SubmitAnnualReviewTest extends TestCase
      */
     public function stores_completed_at_date_when_submitted_by_privilegged_user()
     {
-        $annualReview = AnnualReview::factory()
+        $annualReview = AnnualUpdate::factory()
                             ->create([
                                 'expert_panel_id' => $this->expertPanel->id,
                                 'submitter_id' => $this->coordinator->id,
@@ -57,7 +57,7 @@ class SubmitAnnualReviewTest extends TestCase
         $this->makeRequest($annualReview)
             ->assertStatus(200);
 
-        $this->assertDatabaseHas('annual_reviews', [
+        $this->assertDatabaseHas('annual_updates', [
             'id' => $annualReview->id,
             'completed_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
@@ -68,7 +68,7 @@ class SubmitAnnualReviewTest extends TestCase
      */
     public function validates_base_required_fields_for_gcep()
     {
-        $annualReview = AnnualReview::create(['expert_panel_id'=>$this->expertPanel->id]);
+        $annualReview = AnnualUpdate::create(['expert_panel_id'=>$this->expertPanel->id]);
         
         $response = $this->makeRequest($annualReview)
             ->assertStatus(422);
@@ -103,7 +103,7 @@ class SubmitAnnualReviewTest extends TestCase
      */
     public function does_not_require_fields_after_ep_activity_if_inactive_for_gceps()
     {
-        $annualReview = AnnualReview::create([
+        $annualReview = AnnualUpdate::create([
             'expert_panel_id'=>$this->expertPanel->id,
             'submitter_id' => $this->coordinator->id,
             'data' => [
@@ -116,7 +116,7 @@ class SubmitAnnualReviewTest extends TestCase
         $response = $this->makeRequest($annualReview)
             ->assertStatus(200);
 
-        $this->assertDatabaseHas('annual_reviews', [
+        $this->assertDatabaseHas('annual_updates', [
             'id' => $annualReview->id,
             'completed_at' => Carbon::now()
         ]);
@@ -128,7 +128,7 @@ class SubmitAnnualReviewTest extends TestCase
      */
     public function validates_conditionally_required_fields_for_gceps()
     {
-        $annualReview = AnnualReview::create([
+        $annualReview = AnnualUpdate::create([
             'expert_panel_id'=>$this->expertPanel->id,
             'data' => [
                 'ongoing_plans_updated' => 'yes',
@@ -171,7 +171,7 @@ class SubmitAnnualReviewTest extends TestCase
             'step_3_approval_date' => Carbon::now(),
             'step_4_approval_date' => Carbon::now(),
         ]);
-        $annualReview = AnnualReview::create(['expert_panel_id'=>$this->expertPanel->id]);
+        $annualReview = AnnualUpdate::create(['expert_panel_id'=>$this->expertPanel->id]);
         
         $response = $this->makeRequest($annualReview)
             ->assertStatus(422);
@@ -208,7 +208,7 @@ class SubmitAnnualReviewTest extends TestCase
             'expert_panel_type_id' => 2,
             'step_1_approval_date' => Carbon::now(),
         ]);
-        $annualReview = AnnualReview::create(['expert_panel_id'=>$this->expertPanel->id]);
+        $annualReview = AnnualUpdate::create(['expert_panel_id'=>$this->expertPanel->id]);
         
         $response = $this->makeRequest($annualReview)
             ->assertStatus(422);
@@ -239,7 +239,7 @@ class SubmitAnnualReviewTest extends TestCase
             'step_1_approval_date' => Carbon::now(),
             'step_2_approval_date' => Carbon::now(),
         ]);
-        $annualReview = AnnualReview::create(['expert_panel_id'=>$this->expertPanel->id]);
+        $annualReview = AnnualUpdate::create(['expert_panel_id'=>$this->expertPanel->id]);
         
         $response = $this->makeRequest($annualReview)
             ->assertStatus(422);
@@ -275,7 +275,7 @@ class SubmitAnnualReviewTest extends TestCase
             'step_3_approval_date' => Carbon::now(),
             'step_4_approval_date' => Carbon::now(),
         ]);
-        $annualReview = AnnualReview::create(['expert_panel_id'=>$this->expertPanel->id]);
+        $annualReview = AnnualUpdate::create(['expert_panel_id'=>$this->expertPanel->id]);
         
         $response = $this->makeRequest($annualReview)
             ->assertStatus(422);
@@ -319,7 +319,7 @@ class SubmitAnnualReviewTest extends TestCase
             'step_3_approval_date' => Carbon::now(),
             'step_4_approval_date' => Carbon::now(),
         ]);
-        $annualReview = AnnualReview::create([
+        $annualReview = AnnualUpdate::create([
             'expert_panel_id'=>$this->expertPanel->id,
             'data' => [
                 'ongoing_plans_updated' => 'yes',
@@ -352,7 +352,7 @@ class SubmitAnnualReviewTest extends TestCase
 
     private function makeRequest($annualReview)
     {
-        $url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/annual-reviews/'.$annualReview->id;
+        $url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/annual-updates/'.$annualReview->id;
         return $this->json('POST', $url);
     }
 }

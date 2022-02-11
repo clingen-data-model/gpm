@@ -2,17 +2,17 @@
 
 namespace App\Modules\Group\Actions;
 
-use App\Models\AnnualReview;
+use App\Models\AnnualUpdate;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Auth;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 
-class AnnualReviewSave
+class AnnualUpdateSave
 {
     use AsController;
 
-    public function handle(AnnualReview $annualReview, $submitterId, $data): AnnualReview
+    public function handle(AnnualUpdate $annualReview, $submitterId, $data): AnnualUpdate
     {
         $annualReview->submitter_id = $submitterId;
         $annualReview->data = $data;
@@ -37,7 +37,7 @@ class AnnualReviewSave
     public function authorize(ActionRequest $request)
     {
         $group = Group::findByUuidOrFail($request->group);
-        return Auth::user()->can('manageAnnualReview', $group);
+        return Auth::user()->can('manageAnnualUpdate', $group);
     }
 
     private function getDataFields(): array

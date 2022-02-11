@@ -12,4 +12,9 @@ class Disease extends Model
     protected $table = 'diseases';
     protected $primaryKey = 'mondo_id';
     protected $connection = 'genetracker';
+
+    public function getConnectionName()
+    {
+        return config('database.gt_db_connection');
+    }
 }

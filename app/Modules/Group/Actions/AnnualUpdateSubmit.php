@@ -3,7 +3,7 @@
 namespace App\Modules\Group\Actions;
 
 use Carbon\Carbon;
-use App\Models\AnnualReview;
+use App\Models\AnnualUpdate;
 use Illuminate\Validation\Rule;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Auth;
@@ -11,11 +11,11 @@ use Lorisleiva\Actions\ActionRequest;
 use Illuminate\Support\Facades\Validator;
 use Lorisleiva\Actions\Concerns\AsController;
 
-class AnnualReviewSubmit
+class AnnualUpdateSubmit
 {
     use AsController;
 
-    public function handle(AnnualReview $annualReview): AnnualReview
+    public function handle(AnnualUpdate $annualReview): AnnualUpdate
     {
         $annualReview->update(['completed_at' => Carbon::now()]);
         return $annualReview;
@@ -39,10 +39,10 @@ class AnnualReviewSubmit
     public function authorize(ActionRequest $request)
     {
         $group = Group::findByUuidOrFail($request->group);
-        return Auth::user()->can('manageAnnualReview', $group);
+        return Auth::user()->can('manageAnnualUpdate', $group);
     }
 
-    private function makeDataValidator(AnnualReview $annualReview)
+    private function makeDataValidator(AnnualUpdate $annualReview)
     {
         $data = array_merge(
             ['submitter_id' => $annualReview->submitter_id],
@@ -63,7 +63,7 @@ class AnnualReviewSubmit
         );
     }
 
-    private function getRequirements(AnnualReview $annualReview): array
+    private function getRequirements(AnnualUpdate $annualReview): array
     {
         $requirements = [
             'submitter_id' => [

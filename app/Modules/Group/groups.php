@@ -111,9 +111,9 @@ return [
             'id' => 1007,
             'name' => 'application-edit'
         ],
-        'annual-review-manage' => [
+        'annual-update-manage' => [
             'id' => 1008,
-            'name' => 'annual-review-manage'
+            'name' => 'annual-update-manage'
         ]
     ],
     'role_permissions' => [

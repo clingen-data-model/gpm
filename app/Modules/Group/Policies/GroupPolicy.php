@@ -94,7 +94,7 @@ class GroupPolicy
 
     public function inviteMembers(User $user, Group $group)
     {
-        return $user->hasAnyPermission(['groups-manage', 'ep-applications-manage', 'annual-reviews-manage'])
+        return $user->hasAnyPermission(['groups-manage', 'ep-applications-manage', 'annual-updates-manage'])
             || $user->hasGroupPermissionTo('members-invite', $group);
     }
 
@@ -198,9 +198,9 @@ class GroupPolicy
             || ($user->person && $user->person->isMemberOf($group));
     }
 
-    public function manageAnnualReview(User $user, Group $group): bool
+    public function manageAnnualUpdate(User $user, Group $group): bool
     {
-        return $user->hasAnyPermission('annual-reviews-manage')
+        return $user->hasAnyPermission('annual-updates-manage')
             || $user->hasGroupPermissionTo('application-edit', $group);
     }
 }

@@ -37,25 +37,25 @@ const routes = [
         ]
     },
     {
-        name: 'AnnualReviewsList',
-        path: '/annual-reviews',
-        component: () => import (/* webpackChunkName "annual-reviews" */ '@/views/AnnualReviewsList'),
+        name: 'AnnualUpdatesList',
+        path: '/annual-updates',
+        component: () => import (/* webpackChunkName "annual-updates" */ '@/views/AnnualUpdatesList'),
         meta: {
             protected: true,
-            permissions: ['annual-reviews-manage']
+            permissions: ['annual-updates-manage']
         },
     },
     {
-        name: 'AnnualReviewDetail',
-        path: '/annual-reviews/:id',
-        component: () => import (/* webpackChunkName "annual-reviews" */ '@/views/AnnualReviewDetail'),
+        name: 'AnnualUpdateDetail',
+        path: '/annual-updates/:id',
+        component: () => import (/* webpackChunkName "annual-updates" */ '@/views/AnnualUpdateDetail'),
         props: true,
         meta: {
             protected: true,
         },
         children: [
             {
-                name: 'AnnualReviewAddMember',
+                name: 'AnnualUpdateAddMember',
                 path: 'members/add',
                 component: MemberForm,
                 meta: {
@@ -65,11 +65,11 @@ const routes = [
                 },
                 props: true,
                 // beforeEnter: async (to) => {
-                //     return store.getters.currentUser.hasPermission('annual-reviews-manage');
+                //     return store.getters.currentUser.hasPermission('annual-updates-manage');
                 // }
             },
             {
-                name: 'AnnualReviewEditMember',
+                name: 'AnnualUpdateEditMember',
                 path: 'members/:memberId',
                 component: MemberForm,
                 meta: {
@@ -79,7 +79,7 @@ const routes = [
                 },
                 props: true,
                 // beforeEnter: async (to) => {
-                //     return store.getters.currentUser.hasPermission('annual-reviews-manage');
+                //     return store.getters.currentUser.hasPermission('annual-updates-manage');
                 // }
             },
         ],

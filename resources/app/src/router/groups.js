@@ -10,8 +10,8 @@ const MemberForm = () =>
 const GroupApplication = () =>
     import ( /* webpackChunkName: "group-application" */ '@/views/groups/GroupApplication.vue')
 
-const AnnualReviewForm = () =>
-    import ( /* webpackChunkName: "annual-review" */ '@/views/AnnualReviewForm.vue')
+const AnnualUpdateForm = () =>
+    import ( /* webpackChunkName: "annual-update" */ '@/views/AnnualUpdateForm.vue')
 
 const hasGroupPermission = async (to, permission) => {
     if (store.getters.currentUser.hasPermission('groups-manage')) {
@@ -139,10 +139,10 @@ export default [
             protected: true
         }
     },
-    { name: 'AnnualReview',
-        path: '/groups/:uuid/annual-review',
+    { name: 'AnnualUpdate',
+        path: '/groups/:uuid/annual-update',
         components: {
-            default: AnnualReviewForm
+            default: AnnualUpdateForm
         },
         meta: {
             protected: true

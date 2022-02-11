@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAnnualReviewWindowsTable extends Migration
+class CreateAnnualUpdateWindowsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateAnnualReviewWindowsTable extends Migration
      */
     public function up()
     {
-        Schema::create('annual_review_windows', function (Blueprint $table) {
+        Schema::create('annual_update_windows', function (Blueprint $table) {
             $table->id();
             $table->integer('for_year');
-            $table->date('start');
-            $table->date('end');
+            $table->dateTime('start');
+            $table->dateTime('end');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateAnnualReviewWindowsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('annual_review_windows');
+        Schema::dropIfExists('annual_update_windows');
     }
 }

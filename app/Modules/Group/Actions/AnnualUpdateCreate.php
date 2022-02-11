@@ -2,7 +2,7 @@
 
 namespace App\Modules\Group\Actions;
 
-use App\Models\AnnualReview;
+use App\Models\AnnualUpdate;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Auth;
 use Lorisleiva\Actions\ActionRequest;
@@ -10,13 +10,13 @@ use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 
-class AnnualReviewCreate
+class AnnualUpdateCreate
 {
     use AsController;
 
-    public function handle(ExpertPanel $expertPanel): AnnualReview
+    public function handle(ExpertPanel $expertPanel): AnnualUpdate
     {
-        $annualReview = AnnualReview::create(['expert_panel_id' => $expertPanel->id]);
+        $annualReview = AnnualUpdate::create(['expert_panel_id' => $expertPanel->id]);
 
         return $annualReview;
     }
@@ -32,6 +32,6 @@ class AnnualReviewCreate
 
     public function authorize(ActionRequest $request)
     {
-        return Auth::user()->can('manageAnnualReview', $request->group);
+        return Auth::user()->can('manageAnnualUpdate', $request->group);
     }
 }

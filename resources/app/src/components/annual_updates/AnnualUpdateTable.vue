@@ -18,7 +18,7 @@
 
         <data-table :data="filteredItems" :fields="fields" v-model:sort="sort">
             <template v-slot:cell-action="{item}">
-                <router-link :to="{name: 'AnnualReviewDetail', params: {id: item.id}}">
+                <router-link :to="{name: 'AnnualUpdateDetail', params: {id: item.id}}">
                     view
                 </router-link>
             </template>
@@ -31,7 +31,7 @@ import {api} from '@/http'
 import setupRouterSortAndFilter from '@/composables/router_aware_sort_and_filter'
 
 export default {
-    name: 'AnnualReviewTeable',
+    name: 'AnnualUpdateTeable',
     props: {
         items: {
             type: Array,
@@ -119,8 +119,8 @@ export default {
     },
     methods: {
         exportData () {
-            const annual_review_ids = this.filteredItems.map(i => i.id);
-            api.post(`/api/annual-reviews/export`, {annual_review_ids})
+            const annual_update_ids = this.filteredItems.map(i => i.id);
+            api.post(`/api/annual-updates/export`, {annual_update_ids})
                 .then(response => {
                     const a = document.createElement('a');
                     a.style.display = "none";
@@ -128,7 +128,7 @@ export default {
 
                     a.href = window.URL.createObjectURL( new Blob([response.data, { type: 'text/csv' }]));
 
-                    a.setAttribute('download', 'annual_reviews.csv');
+                    a.setAttribute('download', 'annual_updates.csv');
                     a.click();
 
                     document.body.removeChild(a);

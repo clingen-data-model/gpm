@@ -3,14 +3,14 @@
 namespace Tests\Feature\End2End\Groups;
 
 use Tests\TestCase;
-use App\Models\AnnualReview;
+use App\Models\AnnualUpdate;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class SaveAnnualReviewTest extends TestCase
+class SaveAnnualUpdateTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -19,22 +19,22 @@ class SaveAnnualReviewTest extends TestCase
         parent::setup();
         $this->seed();
 
-        $this->user = $this->setupUser(permissions: ['annual-reviews-manage']);
+        $this->user = $this->setupUser(permissions: ['annual-updates-manage']);
         $this->expertPanel = ExpertPanel::factory()->gcep()->create();
         $this->coordinator = GroupMember::factory()
                                 ->create(['group_id' => $this->expertPanel->group->id])
                                 ->assignRole('coordinator');
 
-        $this->annualReview = AnnualReview::create(['expert_panel_id' => $this->expertPanel->id]);
+        $this->annualReview = AnnualUpdate::create(['expert_panel_id' => $this->expertPanel->id]);
         Sanctum::actingAs($this->user);
     }
 
     /**
      * @test
      */
-    public function unprivileged_user_cannot_save_annual_review()
+    public function unprivileged_user_cannot_save_annual_update()
     {
-        $this->user->revokePermissionTo('annual-reviews-manage');
+        $this->user->revokePermissionTo('annual-updates-manage');
 
         $this->makeRequest()
             ->assertStatus(403);
@@ -50,7 +50,7 @@ class SaveAnnualReviewTest extends TestCase
 
         $expectedData = $this->makeRequestData()['data'];
 
-        $this->assertDatabaseHas('annual_reviews', [
+        $this->assertDatabaseHas('annual_updates', [
             'id' => $this->annualReview->id,
             'expert_panel_id' => $this->expertPanel->id,
             'submitter_id' => $this->coordinator->id,
@@ -70,14 +70,14 @@ class SaveAnnualReviewTest extends TestCase
         $this->makeRequest($submitData)
             ->assertStatus(200);
 
-        $this->assertDatabaseHas('annual_reviews', [
+        $this->assertDatabaseHas('annual_updates', [
             'id' => $this->annualReview->id,
             'expert_panel_id' => $this->expertPanel->id,
             'submitter_id' => $this->coordinator->id,
             'data' => json_encode($expectedData['data']),
         ]);
                 
-        $this->assertDatabaseMissing('annual_reviews', [
+        $this->assertDatabaseMissing('annual_updates', [
             'id' => $this->annualReview->id,
             'expert_panel_id' => $this->expertPanel->id,
             'submitter_id' => $this->coordinator->id,
@@ -89,7 +89,7 @@ class SaveAnnualReviewTest extends TestCase
     {
         $data = $data ?? $this->makeRequestData();
 
-        $url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/annual-reviews/'.$this->annualReview->id;
+        $url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/annual-updates/'.$this->annualReview->id;
         return $this->json('PUT', $url, $data);
     }
 

@@ -4,29 +4,29 @@ import { api, isValidationError } from '@/http'
 
 // Common Components
 import ApplicationSection from '@/components/expert_panels/ApplicationSection'
-import SubmitterInformation from '@/components/annual_review/SubmitterInformation'
-import GoalsForm from '@/components/annual_review/GoalsForm'
-import FundingForm from '@/components/annual_review/FundingForm'
-import MemberDesignationUpdate from '@/components/annual_review/MemberDesignationUpdate'
-import MembershipUpdate from '@/components/annual_review/MembershipUpdate'
+import SubmitterInformation from '@/components/annual_update/SubmitterInformation'
+import GoalsForm from '@/components/annual_update/GoalsForm'
+import FundingForm from '@/components/annual_update/FundingForm'
+import MemberDesignationUpdate from '@/components/annual_update/MemberDesignationUpdate'
+import MembershipUpdate from '@/components/annual_update/MembershipUpdate'
 
 // GCEP Components
-import GciGtUse from '@/components/annual_review/GciGtUse'
-import GcepRereviewForm from '@/components/annual_review/GcepRereviewForm'
-import GcepOngoingPlansUpdateForm from '@/components/annual_review/GcepOngoingPlansUpdateForm'
-import GeneCurationTotals from '@/components/annual_review/GeneCurationTotals'
+import GciGtUse from '@/components/annual_update/GciGtUse'
+import GcepRereviewForm from '@/components/annual_update/GcepRereviewForm'
+import GcepOngoingPlansUpdateForm from '@/components/annual_update/GcepOngoingPlansUpdateForm'
+import GeneCurationTotals from '@/components/annual_update/GeneCurationTotals'
 
 // VCEP Components
-import VariantCurationWorkflow from '@/components/annual_review/VariantCurationWorkflow'
-import VciUse from '@/components/annual_review/VciUse'
-import VcepOngoingPlansUpdateForm from '@/components/annual_review/VcepOngoingPlansUpdateForm'
-import VcepPlansForSpecifications from '@/components/annual_review/VcepPlansForSpecifications'
-import VcepTotals from '@/components/annual_review/VcepTotals'
-import VariantReanalysis from '@/components/annual_review/VariantReanalysis'
-import SpecificationProgress from '@/components/annual_review/SpecificationProgress'
+import VariantCurationWorkflow from '@/components/annual_update/VariantCurationWorkflow'
+import VciUse from '@/components/annual_update/VciUse'
+import VcepOngoingPlansUpdateForm from '@/components/annual_update/VcepOngoingPlansUpdateForm'
+import VcepPlansForSpecifications from '@/components/annual_update/VcepPlansForSpecifications'
+import VcepTotals from '@/components/annual_update/VcepTotals'
+import VariantReanalysis from '@/components/annual_update/VariantReanalysis'
+import SpecificationProgress from '@/components/annual_update/SpecificationProgress'
 
 export default {
-    name: 'AnnualReviewForm',
+    name: 'AnnualUpdateForm',
     components: {
         'app-section': ApplicationSection,
         SubmitterInformation,
@@ -176,9 +176,9 @@ export default {
             this.saving = true;
             this.errors = {};
             try {
-                const updatedAnnualReview = await api.post(`/api/groups/${this.group.uuid}/expert-panel/annual-reviews/${this.annualReview.id}`)
+                const updatedAnnualUpdate = await api.post(`/api/groups/${this.group.uuid}/expert-panel/annual-updates/${this.annualReview.id}`)
                     .then(response => response.data);
-                this.annualReview.completed_at = updatedAnnualReview.completed_at;
+                this.annualReview.completed_at = updatedAnnualUpdate.completed_at;
                 this.saving = false;
             } catch (error) {
                 this.saving = false;
@@ -190,19 +190,19 @@ export default {
             }
         },
         hideModal () {
-            this.$router.replace({name: 'AnnualReview', params: {uuid: this.uuid}});
+            this.$router.replace({name: 'AnnualUpdate', params: {uuid: this.uuid}});
         },
         handleModalClosed (evt) {
             this.clearModalForm(evt);
-            this.$router.push({name: 'AnnualReview', params: {uuid: this.uuid}});
+            this.$router.push({name: 'AnnualUpdate', params: {uuid: this.uuid}});
         },
         clearModalForm () {
             if (typeof this.$refs.modalView.clearForm === 'function') {
                 this.$refs.modalView.clearForm();
             }
         },
-        async getAnnualReview () {
-            this.annualReview = await api.get(`/api/groups/${this.group.uuid}/expert-panel/annual-reviews`)
+        async getAnnualUpdate () {
+            this.annualReview = await api.get(`/api/groups/${this.group.uuid}/expert-panel/annual-updates`)
                 .then(response => {
                     const mergedData = {...this.annualReview.data, ...response.data.data}
                     const reviewData = response.data;
@@ -215,7 +215,7 @@ export default {
             if (!this.annualReview.id)  return;
             try {
                 this.saving = true;
-                await api.put( `/api/groups/${this.group.uuid}/expert-panel/annual-reviews/${this.annualReview.id}`,  this.annualReview);
+                await api.put( `/api/groups/${this.group.uuid}/expert-panel/annual-updates/${this.annualReview.id}`,  this.annualReview);
                 this.saving = false;
                 this.lastSaved = new Date();
             } catch (error) {
@@ -237,14 +237,14 @@ export default {
     },
     async mounted () {
         await this.$store.dispatch('groups/findAndSetCurrent', this.uuid);
-        await this.getAnnualReview();
+        await this.getAnnualUpdate();
     }
 }
 </script>
 <template>
-    <div class="annual-review relative">
+    <div class="annual-update relative">
         <static-alert :variant="dueDateAlertVariant" class="mb-4" v-if="!annualReview.completed_at">
-            The annual review for {{window.for_year}}
+            The annual update for {{window.for_year}}
             is due on {{formatDate(window.end)}}
         </static-alert>
         <group-breadcrumbs :group="group" />
@@ -256,14 +256,14 @@ export default {
                 |
                 ExpertPanel ID: {{group.expert_panel.id}}
                 |
-                AnnualReview ID: {{annualReview.id}}
+                AnnualUpdate ID: {{annualReview.id}}
                 |
                 Last Saved: {{formatDateTime(lastSaved)}}
             </note>
         </h1>
 
         <static-alert variant="success" class="mb-4" v-if="annualReview.completed_at">
-            Your annual review was submitted on {{formatDate(annualReview.completed_at)}}
+            Your annual update was submitted on {{formatDate(annualReview.completed_at)}}
         </static-alert>
 
             <submitter-information v-model="annualReview" :errors="errors" />
@@ -346,13 +346,13 @@ export default {
             <hr>
             <button class="btn btn-lg" @click="submit" v-if="!annualReview.completed_at">Submit annual update</button>
             <static-alert variant="danger mt-4" v-if="hasErrors">
-                There are problems with your annual review that must be corrected before you can submit.  
+                There are problems with your annual update that must be corrected before you can submit.  
                 <br>
                 Please see items highlighted in red above.
             </static-alert>
 
             <static-alert variant="success" v-if="annualReview.completed_at">
-                Thank you for submitting your annual review.
+                Thank you for submitting your annual update.
             </static-alert>
 
         <br>
@@ -366,11 +366,11 @@ export default {
     </div>
 </template>
 <style lang="postcss">
-    .annual-review .input-row .label-container{
+    .annual-update .input-row .label-container{
         font-size: 1.05em;
         margin-bottom: .5rem;
     }
-    .annual-review .application-section {
+    .annual-update .application-section {
         padding-bottom: .25rem;
     }
 </style>

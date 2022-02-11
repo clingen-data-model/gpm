@@ -255,7 +255,7 @@ export default {
                 class="btn btn-xs" 
                 ref="addMemberButton" 
                 :to="append($route.path, 'members/add')"
-                v-if="hasAnyPermission([['members-invite', group], 'groups-manage', 'ep-applications-manage', 'annual-reviews-manage']) && !readonly"
+                v-if="hasAnyPermission([['members-invite', group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage']) && !readonly"
             >Add Member</router-link>
         </head>
         <transition name="slide-fade-down">

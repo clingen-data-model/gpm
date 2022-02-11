@@ -46,7 +46,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         if (app()->environment('testing')) {
-            array_push($seederClasses, AnnualReviewWindowSeeder::class);
+            array_push($seederClasses, AnnualUpdateWindowSeeder::class);
         }
         
         foreach ($seederClasses as $seederClass) {

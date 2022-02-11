@@ -4,7 +4,7 @@ namespace App\Modules\ExpertPanel\Models;
 
 use App\Models\HasUuid;
 use App\Models\Document;
-use App\Models\AnnualReview;
+use App\Models\AnnualUpdate;
 use Illuminate\Support\Carbon;
 use App\Models\Contracts\HasNotes;
 use App\Modules\Group\Models\Group;
@@ -298,12 +298,12 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
      */
     public function annualReviews(): HasMany
     {
-        return $this->hasMany(AnnualReview::class);
+        return $this->hasMany(AnnualUpdate::class);
     }
 
-    public function latestAnnualReview(): HasOne
+    public function latestAnnualUpdate(): HasOne
     {
-        return $this->hasOne(AnnualReview::class)->latestOfMany();
+        return $this->hasOne(AnnualUpdate::class)->latestOfMany();
     }
     
     /**

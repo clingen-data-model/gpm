@@ -12,7 +12,7 @@ use App\Http\Controllers\Api\PeopleController;
 use App\Http\Controllers\Api\MailLogController;
 use App\Http\Controllers\Api\MailDraftController;
 use App\Http\Controllers\Api\GeneLookupController;
-use App\Http\Controllers\Api\AnnualReviewController;
+use App\Http\Controllers\Api\AnnualUpdateController;
 use App\Http\Controllers\Api\DiseaseLookupController;
 use App\Http\Controllers\Api\SystemInfoController;
 use App\Http\Controllers\ImpersonateSearchController;
@@ -56,11 +56,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/impersonate/search', [ImpersonateSearchController::class, 'index']);
 
-    Route::group(['prefix' => '/annual-reviews'], function () {
-        Route::get('', [AnnualReviewController::class, 'index']);
-        Route::get('/windows', [AnnualReviewController::class, 'windows']);
-        Route::post('/export', [AnnualReviewController::class, 'export']);
-        Route::get('/{id}', [AnnualReviewController::class, 'show']);
+    Route::group(['prefix' => '/annual-updates'], function () {
+        Route::get('', [AnnualUpdateController::class, 'index']);
+        Route::get('/windows', [AnnualUpdateController::class, 'windows']);
+        Route::post('/export', [AnnualUpdateController::class, 'export']);
+        Route::get('/{id}', [AnnualUpdateController::class, 'show']);
     });
 
     Route::get('/roles', [RolesController::class, 'index']);

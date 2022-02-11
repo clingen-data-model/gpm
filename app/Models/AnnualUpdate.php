@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
-class AnnualReview extends Model
+class AnnualUpdate extends Model
 {
     use HasFactory;
 
@@ -34,8 +34,8 @@ class AnnualReview extends Model
         parent::boot();
 
         static::saving(function ($model) {
-            if (is_null($model->annual_review_window_id)) {
-                $model->annual_review_window_id = AnnualReviewWindow::orderBy('start', 'desc')->first()->id;
+            if (is_null($model->annual_update_window_id)) {
+                $model->annual_update_window_id = AnnualUpdateWindow::orderBy('start', 'desc')->first()->id;
             }
         });
     }
@@ -45,7 +45,7 @@ class AnnualReview extends Model
      */
 
     /**
-     * Get the expertPanel that owns the AnnualReview
+     * Get the expertPanel that owns the AnnualUpdate
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -55,17 +55,17 @@ class AnnualReview extends Model
     }
 
     /**
-     * Get the window that owns the AnnualReview
+     * Get the window that owns the AnnualUpdate
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function window(): BelongsTo
     {
-        return $this->belongsTo(AnnualReviewWindow::class, 'annual_review_window_id');
+        return $this->belongsTo(AnnualUpdateWindow::class, 'annual_update_window_id');
     }
 
     /**
-     * Get the submitter that owns the AnnualReview
+     * Get the submitter that owns the AnnualUpdate
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

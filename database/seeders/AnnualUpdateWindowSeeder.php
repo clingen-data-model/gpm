@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 use Database\Seeders\Seeder;
-use App\Models\AnnualReviewWindow;
+use App\Models\AnnualUpdateWindow;
 
-class AnnualReviewWindowSeeder extends Seeder
+class AnnualUpdateWindowSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,7 +14,7 @@ class AnnualReviewWindowSeeder extends Seeder
      */
     public function run()
     {
-        AnnualReviewWindow::create([
+        AnnualUpdateWindow::create([
             'for_year' => 2021,
             'start' => '2022-02-16',
             'end' => '2022-03-15',

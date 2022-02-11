@@ -65,9 +65,9 @@ return [
             'guard_name' => 'web',
             'scope' => 'system'
         ],
-        'annual-reviews-manage' => [
+        'annual-updates-manage' => [
             'id' => 40,
-            'name' => 'annual-reviews-manage',
+            'name' => 'annual-updates-manage',
             'guard_name' => 'web',
             'scope' => 'system'
         ]

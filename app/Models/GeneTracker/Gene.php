@@ -12,5 +12,10 @@ class Gene extends Model
 
     protected $table = 'genes';
     protected $primaryKey = 'hgnc_id';
-    protected $connection = 'genetracker';
+    // protected $connection = 'genetracker';
+
+    public function getConnectionName()
+    {
+        return config('database.gt_db_connection');
+    }
 }

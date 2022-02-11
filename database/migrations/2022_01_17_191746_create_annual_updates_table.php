@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAnnualReviewsTable extends Migration
+class CreateAnnualUpdatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateAnnualReviewsTable extends Migration
      */
     public function up()
     {
-        Schema::create('annual_reviews', function (Blueprint $table) {
+        Schema::create('annual_updates', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('expert_panel_id');
             $table->foreign('expert_panel_id')
@@ -21,9 +21,9 @@ class CreateAnnualReviewsTable extends Migration
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
 
-            $table->unsignedBigInteger('annual_review_window_id');
-            $table->foreign('annual_review_window_id')
-                ->references('id')->on('annual_review_windows')
+            $table->unsignedBigInteger('annual_update_window_id');
+            $table->foreign('annual_update_window_id')
+                ->references('id')->on('annual_update_windows')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             
@@ -46,6 +46,6 @@ class CreateAnnualReviewsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('annual_reviews');
+        Schema::dropIfExists('annual_updates');
     }
 }

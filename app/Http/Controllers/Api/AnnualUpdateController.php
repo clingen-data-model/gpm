@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\AnnualReview;
+use App\Models\AnnualUpdate;
 use Illuminate\Http\Request;
-use App\Models\AnnualReviewWindow;
+use App\Models\AnnualUpdateWindow;
 use App\Modules\Group\Models\Group;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Response;
 
-class AnnualReviewController extends Controller
+class AnnualUpdateController extends Controller
 {
     public function index(Request $request)
     {
-        $reviews = AnnualReview::query()
+        $reviews = AnnualUpdate::query()
             ->select(['id', 'expert_panel_id', 'submitter_id', 'completed_at'])
             ->with([
                     'expertPanel' => function ($query) {
@@ -32,16 +32,16 @@ class AnnualReviewController extends Controller
 
     public function show($id)
     {
-        $annualReview = AnnualReview::findOrFail($id);
+        $annualReview = AnnualUpdate::findOrFail($id);
         return $annualReview->loadForUse();
     }
 
     public function showLatestForGroup(Group $group)
     {
         if (!$group->isEp) {
-            return response('This group does not have annual review.', 404);
+            return response('This group does not have annual update.', 404);
         }
-        $review = $group->expertPanel->latestAnnualReview;
+        $review = $group->expertPanel->latestAnnualUpdate;
         if (!$review) {
             return response('not found', 404);
         }
@@ -53,16 +53,16 @@ class AnnualReviewController extends Controller
 
     public function windows(Request $request)
     {
-        return AnnualReviewWindow::all();
+        return AnnualUpdateWindow::all();
     }
 
     public function export(Request $request)
     {
-        $annualReviews = AnnualReview::find($request->annual_review_ids);
+        $annualReviews = AnnualUpdate::find($request->annual_update_ids);
 
         $headers = array(
             "Content-type" => "text/csv",
-            "Content-Disposition" => "attachment; filename=annual_reviews.csv",
+            "Content-Disposition" => "attachment; filename=annual_updates.csv",
             "Pragma" => "no-cache",
             "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
             "Expires" => "0"

@@ -6,10 +6,10 @@ use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\Group\Actions\AnnualReviewCreate;
+use App\Modules\Group\Actions\AnnualUpdateCreate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class CreateAnnualReviewTest extends TestCase
+class CreateAnnualUpdateTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -24,13 +24,13 @@ class CreateAnnualReviewTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_an_annual_review_for_the_expert_panel()
+    public function it_creates_an_annual_update_for_the_expert_panel()
     {
-        $action = new AnnualReviewCreate();
+        $action = new AnnualUpdateCreate();
 
         $action->handle($this->expertPanel);
 
-        $this->assertDatabaseHas('annual_reviews', [
+        $this->assertDatabaseHas('annual_updates', [
             'expert_panel_id' => $this->expertPanel->id,
         ]);
     }
@@ -46,7 +46,7 @@ class CreateAnnualReviewTest extends TestCase
         $this->makeRequest()
             ->assertStatus(403);
 
-        $this->assertDatabaseMissing('annual_reviews', [
+        $this->assertDatabaseMissing('annual_updates', [
             'expert_panel_id' => $this->expertPanel->id,
         ]);
     }
@@ -57,7 +57,7 @@ class CreateAnnualReviewTest extends TestCase
      */
     public function priveleged_user_can_create_via_post()
     {
-        $user = $this->setupUser(permissions: ['annual-reviews-manage']);
+        $user = $this->setupUser(permissions: ['annual-updates-manage']);
         Sanctum::actingAs($user);
 
         $this->makeRequest()
@@ -66,13 +66,13 @@ class CreateAnnualReviewTest extends TestCase
                 'expert_panel_id' => $this->expertPanel->id
             ]);
 
-        $this->assertDatabaseHas('annual_reviews', [
+        $this->assertDatabaseHas('annual_updates', [
             'expert_panel_id' => $this->expertPanel->id,
         ]);
     }
 
     private function makeRequest()
     {
-        return $this->json('POST', '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/annual-reviews');
+        return $this->json('POST', '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/annual-updates');
     }
 }

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class AnnualReviewWindow extends Model
+class AnnualUpdateWindow extends Model
 {
     use HasFactory;
 
@@ -19,8 +19,8 @@ class AnnualReviewWindow extends Model
     protected $casts = [
         'id' => 'int',
         'for_year' => 'int',
-        'start' => 'date',
-        'end' => 'date'
+        'start' => 'datetime',
+        'end' => 'datetime'
     ];
 
     /**
@@ -28,12 +28,12 @@ class AnnualReviewWindow extends Model
      */
 
     /**
-     * Get all of the annualReviews for the AnnualReviewWindow
+     * Get all of the annualReviews for the AnnualUpdateWindow
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function annualReviews(): HasMany
     {
-        return $this->hasMany(AnnualReview::class);
+        return $this->hasMany(AnnualUpdate::class);
     }
 }

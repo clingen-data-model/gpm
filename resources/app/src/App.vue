@@ -13,9 +13,9 @@
                 v-if="hasPermission('ep-applications-manage')"
               >Applications</router-link> 
               <router-link 
-                to="/annual-reviews" 
+                to="/annual-updates" 
                 class="link nav-item" 
-                v-if="hasPermission('annual-reviews-manage')"
+                v-if="hasPermission('annual-updates-manage')"
               >Annual Reviews</router-link> 
               <router-link 
                 to="/people" 

@@ -19,7 +19,7 @@ class UpdateUserRolesAndPermissionsTest extends TestCase
         $this->actingUser = $this->setupUser(permissions: ['users-manage']);
         Sanctum::actingAs($this->actingUser);
 
-        $this->user = $this->setupUserWithPerson(permissions: ['annual-reviews-manage']);
+        $this->user = $this->setupUserWithPerson(permissions: ['annual-updates-manage']);
         $this->user->assignRole('admin');
     }
 
@@ -36,7 +36,7 @@ class UpdateUserRolesAndPermissionsTest extends TestCase
         $this->assertUserHasRole(config('system.roles.admin.id'));
         $this->assertUserMissingRole(config('system.roles.super-admin.id'));
 
-        $this->assertUserHasPermission(config('system.permissions.annual-reviews-manage.id'));
+        $this->assertUserHasPermission(config('system.permissions.annual-updates-manage.id'));
         $this->assertUserMissingPermission(config('system.permissions.ep-applications-manage.id'));
     }
 
@@ -55,7 +55,7 @@ class UpdateUserRolesAndPermissionsTest extends TestCase
         $this->assertUserMissingRole(config('system.roles.admin.id'));
         $this->assertUserHasRole(config('system.roles.super-admin.id'));
     
-        $this->assertUserMissingPermission(config('system.permissions.annual-reviews-manage.id'));
+        $this->assertUserMissingPermission(config('system.permissions.annual-updates-manage.id'));
         $this->assertUserHasPermission(config('system.permissions.ep-applications-manage.id'));
     }
     

@@ -6,11 +6,11 @@
                 <p>
                     <span v-if="showGroupName"><strong>{{group.displayName}}</strong> has</span>
                     <span v-else>You have</span>
-                    an <strong>annual review for {{window.for_year}}</strong> due on <strong>{{formatDate(window.end)}}</strong>.
+                    an <strong>annual update for {{window.for_year}}</strong> due on <strong>{{formatDate(window.end)}}</strong>.
                 </p>
                 <router-link 
                     class="btn font-bold" 
-                    :to="{name: 'AnnualReview', params: {uuid: group.uuid}}"
+                    :to="{name: 'AnnualUpdate', params: {uuid: group.uuid}}"
                     v-if="group.uuid"
                 >
                     Complete the Annual review
@@ -22,7 +22,7 @@
 <script>
 import { api } from '@/http';
 export default {
-    name: 'AnnualReviewAlert',
+    name: 'AnnualUpdateAlert',
     props: {
         group: {
             type: Object,
@@ -63,12 +63,12 @@ export default {
         group: {
             immediate: true,
             handler () {
-                this.getAnnualReview();
+                this.getAnnualUpdate();
             }
         }
     },
     methods: {
-        getAnnualReview () {
+        getAnnualUpdate () {
             if (!this.group.uuid) {
                 return;
             }
@@ -78,7 +78,7 @@ export default {
             }
 
             this.loading = true;
-            api.get(`/api/groups/${this.group.uuid}/expert-panel/annual-reviews`, {headers: {'X-Ignore-Missing': 1} })
+            api.get(`/api/groups/${this.group.uuid}/expert-panel/annual-updates`, {headers: {'X-Ignore-Missing': 1} })
                 .then(response => {
                     this.annualReview = response.data
                 });

@@ -86,7 +86,7 @@ class AddGroupMemberTest extends TestCase
     public function user_with_annualReviewsManage_permission_can_add_group_member()
     {
         $this->user->revokePermissionTo('groups-manage');
-        $this->user->givePermissionTo('annual-reviews-manage');
+        $this->user->givePermissionTo('annual-updates-manage');
         $this->makeRequest()
             ->assertStatus(201);
     }
