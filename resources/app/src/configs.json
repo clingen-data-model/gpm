@@ -1,8 +1,4 @@
 {
-    "systemInfo": {
-        "build_name": "dev",
-        "build_commit": null
-    },
     "expertPanels": {
         "notifications": {
             "cc": {
@@ -33,6 +29,12 @@
                     ]
                 ]
             }
+        },
+        "steps": {
+            "1": "Group Definition",
+            "2": "Draft Specifications",
+            "3": "Pilot Specifications",
+            "4": "Sustained Curation"
         }
     },
     "nextActions": {
