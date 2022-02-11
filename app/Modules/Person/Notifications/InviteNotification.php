@@ -41,6 +41,7 @@ class InviteNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
+                    ->subject('You\'ve been invited to join the ClinGen Group & Personnel Management System')
                     ->view('email.person.invite', ['invite' => $this->invite]);
     }
 

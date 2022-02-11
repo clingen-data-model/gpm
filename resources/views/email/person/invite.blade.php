@@ -17,6 +17,6 @@
 
 <p>
     Thanks,<br>
-    The ClinGen Group and Personnel Management System
+    The ClinGen Team
 </p>
 
