@@ -20,6 +20,7 @@ class MemberResource extends JsonResource
         $data['roles'] = $this->whenLoaded('roles', RoleResource::collection($this->roles));
         $data['permissions'] = $this->whenLoaded('permissions', PermissionResource::collection($this->permissions));
         $data['coi_last_completed'] = $this->when($this->relationLoaded('cois'), $this->coi_last_completed);
+        $data['latest_coi_id'] = $this->when($this->relationLoaded('cois'), $this->latestCoi ? $this->latestCoi->id : null);
         return $data;
     }
 }

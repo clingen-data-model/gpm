@@ -27,6 +27,10 @@ use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationNextActionsControlle
 
 Route::get('/next-actions/assignees', [NextActionAssigneeController::class, 'index']);
 
+Route::group(['prefix' => 'api/cois'], function () {
+    Route::get('/{Coi:id}', [SimpleCoiController::class, 'show']);
+});
+
 Route::group(['prefix' => 'api/coi'], function () {
     Route::get('/{code}/application', [SimpleCoiController::class, 'getApplication']);
     Route::post('/{code}', CoiResponseStore::class);

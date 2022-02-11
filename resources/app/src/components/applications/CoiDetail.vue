@@ -8,7 +8,7 @@
         <h2 class="block-title">
             COI response for 
             <span v-if="coi.data.first_name">{{titleCase(`${coi.data.first_name} ${coi.data.last_name}`)}} in </span>
-            {{membership.group.name}}
+            {{group.name}}
         </h2>
         <div class="text-sm response-data">
             <dictionary-row label="Name" label-class="font-bold">
@@ -88,10 +88,14 @@
 <script>
 export default {
     props: {
-        membership: {
-            type: Object || null,
+        coi: {
+            type: Object,
             required: true
-        }
+        },
+        group: {
+            type: Object,
+            required: true,
+        },
     },
     data() {
         return {
@@ -99,9 +103,6 @@ export default {
         }
     },
     computed: {
-        coi () {
-            return this.membership.latest_coi;
-        },
         isLegacy() {
             return false;
         },

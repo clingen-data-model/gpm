@@ -1,14 +1,15 @@
 <script>
 import configs from '@/configs.json'
-import { formatDate, yearAgo } from '@/date_utils'
+import { api } from '@/http'
 import sortAndFilter from '@/composables/router_aware_sort_and_filter'
 import MemberPreview from '@/components/groups/MemberPreview'
-import { titleCase } from '@/utils'
+import CoiDetail from '@/components/applications/CoiDetail'
 
 export default {
     name: 'MemberList',
     components: {
         MemberPreview,
+        CoiDetail,
     },
     props: {
         readonly: {
@@ -81,6 +82,8 @@ export default {
             selectedMember: null,
             hideAlumns: true,
             members: [],
+            showCoiDetail: false,
+            coi: null
         }
     },
     computed: {
@@ -136,7 +139,6 @@ export default {
         return {
             sort,
             filter,
-            yearAgo
         }
     },
     methods: {
@@ -162,12 +164,6 @@ export default {
         },
         toggleItemDetails(item) {
             item.showDetails = !item.showDetails;
-        },
-        titleCase (string) {
-            return titleCase(string);
-        },
-        formatDate (date) {
-            return formatDate(date)
         },
         editMember (member) {
             this.$router.push(this.append(this.$route.path, `members/${member.id}`))
@@ -232,7 +228,12 @@ export default {
                 return 'text-red-700';
             }
             return 'text-yellow-500';
-        }    
+        },
+        async viewCoi (coiId) {
+            console.log('viewCoi', coiId)
+            this.showCoiDetail = true;
+            this.coi = await api.get(`/api/cois/${coiId}`).then(response => response.data);
+        }  
     }
 }
 </script>
@@ -307,6 +308,9 @@ export default {
                 <template v-slot:cell-coi_last_completed="{item}">
                     <div class="flex space-x-2">
                         <span v-if="item.coi_last_completed">{{formatDate(item.coi_last_completed)}}</span>
+                        <button class="link cursor-pointer" v-if="item.latest_coi_id" @click.stop="viewCoi(item.latest_coi_id)">
+                            <icon-view />
+                        </button>
                         <icon-exclamation
                             v-if="!item.coi_last_completed === null || (item.coi_last_completed < yearAgo())"
                             :class="getCoiDateStyle(item)"
@@ -360,6 +364,9 @@ export default {
                 <p class="text-lg"> Are you sure you want to remove {{selectedMemberName}} from this group?</p>
                 <p><strong>This cannot be undone.</strong></p>
                 <button-row @submit="removeMember" @cancel="cancelRemove" submit-text="Remove Member"></button-row>
+            </modal-dialog>
+            <modal-dialog v-model="showCoiDetail" size="xl">
+                <coi-detail :coi="coi" v-if="coi" :group="group"></coi-detail>
             </modal-dialog>
         </teleport>
     </div>
