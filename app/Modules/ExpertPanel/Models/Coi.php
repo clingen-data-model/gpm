@@ -5,8 +5,10 @@ namespace App\Modules\ExpertPanel\Models;
 use Database\Factories\CoiFactory;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use App\Modules\ExpertPanel\CoiCaster;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\Group\Models\GroupMember;
+use App\Modules\ExpertPanel\CoiDataCaster;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -24,7 +26,7 @@ class Coi extends Model
     ];
 
     public $casts = [
-        'data' => 'object',
+        'data' => CoiDataCaster::class,
         'group_member_id' => 'integer',
         'expert_panel_id' => 'integer',
         'completed_at' => 'datetime'

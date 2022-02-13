@@ -4,14 +4,14 @@ import { api } from '@/http'
 import sortAndFilter from '@/composables/router_aware_sort_and_filter'
 import MemberPreview from '@/components/groups/MemberPreview'
 import CoiDetail from '@/components/applications/CoiDetail'
-import CoiReport from '@/components/groups/CoiReport'
+// import CoiReport from '@/components/groups/CoiReport'
 
 export default {
     name: 'MemberList',
     components: {
         MemberPreview,
         CoiDetail,
-        CoiReport
+        // CoiReport
     },
     props: {
         readonly: {
@@ -86,7 +86,7 @@ export default {
             members: [],
             showCoiDetail: false,
             coi: null,
-            showCoiReport: false
+            // showCoiReport: false
         }
     },
     computed: {
@@ -381,9 +381,9 @@ export default {
             <modal-dialog v-model="showCoiDetail" size="xl">
                 <coi-detail :coi="coi" v-if="coi" :group="group"></coi-detail>
             </modal-dialog>
-            <modal-dialog size="xxl" v-model="showCoiReport" :title="`COI Report for ${group.displayName}`">
+            <!-- <modal-dialog size="xxl" v-model="showCoiReport" :title="`COI Report for ${group.displayName}`">
                 <coi-report :group="group"></coi-report>
-            </modal-dialog>
+            </modal-dialog> -->
         </teleport>
     </div>
 </template>

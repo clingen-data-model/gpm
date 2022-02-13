@@ -85,6 +85,9 @@ export default {
     },
     methods: {
         getCoisForGroup () {
+            if (this.group.uuid === null) {
+                return;
+            }
             api.get(`/api/groups/${this.group.uuid}/expert-panel/cois`)
                 .then(response => {
                     this.cois = response.data.map(coi => coi);
