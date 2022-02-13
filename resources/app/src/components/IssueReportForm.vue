@@ -1,13 +1,6 @@
-<style lang="postcss" scoped>
-.report-issue-container {
-  position: fixed;
-  right: 0;
-  top: 75px;
-}
-</style>
 <template>
   <div v-if="$store.getters.isAuthed">
-    <popover hover arrow class="report-issue-container" placement="left">
+    <popover hover arrow placement="left">
         <template v-slot:content>
             <div class="whitespace-no-wrap w-28 text-xs">Report a problem</div>
         </template>

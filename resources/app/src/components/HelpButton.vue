@@ -1,0 +1,72 @@
+<style lang="postcss">
+  .faq h3,
+  .faq h2
+  {
+    @apply mt-4 border-t pt-4;
+  }
+  .faq h3:first-child,
+  .faq h2:first-child
+  {
+    @apply mt-0 border-none;
+  }
+</style>
+<template>
+  <div v-if="$store.getters.isAuthed">
+    <popover hover arrow placement="left">
+        <template v-slot:content>
+            <div class="whitespace-no-wrap w-28 text-xs">Read the GPM FAQ</div>
+        </template>
+            <button
+                class="
+                    text-white
+                    bg-blue-600
+                    border border-blue-700 border-r-0
+                    pl-3
+                    pr-3
+                    py-2
+                    rounded-l-lg
+                    shadow-lg
+                "
+                @click="showTheFaq"
+            >
+                <icon-question />
+            </button>
+    </popover>
+    <teleport to="body">
+      <modal-dialog title="ClinGen GPM Frequently Asked Questions" v-model="showFaq">
+        <div v-if="!faqMarkdown">Loading FAQ...</div>
+        <markdown-block :markdown="faqMarkdown" class="faq" />
+      </modal-dialog>
+    </teleport>
+  </div>
+</template>
+<script>
+import { api, isValidationError } from "@/http";
+import { feedback } from "@/configs";
+
+export default {
+  name: "ComponentName",
+  props: {},
+  data() {
+    return {
+      showFaq: false,
+      faqMarkdown: null
+    };
+  },
+  computed: {
+    severities() {
+      return feedback.severities;
+    },
+  },
+  methods: {
+    showTheFaq() {
+      this.fetchFaq();
+      this.showFaq = true;
+    },
+    fetchFaq () {
+      api.get('/api/docs/faq')
+        .then(response => this.faqMarkdown = response.data);
+    }
+  },
+};
+</script>

@@ -12,7 +12,7 @@
         <div 
             :class="modalClass"
         >
-            <header class="flex border-b pt-2 pb-2 mb-2 justify-between items-center" ref="header">
+            <header class="flex border-b pt-2 pb-2 justify-between items-center" ref="header">
                 <div class="px-4 pt-2">
                     <slot name="header">
                         <h2 class="" v-if="title">{{title}}</h2>
@@ -24,7 +24,7 @@
                 >X</button>
             </header>
 
-            <section class="overflow-auto px-4 pb-4" ref="panelbody">
+            <section class="overflow-auto px-4 pb-4 pt-2" ref="panelbody">
                 <slot name="default" />
             </section>
             <slot name="footer"></slot>

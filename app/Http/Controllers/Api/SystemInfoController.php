@@ -11,7 +11,10 @@ class SystemInfoController extends Controller
     {
         $data = [
             'build' => config('app.build'),
-            'env' => config('app.env')
+            'env' => config('app.env'),
+            'app' => [
+                'name' => config('app.name')
+            ]
         ];
         return $data;
     }

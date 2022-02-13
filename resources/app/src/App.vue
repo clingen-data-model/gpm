@@ -3,8 +3,8 @@
     <header id="nav" class="border-b bg-gray-100 print:hidden">
       <div class="container mx-auto py-3 flex">
         <div id="main-menu" class="flex-grow">
-          <div class="inline-block pr-3">
-            <router-link to="/" class="text-black hover:text-black"> EPAM</router-link>
+          <div class="inline-block pr-4">
+            <router-link to="/" class="text-black hover:text-black">{{appName}}</router-link>
           </div>
           <span v-if="$store.getters.isAuthed">
               <router-link 
@@ -36,8 +36,10 @@
               >
                 Guides &amp; documentation
               </router-link> -->
+
           </span>
         </div>
+        <a href="mailto:cdwg_oc@clinicalgenome.org?subject=New ExpertPanel Request" class="btn btn-xs mr-4">Request a new group</a>
         <user-menu></user-menu>
       </div>
     </header>
@@ -53,7 +55,11 @@
 
 
     <alert-viewer></alert-viewer>
-    <issue-report-form class="print:hidden" />
+
+    <div class="fixed right-0 top-20 space-y-2">
+      <help-button />
+      <issue-report-form class="print:hidden" />
+    </div>
 
     <teleport to="body">
       <!-- <footer class="w-full border-t mt-4 bg-gray-100">
@@ -97,6 +103,11 @@ export default {
   },
   computed: {
     ...mapGetters(['isAuthed']),
+    appName () {
+      return this.$store.state && this.$store.state.systemInfo && this.$store.state.systemInfo.app? 
+              this.$store.state.systemInfo.app.name
+              : 'GPM'
+    }
   },
   watch: {
     isAuthed () {

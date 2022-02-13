@@ -12,9 +12,10 @@ use App\Http\Controllers\Api\PeopleController;
 use App\Http\Controllers\Api\MailLogController;
 use App\Http\Controllers\Api\MailDraftController;
 use App\Http\Controllers\Api\GeneLookupController;
+use App\Http\Controllers\Api\SystemInfoController;
 use App\Http\Controllers\Api\AnnualUpdateController;
 use App\Http\Controllers\Api\DiseaseLookupController;
-use App\Http\Controllers\Api\SystemInfoController;
+use App\Http\Controllers\Api\DocumentationController;
 use App\Http\Controllers\ImpersonateSearchController;
 use App\Modules\User\Http\Controllers\CurrentUserController;
 
@@ -73,3 +74,6 @@ Route::get('/diseases/{mondo_id}', [DiseaseLookupController::class, 'show']);
 
 Route::get('/genes/search', [GeneLookupController::class, 'search']);
 Route::get('/genes/{hgnc_id}', [GeneLookupController::class, 'show']);
+
+Route::get('/docs', [DocumentationController::class, 'index']);
+Route::get('/docs/{slug}', [DocumentationController::class, 'show']);
