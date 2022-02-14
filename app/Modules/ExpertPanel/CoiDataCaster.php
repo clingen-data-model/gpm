@@ -16,9 +16,9 @@ class CoiDataCaster implements CastsAttributes
 
     public function set($model, $key, $value, $attributes): String
     {
-        if (! $value instanceof CoiData) {
-            throw new InvalidArgumentException('The given value is not an CoiData object.');
-        }
+        // if (! $value instanceof CoiData) {
+        //     throw new InvalidArgumentException('The given value is not an CoiData object.');
+        // }
         return $value->toJson();
     }
 }
