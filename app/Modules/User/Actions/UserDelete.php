@@ -16,5 +16,4 @@ class UserDelete
 
         event(new UserDeleted($user));
     }
-    
 }

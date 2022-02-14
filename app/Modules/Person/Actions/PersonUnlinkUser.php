@@ -16,8 +16,6 @@ class PersonUnlinkUser
             return $person;
         }
         
-        dd($person->user);
-
         $user = $person->user;
         $person->update(['user_id' => null]);
 
@@ -25,5 +23,4 @@ class PersonUnlinkUser
 
         return $person;
     }
-    
 }
