@@ -1,6 +1,7 @@
 <?php
 namespace App\Actions;
 
+use Carbon\Carbon;
 use App\Models\Event;
 use Ramsey\Uuid\Uuid;
 use App\Models\Document;
@@ -15,7 +16,7 @@ use App\Modules\Group\Models\GroupMember;
 use Lorisleiva\Actions\Concerns\AsAction;
 use App\Modules\ExpertPanel\Models\NextAction;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Carbon\Carbon;
+use App\Modules\ExpertPanel\Events\StepApproved;
 
 class DataMigration
 {
@@ -33,7 +34,7 @@ class DataMigration
    
     private function migrateApplications($cdwgs)
     {
-        $applicationsData = DB::table('applications')
+        DB::table('applications')
             ->whereNull('deleted_at')
             ->get()
             ->map(function ($row) use ($cdwgs) {
@@ -102,8 +103,27 @@ class DataMigration
                                     ])->get();
                 $this->migrateActivityLogs($activityLogs, $expertPanel);
                 $this->migrateCois($this->queryAppItems('cois', $row->id)->get(), $expertPanel);
+
+                $this->dispatchStepApprovalEvents($expertPanel);
             });
     }
+
+    private function dispatchStepApprovalEvents(ExpertPanel $expertPanel)
+    {
+        if (!is_null($expertPanel->step_1_approval_date)) {
+            event(new StepApproved($expertPanel, 1, Carbon::parse($expertPanel->step_1_approval_date)));
+        }
+        if (!is_null($expertPanel->step_2_approval_date)) {
+            event(new StepApproved($expertPanel, 2, Carbon::parse($expertPanel->step_2_approval_date)));
+        }
+        if (!is_null($expertPanel->step_3_approval_date)) {
+            event(new StepApproved($expertPanel, 3, Carbon::parse($expertPanel->step_3_approval_date)));
+        }
+        if (!is_null($expertPanel->step_4_approval_date)) {
+            event(new StepApproved($expertPanel, 4, Carbon::parse($expertPanel->step_4_approval_date)));
+        }
+    }
+    
 
     private function migrateActivityLogs($logEntries, $expertPanel)
     {
