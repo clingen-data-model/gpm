@@ -1,0 +1,12 @@
+apiVersion: v1
+data:
+  DX_BROKER: pkc-4yyd6.us-east1.gcp.confluent.cloud:9092
+  DX_DRIVER: kafka
+  DX_ENABLE_PUSH: "false"
+  DX_GROUP: unc_development
+  DX_INCOMING_CSPEC: cspec-general-test
+  DX_OUTGOING_GPM_GENERAL_EVENTS: gpm-general-events-test
+  DX_WARN_DISABLED: "true"
+kind: ConfigMap
+metadata:
+  name: dx-test

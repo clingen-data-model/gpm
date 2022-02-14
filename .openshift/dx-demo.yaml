@@ -1,0 +1,13 @@
+apiVersion: v1
+data:
+  DX_BROKER: pkc-4yyd6.us-east1.gcp.confluent.cloud:9092
+  DX_DRIVER: kafka
+  DX_ENABLE_PUSH: "false"
+  DX_GROUP: unc_staging
+  DX_INCOMING_GCI: gene_validity_events_test
+  DX_INCOMING_CSPEC: cspec-general-demo
+  DX_OUTGOING_GPM_GENERAL_EVENTS: gpm-general-events-demo
+  DX_WARN_DISABLED: "true"
+kind: ConfigMap
+metadata:
+  name: dx-demo
