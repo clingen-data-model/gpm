@@ -32,7 +32,7 @@ class CreateAnnualUpdatesForAllTest extends TestCase
             ->expectsQuestion('When does the review window begin?', $start)
             ->expectsQuestion('When does the review window end?', $end)
             ->expectsOutput('The annual update window is scheduled for '.$start.' to '.$end.'.')
-            ->expectsOutput('Annual reviews created for 2 expert panels.');
+            ->expectsOutput('Annual updates created for 2 expert panels.');
 
         $this->assertDatabaseHas('annual_updates', [
             'expert_panel_id' => $this->expertPanel1->id

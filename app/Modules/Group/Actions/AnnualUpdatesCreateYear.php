@@ -49,6 +49,6 @@ class AnnualUpdatesCreateYear
 
         [$window, $annualReviews] = $this->handle($forYear, $start, $end);
         $command->info('The annual update window is scheduled for '.$start.' to '.$end.'.');
-        $command->info('Annual reviews created for '.$annualReviews->count().' expert panels.');
+        $command->info('Annual updates created for '.$annualReviews->count().' expert panels.');
     }
 }

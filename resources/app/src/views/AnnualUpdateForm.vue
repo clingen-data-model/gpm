@@ -251,7 +251,7 @@ export default {
         <group-breadcrumbs :group="group" />
 
         <h1>
-            {{group.displayName}} - Annual Review for {{year}}
+            {{group.displayName}} - Annual Update for {{year}}
             <note class="font-normal">
                 Group ID: {{group.id}}
                 |

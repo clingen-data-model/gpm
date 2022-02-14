@@ -13,7 +13,7 @@
                     :to="{name: 'AnnualUpdate', params: {uuid: group.uuid}}"
                     v-if="group.uuid"
                 >
-                    Complete the Annual review
+                    Complete the Annual Update
                 </router-link>
             </div>
         </div>

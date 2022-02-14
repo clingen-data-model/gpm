@@ -2,7 +2,7 @@
   <div>
     <header class="flex justify-between items-center border-b mb-4">
       <h1 class="border-0 mb-0">
-        Annual Reviews for {{ latestWindow.for_year }}
+        Annual Updates for {{ latestWindow.for_year }}
       </h1>
       {{formatDate(latestWindow.start)}} - {{formatDate(latestWindow.end)}}
       <select

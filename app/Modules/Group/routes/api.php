@@ -131,7 +131,7 @@ Route::group([
             Route::delete('/{summaryId}', EvidenceSummaryDelete::class);
         });
 
-        // ANNUAL REVIEWS
+        // ANNUAL UPDATES
         Route::group(['prefix' => '/annual-updates'], function () {
             Route::get('/', [AnnualUpdateController::class, 'showLatestForGroup']);
             Route::post('/', AnnualUpdateCreate::class);

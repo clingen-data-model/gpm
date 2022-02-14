@@ -16,7 +16,7 @@
                 to="/annual-updates" 
                 class="link nav-item" 
                 v-if="hasPermission('annual-updates-manage')"
-              >Annual Reviews</router-link> 
+              >Annual Updates</router-link> 
               <router-link 
                 to="/people" 
                 class="link nav-item"
