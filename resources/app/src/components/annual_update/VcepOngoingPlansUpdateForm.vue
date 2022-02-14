@@ -24,6 +24,26 @@
             v-model="workingCopy.data.ongoing_plans_update_details"
             :disabled="isComplete"
         />
+
+        <input-row vertical
+            :disabled="isComplete"
+            label="Have there been any changes to your VCEP’s workflow or meeting/call frequency in the last year?"
+            type="radio-group"
+            v-model="workingCopy.data.changes_to_call_frequency"
+            :errors="errors.changes_to_call_frequency"
+            :options="[{value: 'yes'},{value: 'no'}]" 
+        />
+
+        <input-row 
+            v-if="workingCopy.data.changes_to_call_frequency == 'yes'" 
+            class="ml-4" 
+            label="Please explain" 
+            :errors="errors.changes_to_call_frequency_details" 
+            vertical
+            type="large-text"
+            v-model="workingCopy.data.changes_to_call_frequency_details"
+            :disabled="isComplete"
+        />
     </application-section>
 </template>
 <script>

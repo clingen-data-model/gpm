@@ -112,10 +112,13 @@ class AnnualUpdateSubmit
 
             if ($annualReview->expertPanel->hasApprovedDraft) {
                 $requirements = array_merge($requirements, [
-                    'specification_progress' => 'required|in:in-progress,no-changes,changes-made',
+                    'specification_progress' => 'required|in:not-applicable,no-changes,yes-pending-approval,yes-approved',
                     'specification_progress_url' => 'required',
-                    'specificiations_progress_detail' => 'requird_if:specification_progress,changes-made',
-
+                    // Can't get this to work.  Should really be required in this case, but validation always fails.
+                    'specification_progress_details' => Rule::requiredIf(function () use ($annualReview) {
+                        return isset($annualReview->data['specification_progress'])
+                            && preg_match('/yes/', $annualReview->data['specification_progress']);
+                    }),
                     'variant_counts' => 'required|array|min:1',
                     'variant_counts.*.gene_symbol' => 'required_with:variant_counts.*.in_clinvar,variant_counts.*.gci_approved,variant_counts.*.provisionally_approved',
         
@@ -129,17 +132,20 @@ class AnnualUpdateSubmit
 
             if ($annualReview->expertPanel->sustainedCurationIsApproved) {
                 $requirements = array_merge($requirements, [
-                    'variant_workflow_changes' => 'required|in:yes,no',
-                    'variant_workflow_changes_details' => 'required_if:variant_workflow_changes,yes',
+                    // 'variant_workflow_changes' => 'required|in:yes,no',
+                    // 'variant_workflow_changes_details' => 'required_if:variant_workflow_changes,yes',
                     'rereview_discrepencies_progress' => 'required',
                     'rereview_lp_and_vus_progress' => 'required',
                     'rereview_lb_progress' => 'required',
                     'member_designation_changed' => 'required|in:yes,no',
-                    'specification_plans' => 'required|in:yes,no',
-                    'specification_plans_details' => 'required_if:specification_plans,yes',
+                    // 'specification_plans' => 'required|in:yes,no',
+                    // 'specification_plans_details' => 'required_if:specification_plans,yes',
                     'ongoing_plans_updated' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
                     'ongoing_plans_update_details' => 'exclude_if:ep_activity,inactive|required_if:ongoing_plans_updated,yes',
-        
+                    'changes_to_call_frequency' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
+                    'changes_to_call_frequency_details' => 'exclude_if:ep_activity,inactive|required_if:changes_to_call_frequency,yes',
+                    'specifications_for_new_gene' => 'required|in:yes,no',
+                    'specifications_for_new_gene_details' => 'required_if:specifications_for_new_gene,yes',
                 ]);
             }
         }

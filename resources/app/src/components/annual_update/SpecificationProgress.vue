@@ -12,31 +12,58 @@
             :disabled="isComplete"
             v-model="workingCopy.data.specification_progress"
             type="radio-group"
-            :options="[
-                {   value: 'in-progress',  
-                    label:'VCEP specifications to the ACMG/AMP guidelines in progress.'
-                },
-                {
-                    value: 'no-changes',
-                    label: 'No Changes to the ClinGen-approved VCEP specifications to the ACMG/AMP guidelines (for ClinGen 3-star VCEPs only).'
-                },
-                {
-                    value: 'changes-made',
-                    label: 'We have made changes to the ClinGen-approved VCEP specification to the ACMG/AMP guidelines (for ClinGen 3-star VCEPs only)'
-                }
-            ]"
             :errors="errors.specification_progress" 
             vertical
             label="Have you made any changes or additions to your ACMG/AMP specifications for the gene(s) of interest, including evidence and rationale to support the rule specifications."
+            :options="[
+                {
+                    value: 'not-applicable',
+                    label: 'Not applicable, VCEP specifications to the ACMG/AMP guidelines in progress'
+                },
+                {
+                    value: 'no-changes',
+                    label: 'No, VCEP has made no changes to the ClinGen-approved VCEP specifications to the ACMG/AMP guidelines'
+                },
+                {   value: 'yes-pending-approval',  
+                    label:'Yes, VCEP has proposed changes to the ClinGen-approved VCEP specifications to the ACMG/AMP guidelines, but the updates are not yet approved by the SVI VCEP Review Committee'
+                },
+                {
+                    value: 'yes-approved',
+                    label: 'Yes, VCEP has proposed changes to the ClinGen-approved VCEP specifications to the ACMG/AMP guidelines and the updates have been approved by the SVI VCEP Review Committee'
+                }
+            ]"
         />
         <transition name="slide-fade-down">
             <input-row 
-                v-if="workingCopy.specification_progress === 'changes-made'"
+                v-if="['yes-pending-approval', 'yes-approved'].includes(workingCopy.data.specification_progress)"
                 label="Describe changes" 
-                v-model="workingCopy.specification_progress_details" 
+                v-model="workingCopy.data.specification_progress_details" 
                 :errors="errors.specification_progress_details"
                 type="large-text"
                 vertical
+                :disabled="isComplete"
+            />
+        </transition>
+
+        <input-row 
+            label="Are you planning to start the rule specification process for a new gene in the coming year?"
+            type="radio-group"
+            :errors="errors.specifications_for_new_gene"
+            v-model="workingCopy.data.specifications_for_new_gene"
+            vertical
+            :options="[{value: 'yes'}, {value: 'no'}]"
+            :disabled="isComplete"
+        />
+        
+        <transition name="slide-fade-down">
+            <input-row 
+                v-if="workingCopy.data.specifications_for_new_gene == 'yes'"
+                label="What are your plans?" 
+                v-model="workingCopy.data.specifications_for_new_gene_details" 
+                :errors="errors.specifications_for_new_gene_details"
+                type="large-text"
+                vertical
+                :disabled="isComplete"
             />
         </transition>
     </div>
