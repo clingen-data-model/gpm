@@ -52,6 +52,9 @@
                     <template v-slot:cell-status_name="{value}">
                         <badge :color="groupBadgeColor(value)">{{value}}</badge>
                     </template>
+                    <template v-slot:cell-displayName="{item}">
+                        {{item.name}} {{item.type.name.toUpperCase()}}
+                    </template>
                 </data-table>
             </tab-item>
 

@@ -119,7 +119,7 @@ export default {
             this.verifying = true;
             api.get(`/api/coi/${this.code}/application`)
                 .then(response => {
-                    this.epName = response.data.name
+                    this.epName = response.data.display_name
                 })
                 .then(() => {
                     this.verifying = false;
