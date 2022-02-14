@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0e9b54"],{"8f4d":function(e,n,t){"use strict";t.r(n);var c=t("7a23"),o={class:"w-full h-48 mx-auto align-middle py-48 text-center border bg-gray-100"};function r(e,n,t,r,d,a){return Object(c["openBlock"])(),Object(c["createElementBlock"])("div",o," PLACEHOLDER FOR CDWGS INDEX ")}var d={props:{},data:function(){return{}},computed:{},methods:{}},a=t("6b0d"),u=t.n(a);const p=u()(d,[["render",r]]);n["default"]=p}}]);
+//# sourceMappingURL=chunk-2d0e9b54.8548af5c.js.map
