@@ -93,7 +93,7 @@ class Group extends Entity {
     }
 
     get displayName () {
-        return this.expert_panel.full_long_base_name || this.name;
+        return this.expert_panel.display_name || this.name;
     }
 
     get displayStatus () {
