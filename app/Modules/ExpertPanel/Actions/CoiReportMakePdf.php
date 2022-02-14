@@ -2,6 +2,7 @@
 
 namespace App\Modules\ExpertPanel\Actions;
 
+use Exception;
 use Dompdf\Dompdf;
 use App\Modules\Group\Models\Group;
 use App\Modules\ExpertPanel\CoiData;
@@ -21,23 +22,38 @@ class CoiReportMakePdf
     {
         $members = $group->members()->with('person', 'latestCoi')->get();
 
-        $cois = $members->map(function ($member) {
-            $coi = $member->latestCoi;
-            if (!$coi) {
-                $coi = new Coi(['data' => new CoiData([])]);
-            }
-            return (object)[
-                'name' => $member->person->name,
-                'work_fee_lab' => $this->resolveValue($coi->data->work_fee_lab),
-                'contributions_to_gd_in_ep' => $this->resolveValue($coi->data->contributions_to_gd_in_ep),
-                'contributions_to_genes' => $this->resolveValue($coi->data->contributions_to_genes),
-                'independent_efforts' => $this->resolveValue($coi->data->independent_efforts),
-                'independent_efforts_details' => $this->resolveValue($coi->data->independent_efforts_details),
-                'coi' => $this->resolveValue($coi->data->coi),
-                'coi_details' => $this->resolveValue($coi->data->coi_details),
-                'completed_at' => $coi->completed_at ? $coi->completed_at->format('Y-m-d') : null
-             ];
-        });
+        try {
+            $cois = $members->map(function ($member) {
+                $coi = $member->latestCoi;
+                if (!$coi) {
+                    $coi = new Coi(['data' => (object)[]]);
+                }
+                if (!$coi->data || $coi->data == (object)[]) {
+                    $coi->data = (object)[
+                        'work_fee_lab' => null,
+                        'contributions_to_gd_in_ep' => null,
+                        'contributions_to_genes' => null,
+                        'independent_efforts' => null,
+                        'independent_efforts_details' => null,
+                        'coi' => null,
+                        'coi_details' => null,
+                    ];
+                }
+                return (object)[
+                    'name' => $member->person->name,
+                    'work_fee_lab' => $this->resolveValue($coi->data->work_fee_lab),
+                    'contributions_to_gd_in_ep' => $this->resolveValue($coi->data->contributions_to_gd_in_ep),
+                    'contributions_to_genes' => $this->resolveValue($coi->data->contributions_to_genes),
+                    'independent_efforts' => $this->resolveValue($coi->data->independent_efforts),
+                    'independent_efforts_details' => $this->resolveValue($coi->data->independent_efforts_details),
+                    'coi' => $this->resolveValue($coi->data->coi),
+                    'coi_details' => $this->resolveValue($coi->data->coi_details),
+                    'completed_at' => $coi->completed_at ? $coi->completed_at->format('Y-m-d') : null
+                 ];
+            });
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
         $view = View::make('pdfs.group_coi_report', ['cois' => $cois, 'group' => $group]);
 
         $this->dompdf->loadHtml($view->render());
