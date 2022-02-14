@@ -17,10 +17,10 @@ if [ "$role" = "app" ]; then
 
 elif [ "$role" = "queue" ]; then
 
-    # echo "role: queue"
-    # echo "SESSION_DRIVER: $SESSION_DRIVER"
-    # echo "CACHE_DRIVER: $CACHE_DRIVER"
-    # echo "QUEUE_CONNECTION: $QUEUE_CONNECTION..."
+    echo "role: queue"
+    echo "SESSION_DRIVER: $SESSION_DRIVER"
+    echo "CACHE_DRIVER: $CACHE_DRIVER"
+    echo "QUEUE_CONNECTION: $QUEUE_CONNECTION..."
     php /srv/app/artisan queue:work --verbose --tries=3 --timeout=90
 
 elif [ "$role" = "scheduler" ]; then

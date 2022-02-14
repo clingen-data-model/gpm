@@ -32,6 +32,7 @@ class FeedbackSubmit
         $type,
         $severity
     ) {
+        \Log::debug(__METHOD__);
         $issueFields = [
             "fields" => [
                 "project" => ["key" => "GPMEP"],
@@ -42,6 +43,8 @@ class FeedbackSubmit
                 'customfield_18049' => $url,
             ]
         ];
+
+        \Log::debug('issueFields: ', $issueFields);
 
         if ($type == 'Bug') {
             // Unable to figure out why the field options are causing errors so just omitting.
