@@ -186,12 +186,13 @@ class SubmitAnnualUpdateTest extends TestCase
             'website_attestation',
             'vci_use',
             'variant_counts',
-            'variant_workflow_changes',
+            // 'variant_workflow_changes', // deprecated by Danielle Azzariti Feb. 2022
             'rereview_discrepencies_progress',
             'rereview_lp_and_vus_progress',
             'rereview_lb_progress',
             'member_designation_changed',
-            'specification_plans',
+            // 'specification_plans', // deprecated by Danielle Azzariti Feb. 2022
+            'changes_to_call_frequency'
         ];
 
         foreach ($baseRequiredFields as $field) {
@@ -293,12 +294,13 @@ class SubmitAnnualUpdateTest extends TestCase
             'variant_counts',
             'specification_progress',
             'specification_progress_url',
-            'variant_workflow_changes',
+            // 'variant_workflow_changes', // deprecated by Danielle Azzariti Feb. 2022
             'rereview_discrepencies_progress',
             'rereview_lp_and_vus_progress',
             'rereview_lb_progress',
             'member_designation_changed',
-            'specification_plans',
+            // 'specification_plans', // deprecated by Danielle Azzariti Feb. 2022
+            'specifications_for_new_gene',
         ];
 
         foreach ($baseRequiredFields as $field) {
@@ -322,23 +324,27 @@ class SubmitAnnualUpdateTest extends TestCase
         $annualReview = AnnualUpdate::create([
             'expert_panel_id'=>$this->expertPanel->id,
             'data' => [
+                'specification_progress' => 'yes-pending-approval',
                 'ongoing_plans_updated' => 'yes',
+                'changes_to_call_frequency' => 'yes',
                 'cochair_commitment' => 'no',
                 'applied_for_funding' => 'yes',
                 'funding' => 'other',
                 'vci_use' => 'no',
-                'variant_workflow_changes' => 'yes',
-                'specification_plans' => 'yes',
+                'specifications_for_new_gene' => 'yes',
             ]
         ]);
 
         $conditionalRequiredFields = [
             'vci_use_details',
-            'variant_workflow_changes_details',
+            // 'variant_workflow_changes_details', // deprecated by Danielle Azzariti Feb. 2022
             'ongoing_plans_update_details',
             'cochair_commitment_details',
             'funding_other_details',
-            'specification_plans_details'
+            'changes_to_call_frequency_details',
+            // 'specification_plans_details' // deprecated by Danielle Azzariti Feb. 2022
+            'specifications_for_new_gene_details',
+            'specification_progress_details',
         ];
 
         $response = $this->makeRequest($annualReview)

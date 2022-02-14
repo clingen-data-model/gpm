@@ -17,10 +17,10 @@ import GcepOngoingPlansUpdateForm from '@/components/annual_update/GcepOngoingPl
 import GeneCurationTotals from '@/components/annual_update/GeneCurationTotals'
 
 // VCEP Components
-import VariantCurationWorkflow from '@/components/annual_update/VariantCurationWorkflow'
+// import VariantCurationWorkflow from '@/components/annual_update/VariantCurationWorkflow'
 import VciUse from '@/components/annual_update/VciUse'
 import VcepOngoingPlansUpdateForm from '@/components/annual_update/VcepOngoingPlansUpdateForm'
-import VcepPlansForSpecifications from '@/components/annual_update/VcepPlansForSpecifications'
+// import VcepPlansForSpecifications from '@/components/annual_update/VcepPlansForSpecifications'
 import VcepTotals from '@/components/annual_update/VcepTotals'
 import VariantReanalysis from '@/components/annual_update/VariantReanalysis'
 import SpecificationProgress from '@/components/annual_update/SpecificationProgress'
@@ -42,8 +42,8 @@ export default {
         VcepTotals,
         VariantReanalysis,
         MemberDesignationUpdate,
-        VcepPlansForSpecifications,
-        VariantCurationWorkflow,
+        // VcepPlansForSpecifications,
+        // VariantCurationWorkflow,
         MembershipUpdate,
     },
     props: {
@@ -96,7 +96,6 @@ export default {
                     goals: null,
                     cochair_commitment: null,
                     cochair_commitment_details: null,
-                    sepcification_progress: null,
                     specification_url: null,
                     variant_counts: [],
                     variant_workflow_changes: null,
@@ -104,6 +103,8 @@ export default {
                     specification_progress_url: null,
                     specification_progress: null,
                     specification_progress_details: null,
+                    specifications_for_new_gene: null,
+                    specifications_for_new_gene_details: null,
                     specification_plans: null,
                     specification_plans_details: null,
                     rereview_discrepencies_progress: null,
