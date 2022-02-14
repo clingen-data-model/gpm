@@ -5,11 +5,12 @@ namespace App\Actions;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\ClientInterface;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsJob;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
 use Lorisleiva\Actions\Concerns\AsAction;
+use GuzzleHttp\Exception\RequestException;
 
 class FeedbackSubmit
 {
@@ -49,6 +50,8 @@ class FeedbackSubmit
             $issueFields['fields']['description'] = "\n**Severity:** ".$severityString."\n\n".$issueFields['fields']['description'];
         }
 
+        Log::debug('Should have submitted an issue to jira', $issueFields);
+
         try {
             $issueResponse = $this->http->request('post', 'https://broadinstitute.atlassian.net/rest/api/2/issue', [
                 'headers' => [
@@ -59,7 +62,7 @@ class FeedbackSubmit
                 'json' => $issueFields
             ]);
         } catch (RequestException $e) {
-            \Log::error($e->getMessage());
+            Log::error($e->getMessage());
             return;
         }
         $responseObj = json_decode($issueResponse->getBody()->getContents());
