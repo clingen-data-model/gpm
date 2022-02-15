@@ -496,7 +496,19 @@ export const actions = {
                     });
                     return response;
                 });
-    }
+    },
+
+    // eslint-disable-next-line
+    async updateApprovalDate({ commit }, { group, dateApproved, step }) {
+        return api.put(`/api/applications/${group.expert_panel.uuid}/approve`, {
+                date_approved: dateApproved,
+                step: step
+            })
+            .then(() => {
+                group.expert_panel.updateApprovalDate(dateApproved, step);
+            });
+    },
+
 };
 
 export default {

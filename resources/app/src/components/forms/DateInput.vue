@@ -42,8 +42,7 @@ export default {
                 } else {
                     date = new Date(Date.parse(this.modelValue));
                 }
-                // const date = (!(this.modelValue instanceof Date)) new Date(Date.parse(this.modelValue));
-                return date && new Date(date.getTime()+(date.getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
+                return date && date.toISOString().split('T')[0];
             },
         } 
     },
@@ -54,8 +53,9 @@ export default {
                 this.$emit('update:modelValue', value);
                 return;
             }
-            if (value.valueOf() > new Date(Date.parse('1900-01-01'))) {
-                this.$emit('update:modelValue', value.toISOString());
+
+            if (value.valueOf() > new Date(Date.parse('1900-01-01'))) { 
+                this.$emit('update:modelValue', this.accountForTimezone(value).toISOString());
             }
         },
         accountForTimezone(dateString) {

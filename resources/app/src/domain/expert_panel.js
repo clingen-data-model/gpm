@@ -268,6 +268,17 @@ class ExpertPanel extends Entity
             null;
     }
 
+    updateApprovalDate(newDate, stepNumber) {
+        console.log('updateApprovalDate', newDate, stepNumber);
+        if (!this.steps.includes(stepNumber)) {
+            throw new Error(`Step ${stepNumber} out of bounds`)
+        }
+
+        const stepKey = `step_${stepNumber}_approval_date`;
+
+        this[stepKey] = newDate;
+    }
+
     firstDocumentOfType(docTypeId) {
         const typeDocs = this.documents
             .filter(d => d.document_type_id == docTypeId)

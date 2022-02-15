@@ -225,17 +225,19 @@ export default {
         async updateApprovalDate() {
             try {
                 await this.$store.dispatch(
-                    'applications/updateApprovalDate', 
+                    'groups/updateApprovalDate', 
                     {
-                        application: this.application, 
+                        group: this.group, 
                         dateApproved: this.newApprovalDate, 
                         step: this.step
                     }
                 );
+                // this.group.expert_panel.updateApprovalDate(this.newApprovalDate, this.step);
                 this.editApprovalDate = false;
             } catch (error) {
                 if (is_validation_error(error)) {
                     this.errors = error.response.data.errors;
+                    return;
                 }
             }
         }
