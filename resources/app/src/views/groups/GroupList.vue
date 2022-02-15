@@ -7,43 +7,45 @@
         <tabs-container @tab-changed="getGroupsForType">
             <tab-item v-for="def in tabDefinitions" :label="def.label" :key="def.label">
                 <div class="text-center w-full" v-if="loading">Loading...</div>
-                <data-table
-                    v-else 
-                    :data="filteredGroups.filter(def.filter)" 
-                    :fields="fields" 
-                    v-model:sort="sort"
-                    :row-click-handler="goToGroup"
-                    v-remaining-height
-                    row-class="cursor-pointer active:bg-blue-100"
-                >
-                    <template v-slot:cell-displayStatus="{item}">
-                        <badge class="text-xs" :color="item.statusColor">
-                            {{item.displayStatus}}
-                            <span v-if="item.status.id == 1 && item.isEp()">
-                                - {{item.expert_panel.currentStepName}}
+                <div v-else>
+                    <div class="mb-2">
+                        Filter: <input type="text" v-model="filterString" placeholder="name,id,status,coordinator name">
+                    </div>
+                    <data-table
+                        
+                        :data="filteredGroups.filter(def.filter)" 
+                        :fields="fields" 
+                        v-model:sort="sort"
+                        :row-click-handler="goToGroup"
+                        v-remaining-height
+                        row-class="cursor-pointer active:bg-blue-100"
+                    >
+                        <template v-slot:cell-displayStatus="{item}">
+                            <badge class="text-xs" :color="item.statusColor">
+                                {{item.displayStatus}}<span v-if="item.status.id == 1 && item.isEp()">&nbsp;-&nbsp;{{item.expert_panel.currentStepAbbr}}</span>
+                            </badge>
+                        </template>
+                        <template v-slot:cell-coordinators="{value}">
+                            <div v-if="value.length == 0"></div>
+                            <span v-for="(coordinator, idx) in value" :key="coordinator.id">
+                                <span v-if="idx > 0">, </span>
+                                <router-link 
+                                    :to="{name: 'PersonDetail', params: {uuid: coordinator.person.uuid}}" 
+                                    class="link"
+                                    @click.stop
+                                >
+                                    {{coordinator.person.name}}
+                                </router-link>
                             </span>
-                        </badge>
-                    </template>
-                    <template v-slot:cell-coordinators="{value}">
-                        <div v-if="value.length == 0"></div>
-                        <span v-for="(coordinator, idx) in value" :key="coordinator.id">
-                            <span v-if="idx > 0">, </span>
-                            <router-link 
-                                :to="{name: 'PersonDetail', params: {uuid: coordinator.person.uuid}}" 
-                                class="link"
-                                @click.stop
-                            >
-                                {{coordinator.person.name}}
-                            </router-link>
-                        </span>
-                    </template>
-                </data-table>                
+                        </template>
+                    </data-table>                
+                </div>
             </tab-item>
         </tabs-container>
 
         <modal-dialog v-model="showCreateForm" title="Create a New Group" size="sm">
             <submission-wrapper @submitted="$refs.groupForm.save()" @canceled="$refs.groupForm.cancel()">
-                <group-form ref='groupForm' @canceled="showCreateForm=false" @saved="showCreateForm = false"></group-form>
+                <group-form ref='groupForm' @canceled="showCreateForm=false" @saved="showCreateForm = false" />
             </submission-wrapper>
         </modal-dialog>
     </div>
@@ -51,7 +53,7 @@
 <script>
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
-import {computed} from 'vue'
+import {computed, ref} from 'vue'
 import GroupForm from '@/components/groups/GroupForm'
 import SubmissionWrapper from '@/components/groups/SubmissionWrapper'
 
@@ -147,8 +149,27 @@ export default {
         const store = useStore();
         const router = useRouter();
 
-        let groups = computed(() => store.getters['groups/all']);
-        let filteredGroups = computed(() => groups.value.filter(() => true))
+        const filterString = ref(null);
+
+        const groups = computed(() => store.getters['groups/all']);
+        
+        const filteredGroups = computed(() => groups.value.filter(group => {
+            console.log(filterString.value)
+            if (!filterString.value) {
+                return true;
+            }
+            const normedString = filterString.value.toLowerCase();
+            console.log()
+            return group.name.toLowerCase().match(normedString)
+                || group.id == filterString.value
+                || group.status.name.toLowerCase().match(normedString)
+                || (
+                    group.expert_panel.currentStepName &&
+                    group.expert_panel.currentStepName.toLowerCase().match(normedString)
+                    )
+                || group.coordinators.filter(c => c.person.name.toLowerCase().match(normedString)).length > 0
+        }))
+
         const goToItem = (item) => {
             router.push({
                 name: 'GroupDetail',
@@ -157,6 +178,7 @@ export default {
         }
 
         return {
+            filterString,
             groups,
             filteredGroups,
             goToItem,

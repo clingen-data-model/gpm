@@ -188,6 +188,21 @@ class ExpertPanel extends Entity
         }
     }
 
+    get currentStepAbbr () {
+        switch (this.current_step) {
+            case 1:
+                return 'Definition';
+            case 2: 
+                return 'Draft';
+            case 3: 
+                return 'Pilot';
+            case 4: 
+                return 'Sustained';
+            default:
+                throw new Error('Unknown step '.this.current_step);
+        }
+    }
+
     get pendingNextActions() {
         if (!this.next_actions) {
             return [];
