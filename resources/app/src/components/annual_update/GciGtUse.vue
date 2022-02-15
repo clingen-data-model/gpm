@@ -45,7 +45,7 @@
         <hr>
         <input-row
             :disabled="isComplete"
-            label="All application precuration information has been added to the GeneTracker."
+            label="All applicable precuration information has been added to the GeneTracker."
             vertical
             type="radio-group"
             v-model="workingCopy.data.gt_precuration_info"
