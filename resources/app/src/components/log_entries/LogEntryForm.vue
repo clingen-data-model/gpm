@@ -1,6 +1,5 @@
 <template>
     <form-container class="log-entry-form" ref="form-container">
-        <h2 class="block-title">{{this.$route.meta.title}}</h2>
         <input-row label="Log Date" v-model="newEntry.log_date" :errors="errors.log_date" type="date" ref="logdate"></input-row>
         <step-input v-model="newEntry.step" :errors="errors.step" v-if="application.expert_panel_type_id == 2"></step-input>
         <input-row label="Entry" :errors="errors.entry">
