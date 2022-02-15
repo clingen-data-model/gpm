@@ -97,7 +97,7 @@
             </table>
         </div>
         <modal-dialog v-model="showConfirmRemove" title="Confirm gene/disease pair delete.">
-            <p>You are about to delete the gene/disease pair {{selectedGene.gene.gene_symbol}}/{{selectedGene.disease.name}}.  Are you sure you want to continue?</p>
+            <p>You are about to delete the gene/disease pair {{selectedGene.gene_symbol}}/{{selectedGene.disease_name}}.  Are you sure you want to continue?</p>
             <button-row 
                 submit-text="Yes, delete it." 
                 cancel-text="No, cancel"
@@ -117,7 +117,6 @@ import DiseaseSearchSelect from '@/components/forms/DiseaseSearchSelect'
 import is_validation_error from '@/http/is_validation_error'
 import {hasAnyPermission} from '@/auth_utils'
 
-
 export default {
     name: 'VcepGeneList',
     components: {
@@ -136,6 +135,14 @@ export default {
         'canceled',
         'editing'
     ],
+    computed: {
+        selectedGeneSymbol () {
+            return this.selectedGene && this.selectedGene.gene ?  this.selectedGene.gene.gene_symbol : 'Unknown Gene Symbols'
+        },
+        selectedDiseaseName () {
+            return this.selectedGene && this.selectedGene.disease ?  this.selectedGene.disease.name : 'Unknown Disease Name'
+        }
+    },
     setup(props, context) {
         const store = useStore();
 
