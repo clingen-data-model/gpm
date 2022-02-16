@@ -4,7 +4,7 @@
                         Please list the entire membership of the Expert Panel.
                     </p>
                     <p v-if="workingCopy.expert_panel.is_vcep">
-                        Note: If changes are made to an Expert Panel Co-chair(s) or coordinator, please report them directly to the <a href="mailto:cdwg_oversightcommittee@clinicalgenome.org">Clinical Domain Working Group Oversight Committee</a> when they occur. All current EP members must complete a Conflict of Interest (COI) survey each year. If all members of your EP have filled out the EPAM generated COI survey, some of the information will be auto populated.
+                        Note: If changes are made to an Expert Panel Co-chair(s) or coordinator, please report them directly to the <a href="mailto:cdwg_oversightcommittee@clinicalgenome.org">Clinical Domain Working Group Oversight Committee</a> when they occur. All current EP members must complete a Conflict of Interest (COI) survey each year. If all members of your EP have filled out the GPM generated COI survey, some of the information will be auto populated.
                     </p>
 
                     <member-list 

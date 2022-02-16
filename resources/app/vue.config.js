@@ -15,4 +15,12 @@ module.exports = {
     },
     outputDir: outputDir,
     indexPath: indexPath,
+    chainWebpack: config => {
+        config
+        .plugin('html')
+        .tap(args => {
+          args[0].title = 'ClinGen GPM'
+          return args
+        })
+      }
 }
