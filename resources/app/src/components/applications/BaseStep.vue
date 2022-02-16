@@ -40,7 +40,8 @@
                                 :document-type-id="documentType"
                                 :getsReviewd="documentGetsReviewed"
                                 :step="step"
-                            ></document-manager>
+                                @updated="$emit('updated')"
+                            />
                         </div>
                     </slot>
                     <hr class="border-gray-200 border-4">
@@ -149,7 +150,7 @@ export default {
             default: 'Set "approve-button-label" if not overriding slot "approve-button"'
         }
     },
-    emits: ['documentUploaded', 'stepApproved'],
+    emits: ['documentUploaded', 'stepApproved', 'updated'],
     data() {
         return {
             showApproveForm: false,
@@ -157,6 +158,8 @@ export default {
             newApprovalDate: null,
             showDocuments: true,
             showSections: true,
+            documentsToggled: false,
+            sectionsToggled: false
         }
     },
     computed: {
@@ -187,17 +190,19 @@ export default {
         group: {
             immediate: true,
             handler (to) {
-                if(!to.hasDocumentsOfType(this.documentType)) {
+                if(!to.hasDocumentsOfType(this.documentType) && !this.documentsToggled) {
                     this.showDocuments = false;
                 }
             }
-        }
+        },
     },
     methods: {
         toggleDocuments () {
+            this.documentsToggled = true;
             this.showDocuments = !this.showDocuments;
         },
         toggleSections () {
+            this.sectionsToggled = true;
             this.showSections = !this.showSections;
         },
         goToPrintable () {
@@ -210,10 +215,12 @@ export default {
         approveStep () {
             this.$store.dispatch('applications/approveCurrentStep', {application: this.application, step: this.step})
             this.$emit('stepApproved')
+            this.$emit('updated')
         },
         handleApproved () {
             this.hideApproveForm();
             this.$emit('stepApproved');
+            this.$emit('updated');
         },
         hideApproveForm () {
             this.showApproveForm = false;

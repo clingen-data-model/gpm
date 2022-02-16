@@ -71,11 +71,15 @@
                 <document-edit-form 
                     :document="activeDocument"
                     :save-function="this.commitUpdate"
-                ></document-edit-form>
+                    @saved="$emit('updated')"
+                />
             </modal-dialog>
 
             <modal-dialog v-model="showUploadForm" title="Upload a new document">
-                <document-upload-form :save-function="this.commitCreate"></document-upload-form>
+                <document-upload-form 
+                    :save-function="this.commitCreate" 
+                    @saved="$emit('updated')"
+                />
             </modal-dialog>
 
             <modal-dialog 
@@ -110,6 +114,7 @@ export default {
         DocumentUploadForm,
         DocumentEditForm
     },
+    emits: ['updated'],
     props: {
         documents: {
             type: Array,
@@ -216,6 +221,7 @@ export default {
             } else {
                 alert('we need a default document upload function');
             }
+            this.$emit('updated');
 
             this.showUploadForm = false;
         },
@@ -235,6 +241,7 @@ export default {
             }
             this.showDeleteConfirmation = false;
             this.resetActiveDocument();
+            this.$emit('updated');
         },
         initUpload() {
             this.showUploadForm = true;
@@ -247,6 +254,7 @@ export default {
                 alert('we need a default document upload function');
             }
 
+            this.$emit('updated');
             this.showUploadForm = false;
         },
         resetActiveDocument () {

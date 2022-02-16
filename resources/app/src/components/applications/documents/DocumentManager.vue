@@ -19,6 +19,7 @@
                 :application="application"
                 :document-type-id="documentTypeId"
                 :show-version="showVersion"
+                @updated="$emit('updated')"
             ></document-list>
             
             <button class="btn mb-2 btn-sm" @click="showUploadForm = true">
@@ -31,7 +32,7 @@
                 :document-type-id="documentTypeId" 
                 :step="step"
                 @canceled="showUploadForm = false" 
-                @saved="showUploadForm = false" 
+                @saved="handleSaved" 
                 ref="uploadform"
             >
             </document-upload-form>
@@ -50,6 +51,7 @@ export default {
         FinalDocumentView,
         DocumentList
     },
+    emits: ['updated'],
     props: {
         application: {
             type: Object,
@@ -81,6 +83,12 @@ export default {
     data() {
         return {
             showUploadForm: false,
+        }
+    },
+    methods: {
+        handleSaved () {
+            this.showUploadForm = false;
+            this.$emit('updated');
         }
     }
 }

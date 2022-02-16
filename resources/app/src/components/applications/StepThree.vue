@@ -15,7 +15,8 @@
                         :step="3"
                         class="mb-4"
                         title="Final Specifications"
-                    ></document-manager>
+                        @updated="$emit('updated')"
+                    />
                 </div>
                 <div class="mt-4 p-4 border rounded-xl bg-gray-50">
                     <document-manager 
@@ -24,7 +25,8 @@
                         :document-type-id="4"
                         :getsReviewd="false"
                         :step="3"
-                    ></document-manager>
+                        @updated="$emit('updated')"
+                    />
                 </div>
                 <div class="mt-4 p-4 border rounded-xl bg-gray-50">
                     <document-manager 
@@ -34,7 +36,8 @@
                         :getsReviewd="false"
                         :show-version="false"
                         :step="3"
-                    ></document-manager>
+                        @updated="$emit('updated')"
+                    />
                 </div>
             </div>
         </template>        

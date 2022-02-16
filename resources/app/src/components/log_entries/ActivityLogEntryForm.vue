@@ -32,7 +32,7 @@ export default {
             required: false,
             default: () => {
                 return {
-                    log_date: new Date(),
+                    log_date: new Date().toISOString(),
                     step: null,
                     entry: '',
                 }
@@ -43,9 +43,12 @@ export default {
             type: String
         }
     },
+    emits: [
+        'saved',
+    ],
     setup (props, context) {
         const newEntry = ref({
-            log_date: new Date(),
+            log_date: new Date().toISOString(),
             step: null,
             entry: '',
         });
@@ -58,7 +61,7 @@ export default {
 
             newEntry.value = {
                 id: entry.id,
-                log_date: new Date(Date.parse((entry.created_at))),
+                log_date: new Date(Date.parse((entry.created_at))).toISOString(),
                 step: entry.properties ? entry.properties.step : null,
                 entry: entry.description
             }
@@ -66,7 +69,7 @@ export default {
 
         const initNewEntry = () => {
             newEntry.value = {
-                log_date: new Date(),
+                log_date: new Date().toISOString(),
                 step: null,
                 entry: ''
             }

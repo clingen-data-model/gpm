@@ -212,11 +212,11 @@ export default {
                 .then(response => {
                     const oldFinalIdx = application.documents.findIndex(d => d.metadata.is_final == 1);
                     const oldFinal = application.documents[oldFinalIdx];
-                    oldFinal.metadata.is_final = 0;
-                    // oldFinal.isFinal = 0;
-                    oldFinal.is_final = 0;
-                    console.log({oldFinal});
-                    application.documents[oldFinalIdx] = oldFinal;
+                    if (oldFinal) {
+                        oldFinal.metadata.is_final = 0;
+                        oldFinal.is_final = 0;
+                        application.documents[oldFinalIdx] = oldFinal;
+                    }
 
                     const docIdx = application.documents.findIndex(d => d.id == response.data.id);
                     application.documents[docIdx] = response.data;

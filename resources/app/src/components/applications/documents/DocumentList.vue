@@ -45,18 +45,9 @@
                 :document="activeDocument"
                 :application="application"
                 @canceled="showEditForm = false"
-                @saved="showEditForm = false"
+                @saved="handleDocumentEdited"
                 @triggermarkreviewed="showMarkReviewed"
-            ></document-edit-form>
-        </modal-dialog>
-
-        <modal-dialog v-model="showReviewedForm">
-            <document-reviewed-form 
-                :document="activeDocument" 
-                :application="application" 
-                @canceled="hideReviewedForm" 
-                @saved="hideReviewedForm"
-            ></document-reviewed-form>
+            />
         </modal-dialog>
 
         <modal-dialog 
@@ -235,10 +226,16 @@ export default {
         cancelDelete() {
             this.showDeleteConfirmation = false;
         },
+        handleDocumentEdited() {
+            console.log('handleDocumentEdited');
+            this.showEditForm = false; 
+            this.$emit('updated')
+        },
         async commitDelete() {
             try {
                 await this.$store.dispatch('applications/deleteDocument', {application: this.application, document: this.activeDocument});
                 this.showDeleteConfirmation = false;
+                this.$emit('updated');
             } catch (err) {
                 if (is_validation_error(err)) {
                     alert(err);

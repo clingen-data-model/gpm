@@ -1,7 +1,6 @@
 <template>
     <form-container>
         <h2 class="text-lg border-b pb-1 mb-3">Edit {{type}} version {{document.version}} Info</h2>
-        
         <dictionary-row label="File">
             {{document.filename}}
         </dictionary-row>
@@ -9,17 +8,6 @@
         <input-row :errors="errors.notes" label="Notes">
             <textarea name="notes" v-model="docProxy.notes" cols="30" rows="10"></textarea>
         </input-row>
-        <!-- <input-row 
-            v-model="docProxy.date_reviewed" 
-            label="Date Reviewed" 
-            type="date" 
-            :errors="errors.date_reviewed"
-            :disabled="!docProxy.date_reviewed"
-        >
-            <template v-slot:after-input>
-                <note class="mt-1" v-if="!docProxy.date_reviewed">Mark this document reviewed to edit this field.</note>
-            </template>
-        </input-row> -->
         <button-row>
             <button class="btn" @click="cancel">Cancel</button>
             <button class="btn blue" @click="save">Save</button>
@@ -41,7 +29,9 @@ export default {
         }
     },
     emits: [
-        'triggermarkreviewed'
+        'triggermarkreviewed',
+        'updated',
+        'saved'
     ],
     data() {
         return {
@@ -59,6 +49,7 @@ export default {
             immediate: true,
             handler () {
                 this.docProxy = JSON.parse(JSON.stringify(this.document))
+                console.log(this.docProxy);
             }
         }
     },
@@ -72,6 +63,7 @@ export default {
                 await this.$store.dispatch('applications/updateDocumentInfo', {application: this.application, document: this.docProxy});
                 this.docProxy = {};
                 this.$emit('saved');
+                this.$emit('updated');
             } catch (error) {
                 if (is_validation_error(error)) {
                     this.errors = error.response.data.errors

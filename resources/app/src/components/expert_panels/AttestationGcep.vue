@@ -73,7 +73,9 @@
                 <checkbox v-model="gci_training" :disabled="disabled" @update:modelValue="emitUpdate(), checkCompleteness()">
                     Biocurators are trained on the use of the Gene Curation Interface (GCI).
                 </checkbox>
-                <input-row v-model="group.expert_panel.gci_training_date" @update:modelValue="emitUpdate(), checkCompleteness()"
+                <input-row 
+                    v-model="group.expert_panel.gci_training_date" 
+                    @update:modelValue="emitUpdate(), checkCompleteness()"
                     v-show="gci_training" 
                     :errors="gciTrainingErrors"
                     label="Date Trained"

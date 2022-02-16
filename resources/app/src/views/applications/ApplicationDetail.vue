@@ -35,7 +35,7 @@
 
             <tabs-container>
                 <tab-item label="Application">
-                    <step-tabs :application="application" @stepApproved="getGroup" />
+                    <step-tabs :application="application" @updated="getGroup" />
                 </tab-item>
 
                 <tab-item label="Application Log">
