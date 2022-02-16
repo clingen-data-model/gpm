@@ -422,16 +422,12 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     
     public function getFullLongBaseNameAttribute()
     {
-        return isset($this->attributes['long_base_name'])
-            ? $this->addEpTypeSuffix($this->attributes['long_base_name'])
-            : null;
+        return $this->addEpTypeSuffix($this->attributes['long_base_name']);
     }
 
     public function getFullShortBaseNameAttribute()
     {
-        return isset($this->attributes['short_base_name'])
-            ? $this->addEpTypeSuffix($this->attributes['short_base_name'])
-            : null;
+        return $this->addEpTypeSuffix($this->attributes['short_base_name']);
     }
     
     public function setLongBaseNameAttribute($value)
