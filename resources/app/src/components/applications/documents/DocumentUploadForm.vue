@@ -10,7 +10,7 @@
             label="Date Received" 
             type="date" 
             v-model="newDocument.date_received" 
-            :errors="errors.date_receoved"
+            :errors="errors.date_received"
         ></input-row>
 
         <input-row :errors="errors.notes" label="Notes">
@@ -42,11 +42,14 @@ export default {
             default: null
         },
     },
+    emits: [
+        'saved',
+    ],
     data() {
         return {
             newDocument: {
                 file: null,
-                date_received: new Date(),
+                date_received: new Date().toISOString(),
                 date_reviewed: null,
                 step: this.step,
                 document_type_id: this.documentTypeId,
