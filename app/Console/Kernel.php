@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Actions\SendCoiReminders;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Console\Scheduling\Schedule;
 use App\Console\Commands\Dev\NotifyDeployed;
@@ -31,6 +32,9 @@ class Kernel extends ConsoleKernel
                 Log::debug('scheduler is running.');
             }
         })->everyMinute();
+
+        $schedule->job(new SendCoiReminders)
+            ->weeklyOn(1, '6:00');
     }
 
     /**

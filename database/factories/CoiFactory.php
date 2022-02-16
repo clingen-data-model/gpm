@@ -23,10 +23,12 @@ class CoiFactory extends Factory
      */
     public function definition()
     {
+        $expertPanel = ExpertPanel::count() > 0 ? ExpertPanel::all()->random() : ExpertPanel::factory()->create();
+        $groupMember = GroupMember::count() > 0 ? GroupMember::all()->random() : GroupMember::factory()->create();
         return [
             'uuid' => $this->faker->uuid(),
-            'expert_panel_id' => ExpertPanel::factory()->create()->id,
-            'group_member_id' => GroupMember::factory()->create()->id,
+            'expert_panel_id' => $expertPanel->id,
+            'group_member_id' => $groupMember->id,
             'data' => (object)[
                 'first_name' => $this->faker->firstName,
                 'last_name' => $this->faker->lastName,

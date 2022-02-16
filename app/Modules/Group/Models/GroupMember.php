@@ -152,16 +152,32 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
     {
         return $query->whereNotNull('end_date');
     }
+
+    public function scopeIsActivatedUser($query)
+    {
+        return $query->whereHas('person', function ($q) {
+            $q->isActivatedUser();
+        });
+    }
+
+    public function scopeHasPendingCoi($query)
+    {
+        return $query->whereDoesntHave('cois', function ($q) {
+            $q->where('completed_at', '>', Carbon::today()->subDays(365));
+        });
+    }
+    
+    
     
     // ACCESSORS
     public function getCoiLastCompletedAttribute()
     {
         $latestCoi =  $this->cois
-                    ->filter(function ($coi) {
-                        return !is_null($coi->completed_at);
-                    })
-                    ->sortByDesc('completed_at')
-                    ->first();
+                        ->filter(function ($coi) {
+                            return !is_null($coi->completed_at);
+                        })
+                        ->sortByDesc('completed_at')
+                        ->first();
         return $latestCoi ? $latestCoi->completed_at : null;
     }
 

@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\Person\Models\PrimaryOccupation;
 use App\Modules\Group\Models\Traits\IsGroupMember;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
@@ -181,6 +182,32 @@ class Person extends Model
     public function invite(): HasOne
     {
         return $this->hasOne(Invite::class);
+    }
+
+    /**
+     * Get all of the membershipsWithPendingCoi for the Person
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function membershipsWithPendingCoi(): HasMany
+    {
+        return $this->memberships()->isActive()->hasPendingCoi();
+    }
+
+    /**
+     * SCOPES
+     */
+
+    public function scopeIsActivatedUser($query)
+    {
+        return $query->whereNotNull('user_id');
+    }
+    
+    public function scopeHasPendingCois($query)
+    {
+        return $query->whereHas('memberships', function ($q) {
+            $q->hasPendingCoi()->isActive();
+        });
     }
 
     /**
