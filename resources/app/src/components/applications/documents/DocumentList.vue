@@ -76,13 +76,11 @@
 
 
 import TrashButton from '@/components/buttons/TrashIconButton';
-import DocumentReviewedForm from './DocumentReviewedForm';
 import DocumentEditForm from './DocumentEditForm';
 import is_validation_error from '../../../http/is_validation_error';
 
 export default {
     components: {
-        DocumentReviewedForm,
         DocumentEditForm,
         TrashButton,
     },
