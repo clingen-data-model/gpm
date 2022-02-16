@@ -53,6 +53,6 @@ class NextActionUpdate
 
         event(new NextActionUpdated(application: $expertPanel, nextAction: $nextAction, oldData: $oldData));
 
-        return $nextAction;
+        return $nextAction->load('assignee');
     }
 }

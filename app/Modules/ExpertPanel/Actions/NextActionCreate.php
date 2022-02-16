@@ -28,7 +28,7 @@ class NextActionCreate
         ?int $step = null,
         ?string $assignedTo = null,
         ?string $assignedToName = null,
-    ) {
+    ): NextAction {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         $nextAction = NextAction::make([
             'uuid' => $uuid,
@@ -63,6 +63,6 @@ class NextActionCreate
             assignedToName: $request->assigned_to_name
         );
 
-        return response($na, 200);
+        return response($na->load('assignee'), 200);
     }
 }
