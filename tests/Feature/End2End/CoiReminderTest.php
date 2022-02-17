@@ -26,6 +26,7 @@ class CoiReminderTest extends TestCase
         $this->ep = ExpertPanel::factory()->create();
         $this->user1 = $this->setupUserWithPerson();
         $this->membership1 = app()->make(MemberAdd::class)->handle($this->ep->group, $this->user1->person);
+        config(['app.features.coi_reminders' => true]);
     }
 
     /**
@@ -129,7 +130,6 @@ class CoiReminderTest extends TestCase
     public function does_not_send_email_for_inactive_memberships()
     {
         $ep2 = ExpertPanel::factory()->create();
-        // $membership2 = app()->make(MemberAdd::class)->handle($ep2->group, $this->user1->person);
         app()->make(MemberRetire::class)->handle($this->membership1, Carbon::today()->subDays(2));
 
         Notification::fake();
@@ -141,7 +141,6 @@ class CoiReminderTest extends TestCase
     private function triggerScheduledTask()
     {
         Carbon::setTestNow('2022-02-14 06:00:00');
-
         $this->artisan('schedule:run');
     }
 }

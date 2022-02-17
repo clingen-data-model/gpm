@@ -202,13 +202,21 @@ class Person extends Model
     {
         return $query->whereNotNull('user_id');
     }
-    
+
     public function scopeHasPendingCois($query)
     {
         return $query->whereHas('memberships', function ($q) {
             $q->hasPendingCoi()->isActive();
         });
     }
+
+    public function scopeHasPendingInvite($query)
+    {
+        return $query->whereHas('invite', function ($q) {
+            $q->pending();
+        });
+    }
+    
 
     /**
      * QUERIES

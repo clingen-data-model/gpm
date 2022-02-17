@@ -13,6 +13,10 @@ class SendCoiReminders
 
     public function handle()
     {
+        if (!config('app.features.coi_reminders')) {
+            return;
+        }
+        
         $people = Person::query()
             ->hasPendingCois()
             ->with('membershipsWithPendingCoi')

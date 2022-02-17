@@ -115,5 +115,9 @@ return [
     'jira' => [
         'user' => env('JIRA_USER'),
         'token' => env('JIRA_API_TOKEN')
+    ],
+    'features' => [
+        'invite_reminders' => env('REMINDERS_INVITES', true),
+        'coi_reminders' => env('REMINDERS_COIS', true),
     ]
 ];

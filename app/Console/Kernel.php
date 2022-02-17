@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Actions\SendCoiReminders;
 use Illuminate\Support\Facades\Log;
+use App\Actions\SendInviteReminders;
 use Illuminate\Console\Scheduling\Schedule;
 use App\Console\Commands\Dev\NotifyDeployed;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -34,6 +35,8 @@ class Kernel extends ConsoleKernel
         })->everyMinute();
 
         $schedule->job(new SendCoiReminders)
+            ->weeklyOn(1, '6:00');
+        $schedule->job(new SendInviteReminders)
             ->weeklyOn(1, '6:00');
     }
 
