@@ -245,8 +245,10 @@ export default {
 <template>
     <div class="annual-update relative">
         <static-alert :variant="dueDateAlertVariant" class="mb-4" v-if="!annualReview.completed_at">
-            This annual update for {{window.for_year}}
-            is due on {{formatDate(window.end)}}
+                This annual update for {{window.for_year}} is due on {{formatDate(window.end)}}
+        </static-alert>
+        <static-alert class="mb-4"  v-if="window.for_year == 2021">
+            Refer to <a href="https://docs.google.com/spreadsheets/d/1nmIrsuKa8p1uOy18733P_2JBwQtANxDNmvAo4WTrfqY/edit#gid=1476503765"  class="font-bold" target="ann-up-responses">your responses from last year</a>.
         </static-alert>
         <group-breadcrumbs :group="group" />
 
