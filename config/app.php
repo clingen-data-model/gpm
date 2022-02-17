@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'name' => env('APP_NAME', 'EPAM'),
+    'name' => env('APP_NAME', 'GPM'),
     'env' => env('APP_ENV', 'production'),
     'build' => [
         'name' => env('OPENSHIFT_BUILD_NAME', 'dev'),
