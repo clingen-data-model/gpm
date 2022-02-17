@@ -12,15 +12,19 @@ class V2SendReleaseEmail
 {
     use AsCommand;
 
-    public $commandSignature = 'v2:send-email {--except= : Emails to skip}';
+    public $commandSignature = 'v2:send-email {--except= : Emails to skip} {--limit= : number to send}';
 
-    public function handle($except = [])
+    public function handle($except = [], $limit = 0)
     {
-        $people = Person::query()
+        $peopleQuery = Person::query()
                     ->whereNull('user_id')
                     ->with('memberships', 'memberships.group', 'invite')
-                    ->whereNotIn('email', $except)
-                    ->get();
+                    ->whereNotIn('email', $except);
+        if ($limit > 0) {
+            $peopleQuery->limit($limit);
+        }
+
+        $people = $peopleQuery->get();
 
         $people->each(function ($person) {
             $person->notify(new V2ReleaseNotification());
@@ -30,7 +34,8 @@ class V2SendReleaseEmail
     public function asCommand(Command $command)
     {
         $except = $command->option('except') ? explode(',', $command->option('except')) : [];
+        $limit = $command->option('limit') ?? 0;
 
-        $this->handle($except);
+        $this->handle($except, $limit);
     }
 }
