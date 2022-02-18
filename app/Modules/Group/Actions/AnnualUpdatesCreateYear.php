@@ -31,7 +31,7 @@ class AnnualUpdatesCreateYear
 
         $annualupdates = ExpertPanel::definitionApproved()
             ->get()
-            ->map(function ($ep) {
+            ->map(function ($ep) use ($window) {
                 return $this->updateCreate->handle($ep, $window);
             });
 

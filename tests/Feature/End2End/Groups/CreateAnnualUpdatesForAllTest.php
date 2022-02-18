@@ -29,8 +29,8 @@ class CreateAnnualUpdatesForAllTest extends TestCase
         $end = Carbon::today()->addDays(7)->format('Y-m-d');
         $this->artisan('annual-updates:init-window')
             ->expectsQuestion('What year does the window cover?', (Carbon::now()->year-1))
-            ->expectsQuestion('When does the review window begin?', $start)
-            ->expectsQuestion('When does the review window end?', $end)
+            ->expectsQuestion('When does the update window begin?', $start)
+            ->expectsQuestion('When does the update window end?', $end)
             ->expectsOutput('The annual update window is scheduled for '.$start.' to '.$end.'.')
             ->expectsOutput('Annual updates created for 2 expert panels.');
 
