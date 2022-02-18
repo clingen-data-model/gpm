@@ -158,9 +158,6 @@ export default {
                 return true;
             }
             const normedString = filterString.value.toLowerCase();
-            if (group.expert_panel) {
-                console.log(group.expert_panel.full_short_base_name, group.expert_panel)
-            }
             return group.name.toLowerCase().match(normedString)
                 || group.expert_panel && group.expert_panel.full_long_base_name.toLowerCase().match(normedString)
                 || group.expert_panel && group.expert_panel.full_short_base_name.toLowerCase().match(normedString)
