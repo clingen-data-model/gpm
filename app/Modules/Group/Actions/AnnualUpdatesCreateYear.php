@@ -14,7 +14,7 @@ class AnnualUpdatesCreateYear
 
     public $commandSignature = 'annual-updates:init-window';
 
-    public function __construct(private AnnualUpdateCreate $reviewCreate)
+    public function __construct(private AnnualUpdateCreate $updateCreate)
     {
     }
     
@@ -29,26 +29,26 @@ class AnnualUpdatesCreateYear
         
         $window->save();
 
-        $annualReviews = ExpertPanel::definitionApproved()
+        $annualupdates = ExpertPanel::definitionApproved()
             ->get()
             ->map(function ($ep) {
-                return $this->reviewCreate->handle($ep);
+                return $this->updateCreate->handle($ep, $window);
             });
 
         return [
             $window,
-            $annualReviews
+            $annualupdates
         ];
     }
 
     public function asCommand(Command $command)
     {
         $forYear = $command->ask('What year does the window cover?', (Carbon::now()->year-1));
-        $start = $command->ask('When does the review window begin?');
-        $end = $command->ask('When does the review window end?');
+        $start = $command->ask('When does the update window begin?');
+        $end = $command->ask('When does the update window end?');
 
-        [$window, $annualReviews] = $this->handle($forYear, $start, $end);
+        [$window, $annualupdates] = $this->handle($forYear, $start, $end);
         $command->info('The annual update window is scheduled for '.$start.' to '.$end.'.');
-        $command->info('Annual updates created for '.$annualReviews->count().' expert panels.');
+        $command->info('Annual updates created for '.$annualupdates->count().' expert panels.');
     }
 }
