@@ -16,8 +16,12 @@
         <template v-slot:content>
             <div class="whitespace-no-wrap w-28 text-xs">Read the GPM FAQ</div>
         </template>
-            <button
+            <a
+                href="https://docs.google.com/document/d/1adqRiW8UYTOKpIfBPWDcA-tO7I9Q5UGGYHVpTP9n-6E"
+                target="faq"
                 class="
+                    block
+                    custom-text
                     text-white
                     bg-blue-600
                     border border-blue-700 border-r-0
@@ -27,10 +31,9 @@
                     rounded-l-lg
                     shadow-lg
                 "
-                @click="showTheFaq"
             >
                 <icon-question />
-            </button>
+            </a>
     </popover>
     <teleport to="body">
       <modal-dialog title="ClinGen GPM Frequently Asked Questions" v-model="showFaq">
@@ -41,7 +44,7 @@
   </div>
 </template>
 <script>
-import { api, isValidationError } from "@/http";
+import { api } from "@/http";
 import { feedback } from "@/configs";
 
 export default {
