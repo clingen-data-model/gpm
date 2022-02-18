@@ -41,7 +41,7 @@ class V2ReleaseNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject('[Corrected] Activate your ClinGen Group & Personnel Management account.')
+                    ->subject('Corrected: Activate your ClinGen Group & Personnel Management account.')
                     ->view('email.v2.release_notification', compact('notifiable'));
     }
 
