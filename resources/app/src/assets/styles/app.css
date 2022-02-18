@@ -48,7 +48,7 @@ input[type=file]{
     @apply border-none p-0;
 }
 
-a[href]:not(.btn,.note) {
+a[href]:not(.btn,.note,.custom-text) {
     @apply text-blue-500;
 }
 a[href]:not(.btn) {
