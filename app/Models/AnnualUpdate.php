@@ -26,7 +26,7 @@ class AnnualUpdate extends Model
         'expert_panel_id' => 'int',
         'submitter_id' => 'int',
         'data' => 'array',
-        'completed_at' => 'datetime'
+        'completed_at' => 'datetime',
     ];
 
     public static function boot()
