@@ -38,4 +38,37 @@ class Email extends Model
     {
         return $query->where('to', 'LIKE', '%'.$to.'%');
     }
+
+    /**
+     * ACCESSORS
+     */
+
+    public function getToForMailableAttribute()
+    {
+        return $this->convertAddressesForMailable($this->to);
+    }
+
+    public function getCcForMailableAttribute()
+    {
+        return $this->convertAddressesForMailable($this->cc);
+    }
+
+    public function getBccForMailableAttribute()
+    {
+        return $this->convertAddressesForMailable($this->bcc);
+    }
+
+    private function convertAddressesForMailable($addresses): array
+    {
+        $expectedTo = [];
+        
+        foreach ($addresses as $email => $name) {
+            $expectedTo[] = [
+                'name' => $name,
+                'address' => $email
+            ];
+        }
+
+        return $expectedTo;
+    }
 }
