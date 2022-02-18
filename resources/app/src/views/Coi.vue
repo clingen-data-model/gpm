@@ -7,6 +7,9 @@
             We can't seem to find your membership id.  Please try refreshing.
         </card>
         <card :title="coiTitle"  class="max-w-xl mx-auto relative" v-if="codeIsValid">
+            <p>
+                Review ClinGen’s <coi-policy-link />
+            </p>
             <div class="relative">
                 <div 
                     v-for="question in survey.questions"
