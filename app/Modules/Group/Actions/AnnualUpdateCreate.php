@@ -27,7 +27,8 @@ class AnnualUpdateCreate
             throw ValidationException::withMessages(['The group must be an expert panel']);
         }
 
-        return $this->handle($group->expertPanel);
+        $annualReview = $this->handle($group->expertPanel);
+        return $annualReview->load('window');
     }
 
     public function authorize(ActionRequest $request)
