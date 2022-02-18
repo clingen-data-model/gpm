@@ -509,6 +509,24 @@ export const actions = {
             });
     },
 
+    getAnnualUpdate (context, group) {
+        console.log('getting annual update')
+        api.get(`/api/groups/${group.uuid}/expert-panel/annual-updates`, {headers: {'X-Ignore-Missing': 1} })
+        .then(response => {
+            console.log(response.data)
+            group.expert_panel.annualUpdate = response.data
+            return;
+        });
+    },
+
+    // eslint-disable-next-line
+    createAnnualUpdateForLatestWindow(context, group) {
+        return api.post(`/api/groups/${group.uuid}/expert-panel/annual-updates`)
+            .then(response => {
+                group.expert_panel.annualUpdate = response.data
+            });
+    }
+
 };
 
 export default {

@@ -191,6 +191,23 @@
           />
           <hr />
         </div>
+        <section 
+          class="border my-4 p-4 rounded"
+        >
+          <h2 class="mb-4">Annual Update</h2>
+            <button v-if="showCreateAnnualUpdateButton"
+              class="btn" @click="createAnnualUpdateForLatestWindow"
+            >
+              Create Annual Update for latest window.
+            </button>
+            <a 
+              v-else-if="group.expert_panel.annualUpdate"
+              :href="`/annual-updates/${this.group.expert_panel.annualUpdate.id}`"
+              target="annual update"
+            >
+              View Annual Update for {{this.group.expert_panel.annualUpdate.window.for_year}}
+            </a>
+        </section>
         <section class="border my-4 p-4 bg-red-100 border-red-200 rounded">
           <h2 class="mb-4 text-red-800">
             Here be dragons. Proceed with caution.
@@ -337,6 +354,13 @@ export default {
       errors: {},
     };
   },
+  computed: {
+    showCreateAnnualUpdateButton () {
+      return this.hasPermission('annual-updates-manage')
+        && this.group.expert_panel
+        && !this.group.expert_panel.annualUpdate;
+    }
+  },
   setup(props) {
     const store = useStore();
     const showModal = ref(false);
@@ -375,6 +399,7 @@ export default {
             store.dispatch("groups/getEvidenceSummaries", group.value);
           }
           store.dispatch("groups/getPendingTasks", group.value);
+          store.dispatch("groups/getAnnualUpdate", group.value);
         }
       });
     };
@@ -510,6 +535,9 @@ export default {
         }
       }
     },
+    createAnnualUpdateForLatestWindow () {
+      this.$store.dispatch('groups/createAnnualUpdateForLatestWindow', this.group);
+    }
   },
   mounted() {
     this.showModal = Boolean(this.$route.meta.showModal);
