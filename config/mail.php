@@ -84,8 +84,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'cdwg_oversightcommittee@clinicalgenome.org'),
-        'name' => env('MAIL_FROM_NAME', 'ClinGen CDWG Oversight Committee'),
+        'address' => env('MAIL_FROM_ADDRESS', 'gpm_support@clinicalgenome.org'),
+        'name' => env('MAIL_FROM_NAME', 'ClinGen Group & Personnel Management System'),
     ],
 
     /*
