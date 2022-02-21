@@ -41,7 +41,10 @@ class MailResend
                         })
                         ->toArray();
 
-        $mailData = array_merge($request->only('to', 'subject', 'body'), ['attachments' => $attachments, 'ccAddresses' => $request->cc]);
+        $mailData = array_merge(
+            $request->only('to', 'subject', 'body'),
+            ['attachments' => $attachments, 'ccAddresses' => $request->cc, 'bccAddresses' => $request->bcc]
+        );
 
         $this->handle(...$mailData);
     }

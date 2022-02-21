@@ -44,16 +44,18 @@ class ResendMailTest extends TestCase
     public function user_with_permissions_can_resend_email()
     {
         Mail::fake();
+
         $this->makeRequest()
             ->assertStatus(200);
+
         Mail::assertSent(UserDefinedMailable::class);
         Mail::assertSent(UserDefinedMailable::class, function ($mail) {
-            return $mail->to == $this->mail->toForMailable
+            return $mail->to == $this->mail->to
                 && $mail->subject == $this->mail->subject
                 && $mail->body == $this->mail->body
-                && $mail->cc == $this->mail->ccForMailable
-                // && $mail->bcc == $this->mail->bccForMailable
-                // && $mail->replyTo == $this->mail->reply_to
+                && $mail->cc == $this->mail->cc
+                // && $mail->bcc == $this->mail->bcc
+                && $mail->replyTo == $this->mail->reply_to
             ;
         });
     }
@@ -61,13 +63,14 @@ class ResendMailTest extends TestCase
     private function makeRequest($data = null)
     {
         $data = $data ?? [
-            'to' => array_keys($this->mail->to),
+            'to' => $this->mail->to,
             'subject' => $this->mail->subject,
             'body' => $this->mail->body,
-            'cc' => is_array($this->mail->cc) ? array_keys($this->mail->cc) : [],
-            'bcc' => is_array($this->mail->bcc) ? array_keys($this->mail->bcc) : [],
+            'cc' => is_array($this->mail->cc) ? $this->mail->cc : [],
+            'bcc' => is_array($this->mail->bcc) ? $this->mail->bcc : [],
             'reply_to' => $this->mail->reply_to
         ];
+        // dd($data);
         return $this->json('POST', '/api/mail', $data);
     }
 }

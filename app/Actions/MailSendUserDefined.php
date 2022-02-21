@@ -17,6 +17,7 @@ class MailSendUserDefined
         ?array $from = null,
     ) {
         $ccAddresses = $ccAddresses ?? [];
+        $bccAddresses = $bccAddresses ?? [];
         $attachements = $attachements ?? [];
 
         $mailable = new UserDefinedMailable(body: $body);
@@ -24,13 +25,13 @@ class MailSendUserDefined
 
         if (count($ccAddresses) > 0) {
             foreach ($ccAddresses as $cc) {
-                $mailable->cc($cc);
+                $mailable->cc(...$cc);
             }
         }
 
         if (count($bccAddresses) > 0) {
-            foreach ($ccAddresses as $cc) {
-                $mailable->cc($cc);
+            foreach ($bccAddresses as $bcc) {
+                $mailable->bcc(...$bcc);
             }
         }
 
@@ -43,7 +44,6 @@ class MailSendUserDefined
         }
 
         $mailable = $this->setRecipients($to, $mailable);
-
 
         Mail::send($mailable);
     }
@@ -59,7 +59,11 @@ class MailSendUserDefined
         }
 
         foreach ($to as $recipient) {
-            $mailable->to($recipient);
+            if (is_string($recipient)) {
+                $mailable->to($recipient);
+                continue;
+            }
+            $mailable->to(...$recipient);
         }
         return $mailable;
     }

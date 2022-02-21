@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Backpack\CRUD\CrudTrait;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Email extends Model
 {
     // use CrudTrait;
+    use HasFactory;
 
     protected $guarded = [];
     protected $casts = [
@@ -37,38 +39,5 @@ class Email extends Model
     public function scopeLikeTo($query, $to)
     {
         return $query->where('to', 'LIKE', '%'.$to.'%');
-    }
-
-    /**
-     * ACCESSORS
-     */
-
-    public function getToForMailableAttribute()
-    {
-        return $this->convertAddressesForMailable($this->to);
-    }
-
-    public function getCcForMailableAttribute()
-    {
-        return $this->convertAddressesForMailable($this->cc);
-    }
-
-    public function getBccForMailableAttribute()
-    {
-        return $this->convertAddressesForMailable($this->bcc);
-    }
-
-    private function convertAddressesForMailable($addresses): array
-    {
-        $expectedTo = [];
-        
-        foreach ($addresses as $email => $name) {
-            $expectedTo[] = [
-                'name' => $name,
-                'address' => $email
-            ];
-        }
-
-        return $expectedTo;
     }
 }
