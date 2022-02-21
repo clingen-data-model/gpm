@@ -54,12 +54,19 @@
                     <dictionary-row label="Body">
                         <div v-html="email.body"></div>
                     </dictionary-row>
+                    <button class="btn btn-xs" @click.stop="initResend(email)">Resend</button>
+
                 </div>
             </tab-item>
         </tabs-container>
-        <modal-dialog v-model="showModal" :title="$route.meta.title">
-            <router-view name="modal"></router-view>
-        </modal-dialog>
+        <teleport to="body">
+            <modal-dialog v-model="showModal" :title="$route.meta.title">
+                <router-view name="modal"></router-view>
+            </modal-dialog>
+            <modal-dialog title="Resend Email" v-model="showResendDialog">
+                <custom-email-form :mail-data="currentEmail" @sent="cleanupResend" @canceled="cleanupResend"></custom-email-form>
+            </modal-dialog>
+        </teleport>
     </div>
 </template>
 <script>
@@ -87,7 +94,9 @@ export default {
     },
     data() {
         return {
-            emails: []
+            emails: [],
+            currentEmail: {},
+            showResendDialog: null
         }
     },
     watch: {
@@ -124,6 +133,15 @@ export default {
         }
     },
     methods: {
+        initResend (email) {
+            this.currentEmail = {...email};
+            this.showResendDialog = true;
+        },
+        cleanupResend (email) {
+            this.currentEmail = {},
+            this.showResendDialog = false;
+            this.$store.dispatch('people/getMail', this.person);
+        }
     },
     setup() {
         return {

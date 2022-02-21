@@ -30,7 +30,7 @@ class RecordsOutgoingMailTest extends TestCase
 
         $this->assertDatabaseHas('emails', [
             'subject' => 'test subject',
-            'to' => json_encode([$this->person->email => null])
+            'to' => json_encode([['name' => null, 'address' => $this->person->email]])
         ]);
     }
 

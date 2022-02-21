@@ -33,6 +33,7 @@ registerComponentsInContext(require.context('@/components/dev', false, /\.vue$/i
 registerComponentsInContext(require.context('@/components/forms', false, /\.vue$/i))        
 registerComponentsInContext(require.context('@/components/icons', false, /\.vue$/i))        
 registerComponentsInContext(require.context('@/components/buttons', false, /\.vue$/i))        
+registerComponentsInContext(require.context('@/components/mail', false, /\.vue$/i))        
 
 import SubmissionWrapper from '@/components/groups/SubmissionWrapper';
 app.component('submission-wrapper', SubmissionWrapper);

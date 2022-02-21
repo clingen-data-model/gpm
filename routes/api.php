@@ -1,5 +1,6 @@
 <?php
 
+use App\Actions\MailResend;
 use App\Models\DocumentType;
 use Illuminate\Http\Request;
 use App\Actions\FeedbackSubmit;
@@ -52,10 +53,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/email-drafts/{applicationUuid}/{approvedStepNumber}', [MailDraftController::class, 'show']);
     Route::get('/mail-log', [MailLogController::class, 'index']);
+    Route::post('/mail', MailResend::class);
 
-    Route::put('/notifications/{notificationId}', NotificationMarkRead::class);
-
+    
     Route::get('/impersonate/search', [ImpersonateSearchController::class, 'index']);
+    
+    Route::put('/notifications/{notificationId}', NotificationMarkRead::class);
 
     Route::group(['prefix' => '/annual-updates'], function () {
         Route::get('', [AnnualUpdateController::class, 'index']);

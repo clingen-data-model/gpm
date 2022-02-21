@@ -9,7 +9,7 @@
 <template>
     <div>
         <h1>Mail Log</h1>
-        Filter: <input type="text" v-model="filter">
+        <div class="mb-2">Filter: <input type="text" v-model="filter"></div>
         <data-table 
             :fields="fields" 
             :data="data"
@@ -20,40 +20,29 @@
         >
             <template v-slot:cell-to="{item}">
                 <ul>
-                    <li v-for="(name,email) in item.to" :key="email">
-                        {{email}}
+                    <li v-for="recipient in item.to" :key="recipient.address">
+                        <span v-if="recipient.name">
+                            {{recipient.name}} - 
+                        </span>
+                        {{recipient.address}}
                     </li>
                 </ul>
             </template>
+            <template v-slot:cell-actions="{item}">
+                <div>
+                    <button class="btn btn-xs" @click.stop="initResend(item)">Resend</button>
+                </div>
+            </template>
         </data-table>
 
-        <modal-dialog v-model="showDetail">
-            <dictionary-row label="To" label-class="font-bold" class="mb-1 border-b">
-                <div class="flex-none">
-                    <div v-for="(name, address) in currentEmail.to" :key="address">
-                        {{address}}
-                    </div>
-                </div>
-            </dictionary-row>
-            <dictionary-row label="From" label-class="font-bold" class="mb-1 border-b">
-                <div v-for="(name, address) in currentEmail.from" :key="address">
-                    {{address}}
-                </div>
-            </dictionary-row>
-            <dictionary-row label="Cc" label-class="font-bold" class="mb-1 border-b">
-                <ul>
-                    <li v-for="(name, address) in currentEmail.cc" :key="address">
-                        {{address}}
-                    </li>
-                </ul>
-            </dictionary-row>
-            <dictionary-row label="Subject" label-class="font-bold" class="mb-1 border-b">
-                {{currentEmail.subject}}
-            </dictionary-row>
-            <dictionary-row label="Body" label-class="font-bold" class="mb-1">
-                <div v-html="currentEmail.body" class="email-body w-3/4"></div>
-            </dictionary-row>
-        </modal-dialog>
+        <teleport to="body">
+            <modal-dialog v-model="showDetail">
+                <mail-detail :mail="currentEmail" @resend="initResend(currentEmail)"/>
+            </modal-dialog>
+            <modal-dialog title="Resend Email" v-model="showResendDialog">
+                <custom-email-form :mail-data="currentEmail" @sent="cleanupResend" @canceled="cleanupResend"></custom-email-form>
+            </modal-dialog>
+        </teleport>
     </div>
 </template>
 <script>
@@ -108,10 +97,16 @@ export default {
                         return item.created_at;                        
                     },
                     type: String
+                },
+                {
+                    name: 'actions',
+                    label: '',
+                    sortable: false
                 }
             ],
             data: [],
-            currentEmail: {}
+            currentEmail: {},
+            showResendDialog: false,
         }
     },
     computed: {
@@ -131,6 +126,16 @@ export default {
         showMailDetail (item) {
             this.currentEmail = item;
             this.showDetail = true;
+            console.log(this.currentEmail);
+        },
+        initResend (item) {
+            this.currentEmail = item;
+            this.showResendDialog = true;
+        },
+        cleanupResend () {
+            this.currentEmail = {},
+            this.showResendDialog = false;
+            this.getMailLog();
         }
     },
     mounted() {

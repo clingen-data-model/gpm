@@ -3,6 +3,7 @@
 namespace App\Modules\ExpertPanel\Actions;
 
 use App\Mail\UserDefinedMailable;
+use App\Actions\MailSendUserDefined;
 use Illuminate\Support\Facades\Mail;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Illuminate\Support\Facades\Notification;
@@ -14,6 +15,11 @@ class NotifyContacts
 {
     use AsAction;
     
+    public function __construct(private MailSendUserDefined $sendUserDefinedMail)
+    {
+    }
+    
+
     public function handle(
         ExpertPanel $expertPanel,
         string $subject,
@@ -27,29 +33,13 @@ class NotifyContacts
                         ->get()
                         ->pluck('person');
         
-        $mailable = new UserDefinedMailable(
-            // subject: $subject,
+
+        $this->sendUserDefinedMail->handle(
+            subject: $subject,
             body: $body,
+            attachments: $attachments,
+            ccAddresses: $ccAddresses,
+            to: $contacts->pluck('email')
         );
-
-        $mailable->subject($subject);
-
-        if (count($ccAddresses) > 0) {
-            foreach ($ccAddresses as $cc) {
-                $mailable->cc(...$cc);
-            }
-        }
-
-        if (count($attachments) > 0) {
-            foreach ($attachments as $attachment) {
-                $mailable->attach($attachment->getPath(), [
-                    'as' => $attachment->getOriginalName(),
-                ]);
-            }
-        }
-
-
-        $mail = Mail::to($contacts->pluck('email'))
-                    ->send($mailable);
     }
 }

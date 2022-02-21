@@ -53,7 +53,8 @@ export default {
   data() {
     return {
       showFaq: false,
-      faqMarkdown: null
+      faqMarkdown: null,
+      errors: {}
     };
   },
   computed: {
@@ -68,7 +69,7 @@ export default {
     },
     fetchFaq () {
       api.get('/api/docs/faq')
-        .then(response => this.faqMarkdown = response.data);
+        .then(response => this.faqMarkdown = response.data)
     }
   },
 };
