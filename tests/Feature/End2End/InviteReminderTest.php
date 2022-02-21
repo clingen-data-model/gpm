@@ -42,6 +42,22 @@ class InviteReminderTest extends TestCase
         $this->triggerReminders();
         Notification::assertNotSentTo($user->person, InviteReminderNotification::class);
     }
+
+    /**
+     * @test
+     */
+    public function the_email_body_has_the_correct_content()
+    {
+        $notification = new InviteReminderNotification($this->invite);
+        $mailable = $notification->toMail($this->invite->person);
+        
+        $emailBody = $mailable->render();
+
+        $this->assertStringContainsString($this->invite->inviter->display_name, $emailBody);
+        $this->assertStringContainsString('/invites/'.$this->invite->code, $emailBody);
+    }
+    
+    
     
 
     private function triggerReminders()

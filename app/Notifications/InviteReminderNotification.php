@@ -43,7 +43,7 @@ class InviteReminderNotification extends Notification
     {
         return (new MailMessage)
                     ->view(
-                        'email.invite_reminder.blade.php',
+                        'email.person.invite_reminder',
                         [
                             'invite' => $this->invite,
                         ]
