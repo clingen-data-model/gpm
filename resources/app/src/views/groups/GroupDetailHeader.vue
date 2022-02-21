@@ -1,10 +1,15 @@
 <template>
     <header class="pb-4">
         <group-breadcrumbs />
-        <h1 class="flex justify-between items-center">
+        <h1 class="flex justify-between items-start">
             <div>
                 {{group.displayName}} <badge :color="group.statusColor" class="text-xs">{{group.status ? group.status.name : 'loading...'}}</badge>
-                <note v-if="hasRole('super-user')" class="font-normal">
+                <div class="text-sm text-gray-800 mt-1 font-normal">
+                    Short Name: <strong>{{group.expert_panel.full_short_base_name || '--'}}</strong>
+                    |
+                    Affiliation ID: <strong>{{group.expert_panel.affiliation_id || '--'}}</strong>
+                </div>
+                <note v-if="hasRole('super-user')" class="font-normal mt-2">
                     group.id: {{group.id}}
                     <span v-if="group.isEp()"> | expertPanel.id: {{group.expert_panel.id}}</span>
                 </note>
