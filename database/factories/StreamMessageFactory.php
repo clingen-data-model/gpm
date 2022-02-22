@@ -1,13 +1,33 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\StreamMessage::class, function (Faker $faker) {
-    $success = (bool)rand(0, 1);
-    return [
-        'topic' => 'test',
-        'message' => $faker->sentence(),
-        'sent_at' => $success ? Carbon\Carbon::now() : null,
-        'error' => $success ? null : $faker->sentence
-    ];
-});
+use Carbon\Carbon;
+use App\DataExchange\Models\StreamMessage;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class StreamMessageFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = StreamMessage::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $success = (bool)rand(0, 1);
+        return [
+            'topic' => 'test',
+            'message' => $this->faker->sentence(),
+            'sent_at' => $success ? Carbon::now() : null,
+            'error' => $success ? null : $this->faker->sentence
+        ];
+    }
+}
