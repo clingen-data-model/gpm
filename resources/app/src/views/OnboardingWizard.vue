@@ -109,7 +109,6 @@ export default {
         goBack () {
             this.animationDirection = 'fade';
             if (this.currentStepIdx == 0) {
-                // this.currentStepIdx = stepComponents.length-1;
                 return;
             }
             this.currentStepIdx -= 1;
