@@ -37,13 +37,11 @@ export default {
     },
     created () {
         this.debounceInput = debounce((value) => {
-            const regexp = new RegExp(/\n(,|;)?/)
             const newRecipients = value.split("\n")
                                     .map(i => ({name: null, address: i.trim()}))
                                     .filter(i => {
                                         return i.address !== null
                                     });
-            console.log(newRecipients);
             this.$emit('update:modelValue', newRecipients)
         }, 1000)
     }
