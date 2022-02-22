@@ -14,6 +14,16 @@
                 <option value="null">Select...</option>
                 <option  v-for="{name} in regionCities" :key="name" :value="name">{{name}}</option>
             </select>
+            &nbsp;
+            <popover arrow trigger="hover">
+                <template v-slot:content>
+                    <div class="w-80">
+                        <p>The best way to get your timezone right is to tell us which city has the same “timezone” you do.  For example, if you’re located in Atlanta, Georgia, USA you should choose, North America/New York as your “Timezone”.</p>
+                        <p>See the <faq-link hash="#heading=h.9kox4w1eoeul" /> for more details.</p>
+                    </div>
+                </template>
+                <icon-question class="text-gray-500 cursor-pointer" />
+            </popover>
         </div>
     </div>
 </template>
@@ -69,12 +79,20 @@ export default {
         modelValue: {
             immediate: true,
             handler (to) {
+                let region = null;
+                let cityParts = [];
+                let city = null;
                 if (!to) {
-                    return;
+                    const currentTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                    if (currentTz) {
+                        [region, ...cityParts] = currentTz.split('/').map(i => i.replace('_', ' '));
+                        city = cityParts.join('/').replace('_', ' ');
+                    }
+                } else {
+                    [region, ...cityParts] = to.split('/');
+                    city = cityParts.join('/').replace('_', ' ');
                 }
 
-                const [region, ...cityParts] = to.split('/');
-                const city = cityParts.join('/').replace('_', ' ');
                 if (region != this.region) {
                     this.region = region;
                 }

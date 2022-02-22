@@ -16,24 +16,22 @@
         <template v-slot:content>
             <div class="whitespace-no-wrap w-28 text-xs">Read the GPM FAQ</div>
         </template>
-            <a
-                href="https://docs.google.com/document/d/1adqRiW8UYTOKpIfBPWDcA-tO7I9Q5UGGYHVpTP9n-6E"
-                target="faq"
-                class="
-                    block
-                    custom-text
-                    text-white
-                    bg-blue-600
-                    border border-blue-700 border-r-0
-                    pl-3
-                    pr-3
-                    py-2
-                    rounded-l-lg
-                    shadow-lg
-                "
-            >
-                <icon-question />
-            </a>
+        <faq-link
+            class="
+                block
+                custom-text
+                text-white
+                bg-blue-600
+                border border-blue-700 border-r-0
+                pl-3
+                pr-3
+                py-2
+                rounded-l-lg
+                shadow-lg
+            "
+        >
+            <icon-question />
+        </faq-link>
     </popover>
     <teleport to="body">
       <modal-dialog title="ClinGen GPM Frequently Asked Questions" v-model="showFaq">
