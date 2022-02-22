@@ -45,7 +45,7 @@ class InviteRedeem
     {
         $invite = Invite::findByCodeOrFail($code);
         if ($invite->hasBeenRedeemed()) {
-            throw ValidationException::withMessages(['code' => 'This invite has already been redeemed. Please log in to access your account.']);
+            // throw ValidationException::withMessages(['code' => 'It looks like this invite has already been redeemed. Please log in to access your account, update your profile and complete any COI disclosures.']);
         }
 
         return $this->handle($invite, $request->all());

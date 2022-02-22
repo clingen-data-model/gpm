@@ -4,7 +4,7 @@
         class="input-row my-3"
     >
         <div :class="{'sm:flex': !vertical}">
-            <div class="flex-none label-container" :class="labelContainerClass" v-show="showLabel">
+            <div class="flex-none label-container flex-shrink" :class="labelContainerClass" v-show="showLabel">
                 <slot name="label" v-if="hasLabel">
                     <label :class="resolvedLabelClass">{{label}}{{colon}}</label>
                 </slot>

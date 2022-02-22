@@ -1,7 +1,20 @@
 <template>
     <form-container @keyup.enter="authenticate">
-        <input-row v-model="email" label="Email" type="text" :errors="errors.email" name="email" required></input-row>
-        <input-row v-model="password" label="Password" type="password" :errors="errors.password" name="password" required></input-row>
+        <input-row 
+            v-model="email" 
+            label="Email" 
+            type="text" 
+            :errors="errors.email" 
+            name="email" 
+            required 
+        />
+        <input-row 
+            v-model="password" 
+            label="Password" 
+            type="password" 
+            :errors="errors.password" 
+            name="password" required 
+        />
         
         <p><router-link class="text-blue-500 underline" :to="{name: 'reset-password'}">Forget your password?</router-link></p>
 
