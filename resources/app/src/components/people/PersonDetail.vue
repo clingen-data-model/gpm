@@ -35,9 +35,9 @@
             <tab-item label="Conflict of Interest">
                 <coi-list :person="person"></coi-list>
             </tab-item>
-            <tab-item label="Documents">
+            <!-- <tab-item label="Documents">
                 docs
-            </tab-item>
+            </tab-item> -->
             <!-- <tab-item label="Training &amp; Attestations">
             </tab-item> -->
             <tab-item label="Email Log">
