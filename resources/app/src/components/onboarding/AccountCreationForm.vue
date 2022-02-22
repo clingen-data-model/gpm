@@ -2,6 +2,9 @@
     <div>
         <pre></pre>
         <div v-if="invite.person.user_id">
+            <static-alert>
+                It looks like you've already activated you account.  Please login to continue.
+            </static-alert>
             <login-form @authenticated="redeemForExistingUser"></login-form>
         </div>
         <div v-else>
