@@ -1,5 +1,6 @@
 <template>
     <div class="flex space-x-1 items-start">
+        <pre>modelValue: {{modelValue}}</pre>
         <div>
             <label for="region-select" class="block text-xs">Region:</label>
             <select id="region-select" v-model="region" class="input-cl">
@@ -57,24 +58,11 @@ export default {
         }
     },
     watch: {
-        city (to) {
-            const newValue = this.region+'/'+to.replace(' ', '_');
-            if (!this.timezones.indexOf(newValue)) {
-                return;
-            }
-            this.$emit('update:modelValue', newValue);
+        city () {
+            this.emitUpdate()
         },
-        region (to) {
-            if (to == 'UTC') {
-                this.$emit('update:modelValue', to);
-            }
-
-            const newValue = to+'/'+this.city;
-
-            if (!this.timezones.indexOf(newValue)) {
-                return;
-            }
-            this.$emit('update:modelValue', newValue);
+        region () {
+            this.emitUpdate()
         },
         modelValue: {
             immediate: true,
@@ -83,21 +71,29 @@ export default {
                 let cityParts = [];
                 let city = null;
                 if (!to) {
-                    const currentTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                    if (currentTz) {
-                        [region, ...cityParts] = currentTz.split('/').map(i => i.replace('_', ' '));
-                        city = cityParts.join('/').replace('_', ' ');
-                    }
+                    return;
+                    // const currentTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                    // if (currentTz) {
+                    //     [region, ...cityParts] = currentTz.split('/').map(i => i.replace('_', ' '));
+                    //     city = cityParts.join('/').replace('_', ' ');
+                    // }
                 } else {
                     [region, ...cityParts] = to.split('/');
                     city = cityParts.join('/').replace('_', ' ');
                 }
 
+                let updated = false;
                 if (region != this.region) {
                     this.region = region;
+                    updated = true
                 }
                 if (city != this.city) {
                     this.city = city;
+                    updated = true
+                }
+
+                if (updated) {
+                    this.emitUpdate();
                 }
             }
         }
@@ -126,6 +122,22 @@ export default {
                 this.cities.push({region: region, name: city.join('/').replace('_', ' ')});
             })
             this.regions = [...(new Set(this.regions))];
+        },
+        emitUpdate () {
+            if (this.region == 'UTC') {
+                this.$emit('update:modelValue', this.region);
+            }
+
+            if (!this.city || !this.region) {
+                return;
+            }
+
+            const newValue = this.region+'/'+this.city.replace(' ', '_');
+            if (!this.timezones.indexOf(newValue)) {
+                return;
+            }
+            this.$emit('update:modelValue', newValue);
+            console.log('emitted update:modelValue', newValue)
         }
     },
     mounted () {
