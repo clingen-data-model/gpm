@@ -9,15 +9,17 @@
 <template>
     <div>
         <h1>Mail Log</h1>
-        <div class="mb-2">Filter: <input type="text" v-model="filter"></div>
         <data-table 
             :fields="fields" 
-            :data="data"
-            :filter-term="filter" 
+            :data="filteredMail"
             row-class="cursor-pointer"
             :row-click-handler="showMailDetail"
             v-model:sort="sort"
+            paginated
         >
+            <template v-slot:header>
+                <div class="mb-2">Filter: <input type="text" v-model="filter"></div>
+            </template>
             <template v-slot:cell-to="{item}">
                 <ul>
                     <li v-for="recipient in item.to" :key="recipient.address">
@@ -110,7 +112,20 @@ export default {
         }
     },
     computed: {
-
+        filteredMail () {
+            if (!this.filter) {
+                return this.data
+            }
+            const regexp = new RegExp(`.*${this.filter}.*`, 'i');
+            return this.data.filter(m => {
+                return m.to.filter(item => {
+                        return item.name && item.name.match(regexp)
+                        || item.address && item.address.match(regexp)
+                    }).length > 0
+                    || (m.to.address && m.to.address.match(regexp))
+                    || m.subject.match(regexp)
+            })
+        }
     },
     methods: {
         async getMailLog() {
