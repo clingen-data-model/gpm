@@ -18,7 +18,13 @@ class PeopleController extends Controller
 
     public function index(Request $request)
     {
-        return Person::all();
+        return Person::query()
+                ->with([
+                    'institution' => function ($q) {
+                        $q->select('name', 'id');
+                    }
+                ])
+                ->get();
     }
         
     public function show(Person $person)
