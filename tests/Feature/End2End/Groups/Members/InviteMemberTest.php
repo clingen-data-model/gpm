@@ -76,6 +76,18 @@ class InviteMemberTest extends TestCase
             'last_name' => ['A last name is required.'],
             'email' => ['An email is required.'],
         ]);
+
+        $person = Person::factory()->create();
+
+        $this->json('POST', $this->url, [
+            'first_name' => $person->fist_name,
+            'last_name' => $person->last_name,
+            'email' => $person->email,
+        ])
+        ->assertStatus(422)
+        ->assertJsonFragment([
+            'email' => ['A person with this email address is already in the GPM.  Please click \'Add as member\' next the the person\'s name to the right.']
+        ]);
     }
     
 
