@@ -94,10 +94,10 @@ export default {
             if (!this.searchTerm) {
                 return this.invites;
             }
-            const filter = new RegExp(`.*${this.searchTerm}.*`);
+            const filter = new RegExp(`.*${this.searchTerm}.*`, 'i');
             return this.invites.filter(invite => {
-                return invite.first_name.match(filter)
-                    || invite.last_name.match(filter)
+                return invite.person.first_name.match(filter)
+                    || invite.person.last_name.match(filter)
                     || `${invite.first_name} ${invite.last_name}`.match(filter)
                     || invite.email.match(filter);
             });

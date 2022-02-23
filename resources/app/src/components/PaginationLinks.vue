@@ -54,7 +54,6 @@ export default {
     },
     computed: {
         pagesCount () {
-            console.log(this.items.length);
             return Math.ceil(this.items.length/this.pageSize)
         },
         pages () {
@@ -67,7 +66,7 @@ export default {
             this.pages.forEach(p => {
                 if (p == 0 
                     || p === this.pagesCount-1
-                    || Math.abs(p-this.currentPage) < 3
+                    || Math.abs(p-this.currentPage) < 2
                 ) {
                     displayPages.push({
                         page: p,
