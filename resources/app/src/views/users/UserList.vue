@@ -1,21 +1,17 @@
 <template>
     <div>
         <h1>Users</h1>
-        <div class="flex justify-between mb-2">
-            <div class="flex space-x-2 items-center">
-                Filter: &nbsp;<input type="text" v-model="filter" placeholder="name, email">
-            </div>
-        </div>
         <data-table 
             :fields="fields" 
             :data="filteredUsers" 
             v-model:sort="sort" 
             @rowClick="goToUser"
             row-class="cursor-pointer"
+            paginated
         >
-            <!-- <template v-slot:cell-actions="{item}">
-                <router-link :to="`/users/${item.id}`">Edit</router-link>
-            </template> -->
+            <template v-slot:header>
+                <div>Filter: &nbsp;<input type="text" v-model="filter" placeholder="name, email"></div>
+            </template>
         </data-table>
     </div>
 </template>
@@ -60,7 +56,28 @@ export default {
     },
     computed: {
         filteredUsers () {
-            return this.users.filter(() => true);
+            if (!this.filter) {
+                return this.users;
+            }
+            const pattern = new RegExp(`.*${this.filter}.*`, 'i')
+            return this.users.filter(u => {
+                return u.person.name.match(pattern)
+                    || u.person.email.match(pattern);
+            });
+        }
+    },
+    watch: {
+        filter: {
+            immediate: true,
+            handler () {
+                this.currentPage = 0;
+            }
+        },
+        sort: {
+            immediate: true,
+            handler () {
+                this.currentPage = 0;
+            }
         }
     },
     methods: {
@@ -80,7 +97,7 @@ export default {
 
         return {
             sort,
-            filter
+            filter,
         }
     },
     mounted () {

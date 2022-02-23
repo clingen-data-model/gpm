@@ -1,22 +1,18 @@
 <template>
     <div>
-        <div class="flex justify-between">
-            <div>
-                <note>Admin</note>
-                <h1>Invites</h1>
-            </div>
-            <div>
-                <pre>{{searchTerm}}</pre>
-                <input type="text" v-model="searchTerm" placeholder="filter by name or email">
-            </div>
-        </div>
+        <note>Admin</note>
+        <h1>Invites</h1>
         <data-table
             :data="filteredInvites"
             :fields="fields"
             v-model:sort="tableSort"
             class="text-sm"
             v-remaining-height
+            paginated
         >
+            <template v-slot:header>
+                <input type="text" v-model="searchTerm" placeholder="filter by name or email" class="mb-2">
+            </template>
             <template v-slot:cell-reset="{item}">
                 <button class="btn btn-xs" @click="confirmReset(item)" v-if="item.redeemed_at">
                     Reset
@@ -90,7 +86,7 @@ export default {
                     sortable: false,
                     type: String
                 }
-            ]
+            ],
         }
     },
     computed: {
@@ -105,6 +101,11 @@ export default {
                     || `${invite.first_name} ${invite.last_name}`.match(filter)
                     || invite.email.match(filter);
             });
+        },
+    },
+    watch: {
+        searchTerm () {
+            this.currentPage = 0;
         }
     },
     methods: {
@@ -130,7 +131,7 @@ export default {
         confirmReset(invite) {
             this.resettingInvite = invite;
             this.showConfirmation = true;
-        }
+        },
     },
     mounted () {
         this.getInvites();

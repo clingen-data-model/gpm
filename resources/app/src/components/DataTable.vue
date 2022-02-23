@@ -20,71 +20,82 @@
 </style>
 
 <template>
-    <div class="shadow-inner bg-gray-50">
-        <table class="border-none">
-            <thead>
-                <slot name="thead">
-                <tr class="bg-gray-200">
-                    <th v-for="field in fields.filter(f => !f.hideHeader)" :key="field.name"
-                        :title="field.sortable ? `Click to sort` : ``"
-                        :class="getHeaderClass(field)"
-                        @click="field.sortable && updateSort(field)"
-                        :colspan="(field.colspan ? field.colspan : 1)"
-                    >
-                        <div class="py-1 flex justify-between place-items-center">
-                            <div>
-                                <slot :name="`header-${field.name}`" :item="{field}">
-                                    {{this.getFieldLabel(field)}}
-                                </slot>
-                            </div>
-                            <div>
-                                <div v-if="field.sortable">
-                                    <icon-cheveron-up icon-color="#ccc" 
-                                        v-if="realSort.field != field"
-                                    ></icon-cheveron-up>
-                                    <icon-cheveron-up icon-color="#333" 
-                                        v-if="realSort.field == field && !realSort.desc"
-                                    ></icon-cheveron-up>
-                                    <icon-cheveron-down icon-color="#333" 
-                                        v-if="realSort.field == field && realSort.desc"
-                                    ></icon-cheveron-down>
+    <div>
+        <header class="flex justify-between mb-2 items-center">
+            <slot name="header"></slot>
+            <pagination-links 
+                :items="data"
+                :current-page="currentPage" 
+                v-model:current-page="currentPage"
+                v-if="this.paginated"
+            />
+        </header>
+
+        <div class="shadow-inner bg-gray-50">
+            <table class="border-none">
+                <thead>
+                    <slot name="thead">
+                    <tr class="bg-gray-200">
+                        <th v-for="field in fields.filter(f => !f.hideHeader)" :key="field.name"
+                            :title="field.sortable ? `Click to sort` : ``"
+                            :class="getHeaderClass(field)"
+                            @click="field.sortable && updateSort(field)"
+                            :colspan="(field.colspan ? field.colspan : 1)"
+                        >
+                            <div class="py-1 flex justify-between place-items-center">
+                                <div>
+                                    <slot :name="`header-${field.name}`" :item="{field}">
+                                        {{this.getFieldLabel(field)}}
+                                    </slot>
+                                </div>
+                                <div>
+                                    <div v-if="field.sortable">
+                                        <icon-cheveron-up icon-color="#ccc" 
+                                            v-if="realSort.field != field"
+                                        ></icon-cheveron-up>
+                                        <icon-cheveron-up icon-color="#333" 
+                                            v-if="realSort.field == field && !realSort.desc"
+                                        ></icon-cheveron-up>
+                                        <icon-cheveron-down icon-color="#333" 
+                                            v-if="realSort.field == field && realSort.desc"
+                                        ></icon-cheveron-down>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </th>
-                </tr>
-                </slot>
-            </thead>
-            <tbody v-for="item in sortedFilteredData" :key="item.uuid">
-                <tr :class="resolveRowClass(item)" @click="handleRowClick(item)">
-                    <td 
-                        v-for="field in fields" 
-                        :key="field.name"
-                        :class="getCellClass(field)"
-                    >
-                        <slot :name="getSlotName(field)" :item="item" :field="field" :value="resolveDisplayAttribute(item, field)">
-                            {{resolveDisplayAttribute(item, field)}}
-                        </slot>
-                    </td>
-                </tr>
-                <transition name="fade-slide-down">
-                    <tr class="details" :class="resolveRowClass(item)" v-if="detailRows && item.showDetails">
-                        <td :colspan="fields.length">
-                            <slot name="detail" :item="item">
-                                <object-dictionary :obj="item"></object-dictionary>
+                        </th>
+                    </tr>
+                    </slot>
+                </thead>
+                <tbody v-for="item in items" :key="item.uuid">
+                    <tr :class="resolveRowClass(item)" @click="handleRowClick(item)">
+                        <td 
+                            v-for="field in fields" 
+                            :key="field.name"
+                            :class="getCellClass(field)"
+                        >
+                            <slot :name="getSlotName(field)" :item="item" :field="field" :value="resolveDisplayAttribute(item, field)">
+                                {{resolveDisplayAttribute(item, field)}}
                             </slot>
                         </td>
                     </tr>
-                </transition>
-            </tbody>
-        </table>
+                    <transition name="fade-slide-down">
+                        <tr class="details" :class="resolveRowClass(item)" v-if="detailRows && item.showDetails">
+                            <td :colspan="fields.length">
+                                <slot name="detail" :item="item">
+                                    <object-dictionary :obj="item"></object-dictionary>
+                                </slot>
+                            </td>
+                        </tr>
+                    </transition>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 <script>
 import { formatDate } from '@/date_utils'
-
-
 import {titleCase} from '@/utils'
+import {pageSize, currentPage, getPageItems} from '@/composables/pagination'
 
 /**
  * 
@@ -117,6 +128,10 @@ export default {
         fields: {
             required: true,
             type: Array,
+        },
+        paginated: {
+            type: Boolean,
+            default: false,
         },
         filterTerm: {
             required: false,
@@ -175,6 +190,14 @@ export default {
                     field: this.fields.find(i => i.name == this.sort.field),
                     desc: this.sort.desc
                 }
+                this.resetCurrentPage();
+            }
+        },
+        data: {
+            immediate: true,
+            deep: true,
+            handler: function () {
+                this.resetCurrentPage();
             }
         }
     },
@@ -205,6 +228,12 @@ export default {
                 return data.sort(this.textAndNumberSort)
             }
             return []
+        },
+        paginatedSortedFilteredData () {
+            return this.getPageItems(this.sortedFilteredData);
+        },
+        items () {
+            return this.paginated ? this.paginatedSortedFilteredData : this.sortedFilteredData
         },
         sortField() {
             return this.realSort.field;
@@ -366,7 +395,19 @@ export default {
             }
 
             return this.rowClass;
-        }
+        },
     },
+    setup (props, context) {
+        const resetCurrentPage = () => {
+            currentPage.value = 0;
+        };
+
+        return {
+            resetCurrentPage,
+            currentPage,
+            pageSize,
+            getPageItems
+        }
+    }
 }
 </script>

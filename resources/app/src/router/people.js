@@ -3,7 +3,7 @@ import store from '../store/index'
 
 const PersonDetail = () => import (/* person-detail */ '@/components/people/PersonDetail')
 const PersonEdit = () => import (/* person-detail */ '@/views/PersonEdit')
-const PeopleIndex = () => import (/* people-index */ '@/views/PeopleIndex')
+const PeopleList = () => import (/* people-index */ '@/views/PeopleList')
 const OnboardingWizard = () => import (/* onboarding-wizard */ '@/views/OnboardingWizard')
 
 const checkPermissionAndPersonOwnership = async (to) => {
@@ -29,7 +29,7 @@ const checkPermissionAndPersonOwnership = async (to) => {
 export default [
     { name: 'people-index',
             path: '/people',
-            component: PeopleIndex,
+            component: PeopleList,
             meta: {
                 protected: true
             },
