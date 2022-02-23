@@ -1,6 +1,5 @@
 <template>
     <div class="flex space-x-1 items-start">
-        <pre>modelValue: {{modelValue}}</pre>
         <div>
             <label for="region-select" class="block text-xs">Region:</label>
             <select id="region-select" v-model="region" class="input-cl">
