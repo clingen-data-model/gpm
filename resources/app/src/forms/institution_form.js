@@ -32,6 +32,6 @@ export const getCountries = () => {
 }
 
 export const createInstitution = async (instData) => {
-    return await api.post('api/institutions', instData)
+    return await api.post('/api/institutions', instData)
         .then(response => response.data);
 }
