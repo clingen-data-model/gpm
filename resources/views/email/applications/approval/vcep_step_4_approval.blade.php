@@ -1,6 +1,6 @@
 @extends('email.applications.approval.layout')
 
-@section('content')
+@section('approval')
     <p>
         Congratulations on being formally approved by the CDWG Oversight Committee as an official ClinGen Variant Curation Expert Panel (VCEP)! The ClinGen website will be updated to reflect your new status and an announcement will be circulated in the ClinGen quarterly newsletter. 
     </p>

@@ -1,6 +1,6 @@
 @extends('email.applications.approval.layout')
 
-@section('content')
+@section('approval')
     <p>
         Thank you for submitting your application for the <em>{{ $expertPanel->name }}</em>.
         Your {{ $expertPanel->expert_panel_type_id == 1 ? 'GCEP' : 'VCEP step 1 application' }} has been reviewed and

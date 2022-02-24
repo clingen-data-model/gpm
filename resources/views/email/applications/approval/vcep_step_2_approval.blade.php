@@ -1,6 +1,6 @@
 @extends('email.applications.approval.layout')
 
-@section('content')
+@section('approval')
     <p>
         Congratulations on your Step 2 approval. I have updated your VCEP status on your webpage <a href="{{$expertPanel->clingenUrl}}">{{$expertPanel->clingenUrl}}</a>.
     </p>
