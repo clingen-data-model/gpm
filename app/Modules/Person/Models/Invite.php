@@ -112,6 +112,23 @@ class Invite extends Model
     /**
      * ACCESSORS
      */
+
+    public function getUrlAttribute()
+    {
+        return url('/invites/'.$this->code);
+    }
+    
+    public function getIsPendingAttribute()
+    {
+        return is_null($this->redeemed_at);
+    }
+    
+    public function getIsRedeemedAttribute()
+    {
+        return !is_null($this->redeemed_at);
+    }
+    
+
     public function gethasInviterAttribute()
     {
         return (bool)$this->group;
@@ -128,5 +145,4 @@ class Invite extends Model
     {
         return new InviteFactory();
     }
-    
 }
