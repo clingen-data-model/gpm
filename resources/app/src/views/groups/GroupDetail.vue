@@ -1,3 +1,16 @@
+<style lang="postcss" scoped>
+  .child-group {
+    @apply px-2 border-t  border-l border-r hover:bg-blue-100;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+  }
+  .child-group:first-child {
+    @apply rounded-t-lg
+  }
+  .child-group:last-child {
+    @apply border-b rounded-b-lg;
+  }
+</style>
 <template>
   <div>
     <annual-update-alert
@@ -28,208 +41,233 @@
       @showEdit="showEdit"
     ></group-detail-header>
 
-    <application-summary :group="group" v-if="group.isApplying" />
 
-    <tabs-container @tab-changed="handleTabChange">
-      <tab-item label="Members">
-        <member-list :group="group"></member-list>
-        <submission-wrapper
-          v-if="group.isVcep()"
-          @submitted="submitForm('saveMembershipDescription', 'editingExpertise')"
-          @canceled="cancelForm('editingExpertise')"
-          :show-controls="editingExpertise"
-        >
-          <membership-description-form
-            ref="membershipDescriptionFormRef"
-            class="mt-8"
-            v-model:editing="editingExpertise"
-            :errors="errors"
-          />
-        </submission-wrapper>
-      </tab-item>
-      
-      <tab-item label="Scope" :visible="group.isEp()">
-        <h3>
-          Plans for Ongoing Gene Review and Reanalysis and Discrepancy
-          Resolution
-        </h3>
-        <submission-wrapper
-          v-if="group.isEp()"
-          @submitted="$refs.groupGeneListRef.save()"
-          @canceled="$refs.groupGeneListRef.cancel()"
-          :show-controls="editingGenes"
-        >
-          <component
-            ref="groupGeneListRef"
-            :is="groupGeneList"
-            v-model:editing="editingGenes"
-          />
-        </submission-wrapper>
-        <br />
-        <submission-wrapper
-          :visible="group.isEp()"
-          @submitted="
-            submitForm('saveScopeDescription', 'editingScopeDescription')
-          "
-          @canceled="cancelForm('editingScopeDescription')"
-          :show-controls="editingScopeDescription"
-        >
-          <scope-description-form
-            ref="scopeDescriptionRef"
-            v-model:editing="editingScopeDescription"
-            :errors="errors"
-          />
-        </submission-wrapper>
-      </tab-item>
-
-      <tab-item label="Sustained Curation" :visible="group.isEp()"
-        class="relative"
-      >
-        <div
-          class="bg-white bg-opacity-50 absolute top-0 left-0 right-0 bottom-0"
-          v-if="!group.expert_panel.pilotSpecificationsIsApproved"
-        ></div>
-        <static-alert
-          variant="info"
-          v-if="!group.expert_panel.pilotSpecificationsIsApproved"
-        >
-          You can complete these sections after your first Specifications Pilot
-          has been approved.
-        </static-alert>
-        <submission-wrapper
-          @submitted="submitForm('saveOngoingPlansForm')"
-          @canceled="cancelForm()"
-          class="pb-4"
-          :showControls="
-            hasAnyPermission([
-              'ep-applications-manage',
-              ['application-edit', group],
-            ]) && group.expert_panel.pilotSpecificationsIsApproved
-          "
-        >
-          <component
-            ref="ongoingPlansForm"
-            :is="ongoingPlansFormComponent"
-            :errors="errors"
-            :readonly="!group.expert_panel.pilotSpecificationsIsApproved"
-          />
-        </submission-wrapper>
-        <section v-if="group.isVcep()">
-          <header>
-            <h3>Example Evidence Summaries</h3>
-          </header>
-          <evidence-summaries
-            :group="group"
-            :readonly="!group.expert_panel.pilotSpecificationsIsApproved"
-            class="pb-2 mb-4 border-b"
-          />
-        </section>
-      </tab-item>
-
-      <tab-item label="Specifications" :visible="group.isVcep()">
-        <div class="relative">
-          <static-alert
-            variant="info"
-            v-if="!group.expert_panel.pilotSpecificationsIsApproved"
-          >
-            You can complete these sections after your first Specifications
-            Pilot has been approved.
-          </static-alert>
-          <cspec-summary
-            :readonly="!group.expert_panel.pilotSpecificationsIsApproved"
-          />
-        </div>
-      </tab-item>
-
-      <tab-item label="Documents" v-if="userInGroup(group) || hasPermission('groups-manage')">
-        <group-documents></group-documents>
-      </tab-item>
-
-      <tab-item label="Attestations" :visible="group.isEp()">
-        <note
-          >The attestations below are read only. Attestations can only be
-          completed during the application process.</note
-        >
-        <attestation-gcep
-          class="pb-2 mb-4 border-b"
-          v-if="group.isGcep()"
-          :disabled="true"
-        />
-
-        <h3>Reanalysis &amp; Discrepancy Resolution</h3>
-        <attestation-reanalysis
-          class="pb-2 mb-4 border-b"
-          v-if="group.isVcep()"
-          :disabled="true"
-        />
-        <h3>NHGRI Data Availability</h3>
-        <attestation-nhgri class="pb-2 mb-4 border-b" :disabled="true" />
-      </tab-item>
-      
-      <tab-item label="Log" :visible="hasPermission('groups-manage') || userInGroup(group)">
-        <activity-log
-          :log-entries="logEntries"
-          :api-url="`/api/groups/${group.uuid}/activity-logs`"
-          v-bind:log-updated="getLogEntries"
-        ></activity-log>
-        <button class="btn btn-xs mt-1" @click="getLogEntries">Refresh</button>
-      </tab-item>
-
-      <tab-item label="Admin" :visible="hasPermission('groups-manage')">
-        <div v-if="group.isApplying">
-          <h2 class="pb-2 border-b mb-4">Application</h2>
-          <progress-chart
-            :application="group.expert_panel"
-            class="pb-4 border-b border-gray-300 mb-6"
-          ></progress-chart>
-          <step-tabs
-            :application="group.expert_panel"
-            @stepApproved="getGroup"
-            v-if="group.isEp()"
-          />
-          <hr />
-        </div>
-        <section 
-          class="border my-4 p-4 rounded"
-        >
-          <h2 class="mb-4">Annual Update</h2>
-            <button v-if="showCreateAnnualUpdateButton"
-              class="btn" @click="createAnnualUpdateForLatestWindow"
+    <div class="flex space-x-4">
+      <div class="flex-grow mt-4">
+        <application-summary :group="group" v-if="group.isApplying" />
+        <tabs-container @tab-changed="handleTabChange">
+          <tab-item label="Members">
+            <member-list :group="group"></member-list>
+            <submission-wrapper
+              v-if="group.isVcep()"
+              @submitted="submitForm('saveMembershipDescription', 'editingExpertise')"
+              @canceled="cancelForm('editingExpertise')"
+              :show-controls="editingExpertise"
             >
-              Create Annual Update for latest window.
-            </button>
-            <a 
-              v-else-if="group.expert_panel.annualUpdate"
-              :href="`/annual-updates/${this.group.expert_panel.annualUpdate.id}`"
-              target="annual update"
+              <membership-description-form
+                ref="membershipDescriptionFormRef"
+                class="mt-8"
+                v-model:editing="editingExpertise"
+                :errors="errors"
+              />
+            </submission-wrapper>
+          </tab-item>
+          
+          <tab-item label="Scope" :visible="group.isEp()">
+            <h3>
+              Plans for Ongoing Gene Review and Reanalysis and Discrepancy
+              Resolution
+            </h3>
+            <submission-wrapper
+              v-if="group.isEp()"
+              @submitted="$refs.groupGeneListRef.save()"
+              @canceled="$refs.groupGeneListRef.cancel()"
+              :show-controls="editingGenes"
             >
-              View Annual Update for {{this.group.expert_panel.annualUpdate.window.for_year}}
-            </a>
-        </section>
-        <section class="border my-4 p-4 bg-red-100 border-red-200 rounded">
-          <h2 class="mb-4 text-red-800">
-            Here be dragons. Proceed with caution.
-          </h2>
-          <button class="btn btn red" @click="initDelete">Delete Group</button>
-        </section>
-        <section
-          class="border my-4 p-4 rounded"
-          v-if="$store.state.systemInfo.env !== 'production'"
-        >
-          <h2 class="mb-4">
-            Dev tools
-            <span class="text-gray-500"> - don't use if you don't know.</span>
-          </h2>
-          <button
-            class="btn"
-            v-if="group.isVcep() && group.expert_panel.has_approved_pilot"
-            @click="fakeCspecPilotApproved"
+              <component
+                ref="groupGeneListRef"
+                :is="groupGeneList"
+                v-model:editing="editingGenes"
+              />
+            </submission-wrapper>
+            <br />
+            <submission-wrapper
+              :visible="group.isEp()"
+              @submitted="
+                submitForm('saveScopeDescription', 'editingScopeDescription')
+              "
+              @canceled="cancelForm('editingScopeDescription')"
+              :show-controls="editingScopeDescription"
+            >
+              <scope-description-form
+                ref="scopeDescriptionRef"
+                v-model:editing="editingScopeDescription"
+                :errors="errors"
+              />
+            </submission-wrapper>
+          </tab-item>
+
+          <tab-item label="Sustained Curation" :visible="group.isEp()"
+            class="relative"
           >
-            Fake a Pilot Approved Message
-          </button>
-        </section>
-      </tab-item>
-    </tabs-container>
+            <div
+              class="bg-white bg-opacity-50 absolute top-0 left-0 right-0 bottom-0"
+              v-if="!group.expert_panel.pilotSpecificationsIsApproved"
+            ></div>
+            <static-alert
+              variant="info"
+              v-if="!group.expert_panel.pilotSpecificationsIsApproved"
+            >
+              You can complete these sections after your first Specifications Pilot
+              has been approved.
+            </static-alert>
+            <submission-wrapper
+              @submitted="submitForm('saveOngoingPlansForm')"
+              @canceled="cancelForm()"
+              class="pb-4"
+              :showControls="
+                hasAnyPermission([
+                  'ep-applications-manage',
+                  ['application-edit', group],
+                ]) && group.expert_panel.pilotSpecificationsIsApproved
+              "
+            >
+              <component
+                ref="ongoingPlansForm"
+                :is="ongoingPlansFormComponent"
+                :errors="errors"
+                :readonly="!group.expert_panel.pilotSpecificationsIsApproved"
+              />
+            </submission-wrapper>
+            <section v-if="group.isVcep()">
+              <header>
+                <h3>Example Evidence Summaries</h3>
+              </header>
+              <evidence-summaries
+                :group="group"
+                :readonly="!group.expert_panel.pilotSpecificationsIsApproved"
+                class="pb-2 mb-4 border-b"
+              />
+            </section>
+          </tab-item>
+
+          <tab-item label="Specifications" :visible="group.isVcep()">
+            <div class="relative">
+              <static-alert
+                variant="info"
+                v-if="!group.expert_panel.pilotSpecificationsIsApproved"
+              >
+                You can complete these sections after your first Specifications
+                Pilot has been approved.
+              </static-alert>
+              <cspec-summary
+                :readonly="!group.expert_panel.pilotSpecificationsIsApproved"
+              />
+            </div>
+          </tab-item>
+
+          <tab-item label="Documents" v-if="userInGroup(group) || hasPermission('groups-manage')">
+            <group-documents></group-documents>
+            <note>Documents are only available to members of this group.</note>
+          </tab-item>
+
+          <tab-item label="Attestations" :visible="group.isEp()">
+            <note
+              >The attestations below are read only. Attestations can only be
+              completed during the application process.</note
+            >
+            <attestation-gcep
+              class="pb-2 mb-4 border-b"
+              v-if="group.isGcep()"
+              :disabled="true"
+            />
+
+            <h3>Reanalysis &amp; Discrepancy Resolution</h3>
+            <attestation-reanalysis
+              class="pb-2 mb-4 border-b"
+              v-if="group.isVcep()"
+              :disabled="true"
+            />
+            <h3>NHGRI Data Availability</h3>
+            <attestation-nhgri class="pb-2 mb-4 border-b" :disabled="true" />
+          </tab-item>
+          
+          <tab-item label="Log" :visible="hasPermission('groups-manage') || userInGroup(group)">
+            <activity-log
+              :log-entries="logEntries"
+              :api-url="`/api/groups/${group.uuid}/activity-logs`"
+              v-bind:log-updated="getLogEntries"
+            ></activity-log>
+            <button class="btn btn-xs mt-1" @click="getLogEntries">Refresh</button>
+          </tab-item>
+
+          <tab-item label="Admin" :visible="hasPermission('groups-manage')">
+            <div v-if="group.isApplying">
+              <h2 class="pb-2 border-b mb-4">Application</h2>
+              <progress-chart
+                :application="group.expert_panel"
+                class="pb-4 border-b border-gray-300 mb-6"
+              ></progress-chart>
+              <step-tabs
+                :application="group.expert_panel"
+                @stepApproved="getGroup"
+                v-if="group.isEp()"
+              />
+              <hr />
+            </div>
+            <section 
+              class="border my-4 p-4 rounded"
+            >
+              <h2 class="mb-4">Annual Update</h2>
+                <button v-if="showCreateAnnualUpdateButton"
+                  class="btn" @click="createAnnualUpdateForLatestWindow"
+                >
+                  Create Annual Update for latest window.
+                </button>
+                <a 
+                  v-else-if="group.expert_panel.annualUpdate"
+                  :href="`/annual-updates/${this.group.expert_panel.annualUpdate.id}`"
+                  target="annual update"
+                >
+                  View Annual Update for {{this.group.expert_panel.annualUpdate.window.for_year}}
+                </a>
+            </section>
+            <section class="border my-4 p-4 bg-red-100 border-red-200 rounded">
+              <h2 class="mb-4 text-red-800">
+                Here be dragons. Proceed with caution.
+              </h2>
+              <button class="btn btn red" @click="initDelete">Delete Group</button>
+            </section>
+            <section
+              class="border my-4 p-4 rounded"
+              v-if="$store.state.systemInfo.env !== 'production'"
+            >
+              <h2 class="mb-4">
+                Dev tools
+                <span class="text-gray-500"> - don't use if you don't know.</span>
+              </h2>
+              <button
+                class="btn"
+                v-if="group.isVcep() && group.expert_panel.has_approved_pilot"
+                @click="fakeCspecPilotApproved"
+              >
+                Fake a Pilot Approved Message
+              </button>
+            </section>
+          </tab-item>
+        </tabs-container>
+      </div>
+      <div class="md:w-1/5 lg:w-1/4" v-if="group.hasChildren">
+        <h2 class="mb-4">Subgroups</h2>
+        <ul>
+          <li class="child-group" v-for="group in group.children" :key="group.id">
+            <popover hover arrow placement="top">
+              <template v-slot:content>
+                <div class="text-xs">
+                  <div v-if="group.chairs.length > 0"><strong>Chairs:</strong> {{group.chairs.map(c => c.person.name).join(', ')}}</div>
+                  <div v-if="group.coordinators.length > 0"><strong>Coordinators:</strong> {{group.coordinators.map(c => c.person.name).join(', ')}}</div>
+                  <div><strong># Members:</strong> {{group.members_count}}</div>
+                </div>
+              </template>
+              <router-link :to="{name: 'GroupDetail', params: {uuid: group.uuid}}" class="block">
+                {{group.name}}
+              </router-link>
+            </popover>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
     <br /><br />
 
     <teleport to="body">
@@ -390,6 +428,7 @@ export default {
     const getGroup = () => {
       store.dispatch("groups/find", props.uuid).then(() => {
         store.commit("groups/setCurrentItemIndexByUuid", props.uuid);
+        store.dispatch('groups/getChildren', group.value);
         if (group.value.isEp()) {
           store.dispatch("groups/getGenes", group.value);
           store.dispatch("groups/getDocuments", group.value);

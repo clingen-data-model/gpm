@@ -525,6 +525,14 @@ export const actions = {
             .then(response => {
                 group.expert_panel.annualUpdate = response.data
             });
+    },
+
+    // eslint-disable-next-line
+    getChildren(context, group) {
+        return api.get(`/api/groups/${group.uuid}/children`)
+            .then(response => {
+                group.children = response.data.data
+            });
     }
 
 };

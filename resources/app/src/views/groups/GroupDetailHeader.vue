@@ -1,5 +1,5 @@
 <template>
-    <header class="pb-4">
+    <header>
         <group-breadcrumbs />
         <h1 class="flex justify-between items-start">
             <div>

@@ -1,5 +1,5 @@
 <template>
-    <popper v-bind="$attrs">
+    <popper v-bind="$attrs" class="popover">
         <slot />
         <template #content="props">
             <slot name="content" v-bind="props"></slot>

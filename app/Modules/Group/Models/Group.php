@@ -6,6 +6,7 @@ use App\Models\Traits\HasUuid;
 use App\Models\Contracts\HasNotes;
 use App\Models\Contracts\HasMembers;
 use Database\Factories\GroupFactory;
+use App\Tasks\Contracts\TaskAssignee;
 use App\Models\Contracts\HasDocuments;
 use App\Models\Contracts\HasLogEntries;
 use App\Models\Contracts\RecordsEvents;
@@ -16,16 +17,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Models\Traits\HasNotes as HasNotesTrait;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Modules\Group\Models\Contracts\HasSubmissions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Tasks\Models\TaskAssignee as TaskAssigneeTrait;
 use App\Models\Traits\HasDocuments as HasDocumentsTrait;
 use App\Models\Traits\RecordsEvents as RecordsEventsTrait;
 use App\Models\Traits\HasLogEntries as HasLogEntriesTraits;
 use App\Modules\Group\Models\Traits\HasMembers as HasMembersTrait;
 use App\Modules\Group\Models\Traits\HasSubmissions as HasSubmissionsTrait;
-use App\Tasks\Contracts\TaskAssignee;
-use App\Tasks\Models\TaskAssignee as TaskAssigneeTrait;
 
 /**
  * @property int $id
@@ -140,6 +141,16 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Group::class);
+    }
+
+    /**
+     * Get all of the children for the Group
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function children(): HasMany
+    {
+        return $this->hasMany(Group::class, 'parent_id', 'id');
     }
 
     /**
