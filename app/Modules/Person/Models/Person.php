@@ -6,6 +6,7 @@ use App\Models\Email;
 use App\Models\HasUuid;
 use App\Models\HasEmail;
 use App\Modules\User\Models\User;
+use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Race;
 use App\Modules\Person\Models\Gender;
 use Database\Factories\PersonFactory;
@@ -85,7 +86,7 @@ class Person extends Model
 
     public function activeGroups(): BelongsToMany
     {
-        return $this->groups()->whereNull('pivot.end_date');
+        return $this->groups()->whereNull('group_members.end_date');
     }
     
     /**
@@ -242,8 +243,11 @@ class Person extends Model
     {
         return !is_null($this->user_id);
     }
-    
 
+    public function inGroup(Group $group)
+    {
+        return $this->activeGroups->pluck('id')->contains($group->id);
+    }
 
     // Factory
     protected static function newFactory()

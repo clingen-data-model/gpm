@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use App\Models\HasUuid;
+use Illuminate\Support\Carbon;
+use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Controllers\DocumentController;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
-use Illuminate\Support\Carbon;
 
 class Document extends Model
 {
@@ -150,10 +151,30 @@ class Document extends Model
         $md['is_final'] = $value;
         $this->metadata = $md;
     }
-    
+
+    /**
+     * DOMAIN
+     */
     
     public function getDownloadUrlAttribute()
     {
         return url()->action([DocumentController::class, 'show'], [$this->uuid]);
+    }
+
+    public function belongsToUser(User $user): bool
+    {
+        if ($this->owner_type == get_class($user) && $this->owner_id = $user->id) {
+            return true;
+        }
+
+        if (
+            $user->person
+            && $this->owner_type == get_class($user->person)
+            && $this->owner_id = $user->person->id
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }
