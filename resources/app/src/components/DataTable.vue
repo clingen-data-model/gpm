@@ -397,7 +397,7 @@ export default {
             return this.rowClass;
         },
     },
-    setup (props, context) {
+    setup () {
         const resetCurrentPage = () => {
             currentPage.value = 0;
         };
