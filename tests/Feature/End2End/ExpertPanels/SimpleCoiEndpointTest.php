@@ -3,7 +3,7 @@
 namespace Tests\Feature\End2End\ExpertPanels;
 
 use Carbon\Carbon;
-use App\Modules\ExpertPanel\Models\CoiV1 as Coi;
+use App\Modules\ExpertPanel\Models\Coi;
 use Tests\TestCase;
 use App\Models\Document;
 use Illuminate\Support\Str;
