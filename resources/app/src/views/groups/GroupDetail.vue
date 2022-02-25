@@ -35,9 +35,7 @@
         <member-list :group="group"></member-list>
         <submission-wrapper
           v-if="group.isVcep()"
-          @submitted="
-            submitForm('saveMembershipDescription', 'editingExpertise')
-          "
+          @submitted="submitForm('saveMembershipDescription', 'editingExpertise')"
           @canceled="cancelForm('editingExpertise')"
           :show-controls="editingExpertise"
         >
@@ -143,7 +141,7 @@
         </div>
       </tab-item>
 
-      <tab-item label="Documents">
+      <tab-item label="Documents" v-if="userInGroup(group) || hasPermission('groups-manage')">
         <group-documents></group-documents>
       </tab-item>
 
