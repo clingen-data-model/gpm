@@ -5,9 +5,13 @@
             <div>
                 {{group.displayName}} <badge :color="group.statusColor" class="text-xs">{{group.status ? group.status.name : 'loading...'}}</badge>
                 <div class="text-sm text-gray-800 mt-1 font-normal">
-                    Short Name: <strong>{{group.expert_panel.full_short_base_name || '--'}}</strong>
+                    <span v-if="showShortName">Short Name: <strong>{{group.expert_panel.full_short_base_name || '--'}}</strong>
                     |
+                    </span>
                     Affiliation ID: <strong>{{group.expert_panel.affiliation_id || '--'}}</strong>
+                    <span v-if="group.parent_id">
+                    | Part of the <router-link :to="{name: 'GroupDetail', params: {uuid: group.parent.uuid}}">{{group.parent.name}}</router-link>
+                    </span>
                 </div>
                 <note v-if="hasRole('super-user')" class="font-normal mt-2">
                     group.id: {{group.id}}
@@ -66,6 +70,9 @@ export default {
                 return [];
             }
             return this.group.members.filter(m => m.hasRole('coordinator'));
+        },
+        showShortName () {
+            return this.group.expert_panel.short_base_name !== this.group.expert_panel.long_base_name;
         }
     },
 }

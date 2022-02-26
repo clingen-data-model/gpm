@@ -254,9 +254,23 @@
             <popover hover arrow placement="top">
               <template v-slot:content>
                 <div class="text-xs">
-                  <div v-if="group.chairs.length > 0"><strong>Chairs:</strong> {{group.chairs.map(c => c.person.name).join(', ')}}</div>
-                  <div v-if="group.coordinators.length > 0"><strong>Coordinators:</strong> {{group.coordinators.map(c => c.person.name).join(', ')}}</div>
-                  <div><strong># Members:</strong> {{group.members_count}}</div>
+                  <dictionary-row label="Status" label-class="font-bold" label-width="8em">{{group.status.name}}</dictionary-row>
+                  <dictionary-row v-if="group.chairs.length > 0" 
+                      label="Chairs" 
+                      label-class="font-bold" 
+                      label-width="8em"
+                      class="my-1"
+                  >
+                    {{group.coordinators.map(c => c.person.name).join(', ')}}
+                  </dictionary-row>
+                  <dictionary-row v-if="group.coordinators.length > 0" 
+                      label="Coordinators" 
+                      label-class="font-bold" 
+                      label-width="8em"
+                  >
+                    {{group.coordinators.map(c => c.person.name).join(', ')}}
+                  </dictionary-row>
+                  <dictionary-row label="# Members" label-width="8em" label-class="font-bold">{{group.members_count}}</dictionary-row>
                 </div>
               </template>
               <router-link :to="{name: 'GroupDetail', params: {uuid: group.uuid}}" class="block">
@@ -267,8 +281,6 @@
         </ul>
       </div>
     </div>
-    
-    <br /><br />
 
     <teleport to="body">
       <modal-dialog
@@ -317,7 +329,7 @@
   </div>
 </template>
 <script>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useStore } from "vuex";
 
 import { logEntries, fetchEntries } from "@/adapters/log_entry_repository";
@@ -449,8 +461,10 @@ export default {
       );
     });
 
+    watch(() => props.uuid, () => getGroup(), {immediate: true})
+
     onMounted(async () => {
-      getGroup();
+      // getGroup();
     });
 
     return {
