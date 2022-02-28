@@ -39,7 +39,7 @@
 
           </span>
         </div>
-        <a href="mailto:cdwg_oc@clinicalgenome.org?subject=New ExpertPanel Request" class="btn btn-xs mr-4">Request a new group</a>
+        <a href="mailto:gpm_support@clinicalgenome.org?subject=New ExpertPanel Request" class="btn btn-xs mr-4">Request a new group</a>
         <user-menu></user-menu>
       </div>
     </header>

@@ -21,7 +21,7 @@
             ></input-row>
             <input-row label="Confirm Password" 
                 v-model="password_confirmation" type="password" 
-                :errors="errors.password_confirmation" 
+                :errors="errors.password" 
                 label-width-class="w-24"
             ></input-row>
             <div class="flex flex-row-reverse">
@@ -61,8 +61,8 @@ export default {
                 await store.dispatch('login', {email: email.value, password: password.value})
                 context.emit('saved')
             } catch (error) {
-                if (isValidationError(error )) {
-                    errors.value = error.response.data;
+                if (isValidationError(error)) {
+                    errors.value = error.response.data.errors;
                 }
             }
         }

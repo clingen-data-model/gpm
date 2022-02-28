@@ -104,7 +104,7 @@ export default {
         },
         assembleErrorsForAddressField (field) {
             let addressErrors = [];
-            const pattern = new RegExp(`${field}\.\\d+\.address`);
+            const pattern = new RegExp(`${field}.\\d+.address`);
 
             Object.keys(this.errors).filter(key => {
                     return key.match(pattern)

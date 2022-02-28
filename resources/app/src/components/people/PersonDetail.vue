@@ -40,7 +40,7 @@
             </tab-item> -->
             <!-- <tab-item label="Training &amp; Attestations">
             </tab-item> -->
-            <tab-item label="Email Log">
+            <tab-item label="Email Log" :visible="hasPermission('people-manage') || userIsPerson(person)">
                 <div v-if="sortedMailLog.length == 0" class="well">
                     {{person.first_name}} has not received any mail via the GPM.
                 </div>
@@ -54,7 +54,7 @@
                     <dictionary-row label="Body">
                         <div v-html="email.body"></div>
                     </dictionary-row>
-                    <button class="btn btn-xs" @click.stop="initResend(email)">Resend</button>
+                    <button class="btn btn-xs" @click.stop="initResend(email)" v-if="hasPermission('people-manage')">Resend</button>
 
                 </div>
             </tab-item>

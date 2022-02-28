@@ -362,7 +362,7 @@
     "appFeatures": {
         "inviteReminders": false,
         "coiReminders": false,
-        "showCdwgs": false,
-        "showWgs": false
+        "showCdwgs": true,
+        "showWgs": true
     }
 }

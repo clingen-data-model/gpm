@@ -32,14 +32,14 @@
             </template>
             <template v-slot:cell-actions="{item}">
                 <div>
-                    <button class="btn btn-xs" @click.stop="initResend(item)">Resend</button>
+                    <button class="btn btn-xs" @click.stop="initResend(item)" v-if="hasPermission('people-manage')">Resend</button>
                 </div>
             </template>
         </data-table>
 
         <teleport to="body">
             <modal-dialog v-model="showDetail">
-                <mail-detail :mail="currentEmail" @resend="initResend(currentEmail)"/>
+                <mail-detail :mail="currentEmail" @resend="initResend(currentEmail)" v-if="hasPermission('people-manage')"/>
             </modal-dialog>
             <modal-dialog title="Resend Email" v-model="showResendDialog">
                 <custom-email-form :mail-data="currentEmail" @sent="cleanupResend" @canceled="cleanupResend"></custom-email-form>
