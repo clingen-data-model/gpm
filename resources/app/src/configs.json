@@ -358,5 +358,11 @@
                 "description": "Submitted item is unconditionally approved."
             }
         }
+    },
+    "appFeatures": {
+        "inviteReminders": false,
+        "coiReminders": false,
+        "showCdwgs": false,
+        "showWgs": false
     }
 }
