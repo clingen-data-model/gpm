@@ -63,6 +63,8 @@ Route::group([
         Route::post('/', DocumentAdd::class);
         Route::put('/{document:uuid}', DocumentUpdate::class);
     });
+    
+    Route::get('/{group:uuid}/children', [GroupRelationsController::class, 'children']);
 
 
     Route::get('/{group:uuid}/next-actions', [GroupRelationsController::class, 'nextActions']);

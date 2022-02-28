@@ -56,6 +56,38 @@ import {useRouter} from 'vue-router'
 import {computed, ref} from 'vue'
 import GroupForm from '@/components/groups/GroupForm'
 import SubmissionWrapper from '@/components/groups/SubmissionWrapper'
+import configs from '@/configs'
+
+console.log(configs);
+
+const tabDefinitions = [
+    {
+        label: 'VCEPs',
+        typeId: 4,
+        filter: g => g.isVcep(),
+    },
+    {
+        label: 'GCEPs',
+        typeId: 3,
+        filter: g => g.isGcep()
+    },
+]
+
+if (configs.appFeatures.showCdwgs) {
+    tabDefinitions.push({
+        label: 'CDWGs',
+        typeId: 2,
+        filter: g => g.isCdwg()
+    });
+}
+
+if (configs.appFeatures.showWgs) {
+    tabDefinitions.push({
+        label: 'WGs',
+        typeId: 1,
+        filter: g => g.isWg()
+    });
+}
 
 export default {
     name: 'ComponentName',
@@ -76,29 +108,6 @@ export default {
                 'CDWGs': false,
                 'WGs': false,
             },
-            tabDefinitions:[
-                {
-                    label: 'VCEPs',
-                    typeId: 4,
-                    filter: g => g.isVcep(),
-                },
-                {
-                    label: 'GCEPs',
-                    typeId: 3,
-                    filter: g => g.isGcep()
-                },
-                // Commented out for Feb. 2022 release.
-                // {
-                //     label: 'CDWGs',
-                //     typeId: 2,
-                //     filter: g => g.isCdwg()
-                // },
-                // {
-                //     label: 'WGs',
-                //     typeId: 1,
-                //     filter: g => g.isWg()
-                // }
-            ],
             sort: {
                 field: 'id',
                 desc: false
@@ -181,6 +190,7 @@ export default {
             filterString,
             groups,
             filteredGroups,
+            tabDefinitions,
             goToItem,
             goToGroup: goToItem,
         }

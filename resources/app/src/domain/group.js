@@ -118,6 +118,10 @@ class Group extends Entity {
         return this.expert_panel.isApplying
     }
 
+    get hasChildren () {
+        return this.children && this.children.length > 0
+    }
+
     addMembers (members) {
         members.forEach(m => {
             this.addMember(m);

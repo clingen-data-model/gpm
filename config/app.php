@@ -117,7 +117,9 @@ return [
         'token' => env('JIRA_API_TOKEN')
     ],
     'features' => [
-        'invite_reminders' => env('REMINDERS_INVITES', true),
-        'coi_reminders' => env('REMINDERS_COIS', true),
+        'invite_reminders' => env('FEATURE_REMINDERS_INVITES', true),
+        'coi_reminders' => env('FEATURE_REMINDERS_COIS', true),
+        'show_cdwgs' => env('FEATURE_SHOW_CDWGS', true),
+        'show_wgs' => env('FEATURE_SHOW_WGS', true),
     ]
 ];
