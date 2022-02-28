@@ -4,8 +4,12 @@ namespace Tests\Feature\End2End;
 
 use Carbon\Carbon;
 use Tests\TestCase;
+use App\Models\Role;
+use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Invite;
 use App\Modules\Person\Models\Person;
+use App\Modules\Group\Actions\MemberAdd;
+use App\Modules\Group\Actions\MemberRetire;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\InviteReminderNotification;
@@ -18,9 +22,27 @@ class InviteReminderTest extends TestCase
     public function setup():void
     {
         parent::setup();
+        Role::factory()->create(['name' => 'coordinator', 'scope' => 'group']);
         $this->invite = Invite::factory()->create(['redeemed_at' => null]);
+        $this->addMember = app()->make(MemberAdd::class);
+        $group1 = Group::factory()->create();
+        $this->gm1 = $this->addMember->handle($group1, $this->invite->person);
+
         config(['app.features.invite_reminders' => true]);
     }
+
+    /**
+     * @test
+     */
+    public function person_can_scope_to_hasActiveMembership()
+    {
+        $this->assertEquals(1, Person::hasActiveMembership()->count());
+
+        app()->make(MemberRetire::class)->handle($this->gm1, Carbon::now());
+
+        $this->assertEquals(0, person::hasActiveMembership()->count());
+    }
+    
 
     /**
      * @test
@@ -56,6 +78,28 @@ class InviteReminderTest extends TestCase
         $this->assertStringContainsString($this->invite->inviter->display_name, $emailBody);
         $this->assertStringContainsString('/invites/'.$this->invite->code, $emailBody);
     }
+
+    /**
+     * @test
+     */
+    public function it_does_not_email_inactive_group_members()
+    {
+        $retireMember = app()->make(MemberRetire::class);
+        
+        $group2 = Group::factory()->create();
+        $gm2 = $this->addMember->handle($group2, $this->invite->person);
+
+        $retireMember->handle($this->gm1, Carbon::now());
+        Notification::fake();
+
+        $this->triggerReminders();
+        Notification::assertSentTo($this->invite->person->refresh(), InviteReminderNotification::class);
+
+        Notification::fake();
+        $retireMember->handle($gm2, Carbon::now());
+        Notification::assertNotSentTo($this->invite->person, InviteReminderNotification::class);
+    }
+    
     
     
     

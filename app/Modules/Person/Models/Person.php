@@ -211,11 +211,20 @@ class Person extends Model
         });
     }
 
+    public function scopeHasActiveMembership($query)
+    {
+        return $query->whereHas('memberships', function ($q) {
+            $q->isActive();
+        });
+    }
+    
+
     public function scopeHasPendingInvite($query)
     {
-        return $query->whereHas('invite', function ($q) {
-            $q->pending();
-        });
+        return $query->hasActiveMembership()
+                ->whereHas('invite', function ($q) {
+                    $q->pending();
+                });
     }
     
 

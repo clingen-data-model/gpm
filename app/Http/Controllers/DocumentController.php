@@ -13,6 +13,7 @@ class DocumentController extends Controller
     public function show($uuid)
     {
         $doc = Document::findByUuidOrFail($uuid);
+        
         if (Auth::user()->cannot('view', $doc)) {
             throw new AuthorizationException('You don\'t have permission to download this doucment.');
         }

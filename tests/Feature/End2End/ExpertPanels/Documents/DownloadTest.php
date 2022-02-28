@@ -55,7 +55,7 @@ class DownloadTest extends TestCase
      */
     public function responds_with_404_if_document_not_found()
     {
-        $user = User::factory()->create();
+        $user = $this->setupUserWithPerson();
         Sanctum::actingAs($user);
         $url = '/documents/'.Uuid::uuid4()->toString();
         $response = $this->json('GET', $url);
@@ -68,7 +68,7 @@ class DownloadTest extends TestCase
     public function responds_with_404_if_file_not_found()
     {
         $this->doc->storage_path = 'beans.txt';
-        $user = User::factory()->create();
+        $user = $this->setupUserWithPerson();
         Sanctum::actingAs($user);
         $response = $this->json('GET', '/documents/'.$this->doc->uuid)
                         ->assertStatus(404);
@@ -79,7 +79,7 @@ class DownloadTest extends TestCase
      */
     public function authed_user_can_download_a_file()
     {
-        $user = User::factory()->create();
+        $user = $this->setupUserWithPerson();
         Sanctum::actingAs($user);
 
 
