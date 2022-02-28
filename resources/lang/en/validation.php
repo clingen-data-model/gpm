@@ -131,8 +131,14 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'to.*.address' => [
+            'email' => 'All to values must be valid email addressess.',
+        ],
+        'cc.*.address' => [
+            'email' => 'All to values must be valid email addressess.',
+        ],
+        'bcc.*.address' => [
+            'email' => 'All to values must be valid email addressess.',
         ],
     ],
 

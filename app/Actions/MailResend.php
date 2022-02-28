@@ -53,4 +53,18 @@ class MailResend
     {
         return $request->user()->hasPermissionTo('mail-log-view');
     }
+
+    public function rules()
+    {
+        return [
+            'to' => 'required|array',
+            'to.*.address' => 'required|email',
+            'cc' => 'nullable|array',
+            'cc.*.address' => 'required|email',
+            'bcc' => 'nullable|array',
+            'bcc.*.address' => 'required|email',
+            'subject' => 'required',
+            'body' => 'required'
+        ];
+    }
 }

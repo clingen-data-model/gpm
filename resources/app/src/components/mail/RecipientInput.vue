@@ -37,7 +37,8 @@ export default {
     },
     created () {
         this.debounceInput = debounce((value) => {
-            const newRecipients = value.split("\n")
+            const pattern = new RegExp(/[\n,;]/);
+            const newRecipients = value.split(pattern)
                                     .map(i => ({name: null, address: i.trim()}))
                                     .filter(i => {
                                         return i.address !== null

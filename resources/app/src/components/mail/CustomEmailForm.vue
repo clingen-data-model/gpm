@@ -1,13 +1,9 @@
 <template>
     <div>
-        <dictionary-row label="To">
-            <ul>
-                <li v-for="recipient in workingCopy.to" :key="recipient.address">
-                    <span v-if="recipient.name">{{recipient.name}} - </span>{{recipient.address}}
-                </li>
-            </ul>
-        </dictionary-row>
-        <input-row label="Cc">
+        <input-row label="To" :errors="toErrors">
+            <recipient-input v-model="workingCopy.to" />
+        </input-row>
+        <input-row label="Cc" :errors="errors.ccErrors">
             <recipient-input v-model="workingCopy.cc" v-show="showCc" />
 
             <div v-if="workingCopy.cc && workingCopy.cc.length > 0 && !showCc">
@@ -18,21 +14,21 @@
                 {{showCc ? 'Hide Cc' : 'Show Cc'}}
             </button>
         </input-row>
-        <input-row label="Bcc">
+        <input-row label="Bcc" :errors="bccErrors">
             <recipient-input v-model="workingCopy.bcc" v-show="showBcc" />
             <button class="btn btn-xs" @click="showBcc = !showBcc">
                 {{showBcc ? 'Hide Bcc' : 'Show Bcc'}}
             </button>
         </input-row>
-        <input-row label="Subject">
+        <input-row label="Subject"  :errors="errors.subject">
             <input type="text" v-model="workingCopy.subject" class="w-full">
         </input-row>
         
-        <input-row label="Body">
+        <input-row label="Body" :errors="errors.body">
             <rich-text-editor  v-model="workingCopy.body"></rich-text-editor>
         </input-row>
 
-        <input-row label="Attachments">
+        <input-row label="Attachments" :errors="errors.attachments">
             <input type="file" multiple ref="attachmentsField">
             <note class="mt-2">Please note that if you are "Resending" an email, any attachments on the original email must be re-added.</note>
         </input-row>
@@ -42,6 +38,7 @@
 </template>
 <script>
 import { api, isValidationError } from '@/http';
+
 export default {
     name: 'CustomEmailForm',
     props: {
@@ -55,6 +52,18 @@ export default {
             workingCopy: {},
             showBcc: false,
             showCc: false,
+            errors: {}
+        }
+    },
+    computed: {
+        toErrors () {
+            return this.assembleErrorsForAddressField('to')
+        },
+        ccErrors () {
+            return this.assembleErrorsForAddressField('cc')
+        },
+        bccErrors () {
+            return this.assembleErrorsForAddressField('bcc')
         }
     },
     watch: {
@@ -79,6 +88,7 @@ export default {
                 this.cleanData()
                 await api.post(`/api/mail`, this.workingCopy)
                 this.$emit('sent');
+                this.errors = {};
             } catch(error) {
                 if (isValidationError(error)) {
                     this.errors = error.response.data.errors
@@ -91,8 +101,25 @@ export default {
             this.workingCopy.to = this.workingCopy.to ? this.workingCopy.to.filter(i => i.address !== '') : null;
             this.workingCopy.cc = this.workingCopy.cc ? this.workingCopy.cc.filter(i => i.address !== '') : null;
             this.workingCopy.bcc = this.workingCopy.bcc ? this.workingCopy.bcc.filter(i => i.address !== '') : null;
-            console.log(this.workingCopy);
+        },
+        assembleErrorsForAddressField (field) {
+            let addressErrors = [];
+            const pattern = new RegExp(`${field}\.\\d+\.address`);
+
+            Object.keys(this.errors).filter(key => {
+                    return key.match(pattern)
+                })
+                .forEach(key => {
+                    addressErrors = [...addressErrors, ...this.errors[key]];
+                });
+
+            const set = new Set([
+                ...(this.errors.to || []),
+                ...addressErrors
+            ]);
+            return [...set];
         }
+
     }
 }
 </script>
