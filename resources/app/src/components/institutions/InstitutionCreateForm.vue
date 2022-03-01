@@ -9,7 +9,7 @@ import {fields, getCountries, countries, createInstitution} from '@/forms/instit
 import {isValidationError} from '@/http'
 
 export default {
-    name: 'Institution',
+    name: 'InstitutionCreateForm',
     props: {
         name: {
             type: String||null,

@@ -38,7 +38,7 @@
 <script>
 import api from '@/http/api'
 import SearchSelect from '@/components/forms/SearchSelect'
-import InstitutionForm from '@/components/InstitutionForm'
+import InstitutionForm from '@/components/institutions/InstitutionCreateForm'
 
 export default {
     name: 'InstitutionSearchSelect',
