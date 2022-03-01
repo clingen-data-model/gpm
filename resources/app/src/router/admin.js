@@ -28,5 +28,10 @@ export default [
                 return await store.getters.currentUser.hasPermission('people-manage')
             }
         }
-    }
+    },
+    {
+        name: 'InstitutionList',
+        path: '/admin/institutions',
+        component: () => import ( /* webpackChunkName: "institution-list" */ '@/views/institutions/InstitutionList.vue')
+}
 ]

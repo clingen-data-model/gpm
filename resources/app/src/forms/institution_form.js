@@ -31,7 +31,27 @@ export const getCountries = () => {
     .catch(error => console.error(error));
 }
 
-export const createInstitution = async (instData) => {
-    return await api.post('/api/institutions', instData)
+export const createInstitution = (instData) => {
+    return api.post('/api/institutions', instData)
         .then(response => response.data);
+}
+
+export const updateInstitution = (instData) => {
+    return api.put(`/api/institutions/${instData.id}`, instData)
+            .then(response => response.data);
+}
+
+export const getInstitution = (id) => {
+    return api.get(`/api/institutions/${id}`)
+        .then (response => response.data);
+}
+
+export const getAllInstitutions = (params) => {
+    return api.get(`/api/institutions`, {params: params})
+        .then (response => response.data);
+}
+
+export const markApproved = (institution) => {
+    return api.put(`/api/institutions/${institution.id}/approved`)
+        .then ( response => response.data);
 }

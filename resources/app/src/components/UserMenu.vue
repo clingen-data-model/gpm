@@ -37,6 +37,9 @@
                                 Invites
                             </router-link>
                         </li> 
+                        <li class="menu-item" v-if="hasPermission('people-manage')">
+                            <a href="/admin/institutions">Institutions</a>
+                        </li>
                         <li class="menu-item" v-if="hasPermission('mail-log-view')">
                             <router-link :to="{name: 'mail-log'}" @click="showMenu = false">Mail log</router-link>
                         </li>
