@@ -7,10 +7,12 @@ use App\Modules\Person\Actions\InviteReset;
 use App\Modules\Person\Actions\InviteRedeem;
 use App\Modules\Person\Actions\ProfileUpdate;
 use App\Modules\Person\Actions\InstitutionCreate;
+use App\Modules\Person\Actions\InstitutionUpdate;
 use App\Modules\Person\Actions\InviteValidateCode;
 use App\Http\Controllers\Api\InstitutionController;
 use App\Modules\Person\Actions\MarkNotificationRead;
 use App\Modules\Person\Actions\InstitutionMarkApproved;
+use App\Modules\Person\Actions\InstitutionsMerge;
 use App\Modules\Person\Http\Controllers\Api\ApiController;
 use App\Modules\Person\Actions\InviteRedeemForExistingUser;
 use App\Modules\Person\Http\Controllers\Api\InviteController;
@@ -68,7 +70,8 @@ Route::group([
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/', [InstitutionController::class, 'index']);
         Route::post('/', InstitutionCreate::class);
-        // Route::put('/{institution}', InstitutionUpdate::class);
+        Route::put('/merge', InstitutionsMerge::class);
+        Route::put('/{institution}', InstitutionUpdate::class);
         Route::put('/{institution}/approved', InstitutionMarkApproved::class);
     });
 });

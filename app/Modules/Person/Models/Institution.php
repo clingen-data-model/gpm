@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Database\Factories\InstitutionFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $id
@@ -20,6 +21,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Institution extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -44,6 +46,8 @@ class Institution extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'country_id' => 'integer',
+        'approved' => 'boolean',
     ];
 
     /**

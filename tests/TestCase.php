@@ -4,7 +4,9 @@ namespace Tests;
 
 use App\Models\Cdwg;
 use Ramsey\Uuid\Uuid;
+use App\Models\Permission;
 use Illuminate\Support\Carbon;
+use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Bus;
 use App\Modules\Person\Models\Person;
@@ -12,7 +14,6 @@ use App\Modules\ExpertPanel\Jobs\AddContact;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -124,6 +125,18 @@ abstract class TestCase extends BaseTestCase
         $person = $user->person()->save(Person::factory()->make());
 
         return $user;
+    }
+
+    protected function setupPermission(String|array $permissions)
+    {
+        if (is_string($permissions)) {
+            Permission::factory()->create(['name' => $permissions]);
+            return;
+        }
+
+        foreach ($permissions as $perm) {
+            Permission::factory()->create(['name' => $perm]);
+        }
     }
 
     protected function getLongString()
