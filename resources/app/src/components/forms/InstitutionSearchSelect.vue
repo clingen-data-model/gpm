@@ -20,7 +20,7 @@
                     {{option}}
                 </div>
             </template>
-            <template v-slot:additionalOption>
+            <template v-slot:additionalOption  v-if="allowAdd">
                 <button class="font-bold link cursor-pointer" @click="initAddNew">Add your institution</button>
             </template>
         </search-select>
@@ -50,6 +50,10 @@ export default {
         modelValue: {
             required: true,
         },
+        allowAdd: {
+            type: Boolean,
+            default: true
+        }
     },
     data() {
         return {

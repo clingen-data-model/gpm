@@ -55,3 +55,7 @@ export const markApproved = (institution) => {
     return api.put(`/api/institutions/${institution.id}/approved`)
         .then ( response => response.data);
 }
+
+export const mergeInstitutions = (authorityId, obsoleteIds) => {
+    return api.put(`/api/institutions/merge`, {authority_id: authorityId, obsolete_ids: obsoleteIds});
+}

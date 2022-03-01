@@ -16,6 +16,7 @@
                     
                     <dropdown-item @click="edit(item)">Edit</dropdown-item>
                     <dropdown-item @click="initApprove(item)">Approve</dropdown-item>
+                    <dropdown-item @click="initMerge(item)">Merge into another</dropdown-item>
                 </dropdown-menu>
             </template>
         </data-table>
@@ -26,6 +27,9 @@
             <modal-dialog v-model="showEditDialog" :title="`Edit ${currentItem.name}`">
                 <institution-update-form v-model="currentItem" @saved="handleSaved" @canceled="handleCancel" />
             </modal-dialog>
+            <modal-dialog v-model="showMergeDialog" title="Merge Institutions">
+                <institution-merge-form :obsoletes="[currentItem]" @saved="handleMerge" @canceled="showMergeDialog = false" />
+            </modal-dialog>
         </teleport>
     </div>
 </template>
@@ -34,12 +38,14 @@ import sortAndFilter from '@/composables/router_aware_sort_and_filter';
 import {getAllInstitutions} from '@/forms/institution_form'
 import InstitutionApprovalForm from '@/components/institutions/InstitutionApprovalForm'
 import InstitutionUpdateForm from '@/components/institutions/InstitutionUpdateForm'
+import InstitutionMergeForm from '@/components/institutions/InstitutionMergeForm'
 
 export default {
     name: 'InstitutionList',
     components: {
         InstitutionUpdateForm,
-        InstitutionApprovalForm
+        InstitutionApprovalForm,
+        InstitutionMergeForm,
     },
     data() {
         return {
@@ -93,7 +99,8 @@ export default {
             ],
             currentItem: {country: {}},
             showApproveDialog: false,
-            showEditDialog: false
+            showEditDialog: false,
+            showMergeDialog: false,
         }
     },
     computed: {
@@ -118,6 +125,10 @@ export default {
             this.showApproveDialog = true;
             this.currentItem = item;
         },
+        initMerge (item) {
+            this.currentItem = item;
+            this.showMergeDialog = true;
+        },
         async getInstitutions () {
             this.items = await getAllInstitutions();
         },
@@ -134,11 +145,17 @@ export default {
             this.updateItem();
             this.currentItem = {country: {}}
         },
+        handleMerge() {
+            this.getInstitutions(); 
+            this.showMergeDialog = false;
+        },
         updateItem() {
             if (!this.currentItem.id) {
                 return;
             }
-            const currentIdx = this.items.findIndex(i => i.id = this.currentItem.id);
+            console.log('currentItem', this.currentItem);
+            const currentIdx = this.items.findIndex(i => i.id == this.currentItem.id);
+            console.log('currentItemIdx', currentIdx);
             if (currentIdx > -1) {
                 this.items[currentIdx] = {...this.currentItem}
             }
