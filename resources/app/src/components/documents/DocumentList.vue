@@ -4,7 +4,7 @@
             <div class="flex justify-between py-2">
                 <div class="flex space-x-2">
                     <label>
-                        Search:&nbsp;<input type="text" placeholder="Fitler" v-model="keyword" class="sm">
+                        Search:&nbsp;<input type="text" placeholder="Filter" v-model="keyword" class="sm">
                     </label>
                     <label>
                         Type: &nbsp;
