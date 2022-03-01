@@ -66,7 +66,7 @@ class InstitutionUpdateTest extends TestCase
             ->assertStatus(422)
             ->assertJson([
                 'errors'=>[
-                    'name' => ['This field is required.'],
+                    'name' => ['This is required.'],
                     'country_id' => ['The selection is invalid.']
                 ]
             ]);

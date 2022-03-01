@@ -42,9 +42,17 @@ class InstitutionsMerge
         return [
            'authority_id' => 'required|exists:institutions,id',
            'obsolete_ids' => 'required',
-           'obsolete_ids.*' => 'exists:institutions,id'
+           'obsolete_ids.*' => 'exists:institutions,id|different:authority_id'
         ];
     }
+
+    public function getValidationMessages()
+    {
+        return [
+            'different' => 'All obsolete institutions may not include the merge-to institution.'
+        ];
+    }
+    
 
     private function transferPeople(Institution $authority, Collection $obsoletes)
     {

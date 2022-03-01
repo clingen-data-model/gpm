@@ -79,6 +79,43 @@ class MergeInstitutionsTest extends TestCase
         ]);
     }
     
+    /**
+     * @test
+     */
+    public function validates_required_data()
+    {
+        $this->makeRequest([])
+            ->assertStatus(422)
+            ->assertJsonFragment(['authority_id' => ['This is required.']])
+            ->assertJsonFragment(['obsolete_ids' => ['This is required.']]);
+    }
+
+    /**
+     * @test
+     */
+    public function validates_existing_institutions()
+    {
+        $this->makeRequest(['authority_id' => 777, 'obsolete_ids' => [555, 666]])
+            ->assertStatus(422)
+            ->assertJsonFragment(['authority_id' => ['The selection is invalid.']])
+            ->assertJsonFragment(['obsolete_ids.0' => ['The selection is invalid.']])
+            ->assertJsonFragment(['obsolete_ids.1' => ['The selection is invalid.']]);
+    }
+
+    /**
+     * @test
+     */
+    public function validates_obsolete_cannot_match_authority()
+    {
+        $this->makeRequest([
+                'authority_id' => $this->institution1->id,
+                'obsolete_ids' => [$this->institution1->id, $this->institution2->id]
+            ])
+            ->assertStatus(422)
+            ->assertJsonFragment(['obsolete_ids.0' => ['All obsolete institutions may not include the merge-to institution.']]);
+    }
+    
+    
     
     
 
