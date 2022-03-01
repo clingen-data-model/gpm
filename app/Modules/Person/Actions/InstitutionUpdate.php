@@ -19,7 +19,8 @@ class InstitutionUpdate
     {
         $data = $request->only(['name', 'abbreviation', 'url', 'country_id', 'address']);
         return $this->handle($institution, $data)
-                ->load('country');
+                ->load('country')
+                ->loadCount('people');
     }
 
     public function authorize(ActionRequest $request): bool

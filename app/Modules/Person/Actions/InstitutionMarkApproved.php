@@ -13,7 +13,8 @@ class InstitutionMarkApproved
     {
         $institution->update(['approved' => true]);
 
-        return $institution->load("country");
+        return $institution->load("country")
+                ->loadCount('people');
     }
     
     public function authorize(ActionRequest $request): bool
