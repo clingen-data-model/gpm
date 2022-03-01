@@ -59,6 +59,7 @@ class ModelSearchService
         return $query;
     }
 
+
     private function addWhereClause($query, $where)
     {
         if (!is_null($this->whereFunction)) {

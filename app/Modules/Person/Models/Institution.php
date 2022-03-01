@@ -2,6 +2,7 @@
 
 namespace App\Modules\Person\Models;
 
+use App\Modules\Person\Models\Person;
 use App\Modules\Person\Models\Country;
 use Illuminate\Database\Eloquent\Model;
 use Database\Factories\InstitutionFactory;
@@ -53,6 +54,12 @@ class Institution extends Model
     {
         return $this->belongsTo(Country::class);
     }
+
+    public function people()
+    {
+        return $this->hasMany(Person::class);
+    }
+    
     
     /**
      * SCOPES
