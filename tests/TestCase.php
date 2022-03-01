@@ -3,6 +3,7 @@
 namespace Tests;
 
 use App\Models\Cdwg;
+use App\Models\Role;
 use Ramsey\Uuid\Uuid;
 use App\Models\Permission;
 use Illuminate\Support\Carbon;
@@ -10,10 +11,13 @@ use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Bus;
 use App\Modules\Person\Models\Person;
+use Database\Seeders\GroupTypeSeeder;
+use Database\Seeders\GroupStatusSeeder;
 use App\Modules\ExpertPanel\Jobs\AddContact;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Database\Seeders\EpTypesTableSeeder;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -30,6 +34,7 @@ abstract class TestCase extends BaseTestCase
 
     public function makeApplicationData()
     {
+        $group = Group::factory()->create(['group_type_id' => config('groups.types.cdwg.id')]);
         $data = [
             'uuid' => Uuid::uuid4()->toString(),
             'working_name' => 'EP Working Name',
@@ -137,6 +142,43 @@ abstract class TestCase extends BaseTestCase
         foreach ($permissions as $perm) {
             Permission::factory()->create(['name' => $perm]);
         }
+    }
+
+    protected function setupRoles(String|array $roles)
+    {
+        if (is_string($roles)) {
+            Role::factory()->create(['name' => $roles]);
+            return;
+        }
+
+        foreach ($roles as $perm) {
+            Role::factory()->create(['name' => $perm]);
+        }
+    }
+
+    protected function runSeeder($seederClass): void
+    {
+        $seeder = new $seederClass();
+        $seeder->run();
+    }
+
+    protected function seedForGroupTest(): void
+    {
+        $seeders = [
+            GroupTypeSeeder::class,
+            EpTypesTableSeeder::class,
+            GroupStatusSeeder::class,
+        ];
+
+        foreach ($seeders as $seederClass) {
+            $this->runSeeder($seederClass);
+        }
+    }
+    
+    protected function setupForGroupTest(): void
+    {
+        $this->seedForGroupTest();
+        $this->setupRoles('coordinator', 'groups-manage');
     }
 
     protected function getLongString()

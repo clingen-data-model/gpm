@@ -61,7 +61,7 @@ class RemoveMemberTest extends TestCase
         $response->assertStatus(422);
 
         $response->assertJsonFragment([ 'errors' => [
-            'end_date' => ['The end date field is required.'],
+            'end_date' => ['This is required.'],
         ]]);
     }
 

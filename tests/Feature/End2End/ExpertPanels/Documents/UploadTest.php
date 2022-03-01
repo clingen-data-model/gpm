@@ -100,9 +100,9 @@ class UploadTest extends TestCase
         $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/documents', [])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'uuid' => ['The uuid field is required.'],
-                'file' => ['The file field is required.'],
-                'document_type_id' => ['The document type id field is required.']
+                'uuid' => ['This is required.'],
+                'file' => ['This is required.'],
+                'document_type_id' => ['This is required.']
             ]);
     }
     
@@ -124,7 +124,7 @@ class UploadTest extends TestCase
             ->assertJsonFragment([
                 'uuid' => ['The uuid must be a valid UUID.'],
                 'file' => ['The file must be a file.'],
-                'document_type_id' => ['The selected document type id is invalid.'],
+                'document_type_id' => ['The selection is invalid.'],
                 "date_received" => ["The date received is not a valid date."],
             ]);
     }

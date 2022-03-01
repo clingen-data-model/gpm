@@ -65,10 +65,10 @@ class AddActivityLogTest extends TestCase
         $this->makeRequest([])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'entry' => ['The entry field is required.'],
+                'entry' => ['This is required.'],
             ])
             ->assertJsonFragment([
-                'log_date' => ['The log date field is required.'],
+                'log_date' => ['This is required.'],
             ]);
 
         $this->makeRequest(['log_date'=>'bob'])

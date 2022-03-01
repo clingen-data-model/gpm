@@ -67,7 +67,7 @@ class AddContactsTest extends TestCase
         $response->assertJson([
             'message' => 'The given data was invalid.',
             'errors' => [
-                'person_uuid' => ['The person uuid field is required.'],
+                'person_uuid' => ['This is required.'],
             ]
         ]);
 

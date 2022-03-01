@@ -58,7 +58,7 @@ class UpdateDocumentTest extends TestCase
         $this->makeRequest(['document_type_id' => 9999])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'document_type_id' => ['The selected type is invalid.']
+                'document_type_id' => ['The selection is invalid.']
             ]);
     }
 

@@ -31,12 +31,4 @@ class InitiateApplicationRequest extends FormRequest
             'expert_panel_type_id' => 'required|exists:expert_panel_types,id',
         ];
     }
-
-    public function messages()
-    {
-        return [
-            'cdwg_id.exists' => 'The selected cdwg is invalid.',
-            'expert_panel_type_id.exists' => 'The selected expert panel type is invalid.',
-        ];
-    }
 }

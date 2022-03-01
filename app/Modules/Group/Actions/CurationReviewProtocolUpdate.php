@@ -56,9 +56,8 @@ class CurationReviewProtocolUpdate
     public function getValidationMessages()
     {
         return [
-            'required' => 'This field is required.',
-            'required_if' => 'This field is required.',
-            'curation_review_protocol_id.exists' => 'The selected protocol is invalid.'
+            'required' => 'This is required.',
+            'required_if' => 'This is required.',
         ];
     }
 }

@@ -100,7 +100,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
             ])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'cdwg_id' => ['The selected cdwg id is invalid.'],
+                'cdwg_id' => ['The selection is invalid.'],
                 'long_base_name' => ['The long base name may not be greater than 255 characters.'],
                 'short_base_name' => ['The short base name may not be greater than 15 characters.'],
                 'affiliation_id' => ['The affiliation id must be 5 digits.'],

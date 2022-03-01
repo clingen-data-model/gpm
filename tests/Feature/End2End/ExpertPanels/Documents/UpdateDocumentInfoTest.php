@@ -55,7 +55,7 @@ class UpdateDocumentInfoTest extends TestCase
         $this->json('PUT', $this->docUrl, [])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'date_received' => ['The date received field is required.']
+                'date_received' => ['This is required.']
             ]);
     }
 }

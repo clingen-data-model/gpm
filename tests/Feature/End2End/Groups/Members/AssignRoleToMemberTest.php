@@ -85,7 +85,7 @@ class AssignRoleToMemberTest extends TestCase
         );
         $response->assertStatus(422);
 
-        $response->assertJsonFragment(['role_ids' => ['The role ids field is required.']]);
+        $response->assertJsonFragment(['role_ids' => ['This is required.']]);
     }
 
     /**

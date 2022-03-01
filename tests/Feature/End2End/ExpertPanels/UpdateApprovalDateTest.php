@@ -37,8 +37,8 @@ class UpdateApprovalDateTest extends TestCase
         $this->json('put', '/api/applications/'.$this->expertPanel->uuid.'/approve', [])
             ->assertStatus(422)
             ->assertJson(['errors' => [
-                'step' => ['The step field is required.'],
-                'date_approved' => ['The date approved field is required.']
+                'step' => ['This is required.'],
+                'date_approved' => ['This is required.']
                 ]
             ]);
 

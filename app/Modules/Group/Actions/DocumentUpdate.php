@@ -50,7 +50,6 @@ class DocumentUpdate
     {
         return [
             'required' => 'This is required.',
-            'exists' => 'The selected type is invalid.'
         ];
     }
 }

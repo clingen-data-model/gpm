@@ -20,6 +20,7 @@ class InitiationTest extends TestCase
     public function setup():void
     {
         parent::setup();
+        $this->setupForGroupTest();
         $this->user = User::factory()->create();
         Sanctum::actingAs($this->user);
     }
@@ -30,7 +31,7 @@ class InitiationTest extends TestCase
      */
     public function can_create_initiate_an_application()
     {
-        $this->seed();
+        // $this->seed();
 
         $data = $this->makeApplicationData();
         $data['cdwg_id'] = null;
@@ -51,7 +52,7 @@ class InitiationTest extends TestCase
      */
     public function validates_required_parameters_before_initiating_application()
     {
-        $this->seed();
+        // $this->seed();
 
         $data = [];
         $response = $this->json('Post', '/api/applications', $data);
@@ -60,9 +61,9 @@ class InitiationTest extends TestCase
         $response->assertJson([
             'message' => 'The given data was invalid.',
             'errors' => [
-                'uuid' => ['The uuid field is required.'],
-                'working_name' => ['The working name field is required.'],
-                'expert_panel_type_id' => ['The expert panel type id field is required.'],
+                'uuid' => ['This is required.'],
+                'working_name' => ['This is required.'],
+                'expert_panel_type_id' => ['This is required.'],
             ]
         ]);
     }
@@ -119,7 +120,7 @@ class InitiationTest extends TestCase
         $response = $this->json('Post', '/api/applications', $data);
 
         $response->assertStatus(422);
-        $response->assertJsonFragment(['cdwg_id' => ['The selected cdwg is invalid.']]);
+        $response->assertJsonFragment(['cdwg_id' => ['The selection is invalid.']]);
     }
     
     /**
@@ -127,10 +128,10 @@ class InitiationTest extends TestCase
      */
     public function validates_expert_panel_types_id_exists()
     {
-        $data = ['expert_panel_type_id'=>'3'];
+        $data = ['expert_panel_type_id'=>3];
         $response = $this->json('Post', '/api/applications', $data);
 
         $response->assertStatus(422);
-        $response->assertJsonFragment(['expert_panel_type_id' => ['The selected expert panel type is invalid.']]);
+        $response->assertJsonFragment(['expert_panel_type_id' => ['The selection is invalid.']]);
     }
 }

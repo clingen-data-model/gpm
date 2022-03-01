@@ -10,6 +10,7 @@ use App\Modules\User\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Storage;
+use App\Modules\Group\Actions\MemberAdd;
 use Tests\CreatesDocumentUploadRequestData;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
@@ -27,9 +28,13 @@ class DownloadTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->doc = Document::factory()->make();
+
+        $this->user = $this->setupUserWithPerson();
+        app()->make(MemberAdd::class)->handle($this->expertPanel->group, $this->user->person);
+        Sanctum::actingAs($this->user);
 
         (new ApplicationDocumentAdd)->handle(
             expertPanelUuid: $this->expertPanel->uuid,
@@ -44,19 +49,8 @@ class DownloadTest extends TestCase
     /**
      * @test
      */
-    public function guest_cannot_download_a_file()
-    {
-        $this->json('GET', '/documents/'.$this->doc->uuid)
-            ->assertStatus(401);
-    }
-
-    /**
-     * @test
-     */
     public function responds_with_404_if_document_not_found()
     {
-        $user = $this->setupUserWithPerson();
-        Sanctum::actingAs($user);
         $url = '/documents/'.Uuid::uuid4()->toString();
         $response = $this->json('GET', $url);
         $response->assertStatus(404);
@@ -68,8 +62,6 @@ class DownloadTest extends TestCase
     public function responds_with_404_if_file_not_found()
     {
         $this->doc->storage_path = 'beans.txt';
-        $user = $this->setupUserWithPerson();
-        Sanctum::actingAs($user);
         $response = $this->json('GET', '/documents/'.$this->doc->uuid)
                         ->assertStatus(404);
     }
@@ -79,13 +71,8 @@ class DownloadTest extends TestCase
      */
     public function authed_user_can_download_a_file()
     {
-        $user = $this->setupUserWithPerson();
-        Sanctum::actingAs($user);
-
-
         $data = $this->makeDocumentUploadRequestData(filename: 'test_download.docx');
 
-        \Laravel\Sanctum\Sanctum::actingAs($user);
         $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/documents', $data);
         
         $response = $this->json('GET', '/documents/'.$data['uuid']);

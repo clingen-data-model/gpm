@@ -45,7 +45,7 @@ class AttestationNhgriTest extends TestCase
         $this->submitRequest([])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'attestation' => ['The attestation field is required.']
+                'attestation' => ['This is required.']
             ]);
 
         $this->submitRequest(['attestation' => 0])

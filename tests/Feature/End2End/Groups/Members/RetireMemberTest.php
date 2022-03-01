@@ -61,8 +61,8 @@ class RetireMemberTest extends TestCase
         $response->assertStatus(422);
 
         $response->assertJsonFragment([ 'errors' => [
-            'start_date' => ['The start date field is required.'],
-            'end_date' => ['The end date field is required.'],
+            'start_date' => ['This is required.'],
+            'end_date' => ['This is required.'],
         ]]);
     }
 

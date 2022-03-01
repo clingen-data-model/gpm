@@ -29,7 +29,7 @@ class SendPasswordResetLinkTest extends TestCase
         $response->assertJson([
                 "message" => "The given data was invalid.",
                 "errors" => [
-                    'email' => ['The email field is required.']
+                    'email' => ['This is required.']
                 ]
             ]);
     }

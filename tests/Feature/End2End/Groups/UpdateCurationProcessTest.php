@@ -6,6 +6,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
+use Database\Seeders\CurationReviewProtocolsSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -16,10 +17,11 @@ class UpdateCurationProcessTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupPermission('ep-applications-manage');
+        $this->setupForGroupTest();
+        $this->runSeeder(CurationReviewProtocolsSeeder::class);
 
-        $this->user = User::factory()->create();
-        $this->user->givePermissionTo('ep-applications-manage');
+        $this->user = $this->setupUser(permissions: ['ep-applications-manage']);
         $this->expertPanel = ExpertPanel::factory()->vcep()->create();
 
         Sanctum::actingAs($this->user);
@@ -44,8 +46,8 @@ class UpdateCurationProcessTest extends TestCase
         $this->makeRequest(['expert_panel_type_id' => $this->expertPanel->expert_panel_type_id])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'curation_review_protocol_id' => ['This field is required.'],
-                'meeting_frequency' => ['This field is required.'],
+                'curation_review_protocol_id' => ['This is required.'],
+                'meeting_frequency' => ['This is required.'],
             ]);
 
         $this->makeRequest([
@@ -53,7 +55,7 @@ class UpdateCurationProcessTest extends TestCase
             ])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'curation_review_protocol_other' => ['This field is required.'],
+                'curation_review_protocol_other' => ['This is required.'],
             ]);
     }
 
@@ -67,7 +69,7 @@ class UpdateCurationProcessTest extends TestCase
             ])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'curation_review_protocol_id' => ['The selected protocol is invalid.']
+                'curation_review_protocol_id' => ['The selection is invalid.']
             ]);
     }
 

@@ -82,7 +82,7 @@ class GrantMemberPermissionTest extends TestCase
         $response->assertStatus(422);
 
         $response->assertJsonFragment([
-            'permission_ids' => ['The permission ids field is required.']
+            'permission_ids' => ['This is required.']
         ]);
     }
 
@@ -108,7 +108,7 @@ class GrantMemberPermissionTest extends TestCase
         $response->assertStatus(422);
 
         $response->assertJsonFragment([
-            'permission_ids' => ['The selected permission ids is invalid.']
+            'permission_ids' => ['The selection is invalid.']
         ]);
     }
     

@@ -41,7 +41,7 @@ class UpdateGroupNameTest extends TestCase
         $this->makeRequest([])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'name' => ['The name field is required.']
+                'name' => ['This is required.']
             ]);
 
 

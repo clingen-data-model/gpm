@@ -65,8 +65,8 @@ class AddLogEntryTest extends TestCase
         $this->json('POST', $this->baseUrl, [])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'entry' => ['The entry field is required.'],
-                'log_date' => ['The log date field is required.'],
+                'entry' => ['This is required.'],
+                'log_date' => ['This is required.'],
             ]);
     }
 

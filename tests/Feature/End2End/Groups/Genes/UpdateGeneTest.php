@@ -91,19 +91,19 @@ class UpdateGeneTest extends TestCase
         $rsp2 = $this->json('PUT', $this->url, ['hgnc_id' => 'bob', 'mondo_id' => '920192'])
         ->assertStatus(422)
             ->assertJsonFragment([
-                    'hgnc_id' => ['The selected gene is invalid.']
+                    'hgnc_id' => ['The selection is invalid.']
             ])
             ->assertJsonFragment([
-                'mondo_id' => ['The selected disease is invalid.'],
+                'mondo_id' => ['The selection is invalid.'],
             ]);
 
         $rsp3 = $this->json('PUT', $this->url, ['hgnc_id' => 91828, 'mondo_id' => 'MONDO:3383710'])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'hgnc_id' => ['The selected gene is invalid.']
+                'hgnc_id' => ['The selection is invalid.']
             ])
             ->assertJsonFragment([
-                'mondo_id' => ['The selected disease is invalid.']
+                'mondo_id' => ['The selection is invalid.']
             ]);
     }
 
@@ -121,15 +121,15 @@ class UpdateGeneTest extends TestCase
                     'hgnc_id' => ['The gene is required.']
             ])
             ->assertJsonMissing([
-                    'mondo_id' => ['The disease field is required.']
+                    'mondo_id' => ['This is required.']
             ]);
 
         $this->json('PUT', $this->url, ['hgnc_id' => 'bob', 'mondo_id' => '920192'])
             ->assertJsonFragment([
-                    'hgnc_id' => ['The selected gene is invalid.']
+                    'hgnc_id' => ['The selection is invalid.']
             ])
             ->assertJsonMissing([
-                'mondo_id' => ['The selected disease is invalid.'],
+                'mondo_id' => ['The selection is invalid.'],
             ]);
     }
 

@@ -14,7 +14,7 @@ class ResetPasswordTest extends TestCase
 
     public function setup():void
     {
-        parent::setup();    
+        parent::setup();
     }
 
     /**
@@ -28,10 +28,9 @@ class ResetPasswordTest extends TestCase
         $response->assertJson([
             // "message" => "The given data was invalid.",
             "errors" => [
-                'token' => ['The token field is required.'],
-                'email' => ['The email field is required.'],
-                'password' => ['The password field is required.'],
-                // 'password_confirmation' => ['The password confirmation field is required.']
+                'token' => ['This is required.'],
+                'email' => ['This is required.'],
+                'password' => ['This is required.'],
             ]
         ]);
     }
@@ -76,9 +75,4 @@ class ResetPasswordTest extends TestCase
 
         $response->assertStatus(200);
     }
-    
-    
-    
-    
-
 }

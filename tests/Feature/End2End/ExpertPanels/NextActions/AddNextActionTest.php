@@ -66,10 +66,10 @@ class AddNextActionTest extends TestCase
         $this->json('POST', $this->baseUrl, [])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'uuid' => ['The uuid field is required.'],
-                'date_created' => ['The date created field is required.'],
-                'entry' => ['The entry field is required.'],
-                'assigned_to' => ['The assigned to field is required.']
+                'uuid' => ['This is required.'],
+                'date_created' => ['This is required.'],
+                'entry' => ['This is required.'],
+                'assigned_to' => ['This is required.']
             ]);
     }
 
