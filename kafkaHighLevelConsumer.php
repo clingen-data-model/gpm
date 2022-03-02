@@ -27,8 +27,10 @@ $offset = (int)(isset($options['offset']) ? $options['offset'] : -1);
 $limit = isset($options['limit']) ? (int)$options['limit'] : false;
 $writeToDisk = isset($options['write-to-disk']) ? (int)$options['write-to-disk'] : false;
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
+if (file_exists(__DIR__.'/.env')) {
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+    $dotenv->load();
+}
 
 
 function rSortByKeys($array)
@@ -208,6 +210,7 @@ echo "\nWaiting for partition assignment...\n";
 $count = 0;
 $keys = [];
 
+$timedOut = false;
 while (true) {
     $message = $consumer->consume(10000);
     switch ($message->err) {
@@ -219,11 +222,11 @@ while (true) {
 
             $a = json_decode($message->payload, true);
 
-            $filename = $message->key ?? 'null-key-'.$message->offset;
-
-            $filePath = $messageDir.'/'.$filename.'.json';
-
-            file_put_contents($filePath, json_encode(json_decode($message->payload), JSON_PRETTY_PRINT));
+            if ($writeToDisk) {
+                $filename = $message->key ?? 'null-key-'.$message->offset;
+                $filePath = $messageDir.'/'.$filename.'.json';
+                file_put_contents($filePath, json_encode(json_decode($message->payload), JSON_PRETTY_PRINT));
+            }
 
             echo(json_encode([
                 'len' => $message->len,
@@ -243,36 +246,48 @@ while (true) {
                 echo "Reached limit $limit";
                 break 2;
             }
+            $timedOut = false;
             break;
         case RD_KAFKA_RESP_ERR__PARTITION_EOF:
             echo "\n\n**No more messages; will wait for more...\n\n";
+            $timedOut = false;
             break;
             // echo "\n\nFound all messages. Closing for now.\n\n";
             // break 2;
         case RD_KAFKA_RESP_ERR__TIMED_OUT:
-            echo "**Timed out\n";
-            // echo "Timed out\n";
+            if (!$timedOut) {
+                echo "**timed out - waiting for messages...\n";
+                // echo "Timed out\n";
+                $timedOut = true;
+            }
             break;
         case RD_KAFKA_RESP_ERR__FAIL:
             echo "**Failed to communicate with broker\n";
+            $timedOut = false;
             break;
         case RD_KAFKA_RESP_ERR__BAD_MSG:
             echo "**Bad message format\n";
+            $timedOut = false;
             break;
         case RD_KAFKA_RESP_ERR__RESOLVE:
             echo "**Host resolution failure";
+            $timedOut = false;
             break;
         case RD_KAFKA_RESP_ERR__UNKNOWN_TOPIC:
             echo "**unknown topic\n";
+            $timedOut = false;
             break;
         case RD_KAFKA_RESP_ERR_INVALID_GROUP_ID:
             echo "**invalid group id\n";
+            $timedOut = false;
             break;
         case RD_KAFKA_RESP_ERR_GROUP_AUTHORIZATION_FAILED:
             echo "**group auth failed\n";
+            $timedOut = false;
             break;
         default:
             echo "**Unknown Error: ".$message->err."\n";
+            $timedOut = false;
             break;
 
     }
