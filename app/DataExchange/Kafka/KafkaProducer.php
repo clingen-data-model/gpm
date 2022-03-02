@@ -25,11 +25,12 @@ class KafkaProducer implements MessagePusher
             $topic->produce(RD_KAFKA_PARTITION_UA, 0, $message, $uuid);
             $this->rdKafkaProducer->poll(0);
             
-            while ($this->rdKafkaProducer->getOutQLen() > 0) {
-                $this->rdKafkaProducer->poll(50);
-                \Log::debug('polling b/c $this->rdKafkaProducer->getOutQLen(): '.$this->rdKafkaProducer->getOutQLen());
+            for ($flushRetries = 0; $flushRetries < 10; $flushRetries++) {
+                $result = $this->rdKafkaProducer->flush(1000);
+                if (RD_KAFKA_RESP_ERR_NO_ERROR === $result) {
+                    break;
+                }
             }
-            \Log::debug('q len is 0.  finishing up.');
         } catch (\Throwable $e) {
             report($e);
         }
@@ -46,6 +47,12 @@ class KafkaProducer implements MessagePusher
 
     public function push(string $message, $uuid = null)
     {
+        dump(__METHOD__);
+        dump([
+            'topic' => $this->topic,
+            'message' => $message,
+            'uuid' => $uuid
+        ]);
         if (!$this->topic) {
             throw new StreamingServiceException('You must set a topic on the Producer before you can use KafkaProducer::produce');
         }
