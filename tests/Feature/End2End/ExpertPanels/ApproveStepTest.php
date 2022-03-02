@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Notifications\ApplicationStepApprovedNotification;
+use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ApproveStepTest extends TestCase
@@ -26,7 +27,9 @@ class ApproveStepTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupPermission(['ep-applications-manage']);
+        $this->setupForGroupTest();
+        $this->runSeeder(SubmissionTypeAndStatusSeeder::class);
         $this->person = Person::factory()->create();
         $this->expertPanel = ExpertPanel::factory()->vcep()->create();
         ContactAdd::run($this->expertPanel->uuid, $this->person->uuid);

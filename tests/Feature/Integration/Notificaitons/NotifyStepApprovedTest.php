@@ -22,7 +22,7 @@ class NotifyStepApprovedTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
         
         $this->expertPanel = ExpertPanel::factory()->create([
             'expert_panel_type_id' => config('expert_panels.types.gcep.id')
