@@ -13,7 +13,7 @@ class PushUnsentMessages extends Command
      *
      * @var string
      */
-    protected $signature = 'dx:push-pending';
+    protected $signature = 'dx:push-pending {--limit= : number of messages to be sent}';
 
     /**
      * The console command description.
@@ -40,11 +40,14 @@ class PushUnsentMessages extends Command
     public function handle()
     {
         $query = StreamMessage::unsent();
-        
+        if ($this->option('limit')) {
+            $query->limit($this->option('limit'));
+        }
+
         $progress = $this->output->createProgressBar($query->count());
 
         $query->get()->each(function ($message) use ($progress) {
-            PushMessage::dispatchSync($message);
+            PushMessage::dispatch($message);
             $progress->advance();
         });
         $progress->finish();
