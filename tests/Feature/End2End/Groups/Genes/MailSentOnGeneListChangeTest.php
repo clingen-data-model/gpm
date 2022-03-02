@@ -21,10 +21,12 @@ class MailSentOnGeneListChangeTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupPermission('ep-applications-manage');
+        $this->setupForGroupTest();
         $this->seedGenes();
         $this->seedDiseases();
-
+        
+        config(['app.features.notify_scope_change' => true]);
         $this->user = $this->setupUser(null, ['ep-applications-manage']);
 
         $this->expertPanel = ExpertPanel::factory()->create(['expert_panel_type_id' => config('expert_panels.types.vcep.id')]);
@@ -63,6 +65,50 @@ class MailSentOnGeneListChangeTest extends TestCase
         Mail::assertNotSent(GeneRemovedMail::class);
     }
     
+    /**
+     * @test
+     */
+    public function added_mail_not_sent_if_notify_scope_change_disabled()
+    {
+        $this->expertPanel->step_1_approval_date = Carbon::now();
+        $this->expertPanel->save();
+
+        config(['app.features.notify_scope_change' => false]);
+
+        Mail::fake();
+
+        $this->makeAddRequest()
+            ->assertStatus(200);
+        
+        Mail::assertNotSent(GeneRemovedMail::class);
+    }
+    
+
+    /**
+     * @test
+     */
+    public function remove_mail_not_sent_if_notify_scope_change_disabled()
+    {
+        $this->expertPanel->step_1_approval_date = Carbon::now();
+        $this->expertPanel->save();
+
+        config(['app.features.notify_scope_change' => false]);
+
+        Mail::fake();
+
+        $this->gene1 = $this->expertPanel->genes()->create([
+            'hgnc_id' => 123345,
+            'mondo_id' => 'MONDO:1234567',
+            'gene_symbol' => uniqid()
+        ]);
+
+        $this->makeRemoveRequest()
+            ->assertStatus(200);
+        
+        Mail::assertNotSent(GeneRemovedMail::class);
+    }
+    
+
     /**
      * @test
      */

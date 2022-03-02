@@ -121,5 +121,6 @@ return [
         'coi_reminders' => env('FEATURE_REMINDERS_COIS', true),
         'show_cdwgs' => env('FEATURE_SHOW_CDWGS', true),
         'show_wgs' => env('FEATURE_SHOW_WGS', true),
+        'notify_scope_change' => env('FEATURE_NOTIFY_SCOPE_CHANGE', true)
     ]
 ];

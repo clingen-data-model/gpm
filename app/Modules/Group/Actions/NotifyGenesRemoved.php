@@ -15,6 +15,9 @@ class NotifyGenesRemoved
 
     public function handle(Group $group, Gene $gene): void
     {
+        if (!config('app.features.notify_scope_change')) {
+            return;
+        }
         $mailClass = new GeneRemovedMail($group, $gene);
         Mail::to(config('mail.from.address'))->send($mailClass);
     }

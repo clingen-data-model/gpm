@@ -16,6 +16,9 @@ class NotifyGenesAdded
 
     public function handle(Group $group, Collection $genes): void
     {
+        if (!config('app.features.notify_scope_change')) {
+            return;
+        }
         $mailClass = new GeneAddedMail($group, $genes);
         Mail::to(config('mail.from.address'))->send($mailClass);
     }
