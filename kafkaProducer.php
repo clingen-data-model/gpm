@@ -3,8 +3,13 @@
 use Ramsey\Uuid\Uuid;
 
 require __DIR__ . '/vendor/autoload.php';
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
+
+if (file_exists(__DIR__.'/.env')) {
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+    $dotenv->load();
+}
+
+echo "You are producing as group ".env('DX_GROUP')."\n";
 
 $argments = [];
 $options = [];
@@ -25,29 +30,21 @@ foreach ($argv as $idx => $arg) {
     }
     $arguments[] = $arg;
 }
-$topic = isset($options['topic']) ? $options['topic'] : '';
+function getTopicName($options)
+{
+    if (isset($options['topic'])) {
+        return $options['topic'];
+    }
+
+    echo "Topic:\n";
+    $stdin = fopen('php://stdin', 'r');
+    $topicName = fgets($stdin);
+    return trim($topicName);
+}
+
+$topicName = getTopicName($options);
 
 $conf = new RdKafka\Conf();
-
-// Set a rebalance callback to log partition assignments (optional)
-$conf->setRebalanceCb(function (RdKafka\KafkaConsumer $kafka, $err, array $partitions = null) {
-    switch ($err) {
-        case RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS:
-            echo "Assign: ";
-            var_dump($partitions);
-            $kafka->assign($partitions);
-            break;
-
-         case RD_KAFKA_RESP_ERR__REVOKE_PARTITIONS:
-             echo "Revoke: ";
-             var_dump($partitions);
-             $kafka->assign(null);
-             break;
-
-         default:
-            throw new \Exception($err);
-    }
-});
 
 $conf->setErrorCb(function ($kafka, $err, $reason) {
     throw new StreamingServiceException("Kafka producer error: ".rd_kafka_err2str($err)." (reason: ".$reason.')');
@@ -71,11 +68,11 @@ $conf->set('group.id', env('DX_GROUP'));
 $conf->set('metadata.broker.list', env('DX_BROKER'));
 
 
-$rk = new RdKafka\Producer($conf);
-$rk->setLogLevel(LOG_DEBUG);
-$rk->addBrokers(env('DX_BROKER'));
+$producer = new RdKafka\Producer($conf);
+$producer->setLogLevel(LOG_DEBUG);
+$producer->addBrokers(env('DX_BROKER'));
 
-$topic = $rk->newTopic($topic);
+$topic = $producer->newTopic($topicName);
 
 $stdin = fopen("php://stdin", "r");
 
@@ -89,10 +86,17 @@ while (true) {
     $topic->produce(RD_KAFKA_PARTITION_UA, 0, json_encode(['test' => trim($line)]), Uuid::uuid4()->toString());
     
     echo "tried to produce message '$line'\n";
-    $rk->poll(0);
+    $producer->poll(0);
 }
 
 
-while ($rk->getOutQLen() > 0) {
-    $rk->poll(50);
+for ($flushRetries = 0; $flushRetries < 10; $flushRetries++) {
+    $result = $producer->flush(10000);
+    if (RD_KAFKA_RESP_ERR_NO_ERROR === $result) {
+        break;
+    }
 }
+
+// while ($producer->getOutQLen() > 0) {
+//     $producer->poll(50);
+// }
