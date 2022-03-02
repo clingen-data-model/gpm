@@ -9,7 +9,7 @@
                     <tr>
                         <th style="min-width: 10rem">HGNC Symbol</th>
                         <th style="min-width: 15rem">Disease</th>
-                        <th style="max-width: 9rem">Date Approved</th>
+                        <!-- <th style="max-width: 9rem">Date Approved</th> -->
                         <th
                             v-if="canEdit"
                             style="width: 5rem"
@@ -35,7 +35,7 @@
                                 <template v-if="!gene.edit">
                                     <td>{{gene.gene_symbol}}</td>
                                     <td>{{gene.disease_name}}</td>
-                                    <td>{{formatDate(gene.date_approved)}}</td>
+                                    <!-- <td>{{formatDate(gene.date_approved)}}</td> -->
                                     <td
                                         v-if="canEdit"
                                     >
