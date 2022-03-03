@@ -166,17 +166,24 @@ export default {
             if (!filterString.value) {
                 return true;
             }
-            const normedString = filterString.value.toLowerCase();
-            return group.name.toLowerCase().match(normedString)
-                || group.expert_panel && group.expert_panel.full_long_base_name.toLowerCase().match(normedString)
-                || group.expert_panel && group.expert_panel.full_short_base_name.toLowerCase().match(normedString)
-                || group.id == filterString.value
-                || group.status.name.toLowerCase().match(normedString)
+
+            const pattern = new RegExp(`.*${filterString.value}.*`, 'i');
+
+            return group.name && group.name.match(pattern)
+                || group.displayName && group.displayName.match(pattern)
                 || (
+                    group.expert_panel && 
+                    group.expert_panel.full_short_base_name && 
+                    group.expert_panel.full_short_base_name.match(pattern)
+                )
+                || group.id == filterString.value
+                || group.status.name.match(pattern)
+                || (
+                    group.expert_panel &&
                     group.expert_panel.currentStepName &&
-                    group.expert_panel.currentStepName.toLowerCase().match(normedString)
+                    group.expert_panel.currentStepName.match(pattern)
                     )
-                || group.coordinators.filter(c => c.person.name.toLowerCase().match(normedString)).length > 0
+                || group.coordinators.filter(c => c.person.name.match(pattern)).length > 0
         }))
 
         const goToItem = (item) => {
