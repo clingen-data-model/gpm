@@ -175,9 +175,11 @@ export default {
         },
         parentOptions () {
             const options = [{value: 0, label: 'None'}];
-            this.parents.forEach(parent => {
-                options.push({value: parent.id, label: parent.displayName})
-            })
+            this.parents
+                .filter(group => group.type.can_be_parent)
+                .forEach(parent => {
+                    options.push({value: parent.id, label: parent.displayName})
+                })
 
             return sortBy(options, 'label');
         }

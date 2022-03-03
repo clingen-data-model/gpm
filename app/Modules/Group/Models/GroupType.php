@@ -23,7 +23,8 @@ class GroupType extends Model
      */
     protected $fillable = [
         'name',
-        'fullname'
+        'fullname',
+        'can_be_parent'
     ];
 
     /**
@@ -33,6 +34,7 @@ class GroupType extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'can_be_parent' => 'boolean',
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
