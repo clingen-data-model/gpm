@@ -8,7 +8,9 @@
                     <span v-if="showShortName">Short Name: <strong>{{group.expert_panel.full_short_base_name || '--'}}</strong>
                     |
                     </span>
-                    Affiliation ID: <strong>{{group.expert_panel.affiliation_id || '--'}}</strong>
+                    <span v-if="group.isEp()">
+                        Affiliation ID: <strong>{{group.expert_panel.affiliation_id || '--'}}</strong>
+                    </span>
                     <span v-if="group.parent_id">
                     | Part of the <router-link :to="{name: 'GroupDetail', params: {uuid: group.parent.uuid}}">{{group.parent.name}}</router-link>
                     </span>
