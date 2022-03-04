@@ -1,6 +1,6 @@
 <style lang="postcss" scoped>
   .child-group {
-    @apply px-2 border-t  border-l border-r hover:bg-blue-100;
+    @apply px-2 border-t  border-l border-r hover:bg-blue-100 bg-white;
     padding-top: .5rem;
     padding-bottom: .5rem;
   }
@@ -251,7 +251,7 @@
         <h2 class="mb-4">Subgroups</h2>
         <ul>
           <li class="child-group" v-for="group in group.children" :key="group.id">
-            <popover hover arrow placement="top">
+            <popover hover arrow placement="left" class="block w-full">
               <template v-slot:content>
                 <div class="text-xs">
                   <dictionary-row label="Status" label-class="font-bold" label-width="8em">{{group.status.name}}</dictionary-row>
@@ -273,7 +273,7 @@
                   <dictionary-row label="# Members" label-width="8em" label-class="font-bold">{{group.members_count}}</dictionary-row>
                 </div>
               </template>
-              <router-link :to="{name: 'GroupDetail', params: {uuid: group.uuid}}" class="block">
+              <router-link :to="{name: 'GroupDetail', params: {uuid: group.uuid}}" class="block w-full">
                 {{group.name}}
               </router-link>
             </popover>
