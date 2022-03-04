@@ -26,6 +26,8 @@ $topics = isset($options['topic']) ? explode(',', $options['topic']) : [];
 $offset = (int)(isset($options['offset']) ? $options['offset'] : -1);
 $limit = isset($options['limit']) ? (int)$options['limit'] : false;
 $writeToDisk = isset($options['write-to-disk']) ? (int)$options['write-to-disk'] : false;
+$saveToCsv = isset($options['save-to-csv']) ? (int)$options['save-to-csv'] : false;
+$noPrint = isset($options['no-print']) ? (int)$options['no-print'] : false;
 
 if (file_exists(__DIR__.'/.env')) {
     $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
@@ -56,9 +58,9 @@ function rSortByKeys($array)
 function commitOffset($consumer, $topicPartition, $offset, $attempt = 0)
 {
     if ($offset >= 0) {
-        echo "Committing offset set to $offset for topic ".$topicPartition->getTopic()." on partition ".$topicPartition->getPartition()."...\n";
+        echo "\nCommitting offset set to $offset for topic ".$topicPartition->getTopic()." on partition ".$topicPartition->getPartition()."...\n";
     } else {
-        echo "Don't update offset.\n";
+        echo "\nDon't update offset.\n";
         return;
     }
     // $topicPartition = new RdKafka\TopicPartition($topic, 0, $offset);
@@ -86,22 +88,13 @@ function configure($offset)
         }
     });
 
-    // Set where to start consuming messages when there is no initial offset in
-    // offset store or the desired offset is out of range.
-    // 'smallest': start from the beginning
-    
-    // $topicConf = new RdKafka\TopicConf();
-    // $topicConf->set('auto.offset.reset', 'beginning');
-    // Set the configuration to use for subscribed/assigned topics
-    // $conf->setDefaultTopicConf($topicConf);
-
     $conf->set('auto.offset.reset', 'beginning');
     
     // Set a rebalance callback to log partition assignments (optional)
     $conf->setRebalanceCb(function (RdKafka\KafkaConsumer $consumer, $err, array $topicPartitions = null) use ($offset) {
         switch ($err) {
             case RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS:
-                echo "Assign partions...";
+                echo "\nAssign partions...\n";
                 $consumer->assign($topicPartitions);
                 
                 foreach ($topicPartitions as $tp) {
@@ -123,57 +116,87 @@ function configure($offset)
     return $conf;
 }
 
+function printMessage($message)
+{
+    echo "\n-----\n";
+    echo(json_encode([
+        'len' => $message->len,
+        'topic_name' => $message->topic_name,
+        'timestamp' => $message->timestamp,
+        'partition' => $message->partition,
+        'payload' => json_decode($message->payload),
+        'key' => $message->key,
+        'offset' => $message->offset,
+    ], JSON_PRETTY_PRINT));
+}
+
 function configureForConfluent($offset)
 {
     $conf = configure($offset);
 
-    echo "setting group to ".env('DX_GROUP', 'unc_staging')." for ".env('DX_BROKER')."...\n";
+    echo "\nsetting group to ".env('DX_GROUP', 'unc_staging')." for ".env('DX_BROKER')."...\n";
     $conf->set('group.id', env('DX_GROUP', 'unc_staging'));
     
     $conf->set('security.protocol', 'sasl_ssl');
     $conf->set('metadata.broker.list', env('DX_BROKER'));
     $conf->set('sasl.mechanism', 'PLAIN');
-    echo "Authenticating ".env('DX_BROKER')." with DX_USERNAME (".env('DX_USERNAME').") and DX_PASSWORD (see .env)";
+    echo "\nAuthenticating ".env('DX_BROKER')." with DX_USERNAME (".env('DX_USERNAME').") and DX_PASSWORD (see .env)\n";
     $conf->set('sasl.username', env('DX_USERNAME'));
     $conf->set('sasl.password', env('DX_PASSWORD'));
 
     return $conf;
 }
 
-function configureForExchange($offset)
+function writeToDisk($message)
 {
-    throw new Exception("configureForExchange doesn't work b/c certs an no longer valid for group");
-
-    $group = 'tjward_unc';
-    $cert = "./kafka-auth/sha/unc.crt";
-    $keyLocation = "./kafka-auth/sha/exchange.clinicalgenome.org.key";
-    $caLocation = "./kafka-auth/ca-kafka-cert";
-
-    $conf = configure($offset);
-    
-    $conf->set('group.id', $group);
-    $conf->set('security.protocol', 'ssl');
-    $conf->set('metadata.broker.list', 'exchange.clinicalgenome.org:9093');
-    $conf->set('ssl.certificate.location', $cert);
-    $conf->set('ssl.key.location', $keyLocation);
-    $conf->set('ssl.ca.location', $caLocation);
-
-    if ($sslKeyPassword) {
-        $conf->set('ssl.key.password', $sslKeyPassword);
+    $messageDir = __DIR__.'/consumed_messages';
+    if (!file_exists($messageDir)) {
+        mkdir($messageDir);
+        echo "\nmade ".$messageDir.' directory'."\n";
     }
 
-    return $conf;
+    $filename = $message->key ?? 'null-key-'.$message->offset;
+    $filePath = $messageDir.'/'.$filename.'.json';
+    file_put_contents($filePath, json_encode(json_decode($message->payload), JSON_PRETTY_PRINT));
 }
 
-$messageDir = __DIR__.'/consumed_messages';
-if (!file_exists($messageDir)) {
-    mkdir($messageDir);
-    echo "made ".$messageDir.' directory'."\n";
+$csvHandle = null;
+
+function saveToCsv($message)
+{
+    global $csvHandle;
+
+    $payload = json_decode($message->payload);
+    $eventType = $payload->event_type;
+    $data = $payload->data;
+
+    if (!$csvHandle) {
+        $csvHandle = fopen('kafkaConsumedMessages.csv', 'c');
+        fputcsv($csvHandle, [
+            'offset',
+            'timestamp',
+            'expert_panel',
+            'event_type',
+        ]);
+    }
+    $lineData = [
+        $message->offset,
+        $message->timestamp,
+        $data->expert_panel->affiliation_id,
+        $eventType,
+    ];
+    fputcsv($csvHandle, $lineData);
 }
 
+function closeCsvHandle()
+{
+    global $csvHandle;
+    if ($csvHandle) {
+        fclose($csvHandle);
+    }
+}
 
 $conf = configureForConfluent($offset);
-// $conf = configureForExchange($offset);
 
 $consumer = new RdKafka\KafkaConsumer($conf);
 
@@ -204,7 +227,6 @@ if (array_key_exists('dont-listen', $options)) {
 // Subscribe to topic 'test'
 echo "**Subscribing to the following topics:\n".implode("\n  ", $topics)."...\n";
 $consumer->subscribe($topics);
-// var_dump($consumer->getAssignment());
 echo "\nWaiting for partition assignment...\n";
 
 $count = 0;
@@ -220,30 +242,25 @@ while (true) {
                 $payload = rSortByKeys($payload);
             }
 
-            $a = json_decode($message->payload, true);
-
             if ($writeToDisk) {
-                $filename = $message->key ?? 'null-key-'.$message->offset;
-                $filePath = $messageDir.'/'.$filename.'.json';
-                file_put_contents($filePath, json_encode(json_decode($message->payload), JSON_PRETTY_PRINT));
+                writeToDisk($message);
             }
 
-            echo(json_encode([
-                'len' => $message->len,
-                'topic_name' => $message->topic_name,
-                'timestamp' => $message->timestamp,
-                'partition' => $message->partition,
-                'payload' => $payload,
-                'key' => $message->key,
-                'offset' => $message->offset,
-            ], JSON_PRETTY_PRINT));
+            if ($saveToCsv) {
+                saveToCsv($message);
+            }
+
+            if (!$noPrint) {
+                printMessage($message);
+            }
+
             if (!isset($keys[$message->key])) {
                 $keys[$message->key] = [];
             }
-            // $keys[$message->key][] = json_encode($payload, JSON_PRETTY_PRINT);
+            $keys[$message->key][] = json_encode($payload, JSON_PRETTY_PRINT);
             $count++;
             if ($limit && $count > $limit) {
-                echo "Reached limit $limit";
+                echo "\nReached limit $limit\n";
                 break 2;
             }
             $timedOut = false;
@@ -307,3 +324,5 @@ foreach ($keys as $key => $payloads) {
         echo "-------\n";
     }
 }
+
+closeCsvHandle();
