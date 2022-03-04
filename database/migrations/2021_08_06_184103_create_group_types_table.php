@@ -21,13 +21,13 @@ class CreateGroupTypesTable extends Migration
             $table->string('name', 255)->unique();
             $table->string('fullname')->unique();
             $table->text('description');
+            $table->boolean('can_be_parent')->boolean()->default(true);
             $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();
 
         (new GroupTypeSeeder)->run();
-
     }
 
     /**

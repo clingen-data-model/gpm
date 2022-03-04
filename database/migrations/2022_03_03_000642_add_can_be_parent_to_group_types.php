@@ -13,6 +13,9 @@ class AddCanBeParentToGroupTypes extends Migration
      */
     public function up()
     {
+        if (Schema::hasColumn('group_types', 'can_be_parent')) {
+            return;
+        }
         Schema::table('group_types', function (Blueprint $table) {
             $table->boolean('can_be_parent')->boolean()->default(true);
         });

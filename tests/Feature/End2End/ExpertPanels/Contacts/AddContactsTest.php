@@ -27,9 +27,11 @@ class AddContactsTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        // $this->seed();
+        $this->setupForGroupTest();
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->user = User::factory()->create();
+        Sanctum::actingAs($this->user);
     }
     
 
@@ -40,7 +42,6 @@ class AddContactsTest extends TestCase
     {
         $person = Person::factory()->create();
 
-        Sanctum::actingAs($this->user);
         $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/contacts', ['person_uuid' => $person->uuid]);
         $response->assertStatus(200);
         $response->assertJson([
@@ -59,7 +60,6 @@ class AddContactsTest extends TestCase
     public function validates_new_contact_data()
     {
         $data = [];
-        Sanctum::actingAs($this->user);
         $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/contacts', $data);
 
         $response->assertStatus(422);
@@ -108,7 +108,6 @@ class AddContactsTest extends TestCase
             (new ContactAdd)->handle($this->expertPanel->uuid, $contact->uuid);
         });
 
-        Sanctum::actingAs($this->user);
         $response = $this->json('GET', '/api/applications/'.$this->expertPanel->uuid.'/contacts');
         $response->assertStatus(200);
         $response->assertJson($contacts->toArray());

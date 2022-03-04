@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\End2End\users;
+namespace Tests\Feature\End2End\Users;
 
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;

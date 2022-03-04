@@ -4,6 +4,7 @@ namespace Tests\Feature\End2End\ExpertPanels\Contacts;
 
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
+use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Modules\Person\Models\Person;
 use Lorisleiva\Actions\Facades\Actions;
@@ -25,12 +26,14 @@ class RemoveContactTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
         $this->user = User::factory()->create();
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->person = Person::factory()->create();
         
         (new ContactAdd())->handle($this->expertPanel->uuid, $this->person->uuid);
+
+        Sanctum::actingAs($this->user);
     }
 
     /**
@@ -38,7 +41,6 @@ class RemoveContactTest extends TestCase
      */
     public function removes_contact_from_application()
     {
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $this->json('DELETE', '/api/applications/'.$this->expertPanel->uuid.'/contacts/'.$this->person->uuid)
             ->assertStatus(200);
 
@@ -53,11 +55,9 @@ class RemoveContactTest extends TestCase
      */
     public function responds_with_404_if_application_or_person_not_found()
     {
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $this->json('DELETE', '/api/applications/'.$this->expertPanel->uuid.'/contacts/bob-is-your-uncle')
             ->assertStatus(404);
 
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $this->json('DELETE', '/api/applications/'.Uuid::uuid4().'/contacts/'.$this->person->uuid)
             ->assertStatus(404);
     }
@@ -69,7 +69,6 @@ class RemoveContactTest extends TestCase
     {
         $person2 = Person::factory()->create();
 
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $this->json('DELETE', '/api/applications/'.$this->expertPanel->uuid.'/contacts/'.$person2->uuid)
             ->assertStatus(422)
             ->assertJsonFragment([
