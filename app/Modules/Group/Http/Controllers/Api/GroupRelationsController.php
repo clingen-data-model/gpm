@@ -29,8 +29,8 @@ class GroupRelationsController extends Controller
                             'chairs',
                             'chairs.person',
                         ])
-                        ->get();
-        // dd($children->toArray());
+                        ->get()
+                        ->sortBy('expertPanel.name');
         return ChildGroupResource::collection($children);
     }
     
