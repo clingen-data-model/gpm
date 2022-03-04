@@ -17,7 +17,8 @@ class UpdateApprovalDateTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+
         $this->user = User::factory()->create();
         $this->expertPanel = ExpertPanel::factory()
                                 ->create([

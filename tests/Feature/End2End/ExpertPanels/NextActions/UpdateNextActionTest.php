@@ -9,8 +9,9 @@ use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Database\Seeders\NextActionAssigneesTableSeeder;
+use App\Modules\ExpertPanel\Actions\NextActionCreate;
 
 /**
  * @group next-actions
@@ -24,10 +25,12 @@ class UpdateNextActionTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+        $this->runSeeder([NextActionAssigneesTableSeeder::class]);
 
-        $this->user = User::factory()->create();
+        $this->user = $this->setupUser();
         Sanctum::actingAs($this->user);
+        
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->baseUrl = '/api/applications/'.$this->expertPanel->uuid.'/next-actions';
 

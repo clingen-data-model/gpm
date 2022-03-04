@@ -18,12 +18,10 @@ class ArtisanCreateUserTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
         
         $this->admin = User::factory()->create();
         $this->name = 'Louise Belcher';
         $this->email = 'louise@bobsburgers.com';
-
     }
 
     /**
@@ -43,12 +41,11 @@ class ArtisanCreateUserTest extends TestCase
      */
     public function it_asks_for_auth_info_if_and_new_user_info_and_creates_a_user()
     {
-
         $this->artisan('user:create')
             ->expectsQuestion('Your email address:', $this->admin->email)
             ->expectsQuestion('Your password:', 'password')
             ->expectsOutput('Authenticated as '.$this->admin->name);
-    }    
+    }
     
     /**
      * @test
@@ -114,9 +111,5 @@ class ArtisanCreateUserTest extends TestCase
             ->expectsQuestion('New user\'s email address:', $this->admin->email)
             ->expectsOutput("email is already in use.")
             ->assertExitCode(1);
-
     }
-    
-    
-    
 }

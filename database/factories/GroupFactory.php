@@ -34,4 +34,13 @@ class GroupFactory extends Factory
             'group_status_id' => $this->getRandomConfigValue('groups.statuses')['id'],
         ];
     }
+
+    public function cdwg()
+    {
+        return $this->state(function ($attributes) {
+            return [
+                'group_type_id' => config('groups.types.cdwg.id')
+            ];
+        });
+    }
 }

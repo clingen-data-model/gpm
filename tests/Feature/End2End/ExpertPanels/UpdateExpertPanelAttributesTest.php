@@ -17,7 +17,8 @@ class UpdateExpertPanelAttributesTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+
         $this->user = User::factory()->create();
         $this->cdwg = Cdwg::factory()->create();
 

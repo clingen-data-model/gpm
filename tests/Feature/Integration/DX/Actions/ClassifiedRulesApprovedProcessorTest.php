@@ -21,7 +21,7 @@ class ClassifiedRulesApprovedProcessorTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
         $this->expertPanel = ExpertPanel::factory()->vcep()->create(['affiliation_id' => '50666']);
         // $groupMember = GroupMember::factory()->create(['group_id' => $this->expertPanel->group_id, 'is_contact' => 1]);

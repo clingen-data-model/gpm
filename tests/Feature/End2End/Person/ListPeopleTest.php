@@ -21,8 +21,9 @@ class ListPeopleTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
-        $this->user = User::factory()->create();
+        $this->setupForGroupTest();
+
+        $this->user = $this->setupUser();
         $this->people = Person::factory(5)->create();
     }
 

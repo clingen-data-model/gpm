@@ -23,7 +23,7 @@ class ExpertPanelTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
         Carbon::setTestNow('2021-01-01');
     }
     

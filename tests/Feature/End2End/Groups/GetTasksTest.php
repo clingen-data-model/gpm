@@ -9,6 +9,7 @@ use App\Tasks\Actions\TaskCreate;
 use App\Tasks\Actions\TaskComplete;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Database\Seeders\TaskTypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class GetTasksTest extends TestCase
@@ -18,7 +19,8 @@ class GetTasksTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+        $this->runSeeder(TaskTypeSeeder::class);
         
         $this->expertPanel = ExpertPanel::factory()->vcep()->create();
         $this->pendingTask = (new TaskCreate)->handle($this->expertPanel->group, config('tasks.types.sustained-curation-review.id'));

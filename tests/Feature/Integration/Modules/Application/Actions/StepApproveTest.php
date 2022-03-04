@@ -18,7 +18,7 @@ class StepApproveTest extends TestCase
      */
     public function fires_StepApproved_event_when_step_approved_and_logs_activity()
     {
-        $this->seed();
+        $this->setupForGroupTest();
         $expertPanel = ExpertPanel::factory()->create(['current_step' => 1]);
 
         $dateApproved = Carbon::today();

@@ -3,12 +3,13 @@
 namespace Tests\Feature\End2End\ExpertPanels\NextActions;
 
 use Tests\TestCase;
-use App\Modules\ExpertPanel\Models\NextAction;
 use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
+use App\Modules\ExpertPanel\Models\NextAction;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Database\Seeders\NextActionAssigneesTableSeeder;
+use App\Modules\ExpertPanel\Actions\NextActionCreate;
 
 /**
  * @group next-actions
@@ -22,8 +23,10 @@ class CompleteNextActionTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
-        $this->user = User::factory()->create();
+        $this->setupForGroupTest();
+        $this->runSeeder([NextActionAssigneesTableSeeder::class]);
+
+        $this->user = $this->setupUser();
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->nextAction = NextAction::factory()->make();
 

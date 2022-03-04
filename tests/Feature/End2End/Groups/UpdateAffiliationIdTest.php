@@ -15,7 +15,7 @@ class UpdateAffiliationIdTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
         $this->expertPanel = ExpertPanel::factory()->gcep()->create();
         $this->user = $this->setupUser(permissions: ['groups-manage']);

@@ -33,7 +33,8 @@ class ApplicationEventV1MessageFactoryTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+        $this->setupPermission('application-edit');
         $this->expertPanel = ExpertPanel::factory()->create(['long_base_name'=>'TEST GROUP', 'affiliation_id' => 50666]);
         Gene::factory(2)->create(['expert_panel_id' => $this->expertPanel->id]);
         GroupMember::factory(2)->create(['group_id' => $this->expertPanel->group->id]);

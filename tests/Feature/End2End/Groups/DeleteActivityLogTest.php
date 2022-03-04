@@ -21,9 +21,9 @@ class DeleteActivityLogTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
-        $this->user = User::factory()->create();
+        $this->user = $this->setupUser(permissions: ['groups-manage']);
         $this->group = Group::factory()->create();
         $this->logEntry = Activity::factory()->create([
             'subject_type' => Group::class,
@@ -40,6 +40,7 @@ class DeleteActivityLogTest extends TestCase
      */
     public function unprivileged_user_cannot_delete_a_log_entry()
     {
+        $this->user->RevokePermissionTo('groups-manage');
         $this->json('delete', $this->url)
             ->assertStatus(403);
     }
@@ -49,8 +50,6 @@ class DeleteActivityLogTest extends TestCase
      */
     public function privileged_user_can_delete_a_log_entry()
     {
-        $this->user->givePermissionTo('groups-manage');
-
         $this->json('delete', $this->url)
             ->assertStatus(200);
 

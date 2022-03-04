@@ -22,7 +22,8 @@ class CoiReminderTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+        
         $this->ep = ExpertPanel::factory()->create();
         $this->user1 = $this->setupUserWithPerson();
         $this->membership1 = app()->make(MemberAdd::class)->handle($this->ep->group, $this->user1->person);

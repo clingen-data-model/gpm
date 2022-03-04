@@ -18,12 +18,11 @@ class UpdateGeneTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
         $this->seedGenes();
         $this->seedDiseases();
+        $this->setupForGroupTest();
 
-        $this->user = User::factory()->create();
-        $this->user->givePermissionTo('ep-applications-manage');
+        $this->user = $this->setupUser(permissions: ['ep-applications-manage']);
 
         $this->expertPanel = ExpertPanel::factory()->create(['expert_panel_type_id' => config('expert_panels.types.vcep.id')]);
         $this->gene1 = $this->expertPanel->genes()->create([

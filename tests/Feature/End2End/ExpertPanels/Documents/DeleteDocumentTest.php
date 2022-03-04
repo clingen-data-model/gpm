@@ -22,7 +22,7 @@ class DeleteDocumentTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
         $this->user = User::factory()->create();
         Sanctum::actingAs($this->user);

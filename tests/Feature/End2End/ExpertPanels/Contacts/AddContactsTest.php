@@ -27,7 +27,7 @@ class AddContactsTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        // $this->seed();
+        // $this->setupForGroupTest();
         $this->setupForGroupTest();
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->user = User::factory()->create();

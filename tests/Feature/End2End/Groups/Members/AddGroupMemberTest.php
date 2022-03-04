@@ -31,7 +31,7 @@ class AddGroupMemberTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
         $this->group = Group::factory()->create(['group_type_id'=> 1]);
         $this->person = Person::factory()->create();
         $this->user = $this->setupUser(permissions: ['groups-manage']);
@@ -74,6 +74,7 @@ class AddGroupMemberTest extends TestCase
     public function user_with_epApplicationsManage_permission_can_add_group_member()
     {
         $this->user->revokePermissionTo('groups-manage');
+        $this->setupPermission('ep-applications-manage');
         $this->user->givePermissionTo('ep-applications-manage');
         
         $this->makeRequest()
@@ -86,6 +87,7 @@ class AddGroupMemberTest extends TestCase
     public function user_with_annualReviewsManage_permission_can_add_group_member()
     {
         $this->user->revokePermissionTo('groups-manage');
+        $this->setupPermission('annual-updates-manage');
         $this->user->givePermissionTo('annual-updates-manage');
         $this->makeRequest()
             ->assertStatus(201);
@@ -99,6 +101,7 @@ class AddGroupMemberTest extends TestCase
     {
         $this->user->revokePermissionTo('groups-manage');
         $groupMember = GroupMember::factory()->create(['group_id' => $this->group->id]);
+        $this->setupPermission('members-invite');
         $groupMember->givePermissionTo('members-invite');
         $groupMember->person->update(['user_id' => $this->user->id]);
 

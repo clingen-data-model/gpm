@@ -25,9 +25,9 @@ class GrantMemberPermissionTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
-        $this->user = User::factory()->create();
+        $this->user = $this->setupUser();
         $this->permissions = config('permission.models.permission')::factory(2)->create(['scope' => 'group']);
 
         $this->setupEntities()->setupMember();

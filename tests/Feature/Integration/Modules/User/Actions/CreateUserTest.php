@@ -18,7 +18,6 @@ class CreateUserTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
     }
     
 

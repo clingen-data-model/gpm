@@ -26,9 +26,9 @@ class InviteMemberTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
-        $this->user = User::factory()->create();
+        $this->user = $this->setupUser();
         $this->user->person()->create(Person::factory()->make()->toArray());
 
         $this->group = Group::factory()->create();

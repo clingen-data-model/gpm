@@ -22,7 +22,8 @@ class ExpertPanelCreateTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+        
         $this->data = $this->makeApplicationData();
     }
     

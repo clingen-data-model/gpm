@@ -20,7 +20,7 @@ class GetSummariesTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setUpForGroupTest();
         $this->genes = $this->seedGenes();
 
         $this->user = User::factory()->create();

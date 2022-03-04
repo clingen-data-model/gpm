@@ -16,6 +16,8 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Events\ApplicationStepSubmitted;
 use App\Modules\Group\Notifications\ApplicationSubmissionNotification;
+use Database\Seeders\SubmissionTypeAndStatusSeeder;
+use Database\Seeders\TaskTypeSeeder;
 
 /**
  * @group submissions
@@ -28,7 +30,11 @@ class SubmitApplicationStepTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+        $this->runSeeder(SubmissionTypeAndStatusSeeder::class);
+        $this->setupRoles(['super-admin']);
+        $this->setupPermission(['application-edit']);
+
         $this->user = $this->setupUserWithPerson(null, ['ep-applications-manage']);
         $this->expertPanel = $this->setupVcep();
         Sanctum::actingAs($this->user);

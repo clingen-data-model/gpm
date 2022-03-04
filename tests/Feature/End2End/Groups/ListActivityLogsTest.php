@@ -21,9 +21,9 @@ class ListActivityLogsTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
-        $this->user = $this->setupUserWithPerson();
+        $this->user = $this->setupUserWithPerson(permissions: ['groups-manage']);
         $this->group = Group::factory()->create();
         $this->url = '/api/groups/'.$this->group->uuid.'/activity-logs/';
 
@@ -35,6 +35,7 @@ class ListActivityLogsTest extends TestCase
      */
     public function unprivileged_user_cannot_get_group_activity_log()
     {
+        $this->user->revokePermissionTo('groups-manage');
         $this->json('GET', $this->url)
             ->assertStatus(403);
     }
@@ -44,7 +45,6 @@ class ListActivityLogsTest extends TestCase
      */
     public function privileged_user_can_get_group_activity_logs()
     {
-        $this->user->givePermissionTo('groups-manage');
         $logEntries = Activity::factory(3)->create();
 
         $response = $this->json('GET', $this->url)

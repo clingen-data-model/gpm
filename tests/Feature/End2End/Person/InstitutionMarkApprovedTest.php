@@ -16,7 +16,6 @@ class InstitutionMarkApprovedTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        Permission::factory()->create(['name' => 'people-manage']);
         $this->institution = Institution::factory()->create(['approved' => false]);
         $this->user = $this->setupUser(permissions: ['people-manage']);
         Sanctum::actingAs($this->user);

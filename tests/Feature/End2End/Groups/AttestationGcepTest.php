@@ -21,7 +21,8 @@ class AttestationGcepTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+        $this->setupPermission('ep-applications-manage');
 
         $this->user = User::factory()->create();
         $this->expertPanel = ExpertPanel::factory()->gcep()->create();

@@ -20,11 +20,11 @@ class CreateSummaryTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
         $this->genes = $this->seedGenes();
 
-        $this->user = User::factory()->create();
-        $this->user->givePermissionTo('ep-applications-manage');
+        $this->user = $this->setupUser(permissions: ['ep-applications-manage']);
+
         $this->vcep = ExpertPanel::factory()->vcep()->create();
         $this->vcepGenes = $this->vcep->genes()->saveMany(
             $this->genes->map(function ($hgnc) {

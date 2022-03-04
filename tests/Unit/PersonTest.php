@@ -15,7 +15,7 @@ class PersonTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
     }
     
     /**

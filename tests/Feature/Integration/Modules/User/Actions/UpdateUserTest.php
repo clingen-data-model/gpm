@@ -18,7 +18,6 @@ class UpdateUserTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
 
         $this->user = User::factory()->create(['name' => 'Lana Kane', 'email' => 'lana@archer.com']);
     }

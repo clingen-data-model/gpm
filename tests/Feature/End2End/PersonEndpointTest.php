@@ -24,7 +24,7 @@ class PersonEndpointTest extends TestCase
             'name' => 'people-manage',
             'scope' => 'system'
         ])->create();
-        $this->user = User::factory()->create();
+        $this->user = $this->setupUser();
         $this->user->givePermissionTo('people-manage');
         $this->people = Person::factory(2)->create();
         Sanctum::actingAs($this->user);

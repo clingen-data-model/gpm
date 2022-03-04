@@ -17,7 +17,7 @@ class ApplicationDocumentAddTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->document = Document::factory()->make(['document_type_id'=>config('documents.types.scope.id')]);

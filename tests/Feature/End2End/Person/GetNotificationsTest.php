@@ -17,7 +17,7 @@ class GetNotificationsTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
         $this->user = $this->setupUser();
         Sanctum::actingAs($this->user);

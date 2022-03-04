@@ -21,7 +21,8 @@ class AddActivityLogTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+        $this->setupPermission('groups-manage');
 
         $this->user = User::factory()->create();
         $this->group = Group::factory()->create();

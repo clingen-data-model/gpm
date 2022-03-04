@@ -23,7 +23,7 @@ class IsGroupMemberTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
         $this->group = Group::factory()->create();
         $this->person = Person::factory()->create();

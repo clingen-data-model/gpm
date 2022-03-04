@@ -16,6 +16,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use App\Modules\ExpertPanel\Actions\ExpertPanelCreate;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
+use Database\Seeders\NextActionAssigneesTableSeeder;
 
 class ExpertPanelDetailTest extends TestCase
 {
@@ -24,7 +25,9 @@ class ExpertPanelDetailTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+        $this->runSeeder(NextActionAssigneesTableSeeder::class);
+
         $this->user = User::factory()->create();
         $this->uuid = Uuid::uuid4()->toString();
 

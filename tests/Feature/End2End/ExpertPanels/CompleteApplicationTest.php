@@ -17,8 +17,9 @@ class CompleteApplicationTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
-        $this->user = User::factory()->create();
+        $this->setupForGroupTest();
+
+        $this->user = $this->setupUser();
     }
 
     /**

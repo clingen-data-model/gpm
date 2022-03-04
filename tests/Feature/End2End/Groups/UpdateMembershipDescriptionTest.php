@@ -17,10 +17,11 @@ class UpdateMembershipDescriptionTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+
+        $this->user = $this->setupUser(permissions: ['ep-applications-manage']);
+
         $this->expertPanel = ExpertPanel::factory()->create(['expert_panel_type_id' => config('expert_panels.types.vcep.id')]);
-        $this->user = User::factory()->create();
-        $this->user->givePermissionTo('ep-applications-manage');
         $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/membership-description';
     }
 
@@ -104,6 +105,4 @@ class UpdateMembershipDescriptionTest extends TestCase
             'membership_description' => ['A membership description can only be set for VCEPs.']
         ]);
     }
-    
-    
 }

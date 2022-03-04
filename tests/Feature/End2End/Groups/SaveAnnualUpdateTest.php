@@ -8,6 +8,7 @@ use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Database\Seeders\AnnualUpdateWindowSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class SaveAnnualUpdateTest extends TestCase
@@ -17,7 +18,8 @@ class SaveAnnualUpdateTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+        $this->runSeeder(AnnualUpdateWindowSeeder::class);
 
         $this->user = $this->setupUser(permissions: ['annual-updates-manage']);
         $this->expertPanel = ExpertPanel::factory()->gcep()->create();

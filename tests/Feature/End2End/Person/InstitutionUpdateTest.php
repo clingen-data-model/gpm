@@ -17,7 +17,6 @@ class InstitutionUpdateTest extends TestCase
     {
         parent::setup();
         $this->country = Country::factory()->create();
-        $this->setupPermission('people-manage');
         $this->user = $this->setupUser(permissions: ['people-manage']);
         Sanctum::actingAs($this->user);
 

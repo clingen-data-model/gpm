@@ -18,7 +18,7 @@ class ApplicationCompleteTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
         $this->action = app()->make(ApplicationComplete::class);
     }

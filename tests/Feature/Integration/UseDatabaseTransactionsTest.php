@@ -18,7 +18,8 @@ class UseDatabaseTransactionsTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+        
         $this->dispatcher = app()->make(Dispatcher::class);
         $this->dispatcher->pipeThrough([UseDatabaseTransactions::class]);
     }
@@ -32,7 +33,6 @@ class UseDatabaseTransactionsTest extends TestCase
 
         $this->expectException(\Exception::class);
         $this->dispatcher->dispatch(function () use ($user) {
-            
             $user->save();
             throw new \Exception('blarchgh!');
         });
@@ -55,7 +55,4 @@ class UseDatabaseTransactionsTest extends TestCase
         $this->assertDatabaseHas('users', $user->getAttributes());
         $this->assertDatabaseHas('groups', ['name' => 'test application']);
     }
-    
-    
-    
 }

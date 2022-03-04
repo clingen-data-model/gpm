@@ -16,7 +16,7 @@ class UpdateGroupParentTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
         $this->user = $this->setupUser(permissions: ['groups-manage']);
         Sanctum::actingAs($this->user);

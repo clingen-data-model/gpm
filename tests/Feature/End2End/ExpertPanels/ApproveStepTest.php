@@ -30,6 +30,7 @@ class ApproveStepTest extends TestCase
         $this->setupPermission(['ep-applications-manage']);
         $this->setupForGroupTest();
         $this->runSeeder(SubmissionTypeAndStatusSeeder::class);
+        
         $this->person = Person::factory()->create();
         $this->expertPanel = ExpertPanel::factory()->vcep()->create();
         ContactAdd::run($this->expertPanel->uuid, $this->person->uuid);

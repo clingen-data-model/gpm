@@ -19,7 +19,8 @@ class DeleteGroupTest extends TestCase
     {
         parent::setup();
         Carbon::setTestNow();
-        $this->seed();
+        $this->setupPermission('groups-manage');
+        $this->setupForGroupTest();
 
         $this->user = $this->setupUser(permissions:['groups-manage']);
         $this->group = Group::factory()->create();
@@ -46,10 +47,7 @@ class DeleteGroupTest extends TestCase
         $this->makeRequest()
             ->assertStatus(200);
 
-        $this->assertDatabaseHas('groups', [
-            'id' => $this->group->id,
-            'deleted_at' => Carbon::now(),
-        ]);
+        $this->assertSoftDeleted($this->group);
     }
 
     /**

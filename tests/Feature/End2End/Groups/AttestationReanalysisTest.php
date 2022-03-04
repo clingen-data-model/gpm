@@ -18,9 +18,9 @@ class AttestationReanalysisTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
-        $this->user = User::factory()->create();
+        $this->user = $this->setupUser(permissions: ['ep-applications-manage']);
         $this->expertPanel = ExpertPanel::factory()->vcep()->create();
 
         Sanctum::actingAs($this->user);
@@ -32,6 +32,7 @@ class AttestationReanalysisTest extends TestCase
      */
     public function unprivileged_user_cannot_submit_reanalysis_attestation()
     {
+        $this->user->revokePermissionTo('ep-applications-manage');
         $this->submitRequest()
             ->assertStatus(403);
     }
@@ -41,8 +42,6 @@ class AttestationReanalysisTest extends TestCase
      */
     public function validates_data()
     {
-        $this->user->givePermissionTo('ep-applications-manage');
-
         $this->submitRequest([])
             ->assertStatus(422)
             ->assertJsonFragment([
@@ -65,8 +64,6 @@ class AttestationReanalysisTest extends TestCase
      */
     public function privileged_user_can_submit_reanalysis_attestation()
     {
-        $this->user->givePermissionTo('ep-applications-manage');
-
         $this->submitRequest()
             ->assertStatus(200);
 
@@ -85,8 +82,6 @@ class AttestationReanalysisTest extends TestCase
      */
     public function logs_activity()
     {
-        $this->user->givePermissionTo('ep-applications-manage');
-        
         $this->submitRequest()
             ->assertStatus(200);
 

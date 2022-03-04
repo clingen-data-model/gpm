@@ -26,11 +26,11 @@ class SyncGenesToGcepTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForgroupTest();
+        
         $this->seedGenes([['hgnc_id' => 678, 'gene_symbol'=>'BCD'], ['hgnc_id' => 12345, 'gene_symbol' => 'ABC1']]);
 
-        $this->user = User::factory()->create();
-        $this->user->givePermissionTo('ep-applications-manage');
+        $this->user = $this->setupUser(permissions: ['ep-applications-manage']);
 
         $this->expertPanel = ExpertPanel::factory()->gcep()->create();
         $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/genes';

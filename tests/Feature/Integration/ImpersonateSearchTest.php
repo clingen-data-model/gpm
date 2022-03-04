@@ -15,8 +15,9 @@ class ImpersonateSearchTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+
         $this->user = User::factory()->create();
+        $this->setupRoles(['super-user', 'super-admin', 'admin']);
         $this->others = collect([
             'michael' => User::factory()->create(['name'=>'michael', 'email'=>'squid@hell.com'])
                 ->assignRole('super-user'),

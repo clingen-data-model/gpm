@@ -16,7 +16,7 @@ class ResetInviteTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        // $this->seed();
 
         Carbon::setTestNow('2021-02-02');
         $this->invite = Invite::factory()->create(['redeemed_at' => Carbon::now()]);

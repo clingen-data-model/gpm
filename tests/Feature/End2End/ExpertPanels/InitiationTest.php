@@ -31,8 +31,6 @@ class InitiationTest extends TestCase
      */
     public function can_create_initiate_an_application()
     {
-        // $this->seed();
-
         $data = $this->makeApplicationData();
         $data['cdwg_id'] = null;
         $response = $this->json('POST', '/api/applications', $data);
@@ -52,8 +50,6 @@ class InitiationTest extends TestCase
      */
     public function validates_required_parameters_before_initiating_application()
     {
-        // $this->seed();
-
         $data = [];
         $response = $this->json('Post', '/api/applications', $data);
 

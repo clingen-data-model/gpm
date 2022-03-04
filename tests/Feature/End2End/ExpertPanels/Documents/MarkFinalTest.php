@@ -22,8 +22,9 @@ class MarkFinalTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
-        $this->user = User::factory()->create();
+        $this->setupForGroupTest();
+
+        $this->user = $this->setupUser();
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->document = Document::factory()->make();
         $this->expertPanel->group->documents()->save($this->document);

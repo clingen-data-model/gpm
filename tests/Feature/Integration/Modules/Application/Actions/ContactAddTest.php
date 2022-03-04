@@ -24,7 +24,7 @@ class ContactAddTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
         $this->action = app()->make(ContactAdd::class);
 
         $this->person = Person::factory()->create();

@@ -17,10 +17,9 @@ class UpdateEpNameTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
-        $this->user = User::factory()->create();
-        $this->user->givePermissionTo('groups-manage');
+        $this->user = $this->setupUser(permissions: ['groups-manage']);
         $this->expertPanel = ExpertPanel::factory()->gcep()->create();
 
         Sanctum::actingAs($this->user);

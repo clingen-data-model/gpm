@@ -20,7 +20,7 @@ class PublishApplicationEventsTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
         $this->user = $this->setupUser(null, ['ep-applications-manage']);
         $this->expertPanel = ExpertPanel::factory()->gcep()->create();

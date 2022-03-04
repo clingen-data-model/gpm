@@ -21,9 +21,9 @@ class UpdateActivityLogTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
-        $this->user = User::factory()->create();
+        $this->user = $this->setupUser(permissions: ['groups-manage']);
         $this->group = Group::factory()->create();
         $this->logEntry = Activity::factory()->create([
             'subject_type' => Group::class,
@@ -40,6 +40,7 @@ class UpdateActivityLogTest extends TestCase
      */
     public function unprivileged_user_cannot_update_a_log_entry()
     {
+        $this->user->revokePermissionTo('groups-manage');
         $this->makeRequest()
             ->assertStatus(403);
     }
@@ -49,8 +50,6 @@ class UpdateActivityLogTest extends TestCase
      */
     public function privileged_user_can_update_a_log_entry()
     {
-        $this->user->givePermissionTo('groups-manage');
-
         $this->makeRequest(['entry' => 'farts!', 'log_date' => '2021-12-01T00:00:00'])
             ->assertStatus(200)
             ->assertJsonFragment([
@@ -68,8 +67,6 @@ class UpdateActivityLogTest extends TestCase
      */
     public function validates_data()
     {
-        $this->user->givePermissionTo('groups-manage');
-
         $this->makeRequest([])
             ->assertStatus(422)
             ->assertJsonFragment([

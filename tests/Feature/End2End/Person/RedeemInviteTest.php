@@ -18,7 +18,6 @@ class RedeemInviteTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
 
         $this->invite = Invite::factory()->create(['redeemed_at' => null]);
         $this->validData = [

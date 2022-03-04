@@ -25,9 +25,9 @@ class SimpleCoiEndpointTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+
         $this->expertPanel = ExpertPanel::factory()->create();
-        // $this->markTestSkipped();
     }
     
     /**

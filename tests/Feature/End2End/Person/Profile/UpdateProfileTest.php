@@ -33,8 +33,9 @@ class UpdateProfileTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
-        $this->user = User::factory()->create();
+        $this->setupForGroupTest();
+
+        $this->user = $this->setupUser();
         $this->person = Person::factory()->create();
         $this->perm = Permission::factory()->create(['name' => 'people-manage']);
         $this->groupPerm = Permission::factory()->create(['name' => 'members-update', 'scope' => 'group']);

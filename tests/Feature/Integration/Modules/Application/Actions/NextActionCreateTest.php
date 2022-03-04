@@ -11,6 +11,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Events\NextActionAdded;
+use Database\Seeders\NextActionAssigneesTableSeeder;
 
 /**
  * @group next-actions
@@ -22,7 +23,9 @@ class NextActionCreateTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+        $this->runSeeder(NextActionAssigneesTableSeeder::class);
+
         $this->expertPanel = ExpertPanel::factory()->create();
     }
     

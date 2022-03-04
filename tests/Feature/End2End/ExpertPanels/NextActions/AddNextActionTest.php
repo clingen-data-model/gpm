@@ -8,6 +8,8 @@ use App\Modules\User\Models\User;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Database\Factories\NextActionAssigneeFactory;
+use Database\Seeders\NextActionAssigneesTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
@@ -22,8 +24,10 @@ class AddNextActionTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
-        $this->user = User::factory()->create();
+        $this->setupForGroupTest();
+        $this->runSeeder([NextActionAssigneesTableSeeder::class]);
+
+        $this->user = $this->setupUser();
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->baseUrl = 'api/applications/'.$this->expertPanel->uuid.'/next-actions';
         Carbon::setTestNow();

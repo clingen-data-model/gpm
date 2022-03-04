@@ -21,7 +21,8 @@ class IndexTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+
         \App\Models\Cdwg::factory(3)->create();
         $this->user = User::factory()->create();
         $this->expertPanels = ExpertPanel::factory(1)

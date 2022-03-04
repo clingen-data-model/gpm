@@ -3,11 +3,12 @@
 namespace Tests\Feature\Integration\Modules\Application\Actions;
 
 use Tests\TestCase;
-use App\Modules\ExpertPanel\Models\NextAction;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\WithFaker;
+use App\Modules\ExpertPanel\Models\NextAction;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Database\Seeders\NextActionAssigneesTableSeeder;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use App\Modules\ExpertPanel\Actions\NextActionComplete;
 use App\Modules\ExpertPanel\Events\NextActionCompleted;
@@ -19,7 +20,9 @@ class CompleteNextActionTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+        $this->runSeeder(NextActionAssigneesTableSeeder::class);
+
         $this->expertPanel = ExpertPanel::factory()->create();
     }
 

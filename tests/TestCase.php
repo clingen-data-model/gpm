@@ -118,6 +118,12 @@ abstract class TestCase extends BaseTestCase
         $userData = $userData ?? [];
         $user = User::factory()->create($userData);
         if (count($permissions)) {
+            foreach ($permissions as $perm) {
+                Permission::firstOrCreate([
+                    'name' => $perm,
+                    'guard_name' => 'web',
+                ]);
+            }
             $user->syncPermissions($permissions);
         }
 
@@ -158,6 +164,17 @@ abstract class TestCase extends BaseTestCase
 
     protected function runSeeder($seederClass): void
     {
+        if (is_array($seederClass)) {
+            foreach ($seederClass as $class) {
+                if (!class_exists($class)) {
+                    throw new \Exception('Bad seeder class given: '.$class);
+                }
+                $seeder = new $class();
+                $seeder->run();
+            }
+            return;
+        }
+
         $seeder = new $seederClass();
         $seeder->run();
     }
@@ -170,9 +187,7 @@ abstract class TestCase extends BaseTestCase
             GroupStatusSeeder::class,
         ];
 
-        foreach ($seeders as $seederClass) {
-            $this->runSeeder($seederClass);
-        }
+        $this->runSeeder($seeders);
     }
     
     protected function setupForGroupTest(): void

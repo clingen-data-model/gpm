@@ -11,6 +11,7 @@ use App\DataExchange\Models\IncomingStreamMessage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\DataExchange\Actions\PilotRulesApprovedProcessor;
 use App\DataExchange\Exceptions\DataSynchronizationException;
+use Database\Seeders\TaskTypeSeeder;
 
 class PilotRulesApprovedProcessorTest extends TestCase
 {
@@ -20,7 +21,8 @@ class PilotRulesApprovedProcessorTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+        $this->runSeeder(TaskTypeSeeder::class);
 
         $this->expertPanel = ExpertPanel::factory()->vcep()->create(['affiliation_id' => '50666']);
         $this->message = IncomingStreamMessage::factory()->pilotApproved()->make();

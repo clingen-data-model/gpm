@@ -17,10 +17,9 @@ class UpdateScopeDescriptionTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
         $this->expertPanel = ExpertPanel::factory()->create(['expert_panel_type_id' => config('expert_panels.types.vcep.id')]);
-        $this->user = User::factory()->create();
-        $this->user->givePermissionTo('ep-applications-manage');
+        $this->user = $this->setupUser(permissions: ['ep-applications-manage']);
         $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/scope-description';
     }
 
@@ -106,6 +105,4 @@ class UpdateScopeDescriptionTest extends TestCase
             'scope_description' => ['A description of scope can only be set for expert panels.']
         ]);
     }
-    
-    
 }

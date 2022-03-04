@@ -18,7 +18,6 @@ class MarkNotificationReadTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
 
         $this->user = $this->setupUser();
         $this->person = Person::factory()->create(['user_id' => $this->user->id]);

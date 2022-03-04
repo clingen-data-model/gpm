@@ -21,8 +21,9 @@ class UpdateDocumentInfoTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
-        $this->user = User::factory()->create();
+        $this->setupForGroupTest();
+
+        $this->user = $this->setupUser();
         Sanctum::actingAs($this->user);
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->document = Document::factory()->make();

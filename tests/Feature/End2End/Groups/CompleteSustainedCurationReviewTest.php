@@ -8,6 +8,7 @@ use Laravel\Sanctum\Sanctum;
 use App\Tasks\Actions\TaskCreate;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Database\Seeders\TaskTypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CompleteSustainedCurationReviewTest extends TestCase
@@ -17,7 +18,8 @@ class CompleteSustainedCurationReviewTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+        $this->runSeeder(TaskTypeSeeder::class);
 
         $this->expertPanel = ExpertPanel::factory()->vcep()->create([
             'current_step' => 4,

@@ -6,6 +6,7 @@ use Tests\TestCase;
 use App\Tasks\Actions\TaskCreate;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Database\Seeders\TaskTypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 
@@ -16,7 +17,9 @@ class TaskIndexTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+        $this->runSeeder([TaskTypeSeeder::class]);
+
         $this->user = $this->setupUser();
         $this->vcep1 = ExpertPanel::factory()->vcep()->create();
         $this->task1 = (new TaskCreate)->handle($this->vcep1->group, 'sustained-curation-review');

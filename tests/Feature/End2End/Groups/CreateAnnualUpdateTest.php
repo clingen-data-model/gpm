@@ -7,6 +7,7 @@ use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Actions\AnnualUpdateCreate;
+use Database\Seeders\AnnualUpdateWindowSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CreateAnnualUpdateTest extends TestCase
@@ -16,7 +17,8 @@ class CreateAnnualUpdateTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
+        $this->runSeeder(AnnualUpdateWindowSeeder::class);
 
         $this->expertPanel = ExpertPanel::factory()->create();
     }

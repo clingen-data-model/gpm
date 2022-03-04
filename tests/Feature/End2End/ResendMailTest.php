@@ -19,7 +19,6 @@ class ResendMailTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
 
         $this->user = $this->setupUser(permissions: ['mail-log-view']);
         $this->user->notify(new TestMailNotification());

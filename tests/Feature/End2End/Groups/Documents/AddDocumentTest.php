@@ -18,7 +18,7 @@ class AddDocumentTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
         $this->user = $this->setupUserWithPerson(null, ['groups-manage']);
         $this->group = Group::factory()->create();

@@ -18,9 +18,9 @@ class UpdateLogEntryTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
-        $this->user = User::factory()->create();
+        $this->user = $this->setupUser();
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->baseUrl = '/api/applications/'.$this->expertPanel->uuid.'/log-entries';
 

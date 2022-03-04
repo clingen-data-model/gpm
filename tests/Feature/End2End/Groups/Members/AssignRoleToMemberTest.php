@@ -23,9 +23,9 @@ class AssignRoleToMemberTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
-        $this->user = User::factory()->create();
+        $this->user = $this->setupUser();
         $this->setupEntities()->setupMember();
         
         $this->roles = config('permission.models.role')::factory(2)->create(['scope' => 'group']);

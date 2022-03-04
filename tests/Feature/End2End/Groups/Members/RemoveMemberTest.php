@@ -24,9 +24,9 @@ class RemoveMemberTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
-        $this->user = User::factory()->create();
+        $this->user = $this->setupUser();
         $this->setupEntities()->setupMember();
 
         $this->url = 'api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id;

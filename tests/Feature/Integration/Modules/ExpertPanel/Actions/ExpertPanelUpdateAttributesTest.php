@@ -3,6 +3,7 @@
 namespace Tests\Feature\Integration\Modules\ExpertPanel\Actions;
 
 use Tests\TestCase;
+use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
@@ -17,7 +18,7 @@ class ExpertPanelUpdateAttributesTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
     }
     
 
@@ -54,14 +55,15 @@ class ExpertPanelUpdateAttributesTest extends TestCase
     public function updates_group_parent_id_if_cdwg_id_is_updated()
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create(['long_base_name'=>'aabb']);
+        $cdwg = Group::factory()->cdwg()->create();
     
         ExpertPanelUpdateAttributes::run($expertPanel->uuid, [
-            'cdwg_id' => 2
+            'cdwg_id' => $cdwg->id
         ]);
 
         $this->assertDatabaseHas('groups', [
             'id' => $expertPanel->group->id,
-            'parent_id' => 2
+            'parent_id' => $cdwg->id
         ]);
     }
 }

@@ -16,7 +16,7 @@ class UpdateGroupNameTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
         $this->user = $this->setupUser(permissions: ['groups-manage']);
         $this->group = Group::factory()->create();

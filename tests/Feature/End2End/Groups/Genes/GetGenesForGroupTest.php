@@ -25,7 +25,6 @@ class GetGenesForGroupTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
         $this->seedGenes([
             ['hgnc_id' => 12345, 'gene_symbol' => 'ABC1'],
             ['hgnc_id' => 987654, 'gene_symbol' => 'DEF1']
@@ -34,8 +33,9 @@ class GetGenesForGroupTest extends TestCase
             ['mondo_id' => 'MONDO:1234567', 'name' => 'beans'],
             ['mondo_id' => 'MONDO:9876543', 'name' => 'monkeys']
         ]);
+        $this->setupForGroupTest();
 
-        $this->user = User::factory()->create();
+        $this->user = $this->setupUser();
         $this->expertPanel = ExpertPanel::factory()->vcep()->create();
         $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/genes';
         GenesAdd::run($this->expertPanel->group, [

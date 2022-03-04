@@ -24,7 +24,7 @@ class RetireMemberTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->seed();
+        $this->setupForGroupTest();
 
         $this->setupEntities()->setupMember();
 
