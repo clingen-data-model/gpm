@@ -3,10 +3,13 @@
 namespace App\DataExchange\MessageFactories;
 
 use Exception;
+use Carbon\Carbon;
 use ReflectionClass;
 use App\Events\Event;
+use App\Models\Activity;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use App\Modules\Person\Models\Person;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\Group\Events\GenesAdded;
 use App\Modules\Group\Events\GeneRemoved;
@@ -42,14 +45,17 @@ class ApplicationEventV1MessageFactory implements MessageFactoryInterface
         MemberPermissionRevoked::class,
     ];
 
+
     public function make(
         string $eventType,
         array $message,
+        Carbon $date,
         ?string $schemaVersion = '1.0.0'
     ): array {
         $message = [
             'event_type' => $eventType,
             'schema_version' => $schemaVersion,
+            'date' => $date->format('Y-m-d H:i:s'),
             'data' => $message,
         ];
 
@@ -59,17 +65,18 @@ class ApplicationEventV1MessageFactory implements MessageFactoryInterface
     public function makeFromEvent(PublishableApplicationEvent $event): array
     {
         return $this->make(
-            eventType: $this->resolveEventType($event),
-            message: $this->buildMessage($event),
+            eventType: $this->resolveTypeFromEvent($event),
+            message: $this->buildMessageFromEvent($event),
             schemaVersion: null,
+            date: $event->getLogDate()
         );
     }
 
-    private function resolveEventType(PublishableApplicationEvent $event): string
+    private function resolveTypeFromEvent(PublishableApplicationEvent $event): string
     {
         switch (get_class($event)) {
             case StepApproved::class:
-                return $this->resolveStepApprovalEventType($event);
+                return $this->resolveStepApprovalEventType($event->step);
             // Cases commented until V2.x
             // case GeneAddedApproved::class:
             //     return 'gene_added';
@@ -94,9 +101,9 @@ class ApplicationEventV1MessageFactory implements MessageFactoryInterface
         }
     }
 
-    private function resolveStepApprovalEventType(Event $event): string
+    private function resolveStepApprovalEventType(Int $step): string
     {
-        switch ($event->step) {
+        switch ($step) {
             case 1:
                 return 'ep_definition_approved';
             case 2:
@@ -112,7 +119,7 @@ class ApplicationEventV1MessageFactory implements MessageFactoryInterface
     
     
 
-    private function buildMessage($event)
+    private function buildMessageFromEvent($event)
     {
         $eventClass = get_class($event);
         $message = [
@@ -121,7 +128,7 @@ class ApplicationEventV1MessageFactory implements MessageFactoryInterface
                 'name' => $event->group->displayName,
                 'type' => $event->group->fullType->name,
                 'affiliation_id' => $event->group->expertPanel->affiliation_id
-            ]
+            ],
         ];
 
         if (in_array($eventClass, static::GENE_EVENTS)) {
