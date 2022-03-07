@@ -3,26 +3,26 @@
     Greetings!
 </p>
 
-@if($notifiable->pendingCois->count() > 1)
+@if($notifiable->membershipsWithPendingCoi->count() > 1)
     <p>
-        We wanted to remind you that you have {{$notifiable->pendingCois->count()}} conflict of interest disclosures to complete for the following groups:
+        We wanted to remind you that you have {{$notifiable->membershipsWithPendingCoi->count()}} conflict of interest disclosures to complete for the following groups:
     </p>
 
     <ul>
-        @foreach ($notifiable->pendingCois as $coi)
+        @foreach ($notifiable->membershipsWithPendingCoi as $membership)
             <li>
-                <a href="{{$coi->url}}">{{$coi->group->displayName}}</a>
+                <a href="{{$membership->group->coiUrl}}">{{$membership->group->displayName}}</a>
             </li>
         @endforeach
     </ul>
 @else
     <p>
-        We wanted to remind you that you have a conflict of interest disclosure to complete for <a href="{{$coi->url}}">{{$coi->group->displayName}}</a>
+        We wanted to remind you that you have a conflict of interest disclosure to complete for <a href="{{$notifiable->membershipsWithPendingCoi->first()->group->coiUrl}}">{{$notifiable->membershipsWithPendingCoi->first()->group->displayName}}</a>
     </p>
 @endif
 
 <p>
-    Follow the links above to complete your COIs or log in to the <a href="{{url()}}">ClinGen GPM</a> and see the list on your dashboard.
+    Follow the links above to complete your COIs or log in to the <a href="{{url('/')}}">ClinGen GPM</a> and see the list on your dashboard.
 </p>
 
 <p>

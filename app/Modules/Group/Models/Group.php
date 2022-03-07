@@ -208,6 +208,14 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         return null;
     }
 
+    public function getCoiUrlAttribute()
+    {
+        if ($this->expertPanel) {
+            return $this->expertPanel->coi_url;
+        }
+        return null;
+    }
+
     public function getIsExpertPanelAttribute(): bool
     {
         return in_array($this->group_type_id, [config('groups.types.gcep.id'),config('groups.types.vcep.id')]);
