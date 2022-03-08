@@ -107,6 +107,9 @@ export default {
                         return m;
                     });
         },
+        filteredEmails () {
+            return this.filteredMembers.map(m => `${m.person.name} <${m.person.email}>`)
+        },
         fieldsForGroupType () {
             const fields = [...this.tableFields];
             if (!this.group.isEp()) {
@@ -269,6 +272,9 @@ export default {
                 <div v-if="group.isEp()">
                     <!-- <button class="btn btn-xs" @click="showCoiReport = true">Get COI report</button> -->
                     <a class="btn btn-xs" :href="`/report/groups/${group.uuid}/coi-report`">Get COI Report</a>
+                </div>
+                <div v-if="hasAnyMemberPermission(['groups-manage', ['info-edit', group]]) && $store.state.systemInfo.app.features.email_from_member_list">
+                    <a :href="`mailto:${filteredEmails.join(', ')}`" class="btn btn-xs" @click="initEmailWithFiltered">Email filtered</a>
                 </div>
             </div>
         </head>

@@ -368,6 +368,7 @@
         "coiReminders": true,
         "showCdwgs": true,
         "showWgs": true,
-        "notifyScopeChange": false
+        "notifyScopeChange": false,
+        "emailFromMemberList": false
     }
 }
