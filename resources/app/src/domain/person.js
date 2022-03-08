@@ -112,9 +112,7 @@ class Person extends Entity {
     }
 
     matchesKeyword(keyword) {
-        if (!keyword || keyword.length < 3) {
-            return false;
-        }
+
         const {first_name, last_name, email} = this.attributes;
         const pattern = new RegExp(keyword.toLowerCase());
 
