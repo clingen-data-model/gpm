@@ -99,7 +99,7 @@ const store = createStore({
         features: {
             legacyCoi: process.env.VUE_APP_LEGACY_COI == 'true',
         },
-        systemInfo: {build: {}},
+        systemInfo: {build: {}, app: { features: {}}},
     },
     getters: {
         currentUser: (state) => state.user,

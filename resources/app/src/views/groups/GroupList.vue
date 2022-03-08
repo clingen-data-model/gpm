@@ -56,38 +56,7 @@ import {useRouter} from 'vue-router'
 import {computed, ref} from 'vue'
 import GroupForm from '@/components/groups/GroupForm'
 import SubmissionWrapper from '@/components/groups/SubmissionWrapper'
-import configs from '@/configs'
 
-console.log(configs);
-
-const tabDefinitions = [
-    {
-        label: 'VCEPs',
-        typeId: 4,
-        filter: g => g.isVcep(),
-    },
-    {
-        label: 'GCEPs',
-        typeId: 3,
-        filter: g => g.isGcep()
-    },
-]
-
-if (configs.appFeatures.showCdwgs) {
-    tabDefinitions.push({
-        label: 'CDWGs',
-        typeId: 2,
-        filter: g => g.isCdwg()
-    });
-}
-
-if (configs.appFeatures.showWgs) {
-    tabDefinitions.push({
-        label: 'WGs',
-        typeId: 1,
-        filter: g => g.isWg()
-    });
-}
 
 export default {
     name: 'ComponentName',
@@ -157,6 +126,41 @@ export default {
     setup() {
         const store = useStore();
         const router = useRouter();
+
+
+        const tabDefinitions = computed( () => {
+            const tabs = [
+                {
+                    label: 'VCEPs',
+                    typeId: 4,
+                    filter: g => g.isVcep(),
+                },
+                {
+                    label: 'GCEPs',
+                    typeId: 3,
+                    filter: g => g.isGcep()
+                },
+            ];
+            if (store.state.systemInfo.app.features.show_cdwgs) {
+                tabs.push({
+                    label: 'CDWGs',
+                    typeId: 2,
+                    filter: g => g.isCdwg()
+                });
+            }
+
+            if (store.state.systemInfo.app.features.show_wgs) {
+                tabs.push({
+                    label: 'WGs',
+                    typeId: 1,
+                    filter: g => g.isWg()
+                });
+            }
+
+            return tabs;
+        })
+
+
 
         const filterString = ref(null);
 
