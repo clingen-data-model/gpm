@@ -166,11 +166,20 @@ th.sorted, td.sorted  {
 }
 
 .btn {
+    @apply inline-block;
     @apply px-3 py-1 rounded border border-gray-300 focus:outline-none cursor-pointer;
     @apply bg-gradient-to-b from-white to-gray-100 hover:to-gray-200;
     @apply active:from-gray-200 active:to-gray-100;
     @apply disabled:opacity-60 disabled:cursor-not-allowed;
 
+}
+
+.btn-icon {
+    @apply px-1.5 py-1
+}
+
+.btn-icon-sm {
+    @apply px-1 py-0.5
 }
 
 .btn-xs {
@@ -306,4 +315,8 @@ th.sorted, td.sorted  {
 
 .muted {
     @apply text-gray-400;
+}
+
+.dev-highlight {
+    @apply border border-pink-500;
 }

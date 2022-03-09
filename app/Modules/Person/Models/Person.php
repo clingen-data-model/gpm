@@ -243,6 +243,22 @@ class Person extends Model
     {
         return $this->first_name.' '.$this->last_name;
     }
+
+    public function getAddressStringAttribute()
+    {
+        $parts = [
+                $this->street1,
+                $this->street2,
+                $this->city,
+                $this->state,
+                $this->zip
+            ];
+            
+        return implode(', ', array_filter($parts, function ($part) {
+            return !is_null($part);
+        }));
+    }
+    
     
 
     /**

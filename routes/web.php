@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ViewController;
 use App\Http\Controllers\DocumentController;
+use App\Modules\Group\Actions\GroupMembersMakeCsv;
 use App\Modules\ExpertPanel\Actions\CoiReportMakePdf;
 
 /*
@@ -21,5 +22,6 @@ Route::get('/{any}', [ViewController::class, 'app'])
 Route::get('/documents/{uuid?}', [DocumentController::class, 'show'])->middleware('auth:sanctum');
 
 Route::get('/report/groups/{group:uuid}/coi-report', CoiReportMakePdf::class);
+Route::get('/report/groups/{group:uuid}/member-export', GroupMembersMakeCsv::class);
 
 Route::impersonate();

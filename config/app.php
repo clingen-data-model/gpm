@@ -123,5 +123,6 @@ return [
         'show_wgs' => env('FEATURE_SHOW_WGS', true),
         'notify_scope_change' => env('FEATURE_NOTIFY_SCOPE_CHANGE', true),
         'email_from_member_list' => env('FEATURE_EMAIL_FROM_MEMBER_LIST', false),
+        'member_export' => env('FEATURE_MEMBER_EXPORT', false),
     ]
 ];

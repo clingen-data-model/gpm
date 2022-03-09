@@ -127,6 +127,21 @@ export default {
         },
         selectedMemberName () {
             return this.selectedMember ? this.selectedMember.person.name : null
+        },
+        showCoordinatorActions () {
+            return this.hasAnyMemberPermission(['groups-manage', ['info-edit', this.group]]) 
+                && this.$store.state.systemInfo.app.features.email_from_member_list
+        },
+        showAddMemberButton () {
+            return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage']) && !this.readonly
+        },
+        showMemberReportButton () {
+            console.log(this.$store.state.systemInfo.app.features.member_export)
+            return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage']) && this.$store.state.systemInfo.app.features.member_export
+        },
+        exportUrl () {
+            const query = `?member_ids=${this.filteredMembers.map(m => m.id).join(',')}`;
+            return `/report/groups/${this.group.uuid}/member-export${query}`;
         }
     },
     watch: {
@@ -249,8 +264,8 @@ export default {
 </script>
 <template>
     <div>
-        <head class="flex justify-between items-baseline">
-            <div class="flex space-x-2 items-baseline">
+        <head class="flex justify-between items-end">
+            <div class="flex space-x-2 items-center">
                 <h2>Members</h2>
                 <button 
                     ref="filterToggleButton" 
@@ -259,22 +274,51 @@ export default {
                     @click="toggleFilter"
                     v-if="group.members.length > 0"
                 >
-                    <icon-filter></icon-filter>
+                    <icon-filter  width="16" height="16" />
                 </button>
             </div>
-            <div class="flex space-x-2 items-baseline">
-                <router-link 
-                    class="btn btn-xs" 
-                    ref="addMemberButton" 
-                    :to="append($route.path, 'members/add')"
-                    v-if="hasAnyPermission([['members-invite', group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage']) && !readonly"
-                >Add Member</router-link>
-                <div v-if="group.isEp()">
-                    <!-- <button class="btn btn-xs" @click="showCoiReport = true">Get COI report</button> -->
-                    <a class="btn btn-xs" :href="`/report/groups/${group.uuid}/coi-report`">Get COI Report</a>
+            <div class="flex space-x-2 items-center pb-0.5">
+                <div v-if="showAddMemberButton">
+                    <popper content="Add Member" hover arrow>
+                        <router-link 
+                            class="btn btn-icon" 
+                            :to="append($route.path, 'members/add')"
+                        >
+                            <icon-add class="inline-block"/>
+                        </router-link>
+                    </popper>
                 </div>
-                <div v-if="hasAnyMemberPermission(['groups-manage', ['info-edit', group]]) && $store.state.systemInfo.app.features.email_from_member_list">
-                    <a :href="`mailto:${filteredEmails.join(', ')}`" class="btn btn-xs" @click="initEmailWithFiltered">Email filtered</a>
+                
+                <div v-if="showCoordinatorActions" class="flex space-x-2 items-center">
+                    <popper content="Email listed members" hover arrow>
+                        <a 
+                            :href="`mailto:${filteredEmails.join(', ')}`" 
+                            class="btn btn-icon" 
+                            @click="initEmailWithFiltered"
+                        >
+                            <icon-envelope class="inline-block"  width="16" height="16"/>
+                        </a>
+                    </popper>
+
+                    <dropdown-menu hide-cheveron orientation="right">
+                        <template v-slot:label>
+                            <button class="btn btn-icon"><icon-download width="16" height="16" /></button>
+                        </template>
+                        <dropdown-item class="text-right font-bold">Downloads:</dropdown-item>
+                        <dropdown-item class="text-right">
+                            <a :href="`/report/groups/${group.uuid}/coi-report`">COI Report</a>
+                            <note class="inline"> (PDF)</note>
+                        </dropdown-item>
+                        <dropdown-item  class="text-right" v-if="showMemberReportButton">
+                            <a :href="exportUrl">Member Export</a>
+                            <note class="inline"> (CSV)</note>
+                        </dropdown-item>
+                    </dropdown-menu>
+
+                    <div v-if="group.isEp() && showCoordinatorActions">
+                        
+                    </div>
+
                 </div>
             </div>
         </head>
@@ -405,4 +449,5 @@ export default {
     .retired-member > td {
         @apply text-gray-400;
     }
+
 </style>

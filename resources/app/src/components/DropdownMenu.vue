@@ -7,7 +7,7 @@
     }
 
     .dropdown > .dropdown-label {
-        @apply flex flex-row-reverse align-middle -mb-3 pb-3 pr-2 relative z-20 cursor-pointer outline-none;
+        @apply flex flex-row-reverse align-middle -mb-3 pb-3 relative z-20 cursor-pointer outline-none;
     }
     .dropdown-items-container {
         @apply absolute bg-transparent border w-48 shadow rounded z-50;

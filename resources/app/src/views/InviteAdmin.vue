@@ -96,8 +96,8 @@ export default {
             }
             const filter = new RegExp(`.*${this.searchTerm}.*`, 'i');
             return this.invites.filter(invite => {
-                return invite.person.first_name.match(filter)
-                    || invite.person.last_name.match(filter)
+                return invite.person && invite.person.first_name && invite.person.first_name.match(filter)
+                    || invite.person && invite.person.last_name && invite.person.last_name.match(filter)
                     || `${invite.first_name} ${invite.last_name}`.match(filter)
                     || invite.email.match(filter);
             });
