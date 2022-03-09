@@ -50,8 +50,9 @@ class ApplicationEventV1MessageFactory implements MessageFactoryInterface
         string $eventType,
         array $message,
         Carbon $date,
-        ?string $schemaVersion = '1.0.0'
+        ?string $schemaVersion = null
     ): array {
+        $schemaVersion = $schemaVersion ?? '1.0.0';
         $message = [
             'event_type' => $eventType,
             'schema_version' => $schemaVersion,

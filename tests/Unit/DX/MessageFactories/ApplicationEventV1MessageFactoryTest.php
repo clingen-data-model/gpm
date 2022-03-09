@@ -57,6 +57,7 @@ class ApplicationEventV1MessageFactoryTest extends TestCase
         $this->assertMembersInMessage($this->expertPanel->group->members->all(), $message);
         $this->assertArrayHasKey('scope', $message['data']);
         $this->assertGenesInMessage($this->expertPanel->genes->all(), $message['data']['scope']);
+        $this->assertEquals('1.0.0', $message['schema_version']);
     }
 
     /**
