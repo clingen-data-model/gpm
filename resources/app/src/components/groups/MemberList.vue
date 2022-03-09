@@ -129,8 +129,7 @@ export default {
             return this.selectedMember ? this.selectedMember.person.name : null
         },
         showCoordinatorActions () {
-            return this.hasAnyMemberPermission(['groups-manage', ['info-edit', this.group]]) 
-                && this.$store.state.systemInfo.app.features.email_from_member_list
+            return this.hasAnyMemberPermission(['groups-manage', ['info-edit', this.group]])
         },
         showAddMemberButton () {
             return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage']) && !this.readonly
@@ -142,6 +141,9 @@ export default {
         exportUrl () {
             const query = `?member_ids=${this.filteredMembers.map(m => m.id).join(',')}`;
             return `/report/groups/${this.group.uuid}/member-export${query}`;
+        },
+        features () {
+            return this.$store.state.systemInfo.app.features
         }
     },
     watch: {
@@ -290,7 +292,9 @@ export default {
                 </div>
                 
                 <div v-if="showCoordinatorActions" class="flex space-x-2 items-center">
-                    <popper :content="`Email ${filteredMembers.length} listed members`" hover arrow>
+                    <popper :content="`Email ${filteredMembers.length} listed members`" hover arrow 
+                        v-if="features.email_from_member_list"
+                    >
                         <a 
                             :href="`mailto:${filteredEmails.join(', ')}`" 
                             class="btn btn-icon" 
@@ -384,7 +388,11 @@ export default {
                 </template>
                 <template v-slot:cell-actions="{item}">
                     <div class="flex space-x-2 items-center">
-                        <dropdown-menu :hide-cheveron="true" class="relative" v-if="hasAnyMemberPermission() && !readonly">
+                        <dropdown-menu 
+                            :hide-cheveron="true" 
+                            class="relative block" 
+                            v-if="hasAnyMemberPermission() && !readonly"
+                        >
                             <template v-slot:label>
                                 <button class="btn btn-xs">&hellip;</button>
                             </template>
@@ -404,9 +412,11 @@ export default {
                                 <div @click="confirmRemoveMember(item)">Remove from group</div>
                             </dropdown-item>
                         </dropdown-menu>
-                        <popover hover arrow content="Receives notifications about this group." placement="top">
-                            <icon-notification v-if="item.is_contact" :width="12" :height="12" icon-name="Is a group contact" @click.stop=""/>
-                        </popover>
+                        <div>
+                            <popover hover arrow content="Receives notifications about this group." placement="top">
+                                <icon-notification v-if="item.is_contact" :width="12" :height="12" icon-name="Is a group contact" @click.stop=""/>
+                            </popover>
+                        </div>
                     </div>
                 </template>
 
