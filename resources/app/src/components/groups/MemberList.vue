@@ -279,7 +279,7 @@ export default {
             </div>
             <div class="flex space-x-2 items-center pb-0.5">
                 <div v-if="showAddMemberButton">
-                    <popper content="Add Member" hover arrow>
+                    <popper content="Add a member" hover arrow>
                         <router-link 
                             class="btn btn-icon" 
                             :to="append($route.path, 'members/add')"
@@ -290,7 +290,7 @@ export default {
                 </div>
                 
                 <div v-if="showCoordinatorActions" class="flex space-x-2 items-center">
-                    <popper content="Email listed members" hover arrow>
+                    <popper :content="`Email ${filteredMembers.length} listed members`" hover arrow>
                         <a 
                             :href="`mailto:${filteredEmails.join(', ')}`" 
                             class="btn btn-icon" 
@@ -310,8 +310,10 @@ export default {
                             <note class="inline"> (PDF)</note>
                         </dropdown-item>
                         <dropdown-item  class="text-right" v-if="showMemberReportButton">
+                            <popper class="text-center text-sm p-1" :content="`Export will include ${filteredMembers.length} members currently listed.`" hover arrow>
                             <a :href="exportUrl">Member Export</a>
                             <note class="inline"> (CSV)</note>
+                            </popper>
                         </dropdown-item>
                     </dropdown-menu>
 
