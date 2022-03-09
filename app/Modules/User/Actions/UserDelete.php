@@ -12,6 +12,8 @@ class UserDelete
 
     public function handle(User $user): void
     {
+        $user->roles->each->delete();
+        $user->permissions->each->delete();
         $user->delete();
 
         event(new UserDeleted($user));

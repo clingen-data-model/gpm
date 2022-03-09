@@ -55,8 +55,15 @@
                         <div v-html="email.body"></div>
                     </dictionary-row>
                     <button class="btn btn-xs" @click.stop="initResend(email)" v-if="hasPermission('people-manage')">Resend</button>
-
                 </div>
+            </tab-item>
+            <tab-item label="Admin" :visible="hasPermission('people-manage')">
+                <section class="border my-4 p-4 bg-red-100 border-red-200 rounded">
+                <h2 class="mb-4 text-red-800">
+                    Here be dragons. Proceed with caution.
+                </h2>
+                <button class="btn btn red" @click="initDelete">Delete Person</button>
+                </section>
             </tab-item>
         </tabs-container>
         <teleport to="body">
@@ -65,6 +72,23 @@
             </modal-dialog>
             <modal-dialog title="Resend Email" v-model="showResendDialog">
                 <custom-email-form :mail-data="currentEmail" @sent="cleanupResend" @canceled="cleanupResend"></custom-email-form>
+            </modal-dialog>
+            <modal-dialog :title="`You are about to delete ${person.name}`" v-model="showDeleteConfirmation">
+                <p>You are about to delete this person.  All related data will also be deleted including:</p>
+                <ul class="list-disc pl-6">
+                    <li>User record, system roles, and system permissions (if account is activated)</li>
+                    <li>Invite</li>
+                    <li>Group Memberships and group roles (if any)</li>
+                </ul>
+                <div class="border my-4 px-2 py-1 font-bold bg-red-100 border-red-200 rounded text-red-800">
+                    This cannot be undone.
+                </div>
+                <button-row 
+                    :submit-text="`Delete ${person.name}`" 
+                    @submitted="commitDelete"  
+                    @canceled="cancelDelete" 
+                    submit-variant="red"
+                />
             </modal-dialog>
         </teleport>
     </div>
@@ -96,7 +120,8 @@ export default {
         return {
             emails: [],
             currentEmail: {},
-            showResendDialog: null
+            showResendDialog: null,
+            showDeleteConfirmation: false
         }
     },
     watch: {
@@ -141,6 +166,17 @@ export default {
             this.currentEmail = {},
             this.showResendDialog = false;
             this.$store.dispatch('people/getMail', this.person);
+        },
+        initDelete () {
+            this.showDeleteConfirmation = true;
+        },
+        async commitDelete () {
+            await this.$store.dispatch('people/deletePerson', this.person);
+            this.showDeleteConfirmation = false;
+            this.$router.go(-1);
+        },
+        cancelDelete () {
+            this.showDeleteConfirmation = false;
         }
     },
     setup() {

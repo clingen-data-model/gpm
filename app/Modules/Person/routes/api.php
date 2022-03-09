@@ -5,14 +5,15 @@ use Illuminate\Support\Facades\Route;
 use App\Modules\Person\Models\Institution;
 use App\Modules\Person\Actions\InviteReset;
 use App\Modules\Person\Actions\InviteRedeem;
+use App\Modules\Person\Actions\PersonDelete;
 use App\Modules\Person\Actions\ProfileUpdate;
 use App\Modules\Person\Actions\InstitutionCreate;
+use App\Modules\Person\Actions\InstitutionsMerge;
 use App\Modules\Person\Actions\InstitutionUpdate;
 use App\Modules\Person\Actions\InviteValidateCode;
 use App\Http\Controllers\Api\InstitutionController;
 use App\Modules\Person\Actions\MarkNotificationRead;
 use App\Modules\Person\Actions\InstitutionMarkApproved;
-use App\Modules\Person\Actions\InstitutionsMerge;
 use App\Modules\Person\Http\Controllers\Api\ApiController;
 use App\Modules\Person\Actions\InviteRedeemForExistingUser;
 use App\Modules\Person\Http\Controllers\Api\InviteController;
@@ -40,6 +41,7 @@ Route::group([
         Route::get('/invites/', [InviteController::class, 'index']);
 
         Route::get('/{person:uuid}', [PeopleController::class, 'show']);
+        Route::delete('/{person:uuid}', PersonDelete::class);
         Route::put('/{person:uuid}/profile', ProfileUpdate::class);
         // No post route b/c person creation currently happens when adding members to groups.
         

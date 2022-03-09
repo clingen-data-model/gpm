@@ -40,6 +40,12 @@ export const mutations = {
 
         state.items.push(person);
     },
+    removeItem (state, person) {
+        const idx = state.items.findIndex(p => p.id === person.id);
+        if (idx > -1) {
+            state.items.splice(idx, 1);
+        }
+    },
     clearItems(state) {
         state.items = [];
     },
@@ -140,6 +146,14 @@ export const actions = {
                         person.mailLog = response.data;
                         return response;
                     })
+    },
+
+    deletePerson ({commit}, person) {
+        return api.delete(`/api/people/${person.uuid}`)
+            .then(response => {
+                commit('removeItem', person);
+                return response;
+            });
     }
 };
 
