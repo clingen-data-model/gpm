@@ -369,6 +369,7 @@
         "showCdwgs": true,
         "showWgs": true,
         "notifyScopeChange": false,
-        "emailFromMemberList": false
+        "emailFromMemberList": true,
+        "memberExport": true
     }
 }
