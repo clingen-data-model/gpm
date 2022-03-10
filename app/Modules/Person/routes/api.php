@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Modules\Person\Models\Institution;
 use App\Modules\Person\Actions\InviteReset;
+use App\Modules\Person\Actions\PersonMerge;
 use App\Modules\Person\Actions\InviteRedeem;
 use App\Modules\Person\Actions\PersonDelete;
 use App\Modules\Person\Actions\ProfileUpdate;
@@ -39,6 +40,8 @@ Route::group([
     ], function () {
         Route::get('/', [PeopleController::class, 'index']);
         Route::get('/invites/', [InviteController::class, 'index']);
+
+        Route::put('/merge', PersonMerge::class);
 
         Route::get('/{person:uuid}', [PeopleController::class, 'show']);
         Route::delete('/{person:uuid}', PersonDelete::class);

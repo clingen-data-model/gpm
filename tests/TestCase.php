@@ -138,27 +138,27 @@ abstract class TestCase extends BaseTestCase
         return $user;
     }
 
-    protected function setupPermission(String|array $permissions)
+    protected function setupPermission(String|array $permissions, $scope = 'system')
     {
         if (is_string($permissions)) {
-            Permission::factory()->create(['name' => $permissions]);
+            Permission::factory()->create(['name' => $permissions, 'scope' => $scope]);
             return;
         }
 
         foreach ($permissions as $perm) {
-            Permission::factory()->create(['name' => $perm]);
+            Permission::factory()->create(['name' => $perm, 'scope' => $scope]);
         }
     }
 
-    protected function setupRoles(String|array $roles)
+    protected function setupRoles(String|array $roles, $scope = 'system')
     {
         if (is_string($roles)) {
-            Role::factory()->create(['name' => $roles]);
+            Role::factory()->create(['name' => $roles, 'scope' => $scope]);
             return;
         }
 
         foreach ($roles as $perm) {
-            Role::factory()->create(['name' => $perm]);
+            Role::factory()->create(['name' => $perm, 'scope' => $scope]);
         }
     }
 
@@ -193,7 +193,7 @@ abstract class TestCase extends BaseTestCase
     protected function setupForGroupTest(): void
     {
         $this->seedForGroupTest();
-        $this->setupRoles('coordinator', 'groups-manage');
+        $this->setupRoles(['coordinator']);
     }
 
     protected function getLongString()

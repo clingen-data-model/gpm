@@ -6,25 +6,45 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Bus\Dispatcher;
 use App\Http\Controllers\Controller;
+use App\ModelSearchService;
 use Illuminate\Support\Facades\Auth;
 use App\Modules\Person\Models\Person;
 use App\Modules\Person\Http\Resources\PersonDetailResource;
 
 class PeopleController extends Controller
 {
-    public function __construct(private Dispatcher $commandBus)
-    {
-    }
-
     public function index(Request $request)
     {
-        return Person::query()
-                ->with([
-                    'institution' => function ($q) {
-                        $q->select('name', 'id');
+        $search = new ModelSearchService(
+            modelClass: Person::class,
+            defaultSelect: ['first_name', 'last_name', 'email', 'people.id', 'institution_id', 'people.uuid'],
+            defaultWith: [
+                'institution' => function ($q) {
+                    $q->select('name', 'id');
+                }
+            ],
+            whereFunction: function ($query, $where) {
+                foreach ($where as $key => $value) {
+                    if ($key == 'filterString') {
+                        $query->leftJoin('institutions', 'institutions.id', '=', 'people.institution_id')
+                            ->where(function ($q) use ($value) {
+                                $q->where('first_name', 'like', '%'.$value.'%')
+                                    ->orWhere('last_name', 'like', '%'.$value.'%')
+                                    ->orWhereRaw('concat(first_name, " ", last_name) like "%'.$value.'%"')
+                                    ->orWhere('email', 'like', '%'.$value.'%')
+                                    ->orWhere('institutions.name', '%'.$value.'%');
+                            });
+                    } elseif (is_array($value)) {
+                        $query->whereIn($key, $value);
+                    } else {
+                        $query->where($key, $value);
                     }
-                ])
-                ->get();
+                }
+                return $query;
+            }
+        );
+
+        return $search->search($request->only(['where', 'sort', 'with', 'showDeleted']));
     }
         
     public function show(Person $person)
