@@ -62,7 +62,8 @@
                 <h2 class="mb-4 text-red-800">
                     Here be dragons. Proceed with caution.
                 </h2>
-                <button class="btn btn red" @click="initDelete">Delete Person</button>
+                <p><button class="btn btn red" @click="initMerge">Merge Person into another</button></p>
+                <p><button class="btn btn red" @click="initDelete">Delete Person</button></p>
                 </section>
             </tab-item>
         </tabs-container>
@@ -90,6 +91,9 @@
                     submit-variant="red"
                 />
             </modal-dialog>
+            <modal-dialog :title="`Merge ${person.name} into another person`" v-model="showMergeForm">
+                <person-merge-form :obsolete="person" @saved="handleMerged" @canceled="handleMergeCanceled"></person-merge-form>
+            </modal-dialog>
         </teleport>
     </div>
 </template>
@@ -100,6 +104,7 @@ import {formatDateTime as formatDate} from '@/date_utils'
 import TabsContainer from '../TabsContainer.vue'
 import MembershipList from './MembershipList.vue'
 import PersonProfile from '@/components/people/PersonProfile'
+import PersonMergeForm from '@/components/people/PersonMergeForm'
 import CoiList from '@/components/people/CoiList'
 
 export default {
@@ -108,6 +113,7 @@ export default {
         TabsContainer,
         MembershipList,
         PersonProfile,
+        PersonMergeForm,
         CoiList,
     },
     props: {
@@ -121,7 +127,8 @@ export default {
             emails: [],
             currentEmail: {},
             showResendDialog: null,
-            showDeleteConfirmation: false
+            showDeleteConfirmation: false,
+            showMergeForm: false
         }
     },
     watch: {
@@ -177,6 +184,16 @@ export default {
         },
         cancelDelete () {
             this.showDeleteConfirmation = false;
+        },
+        initMerge() {
+            this.showMergeForm = true;
+        },
+        handleMerged () {
+            this.showMergeForm = false;
+            this.$router.go(-1);
+        },
+        handleMergeCanceled () {
+            this.showMergeForm = false;
         }
     },
     setup() {

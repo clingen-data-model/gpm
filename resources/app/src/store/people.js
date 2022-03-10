@@ -68,7 +68,7 @@ export const actions = {
         dispatch('getAll', {params})
     },
     async getAll({ commit, state, dispatch }, {params, fresh = false}) {
-        if (fresh || state.lastFetch === null) {
+        // if (fresh || state.lastFetch === null) {
             commit('setLastParams', params);
             await api.get(baseUrl+queryStringFromParams(params))
                 .then(response => {
@@ -78,8 +78,8 @@ export const actions = {
                     })
                 });
             return;
-        }
-        dispatch('getPeopleSinceLastFetch', params);
+        // }
+        // dispatch('getPeopleSinceLastFetch', params);
     },
 
     async getPeopleSinceLastFetch({ commit, state }, params=null) 
@@ -154,6 +154,15 @@ export const actions = {
                 commit('removeItem', person);
                 return response;
             });
+    },
+
+    mergePeople ({commit}, {authority, obsolete}) {
+        console.log('store.people.actions.mergePeople', {authority, obsolete});
+        return api.put(`/api/people/merge`, {authority_id: authority.id, obsolete_id: obsolete.id})
+            .then(response => {
+                commit('addItem', response.data);
+                commit('removeItem', obsolete);
+            })
     }
 };
 

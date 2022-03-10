@@ -138,7 +138,6 @@ export default {
         removeSelection(){
             this.$emit('update:modelValue', null);
             this.$nextTick(() => {
-
                 this.$refs.input.focus();
             })
         },
