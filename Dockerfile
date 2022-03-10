@@ -56,6 +56,7 @@ COPY ./database/seeders ./database/seeders
 COPY ./database/factories ./database/factories
 
 RUN composer install \
+        # --optimize-autoloader \
         --no-interaction \
         --no-plugins \
         --no-scripts \
