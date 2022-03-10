@@ -69,10 +69,8 @@ export default {
     },
     methods: {
         async commitMerge () {
-            console.log('commitMerge', {authorityCopy: this.authorityCopy, obsoleteCopy: this.obsoleteCopy})
             try {
                 this.errors = {};
-                console.log({errors: this.errors})
                 await this.$store.dispatch(
                     'people/mergePeople', 
                     {

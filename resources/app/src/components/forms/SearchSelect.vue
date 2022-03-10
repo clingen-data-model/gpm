@@ -121,8 +121,7 @@ export default {
         }
     },
     methods: {
-        handleInputBlur (evt) {
-            console.log(evt)
+        handleInputBlur () {
             this.clearInput();
             this.resetCursor();
         },
@@ -142,7 +141,6 @@ export default {
             })
         },
         setSelection(selection) {
-            console.log('setting selection');
             this.$emit('update:modelValue', selection);
             this.clearInput();
             this.resetCursor();
@@ -152,11 +150,9 @@ export default {
             this.clearOptions();
         },
         clearOptions() {
-            console.debug('clearOptions');
             this.filteredOptions = [];
         },
         clearSearchText() {
-            console.debug('clearSearchText')
             this.searchText = null;
         },
         resetCursor() {
@@ -168,12 +164,10 @@ export default {
             }
             this.cancelKeydownTimer(evt);
             if (evt.key == 'ArrowUp') {
-            console.info('start key down timer', evt.key)
                 this.keydownTimer = setInterval(() => {this.moveUp()}, 100);
                 this.currentKey = 'ArrowUp';
             }
             if (evt.key == 'ArrowDown') {
-            console.info('start key down timer', evt.key)
                 this.keydownTimer = setInterval(() => {this.moveDown()}, 100);
                 this.currentKey = 'ArrowDown';
             }
@@ -234,7 +228,6 @@ export default {
                     this.setSelection(this.filteredOptions[this.cursorPosition])
                 }
                 if (evt.key == 'Escape') {
-                    console.log('escape');
                     this.clearOptions();
                 }
             }

@@ -67,7 +67,8 @@ export const actions = {
     async all({ dispatch }, params) {
         dispatch('getAll', {params})
     },
-    async getAll({ commit, state, dispatch }, {params, fresh = false}) {
+    //eslint-disable-next-line
+    async getAll({ commit }, {params, fresh = false}) {
         // if (fresh || state.lastFetch === null) {
             commit('setLastParams', params);
             await api.get(baseUrl+queryStringFromParams(params))
@@ -106,11 +107,6 @@ export const actions = {
                     commit('setLastFetch', new Date)
                 })
             })
-    },
-
-    // eslint-disable-next-line
-    async createPerson({ commit }, personData) {
-        console.error('people/createPerson action is no longer implemented. Person creation currently happens when adding members to groups.');
     },
 
     async getPerson({commit}, {uuid, params}) {
@@ -157,7 +153,6 @@ export const actions = {
     },
 
     mergePeople ({commit}, {authority, obsolete}) {
-        console.log('store.people.actions.mergePeople', {authority, obsolete});
         return api.put(`/api/people/merge`, {authority_id: authority.id, obsolete_id: obsolete.id})
             .then(response => {
                 commit('addItem', response.data);
