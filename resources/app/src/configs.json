@@ -366,8 +366,8 @@
     "appFeatures": {
         "inviteReminders": true,
         "coiReminders": true,
-        "showCdwgs": true,
-        "showWgs": true,
+        "showCdwgs": false,
+        "showWgs": false,
         "notifyScopeChange": false,
         "emailFromMemberList": true,
         "memberExport": true
