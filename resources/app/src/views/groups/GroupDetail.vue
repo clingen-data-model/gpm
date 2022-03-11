@@ -192,7 +192,7 @@
           </tab-item>
 
           <tab-item label="Admin" :visible="hasPermission('groups-manage')">
-            <div v-if="group.isApplying">
+            <div v-if="group.isApplying && group.isEp()">
               <h2 class="pb-2 border-b mb-4">Application</h2>
               <progress-chart
                 :application="group.expert_panel"
