@@ -56,6 +56,7 @@ import {useRouter} from 'vue-router'
 import {computed, ref} from 'vue'
 import GroupForm from '@/components/groups/GroupForm'
 import SubmissionWrapper from '@/components/groups/SubmissionWrapper'
+import {hasAnyPermission} from '@/auth_utils'
 
 
 export default {
@@ -141,7 +142,7 @@ export default {
                     filter: g => g.isGcep()
                 },
             ];
-            if (store.state.systemInfo.app.features.show_cdwgs) {
+            if (store.state.systemInfo.app.features.show_cdwgs || hasAnyPermission(['groups-manage'])) {
                 tabs.push({
                     label: 'CDWGs',
                     typeId: 2,
@@ -149,7 +150,7 @@ export default {
                 });
             }
 
-            if (store.state.systemInfo.app.features.show_wgs) {
+            if (store.state.systemInfo.app.features.show_wgs || hasAnyPermission(['groups-manage'])) {
                 tabs.push({
                     label: 'WGs',
                     typeId: 1,
