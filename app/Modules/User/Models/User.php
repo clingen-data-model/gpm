@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Cache;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\Contracts\HasLogEntries;
 use App\Modules\User\Models\Preference;
 use Illuminate\Notifications\Notifiable;
 use Lab404\Impersonate\Models\Impersonate;
@@ -18,12 +19,14 @@ use Illuminate\Contracts\Auth\CanResetPassword;
 use Lab404\Impersonate\Services\ImpersonateManager;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\Traits\HasLogEntries as HasLogEntriesTrait;
 use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
 
-class User extends Authenticatable implements CanResetPassword
+class User extends Authenticatable implements CanResetPassword, HasLogEntries
 {
     use HasFactory, Notifiable, CanResetPasswordTrait, HasApiTokens, HasEmail, HasRoles;
     use Impersonate;
+    use HasLogEntriesTrait;
 
     /**
      * The attributes that are mass assignable.

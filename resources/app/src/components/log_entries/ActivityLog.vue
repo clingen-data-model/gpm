@@ -51,13 +51,30 @@ import { ref, computed } from 'vue'
 
 import LogEntryForm from '@/components/log_entries/ActivityLogEntryForm'
 import ActivityLogDeleteConfirmation from '@/components/log_entries/ActivityLogDeleteConfirmation'
+import {formatDate, formatTime} from '@/date_utils'
 
 const fields = [
     {
         name: 'created_at',
-        label: 'Created',
+        label: 'Date & Time',
         sortName: 'created_at',
         sortable: true,
+        resolveValue ({created_at}) {
+            return (created_at) ? formatDate(created_at) : null;
+        },
+        type: Date,
+        colspan: 2,
+        class: 'w-16'
+    },
+    {
+        name: 'created_at',
+        label: 'Time',
+        sortName: 'created_at',
+        sortable: false,
+        resolveValue ({created_at}) {
+            return (created_at) ? formatTime(created_at) : null;
+        },
+        class: "w-28",
         type: Date,
     },
     {

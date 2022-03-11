@@ -33,8 +33,6 @@ class ActivityLogsController extends Controller
             throw new AuthorizationException('You do not have access to view this groups activity logs.');
         }
         
-        $group = Group::where('uuid', $groupUuid)->sole();
-
         $logEntries = $group->logEntries()->with('causer')->get();
         
         return ['data' => $logEntries];

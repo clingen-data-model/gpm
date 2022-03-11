@@ -104,6 +104,12 @@ class PersonPolicy
         return $user->hasPermissionTo('force-person-delete');
     }
 
+    public function viewPersonLogs(User $user, Person $person)
+    {
+        return $user->hasPermissionTo('people-manage');
+    }
+    
+
     private function userIsPerson(User $user, Person $person)
     {
         return $person->user_id === $user->id;

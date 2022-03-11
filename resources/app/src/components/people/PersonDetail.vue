@@ -57,6 +57,14 @@
                     <button class="btn btn-xs" @click.stop="initResend(email)" v-if="hasPermission('people-manage')">Resend</button>
                 </div>
             </tab-item>
+            <tab-item label="Log" :visible="hasPermission('people-manage')">
+                <activity-log
+                    :log-entries="logEntries"
+                    :api-url="`/api/people/${person.uuid}/activity-logs`"
+                    v-bind:log-updated="getLogEntries"
+                ></activity-log>
+                <button class="btn btn-xs mt-1" @click="getLogEntries">Refresh</button>
+            </tab-item> 
             <tab-item label="Admin" :visible="hasPermission('people-manage')">
                 <section class="border my-4 p-4 bg-red-100 border-red-200 rounded">
                 <h2 class="mb-4 text-red-800">
@@ -100,12 +108,15 @@
 <script>
 import { mapGetters } from 'vuex'
 import {formatDateTime as formatDate} from '@/date_utils'
+import { logEntries, fetchEntries } from "@/adapters/log_entry_repository";
 
 import TabsContainer from '../TabsContainer.vue'
 import MembershipList from './MembershipList.vue'
 import PersonProfile from '@/components/people/PersonProfile'
 import PersonMergeForm from '@/components/people/PersonMergeForm'
 import CoiList from '@/components/people/CoiList'
+import ActivityLog from "@/components/log_entries/ActivityLog";
+
 
 export default {
     name: 'PersonDetail',
@@ -115,6 +126,7 @@ export default {
         PersonProfile,
         PersonMergeForm,
         CoiList,
+        ActivityLog
     },
     props: {
         uuid: {
@@ -135,7 +147,8 @@ export default {
         uuid: {
             immediate: true,
             handler: function () {
-                this.$store.dispatch('people/getPerson', {uuid: this.uuid})
+                this.$store.dispatch('people/getPerson', {uuid: this.uuid});
+                this.getLogEntries();
             }
         }
     },
@@ -194,11 +207,17 @@ export default {
         },
         handleMergeCanceled () {
             this.showMergeForm = false;
-        }
+        },
     },
-    setup() {
+    setup(props) {
+        const getLogEntries = async () => {
+            await fetchEntries(`/api/people/${props.uuid}/activity-logs`);
+        };
+
         return {
-            formatDate: formatDate
+            formatDate: formatDate,
+            logEntries,
+            getLogEntries
         }
     },
     async mounted() {

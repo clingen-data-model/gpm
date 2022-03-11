@@ -21,6 +21,7 @@ use App\Modules\Person\Http\Controllers\Api\InviteController;
 use App\Modules\Person\Http\Controllers\Api\PeopleController;
 use App\Modules\Person\Http\Controllers\Api\TimezoneController;
 use App\Modules\Person\Http\Controllers\Api\PersonEmailController;
+use App\Modules\Person\Http\Controllers\Api\ActivityLogsController;
 use App\Modules\Person\Http\Controllers\Api\PersonNotificationController;
 
 Route::group([
@@ -48,6 +49,7 @@ Route::group([
         Route::put('/{person:uuid}/profile', ProfileUpdate::class);
         // No post route b/c person creation currently happens when adding members to groups.
         
+        Route::get('/{person:uuid}/activity-logs', [ActivityLogsController::class, 'index']);
         Route::get('/{person:uuid}/email', [PersonEmailController::class, 'index']);
         Route::get('/{person:uuid}/notifications/unread', [PersonNotificationController::class, 'unread']);
     });

@@ -4,6 +4,7 @@ namespace App\Modules\Person\Models;
 
 use App\Models\Email;
 use App\Models\HasUuid;
+use App\Models\Activity;
 use App\Models\HasEmail;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
@@ -11,6 +12,7 @@ use App\Modules\Person\Models\Race;
 use App\Modules\Person\Models\Gender;
 use Database\Factories\PersonFactory;
 use App\Modules\Person\Models\Country;
+use App\Models\Contracts\HasLogEntries;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\Person\Models\Ethnicity;
 use Illuminate\Notifications\Notifiable;
@@ -24,8 +26,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\Traits\HasLogEntries as HasLogEntriesTrait;
 
-class Person extends Model
+class Person extends Model implements HasLogEntries
 {
     use HasFactory;
     use SoftDeletes;
@@ -34,6 +37,8 @@ class Person extends Model
     use Notifiable;
     use HasEmail;
     use IsGroupMember;
+    use HasLogEntriesTrait;
+
 
     protected $fillable = [
         'uuid',
@@ -89,13 +94,13 @@ class Person extends Model
         return $this->groups()->whereNull('group_members.end_date');
     }
     
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function logEntries()
-    {
-        return $this->morphMany(Activity::class, 'subject');
-    }
+    // /**
+    //  * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+    //  */
+    // public function logEntries()
+    // {
+    //     return $this->morphMany(Activity::class, 'subject');
+    // }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\MorphOne
