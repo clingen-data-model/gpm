@@ -1,16 +1,17 @@
 <template>
-    <label class="mb-2">
-        <slot name="input">
-            <input 
-                type="checkbox" 
-                v-model="val" 
-                class="mt-1" 
-                :value="value"
-                :id="checkboxId"
-                v-bind="$attrs"
-                @change="propagateChange"
-            >
-        </slot>
+    <label class="mb-2 flex items-start">
+        <div class="mt-1">
+            <slot name="input">
+                <input 
+                    type="checkbox" 
+                    v-model="val" 
+                    :value="value"
+                    :id="checkboxId"
+                    v-bind="$attrs"
+                    @change="propagateChange"
+                >
+            </slot>
+        </div>
         <div>
             <slot>
                 {{label}}

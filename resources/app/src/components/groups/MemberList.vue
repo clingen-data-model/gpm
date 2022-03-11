@@ -350,7 +350,7 @@ export default {
                     <!-- <checkbox class="block" label="Needs Training" v-model="filters.needsTraining" /> -->
                 </div>
                 <div class="flex-1 py-2">
-                    <checkbox class="block" label="Hide Alumns" v-model="filters.hideAlumns" />
+                    <checkbox class="block" label="Hide Retired/Alumni" v-model="filters.hideAlumns" />
                 </div>
             </div>
         </transition>

@@ -5,6 +5,7 @@
 /storage/*.key
 /vendor
 /tests/coverage/*
+/video
 .env
 .env.backup
 .phpunit.result.cache
