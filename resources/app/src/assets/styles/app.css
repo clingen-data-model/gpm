@@ -182,6 +182,10 @@ th.sorted, td.sorted  {
     @apply px-1 py-0.5
 }
 
+.btn-icon-xs {
+    @apply px-0.5 py-0
+}
+
 .btn-xs {
     @apply text-xs px-2 py-0.5;
 }

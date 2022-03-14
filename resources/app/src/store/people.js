@@ -134,7 +134,7 @@ export const actions = {
     },
 
     // eslint-disable-next-line
-    async getMail ({commit}, person) {
+    getMail ({commit}, person) {
         if(person.uuid == null) {
             return false;
         }

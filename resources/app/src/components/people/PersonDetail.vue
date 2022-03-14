@@ -27,9 +27,11 @@
         </header>
         <tabs-container>
             <tab-item label="groups">
+                <h2>Groups</h2>
                 <membership-list :person="person"></membership-list>
             </tab-item>
             <tab-item label="Info">
+                <h2>Profile</h2>
                 <person-profile :person="person"></person-profile>
             </tab-item>
             <tab-item label="Conflict of Interest">
@@ -42,30 +44,23 @@
             </tab-item> -->
 
             <tab-item label="Email Log" :visible="hasPermission('people-manage') || userIsPerson(person) || coordinatesPerson(person)">
-                <div v-if="sortedMailLog.length == 0" class="well">
-                    {{person.first_name}} has not received any mail via the GPM.
-                </div>
-                <div class="w-3/4 my-4 p-4 border" v-for="email in sortedMailLog" :key="email.id">
-                    <dictionary-row label="Date/Time">
-                        {{formatDate(email.created_at)}}
-                    </dictionary-row>
-                    <dictionary-row label="Subject">
-                        {{email.subject}}
-                    </dictionary-row>
-                    <dictionary-row label="Body">
-                        <div v-html="email.body"></div>
-                    </dictionary-row>
-                    <button class="btn btn-xs" @click.stop="initResend(email)" v-if="hasPermission('people-manage') || coordinatesPerson(person)">Resend</button>
-                </div>
+                <header class="flex space-x-4 items-center">
+                    <h2>Mail sent to {{person.first_name}}</h2>
+                    <refresh-button :loading="mailLoading" @click="getMailLog"/>
+                </header>
+                <person-mail-log :person="person" :mail="sortedMailLog"></person-mail-log>
             </tab-item>
 
             <tab-item label="Log" :visible="hasPermission('people-manage') || coordinatesPerson(person)">
+                <div class="flex space-x-4 items-center">
+                    <h2>Log Entries</h2>
+                    <refresh-button :loading="logsLoading" @click="getLogEntries"/>
+                </div>
                 <activity-log
                     :log-entries="logEntries"
                     :api-url="`/api/people/${person.uuid}/activity-logs`"
                     v-bind:log-updated="getLogEntries"
                 ></activity-log>
-                <button class="btn btn-xs mt-1" @click="getLogEntries">Refresh</button>
             </tab-item> 
 
             <tab-item label="Admin" :visible="hasPermission('people-manage')">
@@ -83,10 +78,6 @@
         <teleport to="body">
             <modal-dialog v-model="showModal" :title="$route.meta.title">
                 <router-view name="modal"></router-view>
-            </modal-dialog>
-            <modal-dialog title="Resend Email" v-model="showResendDialog">
-                <custom-email-form :mail-data="currentEmail" @sent="cleanupResend" @canceled="cleanupResend"></custom-email-form>
-                button.btn.btn-xs[@click="getMail"]
             </modal-dialog>
             <modal-dialog :title="`You are about to delete ${person.name}`" v-model="showDeleteConfirmation">
                 <p>You are about to delete this person.  All related data will also be deleted including:</p>
@@ -122,6 +113,7 @@ import PersonProfile from '@/components/people/PersonProfile'
 import PersonMergeForm from '@/components/people/PersonMergeForm'
 import CoiList from '@/components/people/CoiList'
 import ActivityLog from "@/components/log_entries/ActivityLog";
+import PersonMailLog from "@/components/people/PersonMailLog";
 
 
 export default {
@@ -132,7 +124,8 @@ export default {
         PersonProfile,
         PersonMergeForm,
         CoiList,
-        ActivityLog
+        ActivityLog,
+        PersonMailLog,
     },
     props: {
         uuid: {
@@ -142,18 +135,17 @@ export default {
     },
     data() {
         return {
-            emails: [],
-            currentEmail: {},
-            showResendDialog: null,
             showDeleteConfirmation: false,
-            showMergeForm: false
+            showMergeForm: false,
+            mailLoading: false,
+            logsLoading: false,
         }
     },
     watch: {
         uuid: {
             immediate: true,
             handler: async function () {
-                const data = await this.$store.dispatch('people/getPerson', {uuid: this.uuid});
+                await this.$store.dispatch('people/getPerson', {uuid: this.uuid});
                 if (this.coordinatesPerson(this.person)) {
                     this.getLogEntries();
                     this.getMailLog();
@@ -187,15 +179,6 @@ export default {
         },
     },
     methods: {
-        initResend (email) {
-            this.currentEmail = {...email};
-            this.showResendDialog = true;
-        },
-        cleanupResend () {
-            this.currentEmail = {},
-            this.showResendDialog = false;
-            this.$store.dispatch('people/getMail', this.person);
-        },
         initDelete () {
             this.showDeleteConfirmation = true;
         },
@@ -217,19 +200,22 @@ export default {
         handleMergeCanceled () {
             this.showMergeForm = false;
         },
-        getMailLog() {
-            this.$store.dispatch('people/getMail', this.person);
+        async getMailLog() {
+            this.mailLoading = true;
+            await this.$store.dispatch('people/getMail', this.person);
+            this.mailLoading = false;
+        },
+        async getLogEntries () {
+            this.logsLoading = true;
+            await this.fetchEntries(`/api/people/${this.uuid}/activity-logs`);
+            this.logsLoading = false;
         }
     },
-    setup(props) {
-        const getLogEntries = async () => {
-            await fetchEntries(`/api/people/${props.uuid}/activity-logs`);
-        };
-
+    setup() {
         return {
             formatDate: formatDate,
             logEntries,
-            getLogEntries
+            fetchEntries
         }
     },
 }
