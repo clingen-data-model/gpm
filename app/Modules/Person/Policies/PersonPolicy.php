@@ -68,6 +68,22 @@ class PersonPolicy
         return false;
     }
 
+    public function updateNameAndEmail(User $user, Person $person): bool
+    {
+        if ($this->update($user, $person)) {
+            return true;
+        }
+
+        $personGroups = $person->activeGroups;
+
+        if ($user->person->coordinatesGroup($personGroups->all())) {
+            return true;
+        }
+
+        return false;
+    }
+    
+
     /**
      * Determine whether the user can delete the model.
      *
@@ -106,7 +122,7 @@ class PersonPolicy
 
     public function viewPersonLogs(User $user, Person $person)
     {
-        return $user->hasPermissionTo('people-manage');
+        return $user->hasPermissionTo('people-manage') || $user->person->coordinatesGroup($person->activeGroups->all());
     }
     
 

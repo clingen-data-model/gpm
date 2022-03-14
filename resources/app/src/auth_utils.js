@@ -13,3 +13,4 @@ export const userInGroup = (group) => {
 export const userIsPerson = (person) => {
     return store.state.user.id == person.user_id;
 }
+export const coordinatesPerson = (person)  => store.state.user.coordinatesPerson(person);

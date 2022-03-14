@@ -42,8 +42,11 @@ class ProfileUpdate
 
     public function asController(ActionRequest $request, Person $person)
     {
-        // $person = Person::findByUuidOrFail($personUuid);
-        $person = $this->handle($person, $request->all());
+        $profileData = $request->only(['first_name', 'last_name', 'email']);
+        if ($request->user()->can('update', $person)) {
+            $profileData = $request->all();
+        }
+        $person = $this->handle($person, $profileData);
 
         $person->load(
             'institution',
@@ -60,7 +63,8 @@ class ProfileUpdate
 
     public function authorize(ActionRequest $request): bool
     {
-        return Auth::user()->can('update', $request->person);
+        return $request->user()->can('update', $request->person)
+            || $request->user()->can('updateNameAndEmail', $request->person);
     }
 
     public function rules(ActionRequest $request)

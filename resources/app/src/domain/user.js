@@ -50,6 +50,10 @@ class User extends Entity {
         return false;
     }
 
+    hasRoleForAnyGroup(role, groups) {
+       return groups.some(g => this.hasGroupRole(role, g));
+    }
+
     hasAnyPermission (permissions) 
     {
         if (!Array.isArray(permissions)) {
@@ -99,6 +103,10 @@ class User extends Entity {
             return true;
         }
         return false;
+    }
+
+    coordinatesPerson (person) {
+        return this.hasRoleForAnyGroup('coordinator', person.memberships.map(m => m.group));
     }
 }
 

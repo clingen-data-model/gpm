@@ -109,11 +109,12 @@ export const actions = {
             })
     },
 
-    async getPerson({commit}, {uuid, params}) {
-        await api.get(`${baseUrl}/${uuid}`+queryStringFromParams(params))
+    getPerson({commit}, {uuid, params}) {
+        return api.get(`${baseUrl}/${uuid}`+queryStringFromParams(params))
             .then(response => {
                 commit('addItem', response.data.data)
                 commit('setCurrentItemIndex', response.data.data)
+                return response;
             });
     },
 

@@ -12,6 +12,7 @@ const checkPermissionAndPersonOwnership = async (to) => {
         return true;
     }
 
+
     // if we don't have a currentItem in people store, get the person by the uuid
     if (!store.getters['people/currentItem'] || store.getters['people/currentItem'].uuid != to.params.uuid) {
         await store.dispatch('people/getPerson', {uuid: to.params.uuid})
@@ -21,6 +22,12 @@ const checkPermissionAndPersonOwnership = async (to) => {
     if (store.getters['people/currentItem'].user_id == store.getters.currentUser.id) {
         return true;
     }
+
+    if (store.getters.currentUser.coordinatesPerson(store.getters['people/currentItem'])) {
+        return true;
+    }
+
+
 
     store.commit('pushError', 'You don\'t have permission to edit this person\'s information');
     return false;

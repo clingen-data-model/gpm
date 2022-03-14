@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Traits\HasLogEntries as HasLogEntriesTrait;
+use Illuminate\Support\Collection;
 
 class Person extends Model implements HasLogEntries
 {
@@ -222,7 +223,6 @@ class Person extends Model implements HasLogEntries
             $q->isActive();
         });
     }
-    
 
     public function scopeHasPendingInvite($query)
     {
@@ -264,6 +264,11 @@ class Person extends Model implements HasLogEntries
         }));
     }
     
+    public function getIsCoordinatorAttribute()
+    {
+        return $this->activeMemberships->pluck('roles')->flatten()->pluck('name')->contains('coordinator');
+    }
+    
     
 
     /**
@@ -277,6 +282,36 @@ class Person extends Model implements HasLogEntries
     public function inGroup(Group $group)
     {
         return $this->activeGroups->pluck('id')->contains($group->id);
+    }
+
+    public function coordinatesGroup($group)
+    {
+        $query = $this->activeMemberships()
+                            ->whereHas('roles', function ($q) {
+                                $q->where('name', 'coordinator');
+                            });
+                            
+        if (is_array($group)) {
+            $query->whereIn(
+                'group_id',
+                collect($group)->map(function ($g) {
+                    return $g->id;
+                })
+            );
+        }
+
+        if (is_object($group)) {
+            $query->where('group_id', $group->id)
+                            ->first();
+        }
+
+
+        $membership = $query->first();
+        if (!$membership) {
+            return false;
+        }
+
+        return true;
     }
 
     // Factory

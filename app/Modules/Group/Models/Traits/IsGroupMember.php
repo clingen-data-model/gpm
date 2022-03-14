@@ -23,6 +23,11 @@ trait IsGroupMember
         return $this->hasMany(GroupMember::class);
     }
     
+    public function activeMemberships(): Relation
+    {
+        return $this->hasMany(GroupMember::class)->whereNull('end_date');
+    }
+    
     public function groups(): BelongsToMany
     {
         return $this->belongsToMany(Group::class, 'group_members', 'person_id', 'group_id')

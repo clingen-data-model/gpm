@@ -52,7 +52,7 @@ app.component('group-breadcrumbs', GroupBreadcrumbs);
 
 import {formatDate, formatDateTime, formatTime, addDays, yearAgo} from '@/date_utils'
 
-import {userCan, hasPermission, hasAnyPermission, hasRole, userIsPerson, userInGroup} from '@/auth_utils'
+import {userCan, hasPermission, hasAnyPermission, hasRole, userIsPerson, userInGroup, coordinatesPerson} from '@/auth_utils'
 
 import objectUid from '@/object_uid'
 
@@ -69,6 +69,7 @@ app.use(store)
             hasAnyPermission,
             hasRole,
             userIsPerson,
+            coordinatesPerson,
             formatDate,
             formatDateTime,
             formatTime,
