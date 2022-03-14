@@ -295,7 +295,6 @@ export const actions = {
         )
         .then(response => {
             const item = getters.getItemByUuid(uuid);
-            console.log(item);
             item.memberDescription = response.data.data.expert_panel.scopeDescription;
             commit('addItem', item)
             return response;
@@ -427,7 +426,6 @@ export const actions = {
     },
 
     addDocument ({commit}, {group, data}) {
-        console.log({group, data})
         if (!data.has('uuid')) {
             data.append('uuid', uuid4());
         }
@@ -510,10 +508,8 @@ export const actions = {
     },
 
     getAnnualUpdate (context, group) {
-        console.log('getting annual update')
         api.get(`/api/groups/${group.uuid}/expert-panel/annual-updates`, {headers: {'X-Ignore-Missing': 1} })
         .then(response => {
-            console.log(response.data)
             group.expert_panel.annualUpdate = response.data
             return;
         });

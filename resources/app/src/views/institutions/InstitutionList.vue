@@ -153,9 +153,7 @@ export default {
             if (!this.currentItem.id) {
                 return;
             }
-            console.log('currentItem', this.currentItem);
             const currentIdx = this.items.findIndex(i => i.id == this.currentItem.id);
-            console.log('currentItemIdx', currentIdx);
             if (currentIdx > -1) {
                 this.items[currentIdx] = {...this.currentItem}
             }

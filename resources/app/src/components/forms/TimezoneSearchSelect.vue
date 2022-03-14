@@ -136,7 +136,6 @@ export default {
                 return;
             }
             this.$emit('update:modelValue', newValue);
-            console.log('emitted update:modelValue', newValue)
         }
     },
     mounted () {

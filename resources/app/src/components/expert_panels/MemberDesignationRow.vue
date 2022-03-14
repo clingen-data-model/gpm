@@ -142,7 +142,6 @@ export default {
         },
 
         syncRoles() {
-            console.log('syncRoles');
             if (this.workingCopy.isDirty('roles')) {
                 return this.$store.dispatch(
                         'groups/memberSyncRoles', 

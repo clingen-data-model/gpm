@@ -1,7 +1,6 @@
 import store from '@/store/index'
 
 const hasPermission = async (permission) => {
-    console.log(permission);
     if (store.getters.currentUser.hasPermission(permission)) {
         return true;
     }

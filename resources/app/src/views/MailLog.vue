@@ -141,7 +141,6 @@ export default {
         showMailDetail (item) {
             this.currentEmail = item;
             this.showDetail = true;
-            console.log(this.currentEmail);
         },
         initResend (item) {
             this.currentEmail = item;

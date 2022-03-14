@@ -126,8 +126,10 @@ export default {
         const notifications = ref([]);
         const getNotifications = async () => {
             loadingNotifications.value = true;
-            notifications.value = await api.get(`/api/people/${user.value.person.uuid}/notifications/unread`)
+            if (user.value.person && user.value.person.uuid) {
+                notifications.value = await api.get(`/api/people/${user.value.person.uuid}/notifications/unread`)
                                 .then(response => response.data)
+            }
             loadingNotifications.value = false;
         }
         const removeNotification = (notification) => {

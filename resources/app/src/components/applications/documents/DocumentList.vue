@@ -225,7 +225,6 @@ export default {
             this.showDeleteConfirmation = false;
         },
         handleDocumentEdited() {
-            console.log('handleDocumentEdited');
             this.showEditForm = false; 
             this.$emit('updated')
         },

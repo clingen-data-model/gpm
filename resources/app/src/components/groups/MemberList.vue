@@ -135,7 +135,6 @@ export default {
             return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage']) && !this.readonly
         },
         showMemberReportButton () {
-            console.log(this.$store.state.systemInfo.app.features.member_export)
             return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage']) && this.$store.state.systemInfo.app.features.member_export
         },
         exportUrl () {
@@ -253,7 +252,6 @@ export default {
             return 'text-yellow-500';
         },
         async viewCoi (coiId) {
-            console.log('viewCoi', coiId)
             this.showCoiDetail = true;
             this.coi = await api.get(`/api/cois/${coiId}`).then(response => response.data);
         },

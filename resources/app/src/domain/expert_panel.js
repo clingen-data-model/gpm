@@ -269,7 +269,6 @@ class ExpertPanel extends Entity
     }
 
     updateApprovalDate(newDate, stepNumber) {
-        console.log('updateApprovalDate', newDate, stepNumber);
         if (!this.steps.includes(stepNumber)) {
             throw new Error(`Step ${stepNumber} out of bounds`)
         }

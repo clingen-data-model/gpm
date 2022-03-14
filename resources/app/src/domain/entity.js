@@ -125,7 +125,6 @@ class Entity {
     }
 
     revertDirty () {
-        console.log('entity.revertDirty');
         this.attributes = {...this.attributes, ...this.original};
         this.clearChanges();
     }

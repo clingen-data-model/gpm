@@ -10,7 +10,7 @@
                 <router-link 
                     :to="`/people/${uuid}/edit`"
                     class="btn btn-xs flex-grow-0"
-                    v-if="(hasPermission('people-manage') || userIsPerson(person))"
+                    v-if="(hasPermission('people-manage') || userIsPerson(person)) || coordinatesPerson(person)"
                 >
                     <icon-edit width="16" heigh="16" />
                 </router-link>
@@ -40,7 +40,8 @@
             </tab-item> -->
             <!-- <tab-item label="Training &amp; Attestations">
             </tab-item> -->
-            <tab-item label="Email Log" :visible="hasPermission('people-manage') || userIsPerson(person)">
+
+            <tab-item label="Email Log" :visible="hasPermission('people-manage') || userIsPerson(person) || coordinatesPerson(person)">
                 <div v-if="sortedMailLog.length == 0" class="well">
                     {{person.first_name}} has not received any mail via the GPM.
                 </div>
@@ -54,10 +55,11 @@
                     <dictionary-row label="Body">
                         <div v-html="email.body"></div>
                     </dictionary-row>
-                    <button class="btn btn-xs" @click.stop="initResend(email)" v-if="hasPermission('people-manage')">Resend</button>
+                    <button class="btn btn-xs" @click.stop="initResend(email)" v-if="hasPermission('people-manage') || coordinatesPerson(person)">Resend</button>
                 </div>
             </tab-item>
-            <tab-item label="Log" :visible="hasPermission('people-manage')">
+
+            <tab-item label="Log" :visible="hasPermission('people-manage') || coordinatesPerson(person)">
                 <activity-log
                     :log-entries="logEntries"
                     :api-url="`/api/people/${person.uuid}/activity-logs`"
@@ -65,6 +67,7 @@
                 ></activity-log>
                 <button class="btn btn-xs mt-1" @click="getLogEntries">Refresh</button>
             </tab-item> 
+
             <tab-item label="Admin" :visible="hasPermission('people-manage')">
                 <section class="border my-4 p-4 bg-red-100 border-red-200 rounded">
                 <h2 class="mb-4 text-red-800">
@@ -74,13 +77,16 @@
                 <p><button class="btn btn red" @click="initDelete">Delete Person</button></p>
                 </section>
             </tab-item>
+
         </tabs-container>
+
         <teleport to="body">
             <modal-dialog v-model="showModal" :title="$route.meta.title">
                 <router-view name="modal"></router-view>
             </modal-dialog>
             <modal-dialog title="Resend Email" v-model="showResendDialog">
                 <custom-email-form :mail-data="currentEmail" @sent="cleanupResend" @canceled="cleanupResend"></custom-email-form>
+                button.btn.btn-xs[@click="getMail"]
             </modal-dialog>
             <modal-dialog :title="`You are about to delete ${person.name}`" v-model="showDeleteConfirmation">
                 <p>You are about to delete this person.  All related data will also be deleted including:</p>
@@ -146,9 +152,12 @@ export default {
     watch: {
         uuid: {
             immediate: true,
-            handler: function () {
-                this.$store.dispatch('people/getPerson', {uuid: this.uuid});
-                this.getLogEntries();
+            handler: async function () {
+                const data = await this.$store.dispatch('people/getPerson', {uuid: this.uuid});
+                if (this.coordinatesPerson(this.person)) {
+                    this.getLogEntries();
+                    this.getMailLog();
+                }
             }
         }
     },
@@ -175,7 +184,7 @@ export default {
                 return (Date.parse(a.created_at) > Date.parse(b.created_at))
                     ? -1 : 1;
             })
-        }
+        },
     },
     methods: {
         initResend (email) {
@@ -208,6 +217,9 @@ export default {
         handleMergeCanceled () {
             this.showMergeForm = false;
         },
+        getMailLog() {
+            this.$store.dispatch('people/getMail', this.person);
+        }
     },
     setup(props) {
         const getLogEntries = async () => {
@@ -220,9 +232,5 @@ export default {
             getLogEntries
         }
     },
-    async mounted() {
-        await this.$store.dispatch('people/getPerson', {uuid: this.uuid})
-        this.$store.dispatch('people/getMail', this.person);
-    }
 }
 </script>

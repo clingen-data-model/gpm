@@ -184,7 +184,6 @@ export default {
                 this.$emit('autosaved');
                 return;
             }
-            console.log('application is not dirty');
         },
         applicationIsDirty () {
             return  this.group.expert_panel.isDirty() 
@@ -192,7 +191,6 @@ export default {
                 || this.genesChanged
         },
         handleUpdate () {
-            console.log('handleUpdate');
             this.debounceAutoSave();
         }
 

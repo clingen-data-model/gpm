@@ -215,7 +215,6 @@ export default {
             this.activeDocument = item;
         },
         commitUpdate (data) {
-            console.log('commitUpdate', data);
             if (this.documentUpdater) {
                 this.documentUpdater(data)
             } else {
@@ -247,7 +246,6 @@ export default {
             this.showUploadForm = true;
         },
         commitCreate (data) {
-            console.log('commitCreate', this.documentCreator);
             if (this.documentCreator) {
                 this.documentCreator(data)
             } else {

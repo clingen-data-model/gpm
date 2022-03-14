@@ -240,7 +240,6 @@ export default {
             try {
                 if (!this.newMember.isPersisted()) {
                     if (!this.newMember.person.isPersisted()) {
-                        console.log('inviting member')
                         await this.inviteNewMember(this.group, this.newMember);
                     }
                     if (this.newMember.person.isPersisted()) {
@@ -253,9 +252,9 @@ export default {
                 this.clearForm();
                 this.$emit('saved');
             } catch (error) {
-                console.log(error);
                 if (is_validation_error(error)) {
                     this.errors = error.response.data.errors
+                    return;
                 }
                 throw error;
             }

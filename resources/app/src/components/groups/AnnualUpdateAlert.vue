@@ -51,7 +51,6 @@ export default {
         variant () {
             const now = new Date();
             if (!this.window.end) {
-                console.log('no window.end');
                 return 'warning';
             }
             const endDate = new Date(Date.parse(this.window.end));

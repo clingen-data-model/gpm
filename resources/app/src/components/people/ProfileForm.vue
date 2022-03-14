@@ -1,8 +1,9 @@
 <template>
     <div>
         <h3>Profile</h3>
+        <!-- <pre>{{fields}}</pre> -->
         <data-form 
-            :fields="profileFields" 
+            :fields="fields" 
             v-model="profile" 
             :errors="errors"
         ></data-form>
@@ -46,7 +47,13 @@ export default {
     },
     computed: {
         fields () {
-            return (this.page == 'profile') ? this.profileFields : this.demographicFields;
+            let editableFields = [...this.profileFields];
+            if (!this.hasPermission('people-manage') && !this.userIsPerson(this.person)) {
+                editableFields =  editableFields.filter(f => ['first_name', 'last_name', 'email'].includes(f.name));
+            }
+            return editableFields;
+
+            // return (this.page == 'profile') ? this.profileFields : this.demographicFields;
         },
         title () {
             return this.page == 'profile' ? 'Please fill out your profile' : 'Please share your demographic information.'
@@ -62,7 +69,6 @@ export default {
             this.profile = {...this.person.attributes};
         },
         async save () {
-            console.log('ProfileForm.save')
             try {
                 await this.$store.dispatch(
                         'people/updateProfile', 

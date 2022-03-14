@@ -41,7 +41,6 @@ class Person extends Entity {
             };
         }
 
-
         const memberships = attributes.memberships || [];
         delete(attributes.memberships);
 

@@ -49,7 +49,6 @@ export default {
             immediate: true,
             handler () {
                 this.docProxy = JSON.parse(JSON.stringify(this.document))
-                console.log(this.docProxy);
             }
         }
     },
