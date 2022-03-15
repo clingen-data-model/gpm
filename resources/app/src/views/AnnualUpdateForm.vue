@@ -239,7 +239,7 @@ export default {
         this.saveOngoingPlans = debounce(() => {
             const {uuid, expert_panel: expertPanel} = this.group;
             return this.$store.dispatch('groups/curationReviewProtocolUpdate', {uuid, expertPanel});
-        }, 5000);
+        }, 2000);
     },
     async mounted () {
         await this.$store.dispatch('groups/findAndSetCurrent', this.uuid);
@@ -290,7 +290,7 @@ export default {
                         </app-section>
 
                         <app-section title="Changes to plans for ongoing curation">
-                            <gcep-ongoing-plans-update-form v-model="annualReview" :errors="errors" @updated="saveOngoingPlanws"></gcep-ongoing-plans-update-form>
+                            <gcep-ongoing-plans-update-form v-model="annualReview" :errors="errors" @updated="saveOngoingPlans"></gcep-ongoing-plans-update-form>
                         </app-section>
 
                         <app-section title="Gene Re-curation/Re-review">
@@ -332,7 +332,7 @@ export default {
                         
                         <variant-reanalysis v-model="annualReview" :errors="errors" />
 
-                        <vcep-ongoing-plans-update-form v-model="annualReview" :errors="errors" />
+                        <vcep-ongoing-plans-update-form v-model="annualReview" :errors="errors"  @updated="saveOngoingPlans"/>
                         
                         <member-designation-update 
                             v-model="annualReview" 

@@ -3,7 +3,7 @@
         <vcep-ongoing-plans-form 
             v-model="workingCopy"
             :errors="errors"
-            @updated="$emit('updated')"
+            @update="$emit('updated')"
             :readonly="isComplete"
         />
         <input-row vertical 
@@ -69,7 +69,7 @@ export default {
             return Boolean(this.modelValue.completed_at);
         }
     },
-    emits: [ ...mirror.emits ],
+    emits: [ ...mirror.emits, 'updated'],
     setup(props, context) {
         const {workingCopy} = mirror.setup(props, context);
         return {
