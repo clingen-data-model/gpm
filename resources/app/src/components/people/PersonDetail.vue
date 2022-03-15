@@ -151,6 +151,12 @@ export default {
                     this.getMailLog();
                 }
             }
+        },
+        'person.memberships': function (to) {
+            if (to.length > 0) {
+                this.getLogEntries();
+                this.getMailLog();
+            }
         }
     },
     computed: {

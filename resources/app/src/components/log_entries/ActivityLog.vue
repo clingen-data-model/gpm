@@ -70,6 +70,7 @@ const fields = [
         name: 'created_at',
         label: 'Time',
         sortName: 'created_at',
+        hideHeader: true,
         sortable: false,
         resolveValue ({created_at}) {
             return (created_at) ? formatTime(created_at) : null;
