@@ -203,4 +203,10 @@ class GroupPolicy
         return $user->hasAnyPermission('annual-updates-manage')
             || $user->hasGroupPermissionTo('application-edit', $group);
     }
+
+    public function retireMember(User $user, Group $group): bool
+    {
+        return $user->hasAnyPermission(['groups-manage', 'ep-applications-manage', 'annual-updates-manage'])
+            || $user->hasGroupPermissionTo('members-retire', $group);
+    }
 }

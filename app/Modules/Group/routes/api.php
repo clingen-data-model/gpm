@@ -15,6 +15,7 @@ use App\Modules\Group\Actions\MemberRetire;
 use App\Modules\Group\Actions\MemberUpdate;
 use App\Modules\Group\Actions\ParentUpdate;
 use App\Modules\Group\Actions\DocumentUpdate;
+use App\Modules\Group\Actions\MemberUnretire;
 use App\Modules\Group\Actions\GroupNameUpdate;
 use App\Modules\Group\Actions\AnnualUpdateSave;
 use App\Modules\Group\Actions\MemberAssignRole;
@@ -24,6 +25,7 @@ use App\Modules\Group\Actions\AnnualUpdateCreate;
 use App\Modules\Group\Actions\AnnualUpdateSubmit;
 use App\Modules\Group\Actions\EvidenceSummaryAdd;
 use App\Modules\Group\Actions\AttestationGcepStore;
+use App\Modules\Group\Actions\DevFakePilotApproved;
 use App\Http\Controllers\Api\AnnualUpdateController;
 use App\Modules\Group\Actions\ApplicationSubmitStep;
 use App\Modules\Group\Actions\AttestationNhgriStore;
@@ -45,7 +47,6 @@ use App\Modules\Group\Http\Controllers\Api\ActivityLogsController;
 use App\Modules\Group\Http\Controllers\Api\GroupRelationsController;
 use App\Modules\Group\Http\Controllers\Api\EvidenceSummaryController;
 use App\Modules\Group\Http\Controllers\Api\GroupSubmissionsController;
-use App\Modules\Group\Actions\DevFakePilotApproved;
 
 Route::group([
     'prefix' => 'api/groups',
@@ -95,6 +96,7 @@ Route::group([
         Route::delete('/{member_id}', MemberRemove::class);
         Route::put('/{member_id}', MemberUpdate::class);
         Route::post('/{member_id}/retire', MemberRetire::class);
+        Route::post('/{member_id}/unretire', MemberUnretire::class);
         
         Route::post('/{member_id}/roles', MemberAssignRole::class);
         Route::delete('/{member_id}/roles/{role_id}', MemberRemoveRole::class);

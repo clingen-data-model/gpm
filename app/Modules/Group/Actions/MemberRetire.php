@@ -47,4 +47,9 @@ class MemberRetire
             'end_date.after_or_equal' => 'The end date must be a date after or equal to the member\'s start date.'
         ];
     }
+    
+    // public function authorize(ActionRequest $request): bool
+    // {
+    //     return $request->user()->can('retireMember');
+    // }
 }

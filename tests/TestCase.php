@@ -141,25 +141,28 @@ abstract class TestCase extends BaseTestCase
     protected function setupPermission(String|array $permissions, $scope = 'system')
     {
         if (is_string($permissions)) {
-            Permission::factory()->create(['name' => $permissions, 'scope' => $scope]);
-            return;
+            return Permission::factory()->create(['name' => $permissions, 'scope' => $scope]);
         }
 
+        $perms = collect();
         foreach ($permissions as $perm) {
-            Permission::factory()->create(['name' => $perm, 'scope' => $scope]);
+            $perms->push(Permission::factory()->create(['name' => $perm, 'scope' => $scope]));
         }
+
+        return $perms;
     }
 
     protected function setupRoles(String|array $roles, $scope = 'system')
     {
         if (is_string($roles)) {
-            Role::factory()->create(['name' => $roles, 'scope' => $scope]);
-            return;
+            return Role::factory()->create(['name' => $roles, 'scope' => $scope]);
         }
 
+        $roles = collect();
         foreach ($roles as $perm) {
-            Role::factory()->create(['name' => $perm, 'scope' => $scope]);
+            $roles->push(Role::factory()->create(['name' => $perm, 'scope' => $scope]));
         }
+        return $roles;
     }
 
     protected function runSeeder($seederClass): void
@@ -193,7 +196,7 @@ abstract class TestCase extends BaseTestCase
     protected function setupForGroupTest(): void
     {
         $this->seedForGroupTest();
-        $this->setupRoles(['coordinator']);
+        $roles = $this->setupRoles('coordinator', 'group');
     }
 
     protected function getLongString()
