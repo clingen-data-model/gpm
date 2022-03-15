@@ -52,7 +52,7 @@ class MailResend
     public function authorize(ActionRequest $request): bool
     {
         return $request->user()->hasPermissionTo('mail-log-view')
-            || $request->user()->person->isCoordinator;
+            || ($request->user()->person && $request->user()->person->isCoordinator);
     }
 
     public function rules()

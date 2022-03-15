@@ -76,7 +76,7 @@ class PersonPolicy
 
         $personGroups = $person->activeGroups;
 
-        if ($user->person->coordinatesGroup($personGroups->all())) {
+        if ($user->person && $user->person->coordinatesGroup($personGroups->all())) {
             return true;
         }
 
