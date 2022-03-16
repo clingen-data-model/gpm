@@ -32,6 +32,11 @@ class MemberUnretired extends GroupMemberEvent implements PublishableApplication
         ];
     }
     
+    
+    public function getEventType(): string
+    {
+        return 'member_unretired';
+    }
 
     /**
      * Get the channels the event should broadcast on.
