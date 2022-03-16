@@ -2,6 +2,7 @@
 
 namespace App\Modules\ExpertPanel\Events;
 
+use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
@@ -48,6 +49,22 @@ class StepApproved extends ExpertPanelEvent implements PublishableApplicationEve
     public function getStep()
     {
         return max(($this->application->current_step - 1), 1);
+    }
+    
+    public function getEventType(): string
+    {
+        switch ($this->step) {
+            case 1:
+                return 'ep_definition_approved';
+            case 2:
+                return 'vcep_draft_specifications_approved';
+            case 3:
+                return 'vcep_pilot_approved';
+            case 4:
+                return 'ep_final_approval';
+            default:
+                throw new Exception('Invalid step approved expected 1-4, received '.$this->step);
+        }
     }
 
     /**

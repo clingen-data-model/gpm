@@ -39,6 +39,11 @@ class MemberRoleAssigned extends GroupMemberEvent implements PublishableApplicat
             'roles' => $this->roles->pluck('name')->toArray()
         ];
     }
+    
+    public function getEventType(): string
+    {
+        return 'member_role_assigned';
+    }
 
     /**
      * Get the channels the event should broadcast on.

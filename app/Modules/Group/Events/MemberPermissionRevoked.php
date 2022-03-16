@@ -47,7 +47,13 @@ class MemberPermissionRevoked extends GroupMemberEvent implements PublishableApp
             'person' => $this->groupMember->person->only('id', 'name', 'email')
         ];
     }
+
+    public function getEventType(): string
+    {
+        return 'member_permission_revoked';
+    }
     
+
 
     /**
      * Get the channels the event should broadcast on.

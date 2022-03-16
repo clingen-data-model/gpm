@@ -30,7 +30,11 @@ class MemberRetire
         $groupMember = GroupMember::findOrFail($groupMemberId);
         $endDate = Carbon::parse($request->endDate);
 
-        return new MemberResource($this->handle($groupMember, $endDate));
+        $member = $this->handle($groupMember, $endDate);
+        $member->load('roles', 'permissions', 'cois', 'person', 'person.institution');
+        unset($member->group);
+
+        return new MemberResource($member);
     }
 
     public function rules(): array

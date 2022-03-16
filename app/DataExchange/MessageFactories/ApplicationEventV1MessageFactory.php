@@ -10,12 +10,15 @@ use App\Models\Activity;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use App\Modules\Person\Models\Person;
+use App\Modules\Group\Events\GeneEvent;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\Group\Events\GenesAdded;
 use App\Modules\Group\Events\GeneRemoved;
 use App\Modules\Group\Events\MemberAdded;
 use App\Modules\Group\Events\MemberRemoved;
 use App\Modules\Group\Events\MemberRetired;
+use App\Modules\Group\Events\MemberUnretired;
+use App\Modules\Group\Events\GroupMemberEvent;
 use App\Modules\Group\Events\GeneAddedApproved;
 use App\Modules\Group\Events\MemberRoleRemoved;
 use App\Modules\ExpertPanel\Events\StepApproved;
@@ -28,31 +31,13 @@ use App\DataExchange\MessageFactories\MessageFactoryInterface;
 
 class ApplicationEventV1MessageFactory implements MessageFactoryInterface
 {
-    const GENE_EVENTS = [
-        // GeneAddedApproved::class,
-        // GeneRemovedApproved::class
-        GenesAdded::class,
-        GeneRemoved::class
-    ];
-
-    const MEMBER_EVENTS = [
-        MemberAdded::class,
-        MemberRemoved::class,
-        MemberRetired::class,
-        MemberRoleAssigned::class,
-        MemberRoleRemoved::class,
-        MemberPermissionsGranted::class,
-        MemberPermissionRevoked::class,
-    ];
-
-
     public function make(
         string $eventType,
         array $message,
         Carbon $date,
         ?string $schemaVersion = null
     ): array {
-        $schemaVersion = $schemaVersion ?? '1.0.0';
+        $schemaVersion = $schemaVersion ?? config('dx.schema_versions.gpm-general-events');
         $message = [
             'event_type' => $eventType,
             'schema_version' => $schemaVersion,
@@ -66,63 +51,16 @@ class ApplicationEventV1MessageFactory implements MessageFactoryInterface
     public function makeFromEvent(PublishableApplicationEvent $event): array
     {
         return $this->make(
-            eventType: $this->resolveTypeFromEvent($event),
+            eventType: $event->getEventType(),
             message: $this->buildMessageFromEvent($event),
             schemaVersion: null,
             date: $event->getLogDate()
         );
     }
 
-    private function resolveTypeFromEvent(PublishableApplicationEvent $event): string
-    {
-        switch (get_class($event)) {
-            case StepApproved::class:
-                return $this->resolveStepApprovalEventType($event->step);
-            // Cases commented until V2.x
-            // case GeneAddedApproved::class:
-            //     return 'gene_added';
-            // case GeneRemovedApproved::class:
-            //     return 'gene_removed';
-            case GenesAdded::class:
-                return 'gene_added';
-            case GeneRemoved::class:
-            case MemberAdded::class:
-            case MemberRemoved::class:
-            case MemberRetired::class:
-            case MemberRoleAssigned::class:
-            case MemberRoleRemoved::class:
-            case MemberPermissionRevoked::class:
-                $reflect = new ReflectionClass($event);
-                return Str::snake($reflect->getShortName());
-                break;
-            case MemberPermissionsGranted::class:
-                return 'member_permission_granted';
-            default:
-                return null;
-        }
-    }
-
-    private function resolveStepApprovalEventType(Int $step): string
-    {
-        switch ($step) {
-            case 1:
-                return 'ep_definition_approved';
-            case 2:
-                return 'vcep_draft_specifications_approved';
-            case 3:
-                return 'vcep_pilot_approved';
-            case 4:
-                return 'ep_final_approval';
-            default:
-                throw new Exception('Invalid step approved expected 1-4, received '.$event->step);
-        }
-    }
-    
-    
-
     private function buildMessageFromEvent($event)
     {
-        $eventClass = get_class($event);
+        $reflection = new ReflectionClass($event);
         $message = [
             'expert_panel' => [
                 'id' => $event->group->uuid,
@@ -132,15 +70,15 @@ class ApplicationEventV1MessageFactory implements MessageFactoryInterface
             ],
         ];
 
-        if (in_array($eventClass, static::GENE_EVENTS)) {
+        if ($reflection->implementsInterface(GeneEvent::class)) {
             $message['genes'] = $this->makeGeneData($event->gene);
         }
 
-        if (in_array($eventClass, static::MEMBER_EVENTS)) {
+        if ($event instanceof GroupMemberEvent) {
             $message['members'] = [$this->makeMemberData($event->groupMember)];
         }
 
-        if ($eventClass == StepApproved::class && $event->step == 1) {
+        if (get_class($event) == StepApproved::class && $event->step == 1) {
             $message['members'] = $event->group
                                     ->members
                                     ->map(function ($member) {

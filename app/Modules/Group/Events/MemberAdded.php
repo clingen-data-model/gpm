@@ -36,6 +36,11 @@ class MemberAdded extends GroupMemberEvent implements PublishableApplicationEven
         return $this->groupMember->person->only('id', 'uuid', 'name', 'email', 'is_contact');
     }
     
+    public function getEventType(): string
+    {
+        return 'member_added';
+    }
+    
     /**
      * Get the channels the event should broadcast on.
      *

@@ -37,6 +37,11 @@ class MemberRemoved extends GroupMemberEvent implements PublishableApplicationEv
             'end_date' => $this->groupMember->end_date->toAtomString()
         ];
     }
+
+    public function getEventType(): string
+    {
+        return 'member_removed';
+    }
     
 
     /**

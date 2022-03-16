@@ -12,6 +12,9 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
 
+/**
+ * @group dx
+ */
 class PublishApplicationEventsTest extends TestCase
 {
     use RefreshDatabase;

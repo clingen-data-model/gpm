@@ -17,6 +17,7 @@ return [
     'push-enable' => env('DX_ENABLE_PUSH', false),
     'warn-disabled' => env('DX_WARN_DISABLED', true),
     'consume' => env('DX_CONSUME', true),
+    # Deprecated
     'topics' => [
         'incoming' => [
             'cspec-general' => env('DX_INCOMING_CSPEC', 'cspec-general-demo')
@@ -25,4 +26,8 @@ return [
             'gpm-applications' => env('DX_OUTGOING_GPM_GENERAL_EVENTS', 'gpm-general-events')
         ]
     ],
+    'schema_versions' => [
+        'gpm-general-events' => '1.1.0'
+    ]
+    
 ];

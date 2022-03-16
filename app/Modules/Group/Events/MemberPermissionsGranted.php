@@ -51,6 +51,10 @@ class MemberPermissionsGranted extends GroupMemberEvent implements PublishableAp
         return $this->groupMember->group;
     }
     
+    public function getEventType(): string
+    {
+        return 'member_permission_granted';
+    }
     
     
 

@@ -32,6 +32,12 @@ class GenesAdded extends GroupEvent implements PublishableApplicationEvent, Gene
     {
         return ['genes' => $this->genes];
     }
+
+    public function getEventType(): string
+    {
+        return 'gene_added';
+    }
+    
     
     /**
      * Get the channels the event should broadcast on.

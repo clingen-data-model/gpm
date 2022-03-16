@@ -15,6 +15,8 @@ use App\Modules\Group\Events\MemberAdded;
 use App\Modules\Group\Models\GroupMember;
 use Database\Factories\GroupMemberFactory;
 use App\Modules\Group\Events\MemberRemoved;
+use App\Modules\Group\Events\MemberRetired;
+use App\Modules\Group\Events\MemberUnretired;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Events\GeneAddedApproved;
 use App\Modules\Group\Events\MemberRoleRemoved;
@@ -26,6 +28,9 @@ use App\Modules\Group\Events\MemberPermissionRevoked;
 use App\Modules\Group\Events\MemberPermissionsGranted;
 use App\DataExchange\MessageFactories\ApplicationEventV1MessageFactory;
 
+/**
+ * @group dx
+ */
 class ApplicationEventV1MessageFactoryTest extends TestCase
 {
     use RefreshDatabase;
@@ -57,7 +62,7 @@ class ApplicationEventV1MessageFactoryTest extends TestCase
         $this->assertMembersInMessage($this->expertPanel->group->members->all(), $message);
         $this->assertArrayHasKey('scope', $message['data']);
         $this->assertGenesInMessage($this->expertPanel->genes->all(), $message['data']['scope']);
-        $this->assertEquals('1.0.0', $message['schema_version']);
+        $this->assertEquals(config('dx.schema_versions.gpm-general-events'), $message['schema_version']);
     }
 
     /**
@@ -136,6 +141,32 @@ class ApplicationEventV1MessageFactoryTest extends TestCase
         
         $message = $this->factory->makeFromEvent($event);
         $this->assertEquals('member_removed', $message['event_type']);
+        $this->assertExpertPanelInMessage($message);
+        $this->assertMembersInMessage([$this->expertPanel->group->members->first()], $message);
+    }
+
+    /**
+     * @test
+     */
+    public function it_creates_a_member_retireded_event()
+    {
+        $event = new MemberRetired($this->expertPanel->group->members->first());
+        
+        $message = $this->factory->makeFromEvent($event);
+        $this->assertEquals('member_retired', $message['event_type']);
+        $this->assertExpertPanelInMessage($message);
+        $this->assertMembersInMessage([$this->expertPanel->group->members->first()], $message);
+    }
+
+    /**
+     * @test
+     */
+    public function it_creates_a_member_unretireded_event()
+    {
+        $event = new MemberUnretired($this->expertPanel->group->members->first());
+        
+        $message = $this->factory->makeFromEvent($event);
+        $this->assertEquals('member_unretired', $message['event_type']);
         $this->assertExpertPanelInMessage($message);
         $this->assertMembersInMessage([$this->expertPanel->group->members->first()], $message);
     }

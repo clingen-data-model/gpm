@@ -11,6 +11,6 @@ interface MessageFactoryInterface
         string $eventType,
         array $message,
         Carbon $date,
-        ?string $schemaVersion = '1.0.0'
+        ?string $schemaVersion = null
     ): array;
 }

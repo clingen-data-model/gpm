@@ -32,6 +32,11 @@ class GeneRemoved extends GroupEvent implements PublishableApplicationEvent, Gen
     {
         return $this->gene->toArray(0);
     }
+
+    public function getEventType(): string
+    {
+        return 'gene_removed';
+    }
     
     /**
      * Get the channels the event should broadcast on.

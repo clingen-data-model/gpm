@@ -43,6 +43,11 @@ class MemberRoleRemoved extends GroupMemberEvent implements PublishableApplicati
             'person' => $this->groupMember->person->only('id', 'name', 'email'),
         ];
     }
+    
+    public function getEventType(): string
+    {
+        return 'member_role_removed';
+    }
 
     /**
      * Get the channels the event should broadcast on.

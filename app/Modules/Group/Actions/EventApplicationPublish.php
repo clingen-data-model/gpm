@@ -20,10 +20,11 @@ class EventApplicationPublish
     
     public function handle(PublishableApplicationEvent $event): ?StreamMessage
     {
-        if ($this->shouldPublish($event)) {
+        $message = $this->messageFactory->makeFromEvent($event);
+        if ($this->shouldPublish($event) && $message) {
             return $this->streamMessageCreate->handle(
                 topic: config('dx.topics.outgoing.gpm-applications'),
-                message: $this->messageFactory->makeFromEvent($event)
+                message: $message
             );
         }
 
@@ -67,5 +68,4 @@ class EventApplicationPublish
     {
         return $event instanceof GeneEvent;
     }
-    
 }
