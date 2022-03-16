@@ -2,6 +2,9 @@
     .danger {
         @apply bg-red-200 text-red-800 border-red-500;
     }
+    .error {
+        @apply bg-red-200 text-red-800 border-red-500;
+    }
     .warning {
         @apply bg-yellow-200 text-yellow-700 border-yellow-500;
     }
@@ -10,6 +13,9 @@
     }
     .info {
         @apply bg-blue-200 text-blue-800 border-blue-500;
+    },
+    .bland {
+        @apply bg-gray-100 border-gray-400;
     }
 </style>
 <template>
