@@ -6,6 +6,7 @@
 ## New Features
 * Coordinators and admins can 'unretire' a group member. #coordinators #members.
 * Prepopulate COI form with last response for group if one exists.
+* Add command to create an in-system notification: php artisan notify:system
 
 # 2022-03-15
 ## Fixes
