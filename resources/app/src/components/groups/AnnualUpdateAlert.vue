@@ -80,6 +80,13 @@ export default {
             api.get(`/api/groups/${this.group.uuid}/expert-panel/annual-updates`, {headers: {'X-Ignore-Missing': 1} })
                 .then(response => {
                     this.annualReview = response.data
+                })
+                .catch(error => {
+                    console.log(error.response)
+                    if (error.response.status == 404) {
+                        console.log('fuckety fuck fuck')
+                        return;
+                    }
                 });
             this.loading = false;
         }
