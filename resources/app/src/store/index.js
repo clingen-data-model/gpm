@@ -31,6 +31,7 @@ axios.interceptors.response.use(
         switch (error.response.status) {
             case 401:
                 store.commit('setAuthenticated', false)
+                return error;
                 break;
             case 403:
                 if (error.response.data.includes('The request to access this resource was rejected.')) {
@@ -40,17 +41,20 @@ axios.interceptors.response.use(
                 } else {
                     store.commit('pushError', 'You do not have permission to complete that action.  If you think this is an error please contact support.')
                 }
+                return error;
                 break;
             case 404:
                 if (error.config.headers['X-Ignore-Missing'] !== 1) {
                     store.commit('pushError', 'We couldn\'t find something you\'re looking for.');
                 }
+                return error;
                 break;
 //             case 422:
 //                 store.commit('pushError', 'There was a problem with your submission');
 //                 break
             case 500:
                 store.commit('pushError', 'We\'ve encountered a problem trying to complete your request.  Support has been notified and we will be in touch.');
+                return error;
                 break;
         }
         return Promise.reject(error);
