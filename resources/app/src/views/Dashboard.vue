@@ -9,7 +9,7 @@
             </div>
         </h1>
         <transition-group tag="div" name="slide-fade-down">
-            <notification-item 
+            <notification-item
                 v-for="notification in notifications" :key="notification.id"
                 :notification="notification"
                 class="mb-2"

@@ -249,6 +249,10 @@ th.sorted, td.sorted  {
     @apply mb-2;
 }
 
+.markdown p:last-child {
+    @apply mb-0;
+}
+
 .markdown ul {
     list-style: disc;
 }

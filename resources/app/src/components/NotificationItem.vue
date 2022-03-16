@@ -1,10 +1,13 @@
 <template>
     <static-alert :variant="variant">
         <div class="flex items-center justify-between px-4">
-            <strong>
-                {{notification.data.message}}
-            </strong>
-            <button @click="markRead">
+            <div class="">
+                <markdown-block v-if="notification.data.markdown" :markdown="notification.data.message" />
+                <div class="font-bold" v-else>
+                    {{notification.data.message}}
+                </div>
+            </div>
+            <button @click="markRead" class="block">
                 <icon-close></icon-close>
             </button>
         </div>
