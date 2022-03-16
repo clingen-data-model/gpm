@@ -102,39 +102,42 @@ export default {
             this.menuY = rect.top + scrollTop + labelHeight - 14;
         }
     },
-    render () {
-        const containerClass = [];
-        return (
-            <div class={containerClass.join(' ')}>
-                <div class="dropdown" class={this.orientation}>
-                    <div class="dropdown-label"
-                        ref="menuButton" 
-                        onClick={this.toggleMenu}
-                    >
-                        <span v-show={!this.hideCheveron}>
-                            <icon-cheveron-down />
-                        </span>
-                        {this.$slots.label ? this.$slots.label() : this.label}
-                    </div>
-                    <teleport to="body">
-                        <transition name="slide-fade-down">
-                            <div 
-                                v-show={this.menuOpen}
-                                v-click-outside={{exclude: ['menuButton'], handler: this.handleOutsideClick}}
-                                ref="dropdownMenu"
-                                class="dropdown-items-container"
-                                style={`top: ${this.menuY}px; left: ${this.menuX}px`}
-                            >
-                                <ul class="dropdown-items" onClick="{this.toggleMenu}">
-                                    {this.$slots.default()}
-                                </ul>
-                            </div>
-                        </transition>
-                    </teleport>
-                </div>
-            </div>
-        )
-    },
+    // render () {
+    //     const containerClass = [];
+    //     return (
+    //         <div class={containerClass.join(' ')}>
+    //             <div class="dropdown" class={this.orientation}>
+    //                 <div class="dropdown-label"
+    //                     ref="menuButton" 
+    //                     onClick={this.toggleMenu}
+    //                 >
+    //                     <span v-show={!this.hideCheveron}>
+    //                         <icon-cheveron-down />
+    //                     </span>
+    //                     {this.$slots.label ? this.$slots.label() : this.label}
+    //                 </div>
+    //                 <teleport to="body">
+    //                     <transition name="slide-fade-down">
+    //                         <div 
+    //                             v-show={this.menuOpen}
+    //                             v-click-outside={{exclude: ['menuButton'], handler: this.handleOutsideClick}}
+    //                             ref="dropdownMenu"
+    //                             class="dropdown-items-container"
+    //                             style={`top: ${this.menuY}px; left: ${this.menuX}px`}
+    //                         >
+    //                             <ul 
+    //                                 class="dropdown-items" 
+    //                                 onClick="{this.toggleMenu}"
+    //                             >
+    //                                 {this.$slots.default()}
+    //                             </ul>
+    //                         </div>
+    //                     </transition>
+    //                 </teleport>
+    //             </div>
+    //         </div>
+    //     )
+    // },
     mounted () {
         this.positionMenu();
         Array.from(this.$refs.dropdownMenu.getElementsByClassName('menu-item'))
@@ -146,3 +149,38 @@ export default {
     }
 }
 </script>
+
+<template>
+    <div>
+        <div class="dropdown" :class="orientation">
+            <div class="dropdown-label"
+                ref="menuButton" 
+                @click.stop="toggleMenu"
+            >
+                <span v-show="!hideCheveron">
+                    <icon-cheveron-down />
+                </span>
+                <slot name="label">{{this.label}}</slot>
+            </div>
+            <teleport to="body">
+                <transition name="slide-fade-down">
+                    <div 
+                        v-show="menuOpen"
+                        v-click-outside="{exclude: ['menuButton'], handler: this.handleOutsideClick}"
+                        ref="dropdownMenu"
+                        class="dropdown-items-container"
+                        :style="{top: `${menuY}px`, left: `${this.menuX}px`}"
+                    >
+                        <ul 
+                            class="dropdown-items" 
+                            onClick="{this.toggleMenu}"
+                        >
+                            <slot></slot>
+                        </ul>
+                    </div>
+                </transition>
+            </teleport>
+        </div>
+    </div>
+
+</template>

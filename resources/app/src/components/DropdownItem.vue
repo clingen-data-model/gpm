@@ -14,12 +14,10 @@ export default {
     mounted() {
         // this.$parent.addItem(this)
     },
-    render() {
-        return (
-            <li class="menu-item hover:bg-blue-100 cursor-pointer">
-                {this.$slots.default()}
-            </li>
-        )
-    }
 }
 </script>
+<template>
+    <li class="menu-item hover:bg-blue-100 cursor-pointer">
+        <slot></slot>
+    </li>
+</template>

@@ -1,17 +1,16 @@
 <script>
-import configs from '@/configs.json'
 import { api } from '@/http'
 import sortAndFilter from '@/composables/router_aware_sort_and_filter'
 import MemberPreview from '@/components/groups/MemberPreview'
 import CoiDetail from '@/components/applications/CoiDetail'
-// import CoiReport from '@/components/groups/CoiReport'
+import GroupMembersFilter from '@/components/groups/GroupMembersFilter'
 
 export default {
     name: 'MemberList',
     components: {
         MemberPreview,
         CoiDetail,
-        // CoiReport
+        GroupMembersFilter
     },
     props: {
         readonly: {
@@ -23,13 +22,14 @@ export default {
         return {
             showFilter: false,
             showConfirmRetire: false,
+            showConfirmUnretire: false,
             showConfirmRemove: false,
             filters: {
                 keyword: null,
                 roleId: null,
                 needsCoi: null,
                 needsTraining: null,
-                hideAlumns: true 
+                hideAlumns: false 
             },
             tableFields: [
                 {
@@ -82,7 +82,6 @@ export default {
 
             ],
             selectedMember: null,
-            hideAlumns: true,
             members: [],
             showCoiDetail: false,
             coi: null,
@@ -117,9 +116,6 @@ export default {
             }
             return fields;
         },
-        roles () {
-            return configs.groups.roles;
-        },
         coiCuttoff () {
             const cuttoff = new Date();
             cuttoff.setFullYear(cuttoff.getFullYear()-1);
@@ -143,7 +139,7 @@ export default {
         },
         features () {
             return this.$store.state.systemInfo.app.features
-        }
+        },
     },
     watch: {
         group: {
@@ -190,6 +186,8 @@ export default {
         editMember (member) {
             this.$router.push(this.append(this.$route.path, `members/${member.id}`))
         },
+
+        // Retire member
         confirmRetireMember (member) {
             this.showConfirmRetire = true;
             this.selectedMember = member;
@@ -211,6 +209,31 @@ export default {
             this.selectedMember = null;
             this.showConfirmRetire = false;
         },
+
+        // Unretire Member
+        // confirmUnretireMember (member) {
+        //     console.log('confirmUnretireMember');
+        //     // this.showConfirmUnretire = true;
+        //     // this.selectedMember = member;
+        // },
+        async unretireMember () {
+            try {
+                await this.$store.dispatch('groups/memberUnretire', {
+                    uuid: this.group.uuid,
+                    memberId: this.selectedMember.id,
+                });
+                this.cancelUnretire();
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        cancelUnretire () {
+            this.selectedMember = null;
+            this.showConfirmUnretire = false;
+        },
+
+
+        // Remove Member
         confirmRemoveMember (member) {
             this.showConfirmRemove = true;
             this.selectedMember = member;
@@ -232,6 +255,8 @@ export default {
             this.selectedMember = null;
             this.showConfirmRemove = false;
         },
+
+
         goToMember (member) {
             this.$router.push({name: 'PersonDetail', params: {uuid: member.person.uuid}})
         },
@@ -259,6 +284,11 @@ export default {
             const reportUrl = `/report/${this.group.expert_panel.coi_code}`
             window.location = reportUrl;
         },
+        confirmUnretire (member) {
+            console.log(member);
+            this.showConfirmUnretire = true;
+            this.selectedMember = member;
+        }
     }
 }
 </script>
@@ -327,30 +357,9 @@ export default {
             </div>
         </head>
         <transition name="slide-fade-down">
-            <div v-show="showFilter" class="flex justify-between px-2 space-x-2 bg-blue-200 rounded-lg"                v-if="group.members.length > 0">
-                <div class="flex-1">
-                    <input-row label="Keyword" type="text" v-model="filters.keyword" label-width-class="w-20"></input-row>
-                    <input-row label="Role" label-width-class="w-20">
-                    <select v-model="filters.roleId">
-                        <option :value="null">Select&hellip;</option>
-                        <option 
-                            v-for="role in roles"
-                            :key="role.id"
-                            :value="role.id"
-                        >
-                            {{role.name}}
-                        </option>
-                    </select>
-                </input-row>
-                </div>
-                <div class="flex-1 py-2">
-                    <checkbox class="block" label="Needs COI" v-model="filters.needsCoi" />
-                    <!-- <checkbox class="block" label="Needs Training" v-model="filters.needsTraining" /> -->
-                </div>
-                <div class="flex-1 py-2">
-                    <checkbox class="block" label="Hide Retired/Alumni" v-model="filters.hideAlumns" />
-                </div>
-            </div>
+            <group-members-filter 
+                 v-show="showFilter"
+                v-model="filters" />
         </transition>
         
         <div class="mt-3 py-2 w-full overflow-x-auto">
@@ -400,12 +409,16 @@ export default {
                                 <div @click="editMember(item)">Update membership</div>
                             </dropdown-item>
                             <dropdown-item
-                                v-if="hasAnyPermission([['members-retire', group], 'groups-manage'])"
+                                v-show="!item.isRetired && hasAnyPermission([['members-retire', group], 'groups-manage'])"
                             >
                                 <div @click="confirmRetireMember(item)">Retire from group</div>
                             </dropdown-item>
                             <dropdown-item
-                                v-if="hasAnyPermission([['members-remove', group], 'groups-manage'])"
+                                v-show="item.isRetired && hasAnyPermission([['members-remove', group], 'groups-manage'])"
+                            >
+                                <div @click="confirmUnretire(item)">Unretire from group</div>
+                            </dropdown-item>
+                            <dropdown-item
                             >
                                 <div @click="confirmRemoveMember(item)">Remove from group</div>
                             </dropdown-item>
@@ -432,6 +445,12 @@ export default {
                     Are you sure you want to retire {{selectedMemberName}} from this group?
                 </p>
                 <button-row @submit="retireMember" @cancel="cancelRetire" submit-text="Retire Member"></button-row>
+            </modal-dialog>
+            <modal-dialog v-model="showConfirmUnretire" size="xs" :title="`Retire ${selectedMemberName}?`">
+                <p class="text-lg">
+                    Are you sure you want to un-retire {{selectedMemberName}}?
+                </p>
+                <button-row @submit="unretireMember" @cancel="cancelUnretire" submit-text="Un-retire Member"></button-row>
             </modal-dialog>
             <modal-dialog v-model="showConfirmRemove" size="xs" :title="`Remove ${selectedMemberName}?`">
                 <p class="text-lg"> Are you sure you want to remove {{selectedMemberName}} from this group?</p>

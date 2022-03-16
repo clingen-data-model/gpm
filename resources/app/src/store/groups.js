@@ -265,6 +265,15 @@ export const actions = {
         });
     },
 
+    async memberUnretire ({ commit }, {uuid, memberId}) {
+        const url = `${baseUrl}/${uuid}/members/${memberId}/unretire`;
+        return await api.post(url)
+        .then(response => {
+            commit('addMemberToGroup', response.data.data);
+            return response;
+        });
+    },
+
     async memberRemove ({ commit }, {uuid, memberId, endDate}) {
         const url = `${baseUrl}/${uuid}/members/${memberId}`;
         return await api.delete(url, {data: { end_date: endDate }})
