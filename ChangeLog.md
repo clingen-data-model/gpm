@@ -7,7 +7,6 @@
 * Coordinators and admins can 'unretire' a group member. #coordinators #members.
 * Prepopulate COI form with last response for group if one exists.
 
-
 # 2022-03-15
 ## Fixes
 * Fixed bug in member filtering on name, email, and institution; 

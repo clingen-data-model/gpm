@@ -89,7 +89,7 @@
         <div class="well" v-else>You are not required to complete conflict of interest disclsoure</div>
         <teleport to="body">
             <modal-dialog v-model="showResponseDialog" size="xl">
-                <coi-detail :membership="currentCoi" v-if="currentCoi"></coi-detail>
+                <coi-detail :coi="currentCoi" :group="currentGroup" v-if="currentCoi"></coi-detail>
             </modal-dialog>
         </teleport>
     </div>
@@ -100,6 +100,7 @@ import CoiDetail from '@/components/applications/CoiDetail';
 import Person from '@/domain/person'
 import {kebabCase} from '@/utils'
 import {hasPermission, userIsPerson} from '@/auth_utils'
+import {Group} from '@/domain'
 
 export default {
     name: 'CoiList',
@@ -191,9 +192,13 @@ export default {
             }
         }
         const currentCoi = ref(null);
+        const currentGroup = ref(null);
         const showResponseDialog = ref(false);
-        const showCoiResponse = (coi) => {
-            currentCoi.value = coi;
+        const showCoiResponse = (membership) => {
+            const latestCoi = membership.cois[membership.cois.length - 1];
+            currentCoi.value = latestCoi;
+            currentGroup.value = new Group({...membership.group});
+            console.log(currentGroup.value.name)
             showResponseDialog.value = true;
         }
 
@@ -203,6 +208,7 @@ export default {
             coiFields,
             coiSort,
             currentCoi,
+            currentGroup,
             showResponseDialog,
             showCoiResponse,
             getCoiRoute,
