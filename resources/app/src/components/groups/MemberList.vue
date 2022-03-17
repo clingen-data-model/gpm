@@ -357,7 +357,7 @@ export default {
             </div>
         </head>
         <transition name="slide-fade-down">
-        <div class="flex justify-between px-2 space-x-2 bg-blue-200 rounded-lg">
+        <div class="flex justify-between px-2 space-x-2 bg-blue-200 rounded-lg" v-show="showFilter">
             <div class="flex-1">
                 <input-row label="Keyword" type="text" v-model="filters.keyword" label-width-class="w-20" />
                 <input-row label="Role" label-width-class="w-20">
