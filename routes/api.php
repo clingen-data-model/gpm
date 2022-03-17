@@ -3,6 +3,7 @@
 use App\Actions\MailResend;
 use App\Models\DocumentType;
 use Illuminate\Http\Request;
+use App\Actions\NotifyPeople;
 use App\Actions\FeedbackSubmit;
 use App\Actions\NotificationMarkRead;
 use Illuminate\Support\Facades\Route;
@@ -55,6 +56,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/mail-log', [MailLogController::class, 'index']);
     Route::post('/mail', MailResend::class);
 
+    Route::post('/announcements', NotifyPeople::class);
     
     Route::get('/impersonate/search', [ImpersonateSearchController::class, 'index']);
     
@@ -68,6 +70,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     Route::get('/roles', [RolesController::class, 'index']);
+
 });
 
 Route::get('/cdwgs', [CdwgController::class, 'index']);

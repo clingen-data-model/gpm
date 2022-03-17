@@ -46,6 +46,9 @@
                         <li class="menu-item" v-if="hasPermission('logs-view')">
                             <a href="/dev/logs" class="p-3 block">System Log</a>
                         </li>
+                        <li class="menu-item" v-if="hasPermission('logs-view')">
+                            <announcement-control />
+                        </li>
                     </ul>
                     <div v-if="user.is_impersonating" class="border-t bg-yellow-300 text-center font-bold p-2">You are impersonating this user.</div>
                 </div>
@@ -103,8 +106,8 @@ export default {
     .menu-item:first-child {
         @apply border-b;
     }
-    .menu-item > a,
-    .menu-item > button {
+    .menu-item > *
+    {
          @apply p-3 block;
     }
 
