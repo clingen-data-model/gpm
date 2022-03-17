@@ -3,14 +3,14 @@ import { api } from '@/http'
 import sortAndFilter from '@/composables/router_aware_sort_and_filter'
 import MemberPreview from '@/components/groups/MemberPreview'
 import CoiDetail from '@/components/applications/CoiDetail'
-import GroupMembersFilter from '@/components/groups/GroupMembersFilter'
+// import GroupMembersFilter from '@/components/groups/GroupMembersFilter'
 
 export default {
     name: 'MemberList',
     components: {
         MemberPreview,
         CoiDetail,
-        GroupMembersFilter
+        // GroupMembersFilter
     },
     props: {
         readonly: {
