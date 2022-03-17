@@ -29,7 +29,7 @@ export default {
                 roleId: null,
                 needsCoi: null,
                 needsTraining: null,
-                hideAlumns: false 
+                hideAlumns: true 
             },
             tableFields: [
                 {
@@ -357,9 +357,34 @@ export default {
             </div>
         </head>
         <transition name="slide-fade-down">
-            <group-members-filter 
-                 v-show="showFilter"
-                v-model="filters" />
+        <div class="flex justify-between px-2 space-x-2 bg-blue-200 rounded-lg">
+            <div class="flex-1">
+                <input-row label="Keyword" type="text" v-model="filters.keyword" label-width-class="w-20" />
+                <input-row label="Role" label-width-class="w-20">
+                <select v-model="filters.roleId">
+                    <option :value="null">Select&hellip;</option>
+                    <option 
+                        v-for="role in roles"
+                        :key="role.id"
+                        :value="role.id"
+                    >
+                        {{role.name}}
+                    </option>
+                </select>
+            </input-row>
+            </div>
+            <div class="flex-1 py-2">
+                <checkbox class="block" label="Needs COI" v-model="filters.needsCoi" />
+                <!-- <checkbox class="block" label="Needs Training" v-model="filters.needsTraining" /> -->
+            </div>
+            <div class="flex-1 py-2">
+                <checkbox class="block" label="Hide Retired/Alumni" v-model="filters.hideAlumns" />
+            </div>
+        </div>
+
+            <!-- <group-members-filter 
+                v-show="showFilter"
+                v-model="filters" /> -->
         </transition>
         
         <div class="mt-3 py-2 w-full overflow-x-auto">
