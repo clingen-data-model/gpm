@@ -6,14 +6,16 @@ use InvalidArgumentException;
 use Illuminate\Console\Command;
 use App\Modules\User\Models\User;
 use App\Modules\Person\Models\Person;
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsCommand;
 use Illuminate\Support\Facades\Notification;
+use Lorisleiva\Actions\Concerns\AsController;
 use App\Notifications\UserDefinedMailNotification;
 use App\Notifications\UserDefinedMarkdownDatabaseNotification;
 
 class NotifyPeople
 {
-    use AsCommand;
+    use AsCommand, AsController;
     
     public $commandSignature = 'notify:system {--message= : text or markdown message.} {--role=* : Only send to people with the specified roles.} {--file= : file to use as message; overrides --message.} {--type=info : Type of notification: success(green), info (blue), warning (yellow), error (red), bland (gray)}';
 
@@ -48,5 +50,19 @@ class NotifyPeople
             $message = $command->ask('What should the notificaiton say?', null);
         }
         $this->handle(trim($message), $command->option('type'), $command->option('role'));
+    }
+
+    public function asController(ActionRequest $request)
+    {
+        $this->handle($request->message, $request->type, preg_split('/[, ]/', $request->roles));
+    }
+
+    public function rules()
+    {
+        return [
+            'message' => 'required',
+            'type' => 'required|in:info,success,bland,warning,danger',
+            'roles' => 'nullable'
+        ];
     }
 }

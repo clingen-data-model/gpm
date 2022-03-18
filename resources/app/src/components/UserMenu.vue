@@ -43,6 +43,9 @@
                         <li class="menu-item" v-if="hasPermission('mail-log-view')">
                             <router-link :to="{name: 'mail-log'}" @click="showMenu = false">Mail log</router-link>
                         </li>
+                        <li class="menu-item" v-if="hasPermission('announcements-manage')">
+                            <announcement-control />
+                        </li>
                         <li class="menu-item" v-if="hasPermission('logs-view')">
                             <a href="/dev/logs" class="p-3 block">System Log</a>
                         </li>
@@ -103,8 +106,8 @@ export default {
     .menu-item:first-child {
         @apply border-b;
     }
-    .menu-item > a,
-    .menu-item > button {
+    .menu-item > *
+    {
          @apply p-3 block;
     }
 
