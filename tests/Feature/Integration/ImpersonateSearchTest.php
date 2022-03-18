@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Integration;
 
+use App\Models\Role;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -18,6 +19,7 @@ class ImpersonateSearchTest extends TestCase
 
         $this->user = User::factory()->create();
         $this->setupRoles(['super-user', 'super-admin', 'admin']);
+
         $this->others = collect([
             'michael' => User::factory()->create(['name'=>'michael', 'email'=>'squid@hell.com'])
                 ->assignRole('super-user'),

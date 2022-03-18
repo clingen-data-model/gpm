@@ -158,11 +158,11 @@ abstract class TestCase extends BaseTestCase
             return Role::factory()->create(['name' => $roles, 'scope' => $scope]);
         }
 
-        $roles = collect();
+        $createdRoles = collect();
         foreach ($roles as $perm) {
-            $roles->push(Role::factory()->create(['name' => $perm, 'scope' => $scope]));
+            $createdRoles->push(Role::factory()->create(['name' => $perm, 'scope' => $scope]));
         }
-        return $roles;
+        return $createdRoles;
     }
 
     protected function runSeeder($seederClass): void

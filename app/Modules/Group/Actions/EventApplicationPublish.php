@@ -20,6 +20,10 @@ class EventApplicationPublish
     
     public function handle(PublishableApplicationEvent $event): ?StreamMessage
     {
+        if (!$event->group->isEp) {
+            return null;
+        }
+
         $message = $this->messageFactory->makeFromEvent($event);
         if ($this->shouldPublish($event) && $message) {
             return $this->streamMessageCreate->handle(

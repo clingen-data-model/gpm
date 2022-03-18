@@ -52,6 +52,7 @@ class MarkNotificationReadTest extends TestCase
     public function user_who_i_not_notifiable_can_mark_notification_read()
     {
         Carbon::setTestNow();
+        
         $this->makeRequest()
             ->assertStatus(200);
 
