@@ -23,8 +23,11 @@
             <h3>Genes</h3>
             <div class="mb-6">
                 <p v-if="isGcep">{{expertPanel.genes.map(g => g.gene.gene_symbol).join(', ')}}</p>
-
-                <simple-table v-if="isVcep" :data="expertPanel.genes.map(g => ({id: g.id,gene: g.gene.gene_symbol, disease: g.disease.name}))" :key-by="'id'" :hide-columns="['id']" />
+                <simple-table 
+                    v-if="isVcep" 
+                    :data="expertPanel.genes.map(g => ({id: g.id,gene: g.gene.gene_symbol, disease: g.disease_name}))" :key-by="'id'" 
+                    :hide-columns="['id']" 
+                />
             </div>
 
             <h3>Description of scope</h3>
