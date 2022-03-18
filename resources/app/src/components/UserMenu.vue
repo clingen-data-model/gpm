@@ -43,11 +43,11 @@
                         <li class="menu-item" v-if="hasPermission('mail-log-view')">
                             <router-link :to="{name: 'mail-log'}" @click="showMenu = false">Mail log</router-link>
                         </li>
-                        <li class="menu-item" v-if="hasPermission('logs-view')">
-                            <a href="/dev/logs" class="p-3 block">System Log</a>
+                        <li class="menu-item" v-if="hasPermission('announcements-manage')">
+                            <announcement-control />
                         </li>
                         <li class="menu-item" v-if="hasPermission('logs-view')">
-                            <announcement-control />
+                            <a href="/dev/logs" class="p-3 block">System Log</a>
                         </li>
                     </ul>
                     <div v-if="user.is_impersonating" class="border-t bg-yellow-300 text-center font-bold p-2">You are impersonating this user.</div>

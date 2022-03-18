@@ -37,8 +37,10 @@ export default {
     },
     methods: {
         async markRead () {
-            await api.put(`/api/notifications/${this.notification.id}`)
-            this.$emit('removed');
+            if (this.notification.id) {
+                await api.put(`/api/notifications/${this.notification.id}`)
+                this.$emit('removed');
+            }
         }
     }
 }

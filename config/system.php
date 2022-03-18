@@ -47,6 +47,12 @@ return [
             'guard_name' => 'web',
             'scope' => 'system'
         ],
+        'announcements-manage' => [
+            'id' => 5,
+            'name' => 'announcements-manage',
+            'guard_name' => 'web',
+            'scope' => 'system'
+        ],
         'group-manage' => [
             'id' => 10,
             'name' => 'groups-manage',
@@ -74,8 +80,8 @@ return [
     ],
 
     'role_permissions' => [
-        'super-user' => [1,2,3,4,10,20,30,40],
-        'super-admin' => [1,3,4,10,20,30,40],
+        'super-user' => [1,2,3,4,5,10,20,30,40],
+        'super-admin' => [1,3,4,5,10,20,30,40],
         'admin' => [3,4,10,20]
     ]
 ];
