@@ -102,7 +102,6 @@ import CoiDetail from '@/components/applications/CoiDetail';
 import Person from '@/domain/person'
 import {kebabCase} from '@/utils'
 import {hasPermission, userIsPerson} from '@/auth_utils'
-import {Group} from '@/domain'
 
 export default {
     name: 'CoiList',
