@@ -41,7 +41,9 @@
                             <button 
                                 class="btn btn-xs" 
                                 @click="showCoiResponse(item)" 
-                            >View response</button>
+                            >
+                                View response
+                            </button>
                             &nbsp;
                             <router-link
                                 v-if="userIsPerson(person)"
@@ -194,11 +196,11 @@ export default {
         const currentCoi = ref(null);
         const currentGroup = ref(null);
         const showResponseDialog = ref(false);
+        
         const showCoiResponse = (membership) => {
             const latestCoi = membership.cois[membership.cois.length - 1];
             currentCoi.value = latestCoi;
-            currentGroup.value = new Group({...membership.group});
-            console.log(currentGroup.value.name)
+            currentGroup.value = membership.group;
             showResponseDialog.value = true;
         }
 
