@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\End2End\Person;
 
+use App\Modules\ExpertPanel\Models\Coi;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Carbon\Carbon;
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
@@ -24,8 +26,10 @@ class PersonMergeTest extends TestCase
         $this->setupRoles('biocurator', 'group');
         $this->setupPermission('members-invite', 'group');
         $this->user = $this->setupUser(permissions: ['people-manage']);
-        $this->group1 = Group::factory()->create();
-        $this->group2 = Group::factory()->create();
+        $ep1 = ExpertPanel::factory()->create();
+        $ep2 = ExpertPanel::factory()->create();
+        $this->group1 = $ep1->group;
+        $this->group2 = $ep2->group;
 
         $this->person1 = $this->setupPerson($this->group1);
         $this->person2 = $this->setupPerson($this->group2);
@@ -82,7 +86,7 @@ class PersonMergeTest extends TestCase
     /**
      * @test
      */
-    public function permissioned_user_can_delete_person_and_all_relations()
+    public function merge_gives_authority_memberships_matching_obsolete_and_deletes_obsolete_membeships()
     {
         Carbon::setTestNow('2022-03-15');
         $this->makeRequest()
@@ -111,8 +115,54 @@ class PersonMergeTest extends TestCase
         $this->assertEquals('biocurator', $this->person1->memberships()->get()->last()->roles->first()->name);
         $this->assertEquals('members-invite', $this->person1->memberships()->get()->last()->permissions->first()->name);
     }
-    
 
+    /**
+     * @test
+     */
+    public function merge_migrates_obsoletes_cois_to_authority()
+    {
+        Carbon::setTestNow('2022-04-25');
+        $coi = Coi::factory()->create([
+            'group_member_id' => $this->person2->memberships->first()->id,
+            'completed_at' => Carbon::now()
+        ]);
+
+        $this->makeRequest()
+            ->assertStatus(200);
+
+        $newMembership = $this->person1->memberships()->get()->last();
+
+        $this->assertDatabaseHas('cois', [
+            'id' => $coi->id,
+            'group_member_id' => $newMembership->id,
+            'completed_at' => Carbon::now()
+        ]);
+    }
+    
+    /**
+     * @test
+     */
+    public function records_merge_activity()
+    {
+        Carbon::setTestNow('2022-04-25');
+        $coi = Coi::factory()->create([
+            'group_member_id' => $this->person2->memberships->first()->id,
+            'completed_at' => Carbon::now()
+        ]);
+
+        $this->makeRequest()
+            ->assertStatus(200);
+
+        $expectedMessage = $this->person2->name . ' was merged into ' . $this->person1->name;
+
+        $this->assertLoggedActivity(
+            logName: 'people',
+            subject: $this->person1,
+            description: $expectedMessage,
+            activity_type: 'person-merged',
+        );
+    }
+    
     private function makeRequest($data = null)
     {
         $data = $data ?? ['authority_id' => $this->person1->id, 'obsolete_id' => $this->person2->id];

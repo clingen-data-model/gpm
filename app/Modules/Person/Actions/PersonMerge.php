@@ -2,12 +2,13 @@
 
 namespace App\Modules\Person\Actions;
 
-use App\Modules\Group\Actions\MemberAdd;
-use App\Modules\Group\Actions\MemberAssignRole;
-use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Person\Models\Person;
 use Lorisleiva\Actions\ActionRequest;
+use App\Modules\Group\Actions\MemberAdd;
+use App\Modules\Person\Events\PersonMerged;
 use Lorisleiva\Actions\Concerns\AsController;
+use App\Modules\Group\Actions\MemberAssignRole;
+use App\Modules\Group\Actions\MemberGrantPermissions;
 
 class PersonMerge
 {
@@ -43,9 +44,19 @@ class PersonMerge
             if ($membership->permissions->count() > 0) {
                 $this->grantPermissions->handle($newMembership, $membership->permissions);
             }
+
+            if ($membership->cois->count() > 0) {
+                $membership->cois->each(function ($coi) use ($newMembership) {
+                    $coi->update([
+                        'group_member_id' => $newMembership->id
+                    ]);
+                });
+            }
         });
 
         $this->deletePerson->handle($obsolete);
+
+        event(new PersonMerged($authority, $obsolete));
 
         return $authority;
     }
