@@ -1,6 +1,6 @@
 <template>
     <div>
-        <button @click="initAnnouncement">Make an announcement</button>
+        <button @click="initAnnouncement" class="link">Make an announcement</button>
         <teleport to='body'>
             <modal-dialog title="Make an announcement" v-model="showForm">
                 <data-form 
@@ -61,7 +61,7 @@ export default {
             }
         }
     },
-    setup (props, context) {
+    setup () {
         return {
             announcement,
             errors: validationErrors,
