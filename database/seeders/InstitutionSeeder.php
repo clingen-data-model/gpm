@@ -17,6 +17,8 @@ class InstitutionSeeder extends Seeder
      */
     public function run()
     {
+        $this->cleanUp();
+
         // Get institutions from https://clinicalgenome.org/data-pull/organizations/
         $items = [];
         if (!app()->environment('testing')) {
@@ -24,8 +26,19 @@ class InstitutionSeeder extends Seeder
         }
 
 
-        $this->seedFromArray($items, Institution::class);
+        foreach ($items as $inst) {
+            Institution::updateOrCreate(['website_id' => $inst['website_id']], $inst);
+        }
     }
+
+    private function cleanUp()
+    {
+        $trashed = Institution::onlyTrashed()->get();
+        $trashed->each(function ($inst) {
+            $inst->forceDelete();
+        });
+    }
+    
 
     private function resolveCountryId($inst): int|null
     {
@@ -71,9 +84,12 @@ class InstitutionSeeder extends Seeder
         $items = array_map(function ($inst) {
             $countryId = $this->resolveCountryId($inst);
 
+            $patterns = ['/&#039;/', '/&amp;/'];
+            $replacements = ["'", '&'];
+
             return [
                 'uuid' => Uuid::uuid4()->toString(),
-                'name' => $this->resolveName($inst->title),
+                'name' => preg_replace($patterns, $replacements, $this->resolveName($inst->title)),
                 'abbreviation' => $this->resolveAbbreviation($inst->title),
                 'url' => $this->resolveUrl($inst),
                 'address' => $this->resolveAddress($inst),
