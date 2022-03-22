@@ -178,7 +178,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
     public function scopeTypeExpertPanel($query)
     {
-        return $query->ofType(config('groups.types.expert_panel.id'));
+        return $query->whereIn('group_type_id', [config('groups.types.gcep.id'), config('groups.types.vcep.id')] );
     }
 
     public function scopeVcep($query)

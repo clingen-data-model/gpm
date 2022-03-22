@@ -43,4 +43,13 @@ class GroupFactory extends Factory
             ];
         });
     }
+
+    public function wg()
+    {
+        return $this->state(function ($attributes) {
+            return [
+                'group_type_id' => config('groups.types.wg.id')
+            ];
+        });
+    }
 }

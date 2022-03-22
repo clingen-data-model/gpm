@@ -213,7 +213,8 @@ class Person extends Model implements HasLogEntries
     public function scopeHasPendingCois($query)
     {
         return $query->whereHas('memberships', function ($q) {
-            $q->hasPendingCoi()->isActive();
+            $q->hasPendingCoi()
+                ->isActive();
         });
     }
 

@@ -18,6 +18,7 @@ class SendCoiReminders
         }
         
         $people = Person::query()
+            ->isActivatedUser()
             ->hasPendingCois()
             ->with('membershipsWithPendingCoi', 'membershipsWithPendingCoi.group')
             ->get();

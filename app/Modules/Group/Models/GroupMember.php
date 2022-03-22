@@ -163,6 +163,9 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
     public function scopeHasPendingCoi($query)
     {
         return $query->isActive()
+            ->whereHas('group', function ($q) {
+                $q->typeExpertPanel();
+            })
             ->whereDoesntHave('cois', function ($q) {
                 $q->where('completed_at', '>', Carbon::today()->subDays(365));
             });

@@ -4,6 +4,7 @@ namespace Tests\Feature\End2End;
 
 use Carbon\Carbon;
 use Tests\TestCase;
+use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
 use App\Modules\ExpertPanel\Models\Coi;
 use App\Modules\Group\Actions\MemberAdd;
@@ -105,9 +106,7 @@ class CoiReminderTest extends TestCase
         ]);
  
         Notification::fake();
-        
         $this->triggerScheduledTask();
-
         Notification::assertSentTo($this->user1->person, CoiReminderNotification::class);
         Notification::assertNotSentTo($user2->person, CoiReminderNotification::class);
     }
@@ -121,7 +120,6 @@ class CoiReminderTest extends TestCase
 
         Notification::fake();
         $this->artisan('schedule:run');
-
         Notification::assertNotSentTo($this->user1->person, CoiReminderNotification::class);
     }
 
@@ -137,8 +135,38 @@ class CoiReminderTest extends TestCase
         $this->triggerScheduledTask();
         Notification::assertNothingSent();
     }
-    
 
+    /**
+     * @test
+     */
+    public function does_not_send_email_to_members_of_non_eps()
+    {
+        $user = $this->setupUserWithPerson();
+        $cdwg = Group::factory()->cdwg()->create();
+        $wg = Group::factory()->wg()->create();
+        app()->make(MemberAdd::class)->handle($cdwg, $user->person);
+        app()->make(MemberAdd::class)->handle($wg, $user->person);
+
+        Notification::fake();
+        $this->triggerScheduledTask();
+        Notification::assertNotSentTo($user->person, CoiReminderNotification::class);
+    }
+
+    /**
+     * @test
+     */
+    public function does_not_send_coi_reminder_to_nonactivated_people()
+    {
+        $person = Person::factory()->create();
+        app()->make(MemberAdd::class)->handle($this->ep->group, $person);
+
+        Notification::fake();
+        $this->triggerScheduledTask();
+        Notification::assertNotSentTo($person, CoiReminderNotification::class);
+
+    }
+    
+    
     private function triggerScheduledTask()
     {
         Carbon::setTestNow('2022-02-14 06:00:00');
