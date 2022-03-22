@@ -14,6 +14,7 @@
                     py-2
                     rounded-l-lg
                     shadow-lg
+                    print:hidden
                 "
                 @click="initReportIssue"
             >
