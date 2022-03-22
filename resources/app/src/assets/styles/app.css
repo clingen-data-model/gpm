@@ -328,3 +328,28 @@ th.sorted, td.sorted  {
 .dev-highlight {
     @apply border border-pink-500;
 }
+
+    .application-review section {
+        @apply mt-6 bg-white p-4 border-b border-gray-200 bg-white;
+        @apply print:mt-0 print:px-0 print:border-b-0;
+    }
+
+    .application-review .step-break {
+        @apply border-t border-b font-bold text-center py-4 my-4 bg-gray-100 print:hidden;
+        max-width: 800px;
+    }
+    .application-review section:first-child {
+        @apply mt-0
+    }
+    .application-review h2 {
+        @apply mb-2 border-b pb-1;
+        @apply print:border-b-0;
+    }
+    .application-review h3 {
+        @apply mb-1;
+    }
+    @media print {
+        .page-break {
+            page-break-before: always;
+        }
+    }

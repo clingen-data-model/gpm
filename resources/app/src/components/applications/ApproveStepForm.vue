@@ -132,7 +132,7 @@ export default {
         },
         async save () {
             const data = {
-                application: this.application, 
+                group: this.group, 
                 dateApproved: this.dateApproved,
                 notifyContacts: this.notifyContacts,
                 subject: this.email.subject,
@@ -141,7 +141,7 @@ export default {
             };
 
             try {
-                await this.$store.dispatch('applications/approveCurrentStep', data)
+                await this.$store.dispatch('groups/approveCurrentStep', data)
                 this.clearForm();
                 this.$emit('saved');
             } catch (e) {

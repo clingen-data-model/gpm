@@ -8,7 +8,6 @@
         <div 
             :class="fullLabelClass" 
             class="flex-shrink-0" 
-            :style="{width: vertical ? 'auto' : labelWidth}"
         >
             <slot name="label" v-if="label">
                 <label :class="fullLabelClass">{{label}}{{colon}}</label>

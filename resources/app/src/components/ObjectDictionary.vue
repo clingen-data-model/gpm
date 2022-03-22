@@ -4,7 +4,7 @@
             v-for="(value, key) in filteredObj" 
             :key="key" 
             :label="titleCase(key)"
-            :label-width-class="labelWidthClass"
+            :label-class="labelClass"
         >
             {{value}}
         </dictionary-row>
@@ -42,6 +42,11 @@ export default {
             default: () => []
         },
         labelWidthClass: {
+            type: String,
+            required: false,
+            default: 'w-36'
+        },
+        labelClass: {
             type: String,
             required: false,
             default: 'w-36'

@@ -1,9 +1,9 @@
 <template>
-    <div>
+    <div class="application-review bg-gray-100 p-2">
         <section>
             <h2>Basic Information</h2>
-            <object-dictionary :obj="basicInfo" labelWidthClass="w-40 font-bold" />
-            <dictionary-row label="CDWG" labelWidthClass="w-40 font-bold">{{this.group.parent ?  this.group.parent.name : '--'}}</dictionary-row>
+            <object-dictionary :obj="basicInfo" label-class="w-40 font-bold" />
+            <dictionary-row label="CDWG" label-class="w-40 font-bold">{{this.group.parent ?  this.group.parent.name : '--'}}</dictionary-row>
         </section>
 
         <section>
@@ -36,7 +36,7 @@
 
         <section v-if="isGcep">
             <h2>Plans for Ongoing Review and Descrepency Resolution</h2>
-            <dictionary-row label="Selected protocol" labelWidthClass="w-48 font-bold">
+            <dictionary-row label="Selected protocol" label-class="w-48 font-bold">
                 <div class="flex-none">
                     {{expertPanel.curation_review_protocol ? titleCase(expertPanel.curation_review_protocol.full_name) : null}}
                 <p v-if="expertPanel.curation_review_protocol_id == 100" class="mt-1">
@@ -68,7 +68,7 @@
                 >
                     {{formatDate(expertPanel.reanalysis_attestation_date)}}
                 </dictionary-row>
-                <dictionary-row label="NHGRI Attestation Signed" label-class="w-52 font-bold">
+                <dictionary-row label="NHGRI Attestation Signed" label-class="w-60 font-bold">
                     {{formatDate(expertPanel.nhgri_attestation_date)}}
                 </dictionary-row>
             </section>

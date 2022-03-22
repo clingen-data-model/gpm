@@ -538,7 +538,33 @@ export const actions = {
             .then(response => {
                 group.children = response.data.data
             });
-    }
+    },
+
+    // eslint-disable-next-line
+    async approveCurrentStep({ dispatch }, { group, dateApproved, notifyContacts, subject, body, attachments }) {
+        const formData = new FormData();
+        formData.append('date_approved', dateApproved);
+        formData.append('notify_contacts', notifyContacts);
+        formData.append('subject', subject);
+        formData.append('body', body);
+
+        Array.from(attachments).forEach((file, idx) => {
+            formData.append('attachments[' + idx + ']', file);
+        });
+
+        const url = `/api/applications/${group.uuid}/current-step/approve`
+        return await api.post(
+                url,
+                formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }
+            )
+            .then(() => {
+                dispatch('findAndSetCurrent', group.uuid);
+            });
+    },
 
 };
 

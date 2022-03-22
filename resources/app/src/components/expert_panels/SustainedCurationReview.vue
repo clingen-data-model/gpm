@@ -1,5 +1,5 @@
 <template>
-    <div class="application-review">
+    <div class="application-review p-2 bg-gray-100">
             <section v-if="expertPanel.has_approved_pilot">
                 <h2>Plans for Ongoing Review and Descrepency Resolution</h2>
                 <dictionary-row label="Selected protocol" labelWidthClass="w-48 font-bold">
