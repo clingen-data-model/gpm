@@ -93,7 +93,7 @@
                             :checked="newMember.hasPermissionThroughRole(permission)"
                             :id="`permission-${permission.id}`"
                             :title="newMember.hasPermissionThroughRole(permission) ? `granted with role` : `grant permission`"
-                            :label="permission.name"
+                            :label="permission.display_name"
                         />
                     </div>
                     <div class="px-2 py-1 bg-gray-100 border relative text-xs">

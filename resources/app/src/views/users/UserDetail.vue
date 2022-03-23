@@ -16,7 +16,7 @@
                 <h3 class="border-b mb-1">Roles</h3>
                 <ul class="flex flex-wrap">
                     <li v-for="role in availableSystemRoles" :key="role.id" class="w-1/3 h-12">
-                        <checkbox v-model="checkedRoles" :label="titleCase(role.name)" :value="role.id" />
+                        <checkbox v-model="checkedRoles" :label="titleCase(role.display_name)" :value="role.id" />
                     </li>
                 </ul>
 
@@ -25,12 +25,12 @@
                     <li v-for="permission in availableSystemPermissions" :key="permission.id" class="w-1/3 h-12">
                         <checkbox 
                             v-if="checkedRolePermissionIds.includes(permission.id)"
-                            :modelValue="true" :disabled="true" :label="permission.name"
+                            :modelValue="true" :disabled="true" :label="permission.display_name"
                         />
                         <checkbox 
                             v-else
                             v-model="checkedPermissions"
-                            :label="titleCase(permission.name)" 
+                            :label="titleCase(permission.display_name)" 
                             :value="permission.id" 
                         />
                     </li>

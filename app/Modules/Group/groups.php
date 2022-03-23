@@ -63,61 +63,89 @@ return [
         'coordinator' => [
             'id' => 101,
             'name' => 'coordinator',
+            'display_name' => 'Coordinator',
+            'description' => 'The coordinator of the group. Has all group permissions.',
         ],
         'chair' => [
             'id' => 102,
-            'name' => 'chair'
+            'name' => 'chair',
+            'display_name' => 'Chair',
+            'description' => 'A chair/co-chair of the group.  No default permissions.',
         ],
         'biocurator' => [
             'id' => 103,
-            'name' => 'biocurator'
+            'name' => 'biocurator',
+            'display_name' => 'Biocurator',
+            'description' => 'Biocurator designation.  No default permissions.',
         ],
         'expert' => [
             'id' => 104,
-            'name' => 'expert'
+            'name' => 'expert',
+            'display_name' => 'Expert',
+            'description' => 'Expert designation.  No default permissions.',
         ],
         'core-approval-member' => [
             'id' => 105,
-            'name' => 'core-approval-member'
+            'name' => 'core-approval-member',
+            'display_name' => 'Core Approval Member',
+            'description' => 'Core approval member designation.  No default permissions.',
         ],
         'biocurator-trainer' => [
             'id' => 106,
-            'name' => 'biocurator-trainer'
+            'name' => 'biocurator-trainer',
+            'display_name' => 'Biocurator trainer',
+            'description' => 'Biocurator trainer designation.  No default permissions.',
         ],
     ],
     'permissions' => [
         'info-edit' => [
             'id' => 1001,
             'name' => 'info-edit',
+            'display_name' => 'Edit Info',
+            'description' => 'Can edit group name.',
         ],
         'members-invite' => [
             'id' => 1002,
             'name' => 'members-invite',
+            'display_name' => 'Invite Members',
+            'description' => 'Can invite people to join the group.',
         ],
         'members-retire' => [
             'id' => 1003,
-            'name' => 'members-retire'
+            'name' => 'members-retire',
+            'display_name' => 'Retire Members',
+            'description' => 'Can retire group members.',
         ],
         'members-remove' => [
             'id' => 1004,
-            'name' => 'members-remove'
+            'name' => 'members-remove',
+            'display_name' => 'Remove Members',
+            'description' => 'Can remove group members.',
         ],
         'members-update' => [
             'id' => 1005,
-            'name' => 'members-update'
+            'name' => 'members-update',
+            'display_name' => 'Update Members',
+            'description' => 'Can update group member information.',
         ],
         'application-read' => [
             'id' => 1006,
-            'name' => 'application-read'
+            'name' => 'application-read',
+            'display_name' => 'Read Application',
+            'description' => 'Can read the group\'s application (if applicable).',
         ],
         'application-edit' => [
             'id' => 1007,
-            'name' => 'application-edit'
+            'name' => 'application-edit',
+            'display_name' => 'Edit Application',
+            'description' => 'Can update group\'s application (if applicable).',
         ],
         'annual-update-manage' => [
             'id' => 1008,
-            'name' => 'annual-update-manage'
-        ]
+            'name' => 'annual-update-manage',
+            'display_name' => 'Manage Annual Update',
+            'description' => 'Can edit and submit an annual update.',
+        ],
     ],
     'role_permissions' => [
         'coordinator' => [1001,1002,1003,1004,1005,1006, 1007, 1008]
