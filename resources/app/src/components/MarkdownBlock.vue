@@ -2,7 +2,7 @@
     <div class="markdown" v-html="rendered"></div>
 </template>
 <script>
-import marked from 'marked';
+import { marked } from 'marked';
 import purify from 'dompurify';
 export default {
     name: 'MarkdownBlock',
@@ -15,7 +15,7 @@ export default {
         rendered () {
             if (!this.markdown) return null;
 
-            return purify.sanitize(marked(this.markdown));
+            return purify.sanitize(marked.parse(this.markdown));
         }
     },
     methods: {
