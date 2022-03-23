@@ -1,5 +1,5 @@
 <template>
-    <label class="mb-2 flex items-start">
+    <label class="mb-2 flex items-start cursor-pointer">
         <div class="mt-1">
             <slot name="input">
                 <input 
