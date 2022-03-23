@@ -122,61 +122,89 @@
         "roles": {
             "coordinator": {
                 "id": 101,
-                "name": "coordinator"
+                "name": "coordinator",
+                "display_name": "Coordinator",
+                "description": "The coordinator of the group. Has all group permissions."
             },
             "chair": {
                 "id": 102,
-                "name": "chair"
+                "name": "chair",
+                "display_name": "Chair",
+                "description": "A chair\/co-chair of the group.  No default permissions."
             },
             "biocurator": {
                 "id": 103,
-                "name": "biocurator"
+                "name": "biocurator",
+                "display_name": "Biocurator",
+                "description": "Biocurator designation.  No default permissions."
             },
             "expert": {
                 "id": 104,
-                "name": "expert"
+                "name": "expert",
+                "display_name": "Expert",
+                "description": "Expert designation.  No default permissions."
             },
             "core-approval-member": {
                 "id": 105,
-                "name": "core-approval-member"
+                "name": "core-approval-member",
+                "display_name": "Core Approval Member",
+                "description": "Core approval member designation.  No default permissions."
             },
             "biocurator-trainer": {
                 "id": 106,
-                "name": "biocurator-trainer"
+                "name": "biocurator-trainer",
+                "display_name": "Biocurator trainer",
+                "description": "Biocurator trainer designation.  No default permissions."
             }
         },
         "permissions": {
             "info-edit": {
                 "id": 1001,
-                "name": "info-edit"
+                "name": "info-edit",
+                "display_name": "Edit Info",
+                "description": "Can edit group name."
             },
             "members-invite": {
                 "id": 1002,
-                "name": "members-invite"
+                "name": "members-invite",
+                "display_name": "Invite Members",
+                "description": "Can invite people to join the group."
             },
             "members-retire": {
                 "id": 1003,
-                "name": "members-retire"
+                "name": "members-retire",
+                "display_name": "Retire Members",
+                "description": "Can retire group members."
             },
             "members-remove": {
                 "id": 1004,
-                "name": "members-remove"
+                "name": "members-remove",
+                "display_name": "Remove Members",
+                "description": "Can remove group members."
             },
             "members-update": {
                 "id": 1005,
-                "name": "members-update"
+                "name": "members-update",
+                "display_name": "Update Members",
+                "description": "Can update group member information."
             },
             "application-read": {
                 "id": 1006,
-                "name": "application-read"
+                "name": "application-read",
+                "display_name": "Read Application",
+                "description": "Can read the group's application (if applicable)."
             },
             "application-edit": {
                 "id": 1007,
-                "name": "application-edit"
+                "name": "application-edit",
+                "display_name": "Edit Application",
+                "description": "Can update group's application (if applicable)."
             },
             "annual-update-manage": {
                 "id": 1008,
-                "name": "annual-update-manage"
+                "name": "annual-update-manage",
+                "display_name": "Manage Annual Update",
+                "description": "Can edit and submit an annual update."
             }
         },
         "rolePermissions": {
@@ -197,18 +225,24 @@
             "super-user": {
                 "id": 1,
                 "name": "super-user",
+                "display_name": "SuperUser",
+                "description": "Full access user with ALL permissions.  Reserved for programmers and technically versed users charged with administering the application.",
                 "guard_name": "web",
                 "scope": "system"
             },
             "super-admin": {
                 "id": 2,
                 "name": "super-admin",
+                "display_name": "SuperAdmin",
+                "description": "Administrator with full group, application, annual update, and person management permissions.  A super-admin should be able take any action that does not require technical expertise.",
                 "guard_name": "web",
                 "scope": "system"
             },
             "admin": {
                 "id": 3,
                 "name": "admin",
+                "display_name": "Admin",
+                "description": "Has standard admin privileges and can manage invites, groups, and people.",
                 "guard_name": "web",
                 "scope": "system"
             }
@@ -217,54 +251,72 @@
             "users-manage": {
                 "id": 1,
                 "name": "users-manage",
+                "display_name": "Manage users",
+                "description": "Edit user roles and permissions (limited based on role).",
                 "guard_name": "web",
                 "scope": "system"
             },
             "logs-view": {
                 "id": 2,
                 "name": "logs-view",
+                "display_name": "View System Logs",
+                "description": "View system logs.",
                 "guard_name": "web",
                 "scope": "system"
             },
             "mail-log-view": {
                 "id": 3,
                 "name": "mail-log-view",
+                "display_name": "View Mail Logs",
+                "description": "View mail logs and resend email.",
                 "guard_name": "web",
                 "scope": "system"
             },
             "invites-view": {
                 "id": 4,
                 "name": "invites-view",
+                "display_name": "View Invites",
+                "description": "Invite administration.",
                 "guard_name": "web",
                 "scope": "system"
             },
             "announcements-manage": {
                 "id": 5,
                 "name": "announcements-manage",
+                "display_name": "Manage announcements",
+                "description": "Create announcements.",
                 "guard_name": "web",
                 "scope": "system"
             },
             "group-manage": {
                 "id": 10,
                 "name": "groups-manage",
+                "display_name": "Manage groups",
+                "description": "Create, update, delete groups.",
                 "guard_name": "web",
                 "scope": "system"
             },
             "people-manage": {
                 "id": 20,
                 "name": "people-manage",
+                "display_name": "Manage people",
+                "description": "Create, update, delete, merge people.",
                 "guard_name": "web",
                 "scope": "system"
             },
             "ep-applications-manage": {
                 "id": 30,
                 "name": "ep-applications-manage",
+                "display_name": "Manage applications",
+                "description": "Create and update applications; mark aplications approved.",
                 "guard_name": "web",
                 "scope": "system"
             },
             "annual-updates-manage": {
                 "id": 40,
                 "name": "annual-updates-manage",
+                "display_name": "Manage applications",
+                "description": "Create and update applications; create a new annual update window.",
                 "guard_name": "web",
                 "scope": "system"
             }
