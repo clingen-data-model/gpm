@@ -38,6 +38,10 @@ export default {
         pageSize: {
             type: Number,
             default: 20
+        },
+        totalItems: {
+            type: Number,
+            required: true
         }
     },
     emits: [
@@ -50,7 +54,7 @@ export default {
     },
     computed: {
         pagesCount () {
-            return Math.ceil(this.items.length/this.pageSize)
+            return Math.ceil(this.totalItems/this.pageSize)
         },
         pages () {
             return range(0, this.pagesCount)
@@ -65,7 +69,7 @@ export default {
                     || Math.abs(p-this.currentPage) < 2
                 ) {
                     displayPages.push({
-                        page: p,
+                        page: p+1,
                         label: p+1
                     });
                 } else {

@@ -97,7 +97,6 @@
 <script>
 import { formatDate } from '@/date_utils'
 import {titleCase} from '@/utils'
-import {currentPage, getPageItems} from '@/composables/pagination'
 
 /**
  * 
@@ -291,10 +290,10 @@ export default {
             }
 
             if (!this.filterTerm) {
-                return this.data;
+                return data;
             }
 
-            return this.data.filter(i => (i !== null))
+            return data.filter(i => (i !== null))
                     .filter(item => this.filterFunction(item, this.filterTerm.trim()));
         }, 
         findFieldByName(name) {
