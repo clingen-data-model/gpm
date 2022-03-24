@@ -12,7 +12,8 @@ class InviteController extends Controller
     public function index(Request $request)
     {
         $invites = Invite::with('person', 'inviter')
-                    ->get();
+                    ->paginate(20)
+                    ->withQueryString();
         return InviteResource::collection($invites);
     }
 }

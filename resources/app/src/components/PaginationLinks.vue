@@ -5,6 +5,7 @@
 </style>
 <template>
     <div>
+        <pre>pageSize: {{this.pageSize}}, totalItems: {{this.totalItems}}</pre>
         <ul class="flex pagination-control">
             <li>
                 <button class="link" @click="goToPreviousPage" :class="{active: currentPage === 0}">&lt;</button>
@@ -42,6 +43,10 @@ export default {
         pageSize: {
             type: Number,
             default: 20
+        },
+        totalItems: {
+            type: Number,
+            required: true
         }
     },
     emits: [
@@ -54,7 +59,7 @@ export default {
     },
     computed: {
         pagesCount () {
-            return Math.ceil(this.items.length/this.pageSize)
+            return Math.ceil(this.totalItems/this.pageSize)
         },
         pages () {
             return range(0, this.pagesCount)
@@ -69,7 +74,7 @@ export default {
                     || Math.abs(p-this.currentPage) < 2
                 ) {
                     displayPages.push({
-                        page: p,
+                        page: p+1,
                         label: p+1
                     });
                 } else {

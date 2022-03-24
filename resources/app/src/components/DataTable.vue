@@ -26,7 +26,9 @@
             <pagination-links 
                 :items="data"
                 :current-page="currentPage" 
-                v-model:current-page="currentPage"
+                :total-items="resolvedTotalItems"
+                :page-size="resolvedPageSize"
+                @update:currentPage="this.$emit('update:currentPage', $event)"
                 v-if="this.paginated"
             />
         </header>
@@ -95,7 +97,7 @@
 <script>
 import { formatDate } from '@/date_utils'
 import {titleCase} from '@/utils'
-import {pageSize, currentPage, getPageItems} from '@/composables/pagination'
+// import {currentPage, getPageItems} from '@/composables/pagination'
 
 /**
  * 
@@ -106,7 +108,8 @@ export default {
         'rowClick',
         'update:sort',
         'sort',
-        'sorted'
+        'sorted',
+        'update:currentPage'
     ],
     props: {
         data: {
@@ -164,6 +167,18 @@ export default {
             type: Boolean,
             required: false,
             default: false
+        },
+        totalItems: {
+            type: [Number, null],
+            default: null
+        },
+        pageSize: {
+            type: [Number, null],
+            default: null
+        },
+        currentPage: {
+            type: Number,
+            default: null
         }
     },
     data() {
@@ -230,7 +245,8 @@ export default {
             return []
         },
         paginatedSortedFilteredData () {
-            return this.getPageItems(this.sortedFilteredData);
+            // return this.getPageItems(this.sortedFilteredData);
+            return this.sortedFilteredData;
         },
         items () {
             return this.paginated ? this.paginatedSortedFilteredData : this.sortedFilteredData
@@ -243,6 +259,12 @@ export default {
                 return this.realSort.field.sortName
             }
             return this.realSort.field.Name;
+        },
+        resolvedTotalItems () {
+            return this.totalItems || this.items.length
+        },
+        resolvedPageSize () {
+            return this.pageSize || 20
         }
     },
     methods: {
@@ -396,17 +418,18 @@ export default {
 
             return this.rowClass;
         },
+        resetCurrentPage () {
+            // this.currentPage.value = 0;
+            this.$emit('upate:currentPage', 1)
+        }
     },
     setup () {
-        const resetCurrentPage = () => {
-            currentPage.value = 0;
-        };
 
         return {
-            resetCurrentPage,
-            currentPage,
-            pageSize,
-            getPageItems
+            // resetCurrentPage,
+            // currentPage,
+            // pageSize,
+            // getPageItems
         }
     }
 }

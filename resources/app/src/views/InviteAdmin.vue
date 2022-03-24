@@ -2,6 +2,7 @@
     <div>
         <note>Admin</note>
         <h1>Invites</h1>
+        <pre>currentPage: {{currentPage}}, pageSize: {{pageSize}}, totalItems: {{totalItems}} </pre>
         <data-table
             :data="filteredInvites"
             :fields="fields"
@@ -9,6 +10,10 @@
             class="text-sm"
             v-remaining-height
             paginated
+            :total-items="totalItems"
+            :per-page="pageSize"
+            :current-page="currentPage"
+            @update:currentPage="getPageItems"
         >
             <template v-slot:header>
                 <input type="text" v-model="searchTerm" placeholder="filter by name or email" class="mb-2">
@@ -87,6 +92,9 @@ export default {
                     type: String
                 }
             ],
+            totalItems: 0,
+            pageSize: 0,
+            currentPage: 1
         }
     },
     computed: {
@@ -105,12 +113,22 @@ export default {
     },
     watch: {
         searchTerm () {
-            this.currentPage = 0;
+            this.currentPage = 1;
         }
     },
     methods: {
+        getPageItems (page) {
+            this.currentPage = page;
+            this.getInvites();
+        },
          async getInvites () {
-            this.invites = await api.get('/api/people/invites').then(rsp => rsp.data.data);     
+            const pageResponse = await api.get(`/api/people/invites?page=${this.currentPage}`)
+                            .then(rsp => rsp.data);
+console.log(pageResponse);
+            this.totalItems = pageResponse.meta.total;
+            this.currentPage = pageResponse.meta.current_page;
+            this.pageSize = pageResponse.meta.per_page;
+            this.invites = pageResponse.data;
         }, 
         async resetInvite (invite) {
             try {
