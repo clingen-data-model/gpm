@@ -2,18 +2,14 @@
     <div>
         <note>Admin</note>
         <h1>Invites</h1>
-        <pre>currentPage: {{currentPage}}, pageSize: {{pageSize}}, totalItems: {{totalItems}} </pre>
         <data-table
-            :data="filteredInvites"
+            :data="itemProvider"
             :fields="fields"
             v-model:sort="tableSort"
             class="text-sm"
             v-remaining-height
             paginated
-            :total-items="totalItems"
-            :per-page="pageSize"
-            :current-page="currentPage"
-            @update:currentPage="getPageItems"
+            ref="dataTable"
         >
             <template v-slot:header>
                 <input type="text" v-model="searchTerm" placeholder="filter by name or email" class="mb-2">
@@ -24,6 +20,7 @@
                 </button>
             </template>
         </data-table>
+
         <teleport to="body">
             <modal-dialog title="Reset Invite" v-model="showConfirmation">
                 <p>You are about to reset the invite for {{resettingInvite.first_name}} {{resettingInvite.last_name}}.</p>
@@ -37,6 +34,7 @@
 </template>
 <script>
 import {api, isValidationError} from '@/http'
+import {debounce} from 'lodash-es'
 
 export default {
     name: 'InviteAdmin',
@@ -45,6 +43,7 @@ export default {
     },
     data () {
         return {
+
             resettingInvite: {},
             tableSort: {field: 'id', desc: false},
             invites: [],
@@ -92,43 +91,27 @@ export default {
                     type: String
                 }
             ],
-            totalItems: 0,
-            pageSize: 0,
-            currentPage: 1
         }
-    },
-    computed: {
-        filteredInvites () {
-            if (!this.searchTerm) {
-                return this.invites;
-            }
-            const filter = new RegExp(`.*${this.searchTerm}.*`, 'i');
-            return this.invites.filter(invite => {
-                return invite.person && invite.person.first_name && invite.person.first_name.match(filter)
-                    || invite.person && invite.person.last_name && invite.person.last_name.match(filter)
-                    || `${invite.first_name} ${invite.last_name}`.match(filter)
-                    || invite.email.match(filter);
-            });
-        },
     },
     watch: {
         searchTerm () {
-            this.currentPage = 1;
+            this.triggerSearch()
         }
     },
     methods: {
-        getPageItems (page) {
-            this.currentPage = page;
-            this.getInvites();
-        },
-         async getInvites () {
-            const pageResponse = await api.get(`/api/people/invites?page=${this.currentPage}`)
-                            .then(rsp => rsp.data);
-console.log(pageResponse);
-            this.totalItems = pageResponse.meta.total;
-            this.currentPage = pageResponse.meta.current_page;
-            this.pageSize = pageResponse.meta.per_page;
-            this.invites = pageResponse.data;
+
+        async itemProvider (currentPage, pageSize, sort, setTotalItems) {
+            const params = {
+                page: currentPage,
+                page_size: pageSize,
+                'sort[field]': sort.field.name,
+                'sort[dir]': sort.desc ? 'DESC' : 'ASC',
+                'where[keyword]': this.searchTerm
+            }
+            const pageResponse = await api.get(`/api/people/invites`, {params: params})
+                .then(rsp => rsp.data);
+            setTotalItems(pageResponse.meta.total);
+            return pageResponse.data;
         }, 
         async resetInvite (invite) {
             try {
@@ -152,7 +135,7 @@ console.log(pageResponse);
         },
     },
     mounted () {
-        this.getInvites();
+        this.triggerSearch = debounce(() => this.$refs.dataTable.getItems(), 500)
     }
 }
 </script>

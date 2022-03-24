@@ -5,10 +5,9 @@
 </style>
 <template>
     <div>
-        <pre>pageSize: {{this.pageSize}}, totalItems: {{this.totalItems}}</pre>
         <ul class="flex pagination-control">
             <li>
-                <button class="link" @click="goToPreviousPage" :class="{active: currentPage === 0}">&lt;</button>
+                <button class="link" @click="goToPreviousPage" :class="{active: currentPage === 1}">&lt;</button>
             </li>
             <li v-for="(page, idx) in displayPages" :key="idx">
                 <button 
@@ -21,7 +20,7 @@
                 <span v-else>&hellip;</span>
             </li>
             <li>
-                <button class="link" @click="goToNextPage" :class="{active: currentPage == pagesCount-1}">&gt;</button>
+                <button class="link" @click="goToNextPage" :class="{active: currentPage == pagesCount}">&gt;</button>
             </li>
         </ul>
     </div>
@@ -32,10 +31,6 @@ import {range} from 'lodash';
 export default {
     name: 'PaginationLinks',
     props: {
-        items: {
-            type: Array,
-            default: () => []
-        },
         currentPage: {
             type: Number,
             required: true
@@ -43,10 +38,6 @@ export default {
         pageSize: {
             type: Number,
             default: 20
-        },
-        totalItems: {
-            type: Number,
-            required: true
         }
     },
     emits: [
@@ -59,7 +50,7 @@ export default {
     },
     computed: {
         pagesCount () {
-            return Math.ceil(this.totalItems/this.pageSize)
+            return Math.ceil(this.items.length/this.pageSize)
         },
         pages () {
             return range(0, this.pagesCount)
@@ -74,7 +65,7 @@ export default {
                     || Math.abs(p-this.currentPage) < 2
                 ) {
                     displayPages.push({
-                        page: p+1,
+                        page: p,
                         label: p+1
                     });
                 } else {
@@ -90,13 +81,13 @@ export default {
     },
     methods: {
         goToPreviousPage () {
-            if (this.currentPage === 0) {
+            if (this.currentPage === 1) {
                 return;
             }
             this.$emit('update:currentPage', this.currentPage - 1);
         },
         goToNextPage () {
-            if (this.currentPage === this.pagesCount-1) {
+            if (this.currentPage === this.pagesCount) {
                 return;
             }
             this.$emit('update:currentPage', this.currentPage + 1);

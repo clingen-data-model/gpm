@@ -21,15 +21,15 @@
 
 <template>
     <div>
+<!-- <pre>{ currentPage: {{currentPage}} }</pre> -->
         <header class="flex justify-between mb-2 items-center">
             <slot name="header"></slot>
             <pagination-links 
-                :items="data"
                 :current-page="currentPage" 
-                :total-items="resolvedTotalItems"
-                :page-size="resolvedPageSize"
-                @update:currentPage="this.$emit('update:currentPage', $event)"
-                v-if="this.paginated"
+                :total-items="totalItems"
+                :page-size="pageSize"
+                @update:currentPage="updateCurrentPage"
+                v-if="shouldPaginate"
             />
         </header>
 
@@ -68,7 +68,7 @@
                     </tr>
                     </slot>
                 </thead>
-                <tbody v-for="item in items" :key="item.uuid">
+                <tbody v-for="item in resolvedItems" :key="item.uuid">
                     <tr :class="resolveRowClass(item)" @click="handleRowClick(item)">
                         <td 
                             v-for="field in fields" 
@@ -97,7 +97,7 @@
 <script>
 import { formatDate } from '@/date_utils'
 import {titleCase} from '@/utils'
-// import {currentPage, getPageItems} from '@/composables/pagination'
+import {currentPage, getPageItems} from '@/composables/pagination'
 
 /**
  * 
@@ -108,13 +108,12 @@ export default {
         'rowClick',
         'update:sort',
         'sort',
-        'sorted',
-        'update:currentPage'
+        'sorted'
     ],
     props: {
         data: {
             required: false,
-            type: Array
+            // type: [Array|Function]
         },
         /**
          * An array of field objects with the following structure:
@@ -168,25 +167,20 @@ export default {
             required: false,
             default: false
         },
-        totalItems: {
-            type: [Number, null],
-            default: null
-        },
         pageSize: {
             type: [Number, null],
-            default: null
+            default: 20
         },
-        currentPage: {
-            type: Number,
-            default: null
-        }
     },
     data() {
         return {
             realSort: {
                 field: {},
                 desc: false
-            }
+            },
+            resolvedItems: [],
+            currentPage: 1,
+            totalItems: 0
         }
     },
     watch: {
@@ -208,48 +202,33 @@ export default {
                 this.resetCurrentPage();
             }
         },
+        filterTerm() {
+            this.getItems();
+        },
         data: {
             immediate: true,
             deep: true,
             handler: function () {
                 this.resetCurrentPage();
+                this.getItems()
+            }
+        },
+        currentPage: {
+            immedate: true,
+            handler () {
+                this.getItems();
             }
         }
     },
     computed: {
+        shouldPaginate () {
+            return this.paginated;
+        },
+        dataIsFunction () {
+            return typeof this.data == 'function'
+        },
         filterFunction () {
             return this.filter ? this.filter : this.defaultFilter;
-        },
-        filteredData() {
-            if (!this.filterTerm) {
-                return this.data;
-            }
-            return this.data.filter(i => (i !== null))
-                    .filter(item => this.filterFunction(item, this.filterTerm.trim()));
-        },
-        sortedFilteredData() {
-            if (this.data) {
-                let data = this.filteredData;
-                const sortType = this.realSort.field.type;
-
-                if (this.realSort.field.sorfFunction) {
-                    return data.sort(this.realSort.field.sortFunction)
-                }
-                
-                if (sortType == Date) {
-                    return data.sort(this.dateSort)
-                }
-
-                return data.sort(this.textAndNumberSort)
-            }
-            return []
-        },
-        paginatedSortedFilteredData () {
-            // return this.getPageItems(this.sortedFilteredData);
-            return this.sortedFilteredData;
-        },
-        items () {
-            return this.paginated ? this.paginatedSortedFilteredData : this.sortedFilteredData
         },
         sortField() {
             return this.realSort.field;
@@ -259,15 +238,65 @@ export default {
                 return this.realSort.field.sortName
             }
             return this.realSort.field.Name;
-        },
-        resolvedTotalItems () {
-            return this.totalItems || this.items.length
-        },
-        resolvedPageSize () {
-            return this.pageSize || 20
         }
     },
     methods: {
+        async getItems () {
+            if (this.dataIsFunction) {
+                this.resolvedItems = await this.data(this.currentPage, this.pageSize, this.realSort, this.setTotalItems);
+                return;
+            }
+
+            const allItems = this.sortData(this.filterData(this.data));
+            this.resolvedItems = this.paginated ? this.paginate(allItems) : allItems;
+            this.setTotalItems(allItems.length);
+        },
+        setTotalItems(totalItemCount) {
+            this.totalItems = totalItemCount;
+        },
+        setCurrentPage(currentPage) {
+            this.currentPage = currentPage;
+        }, 
+        paginate (data) {
+            if (this.dataIsFunction) {
+                this.getItems();
+                return;
+            }
+            const startIndex = (this.currentPage-1) * this.pageSize;
+            const endIndex = startIndex + this.pageSize - 1;
+            return data.slice(startIndex, endIndex);
+        },
+        sortData (data) {
+            const sortType = this.realSort.field.type;
+
+            if (this.dataIsFunction) {
+                this.getItems();
+                return;
+            }
+
+            if (this.realSort.field.sorfFunction) {
+                return data.sort(this.realSort.field.sortFunction)
+            }
+            
+            if (sortType == Date) {
+                return data.sort(this.dateSort)
+            }
+
+            return data.sort(this.textAndNumberSort)
+        },
+        filterData (data) {
+            if (this.dataIsFunction) {
+                this.getItems();
+                return;
+            }
+
+            if (!this.filterTerm) {
+                return this.data;
+            }
+
+            return this.data.filter(i => (i !== null))
+                    .filter(item => this.filterFunction(item, this.filterTerm.trim()));
+        }, 
         findFieldByName(name) {
             return this.fields.find(i => i.name == name)
         },
@@ -322,6 +351,9 @@ export default {
             }
             this.$emit('update:sort', newSort)
             this.$emit('sorted', newSort);
+            this.$nextTick(() => {
+                this.getItems();
+            })
         },
         textAndNumberSort(a, b) {
             const coefficient = this.realSort.desc ? -1 : 1;
@@ -419,18 +451,11 @@ export default {
             return this.rowClass;
         },
         resetCurrentPage () {
-            // this.currentPage.value = 0;
-            this.$emit('upate:currentPage', 1)
-        }
-    },
-    setup () {
-
-        return {
-            // resetCurrentPage,
-            // currentPage,
-            // pageSize,
-            // getPageItems
-        }
+            this.currentPage = 1;
+        },
+        updateCurrentPage (currentPage) {
+            this.currentPage = currentPage;
+        } 
     }
 }
 </script>
