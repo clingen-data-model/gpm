@@ -70,7 +70,7 @@
             <dictionary-row class="pb-2" label-class="w-40" label="Uuid">{{person.uuid}}</dictionary-row>
             <dictionary-row class="pb-2" label-class="w-40" label="Numeric ID">{{person.id}}</dictionary-row>
 
-            <dictionary-row class="pb-2" label-class="w-40" v-if="person.user_id" label="User ID">{{person.user_id}}</dictionary-row>
+            <dictionary-row class="pb-2" label-class="w-40" label="User ID">{{person.user_id || 'Account not activated.'}}</dictionary-row>
             <dictionary-row class="pb-2" label-class="w-40" v-if="person.invite" label="Invite Code">
                 {{person.invite.code}}
                 &nbsp;
