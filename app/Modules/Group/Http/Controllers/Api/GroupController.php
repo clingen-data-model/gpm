@@ -45,12 +45,12 @@ class GroupController extends Controller
             sortFunction: function ($query, $field, $dir) {
                 if ($field == 'type') {
                     $query->innerJoin('group_types', 'groups.group_type_id', '=', 'group_types.id');
-                    $query->ordeBy('group_types.name', $dir);
+                    $query->orderBy('group_types.name', $dir);
                     return $query;
                 }
                 if ($field == 'status') {
                     $query->innerJoin('group_statuses', 'groups.group_status_id', '=', 'group_statuses.id');
-                    $query->ordeBy('group_statuses.name', $dir);
+                    $query->orderBy('group_statuses.name', $dir);
                     return $query;
                 }
                 return $query->orderBy($field, $dir);
