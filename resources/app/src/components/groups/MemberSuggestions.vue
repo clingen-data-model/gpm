@@ -31,17 +31,8 @@ export default {
         }
     },
     emits: [
-        'selected',
-
+        'selected'
     ],
-    data() {
-        return {
-            
-        }
-    },
-    computed: {
-
-    },
     methods: {
         useSuggestion(item) {
             this.$emit('selected', item);

@@ -2,23 +2,26 @@
     <div>
         <h1>People</h1>
         <data-table 
+            :data="itemProvider"
             :fields="fields" 
-            :data="filteredPeople"
             class="width-full"
             :row-click-handler="goToPerson"
             row-class="cursor-pointer"
             v-model:sort="sort"
+            :page-size="20"
             paginated
+            ref="dataTable"
         >
             <template v-slot:header>
                 <label class="block mb-2" for="filter-input">Filter:&nbsp;<input type="text" v-model="filter" placeholder="filter"></label>
-
             </template>
         </data-table>
     </div>
 </template>
 <script>
+import { debounce } from 'lodash'
 import { mapGetters } from 'vuex'
+import {api} from '@/http'
 import SortAndFilter from './../composables/router_aware_sort_and_filter';
 import {pageSize, currentPage, getPageItems} from '@/composables/pagination'
 
@@ -45,12 +48,6 @@ const fields = [
             ];
 
 export default {
-    components: {
-        // DataTable  
-    },
-    props: {
-        
-    },
     data() {
         return {
             fields: fields
@@ -58,32 +55,24 @@ export default {
     },
     computed: {
         ...mapGetters({
-            people: 'people/all',
             currentUser: 'currentUser'
         }),
-        filteredPeople () {
-            if (!this.filter) {
-                return this.people;
-            }
-            const rx = new RegExp(`.*${this.filter}.*`, 'i');
-            return this.people.filter(p => {
-                return p.name.match(rx)
-                    || p.email.match(rx)
-                    || (p.institution && p.institution.name.match(rx));
-            })
-        }
     },
     watch: {
         filter: {
             immediate: true,
             handler () {
-                this.currentPage = 0;
+                if (this.triggerSearch) {
+                    this.triggerSearch();
+                }
             }
         },
         sort: {
             immediate: true,
             handler () {
-                this.currentPage = 0;
+                if (this.triggerSearch) {
+                    this.triggerSearch();
+                }
             }
         }
     },
@@ -103,10 +92,23 @@ export default {
             }
 
             return false;
+        },
+        async itemProvider (currentPage, pageSize, sort, setTotalItems) {
+            const params = {
+                page: currentPage,
+                page_size: pageSize,
+                'sort[field]': sort.field.name,
+                'sort[dir]': sort.desc ? 'DESC' : 'ASC',
+                'where[filterString]': this.filter
+            }
+            const pageResponse = await api.get(`/api/people`, {params: params})
+                .then(rsp => rsp.data);
+            setTotalItems(pageResponse.meta.total);
+            return pageResponse.data;
         }
     },
-    mounted() {
-        this.$store.dispatch('people/all', {})
+    created() {
+        this.triggerSearch = debounce(() => this.$refs.dataTable.getItems(), 500)
     },
     setup() {
         const {sort, filter} = SortAndFilter();

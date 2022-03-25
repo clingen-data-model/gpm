@@ -11,13 +11,13 @@
                                 v-model="newMember.person.first_name" 
                                 placeholder="First" 
                                 class="block w-1/2"
-                                @input="getSuggestedPeople"
+                                @input="debounceSuggestions"
                             >
                             <input type="text" 
                                 v-model="newMember.person.last_name" 
                                 placeholder="Last" 
                                 class="block w-1/2"
-                                @input="getSuggestedPeople"
+                                @input="debounceSuggestions"
                                 :errors="errors.last_name"
                             >
                         </div>
@@ -26,14 +26,13 @@
                         v-model="newMember.person.email" 
                         placeholder="example@example.com" 
                         input-class="w-full"
-                        @input="getSuggestedPeople"
+                        @input="debounceSuggestions"
                         :errors="errors.email"
                     ></input-row>
                 </div>
                 <div v-if="newMember.id || newMember.person_id">
                     <dictionary-row label="Name">
-                        {{newMember.person.first_name}}
-                        {{newMember.person.last_name}}
+                        {{newMember.person.name}}
                     </dictionary-row>
                     <dictionary-row label="Email">{{newMember.person.email}}</dictionary-row>
                     <static-alert v-if="!newMember.id">
@@ -109,7 +108,7 @@
 
             </div>
             <transition name="slide-fade">            
-                <div class="pt-2 border-l pl-2 flex-1" v-if="suggestedPeople.length > 0 && newMember.person_id === null">
+                <div class="pt-2 border-l pl-2  ml-2 flex-1" v-if="suggestedPeople.length > 0 && newMember.person_id === null">
                     <h5 class="font-bold border-b mb-1 pb-1">Matching people</h5>
                     <member-suggestions 
                         :suggestions="suggestedPeople"
@@ -127,12 +126,13 @@
     </div>
 </template>
 <script>
-import {groups} from '@/configs'
+import {debounce} from 'lodash-es'
 import {computed} from 'vue'
-import { useStore } from 'vuex'
+import {useStore} from 'vuex'
+import {api, isValidationrError} from '@/http'
+import {groups} from '@/configs'
 import GroupMember from '@/domain/group_member'
 import MemberSuggestions from '@/components/groups/MemberSuggestions'
-import is_validation_error from '@/http/is_validation_error'
 
 export default {
     name: 'AddMemberForm',
@@ -200,20 +200,30 @@ export default {
         }
     },
     methods: {
-        getSuggestedPeople() {
-            let suggestedPeople = this.people.filter(p => {
-                                        return p.matchesKeyword(this.newMember.person.first_name)
-                                                || p.matchesKeyword(this.newMember.person.last_name)
-                                                || p.matchesKeyword(this.newMember.person.email)
-                                    }).map(p => {
-                                        p.alreadyMember = this.isAlreadyMember(p);
-                                        return p;
-                                    });
-                                    // .filter(p => {
-                                    //     return !this.isAlreadyMember(p)
-                                    // });
+        async getSuggestedPeople() {
+            const nameFilter = [
+                this.newMember.first_name,
+                this.newMember.last_name, 
+            ].filter(p => p !== null && p !== '')
+            .join(' +');
 
-            this.suggestedPeople = Array.from(new Set(suggestedPeople));
+            if (!nameFilter && !this.newMember.email) {
+                this.suggestedPeople = [];
+                return;
+            }
+            const params = {
+                page: 1,
+                'sort[field]': 'name',
+                'sort[dir]': 'ASC',
+                'where[name]': nameFilter,
+                'where[email]': this.newMember.email,
+                with: ['memberships']
+            }
+            this.suggestedPeople = await api.get(`/api/people`, {params: params})
+                .then(rsp => rsp.data.data.map(p => {
+                    p.alreadyMember = this.isAlreadyMember(p);
+                    return p;
+                }));
         },
         initNewMember() {
             this.newMember = new GroupMember();
@@ -252,7 +262,7 @@ export default {
                 this.clearForm();
                 this.$emit('saved');
             } catch (error) {
-                if (is_validation_error(error)) {
+                if (isValidationrError(error)) {
                     this.errors = error.response.data.errors
                     return;
                 }
@@ -366,7 +376,7 @@ export default {
 
         useExistingPerson(person) {
             this.newMember.person_id = person.id;
-            this.newMember.person = person.clone()
+            this.newMember.person = {...person}
         },
         isAlreadyMember(person) {
             return this.group.members.map(m => m.person.id).includes(person.id)
@@ -381,9 +391,11 @@ export default {
         }
     },
     mounted () {
-        this.$store.dispatch('people/getAll', {});
         this.initNewMember();
         this.syncMember();
+    },
+    created () {
+        this.debounceSuggestions = debounce(this.getSuggestedPeople, 500)
     }
 }
 </script>

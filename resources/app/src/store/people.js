@@ -73,7 +73,7 @@ export const actions = {
             commit('setLastParams', params);
             await api.get(baseUrl+queryStringFromParams(params))
                 .then(response => {
-                    response.data.forEach(item => {
+                    response.data.data.forEach(item => {
                         commit('addItem', item)
                         commit('setLastFetch', new Date())
                     })

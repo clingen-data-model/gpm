@@ -3,10 +3,11 @@
         <h1>Users</h1>
         <data-table 
             :fields="fields" 
-            :data="filteredUsers" 
+            :data="getUsers" 
             v-model:sort="sort" 
             @rowClick="goToUser"
             row-class="cursor-pointer"
+            ref="dataTable"
             paginated
         >
             <template v-slot:header>
@@ -17,6 +18,7 @@
 </template>
 <script>
 import {api} from '@/http'
+import {debounce} from 'lodash-es'
 import sortAndFilterSetup from '@/composables/router_aware_sort_and_filter'
 
 export default {
@@ -70,20 +72,35 @@ export default {
         filter: {
             immediate: true,
             handler () {
-                this.currentPage = 0;
+                if (this.triggerSearch) {
+                    this.triggerSearch()
+                }
             }
         },
         sort: {
             immediate: true,
             handler () {
-                this.currentPage = 0;
+                 if (this.triggerSearch) {
+                    this.triggerSearch()
+                }
             }
         }
     },
     methods: {
-        async getUsers () {
-            this.users = await api.get('/api/users')
+        async getUsers (currentPage, pageSize, sort, setTotalItems) {
+            const params = {
+                page: currentPage,
+                page_size: pageSize,
+                'sort[field]': sort.field.name,
+                'sort[dir]': sort.desc ? 'DESC' : 'ASC',
+                'where[filterString]': this.filter,
+                paginated: true
+            }
+            console.log({params});
+            const pageResponse = await api.get('/api/users', {params: params})
                                 .then(response => response.data);
+            setTotalItems(pageResponse.meta.total);
+            return pageResponse.data;
         },
         goToUser (user) {
             this.$router.push({name: 'UserDetail', params: {id: user.id}})
@@ -100,8 +117,8 @@ export default {
             filter,
         }
     },
-    mounted () {
-        this.getUsers();
+    created () {
+        this.triggerSearch = debounce(() => this.$refs.dataTable.getItems(), 500)
     }
 }
 </script>
