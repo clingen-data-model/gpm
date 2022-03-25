@@ -32,7 +32,7 @@ class PeopleController extends Controller
                                 $q->WhereFullText(['email'], preg_replace('/\./', '', $value), [], 'or');
                             } else {
                                 $q->whereFullText(['first_name','last_name'], $value.'*', ['mode' => 'boolean'], 'or')
-                                    ->orWhereFullText(['email'], preg_replace('/\./g', '', $value).'*')
+                                    ->orWhereFullText(['email'], preg_replace('/\./', '', $value).'*')
                                     ->orWhereHas('institution', function ($q) use ($value) {
                                         $q->whereFullText(['name', 'abbreviation'], $value.'*', ['mode' => 'boolean']);
                                     });
