@@ -1,5 +1,9 @@
 # Change Log
 
+# 2022-03-25
+# Improvments
+* Performance improvements for User, Invite Admin, and people list screens.
+
 # 2022-03-16
 ## Fixes
 * Fixed bug preventing people from seeing their own COI responses.
