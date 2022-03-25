@@ -33,23 +33,22 @@ class InviteController extends Controller
 
             $query->orderBy($field, $dir);
             return $query;
-
-            \Log::debug(renderQuery($query));
         };
 
         $whereFunction = function ($query, $where) {
             foreach ($where as $key => $value) {
                 if ($key == 'keyword') {
-                    $query->leftJoin('people', 'invites.person_id', '=', 'people.id')
-                        ->leftJoin('groups', 'invites.inviter_id', '=', 'groups.id')
-                        ->where(function ($query) use ($value) {
-                            $query->where('people.first_name', 'like', '%'.$value.'%')
-                                ->orWhere('people.last_name', 'like', '%'.$value.'%')
-                                ->orWhere('people.email', 'like', '%'.$value.'%')
-                                ->orWhere('groups.name', 'like', '%'.$value.'%');
-                        });
-                        continue;
-                    }
+                    $query->whereHas('person', function ($q) use ($value) {
+                        $q->where('first_name', 'like', '%'.$value.'%')
+                        ->orWhere('last_name', 'like', '%'.$value.'%')
+                        ->orWhere('email', 'like', '%'.$value.'%');
+                    })
+                    ->orWhereHas('inviter', function ($q) use ($value) {
+                        $q->where('name', 'like', '%'.$value.'%');
+                    });
+                    continue;
+                }
+
                 if (is_array($value)) {
                     $query->whereIn($key, $value);
                 } else {
@@ -68,8 +67,6 @@ class InviteController extends Controller
             whereFunction: $whereFunction
         );
         
-        \Log::debug(renderQuery($search->buildQuery($request->all())));
-
         $invites = $search->buildQuery($request->all())
                     ->paginate($request->get('page_size', 20));
         return InviteResource::collection($invites);

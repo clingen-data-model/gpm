@@ -2,16 +2,20 @@
 
 namespace App\Modules\User\Http\Controllers\Api;
 
+use App\ModelSearchService;
 use Illuminate\Http\Request;
 use App\Modules\User\Models\User;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
     public function index(Request $request)
     {
-        return User::query()
-            ->with([
+        \Log::debug($request->all());
+        $search = new ModelSearchService(
+            modelClass: User::class,
+            defaultWith: [
                 'person' => function ($q) {
                     $q->select(['id', 'first_name', 'last_name', 'email', 'user_id']);
                 },
@@ -21,7 +25,33 @@ class UserController extends Controller
                 'permissions' => function ($q) {
                     $q->select('id', 'name');
                 }
-            ])->get();
+            ],
+            whereFunction: function ($query, $where) {
+                foreach ($where as $key => $value) {
+                    if ($key == 'filterString') {
+                        if (preg_match('/@/', $value)) {
+                            $query->WhereFullText(['email'], preg_replace('/\./', '', $value), [], 'or');
+                        } else {
+                            $query->whereFullText(['name'], $value.'*', ['mode' => 'boolean'])
+                                ->orWhereFullText(['email'], $value.'*', ['mode' => 'boolean']);
+
+                        }
+                    } elseif (is_array($value)) {
+                        $query->whereIn($key, $value);
+                    } else {
+                        $query->where($key, $value);
+                    }
+                }
+                return $query;
+            }
+        );
+
+        $searchQuery = $search->buildQuery($request->only(['where', 'sort', 'with']));
+        if ($request->page_size || $request->page) {
+            return UserResource::collection($searchQuery->paginate($request->get('page_size', 20)));
+        }
+
+        return UserResource::collection($searchQuery->get($request->all()));
     }
 
     public function show(User $user)
