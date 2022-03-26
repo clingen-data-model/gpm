@@ -12,6 +12,7 @@ services:
             - MYSQL_ROOT_PASSWORD=root
             - MYSQL_USER=${DB_USERNAME}
             - MYSQL_PASSWORD=${DB_PASSWORD}
+            - MYSQL_SORT_BUFFER_SIZE=256000000
     app:
         build: .
         image: ${DOCKER_NAME}-app

@@ -129,7 +129,7 @@
 import {debounce} from 'lodash-es'
 import {computed} from 'vue'
 import {useStore} from 'vuex'
-import {api, isValidationrError} from '@/http'
+import {api, isValidationError} from '@/http'
 import {groups} from '@/configs'
 import GroupMember from '@/domain/group_member'
 import MemberSuggestions from '@/components/groups/MemberSuggestions'
@@ -262,7 +262,7 @@ export default {
                 this.clearForm();
                 this.$emit('saved');
             } catch (error) {
-                if (isValidationrError(error)) {
+                if (isValidationError(error)) {
                     this.errors = error.response.data.errors
                     return;
                 }

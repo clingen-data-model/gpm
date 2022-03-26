@@ -44,16 +44,34 @@
         >
             <template v-slot:cell-contacts="{item}">
                 <ul>
-                    <li v-for="c in item.group.contacts" :key="c.id">
+                    <li v-for="c in item.group.members" :key="c.id">
                         <small><a :href="`mailto:${c.person.email}`" class="text-blue-500">{{c.person.name}}</a></small>
                     </li>
                 </ul>
             </template>
-            <template v-slot:cell-latest_log_entry_description="{value}">
-                <div v-html="value"></div>
+            <template v-slot:cell-latest_log_entry="{item}">
+                <popper hover arrow placement="right">
+                    <template v-slot:content>
+                        <div  v-html="item.group.latest_log_entry.description"></div>
+                    </template>
+                    {{formatDate(item.group.latest_log_entry.created_at)}}
+                </popper>
             </template>
             <template v-slot:cell-next_actions="{item}">
-                <div>
+                <popper hover arrow placement="left">
+                    <template v-slot:content>
+                        <div 
+                            v-for="assignee in assignees.filter(i => item.pendingActionsByAssignee[i.id].length > 0)" 
+                            :key="assignee.id"
+                            class="whitespace-normal max-w-80"
+                        >
+                            <h4>{{assignee.short_name}}:</h4>
+                            <ul class="list-disc pl-6 text-sm">
+                                <li v-for="action in item.pendingActionsByAssignee[assignee.id]" :key="action.id" v-html="action.entry" class="w-76 whitespace-normal">
+                                </li>
+                            </ul>
+                        </div>
+                    </template>
                     <div v-for="assignee in assignees.filter(i => item.pendingActionsByAssignee[i.id].length > 0)" :key="assignee.id">
                         <span>
                             {{assignee.short_name}}: 
@@ -62,7 +80,7 @@
                             </strong>
                         </span>
                     </div>
-                </div>
+                </popper>
             </template>
         </data-table>
     </div>
@@ -119,26 +137,16 @@ export default {
                     }
                 },
                 {
-                    name: 'latest_log_entry.created_at',
+                    name: 'latest_log_entry',
                     label: 'Last Activity',
                     type: Date,
                     sortable: true,
-                    resolveValue (item) {
+                    resolveSortValue (item) {
                         if (item && item.group && item.group.latest_log_entry) {
                             return formatDate(item.group.latest_log_entry.created_at);
                         }
                         return null
                     },
-                    colspan: 2,
-                    headerClass: ['max-w-sm'],
-                    class: ['min-w-28']
-                },
-                {
-                    name: 'group.latest_log_entry.description',
-                    label: 'Last Activity',
-                    type: String,
-                    hideHeader: true,
-                    class: ['max-w-48', 'truncate']
                 },
                 {
                     name: 'next_actions',
@@ -146,7 +154,6 @@ export default {
                     type: String,
                     sortable: false,
                     class: ['min-w-28', 'max-w-xs', 'truncate'],
-
                 }
             ],
             allInfoFields: [
@@ -290,19 +297,7 @@ export default {
     methods: {
 
         getApplications () {
-            const params = {
-                with: [
-                    'type',
-                    'group',
-                    'group.parent',
-                    'group.latestLogEntry',
-                    'group.contacts',
-                    'group.contacts.person',
-                    'nextActions',
-                    'nextActions.assignee'
-                ],
-            }
-
+            const params = {};
             const where = {
                 expert_panel_type_id: this.epTypeId
             };

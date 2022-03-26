@@ -7,6 +7,7 @@ module.exports = {
     theme: {
         extend: {
             fontSize: {
+                'sm': '.825rem',
                 'md-lg': '1.01rem'
             },
             width: {
@@ -15,11 +16,16 @@ module.exports = {
             maxWidth: {
                 '28': '7rem',
                 '32': '8rem',
+                '36': '9rem',
                 '40': '10rem',
                 '48': '12rem',
                 '56': '14rem',
-                '60': '16rem',
-                '64': '20rem',
+                '60': '15rem',
+                '64': '16rem',
+                '68': '17rem',
+                '72': '18rem',
+                '76': '19rem',
+                '80': '20rem',
             },
             minHeight: {
                 '0': '0',

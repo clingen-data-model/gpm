@@ -1,5 +1,11 @@
 # Change Log
 
+# 2022-03-25
+* Performance improvements for User, Invite Admin, and people list screens and Applications admin screen.
+* Application Admin screen updates:
+  * Only show last activity date.  show last activity description on hover.
+  * Show next actions on hover.
+
 # 2022-03-16
 ## Fixes
 * Fixed bug preventing people from seeing their own COI responses.
