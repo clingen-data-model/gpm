@@ -1,6 +1,6 @@
 import Application from '@/domain/application'
 import appRepo from '@/adapters/application_repository';
-import api from '@/http/api';
+import {api, queryStringFromParams} from '@/http';
 import { v4 as uuid4 } from 'uuid';
 
 const baseUrl = '/api/applications';
@@ -74,10 +74,11 @@ export default {
         }
     },
     actions: {
-        async getApplications({ commit }, params) {
-            appRepo.all(params)
-                .then(data => {
-                    data.forEach(item => {
+        getApplications({ commit }, params) {
+            api.get(baseUrl + queryStringFromParams(params))
+                .then(response => {
+                    console.log(response.data.data)
+                    response.data.data.forEach(item => {
                         commit('addApplication', item)
                     })
                 });
