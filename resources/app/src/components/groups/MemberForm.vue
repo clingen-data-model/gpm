@@ -201,13 +201,7 @@ export default {
     },
     methods: {
         async getSuggestedPeople() {
-            const nameFilter = [
-                this.newMember.first_name,
-                this.newMember.last_name, 
-            ].filter(p => p !== null && p !== '')
-            .join(' +');
-
-            if (!nameFilter && !this.newMember.email) {
+            if (!this.newMember.first_name && !this.newMember.last_name && !this.newMember.email) {
                 this.suggestedPeople = [];
                 return;
             }
@@ -215,7 +209,8 @@ export default {
                 page: 1,
                 'sort[field]': 'name',
                 'sort[dir]': 'ASC',
-                'where[name]': nameFilter,
+                'where[first_name]': this.newMember.first_name,
+                'where[last_name]': this.newMember.last_name,
                 'where[email]': this.newMember.email,
                 with: ['memberships']
             }
