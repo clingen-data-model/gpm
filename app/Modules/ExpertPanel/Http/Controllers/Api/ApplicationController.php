@@ -50,7 +50,7 @@ class ApplicationController extends Controller
             ],
             defaultWith: [
                 'group' => function ($q) {
-                    $q->select('id', 'parent_id', 'name', 'group_type_id');
+                    $q->select('uuid', 'id', 'parent_id', 'name', 'group_type_id');
                 },
                 'group.members' => function ($q) {
                     $q->select('id', 'group_id', 'person_id')
