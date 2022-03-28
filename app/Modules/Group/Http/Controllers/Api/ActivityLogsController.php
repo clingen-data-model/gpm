@@ -10,10 +10,11 @@ use App\Actions\LogEntryUpdate;
 use App\Modules\Group\Models\Group;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\LogEntryResource;
 use App\Http\Requests\CreateLogEntryRequest;
 use App\Http\Requests\UpdateLogEntryRequest;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ActivityLogsController extends Controller
@@ -45,7 +46,7 @@ class ActivityLogsController extends Controller
                             return $i->activity_type.'-'.$i->created_at->format('Y-m-d_H:i');
                         })->values();
         
-        return ['data' => $logEntries];
+        return LogEntryResource::collection($logEntries);
     }
 
     public function store(CreateLogEntryRequest $request, $groupUuid)
