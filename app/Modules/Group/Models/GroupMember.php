@@ -187,6 +187,9 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
 
     public function getCoiNeededAttribute()
     {
+        if (!$this->group->isEp) {
+            return false;
+        }
         if ($this->cois->count() == 0) {
             return true;
         }

@@ -73,9 +73,6 @@ class GroupController extends Controller
             'members.cois',
             'parent',
             'expertPanel',
-            'expertPanel.genes',
-            'expertPanel.genes.gene',
-            'expertPanel.genes.disease',
             'expertPanel.curationReviewProtocol'
         ]);
 
