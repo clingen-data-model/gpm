@@ -13,10 +13,12 @@ class UsersAddFulltextIndex extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->fullText(['name'], 'name_fulltext');
-            $table->fullText(['email'], 'email_fulltext');
-        });
+        if (config('database.connections')[config('database.default')]['driver'] != 'sqlite') {
+            Schema::table('users', function (Blueprint $table) {
+                $table->fullText(['name'], 'name_fulltext');
+                $table->fullText(['email'], 'email_fulltext');
+            });
+        }
     }
 
     /**
@@ -26,9 +28,11 @@ class UsersAddFulltextIndex extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropFullText('name_fulltext');
-            $table->dropFullText('email_fulltext');
-        });
+        if (config('database.connections')[config('database.default')]['driver'] != 'sqlite') {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropFullText('name_fulltext');
+                $table->dropFullText('email_fulltext');
+            });
+        }
     }
 }
