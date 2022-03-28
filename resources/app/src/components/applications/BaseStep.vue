@@ -10,7 +10,7 @@
                     <div v-if="dateApproved">
                         <div class="flex space-x-1" v-if="!editApprovalDate">
                             <div class="text-white bg-green-600 rounded-xl px-2">
-                                Appproved: {{dateApproved}}
+                                Approved: {{dateApproved}}
                             </div>
                             <edit-icon-button class="text-black" @click="initEditApprovalDate"></edit-icon-button>
                         </div>
