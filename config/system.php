@@ -96,7 +96,7 @@ return [
         'annual-updates-manage' => [
             'id' => 40,
             'name' => 'annual-updates-manage',
-            'display_name' => 'Manage applications',
+            'display_name' => 'Manage Annual Updates',
             'description' => 'Create and update applications; create a new annual update window.',
             'guard_name' => 'web',
             'scope' => 'system'

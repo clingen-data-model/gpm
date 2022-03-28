@@ -102,11 +102,11 @@
           >
             <div
               class="bg-white bg-opacity-50 absolute top-0 left-0 right-0 bottom-0"
-              v-if="!group.expert_panel.pilotSpecificationsIsApproved"
+              v-if="!group.expert_panel.pilotSpecificationsIsApproved && group.isVcep()"
             ></div>
             <static-alert
               variant="info"
-              v-if="!group.expert_panel.pilotSpecificationsIsApproved"
+              v-if="!group.expert_panel.pilotSpecificationsIsApproved && group.isVcep()"
             >
               You can complete these sections after your first Specifications Pilot
               has been approved.
