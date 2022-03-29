@@ -49,7 +49,6 @@ class PeopleController extends Controller
                     }
                 }
 
-                \Log::debug(renderQuery($query));
                 return $query;
             },
             sortFunction: function ($query, $field, $dir) {
