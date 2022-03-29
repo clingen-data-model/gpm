@@ -48,6 +48,10 @@ class ModelSearchService
             $query = $this->eagerLoadRelations($query, $params['with']);
         }
 
+        if (isset($params['without'])) {
+            $query = $this->removeEagerLoadRelations($query, $params['without']);
+        }
+
         if (isset($params['where'])) {
             $query = $this->addWhereClause($query, $params['where']);
         }
@@ -92,10 +96,21 @@ class ModelSearchService
             }, explode(',', $relations));
         }
 
-        $query->with($relations);
+        if ($with) {
+            $query->with($relations);
+        }
+        
+        return $query;
+    }
+   
+    private function removeEagerLoadRelations($query, $without)
+    {
+        $query->without($without);
+        
         return $query;
     }
     
+
 
     private function sortQuery($query, $sort)
     {
