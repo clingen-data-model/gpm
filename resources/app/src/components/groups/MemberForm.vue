@@ -131,6 +131,7 @@ import {computed} from 'vue'
 import {useStore} from 'vuex'
 import {api, isValidationError} from '@/http'
 import {groups} from '@/configs'
+import {Person} from '@/domain'
 import GroupMember from '@/domain/group_member'
 import MemberSuggestions from '@/components/groups/MemberSuggestions'
 
@@ -217,7 +218,7 @@ export default {
             this.suggestedPeople = await api.get(`/api/people`, {params: params})
                 .then(rsp => rsp.data.data.map(p => {
                     p.alreadyMember = this.isAlreadyMember(p);
-                    return p;
+                    return new Person(p);
                 }));
         },
         initNewMember() {
@@ -371,7 +372,7 @@ export default {
 
         useExistingPerson(person) {
             this.newMember.person_id = person.id;
-            this.newMember.person = {...person}
+            this.newMember.person = person.clone()
         },
         isAlreadyMember(person) {
             return this.group.members.map(m => m.person.id).includes(person.id)
