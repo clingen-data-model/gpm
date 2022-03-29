@@ -49,8 +49,6 @@ class ActivityLogsController extends Controller
                         ->orWhereNull('activity_type') // for some reason this is necessary to get custom logs. 
                         ->orderBy('created_at', 'desc');
 
-        \Log::debug(renderQuery($query));
-            
         $logEntries = $query->get()
                         ->unique(function ($i) {
                             return $i->activity_type.'-'.$i->created_at->format('Y-m-d_H:i');
