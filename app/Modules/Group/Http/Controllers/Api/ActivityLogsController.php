@@ -34,14 +34,24 @@ class ActivityLogsController extends Controller
             throw new AuthorizationException('You do not have access to view this groups activity logs.');
         }
         
-        $logEntries = $group->logEntries()->select(['id', 'description', 'causer_id', 'causer_type', 'created_at', 'properties->step as step'])
-                        // ->with('causer')
+        $query = $group->logEntries()->select([
+                            'id', 
+                            'description', 
+                            'causer_id', 
+                            'causer_type', 
+                            'created_at', 
+                            'properties->step as step'
+                        ])
                         ->with(['causer' => function ($q) {
                             return $q->select(['id', 'name']);
                         }])
                         ->where('activity_type', '!=', 'coi-completed')
-                        ->orderBy('created_at', 'desc')
-                        ->get()
+                        ->orWhereNull('activity_type') // for some reason this is necessary to get custom logs. 
+                        ->orderBy('created_at', 'desc');
+
+        \Log::debug(renderQuery($query));
+            
+        $logEntries = $query->get()
                         ->unique(function ($i) {
                             return $i->activity_type.'-'.$i->created_at->format('Y-m-d_H:i');
                         })->values();
