@@ -51,12 +51,22 @@ class ActivityLogsController extends Controller
                             ->orWhereNull('activity_type');
                         })
                         ->orderBy('created_at', 'desc');
+    
+        $allLogs = $query->get();
 
-        $logEntries = $query->get()
-                        ->unique(function ($i) {
-                            return $i->activity_type.'-'.$i->created_at->format('Y-m-d_H:i');
-                        })->values();
-        
+        $customLogs = $allLogs->filter(function ($entry) { 
+            return $entry->activity_type == null;
+        });
+
+        $autoLogs = $allLogs->filter(function ($entry) {
+            return $entry->activity_type !== null;
+        })
+        ->unique(function ($i) {
+            return $i->activity_type.'-'.$i->created_at->format('Y-m-d_H:i');
+        });
+
+        $logEntries = $autoLogs->merge($customLogs)->sortByDesc('created_at');
+
         return LogEntryResource::collection($logEntries);
     }
 
