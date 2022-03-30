@@ -1,5 +1,10 @@
 # Change Log
 
+# 2022-03-30
+
+## Enhancements
+* Allow Coordinators to upload specification related documents in the application.
+
 # 2022-03-29
 ## Fixes
 * Typo fix in applicaiton admin.
