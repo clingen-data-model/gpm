@@ -40,15 +40,19 @@ class ActivityLogsController extends Controller
                             'causer_id', 
                             'causer_type', 
                             'created_at', 
-                            'properties->step as step'
+                            'properties->step as step',
+                            'subject_id'
                         ])
                         ->with(['causer' => function ($q) {
                             return $q->select(['id', 'name']);
                         }])
-                        ->where('activity_type', '!=', 'coi-completed')
-                        ->orWhereNull('activity_type') // for some reason this is necessary to get custom logs. 
+                        ->where(function($q) {
+                            $q->where('activity_type', '!=', 'coi-completed')
+                            ->orWhereNull('activity_type');
+                        })
                         ->orderBy('created_at', 'desc');
 
+        \Log::debug(renderQuery($query));
         $logEntries = $query->get()
                         ->unique(function ($i) {
                             return $i->activity_type.'-'.$i->created_at->format('Y-m-d_H:i');
