@@ -52,7 +52,6 @@ class ActivityLogsController extends Controller
                         })
                         ->orderBy('created_at', 'desc');
 
-        \Log::debug(renderQuery($query));
         $logEntries = $query->get()
                         ->unique(function ($i) {
                             return $i->activity_type.'-'.$i->created_at->format('Y-m-d_H:i');
