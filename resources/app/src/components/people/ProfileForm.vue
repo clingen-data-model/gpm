@@ -1,9 +1,9 @@
 <template>
     <div>
         <h3>Profile</h3>
-        <div class="float-right">
+        <!-- <div class="float-right">
             <profile-photo-form :person="person" />
-        </div>
+        </div> -->
         <data-form 
             :fields="fields" 
             v-model="profile" 
