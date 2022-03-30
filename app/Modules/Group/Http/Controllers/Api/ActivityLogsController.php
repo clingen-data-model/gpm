@@ -36,6 +36,7 @@ class ActivityLogsController extends Controller
         
         $query = $group->logEntries()->select([
                             'id', 
+                            'activity_type',
                             'description', 
                             'causer_id', 
                             'causer_type', 
