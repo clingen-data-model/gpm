@@ -143,16 +143,24 @@
 
           <tab-item label="Specifications" :visible="group.isVcep()">
             <div class="relative">
+              <div
+                class="bg-white bg-opacity-50 absolute top-0 left-0 right-0 bottom-0"
+                v-if="!group.expert_panel.defIsApproved && group.isVcep()"
+              ></div>
               <static-alert
                 variant="info"
-                v-if="!group.expert_panel.pilotSpecificationsIsApproved"
+                v-if="!group.expert_panel.defIsApproved && group.isVcep()"
               >
-                You can complete these sections after your first Specifications
-                Pilot has been approved.
+                You can complete these sections after your Group Definition
+                has been approved.
               </static-alert>
-              <cspec-summary
-                :readonly="!group.expert_panel.pilotSpecificationsIsApproved"
-              />
+              <div>
+                <specifications-section 
+                  :doc-type-id="group.expert_panel.draftSpecApproved ? [2,3,4,7] : 2" 
+                  :step="group.expert_panel.draftSpecApproved ? 3 : 2" 
+                />
+            </div>
+
             </div>
           </tab-item>
 
@@ -340,7 +348,7 @@ import ApplicationSummary from "@/components/groups/ApplicationSummary";
 import AttestationGcep from "@/components/expert_panels/AttestationGcep";
 import AttestationNhgri from "@/components/expert_panels/AttestationNhgri";
 import AttestationReanalysis from "@/components/expert_panels/AttestationReanalysis";
-import CspecSummary from "@/components/expert_panels/CspecSummary";
+import SpecificationsSection from "@/components/expert_panels/SpecificationsSection";
 import EvidenceSummaries from "@/components/expert_panels/EvidenceSummaryList";
 import GcepGeneList from "@/components/expert_panels/GcepGeneList";
 import GcepOngoingPlansForm from "@/components/expert_panels/GcepOngoingPlansForm";
@@ -368,7 +376,7 @@ export default {
     AttestationGcep,
     AttestationNhgri,
     AttestationReanalysis,
-    CspecSummary,
+    SpecificationsSection,
     GroupDocuments,
     GroupForm,
     GroupDetailHeader,

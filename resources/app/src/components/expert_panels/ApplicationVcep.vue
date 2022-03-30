@@ -47,6 +47,7 @@
             </app-section>
         </application-step>
         -->
+
         <application-step 
             id="draft-specifications" 
             title="Draft Specifications" 
@@ -54,7 +55,7 @@
             :no-submit="true"
         >
             <app-section>
-                <cspec-summary></cspec-summary>
+                <specifications-section :doc-type-id="2" :step="2"/>
             </app-section>
         </application-step>
 
@@ -65,7 +66,7 @@
             :no-submit="true"
         >
             <app-section>
-                <cspec-summary></cspec-summary>
+                <specifications-section :doc-type-id="[3,4,7]" :step="3" />
             </app-section>
         </application-step>
 
@@ -97,7 +98,7 @@ import ApplicationSection from '@/components/expert_panels/ApplicationSection'
 import ApplicationStep from '@/components/expert_panels/ApplicationStep'
 import AttestationNhgri from '@/components/expert_panels/AttestationNhgri'
 import AttestationReanalysis from '@/components/expert_panels/AttestationReanalysis'
-import CspecSummary from '@/components/expert_panels/CspecSummary'
+import SpecificationsSection from '@/components/expert_panels/SpecificationsSection'
 import EvidenceSummaryList from '@/components/expert_panels/EvidenceSummaryList'
 import GroupForm from '@/components/groups/GroupForm'
 import MemberDesignationForm from '@/components/expert_panels/MemberDesignationForm';
@@ -114,7 +115,7 @@ export default {
         ApplicationStep,
         AttestationNhgri,
         AttestationReanalysis,
-        CspecSummary,
+        SpecificationsSection,
         EvidenceSummaryList,
         GroupForm,
         MemberDesignationForm,

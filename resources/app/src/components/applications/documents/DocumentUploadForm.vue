@@ -1,6 +1,6 @@
 <template>
     <form-container>
-        <h2 class="pb-2 border-b mb-4">Upload {{documentType.long_name}} document(s)</h2>
+        <h2 class="pb-2 border-b mb-4">Upload {{titleCase(documentType.long_name)}}</h2>
 
         <input-row label="Document" :errors="errors.file">
             <input type="file" ref="fileInput">
@@ -11,14 +11,13 @@
             type="date" 
             v-model="newDocument.date_received" 
             :errors="errors.date_received"
+            v-if="showNotes"
         ></input-row>
 
-        <input-row :errors="errors.notes" label="Notes">
-            <textarea name="notes" v-model="newDocument.notes" cols="30" rows="10"></textarea>
+        <input-row :errors="errors.notes" label="Notes" v-if="showNotes">
+            <textarea name="notes" v-model="newDocument.notes" cols="30" rows="5"></textarea>
         </input-row>
         
-        <!-- <input-row label="Date Reviewed" type="date" v-model="newDocument.date_reviewed" :errors="errors.date_reviewed"></input-row> -->
-
         <button-row>
             <button class="btn white" @click="cancel">Cancel</button>
             <button class="btn blue" @click="save">Save</button>
@@ -26,9 +25,9 @@
     </form-container>
 </template>
 <script>
-import { mapState } from 'vuex';
 import {formatDate} from '../../../date_utils'
-import is_validation_error from '../../../http/is_validation_error';
+import {isValidationError} from '@/http';
+import {documentsTypes} from '@/configs.json'
 
 export default {
     props: {
@@ -41,6 +40,10 @@ export default {
             required: false,
             default: null
         },
+        showNotes: {
+            type: Boolean,
+            default: true
+        }
     },
     emits: [
         'saved',
@@ -59,9 +62,9 @@ export default {
         }
     },
     computed: {
-        ...mapState({
-            documentTypes: state => state.doctypes.items
-        }),
+        docTypes () {
+            return documentsTypes;
+        },
         group () {
             return this.$store.getters['groups/currentItemOrNew']
         },
@@ -72,11 +75,10 @@ export default {
             return Boolean(this.newDocument.date_reviewed)
         },
         documentType () {
-            if (this.documentTypes.length == 0) {
+            if (Object.values(this.docTypes).length == 0) {
                 return {};
             }
-            // return this.documentTypes. 
-            return this.$store.getters['doctypes/getItemById'](this.documentTypeId)
+            return Object.values(this.docTypes).find(dt => dt.id = this.documentTypeId)
         }
     },
     methods: {
@@ -97,7 +99,7 @@ export default {
                 this.clearForm();
                 this.$emit('saved');
             } catch (error) {
-                if (is_validation_error(error)) {
+                if (isValidationError(error)) {
                     this.errors = error.response.data.errors
                     return;
                 }
