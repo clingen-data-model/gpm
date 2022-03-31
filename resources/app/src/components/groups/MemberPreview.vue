@@ -1,5 +1,6 @@
 <template>
     <div class="px-8 py-4 inset">
+
         <static-alert variant="warning" v-if="member.isRetired" class="mb-3 float-right">
             RETIRED
         </static-alert>
@@ -12,7 +13,7 @@
             <div class="flex-1 md:flex flex-wrap">
                 <div class="flex-1 mr-8">
                     <dictionary-row label="Email">{{member.person.email}}</dictionary-row>
-                    <dictionary-row label="Institution">{{member.person.institution_id ? member.person.institution.name : '--'}}</dictionary-row>
+                    <dictionary-row label="Institution">{{member.person.institution ? member.person.institution.name : '--'}}</dictionary-row>
                     <dictionary-row label="Credentials">{{member.person.credentials}}</dictionary-row>
                     <object-dictionary
                         :obj="member"

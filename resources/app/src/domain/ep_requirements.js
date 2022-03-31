@@ -21,8 +21,8 @@ export const institutions = new Requirement(
     '3+ institutions represented', 
     group => {
         const institutionIds = group.members
-                                .filter(m => m.person.institution_id != null)
-                                .map(m => m.person.institution_id);        
+                                .filter(m => Boolean(m.person.institution))
+                                .map(m => m.person.institution.id);        
         return new Set(institutionIds).size > 2
     }
 );
