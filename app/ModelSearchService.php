@@ -33,13 +33,13 @@ class ModelSearchService
         $query = $this->modelClass::query()
                     ->with($this->defaultWith);
 
+                    
         if (!is_null($this->defaultSelect)) {
             $query->select($this->defaultSelect);
         } else {
             $dummy = new $this->modelClass();
             $query->select($dummy->getTable().'.*');
         }
-
         if (isset($params['sort']) && !is_null($this->sortFunction)) {
             $query = $this->sortQuery($query, $params['sort']);
         }
