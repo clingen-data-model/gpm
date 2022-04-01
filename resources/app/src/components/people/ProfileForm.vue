@@ -2,7 +2,7 @@
     <div>
         <h3>Profile</h3>
         <div class="float-right">
-            <profile-photo-form :person="person" />
+            <profile-photo-form :person="person" style="width: 100px; height: 100px;" />
         </div>
         <data-form 
             :fields="fields" 

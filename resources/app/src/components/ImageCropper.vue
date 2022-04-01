@@ -6,9 +6,12 @@
             </div>
             <div>
                 <h4>Preview</h4>
-                <div class="border border-gray-700 drop-shadow" style="width: 100px">
-                    <img ref="previewEl" :src="previewUrl" class="w-full">
-                </div>
+                <img 
+                    class="border border-gray-700 overflow-hidden drop-shadow" 
+                    style="width: 100px; height: 100px" 
+                    ref="previewEl"
+                    :src="previewUrl"
+                >
             </div>
         </div>
     </div>
@@ -45,7 +48,6 @@
     }, 500)
 
     const sizeCropper = () => {
-        // console.log('size the cropper');
         const imageData = cropperInst.value.getImageData();
         if (imageData.width == imageData.height) {
             cropperInst.value.setCropBoxData({
@@ -64,8 +66,6 @@
             backround: false,
             // zoomable: false,
             ready () {
-                // console.log('ready');
-                // this.cropper.crop()
                 sizeCropper();
             },
             crop () {
