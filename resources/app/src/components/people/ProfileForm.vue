@@ -1,9 +1,9 @@
 <template>
     <div>
         <h3>Profile</h3>
-        <!-- <div class="float-right">
+        <div class="float-right">
             <profile-photo-form :person="person" />
-        </div> -->
+        </div>
         <data-form 
             :fields="fields" 
             v-model="profile" 
@@ -25,11 +25,11 @@
 import isValidationError from '@/http/is_validation_error'
 import {onMounted} from 'vue'
 import {getLookups, profileFields, demographicFields, lookups} from '@/forms/profile_form';
-// import ProfilePhotoForm from '@/components/people/ProfilePhotoForm.vue';
+import ProfilePhotoForm from '@/components/people/ProfilePhotoForm.vue';
 export default {
     name: 'ProfileForm',
     components: {
-        // ProfilePhotoForm
+        ProfilePhotoForm
     },
     props: {
         person: {
