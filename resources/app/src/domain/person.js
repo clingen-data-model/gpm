@@ -12,6 +12,7 @@ class Person extends Entity {
         institution: {},
         primary_occupation_id: null,
         primary_occupation: {},
+        profile_photo: null,
         credentials: null,
         race_id: null,
         race: {},

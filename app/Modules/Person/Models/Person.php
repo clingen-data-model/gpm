@@ -51,7 +51,7 @@ class Person extends Model implements HasLogEntries
         'institution_id',
         'credentials',
         'biography',
-        'profile_photo_path',
+        'profile_photo',
         'orcid_id',
         'hypothesis_id',
         'street1',
@@ -269,8 +269,11 @@ class Person extends Model implements HasLogEntries
     {
         return $this->activeMemberships->pluck('roles')->flatten()->pluck('name')->contains('coordinator');
     }
-    
-    
+
+    public function getProfilePhotoUrl()
+    {
+        return url('/storage/profile-photos/'.$this->profile_photo);
+    }
 
     /**
      * DOMAIN
