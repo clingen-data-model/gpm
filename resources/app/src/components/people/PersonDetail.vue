@@ -1,29 +1,34 @@
 <template>
     <div>
         <header class="pb-4">
+            <div class="flex space-x-4">
+                <profile-picture :person="person" style="width: 155px"/>
+                <div class="flex-1">
             <router-link class="note" to="/people">People</router-link>
-            <h1 class="flex justify-between items-center">
-                <div>
-                    {{person.name}}
-                    <note>ID: {{person.id}}</note>
-                </div>
-                <router-link 
-                    :to="`/people/${uuid}/edit`"
-                    class="btn btn-xs flex-grow-0"
-                    v-if="(hasPermission('people-manage') || userIsPerson(person)) || coordinatesPerson(person)"
-                >
-                    <icon-edit width="16" heigh="16" />
-                </router-link>
+                    <h1 class="flex justify-between items-center">
+                        <div>
+                            {{person.name}}
+                            <note>ID: {{person.id}}</note>
+                        </div>
+                        <router-link 
+                            :to="`/people/${uuid}/edit`"
+                            class="btn btn-xs flex-grow-0"
+                            v-if="(hasPermission('people-manage') || userIsPerson(person)) || coordinatesPerson(person)"
+                        >
+                            <icon-edit width="16" heigh="16" />
+                        </router-link>
 
-            </h1>
-            <dictionary-row label="Email">
-                <template v-slot:label><strong>Email:</strong></template>
-                {{person.email}}
-            </dictionary-row>
-            <dictionary-row label="Institution">
-                <template v-slot:label><strong>Institution:</strong></template>
-                {{person.institution ? person.institution.name : null}}
-            </dictionary-row>
+                    </h1>
+                    <dictionary-row label="Email">
+                        <template v-slot:label><strong>Email:</strong></template>
+                        {{person.email}}
+                    </dictionary-row>
+                    <dictionary-row label="Institution">
+                        <template v-slot:label><strong>Institution:</strong></template>
+                        {{person.institution ? person.institution.name : null}}
+                    </dictionary-row>
+                </div>
+            </div>
         </header>
         <tabs-container>
             <tab-item label="groups">
@@ -114,6 +119,7 @@ import PersonMergeForm from '@/components/people/PersonMergeForm'
 import CoiList from '@/components/people/CoiList'
 import ActivityLog from "@/components/log_entries/ActivityLog";
 import PersonMailLog from "@/components/people/PersonMailLog";
+import ProfilePicture from "@/components/people/ProfilePicture";
 
 
 export default {
@@ -126,6 +132,7 @@ export default {
         CoiList,
         ActivityLog,
         PersonMailLog,
+        ProfilePicture,
     },
     props: {
         uuid: {
