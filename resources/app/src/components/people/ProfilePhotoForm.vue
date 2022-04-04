@@ -19,7 +19,7 @@
             <modal-dialog v-model="showForm" title="Upload a new profile photo">
                 <ImageCropper 
                     :image-src="srcPath" 
-                    @cropped="setCroppedImage"
+                    @cropped="setCroppedImageBlob"
                 />
 
                 <input-row hideLabel :errors="errors.profile_photo">
@@ -35,7 +35,6 @@
 <script>
 import ImageCropper from '@/components/ImageCropper.vue'
 import {api, isValidationError} from '@/http'
-import {imageFromBlob, resizeImage} from '@/composables/image_resize.js'
 
 export default {
     name: 'ProfilePhotoForm',
@@ -52,7 +51,7 @@ export default {
         return {
             showForm: false,
             file: null,
-            croppedImage: null,
+            croppedImageBlob: null,
             errors: {}
         }
     },
@@ -100,8 +99,8 @@ export default {
         setFile () {
             this.file = this.$refs.fileInput.files[0]
         },
-        setCroppedImage (blob) {            
-            this.croppedImage = blob;
+        setCroppedImageBlob (blob) {            
+            this.croppedImageBlob = blob;
         },
         async fetchProfileImage () {
             const url = `/api/people/${this.person.uuid}/profile-photo`;
@@ -117,11 +116,55 @@ export default {
                                 return new Blob([rsp.data]);
                             });
         },
-        async saveCropped () {
+        saveCropped () {
+            if (this.croppedImageBlob.size > 2000000) {
+                const width = 400;
+                const img = new Image();
+                img.src = URL.createObjectURL(this.croppedImageBlob);
+
+                img.addEventListener('load', (evt) => {
+                    var canvas = document.createElement('canvas'),
+                    ctx = canvas.getContext("2d"),
+
+                    oc = document.createElement('canvas'),
+                    octx = oc.getContext('2d');
+
+                    canvas.width = width; // destination canvas size
+                    canvas.height = canvas.width * img.height / img.width;
+
+                    var cur = {
+                        width: Math.floor(img.width * 0.5),
+                        height: Math.floor(img.height * 0.5)
+                    }
+
+                    oc.width = cur.width;
+                    oc.height = cur.height;
+
+                    octx.drawImage(img, 0, 0, cur.width, cur.height);
+
+                    while (cur.width * 0.5 > width) {
+                        cur = {
+                            width: Math.floor(cur.width * 0.5),
+                            height: Math.floor(cur.height * 0.5)
+                        };
+                        octx.drawImage(oc, 0, 0, cur.width * 2, cur.height * 2, 0, 0, cur.width, cur.height);
+                    }
+                    ctx.drawImage(oc, 0, 0, cur.width, cur.height, 0, 0, canvas.width, canvas.height);
+                    canvas.toBlob(blob => {
+                        console.log(blob.size/1000/1000);
+                        this.storeImage(blob);
+                    })
+                });
+
+                return;
+            }
+
+            this.storeImage(this.croppedImageBlob)
+        },
+        storeImage (blob) {
             const formData = new FormData();
 
-            const sizedBlob = await this.sizeImage(this.croppedImage);
-            formData.append('profile_photo', sizedBlob);
+            formData.append('profile_photo', blob);
 
             api.post(`/api/people/${this.person.uuid}/profile-photo`, formData)
                 .then(() => {
@@ -134,16 +177,6 @@ export default {
                         this.errors = error.response.data.errors;
                     }
                 });
-        },
-        async sizeImage(blob) {
-            if(blob.size > 2000000) {
-                const returnValue = null;
-                const image = imageFromBlob(blob);
-                image.addEventListener('load', (evt) => {
-                    await resizeImage(image, 400);
-                })
-            }
-            return blob;
         },
         cancelCropped () {
             this.showForm = false;
