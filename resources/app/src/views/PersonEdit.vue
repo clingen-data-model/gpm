@@ -8,7 +8,7 @@
     </div>
 </template>
 <script>
-import ProfileForm from '@/components/people/ProfileForm'
+import ProfileForm from '@/components/people/ProfileForm.vue'
 
 export default {
     name: 'PersonEdit',

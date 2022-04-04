@@ -64,7 +64,7 @@
 <script>
 import {mapGetters} from 'vuex';
 import {impersonate, search} from '../domain/impersonate_service';
-import SearchSelect from '@/components/forms/SearchSelect';
+import SearchSelect from '@/components/forms/SearchSelect.vue';
 
 export default {
     components: {

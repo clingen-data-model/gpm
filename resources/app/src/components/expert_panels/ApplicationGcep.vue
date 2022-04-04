@@ -55,15 +55,15 @@ import {debounce} from 'lodash'
 import {errors} from '@/forms/form_factory'
 import {isValidationError} from '@/http'
 
-import ApplicationSection from '@/components/expert_panels/ApplicationSection'
-import ApplicationStep from '@/components/expert_panels/ApplicationStep'
-import AttestationGcep from '@/components/expert_panels/AttestationGcep'
-import AttestationNhgri from '@/components/expert_panels/AttestationNhgri'
-import GcepGeneList from '@/components/expert_panels/GcepGeneList';
-import GroupForm from '@/components/groups/GroupForm'
-import MemberList from '@/components/groups/MemberList';
-import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm';
-import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm';
+import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
+import ApplicationStep from '@/components/expert_panels/ApplicationStep.vue'
+import AttestationGcep from '@/components/expert_panels/AttestationGcep.vue'
+import AttestationNhgri from '@/components/expert_panels/AttestationNhgri.vue'
+import GcepGeneList from '@/components/expert_panels/GcepGeneList.vue';
+import GroupForm from '@/components/groups/GroupForm.vue'
+import MemberList from '@/components/groups/MemberList.vue';
+import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm.vue';
+import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm.vue';
 
 export default {
     name: 'ApplicationGcep',

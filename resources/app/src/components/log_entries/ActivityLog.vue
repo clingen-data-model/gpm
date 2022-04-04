@@ -49,8 +49,8 @@
 <script>
 import { ref, computed } from 'vue'
 
-import LogEntryForm from '@/components/log_entries/ActivityLogEntryForm'
-import ActivityLogDeleteConfirmation from '@/components/log_entries/ActivityLogDeleteConfirmation'
+import LogEntryForm from '@/components/log_entries/ActivityLogEntryForm.vue'
+import ActivityLogDeleteConfirmation from '@/components/log_entries/ActivityLogDeleteConfirmation.vue'
 import {formatDate, formatTime} from '@/date_utils'
 
 const fields = [

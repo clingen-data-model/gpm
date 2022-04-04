@@ -26,7 +26,7 @@
 
 <script>
 // @ is an alias to /src
-import CreateApplicationForm from '@/components/applications/CreateApplicationForm'
+import CreateApplicationForm from '@/components/applications/CreateApplicationForm.vue'
 
 export default {
   name: 'ApplicationsIndex',

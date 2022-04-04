@@ -26,10 +26,10 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import StepOne from '@/components/applications/StepOne'
-import StepTwo from '@/components/applications/StepTwo'
-import StepThree from '@/components/applications/StepThree'
-import StepFour from '@/components/applications/StepFour'
+import StepOne from '@/components/applications/StepOne.vue'
+import StepTwo from '@/components/applications/StepTwo.vue'
+import StepThree from '@/components/applications/StepThree.vue'
+import StepFour from '@/components/applications/StepFour.vue'
 
 export default {
     components: {

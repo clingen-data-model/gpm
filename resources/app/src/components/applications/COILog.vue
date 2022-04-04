@@ -34,8 +34,8 @@
 </template>
 <script>
 
-import CoiDetail from '@/components/applications/CoiDetail';
-import CoiLegacyUpload from '@/components/applications/CoiLegacyUpload';
+import CoiDetail from '@/components/applications/CoiDetail.vue';
+import CoiLegacyUpload from '@/components/applications/CoiLegacyUpload.vue';
 
 export default {
     components: {

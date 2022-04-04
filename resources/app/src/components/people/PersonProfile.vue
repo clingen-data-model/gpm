@@ -107,7 +107,7 @@
 <script>
 import Person from '@/domain/person'
 
-import ProfileForm from '@/components/people/ProfileForm'
+import ProfileForm from '@/components/people/ProfileForm.vue'
 
 export default {
     name: 'PersonProfile',

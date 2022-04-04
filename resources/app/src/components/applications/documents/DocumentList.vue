@@ -75,7 +75,7 @@
 
 
 
-import TrashButton from '@/components/buttons/TrashIconButton';
+import TrashButton from '@/components/buttons/TrashIconButton.vue';
 import DocumentEditForm from './DocumentEditForm';
 import is_validation_error from '../../../http/is_validation_error';
 

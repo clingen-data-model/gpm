@@ -35,7 +35,7 @@
     </div>
 </template>
 <script>
-import ApplicationSubmitButton from '@/components/expert_panels/ApplicationSubmitButton'
+import ApplicationSubmitButton from '@/components/expert_panels/ApplicationSubmitButton.vue'
 import {GcepApplication, VcepApplication} from '@/domain'
 
 export default {

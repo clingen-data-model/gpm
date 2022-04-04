@@ -71,8 +71,8 @@
 <script>
 // included with relative link path b/c alias won't resolve for ApplicationGcep 🤷‍♀️
 import ApplicationGcep from '../../components/expert_panels/ApplicationGcep.vue';
-import ApplicationVcep from '@/components/expert_panels/ApplicationVcep';
-import ApplicationMenu from '@/components/layout/ApplicationMenu';
+import ApplicationVcep from '@/components/expert_panels/ApplicationVcep.vue';
+import ApplicationMenu from '@/components/layout/ApplicationMenu.vue';
 import Group from '@/domain/group';
 import {VcepApplication,  GcepApplication} from '@/domain'
 

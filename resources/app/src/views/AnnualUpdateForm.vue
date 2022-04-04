@@ -3,27 +3,27 @@ import { debounce } from 'lodash'
 import { api, isValidationError } from '@/http'
 
 // Common Components
-import ApplicationSection from '@/components/expert_panels/ApplicationSection'
-import SubmitterInformation from '@/components/annual_update/SubmitterInformation'
-import GoalsForm from '@/components/annual_update/GoalsForm'
-import FundingForm from '@/components/annual_update/FundingForm'
-import MemberDesignationUpdate from '@/components/annual_update/MemberDesignationUpdate'
-import MembershipUpdate from '@/components/annual_update/MembershipUpdate'
+import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
+import SubmitterInformation from '@/components/annual_update/SubmitterInformation.vue'
+import GoalsForm from '@/components/annual_update/GoalsForm.vue'
+import FundingForm from '@/components/annual_update/FundingForm.vue'
+import MemberDesignationUpdate from '@/components/annual_update/MemberDesignationUpdate.vue'
+import MembershipUpdate from '@/components/annual_update/MembershipUpdate.vue'
 
 // GCEP Components
-import GciGtUse from '@/components/annual_update/GciGtUse'
-import GcepRereviewForm from '@/components/annual_update/GcepRereviewForm'
-import GcepOngoingPlansUpdateForm from '@/components/annual_update/GcepOngoingPlansUpdateForm'
-import GeneCurationTotals from '@/components/annual_update/GeneCurationTotals'
+import GciGtUse from '@/components/annual_update/GciGtUse.vue'
+import GcepRereviewForm from '@/components/annual_update/GcepRereviewForm.vue'
+import GcepOngoingPlansUpdateForm from '@/components/annual_update/GcepOngoingPlansUpdateForm.vue'
+import GeneCurationTotals from '@/components/annual_update/GeneCurationTotals.vue'
 
 // VCEP Components
-// import VariantCurationWorkflow from '@/components/annual_update/VariantCurationWorkflow'
-import VciUse from '@/components/annual_update/VciUse'
-import VcepOngoingPlansUpdateForm from '@/components/annual_update/VcepOngoingPlansUpdateForm'
-// import VcepPlansForSpecifications from '@/components/annual_update/VcepPlansForSpecifications'
-import VcepTotals from '@/components/annual_update/VcepTotals'
-import VariantReanalysis from '@/components/annual_update/VariantReanalysis'
-import SpecificationProgress from '@/components/annual_update/SpecificationProgress'
+// import VariantCurationWorkflow from '@/components/annual_update/VariantCurationWorkflow.vue'
+import VciUse from '@/components/annual_update/VciUse.vue'
+import VcepOngoingPlansUpdateForm from '@/components/annual_update/VcepOngoingPlansUpdateForm.vue'
+// import VcepPlansForSpecifications from '@/components/annual_update/VcepPlansForSpecifications.vue'
+import VcepTotals from '@/components/annual_update/VcepTotals.vue'
+import VariantReanalysis from '@/components/annual_update/VariantReanalysis.vue'
+import SpecificationProgress from '@/components/annual_update/SpecificationProgress.vue'
 
 export default {
     name: 'AnnualUpdateForm',

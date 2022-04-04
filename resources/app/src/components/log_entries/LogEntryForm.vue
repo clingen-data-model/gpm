@@ -14,8 +14,8 @@
 <script>
 import {mapGetters} from 'vuex'
 import { formatDate } from '@/date_utils'
-import StepInput from '@/components/forms/StepInput'
-import RichTextEditor from '@/components/forms/RichTextEditor'
+import StepInput from '@/components/forms/StepInput.vue'
+import RichTextEditor from '@/components/forms/RichTextEditor.vue'
 import {logEntries, saveEntry, updateEntry} from '@/adapters/log_entry_repository'
 
 export default {

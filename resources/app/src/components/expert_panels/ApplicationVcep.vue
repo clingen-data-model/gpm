@@ -94,19 +94,19 @@ import {debounce} from 'lodash'
 
 import {errors} from '@/forms/form_factory'
 import {isValidationError} from '@/http'
-import ApplicationSection from '@/components/expert_panels/ApplicationSection'
-import ApplicationStep from '@/components/expert_panels/ApplicationStep'
-import AttestationNhgri from '@/components/expert_panels/AttestationNhgri'
-import AttestationReanalysis from '@/components/expert_panels/AttestationReanalysis'
-import SpecificationsSection from '@/components/expert_panels/SpecificationsSection'
-import EvidenceSummaryList from '@/components/expert_panels/EvidenceSummaryList'
-import GroupForm from '@/components/groups/GroupForm'
-import MemberDesignationForm from '@/components/expert_panels/MemberDesignationForm';
-import MemberList from '@/components/groups/MemberList';
-import MembershipDescriptionForm from '@/components/expert_panels/MembershipDescriptionForm';
-import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm';
-import VcepGeneList from '@/components/expert_panels/VcepGeneList';
-import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm';
+import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
+import ApplicationStep from '@/components/expert_panels/ApplicationStep.vue'
+import AttestationNhgri from '@/components/expert_panels/AttestationNhgri.vue'
+import AttestationReanalysis from '@/components/expert_panels/AttestationReanalysis.vue'
+import SpecificationsSection from '@/components/expert_panels/SpecificationsSection.vue'
+import EvidenceSummaryList from '@/components/expert_panels/EvidenceSummaryList.vue'
+import GroupForm from '@/components/groups/GroupForm.vue'
+import MemberDesignationForm from '@/components/expert_panels/MemberDesignationForm.vue';
+import MemberList from '@/components/groups/MemberList.vue';
+import MembershipDescriptionForm from '@/components/expert_panels/MembershipDescriptionForm.vue';
+import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm.vue';
+import VcepGeneList from '@/components/expert_panels/VcepGeneList.vue';
+import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm.vue';
 
 export default {
     name: 'ApplicationVcep',

@@ -37,7 +37,7 @@
 </template>
 <script>
 import ApplicationStepReview from './ApplicationStepReview'
-import EvidenceSummaryList from '@/components/expert_panels/EvidenceSummaryList'
+import EvidenceSummaryList from '@/components/expert_panels/EvidenceSummaryList.vue'
 
 export default {
     name: 'SustainedCurationReview',

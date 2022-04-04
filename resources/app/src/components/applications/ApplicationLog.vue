@@ -37,7 +37,7 @@ import {computed, watch} from 'vue'
 import {useStore} from 'vuex';
 
 
-import LogEntryForm from '@/components/log_entries/LogEntryForm'
+import LogEntryForm from '@/components/log_entries/LogEntryForm.vue'
 import {logEntries, fetchEntries} from '@/adapters/log_entry_repository';
 
 

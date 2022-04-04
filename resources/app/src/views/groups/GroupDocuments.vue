@@ -10,7 +10,7 @@
     </div>
 </template>
 <script>
-import DocumentList from '@/components/documents/DocumentList';
+import DocumentList from '@/components/documents/DocumentList.vue';
 
 export default {
     name: 'GroupDocuments',

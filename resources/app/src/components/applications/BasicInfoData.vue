@@ -37,7 +37,7 @@
 
 </template>
 <script>
-import GroupForm from '@/components/groups/GroupForm';
+import GroupForm from '@/components/groups/GroupForm.vue';
 
 export default {
     name: 'BasicInfoData',

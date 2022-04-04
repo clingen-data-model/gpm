@@ -74,10 +74,10 @@ import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
 import {ref, computed, onMounted, watch} from 'vue'
 import {api, queryStringFromParams} from '@/http'
-import AnnualUpdateAlert from '@/components/groups/AnnualUpdateAlert';
-import NotificationItem from '@/components/NotificationItem'
-import CoiList from '@/components/people/CoiList'
-import PersonProfile from '@/components/people/PersonProfile'
+import AnnualUpdateAlert from '@/components/groups/AnnualUpdateAlert.vue';
+import NotificationItem from '@/components/NotificationItem.vue'
+import CoiList from '@/components/people/CoiList.vue'
+import PersonProfile from '@/components/people/PersonProfile.vue'
 import Person from "@/domain/person"
 import Group from "@/domain/group"
 import configs from '@/configs'

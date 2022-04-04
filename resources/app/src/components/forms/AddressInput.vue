@@ -15,7 +15,7 @@
 </template>
 <script>
 import mirror from '@/composables/setup_working_mirror'
-import InputErrors from '@/components/forms/InputErrors'
+import InputErrors from '@/components/forms/InputErrors.vue'
 
 export default {
     name: 'AddressInput',

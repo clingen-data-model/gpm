@@ -52,9 +52,9 @@
 <script>
 import {mapGetters} from 'vuex'
 import {formatDate} from '@/date_utils'
-import BaseStep from '@/components/applications/BaseStep'
-import DocumentManager from '@/components/applications/documents/DocumentManager'
-import CspecSummary from '@/components/expert_panels/CspecSummary'
+import BaseStep from '@/components/applications/BaseStep.vue'
+import DocumentManager from '@/components/applications/documents/DocumentManager.vue'
+import CspecSummary from '@/components/expert_panels/CspecSummary.vue'
 
 export default {
     name: 'StepThree',

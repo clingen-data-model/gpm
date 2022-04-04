@@ -1,8 +1,8 @@
 // import router from '.'
 import store from '@/store/index'
 
-const UserAdmin = () => import (/* user-admin */ '@/views/UserAdmin')
-const InviteAdmin = () => import (/* invite-admin */ '@/views/InviteAdmin')
+const UserAdmin = () => import (/* user-admin */ '@/views/UserAdmin.vue')
+const InviteAdmin = () => import (/* invite-admin */ '@/views/InviteAdmin.vue')
 
 
 export default [

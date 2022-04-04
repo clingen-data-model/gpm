@@ -1,10 +1,10 @@
 <script>
 import { api } from '@/http'
 import sortAndFilter from '@/composables/router_aware_sort_and_filter'
-import MemberPreview from '@/components/groups/MemberPreview'
-import CoiDetail from '@/components/applications/CoiDetail'
+import MemberPreview from '@/components/groups/MemberPreview.vue'
+import CoiDetail from '@/components/applications/CoiDetail.vue'
 import configs from '@/configs.json'
-// import GroupMembersFilter from '@/components/groups/GroupMembersFilter'
+// import GroupMembersFilter from '@/components/groups/GroupMembersFilter.vue'
 
 export default {
     name: 'MemberList',

@@ -98,7 +98,7 @@
 </template>
 <script>
 import {ref, computed} from 'vue';
-import CoiDetail from '@/components/applications/CoiDetail';
+import CoiDetail from '@/components/applications/CoiDetail.vue';
 import Person from '@/domain/person'
 import {kebabCase} from '@/utils'
 import {hasPermission, userIsPerson} from '@/auth_utils'

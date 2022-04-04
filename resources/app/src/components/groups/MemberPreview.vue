@@ -62,7 +62,7 @@
 <script>
 import GroupMember from '@/domain/group_member';
 import Group from '@/domain/group';
-import ProfilePicture from '@/components/people/ProfilePicture'
+import ProfilePicture from '@/components/people/ProfilePicture.vue'
 import {formatDate} from '@/date_utils'
 
 

@@ -25,10 +25,10 @@
     </div>
 </template>
 <script>
-import OnboardingSteps from '@/components/onboarding/OnboardingSteps'
-import InviteRedemptionForm from '@/components/onboarding/InviteRedemptionForm'
-import AccountCreationForm from '@/components/onboarding/AccountCreationForm'
-import ProfileForm from '@/components/onboarding/ProfileForm'
+import OnboardingSteps from '@/components/onboarding/OnboardingSteps.vue'
+import InviteRedemptionForm from '@/components/onboarding/InviteRedemptionForm.vue'
+import AccountCreationForm from '@/components/onboarding/AccountCreationForm.vue'
+import ProfileForm from '@/components/onboarding/ProfileForm.vue'
 import Person from '@/domain/person'
 import Coi from '@/views/Coi'
 

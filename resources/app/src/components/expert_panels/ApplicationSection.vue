@@ -1,5 +1,5 @@
 <script>
-import RequirementsBadge from '@/components/expert_panels/RequirementsBadge'
+import RequirementsBadge from '@/components/expert_panels/RequirementsBadge.vue'
 import {GcepApplication, VcepApplication} from '@/domain'
 
 export default {

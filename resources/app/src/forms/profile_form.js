@@ -1,9 +1,9 @@
 import {ref, computed} from 'vue';
 import api from '@/http/api';
 import {kebabCase} from '@/utils'
-import TimezoneSearchSelect from '@/components/forms/TimezoneSearchSelect'
-import InstitutionSearchSelect from '@/components/forms/InstitutionSearchSelect'
-import AddressInput from '@/components/forms/AddressInput'
+import TimezoneSearchSelect from '@/components/forms/TimezoneSearchSelect.vue'
+import InstitutionSearchSelect from '@/components/forms/InstitutionSearchSelect.vue'
+import AddressInput from '@/components/forms/AddressInput.vue'
 
 export const lookups = ref({
     countries:[],

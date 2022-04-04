@@ -18,7 +18,7 @@
 </template>
 <script>
 import { ref, watch } from 'vue'
-import RichTextEditor from '@/components/forms/RichTextEditor'
+import RichTextEditor from '@/components/forms/RichTextEditor.vue'
 import {saveEntry, updateEntry, fetchEntries} from '@/adapters/log_entry_repository'
 
 

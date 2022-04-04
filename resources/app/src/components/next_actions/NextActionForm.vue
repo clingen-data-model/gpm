@@ -43,9 +43,9 @@
     </form-container>
 </template>
 <script>
-import StepInput from '@/components/forms/StepInput'
+import StepInput from '@/components/forms/StepInput.vue'
 import {mapGetters} from 'vuex'
-import RichTextEditor from '@/components/forms/RichTextEditor'
+import RichTextEditor from '@/components/forms/RichTextEditor.vue'
 import {formatDate} from '@/date_utils'
 import configs from '@/configs'
 

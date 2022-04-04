@@ -76,7 +76,7 @@
     </div>
 </template>
 <script>
-import ApplicationStepReview from '@/components/expert_panels/ApplicationStepReview'
+import ApplicationStepReview from '@/components/expert_panels/ApplicationStepReview.vue'
 export default {
     name: 'DefinitionReview',
     extends: ApplicationStepReview,

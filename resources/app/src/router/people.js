@@ -1,10 +1,10 @@
 import router from '.'
 import store from '../store/index'
 
-const PersonDetail = () => import (/* person-detail */ '@/components/people/PersonDetail')
-const PersonEdit = () => import (/* person-detail */ '@/views/PersonEdit')
-const PeopleList = () => import (/* people-index */ '@/views/PeopleList')
-const OnboardingWizard = () => import (/* onboarding-wizard */ '@/views/OnboardingWizard')
+const PersonDetail = () => import (/* person-detail */ '@/components/people/PersonDetail.vue')
+const PersonEdit = () => import (/* person-detail */ '@/views/PersonEdit.vue')
+const PeopleList = () => import (/* people-index */ '@/views/PeopleList.vue')
+const OnboardingWizard = () => import (/* onboarding-wizard */ '@/views/OnboardingWizard.vue')
 
 const checkPermissionAndPersonOwnership = async (to) => {
     // Check for system permission

@@ -133,7 +133,7 @@ import {api, isValidationError} from '@/http'
 import {groups} from '@/configs'
 import {Person} from '@/domain'
 import GroupMember from '@/domain/group_member'
-import MemberSuggestions from '@/components/groups/MemberSuggestions'
+import MemberSuggestions from '@/components/groups/MemberSuggestions.vue'
 
 export default {
     name: 'AddMemberForm',

@@ -112,8 +112,8 @@ import api from '@/http/api'
 import {ref, computed, onMounted} from 'vue';
 import {debounce} from 'lodash'
 import {useStore} from 'vuex';
-import GeneSearchSelect from '@/components/forms/GeneSearchSelect'
-import DiseaseSearchSelect from '@/components/forms/DiseaseSearchSelect'
+import GeneSearchSelect from '@/components/forms/GeneSearchSelect.vue'
+import DiseaseSearchSelect from '@/components/forms/DiseaseSearchSelect.vue'
 import is_validation_error from '@/http/is_validation_error'
 import {hasAnyPermission} from '@/auth_utils'
 
