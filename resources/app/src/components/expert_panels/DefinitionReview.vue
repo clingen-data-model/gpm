@@ -22,10 +22,10 @@
             <h2>Scope of Work</h2>
             <h3>Genes</h3>
             <div class="mb-6">
-                <p v-if="isGcep">{{expertPanel.genes.map(g => g.gene.gene_symbol).join(', ')}}</p>
+                <p v-if="isGcep">{{expertPanel.genes.map(g => g.gene_symbol).join(', ')}}</p>
                 <simple-table 
                     v-if="isVcep" 
-                    :data="expertPanel.genes.map(g => ({id: g.id,gene: g.gene.gene_symbol, disease: g.disease_name}))" :key-by="'id'" 
+                    :data="expertPanel.genes.map(g => ({id: g.id,gene: g.gene_symbol, disease: g.disease_name}))" :key-by="'id'" 
                     :hide-columns="['id']" 
                 />
             </div>
@@ -88,7 +88,17 @@ export default {
                 short_base_name: this.expertPanel.short_base_name,
             }
         },
-
+    },
+    watch: {
+        group: {
+            immediate: true,
+            handler (to, from) { 
+                if ((to.id && (!from || to.id != from.id))) {
+                    this.$store.dispatch('groups/getMembers', this.group);
+                    this.$store.dispatch('groups/getGenes', this.group);
+                }
+            }
+        }
     }
 }
 </script>
