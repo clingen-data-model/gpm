@@ -6,10 +6,13 @@ use App\Modules\Person\Models\Person;
 use Lorisleiva\Actions\Concerns\AsJob;
 use App\Modules\Group\Models\GroupMember;
 use App\Notifications\CoiReminderNotification;
+use Lorisleiva\Actions\Concerns\AsCommand;
 
 class SendCoiReminders
 {
-    use AsJob;
+    use AsJob, AsCommand;
+
+    public $commandSignature = "coi:send-reminders";
 
     public function handle()
     {
