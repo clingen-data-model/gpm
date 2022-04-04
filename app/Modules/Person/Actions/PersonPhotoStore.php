@@ -32,7 +32,7 @@ class PersonPhotoStore
     public function rules(): array
     {
         return [
-           'profile_photo' => 'required|file|max:2000|mimes:jpg,gif,png',
+           'profile_photo' => 'required|file|max:2000|mimes:jpeg,jpg,gif,png',
         ];
     }
 
