@@ -2,9 +2,11 @@
     <div>
         <header class="pb-4">
             <div class="flex space-x-4">
-                <profile-picture :person="person" style="width: 155px"/>
+                
+                <profile-picture :person="person" style="width: 155px" class="rounded-lg" />
+
                 <div class="flex-1">
-            <router-link class="note" to="/people">People</router-link>
+                    <router-link class="note" to="/people">People</router-link>
                     <h1 class="flex justify-between items-center">
                         <div>
                             {{person.name}}

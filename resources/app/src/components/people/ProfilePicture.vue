@@ -1,5 +1,5 @@
 <template>
-    <div class="border border-gray-300 bg-white">
+    <div class="border border-gray-300 bg-white overflow-hidden">
         <img :src="photoUrl">
     </div>
 </template>

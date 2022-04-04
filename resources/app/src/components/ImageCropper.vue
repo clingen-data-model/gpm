@@ -17,7 +17,7 @@
     import 'cropperjs/dist/cropper.css'
     import {debounce} from 'lodash-es'
     import Cropper from 'cropperjs';
-    import {ref, onMounted, watch, defineProps, defineEmits} from 'vue';
+    import {ref, onMounted, watch, defineProps, defineEmits, onUnmounted} from 'vue';
 
     const props = defineProps({
         imageSrc: String
@@ -29,7 +29,7 @@
     const cropperInst = ref(null);
     
     const emitCropped = debounce(() => {
-        if (cropperInst.value) {
+        if (cropperInst.value && cropperInst.value.getCroppedCanvas()) {
             cropperInst.value.getCroppedCanvas().toBlob(blob => {
                 emit('cropped', blob);
             });
@@ -82,5 +82,9 @@
 
     onMounted( () => {
         setupCropper()
+    });
+
+    onUnmounted( () => {
+        cropperInst.value.destroy();
     })
 </script>
