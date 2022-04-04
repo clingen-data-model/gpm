@@ -6,16 +6,9 @@
             </div>
             <div>
                 <h4>Preview</h4>
-                <img 
-                    class="border border-gray-700 overflow-hidden drop-shadow" 
-                    style="width: 100px; height: 100px" 
-                    ref="previewEl"
-                    :src="previewUrl"
-                >
-                <!-- <div>
-                    <button class="btn" @click="zoomOut">-</button>
-                    <button class="btn" @click="zoomIn">+</button>
-                </div> -->
+                <div class="border border-gray-700 drop-shadow" style="width: 100px">
+                    <img ref="previewEl" :src="previewUrl" class="w-full">
+                </div>
             </div>
         </div>
     </div>
@@ -36,9 +29,11 @@
     const cropperInst = ref(null);
     
     const emitCropped = debounce(() => {
-        cropperInst.value.getCroppedCanvas().toBlob(blob => {
-            emit('cropped', blob);
-        });
+        if (cropperInst.value) {
+            cropperInst.value.getCroppedCanvas().toBlob(blob => {
+                emit('cropped', blob);
+            });
+        }
     }, 200)
 
     const updatePreview = debounce(() => {
@@ -50,7 +45,7 @@
     }, 500)
 
     const sizeCropper = () => {
-        console.log('size the cropper');
+        // console.log('size the cropper');
         const imageData = cropperInst.value.getImageData();
         if (imageData.width == imageData.height) {
             cropperInst.value.setCropBoxData({
@@ -69,7 +64,7 @@
             backround: false,
             // zoomable: false,
             ready () {
-                console.log('ready');
+                // console.log('ready');
                 // this.cropper.crop()
                 sizeCropper();
             },

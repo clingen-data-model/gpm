@@ -4,7 +4,6 @@
             <img 
                 :src="srcPath" 
                 :alt="altText"
-                style="max-width: 100px"
                 class="rounded-t-lg"
                 @click="initUpload"
             >
@@ -34,8 +33,9 @@
     </div>
 </template>
 <script>
-import ImageCropper from '@/components/ImageCropper'
+import ImageCropper from '@/components/ImageCropper.vue'
 import {api, isValidationError} from '@/http'
+import {imageFromBlob, resizeImage} from '@/composables/image_resize.js'
 
 export default {
     name: 'ProfilePhotoForm',
@@ -76,13 +76,13 @@ export default {
             if (this.person.profile_photo) {
                 return `/profile-photos/${this.person.profile_photo}`
             }
-            return null;
+            return '/images/default_profile.jpg';
         },
         profilePhoto () {
             if (this.person.profile_photo) {
                 return `/profile-photos/${this.person.profile_photo}`
             }
-            return null;
+            return '/images/default_profile.jpg';
         },
         altText () {
             return this.person.profile_photo_path 
@@ -100,8 +100,7 @@ export default {
         setFile () {
             this.file = this.$refs.fileInput.files[0]
         },
-        setCroppedImage (blob) {
-            console.log('setCroppedImage', blob);
+        setCroppedImage (blob) {            
             this.croppedImage = blob;
         },
         async fetchProfileImage () {
@@ -120,7 +119,9 @@ export default {
         },
         async saveCropped () {
             const formData = new FormData();
-            formData.append('profile_photo', this.croppedImage);
+
+            const sizedBlob = await this.sizeImage(this.croppedImage);
+            formData.append('profile_photo', sizedBlob);
 
             api.post(`/api/people/${this.person.uuid}/profile-photo`, formData)
                 .then(() => {
@@ -133,6 +134,16 @@ export default {
                         this.errors = error.response.data.errors;
                     }
                 });
+        },
+        async sizeImage(blob) {
+            if(blob.size > 2000000) {
+                const returnValue = null;
+                const image = imageFromBlob(blob);
+                image.addEventListener('load', (evt) => {
+                    await resizeImage(image, 400);
+                })
+            }
+            return blob;
         },
         cancelCropped () {
             this.showForm = false;
