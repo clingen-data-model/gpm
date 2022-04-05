@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :class="{'cursor-wait': saving}">
         <div class="border border-gray-200 rounded-lg">
             <img 
                 :src="srcPath" 
@@ -26,8 +26,8 @@
                     <input type="file" @change="setFile" ref="fileInput">
                 </input-row>
 
-
-                <button-row submit-text="Save" @submitted="saveCropped" @canceled="cancelCropped" />
+                <button-row submit-text="Save" @submitted="saveCropped" @canceled="cancelCropped" v-if="!saving"/>
+                <div v-else>Saving...</div>
             </modal-dialog>
         </teleport>
     </div>
@@ -52,7 +52,8 @@ export default {
             showForm: false,
             file: null,
             croppedImageBlob: null,
-            errors: {}
+            errors: {},
+            saving: false
         }
     },
     watch: {
@@ -153,7 +154,7 @@ export default {
                     canvas.toBlob(blob => {
                         console.log(blob.size/1000/1000);
                         this.storeImage(blob);
-                    })
+                    }, null, .5)
                 });
 
                 return;
@@ -162,6 +163,7 @@ export default {
             this.storeImage(this.croppedImageBlob)
         },
         storeImage (blob) {
+            this.saving = true;
             const formData = new FormData();
 
             formData.append('profile_photo', blob);
@@ -171,12 +173,17 @@ export default {
                     this.$store.dispatch('people/getPerson', {uuid: this.person.uuid});
                     this.showForm = false;
                     this.file = null;
+                    this.saving = false;
                 })
                 .catch(error => {
                     if (isValidationError(error)) {
                         this.errors = error.response.data.errors;
+                        this.saving = false;
+                        return;
                     }
-                });
+                    throw (error);
+                    this.saving = false;
+                })
         },
         cancelCropped () {
             this.showForm = false;
