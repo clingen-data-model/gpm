@@ -41,14 +41,14 @@ class ActivityLogsController extends Controller
                             'causer_id', 
                             'causer_type', 
                             'created_at', 
-                            'properties->step as step',
-                            'subject_id'
+                            'subject_id',
+                            'properties',
                         ])
                         ->with(['causer' => function ($q) {
                             return $q->select(['id', 'name']);
                         }])
                         ->where(function($q) {
-                            $q->where('activity_type', '!=', 'coi-completed')
+                            $q->whereNotIn('activity_type', ['coi-completed','next-action-updated'])
                             ->orWhereNull('activity_type');
                         })
                         ->orderBy('created_at', 'desc');
@@ -90,6 +90,7 @@ class ActivityLogsController extends Controller
 
     public function update(UpdateLogEntryRequest $request, $groupUuid, $logEntryId)
     {
+
         if (!Auth::user()->hasPermissionTo('groups-manage')) {
             throw new AuthorizationException('You do not have access to update activity logs.');
         }

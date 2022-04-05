@@ -15,6 +15,8 @@ class LogEntryResource extends JsonResource
     public function toArray($request)
     {
         $data = parent::toArray($request);
+        $data['step'] = $this->step;
+        unset($data['properties']);
         unset($data['causer_type']);
         unset($data['causer_id']);
 

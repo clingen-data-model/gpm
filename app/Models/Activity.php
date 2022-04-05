@@ -10,6 +10,8 @@ class Activity extends BaseActivity
 {
     use HasFactory;
 
+    protected $appends = ['step'];
+
     static public function boot():void
     {
         parent::boot();
@@ -44,5 +46,13 @@ class Activity extends BaseActivity
         $this->attributes['properties']['activity_type'] = $value;
         $this->attributes['activity_type'] = $value;
     }
+
+    public function getStepAttribute()
+    {
+        return isset($this->properties['step'])
+                ? $this->properties['step']
+                : null;
+    }
+    
     
 }
