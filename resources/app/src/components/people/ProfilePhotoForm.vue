@@ -123,7 +123,7 @@ export default {
                 const img = new Image();
                 img.src = URL.createObjectURL(this.croppedImageBlob);
 
-                img.addEventListener('load', (evt) => {
+                img.addEventListener('load', () => {
                     var canvas = document.createElement('canvas'),
                     ctx = canvas.getContext("2d"),
 
@@ -181,8 +181,8 @@ export default {
                         this.saving = false;
                         return;
                     }
-                    throw (error);
                     this.saving = false;
+                    throw (error);
                 })
         },
         cancelCropped () {
