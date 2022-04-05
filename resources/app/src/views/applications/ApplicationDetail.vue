@@ -136,6 +136,7 @@ export default {
             this.$store.dispatch('groups/getDocuments', this.group);
             this.$store.dispatch('groups/getNextActions', this.group);
             this.$store.dispatch('groups/getSubmissions', this.group);
+            this.$store.dispatch('groups/getMembers', this.group);
         },
     },
     mounted() {
