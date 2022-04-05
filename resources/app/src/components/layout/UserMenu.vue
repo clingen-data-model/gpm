@@ -38,9 +38,6 @@
     </div>
 </template>
 <script>
-// import {mapGetters} from 'vuex'
-import ChevronDown from '../core/icons/IconCheveronDown'
-
 export default {
     name: 'UserMenu',
     components: {

@@ -1,11 +1,12 @@
 <template>
-    <input-row :label="label" :errors="errors">
-        <select :value="modelValue" @input="$emit('update:modelValue', $event.target.value)">
-            <option :value="null">No specific step</option>
-            <option v-for="step in steps" :key="step" :value="step">{{step}}</option>
-        </select>
-    </input-row>
-
+    <input-row 
+        label="Step" 
+        :modelValue="modelValue" 
+        @input="$emit('update:modelValue', $event.target.value)"
+        :errors="errors.step" 
+        type="select" 
+        :options="stepOptions"
+    />
 </template>
 <script>
 export default {
@@ -28,10 +29,15 @@ export default {
     emits: [
         'update:modelValue'
     ],
-    computed: {
-        steps () {
-            return [1,2,3,4];
-        },
+    data() {
+        return {
+            stepOptions: [
+                {value: 1, label: 'Definition'}, 
+                {value: 2, label: 'Draft Specifications'}, 
+                {value: 3, label: 'Pilot Specifications'}, 
+                {value: 4, label: 'Sustained Curation'}, 
+            ]
+        }
     }
 }
 </script>

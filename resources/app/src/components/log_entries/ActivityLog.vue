@@ -112,17 +112,21 @@ export default {
         }
     },
     setup (props) {
+        // DATA
         const sort = ref({
             field: 'created_at',
             desc: true
         });
         const selectedEntry = ref({});
         const editingEntry = ref(false);
+        const showDeleteConfirmation = ref(false);
 
+        // COMPUTED
         const hasLogEntries = computed(() => {
             return props.logEntries.length > 0;
         });
 
+        // METHODS
         const editLogEntry = entry => {
             editingEntry.value = true;
             selectedEntry.value = entry;
@@ -132,8 +136,7 @@ export default {
             editingEntry.value = false;
             selectedEntry.value = {};
         }
-
-        const showDeleteConfirmation = ref(false);
+        
         const confirmDelete = (entry) => {
             selectedEntry.value = entry;
             showDeleteConfirmation.value = true;

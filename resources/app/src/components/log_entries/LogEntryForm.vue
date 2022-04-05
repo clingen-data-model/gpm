@@ -1,7 +1,7 @@
 <template>
     <form-container class="log-entry-form" ref="form-container">
         <input-row label="Log Date" v-model="newEntry.log_date" :errors="errors.log_date" type="date" ref="logdate"></input-row>
-        <input-row label="Step" v-model="newEntry.step" :errors="errors.step" v-if="application.expert_panel_type_id == 2" type="select" :options="stepOptions"/>
+        <step-input v-model="newEntry.step" v-if="application.expert_panel_type_id == 2" :errors="errors.step"/>
         <input-row label="Entry" :errors="errors.entry">
             <rich-text-editor v-model="newEntry.entry"></rich-text-editor>
         </input-row>
@@ -38,12 +38,6 @@ export default {
                 entry: ''
             },
             errors: {},
-            stepOptions: [
-                {label: 'Definition', value: 1}, 
-                {label: 'Draft Specifications', value: 2}, 
-                {label: 'Pilot Specifications', value: 3}, 
-                {label: 'Sustained Curation', value: 4}, 
-            ]
         }
     },
     computed: {
@@ -97,7 +91,7 @@ export default {
             this.newEntry = {
                 id: entry.id,
                 log_date: formatDate(new Date(Date.parse((entry.created_at)))),
-                step: entry.step,
+                step: parseInt(entry.step),
                 entry: entry.description
             }
         },
