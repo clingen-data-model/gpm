@@ -16,11 +16,11 @@
                 </router-link>
 
             </h1>
-            <dictionary-row label="Email">
+            <dictionary-row label="Email" label-class="w-24">
                 <template v-slot:label><strong>Email:</strong></template>
                 {{person.email}}
             </dictionary-row>
-            <dictionary-row label="Institution">
+            <dictionary-row label="Institution"  label-class="w-24">
                 <template v-slot:label><strong>Institution:</strong></template>
                 {{person.institution ? person.institution.name : null}}
             </dictionary-row>
