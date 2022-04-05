@@ -57,7 +57,7 @@ export default {
             return logEntry || {};
         },
         logDate () {
-            return this.formatDate(this.logEntry.properties.log_date)
+            return this.formatDate(this.logEntry.created_at)
         },
         flattenedErrors () {
             return Object.values(this.errors).flat();
