@@ -54,7 +54,7 @@ export default {
     setup (props, context) {
         const errors = ref({});
         const logDate = computed(() => {
-            return formatDate(props.logEntry.properties.log_date)
+            return formatDate(props.logEntry.log_date)
         });
         const flattenedErrors = computed(() => {
             return Object.values(errors.value).flat();
