@@ -21,19 +21,22 @@ if(window.navigator && navigator.serviceWorker) {
 const app = createApp(App)
 const registerComponentsInContext = (context => {
     context.keys().forEach(filePath => {
+        if (!filePath.match('.vue')) {
+            return;
+        }
         const componentName = kebabCase(filePath.split('/').pop().split('.')[0]);
         const comp = context(filePath)
         app.component(componentName, comp.default);
     });    
 })
-registerComponentsInContext(require.context('@/components', false, /\.vue$/i))        
-registerComponentsInContext(require.context('@/components/links'), false, /\.vue$/i)        
-registerComponentsInContext(require.context('@/components/alerts'), false, /\.vue$/i)        
-registerComponentsInContext(require.context('@/components/dev'), false, /\.vue$/i)        
-registerComponentsInContext(require.context('@/components/forms'), false, /\.vue$/i)        
-registerComponentsInContext(require.context('@/components/icons'), false, /\.vue$/i)        
-registerComponentsInContext(require.context('@/components/buttons'), false, /\.vue$/i)        
-registerComponentsInContext(require.context('@/components/mail'), false, /\.vue$/i)        
+registerComponentsInContext(require.context('@/components', false, /\.vue$/i));
+registerComponentsInContext(require.context('@/components/links'), false, /\.vue$/i);
+registerComponentsInContext(require.context('@/components/alerts'), false, /\.vue$/i);
+registerComponentsInContext(require.context('@/components/dev'), false, /\.vue$/i);
+registerComponentsInContext(require.context('@/components/forms'), false, /\.vue$/i);
+registerComponentsInContext(require.context('@/components/icons'), false, /\.vue$/i);
+registerComponentsInContext(require.context('@/components/buttons'), false, /\.vue$/i);
+registerComponentsInContext(require.context('@/components/mail'), false, /\.vue$/i);
 
 import SubmissionWrapper from '@/components/groups/SubmissionWrapper.vue';
 app.component('submission-wrapper', SubmissionWrapper);
