@@ -11,6 +11,8 @@ if [ "$env" != "local" ]; then
     (cd /srv/app && .openshift/deploy.sh)
 fi
 
+php /srv/app/artisan storage:link --relative --force
+
 if [ "$role" = "app" ]; then
 
     exec apache2-foreground
