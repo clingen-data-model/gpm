@@ -97,7 +97,7 @@ class PersonPhotoStoreTest extends TestCase
                 'errors' => [
                     'profile_photo' => [
                         'The profile photo may not be greater than 2000 kilobytes.',
-                        'The profile photo must be a file of type: jpg, gif, png.',
+                        'The profile photo must be a file of type: jpeg, jpg, gif, png.',
                     ]
                 ]
             ]);
