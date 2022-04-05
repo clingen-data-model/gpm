@@ -11,21 +11,21 @@
         <template v-slot:sections>
             <div class="application-section">
                 <h2>Draft Specifications</h2>
-                <cspec-summary></cspec-summary>
+                <specifications-section :doc-type-id="2" />
             </div>
         </template>
     </base-step>
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import BaseStep from '@/components/applications/BaseStep'
-import CspecSummary from '@/components/expert_panels/CspecSummary'
+import BaseStep from '@/components/applications/BaseStep.vue'
+import SpecificationsSection from '@/components/expert_panels/SpecificationsSection.vue'
 
 export default {
     name: 'StepTwo',
     components: {
         BaseStep,
-        CspecSummary
+        SpecificationsSection
     },
     props: {
         

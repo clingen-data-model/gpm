@@ -63,6 +63,7 @@ class ApplicationSubmissionNotification extends Notification
     {
         $this->submission->load('type', 'submitter', 'group');
         return [
+            'message' => $this->submission->group->display_name.' has submited an application.',
             'submission' => $this->submission->toArray()
         ];
     }

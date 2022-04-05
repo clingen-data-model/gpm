@@ -15,40 +15,13 @@ class ExpertPanelResource extends JsonResource
     public function toArray($request)
     {
         $data = parent::toArray($request);
+        unset($data['cdwg_id'], $data['created_at'], $data['updated_at'], $data['']);
         $data['cdwg'] = $this->whenLoaded('cdwg');
-
         $data['working_name'] = $this->long_base_name;
-
         $data['group'] = $this->whenLoaded('group', $this->group);
-
         $data['log_entries'] = $this->whenLoaded('group.logEntries');
         $data['latest_log_entry'] = $this->whenLoaded('group.latestLogEntry');
-
         $data['documents'] = $this->whenLoaded('group.documents');
-
-        // $data['firstScopeDocument'] = $this->whenLoaded('group.documents');
-
-        // if ($this->relationLoaded('group')) {
-        //     if (!$data['working_name']) {
-        //         $data['working_name'] = $this->group->name;
-        //     }
-
-
-        //     $data['documents'] = $this->when(
-        //         $this->group->relationLoaded('documents'),
-        //         $this->group->documents->toArray()
-        //     );
-
-        //     $data['firstScopeDocument'] = $this->when(
-        //         $this->group->relationLoaded('documents'),
-        //         $this->firstScopeDocument
-        //     );
-        //     $data['firstFinalDocument'] = $this->when(
-        //         $this->group->relationLoaded('documents'),
-        //         $this->firstFinalDocument
-        //     );
-        // }
-        // $data['contacts'] = $this->when($this->relationLoaded('contacts'), $this->contacts->pluck('person'));
 
         return $data;
     }

@@ -83,9 +83,9 @@
 </template>
 
 <script>
-import UserMenu from './components/UserMenu'
-import AlertViewer from './components/alerts/AlertViewer'
-import IssueReportForm from '@/components/IssueReportForm'
+import UserMenu from '@/components/UserMenu.vue'
+import AlertViewer from '@/components/alerts/AlertViewer.vue'
+import IssueReportForm from '@/components/IssueReportForm.vue'
 import { mapGetters } from 'vuex'
 import configs from '@/configs';
 

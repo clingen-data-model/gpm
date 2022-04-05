@@ -67,13 +67,13 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import ApplicationLog from '@/components/applications/ApplicationLog'
-// import EpAttributesForm from '@/components/applications/EpAttributesForm'
-// import NextActionBanner from '@/components/next_actions/NextActionBanner'
-import NextActions from '@/components/next_actions/NextActions'
-import ProgressChart from '@/components/applications/ProgressChart'
-import StepTabs from '@/components/applications/StepTabs'
-import BasicInfoData from '@/components/applications/BasicInfoData'
+import ApplicationLog from '@/components/applications/ApplicationLog.vue'
+// import EpAttributesForm from '@/components/applications/EpAttributesForm.vue'
+// import NextActionBanner from '@/components/next_actions/NextActionBanner.vue'
+import NextActions from '@/components/next_actions/NextActions.vue'
+import ProgressChart from '@/components/applications/ProgressChart.vue'
+import StepTabs from '@/components/applications/StepTabs.vue'
+import BasicInfoData from '@/components/applications/BasicInfoData.vue'
 
 export default {
     name: 'ApplicationDetail',
@@ -136,6 +136,7 @@ export default {
             this.$store.dispatch('groups/getDocuments', this.group);
             this.$store.dispatch('groups/getNextActions', this.group);
             this.$store.dispatch('groups/getSubmissions', this.group);
+            this.$store.dispatch('groups/getMembers', this.group);
         },
     },
     mounted() {

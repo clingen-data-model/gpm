@@ -45,10 +45,10 @@
     </div>
 </template>
 <script>
-import DefinitionReview from '@/components/expert_panels/DefinitionReview'
-import SustainedCurationReview from '@/components/expert_panels/SustainedCurationReview'
-import CspecSummary from '@/components/expert_panels/CspecSummary'
-import ApplicationStepReview from '@/components/expert_panels/ApplicationStepReview'
+import DefinitionReview from '@/components/expert_panels/DefinitionReview.vue'
+import SustainedCurationReview from '@/components/expert_panels/SustainedCurationReview.vue'
+import CspecSummary from '@/components/expert_panels/CspecSummary.vue'
+import ApplicationStepReview from '@/components/expert_panels/ApplicationStepReview.vue'
 
 export default {
     name: 'ApplicationResponse',

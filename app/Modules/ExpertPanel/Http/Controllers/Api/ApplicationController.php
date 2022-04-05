@@ -46,11 +46,11 @@ class ApplicationController extends Controller
                 'step_4_approval_date',
                 'coi_code',
                 'date_completed',
-                'deleted_at'
+                'expert_panels.deleted_at'
             ],
             defaultWith: [
                 'group' => function ($q) {
-                    $q->select('id', 'parent_id', 'name', 'group_type_id');
+                    $q->select('uuid', 'id', 'parent_id', 'name', 'group_type_id');
                 },
                 'group.members' => function ($q) {
                     $q->select('id', 'group_id', 'person_id')
@@ -73,7 +73,10 @@ class ApplicationController extends Controller
             ],
             whereFunction: function ($query, $where) {
                 foreach ($where as $key => $val) {
-                    // if ($key == 'showDeleted') {}
+                    if ($key == 'since') {
+                        $query->where('updated_at', '>', Carbon::parse($val));
+                        continue;
+                    }
                     $query->where($key, $val);
                 }
 
@@ -100,6 +103,8 @@ class ApplicationController extends Controller
                 } else {
                     $query->orderBy($field, $dir);
                 }
+
+                return $query;
             }
         );
 

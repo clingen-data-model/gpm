@@ -97,7 +97,7 @@ export default {
         membershipInfo () {
             return this.user.person.memberships.map(m => ({
                     id: m.id,
-                    group: m.group.expert_panel.display_name,
+                    group: m.group.expert_panel ? m.group.expert_panel.display_name : m.group.name,
                     roles: m.roles.map(r => r.name).join(', '),
                     extra_permissions: m.permissions.map(r => r.name).join(', ') || '',
                     is_contact: m.is_contact ? 'Yes' : 'No',
@@ -148,7 +148,7 @@ export default {
                 return true;
             }
 
-            if (currentUser.hasRole('super-admin') && this.user.hasRole('admin')) {
+            if (currentUser.hasRole('super-admin') && (this.user.hasRole('admin') || this.user.hasNoRole())) {
                 return true;
             }
 

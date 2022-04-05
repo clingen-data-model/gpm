@@ -13,7 +13,7 @@
     </div>
 </template>
 <script>
-import ProgressStep from '@/components/applications/ProgressStep'
+import ProgressStep from '@/components/applications/ProgressStep.vue'
 
 export default {
     components: {

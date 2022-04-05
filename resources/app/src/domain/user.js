@@ -39,6 +39,12 @@ class User extends Entity {
             || this.hasGroupRole(role, group);
     }
 
+    hasNoRole() 
+    {
+        console.log(this.roles);
+        return this.roles.length == 0;
+    }
+
     hasGroupRole(role, group) {
         if (!group) {
             return false;

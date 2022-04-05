@@ -17,12 +17,14 @@ use App\Modules\Person\Actions\MarkNotificationRead;
 use App\Modules\Person\Actions\InstitutionMarkApproved;
 use App\Modules\Person\Http\Controllers\Api\ApiController;
 use App\Modules\Person\Actions\InviteRedeemForExistingUser;
+use App\Modules\Person\Actions\PersonPhotoStore;
 use App\Modules\Person\Http\Controllers\Api\InviteController;
 use App\Modules\Person\Http\Controllers\Api\PeopleController;
 use App\Modules\Person\Http\Controllers\Api\TimezoneController;
 use App\Modules\Person\Http\Controllers\Api\PersonEmailController;
 use App\Modules\Person\Http\Controllers\Api\ActivityLogsController;
 use App\Modules\Person\Http\Controllers\Api\PersonNotificationController;
+use App\Modules\Person\Models\Person;
 
 Route::group([
     'prefix' => 'api/people',
@@ -52,6 +54,11 @@ Route::group([
         Route::get('/{person:uuid}/activity-logs', [ActivityLogsController::class, 'index']);
         Route::get('/{person:uuid}/email', [PersonEmailController::class, 'index']);
         Route::get('/{person:uuid}/notifications/unread', [PersonNotificationController::class, 'unread']);
+        
+        Route::post('/{person:uuid}/profile-photo', PersonPhotoStore::class);
+        Route::get('/{person:uuid}/profile-photo', function (Person $person) {
+            return \Storage::disk('profile-photos')->get($person->profile_photo);
+        });
     });
 
     Route::get('/invites/{code}', InviteValidateCode::class);
@@ -68,7 +75,9 @@ Route::group([
     
     Route::get('/lookups/{model}/{id}', [ApiController::class, 'show'])
         ->name('people.catchall.show');
+
 });
+
 
 Route::group([
     'prefix' => 'api/institutions',

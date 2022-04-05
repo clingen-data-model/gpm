@@ -1,9 +1,6 @@
 <template>
     <div>
-        <div class="font-bold text-lg mb-4"> 
-            COMING SOON: Summary of CSpec specfications display here. 
-        </div>
-        <!-- <div class="well" v-if="!hasSpecifications">
+        <div class="well" v-if="!hasSpecifications">
             No specifications on record.
         </div>
         <div v-else>
@@ -22,7 +19,7 @@
                     <badge :color="item.status.color">{{item.status.name}}</badge>
                 </template>
             </data-table>
-        </div> -->
+        </div>
         <button 
             @click="goToCspec"
             class="btn btn-xl blue"
@@ -32,11 +29,12 @@
             Go to the CSpec Registry
             <icon-external-link class="inline"></icon-external-link>
         </button>
+            <icon-external-link class="inline"></icon-external-link>
     </div>
 </template>
 <script>
 export default {
-    name: 'Cspec Summary',
+    name: 'CspecSummary',
     props: {
         readonly: {
             type: Boolean,

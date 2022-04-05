@@ -25,8 +25,8 @@ class InviteReminderTest extends TestCase
         Role::factory()->create(['name' => 'coordinator', 'scope' => 'group']);
         $this->invite = Invite::factory()->create(['redeemed_at' => null]);
         $this->addMember = app()->make(MemberAdd::class);
-        $group1 = Group::factory()->create();
-        $this->gm1 = $this->addMember->handle($group1, $this->invite->person);
+        $this->group1 = Group::factory()->create();
+        $this->gm1 = $this->addMember->handle($this->group1, $this->invite->person);
 
         config(['app.features.invite_reminders' => true]);
     }
@@ -60,6 +60,12 @@ class InviteReminderTest extends TestCase
     public function it_does_not_send_a_reminder_to_a_person_that_has_already_activated_their_account()
     {
         $user = $this->setupUserWithPerson();
+        $invite = Invite::factory()->create(['person_id' => $user->person->id, 'redeemed_at' => Carbon::now()]);
+        app()->make(MemberAdd::class)->handle($this->group1, $user->person);
+        
+        $this->assertContains($user->person->id, Person::hasActiveMembership()->get()->pluck('id'));
+        $this->assertNotNull($user->person->invite);
+
         Notification::fake();
         $this->triggerReminders();
         Notification::assertNotSentTo($user->person, InviteReminderNotification::class);

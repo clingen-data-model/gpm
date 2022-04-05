@@ -16,7 +16,7 @@
                         ></th>
                     </tr>
                 </thead>
-                <transition-group name="fade" mode="out-in">                
+                <transition name="fade" mode="out-in">                
                     <tbody v-if="genes.length == 0">
                         <tr>
                             <td colspan="4">
@@ -30,7 +30,7 @@
                         </tr>
                     </tbody>
                     <tbody v-else>
-                        <transition-group name="slide-fade-down">
+                        <!-- <transition-group name="slide-fade-down"> -->
                             <tr v-for="gene in orderedGenes" :key="gene.id">                            
                                 <template v-if="!gene.edit">
                                     <td>{{gene.gene_symbol}}</td>
@@ -76,9 +76,9 @@
                                     </td>
                                 </template>
                             </tr>
-                        </transition-group>
+                        <!-- </transition-group> -->
                     </tbody>
-                </transition-group>
+                </transition>
 
                 <tbody v-if="canEdit">
                         <tr>
@@ -112,8 +112,8 @@ import api from '@/http/api'
 import {ref, computed, onMounted} from 'vue';
 import {debounce} from 'lodash'
 import {useStore} from 'vuex';
-import GeneSearchSelect from '@/components/forms/GeneSearchSelect'
-import DiseaseSearchSelect from '@/components/forms/DiseaseSearchSelect'
+import GeneSearchSelect from '@/components/forms/GeneSearchSelect.vue'
+import DiseaseSearchSelect from '@/components/forms/DiseaseSearchSelect.vue'
 import is_validation_error from '@/http/is_validation_error'
 import {hasAnyPermission} from '@/auth_utils'
 

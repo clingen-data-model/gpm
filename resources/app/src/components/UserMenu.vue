@@ -58,7 +58,7 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import ImpersonateControl from '@/components/ImpersonateControl'
+import ImpersonateControl from '@/components/ImpersonateControl.vue'
 
 export default {
     name: 'UserMenu',

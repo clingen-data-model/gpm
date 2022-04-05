@@ -10,10 +10,11 @@ use App\Actions\LogEntryUpdate;
 use App\Modules\Group\Models\Group;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\LogEntryResource;
 use App\Http\Requests\CreateLogEntryRequest;
 use App\Http\Requests\UpdateLogEntryRequest;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ActivityLogsController extends Controller
@@ -33,9 +34,41 @@ class ActivityLogsController extends Controller
             throw new AuthorizationException('You do not have access to view this groups activity logs.');
         }
         
-        $logEntries = $group->logEntries()->with('causer')->get();
-        
-        return ['data' => $logEntries];
+        $query = $group->logEntries()->select([
+                            'id', 
+                            'activity_type',
+                            'description', 
+                            'causer_id', 
+                            'causer_type', 
+                            'created_at', 
+                            'subject_id',
+                            'properties',
+                        ])
+                        ->with(['causer' => function ($q) {
+                            return $q->select(['id', 'name']);
+                        }])
+                        ->where(function($q) {
+                            $q->whereNotIn('activity_type', ['coi-completed','next-action-updated'])
+                            ->orWhereNull('activity_type');
+                        })
+                        ->orderBy('created_at', 'desc');
+    
+        $allLogs = $query->get();
+
+        $customLogs = $allLogs->filter(function ($entry) { 
+            return $entry->activity_type == null;
+        });
+
+        $autoLogs = $allLogs->filter(function ($entry) {
+            return $entry->activity_type !== null;
+        })
+        ->unique(function ($i) {
+            return $i->activity_type.'-'.$i->created_at->format('Y-m-d_H:i');
+        });
+
+        $logEntries = $autoLogs->merge($customLogs)->sortByDesc('created_at');
+
+        return LogEntryResource::collection($logEntries);
     }
 
     public function store(CreateLogEntryRequest $request, $groupUuid)
@@ -57,6 +90,7 @@ class ActivityLogsController extends Controller
 
     public function update(UpdateLogEntryRequest $request, $groupUuid, $logEntryId)
     {
+
         if (!Auth::user()->hasPermissionTo('groups-manage')) {
             throw new AuthorizationException('You do not have access to update activity logs.');
         }

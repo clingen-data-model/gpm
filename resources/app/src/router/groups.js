@@ -185,7 +185,7 @@ export default [
     { name: 'SustainedCurationReview',
         path: '/groups/:uuid/sustained-curation-review',
         components: {
-            default: () => import(/* webpackchunkname: "sustained-curation-review" */ '@/views/groups/SustainedCurationReview')
+            default: () => import(/* webpackchunkname: "sustained-curation-review" */ '@/views/groups/SustainedCurationReview.vue')
         },
         meta: {
             protected: true

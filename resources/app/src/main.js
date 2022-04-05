@@ -27,15 +27,15 @@ const registerComponentsInContext = (context => {
     });    
 })
 registerComponentsInContext(require.context('@/components', false, /\.vue$/i))        
-registerComponentsInContext(require.context('@/components/links', false, /\.vue$/i))        
-registerComponentsInContext(require.context('@/components/alerts', false, /\.vue$/i))        
-registerComponentsInContext(require.context('@/components/dev', false, /\.vue$/i))        
-registerComponentsInContext(require.context('@/components/forms', false, /\.vue$/i))        
-registerComponentsInContext(require.context('@/components/icons', false, /\.vue$/i))        
-registerComponentsInContext(require.context('@/components/buttons', false, /\.vue$/i))        
-registerComponentsInContext(require.context('@/components/mail', false, /\.vue$/i))        
+registerComponentsInContext(require.context('@/components/links'), false, /\.vue$/i)        
+registerComponentsInContext(require.context('@/components/alerts'), false, /\.vue$/i)        
+registerComponentsInContext(require.context('@/components/dev'), false, /\.vue$/i)        
+registerComponentsInContext(require.context('@/components/forms'), false, /\.vue$/i)        
+registerComponentsInContext(require.context('@/components/icons'), false, /\.vue$/i)        
+registerComponentsInContext(require.context('@/components/buttons'), false, /\.vue$/i)        
+registerComponentsInContext(require.context('@/components/mail'), false, /\.vue$/i)        
 
-import SubmissionWrapper from '@/components/groups/SubmissionWrapper';
+import SubmissionWrapper from '@/components/groups/SubmissionWrapper.vue';
 app.component('submission-wrapper', SubmissionWrapper);
 
 import ClickOutside from './directives/click_outside'
@@ -43,10 +43,10 @@ app.directive('click-outside', ClickOutside)
 import RemainingHeight from '@/directives/remaining_height'
 app.directive('remaining-height', RemainingHeight)
 
-import PopOver from "@/components/PopOver"
+import PopOver from "@/components/PopOver.vue"
 app.component('popper', PopOver);
 app.component('popover', PopOver);
-import GroupBreadcrumbs from '@/components/groups/GroupBreadcrumbs'
+import GroupBreadcrumbs from '@/components/groups/GroupBreadcrumbs.vue'
 app.component('group-breadcrumbs', GroupBreadcrumbs);
 
 

@@ -28,7 +28,7 @@
 </template>
 <script>
 import mirror from '@/composables/setup_working_mirror'
-import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm'
+import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm.vue'
 
 
 export default {

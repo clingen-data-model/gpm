@@ -15,6 +15,13 @@ class GroupController extends Controller
     {
         $searchService = new ModelSearchService(
             modelClass: Group::class,
+            defaultSelect: [
+                'id',
+                'uuid',
+                'name',
+                'group_type_id',
+                'group_status_id',
+            ],
             defaultWith: [
                 'type',
                 'status',
@@ -34,7 +41,9 @@ class GroupController extends Controller
                         'current_step'
                     ]);
                 },
-                'coordinators',
+                'coordinators' => function ($query) {
+                    $query->select(['person_id', 'group_id', 'id']);
+                },
                 'coordinators.roles' => function ($query) {
                     $query->select(['id', 'name']);
                 },
@@ -73,9 +82,6 @@ class GroupController extends Controller
             'members.cois',
             'parent',
             'expertPanel',
-            'expertPanel.genes',
-            'expertPanel.genes.gene',
-            'expertPanel.genes.disease',
             'expertPanel.curationReviewProtocol'
         ]);
 

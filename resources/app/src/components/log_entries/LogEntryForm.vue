@@ -1,7 +1,7 @@
 <template>
     <form-container class="log-entry-form" ref="form-container">
         <input-row label="Log Date" v-model="newEntry.log_date" :errors="errors.log_date" type="date" ref="logdate"></input-row>
-        <step-input v-model="newEntry.step" :errors="errors.step" v-if="application.expert_panel_type_id == 2"></step-input>
+        <step-input v-model="newEntry.step" v-if="application.expert_panel_type_id == 2" :errors="errors.step"/>
         <input-row label="Entry" :errors="errors.entry">
             <rich-text-editor v-model="newEntry.entry"></rich-text-editor>
         </input-row>
@@ -14,8 +14,8 @@
 <script>
 import {mapGetters} from 'vuex'
 import { formatDate } from '@/date_utils'
-import StepInput from '@/components/forms/StepInput'
-import RichTextEditor from '@/components/forms/RichTextEditor'
+import StepInput from '@/components/forms/StepInput.vue'
+import RichTextEditor from '@/components/forms/RichTextEditor.vue'
 import {logEntries, saveEntry, updateEntry} from '@/adapters/log_entry_repository'
 
 export default {
@@ -91,7 +91,7 @@ export default {
             this.newEntry = {
                 id: entry.id,
                 log_date: formatDate(new Date(Date.parse((entry.created_at)))),
-                step: entry.properties.step,
+                step: parseInt(entry.step),
                 entry: entry.description
             }
         },

@@ -1,5 +1,5 @@
 <script>
-import ApplicationSection from '@/components/expert_panels/ApplicationSection'
+import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
 import mirror from '@/composables/setup_working_mirror'
 
 export default {

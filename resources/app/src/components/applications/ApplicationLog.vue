@@ -26,6 +26,11 @@
             <template v-slot:cell-description="{item}">
                 <div v-html="item.description" class="links-blue"></div>
             </template>
+            <!-- <template v-slot:cell-step="{item}">
+                <pre>
+                    {{item}} 
+                </pre>
+            </template> -->
         </data-table>
         <modal-dialog v-model="editingEntry" title="Edit log entry">
             <log-entry-form></log-entry-form>
@@ -37,7 +42,7 @@ import {computed, watch} from 'vue'
 import {useStore} from 'vuex';
 
 
-import LogEntryForm from '@/components/log_entries/LogEntryForm'
+import LogEntryForm from '@/components/log_entries/LogEntryForm.vue'
 import {logEntries, fetchEntries} from '@/adapters/log_entry_repository';
 
 
@@ -79,7 +84,6 @@ export default {
     },
     data() {
         return {
-            fields: fields,
             sort: {
                 field: 'created_at',
                 desc: true
@@ -89,12 +93,23 @@ export default {
         }
     },
     computed: {
+        fields () {
+            console.log(fields.map(f => f.name))
+            if (this.group.group_type_id == 4 && !fields.map(f => f.name).includes('step')) {
+                fields.splice(2, 0, {
+                    name: 'step',
+                    sortable: true,
+                })
+            }
+
+            return fields;
+        },
         hasLogEntries(){
             return this.filteredLogEntries.length > 0;
         },
         filteredLogEntries() {
             if(this.logEntries && this.step) {
-                return this.logEntries.filter(entry => entry.properties.step == this.step);
+                return this.logEntries.filter(entry => entry.step == this.step);
             }
 
             if (this.logEntries) {

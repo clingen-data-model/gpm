@@ -1,21 +1,21 @@
 const ApplicationIndex = () =>
     import ( /* webpackChunkName: "application-index" */ '@/views/ApplicationsIndex.vue')
 const ApplicationDetail = () =>
-    import ( /* webpackChunkName: "application-detail" */ '@/views/applications/ApplicationDetail');
+    import ( /* webpackChunkName: "application-detail" */ '@/views/applications/ApplicationDetail.vue');
 const CreateApplicationForm = () =>
-    import ( /* webpackChunkName: "create-application-form" */ '@/components/applications/CreateApplicationForm');
+    import ( /* webpackChunkName: "create-application-form" */ '@/components/applications/CreateApplicationForm.vue');
 const NextActionForm = () =>
-    import ( /* webpackChunkName: "next-action-form" */ '@/components/next_actions/NextActionForm')
+    import ( /* webpackChunkName: "next-action-form" */ '@/components/next_actions/NextActionForm.vue')
 const LogEntryForm = () =>
-    import ( /* webpackChunkName: "log-entry-form" */ '@/components/log_entries/LogEntryForm')
+    import ( /* webpackChunkName: "log-entry-form" */ '@/components/log_entries/LogEntryForm.vue')
 const MemberForm = () =>
-    import ( /* webpackChunkName: "new-contact-form" */ '@/components/groups/MemberForm')
+    import ( /* webpackChunkName: "new-contact-form" */ '@/components/groups/MemberForm.vue')
 const ConfirmDeleteLogEntry = () =>
-    import ( /* webpackChunkName: "confirm-delete-log-entry" */ '@/components/log_entries/ConfirmDeleteLogEntry')
+    import ( /* webpackChunkName: "confirm-delete-log-entry" */ '@/components/log_entries/ConfirmDeleteLogEntry.vue')
 const ConfirmDeleteNextAction = () =>
-    import ( /* webpackChunkName: "confirm-delete-log-entry" */ '@/components/next_actions/ConfirmDeleteNextAction')
+    import ( /* webpackChunkName: "confirm-delete-log-entry" */ '@/components/next_actions/ConfirmDeleteNextAction.vue')
 const ConfirmDeleteApplication = () =>
-    import ( /* webpackChunkName: "delete-application" */ '@/components/applications/ConfirmDeleteApplication')
+    import ( /* webpackChunkName: "delete-application" */ '@/components/applications/ConfirmDeleteApplication.vue')
 
 
 export default [{

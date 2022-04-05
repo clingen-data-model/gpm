@@ -22,7 +22,7 @@
 @endif
 
 <p>
-    Follow the links above to complete your COIs or log in to the <a href="{{url('/')}}">ClinGen GPM</a> and see the list on your dashboard.
+    Follow the links above to log in and complete your COIs, or log in to the <a href="{{url('/')}}">ClinGen GPM</a> and see the list on your dashboard.
 </p>
 
 <p>

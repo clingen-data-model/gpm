@@ -26,33 +26,29 @@ class PeopleController extends Controller
             ],
             whereFunction: function ($query, $where) {
                 foreach ($where as $key => $value) {
+                    if (!$value) {
+                        continue;
+                    }
                     if ($key == 'filterString') {
-                        $query->where(function ($q) use ($value) {
-                            if (preg_match('/@/', $value)) {
-                                $q->WhereFullText(['email'], preg_replace('/\./', '', $value), [], 'or');
-                            } else {
-                                $q->whereFullText(['first_name','last_name'], $value.'*', ['mode' => 'boolean'], 'or')
-                                    ->orWhereFullText(['email'], preg_replace('/\./', '', $value).'*')
-                                    ->orWhereHas('institution', function ($q) use ($value) {
-                                        $q->whereFullText(['name', 'abbreviation'], $value.'*', ['mode' => 'boolean']);
-                                    });
-                            }
-                        });
-                    } elseif ($key == 'name') {
-                        if ($value) {
-                            $query->WhereFullText(['first_name', 'last_name'], $value.'*', ['mode' => 'boolean'], 'or');
+                        $words = explode(' ', $value);
+                        foreach ($words as $word) {
+                            $query->Where('first_name', 'like', '%'.$word.'%', 'or')
+                                ->orWhere('last_name', 'like', '%'.$word.'%', 'or')
+                                ->orWhere('email', 'like', '%'.$word.'%', 'or');
                         }
+                    } elseif ($key == 'first_name') {
+                        $query->where('first_name', 'like', '%'.$value.'%');
+                    } elseif ($key == 'last_name') {
+                        $query->where('last_name', 'like', '%'.$value.'%');
                     } elseif ($key == 'email') {
-                        if ($value) {
-                            $cleanedValue = preg_replace('/\./', '', $value);
-                            $query->WhereFullText(['email'], '"'.$cleanedValue.'"', [], 'or');
-                        }
+                        $query->where('email', 'like', '%'.$value.'%');
                     } elseif (is_array($value)) {
                         $query->whereIn($key, $value);
                     } else {
                         $query->where($key, $value);
                     }
                 }
+
                 return $query;
             },
             sortFunction: function ($query, $field, $dir) {

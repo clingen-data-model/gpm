@@ -1,9 +1,10 @@
 <script>
 import { api } from '@/http'
 import sortAndFilter from '@/composables/router_aware_sort_and_filter'
-import MemberPreview from '@/components/groups/MemberPreview'
-import CoiDetail from '@/components/applications/CoiDetail'
-// import GroupMembersFilter from '@/components/groups/GroupMembersFilter'
+import MemberPreview from '@/components/groups/MemberPreview.vue'
+import CoiDetail from '@/components/applications/CoiDetail.vue'
+import configs from '@/configs.json'
+// import GroupMembersFilter from '@/components/groups/GroupMembersFilter.vue'
 
 export default {
     name: 'MemberList',
@@ -89,6 +90,10 @@ export default {
         }
     },
     computed: {
+        roles () {
+            return configs.groups.roles;
+        },
+
         group () {
             return this.$store.getters['groups/currentItemOrNew'];
         },
@@ -361,17 +366,17 @@ export default {
             <div class="flex-1">
                 <input-row label="Keyword" type="text" v-model="filters.keyword" label-width-class="w-20" />
                 <input-row label="Role" label-width-class="w-20">
-                <select v-model="filters.roleId">
-                    <option :value="null">Select&hellip;</option>
-                    <option 
-                        v-for="role in roles"
-                        :key="role.id"
-                        :value="role.id"
-                    >
-                        {{role.name}}
-                    </option>
-                </select>
-            </input-row>
+                    <select v-model="filters.roleId">
+                        <option :value="null">Select&hellip;</option>
+                        <option 
+                            v-for="role in roles"
+                            :key="role.id"
+                            :value="role.id"
+                        >
+                            {{role.name}}
+                        </option>
+                    </select>
+                </input-row>
             </div>
             <div class="flex-1 py-2">
                 <checkbox class="block" label="Needs COI" v-model="filters.needsCoi" />
@@ -381,10 +386,6 @@ export default {
                 <checkbox class="block" label="Hide Retired/Alumni" v-model="filters.hideAlumns" />
             </div>
         </div>
-
-            <!-- <group-members-filter 
-                v-show="showFilter"
-                v-model="filters" /> -->
         </transition>
         
         <div class="mt-3 py-2 w-full overflow-x-auto">

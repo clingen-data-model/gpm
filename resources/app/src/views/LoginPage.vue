@@ -11,7 +11,7 @@
     </div>
 </template>
 <script>
-import LoginForm from '@/components/LoginForm';
+import LoginForm from '@/components/LoginForm.vue';
 import { mapGetters } from 'vuex'
 
 export default {

@@ -12,7 +12,6 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        \Log::debug($request->all());
         $search = new ModelSearchService(
             modelClass: User::class,
             defaultWith: [

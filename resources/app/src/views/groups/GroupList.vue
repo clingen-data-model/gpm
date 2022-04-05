@@ -54,8 +54,8 @@
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
 import {computed, ref} from 'vue'
-import GroupForm from '@/components/groups/GroupForm'
-import SubmissionWrapper from '@/components/groups/SubmissionWrapper'
+import GroupForm from '@/components/groups/GroupForm.vue'
+import SubmissionWrapper from '@/components/groups/SubmissionWrapper.vue'
 import {hasAnyPermission} from '@/auth_utils'
 
 

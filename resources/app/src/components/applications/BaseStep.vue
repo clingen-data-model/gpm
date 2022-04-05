@@ -10,7 +10,7 @@
                     <div v-if="dateApproved">
                         <div class="flex space-x-1" v-if="!editApprovalDate">
                             <div class="text-white bg-green-600 rounded-xl px-2">
-                                Appproved: {{dateApproved}}
+                                Approved: {{dateApproved}}
                             </div>
                             <edit-icon-button class="text-black" @click="initEditApprovalDate"></edit-icon-button>
                         </div>
@@ -106,10 +106,10 @@
 <script>
 import { mapGetters } from 'vuex'
 import { formatDate } from '@/date_utils'
-import ApplicationLog from '@/components/applications/ApplicationLog'
-import DocumentManager from '@/components/applications/documents/DocumentManager'
-import ApproveStepForm from '@/components/applications/ApproveStepForm'
-import RemoveButton from '@/components/buttons/RemoveButton'
+import ApplicationLog from '@/components/applications/ApplicationLog.vue'
+import DocumentManager from '@/components/applications/documents/DocumentManager.vue'
+import ApproveStepForm from '@/components/applications/ApproveStepForm.vue'
+import RemoveButton from '@/components/buttons/RemoveButton.vue'
 import is_validation_error from '@/http/is_validation_error'
 
 export default {

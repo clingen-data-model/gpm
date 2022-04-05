@@ -13,9 +13,11 @@ class GroupsAddFulltextIndex extends Migration
      */
     public function up()
     {
-        Schema::table('groups', function (Blueprint $table) {
-            $table->fullText(['name'], 'search_fulltext');
-        });
+        if (config('database.connections')[config('database.default')]['driver'] != 'sqlite') {
+            Schema::table('groups', function (Blueprint $table) {
+                $table->fullText(['name'], 'search_fulltext');
+            });
+        }
     }
     
     /**
@@ -25,8 +27,10 @@ class GroupsAddFulltextIndex extends Migration
      */
     public function down()
     {
-        Schema::table('groups', function (Blueprint $table) {
-            $table->dropFullText('search_fulltext');
-        });
+        if (config('database.connections')[config('database.default')]['driver'] != 'sqlite') {
+            Schema::table('groups', function (Blueprint $table) {
+                $table->dropFullText('search_fulltext');
+            });
+        }
     }
 }

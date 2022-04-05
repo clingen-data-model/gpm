@@ -81,14 +81,14 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import BaseStep from '@/components/applications/BaseStep'
-// import CoiLog from '@/components/applications/COILog'
-// import MemberList from '@/components/groups/MemberList'
-// import ApplicationSection from '@/components/expert_panels/ApplicationSection'
-// import GcepGeneList from '@/components/expert_panels/GcepGeneList'
-// import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm';
-// import VcepGeneList from '@/components/expert_panels/VcepGeneList'
-import DefinitionReview from '@/components/expert_panels/DefinitionReview'
+import BaseStep from '@/components/applications/BaseStep.vue'
+// import CoiLog from '@/components/applications/COILog.vue'
+// import MemberList from '@/components/groups/MemberList.vue'
+// import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
+// import GcepGeneList from '@/components/expert_panels/GcepGeneList.vue'
+// import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm.vue';
+// import VcepGeneList from '@/components/expert_panels/VcepGeneList.vue'
+import DefinitionReview from '@/components/expert_panels/DefinitionReview.vue'
 
 export default {
     name: 'StepOne',

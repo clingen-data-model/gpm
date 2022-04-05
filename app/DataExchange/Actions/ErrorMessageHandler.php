@@ -8,8 +8,8 @@ use App\DataExchange\Exceptions\StreamingServiceException;
 class ErrorMessageHandler
 {
     protected $knownErrors = [
-        RD_KAFKA_RESP_ERR__TIMED_OUT,
-        RD_KAFKA_RESP_ERR__PARTITION_EOF
+        \RD_KAFKA_RESP_ERR__PARTITION_EOF,
+        \RD_KAFKA_RESP_ERR__TIMED_OUT
     ];
 
     public function handle(IncomingStreamMessage $message)

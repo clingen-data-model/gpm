@@ -5,7 +5,7 @@
             <div>
                 {{group.displayName}} <badge :color="group.statusColor" class="text-xs">{{group.status ? group.status.name : 'loading...'}}</badge>
                 <div class="text-sm text-gray-800 mt-1 font-normal">
-                    <span v-if="showShortName">Short Name: <strong>{{group.expert_panel.full_short_base_name || '--'}}</strong>
+                    <span v-if="group.isEp() && showShortName">Short Name: <strong>{{group.expert_panel.full_short_base_name || '--'}}</strong>
                     |
                     </span>
                     <span v-if="group.isEp()">

@@ -35,8 +35,8 @@
     </div>
 </template>
 <script>
-import EvidenceSummary from '@/components/expert_panels/EvidenceSummary'
-import EvidenceSummaryForm from '@/components/expert_panels/EvidenceSummaryForm'
+import EvidenceSummary from '@/components/expert_panels/EvidenceSummary.vue'
+import EvidenceSummaryForm from '@/components/expert_panels/EvidenceSummaryForm.vue'
 
 export default {
     name: 'EvidenceSummaryList',

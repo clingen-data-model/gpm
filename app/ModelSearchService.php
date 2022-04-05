@@ -33,19 +33,23 @@ class ModelSearchService
         $query = $this->modelClass::query()
                     ->with($this->defaultWith);
 
+                    
         if (!is_null($this->defaultSelect)) {
             $query->select($this->defaultSelect);
         } else {
             $dummy = new $this->modelClass();
             $query->select($dummy->getTable().'.*');
         }
-
         if (isset($params['sort']) && !is_null($this->sortFunction)) {
             $query = $this->sortQuery($query, $params['sort']);
         }
 
         if (isset($params['with'])) {
             $query = $this->eagerLoadRelations($query, $params['with']);
+        }
+
+        if (isset($params['without'])) {
+            $query = $this->removeEagerLoadRelations($query, $params['without']);
         }
 
         if (isset($params['where'])) {
@@ -92,10 +96,21 @@ class ModelSearchService
             }, explode(',', $relations));
         }
 
-        $query->with($relations);
+        if ($with) {
+            $query->with($relations);
+        }
+        
+        return $query;
+    }
+   
+    private function removeEagerLoadRelations($query, $without)
+    {
+        $query->without($without);
+        
         return $query;
     }
     
+
 
     private function sortQuery($query, $sort)
     {

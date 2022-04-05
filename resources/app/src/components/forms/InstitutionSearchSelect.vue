@@ -37,8 +37,8 @@
 </template>
 <script>
 import api from '@/http/api'
-import SearchSelect from '@/components/forms/SearchSelect'
-import InstitutionForm from '@/components/institutions/InstitutionCreateForm'
+import SearchSelect from '@/components/forms/SearchSelect.vue'
+import InstitutionForm from '@/components/institutions/InstitutionCreateForm.vue'
 
 export default {
     name: 'InstitutionSearchSelect',

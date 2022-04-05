@@ -25,7 +25,7 @@
 </template>
 <script>
 import mirror from '@/composables/setup_working_mirror'
-import ApplicationSection from '@/components/expert_panels/ApplicationSection'
+import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
 
 export default {
     name: 'VariantCurationWorkflow',

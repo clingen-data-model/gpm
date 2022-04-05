@@ -36,9 +36,9 @@
 <script>
 import sortAndFilter from '@/composables/router_aware_sort_and_filter';
 import {getAllInstitutions} from '@/forms/institution_form'
-import InstitutionApprovalForm from '@/components/institutions/InstitutionApprovalForm'
-import InstitutionUpdateForm from '@/components/institutions/InstitutionUpdateForm'
-import InstitutionMergeForm from '@/components/institutions/InstitutionMergeForm'
+import InstitutionApprovalForm from '@/components/institutions/InstitutionApprovalForm.vue'
+import InstitutionUpdateForm from '@/components/institutions/InstitutionUpdateForm.vue'
+import InstitutionMergeForm from '@/components/institutions/InstitutionMergeForm.vue'
 
 export default {
     name: 'InstitutionList',

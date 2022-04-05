@@ -318,7 +318,12 @@ export default {
             this.$emit('canceled');
         },
         async getParentOptions () {
-            this.parents = await api.get(`/api/groups`)
+            const params = {
+                'where[group_type_id]': [1,2],
+                without: ['coordinators', 'expertPanel']
+            };
+
+            this.parents = await api.get(`/api/groups`, {params})
                         .then(response => {
                             return response.data
                                 .filter(group => group.id != this.group.id)

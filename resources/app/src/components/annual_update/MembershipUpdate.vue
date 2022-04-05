@@ -28,8 +28,8 @@
 </template>
 <script>
 import mirror from '@/composables/setup_working_mirror'
-import AppSection from '@/components/expert_panels/ApplicationSection'
-import MemberList from '@/components/groups/MemberList'
+import AppSection from '@/components/expert_panels/ApplicationSection.vue'
+import MemberList from '@/components/groups/MemberList.vue'
 
 export default {
     name: 'MembershipUpdate',

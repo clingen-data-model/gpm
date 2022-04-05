@@ -27,7 +27,7 @@
     </div>
 </template>
 <script>
-import MenuItem from '@/components/layout/MenuItem'
+import MenuItem from '@/components/layout/MenuItem.vue'
 
 export default {
     components: {

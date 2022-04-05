@@ -1,18 +1,19 @@
 <template>
     <div class="px-8 py-4 inset">
+
         <static-alert variant="warning" v-if="member.isRetired" class="mb-3 float-right">
             RETIRED
         </static-alert>
 
         <div class="md:flex flex-wrap space-x-4 text-sm">
             <div>
-                <profile-picture :person="member.person"></profile-picture>
+                <profile-picture :person="member.person" style="width: 100px; height: 100px;" class="rounded"></profile-picture>
                 <note>member id: {{member.id}}</note>
             </div>
             <div class="flex-1 md:flex flex-wrap">
                 <div class="flex-1 mr-8">
                     <dictionary-row label="Email">{{member.person.email}}</dictionary-row>
-                    <dictionary-row label="Institution">{{member.person.institution_id ? member.person.institution.name : '--'}}</dictionary-row>
+                    <dictionary-row label="Institution">{{member.person.institution ? member.person.institution.name : '--'}}</dictionary-row>
                     <dictionary-row label="Credentials">{{member.person.credentials}}</dictionary-row>
                     <object-dictionary
                         :obj="member"
@@ -61,7 +62,7 @@
 <script>
 import GroupMember from '@/domain/group_member';
 import Group from '@/domain/group';
-import ProfilePicture from '@/components/people/ProfilePicture'
+import ProfilePicture from '@/components/people/ProfilePicture.vue'
 import {formatDate} from '@/date_utils'
 
 

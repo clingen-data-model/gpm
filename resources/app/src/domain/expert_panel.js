@@ -115,11 +115,22 @@ class ExpertPanel extends Entity
     get defIsApproved () {
         return this.step_1_approval_date !== null
     }
+    get definitionIsApproved () {
+        return this.step_1_approval_date !== null
+    }
+    
     get draftSpecificationsIsApproved () {
         return this.step_2_approval_date !== null
     }
+    get draftSpecApproved () {
+        return this.step_2_approval_date !== null
+    }
+
 
     get pilotSpecificationsIsApproved () {
+        return this.step_3_approval_date !== null
+    }
+    get pilotSpecApproved () {
         return this.step_3_approval_date !== null
     }
 

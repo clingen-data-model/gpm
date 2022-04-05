@@ -34,7 +34,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import is_validation_error from '@/http/is_validation_error'
-import RemoveButton from '@/components/buttons/RemoveButton'
+import RemoveButton from '@/components/buttons/RemoveButton.vue'
 
 export default {
     components: {

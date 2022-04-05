@@ -8,7 +8,7 @@
 import {api} from '@/http'
 import AnnualUpdateForm from '@/views/AnnualUpdateForm'
 // import formDef from '@/forms/annual_update'
-// import DataForm from '@/components/forms/DataForm'
+// import DataForm from '@/components/forms/DataForm.vue'
 
 export default {
     name: 'AnnualUpdateDetail',

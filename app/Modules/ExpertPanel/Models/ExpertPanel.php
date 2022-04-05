@@ -468,7 +468,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     }
     public function getCoiUrlAttribute()
     {
-        return '/expert-panels/'.urlencode($this->name).'/coi/'.$this->coi_code;
+        return url('/coi/'.$this->coi_code);
     }
 
     public function getDefinitionIsApprovedAttribute(): bool

@@ -52,7 +52,7 @@
     </div>
 </template>
 <script>
-import RequirementsItem from '@/components/expert_panels/RequirementsItem'
+import RequirementsItem from '@/components/expert_panels/RequirementsItem.vue'
 import {isValidationError} from '@/http'
 import configs from '@/configs'
 

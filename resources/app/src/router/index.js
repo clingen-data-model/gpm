@@ -7,12 +7,12 @@ import cdwgRoutes from './cdwgs'
 import groupRoutes from './groups'
 import adminRoutes from './admin'
 import userRoutes from './users'
-import MemberForm from '@/components/groups/MemberForm'
+import MemberForm from '@/components/groups/MemberForm.vue'
 
 const routes = [
     { name: 'Dashboard',
         path: '/',
-        component: () => import (/* webpackChunkName "dashboard" */ '@/views/Dashboard'),
+        component: () => import (/* webpackChunkName "dashboard" */ '@/views/Dashboard.vue'),
         meta: {
             protected: true
         }
@@ -21,7 +21,7 @@ const routes = [
         name: 'ApplicationSummary',
         path: '/application-summary',
         redirect: '/application-summary/vceps',
-        component: () => import (/* webpackChunkName "applications-summary" */ '@/views/ApplicationSummary'),
+        component: () => import (/* webpackChunkName "applications-summary" */ '@/views/ApplicationSummary.vue'),
         children: [{
                 name: 'GcepsSummary',
                 path: "gceps",
@@ -39,7 +39,7 @@ const routes = [
     {
         name: 'AnnualUpdatesList',
         path: '/annual-updates',
-        component: () => import (/* webpackChunkName "annual-updates" */ '@/views/AnnualUpdatesList'),
+        component: () => import (/* webpackChunkName "annual-updates" */ '@/views/AnnualUpdatesList.vue'),
         meta: {
             protected: true,
             permissions: ['annual-updates-manage']
@@ -48,7 +48,7 @@ const routes = [
     {
         name: 'AnnualUpdateDetail',
         path: '/annual-updates/:id',
-        component: () => import (/* webpackChunkName "annual-updates" */ '@/views/AnnualUpdateDetail'),
+        component: () => import (/* webpackChunkName "annual-updates" */ '@/views/AnnualUpdateDetail.vue'),
         props: true,
         meta: {
             protected: true,
