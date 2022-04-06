@@ -233,5 +233,8 @@ export default {
             fetchEntries
         }
     },
+    onmounted () {
+        this.$store.dispatch('people/clearCurrentItem');
+    }
 }
 </script>
