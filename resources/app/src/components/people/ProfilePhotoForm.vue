@@ -4,7 +4,7 @@
             <img 
                 :src="srcPath" 
                 :alt="altText"
-                class="rounded-t-lg"
+                class="rounded-t-lg w-full"
                 @click="initUpload"
             >
             <button 

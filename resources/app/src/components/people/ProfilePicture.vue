@@ -1,6 +1,6 @@
 <template>
     <div class="border border-gray-300 bg-white overflow-hidden">
-        <img :src="photoUrl">
+        <img :src="photoUrl" class="w-full">
     </div>
 </template>
 <script>
