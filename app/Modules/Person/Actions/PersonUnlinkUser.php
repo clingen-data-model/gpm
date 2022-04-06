@@ -10,13 +10,13 @@ class PersonUnlinkUser
 {
     use AsAction;
 
-    public function handle(Person $person)
+    public function handle(Person $person): Person
     {
-        if (is_null($person->user)) {
+        $user = $person->user;
+        if (is_null($user)) {
             return $person;
         }
         
-        $user = $person->user;
         $person->update(['user_id' => null]);
 
         event(new PersonUnlinkedFromUser($person, $user));
