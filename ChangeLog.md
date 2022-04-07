@@ -1,8 +1,8 @@
 # Change Log
 
-## 2022-04-06
+## 2022-04-07
 * Ensure user is properly transfered when merging people, including user email updated to match authority person.
-
+* Display system roles and additional permissions on Users List Screen.
 ## 2022-04-05
 ### Fixes
 * Bring all activity log UI in line with optimized data coming from the server.

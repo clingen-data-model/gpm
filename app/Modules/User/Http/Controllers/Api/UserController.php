@@ -35,12 +35,19 @@ class UserController extends Controller
                                 ->orWhereFullText(['email'], $value.'*', ['mode' => 'boolean']);
 
                         }
+                        $query->orwhereHas('roles', function ($q) use ($value) {
+                            $q->where('display_name', 'like', '%'.$value.'%');
+                        });
+                        $query->orWhereHas('permissions', function ($q) use ($value) {
+                            $q->where('display_name', 'like', '%'.$value.'%');
+                        });
                     } elseif (is_array($value)) {
                         $query->whereIn($key, $value);
                     } else {
                         $query->where($key, $value);
                     }
                 }
+                \Log::debug(renderQuery($query));
                 return $query;
             }
         );
