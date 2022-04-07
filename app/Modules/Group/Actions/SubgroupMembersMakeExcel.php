@@ -30,7 +30,7 @@ class SubgroupMembersMakeExcel {
         $this->writeAllSheet($writer, $group);
 
         $this->writeGroupSheet($writer, $group);
-        foreach ($group->children as $subgroup) {
+        foreach ($group->children->sortBy('name') as $subgroup) {
             $this->writeGroupSheet($writer, $subgroup);
         }
 
@@ -73,9 +73,9 @@ class SubgroupMembersMakeExcel {
     
     private function writeGroupSheet($writer, $group) {
         $sheet = $writer->addNewSheetAndMakeItCurrent();
-        $sheetName = $group->name.' '.$group->type->name; 
+        $sheetName = $group->name.' '.strtoupper($group->type->name); 
         if (strlen($group->name) > 26) {
-            $sheetName = substr($group->name, 0, 23).'... '.$group->type->name;
+            $sheetName = substr($group->name, 0, 23).'... '.strtoupper($group->type->name);
         }
         $sheet->setName(preg_replace('/[\/\?\*\[\]\\\]/', '', $sheetName));
 
