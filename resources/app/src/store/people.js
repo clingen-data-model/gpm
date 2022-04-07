@@ -61,6 +61,9 @@ export const mutations = {
             state.currentItemIdx = idx;
         }
     },
+    clearCurrentItem(state) {
+        state.currentItemIdx = null;
+    }
 };
 
 export const actions = {

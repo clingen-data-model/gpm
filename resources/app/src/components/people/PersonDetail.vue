@@ -1,29 +1,34 @@
 <template>
     <div>
         <header class="pb-4">
-            <router-link class="note" to="/people">People</router-link>
-            <h1 class="flex justify-between items-center">
-                <div>
-                    {{person.name}}
-                    <note>ID: {{person.id}}</note>
-                </div>
-                <router-link 
-                    :to="`/people/${uuid}/edit`"
-                    class="btn btn-xs flex-grow-0"
-                    v-if="(hasPermission('people-manage') || userIsPerson(person)) || coordinatesPerson(person)"
-                >
-                    <icon-edit width="16" heigh="16" />
-                </router-link>
+            <div class="flex space-x-4">
+                
+                <profile-picture :person="person" style="width: 155px" class="rounded-lg" />
 
-            </h1>
-            <dictionary-row label="Email" label-class="w-24">
-                <template v-slot:label><strong>Email:</strong></template>
-                {{person.email}}
-            </dictionary-row>
-            <dictionary-row label="Institution"  label-class="w-24">
-                <template v-slot:label><strong>Institution:</strong></template>
-                {{person.institution ? person.institution.name : null}}
-            </dictionary-row>
+                <div class="flex-1">
+                    <router-link class="note" to="/people">People</router-link>
+                    <h1 class="flex justify-between items-center">
+                        <div>
+                            {{person.name}}
+                            <note>ID: {{person.id}}</note>
+                        </div>
+                        <router-link 
+                            :to="`/people/${uuid}/edit`"
+                            class="btn btn-xs flex-grow-0"
+                            v-if="(hasPermission('people-manage') || userIsPerson(person)) || coordinatesPerson(person)"
+                        >
+                            <icon-edit width="16" heigh="16" />
+                        </router-link>
+
+                    </h1>
+                    <dictionary-row label="Email" label-class="w-24 font-bold">
+                        {{person.email}}
+                    </dictionary-row>
+                    <dictionary-row label="Institution" label-class="w-24 font-bold">
+                        {{person.institution ? person.institution.name : null}}
+                    </dictionary-row>
+                </div>
+            </div>
         </header>
         <tabs-container>
             <tab-item label="groups">
@@ -114,6 +119,7 @@ import PersonMergeForm from '@/components/people/PersonMergeForm.vue'
 import CoiList from '@/components/people/CoiList.vue'
 import ActivityLog from "@/components/log_entries/ActivityLog";
 import PersonMailLog from "@/components/people/PersonMailLog";
+import ProfilePicture from "@/components/people/ProfilePicture";
 
 
 export default {
@@ -126,6 +132,7 @@ export default {
         CoiList,
         ActivityLog,
         PersonMailLog,
+        ProfilePicture,
     },
     props: {
         uuid: {
@@ -224,5 +231,8 @@ export default {
             fetchEntries
         }
     },
+    onmounted () {
+        this.$store.dispatch('people/clearCurrentItem');
+    }
 }
 </script>

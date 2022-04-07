@@ -18,7 +18,7 @@ use App\Modules\Group\Actions\SubgroupMembersMakeExcel;
 |
 */
 Route::get('/{any}', [ViewController::class, 'app'])
-    ->where('any', '^(?!(api|sanctum|impersonate|dev|documents|report|downloads|clockwork)).*$');
+    ->where('any', '^(?!(api|sanctum|impersonate|dev|documents|report|downloads|clockwork|profile-photos)).*$');
 
 Route::get('/documents/{uuid?}', [DocumentController::class, 'show'])->middleware('auth:sanctum');
 

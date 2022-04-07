@@ -1,7 +1,6 @@
 <template>
-    <div class="w-24 border border-gray-300 bg-white">
-        <img v-if="person.profile_photo_path" :src="person.profile_photo_path">
-        <icon-user v-else height="96" width="96" icon-color="#888" />
+    <div class="border border-gray-300 bg-white overflow-hidden">
+        <img :src="photoUrl" class="w-full">
     </div>
 </template>
 <script>
@@ -23,7 +22,13 @@ export default {
     },
     computed: {
         hasProfilePhoto () {
-            return this.person.profile_photo_path !== null;
+            return this.person.profile_photo !== null;
+        },
+        photoUrl () {
+            if (this.hasProfilePhoto) {
+                return `/profile-photos/${this.person.profile_photo}`
+            }
+            return '/images/default_profile.jpg';
         }
     },
     methods: {
