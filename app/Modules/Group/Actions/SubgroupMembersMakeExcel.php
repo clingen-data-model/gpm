@@ -77,7 +77,7 @@ class SubgroupMembersMakeExcel {
         if (strlen($group->name) > 26) {
             $sheetName = substr($group->name, 0, 23).'... '.$group->type->name;
         }
-        $sheet->setName($sheetName);
+        $sheet->setName(preg_replace('/[\/\?\*\[\]\\\]/', '', $sheetName));
 
         $headerRow = $this->getGroupHeaderRow();
         
@@ -146,7 +146,7 @@ class SubgroupMembersMakeExcel {
     
     private function makeFileName(Group $group)
     {
-        return $group->display_name.'-full-membership'.Carbon::now()->format('Y-m-d').'.xlsx';
+        return preg_replace('/[\/\?\*\[\]\\\]/', '', $group->display_name).'-full-membership'.Carbon::now()->format('Y-m-d').'.xlsx';
     }
     
     private function getXLSXWriter($fileName)
