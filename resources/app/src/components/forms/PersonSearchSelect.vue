@@ -71,8 +71,9 @@ export default {
             const url = `/api/people?where[filterString]=${searchText}`;
             this.options = await api.get(url)
                     .then(response => {
-                        return response.data;
+                        return response.data.data;
                     })
+            console.log(this.options)
             return this.options;
         },
     },
