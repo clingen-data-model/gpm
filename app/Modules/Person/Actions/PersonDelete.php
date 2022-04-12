@@ -28,7 +28,7 @@ class PersonDelete
             $this->removeMember->handle($membership, Carbon::now());
         });
         
-        $user = $person->user;
+        $user = $person->user()->first();
         if ($user) {
             $person->update(['user_id' => null]);
             $this->deleteUser->handle($user);

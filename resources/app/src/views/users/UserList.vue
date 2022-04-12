@@ -48,10 +48,29 @@ export default {
                     sortable: true
                 },
                 {
-                    name: 'actions',
+                    name: 'roles',
+                    label: 'System Roles',
+                    type: String,
                     sortable: false,
-                    label: ''
-                }
+                    resolveValue (item) {
+                        return item.roles.map(r => r.display_name).join(', ')
+                    }
+                },
+                {
+                    name: 'permissions',
+                    label: '+ Permissions',
+                    type: String,
+                    sortable: false,
+                    resolveValue (item) {
+                        return item.permissions.map(r => r.display_name).join(', ')
+                    },
+                    class: 'text-xs'
+                },
+                // {
+                //     name: 'actions',
+                //     sortable: false,
+                //     label: ''
+                // }
                 
             ]
         }
@@ -94,6 +113,7 @@ export default {
                 'sort[field]': sort.field.name,
                 'sort[dir]': sort.desc ? 'DESC' : 'ASC',
                 'where[filterString]': this.filter,
+                'with': ['roles', 'permissions'],
                 paginated: true
             }
             console.log({params});

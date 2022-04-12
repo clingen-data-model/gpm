@@ -138,7 +138,56 @@ class PersonMergeTest extends TestCase
             'completed_at' => Carbon::now()
         ]);
     }
+   
+    /**
+     * @test
+     */
+    public function obsolete_user_transfered_to_unlinked_authority()
+    {
+        $user = User::factory()->create();
+        $this->person2->update(['user_id' => $user->id]);
+
+        $this->makeRequest()
+            ->assertStatus(200);
+
+
+        $this->assertDatabaseHas('people', [
+            'id' => $this->person1->id,
+            'user_id' => $user->id
+        ]);
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'email' => $this->person1->email
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function obsolete_user_not_transfered_if_authority_has_user()
+    {
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
+
+        $this->person2->update(['user_id' => $user2->id]);
+        $this->person1->update(['user_id' => $user1->id]);
+
+        $this->makeRequest()
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('people', [
+            'id' => $this->person1->id,
+            'user_id' => $user1->id
+        ]);
+
+        $this->assertDeleted('users', [
+            'id' => $user2->id,
+        ]);
+
+    }
     
+
     /**
      * @test
      */

@@ -5,6 +5,7 @@ use App\Http\Controllers\ViewController;
 use App\Http\Controllers\DocumentController;
 use App\Modules\Group\Actions\GroupMembersMakeCsv;
 use App\Modules\ExpertPanel\Actions\CoiReportMakePdf;
+use App\Modules\Group\Actions\SubgroupMembersMakeExcel;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,5 +24,6 @@ Route::get('/documents/{uuid?}', [DocumentController::class, 'show'])->middlewar
 
 Route::get('/report/groups/{group:uuid}/coi-report', CoiReportMakePdf::class);
 Route::get('/report/groups/{group:uuid}/member-export', GroupMembersMakeCsv::class);
+Route::get('/report/groups/{group:uuid}/subgroup-member-export', SubgroupMembersMakeExcel::class);
 
 Route::impersonate();

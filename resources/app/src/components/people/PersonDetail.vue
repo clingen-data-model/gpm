@@ -21,12 +21,10 @@
                         </router-link>
 
                     </h1>
-                    <dictionary-row label="Email">
-                        <template v-slot:label><strong>Email:</strong></template>
+                    <dictionary-row label="Email" label-class="w-24 font-bold">
                         {{person.email}}
                     </dictionary-row>
-                    <dictionary-row label="Institution">
-                        <template v-slot:label><strong>Institution:</strong></template>
+                    <dictionary-row label="Institution" label-class="w-24 font-bold">
                         {{person.institution ? person.institution.name : null}}
                     </dictionary-row>
                 </div>

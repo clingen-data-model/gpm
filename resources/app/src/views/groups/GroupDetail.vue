@@ -1,16 +1,3 @@
-<style lang="postcss" scoped>
-  .child-group {
-    @apply px-2 border-t  border-l border-r hover:bg-blue-100 bg-white;
-    padding-top: .5rem;
-    padding-bottom: .5rem;
-  }
-  .child-group:first-child {
-    @apply rounded-t-lg
-  }
-  .child-group:last-child {
-    @apply border-b rounded-b-lg;
-  }
-</style>
 <template>
   <div>
     <annual-update-alert
@@ -256,38 +243,9 @@
         </tabs-container>
       </div>
       <div class="md:w-1/5 lg:w-1/4" v-if="group.hasChildren">
-        <h2 class="mb-4">Subgroups</h2>
-        <ul>
-          <li class="child-group" v-for="group in group.children" :key="group.id">
-            <popover hover arrow placement="left" class="block w-full">
-              <template v-slot:content>
-                <div class="text-xs">
-                  <dictionary-row label="Status" label-class="font-bold" label-width="8em">{{group.status.name}}</dictionary-row>
-                  <dictionary-row v-if="group.chairs.length > 0" 
-                      label="Chairs" 
-                      label-class="font-bold" 
-                      label-width="8em"
-                      class="my-1"
-                  >
-                    {{group.coordinators.map(c => c.person.name).join(', ')}}
-                  </dictionary-row>
-                  <dictionary-row v-if="group.coordinators.length > 0" 
-                      label="Coordinators" 
-                      label-class="font-bold" 
-                      label-width="8em"
-                  >
-                    {{group.coordinators.map(c => c.person.name).join(', ')}}
-                  </dictionary-row>
-                  <dictionary-row label="# Members" label-width="8em" label-class="font-bold">{{group.members_count}}</dictionary-row>
-                </div>
-              </template>
-              <router-link :to="{name: 'GroupDetail', params: {uuid: group.uuid}}" class="block w-full">
-                {{group.name}}
-              </router-link>
-            </popover>
-          </li>
-        </ul>
+        <subgroup-list />
       </div>
+
     </div>
 
     <teleport to="body">
@@ -364,6 +322,7 @@ import AnnualUpdateAlert from "@/components/groups/AnnualUpdateAlert";
 import StepTabs from "@/components/applications/StepTabs";
 import ProgressChart from "@/components/applications/ProgressChart";
 import SustainedCurationReviewAlert from "@/components/alerts/SustainedCurationReviewAlert";
+import SubgroupList from '@/components/groups/SubgroupList.vue'
 
 import { api, isValidationError } from "../../http";
 
@@ -392,6 +351,7 @@ export default {
     StepTabs,
     ProgressChart,
     SustainedCurationReviewAlert,
+    SubgroupList
   },
   props: {
     uuid: {
