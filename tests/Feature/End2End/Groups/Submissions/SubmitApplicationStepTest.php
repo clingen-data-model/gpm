@@ -16,6 +16,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Events\ApplicationStepSubmitted;
 use App\Modules\Group\Notifications\ApplicationSubmissionNotification;
+use Carbon\Carbon;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use Database\Seeders\TaskTypeSeeder;
 
@@ -103,6 +104,53 @@ class SubmitApplicationStepTest extends TestCase
                 'notes' => 'Notes from the submitter!'
             ]);
     }
+
+    /**
+     * @test
+     */
+    public function sets_step_1_date_received_set_when_definition_submitted()
+    {
+        Carbon::setTestNow();
+        $this->expertPanel->current_step = 1;
+        $this->expertPanel->save();
+        $this->makeRequest()
+            ->assertStatus(201)
+            ->assertJsonFragment([
+                'group_id' => $this->expertPanel->group->id,
+                'status' => config('submissions.statuses.pending'),
+                'type' => config('submissions.types.application.definition'),
+                'notes' => 'Notes from the submitter!'
+            ]);
+
+        $this->assertDatabaseHas('expert_panels', [
+            'id' => $this->expertPanel->id,
+            'step_1_received_date' => Carbon::now()->format('Y-m-d H:i:s')
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function sets_step_4_date_received_set_when_sustainedcuration_submitted()
+    {
+        Carbon::setTestNow();
+        $this->expertPanel->current_step = 4;
+        $this->expertPanel->save();
+        $this->makeRequest()
+            ->assertStatus(201)
+            ->assertJsonFragment([
+                'group_id' => $this->expertPanel->group->id,
+                'status' => config('submissions.statuses.pending'),
+                'type' => config('submissions.types.application.sustained-curation'),
+                'notes' => 'Notes from the submitter!'
+            ]);
+
+        $this->assertDatabaseHas('expert_panels', [
+            'id' => $this->expertPanel->id,
+            'step_4_received_date' => Carbon::now()->format('Y-m-d H:i:s')
+        ]);
+    }
+    
 
     /**
      * @test
