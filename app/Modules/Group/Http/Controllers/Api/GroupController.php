@@ -87,6 +87,7 @@ class GroupController extends Controller
 
         return new GroupResource($group);
     }
+    
     public function members(Request $request, $groupUuid)
     {
         $group = Group::findByUuidOrFail($groupUuid);

@@ -3,13 +3,15 @@
 namespace App\Modules\Group\Actions;
 
 use Exception;
-use App\Modules\Group\Models\Submission;
-use App\Modules\Group\Events\ApplicationStepSubmitted;
+use Carbon\Carbon;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
 use Lorisleiva\Actions\ActionRequest;
+use App\Modules\Group\Models\Submission;
+use App\Modules\Group\Models\SubmissionType;
 use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
+use App\Modules\Group\Events\ApplicationStepSubmitted;
 
 class ApplicationSubmitStep
 {
@@ -38,6 +40,8 @@ class ApplicationSubmitStep
         $submission = $submission->fresh()->load(['status', 'type']);
         // 2. change the model's wasRecentlyCreated attriute to true so the response status is 201.
         $submission->wasRecentlyCreated = true;
+
+        $group = $this->setReceivedDate($group);
         
         event(new ApplicationStepSubmitted($group, $submission));
 
@@ -53,6 +57,24 @@ class ApplicationSubmitStep
     public function authorize(ActionRequest $request): bool
     {
         return $request->user()->can('updateApplicationAttribute', $request->group);
+    }
+
+    private function setReceivedDate(Group $group)
+    {
+        switch ($group->expertPanel->current_step) {
+            case 2:
+            case 3:
+                return;
+            case 1:
+                $group->expertPanel->step_1_received_date = Carbon::now();
+                break;
+            case 4:
+                $group->expertPanel->step_4_received_date = Carbon::now();
+                break;
+        }
+        $group->expertPanel->save();
+        
+        return $group;
     }
 
     private function resolveSubmissionType($group): object

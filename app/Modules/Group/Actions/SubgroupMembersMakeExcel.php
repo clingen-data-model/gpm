@@ -15,7 +15,7 @@ use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
 class SubgroupMembersMakeExcel {
     use AsController;
 
-    private $memberEagerLoads = ['members', 'members.roles', 'members.permissions', 'members.person', 'members.person.institution', 'members.person.country'];
+    private $memberEagerLoads = ['members', 'members.roles', 'members.permissions', 'members.person', 'members.person.institution', 'members.person.country', 'members.latestCoi'];
 
     public function handle(ActionRequest $request, Group $group)
     {
@@ -102,6 +102,9 @@ class SubgroupMembersMakeExcel {
             $member->person->last_name,
             $member->person->email,
             $member->start_date->format('Y-m-d'),
+            ($member->latestCoi && $member->latestCoi->completed_at) 
+                ? $member->latestCoi->completed_at->format('Y-m-d') 
+                : null,
             $member->end_date ? $member->end_date->format('Y-m-d') : null,
             $member->is_contact ? 'Yes' : 'No',
             $member->roles->pluck('name')->join(",\n"),
@@ -126,6 +129,7 @@ class SubgroupMembersMakeExcel {
             'last_name',
             'email',
             'added',
+            'COI_last_completed',
             'retired',
             'receives_group_notifications',
             'roles',
