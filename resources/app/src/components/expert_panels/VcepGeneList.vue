@@ -65,7 +65,8 @@
                                             <gene-search-select v-model="gene.gene"></gene-search-select>
                                         </input-row>
                                     </td>
-                                    <td colspan="2">
+                                    <!-- <td colspan="2"> -->
+                                    <td>
                                         <input-row label="" :errors="errors.mondo_id" :vertical="true">
                                             <disease-search-select v-model="gene.disease"></disease-search-select>
                                         </input-row>
@@ -108,9 +109,9 @@
     </div>
 </template>
 <script>
-import api from '@/http/api'
+import {api} from '@/http'
 import {ref, computed, onMounted} from 'vue';
-import {debounce} from 'lodash'
+import {debounce, sortBy} from 'lodash'
 import {useStore} from 'vuex';
 import GeneSearchSelect from '@/components/forms/GeneSearchSelect.vue'
 import DiseaseSearchSelect from '@/components/forms/DiseaseSearchSelect.vue'
@@ -224,7 +225,9 @@ export default {
             }
             loading.value = true;
             try {
-                genes.value = await store.dispatch('groups/getGenes', group.value);
+                // genes.value = await store.dispatch('groups/getGenes', group.value);
+                genes.value = await api.get(`/api/groups/${group.value.uuid}/expert-panel/genes?with[]=gene&with[]=disease`).then(response => response.data);
+                console.log(genes.value);
             } catch (error) {
                 console.log(error);
                 store.commit('pushError', error.response.data);
