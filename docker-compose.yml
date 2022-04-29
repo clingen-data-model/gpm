@@ -41,28 +41,28 @@ services:
             - "6379:6379"
         environment:
             - REDIS_PASSWORD=${REDIS_PASSWORD}
-    scheduler:
-        image: ${DOCKER_NAME}-app
-        container_name: ${DOCKER_NAME}-scheduler
-        sysctls: 
-            - net.ipv4.ip_unprivileged_port_start=0
-        depends_on: 
-            - app
-        volumes:
-            - .:/srv/app
-        environment:
-            CONTAINER_ROLE: scheduler
-            CONTAINER_ENV: local
-    queue:
-        image: ${DOCKER_NAME}-app
-        container_name: ${DOCKER_NAME}-queue
-        sysctls: 
-            - net.ipv4.ip_unprivileged_port_start=0
-        depends_on: 
-            - app
-        volumes:
-            - .:/srv/app
-        environment:
-            CONTAINER_ROLE: queue
-            CONTAINER_ENV: local        
+    # scheduler:
+    #     image: ${DOCKER_NAME}-app
+    #     container_name: ${DOCKER_NAME}-scheduler
+    #     sysctls: 
+    #         - net.ipv4.ip_unprivileged_port_start=0
+    #     depends_on: 
+    #         - app
+    #     volumes:
+    #         - .:/srv/app
+    #     environment:
+    #         CONTAINER_ROLE: scheduler
+    #         CONTAINER_ENV: local
+    # queue:
+    #     image: ${DOCKER_NAME}-app
+    #     container_name: ${DOCKER_NAME}-queue
+    #     sysctls: 
+    #         - net.ipv4.ip_unprivileged_port_start=0
+    #     depends_on: 
+    #         - app
+    #     volumes:
+    #         - .:/srv/app
+    #     environment:
+    #         CONTAINER_ROLE: queue
+    #         CONTAINER_ENV: local        
         
