@@ -127,7 +127,8 @@
             "1": "blue",
             "2": "green",
             "3": "gray",
-            "4": "black"
+            "4": "black",
+            "5": "gray"
         },
         "roles": {
             "coordinator": {

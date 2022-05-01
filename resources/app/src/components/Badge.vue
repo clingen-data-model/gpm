@@ -11,6 +11,9 @@
     .red {
         @apply bg-red-400
     }
+    .gray {
+        @apply bg-gray-400;
+    }
 
 </style>
 <template>
