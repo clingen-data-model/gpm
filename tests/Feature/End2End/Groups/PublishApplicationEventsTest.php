@@ -124,7 +124,7 @@ class PublishApplicationEventsTest extends TestCase
 
     private function approveEpDef()
     {
-        $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/current-step/approve', [
+        $this->json('POST', '/api/applications/'.$this->expertPanel->group->uuid.'/current-step/approve', [
             'date_approved' => Carbon::now(),
             'notify_contacts' => false,
         ])->assertStatus(200);

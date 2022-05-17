@@ -2,15 +2,17 @@
 
 namespace Tests\Feature\End2End\ExpertPanels\NextActions;
 
-use Illuminate\Support\Carbon;
 use Tests\TestCase;
-use App\Modules\User\Models\User;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Carbon;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
+use App\Modules\ExpertPanel\Models\NextAction;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Models\NextActionAssignee;
 use Database\Factories\NextActionAssigneeFactory;
-use Database\Seeders\NextActionAssigneesTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Database\Seeders\NextActionAssigneesTableSeeder;
 
 /**
  * @group next-actions
@@ -98,7 +100,7 @@ class AddNextActionTest extends TestCase
                 'target_date' => ['The target date is not a valid date.'],
                 'date_completed' => ['The date completed is not a valid date.'],
                 'step' => ['The step must be an integer.'],
-                'assigned_to' => ['The next action must be assigned to CDWG OC, Expert Panel, or SVI VCEP Review Committee']
+                'assigned_to' => ['The next action must be assigned to '.NextActionAssignee::all()->pluck('name')->join(', ', ', or ')]
             ]);
     }
 }

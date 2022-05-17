@@ -3,6 +3,7 @@
 namespace App\Modules\ExpertPanel\Actions;
 
 use Illuminate\Support\Carbon;
+use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -77,8 +78,9 @@ class StepApprove
         }
     }
 
-    public function asController(ActionRequest $request, ExpertPanel $expertPanel)
+    public function asController(ActionRequest $request, Group $group)
     {
+        $expertPanel = $group->expertPanel;
         try {
             $attachments = collect($request->attachments)
                 ->map(function ($file) {
