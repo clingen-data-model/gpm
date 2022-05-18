@@ -73,14 +73,23 @@
                     {{application.pendingSubmission.notes}}
                 </blockquote>
             </static-alert>
-            <button 
-                class="btn btn-lg w-full" 
-                @click="startApproveStep"
-                :disabled="!isCurrentStep"
-                :title="isCurrentStep ? 'Approve this step' : 'You can only approve the application\'s current step'"
-            >
-                {{approveButtonLabel}}
-            </button>
+            <div class="flex w-full space-x-4">
+                <button 
+                    class="btn btn-lg flex-1" 
+                    @click="startApproveStep"
+                    :disabled="!isCurrentStep"
+                    :title="isCurrentStep ? 'Approve this step' : 'You can only approve the application\'s current step'"
+                >
+                    {{approveButtonLabel}}
+                </button>
+                <button 
+                    v-if="application.hasPendingSubmissionForCurrentStep"
+                    class="btn btn-lg flex-1" 
+                    @click="startRejectStep"
+                >
+                    Request revisions
+                </button>
+            </div>
 
             <teleport to="body">
                 <modal-dialog v-model="showApproveForm" size="xl" @closed="$refs.approvestepform.clearForm()">
@@ -88,6 +97,13 @@
                         ref="approvestepform" 
                         @saved="handleApproved" 
                         @canceled="hideApproveForm"
+                    />
+                </modal-dialog>
+                <modal-dialog v-model="showRejectForm" size="xl" @closed="$refs.rejectsubmissionform.clearForm()">
+                    <reject-step-form
+                        ref="rejectsubmissionform"
+                        @saved="handleRejected"
+                        @canceled="hideRejectForm"
                     />
                 </modal-dialog>
             </teleport>
@@ -109,6 +125,7 @@ import { formatDate } from '@/date_utils'
 import ApplicationLog from '@/components/applications/ApplicationLog.vue'
 import DocumentManager from '@/components/applications/documents/DocumentManager.vue'
 import ApproveStepForm from '@/components/applications/ApproveStepForm.vue'
+import RejectStepForm from '@/components/applications/RejectStepForm.vue'
 import RemoveButton from '@/components/buttons/RemoveButton.vue'
 import is_validation_error from '@/http/is_validation_error'
 
@@ -159,7 +176,8 @@ export default {
             showDocuments: true,
             showSections: true,
             documentsToggled: false,
-            sectionsToggled: false
+            sectionsToggled: false,
+            showRejectForm: false
         }
     },
     computed: {
@@ -212,6 +230,9 @@ export default {
         startApproveStep () {
             this.showApproveForm = true;
         },
+        startRejectSubmission () {
+            
+        },
         approveStep () {
             this.$store.dispatch('applications/approveCurrentStep', {application: this.application, step: this.step})
             this.$emit('stepApproved')
@@ -224,6 +245,14 @@ export default {
         },
         hideApproveForm () {
             this.showApproveForm = false;
+        },
+        handleRejected () {
+            this.hideRejectForm();
+            this.$emit('stepRejected');
+            this.$emit('updated');
+        },
+        hideRejectForm () {
+            this.showRejectForm = false;
         },
         initEditApprovalDate () {
             this.editApprovalDate = true;
