@@ -98,8 +98,20 @@ class Submission extends Model
 
     public function scopePending($query)
     {
-        return $query->where('submission_status_id', config('submissions.statuses.pending'));
+        return $query->where('submission_status_id', config('submissions.statuses.pending.id'));
     }
+
+    /**
+     * DOMAIN
+     */
+
+    public function reject(): Submission
+    {
+        $this->update(['submission_status_id' => config('submissions.statuses.revise-and-resubmit.id')]);
+        
+        return $this;
+    }
+    
 
     protected static function newFactory()
     {

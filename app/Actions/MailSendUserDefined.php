@@ -55,7 +55,7 @@ class MailSendUserDefined
         }
 
         if (count($to) == 0) {
-            throw new InvalidArgumentException('Expected at least 1 element in to, 0 given.');
+            throw new InvalidArgumentException('Expected at least 1 to address, none given.');
         }
 
         foreach ($to as $recipient) {
