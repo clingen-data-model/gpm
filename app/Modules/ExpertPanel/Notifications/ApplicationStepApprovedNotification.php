@@ -2,15 +2,19 @@
 
 namespace App\Modules\ExpertPanel\Notifications;
 
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\View;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Illuminate\Notifications\Messages\MailMessage;
+use App\Notifications\Contracts\UserDefinedTemplate;
+use App\Notifications\Traits\UserDefinedTemplate as TraitsUserDefinedTemplate;
 
-class ApplicationStepApprovedNotification extends Notification
+class ApplicationStepApprovedNotification extends Notification implements UserDefinedTemplate
 {
     use Queueable;
+    use TraitsUserDefinedTemplate;
 
     /**
      * Create a new notification instance.
@@ -44,24 +48,15 @@ class ApplicationStepApprovedNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        $stepMessages = [
-            1 => 'email.applications.approval.initial_approval',
-            2 => 'email.applications.approval.vcep_step_2_approval',
-            3 => 'email.applications.approval.vcep_step_3_approval',
-            4 => 'email.applications.approval.vcep_step_4_approval',
-        ];
 
-        if (!isset($stepMessages[$this->approvedStep])) {
+        $template = $this->getTemplate($this->approvedStep);
+        if (!$template) {
             return;
         }
-
         $mailMessage = (new MailMessage)
-                    ->subject('Application step '.$this->approvedStep.' for your ClinGen expert panel '.$this->expertPanel->name.' has been approved.')
-                    ->view($stepMessages[$this->approvedStep], [
-                        'notifiable' => $notifiable,
+                    ->subject($this->renderSubject($this->expertPanel))
+                    ->view($template, [
                         'expertPanel' => $this->expertPanel,
-                        'approvedStep' => $this->approvedStep,
-                        'wasLastStep' => $this->wasLastStep
                     ]);
                     
         if (in_array($this->approvedStep, config('expert-panels.notifications.cc.steps'))) {
@@ -98,4 +93,37 @@ class ApplicationStepApprovedNotification extends Notification
             'type' => 'success'
         ];
     }
+
+    public function renderTemplate(ExpertPanel $expertPanel, ?int $step = null): string
+    {
+        $step = $step ?? $expertPanel->currentStep;
+        $template = $this->getTemplate($step);
+        $view = View::make($template, compact($expertPanel));
+        
+        return $view->render();
+    }
+
+    public function renderSubject(ExpertPanel $expertPanel, ?int $step = null): string
+    {
+        $step = $step ?? $expertPanel->current_step;
+
+        return 'Application step '.$step.' for your ClinGen expert panel '.$expertPanel->name.' has been approved.';       
+    }
+
+    private function getTemplate($step)
+    {
+        $stepMessages = [
+            1 => 'email.applications.approval.initial_approval',
+            2 => 'email.applications.approval.vcep_step_2_approval',
+            3 => 'email.applications.approval.vcep_step_3_approval',
+            4 => 'email.applications.approval.vcep_step_4_approval',
+        ];
+
+        if (!isset($stepMessages[$step])) {
+            return null;
+        }
+
+        return $stepMessages[$step];
+    }
+    
 }
