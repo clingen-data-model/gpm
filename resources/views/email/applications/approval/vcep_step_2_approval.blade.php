@@ -2,7 +2,7 @@
 
 @section('approval')
     <p>
-        Congratulations on your Step 2 approval. I have updated your VCEP status on your webpage <a href="{{$expertPanel->clingenUrl}}">{{$expertPanel->clingenUrl}}</a>.
+        Congratulations on your Step 2 approval. I have updated your VCEP status on your webpage <a href="{{$group->expertPanel->clingenUrl}}">{{$group->expertPanel->clingenUrl}}</a>.
     </p>
 
     <p>
