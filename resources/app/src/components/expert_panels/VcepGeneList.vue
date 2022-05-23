@@ -225,9 +225,11 @@ export default {
             }
             loading.value = true;
             try {
-                // genes.value = await store.dispatch('groups/getGenes', group.value);
-                genes.value = await api.get(`/api/groups/${group.value.uuid}/expert-panel/genes?with[]=gene&with[]=disease`).then(response => response.data);
-                console.log(genes.value);
+                genes.value = await api.get(`/api/groups/${group.value.uuid}/expert-panel/genes?with[]=gene&with[]=disease`)
+                    .then(response => response.data);
+                    
+                // need to set genes on the expert_panel for requirements validation
+                group.value.expert_panel.genes = genes.value;
             } catch (error) {
                 console.log(error);
                 store.commit('pushError', error.response.data);
