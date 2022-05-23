@@ -191,6 +191,7 @@ export default {
                         field: this.fields[0],
                         desc: false
                     }
+                    this.getItems()
                     return;
                 }
 
@@ -199,6 +200,7 @@ export default {
                     desc: this.sort.desc
                 }
                 this.resetCurrentPage();
+                this.getItems()
             }
         },
         filterTerm() {
@@ -273,8 +275,13 @@ export default {
                 return;
             }
 
-            if (this.realSort.field.sorfFunction) {
-                return data.sort(this.realSort.field.sortFunction)
+            if (this.realSort.field.sortFunction) {
+                const sorted = data.sort(this.realSort.field.sortFunction)
+                if (this.realSort.desc) {
+                    return sorted.reverse();
+                }
+
+                return sorted;
             }
             
             if (sortType == Date) {
@@ -348,8 +355,10 @@ export default {
             if (oldField != field) {
                 newSort.desc = false
             }
+
             this.$emit('update:sort', newSort)
             this.$emit('sorted', newSort);
+
             this.$nextTick(() => {
                 this.getItems();
             })

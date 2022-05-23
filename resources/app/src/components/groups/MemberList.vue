@@ -60,7 +60,17 @@ export default {
                 {
                     name: 'roles',
                     label: 'Roles',
-                    sortable: false
+                    sortable: true,
+                    sortFunction (a,  b) {
+                        const aComp = a.roles.map(r => r.name).join(',');
+                        const bComp = b.roles.map(r => r.name).join(',');
+                        
+                        if (aComp == bComp) {
+                            return 0;
+                        }
+
+                        return (aComp > bComp) ? 1 : -1;
+                    }
                 },
                 {
                     name: 'coi_last_completed',
@@ -387,7 +397,6 @@ export default {
             </div>
         </div>
         </transition>
-        
         <div class="mt-3 py-2 w-full overflow-x-auto">
             <data-table 
                 :fields="fieldsForGroupType" 
