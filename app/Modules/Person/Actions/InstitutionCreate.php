@@ -17,6 +17,7 @@ class InstitutionCreate
         ?String $url = null,
         ?String $address = null,
         ?int $country_id = null,
+        ?bool $reportable = true,
         // ?int $website_id = null,
     ): Institution {
         return Institution::create([
@@ -26,13 +27,14 @@ class InstitutionCreate
             'url' => $url,
             'address' => $address,
             'country_id' => $country_id,
+            'reportable' => $reportable
             // 'website_id' => $website_id
         ]);
     }
 
     public function asController(ActionRequest $request)
     {
-        return $this->handle(...$request->only('name', 'abbreviation', 'url', 'address', 'country_id', 'website_id'));
+        return $this->handle(...$request->only('name', 'abbreviation', 'url', 'address', 'country_id', 'reportable', 'website_id'));
     }
 
     public function rules(): array
@@ -43,6 +45,7 @@ class InstitutionCreate
            'url' => 'nullable|unique:institutions,url',
            'address' => 'nullable|max:256',
            'country_id' => 'nullable|exists:countries,id',
+           'reportable' => 'nullable|boolean',
         //    'website_id' => 'nullable|unique:institutions,website_id',
         ];
     }

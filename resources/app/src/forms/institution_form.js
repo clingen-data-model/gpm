@@ -21,6 +21,15 @@ export const fields = computed(() => [
         type: 'select',
         options: countries.value
     },
+    {
+        name: 'reportable',
+        label: 'Reportable',
+        type: 'radio-group',
+        options: [
+            {value: true, label: 'Yes'},
+            {value: false, label: 'No'}
+        ]
+    }
 ])
 
 export const getCountries = () => {

@@ -17,7 +17,7 @@ class InstitutionUpdate
 
     public function asController(ActionRequest $request, Institution $institution)
     {
-        $data = $request->only(['name', 'abbreviation', 'url', 'country_id', 'address']);
+        $data = $request->only(['name', 'abbreviation', 'url', 'country_id', 'address', 'reportable']);
         return $this->handle($institution, $data)
                 ->load('country')
                 ->loadCount('people');
@@ -35,7 +35,8 @@ class InstitutionUpdate
            'abbreviation' => 'nullable|max:255',
            'url' => 'nullable|max:255',
            'country_id' => 'nullable|exists:countries,id',
-           'address' => 'nullable|max:255'
+           'address' => 'nullable|max:255',
+           'reportable' => 'nullable|boolean',
         ];
     }
 }

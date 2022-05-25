@@ -34,7 +34,8 @@ class CreateInstitutionTest extends TestCase
                 'abbreviation' => 'Troll U',
                 'url' => 'https://trollu.edu',
                 'address' => null,
-                'country_id' => $this->country->id
+                'country_id' => $this->country->id,
+                'reportable' => false
             ]);
     }
 
@@ -88,7 +89,8 @@ class CreateInstitutionTest extends TestCase
             'abbreviation' => 'Troll U',
             'url' => 'https://trollu.edu',
             'address' => null,
-            'country_id' => $this->country->id
+            'country_id' => $this->country->id,
+            'reportable' => false
         ];
 
         return $this->json('POST', '/api/institutions', $data);
