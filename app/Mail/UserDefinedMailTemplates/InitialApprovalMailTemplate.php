@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\View;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Mail\UserDefinedMailTemplates\UserDefinedTemplate;
 use App\Mail\UserDefinedMailTemplates\AbstractUserDefinedMailTemplate;
-
 class InitialApprovalMailTemplate extends AbstractUserDefinedMailTemplate
 {
 
@@ -17,7 +16,9 @@ class InitialApprovalMailTemplate extends AbstractUserDefinedMailTemplate
 
     public function renderSubject(): string
     {
-        return 'Scope and Membership application for your ClinGen expert panel '.$this->group->name.' has been approved.';       
+        return 'Scope and Membership application for your ClinGen expert panel '
+                . $this->group->name
+                . ' has been approved.';       
     }
 
     public function getCC(): array

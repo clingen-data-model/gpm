@@ -4,7 +4,7 @@ import ApproveStepForm from '@/components/applications/ApproveStepForm.vue'
 import RejectStepForm from '@/components/applications/RejectStepForm.vue'
 
 export default {
-    name: 'StepApprovalComponent',
+    name: 'StepApprovalControl',
     components: {
         ApproveStepForm,
         RejectStepForm,

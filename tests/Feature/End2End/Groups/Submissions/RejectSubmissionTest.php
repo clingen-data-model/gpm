@@ -59,13 +59,11 @@ class RejectSubmissionTest extends TestCase
             ->assertJson([
                 'id' => $this->submission->id,
                 'submission_status_id' => config('submissions.statuses.revise-and-resubmit.id'),
-                'notes' => static::NOTE
             ]);
         
         $this->assertDatabaseHas('submissions', [
             'id' => $this->submission->id,
             'submission_status_id' => config('submissions.statuses.revise-and-resubmit'),
-            'notes' => static::NOTE
         ]);
     }
 

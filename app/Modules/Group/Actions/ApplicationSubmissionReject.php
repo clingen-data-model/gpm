@@ -18,24 +18,25 @@ class ApplicationSubmissionReject
         private NotifyContacts $notifyContactsAction,
     )
     {
-        //code
     }
     
     
-    public function handle(Group $group, Submission $submission, ?string $notes = null, bool $notifyContacts = true): Submission
+    public function handle(Group $group, Submission $submission): Submission
     {
         $submission
-            ->fill(['notes' => $notes])
             ->reject();
 
-        return $submission;
+        return $submission->fresh();
     }
 
     public function asController(ActionRequest $request, Group $group, Submission $submission)
     {
         DB::beginTransaction();
         try {
-            $submission = $this->handle($group, $submission, $request->notes, $request->notify_contacts);
+            $submission = $this->handle(
+                group: $group, 
+                submission: $submission
+            );
 
             $attachments = collect($request->attachments)
                 ->map(function ($file) {
@@ -53,7 +54,8 @@ class ApplicationSubmissionReject
                 );
             }
 
-            
+            DB::commit();
+
             return $submission;
         } catch (\Exception $e) {
             DB::rollback();

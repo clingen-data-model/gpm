@@ -1,7 +1,5 @@
 <template>
     <form-container>
-        <h2>Request Revisons for Step {{application.current_step}}</h2>
-
         <dictionary-row label="">
             <div>
                 <label class="text-sm">
@@ -26,7 +24,7 @@
         <button-row>
             <button class="btn" @click="cancel">Cancel</button>
             <button class="btn blue" @click="save">
-                Approve step {{application.current_step}}
+                Request revisions
                 <span v-if="notifyContacts">
                     and notify
                 </span>
@@ -36,7 +34,7 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
-import api from '@/http/api';
+import {api} from '@/http';
 import isValidationError from '@/http/is_validation_error';
 import RichTextEditor from '@/components/forms/RichTextEditor.vue';
 import UserDefinedMailForm from '@/components/forms/UserDefinedMailForm'
@@ -72,14 +70,12 @@ export default {
         },
     },
     watch: {
-        notifyContacts: function (to) {
-            if (to) {
-                // TODO: update email drafts endpoint to add flexibility.
-                api.get(`/api/email-drafts/${this.application.uuid}/${this.application.current_step}`)
-                    .then(response => {
-                        this.email = response.data;
-                        this.email['files'] = [];
-                    })
+        notifyContacts: {
+            immediate: true,
+            handler: function (to) {
+                if (to) {
+                    this.getEmailTemplate();
+                }
             }
         }
     },
@@ -93,17 +89,24 @@ export default {
             this.$emit('canceled');
         },
         async save () {
-            const data = {
-                group: this.group, 
-                dateApproved: this.dateApproved,
-                notifyContacts: this.notifyContacts,
-                subject: this.email.subject,
-                body: this.email.body,
-                attachments: this.email.files
-            };
 
             try {
-                await this.$store.dispatch('groups/approveCurrentStep', data)
+                const data = {
+                    notify_contacts: this.notifyContacts,
+                    subject: this.email.subject,
+                    body: this.email.body,
+                    attachments: this.email.files
+                };
+
+                const url = `/api/groups/${this.group.uuid}/application/submission/${this.group.expert_panel.pendingSubmission.id}/rejection`;
+                const updatedSubmission = await api.post(url, data).then(rsp => rsp.data);
+                console.log(updatedSubmission);
+                const idx = this.application.submissions.findIndex(s => s.id == updatedSubmission.id);
+                console.log(idx)
+                if (idx > -1) {
+                    this.application.submissions[idx] = updatedSubmission;
+                }
+
                 this.clearForm();
                 this.$emit('saved');
             } catch (e) {
@@ -112,6 +115,18 @@ export default {
                     return;
                 }
             }
+        },
+        getEmailTemplate () {
+            console.log('get template email');
+            api.get(`/api/email-drafts/groups/${this.group.uuid}`, 
+                {params: {templateClass: 'App\\Mail\\UserDefinedMailTemplates\\ApplicationRevisionRequestTemplate'}})
+                .then(response => {
+                    console.log('email template got')
+                    this.email = response.data;
+                    this.email['files'] = [];
+                    console.log(this.email);
+                })
+
         }
     },
     mounted() {

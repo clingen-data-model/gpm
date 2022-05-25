@@ -43,6 +43,13 @@ import isValidationError from '@/http/is_validation_error';
 import RichTextEditor from '@/components/forms/RichTextEditor.vue';
 import UserDefinedMailForm from '@/components/forms/UserDefinedMailForm'
 
+const templateForStep = {
+    1: 'App\\Mail\\UserDefinedMailTemplates\\InitialApprovalMailTemplate',
+    2: 'App\\Mail\\UserDefinedMailTemplates\\SpecificationDraftMailTemplate',
+    3: 'App\\Mail\\UserDefinedMailTemplates\\SpecificationPilotMailTemplate',
+    4: 'App\\Mail\\UserDefinedMailTemplates\\SustainedCurationApprovalMailTemplate',
+}
+
 export default {
     components: {
         RichTextEditor,
@@ -77,7 +84,14 @@ export default {
     watch: {
         notifyContacts: function (to) {
             if (to) {
-                api.get(`/api/email-drafts/${this.application.uuid}/${this.application.current_step}`)
+                api.get(
+                        `/api/email-drafts/groups/${this.group.uuid}`,
+                        {
+                            params: {
+                                templateClass: templateForStep[this.group.expert_panel.current_step]
+                            }
+                        }
+                    )
                     .then(response => {
                         this.email = response.data;
                         this.email['files'] = [];

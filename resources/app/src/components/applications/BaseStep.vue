@@ -1,7 +1,11 @@
 <template>
     <div class="overflow-x-auto">
         <div class="mb-6">
-
+            <step-approval-control 
+                :step="step" 
+                @updated="handleUpdated"
+                @rejected="handleRejected"
+            />
             <div class="flex justify-between text-lg font-bold pb-2 mb-2 border-b">
                 <div class="flex space-x-2">
                     <h2>
@@ -57,58 +61,6 @@
             </transition>
         </div>
 
-        <!-- Approve step -->
-        <div  
-            class="border border-l-0 border-r-0 py-4 mb-6" 
-            v-if="!application.stepIsApproved(step)"
-        >
-            <static-alert 
-                variant="info" 
-                v-if="application.hasPendingSubmissionForCurrentStep"
-                class="mb-4"
-            >
-                This step was submitted by <strong>{{application.pendingSubmission.submitter.name}}</strong> on 
-                <strong>{{formatDate(application.pendingSubmission.created_at)}}</strong> with the following notes:
-                <blockquote>
-                    {{application.pendingSubmission.notes}}
-                </blockquote>
-            </static-alert>
-            <div class="flex w-full space-x-4">
-                <button 
-                    class="btn btn-lg flex-1" 
-                    @click="startApproveStep"
-                    :disabled="!isCurrentStep"
-                    :title="isCurrentStep ? 'Approve this step' : 'You can only approve the application\'s current step'"
-                >
-                    {{approveButtonLabel}}
-                </button>
-                <button 
-                    v-if="application.hasPendingSubmissionForCurrentStep"
-                    class="btn btn-lg flex-1" 
-                    @click="startRejectStep"
-                >
-                    Request revisions
-                </button>
-            </div>
-
-            <teleport to="body">
-                <modal-dialog v-model="showApproveForm" size="xl" @closed="$refs.approvestepform.clearForm()">
-                    <approve-step-form  
-                        ref="approvestepform" 
-                        @saved="handleApproved" 
-                        @canceled="hideApproveForm"
-                    />
-                </modal-dialog>
-                <modal-dialog v-model="showRejectForm" size="xl" @closed="$refs.rejectsubmissionform.clearForm()">
-                    <reject-step-form
-                        ref="rejectsubmissionform"
-                        @saved="handleRejected"
-                        @canceled="hideRejectForm"
-                    />
-                </modal-dialog>
-            </teleport>
-        </div>
-
         <slot></slot>
 
         <slot name="log">
@@ -124,8 +76,7 @@ import { mapGetters } from 'vuex'
 import { formatDate } from '@/date_utils'
 import ApplicationLog from '@/components/applications/ApplicationLog.vue'
 import DocumentManager from '@/components/applications/documents/DocumentManager.vue'
-import ApproveStepForm from '@/components/applications/ApproveStepForm.vue'
-import RejectStepForm from '@/components/applications/RejectStepForm.vue'
+import StepApprovalControl from '@/components/applications/StepApprovalControl.vue'
 import RemoveButton from '@/components/buttons/RemoveButton.vue'
 import is_validation_error from '@/http/is_validation_error'
 
@@ -133,7 +84,7 @@ export default {
     components: {
         ApplicationLog,
         DocumentManager,
-        ApproveStepForm,
+        StepApprovalControl,
         RemoveButton
     },
     props: {

@@ -53,7 +53,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/feedback', FeedbackSubmit::class);
 
     Route::get('/email-drafts/groups/{group:uuid}', [MailDraftController::class, 'makeDraft']);
-    Route::get('/email-drafts/{applicationUuid}/{approvedStepNumber}', [MailDraftController::class, 'show']);
+    // Route::get('/email-drafts/{applicationUuid}/{approvedStepNumber}', [MailDraftController::class, 'show']);
     
     
     Route::get('/mail-log', [MailLogController::class, 'index']);
