@@ -45,6 +45,7 @@ class ApproveStepTest extends TestCase
     {
         $approvalData = [
             'date_approved' => Carbon::now(),
+            'notify_contacts' => false,
         ];
 
         Sanctum::actingAs($this->user);
@@ -133,8 +134,7 @@ class ApproveStepTest extends TestCase
         Mail::fake();
 
         Sanctum::actingAs($this->user);
-        $this->makeRequest($approvalData)
-            ->assertStatus(200);
+        $this->makeRequest($approvalData);
 
         Mail::assertSent(
             UserDefinedMailable::class,

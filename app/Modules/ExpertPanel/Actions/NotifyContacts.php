@@ -2,14 +2,9 @@
 
 namespace App\Modules\ExpertPanel\Actions;
 
-use App\Mail\UserDefinedMailable;
 use App\Actions\MailSendUserDefined;
-use Illuminate\Support\Facades\Mail;
 use Lorisleiva\Actions\Concerns\AsAction;
-use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Notifications\UserDefinedMailNotification;
-use App\Modules\ExpertPanel\Notifications\ApplicationStepApprovedNotification;
 
 class NotifyContacts
 {

@@ -8,13 +8,10 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Notifications\Messages\MailMessage;
-use App\Notifications\Contracts\UserDefinedTemplate;
-use App\Notifications\Traits\UserDefinedTemplate as TraitsUserDefinedTemplate;
 
-class ApplicationStepApprovedNotification extends Notification implements UserDefinedTemplate
+class ApplicationStepApprovedNotification extends Notification
 {
     use Queueable;
-    use TraitsUserDefinedTemplate;
 
     /**
      * Create a new notification instance.
