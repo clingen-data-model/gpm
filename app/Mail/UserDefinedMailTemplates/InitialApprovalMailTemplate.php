@@ -24,11 +24,11 @@ class InitialApprovalMailTemplate extends AbstractUserDefinedMailTemplate
     public function getCC(): array
     {
         return [
-            ['email' => 'cdwg_oversightcommittee@clinicalgenome.org', 'name' => 'CDWG Oversite Committee'],
-            ['email' => 'clingentrackerhelp@unc.edu', 'name' => 'Clingen Tracker Help'],
-            ['email' => 'volunteer@clinicalgenome.org', 'name' => 'CCDB Support'],
-            ['email' => 'erepo@clinicalgenome.org', 'name' => 'ERepo Support'],
-            ['email' => 'clingen-helpdesk@lists.stanford.edu', 'name' => 'GCI/VCI Support'],
+            ['address' => 'cdwg_oversightcommittee@clinicalgenome.org', 'name' => 'CDWG Oversite Committee'],
+            ['address' => 'clingentrackerhelp@unc.edu', 'name' => 'Clingen Tracker Help'],
+            ['address' => 'volunteer@clinicalgenome.org', 'name' => 'CCDB Support'],
+            ['address' => 'erepo@clinicalgenome.org', 'name' => 'ERepo Support'],
+            ['address' => 'clingen-helpdesk@lists.stanford.edu', 'name' => 'GCI/VCI Support'],
         ];
     }
     

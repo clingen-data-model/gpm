@@ -36,11 +36,11 @@ class RenderUserDefinedTemplateTest extends TestCase
         $response->assertJson([
                 'subject' => 'Scope and Membership application for your ClinGen expert panel '.$this->expertPanel->group->name.' has been approved.',
                 'cc' => [
-                    ['email' => 'cdwg_oversightcommittee@clinicalgenome.org', 'name' => 'CDWG Oversite Committee'],
-                    ['email' => 'clingentrackerhelp@unc.edu', 'name' => 'Clingen Tracker Help'],
-                    ['email' => 'volunteer@clinicalgenome.org', 'name' => 'CCDB Support'],
-                    ['email' => 'erepo@clinicalgenome.org', 'name' => 'ERepo Support'],
-                    ['email' => 'clingen-helpdesk@lists.stanford.edu', 'name' => 'GCI/VCI Support'],
+                    ['address' => 'cdwg_oversightcommittee@clinicalgenome.org', 'name' => 'CDWG Oversite Committee'],
+                    ['address' => 'clingentrackerhelp@unc.edu', 'name' => 'Clingen Tracker Help'],
+                    ['address' => 'volunteer@clinicalgenome.org', 'name' => 'CCDB Support'],
+                    ['address' => 'erepo@clinicalgenome.org', 'name' => 'ERepo Support'],
+                    ['address' => 'clingen-helpdesk@lists.stanford.edu', 'name' => 'GCI/VCI Support'],
                 ],
                 'to' => $this->expectedTo()
             ]);
@@ -84,12 +84,12 @@ class RenderUserDefinedTemplateTest extends TestCase
         $response->assertJson([
                 'subject' => 'Your ClinGen expert panel '.$this->expertPanel->group->name.' has received final approval.',
                 'cc' => [
-                    ['email' => 'cdwg_oversightcommittee@clinicalgenome.org', 'name' => 'CDWG Oversite Committee'],
-                    ['email' => 'clingentrackerhelp@unc.edu', 'name' => 'Clingen Tracker Help'],
-                    ['email' => 'volunteer@clinicalgenome.org', 'name' => 'CCDB Support'],
-                    ['email' => 'erepo@clinicalgenome.org', 'name' => 'ERepo Support'],
-                    ['email' => 'clingen-helpdesk@lists.stanford.edu', 'name' => 'GCI/VCI Support'],
-                    ['email' => 'clinvar@ncbi.nlm.nih.gov', 'name' => 'ClinVar'],
+                    ['address' => 'cdwg_oversightcommittee@clinicalgenome.org', 'name' => 'CDWG Oversite Committee'],
+                    ['address' => 'clingentrackerhelp@unc.edu', 'name' => 'Clingen Tracker Help'],
+                    ['address' => 'volunteer@clinicalgenome.org', 'name' => 'CCDB Support'],
+                    ['address' => 'erepo@clinicalgenome.org', 'name' => 'ERepo Support'],
+                    ['address' => 'clingen-helpdesk@lists.stanford.edu', 'name' => 'GCI/VCI Support'],
+                    ['address' => 'clinvar@ncbi.nlm.nih.gov', 'name' => 'ClinVar'],
                 ],
                 'to' => $this->expectedTo()
             ]);
