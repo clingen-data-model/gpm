@@ -40,7 +40,6 @@
 import {mapGetters} from 'vuex'
 import api from '@/http/api';
 import isValidationError from '@/http/is_validation_error';
-import RichTextEditor from '@/components/forms/RichTextEditor.vue';
 import UserDefinedMailForm from '@/components/forms/UserDefinedMailForm'
 
 const templateForStep = {
@@ -52,7 +51,6 @@ const templateForStep = {
 
 export default {
     components: {
-        RichTextEditor,
         UserDefinedMailForm
     },
     emits: [
