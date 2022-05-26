@@ -1,7 +1,7 @@
 <template>
     <div>
         <h4 class="font-bold border-b">Email</h4>
-        <dictionary-row label="To">
+        <dictionary-row label="To" label-class="w-36">
             <static-alert v-if="!group.hasContacts" class="flex-1" variant="danger">
                 There are no contacts to notify!!
             </static-alert>
@@ -16,9 +16,9 @@
                 </li>
             </ul>
         </dictionary-row>
-        <dictionary-row label="Cc">
+        <dictionary-row label="Cc" label-class="w-36">
             <div v-if="workingEmail.cc.length > 0">
-                <truncate-expander :value="ccAddresses" :truncate-length="100"></truncate-expander>
+                <truncate-expander :value="ccAddresses" :truncate-length="100" />
             </div>
             <div class="text-gray-500" v-else>None</div>
         </dictionary-row>
@@ -69,7 +69,7 @@ export default {
             return this.application.current_step == 1 || this.application.current_step == 4
         },
         ccAddresses () {
-            return this.modelValue.cc.map(c => c.email).join(', ')
+            return this.modelValue.cc.map(c => c.address).join(', ')
         }
     },
     methods: {
