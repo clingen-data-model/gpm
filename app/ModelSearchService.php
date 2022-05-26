@@ -40,7 +40,7 @@ class ModelSearchService
             $dummy = new $this->modelClass();
             $query->select($dummy->getTable().'.*');
         }
-        if (isset($params['sort']) && !is_null($this->sortFunction)) {
+        if (isset($params['sort'])) {
             $query = $this->sortQuery($query, $params['sort']);
         }
 
@@ -121,6 +121,6 @@ class ModelSearchService
             return ($this->sortFunction)($query, $field, $dir);
         }
 
-        return $query->sort($field, $dir);
+        return $query->orderBy($field, $dir);
     }
 }

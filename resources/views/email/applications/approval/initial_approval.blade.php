@@ -2,8 +2,8 @@
 
 @section('approval')
     <p>
-        Thank you for submitting your application for the <em>{{ $expertPanel->name }}</em>.
-        Your {{ $expertPanel->expert_panel_type_id == 1 ? 'GCEP' : 'VCEP step 1 application' }} has been reviewed and
+        Thank you for submitting your application for the <em>{{ $group->name }}</em>.
+        Your {{ $group->group_type_id == 3 ? 'GCEP' : 'VCEP step 1 application' }} has been reviewed and
         approved by the ClinGen Clinical Domain Working Group Oversight Committee co-chairs. We will be following up with
         additional information.
     </p>

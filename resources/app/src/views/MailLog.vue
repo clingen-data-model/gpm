@@ -11,11 +11,13 @@
         <h1>Mail Log</h1>
         <data-table 
             :fields="fields" 
-            :data="filteredMail"
+            :data="getPage"
             row-class="cursor-pointer"
             :row-click-handler="showMailDetail"
             v-model:sort="sort"
+            :page-size="20"
             paginated
+            ref="dataTable"
         >
             <template v-slot:header>
                 <div class="mb-2">Filter: <input type="text" v-model="filter"></div>
@@ -49,6 +51,7 @@
 </template>
 <script>
 import api from '../http/api'
+import {debounce} from 'lodash-es'
 import {formatDateTime} from '@/date_utils'
 import sortAndFilter from '../composables/router_aware_sort_and_filter'
 
@@ -111,29 +114,41 @@ export default {
             showResendDialog: false,
         }
     },
-    computed: {
-        filteredMail () {
-            if (!this.filter) {
-                return this.data
+    watch: {
+        filter: {
+            immediate: true,
+            handler: function () {
+                if (this.triggerSearch) {
+                    this.triggerSearch();
+                }
             }
-            const regexp = new RegExp(`.*${this.filter}.*`, 'i');
-            return this.data.filter(m => {
-                return m.to.filter(item => {
-                        return item.name && item.name.match(regexp)
-                        || item.address && item.address.match(regexp)
-                    }).length > 0
-                    || (m.to.address && m.to.address.match(regexp))
-                    || m.subject.match(regexp)
-            })
+        },
+        sort: {
+            deep: true,
+            immediate: true,
+            handler: function () {
+                console.log('sorted')
+                if (this.triggerSearch) {
+                    this.triggerSearch();
+                }
+            }
         }
     },
     methods: {
-        async getMailLog() {
+        async getPage (currentPage, pageSize, sort, setTotalItems) {
             try {
-                await api.get('/api/mail-log')
-                    .then(response => {
-                        this.data = response.data;
-                    });
+                const params = {
+                    page: currentPage,
+                    page_size: pageSize,
+                    'sort[field]': sort.field.name,
+                    'sort[dir]': sort.desc ? 'DESC' : 'ASC',
+                    'where[filterString]': this.filter
+                }
+                const pageResponse = await api.get(`/api/mail-log`, {params: params})
+                    .then(rsp => rsp.data);
+
+                setTotalItems(pageResponse.total);
+                return pageResponse.data;
             } catch (error) {
                 alert(error);
             }
@@ -152,8 +167,8 @@ export default {
             this.getMailLog();
         }
     },
-    mounted() {
-        this.getMailLog();
-    }
+    created() {
+        this.triggerSearch = debounce(() => this.$refs.dataTable.getItems(), 500)
+    },
 }
 </script>   

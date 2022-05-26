@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Request;
+use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Notifications\UserDefinedMailNotification;
+use Illuminate\Validation\ValidationException;
 
 class MailDraftController extends Controller
 {
@@ -52,6 +55,23 @@ class MailDraftController extends Controller
             'cc' => $ccrecipients,
             'subject' => 'Application step '.$approvedStepNumber.' for your ClinGen expert panel '.$expertPanel->name.' has been approved.',
             'body' => $view->render()
+        ];
+    }
+
+    public function makeDraft(Request $request, Group $group)
+    {
+        $templateClass = $request->templateClass;
+        if (!class_exists($templateClass)) {
+            return abort(404);
+        }
+
+        $tpl = new $templateClass($group);
+
+        return [
+            'to' => $tpl->getTo(),
+            'cc' => $tpl->getCc(),
+            'subject' => $tpl->renderSubject(),
+            'body' => $tpl->renderBody()
         ];
     }
 }
