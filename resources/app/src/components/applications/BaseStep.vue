@@ -194,6 +194,10 @@ export default {
             this.$emit('stepApproved');
             this.$emit('updated');
         },
+        handleUpdated () {
+            this.hideApproveForm();
+            this.$emit('updated');
+        },
         hideApproveForm () {
             this.showApproveForm = false;
         },
