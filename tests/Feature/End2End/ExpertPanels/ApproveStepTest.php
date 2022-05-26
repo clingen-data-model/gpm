@@ -45,10 +45,11 @@ class ApproveStepTest extends TestCase
     {
         $approvalData = [
             'date_approved' => Carbon::now(),
+            'notify_contacts' => false,
         ];
 
         Sanctum::actingAs($this->user);
-        $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/current-step/approve', $approvalData)
+        $this->makeRequest($approvalData)
             ->assertStatus(200)
             ->assertJson($this->expertPanel->fresh()->toArray());
 
@@ -85,7 +86,7 @@ class ApproveStepTest extends TestCase
         ];
 
         Sanctum::actingAs($this->user);
-        $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/current-step/approve', $approvalData)
+        $this->makeRequest($approvalData)
             ->assertStatus(422)
             ->assertJsonFragment(['date_approved' => ['The date approved is not a valid date.']]);
     }
@@ -102,7 +103,7 @@ class ApproveStepTest extends TestCase
 
         Mail::fake();
         Sanctum::actingAs($this->user);
-        $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/current-step/approve', $approvalData)
+        $this->makeRequest($approvalData)
             ->assertStatus(200);
 
         Mail::assertNotSent(UserDefinedMailable::class);
@@ -133,8 +134,7 @@ class ApproveStepTest extends TestCase
         Mail::fake();
 
         Sanctum::actingAs($this->user);
-        $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/current-step/approve', $approvalData)
-            ->assertStatus(200);
+        $this->makeRequest($approvalData);
 
         Mail::assertSent(
             UserDefinedMailable::class,
@@ -168,7 +168,7 @@ class ApproveStepTest extends TestCase
         Notification::fake();
 
         Sanctum::actingAs($this->user);
-        $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/current-step/approve', $approvalData)
+        $this->makeRequest($approvalData)
             ->assertStatus(200);
 
         Notification::assertSentTo($person1, ApplicationStepApprovedNotification::class);
@@ -212,7 +212,7 @@ class ApproveStepTest extends TestCase
         ]);
 
         Sanctum::actingAs($this->user);
-        $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/current-step/approve', [
+        $this->makeRequest([
             'date_approved' => Carbon::now(),
             'notify_contacts' => false,
         ])->assertStatus(200);
@@ -220,7 +220,7 @@ class ApproveStepTest extends TestCase
         $this->assertDatabaseHas('submissions', [
             'id' => $submission->id,
             'submission_status_id' => config('submissions.statuses.approved.id'),
-            'approved_at' => Carbon::now()
+            'closed_at' => Carbon::now()
         ]);
     }
 
@@ -237,7 +237,7 @@ class ApproveStepTest extends TestCase
         ]);
 
         Sanctum::actingAs($this->user);
-        $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/current-step/approve', [
+        $this->makeRequest([
             'date_approved' => Carbon::now(),
             'notify_contacts' => false,
         ])->assertStatus(200);
@@ -266,7 +266,7 @@ class ApproveStepTest extends TestCase
         ]);
 
         Sanctum::actingAs($this->user);
-        $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/current-step/approve', [
+        $this->makeRequest([
             'date_approved' => Carbon::now(),
             'notify_contacts' => false,
         ])->assertStatus(200);
@@ -276,4 +276,12 @@ class ApproveStepTest extends TestCase
             'group_status_id' => config('groups.statuses.active.id')
         ]);
     }
+
+    private function makeRequest($data = null)
+    {
+        $data = $data ?? [];
+
+        return $this->json('POST', '/api/applications/'.$this->expertPanel->group->uuid.'/current-step/approve', $data);
+    }
+    
 }

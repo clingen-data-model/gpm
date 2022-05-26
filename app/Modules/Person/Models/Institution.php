@@ -36,7 +36,8 @@ class Institution extends Model
         'address',
         'country_id',
         'website_id',
-        'approved'
+        'approved',
+        'reportable'
     ];
 
     /**
@@ -48,6 +49,7 @@ class Institution extends Model
         'id' => 'integer',
         'country_id' => 'integer',
         'approved' => 'boolean',
+        'reportable' => 'boolean'
     ];
 
     /**

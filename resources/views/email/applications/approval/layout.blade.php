@@ -1,7 +1,7 @@
 @extends('email.layout')
 
 @section('content')
-    <p>Dear {{$expertPanel->long_base_name}} Leaders,</p>
+    <p>Dear {{$group->name}} Leaders,</p>
 
     @yield('approval')
 

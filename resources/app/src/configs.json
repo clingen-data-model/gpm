@@ -53,6 +53,16 @@
                 "name": "SVI VCEP Review Committee",
                 "short_name": "SVI",
                 "id": 3
+            },
+            "gene-curation-small-group": {
+                "name": "Gene Curation Small Group",
+                "short_name": "GC",
+                "id": 4
+            },
+            "chairs": {
+                "name": "CDWG OC chairs",
+                "short_name": "Chairs",
+                "id": 5
             }
         }
     },
@@ -117,7 +127,8 @@
             "1": "blue",
             "2": "green",
             "3": "gray",
-            "4": "black"
+            "4": "black",
+            "5": "gray"
         },
         "roles": {
             "coordinator": {

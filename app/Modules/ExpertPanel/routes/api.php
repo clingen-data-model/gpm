@@ -52,7 +52,7 @@ Route::group([
         Route::post('/{app_uuid}/contacts', ContactAdd::class);
         Route::delete('/{app_uuid}/contacts/{person_uuid}', ContactRemove::class);
         
-        Route::post('/{expertPanel:uuid}/current-step/approve', StepApprove::class);
+        Route::post('/{group:uuid}/current-step/approve', StepApprove::class);
         Route::put('/{app_uuid}/approve', [ApplicationStepController::class, 'updateApprovalDate']);
         
         Route::post('/{app_uuid}/documents', ApplicationDocumentAdd::class);

@@ -20,6 +20,7 @@ class CompleteApplicationTest extends TestCase
         $this->setupForGroupTest();
 
         $this->user = $this->setupUser();
+        $this->expertPanel = ExpertPanel::factory()->gcep()->create();
     }
 
     /**
@@ -27,10 +28,9 @@ class CompleteApplicationTest extends TestCase
      */
     public function gcep_application_completed_when_step1_approved()
     {
-        $expertPanel = ExpertPanel::factory()->gcep()->create();
         $dateApproved = Carbon::parse('2021-09-16');
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $this->json('POST', '/api/applications/'.$expertPanel->uuid.'/current-step/approve', ['date_approved' => $dateApproved])
+        $this->makeRequest(['date_approved' => $dateApproved])
             ->assertStatus(200)
             ->assertJsonFragment([
                 'date_completed' => $dateApproved->toJson(),
@@ -45,31 +45,38 @@ class CompleteApplicationTest extends TestCase
      */
     public function vcep_application_completed_when_step4_approved()
     {
-        $expertPanel = ExpertPanel::factory()->vcep()->create();
-        app()->make(StepApprove::class)->handle($expertPanel, Carbon::parse('2021-01-02'));
-        // $expertPanel->approveCurrentStep(Carbon::parse('2021-01-02'));
-        $expertPanel = $expertPanel->fresh();
-        $this->assertEquals(2, $expertPanel->current_step);
-        $this->assertNull($expertPanel->date_completed);
+        $this->expertPanel->group->update(['group_type_id' => 3]);
+        $this->expertPanel->update(['expert_panel_type_id' => 2]);
 
-        // $expertPanel->approveCurrentStep(Carbon::parse('2021-01-03'));
-        app()->make(StepApprove::class)->handle($expertPanel, Carbon::parse('2021-01-03'));
-        $expertPanel = $expertPanel->fresh();
-        $this->assertEquals(3, $expertPanel->current_step);
-        $this->assertNull($expertPanel->date_completed);
+        app()->make(StepApprove::class)->handle($this->expertPanel, Carbon::parse('2021-01-02'));
+        $this->expertPanel->refresh();
+        $this->assertEquals(2, $this->expertPanel->fresh()->current_step);
+        $this->assertNull($this->expertPanel->date_completed);
+
+        app()->make(StepApprove::class)->handle($this->expertPanel, Carbon::parse('2021-01-03'));
+        $this->expertPanel->refresh();
+        $this->assertEquals(3, $this->expertPanel->current_step);
+        $this->assertNull($this->expertPanel->date_completed);
         
-        // $expertPanel->approveCurrentStep(Carbon::parse('2021-01-04'));
-        app()->make(StepApprove::class)->handle($expertPanel, Carbon::parse('2021-01-04'));
-        $expertPanel = $expertPanel->fresh();
-        $this->assertEquals(4, $expertPanel->current_step);
-        $this->assertNull($expertPanel->date_completed);
+        app()->make(StepApprove::class)->handle($this->expertPanel, Carbon::parse('2021-01-04'));
+        $this->expertPanel->refresh();
+        $this->assertEquals(4, $this->expertPanel->current_step);
+        $this->assertNull($this->expertPanel->date_completed);
 
         $dateApproved = Carbon::parse('2021-09-16');
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $this->json('POST', '/api/applications/'.$expertPanel->uuid.'/current-step/approve', ['date_approved' => $dateApproved])
+        $this->makeRequest(['date_approved' => $dateApproved])
             ->assertStatus(200)
             ->assertJsonFragment([
                 'date_completed' => $dateApproved->toJson()
             ]);
     }
+
+    private function makeRequest($data = null)
+    {
+        $data = $data ?? null;
+
+        return $this->json('POST', '/api/applications/'.$this->expertPanel->group->uuid.'/current-step/approve', $data);
+    }
+    
 }

@@ -166,7 +166,14 @@ class AnnualUpdate extends Model
             if (!is_null($variantCounts)) {
                 $string = '';
                 foreach ($variantCounts as $gene) {
-                    $string .= $gene['gene_symbol'].' - in_clinvar: '.$gene['in_clinvar'].', gci_approved: '.$gene['gci_approved'].', provisionally_approved: '.$gene['provisionally_approved'];
+                    $string .= $gene['gene_symbol']
+                                .' - in_clinvar: '
+                                    .(isset($gene['in_clinvar']) ? $gene['in_clinvar'] : 0)
+                                .', gci_approved: '
+                                    .(isset($gene['gci_approved']) ? $gene['gci_approved'] : 0)
+                                .', provisionally_approved: '
+                                    .(isset($gene['provisionally_approved']) ? $gene['provisionally_approved'] : 0)
+                                .'; ';
                 }
                 $variantCounts = $string;
             }

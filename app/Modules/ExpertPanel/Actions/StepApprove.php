@@ -3,6 +3,7 @@
 namespace App\Modules\ExpertPanel\Actions;
 
 use Illuminate\Support\Carbon;
+use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -14,8 +15,13 @@ use App\Notifications\ValueObjects\MailAttachment;
 use App\Modules\ExpertPanel\Actions\NotifyContacts;
 use App\Modules\ExpertPanel\Service\StepManagerFactory;
 use App\Modules\ExpertPanel\Actions\ApplicationComplete;
+use App\Mail\UserDefinedMailTemplates\InitialApprovalMailTemplate;
+use App\Mail\UserDefinedMailTemplates\SpecificationDraftMailTemplate;
+use App\Mail\UserDefinedMailTemplates\SpecificationPilotMailTemplate;
+use App\Mail\UserDefinedMailTemplates\SustainedCurationApprovalMailTemplate;
 use App\Modules\ExpertPanel\Exceptions\UnmetStepRequirementsException;
 use App\Modules\ExpertPanel\Notifications\ApplicationStepApprovedNotification;
+use InvalidArgumentException;
 
 class StepApprove
 {
@@ -77,8 +83,9 @@ class StepApprove
         }
     }
 
-    public function asController(ActionRequest $request, ExpertPanel $expertPanel)
+    public function asController(ActionRequest $request, Group $group)
     {
+        $expertPanel = $group->expertPanel;
         try {
             $attachments = collect($request->attachments)
                 ->map(function ($file) {
@@ -142,19 +149,15 @@ class StepApprove
             return;
         }
 
-        $defaultMail = (new ApplicationStepApprovedNotification(
-            $expertPanel,
-            $approvedStep,
-            false
-        ))
-        ->toMail($expertPanel->contacts->first());
+        $defaultMail = $this->makeMailTemplate($expertPanel, $approvedStep);
+
 
         $this->notifyContactsAction->handle(
             expertPanel: $expertPanel,
-            subject: $subject ?? $defaultMail->subject,
-            body: $body ?? $defaultMail->render(),
+            subject: $subject ?? $defaultMail->renderSubject(),
+            body: $body ?? $defaultMail->renderBody(),
             attachments: $attachments,
-            ccAddresses: $defaultMail->cc
+            ccAddresses: $defaultMail->getCc()
         );
 
         Notification::send(
@@ -162,4 +165,21 @@ class StepApprove
             new ApplicationStepApprovedNotification($expertPanel, $approvedStep)
         );
     }
+
+    private function makeMailTemplate(ExpertPanel $expertPanel, int $approvedStep)
+    {
+        switch ($approvedStep) {
+            case 1:
+                return new InitialApprovalMailTemplate($expertPanel->group);
+            case 2:
+                return new SpecificationDraftMailTemplate($expertPanel->group);
+            case 3:
+                return new SpecificationPilotMailTemplate($expertPanel->group);
+            case 4:
+                return new SustainedCurationApprovalMailTemplate($expertPanel->group);
+            default:
+                throw new InvalidArgumentException('Unexpected approvedStep recieved: '.$approvedStep.'.  1-4 expected.');
+        }
+    }
+    
 }

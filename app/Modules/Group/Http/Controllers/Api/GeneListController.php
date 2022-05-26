@@ -5,6 +5,7 @@ namespace App\Modules\Group\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Modules\Group\Models\Group;
 use App\Http\Controllers\Controller;
+use App\Models\GeneTracker\Disease;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class GeneListController extends Controller
@@ -17,11 +18,14 @@ class GeneListController extends Controller
             throw new ModelNotFoundException('Only expert panels have gene lists.');
         }
 
-        return $group
+        $query = $group
                 ->expertPanel
                 ->genes()
-                ->select('gene_symbol', 'hgnc_id', 'mondo_id', 'disease_name')
-                // ->with(['gene', 'disease'])
-                ->get();
+                ->select('gene_symbol', 'hgnc_id', 'mondo_id', 'disease_name', 'id')
+                ;
+        if ($request->with) {
+            $query->with($request->with);
+        }
+        return $query->get();
     }
 }

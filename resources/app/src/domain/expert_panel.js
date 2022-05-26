@@ -154,7 +154,10 @@ class ExpertPanel extends Entity
 
     get hasCompletedSubmission () {
         return this.submissions
-                .filter(submission => submission.submission_status_id == submissions.statuses.approved.id)
+                .filter(sub => {
+                    return sub.submission_status_id == submissions.statuses.approved.id
+                        && this.pendingSubmission.type.name == this.currentStepName
+                })
     }
 
     get isCompleted() {

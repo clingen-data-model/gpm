@@ -11,7 +11,7 @@ class SubmissionApprove
     {
         $submission->update([
             'submission_status_id' => config('submissions.statuses.approved.id'),
-            'approved_at' => $dateApproved
+            'closed_at' => $dateApproved
         ]);
 
         return $submission;

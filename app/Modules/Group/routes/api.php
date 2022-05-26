@@ -37,6 +37,7 @@ use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Group\Actions\MemberRevokePermission;
 use App\Modules\Group\Actions\ScopeDescriptionUpdate;
 use App\Modules\Group\Actions\AttestationReanalysisStore;
+use App\Modules\Group\Actions\ApplicationSubmissionReject;
 use App\Modules\Group\Actions\MembershipDescriptionUpdate;
 use App\Modules\Group\Actions\CurationReviewProtocolUpdate;
 use App\Modules\Group\Http\Controllers\Api\GroupController;
@@ -88,6 +89,7 @@ Route::group([
     Route::put('/{group:uuid}/application/', ApplicationSaveChanges::class);
     Route::get('/{group:uuid}/application/submission', [GroupSubmissionsController::class, 'index']);
     Route::post('/{group:uuid}/application/submission', ApplicationSubmitStep::class);
+    Route::post('/{group:uuid}/application/submission/{submission}/rejection', ApplicationSubmissionReject::class);
 
     // MEMBERS
     Route::group(['prefix' => '/{group:uuid}/members'], function () {

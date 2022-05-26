@@ -21,42 +21,8 @@
             You can approve this application but be aware that it is not part of the "normal" application workflow.
         </static-alert>
         
-        
         <transition name="slide-fade-down">
-            <div v-show="notifyContacts">
-                <h4 class="font-bold border-b">Email</h4>
-                <dictionary-row label="To">
-                    <static-alert v-if="!group.hasContacts" class="flex-1" variant="danger">
-                        There are no contacts to notify!!
-                    </static-alert>
-                    <ul v-if="group.hasContacts">
-                        <li v-for="contact in email.to" :key="contact.email">
-                            <router-link 
-                                :to="{name: 'PersonDetail', params: {uuid: contact.uuid}}"
-                                class="text-blue-600 hover:underline" 
-                                target="person"
-                            >
-                                {{contact.name}} &lt;{{contact.email}}&gt;</router-link>
-                        </li>
-                    </ul>
-                </dictionary-row>
-                <dictionary-row label="Cc">
-                    <div v-if="email.cc.length > 0">
-                        <truncate-expander :value="ccAddresses" :truncate-length="100"></truncate-expander>
-                    </div>
-                    <div class="text-gray-500" v-else>None</div>
-                </dictionary-row>
-                <input-row label="Subject">
-                    <input type="text" v-model="email.subject" class="w-full">
-                </input-row>
-                <input-row label="Body">
-                    <rich-text-editor  v-model="email.body"></rich-text-editor>
-                </input-row>
-                <input-row label="Attachments">
-                    <input type="file" multiple ref="attachmentsField">
-                </input-row>
-                <note v-if="emailCced">ClinGen Services will be carbon copied on this email.</note>
-            </div>
+            <user-defined-mail-form v-model="email" v-show="notifyContacts"/>
         </transition>
 
         <button-row>
@@ -75,10 +41,19 @@ import {mapGetters} from 'vuex'
 import api from '@/http/api';
 import isValidationError from '@/http/is_validation_error';
 import RichTextEditor from '@/components/forms/RichTextEditor.vue';
+import UserDefinedMailForm from '@/components/forms/UserDefinedMailForm'
+
+const templateForStep = {
+    1: 'App\\Mail\\UserDefinedMailTemplates\\InitialApprovalMailTemplate',
+    2: 'App\\Mail\\UserDefinedMailTemplates\\SpecificationDraftMailTemplate',
+    3: 'App\\Mail\\UserDefinedMailTemplates\\SpecificationPilotMailTemplate',
+    4: 'App\\Mail\\UserDefinedMailTemplates\\SustainedCurationApprovalMailTemplate',
+}
 
 export default {
     components: {
-        RichTextEditor
+        RichTextEditor,
+        UserDefinedMailForm
     },
     emits: [
         'canceled',
@@ -92,7 +67,8 @@ export default {
                 subject: '',
                 body: '',
                 cc: [],
-                to: []
+                to: [],
+                files: []
             },
             errors: {}
         }
@@ -104,19 +80,21 @@ export default {
         application () {
             return this.group.expert_panel;
         },
-        emailCced () {
-            return this.application.current_step == 1 || this.application.current_step == 4
-        },
-        ccAddresses () {
-            return this.email.cc.map(c => c.email).join(', ')
-        }
     },
     watch: {
         notifyContacts: function (to) {
             if (to) {
-                api.get(`/api/email-drafts/${this.application.uuid}/${this.application.current_step}`)
+                api.get(
+                        `/api/email-drafts/groups/${this.group.uuid}`,
+                        {
+                            params: {
+                                templateClass: templateForStep[this.group.expert_panel.current_step]
+                            }
+                        }
+                    )
                     .then(response => {
                         this.email = response.data;
+                        this.email['files'] = [];
                     })
             }
         }
@@ -137,7 +115,7 @@ export default {
                 notifyContacts: this.notifyContacts,
                 subject: this.email.subject,
                 body: this.email.body,
-                attachments: this.$refs.attachmentsField.files
+                attachments: this.email.files
             };
 
             try {
