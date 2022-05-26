@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\End2End\Groups\Submissions;
 
+use Carbon\Carbon;
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use App\Mail\UserDefinedMailable;
@@ -13,6 +14,7 @@ use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
+use App\Modules\Group\Events\ApplicationRevisionsRequested;
 
 class RejectSubmissionTest extends TestCase
 {
@@ -54,6 +56,7 @@ class RejectSubmissionTest extends TestCase
      */
     public function permissioned_user_can_reject_a_submission()
     {
+        Carbon::setTestNow();
         $this->makeRequest()
             ->assertStatus(200)
             ->assertJson([
@@ -64,13 +67,14 @@ class RejectSubmissionTest extends TestCase
         $this->assertDatabaseHas('submissions', [
             'id' => $this->submission->id,
             'submission_status_id' => config('submissions.statuses.revise-and-resubmit'),
+            'closed_at' => Carbon::now(),
         ]);
     }
 
     /**
      * @test
      */
-    public function emails_group_contacts_when_specified()
+    public function emails_group_contacts_when_specified_and_saves_email_body_to_response_content()
     {
         Mail::fake();
         $data = $this->makeDefaultData(['notify_contacts' => true]);
@@ -94,7 +98,33 @@ class RejectSubmissionTest extends TestCase
                 ;
             }
         );
+        $this->assertDatabaseHas('submissions', [
+            'id' => $this->submission->id,
+            'submission_status_id' => config('submissions.statuses.revise-and-resubmit.id'),
+            'closed_at' => Carbon::now(),
+            'response_content' => $data['body']
+        ]);
+
     }
+
+    /**
+     * @test
+     */
+    public function records_revisions_requested_activity()
+    {
+        $this->makeRequest();
+
+        $this->assertLoggedActivity(
+            subject: $this->expertPanel->group,
+            description: 'Revisions requested for step '.$this->expertPanel->current_step,
+            properties:  [
+                'submission_id' => $this->submission->id,
+            ],
+            activity_type: 'application-revisions-requested',
+            logName: 'groups'
+        );
+    }
+    
     
     
 

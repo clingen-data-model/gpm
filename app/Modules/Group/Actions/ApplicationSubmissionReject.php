@@ -9,6 +9,7 @@ use App\Modules\Group\Models\Submission;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Notifications\ValueObjects\MailAttachment;
 use App\Modules\ExpertPanel\Actions\NotifyContacts;
+use App\Modules\Group\Events\ApplicationRevisionsRequested;
 
 class ApplicationSubmissionReject
 {
@@ -21,10 +22,12 @@ class ApplicationSubmissionReject
     }
     
     
-    public function handle(Group $group, Submission $submission): Submission
+    public function handle(Group $group, Submission $submission, ?string $responseContent = null): Submission
     {
         $submission
-            ->reject();
+            ->reject($responseContent);
+
+        event(new ApplicationRevisionsRequested($submission));
 
         return $submission->fresh();
     }
@@ -35,7 +38,8 @@ class ApplicationSubmissionReject
         try {
             $submission = $this->handle(
                 group: $group, 
-                submission: $submission
+                submission: $submission,
+                responseContent: $request->notify_contacts ? $request->body : null
             );
 
             $attachments = collect($request->attachments)

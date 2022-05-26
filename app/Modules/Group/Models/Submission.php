@@ -2,6 +2,7 @@
 
 namespace App\Modules\Group\Models;
 
+use Carbon\Carbon;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
 use Illuminate\Database\Eloquent\Model;
@@ -22,8 +23,9 @@ class Submission extends Model
         'submission_type_id',
         'submission_status_id',
         'data',
-        'approved_at',
+        'closed_at',
         'notes',
+        'response_content',
         'submitter_id',
     ];
 
@@ -32,7 +34,7 @@ class Submission extends Model
         'submission_type_id' => 'integer',
         'submission_status_id' => 'integer',
         'data' => 'array',
-        'approved_at' => 'datetime',
+        'closed_at' => 'datetime',
         'submitter_id' => 'integer',
     ];
 
@@ -105,9 +107,13 @@ class Submission extends Model
      * DOMAIN
      */
 
-    public function reject(): Submission
+    public function reject(?string $responseContent = null): Submission
     {
-        $this->update(['submission_status_id' => config('submissions.statuses.revise-and-resubmit.id')]);
+        $this->update([
+            'submission_status_id' => config('submissions.statuses.revise-and-resubmit.id'),
+            'response_content' => $responseContent,
+            'closed_at' => Carbon::now()
+        ]);
         
         return $this;
     }

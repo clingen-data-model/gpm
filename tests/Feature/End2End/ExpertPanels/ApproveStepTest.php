@@ -220,7 +220,7 @@ class ApproveStepTest extends TestCase
         $this->assertDatabaseHas('submissions', [
             'id' => $submission->id,
             'submission_status_id' => config('submissions.statuses.approved.id'),
-            'approved_at' => Carbon::now()
+            'closed_at' => Carbon::now()
         ]);
     }
 
