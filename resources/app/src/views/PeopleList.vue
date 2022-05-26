@@ -108,6 +108,9 @@ export default {
         }
     },
     created() {
+        if (this.triggerSearch) {
+            this.triggerSearch();
+        }
         this.triggerSearch = debounce(() => this.$refs.dataTable.getItems(), 500)
     },
     setup() {
