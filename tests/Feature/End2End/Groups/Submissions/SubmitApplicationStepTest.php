@@ -110,7 +110,7 @@ class SubmitApplicationStepTest extends TestCase
      */
     public function sets_step_1_date_received_set_when_definition_submitted()
     {
-        Carbon::setTestNow();
+        Carbon::setTestNow('2022-01-01');
         $this->expertPanel->current_step = 1;
         $this->expertPanel->save();
         $this->makeRequest()
@@ -133,7 +133,7 @@ class SubmitApplicationStepTest extends TestCase
      */
     public function sets_step_4_date_received_set_when_sustainedcuration_submitted()
     {
-        Carbon::setTestNow();
+        Carbon::setTestNow('2022-01-01');
         $this->expertPanel->current_step = 4;
         $this->expertPanel->save();
         $this->makeRequest()
