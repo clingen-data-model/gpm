@@ -21,7 +21,7 @@ class UpdateMembershipDescriptionTest extends TestCase
 
         $this->user = $this->setupUser(permissions: ['ep-applications-manage']);
 
-        $this->expertPanel = ExpertPanel::factory()->create(['expert_panel_type_id' => config('expert_panels.types.vcep.id')]);
+        $this->expertPanel = ExpertPanel::factory()->vcep()->create();
         $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/membership-description';
     }
 
@@ -94,7 +94,7 @@ class UpdateMembershipDescriptionTest extends TestCase
      */
     public function throws_validation_error_if_group_is_not_an_expert_panel()
     {
-        $this->expertPanel->group->update(['group_type_id' => config('expert_panels.types.gcep.id')]);
+        $this->expertPanel->group->update(['group_type_id' => config('groups.types.gcep.id')]);
 
         Sanctum::actingAs($this->user);
         $response = $this->json('PUT', $this->url, ['membership_description' => 'test test test']);

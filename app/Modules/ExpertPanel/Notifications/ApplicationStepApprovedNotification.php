@@ -84,7 +84,7 @@ class ApplicationStepApprovedNotification extends Notification
         }
 
         return [
-            'expert_panel' => $this->expertPanel,
+            'expert_panel' => $this->expertPanel->id,
             'date_approved' => $this->approvedStep,
             'message' => $message,
             'type' => 'success'

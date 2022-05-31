@@ -15,13 +15,19 @@ use App\Modules\Group\Actions\NotifyGenesRemoved;
 use App\Modules\Group\Actions\EventApplicationPublish;
 use App\Modules\Group\Events\ApplicationStepSubmitted;
 use App\Modules\ExpertPanel\Events\ApplicationCompleted;
+use App\Modules\Group\Actions\ApplicationSubmissionMailAdminGroup;
 use App\Modules\Groups\Events\PublishableApplicationEvent;
 use App\Modules\Group\Actions\ApplicationSubmissionNotificationSend;
+use App\Modules\Group\Actions\ApplicationSubmissionReceiptSend;
 
 class GroupModuleServiceProvider extends ModuleServiceProvider
 {
     protected $listeners = [
-        ApplicationStepSubmitted::class => [ApplicationSubmissionNotificationSend::class],
+        ApplicationStepSubmitted::class => [
+            ApplicationSubmissionMailAdminGroup::class,
+            ApplicationSubmissionReceiptSend::class,
+            // ApplicationSubmissionNotificationSend::class
+        ],
         ApplicationCompleted::class => [GroupStatusUpdate::class],
         GenesAdded::class => [NotifyGenesAdded::class],
         GeneRemoved::class => [NotifyGenesRemoved::class],

@@ -52,6 +52,7 @@ class TaskIndexTest extends TestCase
      */
     public function can_get_all_tasks_for_multiple_assignees_of_the_same_type()
     {
+
         $vcep3 = ExpertPanel::factory()->vcep()->create();
         $task1 = (new TaskCreate)->handle($vcep3->group, 'sustained-curation-review');
         $task2 = (new TaskCreate)->handle($vcep3->group, 'sustained-curation-review');
@@ -71,8 +72,9 @@ class TaskIndexTest extends TestCase
             'assignee_id' => $vcep3->group_id,
         ])
         ->assertJsonMissing([
-            'assignee_id' => $this->vcep2->id
-        ]);
+            'assignee_id' => $this->vcep2->group_id
+        ])
+        ;
     }
     
 

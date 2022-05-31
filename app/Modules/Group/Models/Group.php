@@ -229,12 +229,12 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
     public function getIsVcepAttribute(): bool
     {
-        return $this->isExpertPanel && $this->expertPanel->isVcep;
+        return $this->group_type_id == config('groups.types.vcep.id');
     }
 
     public function getIsGcepAttribute(): bool
     {
-        return $this->isExpertPanel && $this->expertPanel->isGcep;
+        return $this->group_type_id == config('groups.types.gcep.id');
     }
 
     public function getFullTypeAttribute()

@@ -48,7 +48,12 @@ class ExpertPanelFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'expert_panel_type_id' => config('expert_panels.types.gcep.id')
+                'expert_panel_type_id' => config('expert_panels.types.gcep.id'),
+                'group_id' => Group::factory()
+                                ->create([
+                                    'name' => 'group '.uniqid(),
+                                    'group_type_id' => config('groups.types.gcep.id')
+                                ])->id
             ];
         });
     }
@@ -57,7 +62,12 @@ class ExpertPanelFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'expert_panel_type_id' => config('expert_panels.types.vcep.id')
+                'expert_panel_type_id' => config('expert_panels.types.vcep.id'),
+                'group_id' => Group::factory()
+                                ->create([
+                                    'name' => 'group '.uniqid(),
+                                    'group_type_id' => config('groups.types.vcep.id')
+                                ])->id
             ];
         });
     }

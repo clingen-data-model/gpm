@@ -113,7 +113,7 @@ class UpdateGeneTest extends TestCase
     {
         Sanctum::actingAs($this->user);
 
-        $this->expertPanel->update(['expert_panel_type_id' => config('expert_panels.types.gcep.id')]);
+        $this->expertPanel->group->update(['group_type_id' => config('groups.types.gcep.id')]);
         $this->json('PUT', $this->url, ['hgnc_id'=>null, 'mondo_id' => null])
             ->assertStatus(422)
             ->assertJsonFragment([
