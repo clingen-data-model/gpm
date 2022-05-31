@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class ApplicationSubmissionNotification extends Notification
+class ApplicationSubmissionAdminNotification extends Notification
 {
     use Queueable;
 
@@ -34,7 +34,7 @@ class ApplicationSubmissionNotification extends Notification
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -47,7 +47,7 @@ class ApplicationSubmissionNotification extends Notification
     {
         return (new MailMessage)
                 ->subject('An application step was submitted.')
-                ->view('email.application_step_submitted', [
+                ->view('email.application_step_submitted_admin', [
                     'notifiable' => $notifiable,
                     'submission' => $this->submission
                 ]);
