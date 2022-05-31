@@ -22,6 +22,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use App\Modules\Group\Events\ApplicationStepSubmitted;
 use App\Modules\Group\Notifications\ApplicationSubmissionNotification;
+use Database\Seeders\NextActionAssigneesTableSeeder;
 use Tests\Feature\End2End\Groups\Members\SetsUpGroupPersonAndMember;
 
 /**
@@ -38,6 +39,7 @@ class SubmitApplicationStepTest extends TestCase
         parent::setup();
         $this->setupForGroupTest();
         $this->runSeeder(SubmissionTypeAndStatusSeeder::class);
+        $this->runSeeder(NextActionAssigneesTableSeeder::class);
         $this->setupRoles(['super-admin']);
         $this->setupPermission(['application-edit']);
 
@@ -238,35 +240,45 @@ class SubmitApplicationStepTest extends TestCase
                 && $mailable->expertPanel->id == $this->expertPanel->id;
         });
     }
-    
-
+        
     /**
      * @test
      */
-    // public function notification_store_in_database()
-    // {
-    //     $admin = $this->setupUser();
-    //     $admin->person()->save(Person::factory()->make());
-    //     $admin->assignRole('super-admin');
-        
-    //     $this->makeRequest();
-
-    //     $this->assertDatabaseHas('notifications', [
-    //         'type' => ApplicationSubmissionNotification::class,
-    //         'notifiable_type' => Person::class,
-    //         'notifiable_id' => $admin->person->id
-    //     ]);
-    // }
-    
-    
-    
-    private function makeRequest($data = null)
+    public function next_action_created_for_admin_group()
     {
+        
+        Carbon::setTestNow('2022-06-01');
+        $this->makeRequest();
+        $this->assertDatabaseHas('next_actions', [
+            'expert_panel_id' => $this->expertPanel->id,
+            'assignee_id' => config('next_actions.assignees.cdwg-oc.id'),
+            'entry' => 'Review application and respond to EP.',
+            'target_date' => Carbon::now()->addDays(14),
+            'type_id' => config('next_actions.types.review-submission.id')
+        ]);
+
+        
+        $gcep = ExpertPanel::factory()->gcep()->create();
+        $this->makeRequest(null, $gcep);
+
+        $this->assertDatabaseHas('next_actions', [
+            'expert_panel_id' => $gcep->id,
+            'assignee_id' => config('next_actions.assignees.gene-curation-small-group.id'),
+            'entry' => 'Review application and respond to EP.',
+            'target_date' => Carbon::now()->addDays(14),
+            'type_id' => config('next_actions.types.review-submission.id')
+        ]);
+    }
+    
+    
+    private function makeRequest($data = null, $expertPanel = null)
+    {
+        $expertPanel = $expertPanel ?? $this->expertPanel;
         $data = $data ?? [
             'notes' => 'Notes from the submitter!'
         ];
 
-        $url = '/api/groups/'.$this->expertPanel->group->uuid.'/application/submission';
+        $url = '/api/groups/'.$expertPanel->group->uuid.'/application/submission';
         return $this->json('post', $url, $data);
     }
     

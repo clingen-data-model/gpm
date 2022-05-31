@@ -28,20 +28,11 @@ class ExpertPanelDetailTest extends TestCase
         $this->setupForGroupTest();
         $this->runSeeder(NextActionAssigneesTableSeeder::class);
 
-        $this->user = User::factory()->create();
-        $this->uuid = Uuid::uuid4()->toString();
-
-        $this->parentGroup = Group::factory()->create();
-        $this->ep = ExpertPanelCreate::run(
-            uuid: $this->uuid,
-            working_name: 'test name',
-            cdwg_id: $this->parentGroup->id,
-            expert_panel_type_id: 2,
-            date_initiated: Carbon::parse('2020-01-01')
-        );
+        $this->user = $this->setupUser();
+        $this->ep = ExpertPanel::factory()->vcep()->create();
 
         ApplicationDocumentAdd::run(
-            expertPanelUuid: $this->uuid,
+            expertPanelUuid: $this->ep->uuid,
             uuid: Uuid::uuid4()->toString(),
             filename: uniqid().'test.tst',
             storage_path: '/tmp/'.uniqid().'.tst',
@@ -50,13 +41,13 @@ class ExpertPanelDetailTest extends TestCase
             date_received: '2020-01-01'
         );
         NextActionCreate::run(
-            expertPanelUuid: $this->uuid,
+            expertPanel: $this->ep,
             uuid: Uuid::uuid4()->toString(),
             entry: 'TEst me',
             dateCreated: '2020-01-01'
         );
         LogEntryAdd::run(
-            expertPanelUuid: $this->uuid,
+            expertPanelUuid: $this->ep->uuid,
             entry: 'TEst me',
             logDate: Carbon::now()->addDays(1)->toJson()
         );
@@ -64,11 +55,9 @@ class ExpertPanelDetailTest extends TestCase
         $person = Person::factory()->create();
 
         ContactAdd::run(
-            expertPanelUuid: $this->uuid,
+            expertPanelUuid: $this->ep->uuid,
             uuid: $person->uuid,
         );
-
-        $this->expertPanel = ExpertPanel::findByUuidOrFail($this->uuid);
     }
 
     /**
@@ -77,10 +66,9 @@ class ExpertPanelDetailTest extends TestCase
     public function gets_application_with_uuid()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $this->json('get', '/api/applications/'.$this->uuid)
+        $this->json('get', '/api/applications/'.$this->ep->uuid)
             ->assertStatus(200)
-            ->assertJsonFragment(['working_name' => $this->expertPanel->group->name])
-            ->assertJsonFragment(['uuid' => $this->uuid]);
+            ->assertJsonFragment(['uuid' => $this->ep->uuid]);
     }
 
     /**
@@ -89,7 +77,7 @@ class ExpertPanelDetailTest extends TestCase
     public function loads_latestLogEntry_by_default()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $response = $this->json('get', '/api/applications/'.$this->uuid)
+        $response = $this->json('get', '/api/applications/'.$this->ep->uuid)
             ->assertStatus(200);
         $response->assertJsonFragment(['description' => 'TEst me']);
     }
@@ -100,7 +88,7 @@ class ExpertPanelDetailTest extends TestCase
     public function loads_latestPendingNextAction_by_default()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $this->json('get', '/api/applications/'.$this->uuid)
+        $this->json('get', '/api/applications/'.$this->ep->uuid)
             ->assertStatus(200)
             ->assertJsonFragment(['entry' => 'TEst me']);
     }
