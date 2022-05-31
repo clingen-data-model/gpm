@@ -81,7 +81,7 @@ class UpdateSummaryTest extends TestCase
      */
     public function validates_group_is_vcep()
     {
-        $this->vcep->update(['expert_panel_type_id' => config('expert_panels.types.gcep.id')]);
+        $this->vcep->group->update(['group_type_id' => config('groups.types.gcep.id')]);
         $this->makeRequest()
             ->assertStatus(422)
             ->assertJsonFragment([

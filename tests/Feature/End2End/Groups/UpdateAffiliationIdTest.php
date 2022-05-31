@@ -67,7 +67,7 @@ class UpdateAffiliationIdTest extends TestCase
                 'affiliation_id' => ['GCEP affiliation IDs must start with "4"']
             ]);
 
-        $this->expertPanel->update(['expert_panel_type_id' => 2]);
+        $this->expertPanel->group->update(['group_type_id' => config('groups.types.vcep.id')]);
         $this->makeRequest('49999')
             ->assertStatus(422)
             ->assertJsonFragment([

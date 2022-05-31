@@ -395,12 +395,12 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
     public function getIsVcepAttribute(): bool
     {
-        return $this->expert_panel_type_id == config('expert_panels.types.vcep.id');
+        return $this->group->isVcep;
     }
 
     public function getIsGcepAttribute(): bool
     {
-        return $this->expert_panel_type_id == config('expert_panels.types.gcep.id');
+        return $this->group->isGcep;
     }
 
 

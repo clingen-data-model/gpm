@@ -29,7 +29,7 @@ class MailSentOnGeneListChangeTest extends TestCase
         config(['app.features.notify_scope_change' => true]);
         $this->user = $this->setupUser(null, ['ep-applications-manage']);
 
-        $this->expertPanel = ExpertPanel::factory()->create(['expert_panel_type_id' => config('expert_panels.types.vcep.id')]);
+        $this->expertPanel = ExpertPanel::factory()->vcep()->create();
         $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/genes';
     }
     

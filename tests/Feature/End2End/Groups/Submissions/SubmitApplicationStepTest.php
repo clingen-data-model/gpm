@@ -2,23 +2,27 @@
 
 namespace Tests\Feature\End2End\Groups\Submissions;
 
+use App\Mail\ApplicationStepSubmittedReceiptMail;
+use App\Mail\ApplicationSubmissionAdminMail;
+use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\Permission;
-use App\Modules\Group\Models\Submission;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Group;
+use Database\Seeders\TaskTypeSeeder;
+use Illuminate\Support\Facades\Mail;
 use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Event;
+use App\Modules\Group\Models\Submission;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use App\Modules\Group\Events\ApplicationStepSubmitted;
 use App\Modules\Group\Notifications\ApplicationSubmissionNotification;
-use Carbon\Carbon;
-use Database\Seeders\SubmissionTypeAndStatusSeeder;
-use Database\Seeders\TaskTypeSeeder;
+use Tests\Feature\End2End\Groups\Members\SetsUpGroupPersonAndMember;
 
 /**
  * @group submissions
@@ -27,6 +31,7 @@ use Database\Seeders\TaskTypeSeeder;
 class SubmitApplicationStepTest extends TestCase
 {
     use RefreshDatabase;
+    use SetsUpGroupPersonAndMember;
     
     public function setup():void
     {
@@ -183,36 +188,75 @@ class SubmitApplicationStepTest extends TestCase
     /**
      * @test
      */
-    public function superAdmins_receive_notification_of_approved()
+    public function cdwg_oc_receives_mail_of_submitted_vcep()
     {
-        $admin = $this->setupUser();
-        $admin->person()->save(Person::factory()->make());
-        $admin->assignRole('super-admin');
-        
-        Notification::fake(ApplicationSubmissionNotification::class);
+        Mail::fake();
         
         $this->makeRequest();
 
-        Notification::assertSentTo($admin->person, ApplicationSubmissionNotification::class);
+        Mail::assertSent(ApplicationSubmissionAdminMail::class, function ($mailable) {
+            $mailable->build();
+            return $mailable->to == [['name'=> 'CDWG Oversight Committee', 'address' => 'cdwg_oversightcommittee@clinicalgenome.org']]
+                && $mailable->submission->id == $this->expertPanel->group->latestPendingSubmission->id;
+        });
+    }
+
+
+    /**
+     * @test
+     */
+    public function gcwg_receives_mail_of_submitted_vcep()
+    {
+        $this->expertPanel->group->update(['group_type_id' => config('groups.types.gcep.id')]);
+
+        Mail::fake();
+        
+        $this->makeRequest();
+
+        Mail::assertSent(ApplicationSubmissionAdminMail::class, function ($mailable) {
+            $mailable->build();
+            return $mailable->to == [['name'=> 'Gene Curation Working Group', 'address' => 'genecuration@clinicalgenome.org']]
+                && $mailable->submission->id == $this->expertPanel->group->latestPendingSubmission->id;
+        });
     }
 
     /**
      * @test
      */
-    public function notification_store_in_database()
+    public function contacts_receive_receipt_of_submission_email()
     {
-        $admin = $this->setupUser();
-        $admin->person()->save(Person::factory()->make());
-        $admin->assignRole('super-admin');
+        $person = Person::factory()->create();
+        $this->setupMember($this->expertPanel->group, $person, ['is_contact' => true]);
+
+        Mail::fake();
         
         $this->makeRequest();
 
-        $this->assertDatabaseHas('notifications', [
-            'type' => ApplicationSubmissionNotification::class,
-            'notifiable_type' => Person::class,
-            'notifiable_id' => $admin->person->id
-        ]);
+        Mail::assertSent(ApplicationStepSubmittedReceiptMail::class, function ($mailable) {
+            $mailable->build();
+            return $mailable->to == [['name'=> $this->groupMember->person->name, 'address' => $this->groupMember->person->email]]
+                && $mailable->expertPanel->id == $this->expertPanel->id;
+        });
     }
+    
+
+    /**
+     * @test
+     */
+    // public function notification_store_in_database()
+    // {
+    //     $admin = $this->setupUser();
+    //     $admin->person()->save(Person::factory()->make());
+    //     $admin->assignRole('super-admin');
+        
+    //     $this->makeRequest();
+
+    //     $this->assertDatabaseHas('notifications', [
+    //         'type' => ApplicationSubmissionNotification::class,
+    //         'notifiable_type' => Person::class,
+    //         'notifiable_id' => $admin->person->id
+    //     ]);
+    // }
     
     
     

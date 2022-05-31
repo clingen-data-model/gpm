@@ -20,11 +20,12 @@ trait SetsUpGroupPersonAndMember
         return $this;
     }
 
-    public function setupMember()
+    public function setupMember(?Group $group = null, ?Person $person = null, $memberAttributes = [])
     {
-        $this->groupMember = MemberAdd::run($this->group, $this->person);
+        $group = $group ?? $this->group;
+        $person = $person ?? $this->person;
+        $this->groupMember = app()->make(MemberAdd::class)->handle($group, $person, $memberAttributes);
         return $this;
     }
-    
     
 }

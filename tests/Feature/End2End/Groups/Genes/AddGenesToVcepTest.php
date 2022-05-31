@@ -38,7 +38,7 @@ class AddGenesToVcepTest extends TestCase
 
         $this->user = $this->setupUser(permissions: ['ep-applications-manage']);
 
-        $this->expertPanel = ExpertPanel::factory()->create(['expert_panel_type_id' => config('expert_panels.types.vcep.id')]);
+        $this->expertPanel = ExpertPanel::factory()->vcep()->create();
         $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/genes';
         
         app()->bind(HgncLookupInterface::class, function ($app) {

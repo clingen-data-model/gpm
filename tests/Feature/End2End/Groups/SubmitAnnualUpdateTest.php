@@ -167,12 +167,13 @@ class SubmitAnnualUpdateTest extends TestCase
     public function validates_base_required_fields_for_vcep()
     {
         $this->expertPanel->update([
-            'expert_panel_type_id' => 2,
+            'expert_panel_type_id' => config('expert_panels.types.vcep.id'),
             'step_1_approval_date' => Carbon::now(),
             'step_2_approval_date' => Carbon::now(),
             'step_3_approval_date' => Carbon::now(),
             'step_4_approval_date' => Carbon::now(),
         ]);
+        $this->expertPanel->group->update(['group_type_id' => config('groups.types.vcep.id')]);
         $annualReview = AnnualUpdate::create(['expert_panel_id'=>$this->expertPanel->id]);
         
         $response = $this->makeRequest($annualReview)
@@ -211,6 +212,7 @@ class SubmitAnnualUpdateTest extends TestCase
             'expert_panel_type_id' => 2,
             'step_1_approval_date' => Carbon::now(),
         ]);
+        $this->expertPanel->group->update(['group_type_id' => config('groups.types.vcep.id')]);
         $annualReview = AnnualUpdate::create(['expert_panel_id'=>$this->expertPanel->id]);
         
         $response = $this->makeRequest($annualReview)
@@ -242,6 +244,7 @@ class SubmitAnnualUpdateTest extends TestCase
             'step_1_approval_date' => Carbon::now(),
             'step_2_approval_date' => Carbon::now(),
         ]);
+        $this->expertPanel->group->update(['group_type_id' => config('groups.types.vcep.id')]);
         $annualReview = AnnualUpdate::create(['expert_panel_id'=>$this->expertPanel->id]);
         
         $response = $this->makeRequest($annualReview)
@@ -278,6 +281,7 @@ class SubmitAnnualUpdateTest extends TestCase
             'step_3_approval_date' => Carbon::now(),
             'step_4_approval_date' => Carbon::now(),
         ]);
+        $this->expertPanel->group->update(['group_type_id' => config('groups.types.vcep.id')]);
         $annualReview = AnnualUpdate::create(['expert_panel_id'=>$this->expertPanel->id]);
         
         $response = $this->makeRequest($annualReview)
@@ -323,6 +327,7 @@ class SubmitAnnualUpdateTest extends TestCase
             'step_3_approval_date' => Carbon::now(),
             'step_4_approval_date' => Carbon::now(),
         ]);
+        $this->expertPanel->group->update(['group_type_id' => config('groups.types.vcep.id')]);
         $annualReview = AnnualUpdate::create([
             'expert_panel_id'=>$this->expertPanel->id,
             'data' => [
