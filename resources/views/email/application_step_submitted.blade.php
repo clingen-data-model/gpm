@@ -12,10 +12,12 @@
     @endif
 </p>
 
-<strong>Notes from the submitter:</strong>
-<p>
-    {{$submission->notes}}
-</p>
+@if ($submission->notes)
+    <strong>Notes from the submitter:</strong>
+    <p>
+        {{$submission->notes}}
+    </p>
+@endif
 
 <p>
     <a href="{{url('/applications/'.$submission->group->uuid)}}">Review the application</a>
