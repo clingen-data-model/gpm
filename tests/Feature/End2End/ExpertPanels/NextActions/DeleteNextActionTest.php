@@ -34,7 +34,7 @@ class DeleteNextActionTest extends TestCase
         $this->baseUrl = '/api/applications/'.$this->expertPanel->uuid.'/next-actions';
 
         (new NextActionCreate)->handle(
-            expertPanelUuid: $this->expertPanel->uuid,
+            expertPanel: $this->expertPanel,
             uuid: Uuid::uuid4(),
             dateCreated: '2020-01-01',
             entry: 'This is a next action',

@@ -65,11 +65,11 @@ Route::group([
         Route::put('/{app_uuid}/log-entries/{id}', LogEntryUpdate::class);
         Route::delete('/{app_uuid}/log-entries/{id}', LogEntryDelete::class);
         
-        Route::post('/{app_uuid}/next-actions', NextActionCreate::class);
-        Route::put('/{app_uuid}/next-actions/{id}', [ApplicationNextActionsController::class, 'update']);
+        Route::post('/{expertPanel:uuid}/next-actions', NextActionCreate::class);
+        Route::put('/{expertPanel:uuid}/next-actions/{nextAction:id}', [ApplicationNextActionsController::class, 'update']);
         Route::delete('/{app_uuid}/next-actions/{id}', [ApplicationNextActionsController::class, 'destroy']);
         Route::post(
-            '/{app_uuid}/next-actions/{action_uuid}/complete',
+            '/{expertPanel:uuid}/next-actions/{nextAction:uuid}/complete',
             [ApplicationNextActionsController::class, 'complete']
         );
     });

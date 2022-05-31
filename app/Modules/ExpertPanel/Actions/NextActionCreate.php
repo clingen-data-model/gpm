@@ -19,7 +19,7 @@ class NextActionCreate
      * @return void
      */
     public function handle(
-        string $expertPanelUuid,
+        ExpertPanel $expertPanel,
         string $uuid,
         string $entry,
         string $dateCreated,
@@ -28,8 +28,8 @@ class NextActionCreate
         ?int $step = null,
         ?string $assignedTo = null,
         ?string $assignedToName = null,
+        ?int $typeId = null
     ): NextAction {
-        $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         $nextAction = NextAction::make([
             'uuid' => $uuid,
             'entry' => $entry,
@@ -38,7 +38,8 @@ class NextActionCreate
             'application_step' => $step,
             'date_completed' => $dateCompleted,
             'assignee_id' => $assignedTo ?? 1,
-            'assignee_name' => $assignedToName
+            'assignee_name' => $assignedToName,
+            'type_id' => $typeId
         ]);
 
         $expertPanel->nextActions()->save($nextAction);
@@ -49,10 +50,10 @@ class NextActionCreate
         return $nextAction;
     }
 
-    public function asController($expertPanelUuid, CreateNextActionRequest $request)
+    public function asController(ExpertPanel $expertPanel, CreateNextActionRequest $request)
     {
         $na = $this->handle(
-            expertPanelUuid: $expertPanelUuid,
+            expertPanel: $expertPanel,
             uuid: $request->uuid,
             entry: $request->entry,
             dateCreated: $request->date_created,

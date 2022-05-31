@@ -31,11 +31,11 @@ class UpdateNextActionTest extends TestCase
         $this->user = $this->setupUser();
         Sanctum::actingAs($this->user);
         
-        $this->expertPanel = ExpertPanel::factory()->create();
+        $this->expertPanel = ExpertPanel::factory()->vcep()->create();
         $this->baseUrl = '/api/applications/'.$this->expertPanel->uuid.'/next-actions';
 
-        (new NextActionCreate)->handle(
-            expertPanelUuid: $this->expertPanel->uuid,
+        $this->nextAction = (new NextActionCreate)->handle(
+            expertPanel: $this->expertPanel,
             uuid: Uuid::uuid4(),
             dateCreated: '2020-01-01',
             entry: 'This is a next action',
@@ -43,7 +43,6 @@ class UpdateNextActionTest extends TestCase
             assignedTo: 1,
             step: 1
         );
-        $this->nextAction = $this->expertPanel->refresh()->nextActions->first();
     }
 
     /**

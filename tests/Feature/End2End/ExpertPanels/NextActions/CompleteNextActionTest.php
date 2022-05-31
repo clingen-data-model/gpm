@@ -31,7 +31,7 @@ class CompleteNextActionTest extends TestCase
         $this->nextAction = NextAction::factory()->make();
 
         NextActionCreate::run(
-            expertPanelUuid: $this->expertPanel->uuid,
+            expertPanel: $this->expertPanel,
             uuid: $this->nextAction->uuid,
             dateCreated: $this->nextAction->date_created,
             entry: $this->nextAction->entry,

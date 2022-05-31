@@ -29,9 +29,9 @@ class NextActionFactory extends Factory
             'entry' => $this->faker->paragraph,
             'date_created' => $this->faker->date,
             'target_date' => $this->faker->date,
-            'date_completed' => $this->faker->date,
+            'date_completed' => null,
             'step' => $this->faker->randomElement([1,2,3,4,null]),
-            'application_id' => $expertPanelId
+            'expert_panel_id' => $expertPanelId
         ];
     }
 }

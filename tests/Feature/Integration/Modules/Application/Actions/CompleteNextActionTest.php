@@ -33,7 +33,7 @@ class CompleteNextActionTest extends TestCase
     {
         $nextAction = NextAction::factory()->make();
         NextActionCreate::run(
-            expertPanelUuid: $this->expertPanel->uuid,
+            expertPanel: $this->expertPanel,
             uuid: $nextAction->uuid,
             dateCreated: $nextAction->date_created,
             entry: $nextAction->entry,
@@ -60,7 +60,7 @@ class CompleteNextActionTest extends TestCase
     {
         $nextAction = NextAction::factory()->make();
         NextActionCreate::run(
-            expertPanelUuid: $this->expertPanel->uuid,
+            expertPanel: $this->expertPanel,
             uuid: $nextAction->uuid,
             dateCreated: $nextAction->date_created,
             entry: $nextAction->entry,
