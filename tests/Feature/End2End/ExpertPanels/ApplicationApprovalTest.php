@@ -20,7 +20,7 @@ use App\Modules\ExpertPanel\Notifications\ApplicationStepApprovedNotification;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ApproveStepTest extends TestCase
+class ApplicationApprovalTest extends TestCase
 {
     use RefreshDatabase;
 
