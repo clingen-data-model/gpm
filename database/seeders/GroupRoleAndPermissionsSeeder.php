@@ -20,9 +20,9 @@ class GroupRoleAndPermissionsSeeder extends Seeder
 
         DB::beginTransaction();
 
-        DB::table('role_has_permissions')->delete();
-        DB::table('roles')->delete();
-        DB::table('permissions')->delete();
+        // DB::table('role_has_permissions')->delete();
+        // DB::table('roles')->delete();
+        // DB::table('permissions')->delete();
 
         $roles = collect(config('groups.roles'))->map(function ($role) {
             $role['scope'] = 'group';

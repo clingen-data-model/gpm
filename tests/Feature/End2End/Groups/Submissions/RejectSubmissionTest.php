@@ -5,15 +5,20 @@ namespace Tests\Feature\End2End\Groups\Submissions;
 use Carbon\Carbon;
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
+use App\Models\NextActionType;
 use App\Mail\UserDefinedMailable;
 use Illuminate\Support\Facades\Mail;
 use App\Modules\Person\Models\Person;
 use App\Modules\Group\Models\Submission;
 use Illuminate\Foundation\Testing\WithFaker;
+use App\Modules\ExpertPanel\Models\NextAction;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Database\Seeders\NextActionTypesTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
+use Database\Seeders\NextActionAssigneesTableSeeder;
+use App\Modules\ExpertPanel\Models\NextActionAssignee;
 use App\Modules\Group\Events\ApplicationRevisionsRequested;
 
 class RejectSubmissionTest extends TestCase
@@ -25,7 +30,9 @@ class RejectSubmissionTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->setupForGroupTest();    
+        $this->setupForGroupTest();
+        $this->runSeeder(NextActionTypesTableSeeder::class); 
+        $this->runSeeder(NextActionAssigneesTableSeeder::class); 
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->admin = $this->setupUserWithPerson(null, ['ep-applications-manage']);
         
@@ -34,7 +41,7 @@ class RejectSubmissionTest extends TestCase
                                 ->create([
                                     'group_id' => $this->expertPanel->group_id,
                                     'submission_type_id' => config('submissions.types.application.definition.id'),
-                                    'submitter_id' => $this->admin->person->id
+                                    'submitter_id' => $this->admin->person->id,
                                 ]);
         
         Sanctum::actingAs($this->admin);
@@ -125,6 +132,41 @@ class RejectSubmissionTest extends TestCase
         );
     }
     
+    /**
+     * @test
+     */
+    public function assigns_make_revisions_next_action_to_expert_panel()
+    {
+        $this->makeRequest()
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('next_actions', [
+            'expert_panel_id' => $this->expertPanel->id,
+            'type_id' => config('next_actions.types.make-revisions'),
+            'assignee_id' => config('next_actions.assignees.expert-panel.id')
+        ]);
+    }
+    
+    /**
+     * @test
+     */
+    public function completes_review_submission_action_if_any()
+    {
+        Carbon::setTestNow('2022-06-01');
+        $nextAction = NextAction::factory()->create([
+            'type_id' => config('next_actions.types.review-submission.id'),
+            'expert_panel_id' => $this->expertPanel->id
+        ]);
+
+        
+        $this->makeRequest()
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('next_actions', [
+            'id' => $nextAction->id,
+            'date_completed' => Carbon::now()
+        ]);
+    }
     
     
 

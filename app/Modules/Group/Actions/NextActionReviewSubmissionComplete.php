@@ -3,9 +3,12 @@
 namespace App\Modules\Group\Actions;
 
 use Carbon\Carbon;
+use App\Events\Event;
+use InvalidArgumentException;
 use Lorisleiva\Actions\Concerns\AsListener;
 use App\Modules\ExpertPanel\Models\NextAction;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Doctrine\Common\Cache\Psr6\InvalidArgument;
 use App\Modules\ExpertPanel\Events\StepApproved;
 use App\Modules\ExpertPanel\Actions\NextActionComplete;
 
@@ -30,9 +33,19 @@ class NextActionReviewSubmissionComplete
         });
     }
 
-    public function asListener(StepApproved $event): void
+    public function asListener(Event $event): void
     {
-        $this->handle($event->application);
+        $expertPanel = isset($event->application) ? $event->application : null;
+        if (!$expertPanel) {
+            if (isset($event->submission)) {
+                $expertPanel = $event->submission->group->expertPanel;
+            }
+        }
+
+        if (!$expertPanel) {
+            throw new InvalidArgumentException('Cannot get expertPanel from event of type '.get_class($event));
+        }
+        $this->handle($expertPanel);
     }
     
     

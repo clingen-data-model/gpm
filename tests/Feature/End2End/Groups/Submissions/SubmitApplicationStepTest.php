@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\End2End\Groups\Submissions;
 
-use App\Mail\ApplicationStepSubmittedReceiptMail;
-use App\Mail\ApplicationSubmissionAdminMail;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\Permission;
@@ -15,15 +13,19 @@ use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Event;
 use App\Modules\Group\Models\Submission;
 use App\Modules\Group\Models\GroupMember;
+use App\Mail\ApplicationSubmissionAdminMail;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Database\Seeders\NextActionTypesTableSeeder;
+use App\Mail\ApplicationStepSubmittedReceiptMail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
-use App\Modules\Group\Events\ApplicationStepSubmitted;
-use App\Modules\Group\Notifications\ApplicationSubmissionNotification;
 use Database\Seeders\NextActionAssigneesTableSeeder;
+use App\Modules\ExpertPanel\Actions\NextActionCreate;
+use App\Modules\Group\Events\ApplicationStepSubmitted;
 use Tests\Feature\End2End\Groups\Members\SetsUpGroupPersonAndMember;
+use App\Modules\Group\Notifications\ApplicationSubmissionNotification;
 
 /**
  * @group submissions
@@ -40,6 +42,7 @@ class SubmitApplicationStepTest extends TestCase
         $this->setupForGroupTest();
         $this->runSeeder(SubmissionTypeAndStatusSeeder::class);
         $this->runSeeder(NextActionAssigneesTableSeeder::class);
+        $this->runSeeder(NextActionTypesTableSeeder::class);
         $this->setupRoles(['super-admin']);
         $this->setupPermission(['application-edit']);
 
@@ -240,7 +243,29 @@ class SubmitApplicationStepTest extends TestCase
                 && $mailable->expertPanel->id == $this->expertPanel->id;
         });
     }
-        
+
+    /**
+     * @test
+     */
+    public function completes_pending_revise_and_resubmit_next_actions()
+    {
+        Carbon::setTestNow('2022-06-01');
+        $nextAction = app()->make(NextActionCreate::class)->handle(
+            expertPanel: $this->expertPanel,
+            entry: config('next_actions.types.make-revisions.default_entry'),
+            dateCreated: Carbon::now(),
+            typeId: config('next_actions.types.make-revisions.id')
+        );
+
+        $this->makeRequest()->assertStatus(201);
+
+        $this->assertDatabaseHas('next_actions', [
+            'id' => $nextAction->id,
+            'date_completed' => Carbon::now()
+        ]);
+    }
+    
+    
     /**
      * @test
      */

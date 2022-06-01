@@ -17,11 +17,13 @@ use App\Modules\Group\Actions\EventApplicationPublish;
 use App\Modules\Group\Events\ApplicationStepSubmitted;
 use App\Modules\ExpertPanel\Events\ApplicationCompleted;
 use App\Modules\Groups\Events\PublishableApplicationEvent;
+use App\Modules\Group\Events\ApplicationRevisionsRequested;
 use App\Modules\Group\Actions\ApplicationSubmissionReceiptSend;
 use App\Modules\Group\Actions\NextActionReviewSubmissionComplete;
 use App\Modules\Group\Actions\ApplicationSubmissionMailAdminGroup;
 use App\Modules\Group\Actions\ApplicationSubmissionAssignNextAction;
 use App\Modules\Group\Actions\ApplicationSubmissionNotificationSend;
+use App\Modules\Group\Actions\ApplicationRevisionsRequestedAssignNextAction;
 
 class GroupModuleServiceProvider extends ModuleServiceProvider
 {
@@ -30,6 +32,10 @@ class GroupModuleServiceProvider extends ModuleServiceProvider
             ApplicationSubmissionMailAdminGroup::class,
             ApplicationSubmissionReceiptSend::class,
             ApplicationSubmissionAssignNextAction::class
+        ],
+        ApplicationRevisionsRequested::class => [
+            ApplicationRevisionsRequestedAssignNextAction::class,
+            NextActionReviewSubmissionComplete::class
         ],
         ApplicationCompleted::class => [GroupStatusUpdate::class],
         GenesAdded::class => [NotifyGenesAdded::class],

@@ -39,7 +39,7 @@ return [
             'id' => 2,
             'name' => 'make revisions',
             'description' => 'The group has application revisions to complted',
-            'default_entry' => 'Make requested revisions.'
+            'default_entry' => 'Update application and resubmit for approval.'
         ]
     ]
 
