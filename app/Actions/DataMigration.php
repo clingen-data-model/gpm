@@ -2,10 +2,8 @@
 namespace App\Actions;
 
 use Carbon\Carbon;
-use App\Models\Event;
 use Ramsey\Uuid\Uuid;
 use App\Models\Document;
-use App\Models\LogEntry;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Modules\Group\Models\Group;
