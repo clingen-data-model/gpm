@@ -1,4 +1,31 @@
 # Change Log
+## 2022-05-31
+### Enhancements
+* Users with EP Application Management permissions can now 'Request revisions' for a submitted application.
+* Group contacts are emailed a receipt of submission when an application step is submitted.
+* Appropriate Admin Group is emailed when a group submits an application: GCWG for GCEPS, CDWG_OC for VCEPS.
+
+## 2022-05-19
+### Fixes
+* Make inactive badge gray so text is legible.
+* Fix broken evidence summary form.
+
+## 2022-04-29
+### Enhancements
+*  Add Chairs and Gene Curation Small group to next action assignees.
+### Fixes
+* Fix VCEP Gene List.
+
+## 2022-04-19
+### Enhancements
+* Add latest COI date to subgroup members export
+* Fix AnnualUpdate data export
+* 
+## 2022-04-12
+### Fixes
+* Fix bug for search-as-you-type person.
+* Set steps 1 and 4 received_date when an application is submitted.
+* 
 
 ## 2022-04-07
 ### Enhanchements

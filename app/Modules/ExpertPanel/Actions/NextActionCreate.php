@@ -9,6 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Events\NextActionAdded;
 use App\Modules\ExpertPanel\Http\Requests\CreateNextActionRequest;
+use Ramsey\Uuid\Uuid;
 
 class NextActionCreate
 {
@@ -19,26 +20,27 @@ class NextActionCreate
      * @return void
      */
     public function handle(
-        string $expertPanelUuid,
-        string $uuid,
+        ExpertPanel $expertPanel,
         string $entry,
         string $dateCreated,
+        ?string $uuid = null,
         ?string $dateCompleted = null,
         ?string $targetDate = null,
         ?int $step = null,
         ?string $assignedTo = null,
         ?string $assignedToName = null,
+        ?int $typeId = null
     ): NextAction {
-        $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         $nextAction = NextAction::make([
-            'uuid' => $uuid,
+            'uuid' => $uuid ?? Uuid::uuid4()->toString(),
             'entry' => $entry,
             'date_created' => $dateCreated,
             'target_date' => $targetDate,
             'application_step' => $step,
             'date_completed' => $dateCompleted,
             'assignee_id' => $assignedTo ?? 1,
-            'assignee_name' => $assignedToName
+            'assignee_name' => $assignedToName,
+            'type_id' => $typeId
         ]);
 
         $expertPanel->nextActions()->save($nextAction);
@@ -49,10 +51,10 @@ class NextActionCreate
         return $nextAction;
     }
 
-    public function asController($expertPanelUuid, CreateNextActionRequest $request)
+    public function asController(ExpertPanel $expertPanel, CreateNextActionRequest $request)
     {
         $na = $this->handle(
-            expertPanelUuid: $expertPanelUuid,
+            expertPanel: $expertPanel,
             uuid: $request->uuid,
             entry: $request->entry,
             dateCreated: $request->date_created,

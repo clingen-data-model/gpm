@@ -7,7 +7,7 @@
             :document-type="1" 
             :document-gets-reviewed="true"
             approve-button-label="Approve Scope and Membership"
-            @stepApproved="handleApproved"
+            @updated="this.$emit('updated')"
         >
             <template v-slot:sections>
                 <definition-review />
@@ -36,7 +36,7 @@ export default {
         // GcepOngoingPlansForm,
         DefinitionReview
     },
-    emits: ['stepApproved'],
+    emits: ['approved', 'updated'],
     data() {
         return {
         }
@@ -53,9 +53,6 @@ export default {
         // }
     },
     methods: {
-        handleApproved() {
-            this.$emit('stepApproved')
-        }
     }
 }
 </script>

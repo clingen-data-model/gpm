@@ -6,7 +6,7 @@
         :document-gets-reviewed="false"
         approve-button-label="Approve Draft Specifications"
         title="Draft ACMG Guideline Specifications"
-        @stepApproved="$emit('stepApproved')"
+        @updated="$emit('updated')"
     >
         <template v-slot:sections>
             <div class="application-section">
@@ -30,7 +30,7 @@ export default {
     props: {
         
     },
-    emits: ['stepApproved'],
+    emits: ['approved', 'updated'],
     data() {
         return {
             

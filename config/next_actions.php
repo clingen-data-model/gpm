@@ -27,5 +27,20 @@ return [
             'short_name' => 'Chairs',
             'id' => 5
         ]
+    ],
+    'types' => [
+        'review-submission' => [
+            'id' => 1,
+            'name' => 'review submission',
+            'description' => 'Admin group should review submission',
+            'default_entry' => 'Review application and respond to EP.'
+        ],
+        'make-revisions' => [
+            'id' => 2,
+            'name' => 'make revisions',
+            'description' => 'The group has application revisions to complted',
+            'default_entry' => 'Update application and resubmit for approval.'
+        ]
     ]
+
 ];

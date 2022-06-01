@@ -118,7 +118,7 @@ export default {
             default: 'Set "approve-button-label" if not overriding slot "approve-button"'
         }
     },
-    emits: ['documentUploaded', 'stepApproved', 'updated'],
+    emits: ['documentUploaded', 'approved', 'updated'],
     data() {
         return {
             showApproveForm: false,
@@ -186,12 +186,12 @@ export default {
         },
         approveStep () {
             this.$store.dispatch('applications/approveCurrentStep', {application: this.application, step: this.step})
-            this.$emit('stepApproved')
+            this.$emit('approved')
             this.$emit('updated')
         },
         handleApproved () {
             this.hideApproveForm();
-            this.$emit('stepApproved');
+            this.$emit('approved');
             this.$emit('updated');
         },
         handleUpdated () {
@@ -203,7 +203,7 @@ export default {
         },
         handleRejected () {
             this.hideRejectForm();
-            this.$emit('stepRejected');
+            this.$emit('rejected');
             this.$emit('updated');
         },
         hideRejectForm () {

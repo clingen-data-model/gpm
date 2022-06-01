@@ -2,6 +2,7 @@
 
 namespace App\Modules\Group\Actions;
 
+use App\Modules\ExpertPanel\Actions\NextActionComplete;
 use Exception;
 use Carbon\Carbon;
 use App\Modules\Group\Models\Group;
@@ -35,6 +36,7 @@ class ApplicationSubmitStep
         ]);
 
         $submission = $group->submissions()->save($submission);
+        
         // Do a couple of things I shouldn't have to do:
         // 1. fresh the instance and load the status and type (b/c not eager loading for some reason)
         $submission = $submission->fresh()->load(['status', 'type']);
@@ -44,6 +46,15 @@ class ApplicationSubmitStep
         $group = $this->setReceivedDate($group);
         
         event(new ApplicationStepSubmitted($group, $submission));
+
+        $group->expertPanel->nextActions()->ofType(config('next_actions.types.make-revisions.id'))
+            ->each(function ($nextAction) use ($group){
+                app()->make(NextActionComplete::class)->handle(
+                    expertPanel: $group->expertPanel,
+                    nextAction: $nextAction,
+                    dateCompleted: Carbon::now()
+                );
+            });
 
         return $submission;
     }

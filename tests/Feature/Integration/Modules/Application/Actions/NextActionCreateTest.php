@@ -37,7 +37,7 @@ class NextActionCreateTest extends TestCase
         $nextAction = NextAction::factory()->make();
         Event::fake();
         (new NextActionCreate)->handle(
-            expertPanelUuid: $this->expertPanel->uuid,
+            expertPanel: $this->expertPanel,
             uuid: $nextAction->uuid,
             dateCreated: $nextAction->date_created,
             entry: $nextAction->entry,
@@ -56,7 +56,7 @@ class NextActionCreateTest extends TestCase
     {
         $nextAction = NextAction::factory()->make(['step'=>3]);
         (new NextActionCreate)->handle(
-            expertPanelUuid: $this->expertPanel->uuid,
+            expertPanel: $this->expertPanel,
             uuid: $nextAction->uuid,
             dateCreated: $nextAction->date_created,
             entry: $nextAction->entry,

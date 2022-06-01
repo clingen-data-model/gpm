@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\End2End\Groups\Submissions;
 
-use App\Mail\ApplicationStepSubmittedReceiptMail;
-use App\Mail\ApplicationSubmissionAdminMail;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\Permission;
@@ -15,14 +13,19 @@ use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Event;
 use App\Modules\Group\Models\Submission;
 use App\Modules\Group\Models\GroupMember;
+use App\Mail\ApplicationSubmissionAdminMail;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Database\Seeders\NextActionTypesTableSeeder;
+use App\Mail\ApplicationStepSubmittedReceiptMail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
+use Database\Seeders\NextActionAssigneesTableSeeder;
+use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use App\Modules\Group\Events\ApplicationStepSubmitted;
-use App\Modules\Group\Notifications\ApplicationSubmissionNotification;
 use Tests\Feature\End2End\Groups\Members\SetsUpGroupPersonAndMember;
+use App\Modules\Group\Notifications\ApplicationSubmissionNotification;
 
 /**
  * @group submissions
@@ -38,6 +41,8 @@ class SubmitApplicationStepTest extends TestCase
         parent::setup();
         $this->setupForGroupTest();
         $this->runSeeder(SubmissionTypeAndStatusSeeder::class);
+        $this->runSeeder(NextActionAssigneesTableSeeder::class);
+        $this->runSeeder(NextActionTypesTableSeeder::class);
         $this->setupRoles(['super-admin']);
         $this->setupPermission(['application-edit']);
 
@@ -238,35 +243,67 @@ class SubmitApplicationStepTest extends TestCase
                 && $mailable->expertPanel->id == $this->expertPanel->id;
         });
     }
-    
 
     /**
      * @test
      */
-    // public function notification_store_in_database()
-    // {
-    //     $admin = $this->setupUser();
-    //     $admin->person()->save(Person::factory()->make());
-    //     $admin->assignRole('super-admin');
-        
-    //     $this->makeRequest();
-
-    //     $this->assertDatabaseHas('notifications', [
-    //         'type' => ApplicationSubmissionNotification::class,
-    //         'notifiable_type' => Person::class,
-    //         'notifiable_id' => $admin->person->id
-    //     ]);
-    // }
-    
-    
-    
-    private function makeRequest($data = null)
+    public function completes_pending_revise_and_resubmit_next_actions()
     {
+        Carbon::setTestNow('2022-06-01');
+        $nextAction = app()->make(NextActionCreate::class)->handle(
+            expertPanel: $this->expertPanel,
+            entry: config('next_actions.types.make-revisions.default_entry'),
+            dateCreated: Carbon::now(),
+            typeId: config('next_actions.types.make-revisions.id')
+        );
+
+        $this->makeRequest()->assertStatus(201);
+
+        $this->assertDatabaseHas('next_actions', [
+            'id' => $nextAction->id,
+            'date_completed' => Carbon::now()
+        ]);
+    }
+    
+    
+    /**
+     * @test
+     */
+    public function next_action_created_for_admin_group()
+    {
+        
+        Carbon::setTestNow('2022-06-01');
+        $this->makeRequest();
+        $this->assertDatabaseHas('next_actions', [
+            'expert_panel_id' => $this->expertPanel->id,
+            'assignee_id' => config('next_actions.assignees.cdwg-oc.id'),
+            'entry' => 'Review application and respond to EP.',
+            'target_date' => Carbon::now()->addDays(14),
+            'type_id' => config('next_actions.types.review-submission.id')
+        ]);
+
+        
+        $gcep = ExpertPanel::factory()->gcep()->create();
+        $this->makeRequest(null, $gcep);
+
+        $this->assertDatabaseHas('next_actions', [
+            'expert_panel_id' => $gcep->id,
+            'assignee_id' => config('next_actions.assignees.gene-curation-small-group.id'),
+            'entry' => 'Review application and respond to EP.',
+            'target_date' => Carbon::now()->addDays(14),
+            'type_id' => config('next_actions.types.review-submission.id')
+        ]);
+    }
+    
+    
+    private function makeRequest($data = null, $expertPanel = null)
+    {
+        $expertPanel = $expertPanel ?? $this->expertPanel;
         $data = $data ?? [
             'notes' => 'Notes from the submitter!'
         ];
 
-        $url = '/api/groups/'.$this->expertPanel->group->uuid.'/application/submission';
+        $url = '/api/groups/'.$expertPanel->group->uuid.'/application/submission';
         return $this->json('post', $url, $data);
     }
     

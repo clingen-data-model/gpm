@@ -6,21 +6,27 @@ use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Carbon;
+use CreateNextActionTypesTable;
 use App\Mail\UserDefinedMailable;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
 use App\Modules\Person\Models\Person;
+use Illuminate\Support\Facades\Event;
 use App\Modules\Group\Models\Submission;
 use Illuminate\Support\Facades\Notification;
+use App\Modules\ExpertPanel\Models\NextAction;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
+use App\Modules\ExpertPanel\Events\StepApproved;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Notifications\ApplicationStepApprovedNotification;
-use Database\Seeders\SubmissionTypeAndStatusSeeder;
+use Database\Seeders\NextActionTypesTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Database\Seeders\SubmissionTypeAndStatusSeeder;
+use Database\Seeders\NextActionAssigneesTableSeeder;
+use App\Modules\ExpertPanel\Notifications\ApplicationStepApprovedNotification;
 
-class ApproveStepTest extends TestCase
+class ApplicationApprovalTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -36,6 +42,7 @@ class ApproveStepTest extends TestCase
         ContactAdd::run($this->expertPanel->uuid, $this->person->uuid);
 
         $this->user = User::factory()->create();
+        Sanctum::actingAs($this->user);
     }
 
     /**
@@ -48,7 +55,7 @@ class ApproveStepTest extends TestCase
             'notify_contacts' => false,
         ];
 
-        Sanctum::actingAs($this->user);
+        
         $this->makeRequest($approvalData)
             ->assertStatus(200)
             ->assertJson($this->expertPanel->fresh()->toArray());
@@ -71,7 +78,7 @@ class ApproveStepTest extends TestCase
 
         $badUuid = Uuid::uuid4();
 
-        Sanctum::actingAs($this->user);
+        
         $this->json('POST', '/api/applications/'.$badUuid.'/current-step/approve', $approvalData)
             ->assertStatus(404);
     }
@@ -85,7 +92,7 @@ class ApproveStepTest extends TestCase
             'date_approved' => 'Carbon::now()',
         ];
 
-        Sanctum::actingAs($this->user);
+        
         $this->makeRequest($approvalData)
             ->assertStatus(422)
             ->assertJsonFragment(['date_approved' => ['The date approved is not a valid date.']]);
@@ -102,7 +109,7 @@ class ApproveStepTest extends TestCase
         ];
 
         Mail::fake();
-        Sanctum::actingAs($this->user);
+        
         $this->makeRequest($approvalData)
             ->assertStatus(200);
 
@@ -133,7 +140,7 @@ class ApproveStepTest extends TestCase
 
         Mail::fake();
 
-        Sanctum::actingAs($this->user);
+        
         $this->makeRequest($approvalData);
 
         Mail::assertSent(
@@ -167,7 +174,7 @@ class ApproveStepTest extends TestCase
 
         Notification::fake();
 
-        Sanctum::actingAs($this->user);
+        
         $this->makeRequest($approvalData)
             ->assertStatus(200);
 
@@ -211,7 +218,7 @@ class ApproveStepTest extends TestCase
             'submitter_id' => $person->id,
         ]);
 
-        Sanctum::actingAs($this->user);
+        
         $this->makeRequest([
             'date_approved' => Carbon::now(),
             'notify_contacts' => false,
@@ -236,7 +243,7 @@ class ApproveStepTest extends TestCase
             'submitter_id' => $person->id,
         ]);
 
-        Sanctum::actingAs($this->user);
+        
         $this->makeRequest([
             'date_approved' => Carbon::now(),
             'notify_contacts' => false,
@@ -265,7 +272,7 @@ class ApproveStepTest extends TestCase
             'submitter_id' => $person->id,
         ]);
 
-        Sanctum::actingAs($this->user);
+        
         $this->makeRequest([
             'date_approved' => Carbon::now(),
             'notify_contacts' => false,
@@ -277,9 +284,33 @@ class ApproveStepTest extends TestCase
         ]);
     }
 
+    /**
+     * @test
+     */
+    public function completes_review_submission_next_action_if_any_pending()
+    {
+        Carbon::setTestNow('2022-06-01');
+        $this->runSeeder(NextActionAssigneesTableSeeder::class);
+        $this->runSeeder(NextActionTypesTableSeeder::class);
+        $nextAction = NextAction::factory()->create([
+            'type_id' => config('next_actions.types.review-submission.id'),
+            'expert_panel_id' => $this->expertPanel->id
+        ]);
+
+        
+        $this->makeRequest()
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('next_actions', [
+            'id' => $nextAction->id,
+            'date_completed' => Carbon::now()
+        ]);
+    }
+    
+
     private function makeRequest($data = null)
     {
-        $data = $data ?? [];
+        $data = $data ?? ['date_approved' => '2020-01-01'];
 
         return $this->json('POST', '/api/applications/'.$this->expertPanel->group->uuid.'/current-step/approve', $data);
     }

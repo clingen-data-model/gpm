@@ -29,7 +29,8 @@ class NextAction extends Model
         'assignee_id',
         'assignee_name',
         'assigned_to',
-        'assigned_to_name'
+        'assigned_to_name',
+        'type_id'
     ];
 
     protected $casts = [
@@ -39,7 +40,8 @@ class NextAction extends Model
         'assignee_id' => 'int',
         'date_created' => 'datetime',
         'date_completed' => 'datetime',
-        'target_date' => 'datetime'
+        'target_date' => 'datetime',
+        'type_id' => 'int'
     ];
 
     protected $with = ['assignee'];
@@ -60,10 +62,31 @@ class NextAction extends Model
         return $this->belongsTo(NextActionAssignee::class, 'assignee_id', 'id');
     }
 
+    /**
+     * Get the type that owns the NextAction
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(NextActionType::class, 'type_id');
+    }
+
     public function scopePending($query)
     {
         return $query->whereNull('date_completed');
     }
+
+    public function scopeOfType($query, $type)
+    {
+        $typeId = $type;
+        if (is_object($type)) {
+            $typeId = $type->id;
+        }
+
+        return $query->where('type_id', $typeId);
+    }
+    
 
     /**
      * ACCESSORS

@@ -94,7 +94,6 @@ export default {
     },
     computed: {
         fields () {
-            console.log(fields.map(f => f.name))
             if (this.group.group_type_id == 4 && !fields.map(f => f.name).includes('step')) {
                 fields.splice(2, 0, {
                     name: 'step',

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Integration\Modules\Application\Actions;
 
+use Carbon\Carbon;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -33,7 +34,7 @@ class CompleteNextActionTest extends TestCase
     {
         $nextAction = NextAction::factory()->make();
         NextActionCreate::run(
-            expertPanelUuid: $this->expertPanel->uuid,
+            expertPanel: $this->expertPanel,
             uuid: $nextAction->uuid,
             dateCreated: $nextAction->date_created,
             entry: $nextAction->entry,
@@ -45,8 +46,8 @@ class CompleteNextActionTest extends TestCase
         Event::fake();
 
         NextActionComplete::run(
-            expertPanelUuid: $this->expertPanel->uuid,
-            nextActionUuid: $nextAction->uuid,
+            expertPanel: $this->expertPanel,
+            nextAction: $nextAction,
             dateCompleted: '2021-02-01'
         );
 
@@ -58,20 +59,17 @@ class CompleteNextActionTest extends TestCase
      */
     public function NextActionCompleted_logged()
     {
-        $nextAction = NextAction::factory()->make();
-        NextActionCreate::run(
-            expertPanelUuid: $this->expertPanel->uuid,
-            uuid: $nextAction->uuid,
-            dateCreated: $nextAction->date_created,
-            entry: $nextAction->entry,
-            dateCompleted: $nextAction->dateCompleted,
-            targetDate: $nextAction->targetDate,
-            step: $nextAction->step
+         $nextAction = NextActionCreate::run(
+            expertPanel: $this->expertPanel,
+            dateCreated: Carbon::now(),
+            entry: 'Some nextAction',
+            dateCompleted: Carbon::now(),
+            targetDate: Carbon::now()->addDays(14),
         );
 
-        NextActionComplete::run(
-            expertPanelUuid: $this->expertPanel->uuid,
-            nextActionUuid: $nextAction->uuid,
+        app()->make(NextActionComplete::class)->handle(
+            expertPanel: $this->expertPanel,
+            nextAction: $nextAction,
             dateCompleted: '2021-02-01'
         );
 

@@ -26,9 +26,9 @@ class NextActionDelete
      *
      * @return void
      */
-    public function handle(string $expertPanelUuid, $nextActionId)
+    public function handle(ExpertPanel $expertPanel, $nextActionId)
     {
-        ExpertPanel::findByUuidOrFail($expertPanelUuid)
+        $expertPanel
             ->nextActions()
             ->findOrFail($nextActionId)
             ->delete();

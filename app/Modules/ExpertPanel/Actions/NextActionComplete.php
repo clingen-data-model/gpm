@@ -1,10 +1,11 @@
 <?php
 namespace App\Modules\ExpertPanel\Actions;
 
-use App\Modules\ExpertPanel\Models\NextAction;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Modules\ExpertPanel\Models\NextAction;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Events\NextActionCompleted;
 
@@ -12,11 +13,8 @@ class NextActionComplete
 {
     use AsAction;
 
-    public function handle(string $expertPanelUuid, string $nextActionUuid, ?string $dateCompleted)
+    public function handle(ExpertPanel $expertPanel, NextAction $nextAction, ?string $dateCompleted)
     {
-        $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
-        $nextAction = NextAction::findByUuidOrFail($nextActionUuid);
-
         $nextAction->date_completed = $dateCompleted;
         $nextAction->save();
         $expertPanel->touch();
@@ -25,4 +23,17 @@ class NextActionComplete
 
         return $nextAction;
     }
+
+    public function asController(ActionRequest $request, ExpertPanel $expertPanel, NextAction $nextAction)
+    {
+        return $this->handle($expertPanel, $nextAction, $request->date_completed);
+    }
+
+    public function rules(): array
+    {
+        return [
+            'date_completed' => 'required|date'
+        ];
+    }
+    
 }

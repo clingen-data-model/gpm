@@ -8,13 +8,17 @@ use Illuminate\Support\Facades\Event;
 use App\Modules\Foundation\ClassGetter;
 use Illuminate\Support\ServiceProvider;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Events\StepApproved;
 use App\Modules\Foundation\ModuleServiceProvider;
 use App\Modules\ExpertPanels\Policies\ExpertPanelPolicy;
+use App\Modules\Group\Actions\NextActionReviewSubmissionComplete;
 
 class ExpertPanelModuleServiceProvider extends ModuleServiceProvider
 {
     protected $listeners = [
-        // EventClass::class => [ListenerClass::class]
+        StepApproved::class => [
+            NextActionReviewSubmissionComplete::class
+        ]
     ];
 
     protected $policies = [
