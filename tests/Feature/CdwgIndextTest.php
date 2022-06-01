@@ -3,11 +3,10 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use App\Models\Cdwg;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
+use App\Modules\Group\Models\Group;
 use Database\Seeders\GroupTypeSeeder;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CdwgIndextTest extends TestCase
@@ -19,11 +18,11 @@ class CdwgIndextTest extends TestCase
         parent::setup();
         $this->runSeeder(GroupTypeSeeder::class);
         
-        // Cdwg::all()->each->delete();
+        Group::cdwg()->get()->each->delete();
         $this->user = User::factory()->create();
         Sanctum::actingAs($this->user);
     
-        $this->cdwgs = Cdwg::factory()->count(13)->create();
+        $this->cdwgs = Group::factory()->cdwg()->count(10)->create();
     }
         
     /**

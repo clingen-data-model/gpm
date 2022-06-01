@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Cdwg;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Database\Seeder;
 use App\Modules\Group\Models\Group;

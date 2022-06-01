@@ -3,10 +3,9 @@
 namespace Tests\Feature\End2End\ExpertPanels;
 
 use Tests\TestCase;
-use App\Models\Cdwg;
-use App\Modules\User\Models\User;
 use Ramsey\Uuid\Uuid;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Modules\User\Models\User;
+use App\Modules\Group\Models\Group;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -20,7 +19,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
         $this->setupForGroupTest();
 
         $this->user = User::factory()->create();
-        $this->cdwg = Cdwg::factory()->create();
+        $this->cdwg = Group::factory()->cdwg()->create();
 
         $this->longText = "Sint nisi commodo nisi tempor adipisicing. Velit officia exercitation voluptate anim consequat eiusmod nisi officia consequat duis aute enim. Eu cupidatat nostrud dolore esse exercitation tempor anim magna ex eiusmod incididunt pariatur. Laboris est eu aup";
     }

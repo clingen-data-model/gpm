@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use Carbon\Carbon;
-use App\Models\Cdwg;
 use Ramsey\Uuid\Uuid;
 use App\Modules\Group\Models\Group;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
