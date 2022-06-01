@@ -39,7 +39,6 @@ class CompleteNextActionTest extends TestCase
             targetDate: $this->nextAction->targetDate,
             step: $this->nextAction->step
         );
-        $this->url = 'api/applications/'.$this->expertPanel->uuid.'/next-actions/'.$this->nextAction->uuid.'/complete';
         Sanctum::actingAs($this->user);
     }
 
@@ -48,11 +47,41 @@ class CompleteNextActionTest extends TestCase
      */
     public function can_mark_next_action_complete()
     {
-        $this->json('POST', $this->url, ['date_completed' => '2021-01-01'])
+        $this->makeRequest()
             ->assertStatus(200)
             ->assertJsonFragment([
                 'uuid' => $this->nextAction->uuid,
                 'date_completed' => Carbon::parse('2021-01-01')->toJson()
             ]);
     }
+    
+    /**
+     * @test
+     */
+    public function validates_input()
+    {
+        $this->makeRequest([])
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                'date_completed' => ['This is required.']
+            ]);
+
+        $this->makeRequest(['date_completed' => 'early dog'])
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                'date_completed' => ['The date completed is not a valid date.']
+            ]);
+    }
+
+    private function makeRequest($data = null)
+    {
+        $data = $data ?? ['date_completed' => '2021-01-01'];
+        return $this->json(
+            'POST', 
+            'api/applications/'.$this->expertPanel->uuid.'/next-actions/'.$this->nextAction->uuid.'/complete', 
+            $data
+        );
+    }
+    
+    
 }

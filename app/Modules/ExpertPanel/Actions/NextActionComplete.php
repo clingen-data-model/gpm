@@ -28,4 +28,12 @@ class NextActionComplete
     {
         return $this->handle($expertPanel, $nextAction, $request->date_completed);
     }
+
+    public function rules(): array
+    {
+        return [
+            'date_completed' => 'required|date'
+        ];
+    }
+    
 }
