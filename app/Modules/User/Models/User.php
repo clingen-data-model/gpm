@@ -2,7 +2,7 @@
 
 namespace App\Modules\User\Models;
 
-use App\Models\HasEmail;
+use App\Models\Traits\HasEmail;
 use Laravel\Sanctum\HasApiTokens;
 use App\Modules\Group\Models\Group;
 use Database\Factories\UserFactory;

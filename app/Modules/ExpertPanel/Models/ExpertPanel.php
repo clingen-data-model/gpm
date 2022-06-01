@@ -2,7 +2,7 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
-use App\Models\HasUuid;
+use App\Models\Traits\HasUuid;
 use App\Models\Document;
 use App\Models\AnnualUpdate;
 use Illuminate\Support\Carbon;

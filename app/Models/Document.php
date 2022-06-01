@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\HasUuid;
+use App\Models\Traits\HasUuid;
 use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Model;

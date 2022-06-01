@@ -3,9 +3,9 @@
 namespace App\Modules\Person\Models;
 
 use App\Models\Email;
-use App\Models\HasUuid;
+use App\Models\Traits\HasUuid;
 use App\Models\Activity;
-use App\Models\HasEmail;
+use App\Models\Traits\HasEmail;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Race;
