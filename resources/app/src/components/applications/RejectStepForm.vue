@@ -115,14 +115,11 @@ export default {
             }
         },
         getEmailTemplate () {
-            console.log('get template email');
             api.get(`/api/email-drafts/groups/${this.group.uuid}`, 
                 {params: {templateClass: 'App\\Mail\\UserDefinedMailTemplates\\ApplicationRevisionRequestTemplate'}})
                 .then(response => {
-                    console.log('email template got')
                     this.email = response.data;
                     this.email['files'] = [];
-                    console.log(this.email);
                 })
 
         }

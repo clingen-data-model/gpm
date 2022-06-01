@@ -3,7 +3,7 @@
         :step="3"
         approve-button-label="Approve Pilot and Specifications"
         title="Pilot ACMG Guideline Specificiations"
-        @stepApproved="$emit('stepApproved')"
+        @updated="$emit('updated')"
     >
         <template v-slot:document>
             <div>
@@ -66,7 +66,7 @@ export default {
     props: {
         
     },
-    emits: ['stepApproved'],
+    emits: ['approved', 'updated'],
     data() {
         return {
             

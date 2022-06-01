@@ -35,7 +35,10 @@
 
             <tabs-container>
                 <tab-item label="Application">
-                    <step-tabs :application="application" @updated="getGroup" />
+                    <step-tabs :application="application" 
+                        @updated="getGroup" 
+                        @approved="getGroup"
+                    />
                 </tab-item>
 
                 <tab-item label="Application Log">
@@ -132,6 +135,7 @@ export default {
             }
         },
         async getGroup () {
+            console.log('getGroup');
             await this.$store.dispatch('groups/findAndSetCurrent', this.uuid);
             this.$store.dispatch('groups/getDocuments', this.group);
             this.$store.dispatch('groups/getNextActions', this.group);

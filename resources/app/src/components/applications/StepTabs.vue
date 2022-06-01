@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-if="application.isGcep">
-            <step-one @stepApproved="handleApproved" @updated="$emit('updated')"></step-one>
+            <step-one @stepApproved="handleApproved" @updated="handleUpdated"></step-one>
         </div>
             <tabs-container 
                 tab-location="right" 
@@ -9,16 +9,16 @@
                 v-if="this.application.expert_panel_type_id == 2"
             >
             <tab-item label="Group Definition">
-                <step-one @stepApproved="handleApproved" @updated="$emit('updated')"></step-one>
+                <step-one @stepApproved="handleApproved" @updated="handleUpdated"></step-one>
             </tab-item>
             <tab-item label="Draft Specifications">
-                <step-two @stepApproved="handleApproved" @updated="$emit('updated')"></step-two>
+                <step-two @stepApproved="handleApproved" @updated="handleUpdated"></step-two>
             </tab-item>
             <tab-item label="Pilot Specfications">
-                <step-three @stepApproved="handleApproved" @updated="$emit('updated')"></step-three>
+                <step-three @stepApproved="handleApproved" @updated="handleUpdated"></step-three>
             </tab-item>
             <tab-item label="Sustained Curation">
-                <step-four @stepApproved="handleApproved" @updated="$emit('updated')"></step-four>
+                <step-four @stepApproved="handleApproved" @updated="handleUpdated"></step-four>
             </tab-item>
         </tabs-container>
 
@@ -38,7 +38,7 @@ export default {
         StepThree,
         StepFour,
     },
-    emits: ['stepApproved'],
+    emits: ['approved', 'updated'],
     data() {
         return {
             activeStep: 1
@@ -64,16 +64,14 @@ export default {
     },
     methods: {
         handleApproved () {
-            this.$emit('stepApproved')
+            console.log('StepTabs - approved');
+            this.$emit('approved');
+            this.$emit('updated');
+        },
+        handleUpdated () {
+            console.log('StepTabs - updated');
+            this.$emit('updated')
         }
     }
-    // watch: {
-    //     application: {
-    //         deep: true,
-    //         handler: function () {
-    //             this.activeStep = this.application.current_step
-    //         }
-    //     }
-    // }
 }
 </script>
