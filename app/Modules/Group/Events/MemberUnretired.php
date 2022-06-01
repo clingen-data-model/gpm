@@ -7,7 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use App\Modules\Groups\Events\PublishableApplicationEvent;
+use App\Modules\Group\Events\PublishableApplicationEvent;
 
 class MemberUnretired extends GroupMemberEvent implements PublishableApplicationEvent
 {
