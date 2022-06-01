@@ -9,8 +9,11 @@ use App\Modules\ExpertPanel\Actions\LogEntryDelete;
 use App\Modules\ExpertPanel\Actions\LogEntryUpdate;
 use App\Modules\ExpertPanel\Actions\CoiResponseStore;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
+use App\Modules\ExpertPanel\Actions\NextActionDelete;
+use App\Modules\ExpertPanel\Actions\NextActionUpdate;
 use App\Modules\ExpertPanel\Actions\ExpertPanelCreate;
 use App\Modules\ExpertPanel\Actions\ExpertPanelDelete;
+use App\Modules\ExpertPanel\Actions\NextActionComplete;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentDelete;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentUpdate;
@@ -22,8 +25,6 @@ use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationLogController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationStepController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationContactController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\NextActionAssigneeController;
-use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationDocumentController;
-use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationNextActionsController;
 
 Route::get('/next-actions/assignees', [NextActionAssigneeController::class, 'index']);
 
@@ -66,11 +67,11 @@ Route::group([
         Route::delete('/{app_uuid}/log-entries/{id}', LogEntryDelete::class);
         
         Route::post('/{expertPanel:uuid}/next-actions', NextActionCreate::class);
-        Route::put('/{expertPanel:uuid}/next-actions/{nextAction:id}', [ApplicationNextActionsController::class, 'update']);
-        Route::delete('/{app_uuid}/next-actions/{id}', [ApplicationNextActionsController::class, 'destroy']);
+        Route::put('/{expertPanel:uuid}/next-actions/{nextAction:id}', NextActionUpdate::class);
+        Route::delete('/{expertPanel:uuid}/next-actions/{id}', NextActionDelete::class);
         Route::post(
             '/{expertPanel:uuid}/next-actions/{nextAction:uuid}/complete',
-            [ApplicationNextActionsController::class, 'complete']
+            NextActionComplete::class
         );
     });
 });

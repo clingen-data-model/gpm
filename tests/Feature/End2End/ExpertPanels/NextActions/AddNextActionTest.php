@@ -4,15 +4,16 @@ namespace Tests\Feature\End2End\ExpertPanels\NextActions;
 
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
+use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\NextAction;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Models\NextActionAssignee;
 use Database\Factories\NextActionAssigneeFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Database\Seeders\NextActionAssigneesTableSeeder;
+use App\Modules\ExpertPanel\Models\NextActionAssignee;
 
 /**
  * @group next-actions
@@ -33,6 +34,7 @@ class AddNextActionTest extends TestCase
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->baseUrl = 'api/applications/'.$this->expertPanel->uuid.'/next-actions';
         Carbon::setTestNow();
+        Sanctum::actingAs($this->user);
     }
 
     /**
@@ -40,7 +42,6 @@ class AddNextActionTest extends TestCase
      */
     public function user_can_create_next_action()
     {
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $this->json('POST', $this->baseUrl, [
                 'uuid' => Uuid::uuid4()->toString(),
                 'date_created' => Carbon::today(),
@@ -68,7 +69,6 @@ class AddNextActionTest extends TestCase
      */
     public function validates_required_fields()
     {
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $this->json('POST', $this->baseUrl, [])
             ->assertStatus(422)
             ->assertJsonFragment([
@@ -84,7 +84,6 @@ class AddNextActionTest extends TestCase
      */
     public function validates_field_types()
     {
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $this->json('POST', $this->baseUrl, [
                 'uuid' => 'eat-my-shorts',
                 'date_created' => 'test',

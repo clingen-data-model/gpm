@@ -13,11 +13,8 @@ class NextActionComplete
 {
     use AsAction;
 
-    public function handle(string $expertPanelUuid, string $nextActionUuid, ?string $dateCompleted)
+    public function handle(ExpertPanel $expertPanel, NextAction $nextAction, ?string $dateCompleted)
     {
-        $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
-        $nextAction = NextAction::findByUuidOrFail($nextActionUuid);
-
         $nextAction->date_completed = $dateCompleted;
         $nextAction->save();
         $expertPanel->touch();

@@ -3,8 +3,8 @@
 namespace Tests\Feature\End2End\ExpertPanels\NextActions;
 
 use Tests\TestCase;
+use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Carbon;
-use App\Modules\User\Models\User;
 use App\Modules\ExpertPanel\Models\NextAction;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -40,6 +40,7 @@ class CompleteNextActionTest extends TestCase
             step: $this->nextAction->step
         );
         $this->url = 'api/applications/'.$this->expertPanel->uuid.'/next-actions/'.$this->nextAction->uuid.'/complete';
+        Sanctum::actingAs($this->user);
     }
 
     /**
@@ -47,7 +48,6 @@ class CompleteNextActionTest extends TestCase
      */
     public function can_mark_next_action_complete()
     {
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $this->json('POST', $this->url, ['date_completed' => '2021-01-01'])
             ->assertStatus(200)
             ->assertJsonFragment([

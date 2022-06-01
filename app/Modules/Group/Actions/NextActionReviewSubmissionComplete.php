@@ -23,8 +23,8 @@ class NextActionReviewSubmissionComplete
         $nextActions = $expertPanel->nextActions()->ofType(config('next_actions.types.review-submission.id'))->get();
         $nextActions->each(function ($nextAction) use ($expertPanel) {
             $this->completeNextAction->handle(
-                expertPanelUuid: $expertPanel->uuid, 
-                nextActionUuid: $nextAction->uuid, 
+                expertPanel: $expertPanel, 
+                nextAction: $nextAction, 
                 dateCompleted: Carbon::now()
             );
         });

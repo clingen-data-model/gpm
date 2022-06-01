@@ -9,6 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Events\NextActionAdded;
 use App\Modules\ExpertPanel\Http\Requests\CreateNextActionRequest;
+use Ramsey\Uuid\Uuid;
 
 class NextActionCreate
 {
@@ -20,9 +21,9 @@ class NextActionCreate
      */
     public function handle(
         ExpertPanel $expertPanel,
-        string $uuid,
         string $entry,
         string $dateCreated,
+        ?string $uuid = null,
         ?string $dateCompleted = null,
         ?string $targetDate = null,
         ?int $step = null,
@@ -31,7 +32,7 @@ class NextActionCreate
         ?int $typeId = null
     ): NextAction {
         $nextAction = NextAction::make([
-            'uuid' => $uuid,
+            'uuid' => $uuid ?? Uuid::uuid4()->toString(),
             'entry' => $entry,
             'date_created' => $dateCreated,
             'target_date' => $targetDate,
