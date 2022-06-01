@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             NextActionAssigneesTableSeeder::class,
             EpTypesTableSeeder::class,
             NextActionAssigneesTableSeeder::class,
+            NextActionTypesTableSeeder::class,
             DocumentTypesTableSeeder::class,
             GroupTypeSeeder::class,
             GroupStatusSeeder::class,

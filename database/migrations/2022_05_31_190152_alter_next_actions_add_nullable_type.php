@@ -29,7 +29,7 @@ class AlterNextActionsAddNullableType extends Migration
     public function down()
     {
         Schema::table('next_actions', function (Blueprint $table) {
-            $table->dropIndex(['type_id']);
+            $table->dropForeign(['type_id']);
             $table->dropColumn('type_id');
         });
     }
