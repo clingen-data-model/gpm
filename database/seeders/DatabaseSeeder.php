@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
             GroupRoleAndPermissionsSeeder::class,
             RulesetStatusSeeder::class,
             RolesAndPermissionsSeeder::class,
-            UsersTableSeeder::class,
+            // UsersTableSeeder::class,
             CdwgsTableSeeder::class,
             NextActionAssigneesTableSeeder::class,
             EpTypesTableSeeder::class,
