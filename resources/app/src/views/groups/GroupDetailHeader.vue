@@ -39,8 +39,8 @@
         </dictionary-row>
         <dictionary-row label="Coordinators:">
             <template v-slot:label><strong>Coordinators:</strong></template>
-            <div v-if="coordinators.length > 0">
-                {{coordinators.map(c => c.person.name).join(', ')}}
+            <div v-if="group.coordinators.length > 0">
+                {{group.coordinators.map(c => c.person.name).join(', ')}}
             </div>
             <div class="text-gray-500" v-else>
                 None assigned
@@ -67,12 +67,12 @@ export default {
         // are identical getters except for the role being filtered on. But since 
         // both work when the data is first loaded I don't know why chairs updates on 
         // member change and coordinators.
-        coordinators: function() {
-            if (!this.group) {
-                return [];
-            }
-            return this.group.members.filter(m => m.hasRole('coordinator'));
-        },
+        // coordinators: function() {
+        //     if (!this.group) {
+        //         return [];
+        //     }
+        //     return this.group.members.filter(m => m.hasRole('coordinator'));
+        // },
         showShortName () {
             return this.group.expert_panel.short_base_name !== this.group.expert_panel.long_base_name;
         }
