@@ -17,7 +17,7 @@ class AnnualUpdateController extends Controller
             ->select(['id', 'expert_panel_id', 'submitter_id', 'completed_at'])
             ->with([
                     'expertPanel' => function ($query) {
-                        $query->select(['id', 'expert_panel_type_id', 'long_base_name']);
+                        $query->with('group')->select(['id', 'expert_panel_type_id', 'long_base_name', 'group_id']);
                     },
                     'submitter' => function ($query) {
                         $query->select(['id', 'person_id']);
