@@ -1,5 +1,7 @@
 <?php
 
+use Carbon\Carbon;
+
 if (!function_exists('renderQuery')) {
     function renderQuery($query)
     {
@@ -14,5 +16,11 @@ if (!function_exists('backtrace')) {
         return array_map(function ($result) {
             return $result['file'].':'.$result['line'];
         }, debug_backtrace(null, $limit));
+    }
+}
+
+if (!function_exists('carbonToString')) {
+    function carbonToString(?Carbon $carbon, $format = 'Y-m-d H:i:s') {
+        return $carbon ? $carbon->format($format) : null;
     }
 }
