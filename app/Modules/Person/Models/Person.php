@@ -94,6 +94,26 @@ class Person extends Model implements HasLogEntries
     {
         return $this->groups()->whereNull('group_members.end_date');
     }
+   
+    /**
+     * The expertPanels that belong to the Person
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function expertPanels(): BelongsToMany
+    {
+        return $this->groups()->typeExpertPanel();
+    }
+
+    /**
+     * The activeExpertPanels that belong to the Person
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function activeExpertPanels(): BelongsToMany
+    {
+        return $this->activeGroups()->typeExpertPanel();
+    }
     
     // /**
     //  * @return \Illuminate\Database\Eloquent\Relations\MorphMany

@@ -4,6 +4,7 @@ namespace App\Modules\Person\Models;
 
 use Database\Factories\CountryFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -35,6 +36,17 @@ class Country extends Model
     protected $casts = [
         'id' => 'integer',
     ];
+
+
+    /**
+     * Get all of the people for the Country
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function people(): HasMany
+    {
+        return $this->hasMany(Person::class);
+    }
 
     // Factory
     protected static function newFactory()
