@@ -1,4 +1,8 @@
 # Change Log
+
+## 2022-06-13
+* Summary and VCEP application reports have been added for users with the 'Pull Reports' permission.  Super-users, super-admins, and admins have been granted the permission.
+
 ## 2022-05-31
 ### Enhancements
 * Users with EP Application Management permissions can now 'Request revisions' for a submitted application.
