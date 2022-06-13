@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Groups\Events;
+namespace App\Modules\Group\Events;
 
 use Carbon\Carbon;
 use App\Events\Event;

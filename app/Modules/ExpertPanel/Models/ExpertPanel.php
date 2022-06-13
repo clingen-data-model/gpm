@@ -2,9 +2,9 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
-use App\Models\HasUuid;
 use App\Models\Document;
 use App\Models\AnnualUpdate;
+use App\Models\Traits\HasUuid;
 use Illuminate\Support\Carbon;
 use App\Models\Contracts\HasNotes;
 use App\Modules\Group\Models\Group;
@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Modules\ExpertPanel\Models\EvidenceSummary;
 use App\Modules\ExpertPanel\Models\ExpertPanelType;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Modules\Group\Models\Contracts\BelongsToGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -188,6 +189,11 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
             ->contact();
     }
 
+    public function members(): Relation
+    {
+        return $this->hasMany(GroupMember::class, 'group_id', 'group_id');
+    }
+
     public function nextActions()
     {
         return $this->hasMany(NextAction::class);
@@ -310,6 +316,16 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
      * SCOPES
      */
 
+    public function scopeApproved($query)
+    {
+        return $query->whereNotNull('date_completed');
+    }
+
+    public function scopeApplying($query)
+    {
+        return $query->whereNull('date_completed');
+    }
+
     public function scopeDefinitionApproved($query)
     {
         return $query->whereNotNull('step_1_approval_date');
@@ -329,6 +345,17 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     {
         return $query->whereNotNull('step_4_approval_date');
     }
+
+    public function scopeTypeGcep($query)
+    {
+        return $query->where('expert_panel_type_id', config('expert_panels.types.gcep.id'));
+    }
+    
+    public function scopeTypeVcep($query)
+    {
+        return $query->where('expert_panel_type_id', config('expert_panels.types.vcep.id'));
+    }
+    
 
     // Access methods
 
@@ -395,11 +422,17 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
     public function getIsVcepAttribute(): bool
     {
+        if (!$this->group) {
+            return false;
+        }
         return $this->group->isVcep;
     }
 
     public function getIsGcepAttribute(): bool
     {
+        if (!$this->group) {
+            return false;
+        }
         return $this->group->isGcep;
     }
 
@@ -454,6 +487,9 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
     private function addEpTypeSuffix($string)
     {
+        if (!$this->type) {
+            return $string;
+        }
         return $string.' '.$this->type->display_name;
     }
 

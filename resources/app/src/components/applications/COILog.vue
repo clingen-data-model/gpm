@@ -108,7 +108,7 @@ export default {
             this.$refs.mailtobutton.click()
         },
         getReport() {
-            const reportUrl = `/report/${this.application.coi_code}`
+            const reportUrl = `/api/report/${this.application.coi_code}`
             window.location = reportUrl;
         },
 

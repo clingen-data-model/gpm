@@ -3,14 +3,10 @@
 namespace Tests\Feature\End2End\ExpertPanels;
 
 use Tests\TestCase;
-use App\Models\Cdwg;
-use Ramsey\Uuid\Uuid;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
-use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Modules\ExpertPanel\Models\ExpertPanelType;
 
 class InitiationTest extends TestCase
 {

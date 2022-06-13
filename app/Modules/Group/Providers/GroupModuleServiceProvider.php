@@ -16,7 +16,7 @@ use App\Modules\Group\Actions\NotifyGenesRemoved;
 use App\Modules\Group\Actions\EventApplicationPublish;
 use App\Modules\Group\Events\ApplicationStepSubmitted;
 use App\Modules\ExpertPanel\Events\ApplicationCompleted;
-use App\Modules\Groups\Events\PublishableApplicationEvent;
+use App\Modules\Group\Events\PublishableApplicationEvent;
 use App\Modules\Group\Events\ApplicationRevisionsRequested;
 use App\Modules\Group\Actions\ApplicationSubmissionReceiptSend;
 use App\Modules\Group\Actions\NextActionReviewSubmissionComplete;

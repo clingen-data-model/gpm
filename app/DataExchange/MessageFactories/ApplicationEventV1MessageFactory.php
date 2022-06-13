@@ -26,7 +26,7 @@ use App\Modules\Group\Events\MemberRoleAssigned;
 use App\Modules\Group\Events\GeneRemovedApproved;
 use App\Modules\Group\Events\MemberPermissionRevoked;
 use App\Modules\Group\Events\MemberPermissionsGranted;
-use App\Modules\Groups\Events\PublishableApplicationEvent;
+use App\Modules\Group\Events\PublishableApplicationEvent;
 use App\DataExchange\MessageFactories\MessageFactoryInterface;
 
 class ApplicationEventV1MessageFactory implements MessageFactoryInterface

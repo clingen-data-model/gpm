@@ -13,7 +13,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Support\Carbon as SupportCarbon;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use App\Modules\Groups\Events\PublishableApplicationEvent;
+use App\Modules\Group\Events\PublishableApplicationEvent;
 
 class StepApproved extends ExpertPanelEvent implements PublishableApplicationEvent
 {

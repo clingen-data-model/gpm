@@ -59,7 +59,7 @@ class Gene extends Model
      */
     public function expertPanel()
     {
-        return $this->belongsTo(\App\Models\ExpertPanel::class);
+        return $this->belongsTo(ExpertPanel::class);
     }
 
     /**
@@ -80,6 +80,20 @@ class Gene extends Model
     public function disease(): BelongsTo
     {
         return $this->belongsTo(GtDisease::class, 'mondo_id', 'mondo_id');
+    }
+
+    /**
+     * SCOPES
+     */
+
+    public function scopeApproved($query)
+    {
+       return $query->whereNotNull('date_approved');
+    }
+
+    public function scopeApplying($query)
+    {
+        return $query->whereNull('date_approved');
     }
 
     public static function newFactory()

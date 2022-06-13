@@ -100,12 +100,20 @@ return [
             'description' => 'Create and update applications; create a new annual update window.',
             'guard_name' => 'web',
             'scope' => 'system'
+        ],
+        'reports-pull' => [
+            'id' => 6,
+            'name' => 'reports-pull',
+            'display_name' => 'Pull Reports',
+            'description' => 'Can pull predefined reports.',
+            'guard_name' => 'web',
+            'scope' => 'system'
         ]
     ],
 
     'role_permissions' => [
-        'super-user' => [1,2,3,4,5,10,20,30,40],
-        'super-admin' => [1,3,4,5,10,20,30,40],
-        'admin' => [3,4,10,20]
+        'super-user' => [1,2,3,4,5,6,10,20,30,40,],
+        'super-admin' => [1,3,4,5,6,10,20,30,40],
+        'admin' => [3,4,6,10,20]
     ]
 ];

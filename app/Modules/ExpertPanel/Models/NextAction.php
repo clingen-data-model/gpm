@@ -2,7 +2,7 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
-use App\Models\HasUuid;
+use App\Models\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
 use Database\Factories\NextActionFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;

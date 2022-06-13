@@ -28,19 +28,18 @@ class UserController extends Controller
             whereFunction: function ($query, $where) {
                 foreach ($where as $key => $value) {
                     if ($key == 'filterString') {
-                        if (preg_match('/@/', $value)) {
-                            $query->WhereFullText(['email'], preg_replace('/\./', '', $value), [], 'or');
-                        } else {
-                            $query->whereFullText(['name'], $value.'*', ['mode' => 'boolean'])
-                                ->orWhereFullText(['email'], $value.'*', ['mode' => 'boolean']);
-
-                        }
-                        $query->orwhereHas('roles', function ($q) use ($value) {
-                            $q->where('display_name', 'like', '%'.$value.'%');
-                        });
-                        $query->orWhereHas('permissions', function ($q) use ($value) {
-                            $q->where('display_name', 'like', '%'.$value.'%');
-                        });
+                        $query->where('users.email', 'like', '%'.$value.'%')
+                            ->orWhereHas('person', function ($q) use ($value) {
+                                $q->where('first_name', 'like', '%'.$value.'%')
+                                    ->orWhere('last_name', 'like', '%'.$value.'%')
+                                    ->orWhere('email', 'like', '%'.$value.'%');
+                            })
+                            ->orwhereHas('roles', function ($q) use ($value) {
+                                $q->where('display_name', 'like', '%'.$value.'%');
+                            })
+                            ->orWhereHas('permissions', function ($q) use ($value) {
+                                $q->where('display_name', 'like', '%'.$value.'%');
+                            });
                     } elseif (is_array($value)) {
                         $query->whereIn($key, $value);
                     } else {
@@ -49,6 +48,21 @@ class UserController extends Controller
                 }
                 \Log::debug(renderQuery($query));
                 return $query;
+            },
+            sortFunction: function ($query, $field, $dir) {
+
+                if ($field == 'person.name') {
+                    $query->leftJoin('people', 'users.id', '=', 'people.user_id');
+                    if (substr($field, 7) == 'name') {
+                        $query->orderBy('people.last_name', $dir)
+                            ->orderBy('people.first_name', $dir);
+                    }
+                    if (substr($field, 7) == 'email') {
+                        $query->orderBy('people.email', $dir);
+                    }
+                    return $query;
+                }
+                return $query->orderBy($field, $dir);
             }
         );
 
@@ -56,6 +70,7 @@ class UserController extends Controller
         if ($request->page_size || $request->page) {
             return UserResource::collection($searchQuery->paginate($request->get('page_size', 20)));
         }
+
 
         return UserResource::collection($searchQuery->get($request->all()));
     }

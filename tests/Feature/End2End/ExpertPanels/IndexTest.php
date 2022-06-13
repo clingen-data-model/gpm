@@ -2,14 +2,15 @@
 
 namespace Tests\Feature\End2End\ExpertPanels;
 
-use App\Models\Document;
 use Tests\TestCase;
+use App\Models\Document;
+use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
+use App\Modules\Group\Models\Group;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Carbon;
 
 class IndexTest extends TestCase
 {
@@ -23,7 +24,7 @@ class IndexTest extends TestCase
         parent::setup();
         $this->setupForGroupTest();
 
-        \App\Models\Cdwg::factory(3)->create();
+        Group::factory(3)->cdwg()->create();
         $this->user = User::factory()->create();
         $this->expertPanels = ExpertPanel::factory(1)
                                 ->randomStep()

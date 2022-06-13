@@ -1,5 +1,7 @@
 <?php
 
+use App\Actions\ReportSummaryMake;
+use App\Actions\ReportVcepApplicationReport;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ViewController;
 use App\Http\Controllers\DocumentController;
@@ -18,12 +20,14 @@ use App\Modules\Group\Actions\SubgroupMembersMakeExcel;
 |
 */
 Route::get('/{any}', [ViewController::class, 'app'])
-    ->where('any', '^(?!(api|sanctum|impersonate|dev|documents|report|downloads|clockwork|profile-photos)).*$');
+    ->where('any', '^(?!(api|sanctum|impersonate|dev|documents|downloads|clockwork|profile-photos)).*$');
 
 Route::get('/documents/{uuid?}', [DocumentController::class, 'show'])->middleware('auth:sanctum');
 
-Route::get('/report/groups/{group:uuid}/coi-report', CoiReportMakePdf::class);
-Route::get('/report/groups/{group:uuid}/member-export', GroupMembersMakeCsv::class);
-Route::get('/report/groups/{group:uuid}/subgroup-member-export', SubgroupMembersMakeExcel::class);
+Route::get('/api/report/basic-summary', ReportSummaryMake::class);
+Route::get('/api/report/vcep-application-summary', ReportVcepApplicationReport::class);
+Route::get('/api/report/groups/{group:uuid}/coi-report', CoiReportMakePdf::class);
+Route::get('/api/report/groups/{group:uuid}/member-export', GroupMembersMakeCsv::class);
+Route::get('/api/report/groups/{group:uuid}/subgroup-member-export', SubgroupMembersMakeExcel::class);
 
 Route::impersonate();

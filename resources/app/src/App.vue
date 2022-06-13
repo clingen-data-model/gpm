@@ -30,6 +30,12 @@
                 class="link nav-item"
                 v-if="hasPermission('users-manage')"
               >Users</router-link>
+              <router-link 
+                to="/reports" 
+                class="link nav-item"
+                v-if="hasPermission('reports-pull')"
+              >Reports
+              </router-link>
               <!-- <router-link 
                 to="/guides-and-documentation" 
                 class="link nav-item"

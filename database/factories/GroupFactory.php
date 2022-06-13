@@ -39,7 +39,10 @@ class GroupFactory extends Factory
     {
         return $this->state(function ($attributes) {
             return [
-                'group_type_id' => config('groups.types.cdwg.id')
+                'uuid' => $this->faker->uuid,
+                'name' => uniqid().' CDWG',
+                'group_type_id' => config('groups.types.cdwg.id'),
+                'group_status_id' => config('groups.statuses.active.id')
             ];
         });
     }
@@ -48,7 +51,8 @@ class GroupFactory extends Factory
     {
         return $this->state(function ($attributes) {
             return [
-                'group_type_id' => config('groups.types.wg.id')
+                'group_type_id' => config('groups.types.wg.id'),
+                'group_status_id' => config('groups.statuses.active.id')
             ];
         });
     }

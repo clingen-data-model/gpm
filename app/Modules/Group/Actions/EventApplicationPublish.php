@@ -7,7 +7,7 @@ use App\Modules\Group\Events\GeneEvent;
 use App\DataExchange\Models\StreamMessage;
 use App\Modules\Group\Events\GroupMemberEvent;
 use App\DataExchange\Actions\StreamMessageCreate;
-use App\Modules\Groups\Events\PublishableApplicationEvent;
+use App\Modules\Group\Events\PublishableApplicationEvent;
 use App\DataExchange\MessageFactories\ApplicationEventV1MessageFactory;
 
 class EventApplicationPublish

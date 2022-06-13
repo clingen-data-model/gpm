@@ -6,7 +6,7 @@
 <template>
     <div class="dictionary-row" :class="{'flex': !vertical}">
         <div 
-            :class="fullLabelClass" 
+            :class="fullLabelClass"
             class="flex-shrink-0" 
         >
             <slot name="label" v-if="label">
@@ -15,6 +15,7 @@
         </div>
         <slot>
         </slot>
+        <div class="hidden w-36">&nbsp;</div>
     </div>
 
 </template>
@@ -31,9 +32,9 @@ export default {
             required: false,
             default: false
         },
-        labelWidth: {
+        labelWidthClass: {
             type: String,
-            default: '9rem'
+            default: 'w-36'
         },
         labelClass: {
             type: String,
@@ -59,6 +60,10 @@ export default {
             }
             if (this.labelClass) {
                 classList.push(this.labelClass.split(' '));
+            }
+
+            if (!this.vertical) {
+                classList.push(this.labelWidthClass || 'w-36');
             }
             return classList
         }

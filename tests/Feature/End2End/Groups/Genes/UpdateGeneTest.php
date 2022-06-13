@@ -24,7 +24,7 @@ class UpdateGeneTest extends TestCase
 
         $this->user = $this->setupUser(permissions: ['ep-applications-manage']);
 
-        $this->expertPanel = ExpertPanel::factory()->create(['expert_panel_type_id' => config('expert_panels.types.vcep.id')]);
+        $this->expertPanel = ExpertPanel::factory()->vcep()->create();
         $this->gene1 = $this->expertPanel->genes()->create([
             'hgnc_id' => 12345,
             'mondo_id' => 'MONDO:9876543',
