@@ -61,7 +61,10 @@ export default {
             if (this.labelClass) {
                 classList.push(this.labelClass.split(' '));
             }
-            classList.push(this.labelWidthClass || 'w-36');
+
+            if (!this.vertical) {
+                classList.push(this.labelWidthClass || 'w-36');
+            }
             return classList
         }
     },
