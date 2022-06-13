@@ -127,6 +127,16 @@ const routes = [
         path: '/:pathMatch(.*)*',
         component: () => import (/* webpackChunkName "not-found" */ '@/views/NotFound.vue'),
     },
+    {
+        name: 'reports',
+        path: '/reports',
+        component: () => import (/* webpackChunkName "reports-index" */ '@/views/Reports.vue'),
+        meta: {
+            protected: true,
+            permissions: ['reports-pull']
+        },
+        // beforeEnter: (to) => hasPermission(to, 'reports-pull')
+    },
 ]
 
 const router = createRouter({

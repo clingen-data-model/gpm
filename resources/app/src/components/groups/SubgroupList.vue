@@ -8,7 +8,7 @@
                 </template>
                 <dropdown-item class="text-right font-bold">Downloads:</dropdown-item>
                 <!-- <dropdown-item class="text-right">
-                    <a :href="`/report/groups/${group.uuid}/subgroups-coi-report`">COI Report</a>
+                    <a :href="`/api/report/groups/${group.uuid}/subgroups-coi-report`">COI Report</a>
                     <note class="inline"> (PDF)</note>
                 </dropdown-item> -->
                 <dropdown-item  class="text-right" v-if="showMemberReportButton">
@@ -70,7 +70,7 @@ export default {
             return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage']) && this.$store.state.systemInfo.app.features.member_export
         },
         exportUrl () {
-            return `/report/groups/${this.group.uuid}/subgroup-member-export`;
+            return `/api/report/groups/${this.group.uuid}/subgroup-member-export`;
         },
     }
 }

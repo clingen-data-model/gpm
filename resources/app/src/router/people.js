@@ -1,37 +1,11 @@
 import router from '.'
 import store from '../store/index'
+import { checkPermissionAndPersonOwnership } from './route_guards'
 
 const PersonDetail = () => import (/* person-detail */ '@/components/people/PersonDetail.vue')
 const PersonEdit = () => import (/* person-detail */ '@/views/PersonEdit.vue')
 const PeopleList = () => import (/* people-index */ '@/views/PeopleList.vue')
 const OnboardingWizard = () => import (/* onboarding-wizard */ '@/views/OnboardingWizard.vue')
-
-const checkPermissionAndPersonOwnership = async (to) => {
-    // Check for system permission
-    if (store.getters.currentUser.hasPermission('people-manage')) {
-        return true;
-    }
-
-
-    // if we don't have a currentItem in people store, get the person by the uuid
-    if (!store.getters['people/currentItem'] || store.getters['people/currentItem'].uuid != to.params.uuid) {
-        await store.dispatch('people/getPerson', {uuid: to.params.uuid})
-    }
-
-    // check that user is the same user associated with the person
-    if (store.getters['people/currentItem'].user_id == store.getters.currentUser.id) {
-        return true;
-    }
-
-    if (store.getters.currentUser.coordinatesPerson(store.getters['people/currentItem'])) {
-        return true;
-    }
-
-
-
-    store.commit('pushError', 'You don\'t have permission to edit this person\'s information');
-    return false;
-};
 
 export default [
     { name: 'people-index',

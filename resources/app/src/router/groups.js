@@ -1,42 +1,12 @@
-import store from '@/store/index'
+import { hasGroupPermission } from './route_guards'
 
-const GroupList = () =>
-    import ( /* webpackChunkName: "group-list" */ '@/views/groups/GroupList.vue')
-const GroupDetail = () =>
-    import ( /* webpackChunkName: "group-detail" */ '@/views/groups/GroupDetail.vue')
-const MemberForm = () =>
-    import ( /* webpackChunkName: "group-detail" */ '@/components/groups/MemberForm.vue')
-
-const GroupApplication = () =>
-    import ( /* webpackChunkName: "group-application" */ '@/views/groups/GroupApplication.vue')
-
-const AnnualUpdateForm = () =>
-    import ( /* webpackChunkName: "annual-update" */ '@/views/AnnualUpdateForm.vue')
-
-const hasGroupPermission = async (to, permission) => {
-    if (store.getters.currentUser.hasPermission('groups-manage')) {
-        return true;
-    }
-
-    if (!store.getters['groups/currentItem'] || store.getters['groups/currentItem'].uuid != to.params.uuid) {
-        await store.dispatch('groups/findAndSetCurrent', to.params.uuid);
-    }
-    
-    const group = store.getters['groups/currentItem'];
-
-    if (store.getters.currentUser.hasGroupPermission(permission, group)) {
-        return true;
-    }
-
-    store.commit('pushError', 'Permission denied');
-    return false;
-}
+const MemberForm = () => import ( /* webpackChunkName: "group-detail" */ '@/components/groups/MemberForm.vue')
 
 export default [
     { name: 'GroupList',
         path: '/groups',
         components:  {
-            default: GroupList
+            default: () => import ( /* webpackChunkName: "group-list" */ '@/views/groups/GroupList.vue')
         },
         meta: {
             protected: true,
@@ -46,7 +16,7 @@ export default [
     { name: 'GroupDetail',
         path: '/groups/:uuid',
         components: {
-            default: GroupDetail
+            default: () => import ( /* webpackChunkName: "group-detail" */ '@/views/groups/GroupDetail.vue')
         },
         meta: {
             protected: true
@@ -89,7 +59,7 @@ export default [
     { name: 'GroupApplication',
         path: '/groups/:uuid/application',
         components: {
-            default: GroupApplication
+            default: () => import ( /* webpackChunkName: "group-application" */ '@/views/groups/GroupApplication.vue')
         },
         meta: {
             protected: true
@@ -142,7 +112,7 @@ export default [
     { name: 'AnnualUpdate',
         path: '/groups/:uuid/annual-update',
         components: {
-            default: AnnualUpdateForm
+            default: () => import ( /* webpackChunkName: "annual-update" */ '@/views/AnnualUpdateForm.vue')
         },
         meta: {
             protected: true

@@ -150,7 +150,7 @@ export default {
         },
         exportUrl () {
             const query = `?member_ids=${this.filteredMembers.map(m => m.id).join(',')}`;
-            return `/report/groups/${this.group.uuid}/member-export${query}`;
+            return `/api/report/groups/${this.group.uuid}/member-export${query}`;
         },
         features () {
             return this.$store.state.systemInfo.app.features
@@ -296,7 +296,7 @@ export default {
             this.coi = await api.get(`/api/cois/${coiId}`).then(response => response.data);
         },
         downloadCoiReport() {
-            const reportUrl = `/report/${this.group.expert_panel.coi_code}`
+            const reportUrl = `/api/report/${this.group.expert_panel.coi_code}`
             window.location = reportUrl;
         },
         confirmUnretire (member) {
@@ -353,7 +353,7 @@ export default {
                         </template>
                         <dropdown-item class="text-right font-bold">Downloads:</dropdown-item>
                         <dropdown-item class="text-right">
-                            <a :href="`/report/groups/${group.uuid}/coi-report`">COI Report</a>
+                            <a :href="`/api/report/groups/${group.uuid}/coi-report`">COI Report</a>
                             <note class="inline"> (PDF)</note>
                         </dropdown-item>
                         <dropdown-item  class="text-right" v-if="showMemberReportButton">
