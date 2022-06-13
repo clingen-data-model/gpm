@@ -1,0 +1,16 @@
+
+
+    public function asController(ActionRequest $request)
+    {
+        // return $this->handle();
+    }
+
+    public function rules(ActionRequest $request): array
+    {
+        return [];
+    }
+
+    public function authorize(ActionRequest $requeset):bool
+    {
+        return true;
+    }

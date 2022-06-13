@@ -1,0 +1,6 @@
+
+
+    function asCommand(Command $command)
+    {
+        //
+    }
