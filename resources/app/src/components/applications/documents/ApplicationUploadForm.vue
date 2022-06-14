@@ -28,18 +28,19 @@
             </tbody>
         </table>
 
-        <input-row label="Document type" 
-            type="select" 
-            :options="filteredTypes" 
-            v-if="docTypeIsArray"
-            v-model="newDocument.document_type_id"
-        />
+        <div v-if="!readonly">
+            <input-row label="Document type" 
+                type="select" 
+                :options="filteredTypes" 
+                v-if="docTypeIsArray"
+                v-model="newDocument.document_type_id"
+            />
 
-        <input-row label="Document" :errors="errors.file">
-            <input type="file" ref="fileInput">
-        </input-row>
-        <button class="btn blue" @click="save">Upload</button>
- 
+            <input-row label="Document" :errors="errors.file">
+                <input type="file" ref="fileInput">
+            </input-row>
+            <button class="btn blue" @click="save">Upload</button>
+        </div> 
         <teleport to='body'>
              <modal-dialog 
                 v-model="showDeleteConfirmation" 
@@ -84,6 +85,10 @@ export default {
             type: Boolean,
             default: true
         },
+        readonly: {
+            type: Boolean,
+            default: false
+        }
     },
     emits: [
         'saved',

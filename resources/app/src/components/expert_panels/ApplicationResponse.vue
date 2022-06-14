@@ -24,10 +24,10 @@
 
         <div class="application-step print:hidden">
             <h1 v-if="expertPanel.definition_is_approved" class="print:hidden" >
-                {{group.displayName}} - Draft and Pilot Specifications
+                {{group.displayName}} - Specifications and Pilot
             </h1>
             <section v-if="expertPanel.definition_is_approved" class="print:hidden" >
-                <cspec-summary></cspec-summary>
+                <specifications-section :doc-type-id="[3,4,7]" :readonly="true" />
             </section>
         </div>
 
@@ -47,16 +47,16 @@
 <script>
 import DefinitionReview from '@/components/expert_panels/DefinitionReview.vue'
 import SustainedCurationReview from '@/components/expert_panels/SustainedCurationReview.vue'
-import CspecSummary from '@/components/expert_panels/CspecSummary.vue'
 import ApplicationStepReview from '@/components/expert_panels/ApplicationStepReview.vue'
+import SpecificationsSection from '@/components/expert_panels/SpecificationsSection'
 
 export default {
     name: 'ApplicationResponse',
     extends: ApplicationStepReview,
     components: {
         DefinitionReview,
-        CspecSummary,
-        SustainedCurationReview
+        SustainedCurationReview,
+        SpecificationsSection
     },
     props: {
         uuid: {

@@ -1,7 +1,12 @@
 <template>
     <div>
-        <cspec-summary v-if="cspecSummaryEnabled" />
-        <application-upload-form :document-type-id="docTypeId" :show-notes="false" v-if="specificationUpload" />
+        <cspec-summary v-if="cspecSummaryEnabled" :readonly="readonly" />
+        <application-upload-form 
+            :document-type-id="docTypeId" 
+            :show-notes="false" 
+            v-if="specificationUpload" 
+            :readonly="readonly" 
+        />
     </div>
 </template>
 <script>
@@ -14,6 +19,10 @@ export default {
         docTypeId: {
             required: true,
             type: [Number, Array]
+        },
+        readonly: {
+            type: Boolean,
+            default: false
         }
     },
     components: {
