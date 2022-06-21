@@ -25,6 +25,12 @@ class Gene extends Model
 {
     use HasFactory, SoftDeletes;
 
+    public function getConnectionName()
+    {
+        return config('database.default');
+    }
+
+
     /**
      * The attributes that are mass assignable.
      *

@@ -1,0 +1,6 @@
+
+
+    public function asListener({{ event_type }} $event)
+    {
+        //
+    }

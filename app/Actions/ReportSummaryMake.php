@@ -15,39 +15,11 @@ use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Lorisleiva\Actions\ActionRequest;
 
-class ReportSummaryMake
+class ReportSummaryMake extends ReportMakeAbstract
 {
-    use AsCommand, AsController;
-
-    public $commandSignature = 'reports:basic-counts';
-
-    public function __construct(private TransformArrayForCsv $csvTransformer)
-    {
-    }
+    public $commandSignature = 'reports:summary';
 
     public function handle(): array
-    {
-        return $this->pullData();
-    }
-
-    public function asController(ActionRequest $request)
-    {
-        $data = $this->handle();
-
-        if ($request->header('accept') == 'application/json') {
-            return $data;
-        }
-
-        $data = $this->csvTransformer->handle($this->handle());
-        return response($data, 200, ['Content-type' => 'text/csv']);
-    }
-
-    public function asCommand(Command $command)
-    {
-        $command->info($this->csvTransformer->handle($this->handle()));
-    }
-
-    private function pullData()
     {
         $vcepStepsSummary = $this->getVcepStepSummary();
         return [
@@ -70,6 +42,7 @@ class ReportSummaryMake
     private function getVcepGenesCount(): int
     {
         return Gene::query()
+                ->distinct('hgnc_id')
                 ->whereHas('expertPanel', function ($q) {
                     $q->typeVcep();
                 })
@@ -79,10 +52,11 @@ class ReportSummaryMake
     private function getGcepGenesCount(): int
     {
         return Gene::query()
-                ->whereHas('expertPanel', function ($q) {
-                    $q->typeGcep();
-                })
-                ->count();
+            ->distinct('hgnc_id')
+            ->whereHas('expertPanel', function ($q) {
+                        $q->typeGcep();
+                    })
+                    ->count();
     }
 
     private function getTotalEpMembersCount(): int

@@ -3,6 +3,36 @@
     import {ref, onMounted} from 'vue'
 
     const summaryData = ref([]);
+    const reports = ref([
+        {
+            url: '/api/report/basic-summary',
+            name: 'Summary' 
+        },
+        {
+            url: '/api/report/vcep-application-summary',
+            name: 'VCEP Application'
+        },
+        {
+            url: '/api/report/gcep-genes',
+            name: 'GCEP Genes'
+        },
+        {
+            url: '/api/report/vcep-genes',
+            name: 'VCEP Genes'
+        },
+        {
+            url: '/api/report/countries',
+            name: 'Countries'
+        },
+        {
+            url: '/api/report/institutions',
+            name: 'Institutions'
+        },
+        {
+            url: '/api/report/people-in-multiple-eps',
+            name: 'People in >1 EP'
+        }
+    ])
 
     const getSummaryReport = async () => {
         api.get('/api/report/basic-summary')
@@ -21,10 +51,9 @@
         <h1>Reports</h1>
         <div class="flex space-x-4">
             <ul class="item-list space-y-2 bg-gray-100 p-4 w-1/4" v-remaining-height>
-                <li>
-                    <download-link url="/api/report/basic-summary" title="Download as CSV">Summary Report</download-link>
+                <li v-for="rpt in reports" :key="rpt.url">
+                    <download-link :url="rpt.url" :title="`Download ${rpt.name} Report`">{{rpt.name}}</download-link>
                 </li>
-                <li><download-link url="/api/report/vcep-application-summary">VCEP Application Report</download-link></li>
             </ul>
             <div class="border-left pl-4 flex-grow">
                 <h2 class="mb-2">Summary Report</h2>
