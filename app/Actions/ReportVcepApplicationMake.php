@@ -9,46 +9,20 @@ use App\Actions\Utils\TransformArrayForCsv;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 
-class ReportVcepApplicationReport
+class ReportVcepApplicationMake extends ReportMakeAbstract
 {
-    use AsController;
-    use AsCommand;
-
     public $commandSignature = 'reports:vcep-application';
-
-    public function __construct(private TransformArrayForCsv $csvTransformer)
-    {
-    }
 
     public function handle()
     {
         $data = $this->pullData();
-        array_unshift($data, array_keys($data[0]));
-        return $this->csvTransformer->handle($data);
-    }
-
-    public function asController(ActionRequest $request)
-    {
-        $data = $this->handle();
-
-        return response($data, 200, ['Content-type' => 'text/csv']);
-    }
-
-    public function asCommand(Command $command)
-    {
-        $command->info($this->handle());
-    }
-    
-
-    public function authorize(ActionRequest $requeset):bool
-    {
-        return true;
+        // array_unshift($data, array_keys($data[0]));
+        return $data;
     }
 
     private function pullData(): array
     {
         $vceps = ExpertPanel::typeVcep()
-                    // ->applying()
                     ->with([
                         'coordinators',
                         'coordinators.person',
