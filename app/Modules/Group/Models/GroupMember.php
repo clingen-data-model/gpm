@@ -200,6 +200,15 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
 
         return false;
     }
+
+    public function getHasCoiRequirement()
+    {
+        if (!$this->group->isEp) {
+            return true;
+        }
+
+        return true;
+    }
     
     
     

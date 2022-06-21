@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="person.memberships.length > 0">
+        <div v-if="person.membershipsWithCoiRequirement.length > 0">
             <div v-if="person.hasPendingCois" class="mb-4">
                 <div v-if="userIsPerson(person)">
                     <h3>You must complete a Conflict of Interest Disclosure for the following memberships:</h3>
@@ -88,7 +88,7 @@
                 None of your memberships require a conflict of interest disclosure
             </div>
         </div>
-        <div class="well" v-else>You are not required to complete conflict of interest disclsoure</div>
+        <div class="well" v-else>You are not required to complete conflict of interest disclsoures.</div>
         <teleport to="body">
             <modal-dialog v-model="showResponseDialog" size="xl">
                 <coi-detail :coi="currentCoi" :group="currentGroup" v-if="currentCoi"></coi-detail>

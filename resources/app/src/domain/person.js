@@ -84,15 +84,15 @@ class Person extends Entity {
     }
 
     get membershipsWithPendingCois () {
-        return this.memberships.filter(m => m.coi_needed);
+        return this.membershipsWithCoiRequirement.filter(m => m.coi_needed);
     }
 
     get membershipsWithCompletedCois () {
-        return this.memberships.filter(m => !m.coi_needed);
+        return this.membershipsWithCoiRequirement.filter(m => !m.coi_needed);
     }
 
     get membershipsWithOutdatedCois () {
-        return this.memberships.filter(m => m.coi_needed && m.cois.length > 0);
+        return this.membershipsWithCoiRequirement.filter(m => m.coi_needed && m.cois.length > 0);
     }
 
     get completedCois () {
@@ -109,6 +109,14 @@ class Person extends Entity {
 
     get hasOutdatedCois () {
         return this.membershipsWithOutdatedCois.length > 0;
+    }
+
+    get expertPanelMemberships () {
+        return this.memberships.filter(m => [3,4].includes(m.group.group_type_id) )
+    }
+
+    get membershipsWithCoiRequirement () {
+        return this.memberships.filter(m => m.has_coi_requirement)
     }
 
     matchesKeyword(keyword) {
