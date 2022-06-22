@@ -25,7 +25,9 @@ class ReportSummaryMake extends ReportMakeAbstract
         return [
             ['VCEP genes', $this->getVcepGenesCount()],
             ['GCEP genes', $this->getGcepGenesCount()],
-            ['Total EP members', $this->getTotalEpMembersCount()],
+            ['Individuals in 1+ EPs', $this->getTotalEpMembersCount()],
+            ['Individuals in 1+ GCEPs', $this->getGcepMembersCount()],
+            ['Individuals in 1+ VCEps', $this->getVcepMembersCount()],
             ['VCEP appliations in definition', $vcepStepsSummary[1]],
             ['VCEP appliations in draft specs', $vcepStepsSummary[2]],
             ['VCEP appliations in pilot specs', $vcepStepsSummary[3]],
@@ -35,7 +37,7 @@ class ReportSummaryMake extends ReportMakeAbstract
             ['GCEPs approved', $this->getGcepApprovedCount()],
             ['Countries represented', $this->getCountriesRepresentedCount()],
             ['Institutions represented', $this->getInstitutionsRepresentedCount()],
-            ['People in many EPs', $this->getPeopleInManyEpsCount()],
+            ['People in 2+ EPs', $this->getPeopleInManyEpsCount()],
         ];
     }
 
@@ -62,13 +64,32 @@ class ReportSummaryMake extends ReportMakeAbstract
     private function getTotalEpMembersCount(): int
     {
         $query = GroupMember::isActive()
-            ->selectRaw('count(distinct(person_id))')
+            ->distinct('person_id')
             ->whereHas('group', function ($q) {
                 $q->typeExpertPanel();
             });
 
         return $query->count();
     }
+    
+    private function getGcepMembersCount(): int
+    {
+        return GroupMember::isActive()
+            ->distinct('person_id')
+            ->whereHas('group', function ($q) {
+                $q->Gcep();
+            })->count();
+    }
+    
+    private function getVcepMembersCount(): int
+    {
+        return GroupMember::isActive()
+            ->distinct('person_id')
+            ->whereHas('group', function ($q) {
+                $q->Vcep();
+            })->count();
+    }
+    
 
     private function getVcepStepSummary(): array
     {
