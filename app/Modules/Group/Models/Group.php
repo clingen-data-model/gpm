@@ -183,18 +183,12 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
     public function scopeVcep($query)
     {
-        return $query->expertPanel()
-                ->whereHas('expertPanel', function ($q) {
-                    $q->Vcep();
-                });
+        return $query->ofType(config('groups.types.vcep.id'));
     }
 
     public function scopeGcep($query)
     {
-        return $query->expertPanel()
-                ->whereHas('expertPanel', function ($q) {
-                    $q->Gcep();
-                });
+        return $query->ofType(config('groups.types.gcep.id'));
     }
 
     /**
