@@ -16,7 +16,7 @@ class MigrateApplicationDataToExpertPanels extends Migration
      */
     public function up()
     {
-        DataMigration::run();
+        // DataMigration::run();
     }
 
     /**

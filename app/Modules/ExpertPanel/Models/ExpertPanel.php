@@ -14,7 +14,6 @@ use App\Tasks\Contracts\TaskAssignee;
 use App\Models\Contracts\RecordsEvents;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\ExpertPanel\Models\Gene;
-use App\Modules\ExpertPanel\Models\CoiV1;
 use App\Modules\Group\Models\GroupMember;
 use Database\Factories\ExpertPanelFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -208,7 +207,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
     public function cois()
     {
-        return $this->hasMany(CoiV1::class, 'expert_panel_id');
+        return $this->hasMany(Coi::class, 'expert_panel_id');
     }
 
     /**

@@ -102,23 +102,6 @@ class SimpleCoiEndpointTest extends TestCase
     /**
      * @test
      */
-    public function returns_csv_of_coi_results_for_application()
-    {
-        Coi::factory(2)->create(['expert_panel_id' => $this->expertPanel->id]);
-        Carbon::setTestNow('2021-06-01');
-        $user = User::factory()->create();
-        Sanctum::actingAs($user);
-        $response = $this->get('/report/'.$this->expertPanel->coi_code);
-        $response->assertStatus(200);
-        
-        $this->assertFileExists('/tmp/'.Str::kebab($this->expertPanel->name).'-coi-report-'.Carbon::now()->format('Y-m-d').'.csv');
-
-        $response->assertDownload();
-    }
-
-    /**
-     * @test
-     */
     public function stores_legacy_coi()
     {
         $document = Document::factory()->create([
