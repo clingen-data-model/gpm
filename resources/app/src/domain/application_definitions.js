@@ -158,7 +158,8 @@ export const VcepApplication = applicationDefinitionFactory({
                         requirements.coordinators,
                         requirements.coisComplete,
                         requirements.institutions,
-                        requirements.expertiseDescription,            
+                        requirements.expertiseDescription,
+                        requirements.memberExpertise
                     ],
                     // components: [
                         // MemberList,
@@ -296,6 +297,7 @@ export const GcepApplication = applicationDefinitionFactory({
                         requirements.coisComplete,
                         requirements.coordinators,
                         requirements.institutions,
+                        requirements.memberExpertise
                     ],
                     // components: [
                         // MemberList,

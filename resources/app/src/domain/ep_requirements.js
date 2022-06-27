@@ -86,6 +86,17 @@ export const coreApprovalMembers = new Requirement(
     }
 )
 
+export const memberExpertise = new Requirement (
+    'Expertise information must be provided for each group member',
+    group => group.members
+                .filter(m => {
+                    return m.expertise === null 
+                        || typeof m.expertise === 'undefined' 
+                        || m.expertise == ''
+                })
+                .length == 0
+)
+
 export default {
     longName,
     shortName,
@@ -107,4 +118,5 @@ export default {
     minimumBiocurators,
     biocuratorTrainers,
     coreApprovalMembers,
+    memberExpertise,
 };
