@@ -1,5 +1,8 @@
 # Change Log
 
+## 2022-06-27
+* Fix last activity sort in applications list.
+
 ## 2022-06-13
 * Summary and VCEP application reports have been added for users with the 'Pull Reports' permission.  Super-users, super-admins, and admins have been granted the permission.
 
