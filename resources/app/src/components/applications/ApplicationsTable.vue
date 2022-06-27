@@ -141,8 +141,10 @@ export default {
                     label: 'Last Activity',
                     type: Date,
                     sortable: true,
-                    resolveSortValue (item) {
+                    resolveSort (item) {
                         if (item && item.group && item.group.latest_log_entry) {
+                            const formatted = formatDate(item.group.latest_log_entry.created_at);
+                            console.log(formatted);
                             return formatDate(item.group.latest_log_entry.created_at);
                         }
                         return null
