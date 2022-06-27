@@ -27,7 +27,7 @@ class ApplicationSubmissionReject
         $submission
             ->reject($responseContent);
 
-        event(new ApplicationRevisionsRequested($submission));
+        event(new ApplicationRevisionsRequested($submission, $responseContent));
 
         return $submission->fresh();
     }

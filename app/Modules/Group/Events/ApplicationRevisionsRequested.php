@@ -25,7 +25,7 @@ class ApplicationRevisionsRequested extends GroupEvent
      *
      * @return void
      */
-    public function __construct(public Submission $submission)
+    public function __construct(public Submission $submission, public ?string $comments = null)
     {
         $this->group = $submission->group;
     }
@@ -39,7 +39,13 @@ class ApplicationRevisionsRequested extends GroupEvent
 
     public function getLogEntry():string
     {
-        return 'Revisions requested for step '.$this->group->expertPanel->current_step;
+        $logEntry = 'Revisions requested for step '.$this->group->expertPanel->current_step;
+
+        if ($this->comments) {
+            $logEntry .= ":\n".$this->comments;
+        }
+
+        return $logEntry;
     }
     
     /**
