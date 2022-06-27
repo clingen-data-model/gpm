@@ -202,6 +202,7 @@
             </div>
             <section 
               class="border my-4 p-4 rounded"
+              v-if="group.isEp()"
             >
               <h2 class="mb-4">Annual Update</h2>
                 <button v-if="showCreateAnnualUpdateButton"

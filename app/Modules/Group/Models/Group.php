@@ -82,6 +82,10 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         'status',
     ];
 
+    protected $appends = [
+        'has_coi_requirement'
+    ];
+
     public static function booted()
     {
         static::deleted(function (Group $group) {
@@ -247,6 +251,15 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         }
 
         return $this->name;
+    }
+
+    public function getHasCoiRequirementAttribute()
+    {
+        if ($this->isExpertPanel) {
+            return true;
+        }
+
+        return false;
     }
 
 

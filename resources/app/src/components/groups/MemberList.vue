@@ -78,12 +78,12 @@ export default {
                     type: Date,
                     sortable: true,
                 },
-                // {
-                //     name: 'training_completed_at',
-                //     label: 'Training Completed',
-                //     type: Date,
-                //     sortable: true
-                // },
+                {
+                    name: 'requirements',
+                    label: 'Reqs',
+                    type: String,
+                    sortable: false
+                },
                 {
                     name: 'actions',
                     label: '',
@@ -126,8 +126,11 @@ export default {
         },
         fieldsForGroupType () {
             const fields = [...this.tableFields];
+            if (!this.group.has_coi_requirement) {
+                fields.splice(fields.findIndex(f => f.name == 'coi_last_completed'), 1);
+            }
             if (!this.group.isEp()) {
-               delete fields.splice(fields.findIndex(f => f.name == 'coi_last_completed'), 1);
+               fields.splice(fields.findIndex(f => f.name == 'requirements'), 1);
             }
             return fields;
         },
@@ -303,6 +306,34 @@ export default {
             console.log(member);
             this.showConfirmUnretire = true;
             this.selectedMember = member;
+        },
+        requirementsMet (member) {
+            if (this.group.has_coi_requirement && member.needsCoi) {
+                return false;
+            }
+
+            if (this.group.isEp() && !member.expertise) {
+                return false;
+            }
+
+            return true;
+        },
+        getRequirements (member) {
+            const requirements = {}
+            if (this.group.has_coi_requirement) {
+                requirements.coi = {
+                    label: 'COI is up to date',
+                    met: !member.needsCoi,
+                }
+            }
+            if (this.group.isEp()) {
+                requirements.expertise = {
+                    label: 'Expertise provided',
+                    met: member.expertise,
+                };
+            }
+
+            return requirements
         }
     }
 }
@@ -464,6 +495,24 @@ export default {
                             </popover>
                         </div>
                     </div>
+                </template>
+
+                <template v-slot:cell-requirements="{item}">
+                        <!-- <pre>{{item}}</pre> -->
+                    <popover hover arrow placement="top">
+                        <icon-checkmark v-if="requirementsMet(item)" :width="12" :height="12" class="text-green-600"/>
+                        <icon-exclamation v-else :width="12" :height="12" class="text-red-700"/>
+
+                        <template v-slot:content>
+                            <ul>
+                                <li v-for="req, k in getRequirements(item)" :key="k">
+                                    <icon-checkmark v-if="req.met" :width="12" :height="12" class="inline-block text-green-600"/>
+                                    <icon-exclamation v-else :width="12" :height="12" class="inline-block text-red-700"/>
+                                    {{req.label}}
+                                </li>
+                            </ul>
+                        </template>
+                    </popover>
                 </template>
 
                 <template v-slot:detail="{item}">
