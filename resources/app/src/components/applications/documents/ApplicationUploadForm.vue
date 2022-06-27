@@ -123,7 +123,6 @@ export default {
         },
         filteredTypes () {
             if (this.docTypeIsArray) {
-                console.log(this.docTypeIsArray, this.documentTypeId);
                 return Object.values(documentsTypes)
                         .filter(dt => this.documentTypeId.includes(dt.id))
                         .map(dt => ({label: dt.long_name, value: dt.id}));
