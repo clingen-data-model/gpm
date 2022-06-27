@@ -40,7 +40,7 @@ class NextActionCreate
             'date_completed' => $dateCompleted,
             'assignee_id' => $assignedTo ?? 1,
             'assignee_name' => $assignedToName,
-            'type_id' => $typeId
+            'next_action_type_id' => $typeId
         ]);
 
         $expertPanel->nextActions()->save($nextAction);
