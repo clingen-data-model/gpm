@@ -1,6 +1,7 @@
 <?php
 
 use App\Actions\MailResend;
+use App\Actions\CommentFind;
 use App\Actions\CommentList;
 use App\Models\DocumentType;
 use Illuminate\Http\Request;
@@ -9,6 +10,7 @@ use App\Actions\CommentCreate;
 use App\Actions\CommentDelete;
 use App\Actions\CommentUpdate;
 use App\Actions\FeedbackSubmit;
+use App\Actions\CommentTypeList;
 use App\Actions\NotificationMarkRead;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
@@ -81,9 +83,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['prefix' => '/comments'], function () {
         Route::post('/', CommentCreate::class);
         Route::get('/', CommentList::class);
+        Route::get('/{comment:id}', CommentFind::class);
         Route::put('/{comment:id}', CommentUpdate::class);
         Route::delete('/{comment:id}', CommentDelete::class);
     });
+    Route::get('/comment-types', CommentTypeList::class);
 
 });
 
