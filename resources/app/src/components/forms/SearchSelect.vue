@@ -356,20 +356,22 @@ export default {
     <!-- <div class="search-select-component" v-click-outside="{handler: ()=> {}, exclude: []}"> -->
     <div class="search-select-component">
         <div class="search-select-container bg-white">
-            <div v-if="hasSelection" 
-                v-for="selection, idx in selections" :key="idx"
-                class="selection" :class="{disabled: disabled}"
-            >
-                <label>
-                    <slot name="selection-label" :selection="selection">
-                        {{resolveDefaultOptionLabel(selection)}}
-                    </slot>
-                </label>  
-                <div 
-                    @click="removeSelection(idx)" 
-                    :disabled="disabled" 
-                    class="remove-btn"
-                >x</div>
+            <div v-if="hasSelection" >
+                <div
+                    v-for="selection, idx in selections" :key="idx"
+                    class="selection" :class="{disabled: disabled}"
+                >
+                    <label>
+                        <slot name="selection-label" :selection="selection">
+                            {{resolveDefaultOptionLabel(selection)}}
+                        </slot>
+                    </label>  
+                    <div 
+                        @click="removeSelection(idx)" 
+                        :disabled="disabled" 
+                        class="remove-btn"
+                    >x</div>
+                </div>
             </div>
             <input 
                 v-show="showInput"
@@ -434,7 +436,8 @@ export default {
     }
 
     .remove-btn {
-        @apply bg-inherit border border-t-0 border-r-0 border-b-0 border-gray-400 rounded-r-md pt-0.5 cursor-pointer;
+        /* @apply bg-inherit border border-t-0 border-r-0 border-b-0 border-gray-400 rounded-r-md pt-0.5 cursor-pointer; */
+        @apply border border-t-0 border-r-0 border-b-0 border-gray-400 rounded-r-md pt-0.5 cursor-pointer;
     }
     
     .search-select-container .input {
