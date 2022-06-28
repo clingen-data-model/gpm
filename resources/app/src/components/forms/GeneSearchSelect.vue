@@ -4,6 +4,7 @@
         :search-function="search" 
         style="z-index: 2" 
         placeholder="HGNC ID or Gene Symbol"
+        keyOptionsBy="id"
     >
         <template v-slot:selection-label="{selection}">
             <div v-if="typeof selection == 'object'">
