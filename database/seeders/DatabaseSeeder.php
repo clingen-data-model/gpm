@@ -44,6 +44,7 @@ class DatabaseSeeder extends Seeder
             CurationReviewProtocolsSeeder::class,
             SubmissionTypeAndStatusSeeder::class,
             TaskTypeSeeder::class,
+            CommentTypesSeeder::class,
         ]);
 
         if (app()->environment('testing')) {
