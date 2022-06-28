@@ -6,6 +6,7 @@
             style="z-index: 2"
             placeholder="Institution name or abbreviation"
             @update:modelValue="searchText = null"
+            keyOptionsBy="id"
         >
             <template v-slot:selection-label="{selection}">
                 <div>

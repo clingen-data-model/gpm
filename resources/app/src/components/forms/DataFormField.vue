@@ -1,5 +1,5 @@
 <script setup>
-    import {computed, h} from 'vue'
+    import {defineEmits, defineProps, computed, h} from 'vue'
     import {setupMirror, mirrorProps, mirrorEmits} from '@/composables/setup_working_mirror'
     import { titleCase } from '@/utils'
     import {set, get} from 'lodash'
@@ -99,6 +99,7 @@
                 ...props.field.component.options,
                 modelValue: fieldValue.value,
                 'onUpdate:modelValue': (value) => { fieldValue.value = value },
+                errors: props.errors
             }
             
             return h(props.field.component.component, options,  props.field.component.slots)
