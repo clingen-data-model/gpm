@@ -1,6 +1,21 @@
+<script>
+import ApplicationStepReview from './ApplicationStepReview'
+import EvidenceSummaryList from '@/components/expert_panels/EvidenceSummaryList.vue'
+import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
+
+export default {
+    name: 'SustainedCurationReview',
+    extends: ApplicationStepReview,
+    components: {
+        EvidenceSummaryList,
+        ReviewSection
+    }
+}
+</script>
+
 <template>
     <div class="application-review p-2 bg-gray-100">
-            <section v-if="expertPanel.has_approved_pilot">
+            <ReviewSection v-if="expertPanel.has_approved_pilot">
                 <h2>Plans for Ongoing Review and Descrepency Resolution</h2>
                 <dictionary-row label="Selected protocol" labelWidthClass="w-48 font-bold">
                     <div class="w-full">
@@ -13,14 +28,14 @@
                 <dictionary-row label="Notes" labelWidthClass="w-48 font-bold">
                     <markdown-block :markdown="expertPanel.curation_review_process_notes" />
                 </dictionary-row>
-            </section>
+            </ReviewSection>
 
-            <section v-if="expertPanel.has_approved_pilot">
+            <ReviewSection v-if="expertPanel.has_approved_pilot">
                 <h2>Evidence Summaries</h2>
                 <evidence-summary-list :readonly="true" />
-            </section>
+            </ReviewSection>
 
-            <section v-if="expertPanel.has_approved_pilot">
+            <ReviewSection v-if="expertPanel.has_approved_pilot">
                 <h2>Core Approval Member, Trained Biocurator, and Biocurator Trainer Designation</h2>
                 <dictionary-row label="Core Approval Members" labelWidthClass="w-48 font-bold">
                     {{this.group.coreApprovalMembers.map(m => m.person.name).join(', ')}}
@@ -31,19 +46,7 @@
                 <dictionary-row label="Trained Biocurators" labelWidthClass="w-48 font-bold">
                     {{this.group.trainedBiocurators.map(m => m.person.name).join(', ')}}
                 </dictionary-row>
-            </section>
+            </ReviewSection>
 
     </div>
 </template>
-<script>
-import ApplicationStepReview from './ApplicationStepReview'
-import EvidenceSummaryList from '@/components/expert_panels/EvidenceSummaryList.vue'
-
-export default {
-    name: 'SustainedCurationReview',
-    extends: ApplicationStepReview,
-    components: {
-        EvidenceSummaryList
-    }
-}
-</script>

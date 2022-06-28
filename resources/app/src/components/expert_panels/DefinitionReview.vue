@@ -1,13 +1,13 @@
 <template>
     <div class="application-review bg-gray-100 p-2">
-        <section>
-            <h2>Basic Information</h2>
+        <ReviewSection title="Basic Information" name="basic-info">
             <object-dictionary :obj="basicInfo" label-class="w-40 font-bold" />
-            <dictionary-row label="CDWG" label-class="w-40 font-bold">{{this.group.parent ?  this.group.parent.name : '--'}}</dictionary-row>
-        </section>
+            <dictionary-row label="CDWG" label-class="w-40 font-bold">
+                {{this.group.parent ?  this.group.parent.name : '--'}}
+            </dictionary-row>
+        </ReviewSection>
 
-        <section>
-            <h2>Membership</h2>
+        <ReviewSection title="Membership" name="membership">
             <simple-table :data="members" key-by="id" class="print:text-xs text-sm" />
 
             <div v-if="isVcep" class="mt-6">
@@ -16,10 +16,9 @@
                     <markdown-block :markdown="expertPanel.membership_description" />
                 </blockquote>
             </div>
-        </section>
+        </ReviewSection>
 
-        <section>
-            <h2>Scope of Work</h2>
+        <ReviewSection title="Scope" name="scope">
             <h3>Genes</h3>
             <div class="mb-6">
                 <p v-if="isGcep">{{expertPanel.genes.map(g => g.gene_symbol).join(', ')}}</p>
@@ -32,21 +31,20 @@
 
             <h3>Description of scope</h3>
             <blockquote><markdown-block :markdown="expertPanel.scope_description" /></blockquote>
-        </section>
+        </ReviewSection>
 
-        <section v-if="isGcep">
-            <h2>Plans for Ongoing Review and Descrepency Resolution</h2>
+        <ReviewSection v-if="isGcep" title="Plans">
             <dictionary-row label="Selected protocol" label-class="w-48 font-bold">
                 <div class="flex-none">
                     {{expertPanel.curation_review_protocol ? titleCase(expertPanel.curation_review_protocol.full_name) : null}}
-                <p v-if="expertPanel.curation_review_protocol_id == 100" class="mt-1">
-                    <em>Details:</em> {{expertPanel.curation_review_protocol_other}}
-                </p>
+                    <p v-if="expertPanel.curation_review_protocol_id == 100" class="mt-1">
+                        <em>Details:</em> {{expertPanel.curation_review_protocol_other}}
+                    </p>
                 </div>
             </dictionary-row>
-        </section>
-        <section v-if="isGcep">
-            <h2>Attestations</h2>
+        </ReviewSection>
+
+        <ReviewSection v-if="isGcep" title="Attestations">
             <dictionary-row label="GCEP Attestation Signed" label-class="w-52 font-bold">
                 {{formatDate(expertPanel.gcep_attestation_date)}}
             </dictionary-row>
@@ -56,30 +54,31 @@
             <dictionary-row label="NHGRI Attestation Signed" label-class="w-52 font-bold">
                 {{formatDate(expertPanel.nhgri_attestation_date)}}
             </dictionary-row>
-        </section>
+        </ReviewSection>
 
-        <div v-if="isVcep">
-            <section>
-                <h2>Attestations</h2>
-
-                <dictionary-row 
-                    label="Reanalysis and Descrepency Resolution Attestation Signed" 
-                    label-class="w-52 font-bold"
-                >
-                    {{formatDate(expertPanel.reanalysis_attestation_date)}}
-                </dictionary-row>
-                <dictionary-row label="NHGRI Attestation Signed" label-class="w-60 font-bold">
-                    {{formatDate(expertPanel.nhgri_attestation_date)}}
-                </dictionary-row>
-            </section>
-        </div>
+        <ReviewSection v-if="isVcep" title="Attestations">
+            <dictionary-row 
+                label="Reanalysis and Descrepency Resolution Attestation Signed" 
+                label-class="w-52 font-bold"
+            >
+                {{formatDate(expertPanel.reanalysis_attestation_date)}}
+            </dictionary-row>
+            <dictionary-row label="NHGRI Attestation Signed" label-class="w-60 font-bold">
+                {{formatDate(expertPanel.nhgri_attestation_date)}}
+            </dictionary-row>
+        </ReviewSection>
     </div>
 </template>
 <script>
 import ApplicationStepReview from '@/components/expert_panels/ApplicationStepReview.vue'
+import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
+
 export default {
     name: 'DefinitionReview',
     extends: ApplicationStepReview,
+    components: {
+        ReviewSection
+    },
     computed: {
         basicInfo () {
             return {
