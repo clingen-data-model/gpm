@@ -21,7 +21,9 @@ export const profileFields = computed(() => [
         name: 'institution_id',
         label: 'Institution',
         type: 'component',
-        component: InstitutionSearchSelect
+        component: {
+            component: InstitutionSearchSelect
+        },
     },
     { name: 'credentials', type: 'large-text'},
     { name: 'biography', type: 'large-text'},
@@ -29,7 +31,9 @@ export const profileFields = computed(() => [
         name: '*', // specifies passing entire modelValue to component.
         type: 'component',
         label: 'Address',
-        component: AddressInput
+        component: {
+            component: AddressInput
+        },
     },
     { 
         name: 'country_id', 
@@ -42,7 +46,9 @@ export const profileFields = computed(() => [
         name: 'timezone', 
         label: 'Timezone',
         type: 'component', 
-        component: TimezoneSearchSelect
+        component: {
+            component: TimezoneSearchSelect
+        },
     },
 ]);
 
