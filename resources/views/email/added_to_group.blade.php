@@ -1,7 +1,7 @@
 @extends('email.layout')
 <p>Hi there!</p>
 
-<p>We wanted to let you know that you've been added to the {{$group->displayName}} group.</p>
+<p>We wanted to let you know that you've been added to the {{$group->displayName}}.</p>
 
 <p>
 @if ($group->isEp)

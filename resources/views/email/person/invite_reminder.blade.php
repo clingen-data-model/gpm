@@ -5,7 +5,7 @@
 
 <p>
     @if($invite->inviter)
-        We wanted to remind you that you've been invited by the the {{$invite->inviter->display_name}} to activate your account in the ClinGen Group & Personnel Management System (GPM).
+        We wanted to remind you that you've been invited by the {{$invite->inviter->display_name}} to activate your account in the ClinGen Group & Personnel Management System (GPM).
     @else
         We wanted to remind you that you've been invited to to activate your account in the ClinGen Group & Personnel Management System (GPM).
     @endif

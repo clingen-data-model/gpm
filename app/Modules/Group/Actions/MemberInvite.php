@@ -100,7 +100,7 @@ class MemberInvite
             'first_name.required' => 'A first name is required.',
             'last_name.required' => 'A last name is required.',
             'email.required' => 'An email is required.',
-            'email.unique' => 'A person with this email address is already in the GPM.  Please click \'Add as member\' next the the person\'s name to the right.'
+            'email.unique' => 'A person with this email address is already in the GPM.  Please click \'Add as member\' next the person\'s name to the right.'
         ];
     }
 }

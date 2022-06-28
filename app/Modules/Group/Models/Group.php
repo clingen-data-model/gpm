@@ -237,20 +237,12 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
     public function getFullTypeAttribute()
     {
-        if ($this->isExpertPanel) {
-            return $this->expertPanel->type;
-        }
-
         return $this->type;
     }
 
     public function getDisplayNameAttribute()
     {
-        if ($this->isExpertPanel) {
-            return $this->expertPanel->displayName;
-        }
-
-        return $this->name;
+        return $this->name.' '.strtoupper($this->type->name);
     }
 
     public function getHasCoiRequirementAttribute()
