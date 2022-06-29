@@ -47,6 +47,10 @@ class Comment extends Model implements ContractsHasComments
         'type',
     ];
 
+    public $with = [
+        'type',
+    ];
+
     /**
      * RELATIONS
      */
