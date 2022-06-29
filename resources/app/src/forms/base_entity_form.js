@@ -12,7 +12,7 @@ class BaseEntityForm {
     }
 
      async find (id) {
-        const data =  await this.repo.find(id)
+        return await this.repo.find(id)
             .then(data => {
                 this.currentItem.value = data
                 this.originalItem.value = data
