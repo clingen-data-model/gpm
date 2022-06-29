@@ -6,7 +6,7 @@
     import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
 
     const store = useStore();
-    const {group, expertPanel, members, isGcep, isVcep} = setupReviewData(store);
+    const {group, expertPanel} = setupReviewData(store);
 
     watch(() => group.value, (to, from) => {
         if ((to.id && (!from || to.id != from.id))) {
