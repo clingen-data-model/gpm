@@ -1,5 +1,5 @@
 <script setup>
-    import {ref, onBeforeUpdate, h} from 'vue'
+    import {ref, onBeforeUpdate, h, defineProps, defineEmits} from 'vue'
     import DataFormField from '@/components/forms/DataFormField.vue'
     import mirror from '@/composables/setup_working_mirror'
     import {v4 as uuid4} from 'uuid'
@@ -86,11 +86,12 @@
     
     <!-- <render /> -->
     <div class="data-form">
-        <div v-for="field in fields" :key="field.name">
+        <pre>{{fields}}</pre>
+        <!-- <div v-for="field in fields" :key="field.name">
             <div :class="wrapperClass">
                 <renderElement :field="field" :modelValue="workingCopy" />
                 <renderExtra :field="field" :modelValue="workingCopy" />
             </div>
-        </div>
+        </div> -->
     </div>
 </template>

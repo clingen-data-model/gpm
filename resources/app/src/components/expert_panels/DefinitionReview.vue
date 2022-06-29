@@ -1,13 +1,42 @@
+<script setup>
+    import { computed, watch } from 'vue'
+    import {useStore} from 'vuex'
+    import setupReviewData from '@/composables/setup_review_data.js'
+    import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
+
+    const store = useStore();
+    const {group, expertPanel, members, isGcep, isVcep, comments} = setupReviewData(store);
+
+    const basicInfo = computed(() => {
+        return {
+            type: group.value.type.name ? group.value.type.name.toUpperCase() : '',
+            long_base_name: expertPanel.value.long_base_name,
+            short_base_name: expertPanel.value.short_base_name,
+        }
+    });
+
+    watch( 
+        () => group.value, 
+        (to, from) => { 
+            if ((to.id && (!from || to.id != from.id))) {
+                store.dispatch('groups/getMembers', group.value);
+                store.dispatch('groups/getGenes', group.value);
+            }
+        }, 
+        { immediate: true }
+    );
+</script>
+
 <template>
     <div class="application-review bg-gray-100 p-2">
-        <ReviewSection title="Basic Information" name="basic-info">
+        <ReviewSection title="Basic Information" name="basic-info" :comments="comments">
             <object-dictionary :obj="basicInfo" label-class="w-40 font-bold" />
             <dictionary-row label="CDWG" label-class="w-40 font-bold">
-                {{this.group.parent ?  this.group.parent.name : '--'}}
+                {{group.parent ?  group.parent.name : '--'}}
             </dictionary-row>
         </ReviewSection>
 
-        <ReviewSection title="Membership" name="membership">
+        <ReviewSection title="Membership" name="membership" :comments="comments">
             <simple-table :data="members" key-by="id" class="print:text-xs text-sm" />
 
             <div v-if="isVcep" class="mt-6">
@@ -17,8 +46,7 @@
                 </blockquote>
             </div>
         </ReviewSection>
-
-        <ReviewSection title="Scope" name="scope">
+        <ReviewSection title="Scope" name="scope" :comments="comments">
             <h3>Genes</h3>
             <div class="mb-6">
                 <p v-if="isGcep">{{expertPanel.genes.map(g => g.gene_symbol).join(', ')}}</p>
@@ -33,7 +61,7 @@
             <blockquote><markdown-block :markdown="expertPanel.scope_description" /></blockquote>
         </ReviewSection>
 
-        <ReviewSection v-if="isGcep" title="Plans">
+        <ReviewSection v-if="isGcep" title="Plans" :comments="comments">
             <dictionary-row label="Selected protocol" label-class="w-48 font-bold">
                 <div class="flex-none">
                     {{expertPanel.curation_review_protocol ? titleCase(expertPanel.curation_review_protocol.full_name) : null}}
@@ -44,7 +72,7 @@
             </dictionary-row>
         </ReviewSection>
 
-        <ReviewSection v-if="isGcep" title="Attestations">
+        <ReviewSection v-if="isGcep" title="Attestations" :comments="comments">
             <dictionary-row label="GCEP Attestation Signed" label-class="w-52 font-bold">
                 {{formatDate(expertPanel.gcep_attestation_date)}}
             </dictionary-row>
@@ -56,7 +84,7 @@
             </dictionary-row>
         </ReviewSection>
 
-        <ReviewSection v-if="isVcep" title="Attestations">
+        <ReviewSection v-if="isVcep" title="Attestations" :comments="comments">
             <dictionary-row 
                 label="Reanalysis and Descrepency Resolution Attestation Signed" 
                 label-class="w-52 font-bold"
@@ -69,35 +97,3 @@
         </ReviewSection>
     </div>
 </template>
-<script>
-import ApplicationStepReview from '@/components/expert_panels/ApplicationStepReview.vue'
-import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
-
-export default {
-    name: 'DefinitionReview',
-    extends: ApplicationStepReview,
-    components: {
-        ReviewSection
-    },
-    computed: {
-        basicInfo () {
-            return {
-                type: this.group.type.name ? this.group.type.name.toUpperCase() : '',
-                long_base_name: this.expertPanel.long_base_name,
-                short_base_name: this.expertPanel.short_base_name,
-            }
-        },
-    },
-    watch: {
-        group: {
-            immediate: true,
-            handler (to, from) { 
-                if ((to.id && (!from || to.id != from.id))) {
-                    this.$store.dispatch('groups/getMembers', this.group);
-                    this.$store.dispatch('groups/getGenes', this.group);
-                }
-            }
-        }
-    }
-}
-</script>

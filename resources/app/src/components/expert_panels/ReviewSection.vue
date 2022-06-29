@@ -1,8 +1,7 @@
 <script setup>
-    import { ref, defineProps, onMounted, computed } from 'vue'
-    import { titleCase } from '@/utils.js'
-    import { formatDate } from '@/date_utils.js'
+    import { ref, computed } from 'vue'
     import ReviewComment from '@/components/expert_panels/ReviewComment.vue'
+    import formDefinition from '../../forms/comment_form.js';
 
     const props = defineProps({
         title: {
@@ -12,57 +11,23 @@
         name: {
             type: String || null,
             default: null
+        },
+        comments: {
+            type: Array,
+            default: () => []
         }
     });
 
-    const comments = ref([
-        {
-            id: 1,
-            type: {
-                name: 'required revision',
-                id: 1
-            },
-            comment: 'Your short base name is very bad.  It smells funny and we would like you to change it to something that isn\'t so odious',
-            section: 'basic-info',
-            commenter: {
-                name: 'Core Group'
-            },
-            created_at: new Date(),
-            comments: [
-                {
-                    id: 3,
-                    type: {
-                        name: 'internal comment',
-                        id: 2
-                    },
-                    comment: 'I don\'t know that it\'s that bad',
-                    commenter: {
-                        name: 'Rando McCommenter'
-                    },
-                }
-            ]
-        },
-        {
-            id: 2,
-            type: {
-                name: 'suggestion',
-                id: 1
-            },
-            comment: 'We think you need better people on your expert panel all of these peope are terrible. You don\t have a single Schlorpian on your team.',
-            section: 'membership',
-            commenter: {
-                name: 'Core Group'
-            },
-            created_at: new Date()
-        } 
-        
-    ]);
-
     const showComments = ref(true)
-    const showCommentForm = ref(false)
+    const showCommentForm = ref(true)
 
     const sectionComments = computed(() => {
-        return comments.value.filter(c => c.section == props.name)
+        return props.comments.filter(c => {
+            if (c.metadata) {
+                return c.metadata.section == props.name
+            }
+            return false
+        })
     })
 
     const countColor = computed(() => {
@@ -74,7 +39,6 @@
         }
         return 'gray'
     })
-
 </script>
 
 <template>
@@ -98,7 +62,7 @@
             </div>
         </div>
         <div class="w-2/5 p-2 bg-gray-100 rounded-lg" v-show="showComments">
-            <div class="flex justify-between items-center">
+            <!-- <div class="flex justify-between items-center">
                 <h3>
                     <icon-cheveron-down class="inline cursor-pointer" @click="showComments = false" />
                     Comments
@@ -108,11 +72,11 @@
                 <li v-for="comment in sectionComments" :key="comment.id" class="bg-white p-2">
                     <ReviewComment :comment="comment"></ReviewComment>
                 </li>
-            </ul>
+            </ul> -->
             <div v-if="showCommentForm">
-                
+                <data-form :fields="formDefinition.fields.value" v-model="formDefinition.currentItem" :errors="formDefinition.errors"></data-form>
             </div>
-            <button v-else class="mt-2 btn btn-xs block">Add comment</button>
+            <button v-else class="mt-2 btn btn-xs block" @click="showCommentForm = true">Add comment</button>
         </div>
     </section>
 </template>

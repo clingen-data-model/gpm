@@ -1,10 +1,12 @@
 import {ref} from 'vue'
 import BaseEntityForm from "./base_entity_form.js";
-import {CommentRepository, CommentTypeRepository} from '@/repositories/comment_repository.js'
+import {commentRepository, typeRepository} from '@/repositories/comment_repository.js'
+
+console.log(typeRepository);
 
 export const commentTypes = ref([]);
 export const getCommentTypes = async () => {
-    return await CommentRepository.query()
+    return await typeRepository.query()
             .then(data => {
                 commentTypes.value = data;
                 return data;
@@ -24,7 +26,9 @@ export const fields = ref([
         label: 'Reference Code',
         type: 'large-text',
         required: true,
-    }
+    },
 ]);
 
-export default (new BaseEntityForm(fields, CommentTypeRepository))
+getCommentTypes();
+
+export default (new BaseEntityForm(fields, commentRepository))
