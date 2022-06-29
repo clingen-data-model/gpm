@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, computed } from 'vue';
+    import { ref, computed, onMounted } from 'vue';
     import { useStore } from 'vuex'
     import setupReviewData from '../../composables/setup_review_data';
     import formDefFactory from '../../forms/comment_form.js';
@@ -12,8 +12,18 @@
         subjectType: { 
             type: String, 
             default: '\\App\\Modules\\Group\\Models\\Group'
+        },
+        comment: {
+            type: Object,
         }
     });
+
+    onMounted(() => {
+        if (props.comment) {
+            formDef.currentItem.value = props.comment
+        }
+    })
+
     const emits = defineEmits(['saved', 'canceled']);
 
     const store = useStore();
@@ -46,11 +56,10 @@
         emits('canceled')
     }
 
-    const save = () => {
+    const create = () => {
         newComment.value.subject_type = props.subjectType,
         newComment.value.subject_id = group.value.id,
         newComment.value.metadata = {section: props.section}
-        console.log(newComment.value)
         formDef.save(newComment.value)
             .then(comment => {
                 comments.value.push(comment);
@@ -58,10 +67,26 @@
                 showCommentForm.value = false;
             })
     }
+
+    const update = () => {
+        formDef.update(newComment.value)
+            .then(comment => {
+                comments.value[comments.value.findIndex(i => i.id == comment.id)] = comment;
+                emits('saved', comment);
+            })
+    }
+
+    const save = () => {
+        if (newComment.value.id) {
+            update();
+            return;
+        }
+        create();
+    }
 </script>
 <template>
     <div>
-        <div v-if="showCommentForm" class="bg-white p-2">
+        <div v-if="showCommentForm || comment" class="bg-white p-2">
             <data-form :fields="fields" v-model="newComment" :errors="errors"></data-form>
             <button-row size="xs" submit-text="Save" @submitted="save" @canceled="cancel"></button-row>
         </div>
