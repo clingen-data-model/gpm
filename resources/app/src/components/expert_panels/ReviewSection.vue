@@ -62,7 +62,7 @@
             </div>
         </div>
         <div class="w-2/5 p-2 bg-gray-100 rounded-lg" v-show="showComments">
-            <!-- <div class="flex justify-between items-center">
+            <div class="flex justify-between items-center">
                 <h3>
                     <icon-cheveron-down class="inline cursor-pointer" @click="showComments = false" />
                     Comments
@@ -72,7 +72,7 @@
                 <li v-for="comment in sectionComments" :key="comment.id" class="bg-white p-2">
                     <ReviewComment :comment="comment"></ReviewComment>
                 </li>
-            </ul> -->
+            </ul>
             <div v-if="showCommentForm">
                 <data-form :fields="formDefinition.fields.value" v-model="formDefinition.currentItem" :errors="formDefinition.errors"></data-form>
             </div>
