@@ -12,7 +12,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
 
-class CommentTest extends TestCase
+abstract class CommentTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -38,7 +38,7 @@ class CommentTest extends TestCase
             'subject_type' => get_class($this->submission),
             'subject_id' => $this->submission->id,
             'creator_id' => $this->user->id,
-            'creator_type' => $this->user
+            'creator_type' => get_class($this->user)
         ];
         return Comment::factory()->create($data);
     }

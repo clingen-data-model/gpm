@@ -19,7 +19,9 @@ class CommentCreate
 
     public function asController(ActionRequest $request)
     {
-        return $this->handle($request->all());
+        $comment = $this->handle($request->all());
+        $comment->load(['creator', 'type']);
+        return $comment;
     }
 
     public function rules(ActionRequest $request): array
@@ -35,6 +37,7 @@ class CommentCreate
 
     public function authorize(ActionRequest $request):bool
     {
+        // dd($request->user()->roles->pluck('permissions')->flatten()->pluck('name')->toArray());
         return $request->user()->hasPermissionTo('ep-applications-comment');
     }
 
