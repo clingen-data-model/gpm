@@ -130,10 +130,12 @@ import {debounce} from 'lodash-es'
 import {computed} from 'vue'
 import {useStore} from 'vuex'
 import {api, isValidationError} from '@/http'
-import {groups} from '@/configs'
 import {Person} from '@/domain'
 import GroupMember from '@/domain/group_member'
 import MemberSuggestions from '@/components/groups/MemberSuggestions.vue'
+import config from '@/configs'
+
+const groups = config.groups;
 
 export default {
     name: 'AddMemberForm',
