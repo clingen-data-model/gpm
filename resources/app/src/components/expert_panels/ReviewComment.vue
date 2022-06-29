@@ -27,7 +27,7 @@
     <div class="my-2">
         <div class="flex justify-between items-start mb-1 rounded">
             <div class="flex space-x-2">
-                <strong class="block" style="font-size: 1rem">{{comment.commenter.name}}</strong>
+                <strong class="block" style="font-size: 1rem">{{comment.creator.name}}</strong>
                 <badge class="block" :color="getVariant(comment)">{{titleCase(comment.type.name)}}</badge>
             </div>
             <div class="flex space-x-2">
@@ -36,7 +36,7 @@
             </div>
         </div>
 
-        <markdown-block :markdown="comment.comment" class="text-sm" />
+        <markdown-block :markdown="comment.content" class="text-sm" />
         
         <ul class="ml-4">
             <li v-for="reply in comment.comments" :key="reply.id">
