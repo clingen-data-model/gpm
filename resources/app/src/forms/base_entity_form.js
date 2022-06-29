@@ -38,6 +38,7 @@ class BaseEntityForm {
         this.clearErrors()
         try {
             this.currentItem.value = this.repo.update(data)
+            return this.currentItem.value
         } catch (e) {
             if (isValidationError(e)) {
                 this.errors.value = e.response.data.errors
@@ -47,7 +48,7 @@ class BaseEntityForm {
     }
     
      async destroy (item) {
-        console.log(`delete assay_class with id: ${item.id}`);
+        this.repo.destroy(item)
     }
     
     cancel () {
