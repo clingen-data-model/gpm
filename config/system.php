@@ -93,6 +93,14 @@ return [
             'guard_name' => 'web',
             'scope' => 'system'
         ],
+        'ep-applications-comment' => [
+            'id' => 31,
+            'name' => 'ep-applications-comment',
+            'display_name' => 'Comment on applications',
+            'description' => 'Create and update comments on submitted EP applications',
+            'guard_name' => 'web',
+            'scope' => 'system'
+        ],
         'annual-updates-manage' => [
             'id' => 40,
             'name' => 'annual-updates-manage',
@@ -100,6 +108,14 @@ return [
             'description' => 'Create and update applications; create a new annual update window.',
             'guard_name' => 'web',
             'scope' => 'system'
+        ],
+        'comments-manage' => [
+            'id' => 50,
+            'name' => 'comments-manage',
+            'display_name' => 'Manage comments',
+            'description' => 'Can edit/delete comments made by other users.',
+            'scope' => 'system',
+            'guard_name' => 'web',
         ],
         'reports-pull' => [
             'id' => 6,
@@ -112,8 +128,8 @@ return [
     ],
 
     'role_permissions' => [
-        'super-user' => [1,2,3,4,5,6,10,20,30,40,],
-        'super-admin' => [1,3,4,5,6,10,20,30,40],
+        'super-user' => [1,2,3,4,5,6,10,20,30,31,40,50],
+        'super-admin' => [1,3,4,5,6,10,20,30,40,50],
         'admin' => [3,4,6,10,20]
     ]
 ];
