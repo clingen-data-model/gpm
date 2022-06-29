@@ -23,7 +23,7 @@ export default class BaseRepository {
     }
     
      destroy (item) {
-        return api.delete(`${this.baseUrl}/${data.id}`)
+        return api.delete(`${this.baseUrl}/${item.id}`)
     }
 
     transformToEntity(item) {
