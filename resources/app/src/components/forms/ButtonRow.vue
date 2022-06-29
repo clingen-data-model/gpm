@@ -1,8 +1,8 @@
 <template>
     <div class="border-t pt-3 mb-1 mt-3 flex space-x-3">
         <slot>
-            <button class="btn" @click="cancel" v-if="showCancel" :disabled="$attrs.disabled">{{cancelText}}</button>
-            <button class="btn" :class="submitVariant" @click="submit" :disabled="$attrs.disabled">{{submitText}}</button>
+            <button class="btn" :class="['btn-'+size]" @click="cancel" v-if="showCancel" :disabled="$attrs.disabled">{{cancelText}}</button>
+            <button class="btn" :class="[submitVariant, 'btn-'+size]" @click="submit" :disabled="$attrs.disabled">{{submitText}}</button>
         </slot>
     </div>
 </template>
@@ -25,6 +25,10 @@ export default {
         submitVariant: {
             type: String,
             default: 'blue'
+        },
+        size: {
+            type: String,
+            default: 'md'
         }
     },
     emits: [
