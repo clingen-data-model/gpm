@@ -68,7 +68,9 @@
 <script>
 import {formatDate} from '../../../date_utils'
 import {isValidationError} from '@/http';
-import {documentsTypes} from '@/configs.json'
+import config from '@/configs.json'
+
+const documentsTypes = config.documentsTypes;
 
 export default {
     props: {
@@ -99,7 +101,6 @@ export default {
                 file: null,
                 date_received: new Date().toISOString(),
                 step: this.step,
-                document_type_id: (this.docTypeIsArray) ? null : this.documentTypeId,
             },
             errors: {},
             activeDocument: {},
@@ -128,7 +129,10 @@ export default {
                         .map(dt => ({label: dt.long_name, value: dt.id}));
             }
             return [];
-        }
+        },
+        document_type_id () {
+            return (this.docTypeIsArray) ? null : this.documentTypeId;
+        } 
     },
     methods: {
         async save() {

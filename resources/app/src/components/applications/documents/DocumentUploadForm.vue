@@ -27,7 +27,9 @@
 <script>
 import {formatDate} from '../../../date_utils'
 import {isValidationError} from '@/http';
-import {documentsTypes} from '@/configs.json'
+import configs from '@/configs.json'
+
+const documentsTypes = configs.documentsTypes;
 
 export default {
     props: {
