@@ -29,14 +29,14 @@
 
 <template>
     <div class="application-review bg-gray-100 p-2">
-        <ReviewSection title="Basic Information" name="basic-info" :comments="comments">
+        <ReviewSection title="Basic Information" name="basic-info">
             <object-dictionary :obj="basicInfo" label-class="w-40 font-bold" />
             <dictionary-row label="CDWG" label-class="w-40 font-bold">
                 {{group.parent ?  group.parent.name : '--'}}
             </dictionary-row>
         </ReviewSection>
 
-        <ReviewSection title="Membership" name="membership" :comments="comments">
+        <ReviewSection title="Membership" name="membership">
             <simple-table :data="members" key-by="id" class="print:text-xs text-sm" />
 
             <div v-if="isVcep" class="mt-6">
@@ -46,7 +46,7 @@
                 </blockquote>
             </div>
         </ReviewSection>
-        <ReviewSection title="Scope" name="scope" :comments="comments">
+        <ReviewSection title="Scope" name="scope">
             <h3>Genes</h3>
             <div class="mb-6">
                 <p v-if="isGcep">{{expertPanel.genes.map(g => g.gene_symbol).join(', ')}}</p>
@@ -61,7 +61,7 @@
             <blockquote><markdown-block :markdown="expertPanel.scope_description" /></blockquote>
         </ReviewSection>
 
-        <ReviewSection v-if="isGcep" title="Plans" :comments="comments">
+        <ReviewSection v-if="isGcep" title="Plans">
             <dictionary-row label="Selected protocol" label-class="w-48 font-bold">
                 <div class="flex-none">
                     {{expertPanel.curation_review_protocol ? titleCase(expertPanel.curation_review_protocol.full_name) : null}}
@@ -72,7 +72,7 @@
             </dictionary-row>
         </ReviewSection>
 
-        <ReviewSection v-if="isGcep" title="Attestations" :comments="comments">
+        <ReviewSection v-if="isGcep" title="Attestations">
             <dictionary-row label="GCEP Attestation Signed" label-class="w-52 font-bold">
                 {{formatDate(expertPanel.gcep_attestation_date)}}
             </dictionary-row>
@@ -84,7 +84,7 @@
             </dictionary-row>
         </ReviewSection>
 
-        <ReviewSection v-if="isVcep" title="Attestations" :comments="comments">
+        <ReviewSection v-if="isVcep" title="Attestations">
             <dictionary-row 
                 label="Reanalysis and Descrepency Resolution Attestation Signed" 
                 label-class="w-52 font-bold"
