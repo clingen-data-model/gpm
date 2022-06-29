@@ -27,6 +27,9 @@ export const fields = ref([
     },
 ]);
 
-getCommentTypes();
 
-export default (new BaseEntityForm(fields, commentRepository))
+export default () => {
+    getCommentTypes();
+
+    return (new BaseEntityForm(fields, commentRepository))
+}

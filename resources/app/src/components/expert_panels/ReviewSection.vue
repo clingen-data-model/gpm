@@ -1,7 +1,14 @@
 <script setup>
     import { ref, computed } from 'vue'
     import ReviewComment from '@/components/expert_panels/ReviewComment.vue'
-    import formDefinition from '../../forms/comment_form.js';
+    import ReviewCommentForm from './ReviewCommentForm.vue'
+    import {useStore} from 'vuex'
+    import setupReviewData from '@/composables/setup_review_data.js'
+
+    const store = useStore();
+    const { comments } = setupReviewData(store);
+
+    console.log(comments)
 
     const props = defineProps({
         title: {
@@ -12,17 +19,12 @@
             type: String || null,
             default: null
         },
-        comments: {
-            type: Array,
-            default: () => []
-        }
     });
 
     const showComments = ref(true)
-    const showCommentForm = ref(true)
 
     const sectionComments = computed(() => {
-        return props.comments.filter(c => {
+        return comments.value.filter(c => {
             if (c.metadata) {
                 return c.metadata.section == props.name
             }
@@ -42,11 +44,11 @@
 </script>
 
 <template>
-    <section class="flex space-x-4">
-        <div class="overflow-x-scroll flex-grow" :class="{'w-3/5': showComments}">
+    <section class="space-y-4 lg:flex lg:space-x-4">
+        <div class="overflow-x-scroll flex-grow" :class="{'lg:w-3/5': showComments}">
             <header class="flex justify-between items-start space-x-4">
-                <h2 class="flex-grow" :class="{'w-3/5': !showComments}">{{title}}</h2>
-                <div class="flex justify-between items-center w-2/5 px-2 py-1 pb-0 bg-gray-100 rounded-lg" v-show="!showComments">
+                <h2 class="flex-grow" :class="{'lg:w-3/5': !showComments}">{{title}}</h2>
+                <div class="flex justify-between items-center lg:w-2/5 px-2 py-1 pb-0 bg-gray-100 rounded-lg" v-show="!showComments">
                     <h3>
                         <icon-cheveron-right class="inline cursor-pointer" @click="showComments = true" />
                         Comments 
@@ -61,7 +63,7 @@
                 </div>
             </div>
         </div>
-        <div class="w-2/5 p-2 bg-gray-100 rounded-lg" v-show="showComments">
+        <div class="lg:w-2/5 p-2 bg-gray-100 rounded-lg" v-show="showComments">
             <div class="flex justify-between items-center">
                 <h3>
                     <icon-cheveron-down class="inline cursor-pointer" @click="showComments = false" />
@@ -69,14 +71,11 @@
                 </h3>
             </div>
             <ul>
-                <li v-for="comment in sectionComments" :key="comment.id" class="bg-white p-2">
+                <li v-for="comment in sectionComments" :key="comment.id" class="bg-white p-2 mb-2">
                     <ReviewComment :comment="comment"></ReviewComment>
                 </li>
             </ul>
-            <div v-if="showCommentForm">
-                <data-form :fields="formDefinition.fields.value" v-model="formDefinition.currentItem" :errors="formDefinition.errors"></data-form>
-            </div>
-            <button v-else class="mt-2 btn btn-xs block" @click="showCommentForm = true">Add comment</button>
+            <ReviewCommentForm :section="name" />
         </div>
     </section>
 </template>

@@ -2,6 +2,8 @@ import { ref, computed, watch } from 'vue'
 import { formatDate } from '@/date_utils'
 import commentRepository from '../repositories/comment_repository';
 
+const comments = ref([]);
+
 export default function (store) {
     const group = computed( () => {
         return store.getters['groups/currentItemOrNew'];
@@ -26,8 +28,6 @@ export default function (store) {
             coi_completed: formatDate(m.coi_last_completed)
         }));
     });
-
-    const comments = ref([]);
 
     watch(() => group.value, async (to, from) => {
         if ((to.id && (!from || to.id != from.id))) {
