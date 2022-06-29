@@ -32,6 +32,10 @@ class Comment extends Model implements ContractsHasComments
         'metadata' => 'array'
     ];
 
+    public $with = [
+        'type',
+    ];
+
     /**
      * Get the type that owns the Comment
      *

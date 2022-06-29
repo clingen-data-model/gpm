@@ -18,7 +18,11 @@ class CommentUpdate
 
     public function asController(ActionRequest $request, Comment $comment)
     {
-        return $this->handle($comment, $request->validated());
+        $comment = $this->handle($comment, $request->validated());
+
+        $comment->load(['creator', 'type']);
+
+        return $comment;
     }
 
     public function rules(ActionRequest $request): array
