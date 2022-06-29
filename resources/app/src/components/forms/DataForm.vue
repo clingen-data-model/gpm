@@ -29,11 +29,11 @@
         fieldRefs.value.push(el)
     }
 
-    const focus = () => {
-        if (fieldRefs.value.length > 0) {
-            fieldRefs.value[0].focus();
-        }
-    }
+    // const focus = () => {
+    //     if (fieldRefs.value.length > 0) {
+    //         fieldRefs.value[0].focus();
+    //     }
+    // }
 
     const {workingCopy} = mirror.setup(props, {emit: emits});
 
@@ -41,7 +41,7 @@
         fieldRefs.value = [];
     })
 
-    const renderElement = ({field, modelValue}) => {
+    const renderElement = ({field}) => {
         if (field.type == 'raw-component') {
             return h(
                 field.component.component, 
@@ -64,7 +64,7 @@
          )
     }
 
-    const renderExtra = ({field, modelvalue}) => {
+    const renderExtra = ({field}) => {
             let extraSlot = null;
             if (field.extraSlot) {
                 extraSlot = h(
@@ -84,14 +84,12 @@
 </script>
 <template>
     
-    <!-- <render /> -->
-    <div class="data-form">
-        <pre>{{fields}}</pre>
-        <!-- <div v-for="field in fields" :key="field.name">
+    <div class="data-form" :id="formId">
+        <div v-for="field in fields" :key="field.name">
             <div :class="wrapperClass">
                 <renderElement :field="field" :modelValue="workingCopy" />
                 <renderExtra :field="field" :modelValue="workingCopy" />
             </div>
-        </div> -->
+        </div>
     </div>
 </template>
