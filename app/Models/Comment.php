@@ -23,23 +23,27 @@ class Comment extends Model implements ContractsHasComments
         'creator_type',
         'creator_id',
         'metadata',
+        'resolved_at'
     ];
 
     public $casts = [
         'id' => 'integer',
         'subject_id' => 'integer',
         'creator_id' => 'integer',
-        'metadata' => 'array'
+        'metadata' => 'array',
+        'resolved_at' => 'datetime'
     ];
 
     public $with = [
         'type',
     ];
 
+    public $appends = [
+        'is_resolved'
+    ];
+
     /**
-     * Get the type that owns the Comment
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * RELATIONS
      */
     public function type(): BelongsTo
     {
@@ -55,4 +59,33 @@ class Comment extends Model implements ContractsHasComments
     {
         return $this->morphTo();
     }
+
+    /**
+     * SCOPES
+     */
+    public function scopeResolved($query)
+    {
+        return $query->whereNotNull('resolved_at');
+    }
+
+    public function scopePending($query)
+    {
+        return $query->whereNull('resolved_at');
+    }
+
+    /**
+     * ACCESSORS
+     */
+
+    public function getIsResolvedAttribute(): bool
+    {
+        return (bool)$this->resolved_at;
+    }
+    
+    public function getIsPendingAttribute(): bool
+    {
+        return is_null($this->resolved_at);
+    }
+    
+    
 }
