@@ -9,10 +9,16 @@
         <dictionary-row label-class="font-bold w-40" label="Affiliation ID">{{application.affiliation_id || '--'}}</dictionary-row>
         <dictionary-row label-class="font-bold w-40" label="CDWG">{{group.parent ? group.parent.name : null || '--'}}</dictionary-row>
         <dictionary-row label-class="font-bold w-40" label="Chair(s)">
-            {{group.chairs.map(c => c.person.name).join(', ')}}
+            <span v-for="c,idx in group.chairs" :key="c.id">
+                <router-link :to="{name: 'PersonDetail', params: {id: c.id}}">{{c.person.name}}</router-link>
+                <span v-if="idx < group.chairs.length-1">, </span>
+            </span>
         </dictionary-row>
         <dictionary-row label-class="font-bold w-40" label="Coordinator(s)">
-            {{group.coordinators.map(c => c.person.name).join(', ')}}
+            <span v-for="c,idx in group.coordinators" :key="c.id">
+                <router-link :to="{name: 'PersonDetail', params: {id: c.id}}">{{c.person.name}}</router-link>
+                <span v-if="idx < group.coordinators.length-1">, </span>
+            </span>
         </dictionary-row>
         <dictionary-row label-class="font-bold w-40" label="Website URL">
             <a 

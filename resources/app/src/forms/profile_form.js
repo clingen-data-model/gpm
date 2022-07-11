@@ -23,7 +23,11 @@ export const profileFields = computed(() => [
         type: 'component',
         component: InstitutionSearchSelect
     },
-    { name: 'credentials', type: 'large-text'},
+    { 
+        name: 'credentials', 
+        type: 'large-text',
+        notes: 'Include degrees and certifications such as PhD, MD, CGC, etc.'
+    },
     { name: 'biography', type: 'large-text'},
     {
         name: '*', // specifies passing entire modelValue to component.

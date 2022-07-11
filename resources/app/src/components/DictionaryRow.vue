@@ -13,8 +13,10 @@
                 <label :class="fullLabelClass">{{label}}{{colon}}</label>
             </slot>
         </div>
-        <slot>
-        </slot>
+        <div>
+            <slot>
+            </slot>
+        </div>
         <div class="hidden w-36">&nbsp;</div>
     </div>
 

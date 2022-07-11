@@ -26,7 +26,11 @@
             :options="resolveOptions(field)"
             :vertical="field.vertical"
             :class="field.class"
-        ></input-row>
+        >
+            <template v-slot:after-input>
+                <div  v-if="field.notes" class="note">{{field.notes}}</div>
+            </template>
+        </input-row>
     </div>
 </template>
 <script>
