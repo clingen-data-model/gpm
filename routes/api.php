@@ -9,8 +9,10 @@ use App\Actions\NotifyPeople;
 use App\Actions\CommentCreate;
 use App\Actions\CommentDelete;
 use App\Actions\CommentUpdate;
+use App\Actions\CommentResolve;
 use App\Actions\FeedbackSubmit;
 use App\Actions\CommentTypeList;
+use App\Actions\CommentUnresolve;
 use App\Actions\NotificationMarkRead;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
@@ -86,6 +88,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/{comment:id}', CommentFind::class);
         Route::put('/{comment:id}', CommentUpdate::class);
         Route::delete('/{comment:id}', CommentDelete::class);
+        Route::post('/{comment:id}/resolved', CommentResolve::class);
+        Route::post('/{comment:id}/unresolved', CommentUnresolve::class);
     });
     Route::get('/comment-types', CommentTypeList::class);
 

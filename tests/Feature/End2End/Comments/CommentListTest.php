@@ -14,14 +14,14 @@ class CommentListTest extends CommentTest
     {
         parent::setup();
         Comment::factory()->create([
-            'subject_id' => $this->submission->id,
-            'subject_type' => get_class($this->submission),
+            'subject_id' => $this->expertPanel->id,
+            'subject_type' => get_class($this->expertPanel),
             'creator_type' => get_class($this->user),
             'creator_id' => $this->user->id
         ]);
         Comment::factory()->create([
-            'subject_id' => $this->submission->id,
-            'subject_type' => get_class($this->submission),
+            'subject_id' => $this->expertPanel->id,
+            'subject_type' => get_class($this->expertPanel),
             'creator_type' => get_class($this->user),
             'creator_id' => $this->user->id
         ]);
@@ -50,13 +50,13 @@ class CommentListTest extends CommentTest
     {
         $this->makeRequest([
             'where' => [
-                'subject_type' => get_class($this->submission),
-                'subject_id' => $this->submission->id,
+                'subject_type' => get_class($this->expertPanel),
+                'subject_id' => $this->expertPanel->id,
             ],
         ])
             ->assertStatus(200)
             ->assertJsonCount(2)
-            ->assertJson(Comment::where(['subject_type' => get_class($this->submission), 'subject_id' => $this->submission->id])->get()->toArray());
+            ->assertJson(Comment::where(['subject_type' => get_class($this->expertPanel), 'subject_id' => $this->expertPanel->id])->get()->toArray());
 
     }
     
