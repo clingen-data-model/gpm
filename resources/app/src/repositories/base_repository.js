@@ -1,4 +1,4 @@
-import { api } from '@/http'
+import { api, queryStringFromParams } from '@/http'
 
 export default class BaseRepository {
     constructor (baseUrl, options = {}) {
@@ -6,8 +6,9 @@ export default class BaseRepository {
         this.options = options
     }
 
-    query () {
-        return api.get(this.baseUrl).then(response =>  this.transformToEntity(response.data))
+    query (params) {
+        const queryString = queryStringFromParams(params)
+        return api.get(this.baseUrl+queryString).then(response =>  this.transformToEntity(response.data))
     }
 
     find (id) {
