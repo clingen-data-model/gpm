@@ -8,8 +8,6 @@
     const store = useStore();
     const { comments } = setupReviewData(store);
 
-    console.log(comments)
-
     const props = defineProps({
         title: {
             type: String || null,
@@ -44,7 +42,7 @@
 </script>
 
 <template>
-    <section class="space-y-4 lg:flex lg:space-x-4">
+    <section class="lg:flex lg:space-x-4">
         <div class="overflow-x-scroll flex-grow" :class="{'lg:w-3/5': showComments}">
             <header class="flex justify-between items-start space-x-4">
                 <h2 class="flex-grow" :class="{'lg:w-3/5': !showComments}">{{title}}</h2>

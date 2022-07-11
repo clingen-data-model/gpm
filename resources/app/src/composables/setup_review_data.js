@@ -29,12 +29,16 @@ export default function (store) {
         }));
     });
 
+    const getComments = async () => {
+        comments.value = await commentRepository.query({where: {
+            subject_type: '\\App\\Modules\\Group\\Models\\Group',
+            subject_id: group.value.id
+        }})
+    }
+
     watch(() => group.value, async (to, from) => {
         if ((to.id && (!from || to.id != from.id))) {
-            comments.value = await commentRepository.query({
-                subject_type: '\\App\\Modules\\Group\\Models\\Group',
-                subject_id: to.id
-            })
+            getComments()
         }
     }, {immediate: true})
     
@@ -46,5 +50,6 @@ export default function (store) {
         isVcep,
         members,
         comments,
+        getComments
     }
 }

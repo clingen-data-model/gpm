@@ -20,6 +20,7 @@ class CreateCommentsTable extends Migration
             $table->json('metadata')->nullable();
             $table->morphs('subject');
             $table->morphs('creator');
+            $table->datetime('resolved_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
