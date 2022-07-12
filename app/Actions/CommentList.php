@@ -18,7 +18,7 @@ class CommentList
             ['type', 'creator']
         );
 
-        $query = $search->buildQuery($queryParams);
+        $query = $search->buildQuery($queryParams)->withCount('comments');
 
         return $query->get();
     }
