@@ -61,7 +61,7 @@
             </div>
         </div>
 
-        <div class="lg:w-2/5 p-2 bg-gray-100 rounded-lg" v-show="showComments">
+        <div class="lg:w-2/5 p-2 bg-gray-100 rounded-lg mb-2" v-show="showComments">
             <div class="flex justify-between items-center">
                 <h3>
                     <icon-cheveron-down class="inline cursor-pointer" @click="showComments = false" />
@@ -69,7 +69,7 @@
                 </h3>
             </div>
             <ul>
-                <li v-for="comment in sectionComments" :key="comment.id" class="bg-white p-2 mb-2">
+                <li v-for="comment in sectionComments" :key="comment.id" class="bg-white p-2">
                     <ReviewComment :comment="comment" :commentManager="commentManager"></ReviewComment>
                 </li>
             </ul>
