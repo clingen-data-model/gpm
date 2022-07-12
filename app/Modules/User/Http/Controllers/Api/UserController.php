@@ -46,7 +46,6 @@ class UserController extends Controller
                         $query->where($key, $value);
                     }
                 }
-                \Log::debug(renderQuery($query));
                 return $query;
             },
             sortFunction: function ($query, $field, $dir) {

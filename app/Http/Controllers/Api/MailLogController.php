@@ -48,8 +48,6 @@ class MailLogController extends Controller
         
         $searchQuery = $search->buildQuery($request->only(['where', 'sort', 'with']));
 
-        \Log::debug(renderQuery($searchQuery));
-        
         if ($request->page_size || $request->page) {
             return $searchQuery->paginate($request->get('page_size', 20));
         }
