@@ -137,28 +137,28 @@
         </div>
 
 
-        <div class="replies">
-            <ul class="ml-1 border-l pl-2" v-if="showReplyList">
-                <li v-for="reply in replyManager.comments" :key="reply.id">
+        <div class="replies ml-1">
+            <ul class="" v-if="showReplyList">
+                <li v-for="reply in replyManager.comments" :key="reply.id" class="border-l-2 mt-2 px-2 py-1 bg-gray-100 bg-opacity-50">
                     <ReviewComment :comment="reply" :commentManager="replyManager" @deleted="handleReplyRemoved"></ReviewComment>
                 </li>
             </ul>
-            <ReviewCommentForm 
-                class="ml-1 border-l pl-2"
-                v-show="showReplyForm" 
-                subjectType="App\Models\Comment"
-                :subjectId="comment.id"
-                :onlyInternal="true"
-                :commentManager="replyManager"
-                @saved="handleNewReply"
-                @canceled="showReplyForm = false"
-            />
-            <button class="link text-sm ml-2" v-if="comment.comments_count > 0" @click="toggleReplies">
+            <button class="link text-sm" v-if="comment.comments_count > 0" @click="toggleReplies">
                 {{showReplyList ? 'Hide' : 'Show'}} 
                 {{comment.comments_count}} 
                 {{comment.comments_count > 1 ? 'replies' : 'reply'}}
             </button>
-
+            <div v-show="showReplyForm" class="border-l-2 mt-2 px-2 py-1 bg-gray-100 bg-opacity-50">
+                <strong>Your Reply</strong>
+                <ReviewCommentForm 
+                    subjectType="App\Models\Comment"
+                    :subjectId="comment.id"
+                    :onlyInternal="true"
+                    :commentManager="replyManager"
+                    @saved="handleNewReply"
+                    @canceled="showReplyForm = false"
+                />
+            </div>
         </div>
     </div>
 </template>
