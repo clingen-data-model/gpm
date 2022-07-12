@@ -1,4 +1,4 @@
-<style lang="postcss" scoped>
+<style scoped>
     .green {
         @apply bg-green-600
     }
@@ -17,7 +17,7 @@
 
 </style>
 <template>
-    <span class="rounded-xl px-2 py-1 text-white text-xs font-bold" :class="color">
+    <span class="rounded-xl text-white font-bold" :class="`${color} ${textSize} ${padding}`">
         <slot></slot>
     </span>
 </template>
@@ -29,7 +29,26 @@ export default {
             type: String,
             required: false,
             default: 'gray',
+        },
+        size: {
+            type: String,
+            default: 'xs'
         }
     },
+    computed: {
+        textSize () {
+            return `text-${this.size}`
+        },
+        padding () {
+            let x = 'px-2';
+            let y = 'py-1';
+
+            if (this.size == 'xxs') {
+                return `${x} py-0.5`
+            }
+
+            return `${x} ${y}`
+        }
+    }
 }
 </script>
