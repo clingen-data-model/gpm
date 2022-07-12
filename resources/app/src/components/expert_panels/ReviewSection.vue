@@ -1,12 +1,9 @@
 <script setup>
-    import { ref, computed } from 'vue'
+    import { ref, computed, inject } from 'vue'
     import ReviewComment from '@/components/expert_panels/ReviewComment.vue'
     import ReviewCommentForm from './ReviewCommentForm.vue'
-    import {useStore} from 'vuex'
-    import setupReviewData from '@/composables/setup_review_data.js'
 
-    const store = useStore();
-    const { comments } = setupReviewData(store);
+    const commentManager = inject('commentManager')
 
     const props = defineProps({
         title: {
@@ -19,10 +16,12 @@
         },
     });
 
-    const showComments = ref(true)
 
+    const showCommentForm = ref(false);
+
+    const showComments = ref(true)
     const sectionComments = computed(() => {
-        return comments.value.filter(c => {
+        return commentManager.value.comments.filter(c => {
             if (c.metadata) {
                 return c.metadata.section == props.name
             }
@@ -61,6 +60,7 @@
                 </div>
             </div>
         </div>
+
         <div class="lg:w-2/5 p-2 bg-gray-100 rounded-lg" v-show="showComments">
             <div class="flex justify-between items-center">
                 <h3>
@@ -70,10 +70,18 @@
             </div>
             <ul>
                 <li v-for="comment in sectionComments" :key="comment.id" class="bg-white p-2 mb-2">
-                    <ReviewComment :comment="comment"></ReviewComment>
+                    <ReviewComment :comment="comment" :commentManager="commentManager"></ReviewComment>
                 </li>
             </ul>
-            <ReviewCommentForm :section="name" />
+            <div class="bg-white p-2">
+                <ReviewCommentForm v-if="showCommentForm"
+                    :section="name" 
+                    :commentManager="commentManager"
+                    @saved="showCommentForm = false"
+                    @canceled="showCommentForm = false"
+                />
+                <button v-else class="btn btn-xs block" @click="showCommentForm = true">Add comment</button>
+            </div>
         </div>
     </section>
 </template>
