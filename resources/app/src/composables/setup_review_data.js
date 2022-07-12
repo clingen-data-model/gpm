@@ -2,8 +2,6 @@ import { ref, computed, watch } from 'vue'
 import { formatDate } from '@/date_utils'
 import commentRepository from '../repositories/comment_repository';
 
-const comments = ref([]);
-
 export default function (store) {
     const group = computed( () => {
         return store.getters['groups/currentItemOrNew'];
@@ -29,27 +27,11 @@ export default function (store) {
         }));
     });
 
-    const getComments = async () => {
-        comments.value = await commentRepository.query({where: {
-            subject_type: '\\App\\Modules\\Group\\Models\\Group',
-            subject_id: group.value.id
-        }})
-    }
-
-    watch(() => group.value, async (to, from) => {
-        if ((to.id && (!from || to.id != from.id))) {
-            getComments()
-        }
-    }, {immediate: true})
-    
-
     return {
         group,
         expertPanel,
         isGcep,
         isVcep,
         members,
-        comments,
-        getComments
     }
 }

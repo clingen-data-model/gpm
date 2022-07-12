@@ -1,11 +1,20 @@
 <script setup>
-    import { computed, watch } from 'vue'
+    import { computed, watch, provide, ref } from 'vue'
     import {useStore} from 'vuex'
     import setupReviewData from '@/composables/setup_review_data.js'
+    import commentManagerFactory from '@/composables/comment_manager.js'
     import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
 
     const store = useStore();
-    const {group, expertPanel, members, isGcep, isVcep, comments} = setupReviewData(store);
+    const {group, expertPanel, members, isGcep, isVcep} = setupReviewData(store);
+    const commentManager = ref();
+    provide('commentManager', commentManager)
+    // provide('comments', comments);
+    // provide('getComments', getComments)
+
+    const comments = ref([]);
+
+    provide('group', group)
 
     const basicInfo = computed(() => {
         return {
@@ -21,6 +30,9 @@
             if ((to.id && (!from || to.id != from.id))) {
                 store.dispatch('groups/getMembers', group.value);
                 store.dispatch('groups/getGenes', group.value);
+                commentManager.value = commentManagerFactory('App\\Modules\\Group\\Models\\Group', to.id)
+                commentManager.value.getComments();
+
             }
         }, 
         { immediate: true }
