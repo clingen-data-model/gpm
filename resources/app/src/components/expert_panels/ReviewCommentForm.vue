@@ -43,11 +43,11 @@
     const formDef = formDefFactory();
 
     const fields = computed(() => {
-        const fields = formDef.fields.value;
-        // if (props.onlyInternal) {
-        //     const typeFieldIdx = fields.findIndex(f => f.name == 'comment_type_id');
-        //     fields.splice(typeFieldIdx, 1);
-        // }
+        const fields = [...formDef.fields.value];
+        if (props.onlyInternal) {
+            const typeFieldIdx = fields.findIndex(f => f.name == 'comment_type_id');
+            fields.splice(typeFieldIdx, 1);
+        }
         return fields;
     })
     const errors = computed(() => {
