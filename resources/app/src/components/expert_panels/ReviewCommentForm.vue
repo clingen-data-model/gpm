@@ -1,20 +1,34 @@
 <script setup>
-    import { ref, computed, onMounted } from 'vue';
+    import { ref, computed, onMounted, inject } from 'vue';
     import { useStore } from 'vuex'
-    import setupReviewData from '../../composables/setup_review_data';
+    // import setupReviewData from '../../composables/setup_review_data';
     import formDefFactory from '../../forms/comment_form.js';
 
+    const group = inject('group');
+
     const props = defineProps({ 
+        commentManager: {
+            type: Object,
+            required: true
+        },
         section: {
             type: [String, null], 
             default: null
         },
         subjectType: { 
             type: String, 
-            default: '\\App\\Modules\\Group\\Models\\Group'
+            default: 'App\\Modules\\Group\\Models\\Group'
+        },
+        subjectId: {
+            type: Number,
+            required: false
         },
         comment: {
             type: Object,
+        },
+        onlyInternal: {
+            type: Boolean,
+            default: false
         }
     });
 
@@ -26,13 +40,15 @@
 
     const emits = defineEmits(['saved', 'canceled']);
 
-    const store = useStore();
-    const {group, comments} = setupReviewData(store);
-
     const formDef = formDefFactory();
 
     const fields = computed(() => {
-        return formDef.fields.value
+        const fields = formDef.fields.value;
+        // if (props.onlyInternal) {
+        //     const typeFieldIdx = fields.findIndex(f => f.name == 'comment_type_id');
+        //     fields.splice(typeFieldIdx, 1);
+        // }
+        return fields;
     })
     const errors = computed(() => {
         return formDef.errors.value
@@ -47,31 +63,33 @@
         }
     })
 
-    const showCommentForm = ref(false);
-
     const cancel = () => {
         formDef.clearCurrentItem()
         formDef.clearErrors()
-        showCommentForm.value = false;
         emits('canceled')
     }
 
     const create = () => {
         newComment.value.subject_type = props.subjectType,
-        newComment.value.subject_id = group.value.id,
+        newComment.value.subject_id = props.subjectId || group.value.id,
         newComment.value.metadata = {section: props.section}
+        if (props.onlyInternal) {
+            newComment.value.comment_type_id = 1
+        }
         formDef.save(newComment.value)
             .then(comment => {
-                comments.value.push(comment);
+                props.commentManager.addComment(comment);
                 emits('saved', comment);
-                showCommentForm.value = false;
             })
     }
 
     const update = () => {
+        if (props.onlyInternal) {
+            newComment.value.comment_type_id = 1
+        }
         formDef.update(newComment.value)
             .then(comment => {
-                comments.value[comments.value.findIndex(i => i.id == comment.id)] = comment;
+                props.commentManager.updateComment(comment);
                 emits('saved', comment);
             })
     }
@@ -86,10 +104,7 @@
 </script>
 <template>
     <div>
-        <div v-if="showCommentForm || comment" class="bg-white p-2">
-            <data-form :fields="fields" v-model="newComment" :errors="errors"></data-form>
-            <button-row size="xs" submit-text="Save" @submitted="save" @canceled="cancel"></button-row>
-        </div>
-        <button v-else class="btn btn-xs block" @click="showCommentForm = true">Add comment</button>
+        <data-form :fields="fields" v-model="newComment" :errors="errors"></data-form>
+        <button-row size="xs" submit-text="Save" @submitted="save" @canceled="cancel"></button-row>
     </div>
 </template>
