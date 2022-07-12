@@ -7,6 +7,18 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait HasComments
 {
+
+    static public function bootHasComments()
+    {
+        static::softDeleted(function ($model) {
+            $model->comments->each->delete();
+        });
+
+        static::forceDeleted(function ($model) {
+            $model->comments->each()->forceDelete();
+        });
+    }
+
     /**
      * Get all of the comments for the HasComments
      *
