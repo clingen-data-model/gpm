@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\Contracts\HasComments as ContractsHasComments;
 use App\Models\Traits\HasComments;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Contracts\HasComments as ContractsHasComments;
 
 class Comment extends Model implements ContractsHasComments
 {
@@ -36,6 +36,7 @@ class Comment extends Model implements ContractsHasComments
 
     public $with = [
         'type',
+        'creator'
     ];
 
     public $appends = [
