@@ -59,19 +59,40 @@ export default {
             required: false,
             type: Boolean,
             default: false
+        },
+        labelField: {
+            type: String,
+            default: 'name'
+        },
+        showOptionsOnFocus: {
+            type: Boolean,
+            default: false
+        },
+        multiple: {
+            type: Boolean,
+            default: false
+        },
+        keyOptionsBy: {
+            type: String,
+            default: 'id'
         }
     },
     emits: [
         'update:modelValue',
+        'removed',
+        'added',
     ],
     data() {
         return {
+            selections: [],
             searchText: null,
             cursorPosition:null,
             filteredOptions: [],
             clearInputTimeout: null,
             keydownTimer: null,
             currentKey: null,
+            hasFocus: false,
+            debug: false
         }
     },
     computed: {
@@ -90,13 +111,13 @@ export default {
             return this.modelValue;
         },
         showInput() {
-            return !this.hasSelection;
+            return !this.hasSelection || this.multiple;
         },
         showingOptions() {
-            if (this.hasAdditionalOption && this.searchText) {
+            if (this.hasAdditionalOption && (this.searchText || this.hasFocus)) {
                 return true;
             }
-            return this.filteredOptions.length > 0;
+            return this.filteredOptions.length > 0 && this.hasFocus;
         },
         highlightedOption() {
             if (this.showingOptions) {
@@ -105,8 +126,13 @@ export default {
             return this.filteredOptions[this.cursorPosition];
         },
         hasSelection() {
-            return Boolean(this.modelValue)
+            return this.selections.length > 0
         },
+        filteredUniqueOptions () {
+            const selectionIds = this.selections.map(s => s.value);
+            return this.filteredOptions
+                    .filter(i => !selectionIds.includes(i.value))
+        }
     },
     watch: {
         searchText: function () {
@@ -115,50 +141,92 @@ export default {
         filteredOptions: function () {
             this.cursorPosition = 0;
         },
-        modelValue () {
+        modelValue (to) {
+            if (to) {
+                this.selections = Array.isArray(to) ? to : [to]
+            }
             this.clearInput();
             this.resetCursor();
         }
     },
     methods: {
+        handleInputFocus () {
+            console.log('handleInputFocus', this.showOptionsOnFocus)
+            this.hasFocus = true;
+            if (this.showOptionsOnFocus) {
+                this.search(this.searchText, this.options);
+            }
+        },
         handleInputBlur () {
-            this.clearInput();
-            this.resetCursor();
+            this.log('handleInputBlur')
+            setTimeout(() => {
+                this.log('timedout')
+
+                this.clearInput();
+                this.resetCursor();
+                this.hasFocus = false;
+            }, 200)
         },
         defaultSearchFunction (searchText, options) {
+            this.log('defaultSearchFunction')
             if (!searchText) {
                 return [];
             }
+
+            const pattern = new RegExp(searchText, 'gi');
             return options.filter(o => {
-                const match = o.name.match(new RegExp(searchText, 'gi'));
-                return match !== null
+                let matches = null;
+                if (typeof o == 'string') {
+                    matches = o.match(pattern)
+                } else {
+                    matches = o[this.labelField].match(pattern);
+                }
+                return matches !== null
             })
         },
-        removeSelection(){
-            this.$emit('update:modelValue', null);
+        removeSelection(selectionIdx){
+            this.log('removeSelection')
+            this.selections.splice(selectionIdx, 1);
+
+            this.emitModelUpdate();
+            this.$emit('removed', this.selections[selectionIdx])
             this.$nextTick(() => {
                 this.$refs.input.focus();
             })
         },
         setSelection(selection) {
-            this.$emit('update:modelValue', selection);
+            this.selections.push(selection);
+            this.emitModelUpdate();
             this.clearInput();
             this.resetCursor();
+            this.$emit('added', this.selection)
+        },
+        emitModelUpdate () {
+            if (this.multiple) {
+                this.$emit('update:modelValue', this.selections);
+            } else {
+                this.$emit('update:modelValue', this.selections[0] ?? null);
+            }
         },
         clearInput() {
+            this.log('clearInput')
             this.clearSearchText();
             this.clearOptions();
         },
         clearOptions() {
+            this.log('clearOptions')
             this.filteredOptions = [];
         },
         clearSearchText() {
+            this.log('clearSearchText')
             this.searchText = null;
         },
         resetCursor() {
+            this.log('resetCursor')
             this.cursorPosition = 0;
         },
         startKeydownTimer(evt) {
+            this.log('startKeydwonTimer')
             if (evt.key == this.currentKey) {
                 return;
             }
@@ -173,6 +241,7 @@ export default {
             }
         },
         handleKeyDown (evt) {
+            this.log('handleKeyDown')
             if (evt.key == 'Tab') {
                 this.handleKeyEvent(evt);
                 return;
@@ -180,12 +249,14 @@ export default {
             this.startKeydownTimer(evt);
         },
         cancelKeydownTimer() {
+            this.log('cancelKeydwonTimer')
             if (this.keydownTimer) {
                 clearInterval(this.keydownTimer);
                 this.currentKey = null;
             }
         },
         moveUp() {
+            this.log('moveUp')
             if (!this.cursorPosition) {
                 this.cursorPosition = 0;
                 return;
@@ -198,6 +269,7 @@ export default {
             return;
         },
         moveDown() {
+            this.log('moveDown')
             if (this.cursorPosition === null) {
                 this.cursorPosition = 0;
                 return;
@@ -210,6 +282,7 @@ export default {
             return;
         },
         handleKeyEvent(evt) {
+            this.log('handleKeyEvent')
             this.cancelKeydownTimer(evt);
             if (this.showingOptions) {
                 if (evt.key == 'ArrowDown') {
@@ -233,15 +306,38 @@ export default {
             }
         },
         scrollToHighlightedOption () {
+            this.log('scrollToHighlightedOption')
             if (!inView(document.getElementById('option-'+this.cursorPosition))) {
                 document.getElementById('option-'+this.cursorPosition).scrollIntoView();
             }
 
+        },
+        resolveDefaultOptionLabel (option) {
+            if (typeof option == 'object') {
+                return option[this.labelField]
+            }
+
+            return option
+        },
+
+        resolveDefaultSelctionLabel (option) {
+            return this.resolveDefaultOptionLabel(option)
+        },
+
+        log (input) {
+            if (this.debug) {
+                console.log(input)
+            }
         }
     },
     created() {
         this.search = debounce( async (searchText, options) => {
             if (searchText == '' || searchText === null || typeof searchText == 'undefined') {
+                if (this.showOptionsOnFocus) {
+                    console.log('show options b/ focus')
+                    this.filteredOptions = [...options];
+                    return;
+                }
                 return [];
             }
 
@@ -252,30 +348,39 @@ export default {
 
             this.filteredOptions = await this.searchFunction(searchText, options);
         }, this.throttle);
-    }
+    },
 }
 </script>
 <template>
     <!-- Trying to get v-click-outside to work, but option slot markup doesn't appear to be in complenent $el when running $el.contains() in v-click-outisde directive -->
     <!-- <div class="search-select-component" v-click-outside="{handler: ()=> {}, exclude: []}"> -->
-    <div class="search-select-component" >
-        <div class="search-select-container border">
-            <div class="selection" :class="{disabled: disabled}" v-if="hasSelection">
+    <div class="search-select-component">
+        <div class="search-select-container bg-white">
+            <div v-if="hasSelection" 
+                v-for="selection, idx in selections" :key="idx"
+                class="selection" :class="{disabled: disabled}"
+            >
                 <label>
-                    <slot name="selection-label" :selection="modelValue">
-                        {{modelValue}}
+                    <slot name="selection-label" :selection="selection">
+                        {{resolveDefaultOptionLabel(selection)}}
                     </slot>
                 </label>  
-                <button @click="removeSelection()" :disabled="disabled">x</button>
+                <div 
+                    @click="removeSelection(idx)" 
+                    :disabled="disabled" 
+                    class="remove-btn"
+                >x</div>
             </div>
             <input 
                 v-show="showInput"
                 type="text" 
                 v-model="searchText" 
                 ref="input" 
-                class="input" 
+                class="input"
                 @keydown="handleKeyDown"
                 @keyup="handleKeyEvent"
+                @focus="handleInputFocus"
+                @blur="handleInputBlur"
                 :placeholder="placeholder"
                 :disabled="disabled"
                 id="search-select-input"
@@ -283,14 +388,14 @@ export default {
         </div>
         <div v-show="showingOptions" class="result-container">
             <ul class="option-list" :style="`max-height: ${optionsListHeight}px`">
-                <li v-for="(opt, idx) in filteredOptions" 
+                <li v-for="(opt, idx) in filteredUniqueOptions" 
                     :key="idx" 
                     class="filtered-option"
                     :class="{highlighted: (idx === cursorPosition)}"
                     :id="`option-${idx}`"
                     @click="setSelection(opt)"
                 >
-                    <slot :option="opt" :index="idx" name="option">{{opt}}</slot>
+                    <slot :option="opt" :index="idx" name="option">{{resolveDefaultOptionLabel(opt)}}</slot>
                 </li>
                 <li v-if="$slots.additionalOption" class="filtered-option additional-option">
                     <slot name="additionalOption"></slot>
@@ -307,51 +412,45 @@ export default {
     }
 
     .search-select-container {
-        @apply border border-gray-300 leading-6 px-2 flex items-center flex-wrap py-1 rounded bg-white;
+        @apply border border-gray-300 leading-6 px-2 flex items-center flex-wrap py-1 rounded space-x-2;
     }
 
-    .search-select-container > input {
-        border: none;
-    }
-    
-    .search-select-container > .selection {
-        @apply bg-gray-500 text-white flex mr-1 rounded-sm text-sm;
+    .selection {
+        @apply bg-gray-500 text-white flex mr-1 rounded text-sm block;
     }
 
-    .search-select-container > .selection.disabled {
+    .selection.disabled {
         background: #aaa;
     }
 
-    .search-select-container > .selection > * {
-        /* @apply px-2 leading-6; */
+    .selection > * {
         padding-left: .5rem;
         padding-right: .5rem;
-        /* line-height: 1.5rem; */
     }
 
-    .search-select-container > .selection > label {
+    .selection > label {
+        @apply py-0.5;
         margin-bottom: 0;
     }
 
-    .search-select-container > .selection > button {
-        /* @apply border-l border-gray-400; */
-        border-width: 0 0 0 1px;
-        background-color: transparent;
-        color: white;
+    .remove-btn {
+        @apply bg-inherit border border-t-0 border-r-0 border-b-0 border-gray-400 rounded-r-md pt-0.5 cursor-pointer;
     }
     
     .search-select-container .input {
-        /* @apply border-none block outline-none focus:outline-none p-0 flex-1; */
+        @apply border-none block w-80;
         display: block;
-        width: 100%;
+        width: 2rem; /* Set the width small b/c this will grow with flex */
         outline: none;
         padding: 0px;
         flex-grow: 1;
-        z-index: 5
+        flex-shrink: 1;
+        z-index: 5;
     }
 
     .result-container {
         position:relative;
+        z-index: 10;
     }
 
     .option-list {

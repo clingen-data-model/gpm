@@ -15,7 +15,7 @@
             <div class="inline" v-if="approved">
                 <popover hover arrow>
                     <template #content>
-                        Make changes from the the <router-link :to="{name: 'GroupDetail', parmas:{uuid: group.uuid}}">group's detail screen</router-link>
+                        Make changes from the <router-link :to="{name: 'GroupDetail', parmas:{uuid: group.uuid}}">group's detail screen</router-link>
                         <br><small>Changes may require re-approval.</small>
                     </template>
                     <badge color="green">Approved</badge>
@@ -83,7 +83,7 @@ export default {
             }
 
             if (this.step.isComplete(this.group)) {
-                return `This step is approved.<br> Make changes from the the <a href="/groups/${this.group.uuid}">group's detail screen</a><br><small>Changes may require re-approval.</small>`
+                return `This step is approved.<br> Make changes from the <a href="/groups/${this.group.uuid}">group's detail screen</a><br><small>Changes may require re-approval.</small>`
             }
 
             return 'This step is not yet available.';   
