@@ -206,7 +206,6 @@ class SubmitApplicationStepTest extends TestCase
         });
     }
 
-
     /**
      * @test
      */
@@ -264,8 +263,7 @@ class SubmitApplicationStepTest extends TestCase
             'date_completed' => Carbon::now()
         ]);
     }
-    
-    
+       
     /**
      * @test
      */
@@ -288,14 +286,30 @@ class SubmitApplicationStepTest extends TestCase
 
         $this->assertDatabaseHas('next_actions', [
             'expert_panel_id' => $gcep->id,
-            'assignee_id' => config('next_actions.assignees.gene-curation-small-group.id'),
+            'assignee_id' => config('next_actions.assignees.gene-curation-core-group.id'),
             'entry' => 'Review application and respond to EP.',
             'target_date' => Carbon::now()->addDays(14),
             'type_id' => config('next_actions.types.review-submission.id')
         ]);
     }
+
+    /**
+     * @test
+     */
+    public function application_snapshot_created_when_submitted()
+    {
+        Carbon::setTestNow('2022-07-14');
+        $this->makeRequest();
+
+        $this->assertDatabaseHas('snapshots', [
+            'group_id' => $this->expertPanel->group_id,
+            'group_data' => $this->expertPanel->group->takeSnapshot(),
+            'expert_panel_data' => $this->expertPanel->group->takeSnapshot(),
+            'created_at' => Carbon::now()
+        ]);
+    }
     
-    
+        
     private function makeRequest($data = null, $expertPanel = null)
     {
         $expertPanel = $expertPanel ?? $this->expertPanel;

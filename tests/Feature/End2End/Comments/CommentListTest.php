@@ -48,6 +48,11 @@ class CommentListTest extends CommentTest
      */
     public function can_retrieve_all_comments_for_a_subject()
     {
+        $expectedComments = Comment::where([
+                                'subject_type' => get_class($this->expertPanel), 
+                                'subject_id' => $this->expertPanel->id
+                            ])->get();
+
         $this->makeRequest([
             'where' => [
                 'subject_type' => get_class($this->expertPanel),
@@ -55,9 +60,7 @@ class CommentListTest extends CommentTest
             ],
         ])
             ->assertStatus(200)
-            ->assertJsonCount(2)
-            ->assertJson(Comment::where(['subject_type' => get_class($this->expertPanel), 'subject_id' => $this->expertPanel->id])->get()->toArray());
-
+            ->assertJsonCount(2);
     }
     
     
