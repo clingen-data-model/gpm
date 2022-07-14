@@ -24,10 +24,12 @@
                 >X</button>
             </header>
 
-            <section class="overflow-auto px-4 pb-4 pt-2" ref="panelbody">
+            <section class="overflow-auto px-4 pb-2 pt-2" ref="panelbody">
                 <slot name="default" />
             </section>
-            <slot name="footer"></slot>
+            <div class="footer px-4 py-2" v-if="this.$slots.footer">
+                <slot name="footer" />
+            </div>
         </div>
     </div>
 </template>
