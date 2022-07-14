@@ -1,5 +1,5 @@
 <script setup>
-    import {ref, onBeforeUpdate, h, defineProps, defineEmits} from 'vue'
+    import {ref, onBeforeUpdate, h} from 'vue'
     import DataFormField from '@/components/forms/DataFormField.vue'
     import mirror from '@/composables/setup_working_mirror'
     import {v4 as uuid4} from 'uuid'

@@ -17,7 +17,7 @@
     </form-container>
 </template>
 <script setup>
-    import { ref, watch, defineProps, defineEmits, computed } from 'vue'
+    import { ref, watch, defineEmits, computed } from 'vue'
     import {useStore} from 'vuex'
     import RichTextEditor from '@/components/forms/RichTextEditor.vue'
     import StepInput from '@/components/forms/StepInput.vue'
