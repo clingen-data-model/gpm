@@ -95,7 +95,7 @@ class GrantMemberPermissionTest extends TestCase
         $response->assertStatus(422);
 
         $response->assertJsonFragment([
-            'permission_ids' => ['The permission ids must be an array.']
+            'permission_ids' => ['This must be an array.']
         ]);
     }
 
