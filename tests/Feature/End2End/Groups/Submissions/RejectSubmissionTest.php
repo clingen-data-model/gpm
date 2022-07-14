@@ -63,7 +63,7 @@ class RejectSubmissionTest extends TestCase
      */
     public function permissioned_user_can_reject_a_submission()
     {
-        Carbon::setTestNow();
+        Carbon::setTestNow('2022-07-12');
         $this->makeRequest()
             ->assertStatus(200)
             ->assertJson([
