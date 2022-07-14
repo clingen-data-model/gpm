@@ -22,10 +22,21 @@ trait HasComments
     /**
      * Get all of the comments for the HasComments
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
     public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'subject');
     }
+
+    public function pendingComments(): MorphMany
+    {
+        return $this->comments()->pending();
+    }
+    
+    public function resolvedComments(): MorphMany
+    {
+        return $this->comments()->resolved();
+    }
+    
 }
