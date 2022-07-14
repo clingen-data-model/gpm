@@ -11,7 +11,12 @@
         </router-link>
         <card>
             <template v-slot:title>
-                <h2>{{application.full_name}} - Current Step: {{application.current_step}}</h2>
+                <div>
+                    <h2>{{application.full_name}} - Current Step: {{application.current_step}}</h2>
+                    <note v-if="hasRole('super-user')">
+                        Group ID: {{group.id}} | ExpertPanel ID: {{application.id}}
+                    </note>
+                </div>
             </template>
             <template v-slot:header-right>
                 <div class="flex space-x-2">
@@ -22,8 +27,8 @@
             
             <div class="md:flex md:space-x-4">
                 <!-- <ep-attributes-form :application="application" class=" flex-1"></ep-attributes-form> -->
-                <basic-info-data></basic-info-data>
-                <div class="flex-1 space-y-2 md:border-l md:px-4 md:py-2">
+                <basic-info-data class="w-1/2"></basic-info-data>
+                <div class="w-1/2 space-y-2 md:border-l md:px-4 md:py-2">
                     <next-actions :next-actions="application.next_actions" v-if="application.next_actions"></next-actions>
                 </div>
             </div>

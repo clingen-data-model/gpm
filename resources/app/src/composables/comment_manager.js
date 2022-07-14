@@ -1,8 +1,19 @@
-import {ref} from 'vue'
+import {ref, computed} from 'vue'
 import commentRepository from '../repositories/comment_repository';
+
+const types = {
+    internal: 1,
+    suggestion: 2,
+    requirement: 3
+};
 
 export default (subjectType, subjectId) => {
     const comments = ref([]);
+
+    const openComments = computed(() => comments.value.filter(c => !c.is_resolved))
+    const openRequirements = computed(() => openComments.value.filter(c =>  c.comment_type_id == types.requirement));
+    const openSuggestions = computed(() => openComments.value.filter(c =>  c.comment_type_id == types.suggestion));
+    const openInternal = computed(() => openComments.value.filter(c => c.comment_type_id == types.internal));
 
     const findCommentIndex = (comment) => {
         return comments.value.findIndex(c => c.id == comment.id)
@@ -25,6 +36,10 @@ export default (subjectType, subjectId) => {
             id: subjectId
         },
         comments,
+        openComments,
+        openRequirements,
+        openSuggestions,
+        openInternal,
         getComments,
         addComment,
         removeComment,
