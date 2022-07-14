@@ -17,8 +17,8 @@ return [
             'short_name' => 'SVI',
             'id' => 3
         ],
-        'gene-curation-small-group' => [
-            'name' => 'Gene Curation Small Group',
+        'gene-curation-core-group' => [
+            'name' => 'Gene Curation Core Group',
             'short_name' => 'GC',
             'id' => 4,
         ],
@@ -40,6 +40,12 @@ return [
             'name' => 'make revisions',
             'description' => 'The group has application revisions to complted',
             'default_entry' => 'Update application and resubmit for approval.'
+        ],
+        'chair-review' => [
+            'id' => 3,
+            'name' => 'chair review',
+            'description' => 'Chairs should review the application and provide feedback',
+            'default_entry' => 'Chairs review application and provide feedback.'
         ]
     ]
 

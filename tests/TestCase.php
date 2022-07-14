@@ -80,14 +80,17 @@ abstract class TestCase extends BaseTestCase
         $causer_type = null,
         $causer_id = null,
         $activity_type = null,
-        $logName = 'applications'
+        $logName = null
     ) {
         $data = [
-            'log_name' => $logName,
             'description' => $description,
             'subject_type' => get_class($subject),
             'subject_id' => $subject->id,
         ];
+
+        if ($logName) {
+            $data['log_name'] = $logName;
+        }
 
         if ($causer_type) {
             $data['causer_type'] = $causer_type;
