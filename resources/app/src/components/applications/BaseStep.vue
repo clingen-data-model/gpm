@@ -1,82 +1,9 @@
-<template>
-    <div class="overflow-x-auto">
-        <div class="mb-6">
-            <step-approval-control 
-                :step="step" 
-                @updated="handleUpdated"
-                @rejected="handleRejected"
-            />
-            <div class="flex justify-between text-lg font-bold pb-2 mb-2 border-b">
-                <div class="flex space-x-2">
-                    <h2>
-                        {{title}}
-                    </h2>
-                    <div v-if="dateApproved">
-                        <div class="flex space-x-1" v-if="!editApprovalDate">
-                            <div class="text-white bg-green-600 rounded-xl px-2">
-                                Approved: {{dateApproved}}
-                            </div>
-                            <edit-icon-button class="text-black" @click="initEditApprovalDate"></edit-icon-button>
-                        </div>
-                        <div class="flex space-x-1" v-else>
-                            <date-input v-model="newApprovalDate"></date-input>
-                            <button class="btn blue" @click="updateApprovalDate">Save</button>
-                            <remove-button @click="editApprovalDate = false"></remove-button>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <button class="btn btn-xs" @click="toggleDocuments">{{docsToggleText}}</button>
-                    &nbsp;
-                    <button class="btn btn-xs" @click="toggleSections">{{sectionsToggleText}}</button>
-                    &nbsp;
-                    <button class="btn btn-xs" @click="goToPrintable">Printable Application</button>
-
-                </div>
-            </div>
-            <transition name="slide-fade-down">
-                <div v-if="showDocuments">
-                    <slot name="document">
-                        <div class="mt-4 p-4 border rounded-xl bg-gray-50">
-                            <document-manager
-                                :title="documentName"
-                                :application="application"
-                                :document-type-id="documentType"
-                                :getsReviewd="documentGetsReviewed"
-                                :step="step"
-                                @updated="$emit('updated')"
-                            />
-                        </div>
-                    </slot>
-                    <hr class="border-gray-200 border-4">
-                </div>
-            </transition>
-
-            <transition name="slide-fade-down">
-                <div>
-                    <slot name="sections" v-if="showSections">
-                        Step sections here!
-                    </slot>
-                </div>
-            </transition>
-        </div>
-
-        <slot></slot>
-
-        <slot name="log">
-            <div class="mb-6 mt-4 border-t pt-4">
-                <h3 class="mb-2">Step {{step}} Progress Log</h3>
-                <application-log :step="step"></application-log>
-            </div>
-        </slot>
-    </div>
-</template>
 <script>
 import { mapGetters } from 'vuex'
 import { formatDate } from '@/date_utils'
 import ApplicationLog from '@/components/applications/ApplicationLog.vue'
 import DocumentManager from '@/components/applications/documents/DocumentManager.vue'
-import StepApprovalControl from '@/components/applications/StepApprovalControl.vue'
+import StepControls from '@/components/applications/StepControls.vue'
 import RemoveButton from '@/components/buttons/RemoveButton.vue'
 import is_validation_error from '@/http/is_validation_error'
 
@@ -84,7 +11,7 @@ export default {
     components: {
         ApplicationLog,
         DocumentManager,
-        StepApprovalControl,
+        StepControls,
         RemoveButton
     },
     props: {
@@ -178,37 +105,10 @@ export default {
             window.open(`/groups/${this.group.uuid}/application/review`);
         },
 
-        startApproveStep () {
-            this.showApproveForm = true;
-        },
-        startRejectSubmission () {
-            
-        },
-        approveStep () {
-            this.$store.dispatch('applications/approveCurrentStep', {application: this.application, step: this.step})
-            this.$emit('approved')
-            this.$emit('updated')
-        },
-        handleApproved () {
-            this.hideApproveForm();
-            this.$emit('approved');
-            this.$emit('updated');
-        },
         handleUpdated () {
-            this.hideApproveForm();
             this.$emit('updated');
         },
-        hideApproveForm () {
-            this.showApproveForm = false;
-        },
-        handleRejected () {
-            this.hideRejectForm();
-            this.$emit('rejected');
-            this.$emit('updated');
-        },
-        hideRejectForm () {
-            this.showRejectForm = false;
-        },
+
         initEditApprovalDate () {
             this.editApprovalDate = true;
             this.newApprovalDate = this.dateApproved;
@@ -235,3 +135,76 @@ export default {
     }
 }
 </script>
+
+<template>
+    <div class="overflow-x-auto">
+        <div class="mb-6">
+            <step-controls v-if="!application.stepIsApproved(step)"
+                :step="step" 
+                @updated="handleUpdated"
+            />
+            <div class="flex justify-between text-lg font-bold pb-2 mb-2 border-b">
+                <div class="flex space-x-2">
+                    <h2>
+                        {{title}}
+                    </h2>
+                    <div v-if="dateApproved">
+                        <div class="flex space-x-1" v-if="!editApprovalDate">
+                            <div class="text-white bg-green-600 rounded-xl px-2">
+                                Approved: {{dateApproved}}
+                            </div>
+                            <edit-icon-button class="text-black" @click="initEditApprovalDate"></edit-icon-button>
+                        </div>
+                        <div class="flex space-x-1" v-else>
+                            <date-input v-model="newApprovalDate"></date-input>
+                            <button class="btn blue" @click="updateApprovalDate">Save</button>
+                            <remove-button @click="editApprovalDate = false"></remove-button>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-xs" @click="toggleDocuments">{{docsToggleText}}</button>
+                    &nbsp;
+                    <button class="btn btn-xs" @click="toggleSections">{{sectionsToggleText}}</button>
+                    &nbsp;
+                    <button class="btn btn-xs" @click="goToPrintable">Printable Application</button>
+
+                </div>
+            </div>
+            <transition name="slide-fade-down">
+                <div v-if="showDocuments">
+                    <slot name="document">
+                        <div class="mt-4 p-4 border rounded-xl bg-gray-50">
+                            <document-manager
+                                :title="documentName"
+                                :application="application"
+                                :document-type-id="documentType"
+                                :getsReviewd="documentGetsReviewed"
+                                :step="step"
+                                @updated="$emit('updated')"
+                            />
+                        </div>
+                    </slot>
+                    <hr class="border-gray-200 border-4">
+                </div>
+            </transition>
+
+            <transition name="slide-fade-down">
+                <div>
+                    <slot name="sections" v-if="showSections">
+                        Step sections here!
+                    </slot>
+                </div>
+            </transition>
+        </div>
+
+        <slot></slot>
+
+        <slot name="log">
+            <div class="mb-6 mt-4 border-t pt-4">
+                <h3 class="mb-2">Step {{step}} Progress Log</h3>
+                <application-log :step="step"></application-log>
+            </div>
+        </slot>
+    </div>
+</template>

@@ -9,11 +9,6 @@
     const {group, expertPanel, members, isGcep, isVcep} = setupReviewData(store);
     const commentManager = ref();
     provide('commentManager', commentManager)
-    // provide('comments', comments);
-    // provide('getComments', getComments)
-
-    const comments = ref([]);
-
     provide('group', group)
 
     const basicInfo = computed(() => {
@@ -73,7 +68,7 @@
             <blockquote><markdown-block :markdown="expertPanel.scope_description" /></blockquote>
         </ReviewSection>
 
-        <ReviewSection v-if="isGcep" title="Plans">
+        <ReviewSection v-if="isGcep" title="Plans" name="plans">
             <dictionary-row label="Selected protocol" label-class="w-48 font-bold">
                 <div class="flex-none">
                     {{expertPanel.curation_review_protocol ? titleCase(expertPanel.curation_review_protocol.full_name) : null}}
@@ -84,7 +79,7 @@
             </dictionary-row>
         </ReviewSection>
 
-        <ReviewSection v-if="isGcep" title="Attestations">
+        <ReviewSection v-if="isGcep" title="Attestations" name="attestations">
             <dictionary-row label="GCEP Attestation Signed" label-class="w-52 font-bold">
                 {{formatDate(expertPanel.gcep_attestation_date)}}
             </dictionary-row>
@@ -96,7 +91,7 @@
             </dictionary-row>
         </ReviewSection>
 
-        <ReviewSection v-if="isVcep" title="Attestations">
+        <ReviewSection v-if="isVcep" title="Attestations" name="attestations">
             <dictionary-row 
                 label="Reanalysis and Descrepency Resolution Attestation Signed" 
                 label-class="w-52 font-bold"
