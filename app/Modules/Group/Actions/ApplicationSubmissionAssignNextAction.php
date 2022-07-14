@@ -29,7 +29,7 @@ class ApplicationSubmissionAssignNextAction
                 targetDate: Carbon::now()->addDays(14),
                 assignedTo: $group->expertPanel->isVcep 
                     ? config('next_actions.assignees.cdwg-oc.id') 
-                    : config('next_actions.assignees.gene-curation-small-group.id'),
+                    : config('next_actions.assignees.gene-curation-core-group.id'),
                 typeId: config('next_actions.types.review-submission.id')
             );
     }
