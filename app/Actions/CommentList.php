@@ -15,7 +15,23 @@ class CommentList
     {
         $search = new ModelSearchService(
             Comment::class, 
-            ['type', 'creator']
+            defaultSelect: [
+                'id', 
+                'comment_type_id', 
+                'creator_id', 
+                'creator_type', 
+                'resolved_at', 
+                'content', 
+                'metadata'
+            ],
+            defaultWith: [
+                'type' => function ($q) {
+                    return $q->select(['id', 'name', 'description']);
+                },
+                'creator' => function ($q) {
+                    return $q->select('id', 'first_name', 'last_name', 'email');
+                }
+            ]
         );
 
         $query = $search->buildQuery($queryParams)->withCount('comments');
