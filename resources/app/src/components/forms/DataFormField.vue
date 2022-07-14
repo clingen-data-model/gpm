@@ -1,5 +1,5 @@
 <script setup>
-    import {defineEmits, defineProps, computed, h} from 'vue'
+    import {defineEmits, computed, h} from 'vue'
     import {setupMirror, mirrorProps, mirrorEmits} from '@/composables/setup_working_mirror'
     import { titleCase } from '@/utils'
     import {set, get} from 'lodash'
