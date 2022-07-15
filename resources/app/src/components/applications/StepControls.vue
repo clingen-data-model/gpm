@@ -26,7 +26,7 @@ const group = computed(() => store.getters['groups/currentItemOrNew'])
 
 <template>
     <div class="border-t border-b py-4 mb-6">
-        <submission-alert :group="group"></submission-alert>
+        <submission-alert class="mb-4" :group="group"></submission-alert>
         <div class="flex w-full space-x-4">
             <StepApproveControl
                 class="flex-1"
@@ -37,13 +37,15 @@ const group = computed(() => store.getters['groups/currentItemOrNew'])
                 {{approveLabel}}
             </StepApproveControl>
 
-            <StepSendToChairsControl 
+            <StepSendToChairsControl             
+                v-if="group.expert_panel.hasPendingSubmissionForCurrentStep"
                 class="flex-1"
                 :group="group" 
                 @sentToChairs="() => {$emit('sentToChairs'); $emit('updated'); }" 
             />
 
             <StepRequestRevisionsControl 
+                v-if="group.expert_panel.hasPendingSubmissionForCurrentStep"
                 class="flex-1"
                 :group="group"
                 @revisionsRequested="() => {$emit('revisionsRequested'); $emit('updated')}"
