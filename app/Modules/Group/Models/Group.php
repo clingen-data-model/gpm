@@ -27,7 +27,6 @@ use App\Tasks\Models\TaskAssignee as TaskAssigneeTrait;
 use App\Models\Traits\HasDocuments as HasDocumentsTrait;
 use App\Models\Traits\RecordsEvents as RecordsEventsTrait;
 use App\Models\Traits\HasLogEntries as HasLogEntriesTraits;
-use App\Models\Traits\Snapshotable;
 use App\Modules\Group\Models\Traits\HasMembers as HasMembersTrait;
 use App\Modules\Group\Models\Traits\HasSubmissions as HasSubmissionsTrait;
 
@@ -42,7 +41,7 @@ use App\Modules\Group\Models\Traits\HasSubmissions as HasSubmissionsTrait;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDocuments, HasLogEntries, HasSubmissions, TaskAssignee, ContractsHasComments, Snapshotable
+class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDocuments, HasLogEntries, HasSubmissions, TaskAssignee, ContractsHasComments
 {
     use HasFactory;
     use SoftDeletes;
@@ -258,58 +257,6 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         return false;
     }
 
-    /**
-     * SNAPSHOTABLE METHODS
-     */
-
-    public function createSnapshot(): array
-    {
-        $this->load([
-            'expertPanel', 
-            'expertPanel.type', 
-            'expertPanel.genes',
-            'members',
-            'members.latestCoi',
-            'members.person', 
-        ]);
-
-        $snapshot = [
-            'class' => __CLASS__,
-            'attributes' => $this->getAttributes(),
-            'relations' => $this->snapshotRelations($this)
-        ];
-
-        return $snapshot;
-    }
-
-    private function snapshotRelations($model): array
-    {
-        return $model->getRelations()->map(function ($r) {
-            $interfaces = class_implements($r);
-            if ($interfaces && in_array(Snapshotable::class, $interfaces)) {
-                return $r->createSnapshot();
-            }
-
-            return [
-                'class' => get_class($r),
-                'attributes' => $r->toArray(),
-                'relations' => $this->snapshotRelations($r)
-            ];
-        })->toArray();
-    }
-
-    static public function initFromSnapshot($snapshot): Self
-    {
-        $group = new Self();
-        foreach ($snapshot['attributes'] as $key => $value) {
-            $group->setAttribute($key, $value);
-        }
-        $group->expertPanel = new ExpertPanel();
-        
-
-        return $group;
-
-    }
     
     
 
