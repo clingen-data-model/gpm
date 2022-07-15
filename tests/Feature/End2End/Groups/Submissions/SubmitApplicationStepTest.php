@@ -294,22 +294,6 @@ class SubmitApplicationStepTest extends TestCase
     /**
      * @test
      */
-    public function application_snapshot_created_when_submitted()
-    {
-        Carbon::setTestNow('2022-07-14');
-        $this->makeRequest();
-
-        $this->assertDatabaseHas('snapshots', [
-            'group_id' => $this->expertPanel->group_id,
-            'group_data' => $this->expertPanel->group->takeSnapshot(),
-            'expert_panel_data' => $this->expertPanel->group->takeSnapshot(),
-            'created_at' => Carbon::now()
-        ]);
-    }
-    
-    /**
-     * @test
-     */
     public function stores_snapshot_of_application_when_submitted()
     {
         $this->makeRequest()

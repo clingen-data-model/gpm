@@ -9,12 +9,15 @@ use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Collection;
 use App\Modules\Group\Models\Group;
 use Illuminate\Testing\TestResponse;
+use App\Modules\Person\Models\Person;
+use Database\Seeders\CommentTypesSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Database\Seeders\CommentTypesSeeder;
 use Database\Seeders\NextActionTypesTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Modules\Group\Actions\ApplicationSubmitStep;
 use Database\Seeders\NextActionAssigneesTableSeeder;
+use Database\Seeders\SubmissionTypeAndStatusSeeder;
 
 class ApplicationSendToChairsTest extends TestCase
 {
@@ -78,6 +81,22 @@ class ApplicationSendToChairsTest extends TestCase
                 'step' => $this->expertPanel->current_step
             ]
         );
+    }
+    
+    /**
+     * @test
+     */
+    public function pending_submission_status_updated_to_under_chair_review()
+    {
+        $this->runSeeder(SubmissionTypeAndStatusSeeder::class);
+        $person = Person::factory()->create();
+        $submission = app()->make(ApplicationSubmitStep::class)->handle($this->group, $person);
+        $this->makeRequest();
+
+        $this->assertDatabaseHas('submissions', [
+            'id' => $submission->id,
+            'submission_status_id' => config('submissions.statuses.under-chair-review.id')
+        ]);
     }
     
     

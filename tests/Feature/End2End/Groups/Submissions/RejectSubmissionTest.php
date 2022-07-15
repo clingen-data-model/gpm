@@ -68,12 +68,12 @@ class RejectSubmissionTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'id' => $this->submission->id,
-                'submission_status_id' => config('submissions.statuses.revise-and-resubmit.id'),
+                'submission_status_id' => config('submissions.statuses.revisions-requested.id'),
             ]);
         
         $this->assertDatabaseHas('submissions', [
             'id' => $this->submission->id,
-            'submission_status_id' => config('submissions.statuses.revise-and-resubmit'),
+            'submission_status_id' => config('submissions.statuses.revisions-requested'),
             'closed_at' => Carbon::now(),
         ]);
     }
@@ -107,7 +107,7 @@ class RejectSubmissionTest extends TestCase
         );
         $this->assertDatabaseHas('submissions', [
             'id' => $this->submission->id,
-            'submission_status_id' => config('submissions.statuses.revise-and-resubmit.id'),
+            'submission_status_id' => config('submissions.statuses.revisions-requested.id'),
             'closed_at' => Carbon::now(),
             'response_content' => $data['body']
         ]);

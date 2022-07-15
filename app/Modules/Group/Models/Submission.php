@@ -39,7 +39,10 @@ class Submission extends Model
     ];
 
     protected $with = ['status', 'type'];
+   
     
+    protected $appends = ['isPending', 'is_pending'];
+
     # RELATIONS
 
     /**
@@ -100,8 +103,25 @@ class Submission extends Model
 
     public function scopePending($query)
     {
-        return $query->where('submission_status_id', config('submissions.statuses.pending.id'));
+        return $query->whereIn(
+                'submission_status_id', 
+                [
+                    config('submissions.statuses.pending.id'),
+                    config('submissions.statuses.under-chair-review.id')
+                ]
+            );
     }
+
+    // ACCESSORS
+    public function getIsPendingAttribute()
+    {
+        $pendingStatuses = [
+                            config('submissions.statuses.pending.id'),
+                            config('submissions.statuses.under-chair-review.id')
+                        ];
+        return in_array($this->submission_status_id, $pendingStatuses);
+    }
+    
 
     /**
      * DOMAIN
@@ -110,7 +130,7 @@ class Submission extends Model
     public function reject(?string $responseContent = null): Submission
     {
         $this->update([
-            'submission_status_id' => config('submissions.statuses.revise-and-resubmit.id'),
+            'submission_status_id' => config('submissions.statuses.revisions-requested.id'),
             'response_content' => $responseContent,
             'closed_at' => Carbon::now()
         ]);

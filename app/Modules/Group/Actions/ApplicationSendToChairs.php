@@ -20,6 +20,7 @@ class ApplicationSendToChairs
     {
         $this->notifyChairs($group, $additionalComments);
         $this->createNextActionForChairs($group);
+        $this->updateSubmissionStatus($group);
 
         // Create Tasks for each chair (?)
         // NOT YET
@@ -42,9 +43,7 @@ class ApplicationSendToChairs
     {
         // TODO: Send notification(s) to the chairs
         Log::warning(__METHOD__.' is not implemented');
-
     }
-    
 
     private function createNextActionForChairs(Group $group): void
     {
@@ -56,6 +55,17 @@ class ApplicationSendToChairs
             typeId: config('next_actions.types.chair-review.id'),
         );
     }
+
+    private function updateSubmissionStatus(Group $group): void
+    {
+        $submission = $group->latestPendingSubmission;
+        if (!$submission) {
+            return;
+        }
+
+        $submission->update(['submission_status_id' => config('submissions.statuses.under-chair-review.id')]);
+    }
+    
     
     
 }

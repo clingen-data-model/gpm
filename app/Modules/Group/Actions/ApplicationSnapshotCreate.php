@@ -26,7 +26,14 @@ class ApplicationSnapshotCreate
             'type',
             'status',
             'members',
-            'members.person',
+            'members.person' => function ($q) {
+                $q->select([
+                    'id',
+                    'first_name', 'last_name', 'email',
+                    'credentials',
+                ]);
+            },
+            'members.person.institution',
             'members.roles',
             'comments',
             'comments.creator'

@@ -18,7 +18,7 @@ class ApplicationSubmitStep
 {
     use AsController;
     
-    public function handle(Group $group, Person $submitter, ?String $notes): Submission
+    public function handle(Group $group, Person $submitter, ?String $notes = null): Submission
     {
         $submissionType = $this->resolveSubmissionType($group);
         
