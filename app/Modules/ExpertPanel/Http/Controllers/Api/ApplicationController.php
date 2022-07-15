@@ -69,7 +69,8 @@ class ApplicationController extends Controller
                 'nextActions.assignee',
                 'group.latestLogEntry' => function ($q) {
                     $q->select('created_at', 'description', 'subject_id', 'subject_type');
-                }
+                },
+                'group.latestSubmission'
             ],
             whereFunction: function ($query, $where) {
                 foreach ($where as $key => $val) {

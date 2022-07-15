@@ -65,13 +65,13 @@
             <li>
                 <input-row :errors="errors.biocurator_training" :hide-label="true">
                     <checkbox v-model="group.expert_panel.biocurator_training" :disabled="disabled" @update:modelValue="emitUpdate(), checkCompleteness()">
-                        Biocurators have received all appropriate training. 
+                        Biocurators have received training and/or there is a plan in place to train any biocurators who have not received all training yet. 
                     </checkbox>
                 </input-row>
             </li>
             <li>
                 <checkbox v-model="gci_training" :disabled="disabled" @update:modelValue="emitUpdate(), checkCompleteness()">
-                    Biocurators are trained on the use of the Gene Curation Interface (GCI).
+                    Biocurators are trained on the use of the Gene Curation Interface (GCI) and/or there is a plan in place to train any biocurators who are not yet trained on the use of the GCI”
                 </checkbox>
                 <input-row 
                     v-model="group.expert_panel.gci_training_date" 
@@ -86,7 +86,7 @@
             <li>
                 <input-row :errors="errors.biocurator_mailing_list" :hide-label="true">
                     <checkbox v-model="group.expert_panel.biocurator_mailing_list" :disabled="disabled" @update:modelValue="emitUpdate(), checkCompleteness()">
-                        Biocurators have joined the Biocurator WG mailing list.
+                        Biocurators have joined the Biocurator WG mailing list and/or there is a plan in place to have them join mailing list.
                         <br>The calls occur on the 2nd and 4th Thursdays from 12-1pm.
                     </checkbox>
                 </input-row>

@@ -77,7 +77,6 @@ export default {
         getApplications({ commit }, params) {
             api.get(baseUrl + queryStringFromParams(params))
                 .then(response => {
-                    console.log(response.data.data)
                     response.data.data.forEach(item => {
                         commit('addApplication', item)
                     })

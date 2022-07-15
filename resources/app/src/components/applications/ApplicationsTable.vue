@@ -137,6 +137,33 @@ export default {
                     }
                 },
                 {
+                    name: 'latest_submission_date',
+                    label: 'Last Submitted',
+                    type: Date,
+                    sortable: true,
+                    resolveValue (item) {
+                        return item.group.latest_submission 
+                            ? formatDate(item.group.latest_submission.created_at) 
+                            : null
+                    }
+                },
+                {
+                    name: 'latest_submision.status',
+                    label: 'Submission Status',
+                    type: String,
+                    sortable: true,
+                    resolveValue (item) {
+                        return item.group.latest_submission 
+                            ? item.group.latest_submission.status.name
+                            : null
+                    },
+                    // resolveSort(item) {
+                    //     return item.group.latest_submission 
+                    //         ? item.group.latest_submission.closed_at ? 'Closed' : 'Pending'
+                    //         : <null></null>
+                    // }
+                },
+                {
                     name: 'latest_log_entry',
                     label: 'Last Activity',
                     type: Date,
@@ -144,7 +171,6 @@ export default {
                     resolveSort (item) {
                         if (item && item.group && item.group.latest_log_entry) {
                             const formatted = formatDate(item.group.latest_log_entry.created_at);
-                            console.log(formatted);
                             return formatDate(item.group.latest_log_entry.created_at);
                         }
                         return null
@@ -156,7 +182,7 @@ export default {
                     type: String,
                     sortable: false,
                     class: ['min-w-28', 'max-w-xs', 'truncate'],
-                }
+                },
             ],
             allInfoFields: [
                     {

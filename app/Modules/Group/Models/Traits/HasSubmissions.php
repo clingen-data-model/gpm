@@ -15,6 +15,12 @@ trait HasSubmissions
     {
         return $this->hasMany(Submission::class);
     }
+
+    public function latestSubmission():HasOne
+    {
+        return $this->hasOne(Submission::class)
+            ->ofMany(['created_at' => 'max']);
+    }
     
     public function latestPendingSubmission():HasOne
     {

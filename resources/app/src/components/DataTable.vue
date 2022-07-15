@@ -367,10 +367,21 @@ export default {
             const coefficient = this.realSort.desc ? -1 : 1;
             let aVal = this.resolveSortAttribute(a, this.sortField);
             let bVal = this.resolveSortAttribute(b, this.sortField);
-            if (this.realSort.field.type == String && aVal !== null && bVal !== null) {
-                aVal = aVal.toLowerCase();
-                bVal = bVal.toLowerCase();
+
+            // Handle cases where operand is null
+            if (aVal && !bVal) {
+                return -1 * coefficient;
             }
+            if (bVal && !aVal) {
+                return 1 * coefficient;
+            }
+
+            // Normalize strings
+            if (this.realSort.field.type == String || (typeof aVal == 'string' && typeof bVal == 'string')) {
+                aVal = aVal ? aVal.toLowerCase() : aVal;
+                bVal = bVal ? bVal.toLowerCase() : bVal;
+            }
+
             if (aVal == bVal) {
                 if (a.id > b.id) {
                     return 1*coefficient;

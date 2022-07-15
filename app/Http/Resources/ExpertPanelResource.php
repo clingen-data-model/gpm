@@ -21,6 +21,7 @@ class ExpertPanelResource extends JsonResource
         $data['group'] = $this->whenLoaded('group', $this->group);
         $data['log_entries'] = $this->whenLoaded('group.logEntries');
         $data['latest_log_entry'] = $this->whenLoaded('group.latestLogEntry');
+        $data['latest_submission'] = $this->whenLoaded('group.latestSubmission');
         $data['documents'] = $this->whenLoaded('group.documents');
 
         return $data;
