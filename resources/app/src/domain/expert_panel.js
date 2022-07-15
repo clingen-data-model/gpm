@@ -139,12 +139,12 @@ class ExpertPanel extends Entity
     }
 
     get pendingSubmission () {
-        return this.submissions.find(submission => submission.submission_status_id == submissions.statuses.pending.id) || {};
+        return this.submissions.find(submission => submission.is_pending) || {};
     }
 
     get hasPendingSubmission () {
         return this.submissions
-                .filter(submission => submission.submission_status_id == submissions.statuses.pending.id)
+                .filter(submission => submission.is_pending)
                 .length > 0
     }
 

@@ -53,7 +53,6 @@
 <template>
     <div>
         <button 
-            v-if="group.expert_panel.hasPendingSubmissionForCurrentStep"
             class="btn btn-lg w-full" 
             @click="initSendToChairs"
             v-bind="attrs"
