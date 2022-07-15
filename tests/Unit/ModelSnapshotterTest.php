@@ -103,6 +103,19 @@ class ModelSnapshotterTest extends TestCase
     /**
      * @test
      */
+    public function can_create_snapshot_with_null_relations()
+    {
+        $this->model->setRelation('type', null);
+
+        $snapshot = $this->snapshotter->createSnapshot($this->model);
+
+        $this->assertEquals(['type' => null], $snapshot['relations']);
+    }
+    
+
+    /**
+     * @test
+     */
     public function can_create_snapshot_with_nested_relations()
     {
         $epAttr = ['long_base_name' => 'Long VCEP Name'];

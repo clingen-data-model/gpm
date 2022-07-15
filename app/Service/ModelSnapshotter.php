@@ -20,9 +20,13 @@ class ModelSnapshotter
 
     private function snapshotRelations($model): array
     {
-        return collect($model->getRelations())->map(function ($relation) {
+        return collect($model->getRelations())->map(function ($relation, $key) {
             if ($relation instanceof Collection) {
                 return $relation->map(fn (Model $item) => $this->createSnapshot($item));
+            }
+
+            if (is_null($relation)) {
+                return null;
             }
 
             return $this->createSnapshot($relation);
