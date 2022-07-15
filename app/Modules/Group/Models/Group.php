@@ -257,6 +257,10 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         return false;
     }
 
+    
+    
+
+
 
     protected static function newFactory()
     {
