@@ -160,7 +160,7 @@ describe ('ApplicationStep', () => {
 let testSection3 = null;
 let testStep2 = null;
 let testApp = null;
-describe ('AppliationDefinition', () => {
+describe ('applicationDefinition', () => {
     beforeEach(() => {
         testSection1 = new ApplicationSection( 'test section 1', 'Test section 1!',  [testReq1, testReq2], [] );
         testSection2 = new ApplicationSection( 'test section 2', 'Test!', [testReq3], [] );  
@@ -194,7 +194,7 @@ describe ('AppliationDefinition', () => {
     });
 })
 
-describe('AppliationDefinitionFactory', () => {
+describe('applicationDefinitionFactory', () => {
     it('can build an application from an object', () => {
         const def = {
             steps: {

@@ -64,7 +64,7 @@ class SubmitApplicationStepTest extends TestCase
     /**
      * @test
      */
-    public function a_privileged_user_can_submit_appliation()
+    public function a_privileged_user_can_submit_application()
     {
         $this->makeRequest()
             ->assertStatus(201)

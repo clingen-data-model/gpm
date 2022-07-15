@@ -14,7 +14,7 @@ class ApplicationRevisionRequestTemplate extends AbstractUserDefinedMailTemplate
 
     public function renderSubject(): string
     {
-        return $this->group->type->name.' appliation revisions requested.';
+        return $this->group->type->name.' application revisions requested.';
     }
 
     public function getCC(): array

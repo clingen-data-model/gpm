@@ -18,7 +18,7 @@
 * Approvers can make comments that are kept private to Pre-approvers/approvers/admins.
 * A Pre-approver can mark a submission ready for Approver review.
 * An admin/pre-approver/approver can add/update/delete request revisions for an application section.
-  * When a revision is requested a RevisionRequest record is created and associated with the ExpertPanel & appliation section.
+  * When a revision is requested a RevisionRequest record is created and associated with the ExpertPanel & application section.
 * An admin can "respond" to a submission with 'Approved', 'Approved w/ revisions', 'revisions requested'.  All three responses effectively "finish" the submission.
   * Approved - unconditionally approved.  
     * Automated emails will be sent indicating the submission has been approved.
