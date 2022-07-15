@@ -2,7 +2,6 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
-use App\Models\Document;
 use App\Models\AnnualUpdate;
 use App\Models\Traits\HasUuid;
 use Illuminate\Support\Carbon;
@@ -10,7 +9,6 @@ use App\Models\Contracts\HasNotes;
 use App\Modules\Group\Models\Group;
 use App\Models\Contracts\HasMembers;
 use App\Modules\Person\Models\Person;
-use App\Tasks\Contracts\TaskAssignee;
 use App\Models\Contracts\RecordsEvents;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\ExpertPanel\Models\Gene;
@@ -27,13 +25,11 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Modules\Group\Models\Contracts\BelongsToGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Tasks\Models\TaskAssignee as TaskAssigneeTrait;
 use App\Modules\ExpertPanel\Models\SpecificationRuleSet;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use App\Modules\ExpertPanel\Models\CurationReviewProtocol;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use App\Models\Traits\RecordsEvents as TraitsRecordsEvents;
-use App\Modules\ExpertPanel\Models\ReanalysisDiscrepencyResolution;
 use App\Modules\Group\Models\Traits\HasMembers as TraitsHasMembers;
 use App\Modules\Group\Models\Traits\BelongsToGroup as TraitsBelongsToGroup;
 
@@ -158,8 +154,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     }
     
 
-    // Domain methods
-    
+    // DOMAIN METHODS
     public function addContact(Person $person)
     {
         $member = GroupMember::firstOrCreate([
@@ -171,7 +166,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     }
 
 
-    // Relationships
+    // RELATIONSHIPS
     public function group(): BelongsTo
     {
         return $this->belongsTo(Group::class);
@@ -311,10 +306,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $this->hasOne(AnnualUpdate::class)->latestOfMany();
     }
     
-    /**
-     * SCOPES
-     */
-
+    // SCOPES
     public function scopeApproved($query)
     {
         return $query->whereNotNull('date_completed');
@@ -356,8 +348,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     }
     
 
-    // Access methods
-
+    // ACCESS METHODS
     public static function findByAffiliationId($affiliationId)
     {
         return static::where('affiliation_id', $affiliationId)->first();
@@ -397,10 +388,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $results->version;
     }
 
-    /**
-     * ACCESSORS
-     */
-
+    // ACCESSORS
     public function getFirstScopeDocumentAttribute()
     {
         return $this->group->documents()
