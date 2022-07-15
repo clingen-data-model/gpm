@@ -24,6 +24,7 @@ use App\Modules\Group\Actions\ApplicationSubmissionMailAdminGroup;
 use App\Modules\Group\Actions\ApplicationSubmissionAssignNextAction;
 use App\Modules\Group\Actions\ApplicationSubmissionNotificationSend;
 use App\Modules\Group\Actions\ApplicationRevisionsRequestedAssignNextAction;
+use App\Modules\Group\Actions\ApplicationSnapshotCreate;
 
 class GroupModuleServiceProvider extends ModuleServiceProvider
 {
@@ -31,7 +32,8 @@ class GroupModuleServiceProvider extends ModuleServiceProvider
         ApplicationStepSubmitted::class => [
             ApplicationSubmissionMailAdminGroup::class,
             ApplicationSubmissionReceiptSend::class,
-            ApplicationSubmissionAssignNextAction::class
+            ApplicationSubmissionAssignNextAction::class,
+            ApplicationSnapshotCreate::class
         ],
         ApplicationRevisionsRequested::class => [
             ApplicationRevisionsRequestedAssignNextAction::class,

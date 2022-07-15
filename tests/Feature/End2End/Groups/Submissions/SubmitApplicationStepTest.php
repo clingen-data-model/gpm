@@ -160,7 +160,6 @@ class SubmitApplicationStepTest extends TestCase
             'step_4_received_date' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
     }
-    
 
     /**
      * @test
@@ -173,7 +172,7 @@ class SubmitApplicationStepTest extends TestCase
 
         Event::assertDispatched(ApplicationStepSubmitted::class);
     }
-    
+
     /**
      * @test
      */
@@ -188,7 +187,6 @@ class SubmitApplicationStepTest extends TestCase
             'activity_type' => 'application-step-submitted'
         ]);
     }
-    
 
     /**
      * @test
@@ -309,6 +307,22 @@ class SubmitApplicationStepTest extends TestCase
         ]);
     }
     
+    /**
+     * @test
+     */
+    public function stores_snapshot_of_application_when_submitted()
+    {
+        $this->makeRequest()
+            ->assertStatus(201);
+
+        $this->assertDatabaseHas('application_snapshots', [
+            'group_id' => $this->expertPanel->group_id,
+            'submission_id' => 1,
+            'version' => 1,
+        ]);
+    }
+    
+
         
     private function makeRequest($data = null, $expertPanel = null)
     {
