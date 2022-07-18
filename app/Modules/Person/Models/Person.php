@@ -303,6 +303,11 @@ class Person extends Model implements HasLogEntries
         return !is_null($this->user_id);
     }
 
+    public function isRegistered(): bool
+    {
+        return $this->isLinkedToUser();
+    }
+
     public function inGroup(Group $group)
     {
         return $this->activeGroups->pluck('id')->contains($group->id);

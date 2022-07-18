@@ -101,6 +101,14 @@ return [
             'guard_name' => 'web',
             'scope' => 'system'
         ],
+        'ep-applications-approve' => [
+            'id' => 32,
+            'name' => 'ep-appications-approve',
+            'display_name' => 'Approve expert panel applications',
+            'description' => 'Approve a submitted application',
+            'guard_name' => 'web',
+            'scope' => 'system'
+        ],
         'annual-updates-manage' => [
             'id' => 40,
             'name' => 'annual-updates-manage',

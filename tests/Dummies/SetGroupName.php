@@ -13,4 +13,8 @@ class SetGroupName
         return $group;
     }
     
+    public function __invoke(Group $group, string $name): Group
+    {
+        return $this->handle($group, $name);
+    }
 }

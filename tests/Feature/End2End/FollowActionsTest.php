@@ -21,10 +21,11 @@ class FollowActionsTest extends TestCase
     {
         parent::setup();
         $this->setupForGroupTest();
-        $this->group = Group::factory()->create(['group_status_id' => 1]);
+        $this->group = Group::factory()->vcep()->create(['group_status_id' => 1]);
         $this->followAction = FollowAction::create([
             'event_class' => GroupStatusUpdated::class,
-            'follower' => new TestFollower(4)
+            'follower' => TestFollower::class,
+            'args' => ['targetStatusId' => 4]
         ]);
     }
 
@@ -65,18 +66,13 @@ class FollowActionsTest extends TestCase
         ]);
     }
     
-    
 }
 
 class TestFollower
 {
-    public function __construct(private $targetStatusId)
+    public function asFollowAction(GroupStatusUpdated $event, $targetStatusId): bool
     {
-    }
-
-    public function __invoke(GroupStatusUpdated $event): bool
-    {
-        if ($event->group->group_status_id == $this->targetStatusId) {
+        if ($event->group->group_status_id == $targetStatusId) {
             $event->group->update(['name' => 'Updated by follow action']);
             return true;
         }

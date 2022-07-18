@@ -9,6 +9,7 @@ use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
 use App\Modules\Group\Actions\MemberAdd;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -30,6 +31,8 @@ class RetireMemberTest extends TestCase
 
         $this->url = 'api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id.'/retire/';
         Sanctum::actingAs($this->user);
+        Carbon::setTestNow('2022-07-18');
+
     }
 
     /**
@@ -37,7 +40,7 @@ class RetireMemberTest extends TestCase
      */
     public function can_retire_member_from_group()
     {
-        $endDate = (new DateTime());
+        $endDate = Carbon::now();
         $response = $this->json('POST', $this->url, [
             'start_date' => $endDate->format(DateTime::ATOM),
             'end_date' => $endDate->format(DateTime::ATOM),

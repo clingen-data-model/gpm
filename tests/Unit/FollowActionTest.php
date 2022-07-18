@@ -4,6 +4,8 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Models\FollowAction;
+use Tests\Dummies\TestEvent;
+use Tests\Dummies\TestFollower;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class FollowActionTest extends TestCase
@@ -17,7 +19,8 @@ class FollowActionTest extends TestCase
     {
         $fa = new FollowAction([
             'event_class' => TestEvent::class,
-            'follower' => new TestFollower('beans')
+            'follower' => TestFollower::class,
+            'args' => ['name' => 'beans']
         ]);
         $fa->save();
 
@@ -25,35 +28,9 @@ class FollowActionTest extends TestCase
 
         $event = new TestEvent('beans');
 
-        $follower = $fa1->follower;
+        $follower = app()->make($fa1->follower);
 
-        $this->assertTrue($follower($event));
+        $this->assertTrue($follower->asFollowAction($event, 'beans'));
     }
-    
-}
-
-class TestEvent
-{
-    public function __construct(public $argument)
-    {
-    }
-}
-
-class TestFollower
-{
-    public function __construct(private $name)
-    {
-        //code
-    }
-
-    public function __invoke(TestEvent $event): bool
-    {
-        if ($event->argument == $this->name) {
-            return true;
-        }
-
-        return false;
-    }
-    
     
 }

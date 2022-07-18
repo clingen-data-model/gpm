@@ -15,9 +15,13 @@ class CreateFollowActionsTable extends Migration
     {
         Schema::create('follow_actions', function (Blueprint $table) {
             $table->id();
+            $table->string('name')->nullable();
             $table->string('event_class');
-            $table->string('follower');
+            $table->text('follower');
+            $table->json('args')->nullable();
+            $table->text('description')->nullable();
             $table->datetime('completed_at')->nullable();
+            $table->string('hash')->unique();
             $table->timestamps();
             $table->softDeletes();
         });

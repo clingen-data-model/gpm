@@ -13,8 +13,11 @@ class RunFollowAction
 
     public function handle(FollowAction $followAction, Event $event)
     {
-        $follower = $followAction->follower;
-        if ($follower($event)) {
+        // $followerClass = $followAction->follower;
+        $follower = app()->make($followAction->follower);
+
+        $args = $followAction->args ?? [];
+        if ($follower->asFollowAction($event, ...$args)) {
             $followAction->update(['completed_at' => Carbon::now()]);
         }
     }
@@ -26,7 +29,6 @@ class RunFollowAction
                             ->incomplete()
                             ->get();
 
-        // dd($followActions);
         $followActions->each(fn ($fa) => $this->handle($fa, $event));
     }
 }
