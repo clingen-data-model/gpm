@@ -35,6 +35,30 @@ class GroupFactory extends Factory
         ];
     }
 
+    public function vcep()
+    {
+        return $this->state(function ($attributes) {
+            return [
+                'uuid' => $this->faker->uuid,
+                'name' => uniqid().' CDWG',
+                'group_type_id' => config('groups.types.vcep.id'),
+                'group_status_id' => config('groups.statuses.applying.id')
+            ];
+        });
+    }
+
+    public function gcep()
+    {
+        return $this->state(function ($attributes) {
+            return [
+                'uuid' => $this->faker->uuid,
+                'name' => uniqid().' CDWG',
+                'group_type_id' => config('groups.types.gcep.id'),
+                'group_status_id' => config('groups.statuses.applying.id')
+            ];
+        });
+    }
+
     public function cdwg()
     {
         return $this->state(function ($attributes) {

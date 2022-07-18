@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Exceptions\FollowActionDuplicateException;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class FollowAction extends Model
 {
@@ -12,13 +13,28 @@ class FollowAction extends Model
     protected $fillable = [
         'event_class',
         'follower',
-        'completed_at'
+        'args',
+        'completed_at',
+        'name',
+        'description',
     ];
 
     protected $casts = [
         'id' => 'integer',
+        'args' => 'array',
         'completed_at' => 'datetime'
     ];
+
+    static public function boot () {
+        parent::boot();
+        static::saving(function ($model) {
+            $model->hash = md5($model->event_class.'-'.$model->follower.'-'.json_encode($model->args).'-'.$model->completed_at);
+
+            if (self::query()->otherWithHash($model->hash, $model)->count() > 0) {
+                throw new FollowActionDuplicateException('A follow action with the same event, follower, and arguments already exists.');
+            }
+        });
+    }
 
     // SCOPES
     public function scopeForEvent($query, $eventClass)
@@ -31,17 +47,11 @@ class FollowAction extends Model
         return $query->whereNull('completed_at');
     }
     
-    
-
-    // ACCESSORS
-    public function getFollowerAttribute()
+    public function scopeOtherWithHash($query, $hash, $current)
     {
-        return unserialize($this->attributes['follower']);
-    }
-
-    public function setFollowerAttribute(Object $value)
-    {
-        return $this->attributes['follower'] = serialize($value);
+        return $query->where('hash', $hash)
+            ->where('id', '!=', $current->id);
     }
     
+
 }
