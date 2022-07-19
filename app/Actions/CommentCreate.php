@@ -37,7 +37,6 @@ class CommentCreate
 
     public function authorize(ActionRequest $request):bool
     {
-        // dd($request->user()->roles->pluck('permissions')->flatten()->pluck('name')->toArray());
         return $request->user()->hasPermissionTo('ep-applications-comment');
     }
 
