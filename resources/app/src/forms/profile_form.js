@@ -26,7 +26,7 @@ export const profileFields = computed(() => [
     { 
         name: 'credentials', 
         type: 'large-text',
-        notes: 'Include degrees and certifications such as PhD, MD, CGC, etc.'
+        notes: 'Include degrees and certifications such as PhD, MD, CGC, etc. Please include professional roles and associations in your biography.'
     },
     { name: 'biography', type: 'large-text'},
     {
