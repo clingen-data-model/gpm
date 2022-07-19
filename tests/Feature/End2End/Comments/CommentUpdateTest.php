@@ -55,8 +55,7 @@ class CommentUpdateTest extends CommentTest
         Sanctum::actingAs($otherUser);
         $expectedData = $this->getDefaultData();
         $this->makeRequest()
-            ->assertStatus(403)
-            ;
+            ->assertStatus(403);
 
         $this->assertDatabaseMissing('comments', $this->jsonifyArrays($expectedData));
     }
