@@ -14,10 +14,14 @@
                     v-model="group.expert_panel.scope_description"
                     :errors="errors.scope_description"
                     type="large-text"
-                    label="Describe the scope of work of the Expert Panel including the disease area(s), genes being addressed, and any specific rational for choosing the condition(s)."
                     vertical
                     @update:modelValue="$emit('update')"
-                />
+                >
+                    <template v-slot:label>
+                        Describe the scope of work of the Expert Panel including the disease area(s), genes being addressed, and any specific rational for choosing the condition(s).
+                        See the <vcep-protocol-link v-if="group.isVcep()" /> <gcep-quick-guide-link v-if="group.isGcep()" /> for more information.
+                    </template>
+                </input-row>
                 <div v-else>
                     <markdown-block 
                         v-if="group.expert_panel.scope_description" 
@@ -34,9 +38,10 @@
 </template>
 <script>
 import Group from '@/domain/group'
+import GcepQuickGuideLink from '../links/GcepQuickGuideLink.vue';
 
 export default {
-    name: 'scopeDescriptionForm',
+    name: "scopeDescriptionForm",
     props: {
         editing: {
             type: Boolean,
@@ -50,29 +55,30 @@ export default {
         }
     },
     emits: [
-        'update:editing',
-        'update:group',
-        'update'
+        "update:editing",
+        "update:group",
+        "update"
     ],
     computed: {
         group: {
-            get () {
-                return this.$store.getters['groups/currentItem'] || new Group();
+            get() {
+                return this.$store.getters["groups/currentItem"] || new Group();
             },
-            set (value) {
-                this.$store.commit('groups/addItem', value);
+            set(value) {
+                this.$store.commit("groups/addItem", value);
             }
         },
-        scopeDescription: { 
+        scopeDescription: {
             get: function () {
-                return this.group.expert_panel.scope_description
-            }, 
+                return this.group.expert_panel.scope_description;
+            },
             set: function (value) {
                 const groupCopy = this.group.clone();
                 groupCopy.expert_panel.scope_description = value;
-                this.$emit('update:group', groupCopy);
+                this.$emit("update:group", groupCopy);
             }
         }
-    }
+    },
+    components: { GcepQuickGuideLink }
 }
 </script>

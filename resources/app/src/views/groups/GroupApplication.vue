@@ -28,7 +28,18 @@
                 :is-collapsed="!showApplicationToc"
             >
                 <template v-slot:footer>
-                    <div class="p-2 border-t text-sm text-center bottom-0">
+                    <div class="my-4 p-4 text-sm flex items-start space-x-4 bg-gray-200 rounded-lg">
+                        <icon-question height="48" width="48" class="text-blue-700"/> 
+                        <div>
+                            <h3 style="line-height: 1">Have Questions?</h3>
+                            <div style="font-size: 1rem; line-height:2">
+                                Read the 
+                                <gcep-quick-guide-link v-if="group.group_type_id == 3" />
+                                <vcep-protocol-link v-if="group.group_type_id == 4" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-sm bottom-0">
                         <div v-if="saving">Saving...</div>
                         <div v-else>Last saved at {{formatTime(lastSavedAt)}}</div>
                     </div>

@@ -1,4 +1,4 @@
-<style lang="postcss" scoped>
+<style scoped>
     li a {
         @apply text-black no-underline;
         color: black !important;
@@ -29,12 +29,12 @@
         <div
             v-if="isStep"
         >
-            <header 
+            <header v-if="item.title"
                 class="flex justify-between label"
                 :class="{open: !collapsed, 'current-step': isCurrentStep}"
                 @click="toggleContents"
             >
-                <div>
+                <div class="font-bold">
                     {{item.title}}
                     <icon-cheveron-right class="cheveron inline -mt-1" v-if="hasManySections" />
                 </div>
@@ -43,7 +43,10 @@
                 </badge>
             </header>
             <transition name="slide-fade-down">
-                <ul v-if="this.item.sections && hasManySections" class="ml-4 text-smaller" v-show="!collapsed">
+                <ul 
+                    v-if="this.item.sections && hasManySections" 
+                    :class="{'ml-4 text-smaller': item.title}" v-show="!collapsed"
+                >
                     <li v-for="(section, idx) in item.sections" :key="idx">
                         <menu-item :item="section"></menu-item>
                     </li>
