@@ -43,14 +43,6 @@ class Comment extends Model implements ContractsHasComments
         'is_resolved'
     ];
 
-    public $with = [
-        'type',
-    ];
-
-    public $with = [
-        'type',
-    ];
-
     /**
      * RELATIONS
      */
