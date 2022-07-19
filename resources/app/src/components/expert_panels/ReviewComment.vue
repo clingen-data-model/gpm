@@ -1,10 +1,14 @@
 <script setup>
-    import {ref} from 'vue'
+    import {ref, computed} from 'vue'
+    import {useStore} from 'vuex'
     import ReviewCommentForm from './ReviewCommentForm.vue'
     import commentFormFactory from '@/forms/comment_form.js'
     import commentRepository from '../../repositories/comment_repository';
     import DropdownItem from '../DropdownItem.vue';
     import commentManagerFactory from '@/composables/comment_manager.js'
+    import {hasPermission} from '../../auth_utils';
+
+    const store = useStore();
 
     const formDef = commentFormFactory();
     const props = defineProps({
@@ -27,6 +31,9 @@
     const showConfirmDelete = ref(false);
 
     const getVariant = comment => {
+        if (!comment.type) {
+            return 'gray'
+        }
         switch (comment.type.name) {
             case 'required revision':
                 return 'yellow'
@@ -87,7 +94,9 @@
         const commentClone = {...props.comment};
         commentClone.comments_count -= 1;
         props.commentManager.updateComment(commentClone);
-    } 
+    }
+
+    const canEdit = computed(() => hasPermission('comments-manage') || store.getters.currentUser.id === props.comment.creator_id)
 </script>
 <template>
     <div class="my-2">
@@ -95,9 +104,9 @@
             <div v-if="!showEditForm" class="relative">
                 <div class="flex justify-between items-start mb-1 rounded">
                     <div class="flex space-x-2 items-end">
-                        <strong class="block">{{comment.creator.name}}</strong>
+                        <strong class="block">{{comment.creator && comment.creator.name}}</strong>
                         <badge class="block" :color="getVariant(comment)" size="xxs">
-                            {{titleCase(comment.type.name)}}
+                            {{comment.type && titleCase(comment.type.name)}}
                         </badge>
                         <icon-checkmark 
                             class="text-green-500" 
@@ -106,9 +115,8 @@
                         />
                     </div>
                     <div class="flex space-x-2">
-                        <dropdown-menu hideCheveron>
+                        <dropdown-menu hideCheveron v-if="canEdit">
                             <dropdown-item @click="showEditForm = true">Edit</dropdown-item>
-                            <dropdown-item @click="initReply">Reply</dropdown-item>
                             <dropdown-item @click="toggleResolution">{{comment.is_resolved ? 'Mark unresolved' : 'Resolve'}}</dropdown-item>
                             <dropdown-item @click="initDelete">Delete</dropdown-item>
                         </dropdown-menu>
@@ -116,6 +124,8 @@
                 </div>
     
                 <markdown-block :markdown="comment.content" class="text-sm" />
+                <button class="link" @click="initReply"><icon-reply class="inline-block" />Reply</button>
+
     
                 <static-alert variant="danger" v-show="showConfirmDelete" class="">
                     Continue with delete?

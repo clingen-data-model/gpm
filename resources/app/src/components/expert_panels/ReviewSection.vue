@@ -73,7 +73,7 @@
                     <ReviewComment :comment="comment" :commentManager="commentManager"></ReviewComment>
                 </li>
             </ul>
-            <div class="bg-white p-2">
+            <div class="bg-white mt-2 p-2">
                 <ReviewCommentForm v-if="showCommentForm"
                     :section="name" 
                     :commentManager="commentManager"
