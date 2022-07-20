@@ -1,4 +1,4 @@
-<style lang="postcss" scoped>
+<style scoped>
     table {
         @apply w-full;
     }
@@ -53,13 +53,13 @@
                                 <div>
                                     <div v-if="field.sortable">
                                         <icon-cheveron-up icon-color="#ccc" 
-                                            v-if="realSort.field != field"
+                                            v-if="realSort.field.name != field.name"
                                         ></icon-cheveron-up>
                                         <icon-cheveron-up icon-color="#333" 
-                                            v-if="realSort.field == field && !realSort.desc"
+                                            v-if="realSort.field.name == field.name && !realSort.desc"
                                         ></icon-cheveron-up>
                                         <icon-cheveron-down icon-color="#333" 
-                                            v-if="realSort.field == field && realSort.desc"
+                                            v-if="realSort.field.name == field.name && realSort.desc"
                                         ></icon-cheveron-down>
                                     </div>
                                 </div>
@@ -248,7 +248,7 @@ export default {
                 return;
             }
 
-            const allItems = this.sortData(this.filterData(this.data));
+            const allItems = this.sortData(this.filterData([...this.data]));
             this.resolvedItems = this.paginated ? this.paginate(allItems) : allItems;
             this.setTotalItems(allItems.length);
         },
@@ -352,7 +352,7 @@ export default {
                 desc: !this.realSort.desc
             }
             
-            if (oldField != field) {
+            if (oldField.name != field.name) {
                 newSort.desc = false
             }
 
