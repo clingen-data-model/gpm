@@ -92,12 +92,25 @@ class Submission extends Model
 
     # SCOPES
 
+    public function scopeWithStatus($query, $status)
+    {
+        if (is_array($status)) {
+            return $query->whereIn('submission_status_id', $status);
+        }
+        return $query->where('submission_status_id', $status);
+    }
+    
+
     public function scopeOfType($query, $type)
     {
         $typeId = $type;
         if (is_object($type) && get_class($type) == SubmissionType::class) {
             $typeId = $type->id;
         }
+        if (is_array($type)) {
+            return $query->whereIn('submission_type_id', $type);
+        }
+
         return $query->where('submission_type_id', $typeId);
     }
 

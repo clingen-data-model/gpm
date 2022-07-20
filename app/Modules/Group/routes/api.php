@@ -33,6 +33,7 @@ use App\Modules\Group\Actions\AttestationNhgriStore;
 use App\Modules\Group\Actions\EvidenceSummaryDelete;
 use App\Modules\Group\Actions\EvidenceSummaryUpdate;
 use App\Modules\Group\Actions\ExpertPanelNameUpdate;
+use App\Modules\Group\Actions\ApplicationActivityGet;
 use App\Modules\Group\Actions\ApplicationSaveChanges;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Group\Actions\MemberRevokePermission;
@@ -56,6 +57,8 @@ Route::group([
 ], function () {
     Route::get('/', [GroupController::class, 'index']);
     Route::post('/', GroupCreate::class);
+
+    Route::get('/applications', ApplicationActivityGet::class);
 
     Route::group(['prefix' => '/{group:uuid}'], function () {
         Route::get('/', [GroupController::class, 'show']);

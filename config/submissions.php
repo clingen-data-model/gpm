@@ -16,7 +16,7 @@ return [
         'application' => [
             'definition' => $definitionType,
             'sustained-curation' => $sustainedCurationType
-        ]
+        ],
     ],
     'types-by-step' => [
         1 => $definitionType,
