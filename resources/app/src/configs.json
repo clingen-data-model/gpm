@@ -464,9 +464,9 @@
         "emailFromMemberList": true,
         "inviteReminders": true,
         "memberExport": true,
-        "showCdwgs": false,
-        "showWgs": false,
-        "notifyScopeChange": false,
+        "showCdwgs": true,
+        "showWgs": true,
+        "notifyScopeChange": true,
         "specificationUpload": true,
         "cspecSummary": false
     },
