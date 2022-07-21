@@ -46,50 +46,64 @@ class AssignCommentPermissions extends Command
      */
     public function handle()
     {
-        $action = app()->make(PermissionAdd::class);
-        $createFollowAction = app()->make(CreateFollowAction::class);
         
         $groups = Group::find([126, 133]);
 
         foreach ($groups as $group) {
-            $group->members->each(fn ($m) => $action->handle($m->person, 'ep-applications-comment'));
+            $this->assignCommentPermissionToGroup($group);
+            $this->addFollowActions($group);
+        }
 
-            try {
-                $createFollowAction->handle(
-                    eventClass: MemberAdded::class, 
-                    follower: MemberAddSystemPermission::class, 
-                    args: ['permissionName' => 'ep-applications-comment', 'groupId'=>$group->id],
-                    name: $group->display_name.'members get ep-applications-comment when added.',
-                    description: 'Automatically grants ep-applications-comment system permission when a person is added to a member of '.$group->display_name
-                );
-            } catch (FollowActionDuplicateException $e) {
-                $this->error($e->getMessage());
-            }
-
-            try {
-                $createFollowAction->handle(
-                    eventClass: MemberRemoved::class, 
-                    follower: MemberRemoveSystemPermission::class, 
-                    args: ['permissionName' => 'ep-applications-comment', 'groupId'=>$group->id],
-                    name: $group->display_name.': remove ep-applications-comment when member removed.',
-                    description: 'Automatically revokes ep-applications-comment system permission when a member is removed from '.$group->display_name
-                );
-            } catch (FollowActionDuplicateException $e) {
-                $this->error($e->getMessage());
-            }
-            try {
-                $createFollowAction->handle(
-                    eventClass: MemberRetired::class, 
-                    follower: MemberRemoveSystemPermission::class, 
-                    args: ['permissionName' => 'ep-applications-comment', 'groupId'=>$group->id],
-                    name: $group->display_name.': remove ep-applications-comment when member retired.',
-                    description: 'Automatically revokes ep-applications-comment system permission when a member is retired from '.$group->display_name
-                );
-            } catch (FollowActionDuplicateException $e) {
-                $this->error($e->getMessage());
-            }
+        foreach ($groups[1]->chairs as $chair) {
+            $chair->person->user->givePermissionTo('ep-applications-approve');
         }
 
         return 0;
     }
+
+    private function assignCommentPermissionToGroup(Group $group): void
+    {
+        $group->members->each(fn ($m) => app()->make(PermissionAdd::class)->handle($m->person, 'ep-applications-comment'));
+    }
+
+    private function addFollowActions(Group $group): void
+    {
+        $createFollowAction = app()->make(CreateFollowAction::class);
+        try {
+            $createFollowAction->handle(
+                eventClass: MemberAdded::class, 
+                follower: MemberAddSystemPermission::class, 
+                args: ['permissionName' => 'ep-applications-comment', 'groupId'=>$group->id],
+                name: $group->display_name.'members get ep-applications-comment when added.',
+                description: 'Automatically grants ep-applications-comment system permission when a person is added to a member of '.$group->display_name
+            );
+        } catch (FollowActionDuplicateException $e) {
+            $this->error($e->getMessage());
+        }
+
+        try {
+            $createFollowAction->handle(
+                eventClass: MemberRemoved::class, 
+                follower: MemberRemoveSystemPermission::class, 
+                args: ['permissionName' => 'ep-applications-comment', 'groupId'=>$group->id],
+                name: $group->display_name.': remove ep-applications-comment when member removed.',
+                description: 'Automatically revokes ep-applications-comment system permission when a member is removed from '.$group->display_name
+            );
+        } catch (FollowActionDuplicateException $e) {
+            $this->error($e->getMessage());
+        }
+        try {
+            $createFollowAction->handle(
+                eventClass: MemberRetired::class, 
+                follower: MemberRemoveSystemPermission::class, 
+                args: ['permissionName' => 'ep-applications-comment', 'groupId'=>$group->id],
+                name: $group->display_name.': remove ep-applications-comment when member retired.',
+                description: 'Automatically revokes ep-applications-comment system permission when a member is retired from '.$group->display_name
+            );
+        } catch (FollowActionDuplicateException $e) {
+            $this->error($e->getMessage());
+        }
+    }
+    
+    
 }
