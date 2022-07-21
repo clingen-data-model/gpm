@@ -190,7 +190,7 @@ export default {
             </transition>
 
             <transition name="slide-fade-down">
-                <div>
+                <div class="screen-block-container">
                     <slot name="sections" v-if="showSections">
                         Step sections here!
                     </slot>
@@ -198,7 +198,9 @@ export default {
             </transition>
         </div>
 
-        <slot></slot>
+        <div>
+            <slot></slot>
+        </div>
 
         <slot name="log">
             <div class="mb-6 mt-4 border-t pt-4">
