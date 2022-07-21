@@ -3,41 +3,16 @@
         <h1>
             Dashboard
             <div class="note font-normal">
-                User ID: {{user.id}}
-                |
-                Person ID: {{user.person ? user.person.id : 'no person!!'}}
+                User ID: {{user.id}} | Person ID: {{user.person ? user.person.id : 'no person!!'}}
             </div>
         </h1>
-        <transition-group tag="div" name="slide-fade-down">
-            <notification-item
-                v-for="notification in notifications" :key="notification.id"
-                :notification="notification"
-                class="mb-2"
-                @removed="removeNotification(notification)"
-            ></notification-item>
-        </transition-group>
 
-        <sustained-curation-review-alert
-            v-for="task in sustainedCurationReviews" 
-            :key="task.id"
-            :group="task.assignee"
-            class="mb-2"
+        <NotificationList :user="user" />
+        <DashboardAlerts :user="user" />
+        <ApplicationActivity :user="user"
+            v-if="hasAnyPermission(['ep-applications-manage', 'ep-applications-comment', 'ep-applications-approve'])" 
+            class="py-4 border-b"
         />
-
-        <annual-update-alert 
-            v-for="group in coordinatingGroups" :key="group.id" 
-            :group="group"
-            :show-group-name="true"
-            class="mb-2"
-        />
-
-        <coi-alert
-            v-for="membership in user.person.membershipsWithPendingCois" 
-            :key="membership.id"
-            :membership="membership"
-            class="mb-2"
-        />
-
         <tabs-container class="mt-8">
             <tab-item label="Your Groups">
                 <div class="well" v-if="!groups.length">You are not assigned to any groups.</div>
@@ -73,22 +48,23 @@
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
 import {ref, computed, onMounted, watch} from 'vue'
-import {api, queryStringFromParams} from '@/http'
-import AnnualUpdateAlert from '@/components/groups/AnnualUpdateAlert.vue';
-import NotificationItem from '@/components/NotificationItem.vue'
 import CoiList from '@/components/people/CoiList.vue'
 import PersonProfile from '@/components/people/PersonProfile.vue'
 import Person from "@/domain/person"
 import Group from "@/domain/group"
 import configs from '@/configs'
+import ApplicationActivity from '../components/dashboard/ApplicationActivity.vue';
+import DashboardAlerts from '@/components/dashboard/DashboardAlerts.vue'
+import NotificationList from '../components/NotificationList.vue'
 
 export default {
     name: 'Dashboard',
     components: {
         CoiList,
-        NotificationItem,
         PersonProfile,
-        AnnualUpdateAlert
+        ApplicationActivity,
+        DashboardAlerts,
+        NotificationList,
     },
     data() {
         return {
@@ -120,39 +96,11 @@ export default {
             loadPersonInStore();
         });
 
-        // NOTIFICATIONS
-        // TODO: Extract to modules
-        const loadingNotifications = ref(false);
-        const notifications = ref([]);
-        const getNotifications = async () => {
-            loadingNotifications.value = true;
-            if (user.value.person && user.value.person.uuid) {
-                notifications.value = await api.get(`/api/people/${user.value.person.uuid}/notifications/unread`)
-                                .then(response => response.data)
-            }
-            loadingNotifications.value = false;
-        }
-        const removeNotification = (notification) => {
-            const index = notifications.value.findIndex((item) => item.id == notification.id);
-            if (index > -1) {
-                notifications.value.splice(index, 1);
-            }
-        }
-
-
         // GROUPS
         // TODO: Get groups by search with TONS of info.
         // TODO: Extract that work to a module.
         const groups = computed(() => {
             return user.value.memberships
-                    .map(m => m.group)
-                    .filter(g => g !== null)
-                    .map(group => new Group(group))
-        });
-
-        const coordinatingGroups = computed(() => {
-            return user.value.memberships
-                    .filter(m => m.hasPermission('annual-update-manage'))
                     .map(m => m.group)
                     .filter(g => g !== null)
                     .map(group => new Group(group))
@@ -191,51 +139,20 @@ export default {
             return map[status] || 'blue'
         };
 
-        const sustainedCurationReviews = ref([]);
-        const getSustainedCurationReviewTasks = async () => {
-            const params = {
-                with: ['assignee'],
-                where: {
-                    task_type_id: 1,
-                    assignee_type: 'App\\Modules\\Group\\Models\\Group',
-                    assignee_id: [...(new Set(coordinatingGroups.value.map(cg => cg.id)))],
-                    pending: 1
-                }
-            }
-            const queryString = queryStringFromParams(params);
-            const url = `/api/tasks${queryString}`;
-            sustainedCurationReviews.value = await api.get(url)
-                                                .then(response => {
-                                                    const uniqueTasks = {};
-                                                    response.data.forEach(task => {
-                                                        uniqueTasks[task.assignee_id] = task;
-                                                    })
-                                                    return uniqueTasks;
-                                                });
-        }
-
         // TODO: extract to module.
         // TODO: Get coi data on demand
 
         onMounted(async () => {
-            getNotifications();
             await store.dispatch('forceGetCurrentUser');
-            await getSustainedCurationReviewTasks();
         })
 
         return {
             user,
-            sustainedCurationReviews,
             personFromStore,
-            loadingNotifications,
-            notifications,
             groups,
-            coordinatingGroups,
             groupSort,
             groupFields,
             groupBadgeColor,
-            getNotifications,
-            removeNotification,
             navigateToGroup: (item) => {
                 router.push({
                     name: 'GroupDetail',
