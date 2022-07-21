@@ -96,7 +96,7 @@
         props.commentManager.updateComment(commentClone);
     }
 
-    const canEdit = computed(() => hasPermission('comments-manage') || store.getters.currentUser.id === props.comment.creator_id)
+    const canEdit = computed(() => hasPermission('comments-manage') || store.getters.currentUser.person.id == props.comment.creator_id)
 </script>
 <template>
     <div class="my-2">
