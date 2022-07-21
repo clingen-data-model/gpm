@@ -23,27 +23,24 @@
 </script>
 
 <template>
-    <table class="mt-2">
-        <tr v-for="(comments, section) in commentsBySection" :key="section">
-            <td class=" border-none">
-                <h4>{{titleCase(section)}}</h4>
-            </td>
-            <td class=" border-none">
-                <ReviewCommentAnonymous 
-                    v-for="comment in comments" 
-                    :key="comment.id" 
-                    :comment="comment" 
-                    class="mb-4"
-                />
-            </td>
-        </tr>
-        <tr>
-            <td class="border-none"></td>
-            <td class="border-none">
-                <note>
-                    To make changes to comments click 'Cancel' and update alongside the application.
-                </note>
-            </td>
-        </tr>
-    </table>        
+    <div>
+        <table class="mt-2" v-if="comments.length > 0">
+            <tr v-for="(comments, section) in commentsBySection" :key="section">
+                <td class=" border-none">
+                    <h4>{{titleCase(section)}}</h4>
+                </td>
+                <td class=" border-none">
+                    <ReviewCommentAnonymous 
+                        v-for="comment in comments" 
+                        :key="comment.id" 
+                        :comment="comment" 
+                        class="mb-4"
+                    />
+                </td>
+            </tr>
+        </table>
+        <div v-else>
+            No comments
+        </div>
+    </div>
 </template>

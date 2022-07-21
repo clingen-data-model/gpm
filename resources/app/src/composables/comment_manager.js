@@ -13,6 +13,7 @@ export default (subjectType, subjectId) => {
     const openComments = computed(() => comments.value.filter(c => !c.is_resolved))
     const openRequirements = computed(() => openComments.value.filter(c =>  c.comment_type_id == types.requirement));
     const openSuggestions = computed(() => openComments.value.filter(c =>  c.comment_type_id == types.suggestion));
+    const commentsForEp = computed(() => [...openRequirements.value, ...openSuggestions.value])
     const openInternal = computed(() => openComments.value.filter(c => c.comment_type_id == types.internal));
 
     const findCommentIndex = (comment) => {
@@ -43,6 +44,7 @@ export default (subjectType, subjectId) => {
         getComments,
         addComment,
         removeComment,
-        updateComment
+        updateComment,
+        commentsForEp
     }
 }
