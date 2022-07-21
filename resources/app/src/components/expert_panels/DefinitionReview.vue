@@ -1,14 +1,11 @@
 <script setup>
-    import { computed, watch, provide, ref } from 'vue'
+    import { computed, provide} from 'vue'
     import {useStore} from 'vuex'
     import setupReviewData from '@/composables/setup_review_data.js'
-    import commentManagerFactory from '@/composables/comment_manager.js'
     import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
 
     const store = useStore();
     const {group, expertPanel, members, isGcep, isVcep} = setupReviewData(store);
-    const commentManager = ref();
-    provide('commentManager', commentManager)
     provide('group', group)
 
     const basicInfo = computed(() => {
@@ -19,23 +16,10 @@
         }
     });
 
-    watch( 
-        () => group.value, 
-        (to, from) => { 
-            if ((to.id && (!from || to.id != from.id))) {
-                store.dispatch('groups/getMembers', group.value);
-                store.dispatch('groups/getGenes', group.value);
-                commentManager.value = commentManagerFactory('App\\Modules\\Group\\Models\\Group', to.id)
-                commentManager.value.getComments();
-
-            }
-        }, 
-        { immediate: true }
-    );
 </script>
 
 <template>
-    <div class="application-review bg-gray-100 p-2">
+    <div class="space-y-4">
         <ReviewSection title="Basic Information" name="basic-info">
             <object-dictionary :obj="basicInfo" label-class="w-40 font-bold" />
             <dictionary-row label="CDWG" label-class="w-40 font-bold">
