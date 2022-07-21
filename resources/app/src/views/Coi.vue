@@ -70,6 +70,7 @@ import is_validation_error from '@/http/is_validation_error';
 const survey = new Survey(coiDef);
 
 export default {
+    name: 'Coi',
     props: {
         code: {
             required: true,
