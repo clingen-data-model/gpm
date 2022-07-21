@@ -54,7 +54,7 @@ class ApplicationActivityTest extends TestCase
 
         $this->makeRequest()
             ->assertStatus(200)
-            ->assertJsonCount(3);
+            ->assertJsonCount(3, 'data');
     }
 
     /**
@@ -67,28 +67,30 @@ class ApplicationActivityTest extends TestCase
 
         $this->setupAllEpsWithSubmissions();
 
-        $this->makeRequest()
-            ->assertStatus(200)
-            ->assertJsonCount(2);
+        $rsp = $this->makeRequest();
+        // dump($rsp->original);
+        $rsp->assertStatus(200);
+        $rsp->assertJsonCount(2, 'data');
     }
 
     /**
      * @test
      */
-    public function application_approvers_see_applications_under_chair_review()
+    public function application_approvers_only_see_applications_under_chair_review()
     {
-        $this->setupPermission(['ep-applications-approve']);
-        $this->user->givePermissionTo('ep-applications-approve');
+        $this->setupPermission(['ep-applications-approve', 'ep-applications-comment']);
+        $this->user->givePermissionTo(['ep-applications-approve', 'ep-applications-comment']);
 
         $this->setupAllEpsWithSubmissions();
 
         $this->makeRequest()
             ->assertStatus(200)
-            ->assertJsonCount(1);
+            ->assertJsonCount(1, 'data');
     }
     
     private function setupAllEpsWithSubmissions()
     {
+        $ep = ExpertPanel::factory()->create();
         $epAndSub1 = [...$this->setupExpertPanelAndSubmission()];
         $epAndSub2 = [...$this->setupExpertPanelAndSubmission()];
         $epAndSub2['submission']->update([

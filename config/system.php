@@ -103,7 +103,7 @@ return [
         ],
         'ep-applications-approve' => [
             'id' => 32,
-            'name' => 'ep-appications-approve',
+            'name' => 'ep-applications-approve',
             'display_name' => 'Approve expert panel applications',
             'description' => 'Approve a submitted application',
             'guard_name' => 'web',

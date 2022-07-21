@@ -353,7 +353,7 @@
             },
             "ep-applications-approve": {
                 "id": 32,
-                "name": "ep-appications-approve",
+                "name": "ep-applications-approve",
                 "display_name": "Approve expert panel applications",
                 "description": "Approve a submitted application",
                 "guard_name": "web",
@@ -497,9 +497,9 @@
         "emailFromMemberList": true,
         "inviteReminders": true,
         "memberExport": true,
-        "showCdwgs": false,
-        "showWgs": false,
-        "notifyScopeChange": false,
+        "showCdwgs": true,
+        "showWgs": true,
+        "notifyScopeChange": true,
         "specificationUpload": true,
         "cspecSummary": false
     },

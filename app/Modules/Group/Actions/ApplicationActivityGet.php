@@ -22,14 +22,14 @@ class ApplicationActivityGet
                         $q->withStatus($this->getSubmissionStatusesForUser($user));
                     })
                     ->with([
+                        'type',
                         'latestSubmission',
                         'expertPanel' => function ($q) {
                             $q->select(['id', 'uuid', 'long_base_name', 'short_base_name', 'group_id', 'current_step']);
                         }
                     ]);
 
-        return $query->get();
-        // return ApplicationActivityResource::collection($query->get());
+        return ApplicationActivityResource::collection($query->get());
         
     }
 
@@ -40,9 +40,15 @@ class ApplicationActivityGet
 
     private function getSubmissionStatusesForUser(User $user): array
     {
+        if ($user->hasPermissionTo('ep-applications-approve')) {
+            return [config('submissions.statuses.under-chair-review.id')];
+        }
+
         $statuses = [config('submissions.statuses.under-chair-review.id')];
 
-        if ($user->hasAnyPermission(['ep-applications-manage', 'ep-applications-comment'])) {
+        if (
+            $user->hasAnyPermission(['ep-applications-manage', 'ep-applications-comment'])
+        ) {
             $statuses[] = config('submissions.statuses.pending.id');
         }
         if ($user->hasPermissionTo('ep-applications-manage')) {

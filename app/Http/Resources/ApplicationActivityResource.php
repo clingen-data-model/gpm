@@ -15,22 +15,13 @@ class ApplicationActivityResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'group' => [
-                'id' => $this->group->id,
-                'name' => $this->group->display_name,
-                'uuid' => $this->group->uuid,
-                'current_step' => $this->group->expertPanel->current_step,
-                'type' => $this->group->type,
-                'last_submission_date' => $this->group->latestSubmission->created_at
-            ],
-            'submission' => [
-                'id' => $this->id,
-                'type' => $this->type,
-                'status' => $this->status,
-                'notes' => $this->notes,
-                'created_at' => $this->created_at,
-                'updated_at' => $this->updated_at,
-            ]
+            'id' => $this->id,
+            'name' => $this->display_name,
+            'uuid' => $this->uuid,
+            'current_step' => $this->expertPanel->current_step,
+            'type' => $this->type,
+            'last_submission_date' => $this->latestSubmission->created_at,
+            'submission' => $this->latestSubmission,
         ];
     }
 }
