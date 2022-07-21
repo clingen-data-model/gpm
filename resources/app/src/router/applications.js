@@ -64,7 +64,8 @@ export default [{
         component: ApplicationDetail,
         props: true,
         meta: {
-            protected: true
+            protected: true,
+            permissions: ['ep-applications-manage', 'ep-applications-comment', 'ep-applications-approve']
         },
         children: [{
                 name: 'NextAction',
