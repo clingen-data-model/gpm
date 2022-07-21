@@ -41,6 +41,9 @@ registerComponentsInContext(require.context('@/components/mail'), false, /\.vue$
 import SubmissionWrapper from '@/components/groups/SubmissionWrapper.vue';
 app.component('submission-wrapper', SubmissionWrapper);
 
+import ScreenTemplate from '@/components/ScreenTemplate.vue';
+app.component('ScreenTemplate', ScreenTemplate);
+
 import ClickOutside from './directives/click_outside'
 app.directive('click-outside', ClickOutside)
 import RemainingHeight from '@/directives/remaining_height'

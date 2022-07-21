@@ -353,3 +353,11 @@ th.sorted, td.sorted  {
             page-break-before: always;
         }
     }
+
+    .screen-block-container {
+        @apply bg-gray-100 p-4;
+    }
+
+    .screen-block {
+        @apply bg-white p-4 border-b border-gray-200;
+    }
