@@ -5,13 +5,16 @@ namespace App\Modules\Group\Models;
 use Carbon\Carbon;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
+use App\Modules\Group\Models\Judgement;
 use Illuminate\Database\Eloquent\Model;
 use Database\Factories\SubmissionFactory;
 use App\Modules\Group\Models\SubmissionType;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\Group\Models\SubmissionStatus;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Submission extends Model
 {
@@ -88,6 +91,17 @@ class Submission extends Model
     public function submitter(): BelongsTo
     {
         return $this->belongsTo(Person::class, 'submitter_id');
+    }
+    
+
+    /**
+     * Get all of the judgements for the Submission
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function judgements(): HasMany
+    {
+        return $this->hasMany(Judgement::class);
     }
 
     # SCOPES

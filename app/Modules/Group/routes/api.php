@@ -34,6 +34,7 @@ use App\Modules\Group\Actions\EvidenceSummaryDelete;
 use App\Modules\Group\Actions\EvidenceSummaryUpdate;
 use App\Modules\Group\Actions\ExpertPanelNameUpdate;
 use App\Modules\Group\Actions\ApplicationActivityGet;
+use App\Modules\Group\Actions\ApplicationJudgementSubmit;
 use App\Modules\Group\Actions\ApplicationSaveChanges;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Group\Actions\MemberRevokePermission;
@@ -80,6 +81,10 @@ Route::group([
                 Route::get('/', [GroupSubmissionsController::class, 'index']);
                 Route::post('/', ApplicationSubmitStep::class);
                 Route::post('/{submission}/rejection', ApplicationSubmissionReject::class);
+            });
+
+            Route::group(['prefix' => '/judgement'], function () {
+                Route::post('/', ApplicationJudgementSubmit::class);
             });
 
         });

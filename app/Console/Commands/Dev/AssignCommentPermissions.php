@@ -47,7 +47,7 @@ class AssignCommentPermissions extends Command
     public function handle()
     {
         
-        $groups = Group::find([126, 133]);
+        $groups = Group::find([151, 133]);
 
         foreach ($groups as $group) {
             $this->assignCommentPermissionToGroup($group);

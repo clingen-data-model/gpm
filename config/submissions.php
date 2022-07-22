@@ -46,4 +46,9 @@ return [
             'description' => 'Submitted item is unconditionally approved.'
         ]
     ],
+    'judgements' => [
+        'request-revisions', 
+        'approve-after-revisions', 
+        'approve'
+    ]
 ];
