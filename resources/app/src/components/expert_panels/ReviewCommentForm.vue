@@ -1,7 +1,5 @@
 <script setup>
-    import { ref, computed, onMounted, inject } from 'vue';
-    import { useStore } from 'vuex'
-    // import setupReviewData from '../../composables/setup_review_data';
+    import { computed, onMounted, inject } from 'vue';
     import formDefFactory from '../../forms/comment_form.js';
 
     const group = inject('group');
