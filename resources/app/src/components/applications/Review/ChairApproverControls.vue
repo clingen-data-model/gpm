@@ -1,19 +1,23 @@
 <script setup>
-    import { ref, inject } from 'vue'
+    import { ref, computed, inject } from 'vue'
+    import { useStore } from 'vuex'
     import CommentSummary from '../CommentSummary.vue';
+    import JudgementForm from './JudgementForm.vue';
+    import JudgementDetail from './JudgementDetail.vue';
 
-    const commentManager = inject('commentManager')
+    const commentManager = inject('commentManager');
 
-    const showJudgementDialog = ref(true)
+    const emits = defineEmits([''])
+    const store = useStore();
+    const group = computed(() => store.getters['groups/currentItemOrNew'])
+
+    const showJudgementDialog = ref(false)
     const initJudgement = () => {
         showJudgementDialog.value = true
     }
-    const commitJudgement = () => {
-        showJudgementDialog.value = false
-    }
-    const cancelJudgement = () => {
-        showJudgementDialog.value = false
-    }
+    const hasMadeJudgment = computed(() => {
+        return true;
+    })
 </script>
 <template>
     <div class="flex flex-col space-y-2 screen-block">
@@ -26,13 +30,19 @@
             <CommentSummary :comments="commentManager.openInternal" />
         </div>
         <hr>
-        <div class="pt-2 flex space-x-2 items-center">
+        <div class="pt-2 lg:flex lg:space-x-2 space-y-2 lg:space-y-0 items-start">
             <div class="lg:w-3/5">
-                <button class="block btn btn-lg blue" @click="initJudgement">Approve or request revisions</button>
+                <button v-if="!hasMadeJudgment"
+                    class="block btn btn-lg blue" 
+                    @click="initJudgement"
+                >
+                    Approve or request revisions
+                </button>
+                <JudgementDetail />
             </div>
-            <div class="flex space-x-2 items-center p-2 bg-gray-200 rounded-lg lg:w-2/5">
+            <div class="flex space-x-2 items-center p-2 bg-gray-100 rounded-lg lg:w-2/5">
                 <icon-arrow-down class="text-blue-600 flex-shrink-0" width="30" height="30" /> 
-                <div>Reply to comments or create comments, suggestions, and required revisions in the comments sections below.</div>
+                <div>Reply to or create comments, suggestions, and required revisions in the comments sections below.</div>
                 <icon-arrow-down class="text-blue-600 flex-shrink-0" width="30" height="30" /> 
             </div>
         </div>
@@ -41,16 +51,7 @@
                 v-model="showJudgementDialog"
                 title="Approve or request revisions"
             >
-                <div v-if="commentManager.commentsForEp.length > 0">
-                    <h3>The following comments will be sent to the expert panel:</h3>
-                    <CommentSummary :comments="commentManager.commentsForEp" />
-                </div>
-
-                
-
-                <template v-slot:footer>
-                    <button-row @submitted="commitJudgement" @canceled="cancelJudgement"></button-row>
-                </template>
+                <JudgementForm @saved="showJudgementDialog = false" @canceled="showJudgementDialog = false" />
             </modal-dialog>
         </teleport>
     </div>
