@@ -182,7 +182,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
     public function scopeWg($query)
     {
-        return $this->workingGroup($query);
+        return $this->scopeWorkingGroup($query);
     }
 
     public function scopeTypeExpertPanel($query)

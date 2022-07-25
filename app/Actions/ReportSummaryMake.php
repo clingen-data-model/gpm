@@ -83,11 +83,13 @@ class ReportSummaryMake extends ReportMakeAbstract
 
     private function getWgMembersCount(): int
     {
-        return GroupMember::isActive()
+        $query = GroupMember::isActive()
             ->distinct('person_id')
             ->whereHas('group', function ($q) {
                 $q->wg();
-            })->count();
+            });
+
+        return $query->count();
     }
 
     private function getCdwgMembersCount(): int
