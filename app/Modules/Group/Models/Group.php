@@ -180,6 +180,11 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         return $query->ofType(config('groups.types.wg.id'));
     }
 
+    public function scopeWg($query)
+    {
+        return $this->workingGroup($query);
+    }
+
     public function scopeTypeExpertPanel($query)
     {
         return $query->whereIn('group_type_id', [config('groups.types.gcep.id'), config('groups.types.vcep.id')] );
