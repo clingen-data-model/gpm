@@ -17,7 +17,7 @@ class CreateJudgementsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('submission_id');
             $table->unsignedBigInteger('person_id');
-            $table->enum('judgement', ['request-revisions', 'approve-after-revisions', 'approve']);
+            $table->enum('decision', ['request-revisions', 'approve-after-revisions', 'approve']);
             $table->text('notes')->nullable();
             $table->timestamps();
 

@@ -3,6 +3,7 @@
 namespace App\Modules\Group\Models;
 
 use InvalidArgumentException;
+use App\Modules\Person\Models\Person;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +14,7 @@ class Judgement extends Model
     use HasFactory;
 
     public $fillable = [
-        'judgement',
+        'decision',
         'notes',
         'submission_id',
         'person_id'
@@ -73,12 +74,12 @@ class Judgement extends Model
     
 
     // MUTATORS
-    public function setJudgementAttribute($value)
+    public function setDecisionAttribute($value)
     {
-        if (!in_array($value, config('submissions.judgements'))) {
-            throw new InvalidArgumentException('Cannot set judgement attribute. '. $value .' not found in '.implode(', ', config('submissions.judgements')));
+        if (!in_array($value, config('submissions.decisions'))) {
+            throw new InvalidArgumentException('Cannot set decision attribute. '. $value .' not found in '.implode(', ', config('submissions.decisions')));
         }
-        $this->attributes['judgement'] = $value;
+        $this->attributes['decision'] = $value;
     }
     
 }

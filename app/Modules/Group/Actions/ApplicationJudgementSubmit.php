@@ -13,10 +13,10 @@ class ApplicationJudgementSubmit
 {
     use AsController;
 
-    public function handle(Group $group, Person $person, string $judgement, ?string $notes = null)
+    public function handle(Group $group, Person $person, string $decision, ?string $notes = null)
     {
         return $group->latestPendingSubmission->judgements()->create([
-            'judgement' => $judgement,
+            'decision' => $decision,
             'notes' => $notes,
             'person_id' => $person->id
         ]);
@@ -24,13 +24,13 @@ class ApplicationJudgementSubmit
 
     public function asController(ActionRequest $request, Group $group)
     {
-        return $this->handle($group, $request->user()->person, $request->judgement, $request->judgement_notes);
+        return $this->handle($group, $request->user()->person, $request->decision, $request->notes);
     }
 
     public function rules(ActionRequest $request, Group $group): array
     {
         return [
-            'judgement' => ['required', Rule::in(['request-revisions', 'approve-after-revisions', 'approve'])]
+            'decision' => ['required', Rule::in(['request-revisions', 'approve-after-revisions', 'approve'])]
         ];
     }
 

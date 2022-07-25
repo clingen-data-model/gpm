@@ -2,38 +2,10 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Testing\TestResponse;
-use App\Modules\Person\Models\Person;
-use App\Modules\Group\Models\Judgement;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Database\Seeders\NextActionTypesTableSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Database\Seeders\SubmissionTypeAndStatusSeeder;
-use App\Modules\Group\Actions\ApplicationSubmitStep;
-use Database\Seeders\NextActionAssigneesTableSeeder;
 
-class JudgementSubmissionTest extends TestCase
+class JudgementSubmissionTest extends JudgementTest
 {
-    use RefreshDatabase;
-
-    public function setup():void
-    {
-        parent::setup();
-        $this->setupForGroupTest();
-        $this->seed(SubmissionTypeAndStatusSeeder::class);
-        $this->seed(NextActionAssigneesTableSeeder::class);
-        $this->seed(NextActionTypesTableSeeder::class);
-        $this->submit = app()->make(ApplicationSubmitStep::class);
-        
-        $this->user = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
-        $epAndSub = $this->setupExpertPanelAndSubmission();
-        $this->expertPanel = $epAndSub['expertPanel'];
-        $this->submission = $epAndSub['submission'];
-        Sanctum::actingAs($this->user);
-    }
 
     /**
      * @test
@@ -53,12 +25,12 @@ class JudgementSubmissionTest extends TestCase
     {
         $this->makeRequest([])
             ->assertValidationErrors([
-                'judgement' => ['This is required.']
+                'decision' => ['This is required.']
             ]);
 
-        $this->makeRequest(['judgement' => 'hedgehogs'])
+        $this->makeRequest(['decision' => 'hedgehogs'])
             ->assertValidationErrors([
-                'judgement' => ['The selection is invalid.']
+                'decision' => ['The selection is invalid.']
             ]);
     }
 
@@ -85,14 +57,14 @@ class JudgementSubmissionTest extends TestCase
         $this->makeRequest()
             ->assertStatus(201)
             ->assertJson([
-                'judgement' => 'request-revisions',
+                'decision' => 'request-revisions',
                 'notes' => 'These are my comments I want to add.',
                 'submission_id' => $this->submission->id,
                 'person_id' => $this->user->person->id
             ]);
 
         $this->assertDatabaseHas('judgements', [
-            'judgement' => 'request-revisions',
+            'decision' => 'request-revisions',
             'notes' => 'These are my comments I want to add.',
             'submission_id' => $this->submission->id,
             'person_id' => $this->user->person->id
@@ -102,22 +74,12 @@ class JudgementSubmissionTest extends TestCase
     private function makeRequest($data = null): TestResponse
     {
         $data = $data ?? [
-            'judgement' => 'request-revisions',
-            'judgement_notes' => "These are my comments I want to add.",
+            'decision' => 'request-revisions',
+            'notes' => "These are my comments I want to add.",
             'person_id' => $this->user->person->id
         ];
 
-        return $this->json('POST', '/api/groups/'.$this->expertPanel->group->uuid.'/application/judgement', $data);
-    }    
-    
-
-    private function setupExpertPanelAndSubmission($expertPanel = null, $submitter = null): array
-    {
-        $expertPanel = $expertPanel ?? ExpertPanel::factory()->vcep()->create();
-        $submitter = $submitter ?? Person::factory()->create();
-        $submission = $this->submit->handle(group: $expertPanel->group, submitter: $submitter);
-
-        return ['expertPanel' => $expertPanel, 'submission' => $submission];
+        return $this->json('POST', '/api/groups/'.$this->expertPanel->group->uuid.'/application/judgements', $data);
     }
-    
+
 }
