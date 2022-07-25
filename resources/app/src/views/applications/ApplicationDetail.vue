@@ -5,6 +5,7 @@
     import ApplicationAdmin from './ApplicationAdmin.vue'
     import ApplicationReview from './ApplicationReview.vue'
     import commentManagerFactory from '@/composables/comment_manager.js'
+    import {api} from '@/http';
 
     const commentManager = ref(commentManagerFactory('App\\Modules\\Group\\Models\\Group', 0));
     provide('commentManager', commentManager)
@@ -18,15 +19,24 @@
         }
     })
 
+
     const loading = ref(false);
     const group = computed(() => store.getters['groups/currentItemOrNew'])
     const applicationView = shallowRef(ApplicationReview);
+    const latestSubmission = ref({});
+    provide('latestSubmission', latestSubmission);
+    const getLatestSubmission = () => {
+        api.get(`/api/groups/${group.value.uuid}/application/latest-submission`)
+            .then(rsp => latestSubmission.value = rsp.data)
+            .catch(error => console.log(error));
+    }
     const getGroup = async () => {
         loading.value = true;
         await store.dispatch('groups/findAndSetCurrent', props.uuid);
         store.dispatch('groups/getDocuments', group.value);
         store.dispatch('groups/getNextActions', group.value);
         store.dispatch('groups/getSubmissions', group.value);
+        getLatestSubmission();
         store.dispatch('groups/getMembers', group.value);
         store.dispatch('groups/getGenes', group.value);
         loading.value = false;
@@ -56,6 +66,11 @@
     })
 </script>
 <template>
-    <component :is="applicationView" @updated="getGroup" :loading="loading"/>
+    <component :is="applicationView" 
+        :loading="loading" 
+        @updated="getGroup" 
+        @saved="getLatestSubmission" 
+        @deleted="getLatestSubmission"
+    />
     <div v-show="loading">Loading&hellip;</div>
 </template>

@@ -1,51 +1,90 @@
 <script setup>
-    import {ref, computed, inject} from 'vue';
+    import {ref, computed, inject, watch} from 'vue';
     import {useStore} from 'vuex';
     import {api} from '@/http'
     import CommentSummary from '../CommentSummary.vue';
-import {isValidationError} from '../../../http';
+    import {isValidationError} from '@/http';
 
-    const emits = defineEmits(['saved', 'canceled'])
+    const props = defineProps({
+        modelValue: {
+            type: Object,
+            default: () => ({decision: null, notes: null})
+        }
+    })
+    const emits = defineEmits(['saved', 'canceled', 'update:modelValue'])
 
     const commentManager = inject('commentManager')
     const store = useStore();
     const group = computed(() => store.getters['groups/currentItemOrNew'])
 
     const judgementOptions = [
-        {label: 'Request Revisions', value: 'request-revisions'},
-        {label: 'Approve after revisions', value: 'approve-after-revisions'},
-        {label: 'Approve', value: 'approve'},
+        'request-revisions',
+        'approve-after-revisions',
+        'approve',
     ];
 
     const errors = ref({});
-    const judgement = ref({});
-    const judgementNotes = ref();
+
+    const judgement = ref({
+        judgement: null,
+        notes: null,
+    });
+
+    const syncJudgement = (val) => {
+        judgement.value = val;
+    }
+
+    watch(() => props.modelValue, to => {
+        if (to) {
+            syncJudgement(to);
+        }
+    }, {immediate: true});
+
+    const createJudgement = async () => {
+        return  api.post(
+            `/api/groups/${group.value.uuid}/application/judgements`, 
+            {
+                decision: judgement.value.decision, 
+                notes: judgement.value.notes
+            }
+        );
+    }
+
+    const updateJudgement = async () => {
+        const url = `/api/groups/${group.value.uuid}/application/judgements/${judgement.value.id}`;
+        return api.put(url, judgement.value)
+            .then(rsp => {
+                emits('update:modelValue', rsp.data);
+            });
+
+    }
 
     const commitJudgement = async () => {
+        let updated = null;
         try {
-            await api.post(
-                `/api/groups/${group.value.uuid}/application/judgement`, 
-                {
-                    judgement: judgement.value.value, 
-                    judgement_notes: judgementNotes.value
-                }
-            );
-            emits('saved')
-            clearJudgementData();
+            updated = (judgement.value.id) 
+                        ? await updateJudgement() 
+                        : await createJudgement();
         } catch (err) {
             if (isValidationError(err)) {
                 errors.value = err.response.data.errors
             }
         }
+
+        emits('saved', updated)
+        clearJudgementData();
     }
+
     const cancelJudgement = () => {
         clearJudgementData()
         emits('canceled')
     }
 
     const clearJudgementData = () => {
-        judgement.value = undefined
-        judgementNotes.value = undefined
+        if (props.modelValue) {
+            syncJudgement(props.modelValue);
+        }
+        judgement.value = {}
     }
 </script>
 
@@ -56,12 +95,12 @@ import {isValidationError} from '../../../http';
             <CommentSummary :comments="commentManager.commentsForEp" />
         </div>
         <hr>
-        <input-row :errors="errors.judgement" vertical>
+        <input-row :errors="errors.decision" vertical>
             <template v-slot:label>
                 <h3>How should we proceed?</h3>
             </template>
             <radio-button-group 
-                v-model="judgement" 
+                v-model="judgement.decision" 
                 :options="judgementOptions" 
                 labelAttribute="label" 
                 size="lg" 
@@ -70,7 +109,7 @@ import {isValidationError} from '../../../http';
         </input-row>
 
         <input-row 
-            v-model="judgementNotes" 
+            v-model="judgement.notes"
             label="Notes for the expert panel" 
             type="large-text"
             :errors="errors.notes"

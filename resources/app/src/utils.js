@@ -3,6 +3,9 @@
  * @param {string} string 
  */
 export const normalizeCase = string => {
+    if (!string) {
+        return string
+    }
     const val = string.replace(/[A-Z]/g, letter => ` ${letter.toLowerCase()}`)
             .split(/[\s_-]/)
             .filter(w => w !== ' ' && w !== '')
@@ -13,25 +16,41 @@ export const normalizeCase = string => {
 }
 
 export const titleCase = string => {
+    if (!string) {
+        return string
+    }
     const parts = normalizeCase(string).split(' ');
     return parts.map(str => str.charAt(0).toUpperCase()+str.slice(1)).join(' ');
 }
 
 export const kebabCase = string => {
+    if (!string) {
+        return string
+    }
     return normalizeCase(string).split(' ').join('-');
 }
 
 export const snakeCase = string => {
+    if (!string) {
+        return string
+    }
     return normalizeCase(string).split(' ').join('_');
 }
 
 export const camelCase = string => {
+    if (!string) {
+        return string
+    }
     const parts = normalizeCase(string).split(' ');
     return parts.map(str => str.charAt(0).toUpperCase()+str.slice(1)).join('');
 }
 
 export const sentenceCase = str => {
-    return str.charAt(0).toUpperCase()+str.slice(1);
+    if (str === null) {
+        return str
+    }
+    const parts = normalizeCase(str).split(' ');
+    return parts.join(' ').charAt(0).toUpperCase()+parts.join(' ').slice(1);
 }
 
 export const arrayContains = (needle, haystack) => {

@@ -6,8 +6,10 @@
     import JudgementDetail from './JudgementDetail.vue';
 
     const commentManager = inject('commentManager');
+    const latestSubmission = inject('latestSubmission')
 
-    const emits = defineEmits([''])
+    const emits = defineEmits(['deleted', 'saved'])
+
     const store = useStore();
     const group = computed(() => store.getters['groups/currentItemOrNew'])
 
@@ -16,8 +18,16 @@
         showJudgementDialog.value = true
     }
     const hasMadeJudgment = computed(() => {
-        return true;
+        return latestSubmission.value.judgements
+            && latestSubmission.value.judgements.length > 0
+            //  && latestSubmission.judgements.filter(j => j.person_id == store.getters.currentUser.person.id).length > 0;
     })
+
+    const handleSave = (newJudgement) => {
+        showJudgementDialog.value = false;
+        emits('saved', newJudgement);
+        
+    }
 </script>
 <template>
     <div class="flex flex-col space-y-2 screen-block">
@@ -38,7 +48,7 @@
                 >
                     Approve or request revisions
                 </button>
-                <JudgementDetail />
+                <JudgementDetail v-else @deleted="emits('deleted')" @saved="emits('saved')" />
             </div>
             <div class="flex space-x-2 items-center p-2 bg-gray-100 rounded-lg lg:w-2/5">
                 <icon-arrow-down class="text-blue-600 flex-shrink-0" width="30" height="30" /> 
@@ -51,7 +61,7 @@
                 v-model="showJudgementDialog"
                 title="Approve or request revisions"
             >
-                <JudgementForm @saved="showJudgementDialog = false" @canceled="showJudgementDialog = false" />
+                <JudgementForm @saved="handleSave" @canceled="showJudgementDialog = false" />
             </modal-dialog>
         </teleport>
     </div>

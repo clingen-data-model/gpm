@@ -1,4 +1,6 @@
 <script setup>
+import {sentenceCase} from '../../utils';
+
     const props = defineProps({
         modelValue: {
             required: true
@@ -29,7 +31,17 @@
 
     const isSelected = (opt) => JSON.stringify(opt) == JSON.stringify(props.modelValue);
 
-    const resolveLabel = (option) => props.labelAttribute ? option[props.labelAttribute] : option;
+    const resolveLabel = (option) => {
+        if (typeof option == 'object') {
+            return props.labelAttribute ? option[props.labelAttribute] : option;
+        }
+
+        if (typeof option == 'string') {
+            return sentenceCase(option)
+        }
+
+        return option;
+    }
     
     const resolveButtonClass = (option) => {
         const classes = [props.size];
