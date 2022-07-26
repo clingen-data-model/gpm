@@ -21,15 +21,7 @@
             <user-defined-mail-form v-model="email" v-show="notifyContacts"/>
         </transition>
 
-        <button-row>
-            <button class="btn" @click="cancel">Cancel</button>
-            <button class="btn blue" @click="save">
-                Request revisions
-                <span v-if="notifyContacts">
-                    and notify
-                </span>
-            </button>
-        </button-row>
+        <button-row @canceled="cancel" @submitted="save" :submit-text="submissionText" />
     </form-container>
 </template>
 <script>
@@ -66,6 +58,9 @@ export default {
         application () {
             return this.group.expert_panel;
         },
+        submissionText () {
+            return 'Request Revisions'+(this.notifyContacts ? ' and notify' : '')
+        }
     },
     watch: {
         notifyContacts: {
@@ -80,7 +75,7 @@ export default {
     methods: {
         clearForm() {
             this.dateApproved = null;
-            this.notifyContacts = false;
+            this.notifyContacts = true;
         },
         cancel () {
             this.clearForm();
