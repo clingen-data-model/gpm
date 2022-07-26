@@ -25,6 +25,9 @@ class ApplicationActivityGet
                         'type',
                         'latestSubmission',
                         'latestSubmission.judgements',
+                        'latestSubmission.judgements.person' => function ($q) {
+                            $q->select('first_name', 'last_name', 'email', 'id');
+                        },
                         'expertPanel' => function ($q) {
                             $q->select(['id', 'uuid', 'long_base_name', 'short_base_name', 'group_id', 'current_step']);
                         }

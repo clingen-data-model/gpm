@@ -69,10 +69,10 @@ import {hasPermission} from '../../auth_utils';
         return group.submission.judgements.find(j => j.person_id == props.user.person.id);
     }
 
-    const judgementColor = group => {
-        if (!group.submission.judgements) return 'gray';
+    const judgementColor = judgement => {
+        if (!judgement.decision) return 'gray';
         const decToColor = {'approved': 'green', 'approve-after-revisions': 'blue', 'request-revisions': 'yellow'}
-        return decToColor[judgementFor(group).decision];
+        return decToColor[judgement.decision];
     }
 
     onMounted(() => {
@@ -103,7 +103,7 @@ import {hasPermission} from '../../auth_utils';
                             <template v-slot:content>
                                 <div>
                                     <h3 class="mb-2">Your Decision</h3>
-                                    <badge class="inline-block" :color="judgementColor(item)" size="xs">
+                                    <badge class="inline-block" :color="judgementColor(judgementFor(item))" size="xs">
                                         {{judgementFor(item).decision}}
                                     </badge>
                                 </div>
@@ -121,14 +121,44 @@ import {hasPermission} from '../../auth_utils';
                             </template>
                         </popper>
                     </div>
+
                     <router-link v-else
                         :to="{name: 'ApplicationDetail', params: {uuid: item.uuid}}" 
                         class="btn btn-xs"
                     >
                         {{hasPermission('ep-applications-manage') ? 'View' : 'Review'}}
                     </router-link>
+
+                    <div>
+                        <popper hover arrow>
+                            <badge v-if="hasPermission('ep-applications-manage') && item.submission.status.name == 'Under Chair Review'" :color="item.submission.judgements.length == 3 ? 'green' : 'gray' ">
+                                {{item.submission.judgements.length}}/3
+                            </badge>
+
+                            <template v-slot:content>
+                                <h3>Decisions:</h3>
+                                <table style="max-width: 350px" class="text-sm">
+                                    <tr v-for="j in item.submission.judgements" :key="j.id">
+                                        <th>{{j.person.name}}:</th>
+                                        <td>
+                                            <badge class="inline-block" :color="judgementColor(j)">{{j.decision}}</badge>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </popper>
+                    </div>
                 </div>
             </template>
         </data-table>
     </div>        
 </template>
+
+<style scoped>
+    table {
+        @apply border-none;
+    }
+    table td, table th {
+        @apply border-none text-left pl-0;
+    }
+</style>
