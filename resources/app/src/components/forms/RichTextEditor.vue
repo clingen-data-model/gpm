@@ -1,12 +1,17 @@
-<style lang="postcss">
+<style>
     /* Note: punting on more precise sizing b/c it's more complicated than it should be. */
     .ck-editor__editable, .ck-editor__editable_inline {
         min-width: 300px;
         height: 250px;
     }
-    .ck.ck-editor__main p {
-        @apply my-4;
+    .ck.ck-editor__main p, .ck.ck-editor__main ul {
+        @apply mb-4;
     }
+
+    .ck.ck-editor__main ul > li{
+        @apply list-disc ml-4;
+    }
+
     .ck.ck-editor__main a {
         @apply text-blue-600 underline;
     }
@@ -37,7 +42,7 @@ export default {
         return {
             editor: CKEditor,
             editorConfig: {
-                toolbar: ['bold', 'italic', '|', 'link'],
+                toolbar: ['bold', 'italic', 'list', '|', 'link'],
                 remove: ['Heading', "CKFinderUploadAdapter"],
                 width: '100%',
                 height: 200,
