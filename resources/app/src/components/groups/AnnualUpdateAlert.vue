@@ -45,7 +45,7 @@ export default {
         },
 
         isPending() {
-            return !(this.annualReview.completed_at)
+            return this.annualReview && !(this.annualReview.completed_at)
         },
         
         variant () {
@@ -81,13 +81,6 @@ export default {
                 .then(response => {
                     this.annualReview = response.data
                 })
-                .catch(error => {
-                    console.log(error.response)
-                    if (error.response.status == 404) {
-                        console.log('fuckety fuck fuck')
-                        return;
-                    }
-                });
             this.loading = false;
         }
     }
