@@ -1,5 +1,6 @@
 <script setup>
-    import {ref, computed, onMounted} from 'vue'
+    import {judgementColor} from '@/composables/judgement_utils.js'
+    import {ref, onMounted} from 'vue'
     import {useRouter} from 'vue-router'
     import {api} from '@/http'
 import {hasPermission} from '../../auth_utils';
@@ -67,12 +68,6 @@ import {hasPermission} from '../../auth_utils';
         if (!group.submission.judgements) return {};
         
         return group.submission.judgements.find(j => j.person_id == props.user.person.id);
-    }
-
-    const judgementColor = judgement => {
-        if (!judgement.decision) return 'gray';
-        const decToColor = {'approved': 'green', 'approve-after-revisions': 'blue', 'request-revisions': 'yellow'}
-        return decToColor[judgement.decision];
     }
 
     onMounted(() => {
