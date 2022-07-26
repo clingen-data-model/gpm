@@ -14,7 +14,7 @@
     .info {
         @apply bg-blue-200 text-blue-800 border-blue-500;
     },
-    .bland {
+    .bland, .gray {
         @apply bg-gray-100 border-gray-400;
     }
 </style>
