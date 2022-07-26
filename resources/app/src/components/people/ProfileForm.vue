@@ -1,7 +1,8 @@
 <template>
     <div>
         <h3>Profile</h3>
-        <div class="float-right">
+        <div class="float-right" v-if="(hasPermission('people-manage') || userIsPerson(person))"
+        >
             <profile-photo-form :person="person" style="width: 100px; height: 100px;" />
         </div>
         <data-form 
@@ -10,13 +11,6 @@
             :errors="errors"
         ></data-form>
         <hr class="my-4">
-
-        <!-- <h3>Demographics</h3>
-        <data-form 
-            :fields="demographicFields" 
-            v-model="profile" 
-            :errors="errors"
-        ></data-form> -->
 
         <button-row @submitted="save" @canceled="cancel()" submit-text="Save"></button-row>
     </div>
@@ -54,7 +48,7 @@ export default {
         fields () {
             let editableFields = [...this.profileFields];
             if (!this.hasPermission('people-manage') && !this.userIsPerson(this.person)) {
-                editableFields =  editableFields.filter(f => ['first_name', 'last_name', 'email'].includes(f.name));
+                editableFields =  editableFields.filter(f => ['first_name', 'last_name', 'email', 'credentials'].includes(f.name));
             }
             return editableFields;
 

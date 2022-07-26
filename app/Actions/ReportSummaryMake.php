@@ -4,7 +4,9 @@ namespace App\Actions;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
+use Lorisleiva\Actions\ActionRequest;
 use App\Modules\Person\Models\Country;
 use App\Modules\ExpertPanel\Models\Gene;
 use App\Modules\Group\Models\GroupMember;
@@ -13,7 +15,6 @@ use Lorisleiva\Actions\Concerns\AsCommand;
 use App\Actions\Utils\TransformArrayForCsv;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Lorisleiva\Actions\ActionRequest;
 
 class ReportSummaryMake extends ReportMakeAbstract
 {
@@ -23,11 +24,11 @@ class ReportSummaryMake extends ReportMakeAbstract
     {
         $vcepStepsSummary = $this->getVcepStepSummary();
         return [
-            ['VCEP genes', $this->getVcepGenesCount()],
-            ['GCEP genes', $this->getGcepGenesCount()],
-            ['Individuals in 1+ EPs', $this->getTotalEpMembersCount()],
-            ['Individuals in 1+ GCEPs', $this->getGcepMembersCount()],
-            ['Individuals in 1+ VCEps', $this->getVcepMembersCount()],
+            ['Groups', Group::count()],
+            ['Working Groups', Group::wg()->count()],
+            ['CDWGs', Group::cdwg()->count()],
+            ['VCEPs', Group::vcep()->count()],
+            ['GCEPS', Group::gcep()->count()],
             ['VCEP applications in definition', $vcepStepsSummary[1]],
             ['VCEP applications in draft specs', $vcepStepsSummary[2]],
             ['VCEP applications in pilot specs', $vcepStepsSummary[3]],
@@ -35,6 +36,14 @@ class ReportSummaryMake extends ReportMakeAbstract
             ['VCEPs approved', $this->getGcepApprovedCount()],
             ['GCEPs applying', $this->getGcepApplyingCount()],
             ['GCEPs approved', $this->getGcepApprovedCount()],
+            ['VCEP genes', $this->getVcepGenesCount()],
+            ['GCEP genes', $this->getGcepGenesCount()],
+            ['Individuals', Person::count()],
+            ['Individuals in 1+ WGs', $this->getWgMembersCount()],
+            ['Individuals in 1+ CDWGs', $this->getCdwgMembersCount()],
+            ['Individuals in 1+ EPs', $this->getTotalEpMembersCount()],
+            ['Individuals in 1+ GCEPs', $this->getGcepMembersCount()],
+            ['Individuals in 1+ VCEps', $this->getVcepMembersCount()],
             ['Countries represented', $this->getCountriesRepresentedCount()],
             ['Institutions represented', $this->getInstitutionsRepresentedCount()],
             ['People in 2+ EPs', $this->getPeopleInManyEpsCount()],
@@ -71,7 +80,27 @@ class ReportSummaryMake extends ReportMakeAbstract
 
         return $query->count();
     }
-    
+
+    private function getWgMembersCount(): int
+    {
+        $query = GroupMember::isActive()
+            ->distinct('person_id')
+            ->whereHas('group', function ($q) {
+                $q->wg();
+            });
+
+        return $query->count();
+    }
+
+    private function getCdwgMembersCount(): int
+    {
+        return GroupMember::isActive()
+            ->distinct('person_id')
+            ->whereHas('group', function ($q) {
+                $q->cdwg();
+            })->count();
+    }
+
     private function getGcepMembersCount(): int
     {
         return GroupMember::isActive()

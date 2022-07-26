@@ -31,6 +31,7 @@ import AccountCreationForm from '@/components/onboarding/AccountCreationForm.vue
 import ProfileForm from '@/components/onboarding/ProfileForm.vue'
 import Person from '@/domain/person'
 import Coi from '@/views/Coi'
+import {Group} from '../domain'
 
 const stepComponents = [
     InviteRedemptionForm,
@@ -88,8 +89,9 @@ export default {
     watch: {
         invite: {
             deep: true,
+            immediate: true,
             handler: function (to) {
-                if (to.inviter) {
+                if (to.inviter && new Group(to.inviter).isEp()) {
                     stepComponents.push(Coi)
                 }
             }
@@ -139,7 +141,7 @@ export default {
     }
 }
 </script>
-<style lang="postcss" scoped>
+<style scoped>
     .onboarding-container {
         @apply shadow-lg border px-4 py-8 mx-auto mt-12 border-gray-300;
         transition: all .3s;

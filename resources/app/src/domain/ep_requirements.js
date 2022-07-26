@@ -15,13 +15,16 @@ const isEmpty = (val) => {
             return true;
         case 'object':
             if (val === null) return true;
+
+            if (val.constructor.name == 'Date') return !(val);
+
             return (Object.keys(val).length === 0);
         case 'array':
             return (val.length === 0);
         case 'string':
             return (val.trim() === '');
         default:
-            return Boolean(val);
+            return !(val);
     }
 }
 
