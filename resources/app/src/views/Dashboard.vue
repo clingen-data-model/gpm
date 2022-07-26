@@ -8,11 +8,14 @@
         </h1>
 
         <NotificationList :user="user" />
+        
         <DashboardAlerts :user="user" />
+
         <ApplicationActivity :user="user"
-            v-if="hasAnyPermission(['ep-applications-manage', 'ep-applications-comment', 'ep-applications-approve'])" 
-            class="py-4 border-b"
+            v-if="hasAnyPermission(['ep-applications-manage', 'ep-applications-comment', 'ep-applications-approve'])"
+            class="screen-block"
         />
+        
         <tabs-container class="mt-8">
             <tab-item label="Your Groups">
                 <div class="well" v-if="!groups.length">You are not assigned to any groups.</div>
