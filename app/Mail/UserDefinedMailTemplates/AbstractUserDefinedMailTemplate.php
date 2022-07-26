@@ -15,9 +15,14 @@ Abstract Class AbstractUserDefinedMailTemplate
 
     public function renderBody(): string
     {
-        $view = View::make($this->getTemplate(), ['group' => $this->group]);
+        $view = View::make($this->getTemplate(), $this->getContext());
         
         return $view->render();
+    }
+
+    protected function getContext(): array
+    {
+        return ['group' => $this->group];
     }
 
     abstract public function renderSubject(): string;

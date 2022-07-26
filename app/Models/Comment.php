@@ -74,6 +74,42 @@ class Comment extends Model implements ContractsHasComments
         return $query->whereNull('resolved_at');
     }
 
+    public function scopeOfType($query, $type)
+    {
+        $typeId = $type;
+
+        if (is_iterable($type)) {
+            $query->whereIn('comment_type_id', $type);
+        }
+
+        if (is_object($type) && get_class($type) == CommentType::class) {
+            $typeId = $type->id;
+        }
+        $query->where('comment_type_id', $typeId);
+    }
+    
+
+    public function scopeRequiredRevision($query)
+    {
+        return $query->ofType(config('comments.types.required-revision.id'));
+    }
+    
+    public function scopeSuggestion($query)
+    {
+        return $query->ofType(config('comments.types.suggestion.id'));
+    }
+    
+    public function scopeInternalComment($query)
+    {
+        return $query->ofType(config('comments.types.internal-comment.id'));
+    }
+    
+    public function scopeForEp($query)
+    {
+        return $query->ofType([config('comments.types.suggestion.id'), config('comments.types.required-revision.id')]);
+    }
+    
+
     /**
      * ACCESSORS
      */
