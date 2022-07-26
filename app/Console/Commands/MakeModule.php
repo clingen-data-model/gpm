@@ -46,8 +46,6 @@ class MakeModule extends Command
     {
         $moduleName = $this->argument('moduleName');
 
-        $lcName = strtolower($moduleName);
-        $snakeName = Str::snake($moduleName);
         $studlyName = Str::studly($moduleName);
 
         if (!file_exists($this->modDir)) {
@@ -79,5 +77,4 @@ class MakeModule extends Command
         
         return 0;
     }
-
 }

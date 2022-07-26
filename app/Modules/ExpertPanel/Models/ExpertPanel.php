@@ -158,19 +158,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     }
     
 
-    // Domain methods
-    
-    public function addContact(Person $person)
-    {
-        $member = GroupMember::firstOrCreate([
-            'person_id' => $person->id,
-            'group_id' => $this->group_id,
-            'is_contact' => 1
-        ]);
-        $this->touch();
-    }
-
-
     // Relationships
     public function group(): BelongsTo
     {
@@ -406,9 +393,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $this->group->documents()
                 ->type(config('documents.types.scope.id'))
                 ->isVersion(1)
-                ->first()
-            ;
-        ;
+                ->first();
     }
 
     public function getFirstFinalDocumentAttribute()

@@ -88,7 +88,6 @@ class KafkaConsumer implements MessageConsumer
     {
         $this->kafkaConsumer->subscribe($this->topics);
     
-        $handlerChain = $this->getMessageHandlerChain();
         while (true) {
             $message = $this->kafkaConsumer->consume(10000);
             try {

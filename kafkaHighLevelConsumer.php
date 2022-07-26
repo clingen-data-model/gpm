@@ -1,5 +1,7 @@
 <?php
 
+use Exception;
+use RdKafka\Conf;
 use App\DataExchange\Exceptions\StreamingServiceException;
 
 require __DIR__ . '/vendor/autoload.php';
@@ -57,12 +59,11 @@ function rSortByKeys($array)
 
 function commitOffset($consumer, $topicPartition, $offset, $attempt = 0)
 {
-    if ($offset >= 0) {
+    if ($offset == 0) {
         echo "\nCommitting offset set to $offset for topic ".$topicPartition->getTopic()." on partition ".$topicPartition->getPartition()."...\n";
-    } else {
-        echo "\nDon't update offset.\n";
         return;
     }
+    echo "\nDon't update offset.\n";
     // $topicPartition = new RdKafka\TopicPartition($topic, 0, $offset);
     $topicPartition->setOffset($offset);
     $consumer->commit([$topicPartition]);
@@ -70,7 +71,7 @@ function commitOffset($consumer, $topicPartition, $offset, $attempt = 0)
 
 function configure($offset)
 {
-    $conf = new RdKafka\Conf();
+    $conf = new Conf();
 
     // Configure the group.id. All consumer with the same group.id will consume
     // different partitions.
@@ -101,15 +102,15 @@ function configure($offset)
                     commitOffset($consumer, $tp, $offset);
                 }
     
-            break;
+                break;
     
-             case RD_KAFKA_RESP_ERR__REVOKE_PARTITIONS:
+            case RD_KAFKA_RESP_ERR__REVOKE_PARTITIONS:
                 $assignments = $consumer->getAssignment();
-                 $consumer->assign(null);
-                 break;
+                $consumer->assign(null);
+                break;
     
-             default:
-                throw new \Exception($err);
+            default:
+                throw new Exception($err);
         }
     });
 

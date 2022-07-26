@@ -29,23 +29,25 @@ class PeopleController extends Controller
                     if (!$value) {
                         continue;
                     }
-                    if ($key == 'filterString') {
-                        $words = explode(' ', $value);
-                        foreach ($words as $word) {
-                            $query->Where('first_name', 'like', '%'.$word.'%', 'or')
-                                ->orWhere('last_name', 'like', '%'.$word.'%', 'or')
-                                ->orWhere('email', 'like', '%'.$word.'%', 'or');
-                        }
-                    } elseif ($key == 'first_name') {
-                        $query->where('first_name', 'like', '%'.$value.'%');
-                    } elseif ($key == 'last_name') {
-                        $query->where('last_name', 'like', '%'.$value.'%');
-                    } elseif ($key == 'email') {
-                        $query->where('email', 'like', '%'.$value.'%');
-                    } elseif (is_array($value)) {
-                        $query->whereIn($key, $value);
-                    } else {
-                        $query->where($key, $value);
+                    switch ($key) {
+                        case 'filterString':
+                            $words = explode(' ', $value);
+                            foreach ($words as $word) {
+                                $query->Where('first_name', 'like', '%'.$word.'%', 'or')
+                                    ->orWhere('last_name', 'like', '%'.$word.'%', 'or')
+                                    ->orWhere('email', 'like', '%'.$word.'%', 'or');
+                            }
+                            break;
+                        case 'first_name':
+                        case 'last_name':
+                        case 'email_name':
+                            $query->where($key, 'like', '%'.$value.'%');
+                            break;
+                        default:
+                            if (is_array($value)) {
+                                $query->whereIn($key, $value);
+                                continue 2;
+                            }
                     }
                 }
 
@@ -63,7 +65,7 @@ class PeopleController extends Controller
                 }
                 
 
-                return $query->orderBy($field, $dir);    
+                return $query->orderBy($field, $dir);
             }
         );
         

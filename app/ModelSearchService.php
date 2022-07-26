@@ -33,13 +33,9 @@ class ModelSearchService
         $query = $this->modelClass::query()
                     ->with($this->defaultWith);
 
-                    
-        if (!is_null($this->defaultSelect)) {
-            $query->select($this->defaultSelect);
-        } else {
-            $dummy = new $this->modelClass();
-            $query->select($dummy->getTable().'.*');
-        }
+
+        $query->select($this->getSelect());
+
         if (isset($params['sort'])) {
             $query = $this->sortQuery($query, $params['sort']);
         }
@@ -63,6 +59,15 @@ class ModelSearchService
         return $query;
     }
 
+    private function getSelect()
+    {
+        if (!is_null($this->defaultSelect)) {
+            return $this->defaultSelect;
+        }
+        $dummy = new $this->modelClass();
+        return $dummy->getTable().'.*';
+    }
+    
 
     private function addWhereClause($query, $where)
     {

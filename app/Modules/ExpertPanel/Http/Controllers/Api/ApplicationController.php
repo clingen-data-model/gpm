@@ -85,27 +85,26 @@ class ApplicationController extends Controller
             },
             sortFunction: function ($query, $field, $dir) {
                 if ($field == 'name') {
-                    $query->orderBy('long_base_name', $dir);
-                } elseif ($field == 'cdwg.name') {
+                    return $query->orderBy('long_base_name', $dir);
+                }
+                if ($field == 'cdwg.name') {
                     $query->leftJoin('groups', 'expert_panels.group_id', '=', 'groups.id');
                     $query->leftJoin('groups as parents', 'groups.parent_id', '=', 'parents.id');
-                    $query->orderBy('parents.name', $dir);
-                } elseif ($field == 'latestLogEntry.created_at') {
+                    return $query->orderBy('parents.name', $dir);
+                }
+                if ($field == 'latestLogEntry.created_at') {
                     $subQuery = DB::table('activity_log')
                                     ->select('subject_id', DB::raw('MAX(created_at) as latest_activity_at'))
                                     ->where('subject_type', ExpertPanel::class)
                                     ->groupBy('subject_id');
 
-                    $query->leftJoinSub($subQuery, 'latest_activity', function ($join) {
+                    return $query->leftJoinSub($subQuery, 'latest_activity', function ($join) {
                         $join->on('latest_activity.subject_id', '=', 'expert_panels.id');
                     })
                     ->addSelect('latest_activity.latest_activity_at as latest_activity_at')
                     ->orderBy('latest_activity_at', $dir);
-                } else {
-                    $query->orderBy($field, $dir);
                 }
-
-                return $query;
+                return $query->orderBy($field, $dir);
             }
         );
 

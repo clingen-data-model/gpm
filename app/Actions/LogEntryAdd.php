@@ -13,8 +13,6 @@ class LogEntryAdd
 {
     use AsAction;
 
-    private ExpertPanel  $expertPanel;
-
     /**
      * Execute the job.
      *

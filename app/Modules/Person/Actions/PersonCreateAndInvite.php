@@ -2,6 +2,7 @@
 
 namespace App\Modules\Person\Actions;
 
+use Exception;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Console\Command;
 use App\Modules\User\Models\User;
@@ -61,7 +62,7 @@ class PersonCreateAndInvite extends PersonCreate
             }
 
             return 0;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $command->error($e->getMessage());
             return 1;
         }
@@ -81,7 +82,7 @@ class PersonCreateAndInvite extends PersonCreate
             return true;
         }
 
-        throw new \Exception('You could not be authenticated.');
+        throw new Exception('You could not be authenticated.');
     }
 
     private function getUserName(Command $command)
@@ -106,7 +107,7 @@ class PersonCreateAndInvite extends PersonCreate
         );
         if ($validator->fails()) {
             $messages = implode('; ', $validator->getMessageBag()->all());
-            throw new \Exception($messages);
+            throw new Exception($messages);
         }
 
         return [$first_name, $last_name];
@@ -132,7 +133,7 @@ class PersonCreateAndInvite extends PersonCreate
 
         if ($validator->fails()) {
             $messages = implode('; ', $validator->getMessageBag()->all());
-            throw new \Exception($messages);
+            throw new Exception($messages);
         }
 
         return $email;

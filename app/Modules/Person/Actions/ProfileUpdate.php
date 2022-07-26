@@ -21,13 +21,11 @@ class ProfileUpdate
 
     public function handle(Person $person, array $data)
     {
-        $policy = new PersonPolicy();
         if (Auth::guest()) {
             abort(403);
         }
         $person->update($data);
 
-        $personUser = $person->user;
         if ($person->user_id) {
             $person->user->update([
                 'name' => $person->first_name. ' '.$person->last_name,
