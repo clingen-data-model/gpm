@@ -5,6 +5,7 @@ namespace Tests\Feature\End2End\Person\Profile;
 use DateTime;
 use Tests\TestCase;
 use App\Models\Permission;
+use App\Models\Role;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Validation\Rule;
 use App\Modules\User\Models\User;
@@ -14,6 +15,7 @@ use App\Modules\Person\Models\Gender;
 use App\Modules\Person\Models\Person;
 use App\Modules\Person\Models\Country;
 use App\Modules\Group\Actions\MemberAdd;
+use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Person\Models\Institution;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Person\Models\PrimaryOccupation;
@@ -118,6 +120,34 @@ class UpdateProfileTest extends TestCase
         $this->makeRequest()
             ->assertStatus(403);
     }
+
+    /**
+     * @test
+     */
+    public function a_coordinator_can_edit_some_profile_fields_of_members()
+    {
+        $group = Group::factory()->create();
+        MemberAdd::run($group, $this->person);
+
+        $role = Role::where('name', 'coordinator')->first();
+
+        $userPerson = Person::factory()->create(['user_id' => $this->user->id]);
+        $userMember = MemberAdd::run($group, $userPerson);
+        $action = new MemberAssignRole();
+        $action->handle($userMember, [$role]);
+
+        $this->makeRequest(['first_name' => 'butt', 'last_name' => 'munch', 'email' => 'buttmunch@turds.com', 'credentials' => 'FhD, LD', 'biography' => 'A real turd burgler'])
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('people', [
+            'first_name' => 'butt',
+            'last_name' => 'munch',
+            'email' => 'buttmunch@turds.com',
+            'credentials' => 'FhD, LD',
+            'biography' => null,
+        ]);
+    }
+    
 
     /**
      * @test
