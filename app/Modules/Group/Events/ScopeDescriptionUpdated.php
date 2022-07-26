@@ -20,7 +20,7 @@ class ScopeDescriptionUpdated extends GroupEvent
      *
      * @return void
      */
-    public function __construct(public Group $group, public string $description)
+    public function __construct(public Group $group, public ?string $description)
     {
         //
     }
