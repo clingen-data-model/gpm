@@ -15,9 +15,10 @@
     const commentManager = inject('commentManager');
     const additionalComments = ref();
     
-    const showModal = ref(true)
+    const showModal = ref(false)
     const initSendToChairs = () => {
-        commentManager.getComments();
+
+        commentManager.value.getComments();
         showModal.value = true
     }
     const sendToChairs = async () => {
