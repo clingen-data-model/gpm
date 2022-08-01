@@ -25,16 +25,16 @@
 
 <template>
     <div>
-        <static-alert 
-            variant="bland" 
+        <static-alert
+            variant="bland"
             v-if="hasPendingSubmission"
             class="mb-4 border-blue-700"
         >
             <h3 class="border-b pb-1 mb-1">Submission Info:</h3>
             <ul class="list-disc pl-4 flex flex-col space-y-1">
                 <li>
-                    <strong>Submitted</strong> by <strong>{{group.expert_panel.pendingSubmission.submitter.name}}</strong> on 
-                    <strong>{{formatDate(group.expert_panel.pendingSubmission.created_at)}}</strong> 
+                    <strong>Submitted</strong> by <strong>{{group.expert_panel.pendingSubmission.submitter.name}}</strong> on
+                    <strong>{{formatDate(group.expert_panel.pendingSubmission.created_at)}}</strong>
                     <span v-if="group.expert_panel.pendingSubmission.notes">
                         with the following notes:
                     </span>
