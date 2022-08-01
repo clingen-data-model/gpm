@@ -1,13 +1,23 @@
 <script setup>
-    import { computed, provide} from 'vue'
-    import {useStore} from 'vuex'
-    import setupReviewData from '@/composables/setup_review_data.js'
+    import {useStore} from 'vuex';
+    import { computed} from 'vue'
     import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
+    import { formatDate } from '@/date_utils'
 
     const store = useStore();
-    const {group, expertPanel, members, isGcep, isVcep} = setupReviewData(store);
-    provide('group', group)
-
+    const group = computed(() => store.getters['groups/currentItemOrNew'])
+    const expertPanel = computed(() => group.value.expert_panel);
+    const members = computed( () => {
+        return group.value.members.map(m => ({
+            id: m.id,
+            name: m.person.name,
+            institution: m.person.institution ? m.person.institution.name : null,
+            credentials: m.person.credentials,
+            expertise: m.expertise,
+            roles: m.roles.map(r => r.name).join(', '),
+            coi_completed: formatDate(m.coi_last_completed)
+        }));
+    });
     const basicInfo = computed(() => {
         return {
             type: group.value.type.name ? group.value.type.name.toUpperCase() : '',
@@ -30,7 +40,7 @@
         <ReviewSection title="Membership" name="membership">
             <simple-table :data="members" key-by="id" class="print:text-xs text-sm" />
 
-            <div v-if="isVcep" class="mt-6">
+            <div v-if="group.isVcep()" class="mt-6">
                 <h4>Expertise of VCEP members</h4>
                 <blockquote>
                     <markdown-block :markdown="expertPanel.membership_description" />
@@ -40,11 +50,11 @@
         <ReviewSection title="Scope" name="scope">
             <h3>Genes</h3>
             <div class="mb-6">
-                <p v-if="isGcep">{{expertPanel.genes.map(g => g.gene_symbol).join(', ')}}</p>
-                <simple-table 
-                    v-if="isVcep" 
-                    :data="expertPanel.genes.map(g => ({id: g.id,gene: g.gene_symbol, disease: g.disease_name}))" :key-by="'id'" 
-                    :hide-columns="['id']" 
+                <p v-if="group.isGcep()">{{expertPanel.genes.map(g => g.gene_symbol).join(', ')}}</p>
+                <simple-table
+                    v-if="group.isVcep()"
+                    :data="expertPanel.genes.map(g => ({id: g.id,gene: g.gene_symbol, disease: g.disease_name}))" :key-by="'id'"
+                    :hide-columns="['id']"
                 />
             </div>
 
@@ -52,7 +62,7 @@
             <blockquote><markdown-block :markdown="expertPanel.scope_description" /></blockquote>
         </ReviewSection>
 
-        <ReviewSection v-if="isGcep" title="Plans" name="plans">
+        <ReviewSection v-if="group.isGcep()" title="Plans" name="plans">
             <dictionary-row label="Selected protocol" label-class="w-48 font-bold">
                 <div class="flex-none">
                     {{expertPanel.curation_review_protocol ? titleCase(expertPanel.curation_review_protocol.full_name) : null}}
@@ -63,7 +73,7 @@
             </dictionary-row>
         </ReviewSection>
 
-        <ReviewSection v-if="isGcep" title="Attestations" name="attestations">
+        <ReviewSection v-if="group.isGcep()" title="Attestations" name="attestations">
             <dictionary-row label="GCEP Attestation Signed" label-class="w-52 font-bold">
                 {{formatDate(expertPanel.gcep_attestation_date)}}
             </dictionary-row>
@@ -75,9 +85,9 @@
             </dictionary-row>
         </ReviewSection>
 
-        <ReviewSection v-if="isVcep" title="Attestations" name="attestations">
-            <dictionary-row 
-                label="Reanalysis and Descrepency Resolution Attestation Signed" 
+        <ReviewSection v-if="group.isVcep()" title="Attestations" name="attestations">
+            <dictionary-row
+                label="Reanalysis and Descrepency Resolution Attestation Signed"
                 label-class="w-52 font-bold"
             >
                 {{formatDate(expertPanel.reanalysis_attestation_date)}}

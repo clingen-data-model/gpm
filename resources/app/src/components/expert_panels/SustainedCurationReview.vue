@@ -1,12 +1,12 @@
 <script setup>
     import EvidenceSummaryList from '@/components/expert_panels/EvidenceSummaryList.vue'
-    import { watch } from 'vue'
+    import {computed, watch } from 'vue'
     import {useStore} from 'vuex'
-    import setupReviewData from '@/composables/setup_review_data.js'
     import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
 
     const store = useStore();
-    const {group, expertPanel} = setupReviewData(store);
+    const group = computed(() => store.getters['groups/currentItemOrNew'])
+    const expertPanel = computed(() => group.value.expert_panel)
 
     watch(() => group.value, (to, from) => {
         if ((to.id && (!from || to.id != from.id))) {
@@ -17,7 +17,11 @@
 
 <template>
     <div class="application-review p-2 bg-gray-100">
-            <ReviewSection v-if="expertPanel.has_approved_pilot" title="Plans for Ongoing Review and Descrepency Resolution">
+            <ReviewSection
+                v-if="expertPanel.has_approved_pilot"
+                title="Plans for Ongoing Review and Descrepency Resolution"
+                name="discrepency-review"
+            >
                 <dictionary-row label="Selected protocol" labelWidthClass="w-48 font-bold">
                     <div class="w-full">
                         {{expertPanel.curation_review_protocol ? titleCase(expertPanel.curation_review_protocol.full_name) : null}}
@@ -31,11 +35,17 @@
                 </dictionary-row>
             </ReviewSection>
 
-            <ReviewSection v-if="expertPanel.has_approved_pilot" title="Evidence Summaries">
+            <ReviewSection v-if="expertPanel.has_approved_pilot"
+                title="Evidence Summaries"
+                name="evidence-summaries"
+            >
                 <evidence-summary-list :readonly="true" />
             </ReviewSection>
 
-            <ReviewSection v-if="expertPanel.has_approved_pilot" title="Core Approval Member, Trained Biocurator, and Biocurator Trainer Designation">
+            <ReviewSection v-if="expertPanel.has_approved_pilot"
+                title="Core Approval Member, Trained Biocurator, and Biocurator Trainer Designation"
+                name="member-designation"
+            >
                 <dictionary-row label="Core Approval Members" labelWidthClass="w-48 font-bold">
                     {{this.group.coreApprovalMembers.map(m => m.person.name).join(', ')}}
                 </dictionary-row>

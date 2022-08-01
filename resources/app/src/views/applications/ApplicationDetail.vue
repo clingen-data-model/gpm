@@ -22,9 +22,12 @@
 
     const loading = ref(false);
     const group = computed(() => store.getters['groups/currentItemOrNew'])
+    provide('group', group);
+
     const applicationView = shallowRef(ApplicationReview);
     const latestSubmission = ref({});
     provide('latestSubmission', latestSubmission);
+
     const getLatestSubmission = () => {
         api.get(`/api/groups/${group.value.uuid}/application/latest-submission`)
             .then(rsp => latestSubmission.value = rsp.data)
@@ -42,16 +45,16 @@
         loading.value = false;
     };
 
-    watch( 
-        () => props.uuid, 
-        async (to, from) => { 
+    watch(
+        () => props.uuid,
+        async (to, from) => {
             if ((to && (!from || to != from))) {
                 await getGroup();
                 commentManager.value = commentManagerFactory('App\\Modules\\Group\\Models\\Group', group.value.id)
                 commentManager.value.getComments();
 
             }
-        }, 
+        },
         { immediate: true }
     );
 
@@ -66,10 +69,10 @@
     })
 </script>
 <template>
-    <component :is="applicationView" 
-        :loading="loading" 
-        @updated="getGroup" 
-        @saved="getLatestSubmission" 
+    <component :is="applicationView"
+        :loading="loading"
+        @updated="getGroup"
+        @saved="getLatestSubmission"
         @deleted="getLatestSubmission"
     />
     <div v-show="loading">Loading&hellip;</div>
