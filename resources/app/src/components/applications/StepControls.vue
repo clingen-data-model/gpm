@@ -1,14 +1,14 @@
 <script setup>
 import {computed} from 'vue'
 import {useStore} from 'vuex';
-import SubmissionAlert from './StepSubmissionAlert.vue';
+import SubmissionInfo from './SubmissionInfo.vue';
 import StepApproveControl from './StepApproveControl.vue'
 import StepSendToChairsControl from './StepSendToChairsControl'
 import StepRequestRevisionsControl from './StepRequestRevisionsControl'
 
 const store = useStore()
 
-defineProps({    
+defineProps({
     step: {
         type: Number,
         required: true
@@ -26,25 +26,25 @@ const group = computed(() => store.getters['groups/currentItemOrNew'])
 
 <template>
     <div class="border-t border-b py-4 mb-6">
-        <submission-alert class="mb-4" :group="group"></submission-alert>
+        <SubmissionInfo class="mb-4" :group="group"></SubmissionInfo>
         <div class="flex w-full space-x-4">
             <StepApproveControl
                 class="flex-1"
-                :group="group" 
-                :step="step" 
+                :group="group"
+                :step="step"
                 @stepApproved="() => {$emit('stepApproved'); $emit('updated')}"
             >
                 {{approveLabel}}
             </StepApproveControl>
 
-            <StepSendToChairsControl             
+            <StepSendToChairsControl
                 v-if="group.expert_panel.hasPendingSubmissionForCurrentStep"
                 class="flex-1"
-                :group="group" 
-                @sentToChairs="() => {$emit('sentToChairs'); $emit('updated'); }" 
+                :group="group"
+                @sentToChairs="() => {$emit('sentToChairs'); $emit('updated'); }"
             />
 
-            <StepRequestRevisionsControl 
+            <StepRequestRevisionsControl
                 v-if="group.expert_panel.hasPendingSubmissionForCurrentStep"
                 class="flex-1"
                 :group="group"
