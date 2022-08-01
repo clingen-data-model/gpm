@@ -19,7 +19,7 @@ export default (subjectType, subjectId) => {
     const findCommentIndex = (comment) => {
         return comments.value.findIndex(c => c.id == comment.id)
     }
-    
+
     const getComments = async () => {
         comments.value = await commentRepository.query({where: {
             subject_type: subjectType,
