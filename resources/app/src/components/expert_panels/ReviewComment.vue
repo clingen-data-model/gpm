@@ -1,5 +1,5 @@
 <script setup>
-    import {ref, computed} from 'vue'
+    import {ref, computed, onMounted} from 'vue'
     import {useStore} from 'vuex'
     import ReviewCommentForm from './ReviewCommentForm.vue'
     import commentFormFactory from '@/forms/comment_form.js'
@@ -21,11 +21,9 @@
             required: true
         }
     });
+    const emits = defineEmits(['created', 'updated', 'resolved', 'unresolved', 'deleted']);
 
     const replyManager = ref(commentManagerFactory('App\\Models\\Comment', props.comment.id))
-
-
-    const emits = defineEmits(['created', 'updated', 'resolved', 'unresolved', 'deleted']);
 
     const showEditForm = ref(false);
     const showConfirmDelete = ref(false);
@@ -40,7 +38,7 @@
             case 'suggestion':
                 return 'blue'
             case 'internal comment':
-                return 'gray' 
+                return 'gray'
             default:
                 null
                 break;
@@ -77,24 +75,38 @@
     const showReplyList = ref(false);
     const toggleReplies = async () => {
         if (!showReplyList.value) {
-            await replyManager.value.getComments();
-            console.log(replyManager.value.comments)
+            showReplies();
         }
         showReplyList.value = !showReplyList.value;
     }
 
+    const showReplies = () => {
+        replyManager.value.getComments()
+            .then(rsp => {
+                showReplyList.value = true;
+                return rsp;
+            });
+    }
+
     const showReplyForm = ref(false);
     const initReply = () => showReplyForm.value = true;
-    const handleNewReply = (comment) => {
+    const handleNewReply = (newReply) => {
         const commentClone = {...props.comment};
         commentClone.comments_count += 1;
         props.commentManager.updateComment(commentClone);
+        // showReplies();
+        showReplyList.value = true;
+        showReplyForm.value = false;
     }
     const handleReplyRemoved = (comment) => {
         const commentClone = {...props.comment};
         commentClone.comments_count -= 1;
         props.commentManager.updateComment(commentClone);
     }
+
+    onMounted(() => {
+        replyManager.value.getComments();
+    })
 
     const canEdit = computed(() => hasPermission('comments-manage') || store.getters.currentUser.person.id == props.comment.creator_id)
 </script>
@@ -108,9 +120,9 @@
                         <badge class="block" :color="getVariant(comment)" size="xxs">
                             {{comment.type && titleCase(comment.type.name)}}
                         </badge>
-                        <icon-checkmark 
-                            class="text-green-500" 
-                            v-if="comment.is_resolved" 
+                        <icon-checkmark
+                            class="text-green-500"
+                            v-if="comment.is_resolved"
                             title="Resolved"
                         />
                     </div>
@@ -122,25 +134,25 @@
                         </dropdown-menu>
                     </div>
                 </div>
-    
+
                 <markdown-block :markdown="comment.content" class="text-sm" />
                 <button class="link" @click="initReply"><icon-reply class="inline-block" />Reply</button>
 
-    
+
                 <static-alert variant="danger" v-show="showConfirmDelete" class="">
                     Continue with delete?
-                    <button-row 
+                    <button-row
                         size="xs"
-                        submit-text="Yes, delete" 
+                        submit-text="Yes, delete"
                         @submitted="deleteComment"
                         @canceled="showConfirmDelete=false"
                         submitVariant="red"
                     ></button-row>
                 </static-alert>
             </div>
-            <ReviewCommentForm v-else 
-                @canceled="showEditForm = false" 
-                @saved="showEditForm = false" 
+            <ReviewCommentForm v-else
+                @canceled="showEditForm = false"
+                @saved="showEditForm = false"
                 :comment="comment"
                 :commentManager="commentManager"
             />
@@ -148,19 +160,21 @@
 
 
         <div class="replies ml-1">
-            <ul class="" v-if="showReplyList">
-                <li v-for="reply in replyManager.comments" :key="reply.id" class="border-l-2 mt-2 px-2 py-1 bg-gray-100 bg-opacity-50">
-                    <ReviewComment :comment="reply" :commentManager="replyManager" @deleted="handleReplyRemoved"></ReviewComment>
+            <ul v-if="showReplyList">
+                <li v-for="reply in replyManager.comments" :key="reply.id"
+                    class="border-l-2 mt-2 px-2 py-1 bg-gray-100 bg-opacity-50"
+                >
+                    <ReviewComment :comment="reply" :commentManager="replyManager" @deleted="handleReplyRemoved" />
                 </li>
             </ul>
             <button class="link text-sm" v-if="comment.comments_count > 0" @click="toggleReplies">
-                {{showReplyList ? 'Hide' : 'Show'}} 
-                {{comment.comments_count}} 
+                {{showReplyList ? 'Hide' : 'Show'}}
+                {{comment.comments_count}}
                 {{comment.comments_count > 1 ? 'replies' : 'reply'}}
             </button>
             <div v-show="showReplyForm" class="border-l-2 mt-2 px-2 py-1 bg-gray-100 bg-opacity-50">
                 <strong>Your Reply</strong>
-                <ReviewCommentForm 
+                <ReviewCommentForm
                     subjectType="App\Models\Comment"
                     :subjectId="comment.id"
                     :onlyInternal="true"
