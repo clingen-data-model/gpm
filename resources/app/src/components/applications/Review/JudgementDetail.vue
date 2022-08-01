@@ -61,13 +61,12 @@
             <button class="btn btn-xs" @click="initDelete">Delete</button>
         </div>
 
-        <pre>{{userJudgement}}</pre>
         <teleport to='body'>
             <modal-dialog v-model="showJudgementDialog" title="Update Your Decision">
                 <JudgementForm
+                    v-model="userJudgement"
                     @saved="showJudgementDialog = false"
                     @canceled="showJudgementDialog = false"
-                    v-model="userJudgement"
                 />
             </modal-dialog>
 
