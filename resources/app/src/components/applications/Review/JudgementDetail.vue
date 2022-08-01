@@ -4,7 +4,7 @@
     import { api } from '@/http'
     import { titleCase } from '@/utils';
     import JudgementForm from './JudgementForm.vue';
-   
+
     const emits = defineEmits(['deleted']);
     const store = useStore();
     const latestSubmission = inject('latestSubmission')
@@ -50,20 +50,21 @@
 <template>
     <div v-if="userJudgement">
         <h3>
-            Your Decision: 
+            Your Decision:
             <badge :color="badgeVariant" size="lg">{{titleCase(userJudgement.decision)}}</badge>
         </h3>
         <div class="mt-2" v-if="userJudgement.notes">
             <p><strong>Notes: </strong>{{userJudgement.notes}}</p>
         </div>
-        <div class="flex space-x-2">            
+        <div class="flex space-x-2">
             <button class="btn btn-xs" @click="initUpdate">Update</button>
             <button class="btn btn-xs" @click="initDelete">Delete</button>
         </div>
 
+        <pre>{{userJudgement}}</pre>
         <teleport to='body'>
             <modal-dialog v-model="showJudgementDialog" title="Update Your Decision">
-                <JudgementForm 
+                <JudgementForm
                     @saved="showJudgementDialog = false"
                     @canceled="showJudgementDialog = false"
                     v-model="userJudgement"
@@ -71,12 +72,12 @@
             </modal-dialog>
 
             <modal-dialog v-model="showDeleteDialog" title="Delete your decision for this applicaiton">
-                You are about to delete your decision for this applicaiton.  
-                This cannot be undone.  
+                You are about to delete your decision for this applicaiton.
+                This cannot be undone.
                 Are you sure you want to continue?
-                
+
                 <template v-slot:footer>
-                    <button-row submit-text="Yes, Delete" @click="deleteJudgement"></button-row>
+                    <button-row submit-text="Yes, Delete" @submitted="deleteJudgement" @canceled="showDeleteDialog = false"></button-row>
                 </template>
             </modal-dialog>
         </teleport>
