@@ -23,13 +23,13 @@ class ApplicationSendToChairsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
-        (new NextActionTypesTableSeeder)->run();
-        (new NextActionAssigneesTableSeeder)->run();
-        
+        (new NextActionTypesTableSeeder())->run();
+        (new NextActionAssigneesTableSeeder())->run();
+
         $this->user = $this->setupUser(permissions: ['ep-applications-manage']);
         Sanctum::actingAs($this->user);
         $this->expertPanel = ExpertPanel::factory()->vcep()->create();
@@ -51,6 +51,9 @@ class ApplicationSendToChairsTest extends TestCase
      */
     public function next_action_assigned_to_oc_chairs()
     {
+        $this->runSeeder(SubmissionTypeAndStatusSeeder::class);
+        $person = Person::factory()->create();
+        $submission = app()->make(ApplicationSubmitStep::class)->handle($this->group, $person);
         $this->makeRequest()
             ->assertStatus(200);
 
@@ -67,6 +70,9 @@ class ApplicationSendToChairsTest extends TestCase
      */
     public function logs_that_chairs_sent_application()
     {
+        $this->runSeeder(SubmissionTypeAndStatusSeeder::class);
+        $person = Person::factory()->create();
+        $submission = app()->make(ApplicationSubmitStep::class)->handle($this->group, $person);
         $comments = $this->setupComments();
         $this->makeRequest()
             ->assertStatus(200);
@@ -77,12 +83,12 @@ class ApplicationSendToChairsTest extends TestCase
             description: 'Sent to CDWG OC Chairs: Step '.$this->expertPanel->current_step.' application',
             properties: [
                 'additional_comments' =>  'These are my additional notes.',
-                'comment_ids' => $comments->filter(fn($c) => is_null($c->resolved_at))->pluck('id'),
+                'comment_ids' => $comments->filter(fn ($c) => is_null($c->resolved_at))->pluck('id'),
                 'step' => $this->expertPanel->current_step
             ]
         );
     }
-    
+
     /**
      * @test
      */
@@ -98,9 +104,27 @@ class ApplicationSendToChairsTest extends TestCase
             'submission_status_id' => config('submissions.statuses.under-chair-review.id')
         ]);
     }
-    
-    
-    
+
+    /**
+     * @test
+     */
+    public function sent_to_chairs_at_timestamp_set()
+    {
+        Carbon::setTestNow('2022-08-01');
+        $this->runSeeder(SubmissionTypeAndStatusSeeder::class);
+        $person = Person::factory()->create();
+        $submission = app()->make(ApplicationSubmitStep::class)->handle($this->group, $person);
+        $this->makeRequest();
+
+        $this->assertDatabaseHas('submissions', [
+            'id' => $submission->id,
+            'sent_to_chairs_at' => Carbon::now()
+        ]);
+    }
+
+
+
+
     private function makeRequest(): TestResponse
     {
         return $this->json('POST', '/api/groups/'.$this->group->uuid.'/command', [
@@ -108,37 +132,36 @@ class ApplicationSendToChairsTest extends TestCase
             'additionalComments' => 'These are my additional notes.'
         ]);
     }
-    
+
     private function setupComments(): Collection
     {
-        (new CommentTypesSeeder)->run();
+        (new CommentTypesSeeder())->run();
         return collect([
             Comment::factory()->create([
-                'subject_type' => get_class($this->group), 
-                'subject_id' => $this->group->id, 
+                'subject_type' => get_class($this->group),
+                'subject_id' => $this->group->id,
                 'comment_type_id' => config('comments.types.internal-comment.id'),
                 'metadata' => ['section' => 'membership'],
             ]),
             Comment::factory()->create([
-                'subject_type' => get_class($this->group), 
-                'subject_id' => $this->group->id, 
+                'subject_type' => get_class($this->group),
+                'subject_id' => $this->group->id,
                 'comment_type_id' => config('comments.types.suggestion.id'),
                 'metadata' => ['section' => 'scope'],
             ]),
             Comment::factory()->create([
-                'subject_type' => get_class($this->group), 
-                'subject_id' => $this->group->id, 
+                'subject_type' => get_class($this->group),
+                'subject_id' => $this->group->id,
                 'comment_type_id' => config('comments.types.required-revision.id'),
                 'metadata' => ['section' => 'scope'],
             ]),
             Comment::factory()->create([
-                'subject_type' => get_class($this->group), 
-                'subject_id' => $this->group->id, 
+                'subject_type' => get_class($this->group),
+                'subject_id' => $this->group->id,
                 'comment_type_id' => config('comments.types.required-revision.id'),
                 'metadata' => ['section' => 'attestations'],
                 'resolved_at' => Carbon::now()
             ]),
         ]);
     }
-    
 }
