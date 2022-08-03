@@ -1,3 +1,41 @@
+<script setup>
+import {computed, provide, ref, watch, defineProps} from 'vue'
+import {useStore} from 'vuex'
+import DefinitionReview from '@/components/expert_panels/DefinitionReview.vue'
+import SustainedCurationReview from '@/components/expert_panels/SustainedCurationReview.vue'
+import SpecificationsSection from '@/components/expert_panels/SpecificationsSection'
+import commentManagerFactory from '../../composables/comment_manager'
+
+const props = defineProps({
+    uuid: {
+        type: String,
+        required: true
+    }
+});
+const store = useStore();
+
+const commentManager = ref(commentManagerFactory('App\\Modules\\Group\\Models\\Group', 0));
+provide('commentManager', null)
+
+const group = computed(() => store.getters['groups/currentItemOrNew'])
+
+const loadGroup = async (uuid) => {
+    await store.dispatch('groups/findAndSetCurrent', uuid);
+    store.dispatch('groups/getMembers', group.value);
+    store.dispatch('groups/getMembers', group.value);
+    store.dispatch('groups/getGenes', group.value);
+
+}
+
+watch(() => props.uuid, (to) => {
+    loadGroup(to);
+}, {immediate: true});
+
+
+const print = () => {
+    window.print();
+}
+</script>
 <template>
     <div class="application-review">
         <div class="print:hidden">
@@ -23,10 +61,10 @@
         </div>
 
         <div class="application-step print:hidden">
-            <h1 v-if="expertPanel.definition_is_approved" class="print:hidden" >
+            <h1 v-if="group.expert_panel.definition_is_approved" class="print:hidden" >
                 {{group.displayName}} - Specifications and Pilot
             </h1>
-            <section v-if="expertPanel.definition_is_approved" class="print:hidden" >
+            <section v-if="group.expert_panel.definition_is_approved" class="print:hidden" >
                 <specifications-section :doc-type-id="[3,4,7]" :readonly="true" />
             </section>
         </div>
@@ -36,7 +74,7 @@
         </div>
 
         <div class="application-step  page-break">
-            <h1 v-if="expertPanel.has_approved_pilot">
+            <h1 v-if="group.expert_panel.has_approved_pilot">
                 {{group.displayName}} - Sustained Curation
             </h1>
 
@@ -44,43 +82,7 @@
         </div>
     </div>
 </template>
-<script>
-import DefinitionReview from '@/components/expert_panels/DefinitionReview.vue'
-import SustainedCurationReview from '@/components/expert_panels/SustainedCurationReview.vue'
-import ApplicationStepReview from '@/components/expert_panels/ApplicationStepReview.vue'
-import SpecificationsSection from '@/components/expert_panels/SpecificationsSection'
-
-export default {
-    name: 'ApplicationResponse',
-    extends: ApplicationStepReview,
-    components: {
-        DefinitionReview,
-        SustainedCurationReview,
-        SpecificationsSection
-    },
-    props: {
-        uuid: {
-            type: String,
-            required: true
-        }
-    },
-    watch: {
-        uuid: {
-            immediate: true,
-            handler: async function (to) {
-                await this.$store.dispatch('groups/findAndSetCurrent', to);
-                this.$store.dispatch('groups/getMembers', this.group);
-            }
-        }
-    },
-    methods: {
-        print () {
-            window.print();
-        }
-    }
-}
-</script>
-<style lang="postcss">
+<style>
     .application-review {
         max-width: 800px;
     }

@@ -19,8 +19,11 @@
 
     const showCommentForm = ref(false);
 
-    const showComments = ref(true)
+    const showComments = ref(false)
     const sectionComments = computed(() => {
+        if (!commentManager) {
+            return [];
+        }
         return commentManager.value.comments.filter(c => {
             if (c.metadata) {
                 return c.metadata.section == props.name
@@ -30,6 +33,9 @@
     })
 
     const countColor = computed(() => {
+        if (!commentManager) {
+            return null;
+        }
         if (sectionComments.value.find(c => c.type.name == 'required revision')) {
             return 'yellow'
         }
@@ -45,18 +51,18 @@
         <div class="overflow-x-auto flex-grow" :class="{'lg:w-3/5': showComments}">
             <header class="flex justify-between items-start space-x-4">
                 <h2 class="flex-grow" :class="{'lg:w-3/5': !showComments}">{{title}}</h2>
-                <div class="flex justify-between items-center lg:w-2/5 px-2 py-1 pb-0 bg-gray-100 rounded-lg" v-show="!showComments">
+                <div class="flex justify-between items-center lg:w-2/5 px-2 py-1 pb-0 bg-gray-100 rounded-lg" v-show="!showComments"  v-if="commentManager">
                     <h3>
-                        <icon-cheveron-right class="inline cursor-pointer" @click="showComments = true" />
-                        Comments 
+                        <icon-cheveron-right class="inline cursor-pointer" @click="showComments = true"/>
+                        Comments
                         <badge :color="countColor">{{sectionComments.length}}</badge>
                     </h3>
                 </div>
 
             </header>
             <div>
-                <div> 
-                    <slot></slot> 
+                <div>
+                    <slot></slot>
                 </div>
             </div>
         </div>
@@ -75,7 +81,7 @@
             </ul>
             <div class="bg-white mt-2 p-2">
                 <ReviewCommentForm v-if="showCommentForm"
-                    :section="name" 
+                    :section="name"
                     :commentManager="commentManager"
                     @saved="showCommentForm = false"
                     @canceled="showCommentForm = false"
