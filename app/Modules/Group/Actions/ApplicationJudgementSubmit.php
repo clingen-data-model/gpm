@@ -8,6 +8,7 @@ use App\Modules\Person\Models\Person;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
+use App\Modules\Group\Events\ApplicationJudgementCreated;
 
 class ApplicationJudgementSubmit
 {
@@ -15,11 +16,15 @@ class ApplicationJudgementSubmit
 
     public function handle(Group $group, Person $person, string $decision, ?string $notes = null)
     {
-        return $group->latestPendingSubmission->judgements()->create([
+        $judgement = $group->latestPendingSubmission->judgements()->create([
             'decision' => $decision,
             'notes' => $notes,
             'person_id' => $person->id
         ]);
+
+        event(new ApplicationJudgementCreated($judgement));
+
+        return $judgement;
     }
 
     public function asController(ActionRequest $request, Group $group)
@@ -40,7 +45,7 @@ class ApplicationJudgementSubmit
             throw ValidationException::withMessages(['group' => ['This group does not have a pending submission.']]);
         }
     }
-    
+
 
     public function authorize(ActionRequest $request):bool
     {

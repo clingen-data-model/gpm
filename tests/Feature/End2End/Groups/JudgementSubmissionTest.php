@@ -45,9 +45,8 @@ class JudgementSubmissionTest extends JudgementTest
             ->assertValidationErrors([
                 'group' => ['This group does not have a pending submission.']
             ]);
-        
+
     }
-    
 
     /**
      * @test
@@ -70,6 +69,21 @@ class JudgementSubmissionTest extends JudgementTest
             'person_id' => $this->user->person->id
         ]);
     }
+
+    /**
+     * @test
+     */
+    public function logs_judgement_submitted_activity()
+    {
+        $this->makeRequest()
+            ->assertStatus(201);
+
+        $this->assertLoggedActivity(
+            subject: $this->expertPanel->group,
+            description: $this->user->person->name.' made a decision on the submission: request-revisions'
+        );
+    }
+
 
     private function makeRequest($data = null): TestResponse
     {
