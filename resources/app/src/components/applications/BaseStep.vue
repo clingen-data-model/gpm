@@ -16,7 +16,7 @@ export default {
     },
     props: {
         title: {
-            type: String, 
+            type: String,
             required: false,
             default: 'YOU SHOULD SET A TITLE'
         },
@@ -116,10 +116,10 @@ export default {
         async updateApprovalDate() {
             try {
                 await this.$store.dispatch(
-                    'groups/updateApprovalDate', 
+                    'groups/updateApprovalDate',
                     {
-                        group: this.group, 
-                        dateApproved: this.newApprovalDate, 
+                        group: this.group,
+                        dateApproved: this.newApprovalDate,
                         step: this.step
                     }
                 );
@@ -140,7 +140,7 @@ export default {
     <div class="overflow-x-auto">
         <div class="mb-6">
             <step-controls v-if="!application.stepIsApproved(step)"
-                :step="step" 
+                :step="step"
                 @updated="handleUpdated"
             />
             <div class="flex justify-between text-lg font-bold pb-2 mb-2 border-b">
