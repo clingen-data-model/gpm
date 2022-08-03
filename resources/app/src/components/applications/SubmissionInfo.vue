@@ -1,5 +1,5 @@
 <script setup>
-    import {computed, inject} from 'vue'
+    import {computed, inject, onMounted, ref} from 'vue'
     import {formatDate} from '@/date_utils.js'
     import {judgementColor} from '@/composables/judgement_utils.js'
 
@@ -7,53 +7,92 @@
         group: {
             type: Object,
             required: true
+        },
+        step: {
+            type: Number,
+            required: true
         }
     })
 
-    const latestSubmission = inject('latestSubmission')
-
-    const hasPendingSubmission = computed(() => props.group.expert_panel.hasPendingSubmissionForCurrentStep);
-    const pendingSubmission = computed(() => props.group.expert_panel.pendingSubmission);
-
-    const judgements = computed(() => {
-        if (!latestSubmission || !latestSubmission.judgements) {
-            return []
-        }
-        return latestSubmission.judgements
+    const stepHasBeenSubmitted = computed(() => {
+        return submissions.value && submissions.value.length > 0;
     });
+
+    const submissions = computed(() => {
+        return props.group.expert_panel.submissionsForStep(props.step);
+    })
+
+    const firstSubmission = computed(() => {
+        if (!submissions.value) return null
+
+        return submissions.value[0];
+    })
+
+    const latestSubmission = computed(() => {
+        if (!submissions.value) return null;
+
+        return submissions.value[submissions.value.length-1];
+    });
+
+    const latestJudgements = computed(() => {
+        if (!submissions.value)  return [];
+
+        if (
+            submissions.value.length == 1
+            || latestSubmission.value.submission_status_id == 3
+            || latestSubmission.value.submission_status_id == 2
+        ) {
+            return latestSubmission.value.judgements;
+        }
+
+        return submissions.value[submissions.value.length-2].judgements;
+    });
+
+
 </script>
 
 <template>
-    <div>
+    <div v-if="step == group.expert_panel.current_step">
         <static-alert
-            variant="bland"
-            v-if="hasPendingSubmission"
             class="mb-4 border-blue-700"
+            variant="bland"
+            v-if="stepHasBeenSubmitted"
         >
-            <h3 class="border-b pb-1 mb-1">Submission Info:</h3>
-            <ul class="list-disc pl-4 flex flex-col space-y-1">
-                <li>
-                    <strong>Submitted</strong> by <strong>{{group.expert_panel.pendingSubmission.submitter.name}}</strong> on
-                    <strong>{{formatDate(group.expert_panel.pendingSubmission.created_at)}}</strong>
-                    <span v-if="group.expert_panel.pendingSubmission.notes">
-                        with the following notes:
-                    </span>
-                    <blockquote v-if="group.expert_panel.pendingSubmission.notes">
-                        {{group.expert_panel.pendingSubmission.notes}}
-                    </blockquote>
-                </li>
-
-                <li v-if="pendingSubmission.status.name == 'Under Chair Review'">
-                   <strong>Sent to chairs</strong> for review on <strong>{{formatDate(pendingSubmission.updated_at)}}</strong>
-                    <ul v-if="latestSubmission.judgements.length > 0"  class="list-disc pl-6 flex flex-col space-y-0.5">
-                        <li v-for="j in latestSubmission.judgements" :key="j.id">
-                            <strong>{{j.person.name}}:</strong> <badge :color="judgementColor(j)">{{j.decision}}</badge>
-                            on <strong>{{formatDate(j.updated_at)}}</strong>
-                            <p class="text-sm" v-if="j.notes"><strong>Notes for EP:</strong> {{j.notes}}</p>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+            <div v-if="!latestSubmission.sent_to_chairs_at">
+                <strong>Submitted</strong> by {{latestSubmission.submitter.name}} on
+                <strong>{{formatDate(latestSubmission.created_at)}}</strong>
+                <div class="ml-4" v-if="latestSubmission.notes">{{latestSubmission.notes}}</div>
+            </div>
+            <div v-if="latestSubmission.status.name == 'Under Chair Review'">
+                <strong>Sent to chairs</strong> on <strong>{{formatDate(latestSubmission.sent_to_chairs_at)}}</strong>.
+            </div>
+            <div v-if="latestSubmission.status.name == 'Revisions Requested'">
+                <strong>{{formatDate(latestSubmission.updated_at)}}</strong> - Revisions Requested.
+            </div>
+            <div v-if="latestSubmission.submission_status_id > 1 || latestSubmission.id != firstSubmission.id">
+                <hr class="my-1">
+                <strong>Latest Chair Decisions:</strong>
+                <ul class="list-disc pl-6" v-if="latestJudgements.length > 0">
+                    <li v-for="judgement in latestJudgements" :key="judgement.id">
+                        <strong>{{judgement.person.name}}:</strong>
+                        &nbsp;
+                        <badge :color="judgementColor(judgement)">{{judgement.decision}}</badge>
+                    </li>
+                </ul>
+                <div v-else class="ml-4 text-gray-500">
+                    Awaiting decisions...
+                </div>
+            </div>
         </static-alert>
     </div>
 </template>
+
+<style scoped>
+    .submission-log-table {
+        @apply text-sm
+    }
+    .submission-log-table td,
+    .submission-log-table th {
+        @apply border-0 border-b py-2
+    }
+</style>

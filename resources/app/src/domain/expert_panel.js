@@ -1,6 +1,7 @@
 import Entity from './entity'
 import configs from '@/configs'
 
+const stepNumberToName = {1: 'Definition', 2: 'Draft', 3: 'Pilot', 4: 'Sustained Curation'}
 const {submissions} = configs;
 class ExpertPanel extends Entity
 {
@@ -118,7 +119,7 @@ class ExpertPanel extends Entity
     get definitionIsApproved () {
         return this.step_1_approval_date !== null
     }
-    
+
     get draftSpecificationsIsApproved () {
         return this.step_2_approval_date !== null
     }
@@ -191,11 +192,11 @@ class ExpertPanel extends Entity
         switch (this.current_step) {
             case 1:
                 return 'Definition';
-            case 2: 
+            case 2:
                 return 'Draft Specifications';
-            case 3: 
+            case 3:
                 return 'Pilot Specifications';
-            case 4: 
+            case 4:
                 return 'Sustained Curation';
             default:
                 throw new Error('Unknown step '.this.current_step);
@@ -206,11 +207,11 @@ class ExpertPanel extends Entity
         switch (this.current_step) {
             case 1:
                 return 'Definition';
-            case 2: 
+            case 2:
                 return 'Draft';
-            case 3: 
+            case 3:
                 return 'Pilot';
-            case 4: 
+            case 4:
                 return 'Sustained';
             default:
                 throw new Error('Unknown step '.this.current_step);
@@ -245,11 +246,23 @@ class ExpertPanel extends Entity
     get isApplying () {
         return this.date_completed === null;
     }
-    
+
+    submissionsForStep (step) {
+        const stepName = (typeof step == 'number') ? stepNumberToName[step] : step;
+        return this.submissions.filter(s => s.type.name = stepName)
+    }
+
     hasPendingSubmissionForStep(stepName) {
         return this.hasPendingSubmission && this.pendingSubmission.type.name == stepName;
     }
 
+    hasPendingSubmissionForStepNumber(step) {
+        return this.hasPendingSubmission && this.pendingSubmission.type.name == stepNumberToName[step];
+    }
+
+    stepHasBeenSubmitted(step) {
+        return this.submissions.some(s => s.type.name == stepNumberToName[step])
+    }
 
     isWaitingOnCdwgOc() {
         return this.pendingActionsAssigneeCounts.cdwg_oc > 0;
