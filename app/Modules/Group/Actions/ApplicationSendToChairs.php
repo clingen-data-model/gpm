@@ -3,6 +3,7 @@
 namespace App\Modules\Group\Actions;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Log;
 use Lorisleiva\Actions\ActionRequest;
@@ -14,22 +15,36 @@ class ApplicationSendToChairs
     public function __construct(private NextActionCreate $createNextAction)
     {
     }
-    
+
 
     public function handle(Group $group, ?string $additionalComments)
     {
-        $this->notifyChairs($group, $additionalComments);
-        $this->createNextActionForChairs($group);
-        $this->updateSubmissionStatus($group);
+        DB::transaction(function () use ($group, $additionalComments) {
 
-        // Create Tasks for each chair (?)
-        // NOT YET
-        
-        event(new ApplicationSentToChairs(
-            group: $group, 
-            comments: $group->pendingComments, 
-            additionalComments: $additionalComments)
-        );
+            $this->notifyChairs($group, $additionalComments);
+            $this->createNextActionForChairs($group);
+
+            $submission = $group->latestPendingSubmission;
+            if (!$submission) {
+                return;
+            }
+
+            $submission->update([
+                'submission_status_id' => config('submissions.statuses.under-chair-review.id'),
+                'sent_to_chairs_at' => Carbon::now(),
+            ]);
+
+
+            // Create Tasks for each chair (?)
+            // NOT YET
+
+            event(new ApplicationSentToChairs(
+                group: $group,
+                comments: $group->pendingComments,
+                additionalComments: $additionalComments
+            ));
+        });
+
 
         return $group;
     }
@@ -55,17 +70,4 @@ class ApplicationSendToChairs
             typeId: config('next_actions.types.chair-review.id'),
         );
     }
-
-    private function updateSubmissionStatus(Group $group): void
-    {
-        $submission = $group->latestPendingSubmission;
-        if (!$submission) {
-            return;
-        }
-
-        $submission->update(['submission_status_id' => config('submissions.statuses.under-chair-review.id')]);
-    }
-    
-    
-    
 }

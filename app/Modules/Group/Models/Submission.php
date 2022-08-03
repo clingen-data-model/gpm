@@ -26,6 +26,7 @@ class Submission extends Model
         'submission_type_id',
         'submission_status_id',
         'data',
+        'sent_to_chairs_at',
         'closed_at',
         'notes',
         'response_content',
@@ -42,8 +43,8 @@ class Submission extends Model
     ];
 
     protected $with = ['status', 'type'];
-   
-    
+
+
     protected $appends = ['isPending', 'is_pending'];
 
     # RELATIONS
@@ -92,7 +93,7 @@ class Submission extends Model
     {
         return $this->belongsTo(Person::class, 'submitter_id');
     }
-    
+
 
     /**
      * Get all of the judgements for the Submission
@@ -113,7 +114,7 @@ class Submission extends Model
         }
         return $query->where('submission_status_id', $status);
     }
-    
+
 
     public function scopeOfType($query, $type)
     {
@@ -131,12 +132,12 @@ class Submission extends Model
     public function scopePending($query)
     {
         return $query->whereIn(
-                'submission_status_id', 
-                [
-                    config('submissions.statuses.pending.id'),
-                    config('submissions.statuses.under-chair-review.id')
-                ]
-            );
+            'submission_status_id',
+            [
+                config('submissions.statuses.pending.id'),
+                config('submissions.statuses.under-chair-review.id')
+            ]
+        );
     }
 
     // ACCESSORS
@@ -148,7 +149,7 @@ class Submission extends Model
                         ];
         return in_array($this->submission_status_id, $pendingStatuses);
     }
-    
+
 
     /**
      * DOMAIN
@@ -161,10 +162,10 @@ class Submission extends Model
             'response_content' => $responseContent,
             'closed_at' => Carbon::now()
         ]);
-        
+
         return $this;
     }
-    
+
 
     protected static function newFactory()
     {
