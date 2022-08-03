@@ -32,12 +32,13 @@ class ApplicationStepSubmitted extends GroupEvent
         $submitterName = $this->submission->submitter ? $this->submission->submitter->name : 'system';
         return $this->submission->type->name.' application submitted for approval by '.$submitterName.'.';
     }
-    
+
     public function getProperties(): ?array
     {
         return [
             'submission' => $this->submission->toArray(),
-            'date_submitted' => $this->submission->created_at
+            'date_submitted' => $this->submission->created_at,
+            'step' => $this->submission->group->expertPanel->current_step
         ];
     }
 
