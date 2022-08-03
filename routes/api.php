@@ -13,6 +13,7 @@ use App\Actions\CommentResolve;
 use App\Actions\FeedbackSubmit;
 use App\Actions\CommentTypeList;
 use App\Actions\CommentUnresolve;
+use App\Actions\LogEntrySearch;
 use App\Actions\NotificationMarkRead;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
@@ -62,15 +63,15 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/email-drafts/groups/{group:uuid}', [MailDraftController::class, 'makeDraft']);
     // Route::get('/email-drafts/{applicationUuid}/{approvedStepNumber}', [MailDraftController::class, 'show']);
-    
-    
+
+
     Route::get('/mail-log', [MailLogController::class, 'index']);
     Route::post('/mail', MailResend::class);
 
     Route::post('/announcements', NotifyPeople::class);
-    
+
     Route::get('/impersonate/search', [ImpersonateSearchController::class, 'index']);
-    
+
     Route::put('/notifications/{notificationId}', NotificationMarkRead::class);
 
     Route::group(['prefix' => '/annual-updates'], function () {
@@ -93,6 +94,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
     Route::get('/comment-types', CommentTypeList::class);
 
+    Route::get('/activity-logs', LogEntrySearch::class);
 });
 
 Route::get('/cdwgs', [CdwgController::class, 'index']);
