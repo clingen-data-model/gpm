@@ -17,8 +17,8 @@ class GroupSubmissionsController extends Controller
             ->with([
                 'submitter' => function ($q) {
                     return $q->select([
-                        'id', 
-                        'first_name', 
+                        'id',
+                        'first_name',
                         'last_name',
                         'email',
                     ]);
@@ -28,6 +28,7 @@ class GroupSubmissionsController extends Controller
                     return $q->select(['id', 'first_name', 'last_name', 'email']);
                 }
             ])
+            ->orderBy('created_at', 'asc')
             ->get();
     }
 
@@ -37,8 +38,8 @@ class GroupSubmissionsController extends Controller
             ->with([
                 'submitter' => function ($q) {
                     return $q->select([
-                        'id', 
-                        'first_name', 
+                        'id',
+                        'first_name',
                         'last_name',
                         'email',
                     ]);
@@ -49,5 +50,4 @@ class GroupSubmissionsController extends Controller
                 }
             ])->first();
     }
-    
 }
