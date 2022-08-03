@@ -1,48 +1,12 @@
 <template>
-    <base-step 
+    <base-step
         :step="3"
         approve-button-label="Approve Pilot and Specifications"
         title="Pilot ACMG Guideline Specificiations"
         @updated="$emit('updated')"
     >
-        <template v-slot:document>
-            <div>
-                <div class="mt-4 p-4 border rounded-xl bg-gray-50">
-                    <document-manager 
-                        :application="application"
-                        :document-type-id="3"
-                        :getsReviewd="false"
-                        :step="3"
-                        class="mb-4"
-                        title="Final Specifications"
-                        @updated="$emit('updated')"
-                    />
-                </div>
-                <div class="mt-4 p-4 border rounded-xl bg-gray-50">
-                    <document-manager 
-                        title="Pilot Classifications"
-                        :application="application"
-                        :document-type-id="4"
-                        :getsReviewd="false"
-                        :step="3"
-                        @updated="$emit('updated')"
-                    />
-                </div>
-                <div class="mt-4 p-4 border rounded-xl bg-gray-50">
-                    <document-manager 
-                        title="Additional Documents"
-                        :application="application"
-                        :document-type-id="7"
-                        :getsReviewd="false"
-                        :show-version="false"
-                        :step="3"
-                        @updated="$emit('updated')"
-                    />
-                </div>
-            </div>
-        </template>        
         <template v-slot:sections>
-            <div class="application-section">
+            <div class="application-section screen-block">
                 <h2>Pilot Specifications</h2>
                 <specifications-section :doc-type-id="[3,4,7]" />
             </div>
@@ -64,12 +28,12 @@ export default {
         SpecificationsSection
     },
     props: {
-        
+
     },
     emits: ['approved', 'updated'],
     data() {
         return {
-            
+
         }
     },
     computed: {

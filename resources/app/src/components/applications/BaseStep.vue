@@ -51,10 +51,6 @@ export default {
             showApproveForm: false,
             editApprovalDate: false,
             newApprovalDate: null,
-            showDocuments: true,
-            showSections: true,
-            documentsToggled: false,
-            sectionsToggled: false,
             showRejectForm: false
         }
     },
@@ -75,32 +71,8 @@ export default {
 
             return null;
         },
-        docsToggleText () {
-            return this.showDocuments ? 'Hide Documents' : 'Show Documents';
-        },
-        sectionsToggleText () {
-            return this.showSections ? 'Hide Sections' : 'Show Sections';
-        }
-    },
-    watch: {
-        group: {
-            immediate: true,
-            handler (to) {
-                if(!to.hasDocumentsOfType(this.documentType) && !this.documentsToggled) {
-                    this.showDocuments = false;
-                }
-            }
-        },
     },
     methods: {
-        toggleDocuments () {
-            this.documentsToggled = true;
-            this.showDocuments = !this.showDocuments;
-        },
-        toggleSections () {
-            this.sectionsToggled = true;
-            this.showSections = !this.showSections;
-        },
         goToPrintable () {
             window.open(`/groups/${this.group.uuid}/application/review`);
         },
@@ -163,39 +135,16 @@ export default {
                     </div>
                 </div>
                 <div>
-                    <button class="btn btn-xs" @click="toggleDocuments">{{docsToggleText}}</button>
-                    &nbsp;
-                    <button class="btn btn-xs" @click="toggleSections">{{sectionsToggleText}}</button>
-                    &nbsp;
                     <button class="btn btn-xs" @click="goToPrintable">Printable Application</button>
 
                 </div>
             </div>
-            <transition name="slide-fade-down">
-                <div v-if="showDocuments">
-                    <slot name="document">
-                        <div class="mt-4 p-4 border rounded-xl bg-gray-50">
-                            <document-manager
-                                :title="documentName"
-                                :application="application"
-                                :document-type-id="documentType"
-                                :getsReviewd="documentGetsReviewed"
-                                :step="step"
-                                @updated="$emit('updated')"
-                            />
-                        </div>
-                    </slot>
-                    <hr class="border-gray-200 border-4">
-                </div>
-            </transition>
 
-            <transition name="slide-fade-down">
-                <div class="screen-block-container">
-                    <slot name="sections" v-if="showSections">
-                        Step sections here!
-                    </slot>
-                </div>
-            </transition>
+            <div class="screen-block-container">
+                <slot name="sections">
+                    Step sections here!
+                </slot>
+            </div>
         </div>
 
         <div>
