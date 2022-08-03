@@ -29,10 +29,10 @@ class ReportSummaryMake extends ReportMakeAbstract
             ['CDWGs', Group::cdwg()->count()],
             ['VCEPs', Group::vcep()->count()],
             ['GCEPS', Group::gcep()->count()],
-            ['VCEP applications in definition', $vcepStepsSummary[1]],
-            ['VCEP applications in draft specs', $vcepStepsSummary[2]],
-            ['VCEP applications in pilot specs', $vcepStepsSummary[3]],
-            ['VCEP applications in sustained curation', $vcepStepsSummary[4]],
+            ['VCEP applications in definition', isset($vcepStepsSummary[1]) ? $vcepStepsSummary[1] : 0],
+            ['VCEP applications in draft specs', isset($vcepStepsSummary[2]) ? $vcepStepsSummary[2] : 0],
+            ['VCEP applications in pilot specs', isset($vcepStepsSummary[3]) ? $vcepStepsSummary[3] : 0],
+            ['VCEP applications in sustained curation', isset($vcepStepsSummary[4]) ? $vcepStepsSummary[4] : 0],
             ['VCEPs approved', $this->getGcepApprovedCount()],
             ['GCEPs applying', $this->getGcepApplyingCount()],
             ['GCEPs approved', $this->getGcepApprovedCount()],
@@ -109,7 +109,7 @@ class ReportSummaryMake extends ReportMakeAbstract
                 $q->Gcep();
             })->count();
     }
-    
+
     private function getVcepMembersCount(): int
     {
         return GroupMember::isActive()
@@ -118,7 +118,7 @@ class ReportSummaryMake extends ReportMakeAbstract
                 $q->Vcep();
             })->count();
     }
-    
+
 
     private function getVcepStepSummary(): array
     {
@@ -149,7 +149,7 @@ class ReportSummaryMake extends ReportMakeAbstract
     {
         return ExpertPanel::typeGcep()->approved()->count();
     }
-    
+
     private function getCountriesRepresentedCount(): int
     {
         return Country::query()
@@ -163,14 +163,14 @@ class ReportSummaryMake extends ReportMakeAbstract
                 ->has('people')
                 ->count();
     }
-    
+
     private function getPeopleInManyEpsCount(): int
     {
         return Person::has('activeExpertPanels', '>', 1)
             ->count();
     }
-    
-    
-    
-    
+
+
+
+
 }
