@@ -120,11 +120,12 @@
                         <badge class="block" :color="getVariant(comment)" size="xxs">
                             {{comment.type && titleCase(comment.type.name)}}
                         </badge>
-                        <icon-checkmark
-                            class="text-green-500"
-                            v-if="comment.is_resolved"
-                            title="Resolved"
-                        />
+                        <popper hover arrow content="Resolved" v-if="comment.is_resolved">
+                            <icon-checkmark
+                                class="text-green-500"
+                                title="Resolved"
+                            />
+                        </popper>
                     </div>
                     <div class="flex space-x-2">
                         <dropdown-menu hideCheveron v-if="canEdit">
