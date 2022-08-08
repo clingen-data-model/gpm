@@ -1,7 +1,7 @@
 <template>
     <div>
         <p>
-            The Gene Curation Expert Panel (GCEP) leaders(s) will complete the checkbox attestations document below on behalf of the GCEP. 
+            The Gene Curation Expert Panel (GCEP) leaders(s) will complete the checkbox attestations document below on behalf of the GCEP.
         </p>
         <ul class="ml-4 mt-2">
             <li>
@@ -13,9 +13,9 @@
             </li>
             <li>
                 <input-row :errors="errors.utilize_gci" :hide-label="true">
-                    <checkbox 
-                        v-model="group.expert_panel.utilize_gci" 
-                        :disabled="disabled"  
+                    <checkbox
+                        v-model="group.expert_panel.utilize_gci"
+                        :disabled="disabled"
                         @update:modelValue="emitUpdate(), checkCompleteness()"
                     >
                         This GCEP will utilize the ClinGen Gene Curation Interface for documentation of all gene-disease validity classifications.
@@ -24,8 +24,8 @@
             </li>
             <li>
                 <input-row :errors="errors.curations_publicly_available" :hide-label="true">
-                    <checkbox 
-                        v-model="group.expert_panel.curations_publicly_available" 
+                    <checkbox
+                        v-model="group.expert_panel.curations_publicly_available"
                         :disabled="disabled"
                         @update:modelValue="emitUpdate(), checkCompleteness()"
                     >
@@ -43,7 +43,7 @@
             <li>
                 <input-row :errors="errors.draft_manuscripts" :hide-label="true">
                     <checkbox v-model="group.expert_panel.draft_manuscripts" :disabled="disabled" @update:modelValue="emitUpdate(), checkCompleteness()">
-                        Draft manuscripts will be submitted to the ClinGen Gene Curation WG for review prior to submission. 
+                        Draft manuscripts will be submitted to the ClinGen Gene Curation WG for review prior to submission.
                         Email: <a href="mailto:genecuration@clinicalgenome.org">genecuration@clinicalgenome.org</a>
                     </checkbox>
                 </input-row>
@@ -65,7 +65,7 @@
             <li>
                 <input-row :errors="errors.biocurator_training" :hide-label="true">
                     <checkbox v-model="group.expert_panel.biocurator_training" :disabled="disabled" @update:modelValue="emitUpdate(), checkCompleteness()">
-                        Biocurators have received training and/or there is a plan in place to train any biocurators who have not received all training yet. 
+                        Biocurators have received training and/or there is a plan in place to train any biocurators who have not received all training yet.
                     </checkbox>
                 </input-row>
             </li>
@@ -73,10 +73,10 @@
                 <checkbox v-model="gci_training" :disabled="disabled" @update:modelValue="emitUpdate(), checkCompleteness()">
                     Biocurators are trained on the use of the Gene Curation Interface (GCI) and/or there is a plan in place to train any biocurators who are not yet trained on the use of the GCI”
                 </checkbox>
-                <input-row 
-                    v-model="group.expert_panel.gci_training_date" 
+                <input-row
+                    v-model="group.expert_panel.gci_training_date"
                     @update:modelValue="emitUpdate(), checkCompleteness()"
-                    v-show="gci_training" 
+                    v-show="gci_training"
                     :errors="gciTrainingErrors"
                     label="Date Trained"
                     type="date"
