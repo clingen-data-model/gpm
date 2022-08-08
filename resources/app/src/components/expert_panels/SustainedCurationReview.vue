@@ -57,5 +57,8 @@
                 </dictionary-row>
             </ReviewSection>
 
+            <div v-if="!expertPanel.has_appoved_pilot" class="screen-block">
+                No approved pilot.
+            </div>
     </div>
 </template>
