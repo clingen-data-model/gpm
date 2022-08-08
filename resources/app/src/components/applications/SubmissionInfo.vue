@@ -77,6 +77,7 @@
                         <strong>{{judgement.person.name}}:</strong>
                         &nbsp;
                         <badge :color="judgementColor(judgement)">{{judgement.decision}}</badge>
+                        <div v-if="judgement.notes" class="text-sm"><strong>Notes:</strong> {{judgement.notes}}</div>
                     </li>
                 </ul>
                 <div v-else class="ml-4 text-gray-500">
