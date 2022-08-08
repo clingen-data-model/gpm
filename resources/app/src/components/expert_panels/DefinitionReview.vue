@@ -2,22 +2,29 @@
     import {useStore} from 'vuex';
     import { computed} from 'vue'
     import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
+    import ReviewMembership from '@/components/expert_panels/ReviewMembership.vue'
     import { formatDate } from '@/date_utils'
 
     const store = useStore();
     const group = computed(() => store.getters['groups/currentItemOrNew'])
     const expertPanel = computed(() => group.value.expert_panel);
     const members = computed( () => {
+        if (!group.value) {
+            return [];
+        }
         return group.value.members.map(m => ({
             id: m.id,
+            first_name: m.person.first_name,
+            last_name: m.person.last_name,
             name: m.person.name,
             institution: m.person.institution ? m.person.institution.name : null,
             credentials: m.person.credentials,
             expertise: m.expertise,
             roles: m.roles.map(r => r.name).join(', '),
-            coi_completed: formatDate(m.coi_last_completed)
+            // coi_completed: formatDate(m.coi_last_completed)
         }));
     });
+
     const basicInfo = computed(() => {
         return {
             type: group.value.type.name ? group.value.type.name.toUpperCase() : '',
@@ -25,7 +32,6 @@
             short_base_name: expertPanel.value.short_base_name,
         }
     });
-
 </script>
 
 <template>
@@ -38,7 +44,8 @@
         </ReviewSection>
 
         <ReviewSection title="Membership" name="membership">
-            <simple-table :data="members" key-by="id" class="print:text-xs text-sm" />
+            <!-- {{members}} -->
+            <ReviewMembership :members="members" />
 
             <div v-if="group.isVcep()" class="mt-6">
                 <h4>Expertise of VCEP members</h4>
@@ -47,6 +54,7 @@
                 </blockquote>
             </div>
         </ReviewSection>
+
         <ReviewSection title="Scope" name="scope">
             <h3>Genes</h3>
             <div class="mb-6">

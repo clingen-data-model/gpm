@@ -6,7 +6,7 @@
 }
 
 /**
- * "sticky" footer technique lifted from 
+ * "sticky" footer technique lifted from
  * https://css-tricks.com/a-clever-sticky-footer-technique/
  **/
 html, body {
@@ -36,7 +36,7 @@ h2{
     @apply text-xl;
 }
 
-h3 { 
+h3 {
     @apply text-lg;
 }
 
@@ -123,7 +123,7 @@ input[type="checkbox"]:checked::before  {
   transform: scale(1);
 }
 
- 
+
 blockquote{
     @apply border-l-4 ml-2 pl-2 mt-0;
     @apply print:border-l-0 print:ml-0 print:pl-0 print:mt-0;
@@ -158,7 +158,11 @@ th.sorted, td.sorted  {
     @apply text-blue-500 hover:underline;
 }
 
-.nav-item { 
+.link.link-black {
+    @apply text-black hover:underline;
+}
+
+.nav-item {
     @apply border-r-2 border-gray-400  pr-2 mr-2 align-middle;
 }
 .nav-item:last-child {
@@ -271,11 +275,11 @@ th.sorted, td.sorted  {
 .fade-enter-active {
     transition: all 0.3s ease-out;
 }
-  
+
 .fade-leave-active {
     transition: all 0.3s ease-out;
 }
-  
+
 .fade-enter-from,
 .fade-leave-to {
     opacity: 0;
@@ -284,11 +288,11 @@ th.sorted, td.sorted  {
 .slide-fade-enter-active {
     transition: all 0.3s ease-out;
 }
-  
+
 .slide-fade-leave-active {
     transition: all 0.3s ease-out;
 }
-  
+
 .slide-fade-enter-from,
 .slide-fade-leave-to {
     transform: translateX(20px);
@@ -299,12 +303,12 @@ th.sorted, td.sorted  {
 .slide-fade-down-enter-active {
     transition: all 0.3s ease-out;
 }
-  
+
 .fade-slide-down-leave-active,
 .slide-fade-down-leave-active {
     transition: all 0.3s ease-out;
 }
-  
+
 .fade-slide-down-enter-from,
 .fade-slide-down-leave-to,
 .slide-fade-down-enter-from,
