@@ -57,8 +57,8 @@
             <p><strong>Notes: </strong>{{userJudgement.notes}}</p>
         </div>
         <div class="flex space-x-2">
-            <button class="btn btn-xs" @click="initUpdate">Update</button>
-            <button class="btn btn-xs" @click="initDelete">Delete</button>
+            <button class="btn btn-xs" @click="initUpdate">Change Decision</button>
+            <button class="btn btn-xs" @click="initDelete">Cancel Decision</button>
         </div>
 
         <teleport to='body'>
