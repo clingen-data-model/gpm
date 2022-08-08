@@ -19,7 +19,7 @@
 
     const showCommentForm = ref(false);
 
-    const showComments = ref(false)
+    const showComments = ref(true)
     const sectionComments = computed(() => {
         if (!commentManager) {
             return [];
@@ -67,7 +67,7 @@
             </div>
         </div>
 
-        <div class="lg:w-2/5 p-2 bg-gray-100 rounded-lg mb-2" v-show="showComments">
+        <div class="lg:w-2/5 p-2 bg-gray-100 rounded-lg mb-2" v-show="showComments && commentManager">
             <div class="flex justify-between items-center">
                 <h3>
                     <icon-cheveron-down class="inline cursor-pointer" @click="showComments = false" />
