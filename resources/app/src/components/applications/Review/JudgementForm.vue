@@ -112,7 +112,7 @@
 
         <input-row
             v-model="judgement.notes"
-            label="Notes for the expert panel"
+            label="Other notes for the expert panel"
             type="large-text"
             :errors="errors.notes"
             vertical
