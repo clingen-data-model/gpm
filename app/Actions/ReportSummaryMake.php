@@ -33,7 +33,7 @@ class ReportSummaryMake extends ReportMakeAbstract
             ['VCEP applications in draft specs', isset($vcepStepsSummary[2]) ? $vcepStepsSummary[2] : 0],
             ['VCEP applications in pilot specs', isset($vcepStepsSummary[3]) ? $vcepStepsSummary[3] : 0],
             ['VCEP applications in sustained curation', isset($vcepStepsSummary[4]) ? $vcepStepsSummary[4] : 0],
-            ['VCEPs approved', $this->getGcepApprovedCount()],
+            ['VCEPs approved', $this->getVcepApprovedCount()],
             ['GCEPs applying', $this->getGcepApplyingCount()],
             ['GCEPs approved', $this->getGcepApprovedCount()],
             ['VCEP genes', $this->getVcepGenesCount()],
@@ -137,7 +137,7 @@ class ReportSummaryMake extends ReportMakeAbstract
 
     private function getVcepApprovedCount(): int
     {
-        return ExpertPanel::typeVcep()->approved_count();
+        return ExpertPanel::typeVcep()->approved()->count();
     }
 
     private function getGcepApplyingCount(): int
