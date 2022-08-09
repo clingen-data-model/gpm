@@ -2,7 +2,6 @@
 import { mapGetters } from 'vuex'
 import { formatDate } from '@/date_utils'
 import ApplicationLog from '@/components/applications/ApplicationLog.vue'
-import DocumentManager from '@/components/applications/documents/DocumentManager.vue'
 import StepControls from '@/components/applications/StepControls.vue'
 import RemoveButton from '@/components/buttons/RemoveButton.vue'
 import is_validation_error from '@/http/is_validation_error'
@@ -10,7 +9,6 @@ import is_validation_error from '@/http/is_validation_error'
 export default {
     components: {
         ApplicationLog,
-        DocumentManager,
         StepControls,
         RemoveButton
     },

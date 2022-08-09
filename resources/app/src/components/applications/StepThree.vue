@@ -17,14 +17,12 @@
 import {mapGetters} from 'vuex'
 import {formatDate} from '@/date_utils'
 import BaseStep from '@/components/applications/BaseStep.vue'
-import DocumentManager from '@/components/applications/documents/DocumentManager.vue'
 import SpecificationsSection from '../expert_panels/SpecificationsSection.vue'
 
 export default {
     name: 'StepThree',
     components: {
         BaseStep,
-        DocumentManager,
         SpecificationsSection
     },
     props: {
