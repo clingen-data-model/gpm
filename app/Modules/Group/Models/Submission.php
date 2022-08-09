@@ -39,6 +39,7 @@ class Submission extends Model
         'submission_status_id' => 'integer',
         'data' => 'array',
         'closed_at' => 'datetime',
+        'sent_to_chairs_at' => 'datetime',
         'submitter_id' => 'integer',
     ];
 
@@ -139,6 +140,13 @@ class Submission extends Model
             ]
         );
     }
+
+    public function scopeSentToChair($query)
+    {
+        return $query->whereNotNull('sent_to_chairs_at')
+                ->pending();
+    }
+
 
     // ACCESSORS
     public function getIsPendingAttribute()

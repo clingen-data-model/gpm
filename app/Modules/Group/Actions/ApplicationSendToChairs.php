@@ -17,7 +17,7 @@ class ApplicationSendToChairs
     }
 
 
-    public function handle(Group $group, ?string $additionalComments)
+    public function handle(Group $group, ?string $additionalComments = null)
     {
         DB::transaction(function () use ($group, $additionalComments) {
 
