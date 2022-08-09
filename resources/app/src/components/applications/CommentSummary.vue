@@ -26,14 +26,14 @@
     <div>
         <table class="mt-2" v-if="comments.length > 0">
             <tr v-for="(comments, section) in commentsBySection" :key="section">
-                <td class=" border-none">
+                <td class="w-40 border-none">
                     <h4>{{titleCase(section)}}</h4>
                 </td>
                 <td class=" border-none">
-                    <ReviewCommentAnonymous 
-                        v-for="comment in comments" 
-                        :key="comment.id" 
-                        :comment="comment" 
+                    <ReviewCommentAnonymous
+                        v-for="comment in comments"
+                        :key="comment.id"
+                        :comment="comment"
                     />
                 </td>
             </tr>

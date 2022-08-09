@@ -44,7 +44,7 @@ export default {
             let y = 'py-1';
 
             if (this.size == 'xxs') {
-                return `px-1 py-0.5`
+                return `${x} py-0.5`
             }
 
             return `${x} ${y}`

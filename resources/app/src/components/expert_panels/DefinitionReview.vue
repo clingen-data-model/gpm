@@ -4,6 +4,7 @@
     import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
     import ReviewMembership from '@/components/expert_panels/ReviewMembership.vue'
     import { formatDate } from '@/date_utils'
+import {hasPermission} from '../../auth_utils';
 
     const store = useStore();
     const group = computed(() => store.getters['groups/currentItemOrNew'])
@@ -12,17 +13,23 @@
         if (!group.value) {
             return [];
         }
-        return group.value.members.map(m => ({
-            id: m.id,
-            first_name: m.person.first_name,
-            last_name: m.person.last_name,
-            name: m.person.name,
-            institution: m.person.institution ? m.person.institution.name : null,
-            credentials: m.person.credentials,
-            expertise: m.expertise,
-            roles: m.roles.map(r => r.name).join(', '),
-            // coi_completed: formatDate(m.coi_last_completed)
-        }));
+        return group.value.members.map(m => {
+            const retVal = {
+                id: m.id,
+                first_name: m.person.first_name,
+                last_name: m.person.last_name,
+                name: m.person.name,
+                institution: m.person.institution ? m.person.institution.name : null,
+                credentials: m.person.credentials,
+                expertise: m.expertise,
+                roles: m.roles.map(r => r.name).join(', '),
+            }
+            if (hasPermission('ep-applications-manage')) {
+                retVal.coi_completed = formatDate(m.coi_last_completed);
+            }
+
+            return retVal;
+        });
     });
 
     const basicInfo = computed(() => {

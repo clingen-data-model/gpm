@@ -26,7 +26,7 @@
     const handleSave = (newJudgement) => {
         showJudgementDialog.value = false;
         emits('saved', newJudgement);
-        
+
     }
 </script>
 <template>
@@ -43,7 +43,7 @@
         <div class="pt-2 lg:flex lg:space-x-2 space-y-2 lg:space-y-0 items-start">
             <div class="lg:w-3/5">
                 <button v-if="!hasMadeJudgment"
-                    class="block btn btn-lg blue" 
+                    class="block btn btn-lg blue"
                     @click="initJudgement"
                 >
                     Approve or request revisions
@@ -51,13 +51,13 @@
                 <JudgementDetail v-else @deleted="emits('deleted')" @saved="emits('saved')" />
             </div>
             <div class="flex space-x-2 items-center p-2 bg-gray-100 rounded-lg lg:w-2/5">
-                <icon-arrow-down class="text-blue-600 flex-shrink-0" width="30" height="30" /> 
+                <icon-arrow-down class="text-blue-600 flex-shrink-0" width="30" height="30" />
                 <div>Reply to or create comments, suggestions, and required revisions in the comments sections below.</div>
-                <icon-arrow-down class="text-blue-600 flex-shrink-0" width="30" height="30" /> 
+                <icon-arrow-down class="text-blue-600 flex-shrink-0" width="30" height="30" />
             </div>
         </div>
         <teleport to='body'>
-            <modal-dialog 
+            <modal-dialog
                 v-model="showJudgementDialog"
                 title="Approve or request revisions"
             >

@@ -19,7 +19,7 @@ import {computed} from 'vue';
             return props.summary.authors[0].name+'. ';
         }
 
-        return props.summary.authors.map(a => a.name)[0]+` and ${props.summary.authors.length - 1} others. `;
+        return props.summary.authors.map(a => a.name)[0]+` et al. `;
     })
 
     const titleString = computed(() => {
