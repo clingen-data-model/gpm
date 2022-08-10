@@ -50,13 +50,17 @@ Route::group([
         Route::delete('/{person:uuid}', PersonDelete::class);
         Route::put('/{person:uuid}/profile', ProfileUpdate::class);
         // No post route b/c person creation currently happens when adding members to groups.
-        
+
         Route::get('/{person:uuid}/activity-logs', [ActivityLogsController::class, 'index']);
         Route::get('/{person:uuid}/email', [PersonEmailController::class, 'index']);
         Route::get('/{person:uuid}/notifications/unread', [PersonNotificationController::class, 'unread']);
-        
+
         Route::post('/{person:uuid}/profile-photo', PersonPhotoStore::class);
         Route::get('/{person:uuid}/profile-photo', function (Person $person) {
+            if (!\Storage::disk('profile-photos')->exists($person->profile_photo)) {
+                return response()->file(public_path('images/default_profile.jpg'));
+            }
+
             return \Storage::disk('profile-photos')->get($person->profile_photo);
         });
     });
@@ -72,7 +76,7 @@ Route::group([
 
     Route::get('/lookups/{model}', [ApiController::class, 'index'])
     ->name('people.catchall.index');
-    
+
     Route::get('/lookups/{model}/{id}', [ApiController::class, 'show'])
         ->name('people.catchall.show');
 
