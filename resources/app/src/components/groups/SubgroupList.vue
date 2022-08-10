@@ -23,17 +23,17 @@
               <template v-slot:content>
                 <div class="text-xs">
                   <dictionary-row label="Status" label-class="font-bold" label-width="8em">{{group.status.name}}</dictionary-row>
-                  <dictionary-row v-if="group.chairs.length > 0" 
-                      label="Chairs" 
-                      label-class="font-bold" 
+                  <dictionary-row v-if="group.chairs.length > 0"
+                      label="Chairs"
+                      label-class="font-bold"
                       label-width="8em"
                       class="my-1"
                   >
                     {{group.coordinators.map(c => c.person.name).join(', ')}}
                   </dictionary-row>
-                  <dictionary-row v-if="group.coordinators.length > 0" 
-                      label="Coordinators" 
-                      label-class="font-bold" 
+                  <dictionary-row v-if="group.coordinators.length > 0"
+                      label="Coordinators"
+                      label-class="font-bold"
                       label-width="8em"
                   >
                     {{group.coordinators.map(c => c.person.name).join(', ')}}
@@ -55,11 +55,11 @@
 export default {
     name: 'SubgroupList',
     props: {
-        
+
     },
     data() {
         return {
-            
+
         }
     },
     computed: {
@@ -67,7 +67,7 @@ export default {
             return this.$store.getters['groups/currentItemOrNew'];
         },
         showMemberReportButton () {
-            return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage']) && this.$store.state.systemInfo.app.features.member_export
+            return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage'])
         },
         exportUrl () {
             return `/api/report/groups/${this.group.uuid}/subgroup-member-export`;

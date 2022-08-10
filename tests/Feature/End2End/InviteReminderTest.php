@@ -18,7 +18,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class InviteReminderTest extends TestCase
 {
     use RefreshDatabase;
-    
+
     public function setup():void
     {
         parent::setup();
@@ -27,8 +27,6 @@ class InviteReminderTest extends TestCase
         $this->addMember = app()->make(MemberAdd::class);
         $this->group1 = Group::factory()->create();
         $this->gm1 = $this->addMember->handle($this->group1, $this->invite->person);
-
-        config(['app.features.invite_reminders' => true]);
     }
 
     /**
@@ -42,7 +40,7 @@ class InviteReminderTest extends TestCase
 
         $this->assertEquals(0, person::hasActiveMembership()->count());
     }
-    
+
 
     /**
      * @test
@@ -62,7 +60,7 @@ class InviteReminderTest extends TestCase
         $user = $this->setupUserWithPerson();
         $invite = Invite::factory()->create(['person_id' => $user->person->id, 'redeemed_at' => Carbon::now()]);
         app()->make(MemberAdd::class)->handle($this->group1, $user->person);
-        
+
         $this->assertContains($user->person->id, Person::hasActiveMembership()->get()->pluck('id'));
         $this->assertNotNull($user->person->invite);
 
@@ -78,7 +76,7 @@ class InviteReminderTest extends TestCase
     {
         $notification = new InviteReminderNotification($this->invite);
         $mailable = $notification->toMail($this->invite->person);
-        
+
         $emailBody = $mailable->render();
 
         $this->assertStringContainsString($this->invite->inviter->display_name, $emailBody);
@@ -91,7 +89,7 @@ class InviteReminderTest extends TestCase
     public function it_does_not_email_inactive_group_members()
     {
         $retireMember = app()->make(MemberRetire::class);
-        
+
         $group2 = Group::factory()->create();
         $gm2 = $this->addMember->handle($group2, $this->invite->person);
 
@@ -105,10 +103,10 @@ class InviteReminderTest extends TestCase
         $retireMember->handle($gm2, Carbon::now());
         Notification::assertNotSentTo($this->invite->person, InviteReminderNotification::class);
     }
-    
-    
-    
-    
+
+
+
+
 
     private function triggerReminders()
     {
