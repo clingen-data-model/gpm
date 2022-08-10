@@ -12,9 +12,9 @@
                         Filter: <input type="text" v-model="filterString" placeholder="name,id,status,coordinator name">
                     </div>
                     <data-table
-                        
-                        :data="filteredGroups.filter(def.filter)" 
-                        :fields="fields" 
+
+                        :data="filteredGroups.filter(def.filter)"
+                        :fields="fields"
                         v-model:sort="sort"
                         :row-click-handler="goToGroup"
                         v-remaining-height
@@ -29,8 +29,8 @@
                             <div v-if="value.length == 0"></div>
                             <span v-for="(coordinator, idx) in value" :key="coordinator.id">
                                 <span v-if="idx > 0">, </span>
-                                <router-link 
-                                    :to="{name: 'PersonDetail', params: {uuid: coordinator.person.uuid}}" 
+                                <router-link
+                                    :to="{name: 'PersonDetail', params: {uuid: coordinator.person.uuid}}"
                                     class="link"
                                     @click.stop
                                 >
@@ -38,7 +38,7 @@
                                 </router-link>
                             </span>
                         </template>
-                    </data-table>                
+                    </data-table>
                 </div>
             </tab-item>
         </tabs-container>
@@ -66,7 +66,7 @@ export default {
         SubmissionWrapper
     },
     props: {
-        
+
     },
     data() {
         return {
@@ -141,22 +141,17 @@ export default {
                     typeId: 3,
                     filter: g => g.isGcep()
                 },
-            ];
-            if (store.state.systemInfo.app.features.show_cdwgs || hasAnyPermission(['groups-manage'])) {
-                tabs.push({
+{
                     label: 'CDWGs',
                     typeId: 2,
                     filter: g => g.isCdwg()
-                });
-            }
-
-            if (store.state.systemInfo.app.features.show_wgs || hasAnyPermission(['groups-manage'])) {
-                tabs.push({
+                },
+                {
                     label: 'WGs',
                     typeId: 1,
                     filter: g => g.isWg()
-                });
-            }
+                },
+            ];
 
             return tabs;
         })
@@ -166,7 +161,7 @@ export default {
         const filterString = ref(null);
 
         const groups = computed(() => store.getters['groups/all']);
-        
+
         const filteredGroups = computed(() => groups.value.filter(group => {
             if (!filterString.value) {
                 return true;
@@ -177,8 +172,8 @@ export default {
             return group.name && group.name.match(pattern)
                 || group.displayName && group.displayName.match(pattern)
                 || (
-                    group.expert_panel && 
-                    group.expert_panel.full_short_base_name && 
+                    group.expert_panel &&
+                    group.expert_panel.full_short_base_name &&
                     group.expert_panel.full_short_base_name.match(pattern)
                 )
                 || group.id == filterString.value

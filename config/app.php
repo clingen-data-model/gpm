@@ -48,7 +48,7 @@ return [
         /*
          * Package Service Providers...
          */
-        
+
         /*
         * Application Service Providers...
         */
@@ -117,12 +117,6 @@ return [
         'token' => env('JIRA_API_TOKEN')
     ],
     'features' => [
-        'coi_reminders' => env('FEATURE_REMINDERS_COIS', true),
-        'email_from_member_list' => env('FEATURE_EMAIL_FROM_MEMBER_LIST', false),
-        'invite_reminders' => env('FEATURE_REMINDERS_INVITES', true),
-        'member_export' => env('FEATURE_MEMBER_EXPORT', false),
-        'show_cdwgs' => env('FEATURE_SHOW_CDWGS', true),
-        'show_wgs' => env('FEATURE_SHOW_WGS', true),
         'notify_scope_change' => env('FEATURE_NOTIFY_SCOPE_CHANGE', true),
         'specification_upload' => env('FEATURE_SPEC_UPLOAD', true),
         'cspec_summary' => env('FEATURE_CSPEC_SUMMARY', false)
