@@ -2,6 +2,7 @@
     import {computed, inject, onMounted, ref} from 'vue'
     import {formatDate} from '@/date_utils.js'
     import {judgementColor} from '@/composables/judgement_utils.js'
+    import { featureIsEnabled } from '../../utils';
 
     const props = defineProps({
         group: {
@@ -69,7 +70,7 @@
             <div v-if="latestSubmission.status.name == 'Revisions Requested'">
                 <strong>{{formatDate(latestSubmission.updated_at)}}</strong> - Revisions Requested.
             </div>
-            <div v-if="latestSubmission.submission_status_id > 1 || latestSubmission.id != firstSubmission.id">
+            <div v-if="featureIsEnabled('chair_review') && (latestSubmission.submission_status_id > 1 || latestSubmission.id != firstSubmission.id)">
                 <hr class="my-1">
                 <strong>Latest Chair Decisions:</strong>
                 <ul class="list-disc pl-6" v-if="latestJudgements.length > 0">

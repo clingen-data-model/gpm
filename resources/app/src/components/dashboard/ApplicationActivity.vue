@@ -3,7 +3,8 @@
     import {ref, onMounted} from 'vue'
     import {useRouter} from 'vue-router'
     import {api} from '@/http'
-import {hasPermission} from '../../auth_utils';
+    import {hasPermission} from '@/auth_utils';
+    import { featureIsEnabled } from '@/utils.js';
 
     const router = useRouter();
 
@@ -52,7 +53,7 @@ import {hasPermission} from '../../auth_utils';
 
     const goToApplication = (group) => {
         router.push({
-            name: 'ApplicationDetail', 
+            name: 'ApplicationDetail',
             params:{
                 uuid: group.uuid
             }
@@ -66,7 +67,7 @@ import {hasPermission} from '../../auth_utils';
 
     const judgementFor = group => {
         if (!group.submission.judgements) return {};
-        
+
         return group.submission.judgements.find(j => j.person_id == props.user.person.id);
     }
 
@@ -79,10 +80,10 @@ import {hasPermission} from '../../auth_utils';
     <div>
         <h2>Application activity</h2>
         <!-- <pre>{{groups}}</pre> -->
-        <data-table 
-            :data="groups" 
-            :fields="fields" 
-            v-model:sort="sort" 
+        <data-table
+            :data="groups"
+            :fields="fields"
+            v-model:sort="sort"
             class="text-sm"
             @rowClick="goToApplication"
             row-class="cursor-pointer"
@@ -107,7 +108,7 @@ import {hasPermission} from '../../auth_utils';
                                 </div>
                                 <hr>
                                 <router-link
-                                    :to="{name: 'ApplicationDetail', params: {uuid: item.uuid}}" 
+                                    :to="{name: 'ApplicationDetail', params: {uuid: item.uuid}}"
                                     :class="{'btn btn-xs': hasPermission('ep-applications-approve')}"
                                 >
                                     {{'Review'}}
@@ -118,14 +119,14 @@ import {hasPermission} from '../../auth_utils';
                     </div>
 
                     <router-link v-else
-                        :to="{name: 'ApplicationDetail', params: {uuid: item.uuid}}" 
+                        :to="{name: 'ApplicationDetail', params: {uuid: item.uuid}}"
                         class="btn btn-xs"
                     >
                         {{hasPermission('ep-applications-manage') ? 'View' : 'Review'}}
                     </router-link>
 
                     <div>
-                        <popper hover arrow>
+                        <popper hover arrow v-if="featureIsEnabled('chair-review')">
                             <badge v-if="hasPermission('ep-applications-manage') && item.submission.status.name == 'Under Chair Review'" :color="item.submission.judgements.length == 3 ? 'green' : 'gray' ">
                                 {{item.submission.judgements.length}}/3
                             </badge>
@@ -146,7 +147,7 @@ import {hasPermission} from '../../auth_utils';
                 </div>
             </template>
         </data-table>
-    </div>        
+    </div>
 </template>
 
 <style scoped>

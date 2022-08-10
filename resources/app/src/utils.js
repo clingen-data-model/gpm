@@ -1,6 +1,8 @@
+import configs from '@/configs.json'
+
 /**
  * Normalizes the case of a string to lower, space, cased
- * @param {string} string 
+ * @param {string} string
  */
 export const normalizeCase = string => {
     if (!string) {
@@ -37,12 +39,18 @@ export const snakeCase = string => {
     return normalizeCase(string).split(' ').join('_');
 }
 
-export const camelCase = string => {
+export const studlyCase = string => {
     if (!string) {
         return string
     }
     const parts = normalizeCase(string).split(' ');
     return parts.map(str => str.charAt(0).toUpperCase()+str.slice(1)).join('');
+}
+
+export const camelCase = string => {
+    const studly = studlyCase(string);
+
+    return studly.charAt(0).toLowerCase()+studly.slice(1)
 }
 
 export const sentenceCase = str => {
@@ -72,11 +80,17 @@ export const arrayContains = (needle, haystack) => {
         .includes(needle);
 }
 
+export const featureIsEnabled = feature => {
+    console.log(camelCase(feature))
+    return configs.appFeatures[camelCase(feature)]
+}
+
 export default {
     arrayContains,
     normalizeCase,
     titleCase,
     kebabCase,
     camelCase,
-    snakeCase
+    snakeCase,
+    featureIsEnabled
 }

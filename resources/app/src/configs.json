@@ -500,7 +500,8 @@
     "appFeatures": {
         "notifyScopeChange": true,
         "specificationUpload": true,
-        "cspecSummary": false
+        "cspecSummary": false,
+        "chairReview": false
     },
     "documentsTypes": {
         "scope": {
