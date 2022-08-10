@@ -460,12 +460,6 @@
         }
     },
     "appFeatures": {
-        "coiReminders": true,
-        "emailFromMemberList": true,
-        "inviteReminders": true,
-        "memberExport": true,
-        "showCdwgs": true,
-        "showWgs": true,
         "notifyScopeChange": true,
         "specificationUpload": true,
         "cspecSummary": false
