@@ -5,6 +5,7 @@ namespace Tests\Feature\End2End\Groups;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\Comment;
+use App\Models\Permission;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Collection;
 use App\Modules\Group\Models\Group;
@@ -12,12 +13,14 @@ use Illuminate\Testing\TestResponse;
 use App\Modules\Person\Models\Person;
 use Database\Seeders\CommentTypesSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Database\Seeders\NextActionTypesTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use App\Modules\Group\Actions\ApplicationSubmitStep;
 use Database\Seeders\NextActionAssigneesTableSeeder;
-use Database\Seeders\SubmissionTypeAndStatusSeeder;
+use App\Modules\Group\Notifications\ApplicationReadyForApproverReview;
 
 class ApplicationSendToChairsTest extends TestCase
 {
@@ -29,6 +32,7 @@ class ApplicationSendToChairsTest extends TestCase
         $this->setupForGroupTest();
         (new NextActionTypesTableSeeder())->run();
         (new NextActionAssigneesTableSeeder())->run();
+        Permission::firstOrCreate(['name' => 'ep-applications-approve', 'guard' => 'web']);
 
         $this->user = $this->setupUser(permissions: ['ep-applications-manage']);
         Sanctum::actingAs($this->user);
@@ -101,7 +105,7 @@ class ApplicationSendToChairsTest extends TestCase
 
         $this->assertDatabaseHas('submissions', [
             'id' => $submission->id,
-            'submission_status_id' => config('submissions.statuses.under-chair-review.id')
+            'submission_status_id' => config('submissions.statuses.under-chair-review.id'),
         ]);
     }
 
@@ -118,12 +122,29 @@ class ApplicationSendToChairsTest extends TestCase
 
         $this->assertDatabaseHas('submissions', [
             'id' => $submission->id,
-            'sent_to_chairs_at' => Carbon::now()
+            'sent_to_chairs_at' => Carbon::now(),
+            'notes_for_chairs' => 'These are my additional notes.'
         ]);
     }
 
+    /**
+     * @test
+     */
+    public function sends_notification_to_chairs()
+    {
+        $approver1 = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
+        $approver2 = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
 
+        Notification::fake();
 
+        $this->makeRequest()->assertStatus(200);
+
+        Notification::assertSentTo(
+            [$approver1->person, $approver2->person],
+            ApplicationReadyForApproverReview::class,
+            fn ($n) => $n->group->id = $this->expertPanel->group_id
+        );
+    }
 
     private function makeRequest(): TestResponse
     {

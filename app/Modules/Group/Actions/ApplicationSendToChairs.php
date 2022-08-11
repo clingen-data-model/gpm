@@ -3,12 +3,15 @@
 namespace App\Modules\Group\Actions;
 
 use Carbon\Carbon;
+use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Log;
 use Lorisleiva\Actions\ActionRequest;
+use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use App\Modules\Group\Events\ApplicationSentToChairs;
+use App\Modules\Group\Notifications\ApplicationReadyForApproverReview;
 
 class ApplicationSendToChairs
 {
@@ -21,7 +24,7 @@ class ApplicationSendToChairs
     {
         DB::transaction(function () use ($group, $additionalComments) {
 
-            $this->notifyChairs($group, $additionalComments);
+            $this->notifyChairs($group);
             $this->createNextActionForChairs($group);
 
             $submission = $group->latestPendingSubmission;
@@ -32,6 +35,7 @@ class ApplicationSendToChairs
             $submission->update([
                 'submission_status_id' => config('submissions.statuses.under-chair-review.id'),
                 'sent_to_chairs_at' => Carbon::now(),
+                'notes_for_chairs' => $additionalComments
             ]);
 
 
@@ -54,10 +58,14 @@ class ApplicationSendToChairs
         return $request->user()->hasPermissionTo('ep-applications-manage');
     }
 
-    private function notifyChairs(Group $group, $additionalComments): void
+    private function notifyChairs(Group $group): void
     {
-        // TODO: Send notification(s) to the chairs
-        Log::warning(__METHOD__.' is not implemented');
+        $chairs = User::permission('ep-applications-approve')
+                    ->with('person')
+                    ->get()
+                    ->pluck('person');
+
+        Notification::send($chairs, new ApplicationReadyForApproverReview($group));
     }
 
     private function createNextActionForChairs(Group $group): void
