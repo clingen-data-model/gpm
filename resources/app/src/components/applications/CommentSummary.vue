@@ -34,6 +34,7 @@
                         v-for="comment in comments"
                         :key="comment.id"
                         :comment="comment"
+                        class="mb-1"
                     />
                 </td>
             </tr>

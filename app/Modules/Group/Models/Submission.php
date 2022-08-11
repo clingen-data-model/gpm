@@ -27,6 +27,7 @@ class Submission extends Model
         'submission_status_id',
         'data',
         'sent_to_chairs_at',
+        'notes_for_chairs',
         'closed_at',
         'notes',
         'response_content',

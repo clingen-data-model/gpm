@@ -39,6 +39,12 @@
             <h3>Internal Comments</h3>
             <CommentSummary :comments="commentManager.openInternal" />
         </div>
+        <div v-if="latestSubmission.notes_for_chairs">
+            <h3>Other notes from the Core Group</h3>
+            <p>
+                {{latestSubmission.notes_for_chairs}}
+            </p>
+        </div>
         <hr>
         <div class="pt-2 lg:flex lg:space-x-2 space-y-2 lg:space-y-0 items-start">
             <div class="lg:w-3/5">

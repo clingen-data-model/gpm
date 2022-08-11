@@ -15,6 +15,7 @@ class AlterSubmissionsAddSentToChairsAt extends Migration
     {
         Schema::table('submissions', function (Blueprint $table) {
             $table->datetime('sent_to_chairs_at')->nullable()->after('data');
+            $table->text('notes_for_chairs')->nullable()->after('sent_to_chairs_at');
         });
     }
 
@@ -27,6 +28,7 @@ class AlterSubmissionsAddSentToChairsAt extends Migration
     {
         Schema::table('submissions', function (Blueprint $table) {
             $table->dropColumn('sent_to_chairs_at');
+            $table->dropColumn('notes_for_chairs');
         });
     }
 }
