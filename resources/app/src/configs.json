@@ -501,7 +501,7 @@
         "notifyScopeChange": true,
         "specificationUpload": true,
         "cspecSummary": false,
-        "chairReview": false
+        "chairReview": true
     },
     "documentsTypes": {
         "scope": {
