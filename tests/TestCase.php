@@ -23,7 +23,7 @@ abstract class TestCase extends BaseTestCase
     use CreatesApplication;
     use WithFaker;
     // Helper methods
-    
+
     public function setup():void
     {
         parent::setup();
@@ -32,9 +32,9 @@ abstract class TestCase extends BaseTestCase
                 ->assertInvalid($validationErrrors);
 
             return $this;
-        });    
+        });
     }
-    
+
 
     public function makeApplicationData()
     {
@@ -64,12 +64,12 @@ abstract class TestCase extends BaseTestCase
 
         return $contacts;
     }
-    
+
     protected function addContactToApplication(ExpertPanel  $expertPanel)
     {
         $person = Person::factory()->create();
         ContactAdd::run($expertPanel->uuid, $person->uuid);
-        
+
         return $person;
     }
 
@@ -105,9 +105,9 @@ abstract class TestCase extends BaseTestCase
         }
 
         if ($properties) {
-            if (!isset($properties['step'])) {
-                $properties['step'] = $subject->current_step;
-            }
+            // if (!isset($properties['step'])) {
+            //     $properties['step'] = $subject->current_step;
+            // }
             foreach ($properties as $key => $val) {
                 $dbVal = $val;
                 if (is_array($val) || is_object($val)) {
@@ -199,7 +199,7 @@ abstract class TestCase extends BaseTestCase
 
         $this->runSeeder($seeders);
     }
-    
+
     protected function setupForGroupTest(): void
     {
         $this->seedForGroupTest();
