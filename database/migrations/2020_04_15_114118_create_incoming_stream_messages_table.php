@@ -20,13 +20,13 @@ class CreateIncomingStreamMessagesTable extends Migration
             $table->integer('partition');
             $table->integer('offset');
             $table->bigInteger('timestamp')->nullable();
-            $table->dateTime('processed_at')->nullable();
             $table->integer('error_code');
             $table->json('payload')->nullable();
-            $table->timestamps();
+            $table->dateTime('processed_at')->nullable();
 
             $table->index('key');
             $table->index('timestamp');
+            $table->timestamps();
         });
     }
 

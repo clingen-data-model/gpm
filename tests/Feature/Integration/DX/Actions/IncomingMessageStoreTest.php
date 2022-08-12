@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Integration\DataExchange\Actions;
+namespace Tests\Feature\Integration\DX\Actions;
 
 use App\DataExchange\Actions\IncomingMessageStore;
 use App\DataExchange\DxMessage;
@@ -70,7 +70,7 @@ class IncomingMessageStoreTest extends TestCase
         $this->assertDatabaseHas('incoming_stream_messages', $expectedData);
         $this->assertEquals($inStrMsg->key, $dxMessage->topic.'-'.$dxMessage->timestamp);
     }
-    
+
 
     private function makeDxMessage($data = null)
     {

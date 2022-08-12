@@ -34,6 +34,14 @@ class IncomingStreamMessage extends Model
         parent::boot();
     }
 
+
+    // SCOPES
+    public function scopeProcessed($query)
+    {
+        return $query->whereNotNull('processed_at');
+    }
+
+
     public static function newFactory()
     {
         return new IncomingStreamMessageFactory();

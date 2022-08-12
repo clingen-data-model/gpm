@@ -22,11 +22,11 @@ class MessageHandlerFactory
 
         throw new UnsupportedIncomingMessage($message);
     }
-    
+
     private function buildHandlerClassName($message)
     {
         $namespace = '\\App\\DataExchange\\Actions';
-        $className = Str::studly($message->payload->event.'Processor');
+        $className = Str::studly($message->payload->cspecDoc->status->event.'Processor');
 
         return $namespace.'\\'.$className;
     }
