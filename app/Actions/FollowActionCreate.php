@@ -7,10 +7,10 @@ use App\Models\FollowAction;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsCommand;
 
-class CreateFollowAction
+class FollowActionCreate
 {
     use AsCommand;
-    public $commandSignature = 'follow-action:create 
+    public $commandSignature = 'follow-action:create
                                     {event : event to follow.}
                                     {class : class from which to build follower.}
                                     {--args=* : Args with which to instantiate follower.}
@@ -19,10 +19,10 @@ class CreateFollowAction
                                 ';
 
     public function handle(
-        string $eventClass, 
-        String $follower, 
-        ?array $args = null, 
-        ?string $name = null, 
+        string $eventClass,
+        String $follower,
+        ?array $args = null,
+        ?string $name = null,
         ?string $description = null
     )
     {
@@ -38,7 +38,7 @@ class CreateFollowAction
             'description' => $description
         ]);
     }
-    
+
     public function asCommand(Command $command)
     {
         $event = $command->argument('event');
@@ -69,8 +69,8 @@ class CreateFollowAction
 
         try {
             $this->handle(
-                eventClass: $event, 
-                follower: $class, 
+                eventClass: $event,
+                follower: $class,
                 args: $args,
                 name: $name,
                 description: $description
@@ -79,7 +79,7 @@ class CreateFollowAction
             $command->error('failed to instantiate follower object.'."\n\t".$e->getMessage());
         }
     }
-    
+
     public function generateName(string $eventClass, string $followerClass): string
     {
         $pattern = '/App\\\|Modules\\\|Actions\\\|Events\\\\/';
@@ -88,5 +88,5 @@ class CreateFollowAction
 
         return $classNameString.'_ON_'.$eventNameString;//Str::kebab();
     }
-    
+
 }

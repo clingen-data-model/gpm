@@ -5,16 +5,16 @@ namespace App\Modules\Person\Actions;
 use App\Actions\Contracts\AsFollowAction;
 use App\Events\Event;
 use App\Models\Permission;
-use App\Actions\CreateFollowAction;
+use App\Actions\FollowActionCreate;
 use App\Modules\Person\Models\Person;
 use App\Modules\Person\Events\InviteRedeemed;
 
 class PermissionAdd implements AsFollowAction
 {
-    public function __construct(private CreateFollowAction $createFollowAction)
+    public function __construct(private FollowActionCreate $FollowActionCreate)
     {
     }
-    
+
     public function handle(Person $person, $permissionName): Person
     {
         if (!$this->isSystemPermission($permissionName)) {
@@ -22,7 +22,7 @@ class PermissionAdd implements AsFollowAction
         }
 
         if (!$person->isLinkedToUser()) {
-            $this->createFollowAction->handle(
+            $this->FollowActionCreate->handle(
                 eventClass: InviteRedeemed::class,
                 follower: PermissionAdd::class,
                 args: ['personId' => $person->id, 'permissionName' => $permissionName],
@@ -48,6 +48,6 @@ class PermissionAdd implements AsFollowAction
         $perm = Permission::where(['name' => $permissionName])->first();
         return !is_null($perm) && $perm->scope == 'system';
     }
-    
-    
+
+
 }

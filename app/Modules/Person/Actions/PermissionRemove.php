@@ -5,7 +5,7 @@ namespace App\Modules\Person\Actions;
 use App\Actions\Contracts\AsFollowAction;
 use App\Events\Event;
 use App\Models\Permission;
-use App\Actions\CreateFollowAction;
+use App\Actions\FollowActionCreate;
 use App\Modules\Person\Models\Person;
 use App\Modules\Person\Events\InviteRedeemed;
 
@@ -34,6 +34,6 @@ class PermissionRemove implements AsFollowAction
         $perm = Permission::where(['name' => $permissionName])->first();
         return !$perm || $perm->scope == 'system';
     }
-    
-    
+
+
 }

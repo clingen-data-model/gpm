@@ -3,7 +3,7 @@
 namespace App\Console\Commands\Dev;
 
 use Illuminate\Console\Command;
-use App\Actions\CreateFollowAction;
+use App\Actions\FollowActionCreate;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Events\MemberAdded;
 use App\Modules\Group\Events\MemberRemoved;
@@ -70,9 +70,9 @@ class AssignCommentPermissions extends Command
 
     private function addFollowActions(Group $group): void
     {
-        $createFollowAction = app()->make(CreateFollowAction::class);
+        $FollowActionCreate = app()->make(FollowActionCreate::class);
         try {
-            $createFollowAction->handle(
+            $FollowActionCreate->handle(
                 eventClass: MemberAdded::class,
                 follower: MemberAddSystemPermission::class,
                 args: ['permissionName' => 'ep-applications-comment', 'groupId'=>$group->id],
@@ -84,7 +84,7 @@ class AssignCommentPermissions extends Command
         }
 
         try {
-            $createFollowAction->handle(
+            $FollowActionCreate->handle(
                 eventClass: MemberRemoved::class,
                 follower: MemberRemoveSystemPermission::class,
                 args: ['permissionName' => 'ep-applications-comment', 'groupId'=>$group->id],
@@ -95,7 +95,7 @@ class AssignCommentPermissions extends Command
             $this->error($e->getMessage());
         }
         try {
-            $createFollowAction->handle(
+            $FollowActionCreate->handle(
                 eventClass: MemberRetired::class,
                 follower: MemberRemoveSystemPermission::class,
                 args: ['permissionName' => 'ep-applications-comment', 'groupId'=>$group->id],
