@@ -7,7 +7,7 @@ use App\Events\Event;
 use App\Models\FollowAction;
 use Lorisleiva\Actions\Concerns\AsListener;
 
-class RunFollowAction
+class FollowActionRun
 {
     use AsListener;
 

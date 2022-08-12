@@ -8,7 +8,7 @@ use App\Listeners\RecordEvent;
 use RecursiveIteratorIterator;
 use App\Events\RecordableEvent;
 use RecursiveDirectoryIterator;
-use App\Actions\RunFollowAction;
+use App\Actions\FollowActionRun;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
@@ -77,7 +77,7 @@ abstract class ModuleServiceProvider extends ServiceProvider
     {
         $eventClasses = $this->classGetter->atPath($this->getEventPath());
         foreach ($eventClasses as $class) {
-            Event::listen($class, RunFollowAction::class);
+            Event::listen($class, FollowActionRun::class);
         }
     }
 
@@ -89,7 +89,7 @@ abstract class ModuleServiceProvider extends ServiceProvider
             }
         }
     }
-    
+
 
     protected function registerCommands()
     {
@@ -113,7 +113,7 @@ abstract class ModuleServiceProvider extends ServiceProvider
     }
 
     abstract protected function getModulePath();
-    
+
     protected function getEventPath()
     {
         return $this->getModulePath().'/Events';

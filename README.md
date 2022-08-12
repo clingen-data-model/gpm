@@ -52,9 +52,9 @@ $followAction = FollowAction::create([
 ]);
 ```
 
-The `RunFollowAction` action is registered as a listener for all module events.  It checks for incomplete FollowActions persisted for an event and runs them.
+The `FollowActionRun` action is registered as a listener for all module events.  It checks for incomplete FollowActions persisted for an event and runs them.
 
-When a follower returns `true` `RunFollowAction` will set the `FollowAction.completed_at` timestamp so it will not be run again.
+When a follower returns `true` `FollowActionRun` will set the `FollowAction.completed_at` timestamp so it will not be run again.
 
 If you want to create a FollowAction that always runs just have `asFollowAction` always return false.
 
