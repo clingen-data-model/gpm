@@ -70,6 +70,11 @@ class ConsumeDxMessages extends Command
         $this->info($count.' messages read.');
     }
 
+    private function printPayload($message)
+    {
+        $this->info('Payload:' . json_encode($message->payload, JSON_PRETTY_PRINT));
+    }
+
     private function printKey($message)
     {
         $this->info('Key: '.$message->key);
