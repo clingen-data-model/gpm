@@ -1,0 +1,40 @@
+{
+    "cspecDoc": {
+        "affiliationId": "59999",
+        "approvalDate": "2022-06-01T22:05:19.101Z",
+        "cspecEditorUILink": "https:\/\/genboree.org\/cspec\/ed\/svi\/doc\/GN024",
+        "cspecId": "GN024",
+        "cspecRegApiLink": "https:\/\/genboree.org\/cspec\/api\/SequenceVariantInterpretation\/id\/GN024",
+        "cspecRegUILink": "https:\/\/genboree.org\/cspec\/ui\/svi\/doc\/GN024",
+        "name": "ClinGen CDH1  Expert Panel Specifications to the ACMG\/AMP Variant Interpretation Guidelines for MLH1 Version 1.0.0",
+        "ruleSets": [
+            {
+                "ruleSetId": "1415183930",
+                "ruleSetRegApiLink": "https:\/\/genboree.org\/cspec\/api\/RuleSet\/id\/1415183930",
+                "ruleSetRegUiLink": "https:\/\/genboree.org\/cspec\/ui\/svi\/ruleset\/1415183930",
+                "scope": [
+                    {
+                        "diseases": [
+                            {
+                                "adjective": "Autosomal dominant inheritance with maternal imprinting (HP:0012275)",
+                                "preferredModeOfInheritance": "Autosomal dominant inheritance",
+                                "preferredMondoId": "MONDO:0014997"
+                            }
+                        ],
+                        "gene": "MLH1",
+                        "preferredTranscript": "NM_000249.4"
+                    }
+                ]
+            }
+        ],
+        "status": {
+            "current": "Classification Rules In Prep",
+            "event": "classified-rules-withdrawn",
+            "modifiedAt": "2022-06-16T21:50:55.572Z",
+            "previous": "Classification Rules Submitted"
+        },
+        "version": "1.0.0"
+    },
+    "eventTime": "2022-07-25T10:31:26.309Z",
+    "uuid": "0b2fe16f-0558-480f-98a6-c11fa6af9dc9"
+}

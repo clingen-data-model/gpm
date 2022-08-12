@@ -1,0 +1,37 @@
+{
+    "cspecDoc": {
+        "affiliationId": "59999",
+        "approvalDate": "01-05-2022",
+        "cspecEditorUILink": "https:\/\/cspec.genome.network\/cspec\/ed\/svi\/doc\/GN022",
+        "cspecId": "GN022",
+        "cspecRegApiLink": "https:\/\/cspec.genome.network\/cspec\/api\/SequenceVariantInterpretation\/id\/GN022",
+        "cspecRegUILink": "https:\/\/cspec.genome.network\/cspec\/ui\/svi\/doc\/GN022",
+        "name": "ClinGen FBN1 Expert Panel Specifications to the ACMG\/AMP Variant Interpretation Guidelines Version 1",
+        "ruleSets": [
+            {
+                "ruleSetId": "643243099",
+                "ruleSetRegApiLink": "https:\/\/cspec.genome.network\/cspec\/api\/RuleSet\/id\/643243099",
+                "ruleSetRegUiLink": "https:\/\/cspec.genome.network\/cspec\/ui\/svi\/ruleset\/643243099",
+                "scope": [
+                    {
+                        "diseases": [
+                            {
+                                "preferredMondoId": "MONDO:0007947"
+                            }
+                        ],
+                        "gene": "FBN1",
+                        "preferredTranscript": "NM_000138"
+                    }
+                ]
+            }
+        ],
+        "status": {
+            "current": "Released",
+            "event": "cspec-released",
+            "previous": "Approved For Release"
+        },
+        "version": "1.0.0"
+    },
+    "eventTime": "2022-07-25T10:35:10.476Z",
+    "uuid": "ff3f5c5d-1cf8-49ad-b0c6-5f11d041e51c"
+}
