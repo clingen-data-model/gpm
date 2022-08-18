@@ -24,3 +24,9 @@ if (!function_exists('carbonToString')) {
         return $carbon ? $carbon->format($format) : null;
     }
 }
+
+if (!function_exists('test_path')) {
+    function test_path(string $path) {
+        return base_path('tests/'.$path);
+    }
+}
