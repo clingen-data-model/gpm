@@ -30,9 +30,7 @@ class DxConsumeTest extends TestCase
             $this->messages[] = new DxMessage('a', time(), file_get_contents($filesDir.'/'.$file), $idx);
         }
 
-        app()->bind(MessageStream::class, function () {
-            return new FakeMessageStream($this->messages);
-        });
+        app()->bind(MessageStream::class, fn () => new FakeMessageStream($this->messages));
 
         $this->messageProcessor = new FakeMessageProcessor();
         app()->instance(MessageProcessor::class, $this->messageProcessor);

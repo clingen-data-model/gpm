@@ -17,7 +17,7 @@ class ClassifiedRulesApprovedProcessor
 
     public function handle(IncomingStreamMessage $message): void
     {
-        $expertPanel = ExpertPanel::findByAffiliationId($message->payload->affiliationId);
+        $expertPanel = ExpertPanel::findByAffiliationId($message->payload->cspecDoc->affiliationId);
         if (!$expertPanel) {
             Log::error('Received pilot-rules-approved event about EP with unkown affiliation id '.$message->payload->cspecDoc->affiliationId);
             return;

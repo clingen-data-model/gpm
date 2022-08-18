@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use App\Actions\SendInviteReminders;
 use Illuminate\Console\Scheduling\Schedule;
 use App\Console\Commands\Dev\NotifyDeployed;
+use App\DataExchange\Actions\DxConsume;
 use App\Modules\Group\Actions\ApplicationSubmissionRemindChairs;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -34,6 +35,11 @@ class Kernel extends ConsoleKernel
                 Log::debug('scheduler is running.');
             }
         })->everyMinute();
+
+        $schedule->call(function () {
+            $consumeDxMessages = app()->make(DxConsume::class);
+            $consumeDxMessages->handle(array_values(config('dx.topics.incoming')));
+        })->hourly();
 
         $schedule->job(new SendCoiReminders)
             ->weeklyOn(1, '6:00');

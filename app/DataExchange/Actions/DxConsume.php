@@ -11,7 +11,7 @@ class DxConsume
     {
     }
 
-    public function handle(array $topics): void
+    public function handle(array $topics, ?int $limit = null): void
     {
 
         foreach ($topics as $topic) {
@@ -22,5 +22,4 @@ class DxConsume
             $this->processor->handle($message);
         }
     }
-
 }
