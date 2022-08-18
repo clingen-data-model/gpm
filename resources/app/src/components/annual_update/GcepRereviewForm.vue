@@ -2,17 +2,17 @@
     <div>
         <p>Gene Curation Expert Panels are expected to review current clinical validity classifications for their approved genes based on the guidance provided in the <gcep-recuration-process-link />. Please indicate the following:</p>
 
-        <input-row 
+        <input-row
             :disabled="isComplete"
             label="Have you begun recuration?"
             v-model="workingCopy.data.recuration_begun"
             type="radio-group"
             :options="[{value:'yes'},{value:'no'}]"
-            :errors="errors.recuration_begun" 
+            :errors="errors.recuration_begun"
             vertical
         />
 
-        <input-row 
+        <input-row
             :disabled="isComplete"
             v-model="workingCopy.data.recuration_designees"
             :errors="errors.recuration_designees"
