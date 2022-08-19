@@ -99,6 +99,16 @@ class KafkaMessageStream implements MessageStream
         return $this;
     }
 
+    public function addTopics(array $topics): MessageStream
+    {
+        foreach ($topics as $topic) {
+            $this->addTopic($topic);
+        }
+
+        return $this;
+    }
+
+
     /**
      * Remove topic from topic list
      *

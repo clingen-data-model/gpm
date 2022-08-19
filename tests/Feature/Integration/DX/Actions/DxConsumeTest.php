@@ -4,18 +4,26 @@ namespace Tests\Feature\Integration\DX\Actions;
 
 use Tests\TestCase;
 use App\DataExchange\DxMessage;
+use Illuminate\Support\Facades\Bus;
 use Tests\Dummies\FakeMessageStream;
 use App\DataExchange\Actions\DxConsume;
 use Tests\Dummies\FakeMessageProcessor;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\DataExchange\Contracts\MessageStream;
+use Lorisleiva\Actions\Decorators\JobDecorator;
 use App\DataExchange\Contracts\MessageProcessor;
 use App\DataExchange\Models\IncomingStreamMessage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\DataExchange\Actions\IncomingMessageProcess;
 
+/**
+ * @group dx
+ */
 class DxConsumeTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected array $messages;
 
     public function setup():void
     {
@@ -32,21 +40,25 @@ class DxConsumeTest extends TestCase
 
         app()->bind(MessageStream::class, fn () => new FakeMessageStream($this->messages));
 
-        $this->messageProcessor = new FakeMessageProcessor();
-        app()->instance(MessageProcessor::class, $this->messageProcessor);
     }
 
     /**
      * @test
      */
-    public function consumes_dx_messages_and_stores()
+    public function consumes_dx_messages_and_dispatches_processor()
     {
+        // $messageProcessor = new FakeMessageProcessor();
+        // app()->instance(MessageProcessor::class, $messageProcessor);
 
+        config(['queue.default' => 'redis']);
+        Bus::fake();
         $action = app()->make(DxConsume::class);
 
         $action->handle(topics: ['a', 'b', 'c']);
 
-        $this->assertEquals(count($this->messages), count($this->messageProcessor->messages));
+        Bus::assertDispatchedTimes(JobDecorator::class, count($this->messages));
+        Bus::assertDispatched(JobDecorator::class, function ($j) {
+            return implementsInterface($j->getAction(), MessageProcessor::class);
+        });
     }
-
 }

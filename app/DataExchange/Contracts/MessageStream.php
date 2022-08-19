@@ -17,6 +17,15 @@ interface MessageStream
     public function addTopic(String $topic): MessageStream;
 
     /**
+     * Add multiple topics at once.
+     *
+     * @param array $topics
+     *
+     * @return MessageStream
+     */
+    public function addTopics(Array $topics): MessageStream;
+
+    /**
      * remove a topic subscription
      */
     public function removeTopic(String $topic): MessageStream;

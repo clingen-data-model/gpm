@@ -12,6 +12,9 @@ use App\DataExchange\Contracts\MessageStream;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+/**
+ * @group dx
+ */
 class ConsumeCspecMessagesTest extends TestCase
 {
     use RefreshDatabase;
@@ -54,8 +57,6 @@ class ConsumeCspecMessagesTest extends TestCase
             'current_step' => 2
         ]);
     }
-
-
 
     /**
      * @test

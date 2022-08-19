@@ -12,12 +12,17 @@ class FakeMessageStream implements MessageStream
     }
 
 
-    public function addTopic($topic): MessageStream
+    public function addTopic(string $topic): MessageStream
     {
         return $this;
     }
 
-    public function removeTopic($argument): MessageStream
+    public function addTopics(array $topics): MessageStream
+    {
+        return $this;
+    }
+
+    public function removeTopic(string $argument): MessageStream
     {
         return $this;
     }
