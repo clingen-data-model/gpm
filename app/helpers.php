@@ -30,3 +30,9 @@ if (!function_exists('test_path')) {
         return base_path('tests/'.$path);
     }
 }
+
+if (!function_exists('implementsInteface')) {
+    function implementsInterface($object, $interface) {
+        return in_array($interface, class_implements($object));
+    }
+}
