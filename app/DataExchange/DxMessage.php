@@ -2,9 +2,10 @@
 
 namespace App\DataExchange;
 
+use Illuminate\Contracts\Support\Arrayable;
 use phpDocumentor\Reflection\Types\Boolean;
 
-class DxMessage
+class DxMessage implements Arrayable
 {
     public function __construct(
         public String $topic,
@@ -59,4 +60,16 @@ class DxMessage
             errorString: $message->errstr()
         );
     }
+
+    public function toArray(): array
+    {
+        return [
+            'topic' => $this->topic,
+            'key' => $this->key,
+            'timestamp' => $this->timestamp,
+            'payload' => $this->payload,
+            'offset' => $this->offset
+        ];
+    }
+
 }
