@@ -47,9 +47,6 @@ class DxConsumeTest extends TestCase
      */
     public function consumes_dx_messages_and_dispatches_processor()
     {
-        // $messageProcessor = new FakeMessageProcessor();
-        // app()->instance(MessageProcessor::class, $messageProcessor);
-
         config(['queue.default' => 'redis']);
         Bus::fake();
         $action = app()->make(DxConsume::class);
