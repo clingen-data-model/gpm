@@ -260,6 +260,17 @@ class ExpertPanel extends Entity
         return this.hasPendingSubmission && this.pendingSubmission.type.name == stepNumberToName[step];
     }
 
+    latestPendingSubmissionForStep(step) {
+        const stepName = (typeof step == 'number') ? stepNumberToName[step] : step;
+        const stepSubmissions = this.submissions.filter(s => s.type.name = stepName);
+
+        if (stepSubmissions.length == 0) {
+            return null;
+        }
+
+        return stepSubmissions[stepSubmissions.length - 1];
+    }
+
     stepHasBeenSubmitted(step) {
         return this.submissions.some(s => s.type.name == stepNumberToName[step])
     }
