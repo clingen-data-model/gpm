@@ -37,6 +37,9 @@ class Kernel extends ConsoleKernel
         })->everyMinute();
 
         $schedule->call(function () {
+            if (!config('dx.consume')) {
+                return;
+            }
             $consumeDxMessages = app()->make(DxConsume::class);
             $consumeDxMessages->handle(array_values(config('dx.topics.incoming')));
         })->hourly();

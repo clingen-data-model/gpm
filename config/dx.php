@@ -29,5 +29,5 @@ return [
     'schema_versions' => [
         'gpm-general-events' => '1.1.0'
     ]
-    
+
 ];

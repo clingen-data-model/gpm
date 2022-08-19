@@ -27,7 +27,34 @@ class ConsumeCspecMessagesTest extends TestCase
                             'step_1_approval_date' => Carbon::now(),
                             'affiliation_id' => '59999',
                         ]);
+        config(['dx.consume' => true]);
     }
+
+    /**
+     * @test
+     */
+    public function does_not_consume_if_dx_consume_config_is_false()
+    {
+        config(['dx.consume' => false]);
+        app()->bind(MessageStream::class, fn () => new FakeMessageStream([
+            new DxMessage(
+                'cspec_general_events_test',
+                time(),
+                file_get_contents(test_path('files/cspec/cspec-classified-rules-approved.json')),
+                1
+            ),
+        ]));
+
+        Carbon::setTestNow('2022-08-18 00:00:00');
+        Artisan::call('schedule:run');
+
+        $this->assertDatabaseHas('expert_panels', [
+            'id' => $this->vcep->id,
+            'step_2_approval_date' =>  null,
+            'current_step' => 2
+        ]);
+    }
+
 
 
     /**
