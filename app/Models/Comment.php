@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\CommentType;
 use App\Models\Traits\HasComments;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -13,7 +14,7 @@ class Comment extends Model implements ContractsHasComments
 {
     use HasFactory;
     use SoftDeletes;
-    use HasComments; 
+    use HasComments;
 
     public $fillable = [
         'content',
@@ -48,7 +49,7 @@ class Comment extends Model implements ContractsHasComments
      */
     public function type(): BelongsTo
     {
-        return $this->belongsTo(CommentTYpe::class, 'comment_type_id');
+        return $this->belongsTo(CommentType::class, 'comment_type_id');
     }
 
     public function creator()
@@ -87,28 +88,28 @@ class Comment extends Model implements ContractsHasComments
         }
         $query->where('comment_type_id', $typeId);
     }
-    
+
 
     public function scopeRequiredRevision($query)
     {
         return $query->ofType(config('comments.types.required-revision.id'));
     }
-    
+
     public function scopeSuggestion($query)
     {
         return $query->ofType(config('comments.types.suggestion.id'));
     }
-    
+
     public function scopeInternalComment($query)
     {
         return $query->ofType(config('comments.types.internal-comment.id'));
     }
-    
+
     public function scopeForEp($query)
     {
         return $query->ofType([config('comments.types.suggestion.id'), config('comments.types.required-revision.id')]);
     }
-    
+
 
     /**
      * ACCESSORS
@@ -118,11 +119,11 @@ class Comment extends Model implements ContractsHasComments
     {
         return (bool)$this->resolved_at;
     }
-    
+
     public function getIsPendingAttribute(): bool
     {
         return is_null($this->resolved_at);
     }
-    
-    
+
+
 }
