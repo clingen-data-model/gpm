@@ -14,7 +14,7 @@ class ConsumeDxMessages extends Command
      *
      * @var string
      */
-    protected $signature = 'kafka:consume {actions*} {--topic=* : Topic to consume} {--offset= : offset to assign} {--limit=10 : number of messages to read before stopping.}';
+    protected $signature = 'kafka:consume {actions*} {--topic=* : Topic to consume} {--offset= : offset to assign} {--limit= : number of messages to read before stopping.}';
 
     /**
      * The console command description.
@@ -58,7 +58,8 @@ class ConsumeDxMessages extends Command
         }
 
         $count = 0;
-        foreach($messageStream->consumeSomeMessages($limit) as $message) {
+        $generator = $limit ? $messageStream->consumeSomeMessages($limit) :  $messageStream->consume();
+        foreach($generator as $message) {
             $count++;
             foreach ($actions as $action) {
                 if (method_exists($this, $action)) {
@@ -80,6 +81,12 @@ class ConsumeDxMessages extends Command
         $this->info('Key: '.$message->key);
     }
 
+    private function persistSingleMessage($message): void
+    {
+        $filepath = base_path('consumed_messages/'.($message->key ?? time()).'.json');
+        dump($filepath);
+        file_put_contents($filepath, $message->toJson(JSON_PRETTY_PRINT));
+    }
 
     private function solicitTopics(\RdKafka\KafkaConsumer $kafkaConsumer)
     {

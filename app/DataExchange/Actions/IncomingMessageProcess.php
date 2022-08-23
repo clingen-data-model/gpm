@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\DataExchange\MessageHandlerFactory;
 use App\DataExchange\Contracts\MessageProcessor;
+use App\DataExchange\Exceptions\DataSynchronizationException;
 use App\DataExchange\Models\IncomingStreamMessage;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\DataExchange\Exceptions\UnsupportedIncomingMessage;
@@ -42,7 +43,9 @@ class IncomingMessageProcess implements MessageProcessor
             } catch (ModelNotFoundException $e) {
                 Log::error('Received "classified-rules-approved" event from CSPEC for expert panel with affiliation_id '.$message->payload->affiliationId.', but not found.');
             } catch (UnsupportedIncomingMessage $e) {
-                Log::error($e->getMessage());
+                Log::warning($e->getMessage());
+            } catch (DataSynchronizationException $e) {
+                Log::error('Recieved a message '.$message->key.' from '.$message->topic.' with data out of sync with GPM data', $message->toArray());
             }
 
             // return the original message

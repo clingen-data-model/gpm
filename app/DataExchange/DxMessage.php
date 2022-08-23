@@ -3,9 +3,11 @@
 namespace App\DataExchange;
 
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
+use JsonSerializable;
 use phpDocumentor\Reflection\Types\Boolean;
 
-class DxMessage implements Arrayable
+class DxMessage implements Arrayable, JsonSerializable, Jsonable
 {
     public function __construct(
         public String $topic,
@@ -67,9 +69,20 @@ class DxMessage implements Arrayable
             'topic' => $this->topic,
             'key' => $this->key,
             'timestamp' => $this->timestamp,
-            'payload' => $this->payload,
+            'payload' => $this->__get('payload'),
             'offset' => $this->offset
         ];
     }
+
+    public function jsonSerialize(): mixed
+    {
+        return json_encode($this->toArray());
+    }
+
+    public function toJson($options = 0)
+    {
+        return json_encode($this->toArray(), $options);
+    }
+
 
 }

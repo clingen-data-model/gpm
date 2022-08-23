@@ -25,7 +25,7 @@ class ApplicationActivityTest extends TestCase
         $this->seed(NextActionAssigneesTableSeeder::class);
         $this->seed(NextActionTypesTableSeeder::class);
         $this->submit = app()->make(ApplicationSubmitStep::class);
-        
+
         $this->user = $this->setupUser();
         Sanctum::actingAs($this->user);
 
@@ -85,28 +85,28 @@ class ApplicationActivityTest extends TestCase
             ->assertStatus(200)
             ->assertJsonCount(1, 'data');
     }
-    
+
     private function setupAllEpsWithSubmissions()
     {
         $ep = ExpertPanel::factory()->create();
-        $epAndSub1 = [...$this->setupExpertPanelAndSubmission()];
-        $epAndSub2 = [...$this->setupExpertPanelAndSubmission()];
+        $epAndSub1 = $this->setupExpertPanelAndSubmission();
+        $epAndSub2 = $this->setupExpertPanelAndSubmission();
         $epAndSub2['submission']->update([
             'submission_status_id' => config('submissions.statuses.under-chair-review.id')
         ]);
-        $epAndSub3 = [...$this->setupExpertPanelAndSubmission()];
+        $epAndSub3 = $this->setupExpertPanelAndSubmission();
         $epAndSub3['submission']->update([
             'submission_status_id' => config('submissions.statuses.revisions-requested.id')
         ]);
-        $epAndSub4 = [...$this->setupExpertPanelAndSubmission()];
+        $epAndSub4 = $this->setupExpertPanelAndSubmission();
         $epAndSub4['submission']->update([
             'submission_status_id' => config('submissions.statuses.approved.id')
         ]);
 
         return [$epAndSub1, $epAndSub2, $epAndSub3, $epAndSub4];
     }
-    
-    
+
+
     private function setupExpertPanelAndSubmission($expertPanel = null, $submitter = null): array
     {
         $expertPanel = $expertPanel ?? ExpertPanel::factory()->vcep()->create();
@@ -115,14 +115,14 @@ class ApplicationActivityTest extends TestCase
 
         return ['expertPanel' => $expertPanel, 'submission' => $submission];
     }
-    
+
 
 
     private function makeRequest(): TestResponse
     {
         return $this->json('GET', '/api/groups/applications');
     }
-    
-    
-    
+
+
+
 }

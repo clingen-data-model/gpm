@@ -16,19 +16,27 @@ class MessageHandlerFactoryTest extends TestCase
         parent::setup();
         $this->factory = app()->make(MessageHandlerFactory::class);
     }
-    
+
     /**
      * @test
      */
     public function throws_unsupportedIncomingMessage_exception_if_type_not_supported()
     {
-        $message = new IncomingStreamMessage(['payload' => ['event' => 'snow-storm']]);
+        $message = new IncomingStreamMessage([
+            'payload' => [
+                'cspecDoc' => [
+                    'status' => [
+                        'event' => 'snow-storm'
+                    ]
+                ]
+            ]
+        ]);
 
         $this->expectException(UnsupportedIncomingMessage::class);
 
         $this->factory->make($message);
     }
-    
+
 
     /**
      * @test
@@ -36,9 +44,11 @@ class MessageHandlerFactoryTest extends TestCase
     public function returns_event_type_based_handler()
     {
         $message = new IncomingStreamMessage([
-            'payload' => (object)[
-                'event' => 'classified-rules-approved'
-            ],
+            'payload' => (object)['cspecDoc' => [
+                'status' => [
+                    'event' => 'classified-rules-approved'
+                ]
+            ]],
             'error_code' => 0
         ]);
 

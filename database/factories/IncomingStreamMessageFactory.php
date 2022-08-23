@@ -41,9 +41,11 @@ class IncomingStreamMessageFactory extends Factory
             return [
                 'key' => null,
                 'payload' => [
-                    'uuid' => $this->faker->uuid,
-                    'event' => 'classified-rules-approved',
-                    'affiliationId' => '50666',
+                    'cspecDoc' => [
+                        'uuid' => $this->faker->uuid,
+                        'event' => 'classified-rules-approved',
+                        'affiliationId' => '50666',
+                    ]
                 ]
             ];
         });
@@ -55,9 +57,11 @@ class IncomingStreamMessageFactory extends Factory
             return [
                 'key' => null,
                 'payload' => [
-                    'uuid' => $this->faker->uuid,
-                    'event' => 'pilot-rules-approved',
-                    'affiliationId' => '50666',
+                    'cspecDoc' => [
+                        'uuid' => $this->faker->uuid,
+                        'event' => 'pilot-rules-approved',
+                        'affiliationId' => '50666',
+                    ]
                 ]
             ];
         });
