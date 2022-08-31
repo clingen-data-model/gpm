@@ -3,14 +3,16 @@ namespace App\Modules\Group\Events;
 
 use App\Modules\Group\Models\Group;
 use Illuminate\Queue\SerializesModels;
+use App\Modules\Group\Events\GeneEvent;
 use App\Modules\ExpertPanel\Models\Gene;
 use App\Modules\Group\Events\GroupEvent;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
+use App\Modules\Group\Events\GeneEventInterface;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use App\Modules\Group\Events\PublishableApplicationEvent;
 
-class GeneRemovedApproved extends GroupEvent implements GeneEvent //, PublishableApplicationEvent
+class GeneRemovedApproved extends GeneEvent implements GeneEventInterface //, PublishableApplicationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -27,12 +29,12 @@ class GeneRemovedApproved extends GroupEvent implements GeneEvent //, Publishabl
     {
         return 'Gene '.$this->gene->gene_symbol.' removed from '.$this->group->name.' scope.';
     }
-    
+
     public function getProperties(): ?array
     {
         return $this->gene->toArray(0);
     }
-    
+
     /**
      * Get the channels the event should broadcast on.
      *
