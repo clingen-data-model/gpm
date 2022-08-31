@@ -52,15 +52,9 @@ class ApplicationEventV1MessageFactory implements MessageFactoryInterface
     {
         return $this->make(
             eventType: $event->getEventType(),
-            message: $this->buildMessageFromEvent($event),
+            message: $event->getPublishableMessage(),
             schemaVersion: null,
             date: $event->getLogDate()
         );
     }
-
-    private function buildMessageFromEvent(PublishableApplicationEvent $event)
-    {
-        return $event->getPublishableMessage();
-    }
-
 }
