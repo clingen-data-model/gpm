@@ -9,6 +9,7 @@ use Database\Seeders\UsersTableSeeder;
 use Database\Seeders\GroupStatusSeeder;
 use Database\Seeders\InstitutionSeeder;
 use Database\Seeders\DocumentTypesTableSeeder;
+use Database\Seeders\SpecificationStatusSeeder;
 use Database\Seeders\GroupRoleAndPermissionsSeeder;
 use Database\Seeders\NextActionAssigneesTableSeeder;
 
@@ -25,6 +26,7 @@ class DatabaseSeeder extends Seeder
         $seederClasses = array_merge($seederClasses, [
             GroupRoleAndPermissionsSeeder::class,
             RulesetStatusSeeder::class,
+            SpecificationStatusSeeder::class,
             RolesAndPermissionsSeeder::class,
             // UsersTableSeeder::class,
             CdwgsTableSeeder::class,
@@ -50,7 +52,7 @@ class DatabaseSeeder extends Seeder
         if (app()->environment('testing')) {
             array_push($seederClasses, AnnualUpdateWindowSeeder::class);
         }
-        
+
         foreach ($seederClasses as $seederClass) {
             $seeder = new $seederClass();
             $seeder->run();

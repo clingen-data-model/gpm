@@ -23,6 +23,7 @@ class RulesetStatus extends Model
      */
     protected $fillable = [
         'name',
+        'event',
         'description',
     ];
 
@@ -34,4 +35,10 @@ class RulesetStatus extends Model
     protected $casts = [
         'id' => 'integer',
     ];
+
+    public static function findByEvent(string $event): ?RulesetStatus
+    {
+        return self::where('event', $event)->first();
+    }
+
 }

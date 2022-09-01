@@ -18,9 +18,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 class Ruleset extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
     protected $table = 'specification_rulesets';
+
+    protected $primaryKey = 'cspec_ruleset_id';
 
     /**
      * The attributes that are mass assignable.

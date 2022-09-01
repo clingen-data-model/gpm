@@ -5,13 +5,15 @@ namespace Tests\Feature\Integration\DX\Actions;
 use Carbon\Carbon;
 use Tests\TestCase;
 use Faker\Provider\el_CY\Person;
+use App\Modules\Group\Models\GroupMember;
+use Database\Seeders\RulesetStatusSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Database\Seeders\SpecificationStatusSeeder;
 use App\DataExchange\Models\IncomingStreamMessage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\DataExchange\Exceptions\DataSynchronizationException;
 use App\DataExchange\Actions\ClassifiedRulesApprovedProcessor;
-use App\Modules\Group\Models\GroupMember;
 
 class ClassifiedRulesApprovedProcessorTest extends TestCase
 {
@@ -23,17 +25,11 @@ class ClassifiedRulesApprovedProcessorTest extends TestCase
         parent::setup();
         $this->setupForGroupTest();
 
-        $this->expertPanel = ExpertPanel::factory()->vcep()->create(['affiliation_id' => '50666']);
-        // $groupMember = GroupMember::factory()->create(['group_id' => $this->expertPanel->group_id, 'is_contact' => 1]);
-        $this->message = IncomingStreamMessage::factory()->draftApproved()->make();
-        
-        $payload = (array)$this->message->payload;
-        $payload = array_merge($payload, [
-            'uuid' => $this->expertPanel->uuid,
-            'affiliationId' => $this->expertPanel->affiliation_id
-        ]);
+        (new SpecificationStatusSeeder)->run();
+        (new RulesetStatusSeeder)->run();
 
-        $this->message->payload = (object)$payload;
+        $this->expertPanel = ExpertPanel::factory()->vcep()->create(['affiliation_id' => '50666']);
+        $this->message = IncomingStreamMessage::factory()->draftApproved()->make();
 
         $this->action = app()->make(ClassifiedRulesApprovedProcessor::class);
     }
@@ -97,7 +93,7 @@ class ClassifiedRulesApprovedProcessorTest extends TestCase
         $this->expertPanel->step_1_approval_date = Carbon::parse('2020-01-01');
         $this->expertPanel->current_step = 2;
         $this->expertPanel->save();
- 
+
         Carbon::setTestNow('2022-01-01');
 
         $this->message->timestamp = Carbon::now()->timestamp;

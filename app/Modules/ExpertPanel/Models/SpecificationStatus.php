@@ -23,7 +23,9 @@ class SpecificationStatus extends Model
      */
     protected $fillable = [
         'name',
+        'event',
         'description',
+        'color',
     ];
 
     /**
@@ -34,4 +36,11 @@ class SpecificationStatus extends Model
     protected $casts = [
         'id' => 'integer',
     ];
+
+    public static function findByEvent(string $event): ?SpecificationStatus
+    {
+        return self::where('event', $event)->first();
+    }
+
+
 }

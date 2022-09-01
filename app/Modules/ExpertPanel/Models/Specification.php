@@ -28,6 +28,8 @@ class Specification extends Model implements HasNotes, BelongsToExpertPanel, Con
 {
     use HasFactory, SoftDeletes, HasNotesTrait, BelongsToGroup, TraitsBelongsToExpertPanel;
 
+    protected $primaryKey = 'cspec_id';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -37,6 +39,7 @@ class Specification extends Model implements HasNotes, BelongsToExpertPanel, Con
         'cspec_id',
         'expert_panel_id',
         'status_id',
+        'name',
         'url',
     ];
 
@@ -57,7 +60,7 @@ class Specification extends Model implements HasNotes, BelongsToExpertPanel, Con
      */
     public function rulesets()
     {
-        return $this->hasMany(Ruleset::class);
+        return $this->hasMany(Ruleset::class, 'specification_id');
     }
 
     /**
