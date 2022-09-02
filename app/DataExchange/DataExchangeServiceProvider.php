@@ -9,6 +9,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Finder\Finder;
 use App\DataExchange\Kafka\KafkaConfig;
+use Lorisleiva\Actions\Facades\Actions;
 use App\DataExchange\Kafka\KafkaConsumer;
 use App\DataExchange\Kafka\KafkaProducer;
 use App\DataExchange\Listeners\PushMessage;
@@ -50,6 +51,11 @@ class DataExchangeServiceProvider extends ServiceProvider
         }
 
         $this->bindInstances();
+
+        if ($this->app->runningInConsole()) {
+            dump('register actions as commands.');
+            Actions::registerCommands(__DIR__.'/Actions');
+        }
     }
 
     protected function bindInstances()
