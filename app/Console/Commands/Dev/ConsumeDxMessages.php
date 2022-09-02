@@ -14,7 +14,7 @@ class ConsumeDxMessages extends Command
      *
      * @var string
      */
-    protected $signature = 'kafka:consume {actions*} {--topic=* : Topic to consume} {--offset= : offset to assign} {--limit= : number of messages to read before stopping.}';
+    protected $signature = 'kafka:consume {actions*} {--topic=* : Topic to consume} {--offset= : offset to assign} {--limit= : number of messages to read before stopping.} {--only-offset : Only update the topic offset}';
 
     /**
      * The console command description.
@@ -41,7 +41,8 @@ class ConsumeDxMessages extends Command
     public function handle()
     {
         $offset = $this->option('offset');
-        $limit = $this->option('limit');
+        $onlyOffset = $this->option('only-offset');
+        $limit = $onlyOffset ? 0 : $this->option('limit');
         $actions = $this->argument('actions');
 
         $kafkaConsumer = $this->buildKafkaConsumer($offset);
@@ -58,7 +59,14 @@ class ConsumeDxMessages extends Command
         }
 
         $count = 0;
-        $generator = $limit ? $messageStream->consumeSomeMessages($limit) :  $messageStream->consume();
+        $generator = !is_null($limit)
+                        ? $messageStream->consumeSomeMessages($limit)
+                        :  $messageStream->consume();
+
+        if (!is_null($limit)) {
+            $this->info('Will read '.$limit.' messages.');
+        }
+
         foreach($generator as $message) {
             $count++;
             foreach ($actions as $action) {
@@ -74,6 +82,16 @@ class ConsumeDxMessages extends Command
     private function printPayload($message)
     {
         $this->info('Payload:' . json_encode($message->payload, JSON_PRETTY_PRINT));
+    }
+
+    private function printStatus($message)
+    {
+        $this->info('Status: '.json_encode($message->payload->cspecDoc->status->current, JSON_PRETTY_PRINT));
+    }
+
+    private function printEvent($message)
+    {
+        $this->info('Event: '.json_encode($message->payload->cspecDoc->status->event, JSON_PRETTY_PRINT));
     }
 
     private function printKey($message)
@@ -103,7 +121,7 @@ class ConsumeDxMessages extends Command
         );
     }
 
-    private function buildKafkaConsumer(?int $offset = null)
+    private function buildKafkaConsumer(?int $offset = null): \RdKafka\KafkaConsumer
     {
         $rdKafkaConfig = $this->buildKafkaConfig($offset);
         return new \RdKafka\KafkaConsumer($rdKafkaConfig);
