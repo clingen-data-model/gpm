@@ -2,8 +2,9 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Database\Factories\SpecificationStatusFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -42,5 +43,9 @@ class SpecificationStatus extends Model
         return self::where('event', $event)->first();
     }
 
+    protected static function newFactory()
+    {
+        return new SpecificationStatusFactory();
+    }
 
 }

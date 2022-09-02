@@ -17,8 +17,7 @@ class SpecificationSync
         SpecificationStatus $status
     ): Specification
     {
-
-        return $expertPanel->specifications()
+        $specification = $expertPanel->specifications()
             ->updateOrCreate(
                 [
                     'cspec_id' => $cspecId,
@@ -28,5 +27,7 @@ class SpecificationSync
                     'status_id' => $status->id
                 ]
             );
+
+        return $specification;
     }
 }

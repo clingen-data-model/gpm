@@ -5,14 +5,15 @@ namespace App\Modules\ExpertPanel\Models;
 use App\Models\Contracts\HasNotes;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\ExpertPanel\Models\Ruleset;
+use Database\Factories\SpecificationFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Traits\HasNotes as HasNotesTrait;
 use App\Modules\Group\Models\Traits\BelongsToGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Modules\ExpertPanel\Models\SpecificationStatus;
 use App\Modules\ExpertPanel\Models\Contracts\BelongsToExpertPanel;
-use App\Modules\ExpertPanel\Models\Traits\BelongsToExpertPanel as TraitsBelongsToExpertPanel;
 use App\Modules\Group\Models\Contracts\BelongsToGroup as ContractsBelongsToGroup;
+use App\Modules\ExpertPanel\Models\Traits\BelongsToExpertPanel as TraitsBelongsToExpertPanel;
 
 /**
  * @property int $id
@@ -29,6 +30,7 @@ class Specification extends Model implements HasNotes, BelongsToExpertPanel, Con
     use HasFactory, SoftDeletes, HasNotesTrait, BelongsToGroup, TraitsBelongsToExpertPanel;
 
     protected $primaryKey = 'cspec_id';
+    public $incrementing = false;
 
     /**
      * The attributes that are mass assignable.
@@ -49,11 +51,9 @@ class Specification extends Model implements HasNotes, BelongsToExpertPanel, Con
      * @var array
      */
     protected $casts = [
-        'id' => 'integer',
         'expert_panel_id' => 'integer',
         'status_id' => 'integer',
     ];
-
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -69,5 +69,16 @@ class Specification extends Model implements HasNotes, BelongsToExpertPanel, Con
     public function status()
     {
         return $this->belongsTo(SpecificationStatus::class);
+    }
+
+    // ACCESSORS
+    public function getIdAttribute()
+    {
+        return $this->attributes['cspec_id'];
+    }
+
+    protected static function newFactory()
+    {
+        return new SpecificationFactory();
     }
 }

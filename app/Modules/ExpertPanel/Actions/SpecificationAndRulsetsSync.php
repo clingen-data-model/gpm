@@ -25,9 +25,14 @@ class SpecificationAndRulsetsSync
         string $name,
         string $event,
         array $rulesets
-    ): Specification
+    ): ?Specification
     {
         $specStatus = SpecificationStatus::findByEvent($event);
+        if (!$specStatus) {
+            \Log::warning('unknown specifications status event: '.$event);
+            return null;
+        }
+
         $specification = $this->syncSpecification->handle(
             cspecId: $cspecId,
             expertPanel: $expertPanel,
@@ -36,6 +41,11 @@ class SpecificationAndRulsetsSync
         );
 
         $rulesetStatus = RulesetStatus::findByEvent($event);
+        if (!$rulesetStatus) {
+            \Log::warning('unknown ruleset status event: '.$event);
+            return null;
+        }
+
         foreach ($rulesets as $ruleset) {
             $this->syncRuleset->handle(
                 specification: $specification,

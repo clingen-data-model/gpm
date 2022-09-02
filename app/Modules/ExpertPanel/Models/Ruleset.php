@@ -2,6 +2,7 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
+use Database\Factories\RulesetFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\ExpertPanel\Models\RulesetStatus;
@@ -24,6 +25,8 @@ class Ruleset extends Model
     protected $table = 'specification_rulesets';
 
     protected $primaryKey = 'cspec_ruleset_id';
+    public $incrementing = false;
+
 
     /**
      * The attributes that are mass assignable.
@@ -62,4 +65,10 @@ class Ruleset extends Model
     {
         return $this->belongsTo(RulesetStatus::class);
     }
+
+    protected static function newFactory()
+    {
+        return new RulesetFactory();
+    }
+
 }
