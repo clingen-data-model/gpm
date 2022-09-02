@@ -2,12 +2,13 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use App\DataExchange\MessageHandlerFactory;
+use App\DataExchange\Actions\ErrorMessageHandler;
 use App\DataExchange\Models\IncomingStreamMessage;
 use App\DataExchange\Exceptions\UnsupportedIncomingMessage;
 use App\DataExchange\Actions\ClassifiedRulesApprovedProcessor;
-use App\DataExchange\Actions\ErrorMessageHandler;
+use App\DataExchange\Actions\CspecDataSyncProcessor;
 
 class MessageHandlerFactoryTest extends TestCase
 {
@@ -23,6 +24,7 @@ class MessageHandlerFactoryTest extends TestCase
     public function throws_unsupportedIncomingMessage_exception_if_type_not_supported()
     {
         $message = new IncomingStreamMessage([
+            'topic' => 'test-test',
             'payload' => [
                 'cspecDoc' => [
                     'status' => [
@@ -37,6 +39,25 @@ class MessageHandlerFactoryTest extends TestCase
         $this->factory->make($message);
     }
 
+    /**
+     * @test
+     */
+    public function returns_CspecDataSyncProcessor_if_cspec_general_topic_by_default()
+    {
+        $message = new IncomingStreamMessage([
+            'topic' => config('dx.topics.incoming.cspec-general'),
+            'payload' => (object)[
+                'cspecDoc' => [
+                    'status' => [
+                        'event' => 'pilot-rules-submitted'
+                    ]
+                ]
+            ],
+            'error_code' => 0
+        ]);
+
+        $this->assertInstanceOf(CspecDataSyncProcessor::class, $this->factory->make($message));
+    }
 
     /**
      * @test

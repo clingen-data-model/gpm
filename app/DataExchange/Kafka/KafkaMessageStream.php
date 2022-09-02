@@ -4,19 +4,9 @@ declare(strict_types=1);
 
 namespace App\DataExchange\Kafka;
 
-use App\DataExchange\Events\Received;
-use App\DataExchange\Contracts\MessageConsumer;
-use App\DataExchange\Kafka\ErrorMessageHandler;
-use App\DataExchange\Kafka\NoNewMessageHandler;
-use App\DataExchange\Kafka\StoreMessageHandler;
-use App\DataExchange\Kafka\NoActionMessageHandler;
-use App\DataExchange\Actions\IncomingMessageProcess;
-use App\DataExchange\Contracts\MessageStream;
-use App\DataExchange\DxMessage;
-use App\DataExchange\Kafka\SuccessfulMessageHandler;
-use App\DataExchange\Exceptions\StreamingServiceException;
-use App\DataExchange\Exceptions\StreamingServiceEndOfFIleException;
 use Generator;
+use App\DataExchange\DxMessage;
+use App\DataExchange\Contracts\MessageStream;
 
 /**
  * @property array $topics
@@ -30,6 +20,12 @@ class KafkaMessageStream implements MessageStream
     {
     }
 
+    public function subscribe(): void
+    {
+        $this->kafkaConsumer->subscribe($this->topics);
+    }
+
+
     /**
      * Continuously listens for new messages and yields them as they are received.
      *
@@ -37,7 +33,7 @@ class KafkaMessageStream implements MessageStream
      */
     public function listen(): Generator
     {
-        $this->kafkaConsumer->subscribe($this->topics);
+        $this->subscribe();
 
         while (true) {
             $message = $this->kafkaConsumer->consume(10000);

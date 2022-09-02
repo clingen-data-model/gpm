@@ -7,14 +7,10 @@ use App\DataExchange\DxMessage;
 use Illuminate\Support\Facades\Bus;
 use Tests\Dummies\FakeMessageStream;
 use App\DataExchange\Actions\DxConsume;
-use Tests\Dummies\FakeMessageProcessor;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\DataExchange\Contracts\MessageStream;
 use Lorisleiva\Actions\Decorators\JobDecorator;
 use App\DataExchange\Contracts\MessageProcessor;
-use App\DataExchange\Models\IncomingStreamMessage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\DataExchange\Actions\IncomingMessageProcess;
 
 /**
  * @group dx
@@ -58,4 +54,22 @@ class DxConsumeTest extends TestCase
             return implementsInterface($j->getAction(), MessageProcessor::class);
         });
     }
+
+    /**
+     * @test
+     */
+    public function consums_limited_number_of_messages_if_limit_supplied()
+    {
+        config(['queue.default' => 'redis']);
+        Bus::fake();
+        $action = app()->make(DxConsume::class);
+
+        $action->handle(topics: ['a', 'b', 'c'], limit: 1);
+
+        Bus::assertDispatchedTimes(JobDecorator::class, 1);
+        Bus::assertDispatched(JobDecorator::class, function ($j) {
+            return implementsInterface($j->getAction(), MessageProcessor::class);
+        });
+    }
+
 }
