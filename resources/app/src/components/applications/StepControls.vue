@@ -8,7 +8,7 @@ import StepRequestRevisionsControl from './StepRequestRevisionsControl'
 
 const store = useStore()
 
-defineProps({
+const props = defineProps({
     step: {
         type: Number,
         required: true
@@ -21,6 +21,15 @@ defineProps({
 });
 
 const group = computed(() => store.getters['groups/currentItemOrNew'])
+
+const showSendToChairsControl = computed(() => {
+    if (!group.value) {
+        return false;
+    }
+    const latestSubmission = group.value.expert_panel.latestPendingSubmissionForStep(props.step);
+    return latestSubmission
+        && latestSubmission.submission_status_id == 1;
+})
 
 </script>
 
@@ -38,14 +47,14 @@ const group = computed(() => store.getters['groups/currentItemOrNew'])
             </StepApproveControl>
 
             <StepSendToChairsControl
-                v-if="group.expert_panel.stepHasBeenSubmitted(step)"
+                v-if="showSendToChairsControl"
                 class="flex-1"
                 :group="group"
                 @sentToChairs="() => {$emit('sentToChairs'); $emit('updated'); }"
             />
 
             <StepRequestRevisionsControl
-                v-if="group.expert_panel.stepHasBeenSubmitted(step)"
+                v-if="group.expert_panel.hasPendingSubmissionForCurrentStep"
                 class="flex-1"
                 :group="group"
                 @revisionsRequested="() => {$emit('revisionsRequested'); $emit('updated')}"

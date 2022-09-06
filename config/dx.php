@@ -17,10 +17,10 @@ return [
     'push-enable' => env('DX_ENABLE_PUSH', false),
     'warn-disabled' => env('DX_WARN_DISABLED', true),
     'consume' => env('DX_CONSUME', true),
-    # Deprecated
+    # Deprecated <--- WHY ARE YOU MARKED AS DEPRECATED?!?!?!
     'topics' => [
         'incoming' => [
-            'cspec-general' => env('DX_INCOMING_CSPEC', 'cspec-general-demo')
+            'cspec-general' => env('DX_INCOMING_CSPEC', 'cspec-general')
         ],
         'outgoing' => [
             'gpm-applications' => env('DX_OUTGOING_GPM_GENERAL_EVENTS', 'gpm-general-events')

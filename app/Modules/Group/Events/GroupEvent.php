@@ -37,7 +37,7 @@ abstract class GroupEvent extends RecordableEvent
     {
         return $this->group;
     }
-    
+
     public function getLog(): string
     {
         return 'groups';

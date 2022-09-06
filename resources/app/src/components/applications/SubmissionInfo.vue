@@ -3,6 +3,7 @@
     import {formatDate} from '@/date_utils.js'
     import {judgementColor} from '@/composables/judgement_utils.js'
     import { featureIsEnabled } from '../../utils';
+import MarkdownBlock from '../MarkdownBlock.vue';
 
     const props = defineProps({
         group: {
@@ -23,16 +24,14 @@
         return props.group.expert_panel.submissionsForStep(props.step);
     })
 
-    const firstSubmission = computed(() => {
-        if (!submissions.value) return null
+    // const firstSubmission = computed(() => {
+    //     if (!submissions.value) return null
 
-        return submissions.value[0];
-    })
+    //     return submissions.value[0];
+    // })
 
     const latestSubmission = computed(() => {
-        if (!submissions.value) return null;
-
-        return submissions.value[submissions.value.length-1];
+        return props.group.expert_panel.latestPendingSubmissionForStep(props.step);
     });
 
     const latestJudgements = computed(() => {
@@ -60,20 +59,20 @@
             v-if="stepHasBeenSubmitted"
         >
             <div v-if="!latestSubmission.sent_to_chairs_at">
-                <strong>Submitted</strong> by {{latestSubmission.submitter.name}} on
+                <strong>Submitted</strong> by {{latestSubmission.submitter ? latestSubmission.submitter.name : ''}} on
                 <strong>{{formatDate(latestSubmission.created_at)}}</strong>
-                <div class="ml-4" v-if="latestSubmission.notes">{{latestSubmission.notes}}</div>
+                <MarkdownBlock class="ml-4" v-if="latestSubmission.notes" :markdown="latestSubmission.notes" />
             </div>
-            <div v-if="latestSubmission.status.name == 'Under Chair Review'">
+            <div v-if="latestSubmission.submission_status_id == 3">
                 <strong>Sent to chairs</strong> on <strong>{{formatDate(latestSubmission.sent_to_chairs_at)}}</strong>.
             </div>
-            <div v-if="latestSubmission.status.name == 'Revisions Requested'">
+            <div v-if="latestSubmission.submission_status_id == 2">
                 <strong>{{formatDate(latestSubmission.updated_at)}}</strong> - Revisions Requested.
             </div>
-            <div v-if="featureIsEnabled('chair_review') && (latestSubmission.submission_status_id > 1 || latestSubmission.id != firstSubmission.id)">
+            <div v-if="featureIsEnabled('chair_review') && (latestSubmission.submission_status_id == 3)">
                 <hr class="my-1">
                 <strong>Latest Chair Decisions:</strong>
-                <ul class="list-disc pl-6" v-if="latestJudgements.length > 0">
+                <ul class="list-disc pl-6" v-if="latestJudgements && latestJudgements.length > 0">
                     <li v-for="judgement in latestJudgements" :key="judgement.id">
                         <strong>{{judgement.person.name}}:</strong>
                         &nbsp;

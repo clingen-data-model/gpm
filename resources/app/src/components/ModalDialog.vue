@@ -1,15 +1,15 @@
 <template>
-    <div class="fixed top-0 left-0 right-0 bottom-0 flex justify-center content-center z-50" 
+    <div class="fixed top-0 left-0 right-0 bottom-0 flex justify-center content-center z-50"
         @keyup.esc="close"
         v-show="isVisible"
     >
-        <div 
-            id="modal-backdrop" 
-            class="fixed top-0 left-0 right-0 bottom-0 bg-black opacity-50" 
+        <div
+            id="modal-backdrop"
+            class="fixed top-0 left-0 right-0 bottom-0 bg-black opacity-50"
             @click="close"
         ></div>
 
-        <div 
+        <div
             :class="modalClass"
         >
             <header class="flex border-b pt-2 pb-2 justify-between items-center" ref="header">
@@ -18,7 +18,7 @@
                         <h2 class="" v-if="title">{{title}}</h2>
                     </slot>
                 </div>
-                <button 
+                <button
                     @click="close" class="bock btn btn-xs gray mx-2"
                     v-if="!hideClose"
                 >X</button>
@@ -28,7 +28,7 @@
                 <slot name="default"></slot>
             </section>
             <div class="footer px-4 py-2" v-if="this.$slots.footer">
-                <slot name="footer" />
+                <slot name="footer"></slot>
             </div>
         </div>
     </div>
@@ -83,22 +83,22 @@ export default {
         },
         width() {
             switch (this.size) {
-                case 'xxs': 
+                case 'xxs':
                     return 'lg:w-1/6'
-                case 'xs': 
+                case 'xs':
                     return 'lg:w-1/4'
-                case 'sm': 
+                case 'sm':
                     return 'lg:w-1/3'
                 case 'md':
                     return 'lg:w-1/2'
-                case 'lg': 
+                case 'lg':
                     return 'lg:w-2/3'
                 case 'xl':
                     return 'lg:w-3/4'
-                case 'xxl': 
+                case 'xxl':
                     return 'lg:w-11/12'
                 case 'full':
-                    return 'w-full'           
+                    return 'w-full'
                 default:
                     return 'lg:w-1/2'
             }

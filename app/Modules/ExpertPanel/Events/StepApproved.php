@@ -14,10 +14,14 @@ use Illuminate\Support\Carbon as SupportCarbon;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use App\Modules\Group\Events\PublishableApplicationEvent;
+use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
 
 class StepApproved extends ExpertPanelEvent implements PublishableApplicationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+    use IsPublishableApplicationEvent {
+        getPublishableMessage as protected getBaseMessage;
+    }
 
     /**
      * Create a new event instance.
@@ -40,17 +44,17 @@ class StepApproved extends ExpertPanelEvent implements PublishableApplicationEve
     {
         return 'Step '.$this->step.' approved';
     }
-    
+
     public function getLogDate():Carbon
     {
         return $this->dateApproved;
     }
-    
+
     public function getStep()
     {
         return max(($this->application->current_step - 1), 1);
     }
-    
+
     public function getEventType(): string
     {
         switch ($this->step) {
@@ -66,6 +70,29 @@ class StepApproved extends ExpertPanelEvent implements PublishableApplicationEve
                 throw new Exception('Invalid step approved expected 1-4, received '.$this->step);
         }
     }
+
+    public function getPublishableMessage(): array
+    {
+        $message = $this->getBaseMessage();
+        if ($this->step == 1) {
+            $message['members'] = $this->group->members
+                                    ->map(function ($member) {
+                                        return $this->mapMemberForMessage($member);
+                                    })
+                                    ->toArray();
+
+            $message['scope']['statement'] = $this->group->expertPanel->scope_description;
+            $message['scope']['genes'] = $this->group->expertPanel->genes
+                                            ->map(function ($gene) {
+                                                return $this->mapGeneForMessage($gene);
+                                            })
+                                            ->toArray();
+        }
+
+        return $message;
+
+    }
+
 
     /**
      * Get the channels the event should broadcast on.

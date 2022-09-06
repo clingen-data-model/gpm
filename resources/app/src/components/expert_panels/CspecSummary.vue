@@ -1,37 +1,3 @@
-<template>
-    <div>
-        <div class="well" v-if="!hasSpecifications">
-            No specifications on record.
-        </div>
-        <div v-else>
-            <data-table 
-                :fields="specFields" 
-                :data="group.expert_panel.specifications" 
-                v-model:sort="sort"
-                class="mb-6"
-            >
-                <template v-slot:cell-id="{item}">
-                    <a :href="`https://cspec.genome.network/cspec/ui/svi/ruleset/${item.id}`" target="cspec" class="btn btn-xs">
-                        Go to rules
-                    </a>
-                </template>
-                <template v-slot:cell-status_name="{item}">
-                    <badge :color="item.status.color">{{item.status.name}}</badge>
-                </template>
-            </data-table>
-        </div>
-        <button 
-            @click="goToCspec"
-            class="btn btn-xl blue"
-            target="cspec"
-            :disabled="readonly"
-        >
-            Go to the CSpec Registry
-            <icon-external-link class="inline"></icon-external-link>
-        </button>
-            <icon-external-link class="inline"></icon-external-link>
-    </div>
-</template>
 <script>
 export default {
     name: 'CspecSummary',
@@ -105,3 +71,37 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <div class="well" v-if="!hasSpecifications">
+            No specifications on record.
+        </div>
+        <div v-else>
+            <data-table
+                :fields="specFields"
+                :data="group.expert_panel.specifications"
+                v-model:sort="sort"
+                class="mb-6"
+            >
+                <template v-slot:cell-id="{item}">
+                    <a :href="`https://cspec.genome.network/cspec/ui/svi/ruleset/${item.id}`" target="cspec" class="btn btn-xs">
+                        Go to rules
+                    </a>
+                </template>
+                <template v-slot:cell-status_name="{item}">
+                    <badge :color="item.status.color">{{item.status.name}}</badge>
+                </template>
+            </data-table>
+        </div>
+        <button
+            @click="goToCspec"
+            class="btn btn-xl blue"
+            target="cspec"
+            :disabled="readonly"
+        >
+            Go to the CSpec Registry
+            <icon-external-link class="inline"></icon-external-link>
+        </button>
+            <icon-external-link class="inline"></icon-external-link>
+    </div>
+</template>

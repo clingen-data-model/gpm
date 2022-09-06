@@ -7,9 +7,11 @@ use Tests\TestCase;
 use App\DataExchange\DxMessage;
 use Tests\Dummies\FakeMessageStream;
 use Illuminate\Support\Facades\Artisan;
+use Database\Seeders\RulesetStatusSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\DataExchange\Contracts\MessageStream;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Database\Seeders\SpecificationStatusSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
@@ -22,6 +24,8 @@ class ConsumeCspecMessagesTest extends TestCase
     public function setup():void
     {
         parent::setup();
+        (new SpecificationStatusSeeder)->run();
+        (new RulesetStatusSeeder)->run();
         $this->setupForGroupTest();
         $this->vcep = ExpertPanel::factory()
                         ->vcep()

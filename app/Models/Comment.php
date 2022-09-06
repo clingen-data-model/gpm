@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\CommentType;
 use App\Models\Traits\HasComments;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;

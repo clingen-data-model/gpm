@@ -43,9 +43,9 @@ class ApplicationEventV1MessageFactoryTest extends TestCase
         $this->expertPanel = ExpertPanel::factory()->create(['long_base_name'=>'TEST GROUP', 'affiliation_id' => 50666]);
         Gene::factory(2)->create(['expert_panel_id' => $this->expertPanel->id]);
         GroupMember::factory(2)->create(['group_id' => $this->expertPanel->group->id]);
-        
+
         $this->expertPanel->load('genes', 'group', 'group.members', 'group.members.person');
-        
+
         $this->factory = new ApplicationEventV1MessageFactory();
     }
 
@@ -71,7 +71,7 @@ class ApplicationEventV1MessageFactoryTest extends TestCase
     public function it_creates_a_member_added_message()
     {
         $event = new MemberAdded($this->expertPanel->group->members->first());
-        
+
         $message = $this->factory->makeFromEvent($event);
         $this->assertEquals('member_added', $message['event_type']);
         $this->assertExpertPanelInMessage($message);
@@ -90,7 +90,7 @@ class ApplicationEventV1MessageFactoryTest extends TestCase
         $this->assertEquals('member_role_assigned', $message['event_type']);
         $this->assertMembersInMessage([$this->expertPanel->group->members->first()], $message);
     }
-    
+
     /**
      * @test
      */
@@ -103,7 +103,7 @@ class ApplicationEventV1MessageFactoryTest extends TestCase
         $this->assertEquals('member_role_removed', $message['event_type']);
         $this->assertMembersInMessage([$this->expertPanel->group->members->first()], $message);
     }
-    
+
     /**
      * @test
      */
@@ -116,7 +116,7 @@ class ApplicationEventV1MessageFactoryTest extends TestCase
         $this->assertEquals('member_permission_granted', $message['event_type']);
         $this->assertMembersInMessage([$this->expertPanel->group->members->first()], $message);
     }
-    
+
     /**
      * @test
      */
@@ -138,7 +138,7 @@ class ApplicationEventV1MessageFactoryTest extends TestCase
     public function it_creates_a_member_removed_event()
     {
         $event = new MemberRemoved($this->expertPanel->group->members->first());
-        
+
         $message = $this->factory->makeFromEvent($event);
         $this->assertEquals('member_removed', $message['event_type']);
         $this->assertExpertPanelInMessage($message);
@@ -151,7 +151,7 @@ class ApplicationEventV1MessageFactoryTest extends TestCase
     public function it_creates_a_member_retireded_event()
     {
         $event = new MemberRetired($this->expertPanel->group->members->first());
-        
+
         $message = $this->factory->makeFromEvent($event);
         $this->assertEquals('member_retired', $message['event_type']);
         $this->assertExpertPanelInMessage($message);
@@ -164,7 +164,7 @@ class ApplicationEventV1MessageFactoryTest extends TestCase
     public function it_creates_a_member_unretireded_event()
     {
         $event = new MemberUnretired($this->expertPanel->group->members->first());
-        
+
         $message = $this->factory->makeFromEvent($event);
         $this->assertEquals('member_unretired', $message['event_type']);
         $this->assertExpertPanelInMessage($message);
@@ -182,19 +182,20 @@ class ApplicationEventV1MessageFactoryTest extends TestCase
         $this->assertExpertPanelInMessage($message);
         $this->assertGenesInMessage([$this->expertPanel->genes->first()], $message);
     }
-    
+
     /**
      * @test
      */
-    public function it_creates_a_gene_removeded_message_when_removed_gene_approved()
+    public function it_creates_a_gene_removed_message_when_removed_gene_approved()
     {
         $event = new GeneRemoved($this->expertPanel->group, $this->expertPanel->genes->first());
         $message = $this->factory->makeFromEvent($event);
+
         $this->assertEquals('gene_removed', $message['event_type']);
         $this->assertExpertPanelInMessage($message);
         $this->assertGenesInMessage([$this->expertPanel->genes->first()], $message);
     }
-    
+
     private function assertGenesInMessage($genes, $message)
     {
         $comparisonArray = isset($message['data']) ? $message['data'] : $message;
@@ -210,7 +211,7 @@ class ApplicationEventV1MessageFactoryTest extends TestCase
 
         $this->assertEquals($genesMsg, $comparisonArray['genes']);
     }
-    
+
 
     private function assertMembersInMessage($members, $message)
     {
@@ -227,7 +228,7 @@ class ApplicationEventV1MessageFactoryTest extends TestCase
         $this->assertArrayHasKey('members', $message['data']);
         $this->assertEquals($membersMsg, $message['data']['members']);
     }
-    
+
 
     private function assertExpertPanelInMessage($message)
     {

@@ -17,7 +17,7 @@
         showRejectForm.value = true;
     };
     const handleRejected = () => {
-        this.hideRejectForm();
+        hideRejectForm();
         emits('revisionsRequested');
     };
     const hideRejectForm = () => {
@@ -27,19 +27,19 @@
 </script>
 <template>
     <div>
-        <button 
+        <button
             v-if="group.expert_panel.hasPendingSubmissionForCurrentStep"
-            class="btn btn-lg w-full" 
+            class="btn btn-lg w-full"
             @click="startRejectSubmission"
             v-bind="attrs"
         >
             Request revisions
         </button>
         <teleport to="body">
-            <modal-dialog 
+            <modal-dialog
                 title="Request Revisions to Application"
-                v-model="showRejectForm" 
-                size="xl" 
+                v-model="showRejectForm"
+                size="xl"
                 @closed="$refs.rejectsubmissionform.clearForm()"
             >
                 <reject-step-form

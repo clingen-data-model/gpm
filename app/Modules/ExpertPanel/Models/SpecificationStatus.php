@@ -2,8 +2,9 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Database\Factories\SpecificationStatusFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -23,7 +24,9 @@ class SpecificationStatus extends Model
      */
     protected $fillable = [
         'name',
+        'event',
         'description',
+        'color',
     ];
 
     /**
@@ -34,4 +37,15 @@ class SpecificationStatus extends Model
     protected $casts = [
         'id' => 'integer',
     ];
+
+    public static function findByEvent(string $event): ?SpecificationStatus
+    {
+        return self::where('event', $event)->first();
+    }
+
+    protected static function newFactory()
+    {
+        return new SpecificationStatusFactory();
+    }
+
 }

@@ -89,3 +89,24 @@ The consumer adds topics to a `MessageStream` and passes consumed messages to a 
 By default the GPM binds `KafkaMessageStream` to the `MessageStream` contract, and `IncomingMessageProcess` to the `MessageProcessorContract`.
 
 `IncomingMessageProcessor` delegates creation of a `StreamMessage` model based on the `DxMessage` to `IncomingMessageStore` and uses the `MessageHandlerFactory` to instantiate message specific processing.
+
+#### Actions taken on receipt of CSPEC messages
+If the affiliation associated with the event does not exist, or has an incompatible application status a `DataSynchronizationException` is thrown, an error is logged and the message is left unprocessed.
+
+<table>
+    <tr>
+        <th>Event Type</th>
+        <th>Action Taken</th>
+        <th>Action Class</th>
+    </tr>
+    <tr>
+        <td>classified-rules-approved</td>
+        <td>Marks Draft Rules step (2) approved.</td>
+        <td>App\DataExchange\Actions\ClassifiedRulesApprovedProcessor</td>
+    </tr>
+    <tr>
+        <td>pilot-rules-approved</td>
+        <td>Marks Pilot Rules step (3) approved if not previously already approved.  If previously approved, assigns a task to review sustained curation responses.</td>
+        <td>App\DataExchange\Actions\ClassifiedRulesApprovedProcessor</td>
+    </tr>
+</table>

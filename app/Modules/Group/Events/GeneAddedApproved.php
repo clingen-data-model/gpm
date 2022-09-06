@@ -3,13 +3,14 @@ namespace App\Modules\Group\Events;
 
 use App\Modules\Group\Models\Group;
 use Illuminate\Queue\SerializesModels;
-use App\Modules\Group\Events\GroupEvent;
+use App\Modules\Group\Events\GeneEvent;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
+use App\Modules\Group\Events\GeneEventInterface;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use App\Modules\Group\Events\PublishableApplicationEvent;
 
-class GeneAddedApproved extends GroupEvent implements GeneEvent //, PublishableApplicationEvent
+class GeneAddedApproved extends GeneEvent implements GeneEventInterface //, PublishableApplicationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -26,12 +27,12 @@ class GeneAddedApproved extends GroupEvent implements GeneEvent //, PublishableA
     {
         return 'Genes added to '.$this->group->name.' scope.';
     }
-    
+
     public function getProperties(): ?array
     {
         return ['genes' => $this->genes];
     }
-    
+
     /**
      * Get the channels the event should broadcast on.
      *

@@ -2,8 +2,9 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Database\Factories\RulesetStatusFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -16,6 +17,8 @@ class RulesetStatus extends Model
 {
     use HasFactory;
 
+    protected $table = 'ruleset_statuses';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -23,6 +26,7 @@ class RulesetStatus extends Model
      */
     protected $fillable = [
         'name',
+        'event',
         'description',
     ];
 
@@ -34,4 +38,16 @@ class RulesetStatus extends Model
     protected $casts = [
         'id' => 'integer',
     ];
+
+    public static function findByEvent(string $event): ?RulesetStatus
+    {
+        return self::where('event', $event)->first();
+    }
+
+    protected static function newFactory()
+    {
+        return new RulesetStatusFactory();
+    }
+
+
 }
