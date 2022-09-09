@@ -1,11 +1,12 @@
 <template>
     <div>
         <cspec-summary v-if="cspecSummaryEnabled" :readonly="readonly" />
-        <application-upload-form 
-            :document-type-id="docTypeId" 
-            :show-notes="false" 
-            v-if="specificationUpload" 
-            :readonly="readonly" 
+        <br>
+        <application-upload-form
+            :document-type-id="docTypeId"
+            :show-notes="false"
+            v-if="specificationUpload"
+            :readonly="readonly"
         />
     </div>
 </template>
@@ -31,7 +32,7 @@ export default {
     },
     data() {
         return {
-            
+
         }
     },
     computed: {

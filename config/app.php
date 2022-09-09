@@ -119,7 +119,7 @@ return [
     'features' => [
         'notify_scope_change' => env('FEATURE_NOTIFY_SCOPE_CHANGE', true),
         'specification_upload' => env('FEATURE_SPEC_UPLOAD', true),
-        'cspec_summary' => env('FEATURE_CSPEC_SUMMARY', false),
+        'cspec_summary' => env('FEATURE_CSPEC_SUMMARY', true),
         'chair_review' => env('FEATURE_CHAIR_REVIEW', true),
     ]
 ];

@@ -28,6 +28,7 @@ use App\Modules\Group\Actions\HandleGroupCommand;
 use App\Modules\Group\Actions\AttestationGcepStore;
 use App\Modules\Group\Actions\DevFakePilotApproved;
 use App\Http\Controllers\Api\AnnualUpdateController;
+use App\Modules\ExpertPanel\Actions\SpecificationsGet;
 use App\Modules\Group\Actions\ApplicationSubmitStep;
 use App\Modules\Group\Actions\AttestationNhgriStore;
 use App\Modules\Group\Actions\EvidenceSummaryDelete;
@@ -131,7 +132,7 @@ Route::group([
                 Route::put('/{gene_id}', GeneUpdate::class);
                 Route::delete('/{gene_id}', GeneRemove::class);
             });
-        
+
             // EVIDENCE SUMMARIES
             Route::group(['prefix' => '/evidence-summaries'], function () {
                 Route::get('/', [EvidenceSummaryController::class, 'index']);
@@ -159,12 +160,12 @@ Route::group([
                 Route::put('/', MemberUpdate::class);
                 Route::post('/retire', MemberRetire::class);
                 Route::post('/unretire', MemberUnretire::class);
-                
+
                 Route::group(['prefix' => '/roles'], function () {
                     Route::post('/', MemberAssignRole::class);
                     Route::delete('/{role_id}', MemberRemoveRole::class);
                 });
-            
+
                 Route::group(['prefix' => '/permissions'], function () {
                     Route::post('/', MemberGrantPermissions::class);
                     Route::delete('/{permission_id}', MemberRevokePermission::class);
@@ -177,8 +178,9 @@ Route::group([
         Route::put('/name', GroupNameUpdate::class);
         Route::put('/parent', ParentUpdate::class);
         Route::get('/tasks', [GroupRelationsController::class, 'tasks']);
+        Route::get('/specifications', SpecificationsGet::class);
         Route::put('/status', GroupStatusUpdate::class);
-         
+
     });
 
     Route::post('/{uuid}/invites', MemberInvite::class);

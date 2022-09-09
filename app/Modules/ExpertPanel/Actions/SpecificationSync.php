@@ -14,16 +14,17 @@ class SpecificationSync
         string $name,
         string $status
     ): Specification {
-        $specification = $expertPanel->specifications()
-            ->updateOrCreate(
-                [
-                    'cspec_id' => $cspecId,
-                ],
-                [
-                    'name' => $name,
-                    'status' => $status
-                ]
-            );
+        // $specification = $expertPanel->specifications()
+        $specification = Specification::updateOrCreate(
+            [
+                'cspec_id' => $cspecId,
+            ],
+            [
+                'name' => $name,
+                'status' => $status,
+                'expert_panel_id' => $expertPanel->id
+            ]
+        );
 
         return $specification;
     }
