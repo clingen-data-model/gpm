@@ -84,6 +84,11 @@ class ConsumeDxMessages extends Command
         $this->info('Payload:' . json_encode($message->payload, JSON_PRETTY_PRINT));
     }
 
+    private function printOffset($message)
+    {
+        $this->info('Offset: '.$message->offset);
+    }
+
     private function printStatus($message)
     {
         $this->info('Status: '.json_encode($message->payload->cspecDoc->status->current, JSON_PRETTY_PRINT));
