@@ -21,11 +21,9 @@ class ConsumeCspecMessagesTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
-        (new SpecificationStatusSeeder)->run();
-        (new RulesetStatusSeeder)->run();
         $this->setupForGroupTest();
         $this->vcep = ExpertPanel::factory()
                         ->vcep()
@@ -118,5 +116,4 @@ class ConsumeCspecMessagesTest extends TestCase
             'current_step' => 4
         ]);
     }
-
 }

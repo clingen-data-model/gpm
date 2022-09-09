@@ -18,7 +18,7 @@ class PilotRulesApprovedProcessor
     public function __construct(
         private StepApprove $approveStep,
         private TaskCreate $createTask,
-        private SpecificationAndRulsetsSync $syncSpecification
+        private SpecificationAndRulsetsSync $syncSpecificationAndRulesets
     ) {
     }
 
@@ -38,11 +38,11 @@ class PilotRulesApprovedProcessor
         }
 
         // Sync the specification and rulset models to latest from CSPEC registry
-        $this->syncSpecification->handle(
+        $this->syncSpecificationAndRulesets->handle(
             cspecId: $cspecDoc->cspecId,
             expertPanel: $expertPanel,
             name: $cspecDoc->name,
-            event: $cspecDoc->status->event,
+            status: $cspecDoc->status,
             rulesets: $cspecDoc->ruleSets
         );
 

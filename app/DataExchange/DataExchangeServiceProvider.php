@@ -52,8 +52,7 @@ class DataExchangeServiceProvider extends ServiceProvider
 
         $this->bindInstances();
 
-        if ($this->app->runningInConsole()) {
-            dump('register actions as commands.');
+        if ($this->app->runningInConsole() && !$this->app->environment('testing')) {
             Actions::registerCommands(__DIR__.'/Actions');
         }
     }

@@ -36,7 +36,7 @@ class Ruleset extends Model
     protected $fillable = [
         'cspec_ruleset_id',
         'specification_id',
-        'status_id',
+        'status',
     ];
 
     /**
@@ -58,17 +58,8 @@ class Ruleset extends Model
         return $this->belongsTo(Specification::class, 'specification_id', 'cspec_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function status()
-    {
-        return $this->belongsTo(RulesetStatus::class);
-    }
-
     protected static function newFactory()
     {
         return new RulesetFactory();
     }
-
 }

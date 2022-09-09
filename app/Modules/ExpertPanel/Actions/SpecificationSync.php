@@ -8,15 +8,12 @@ use App\Modules\ExpertPanel\Models\SpecificationStatus;
 
 class SpecificationSync
 {
-
-
     public function handle(
         ExpertPanel $expertPanel,
         string $cspecId,
         string $name,
-        SpecificationStatus $status
-    ): Specification
-    {
+        string $status
+    ): Specification {
         $specification = $expertPanel->specifications()
             ->updateOrCreate(
                 [
@@ -24,7 +21,7 @@ class SpecificationSync
                 ],
                 [
                     'name' => $name,
-                    'status_id' => $status->id
+                    'status' => $status
                 ]
             );
 

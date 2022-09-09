@@ -17,7 +17,7 @@ class CspecDataSyncProcessor
 {
     use AsJob;
 
-    public function __construct(private SpecificationAndRulsetsSync $syncSpecification)
+    public function __construct(private SpecificationAndRulsetsSync $syncSpecificationAndRulesets)
     {
     }
 
@@ -32,13 +32,12 @@ class CspecDataSyncProcessor
             return;
         }
 
-        $this->syncSpecification->handle(
+        $this->syncSpecificationAndRulesets->handle(
             cspecId: $cspecDoc->cspecId,
             expertPanel: $expertPanel,
             name: $cspecDoc->name,
-            event: $cspecDoc->status->event,
+            status: $cspecDoc->status,
             rulesets: $cspecDoc->ruleSets
         );
     }
-
 }

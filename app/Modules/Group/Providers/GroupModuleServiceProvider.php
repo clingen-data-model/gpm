@@ -83,10 +83,6 @@ class GroupModuleServiceProvider extends ModuleServiceProvider
             __DIR__.'/../groups.php',
             'groups'
         );
-        $this->mergeConfigFrom(
-            __DIR__.'/../specifications.php',
-            'specifications'
-        );
     }
 
     protected function getModulePath()

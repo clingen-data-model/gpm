@@ -20,13 +20,10 @@ class ClassifiedRulesApprovedProcessorTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
-
-        (new SpecificationStatusSeeder)->run();
-        (new RulesetStatusSeeder)->run();
 
         $this->expertPanel = ExpertPanel::factory()->vcep()->create(['affiliation_id' => '50666']);
         $this->message = IncomingStreamMessage::factory()->draftApproved()->make();

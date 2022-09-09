@@ -27,7 +27,11 @@ use App\Modules\ExpertPanel\Models\Traits\BelongsToExpertPanel as TraitsBelongsT
  */
 class Specification extends Model implements HasNotes, BelongsToExpertPanel, ContractsBelongsToGroup
 {
-    use HasFactory, SoftDeletes, HasNotesTrait, BelongsToGroup, TraitsBelongsToExpertPanel;
+    use HasFactory;
+    use SoftDeletes;
+    use HasNotesTrait;
+    use BelongsToGroup;
+    use TraitsBelongsToExpertPanel;
 
     protected $primaryKey = 'cspec_id';
     public $incrementing = false;
@@ -40,7 +44,7 @@ class Specification extends Model implements HasNotes, BelongsToExpertPanel, Con
     protected $fillable = [
         'cspec_id',
         'expert_panel_id',
-        'status_id',
+        'status',
         'name',
         'url',
     ];
@@ -61,14 +65,6 @@ class Specification extends Model implements HasNotes, BelongsToExpertPanel, Con
     public function rulesets()
     {
         return $this->hasMany(Ruleset::class, 'specification_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function status()
-    {
-        return $this->belongsTo(SpecificationStatus::class);
     }
 
     // ACCESSORS
