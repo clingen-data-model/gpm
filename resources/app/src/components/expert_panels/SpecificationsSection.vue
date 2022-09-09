@@ -1,6 +1,6 @@
 <template>
     <div>
-        <cspec-summary v-if="cspecSummaryEnabled" :readonly="readonly" class="mt-4" />
+        <cspec-summary v-if="cspecSummaryEnabled" :readonly="readonly" />
 
         <collapsible class="mt-4">
             <template v-slot:title>

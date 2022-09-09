@@ -101,6 +101,7 @@ export default {
             href="https://cspec.genome.network/"
         >
             Go to the CSpec Registry
+            <icon-arrow-right class="inline" />
         </a>
 
         <note class="mt-2">It may take up to an hour for the latest updates in the CSPEC Registry to display here.</note>
