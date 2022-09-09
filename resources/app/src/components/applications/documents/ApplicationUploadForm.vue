@@ -29,9 +29,9 @@
         </table>
 
         <div v-if="!readonly">
-            <input-row label="Document type" 
-                type="select" 
-                :options="filteredTypes" 
+            <input-row label="Document type"
+                type="select"
+                :options="filteredTypes"
                 v-if="docTypeIsArray"
                 v-model="newDocument.document_type_id"
             />
@@ -40,10 +40,10 @@
                 <input type="file" ref="fileInput">
             </input-row>
             <button class="btn blue" @click="save">Upload</button>
-        </div> 
+        </div>
         <teleport to='body'>
-             <modal-dialog 
-                v-model="showDeleteConfirmation" 
+             <modal-dialog
+                v-model="showDeleteConfirmation"
                 :title="`You are about to delete ${activeDocument.filename}`"
             >
                 <div v-if="activeDocument">
@@ -52,9 +52,9 @@
                     </p>
                     <p>Are you sure you want to continue?</p>
 
-                    <button-row 
-                        submit-text="Delete Document" 
-                        @canceled="cancelDelete" 
+                    <button-row
+                        submit-text="Delete Document"
+                        @canceled="cancelDelete"
                         @submitted="commitDelete"
                     >
                     </button-row>
@@ -62,7 +62,7 @@
             </modal-dialog>
         </teleport>
 
- 
+
     </div>
 </template>
 <script>
@@ -132,7 +132,7 @@ export default {
         },
         document_type_id () {
             return (this.docTypeIsArray) ? null : this.documentTypeId;
-        } 
+        }
     },
     methods: {
         async save() {
@@ -145,6 +145,8 @@ export default {
                         data.append(key, val);
                     })
                 data.append('file', this.$refs.fileInput.files[0]);
+                data.append('document_type_id', this.documentTypeId);
+                data.forEach(v => console.log(v));
                 await this.$store.dispatch('groups/addApplicationDocument', {group: this.group, data});
 
                 this.clearForm();

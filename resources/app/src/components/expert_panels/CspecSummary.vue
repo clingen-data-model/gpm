@@ -39,7 +39,7 @@ export default {
             return this.$store.getters['groups/currentItemOrNew'];
         },
         hasSpecifications () {
-            return true;
+            return this.group.expert_panel.specifications && this.group.expert_panel.specifications.length > 0;
         },
         specifications () {
             return this.group.expert_panel.specifications;
@@ -62,8 +62,8 @@ export default {
 </script>
 <template>
     <div>
-        <div class="well" v-if="!hasSpecifications">
-            No specifications on record.
+        <div class="well mb-2" v-if="!hasSpecifications">
+            No specifications on record in the CSPEC Registry.
         </div>
         <div v-else>
             <table class="mb-2">
@@ -102,5 +102,8 @@ export default {
         >
             Go to the CSpec Registry
         </a>
+
+        <note class="mt-2">It may take up to an hour for the latest updates in the CSPEC Registry to display here.</note>
+
     </div>
 </template>
