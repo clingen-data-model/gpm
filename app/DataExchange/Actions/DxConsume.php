@@ -15,19 +15,19 @@ class DxConsume
     public $commandSignature = 'dx:consume {topic* : topic to be consumed} {--limit= : number of messages to consume}';
 
     public function __construct(
-        private MessageStream $stream,
-        private MessageProcessor $processor,
-        private Dispatcher $jobBus
     )
     {
     }
 
     public function handle(array $topics, ?int $limit = null): void
     {
-        $this->stream->addTopics($topics);
-        $generator = is_null($limit) ? $this->stream->consume() : $this->stream->consumeSomeMessages($limit);
+        $stream = app()->make(MessageStream::class);
+        $processor = app()->make(MessageProcessor::class);
+        $jobBus = app()->make(Dispatcher::class);
+        $stream->addTopics($topics);
+        $generator = is_null($limit) ? $stream->consume() : $stream->consumeSomeMessages($limit);
         foreach($generator as $message) {
-            $this->jobBus->dispatch($this->processor::makeJob($message));
+            $jobBus->dispatch($processor::makeJob($message));
         }
     }
 
