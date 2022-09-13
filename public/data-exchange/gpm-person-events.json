@@ -1,0 +1,76 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "$id": "https://epam.gpm.clinicalgenome.org/applicaiton-events.json",
+    "title": "GPM Person Event",
+    "description": "A message published to the gpm-person-events stream.",
+    "type": "object",
+    "properties": {
+        "event_type": {
+            "type": "string",
+            "title": "Type of gpm person event",
+            "enum": [
+                "created",
+                "updated",
+                "deleted"
+            ]
+        },
+        "schema_version": {"type": "string"},
+        "person": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "pattern": "^\\w{8}(-\\w{4}){3}-\\w{12}$"
+                },
+                "first_name": { "type": "string" },
+                "last_name": { "type": "string" },
+                "email": { "type": "string" },
+                "phone": { "type": "string" },
+                "institution": {
+                    "type": "object",
+                    "properties": {
+                        "id":  {
+                            "type": "string",
+                            "pattern": "^\\w{8}(-\\w{4}){3}-\\w{12}$"
+                        },
+                        "website_id": { "type": "integer" },
+                        "name": { "type": "string" },
+                        "abbreviation": { "type": "string" },
+                        "url": { "type": "string" },
+                        "address": { "type": "string" },
+                        "country": { "type": "string "}
+                    },
+                    "required": [ "id", "website_id", "name" ]
+                },
+                "credentials": { "type": "string" },
+                "biography": { "type": "string" },
+                "profile_photo": { "type": "string" },
+                "orcid_id": { "type": "string" },
+                "hypothesis_id": { "type": "string" },
+                "address": {
+                    "type": "object",
+                    "properties": {
+                        "street1": { "type": "string" },
+                        "street2": { "type": "string" },
+                        "city": { "type": "string" },
+                        "state": { "type": "string" },
+                        "zip": { "type": "string" },
+                        "country": { "type": "string" }
+                    }
+                },
+                "timezone": { "type": "string" }
+            },
+            "required": [
+                "id",
+                "first_name",
+                "last_name",
+                "email"
+            ]
+        }
+    },
+    "required": [
+        "event_type",
+        "schema_version",
+        "person"
+    ]
+}
