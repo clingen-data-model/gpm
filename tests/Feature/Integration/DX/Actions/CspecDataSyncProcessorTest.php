@@ -22,15 +22,10 @@ class CspecDataSyncProcessorTest extends TestCase
     protected ExpertPanel $expertPanel;
     protected Collection $statuses;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
-
-        (new SpecificationStatusSeeder)->run();
-        (new RulesetStatusSeeder)->run();
-
-        $this->statuses = collect(config('specifications.statuses'))->keyBy('event');
 
         $this->expertPanel = ExpertPanel::factory()->vcep()->create(['affiliation_id' => 599999]);
 
@@ -46,7 +41,8 @@ class CspecDataSyncProcessorTest extends TestCase
                         ]
                     ],
                     'status' => [
-                        'event' => 'classified-rules-submitted'
+                        'event' => 'classified-rules-submitted',
+                        'current' => 'Classified Rules Submitted'
                     ]
                 ]
             ],
@@ -73,20 +69,19 @@ class CspecDataSyncProcessorTest extends TestCase
         $specification = Specification::factory()->create([
             'cspec_id' => 'BL004',
             'name' => 'Early Bird Nini',
-            'status_id' => 1,
+            'status' => 'New CSpec Doc Created',
             'expert_panel_id' => $this->expertPanel->id
         ]);
         $ruleset = Ruleset::factory()->create([
             'cspec_ruleset_id' => '123456',
             'specification_id' => 'BL004',
-            'status_id' => 1
+            'status' => 'New CSpec Doc Created'
         ]);
 
         app()->make(CspecDataSyncProcessor::class)
             ->handle($this->message);
 
         $this->assertDatabaseSynced();
-
     }
 
     private function assertDatabaseSynced(): void
@@ -95,16 +90,13 @@ class CspecDataSyncProcessorTest extends TestCase
             'cspec_id' => 'BL004',
             'name' => 'blah blah blah',
             'expert_panel_id' => $this->expertPanel->id,
-            'status_id' => $this->statuses->get('classified-rules-submitted')['id']
+            'status' => 'Classified Rules Submitted'
         ]);
 
         $this->assertDatabaseHas('specification_rulesets', [
             'cspec_ruleset_id' => '123456',
             'specification_id' => 'BL004',
-            'status_id' => $this->statuses->get('classified-rules-submitted')['id']
+            'status' => 'Classified Rules Submitted'
         ]);
-   }
-
-
-
+    }
 }

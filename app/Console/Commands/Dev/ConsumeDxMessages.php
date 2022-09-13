@@ -14,7 +14,7 @@ class ConsumeDxMessages extends Command
      *
      * @var string
      */
-    protected $signature = 'kafka:consume {actions*} {--topic=* : Topic to consume} {--offset= : offset to assign} {--limit= : number of messages to read before stopping.} {--only-offset : Only update the topic offset}';
+    protected $signature = 'kafka:consume {actions*} {--topic=* : Topic to consume} {--offset= : offset to assign} {--limit= : number of messages to read before stopping.} {--only-offset : Only update the topic offset} {--print-offset : print the offset}';
 
     /**
      * The console command description.
@@ -54,20 +54,20 @@ class ConsumeDxMessages extends Command
             $topics = $this->solicitTopics($kafkaConsumer);
         }
 
-        foreach($topics as $topic) {
+        foreach ($topics as $topic) {
             $messageStream->addTopic($topic);
         }
 
         $count = 0;
         $generator = !is_null($limit)
                         ? $messageStream->consumeSomeMessages($limit)
-                        :  $messageStream->consume();
+                        : $messageStream->consume();
 
         if (!is_null($limit)) {
             $this->info('Will read '.$limit.' messages.');
         }
 
-        foreach($generator as $message) {
+        foreach ($generator as $message) {
             $count++;
             foreach ($actions as $action) {
                 if (method_exists($this, $action)) {
@@ -82,6 +82,11 @@ class ConsumeDxMessages extends Command
     private function printPayload($message)
     {
         $this->info('Payload:' . json_encode($message->payload, JSON_PRETTY_PRINT));
+    }
+
+    private function printOffset($message)
+    {
+        $this->info('Offset: '.$message->offset);
     }
 
     private function printStatus($message)
@@ -139,6 +144,7 @@ class ConsumeDxMessages extends Command
 
                         foreach ($topicPartitions as $tp) {
                             $this->commitOffset($consumer, $tp, $offset);
+                            echo $tp->getTopic().' offset now at '.$tp->getOffset()."\n";
                         }
 
                         break;
@@ -159,11 +165,12 @@ class ConsumeDxMessages extends Command
 
     private function commitOffset($consumer, $topicPartition, $offset, $attempt = 0)
     {
-        if ($offset >= 0) {
-            $this->info("Committing offset set to $offset for topic ".$topicPartition->getTopic()." on partition ".$topicPartition->getPartition()."...");
-        } else {
+        if (is_null($offset)) {
             $this->info("Don't update offset.");
             return;
+        }
+        if ($offset >= 0) {
+            $this->info("Committing offset set to $offset for topic ".$topicPartition->getTopic()." on partition ".$topicPartition->getPartition()."...");
         }
         $topicPartition->setOffset($offset);
         $consumer->commit([$topicPartition]);

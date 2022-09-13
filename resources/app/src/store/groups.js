@@ -63,10 +63,10 @@ export const mutations = {
         const idx = state.items.findIndex(i => i.uuid == item.uuid);
         state.currentItemIdx = idx;
     },
-    
+
     removeItem(state, item) {
         const idx = state.items.findIndex(i => i.uuid == item.uuid);
-        state.items.splice(idx, 1);           
+        state.items.splice(idx, 1);
     },
 
     clearCurrentItemIdx(state) {
@@ -133,7 +133,7 @@ export const actions = {
                     commit('addItem', response.data.data);
                     return response;
                 })
-        
+
     },
 
     delete ({commit, getters}, uuid) {
@@ -154,7 +154,7 @@ export const actions = {
 
     async memberAdd ({commit}, {uuid, personId, roleIds, data}) {
         const url = `${baseUrl}/${uuid}/members`
-        
+
         return await api.post(url, {
                 person_id: personId,
                 role_ids: roleIds,
@@ -223,14 +223,14 @@ export const actions = {
         const promises = [];
         if (member.addedRoles.length > 0) {
             promises.push(dispatch(
-                'memberAssignRole', 
+                'memberAssignRole',
                 {uuid: group.uuid, memberId: member.id, roleIds: member.addedRoles.map(role => role.id)}
             ));
         }
-        
+
         member.removedRoles.forEach(role => {
             promises.push(dispatch(
-                'memberRemoveRole', 
+                'memberRemoveRole',
                 {uuid: group.uuid, memberId: member.id, roleId: role.id}
             ));
         })
@@ -285,7 +285,7 @@ export const actions = {
 
     async membershipDescriptionUpdate({commit, getters}, {uuid, membershipDescription}) {
         return await api.put(
-            `${getApplicationUrl(uuid)}/membership-description`, 
+            `${getApplicationUrl(uuid)}/membership-description`,
             { membership_description: membershipDescription }
         )
         .then(response => {
@@ -297,9 +297,9 @@ export const actions = {
     },
 
     async scopeDescriptionUpdate({ commit, getters }, {uuid, scopeDescription}) {
-        
+
         return await api.put(
-            `${getApplicationUrl(uuid)}/scope-description`, 
+            `${getApplicationUrl(uuid)}/scope-description`,
             { scope_description: scopeDescription }
         )
         .then(response => {
@@ -318,32 +318,17 @@ export const actions = {
 
         return api.put(`${getApplicationUrl(uuid)}/curation-review-protocols`, expertPanel.attributes)
     },
-    
-    getSpecifications({ commit }, group) {
-        // if (!group.isVcep()) {
-        //     throw new Error('Can not retreive specfications. Only VCEPS have specifications.');
-        // }
 
-        console.log("IMPLEMENT groups/getSpecifications action.");
-        group.expert_panel.specifications = [
-            {
-                gene_symbol: 'ABC1',
-                disease_name: 'Beans for lunch',
-                status: {
-                    name: 'blah',
-                    id: 1,
-                    color: 'blue'
-                },
-                updated_at: '2021-11-01T00:00:00Z'
-            }
-        ];
-        commit('addItem', group);
-        // return api.get(`${baseUrl}/${group.uuid}/specifications`)
-        //         .then(response => {
-                    
-        //             commit('appendAttribute')
-        //             return response;
-        //         })
+    getSpecifications({ commit }, group) {
+        if (!group.isVcep()) {
+            throw new Error('Can not retreive specfications. Only VCEPS have specifications.');
+        }
+
+        return api.get(`${baseUrl}/${group.uuid}/specifications`)
+            .then(rsp => {
+                group.expert_panel.specifications = rsp.data
+                commit('addItem', group);
+            })
     },
 
     getGenes ({ commit, getters,}, group) {
@@ -355,7 +340,7 @@ export const actions = {
                 return response.data;
             });
     },
-    
+
     getEvidenceSummaries ({commit, getters}, group) {
         return api.get(`${getApplicationUrl(group.uuid)}/evidence-summaries`)
             .then(response => {
@@ -366,15 +351,15 @@ export const actions = {
             })
     },
 
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
     saveApplicationData ({commit}, group) {
         // delete group b/c it's not needed for the request and interferes
         // with laravel's route-model binding.
         const expertPanelAttributes = clone(group.expert_panel.attributes);
         delete(expertPanelAttributes.group);
-        
+
         return api.put(`${baseUrl}/${group.uuid}/application`, expertPanelAttributes)
-            .then(response => { 
+            .then(response => {
                 return response;
             });
     },
@@ -422,7 +407,7 @@ export const actions = {
         if (!data.has('uuid')) {
             data.append('uuid', uuid4())
         }
-    
+
         return api.post(`/api/applications/${group.expert_panel.uuid}/documents`, data)
             .then(response => {
                 group.documents.push(response.data);
@@ -445,7 +430,7 @@ export const actions = {
                     if (response.data.document_type_id < 8) {
                         group.expert_panel.documents.push(response.data);
                         commit('addItem', group);
-                    }    
+                    }
                     return response.data;
                 });
     },
@@ -469,7 +454,7 @@ export const actions = {
                 return response;
             });
     },
-    
+
 
     // eslint-disable-next-line
     async addLogEntry({ dispatch }, { group, logEntryData }) {

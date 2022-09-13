@@ -31,11 +31,11 @@ class RejectSubmissionTest extends TestCase
     {
         parent::setup();
         $this->setupForGroupTest();
-        $this->runSeeder(NextActionTypesTableSeeder::class); 
-        $this->runSeeder(NextActionAssigneesTableSeeder::class); 
+        $this->runSeeder(NextActionTypesTableSeeder::class);
+        $this->runSeeder(NextActionAssigneesTableSeeder::class);
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->admin = $this->setupUserWithPerson(null, ['ep-applications-manage']);
-        
+
         (new SubmissionTypeAndStatusSeeder)->run();
         $this->submission = Submission::factory()
                                 ->create([
@@ -43,7 +43,7 @@ class RejectSubmissionTest extends TestCase
                                     'submission_type_id' => config('submissions.types.application.definition.id'),
                                     'submitter_id' => $this->admin->person->id,
                                 ]);
-        
+
         Sanctum::actingAs($this->admin);
     }
 
@@ -70,7 +70,7 @@ class RejectSubmissionTest extends TestCase
                 'id' => $this->submission->id,
                 'submission_status_id' => config('submissions.statuses.revisions-requested.id'),
             ]);
-        
+
         $this->assertDatabaseHas('submissions', [
             'id' => $this->submission->id,
             'submission_status_id' => config('submissions.statuses.revisions-requested'),
@@ -83,6 +83,7 @@ class RejectSubmissionTest extends TestCase
      */
     public function emails_group_contacts_when_specified_and_saves_email_body_to_response_content()
     {
+        Carbon::setTestNow('2022-07-12');
         Mail::fake();
         $data = $this->makeDefaultData(['notify_contacts' => true]);
 
@@ -131,7 +132,7 @@ class RejectSubmissionTest extends TestCase
             logName: 'groups'
         );
     }
-    
+
     /**
      * @test
      */
@@ -146,7 +147,7 @@ class RejectSubmissionTest extends TestCase
             'assignee_id' => config('next_actions.assignees.expert-panel.id')
         ]);
     }
-    
+
     /**
      * @test
      */
@@ -158,7 +159,7 @@ class RejectSubmissionTest extends TestCase
             'expert_panel_id' => $this->expertPanel->id
         ]);
 
-        
+
         $this->makeRequest()
             ->assertStatus(200);
 
@@ -167,8 +168,8 @@ class RejectSubmissionTest extends TestCase
             'date_completed' => Carbon::now()
         ]);
     }
-    
-    
+
+
 
     private function makeRequest($data = null)
     {
@@ -186,8 +187,8 @@ class RejectSubmissionTest extends TestCase
             'body' => static::NOTE
         ], $mergeData);
     }
-    
-    
-    
-    
+
+
+
+
 }

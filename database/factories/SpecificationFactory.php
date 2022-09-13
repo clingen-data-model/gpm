@@ -9,7 +9,6 @@ use App\Modules\ExpertPanel\Models\SpecificationStatus;
 
 class SpecificationFactory extends Factory
 {
-
     protected $model = Specification::class;
 
     /**
@@ -22,7 +21,7 @@ class SpecificationFactory extends Factory
         return [
             'cspec_id' => uniqid(),
             'name' => $this->faker->sentence(),
-            'status_id' => SpecificationStatus::factory(),
+            'status' => 'Start',
             'expert_panel_id' => ExpertPanel::factory()
         ];
     }

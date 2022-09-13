@@ -20,7 +20,7 @@ class RulesetFactory extends Factory
         return [
             'cspec_ruleset_id' => uniqid(),
             'specification_id' => Specification::factory(),
-            'status_id' => 1
+            'status' => 'START'
         ];
     }
 }

@@ -18,8 +18,7 @@ class ClassifiedRulesApprovedProcessor
     public function __construct(
         private StepApprove $approveStepAction,
         private SpecificationAndRulsetsSync $syncSpecification
-    )
-    {
+    ) {
     }
 
     public function handle(IncomingStreamMessage $message): void
@@ -44,7 +43,7 @@ class ClassifiedRulesApprovedProcessor
             cspecId: $cspecDoc->cspecId,
             expertPanel: $expertPanel,
             name: $cspecDoc->name,
-            event: $cspecDoc->status->event,
+            status: $cspecDoc->status,
             rulesets: $cspecDoc->ruleSets
         );
 

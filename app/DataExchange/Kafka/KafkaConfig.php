@@ -10,9 +10,8 @@ class KafkaConfig
 {
     private $conf;
 
-    public function __construct(KafkaEnvValidator $validator, $group = null)
+    public function __construct($group = null)
     {
-        $validator();
         $this->conf = new \RdKafka\Conf();
         $this->setGroup($group);
 
@@ -24,7 +23,7 @@ class KafkaConfig
         if (!app()->environment('testing')) {
             $this->configSecurity();
         }
-        
+
         $this->conf->setErrorCb(function ($kafka, $err, $reason) {
             throw new StreamingServiceException("Kafka producer error: ".rd_kafka_err2str($err)." (reason: ".$reason.')');
         });
@@ -70,7 +69,7 @@ class KafkaConfig
 
             return;
         }
-        
+
         $this->conf->set('security.protocol', 'sasl_ssl');
         $this->conf->set('sasl.mechanism', 'PLAIN');
         $this->conf->set('sasl.username', config('dx.username'));

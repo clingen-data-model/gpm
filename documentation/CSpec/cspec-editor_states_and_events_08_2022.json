@@ -1,0 +1,153 @@
+{
+  "START" : {
+    label: "start",
+    events: {
+      "cspec-created" :{
+        permissions: ["cspec-create"],
+        label : "New CSpec Doc Created",
+        note: "Creation of a new specification document.",
+        timeStamp :  "",
+        modifiedBy : "",
+        current :    "",
+        next :       [
+          "Classification Rules In Prep",
+          "Pilot Rules In Prep"
+        ],
+      }
+    }
+  },
+  "Classification Rules In Prep" : {
+    label: "Classification Rules In Prep",
+    definition: "Classification Rules are in preparation for SVI approval.",
+    permissions: ["cspec-create", "cspec-approve"],
+    events :
+    {
+      "classified-rules-submitted" : {
+        permissions: ["cspec-create"],
+        label : "Submit Classified Rules",
+        note: "Classified rules are submitted for the SVI review and approval.",
+        timeStamp :  "",
+        modifiedBy : "",
+        current :    "",
+        next :       [ "Classification Rules Submitted" ],
+      }
+    }
+  },
+  "Classification Rules Submitted" : {
+    label: "Classification Rules Submitted",
+    definition: "Classification Rules are submitted for SVI approval. Submitted document cannot be edited until the SVI review/approval is complete",
+    permissions: ["cspec-create"],
+    events :
+    {
+      "classified-rules-reviewed" :  {
+        permissions: ["cspec-approve"],
+        label: "Review Classified Rules",
+        note: "Classified rules are reviwed by the SVI approver with recommendations. The VCEP must re-submit the specification for approval.",
+        next :       [ "Classification Rules In Prep" ],
+        timeStamp :  "",
+        modifiedBy : "",
+        current :    ""
+      },
+      "classified-rules-approved" :  {
+        permissions: ["cspec-approve"],
+        label: "Approve Classified Rules",
+        note: "Approve Classified rules with out without recommendations. Approval will change the status of the criteria specification to Pilot Rules In Preparation status.",
+        next :       [ "Pilot Rules In Prep" ],
+        timeStamp :  "",
+        modifiedBy : "",
+        current :    ""
+      },
+      "classified-rules-withdrawn" : {
+        permissions: ["cspec-create"],
+        label: "Withdraw Classified Rules Submission",
+        note: "Withdraw the classified rules from approval submission. This will change the status of the criteria specification to Rules Classification In Preparation.",
+        next :       [ "Classification Rules In Prep" ],
+        timeStamp :  "",
+        modifiedBy : "",
+        current :    ""
+      }
+    }
+  },
+  "Pilot Rules In Prep" : {
+    label: "Pilot Rules In Prep",
+    definition: "Pilot Rules are in preparation for SVI approval submission.",
+    events :
+    {
+      "pilot-rules-submitted" : {
+        permissions: ["cspec-create"],
+        label: "Submit Pilot Rules",
+        note: "Pilot rules are submitted for the SVI review and approval.",
+        timeStamp :  "",
+        modifiedBy : "",
+        current :    "",
+        next :       [ "Pilot Rules Submitted" ]
+      }
+    }
+  },
+  "Pilot Rules Submitted" : {
+    label: "Pilot Rules Submitted",
+    definition: "Pilot rules are submitted for the SVI approval",
+    events :
+    {
+      "pilot-rules-reviewed" :  {
+        permissions: ["cspec-approve"],
+        label: "Review Pilot Rules",
+        note : "Pilot rules are reviewed with recommendations. The VCEP must re-submit for approval.",
+        next :       [ "Pilot Rules In Prep" ],
+        timeStamp :  "",
+        modifiedBy : "",
+        current :    ""
+      },
+      "pilot-rules-approved" :  {
+        permissions: ["cspec-approve"],
+        label: "Approve Pilot Rules",
+        note: "Approve pilot rules with or without recommendations. The VCEP can prepare to release the approved specification document.",
+        next :       [ "Approved For Release" ],
+        timeStamp :  "",
+        modifiedBy : "",
+        current :    ""
+      },
+      "pilot-rules-withdrawn" : {
+        permissions: ["cspec-create"],
+        label: "Withdraw Pilot Rules Submission",
+        note: "Withdraw the classified rules from pilot rules approval submission. This will change the status of the specification to Pilot Rules In Preparation.",
+        next :       [ "Pilot Rules In Prep" ],
+        timeStamp :  "",
+        modifiedBy : "",
+        current :    ""
+      }
+    }
+  },
+  "Approved For Release" : {
+    label: "Approved For Release",
+    definition: "Pilot Rules are approved for release. This is a preparation stage prior to release and awaits VCEP step 4 approval.",
+    events :
+    {
+      "cspec-released" : {
+        permissions: ["cspec-create"],
+        label: "Release Criteria Specification",
+        note: "Release the approved specification to the CSpec Registry and public sharing.",
+        next :       [ "Released" ],
+        timeStamp :  "",
+        modifiedBy : "",
+        current :    ""
+      }
+    }
+  },
+  "Released" : {
+    label : "Released",
+    definition :"Pilot Rules are versioned and released to the CSpec Registry.",
+    events :
+    {
+      "cspec-reopened" : {
+        permissions: ["cspec-create"],
+        label: "Reopen Criteria Specification",
+        note: "Reopen the specification document to edit and update.",
+        next :       [ "Pilot Rules In Prep" ],
+        timeStamp :  "",
+        modifiedBy : "",
+        current :    ""
+      }
+    }
+  }
+}
