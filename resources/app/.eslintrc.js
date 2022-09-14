@@ -8,7 +8,7 @@ module.exports = {
         'eslint:recommended'
     ],
     parserOptions: {
-        parser: 'babel-eslint'
+        parser: '@babel/eslint-parser'
     },
     rules: {
         'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
@@ -18,6 +18,9 @@ module.exports = {
         'no-unreachable': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
         'vue/no-unused-components': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
         'vue/no-unused-vars': process.env.NODE_ENV === 'production' ? 'warn' : 'warn',
+        'vue/no-use-v-if-with-v-for': process.env.NODE_ENV === 'production' ? 'warn' : 'warn',
+        'vue/multi-word-component-names': 'off',
+        'vue/no-setup-props-destructure': 'warn'
     },
     overrides: [
       {

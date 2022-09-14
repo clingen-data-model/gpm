@@ -49,25 +49,25 @@ class StepApprove
     ) {
         $stepManager = app()->make(StepManagerFactory::class)($expertPanel);
         $dateApproved = $dateApproved ? Carbon::parse($dateApproved) : Carbon::now();
-        
+
         if (! $stepManager->canApprove()) {
             throw new UnmetStepRequirementsException($expertPanel, $stepManager->getUnmetRequirements());
         }
-        
+
         $expertPanel->{'step_'.$expertPanel->current_step.'_approval_date'} = $dateApproved;
         $approvedStep = $expertPanel->current_step;
 
         if (!$stepManager->isLastStep()) {
             $expertPanel->current_step++;
         }
-        
+
         $expertPanel->save();
 
         $submission = $this->getSubmission($expertPanel, $approvedStep);
         if ($submission) {
             $this->approveSubmission->handle($submission, $dateApproved);
         }
-        
+
         event(new StepApproved(
             application: $expertPanel,
             step: $approvedStep,
@@ -92,7 +92,7 @@ class StepApprove
                     return MailAttachment::createFromUploadedFile($file);
                 })
                 ->toArray();
-           
+
             $this->handle(
                 $expertPanel,
                 dateApproved: $request->date_approved ? Carbon::parse($request->date_approved) : Carbon::now(),
@@ -138,7 +138,7 @@ class StepApprove
                 ->first();
         }
     }
-    
+
 
     private function notifyContacts($expertPanel, $approvedStep, $subject, $body, $attachments)
     {
@@ -181,5 +181,5 @@ class StepApprove
                 throw new InvalidArgumentException('Unexpected approvedStep recieved: '.$approvedStep.'.  1-4 expected.');
         }
     }
-    
+
 }

@@ -54,8 +54,8 @@
                 "short_name": "SVI",
                 "id": 3
             },
-            "gene-curation-small-group": {
-                "name": "Gene Curation Small Group",
+            "gene-curation-core-group": {
+                "name": "Gene Curation Core Group",
                 "short_name": "GC",
                 "id": 4
             },
@@ -77,6 +77,12 @@
                 "name": "make revisions",
                 "description": "The group has application revisions to complted",
                 "default_entry": "Update application and resubmit for approval."
+            },
+            "chair-review": {
+                "id": 3,
+                "name": "chair review",
+                "description": "Chairs should review the application and provide feedback",
+                "default_entry": "Chairs review application and provide feedback."
             }
         }
     },
@@ -337,6 +343,22 @@
                 "guard_name": "web",
                 "scope": "system"
             },
+            "ep-applications-comment": {
+                "id": 31,
+                "name": "ep-applications-comment",
+                "display_name": "Comment on applications",
+                "description": "Create and update comments on submitted EP applications",
+                "guard_name": "web",
+                "scope": "system"
+            },
+            "ep-applications-approve": {
+                "id": 32,
+                "name": "ep-applications-approve",
+                "display_name": "Approve expert panel applications",
+                "description": "Approve a submitted application",
+                "guard_name": "web",
+                "scope": "system"
+            },
             "annual-updates-manage": {
                 "id": 40,
                 "name": "annual-updates-manage",
@@ -344,6 +366,14 @@
                 "description": "Create and update applications; create a new annual update window.",
                 "guard_name": "web",
                 "scope": "system"
+            },
+            "comments-manage": {
+                "id": 50,
+                "name": "comments-manage",
+                "display_name": "Manage comments",
+                "description": "Can edit\/delete comments made by other users.",
+                "scope": "system",
+                "guard_name": "web"
             },
             "reports-pull": {
                 "id": 6,
@@ -365,7 +395,9 @@
                 10,
                 20,
                 30,
-                40
+                31,
+                40,
+                50
             ],
             "super-admin": [
                 1,
@@ -376,7 +408,8 @@
                 10,
                 20,
                 30,
-                40
+                40,
+                50
             ],
             "admin": [
                 3,
@@ -442,33 +475,33 @@
                 "name": "Pending",
                 "description": "Submission does not have a response."
             },
-            "revise-and-resubmit": {
+            "revisions-requested": {
                 "id": 2,
-                "name": "Revise and Resubmit",
+                "name": "Revisions Requested",
                 "description": "Submitted item must be revised and resubmitted with no promise of approval."
             },
-            "approved-w-revisions": {
+            "under-chair-review": {
                 "id": 3,
-                "name": "Approved w\/ Revisions",
-                "description": "Submitted item must be revised and will be approved review of revisions."
+                "name": "Under Chair Review",
+                "description": "Submitted item has been sent to CDWG OC Chairs for review."
             },
             "approved": {
                 "id": 4,
                 "name": "Approved",
                 "description": "Submitted item is unconditionally approved."
             }
-        }
+        },
+        "decisions": [
+            "request-revisions",
+            "approve-after-revisions",
+            "approve"
+        ]
     },
     "appFeatures": {
-        "coiReminders": true,
-        "emailFromMemberList": true,
-        "inviteReminders": true,
-        "memberExport": true,
-        "showCdwgs": true,
-        "showWgs": true,
         "notifyScopeChange": true,
         "specificationUpload": true,
-        "cspecSummary": false
+        "cspecSummary": true,
+        "chairReview": true
     },
     "documentsTypes": {
         "scope": {

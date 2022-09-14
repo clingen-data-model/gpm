@@ -26,7 +26,7 @@ trait HasSubmissions
     {
         return $this->hasOne(Submission::class)
                 ->ofMany(['created_at'=>'max'], function ($query) {
-                    $query->where('submission_status_id', config('submissions.statuses.pending.id'));
+                    $query->pending();
                 });
     }
 

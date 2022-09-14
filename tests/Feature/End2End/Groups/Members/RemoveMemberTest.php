@@ -3,6 +3,7 @@
 namespace Tests\Feature\End2End\Groups\Members;
 
 use DateTime;
+use Carbon\Carbon;
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
@@ -46,7 +47,7 @@ class RemoveMemberTest extends TestCase
         $response->assertStatus(200);
         // $response->assertJsonFragment([
         //     'id' => $this->groupMember->id,
-        //     'deleted_at' => 
+        //     'deleted_at' =>
         // ]);
 
         $this->assertDatabaseHas('group_members', [
@@ -54,7 +55,7 @@ class RemoveMemberTest extends TestCase
             'deleted_at' => $endDate->format('Y-m-d H:i:s')
         ]);
     }
-    
+
     /**
      * @test
      */

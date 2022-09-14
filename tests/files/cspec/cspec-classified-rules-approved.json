@@ -1,0 +1,34 @@
+{
+    "cspecDoc": {
+        "affiliationId": "59999",
+        "approvalDate": "2022-03-29T05:00:00.000Z",
+        "cspecEditorUILink": "https:\/\/10.15.55.128\/cspec-stg\/ed\/svi\/doc\/GN007",
+        "cspecId": "GN007",
+        "cspecRegApiLink": "https:\/\/10.15.55.128\/cspec-stg\/api\/SequenceVariantInterpretation\/doc\/GN007",
+        "cspecRegUILink": "https:\/\/10.15.55.128\/cspec-stg\/ui\/svi\/doc\/GN007",
+        "name": "ClinGen CDH1 Expert Panel Specifications to the ACMG\/AMP Variant Interpretation Guidelines for CDH1 Version 3.2.0",
+        "ruleSets": [
+            {
+                "ruleSetId": "551552032",
+                "ruleSetRegApiLink": "https:\/\/10.15.55.128\/cspec-stg\/api\/RuleSet\/id\/551552032",
+                "ruleSetRegUiLink": "https:\/\/10.15.55.128\/cspec-stg\/ui\/svi\/ruleset\/551552032",
+                "scope": [
+                    {
+                        "diseases": [],
+                        "gene": "CDH1",
+                        "preferredTranscript": "NM_004360.5"
+                    }
+                ]
+            }
+        ],
+        "status": {
+            "current": "Approved For Release",
+            "event": "classified-rules-approved",
+            "modifiedAt": "2022-06-16T18:17:28.678Z",
+            "previous": "Classified Rules Approved"
+        },
+        "version": "3.2.0"
+    },
+    "eventTime": "2022-06-16T18:17:28.807Z",
+    "uuid": "2576c04f-3edc-43db-9755-5f478a769586"
+}

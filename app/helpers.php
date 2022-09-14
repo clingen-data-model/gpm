@@ -27,9 +27,14 @@ if (!function_exists('carbonToString')) {
     }
 }
 
-if (!function_exists('valOrDefault')) {
-    function valueAtIndex(array $arr, $val, $default = null)
-    {
-        return isset($arr[$val]) ? $arr[$val]  : $default;
+if (!function_exists('test_path')) {
+    function test_path(string $path) {
+        return base_path('tests/'.$path);
+    }
+}
+
+if (!function_exists('implementsInteface')) {
+    function implementsInterface($object, $interface) {
+        return in_array($interface, class_implements($object));
     }
 }

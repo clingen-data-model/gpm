@@ -5,20 +5,22 @@ namespace Tests\Feature\Integration\DX\Actions;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Modules\Group\Models\Group;
+use Database\Seeders\TaskTypeSeeder;
+use Database\Seeders\RulesetStatusSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Database\Seeders\SpecificationStatusSeeder;
 use App\DataExchange\Models\IncomingStreamMessage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\DataExchange\Actions\PilotRulesApprovedProcessor;
 use App\DataExchange\Exceptions\DataSynchronizationException;
-use Database\Seeders\TaskTypeSeeder;
 
 class PilotRulesApprovedProcessorTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -26,14 +28,6 @@ class PilotRulesApprovedProcessorTest extends TestCase
 
         $this->expertPanel = ExpertPanel::factory()->vcep()->create(['affiliation_id' => '50666']);
         $this->message = IncomingStreamMessage::factory()->pilotApproved()->make();
-        
-        $payload = (array)$this->message->payload;
-        $payload = array_merge($payload, [
-            'uuid' => $this->expertPanel->uuid,
-            'affiliationId' => $this->expertPanel->affiliation_id
-        ]);
-
-        $this->message->payload = (object)$payload;
 
         $this->action = app()->make(PilotRulesApprovedProcessor::class);
     }
@@ -90,7 +84,7 @@ class PilotRulesApprovedProcessorTest extends TestCase
         $this->expertPanel->step_2_approval_date = Carbon::parse('2021-01-01');
         $this->expertPanel->current_step = 3;
         $this->expertPanel->save();
- 
+
         Carbon::setTestNow('2022-01-01');
 
         $this->message->timestamp = Carbon::now()->timestamp;

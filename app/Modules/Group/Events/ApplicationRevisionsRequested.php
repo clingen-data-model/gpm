@@ -34,6 +34,7 @@ class ApplicationRevisionsRequested extends GroupEvent
     {
         return [
             'submission_id' => $this->submission->id,
+            'step' => $this->submission->group->expertPanel->current_step,
         ];
     }
 
@@ -47,7 +48,7 @@ class ApplicationRevisionsRequested extends GroupEvent
 
         return $logEntry;
     }
-    
+
     /**
      * Get the channels the event should broadcast on.
      *

@@ -52,7 +52,7 @@
     import 'cropperjs/dist/cropper.css'
     import {debounce} from 'lodash-es'
     import Cropper from 'cropperjs';
-    import {ref, onMounted, watch, defineProps, defineEmits, onUnmounted} from 'vue';
+    import {ref, onMounted, watch, onUnmounted} from 'vue';
 
     const props = defineProps({
         imageSrc: String

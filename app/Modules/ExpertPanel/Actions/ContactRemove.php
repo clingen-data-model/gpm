@@ -46,6 +46,7 @@ class ContactRemove
             $this->handle($expertPanelUuid, $personUuid);
         } catch (PersonNotContactException $e) {
             Log::warning($e->getMessage(), ['application_id' => $e->getApplication()->id, 'person_id' => $e->getPerson()->id]);
+            
             throw ValidationException::withMessages([
                 'contact' => ['The specified person is not a contact of this application.']
             ]);

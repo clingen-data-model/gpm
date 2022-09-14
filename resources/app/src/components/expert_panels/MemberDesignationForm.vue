@@ -1,4 +1,4 @@
-<style lang="postcss" scoped>
+<style scoped>
     th {
         @apply bg-white border-0
     }
@@ -27,8 +27,8 @@
                     <th>Biocurator Trainer</th>
                     <th>
                         Core Approval Member
-                        <popover 
-                            arrow 
+                        <popover
+                            arrow
                             content="Core approval members are responsible for ongoing final approval of variant classifications."
                             hover
                         >
@@ -38,7 +38,7 @@
                 </tr>
             </thead>
             <tbody>
-                <member-designation-row 
+                <member-designation-row
                     :member="member"
                     v-for="member in group.members"
                     :key="member.id"
@@ -79,7 +79,7 @@ export default {
             return this.hasAnyPermission([
                         'ep-applications-manage',
                         ['application-edit', this.group]
-                    ]) 
+                    ])
                     && !this.readonly;
         }
     },

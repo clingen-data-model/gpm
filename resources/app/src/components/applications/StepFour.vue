@@ -1,5 +1,5 @@
 <template>
-    <base-step 
+    <base-step
         :step="4"
         :document-type="5"
         document-name="Sustained Curation"
@@ -9,20 +9,7 @@
         @updated="$emit('updated')"
     >
         <template v-slot:sections>
-
             <sustained-curation-review />
-            <!-- <div class="applicaiton-section">
-                <h2>Plans for Ongoing Review and Reanalysis and Discrepancy Resolution</h2>
-                <vcep-ongoing-plans-form readonly />
-            </div>
-            <div class="application-section">
-                <h2>Example Evidence Summaries</h2>
-                <evidence-summary-list readonly/>
-            </div>
-            <div class="application-section">
-                <h2>Member Designation</h2>
-                <member-designation-form readonly />
-            </div> -->
         </template>
     </base-step>
 </template>
@@ -44,12 +31,12 @@ export default {
         SustainedCurationReview
     },
     props: {
-        
+
     },
     emits: ['approved', 'updated'],
     data() {
         return {
-            
+
         }
     },
     computed: {

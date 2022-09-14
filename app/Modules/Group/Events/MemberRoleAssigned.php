@@ -31,7 +31,7 @@ class MemberRoleAssigned extends GroupMemberEvent implements PublishableApplicat
     {
         return $this->groupMember->name.' given roles '.$this->roles->pluck('name')->join(',', ', and');
     }
-    
+
     public function getProperties(): ?array
     {
         return [
@@ -39,7 +39,7 @@ class MemberRoleAssigned extends GroupMemberEvent implements PublishableApplicat
             'roles' => $this->roles->pluck('name')->toArray()
         ];
     }
-    
+
     public function getEventType(): string
     {
         return 'member_role_assigned';

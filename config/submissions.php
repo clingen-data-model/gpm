@@ -16,7 +16,7 @@ return [
         'application' => [
             'definition' => $definitionType,
             'sustained-curation' => $sustainedCurationType
-        ]
+        ],
     ],
     'types-by-step' => [
         1 => $definitionType,
@@ -30,15 +30,15 @@ return [
             'name' => 'Pending',
             'description' => 'Submission does not have a response.',
         ],
-        'revise-and-resubmit' => [
+        'revisions-requested' => [
             'id' => 2,
-            'name' => 'Revise and Resubmit',
+            'name' => 'Revisions Requested',
             'description' => 'Submitted item must be revised and resubmitted with no promise of approval.',
         ],
-        'approved-w-revisions' => [
+        'under-chair-review' => [
             'id' => 3,
-            'name' => 'Approved w/ Revisions',
-            'description' => 'Submitted item must be revised and will be approved review of revisions.',
+            'name' => 'Under Chair Review',
+            'description' => 'Submitted item has been sent to CDWG OC Chairs for review.',
         ],
         'approved' => [
             'id' => 4,
@@ -46,4 +46,9 @@ return [
             'description' => 'Submitted item is unconditionally approved.'
         ]
     ],
+    'decisions' => [
+        'request-revisions', 
+        'approve-after-revisions', 
+        'approve'
+    ]
 ];

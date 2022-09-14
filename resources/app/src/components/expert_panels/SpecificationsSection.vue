@@ -1,12 +1,18 @@
 <template>
     <div>
         <cspec-summary v-if="cspecSummaryEnabled" :readonly="readonly" />
-        <application-upload-form 
-            :document-type-id="docTypeId" 
-            :show-notes="false" 
-            v-if="specificationUpload" 
-            :readonly="readonly" 
-        />
+
+        <collapsible class="mt-4">
+            <template v-slot:title>
+                <h3>Legacy document-based specifications</h3>
+            </template>
+            <application-upload-form
+                :document-type-id="docTypeId"
+                :show-notes="false"
+                v-if="specificationUpload"
+                :readonly="readonly"
+            />
+        </collapsible>
     </div>
 </template>
 <script>
@@ -31,7 +37,6 @@ export default {
     },
     data() {
         return {
-            
         }
     },
     computed: {

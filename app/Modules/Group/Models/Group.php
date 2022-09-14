@@ -2,6 +2,7 @@
 
 namespace App\Modules\Group\Models;
 
+use App\Models\Contracts\HasComments as ContractsHasComments;
 use App\Models\Traits\HasUuid;
 use App\Models\Contracts\HasNotes;
 use App\Models\Contracts\HasMembers;
@@ -10,6 +11,7 @@ use App\Tasks\Contracts\TaskAssignee;
 use App\Models\Contracts\HasDocuments;
 use App\Models\Contracts\HasLogEntries;
 use App\Models\Contracts\RecordsEvents;
+use App\Models\Traits\HasComments;
 use App\Modules\Group\Models\GroupType;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\Group\Models\GroupStatus;
@@ -39,7 +41,7 @@ use App\Modules\Group\Models\Traits\HasSubmissions as HasSubmissionsTrait;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDocuments, HasLogEntries, HasSubmissions, TaskAssignee
+class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDocuments, HasLogEntries, HasSubmissions, TaskAssignee, ContractsHasComments
 {
     use HasFactory;
     use SoftDeletes;
@@ -51,6 +53,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     use HasLogEntriesTraits;
     use HasSubmissionsTrait;
     use TaskAssigneeTrait;
+    use HasComments;
 
     /**
      * The attributes that are mass assignable.
@@ -258,6 +261,10 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
         return false;
     }
+
+    
+    
+
 
 
     protected static function newFactory()

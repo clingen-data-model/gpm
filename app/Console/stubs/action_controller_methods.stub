@@ -10,7 +10,7 @@
         return [];
     }
 
-    public function authorize(ActionRequest $requeset):bool
+    public function authorize(ActionRequest $request):bool
     {
         return true;
     }

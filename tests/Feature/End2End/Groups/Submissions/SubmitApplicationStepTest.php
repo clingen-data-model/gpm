@@ -160,7 +160,6 @@ class SubmitApplicationStepTest extends TestCase
             'step_4_received_date' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
     }
-    
 
     /**
      * @test
@@ -173,7 +172,7 @@ class SubmitApplicationStepTest extends TestCase
 
         Event::assertDispatched(ApplicationStepSubmitted::class);
     }
-    
+
     /**
      * @test
      */
@@ -188,7 +187,6 @@ class SubmitApplicationStepTest extends TestCase
             'activity_type' => 'application-step-submitted'
         ]);
     }
-    
 
     /**
      * @test
@@ -205,7 +203,6 @@ class SubmitApplicationStepTest extends TestCase
                 && $mailable->submission->id == $this->expertPanel->group->latestPendingSubmission->id;
         });
     }
-
 
     /**
      * @test
@@ -264,8 +261,7 @@ class SubmitApplicationStepTest extends TestCase
             'date_completed' => Carbon::now()
         ]);
     }
-    
-    
+       
     /**
      * @test
      */
@@ -288,14 +284,30 @@ class SubmitApplicationStepTest extends TestCase
 
         $this->assertDatabaseHas('next_actions', [
             'expert_panel_id' => $gcep->id,
-            'assignee_id' => config('next_actions.assignees.gene-curation-small-group.id'),
+            'assignee_id' => config('next_actions.assignees.gene-curation-core-group.id'),
             'entry' => 'Review application and respond to EP.',
             'target_date' => Carbon::now()->addDays(14),
             'type_id' => config('next_actions.types.review-submission.id')
         ]);
     }
+
+    /**
+     * @test
+     */
+    public function stores_snapshot_of_application_when_submitted()
+    {
+        $this->makeRequest()
+            ->assertStatus(201);
+
+        $this->assertDatabaseHas('application_snapshots', [
+            'group_id' => $this->expertPanel->group_id,
+            'submission_id' => 1,
+            'version' => 1,
+        ]);
+    }
     
-    
+
+        
     private function makeRequest($data = null, $expertPanel = null)
     {
         $expertPanel = $expertPanel ?? $this->expertPanel;

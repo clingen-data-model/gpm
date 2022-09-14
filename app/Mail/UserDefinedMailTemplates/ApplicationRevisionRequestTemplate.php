@@ -22,6 +22,20 @@ class ApplicationRevisionRequestTemplate extends AbstractUserDefinedMailTemplate
         return [
         ];
     }
+
+    protected function getContext(): array
+    {
+        $context = parent::getContext();
+        $context['requiredRevisions'] = $this->group->comments()->pending()->requiredRevision()->get();
+        $context['suggestions'] = $this->group->comments()->pending()->suggestion()->get();
+        $context['judgementNotes'] = $this->group
+                                        ->latestSubmission
+                                        ->judgements
+                                        ->filter(fn ($j) => $j->notes !== null)
+                                        ->map(fn ($j) => $j->notes);
+
+        return $context;
+    }
     
     
 }

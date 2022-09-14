@@ -8,13 +8,14 @@ use App\Models\Permission;
 use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
+use Illuminate\Testing\TestResponse;
 use App\Modules\Person\Models\Person;
 use Database\Seeders\GroupTypeSeeder;
 use Database\Seeders\GroupStatusSeeder;
+use Database\Seeders\EpTypesTableSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Database\Seeders\EpTypesTableSeeder;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -22,12 +23,18 @@ abstract class TestCase extends BaseTestCase
     use CreatesApplication;
     use WithFaker;
     // Helper methods
-    
+
     public function setup():void
     {
         parent::setup();
+        TestResponse::macro('assertValidationErrors', function($validationErrrors) {
+            $this->assertStatus(422)
+                ->assertInvalid($validationErrrors);
+
+            return $this;
+        });
     }
-    
+
 
     public function makeApplicationData()
     {
@@ -57,12 +64,12 @@ abstract class TestCase extends BaseTestCase
 
         return $contacts;
     }
-    
+
     protected function addContactToApplication(ExpertPanel  $expertPanel)
     {
         $person = Person::factory()->create();
         ContactAdd::run($expertPanel->uuid, $person->uuid);
-        
+
         return $person;
     }
 
@@ -73,14 +80,17 @@ abstract class TestCase extends BaseTestCase
         $causer_type = null,
         $causer_id = null,
         $activity_type = null,
-        $logName = 'applications'
+        $logName = null
     ) {
         $data = [
-            'log_name' => $logName,
             'description' => $description,
             'subject_type' => get_class($subject),
             'subject_id' => $subject->id,
         ];
+
+        if ($logName) {
+            $data['log_name'] = $logName;
+        }
 
         if ($causer_type) {
             $data['causer_type'] = $causer_type;
@@ -95,9 +105,9 @@ abstract class TestCase extends BaseTestCase
         }
 
         if ($properties) {
-            if (!isset($properties['step'])) {
-                $properties['step'] = $subject->current_step;
-            }
+            // if (!isset($properties['step'])) {
+            //     $properties['step'] = $subject->current_step;
+            // }
             foreach ($properties as $key => $val) {
                 $dbVal = $val;
                 if (is_array($val) || is_object($val)) {
@@ -189,7 +199,7 @@ abstract class TestCase extends BaseTestCase
 
         $this->runSeeder($seeders);
     }
-    
+
     protected function setupForGroupTest(): void
     {
         $this->seedForGroupTest();
@@ -199,5 +209,17 @@ abstract class TestCase extends BaseTestCase
     protected function getLongString()
     {
         return 'something longer than 255 characters so that we can test the maximum length validation.  If we don\'t validate the length of the string some verbose pontificator will inevitably think their group is so important that it needs a name longer that 255 characters.';
+    }
+
+    protected function jsonifyArrays($data): array
+    {
+        $jsonified = [];
+        foreach ($data as $key => $val) {
+            if (is_array($val)) {
+                $val = json_encode($val);
+            }
+            $jsonified[$key] = $val;
+        }
+        return $jsonified;
     }
 }

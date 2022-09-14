@@ -30,7 +30,7 @@ export default {
                 roleId: null,
                 needsCoi: null,
                 needsTraining: null,
-                hideAlumns: true 
+                hideAlumns: true
             },
             tableFields: [
                 {
@@ -64,7 +64,7 @@ export default {
                     sortFunction (a,  b) {
                         const aComp = a.roles.map(r => r.name).join(',');
                         const bComp = b.roles.map(r => r.name).join(',');
-                        
+
                         if (aComp == bComp) {
                             return 0;
                         }
@@ -107,7 +107,7 @@ export default {
         group () {
             return this.$store.getters['groups/currentItemOrNew'];
         },
-        
+
         filteredMembers () {
             if (!this.group.members) {
                 return [];
@@ -149,7 +149,7 @@ export default {
             return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage']) && !this.readonly
         },
         showMemberReportButton () {
-            return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage']) && this.$store.state.systemInfo.app.features.member_export
+            return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage'])
         },
         exportUrl () {
             const query = `?member_ids=${this.filteredMembers.map(m => m.id).join(',')}`;
@@ -215,7 +215,7 @@ export default {
                 await this.$store.dispatch('groups/memberRetire', {
                     uuid: this.group.uuid,
                     memberId: this.selectedMember.id,
-                    startDate: this.selectedMember.start_date, 
+                    startDate: this.selectedMember.start_date,
                     endDate: new Date().toISOString()
                 });
                 this.cancelRetire();
@@ -261,7 +261,7 @@ export default {
                 await this.$store.dispatch('groups/memberRemove', {
                     uuid: this.group.uuid,
                     memberId: this.selectedMember.id,
-                    startDate: this.selectedMember.start_date, 
+                    startDate: this.selectedMember.start_date,
                     endDate: new Date().toISOString()
                 });
                 this.cancelRemove();
@@ -343,10 +343,10 @@ export default {
         <head class="flex justify-between items-end">
             <div class="flex space-x-2 items-center">
                 <h2>Members</h2>
-                <button 
-                    ref="filterToggleButton" 
-                    class="px-3 py-2 rounded-t transition-color" 
-                    :class="{'rounded-b': !showFilter, 'bg-blue-200': showFilter}" 
+                <button
+                    ref="filterToggleButton"
+                    class="px-3 py-2 rounded-t transition-color"
+                    :class="{'rounded-b': !showFilter, 'bg-blue-200': showFilter}"
                     @click="toggleFilter"
                     v-if="group.members.length > 0"
                 >
@@ -356,22 +356,20 @@ export default {
             <div class="flex space-x-2 items-center pb-0.5">
                 <div v-if="showAddMemberButton">
                     <popper content="Add a member" hover arrow>
-                        <router-link 
-                            class="btn btn-icon" 
+                        <router-link
+                            class="btn btn-icon"
                             :to="append($route.path, 'members/add')"
                         >
                             <icon-add class="inline-block"/>
                         </router-link>
                     </popper>
                 </div>
-                
+
                 <div v-if="showCoordinatorActions" class="flex space-x-2 items-center">
-                    <popper :content="`Email ${filteredMembers.length} listed members`" hover arrow 
-                        v-if="features.email_from_member_list"
-                    >
-                        <a 
-                            :href="`mailto:${filteredEmails.join(', ')}`" 
-                            class="btn btn-icon" 
+                    <popper :content="`Email ${filteredMembers.length} listed members`" hover arrow>
+                        <a
+                            :href="`mailto:${filteredEmails.join(', ')}`"
+                            class="btn btn-icon"
                             @click="initEmailWithFiltered"
                         >
                             <icon-envelope class="inline-block"  width="16" height="16"/>
@@ -396,7 +394,7 @@ export default {
                     </dropdown-menu>
 
                     <div v-if="group.isEp() && showCoordinatorActions">
-                        
+
                     </div>
 
                 </div>
@@ -409,7 +407,7 @@ export default {
                 <input-row label="Role" label-width-class="w-20">
                     <select v-model="filters.roleId">
                         <option :value="null">Select&hellip;</option>
-                        <option 
+                        <option
                             v-for="role in roles"
                             :key="role.id"
                             :value="role.id"
@@ -429,11 +427,11 @@ export default {
         </div>
         </transition>
         <div class="mt-3 py-2 w-full overflow-x-auto">
-            <data-table 
-                :fields="fieldsForGroupType" 
-                :data="filteredMembers" 
-                v-model:sort="sort" 
-                :detailRows="true" 
+            <data-table
+                :fields="fieldsForGroupType"
+                :data="filteredMembers"
+                v-model:sort="sort"
+                :detailRows="true"
                 :row-class="(item) => 'cursor-pointer'+ (item.isRetired ? ' retired-member' : '')"
                 @rowClick="goToMember"
                 v-if="group.members.length > 0"
@@ -461,9 +459,9 @@ export default {
                 </template>
                 <template v-slot:cell-actions="{item}">
                     <div class="flex space-x-2 items-center">
-                        <dropdown-menu 
-                            :hide-cheveron="true" 
-                            class="relative block" 
+                        <dropdown-menu
+                            :hide-cheveron="true"
+                            class="relative block"
                             v-if="hasAnyMemberPermission() && !readonly"
                         >
                             <template v-slot:label>
@@ -552,9 +550,9 @@ export default {
 </template>
 <style>
     .inset {
-        box-shadow: 
+        box-shadow:
             inset 0px 11px 15px -10px #CCC,
-            inset 0px -11px 10px -10px #EEE; 
+            inset 0px -11px 10px -10px #EEE;
     }
     .transition-color {
         transition: background-color .3 linear;

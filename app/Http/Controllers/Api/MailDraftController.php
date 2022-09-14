@@ -4,12 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Notifications\UserDefinedMailNotification;
-use Illuminate\Validation\ValidationException;
 
 class MailDraftController extends Controller
 {

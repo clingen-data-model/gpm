@@ -44,7 +44,9 @@
 </template>
 <script>
 import { api } from "@/http";
-import { feedback } from "@/configs";
+import configs from "@/configs";
+
+const feedback = configs.feedback;
 
 export default {
   name: "ComponentName",

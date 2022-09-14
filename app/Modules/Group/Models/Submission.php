@@ -5,13 +5,16 @@ namespace App\Modules\Group\Models;
 use Carbon\Carbon;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
+use App\Modules\Group\Models\Judgement;
 use Illuminate\Database\Eloquent\Model;
 use Database\Factories\SubmissionFactory;
 use App\Modules\Group\Models\SubmissionType;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\Group\Models\SubmissionStatus;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Submission extends Model
 {
@@ -23,6 +26,8 @@ class Submission extends Model
         'submission_type_id',
         'submission_status_id',
         'data',
+        'sent_to_chairs_at',
+        'notes_for_chairs',
         'closed_at',
         'notes',
         'response_content',
@@ -35,11 +40,15 @@ class Submission extends Model
         'submission_status_id' => 'integer',
         'data' => 'array',
         'closed_at' => 'datetime',
+        'sent_to_chairs_at' => 'datetime',
         'submitter_id' => 'integer',
     ];
 
     protected $with = ['status', 'type'];
-    
+
+
+    protected $appends = ['isPending', 'is_pending'];
+
     # RELATIONS
 
     /**
@@ -87,7 +96,27 @@ class Submission extends Model
         return $this->belongsTo(Person::class, 'submitter_id');
     }
 
+
+    /**
+     * Get all of the judgements for the Submission
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function judgements(): HasMany
+    {
+        return $this->hasMany(Judgement::class);
+    }
+
     # SCOPES
+
+    public function scopeWithStatus($query, $status)
+    {
+        if (is_array($status)) {
+            return $query->whereIn('submission_status_id', $status);
+        }
+        return $query->where('submission_status_id', $status);
+    }
+
 
     public function scopeOfType($query, $type)
     {
@@ -95,13 +124,41 @@ class Submission extends Model
         if (is_object($type) && get_class($type) == SubmissionType::class) {
             $typeId = $type->id;
         }
+        if (is_array($type)) {
+            return $query->whereIn('submission_type_id', $type);
+        }
+
         return $query->where('submission_type_id', $typeId);
     }
 
     public function scopePending($query)
     {
-        return $query->where('submission_status_id', config('submissions.statuses.pending.id'));
+        return $query->whereIn(
+            'submission_status_id',
+            [
+                config('submissions.statuses.pending.id'),
+                config('submissions.statuses.under-chair-review.id')
+            ]
+        );
     }
+
+    public function scopeSentToChair($query)
+    {
+        return $query->whereNotNull('sent_to_chairs_at')
+                ->pending();
+    }
+
+
+    // ACCESSORS
+    public function getIsPendingAttribute()
+    {
+        $pendingStatuses = [
+                            config('submissions.statuses.pending.id'),
+                            config('submissions.statuses.under-chair-review.id')
+                        ];
+        return in_array($this->submission_status_id, $pendingStatuses);
+    }
+
 
     /**
      * DOMAIN
@@ -110,14 +167,14 @@ class Submission extends Model
     public function reject(?string $responseContent = null): Submission
     {
         $this->update([
-            'submission_status_id' => config('submissions.statuses.revise-and-resubmit.id'),
+            'submission_status_id' => config('submissions.statuses.revisions-requested.id'),
             'response_content' => $responseContent,
             'closed_at' => Carbon::now()
         ]);
-        
+
         return $this;
     }
-    
+
 
     protected static function newFactory()
     {

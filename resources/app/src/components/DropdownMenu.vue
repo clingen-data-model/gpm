@@ -1,38 +1,3 @@
-<style lang="postcss">
-    .dropdown {
-        @apply relative
-    }
-    .dropdown.right {
-        @apply top-0 right-0 text-right
-    }
-
-    .dropdown > .dropdown-label {
-        @apply flex flex-row-reverse align-middle -mb-3 pb-3 relative z-20 cursor-pointer outline-none;
-    }
-    .dropdown-items-container {
-        @apply absolute bg-transparent border w-48 shadow rounded z-50;
-    }
-    .dropdown.right > .dropdown-items-container {
-        @apply right-0;
-    }
-    .dropdown.left > .dropdown-items-container {
-        @apply left-0;
-    }
-    .dropdown-items {
-        @apply bg-transparent shadow-md w-48;
-        z-index: 1000;
-    },
-    .dropdown-items > li {
-        @apply bg-white hover:bg-blue-100 cursor-pointer py-2 px-2;
-        @apply border border-b-0 border-gray-300;
-    }
-    .dropdown-items > li:first-child {
-        @apply rounded-t
-    }
-    .dropdown-items > li:last-child {
-        @apply border-b rounded-b
-    }
-</style>
 <script>
 
 import {Teleport, Transition} from 'vue'
@@ -184,3 +149,39 @@ export default {
     </div>
 
 </template>
+
+<style>
+    .dropdown {
+        @apply relative
+    }
+    .dropdown.right {
+        @apply top-0 right-0 text-right
+    }
+
+    .dropdown > .dropdown-label {
+        @apply flex flex-row-reverse align-middle -mb-3 pb-3 relative z-20 cursor-pointer outline-none;
+    }
+    .dropdown-items-container {
+        @apply absolute bg-transparent border w-48 shadow rounded z-50;
+    }
+    .dropdown.right > .dropdown-items-container {
+        @apply right-0;
+    }
+    .dropdown.left > .dropdown-items-container {
+        @apply left-0;
+    }
+    .dropdown-items {
+        @apply bg-transparent shadow-md w-48;
+        z-index: 1000;
+    },
+    .dropdown-items > li {
+        @apply bg-white hover:bg-blue-100 cursor-pointer py-2 px-2;
+        @apply border border-b-0 border-gray-300;
+    }
+    .dropdown-items > li:first-child {
+        @apply rounded-t
+    }
+    .dropdown-items > li:last-child {
+        @apply border-b rounded-b
+    }
+</style>

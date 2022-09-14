@@ -2,7 +2,6 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
-use App\Models\Document;
 use App\Models\AnnualUpdate;
 use App\Models\Traits\HasUuid;
 use Illuminate\Support\Carbon;
@@ -10,7 +9,6 @@ use App\Models\Contracts\HasNotes;
 use App\Modules\Group\Models\Group;
 use App\Models\Contracts\HasMembers;
 use App\Modules\Person\Models\Person;
-use App\Tasks\Contracts\TaskAssignee;
 use App\Models\Contracts\RecordsEvents;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\ExpertPanel\Models\Gene;
@@ -27,13 +25,11 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Modules\Group\Models\Contracts\BelongsToGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Tasks\Models\TaskAssignee as TaskAssigneeTrait;
 use App\Modules\ExpertPanel\Models\SpecificationRuleSet;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use App\Modules\ExpertPanel\Models\CurationReviewProtocol;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use App\Models\Traits\RecordsEvents as TraitsRecordsEvents;
-use App\Modules\ExpertPanel\Models\ReanalysisDiscrepencyResolution;
 use App\Modules\Group\Models\Traits\HasMembers as TraitsHasMembers;
 use App\Modules\Group\Models\Traits\BelongsToGroup as TraitsBelongsToGroup;
 
@@ -156,9 +152,21 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
             $expertPanel->specifications->each->delete();
         });
     }
-    
 
-    // Relationships
+
+    // DOMAIN METHODS
+    public function addContact(Person $person)
+    {
+        $member = GroupMember::firstOrCreate([
+            'person_id' => $person->id,
+            'group_id' => $this->group_id,
+            'is_contact' => 1
+        ]);
+        $this->touch();
+    }
+
+
+    // RELATIONSHIPS
     public function group(): BelongsTo
     {
         return $this->belongsTo(Group::class);
@@ -297,11 +305,8 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     {
         return $this->hasOne(AnnualUpdate::class)->latestOfMany();
     }
-    
-    /**
-     * SCOPES
-     */
 
+    // SCOPES
     public function scopeApproved($query)
     {
         return $query->whereNotNull('date_completed');
@@ -336,15 +341,14 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     {
         return $query->where('expert_panel_type_id', config('expert_panels.types.gcep.id'));
     }
-    
+
     public function scopeTypeVcep($query)
     {
         return $query->where('expert_panel_type_id', config('expert_panels.types.vcep.id'));
     }
-    
 
-    // Access methods
 
+    // ACCESS METHODS
     public static function findByAffiliationId($affiliationId)
     {
         return static::where('affiliation_id', $affiliationId)->first();
@@ -384,10 +388,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $results->version;
     }
 
-    /**
-     * ACCESSORS
-     */
-
+    // ACCESSORS
     public function getFirstScopeDocumentAttribute()
     {
         return $this->group->documents()
@@ -435,8 +436,8 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     {
         return $this->getFullLongBaseNameAttribute();
     }
-    
-    
+
+
     public function getFullLongBaseNameAttribute()
     {
         return isset($this->attributes['long_base_name'])
@@ -450,7 +451,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
             ? $this->addEpTypeSuffix($this->attributes['short_base_name'])
             : $this->addEpTypeSuffix('');
     }
-    
+
     public function setLongBaseNameAttribute($value)
     {
         $this->attributes['long_base_name'] = $this->trimEpTypeSuffix($value);
@@ -477,7 +478,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $string.' '.$this->type->display_name;
     }
 
-    
+
     public function getClingenUrlAttribute()
     {
         if (is_null($this->affiliation_id)) {
@@ -495,30 +496,30 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     {
         return (bool)$this->step_1_approval_date;
     }
-    
+
     public function getHasApprovedDraftAttribute(): bool
     {
         return !is_null($this->step_2_approval_date);
     }
-    
+
     public function getHasApprovedPilotAttribute(): bool
     {
         return !is_null($this->step_3_approval_date);
     }
-    
+
     public function getSustainedCurationIsApprovedAttribute(): bool
     {
         return !is_null($this->step_4_approval_date);
     }
-    
+
 
     public function getApprovalDateForStep($stepNumber): Carbon
     {
         return $this->{'step_'.$stepNumber.'_approval_date'};
     }
-    
-    
-    
+
+
+
 
     // Factory support
     protected static function newFactory()

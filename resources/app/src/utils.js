@@ -1,8 +1,13 @@
+import configs from '@/configs.json'
+
 /**
  * Normalizes the case of a string to lower, space, cased
- * @param {string} string 
+ * @param {string} string
  */
 export const normalizeCase = string => {
+    if (!string) {
+        return string
+    }
     const val = string.replace(/[A-Z]/g, letter => ` ${letter.toLowerCase()}`)
             .split(/[\s_-]/)
             .filter(w => w !== ' ' && w !== '')
@@ -13,25 +18,47 @@ export const normalizeCase = string => {
 }
 
 export const titleCase = string => {
+    if (!string) {
+        return string
+    }
     const parts = normalizeCase(string).split(' ');
     return parts.map(str => str.charAt(0).toUpperCase()+str.slice(1)).join(' ');
 }
 
 export const kebabCase = string => {
+    if (!string) {
+        return string
+    }
     return normalizeCase(string).split(' ').join('-');
 }
 
 export const snakeCase = string => {
+    if (!string) {
+        return string
+    }
     return normalizeCase(string).split(' ').join('_');
 }
 
-export const camelCase = string => {
+export const studlyCase = string => {
+    if (!string) {
+        return string
+    }
     const parts = normalizeCase(string).split(' ');
     return parts.map(str => str.charAt(0).toUpperCase()+str.slice(1)).join('');
 }
 
+export const camelCase = string => {
+    const studly = studlyCase(string);
+
+    return studly.charAt(0).toLowerCase()+studly.slice(1)
+}
+
 export const sentenceCase = str => {
-    return str.charAt(0).toUpperCase()+str.slice(1);
+    if (str === null) {
+        return str
+    }
+    const parts = normalizeCase(str).split(' ');
+    return parts.join(' ').charAt(0).toUpperCase()+parts.join(' ').slice(1);
 }
 
 export const arrayContains = (needle, haystack) => {
@@ -53,11 +80,17 @@ export const arrayContains = (needle, haystack) => {
         .includes(needle);
 }
 
+export const featureIsEnabled = feature => {
+    console.log(camelCase(feature))
+    return configs.appFeatures[camelCase(feature)]
+}
+
 export default {
     arrayContains,
     normalizeCase,
     titleCase,
     kebabCase,
     camelCase,
-    snakeCase
+    snakeCase,
+    featureIsEnabled
 }

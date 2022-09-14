@@ -34,7 +34,6 @@ export class ApplicationSection extends RequirementEvaluator {
         this.requirements = requirements;
         this.components = components;
     }
-
 }
 export class ApplicationStep extends RequirementEvaluator{
     constructor (name, sections, title, completeFunction, disabledFunction) {
@@ -85,9 +84,9 @@ export class ApplicationDefinition extends RequirementEvaluator{
         this.steps = steps;
         this.steps.forEach(step => {
             Object.defineProperty(
-                this, 
-                step.name, 
-                { 
+                this,
+                step.name,
+                {
                     get: () => {
                         return this.steps.find(st => st.name == step.name)
                     }
@@ -163,7 +162,7 @@ export const VcepApplication = applicationDefinitionFactory({
                     ],
                     // components: [
                         // MemberList,
-                        // MembershipDescriptionForm        
+                        // MembershipDescriptionForm
                     // ]
                 },
                 scope: {
@@ -195,7 +194,7 @@ export const VcepApplication = applicationDefinitionFactory({
                         // AttestationNhgri
                     // ]
                 }
-        
+
             },
             completed: group => group.expert_panel.defIsApproved,
             disabled: () => false,
@@ -267,11 +266,11 @@ export const VcepApplication = applicationDefinitionFactory({
                     // components: [
                         // MemberDesignationForm
                     // ]
-                },    
+                },
             },
             completed: group => group.expert_panel.sustainedCurationIsApproved,
             disabled: group => !group.expert_panel.pilotSpecificationsIsApproved,
-        }        
+        }
     }
 });
 
@@ -341,7 +340,7 @@ export const GcepApplication = applicationDefinitionFactory({
                     //     AttestationNhgri
                     // ]
                 }
-        
+
             }
         },
     }

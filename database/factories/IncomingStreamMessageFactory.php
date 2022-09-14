@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class IncomingStreamMessageFactory extends Factory
 {
-
     /**
      * The name of the factory's corresponding model.
      *
@@ -41,9 +40,17 @@ class IncomingStreamMessageFactory extends Factory
             return [
                 'key' => null,
                 'payload' => [
-                    'uuid' => $this->faker->uuid,
-                    'event' => 'classified-rules-approved',
-                    'affiliationId' => '50666',
+                    'cspecDoc' => [
+                        'cspecId' => 'ABC1',
+                        'uuid' => $this->faker->uuid,
+                        'status' => [
+                            'event' => 'classified-rules-approved',
+                            'current' => 'Classified Rules Approved'
+                        ],
+                        'affiliationId' => '50666',
+                        'name' => $this->faker->sentence,
+                        'ruleSets' => []
+                    ]
                 ]
             ];
         });
@@ -55,9 +62,17 @@ class IncomingStreamMessageFactory extends Factory
             return [
                 'key' => null,
                 'payload' => [
-                    'uuid' => $this->faker->uuid,
-                    'event' => 'pilot-rules-approved',
-                    'affiliationId' => '50666',
+                    'cspecDoc' => [
+                        'cspecId' => 'ABC1',
+                        'uuid' => $this->faker->uuid,
+                        'status' => [
+                            'event' => 'pilot-rules-approved',
+                            'current' => 'Pilot Rules Approved'
+                        ],
+                        'affiliationId' => '50666',
+                        'name' => $this->faker->sentence,
+                        'ruleSets' => [],
+                    ]
                 ]
             ];
         });

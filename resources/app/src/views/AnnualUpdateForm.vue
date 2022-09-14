@@ -50,7 +50,7 @@ export default {
         uuid: {
             required: true,
             type: String
-        }
+        },
     },
     data() {
         return {
@@ -123,9 +123,9 @@ export default {
     },
     computed: {
         prevYearUrl () {
-            return (this.group.expert_panel.is_vcep) 
-                ? 'https://docs.google.com/spreadsheets/d/1nmIrsuKa8p1uOy18733P_2JBwQtANxDNmvAo4WTrfqY/edit#gid=1476503765' 
-                : 'https://docs.google.com/spreadsheets/d/1-wE9Inu7sUG8jV456EdEsvVp36SWH4qCKX0V3i4dC2I/edit#gid=1788029822' 
+            return (this.group.expert_panel.is_vcep)
+                ? 'https://docs.google.com/spreadsheets/d/1nmIrsuKa8p1uOy18733P_2JBwQtANxDNmvAo4WTrfqY/edit#gid=1476503765'
+                : 'https://docs.google.com/spreadsheets/d/1-wE9Inu7sUG8jV456EdEsvVp36SWH4qCKX0V3i4dC2I/edit#gid=1788029822'
         },
         group () {
             return this.$store.getters['groups/currentItemOrNew'];
@@ -172,8 +172,8 @@ export default {
             }
         },
         $route() {
-            this.showModal = this.$route.meta.showModal 
-                                ? Boolean(this.$route.meta.showModal) 
+            this.showModal = this.$route.meta.showModal
+                                ? Boolean(this.$route.meta.showModal)
                                 : false;
         }
     },
@@ -311,8 +311,8 @@ export default {
                     </app-section>
 
                     <website-attestation v-model="annualReview" :errors="errors" />
-                    
-                    <template 
+
+                    <template
                         v-if="expertPanel.is_vcep && expertPanel.has_approved_draft">
                         <!-- <dev-component>Begin questions for specifcation-ed VCEPS</dev-component> -->
                         <app-section title="Progress on Rule Specification">
@@ -327,23 +327,23 @@ export default {
 
                     <template v-if="expertPanel.is_vcep && expertPanel.sustained_curation_is_approved">
                         <!-- <dev-component>Begin Questions for sustained curation</dev-component> -->
-                        
+
                         <!-- <variant-curation-workflow v-model="annualReview" :errors="errors" /> -->
-                        
+
                         <variant-reanalysis v-model="annualReview" :errors="errors" />
 
                         <vcep-ongoing-plans-update-form v-model="annualReview" :errors="errors"  @updated="saveOngoingPlans"/>
-                        
-                        <member-designation-update 
-                            v-model="annualReview" 
+
+                        <member-designation-update
+                            v-model="annualReview"
                             :errors="errors"
                             @updated="debounceSave"
                             ref="memberDesignationUpdate"
                         />
 
-                        <!-- <vcep-plans-for-specifications 
-                            v-model="annualReview" 
-                            :errors="errors" 
+                        <!-- <vcep-plans-for-specifications
+                            v-model="annualReview"
+                            :errors="errors"
                         /> -->
 
                         <!-- <dev-component>End Questions for sustained curation</dev-component> -->
@@ -354,7 +354,7 @@ export default {
             <hr>
             <button class="btn btn-lg" @click="submit" v-if="!annualReview.completed_at">Submit annual update</button>
             <static-alert variant="danger mt-4" v-if="hasErrors">
-                There are problems with your annual update that must be corrected before you can submit.  
+                There are problems with your annual update that must be corrected before you can submit.
                 <br>
                 Please see items highlighted in red above.
             </static-alert>

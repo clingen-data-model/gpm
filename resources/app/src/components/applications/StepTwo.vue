@@ -1,5 +1,5 @@
 <template>
-    <base-step 
+    <base-step
         :step="2"
         :document-type="2"
         document-name="Draft Specifications"
@@ -9,7 +9,7 @@
         @updated="$emit('updated')"
     >
         <template v-slot:sections>
-            <div class="application-section">
+            <div class="application-section screen-block">
                 <h2>Draft Specifications</h2>
                 <specifications-section :doc-type-id="2" />
             </div>
@@ -28,12 +28,12 @@ export default {
         SpecificationsSection
     },
     props: {
-        
+
     },
     emits: ['approved', 'updated'],
     data() {
         return {
-            
+
         }
     },
     computed: {

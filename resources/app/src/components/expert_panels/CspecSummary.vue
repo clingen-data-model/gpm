@@ -1,37 +1,3 @@
-<template>
-    <div>
-        <div class="well" v-if="!hasSpecifications">
-            No specifications on record.
-        </div>
-        <div v-else>
-            <data-table 
-                :fields="specFields" 
-                :data="group.expert_panel.specifications" 
-                v-model:sort="sort"
-                class="mb-6"
-            >
-                <template v-slot:cell-id="{item}">
-                    <a :href="`https://cspec.genome.network/cspec/ui/svi/ruleset/${item.id}`" target="cspec" class="btn btn-xs">
-                        Go to rules
-                    </a>
-                </template>
-                <template v-slot:cell-status_name="{item}">
-                    <badge :color="item.status.color">{{item.status.name}}</badge>
-                </template>
-            </data-table>
-        </div>
-        <button 
-            @click="goToCspec"
-            class="btn btn-xl blue"
-            target="cspec"
-            :disabled="readonly"
-        >
-            Go to the CSpec Registry
-            <icon-external-link class="inline"></icon-external-link>
-        </button>
-            <icon-external-link class="inline"></icon-external-link>
-    </div>
-</template>
 <script>
 export default {
     name: 'CspecSummary',
@@ -49,17 +15,12 @@ export default {
             },
             specFields: [
                 {
-                    name: 'gene_symbol',
+                    name: 'name',
                     type: String,
                     sortable: true,
                 },
                 {
-                    name: 'disease_name',
-                    type: String,
-                    sortable: true,
-                },
-                {
-                    name: 'status.name',
+                    name: 'status',
                     label: 'Status',
                     type: String,
                     sortable: true,
@@ -70,12 +31,6 @@ export default {
                     type: Date,
                     sortable: true,
                 },
-                {
-                    name: 'id',
-                    label: '',
-                    type: Number,
-                    sortable: false,
-                }
             ]
         }
     },
@@ -84,7 +39,7 @@ export default {
             return this.$store.getters['groups/currentItemOrNew'];
         },
         hasSpecifications () {
-            return true;
+            return this.group.expert_panel.specifications && this.group.expert_panel.specifications.length > 0;
         },
         specifications () {
             return this.group.expert_panel.specifications;
@@ -105,3 +60,51 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <div class="well mb-2" v-if="!hasSpecifications">
+            No specifications on record in the CSPEC Registry.
+        </div>
+        <div v-else>
+            <table class="mb-2">
+                <thead>
+                    <tr>
+                        <th>Specification Name</th>
+                        <th>Status</th>
+                        <th>Last Updated</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="spec in specifications" :key="spec.id">
+                        <td>{{spec.name}}</td>
+                        <td>{{spec.status}}</td>
+                        <td>{{formatDate(spec.updated_at)}}</td>
+                        <td>
+                            <ul>
+                                <!-- <li>
+                                    <a target="cspec_view" :href="`https://cspec.genome.network/cspec/ui/svi/doc/${spec.cspec_id}`">View</a>
+                                </li> -->
+                                <li>
+                                    <a target="cspec_edit" :href="`https://cspec.genome.network/cspec/ed/svi/doc/${spec.cspec_id}`">Edit</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <a
+            class="btn btn-lg blue"
+            target="cspec-editor"
+            :disabled="readonly"
+            href="https://cspec.genome.network/"
+        >
+            Go to the CSpec Registry
+            <icon-arrow-right class="inline" />
+        </a>
+
+        <note class="mt-2">It may take up to an hour for the latest updates in the CSPEC Registry to display here.</note>
+
+    </div>
+</template>

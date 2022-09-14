@@ -29,15 +29,16 @@ class ApplicationStepSubmitted extends GroupEvent
 
     public function getLogEntry(): string
     {
-        $submitterName = Auth::user() ? Auth::user()->name : 'system';
+        $submitterName = $this->submission->submitter ? $this->submission->submitter->name : 'system';
         return $this->submission->type->name.' application submitted for approval by '.$submitterName.'.';
     }
-    
+
     public function getProperties(): ?array
     {
         return [
             'submission' => $this->submission->toArray(),
-            'date_submitted' => $this->submission->created_at
+            'date_submitted' => $this->submission->created_at,
+            'step' => $this->submission->group->expertPanel->current_step
         ];
     }
 

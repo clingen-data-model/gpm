@@ -1,4 +1,4 @@
-<style lang="postcss" scoped>
+<style scoped>
     table {
         @apply w-full;
     }
@@ -24,8 +24,8 @@
 <!-- <pre>{ currentPage: {{currentPage}} }</pre> -->
         <header class="flex justify-between mb-2 items-center">
             <slot name="header"></slot>
-            <pagination-links 
-                :current-page="currentPage" 
+            <pagination-links
+                :current-page="currentPage"
                 :total-items="totalItems"
                 :page-size="pageSize"
                 @update:currentPage="updateCurrentPage"
@@ -52,14 +52,14 @@
                                 </div>
                                 <div>
                                     <div v-if="field.sortable">
-                                        <icon-cheveron-up icon-color="#ccc" 
-                                            v-if="realSort.field != field"
+                                        <icon-cheveron-up icon-color="#ccc"
+                                            v-if="realSort.field.name != field.name"
                                         ></icon-cheveron-up>
-                                        <icon-cheveron-up icon-color="#333" 
-                                            v-if="realSort.field == field && !realSort.desc"
+                                        <icon-cheveron-up icon-color="#333"
+                                            v-if="realSort.field.name == field.name && !realSort.desc"
                                         ></icon-cheveron-up>
-                                        <icon-cheveron-down icon-color="#333" 
-                                            v-if="realSort.field == field && realSort.desc"
+                                        <icon-cheveron-down icon-color="#333"
+                                            v-if="realSort.field.name == field.name && realSort.desc"
                                         ></icon-cheveron-down>
                                     </div>
                                 </div>
@@ -70,8 +70,8 @@
                 </thead>
                 <tbody v-for="item in resolvedItems" :key="item.uuid">
                     <tr :class="resolveRowClass(item)" @click="handleRowClick(item)">
-                        <td 
-                            v-for="field in fields" 
+                        <td
+                            v-for="field in fields"
                             :key="field.name"
                             :class="getCellClass(field)"
                         >
@@ -99,7 +99,7 @@ import { formatDate } from '@/date_utils'
 import {titleCase} from '@/utils'
 
 /**
- * 
+ *
  */
 export default {
     name: 'DataTable',
@@ -121,7 +121,7 @@ export default {
          *      type: <Type> // Number, String, Object, Date, etc. Determines sort default behavior and default display,
          *      sortable: <Boolean> // True: column can be sorted; False: can't be sorted. Default: false
          *      sortName: <String>item_attribute_name // Item's attribute on which to sort. Default: null - uses 'name'
-         *      resolveValue: <Function> // custom function to resolve item's value for this column. 
+         *      resolveValue: <Function> // custom function to resolve item's value for this column.
          *                                  Effects sort if no 'sortName' provided.
          *      sortFunction: <Function>(a, b) => -1|0|1 // Used to sort column instead of default stort algorithm.
          * }
@@ -248,7 +248,7 @@ export default {
                 return;
             }
 
-            const allItems = this.sortData(this.filterData(this.data));
+            const allItems = this.sortData(this.filterData([...this.data]));
             this.resolvedItems = this.paginated ? this.paginate(allItems) : allItems;
             this.setTotalItems(allItems.length);
         },
@@ -257,7 +257,7 @@ export default {
         },
         setCurrentPage(currentPage) {
             this.currentPage = currentPage;
-        }, 
+        },
         paginate (data) {
             if (this.dataIsFunction) {
                 this.getItems();
@@ -283,7 +283,7 @@ export default {
 
                 return sorted;
             }
-            
+
             if (sortType == Date) {
                 return data.sort(this.dateSort)
             }
@@ -302,7 +302,7 @@ export default {
 
             return data.filter(i => (i !== null))
                     .filter(item => this.filterFunction(item, this.filterTerm.trim()));
-        }, 
+        },
         findFieldByName(name) {
             return this.fields.find(i => i.name == name)
         },
@@ -332,7 +332,7 @@ export default {
             }
             return value;
         },
-        
+
         resolveSortAttribute (item, field){
             if (field.resolveSort) {
                 return field.resolveSort(item);
@@ -344,15 +344,15 @@ export default {
 
             return this.resolveDisplayAttribute(item, field)
         },
-        
+
         updateSort(field) {
             const oldField = this.realSort.field;
             const newSort = {
                 field: field.name,
                 desc: !this.realSort.desc
             }
-            
-            if (oldField != field) {
+
+            if (oldField.name != field.name) {
                 newSort.desc = false
             }
 
@@ -402,7 +402,7 @@ export default {
             if (isNaN(parseFloat(bVal))) {
                 bVal = 0;
             }
-            
+
             if (aVal === bVal) {
                 return 0;
             }
@@ -422,7 +422,7 @@ export default {
                     return true;
                 }
             }
-            
+
             return false;
         },
         handleRowClick(item) {
@@ -474,7 +474,7 @@ export default {
         },
         updateCurrentPage (currentPage) {
             this.currentPage = currentPage;
-        } 
+        }
     }
 }
 </script>

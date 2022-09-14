@@ -12,9 +12,6 @@ class SendInviteReminders
 
     public function handle()
     {
-        if (!config('app.features.invite_reminders')) {
-            return;
-        }
         $people = Person::query()
                             ->hasPendingInvite()
                             ->with('invite')

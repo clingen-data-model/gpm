@@ -18,14 +18,14 @@ class MemberAdded extends GroupMemberEvent implements PublishableApplicationEven
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
-     * CONSTRUCTOR of parent sets group instance var to $groupMembe->group;
+     * CONSTRUCTOR of parent sets group instance var to $groupMember->group;
      */
 
     public function getLogEntry(): string
     {
         return $this->groupMember->person->name.' added to '.$this->group->name;
     }
-    
+
     public function getLogDate(): Carbon
     {
         return Carbon::now();
@@ -35,12 +35,12 @@ class MemberAdded extends GroupMemberEvent implements PublishableApplicationEven
     {
         return $this->groupMember->person->only('id', 'uuid', 'name', 'email', 'is_contact');
     }
-    
+
     public function getEventType(): string
     {
         return 'member_added';
     }
-    
+
     /**
      * Get the channels the event should broadcast on.
      *

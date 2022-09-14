@@ -9,7 +9,7 @@
                     <label :class="resolvedLabelClass">{{label}}{{colon}}</label>
                 </slot>
             </div>
-            <div class="flex-grow">
+            <div class="flex-grow flex flex-col space-y-3">
                 <slot>
                     <date-input 
                         v-if="type == 'date'"

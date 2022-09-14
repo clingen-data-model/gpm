@@ -1,10 +1,19 @@
 <?php
 
 use App\Actions\MailResend;
+use App\Actions\CommentFind;
+use App\Actions\CommentList;
 use App\Models\DocumentType;
 use Illuminate\Http\Request;
 use App\Actions\NotifyPeople;
+use App\Actions\CommentCreate;
+use App\Actions\CommentDelete;
+use App\Actions\CommentUpdate;
+use App\Actions\CommentResolve;
 use App\Actions\FeedbackSubmit;
+use App\Actions\CommentTypeList;
+use App\Actions\CommentUnresolve;
+use App\Actions\LogEntrySearch;
 use App\Actions\NotificationMarkRead;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
@@ -54,15 +63,15 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/email-drafts/groups/{group:uuid}', [MailDraftController::class, 'makeDraft']);
     // Route::get('/email-drafts/{applicationUuid}/{approvedStepNumber}', [MailDraftController::class, 'show']);
-    
-    
+
+
     Route::get('/mail-log', [MailLogController::class, 'index']);
     Route::post('/mail', MailResend::class);
 
     Route::post('/announcements', NotifyPeople::class);
-    
+
     Route::get('/impersonate/search', [ImpersonateSearchController::class, 'index']);
-    
+
     Route::put('/notifications/{notificationId}', NotificationMarkRead::class);
 
     Route::group(['prefix' => '/annual-updates'], function () {
@@ -74,6 +83,18 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/roles', [RolesController::class, 'index']);
 
+    Route::group(['prefix' => '/comments'], function () {
+        Route::post('/', CommentCreate::class);
+        Route::get('/', CommentList::class);
+        Route::get('/{comment:id}', CommentFind::class);
+        Route::put('/{comment:id}', CommentUpdate::class);
+        Route::delete('/{comment:id}', CommentDelete::class);
+        Route::post('/{comment:id}/resolved', CommentResolve::class);
+        Route::post('/{comment:id}/unresolved', CommentUnresolve::class);
+    });
+    Route::get('/comment-types', CommentTypeList::class);
+
+    Route::get('/activity-logs', LogEntrySearch::class);
 });
 
 Route::get('/cdwgs', [CdwgController::class, 'index']);

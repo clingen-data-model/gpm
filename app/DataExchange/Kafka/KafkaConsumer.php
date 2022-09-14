@@ -82,12 +82,13 @@ class KafkaConsumer implements MessageConsumer
             $availableTopics
         );
     }
-    
+
 
     public function listen(): MessageConsumer
     {
         $this->kafkaConsumer->subscribe($this->topics);
-    
+
+        $handlerChain = $this->getMessageHandlerChain();
         while (true) {
             $message = $this->kafkaConsumer->consume(10000);
             try {
@@ -110,13 +111,13 @@ class KafkaConsumer implements MessageConsumer
     public function consume(): MessageConsumer
     {
         $this->kafkaConsumer->subscribe($this->topics);
-    
+
         $handlerChain = $this->getMessageHandlerChain();
 
         while (true) {
             $message = $this->kafkaConsumer->consume(10000);
             try {
-                // $handlerChain->handle($message);
+                $handlerChain->handle($message);
             } catch (StreamingServiceEndOfFIleException $e) {
                 break;
             } catch (StreamingServiceException $th) {

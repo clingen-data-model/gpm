@@ -1,0 +1,40 @@
+{
+    "cspecDoc": {
+        "affiliationId": "59999",
+        "approvalDate": "2022-06-01T21:29:36.989Z",
+        "cspecEditorUILink": "https:\/\/10.15.55.128\/cspec-stg\/ed\/svi\/doc\/GN024",
+        "cspecId": "GN024",
+        "cspecRegApiLink": "https:\/\/10.15.55.128\/cspec-stg\/api\/SequenceVariantInterpretation\/doc\/GN024",
+        "cspecRegUILink": "https:\/\/10.15.55.128\/cspec-stg\/ui\/svi\/doc\/GN024",
+        "name": "ClinGen Monogenic Diabetes  Expert Panel Specifications to the ACMG\/AMP Variant Interpretation Guidelines for ACAT1 Version 1.0.0",
+        "ruleSets": [
+            {
+                "ruleSetId": "1411613535",
+                "ruleSetRegApiLink": "https:\/\/10.15.55.128\/cspec-stg\/api\/RuleSet\/id\/1411613535",
+                "ruleSetRegUiLink": "https:\/\/10.15.55.128\/cspec-stg\/ui\/svi\/ruleset\/1411613535",
+                "scope": [
+                    {
+                        "diseases": [
+                            {
+                                "adjective": "Autosomal dominant inheritance with maternal imprinting (HP:0012275)",
+                                "preferredModeOfInheritance": "Autosomal dominant inheritance",
+                                "preferredMondoId": "MONDO:0012349"
+                            }
+                        ],
+                        "gene": "ACAT1",
+                        "preferredTranscript": "NM_000019.4"
+                    }
+                ]
+            }
+        ],
+        "status": {
+            "current": "Classification Rules Submitted",
+            "event": "classified-rules-submitted",
+            "modifiedAt": "2022-06-02T16:21:08.396Z",
+            "previous": "Classification Rules In Prep"
+        },
+        "version": "1.0.0"
+    },
+    "eventTime": "2022-06-02T16:21:08.510Z",
+    "uuid": "7b5289d5-8f21-4427-807a-24748d1ce6ef"
+}

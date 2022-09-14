@@ -18,22 +18,12 @@
 <script>
 import {mapGetters} from 'vuex'
 import BaseStep from '@/components/applications/BaseStep.vue'
-// import CoiLog from '@/components/applications/COILog.vue'
-// import MemberList from '@/components/groups/MemberList.vue'
-// import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
-// import GcepGeneList from '@/components/expert_panels/GcepGeneList.vue'
-// import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm.vue';
-// import VcepGeneList from '@/components/expert_panels/VcepGeneList.vue'
 import DefinitionReview from '@/components/expert_panels/DefinitionReview.vue'
 
 export default {
     name: 'StepOne',
     components: {
         BaseStep,
-        // CoiLog,
-        // MemberList,
-        // ApplicationSection,
-        // GcepOngoingPlansForm,
         DefinitionReview
     },
     emits: ['approved', 'updated'],
@@ -48,9 +38,6 @@ export default {
         application () {
             return this.group.expert_panel;
         },
-        // geneList () {
-        //     return this.group.isVcep() ? VcepGeneList : GcepGeneList;
-        // }
     },
     methods: {
     }

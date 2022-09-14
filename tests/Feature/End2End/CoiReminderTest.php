@@ -24,11 +24,10 @@ class CoiReminderTest extends TestCase
     {
         parent::setup();
         $this->setupForGroupTest();
-        
+
         $this->ep = ExpertPanel::factory()->create();
         $this->user1 = $this->setupUserWithPerson();
         $this->membership1 = app()->make(MemberAdd::class)->handle($this->ep->group, $this->user1->person);
-        config(['app.features.coi_reminders' => true]);
     }
 
     /**
@@ -62,7 +61,7 @@ class CoiReminderTest extends TestCase
         $this->assertEquals(1, $peopleWithPendingCois->count());
         $this->assertEquals($this->user1->person->id, $peopleWithPendingCois->first()->id);
     }
-    
+
     /**
      * @test
      */
@@ -104,7 +103,7 @@ class CoiReminderTest extends TestCase
             'expert_panel_id' => $ep2->id,
             'completed_at' => Carbon::now()->subDays(364)
         ]);
- 
+
         Notification::fake();
         $this->triggerScheduledTask();
         Notification::assertSentTo($this->user1->person, CoiReminderNotification::class);
@@ -165,8 +164,8 @@ class CoiReminderTest extends TestCase
         Notification::assertNotSentTo($person, CoiReminderNotification::class);
 
     }
-    
-    
+
+
     private function triggerScheduledTask()
     {
         Carbon::setTestNow('2022-02-14 06:00:00');

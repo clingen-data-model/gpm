@@ -67,7 +67,7 @@ class ActionMakeCommand extends GeneratorCommand
                 'use Lorisleiva\Actions\ActionRequest;',
                 'use Lorisleiva\Actions\Concerns\AsController;',
             ];
-            $useTraits = ["\tuse AsController;"];
+            $useTraits = ["use AsController;"];
 
             $replacements['{{ as_controller_methods }}'] = file_get_contents($this->getControllerMethodsStub());
         }
@@ -76,7 +76,7 @@ class ActionMakeCommand extends GeneratorCommand
 
             $useStatements[] = 'use Lorisleiva\Actions\Concerns\AsCommand';
             $useStatements[] = 'use Illumniate\Console\Command';
-            $useTraits[] = "\tuse AsController;";
+            $useTraits[] = "use AsCommand;";
             $replacements['{{ command_signature }}'] = "\t".'$commandSignature = \'command\'';
             $replacements['{{ as_command_methods }}'] = file_get_contents($this->getCommandMethodsStub());
         }
@@ -84,12 +84,12 @@ class ActionMakeCommand extends GeneratorCommand
         if ($this->option('as-listener')) {
 
             $useStatements[] = 'use Lorisleiva\Actions\Concerns\AsListener;';
-            $useTraits[] = "\tuse AsListener;";
+            $useTraits[] = "use AsListener;";
             $replacements['{{ event_type }}'] = $this->option('as-listener');
             $replacements['{{ as_listener_methods }}'] = file_get_contents($this->getListenerMethodsStub());
         }
         
-        $replacements['{{ use_statements }}'] = implode("\n", $useStatements);
+        $replacements['{{ use_statements }}'] = implode("\n    ", $useStatements);
         $replacements['{{ use_traits }}'] = implode("\n", $useTraits);
 
         return $replacements;
