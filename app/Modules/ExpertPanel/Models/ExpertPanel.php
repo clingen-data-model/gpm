@@ -154,18 +154,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     }
 
 
-    // DOMAIN METHODS
-    public function addContact(Person $person)
-    {
-        $member = GroupMember::firstOrCreate([
-            'person_id' => $person->id,
-            'group_id' => $this->group_id,
-            'is_contact' => 1
-        ]);
-        $this->touch();
-    }
-
-
     // RELATIONSHIPS
     public function group(): BelongsTo
     {
