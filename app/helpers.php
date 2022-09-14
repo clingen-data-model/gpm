@@ -1,6 +1,9 @@
 <?php
 
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Symfony\Component\Finder\Finder;
 
 if (!function_exists('renderQuery')) {
     function renderQuery($query)
@@ -43,5 +46,29 @@ if (!function_exists('test_path')) {
 if (!function_exists('implementsInteface')) {
     function implementsInterface($object, $interface) {
         return in_array($interface, class_implements($object));
+    }
+}
+
+if (!function_exists('getClassesInPaths')) {
+    function getClassesInPaths($paths, $namespace = null) {
+        $paths = array_unique(Arr::wrap($paths));
+        $paths = array_filter($paths, function ($path) {
+            return is_dir($path);
+        });
+
+        if (empty($paths)) {
+            return;
+        }
+
+        $classes = [];
+        foreach ((new Finder())->in($paths)->files() as $command) {
+            $classes[] = $namespace.str_replace(
+                ['/', '.php'],
+                ['\\', ''],
+                Str::after($command->getPathname(), realpath(app_path()).DIRECTORY_SEPARATOR)
+            );
+        }
+
+        return $classes;
     }
 }
