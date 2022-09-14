@@ -48,7 +48,7 @@ Event types in this topic include
 * `deleted`: The person defined in the `person` attribute has been deleted.
 
 ### Event Schema
-The full JSON schema can be found at [gpm-person-events.json](./gpm-person-events.json).
+The full JSON schema can be found at [gpm-person-events.json](gpm-person-events.json).
 
 ## Questions & Comments
 Questions and comments and issues can be directed to TJ Ward or via github issues on this repository.

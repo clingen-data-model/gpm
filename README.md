@@ -63,6 +63,11 @@ The ClinGen Data Exchange (DX) is a [Kafka](https://kafka.apache.org/) message b
 
 The GPM integrates with the DX to publish messages about its data and consume messages from the [CSPEC Registry](https://https://cspec.genome.network/cspec/ui/svi/) about VCEP AMCG/AMP Guidelines Specfications.
 
+
+The GPM produces to one (soon two) topic(s):
+* `gpm-general-events` - While a bit mis-named, this topic publishes messages about events related to GPM groups, their scope, and their members.  See [gpm-general-events documention](public/data-exchange/gpm-general-events.md) for details.
+* `gpm-person-events` - This topic publishes messages about events related to people in the GPM (i.e. profile information about group members). See [gpm-person-events documentation](public/data-exchange/gpm-person-events.md) for details.
+
 #### Notes about the DX implementation
 * All topics are on a single partition.
 

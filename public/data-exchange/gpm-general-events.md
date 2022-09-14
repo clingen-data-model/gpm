@@ -13,7 +13,7 @@ This topic is currently subscribed to by:
 Each message in this topic will have:
 * `event_type`: A string defining the type of event.
 * `schema_version`: A string representing the semantic version of the message.
-* `data`: An object with the event data for the group.  The structure varies based on event type. See [gpm-general-events.json](./gpm-general-events.json) for details.
+* `data`: An object with the event data for the group.  The structure varies based on event type. See [gpm-general-events.json](gpm-general-events.json) for details.
 
 Required attributes are **bolded**.
 
@@ -41,8 +41,8 @@ Event types in this topic include
 
 
 ### Event Schema & Example
-The full JSON schema can be found at [gpm-general-events.json](./gpm-general-events.json).
-See [gpm-general-events-example.json](./gpm-general-events-example.json) for examples
+The full JSON schema can be found at [gpm-general-events.json](gpm-general-events.json).
+See [gpm-general-events-example.json](gpm-general-events-example.json) for examples
 
 ## Questions & Comments
 Questions and comments and issues can be directed to TJ Ward or via github issues on this repository.
