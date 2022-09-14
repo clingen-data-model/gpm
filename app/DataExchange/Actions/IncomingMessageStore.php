@@ -6,6 +6,8 @@ use App\DataExchange\DxMessage;
 use Illuminate\Support\Facades\Log;
 use Lorisleiva\Actions\Concerns\AsListener;
 use App\DataExchange\Models\IncomingStreamMessage;
+use App\DataExchange\Exceptions\DuplicateMessageException;
+use App\DataExchange\Exceptions\DuplicationMessageException;
 
 class IncomingMessageStore
 {
@@ -24,8 +26,7 @@ class IncomingMessageStore
         ]);
 
         if ($storedMessage->payload != $message->payload) {
-            Log::warning('We got a message from the '.$message->topic.' with a key that already exists and a payload that is different', ['storedMessage->payload' => $storedMessage->payload, 'payload' => $message->payload]);
-            die;
+            throw new DuplicateMessageException('We got a message from the '.$message->topic.' with a key that already exists and a payload that is different', 422, ['storedMessage->payload' => $storedMessage->payload, 'payload' => $message->payload]);
         }
 
         return $storedMessage;

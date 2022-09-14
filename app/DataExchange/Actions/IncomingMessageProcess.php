@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use App\DataExchange\MessageHandlerFactory;
 use App\DataExchange\Contracts\MessageProcessor;
 use App\DataExchange\Exceptions\DataSynchronizationException;
+use App\DataExchange\Exceptions\DuplicateMessageException;
 use App\DataExchange\Models\IncomingStreamMessage;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\DataExchange\Exceptions\UnsupportedIncomingMessage;
@@ -30,7 +31,11 @@ class IncomingMessageProcess implements MessageProcessor
     {
         return DB::transaction(function () use ($message) {
             // Store the message and as an IncomingStreamMessage
-            $incomingStreamMessage = $this->storeMessage->handle($message);
+            try {
+                $incomingStreamMessage = $this->storeMessage->handle($message);
+            } catch (DuplicateMessageException $th) {
+                Log::warning($th->getMessage(), $th->getAdditionalLogData());
+            }
 
             try {
                 // Insantiate the action for the type and run the handler
