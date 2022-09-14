@@ -27,6 +27,13 @@ if (!function_exists('carbonToString')) {
     }
 }
 
+if (!function_exists('valueAtIndex')) {
+    function valueAtIndex(array $arr, $index, $default = null)
+    {
+        return isset($arr[$index]) ? $arr[$index]  : $default;
+    }
+}
+
 if (!function_exists('test_path')) {
     function test_path(string $path) {
         return base_path('tests/'.$path);
