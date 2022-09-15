@@ -2,9 +2,10 @@
 
 namespace App\Console\Commands\Dev;
 
+use Exception;
+use \RdKafka\KafkaConsumer as RdKafkaConsumer;
 use Illuminate\Console\Command;
 use App\DataExchange\Kafka\KafkaConfig;
-use App\DataExchange\Contracts\MessageStream;
 use App\DataExchange\Kafka\KafkaMessageStream;
 
 class ConsumeDxMessages extends Command
@@ -79,31 +80,79 @@ class ConsumeDxMessages extends Command
         $this->info($count.' messages read.');
     }
 
+    /**
+     * Print the payload to the stdOut
+     *
+     * @param mixed $message
+     *
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     *
+     */
     private function printPayload($message)
     {
         $this->info('Payload:' . json_encode($message->payload, JSON_PRETTY_PRINT));
     }
 
+    /**
+     * Print the offset to the stdOut
+     *
+     * @param mixed $message
+     *
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     *
+     */
     private function printOffset($message)
     {
         $this->info('Offset: '.$message->offset);
     }
 
+    /**
+     * Print the status to the stdOut
+     *
+     * @param mixed $message
+     *
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     *
+     */
     private function printStatus($message)
     {
         $this->info('Status: '.json_encode($message->payload->cspecDoc->status->current, JSON_PRETTY_PRINT));
     }
 
+    /**
+     * Print the event name to the stdOut
+     *
+     * @param mixed $message
+     *
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     *
+     */
     private function printEvent($message)
     {
         $this->info('Event: '.json_encode($message->payload->cspecDoc->status->event, JSON_PRETTY_PRINT));
     }
 
+     /**
+     * Print the message key to the stdOut
+     *
+     * @param mixed $message
+     *
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     *
+     */
     private function printKey($message)
     {
         $this->info('Key: '.$message->key);
     }
 
+    /**
+     * Store the message as to it's own file
+     *
+     * @param mixed $message
+     *
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     *
+     */
     private function persistSingleMessage($message): void
     {
         $filepath = base_path('consumed_messages/'.($message->key ?? time()).'.json');
@@ -126,17 +175,17 @@ class ConsumeDxMessages extends Command
         );
     }
 
-    private function buildKafkaConsumer(?int $offset = null): \RdKafka\KafkaConsumer
+    private function buildKafkaConsumer(?int $offset = null): RdKafkaConsumer
     {
         $rdKafkaConfig = $this->buildKafkaConfig($offset);
-        return new \RdKafka\KafkaConsumer($rdKafkaConfig);
+        return new RdKafkaConsumer($rdKafkaConfig);
     }
 
     private function buildKafkaConfig(?int $offset = null)
     {
         $config = app()->make(KafkaConfig::class);
         $config->setRebalanceCallback(
-            function (\RdKafka\KafkaConsumer $consumer, $err, array $topicPartitions = null) use ($offset) {
+            function (RdKafkaConsumer $consumer, $err, array $topicPartitions = null) use ($offset) {
                 switch ($err) {
                     case RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS:
                         echo "\nAssign partions...\n";
@@ -155,7 +204,7 @@ class ConsumeDxMessages extends Command
                         break;
 
                     default:
-                        throw new \Exception($err);
+                        throw new Exception($err);
                 }
             }
         );

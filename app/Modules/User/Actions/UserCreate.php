@@ -2,6 +2,7 @@
 
 namespace App\Modules\User\Actions;
 
+use Exception;
 use Illuminate\Console\Command;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -31,9 +32,9 @@ class UserCreate
     }
 
     /**
-     * Creates a user entity with name, email, and password.  
+     * Creates a user entity with name, email, and password.
      * Password value is hashed before storage. If password is null, a random password is created and hashed.
-     * 
+     *
      * @param string $name User's name
      * @param string $email Email for the user account
      * @param string|null $password Password (or null).
@@ -84,7 +85,7 @@ class UserCreate
             return true;
         }
 
-        throw new \Exception('You could not be authenticated.');
+        throw new Exception('You could not be authenticated.');
     }
 
     private function getUserName(Command $command)
@@ -103,7 +104,7 @@ class UserCreate
         );
         if ($validator->fails()) {
             $messages = implode('; ', $validator->getMessageBag()->all());
-            throw new \Exception($messages);
+            throw new Exception($messages);
         }
 
         return $name;
@@ -129,7 +130,7 @@ class UserCreate
 
         if ($validator->fails()) {
             $messages = implode('; ', $validator->getMessageBag()->all());
-            throw new \Exception($messages);
+            throw new Exception($messages);
         }
 
         return $email;

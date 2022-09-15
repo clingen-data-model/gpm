@@ -4,6 +4,7 @@ namespace App\Actions;
 
 use Illuminate\Support\Str;
 use App\Models\FollowAction;
+use InvalidArgumentException;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsCommand;
 
@@ -27,7 +28,7 @@ class FollowActionCreate
     )
     {
         if (!class_exists($follower)) {
-            throw new \InvalidArgumentException('Failed to create FollowAction. The follower class '.$follower.' does not appear to exist.');
+            throw new InvalidArgumentException('Failed to create FollowAction. The follower class '.$follower.' does not appear to exist.');
         }
 
         return FollowAction::create([

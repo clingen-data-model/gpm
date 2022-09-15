@@ -20,11 +20,7 @@ class CurrentUserResource extends JsonResource
     {
         $data = parent::toArray($request);
         $data['roles'] = $this->whenLoaded('roles', RoleResource::collection($this->roles));
-        $rolePermissions = $this->relationLoaded('roles.permissions')
-                                ? $this->roles->pluck('permissions')->flatten()
-                                : collect();
         $data['memberships'] = $this->whenLoaded('person', MemberResource::collection($this->person->memberships));
-        // unset($data['person']['memberships']);
         $data['person'] = $this->whenLoaded('person', new PersonDetailResource($this->person));
         $data['is_impersonating'] = $this->isImpersonating;
 

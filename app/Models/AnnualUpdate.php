@@ -164,18 +164,7 @@ class AnnualUpdate extends Model
         if ($this->isVcep) {
             $variantCounts = $this->getDataOrNull('variant_counts');
             if (!is_null($variantCounts)) {
-                $string = '';
-                foreach ($variantCounts as $gene) {
-                    $string .= $gene['gene_symbol']
-                                .' - in_clinvar: '
-                                    .(isset($gene['in_clinvar']) ? $gene['in_clinvar'] : 0)
-                                .', gci_approved: '
-                                    .(isset($gene['gci_approved']) ? $gene['gci_approved'] : 0)
-                                .', provisionally_approved: '
-                                    .(isset($gene['provisionally_approved']) ? $gene['provisionally_approved'] : 0)
-                                .'; ';
-                }
-                $variantCounts = $string;
+                $variantCountString = $this->getVariantCountString($variantCounts);
             }
 
             $result = array_merge(
@@ -187,7 +176,7 @@ class AnnualUpdate extends Model
                     'cochair_commitment_details' => $this->getDataOrNull('cochair_commitment_details'),
                     'sepcification_progress' => $this->getDataOrNull('sepcification_progress'),
                     'specification_url' => $this->getDataOrNull('specification_url'),
-                    'variant_counts' => $variantCounts,
+                    'variant_counts' => $variantCountString,
                     'variant_workflow_changes' => $this->getDataOrNull('variant_workflow_changes'),
                     'variant_workflow_changes_details' => $this->getDataOrNull('variant_workflow_changes_details'),
                     'specification_progress' => $this->getDataOrNull('specification_progress'),
@@ -232,6 +221,24 @@ class AnnualUpdate extends Model
 
         return $this;
     }
+
+    private function getVariantCountString($variantCounts): String
+    {
+        $string = '';
+        foreach ($variantCounts as $gene) {
+            $string .= $gene['gene_symbol']
+                        .' - in_clinvar: '
+                            .(isset($gene['in_clinvar']) ? $gene['in_clinvar'] : 0)
+                        .', gci_approved: '
+                            .(isset($gene['gci_approved']) ? $gene['gci_approved'] : 0)
+                        .', provisionally_approved: '
+                            .(isset($gene['provisionally_approved']) ? $gene['provisionally_approved'] : 0)
+                        .'; ';
+        }
+        
+        return $string;
+    }
+    
 
     private function getDataOrNull($key)
     {

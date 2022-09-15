@@ -59,11 +59,11 @@ class PushMessage implements ShouldQueue
         if (is_string($message)) {
             return $message;
         }
-        
+
         if (is_array($message) || is_object($message)) {
             return json_encode($message);
         }
 
-        throw new \Exception("Expected message to be string, object, or array.  Got ".gettype($message));
+        throw new Exception("Expected message to be string, object, or array.  Got ".gettype($message));
     }
 }

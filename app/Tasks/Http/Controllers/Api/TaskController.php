@@ -24,9 +24,10 @@ class TaskController
                     }
                     if (is_array($value)) {
                         $query->whereIn($key, $value);
-                    } else {
-                        $query->where($key, $value);
+                        continue;
                     }
+                    
+                    $query->where($key, $value);
                 }
                 return $query;
             }

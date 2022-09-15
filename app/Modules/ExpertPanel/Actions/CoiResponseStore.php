@@ -49,7 +49,7 @@ class CoiResponseStore
 
     public function asController($coiCode, CoiStorageRequest $request)
     {
-        $coi = $this->handle($coiCode, $request->group_member_id, $request->except('group_member_id'));
+        $this->handle($coiCode, $request->group_member_id, $request->except('group_member_id'));
         return response(['message' => 'COI response stored.'], 200);
     }
 }

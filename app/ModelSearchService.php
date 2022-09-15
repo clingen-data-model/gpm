@@ -20,26 +20,22 @@ class ModelSearchService
     ) {
         //code
     }
-    
+
     public function search($params): Collection
     {
         return $this->buildQuery($params)
                 ->get();
     }
-    
+
 
     public function buildQuery($params): Builder
     {
         $query = $this->modelClass::query()
                     ->with($this->defaultWith);
 
-                    
-        if (!is_null($this->defaultSelect)) {
-            $query->select($this->defaultSelect);
-        } else {
-            $dummy = new $this->modelClass();
-            $query->select($dummy->getTable().'.*');
-        }
+
+        $query->select($this->getSelect());
+
         if (isset($params['sort'])) {
             $query = $this->sortQuery($query, $params['sort']);
         }
@@ -63,6 +59,15 @@ class ModelSearchService
         return $query;
     }
 
+    private function getSelect()
+    {
+        if (!is_null($this->defaultSelect)) {
+            return $this->defaultSelect;
+        }
+        $dummy = new $this->modelClass();
+        return $dummy->getTable().'.*';
+    }
+
 
     private function addWhereClause($query, $where)
     {
@@ -73,14 +78,14 @@ class ModelSearchService
         foreach ($where as $key => $value) {
             if (is_array($value)) {
                 $query->whereIn($key, $value);
-            } else {
-                $query->where($key, $value);
+                continue;
             }
+            $query->where($key, $value);
         }
 
         return $query;
     }
-    
+
 
     private function eagerLoadRelations($query, $with)
     {
@@ -99,17 +104,17 @@ class ModelSearchService
         if ($with) {
             $query->with($relations);
         }
-        
+
         return $query;
     }
-   
+
     private function removeEagerLoadRelations($query, $without)
     {
         $query->without($without);
-        
+
         return $query;
     }
-    
+
 
 
     private function sortQuery($query, $sort)

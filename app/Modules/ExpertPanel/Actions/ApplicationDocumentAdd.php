@@ -95,8 +95,9 @@ class ApplicationDocumentAdd
                 $expertPanel->step_4_received_date = $document->dateReceived;
             }
             $expertPanel->save();
-        } else {
-            $expertPanel->touch();
+            return;
         }
+
+        $expertPanel->touch();
     }
 }

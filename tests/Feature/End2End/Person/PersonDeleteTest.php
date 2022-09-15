@@ -25,7 +25,7 @@ class PersonDeleteTest extends TestCase
         $this->person = $this->user->person;
         $this->invite = Invite::factory()->create(['person_id' => $this->person->id]);
         $this->membership = app()->make(MemberAdd::class)->handle($this->group, $this->person);
-        
+
         Sanctum::actingAs($this->user);
     }
 
@@ -53,7 +53,25 @@ class PersonDeleteTest extends TestCase
         $this->assertDatabaseHas('group_members', ['id' => $this->membership->id, 'deleted_at' => Carbon::now()]);
         $this->assertDatabaseMissing('users', ['id' => $this->user->id]);
     }
-    
+
+    /**
+     * @test
+     */
+    public function records_PersonDeleted_activity()
+    {
+        Carbon::setTestNow('2022-03-15');
+        $this->makeRequest()
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('activity_log', [
+            'activity_type' => 'person-deleted',
+            'log_name' => 'people',
+            'subject_type' => get_class($this->person),
+            'subject_id' => $this->person->id
+        ]);
+    }
+
+
 
     private function makeRequest()
     {

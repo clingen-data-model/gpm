@@ -40,11 +40,11 @@ class ExpertPanelNameUpdated extends GroupEvent
     {
         $properties = [];
         if ($this->oldLong != $this->longName) {
-            $propoerties['old_long_base_name'] = $this->oldLong;
+            $properties['old_long_base_name'] = $this->oldLong;
             $properties['new_long_base_name'] = $this->longName;
         }
         if ($this->oldShort != $this->shortName) {
-            $propoerties['old_short_base_name'] = $this->oldShort;
+            $properties['old_short_base_name'] = $this->oldShort;
             $properties['new_short_base_name'] = $this->shortName;
         }
         

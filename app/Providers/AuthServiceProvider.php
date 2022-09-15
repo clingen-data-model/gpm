@@ -24,11 +24,12 @@ class AuthServiceProvider extends ServiceProvider
      * Register any authentication / authorization services.
      *
      * @return void
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function boot()
     {
         $this->registerPolicies();
-
         ResetPassword::createUrlUsing(function ($user, string $token) {
             return url('/reset-password?token='.$token);
         });

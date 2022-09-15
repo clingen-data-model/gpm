@@ -1,68 +1,5 @@
 {
-    "event_types": [
-        {
-            "name": "ep_definition_approved",
-            "description": "Membership and Scope has been give first approval by the CDWG OC. and VCEPs are ready to start drafting specifications"
-        },
-        {
-            "name": "vcep_draft_specifications_approved",
-            "description": "Drafts for all scopes in VCEP specifications have been approved in the CSPEC Registry for all gene/diseases in the approved scope."
-        },
-        {
-            "name": "vcep_pilot_approved",
-            "description": "All specification scopes and pilot classifications for gene/diseases in the appoved scope have been given final approval in the CSPEC Registry."
-        },
-        {
-            "name": "sustained_curation_approved",
-            "description": "Step 4 approval for VCEPS respectively.  Indicates plans for review have been approved and all necessary attestations have been completed by approved membership.  EP is now fully approved."
-        },
-        {
-            "name": "gene_added",
-            "description": "CDWG OC has approved an updated scope and gene list for a VCEP"
-        },
-        {
-            "name": "gene_removed",
-            "description": "CDWG OC has approved an updated scope and gene list for a VCEP"
-        },
-        {
-            "name": "member_added",
-            "description": "EP has added a new member."
-        },
-        {
-            "name": "member_removed",
-            "description": "EP has removed a new member completely."
-        },
-        {
-            "name": "member_retired",
-            "description": "EP has retired a member, who is now considered alumni."
-        },
-        {
-            "name": "member_role_assigned",
-            "description": "Role given to user."
-        },
-        {
-            "name": "member_role_removed",
-            "description": "Role removed from user."
-        },
-        {
-            "name": "member_permission_granted",
-            "description": ""
-        },
-        {
-            "name": "member_permission_revoked",
-            "description": ""
-        },
-        {
-            "name": "account_updated",
-            "description": "GPM user has updated their email or they have been their roles/permissions have changed."
-        },
-        {
-            "name": "profile_updated",
-            "description": "ClinGen Member has updated their profile."
-        }
-    ],
-
-    "example_events": [
+    "examples": [
         {
             "event_type": "ep_definition_approved",
             "date": "2020-06-01",
@@ -177,6 +114,21 @@
                     "mondo_id": "MONDO:7654321"
                 }
             ]
+        },
+        {
+            "event_type": "ep_info_updated",
+            "date": "2022-09-16",
+            "expert_panel": {
+                "id": "some-random-uuid",
+                "name": "Midnight Meow Disorder VCEP",
+                "type": "VCEP",
+                "affiliation_id": 500099,
+                "long_base_name": "Midnight Meow Disorder",
+                "short_base_name": "MMD",
+                "hypothesis_group": "123181",
+                "membership_description": "Blah blah blah",
+                "scope_description": "Our scope is cosmic. Blah blah blah."
+            }
         }
     ]
 }

@@ -1,19 +1,19 @@
 {
     "$schema": "http://json-schema.org/schema#",
     "$id": "https://epam.gpm.clinicalgenome.org/applicaiton-events.json",
-    "title": "GeneTracker Event",
-    "description": "A message published to the ep-application-events curation stream.",
+    "title": "GPM Expert Panel Event",
+    "description": "A message published to the ep-application-events stream.",
     "type": "object",
     "properties": {
         "event_type": {
             "type": "string",
-            "title": "Type of curation event",
+            "title": "Type of expert panel event",
             "enum": [
                 "initiated",
                 "updated",
-                "step_approved", 
-                "completed", 
-                "deleted", 
+                "step_approved",
+                "completed",
+                "deleted",
                 "member_added",
                 "member_removed"
             ]
@@ -26,12 +26,12 @@
                     "type": "string",
                     "pattern": "^\\w{8}(-\\w{4}){3}-\\w{12}$"
                 },
-                "approved_step": { 
+                "approved_step": {
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 4
                 },
-                "current_step": { 
+                "current_step": {
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 4

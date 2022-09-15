@@ -30,8 +30,12 @@ class ContactAdd
             return;
         }
 
-        
-        $expertPanel->addContact($person);
+        GroupMember::firstOrCreate([
+            'person_id' => $person->id,
+            'group_id' => $expertPanel->group_id,
+            'is_contact' => 1
+        ]);
+        $expertPanel->touch();
         Event::dispatch(new ContactAdded($expertPanel, $person));
 
         return $person;

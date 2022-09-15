@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\End2End\comments;
+namespace Tests\Feature\End2End\Comments;
 
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
@@ -45,7 +45,7 @@ class CommentUpdateTest extends CommentTest
 
         $this->assertDatabaseHas('comments', $this->jsonifyArrays($expectedData));
     }
-    
+
     /**
      * @test
      */
@@ -59,7 +59,7 @@ class CommentUpdateTest extends CommentTest
 
         $this->assertDatabaseMissing('comments', $this->jsonifyArrays($expectedData));
     }
-    
+
 
     private function makeRequest($data = null)
     {
@@ -74,8 +74,8 @@ class CommentUpdateTest extends CommentTest
             'comment_type_id' => config('comments.types.required-revision.id')
         ], $data);
     }
-        
-    
-    
-    
+
+
+
+
 }

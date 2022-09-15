@@ -2,6 +2,7 @@
 
 namespace App\Tasks\Models;
 
+use Exception;
 use App\Models\TaskType;
 use App\Tasks\Contracts\TaskAssignee;
 use Illuminate\Database\Eloquent\Model;
@@ -58,7 +59,7 @@ class Task extends Model
     {
         if (is_string($type)) {
             if (!array_key_exists($type, config('tasks.types'))) {
-                throw new \Exception('unknown task type '.$type);
+                throw new Exception('unknown task type '.$type);
             }
             return $query->where('task_type_id', config('tasks.types.'.$type.'.id'));
         }

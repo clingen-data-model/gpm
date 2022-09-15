@@ -69,6 +69,7 @@ return [
         App\Modules\User\Providers\UserModuleServiceProvider::class,
         App\Tasks\Providers\TaskServiceProvider::class,
 
+        App\DataExchange\KafkaServiceProvider::class,
         App\DataExchange\DataExchangeServiceProvider::class,
 
     ],

@@ -18,9 +18,9 @@ class InviteController extends Controller
                 if ($field == 'person.name') {
                     $query->orderBy('people.first_name', $dir)
                         ->orderBy('people.last_name', $dir);
-                } else {
-                    $query->orderBy('people.email');
                 }
+                $query->orderBy('people.email');
+
                 return $query;
             }
 
@@ -51,11 +51,10 @@ class InviteController extends Controller
 
                 if (is_array($value)) {
                     $query->whereIn($key, $value);
-                } else {
-                    $query->where($key, $value);
+                    continue;
                 }
-
-            }    
+                $query->where($key, $value);
+            }
             return $query;
         };
 

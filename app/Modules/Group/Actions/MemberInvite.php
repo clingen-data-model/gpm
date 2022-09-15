@@ -44,20 +44,20 @@ class MemberInvite
             first_name: $data['first_name'],
             last_name: $data['last_name'],
             email: $data['email'],
-            phone: isset($data['phone']) ? $data['phone'] : null,
+            phone: valueAtIndex($data, 'phone'),
         );
 
         $this->invitePerson->handle(person: $person, inviter: $group);
         
-        $isContact = isset($data['is_contact']) ? $data['is_contact'] : false;
+        $isContact = valueAtIndex($data, 'is_contact', false);
         $newMember = $this->addMember
                         ->cancelNotification()
                         ->handle($group, $person, [
                             'is_contact' => $isContact,
-                            'expertise' => isset($data['expertise']) ? $data['expertise'] : null,
-                            'notes' => isset($data['notes']) ? $data['notes'] : null,
-                            'training_level_1' => isset($data['training_level_1']) ? $data['training_level_1'] : null,
-                            'training_level_2' => isset($data['training_level_2']) ? $data['training_level_2'] : null,
+                            'expertise' => valueAtIndex($data, 'expertise'),
+                            'notes' => valueAtIndex($data, 'notes'),
+                            'training_level_1' => valueAtIndex($data, 'training_level_1'),
+                            'training_level_2' => valueAtIndex($data, 'training_level_2'),
                         ]);
 
         if ($roleIds) {

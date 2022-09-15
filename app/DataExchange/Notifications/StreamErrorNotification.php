@@ -29,6 +29,8 @@ class StreamErrorNotification extends Notification implements DigestibleNotifica
      *
      * @param  mixed  $notifiable
      * @return array
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function via($notifiable)
     {
@@ -40,6 +42,8 @@ class StreamErrorNotification extends Notification implements DigestibleNotifica
      *
      * @param  mixed  $notifiable
      * @return array
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function toArray($notifiable)
     {

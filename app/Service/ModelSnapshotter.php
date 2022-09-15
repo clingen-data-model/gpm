@@ -20,7 +20,7 @@ class ModelSnapshotter
 
     private function snapshotRelations($model): array
     {
-        return collect($model->getRelations())->map(function ($relation, $key) {
+        return collect($model->getRelations())->map(function ($relation) {
             if ($relation instanceof Collection) {
                 return $relation->map(fn (Model $item) => $this->createSnapshot($item));
             }
@@ -35,18 +35,18 @@ class ModelSnapshotter
 
     public function initModelFromSnapshot($snapshot): Model
     {
-        $model = new ($snapshot['class'])();
+        $model = new $snapshot['class'];
         foreach ($snapshot['attributes'] as $key => $value) {
             $model->setAttribute($key, $value);
         }
-        
+
         if (isset($snapshot['relations'])) {
             foreach ($snapshot['relations'] as $key => $relation) {
                 if (!isset($relation['class'])) {
                     $model->setRelation($key, collect($relation)->map(fn($r) => $this->initModelFromSnapshot($r)));
                     continue;
                 }
-    
+
                 $model->setRelation($key, $this->initModelFromSnapshot($relation));
             }
         }

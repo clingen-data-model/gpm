@@ -42,14 +42,13 @@ class UserController extends Controller
                             });
                     } elseif (is_array($value)) {
                         $query->whereIn($key, $value);
-                    } else {
-                        $query->where($key, $value);
+                        continue;
                     }
+                    $query->where($key, $value);
                 }
                 return $query;
             },
             sortFunction: function ($query, $field, $dir) {
-
                 if ($field == 'person.name') {
                     $query->leftJoin('people', 'users.id', '=', 'people.user_id');
                     if (substr($field, 7) == 'name') {

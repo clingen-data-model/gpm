@@ -163,14 +163,14 @@ class Document extends Model
 
     public function belongsToUser(User $user): bool
     {
-        if ($this->owner_type == get_class($user) && $this->owner_id = $user->id) {
+        if ($this->owner_type == get_class($user) && $this->owner_id == $user->id) {
             return true;
         }
 
         if (
             $user->person
             && $this->owner_type == get_class($user->person)
-            && $this->owner_id = $user->person->id
+            && $this->owner_id == $user->person->id
         ) {
             return true;
         }

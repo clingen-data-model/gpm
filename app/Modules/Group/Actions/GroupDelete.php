@@ -33,11 +33,8 @@ class GroupDelete
     {
         $identifier = $command->argument('groupId');
         $group = null;
-        if (is_numeric($identifier)) {
-            $group = Group::find($identifier);
-        } else {
-            $group = Group::findByUuid($identifier);
-        }
+
+        $group =  (is_numeric($identifier)) ? Group::find($identifier) : Group::findByUuid($identifier);
 
         if (!$group) {
             $command->error('Group with identifier '.$identifier.' not found');
