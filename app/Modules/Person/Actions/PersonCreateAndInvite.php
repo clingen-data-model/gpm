@@ -25,7 +25,7 @@ class PersonCreateAndInvite extends PersonCreate
     public function __construct(private PersonInvite $inviter)
     {
     }
-    
+
     public function handle(
         string $uuid,
         string $first_name,

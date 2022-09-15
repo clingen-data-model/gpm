@@ -20,13 +20,13 @@ class ModelSearchService
     ) {
         //code
     }
-    
+
     public function search($params): Collection
     {
         return $this->buildQuery($params)
                 ->get();
     }
-    
+
 
     public function buildQuery($params): Builder
     {
@@ -67,7 +67,7 @@ class ModelSearchService
         $dummy = new $this->modelClass();
         return $dummy->getTable().'.*';
     }
-    
+
 
     private function addWhereClause($query, $where)
     {
@@ -78,14 +78,14 @@ class ModelSearchService
         foreach ($where as $key => $value) {
             if (is_array($value)) {
                 $query->whereIn($key, $value);
-            } else {
-                $query->where($key, $value);
+                continue;
             }
+            $query->where($key, $value);
         }
 
         return $query;
     }
-    
+
 
     private function eagerLoadRelations($query, $with)
     {
@@ -104,17 +104,17 @@ class ModelSearchService
         if ($with) {
             $query->with($relations);
         }
-        
+
         return $query;
     }
-   
+
     private function removeEagerLoadRelations($query, $without)
     {
         $query->without($without);
-        
+
         return $query;
     }
-    
+
 
 
     private function sortQuery($query, $sort)

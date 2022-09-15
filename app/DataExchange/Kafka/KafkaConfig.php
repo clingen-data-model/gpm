@@ -5,14 +5,23 @@ namespace App\DataExchange\Kafka;
 use Illuminate\Support\Facades\Log;
 use App\DataExchange\Exceptions\StreamingServiceException;
 use App\DataExchange\Kafka\KafkaEnvValidator;
+use \RdKafka\Conf;
 
 class KafkaConfig
 {
     private $conf;
 
+    /**
+     * Constructs the KafkaConfig
+     *
+     * @param string $group kafka group
+     * @return void
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function __construct($group = null)
     {
-        $this->conf = new \RdKafka\Conf();
+        $this->conf = new Conf();
         $this->setGroup($group);
 
         // Initial list of Kafka brokers
