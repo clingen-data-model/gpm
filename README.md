@@ -121,3 +121,39 @@ The demo and production instances of the GPM are hosted on UNC's [Cloudapps Open
 
 ### Topics
 * [Updating SSL Certificates](documentation/devops/ssl-cert-updated.md)
+
+### Training
+ClinGen needs to track the training of bio-curators to ensure compliance with FDA regulations.  
+
+ClinGen members in all curation activities must receive training to participate in ClinGen groups and expert panels.
+
+Training tracking is currently managed by the CCDB, but b/c the CCDB was only ever intended to track C3 volunteers relying on it to track training of all ClinGen members is problematic.
+### Training Topics
+Topics of Training include:
+* Baseline Curation (CCDB baseline volunteers only)
+* Actionability
+* Dosage
+* Gene
+* Somatic Variant
+* Variant - Variant curators must complete an additional level of training that is specific to each of their VCEPs.
+
+### Training Sessions
+A training session is a synchronous event via teleconferencing.
+Level 1 training sessions occur at regular intervals.  In general the person coordinating a training session for a topic follows this general workflow:
+1. Identify ClinGen members who require training for the topic.
+1. Make inquiries about scheduling to find a date and time that work for the most people. (Doodle?)
+1. Schedule the training session in the CCDB and invite ClinGen members who require training.
+
+When a person is invited to training the CCDB sends them an customized email with the time, date, and "location" of the session.
+
+During or following the training session the trainer can mark training complete for any invitees.
+
+#### Possible integrations
+##### Zoom
+The Zoom API allows the [creating meetings](https://marketplace.zoom.us/docs/api-reference/zoom-api/methods/#operation/createMeeting) once a user has authorized the client via OAuth.  
+A Zoom API, the client can also:  
+* [Get a meeting invitation](https://marketplace.zoom.us/docs/api-reference/zoom-api/methods/#operation/meetingInvitation)
+* [Get a list of a past meeting's participants](https://marketplace.zoom.us/docs/api-reference/zoom-api/methods/#operation/pastMeetingParticipants)
+* [Update a meeting](https://marketplace.zoom.us/docs/api-reference/zoom-api/methods/#operation/meetingUpdate)
+* Many other features.
+
