@@ -44,7 +44,7 @@ class ApplicationReadyForApproverReview extends Notification
     {
         return (new MailMessage)
                     ->view(
-                        'email.application_submission_ready_For_review',
+                        'email.application_submission_ready_for_review',
                         [
                             'notifiable' => $notifiable,
                             'group' => $this->group,
