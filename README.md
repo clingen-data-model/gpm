@@ -115,3 +115,9 @@ If the affiliation associated with the event does not exist, or has an incompati
         <td>App\DataExchange\Actions\ClassifiedRulesApprovedProcessor</td>
     </tr>
 </table>
+
+## DevOps
+The demo and production instances of the GPM are hosted on UNC's [Cloudapps OpenShift cluster](https://console.cloudapps.unc.edu) in the `dept-gpm` project.  OpenShift is RedHat's value-add to the Kubernetes open source project.  You're better off referencing Kubernetes documentation for anything that is not a proprietary OpenShift thing (i.e. Builds, BuildConfigs, etc.).
+
+### Topics
+* [Updating SSL Certificates](documentation/devops/ssl-cert-updated.md)
