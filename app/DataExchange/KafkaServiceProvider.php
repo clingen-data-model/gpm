@@ -2,11 +2,11 @@
 
 namespace App\DataExchange;
 
-use RdKafka\KafkaConfig;
 use \RdKafka\Producer;
-use \RdKafka\KafkaConsumer as RdKafkaConsumer;
+use App\DataExchange\Kafka\KafkaConfig;
 use Illuminate\Support\ServiceProvider;
 use App\DataExchange\Kafka\KafkaConsumer;
+use \RdKafka\KafkaConsumer as RdKafkaConsumer;
 
 class KafkaServiceProvider extends ServiceProvider
 {
