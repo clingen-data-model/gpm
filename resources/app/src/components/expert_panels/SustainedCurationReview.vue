@@ -47,13 +47,13 @@
                 name="member-designation"
             >
                 <dictionary-row label="Core Approval Members" labelWidthClass="w-48 font-bold">
-                    {{this.group.coreApprovalMembers.map(m => m.person.name).join(', ')}}
+                    {{group.coreApprovalMembers.map(m => m.person.name).join(', ')}}
                 </dictionary-row>
                 <dictionary-row label="Biocurator Trainers" labelWidthClass="w-48 font-bold">
-                    {{this.group.biocuratorTrainers.map(m => m.person.name).join(', ')}}
+                    {{group.biocuratorTrainers.map(m => m.person.name).join(', ')}}
                 </dictionary-row>
                 <dictionary-row label="Trained Biocurators" labelWidthClass="w-48 font-bold">
-                    {{this.group.trainedBiocurators.map(m => m.person.name).join(', ')}}
+                    {{group.trainedBiocurators.map(m => m.person.name).join(', ')}}
                 </dictionary-row>
             </ReviewSection>
 
