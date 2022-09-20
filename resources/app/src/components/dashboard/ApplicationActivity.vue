@@ -23,7 +23,7 @@
         },
         {
             name: 'submission.type.name',
-            label: 'Submissed Step',
+            label: 'Submitted Step',
             sortable: true
         },
         {

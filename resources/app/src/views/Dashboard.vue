@@ -1,56 +1,8 @@
-<template>
-    <div>
-        <h1>
-            Dashboard
-            <div class="note font-normal">
-                User ID: {{user.id}} | Person ID: {{user.person ? user.person.id : 'no person!!'}}
-            </div>
-        </h1>
-
-        <NotificationList :user="user" />
-
-        <DashboardAlerts :user="user" />
-
-        <ApplicationActivity :user="user"
-            v-if="showApplicationActivity"
-            class="screen-block"
-        />
-
-        <tabs-container class="mt-8">
-            <tab-item label="Your Groups">
-                <div class="well" v-if="!groups.length">You are not assigned to any groups.</div>
-                <data-table
-                    v-else
-                    :data="groups"
-                    :fields="groupFields"
-                    v-model:sort="groupSort"
-                    @rowClick="navigateToGroup"
-                    row-class="cursor-pointer"
-                >
-                    <template v-slot:cell-status_name="{value}">
-                        <badge :color="groupBadgeColor(value)">{{value}}</badge>
-                    </template>
-                    <template v-slot:cell-displayName="{item}">
-                        {{item.name}} {{item.type.name.toUpperCase()}}
-                    </template>
-                </data-table>
-            </tab-item>
-
-            <tab-item label="Your Info">
-                <person-profile :person="personFromStore"></person-profile>
-            </tab-item>
-
-            <tab-item label="COIs">
-                <coi-list :person="user.person"></coi-list>
-            </tab-item>
-
-        </tabs-container>
-    </div>
-</template>
 <script setup>
     import {useStore} from 'vuex'
     import {useRouter} from 'vue-router'
     import {ref, computed, onMounted, watch} from 'vue'
+    import { upperCase } from 'lodash-es'
     import CoiList from '@/components/people/CoiList.vue'
     import PersonProfile from '@/components/people/PersonProfile.vue'
     import Person from "@/domain/person"
@@ -114,6 +66,12 @@
             },
             type: String
         },
+        {
+            name: 'type.name',
+            label: 'Type',
+            sortable: true,
+            resolveValue: item => upperCase(item.type.name)
+        }
     ]);
     const groupSort = ref({
         field: 'displayName',
@@ -149,3 +107,52 @@
         })
     }
 </script>
+<template>
+    <div>
+        <h1>
+            Dashboard
+            <div class="note font-normal">
+                User ID: {{user.id}} | Person ID: {{user.person ? user.person.id : 'no person!!'}}
+            </div>
+        </h1>
+
+        <NotificationList :user="user" />
+
+        <DashboardAlerts :user="user" />
+
+        <ApplicationActivity :user="user"
+            v-if="showApplicationActivity"
+            class="screen-block"
+        />
+
+        <tabs-container class="mt-8">
+            <tab-item label="Your Groups">
+                <div class="well" v-if="!groups.length">You are not assigned to any groups.</div>
+                <data-table
+                    v-else
+                    :data="groups"
+                    :fields="groupFields"
+                    v-model:sort="groupSort"
+                    @rowClick="navigateToGroup"
+                    row-class="cursor-pointer"
+                >
+                    <template v-slot:cell-status_name="{value}">
+                        <badge :color="groupBadgeColor(value)">{{value}}</badge>
+                    </template>
+                    <template v-slot:cell-displayName="{item}">
+                        {{item.name}} {{item.type.name.toUpperCase()}}
+                    </template>
+                </data-table>
+            </tab-item>
+
+            <tab-item label="Your Info">
+                <person-profile :person="personFromStore"></person-profile>
+            </tab-item>
+
+            <tab-item label="COIs">
+                <coi-list :person="user.person"></coi-list>
+            </tab-item>
+
+        </tabs-container>
+    </div>
+</template>

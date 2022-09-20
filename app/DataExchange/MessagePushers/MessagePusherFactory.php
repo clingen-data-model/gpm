@@ -16,7 +16,7 @@ class MessagePusherFactory
             return new DisabledPusher();
         }
         if (config('dx.driver') == 'kafka') {
-            return $this->app->make(KafkaProducer::class);
+            return app()->make(KafkaProducer::class);
         }
         if (config('dx.driver') == 'log') {
             return new MessageLogger();

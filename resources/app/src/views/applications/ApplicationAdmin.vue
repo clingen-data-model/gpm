@@ -29,8 +29,8 @@ export default {
     },
     watch: {
         $route() {
-                this.showModal = this.$route.meta.showModal 
-                                    ? Boolean(this.$route.meta.showModal) 
+                this.showModal = this.$route.meta.showModal
+                                    ? Boolean(this.$route.meta.showModal)
                                     : false;
         }
     },
@@ -57,11 +57,11 @@ export default {
     },
     methods: {
         hideModal () {
-            this.$router.replace({name: 'ApplicationDetail', params: {uuid: this.uuid}});
+            this.$router.replace({name: 'ApplicationDetail', params: {uuid: this.group.uuid}});
         },
         handleModalClosed (evt) {
             this.clearModalForm(evt);
-            this.$router.push({name: 'ApplicationDetail', params: {uuid: this.uuid}});
+            this.$router.push({name: 'ApplicationDetail', params: {uuid: this.group.uuid}});
         },
         clearModalForm () {
             if (typeof this.$refs.modalView.clearForm === 'function') {
@@ -83,8 +83,8 @@ export default {
         <ScreenTemplate :title="group.displayName" :breadcrumbs="breadcrumbs">
             <template v-slot:header-dev>
                 <note>
-                    Group ID: {{group.id}} 
-                    | 
+                    Group ID: {{group.id}}
+                    |
                     Expert Panel ID: {{group.expert_panel.id}}
                 </note>
             </template>
@@ -92,26 +92,26 @@ export default {
                 <div class="flex space-x-2">
                     <router-link :to="{name: 'NextAction'}" class="btn btn-sm">Add Next Action</router-link>
                     <router-link :to="{name: 'LogEntry'}" class="btn btn-sm">Add Log Entry</router-link>
-                </div>                
+                </div>
             </template>
 
             <div class="md:flex md:space-x-4">
                 <basic-info-data class="w-1/2 screen-block"></basic-info-data>
-                <next-actions v-if="application.next_actions" 
-                    :next-actions="application.next_actions" 
+                <next-actions v-if="application.next_actions"
+                    :next-actions="application.next_actions"
                     class="w-1/2 space-y-2 md:px-4 md:py-2 bg-white border-b border-gray-200 "
                 />
             </div>
 
-            <progress-chart 
-                :application="application" 
+            <progress-chart
+                :application="application"
                 class="py-4 screen-block"
             />
 
             <tabs-container>
                 <tab-item label="Application">
-                    <step-tabs :application="application" 
-                        @updated="$emit('updated')" 
+                    <step-tabs :application="application"
+                        @updated="$emit('updated')"
                         @approved="$emit('updated')"
                     />
                 </tab-item>
@@ -129,8 +129,8 @@ export default {
             </tabs-container>
         </ScreenTemplate>
         <teleport to="body">
-            <modal-dialog 
-                v-model="showModal" 
+            <modal-dialog
+                v-model="showModal"
                 @closed="handleModalClosed"
                 :title="$route.meta.title"
             >

@@ -2,6 +2,9 @@
 
 namespace App\Modules\Group\Providers;
 
+use App\Models\Activity;
+use App\Models\LogEntry;
+use App\Policies\LogEntryPolicy;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Event;
 use App\Modules\Group\Events\GenesAdded;
@@ -16,6 +19,7 @@ use App\Modules\Group\Actions\NotifyGenesRemoved;
 use App\Modules\Group\Actions\EventApplicationPublish;
 use App\Modules\Group\Events\ApplicationStepSubmitted;
 use App\Modules\ExpertPanel\Events\ApplicationCompleted;
+use App\Modules\Group\Actions\ApplicationSnapshotCreate;
 use App\Modules\Group\Events\PublishableApplicationEvent;
 use App\Modules\Group\Events\ApplicationRevisionsRequested;
 use App\Modules\Group\Actions\ApplicationSubmissionReceiptSend;
@@ -24,7 +28,6 @@ use App\Modules\Group\Actions\ApplicationSubmissionMailAdminGroup;
 use App\Modules\Group\Actions\ApplicationSubmissionAssignNextAction;
 use App\Modules\Group\Actions\ApplicationSubmissionNotificationSend;
 use App\Modules\Group\Actions\ApplicationRevisionsRequestedAssignNextAction;
-use App\Modules\Group\Actions\ApplicationSnapshotCreate;
 
 class GroupModuleServiceProvider extends ModuleServiceProvider
 {
@@ -46,6 +49,7 @@ class GroupModuleServiceProvider extends ModuleServiceProvider
 
     protected $policies = [
         Group::class => GroupPolicy::class,
+        Activity::class => LogEntryPolicy::class
     ];
 
 
