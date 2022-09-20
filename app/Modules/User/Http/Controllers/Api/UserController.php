@@ -40,6 +40,7 @@ class UserController extends Controller
                             ->orWhereHas('permissions', function ($q) use ($value) {
                                 $q->where('display_name', 'like', '%'.$value.'%');
                             });
+                        continue;
                     } elseif (is_array($value)) {
                         $query->whereIn($key, $value);
                         continue;
