@@ -186,12 +186,6 @@ class GroupPolicy
             || $user->hasGroupPermissionTo('application-edit', $group);
     }
 
-    public function viewGroupLogs(User $user, Group $group)
-    {
-        return $user->hasAnyPermission('groups-manage', 'ep-applications-manage')
-            || ($user->person && $user->person->isMemberOf($group));
-    }
-
     public function manageGroupDocuments(User $user, Group $group): bool
     {
         return $user->hasAnyPermission('groups-manage', 'ep-applications-manage')
@@ -208,5 +202,17 @@ class GroupPolicy
     {
         return $user->hasAnyPermission(['groups-manage', 'ep-applications-manage', 'annual-updates-manage'])
             || $user->hasGroupPermissionTo('members-retire', $group);
+    }
+
+    public function viewGroupLogs(User $user, Group $group)
+    {
+        return $this->managesGroupsOrApplications($user)
+            || ($user->person && $user->person->isMemberOf($group));
+    }
+
+
+    private function managesGroupsOrApplications(User $user): bool
+    {
+        return $user->hasAnyPermission('groups-manage', 'ep-applications-manage');
     }
 }

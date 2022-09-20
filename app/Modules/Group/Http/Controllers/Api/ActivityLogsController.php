@@ -2,6 +2,7 @@
 
 namespace App\Modules\Group\Http\Controllers\Api;
 
+use App\Models\LogEntry;
 use App\Actions\LogEntryAdd;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
@@ -30,17 +31,18 @@ class ActivityLogsController extends Controller
     {
         $group = Group::where('uuid', $groupUuid)->sole();
 
+        //Extract to policy the next time this is an issue
         if (Auth::user()->cannot('viewGroupLogs', $group)) {
             throw new AuthorizationException('You do not have access to view this groups activity logs.');
         }
-        
+
         $query = $group->logEntries()->select([
-                            'id', 
+                            'id',
                             'activity_type',
-                            'description', 
-                            'causer_id', 
-                            'causer_type', 
-                            'created_at', 
+                            'description',
+                            'causer_id',
+                            'causer_type',
+                            'created_at',
                             'subject_id',
                             'properties',
                         ])
@@ -52,10 +54,10 @@ class ActivityLogsController extends Controller
                             ->orWhereNull('activity_type');
                         })
                         ->orderBy('created_at', 'desc');
-    
+
         $allLogs = $query->get();
 
-        $customLogs = $allLogs->filter(function ($entry) { 
+        $customLogs = $allLogs->filter(function ($entry) {
             return $entry->activity_type == null;
         });
 
@@ -73,11 +75,11 @@ class ActivityLogsController extends Controller
 
     public function store(CreateLogEntryRequest $request, $groupUuid)
     {
-        if (!Auth::user()->hasPermissionTo('groups-manage')) {
+        $group = Group::findByUuidOrFail($groupUuid);
+        if (Auth::user()->cannot('create', LogEntry::class)) {
             throw new AuthorizationException('You do not have access to add log entries.');
         }
 
-        $group = Group::findByUuidOrFail($groupUuid);
         $logEntry = $this->addEntry->handle(
             subject: $group,
             logDate: $request->log_date,
@@ -90,13 +92,13 @@ class ActivityLogsController extends Controller
 
     public function update(UpdateLogEntryRequest $request, $groupUuid, $logEntryId)
     {
+        $group = Group::findByUuidOrFail($groupUuid);
+        $logEntry = $group->logEntries()->findOrFail($logEntryId);
 
-        if (!Auth::user()->hasPermissionTo('groups-manage')) {
+        if (Auth::user()->cannot('update', $logEntry)) {
             throw new AuthorizationException('You do not have access to update activity logs.');
         }
 
-        $group = Group::findByUuidOrFail($groupUuid);
-        $logEntry = $group->logEntries()->findOrFail($logEntryId);
 
         $logEntry = $this->updateEntry->handle(
             subject: $group,
@@ -112,12 +114,12 @@ class ActivityLogsController extends Controller
 
     public function destroy($groupUuid, $logEntryId)
     {
-        if (!Auth::user()->hasPermissionTo('groups-manage')) {
-            throw new AuthorizationException('You do not have access to update activity logs.');
-        }
-
         $group = Group::findByUuidOrFail($groupUuid);
         $logEntry = $group->logEntries()->findOrFail($logEntryId);
+
+        if (Auth::user()->cannot('delete', $logEntry)) {
+            throw new AuthorizationException('You do not have access to update activity logs.');
+        }
 
         try {
             $this->deleteEntry->handle(
