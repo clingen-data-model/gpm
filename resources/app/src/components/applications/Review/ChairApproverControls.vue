@@ -4,6 +4,7 @@
     import CommentSummary from '../CommentSummary.vue';
     import JudgementForm from './JudgementForm.vue';
     import JudgementDetail from './JudgementDetail.vue';
+    import {judgementColor} from '@/composables/judgement_utils.js'
 
     const commentManager = inject('commentManager');
     const latestSubmission = inject('latestSubmission')
@@ -23,6 +24,13 @@
              && latestSubmission.value.judgements.filter(j => j.person_id == store.getters.currentUser.person.id).length > 0;
     })
 
+    const otherJudgements = computed(() => {
+        if (!latestSubmission.value) {
+            return [];
+        }
+        return latestSubmission.value.judgements.filter(j => j.person_id !== store.getters.currentUser.person.id)
+    })
+
     const handleSave = (newJudgement) => {
         showJudgementDialog.value = false;
         emits('saved', newJudgement);
@@ -31,19 +39,30 @@
 </script>
 <template>
     <div class="flex flex-col space-y-2 screen-block">
-        <div v-if="commentManager.commentsForEp.length > 0">
-            <h3>Comments for the Expert Panel</h3>
-            <CommentSummary :comments="commentManager.commentsForEp" />
-        </div>
-        <div v-if="commentManager.openInternal.length > 0">
-            <h3>Internal Comments</h3>
-            <CommentSummary :comments="commentManager.openInternal" />
-        </div>
-        <div v-if="latestSubmission.notes_for_chairs">
-            <h3>Other notes from the Core Group</h3>
-            <p>
-                {{latestSubmission.notes_for_chairs}}
-            </p>
+        <div class="xl:w-3/4 flex flex-col space-y-2 border-between-children">
+            <div v-if="commentManager.commentsForEp.length > 0">
+                <h3>Comments for the Expert Panel</h3>
+                <CommentSummary :comments="commentManager.commentsForEp" class="mb-2"/>
+            </div>
+            <div v-if="commentManager.openInternal.length > 0">
+                <h3>Internal Comments</h3>
+                <CommentSummary :comments="commentManager.openInternal" class="mb-2" />
+            </div>
+            <div v-if="latestSubmission.notes_for_chairs">
+                <h3>Other notes from the Core Group</h3>
+                <p>
+                    {{latestSubmission.notes_for_chairs}}
+                </p>
+            </div>
+            <div v-if="otherJudgements.length > 0">
+                <h3>Other Approver's Judgements:</h3>
+                <ul>
+                    <li v-for="j in otherJudgements" :key="j.id" class="mt-2 ml-2">
+                        <div class="text-lg">{{j.person.name}}: <badge :color="judgementColor(j)">{{titleCase(j.decision)}}</badge></div>
+                        <p v-if="j.notes" class="ml-2 text-sm"><strong>Notes for EP: </strong>{{j.notes}}</p>
+                    </li>
+                </ul>
+            </div>
         </div>
         <hr>
         <div class="pt-2 lg:flex lg:space-x-2 space-y-2 lg:space-y-0 items-start">
@@ -72,3 +91,11 @@
         </teleport>
     </div>
 </template>
+<style scoped>
+    .border-between-children > * {
+        @apply border-b border-gray-100 pb-1 mb-1;
+    }
+    .border-between-children > *:last-child {
+        @apply border-b-0 pb-0 mb-0;
+    }
+</style>
