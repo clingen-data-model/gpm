@@ -7,7 +7,7 @@
             <input-row v-model="email" type="text" label="Email" :errors="errors.email"></input-row>
             <input-row v-model="password" type="password" label="New password" :errors="errors.password" v-if="hasToken"></input-row>
             <input-row v-model="password_confirmation" type="password" label="Confirm password" :errors="errors.password_confirmation" v-if="hasToken"></input-row>
-            <button-row :show-cancel="false" submit-text="Send Password Reset Link" @submitClicked="submitReset"></button-row>
+            <button-row :show-cancel="false" :submit-text="submitText" @submitClicked="submitReset"></button-row>
         </div>
     </card>
 </template>
@@ -16,7 +16,7 @@ import api from '../http/api'
 import is_validation_error from '../http/is_validation_error'
 export default {
     props: {
-        
+
     },
     data() {
         return {
@@ -30,6 +30,9 @@ export default {
     computed: {
         hasToken () {
             return Boolean(this.$route.query.token)
+        },
+        submitText () {
+            return this.hasToken ? 'Reset Password' : 'Send Password Reset Link';
         }
     },
     methods: {
