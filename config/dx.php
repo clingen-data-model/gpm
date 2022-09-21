@@ -23,7 +23,8 @@ return [
             'cspec-general' => env('DX_INCOMING_CSPEC', 'cspec-general')
         ],
         'outgoing' => [
-            'gpm-applications' => env('DX_OUTGOING_GPM_GENERAL_EVENTS', 'gpm-general-events')
+            'gpm-general-events' => env('DX_OUTGOING_GPM_GENERAL_EVENTS', 'gpm-general-events'),
+            'gpm-person-events' => env('DX_OUTGOING_GPM_PERSON_EVENTS', 'gpm-person-events'),
         ]
     ],
     'schema_versions' => [

@@ -17,7 +17,7 @@ class EventApplicationPublish
         public ApplicationEventV1MessageFactory $messageFactory
     ) {
     }
-    
+
     public function handle(PublishableApplicationEvent $event): ?StreamMessage
     {
         if (!$event->group->isEp) {
@@ -27,7 +27,7 @@ class EventApplicationPublish
         $message = $this->messageFactory->makeFromEvent($event);
         if ($this->shouldPublish($event) && $message) {
             return $this->streamMessageCreate->handle(
-                topic: config('dx.topics.outgoing.gpm-applications'),
+                topic: config('dx.gpm-general-events'),
                 message: $message
             );
         }
@@ -55,13 +55,13 @@ class EventApplicationPublish
     {
         return $group->expertPanel->definitionIsApproved;
     }
-    
+
 
     private function isGroupMemberOrGeneEvent($event): bool
     {
         return $this->isGroupMemberEvent($event) || $this->isGeneEvent($event);
     }
-    
+
 
     private function isGroupMemberEvent($event): bool
     {
