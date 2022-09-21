@@ -5,8 +5,7 @@ namespace App\DataExchange;
 use \RdKafka\Producer;
 use App\DataExchange\Kafka\KafkaConfig;
 use Illuminate\Support\ServiceProvider;
-use App\DataExchange\Kafka\KafkaConsumer;
-use \RdKafka\KafkaConsumer as RdKafkaConsumer;
+use \RdKafka\KafkaConsumer;
 
 class KafkaServiceProvider extends ServiceProvider
 {
@@ -40,11 +39,10 @@ class KafkaServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(KafkaConsumer::class, function () {
-            // TODO: MoveToKafkaServiceProvider?
             $conf = $this->app->make(KafkaConfig::class)->getConfig();
             $conf->set('auto.offset.reset', 'smallest');
 
-            return new RdKafkaConsumer($conf);
+            return new KafkaConsumer($conf);
         });
     }
 
