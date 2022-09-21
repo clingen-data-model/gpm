@@ -4,6 +4,7 @@
     import { api } from '@/http'
     import { titleCase } from '@/utils';
     import JudgementForm from './JudgementForm.vue';
+    import {judgementColor} from '@/composables/judgement_utils.js'
 
     const emits = defineEmits(['deleted']);
     const store = useStore();
@@ -19,17 +20,7 @@
             return null;
         },
     })
-    const badgeVariant = computed(() => {
-        switch (userJudgement.value.decision) {
-            case 'request-revisions':
-                return 'yellow';
-            case 'approve-after-revisions':
-                return 'blue';
-            default:
-                return 'green'
-
-        }
-    })
+    const badgeVariant = computed(() => judgementColor (userJudgement.value.decision))
 
     const showJudgementDialog = ref(false);
     const initUpdate = () => {
