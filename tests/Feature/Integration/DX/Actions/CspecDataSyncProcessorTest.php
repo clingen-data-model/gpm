@@ -4,6 +4,7 @@ namespace Tests\Feature\Integration\DX\Actions;
 
 use Tests\TestCase;
 use Illuminate\Support\Collection;
+use App\Modules\Group\Models\Group;
 use Database\Seeders\RulesetStatusSeeder;
 use App\Modules\ExpertPanel\Models\Ruleset;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -83,6 +84,38 @@ class CspecDataSyncProcessorTest extends TestCase
 
         $this->assertDatabaseSynced();
     }
+
+    /**
+     * @test
+     */
+    public function status_change_is_logged()
+    {
+        $specification = Specification::factory()->create([
+            'cspec_id' => 'BL004',
+            'name' => 'Early Bird Nini',
+            'status' => 'New CSpec Doc Created',
+            'expert_panel_id' => $this->expertPanel->id
+        ]);
+        $ruleset = Ruleset::factory()->create([
+            'cspec_ruleset_id' => '123456',
+            'specification_id' => 'BL004',
+            'status' => 'New CSpec Doc Created'
+        ]);
+
+        app()->make(CspecDataSyncProcessor::class)
+            ->handle($this->message);
+
+        $this->assertDatabaseHas('activity_log', [
+            'activity_type' => 'specification-status-updated',
+            'subject_id' => $this->expertPanel->group_id,
+            'subject_type' => Group::class,
+            'properties->specification_id' => 'BL004',
+            'properties->status' => 'Classified Rules Submitted',
+            'properties->step' => 2,
+            'description' => 'Specification "blah blah blah" status updated to "Classified Rules Submitted"'
+        ]);
+    }
+
 
     private function assertDatabaseSynced(): void
     {
