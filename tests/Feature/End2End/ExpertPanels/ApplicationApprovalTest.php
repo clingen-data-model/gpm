@@ -43,7 +43,7 @@ class ApplicationApprovalTest extends TestCase
 
         $this->user = User::factory()->create();
         Sanctum::actingAs($this->user);
-        Carbon::setTestNow();
+        Carbon::setTestNow('2022-06-01');
     }
 
     /**
@@ -290,7 +290,6 @@ class ApplicationApprovalTest extends TestCase
      */
     public function completes_review_submission_next_action_if_any_pending()
     {
-        Carbon::setTestNow('2022-06-01');
         $this->runSeeder(NextActionAssigneesTableSeeder::class);
         $this->runSeeder(NextActionTypesTableSeeder::class);
         $nextAction = NextAction::factory()->create([

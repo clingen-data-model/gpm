@@ -53,9 +53,20 @@ abstract class GroupEvent extends RecordableEvent
         return Carbon::now();
     }
 
+    /**
+     * For PublishableEvent interface that is applied to many sub-classes
+     */
     public function getTopic(): string
     {
         return config('dx.topics.outgoing.gpm-general-events');
+    }
+
+    /**
+     * For PublishableEvent interface that is applied to many sub-classes
+     */
+    public function shouldPublish(): bool
+    {
+        return $this->group->isEp;
     }
 
     abstract public function getLogEntry() :string;

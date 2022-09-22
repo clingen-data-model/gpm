@@ -74,16 +74,6 @@ class GroupModuleServiceProvider extends ModuleServiceProvider
         parent::boot();
         $this->registerPolicies();
 
-        $eventClasses = array_merge(
-            $this->classGetter->atPath($this->getEventPath()),
-            $this->classGetter->atPath(app_path('Modules/ExpertPanel/Events'))
-        );
-        foreach ($eventClasses as $class) {
-            if (array_key_exists(PublishableEvent::class, class_implements($class))) {
-                Event::listen($class, [EventApplicationPublish::class, 'handle']);
-            }
-        }
-
         $this->mergeConfigFrom(
             __DIR__.'/../groups.php',
             'groups'

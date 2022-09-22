@@ -11,4 +11,5 @@ interface PublishableEvent extends Event
     public function getLogDate(): Carbon;
     public function getEventType(): string;
     public function getPublishableMessage(): array;
+    public function shouldPublish(): bool;
 }

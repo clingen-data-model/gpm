@@ -4,11 +4,13 @@ namespace App\Modules\Foundation;
 
 use Exception;
 use RegexIterator;
+use App\Actions\EventPublish;
 use App\Listeners\RecordEvent;
 use RecursiveIteratorIterator;
 use App\Events\RecordableEvent;
 use RecursiveDirectoryIterator;
 use App\Actions\FollowActionRun;
+use App\Events\PublishableEvent;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
@@ -35,6 +37,7 @@ abstract class ModuleServiceProvider extends ServiceProvider
     public function register()
     {
         $this->registerRecordableEventListeners();
+        $this->registerPublishableEventListeners();
         $this->registerExpliciteListeners();
         $this->registerFollowActionListeners();
     }
@@ -72,6 +75,17 @@ abstract class ModuleServiceProvider extends ServiceProvider
             }
         }
     }
+
+    private function registerPublishableEventListeners()
+    {
+        $eventClasses = $this->classGetter->atPath($this->getEventPath());
+        foreach ($eventClasses as $class) {
+            if (array_key_exists(PublishableEvent::class, class_implements($class))) {
+                Event::listen($class, [EventPublish::class, 'handle']);
+            }
+        }
+    }
+
 
     private function registerFollowActionListeners()
     {
