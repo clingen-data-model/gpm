@@ -19,7 +19,7 @@
     <div class="application-review p-2 bg-gray-100">
             <ReviewSection
                 v-if="expertPanel.has_approved_pilot"
-                title="Plans for Ongoing Review and Descrepency Resolution"
+                title="Plans for Ongoing Review and Discrepancy Resolution"
                 name="discrepency-review"
             >
                 <dictionary-row label="Selected protocol" labelWidthClass="w-48 font-bold">

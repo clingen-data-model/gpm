@@ -102,7 +102,7 @@ import {hasPermission} from '../../auth_utils';
 
         <ReviewSection v-if="group.isVcep()" title="Attestations" name="attestations">
             <dictionary-row
-                label="Reanalysis and Descrepency Resolution Attestation Signed"
+                label="Reanalysis and Discrepancy Resolution Attestation Signed"
                 label-class="w-52 font-bold"
             >
                 {{formatDate(expertPanel.reanalysis_attestation_date)}}
