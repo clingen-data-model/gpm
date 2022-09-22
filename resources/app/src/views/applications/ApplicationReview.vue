@@ -32,9 +32,17 @@
         return null;
     })
 
+    const screenTitle = computed(() => {
+        if (group.value.isGcep()) {
+            return group.value.displayName;
+        }
+
+        return `${group.value.displayName} - ${group.value.expert_panel.currentStepName}`
+    })
+
 </script>
 <template>
-    <ScreenTemplate :title="group.displayName" :breadcrumbs="breadcrumbs">
+    <ScreenTemplate :title="screenTitle" :breadcrumbs="breadcrumbs">
         <ChairApproverControls
             v-if="hasPermission('ep-applications-approve')"
             @deleted="emits('deleted')"
