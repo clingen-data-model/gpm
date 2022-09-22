@@ -25,11 +25,14 @@
     })
 
     const otherJudgements = computed(() => {
-        if (!latestSubmission.value) {
+        if (!latestSubmission.value || !latestSubmission.value.judgements) {
             return [];
         }
         return latestSubmission.value.judgements.filter(j => j.person_id !== store.getters.currentUser.person.id)
     })
+
+    const hasCommentsForEp = computed(() => commentManager.value.commentsForEp.length > 0)
+    const hasInternalComments = computed(() => commentManager.value.openInternal.length > 0)
 
     const handleSave = (newJudgement) => {
         showJudgementDialog.value = false;
@@ -40,13 +43,25 @@
 <template>
     <div class="flex flex-col space-y-2 screen-block">
         <div class="xl:w-3/4 flex flex-col space-y-2 border-between-children">
-            <div v-if="commentManager.commentsForEp.length > 0">
+            <div>
                 <h3>Comments for the Expert Panel</h3>
-                <CommentSummary :comments="commentManager.commentsForEp" class="mb-2"/>
+                <div class="mb-2">
+                    <CommentSummary  v-if="hasCommentsForEp"
+                        :comments="commentManager.commentsForEp"
+                    />
+                    <div v-else class="note">None</div>
+                </div>
             </div>
-            <div v-if="commentManager.openInternal.length > 0">
+
+            <div>
                 <h3>Internal Comments</h3>
-                <CommentSummary :comments="commentManager.openInternal" class="mb-2" />
+                <div class="mb-2">
+                    <CommentSummary
+                        v-if="hasInternalComments"
+                        :comments="commentManager.openInternal"
+                    />
+                    <div v-else class="note">None</div>
+                </div>
             </div>
             <div v-if="latestSubmission.notes_for_chairs">
                 <h3>Other notes from the Core Group</h3>
