@@ -2,12 +2,12 @@
 
 namespace App\Modules\Group\Actions;
 
+use App\Events\PublishableEvent;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Events\GeneEvent;
 use App\DataExchange\Models\StreamMessage;
 use App\Modules\Group\Events\GroupMemberEvent;
 use App\DataExchange\Actions\StreamMessageCreate;
-use App\Modules\Group\Events\PublishableApplicationEvent;
 use App\DataExchange\MessageFactories\ApplicationEventV1MessageFactory;
 
 class EventApplicationPublish
@@ -18,7 +18,7 @@ class EventApplicationPublish
     ) {
     }
 
-    public function handle(PublishableApplicationEvent $event): ?StreamMessage
+    public function handle(PublishableEvent $event): ?StreamMessage
     {
         if (!$event->group->isEp) {
             return null;
@@ -27,7 +27,7 @@ class EventApplicationPublish
         $message = $this->messageFactory->makeFromEvent($event);
         if ($this->shouldPublish($event) && $message) {
             return $this->streamMessageCreate->handle(
-                topic: config('dx.gpm-general-events'),
+                topic: $event->getTopic(),
                 message: $message
             );
         }

@@ -40,7 +40,7 @@ class PublishApplicationEventsTest extends TestCase
         $this->approveEpDef();
 
         $this->assertDatabaseHas('stream_messages', [
-            'topic' => config('dx.gpm-general-events'),
+            'topic' => config('dx.topics.outgoing.gpm-general-events'),
             'message->event_type' => 'ep_definition_approved',
             'sent_at' => null,
         ]);
@@ -54,7 +54,7 @@ class PublishApplicationEventsTest extends TestCase
         $this->addPerson();
 
         $this->assertDatabaseMissing('stream_messages', [
-            'topic' => config('dx.gpm-general-events'),
+            'topic' => config('dx.topics.outgoing.gpm-general-events'),
             'message->event_type' => 'member_added',
         ]);
     }
@@ -69,7 +69,7 @@ class PublishApplicationEventsTest extends TestCase
         $this->addPerson();
 
         $this->assertDatabaseHas('stream_messages', [
-            'topic' => config('dx.gpm-general-events'),
+            'topic' => config('dx.topics.outgoing.gpm-general-events'),
             'message->event_type' => 'member_added',
             'sent_at' => null,
         ]);
@@ -83,7 +83,7 @@ class PublishApplicationEventsTest extends TestCase
         $this->addGene();
 
         $this->assertDatabaseMissing('stream_messages', [
-            'topic' => config('dx.gpm-general-events'),
+            'topic' => config('dx.topics.outgoing.gpm-general-events'),
             'message->event_type' => 'gene_added',
         ]);
     }
@@ -98,7 +98,7 @@ class PublishApplicationEventsTest extends TestCase
         $this->addGene();
 
         $this->assertDatabaseHas('stream_messages', [
-            'topic' => config('dx.gpm-general-events'),
+            'topic' => config('dx.topics.outgoing.gpm-general-events'),
             'message->event_type' => 'gene_added',
             'sent_at' => null,
         ]);

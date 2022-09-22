@@ -2,20 +2,18 @@
 
 namespace App\Modules\Group\Events;
 
+use App\Events\PublishableEvent;
 use App\Modules\Group\Models\Group;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Database\Eloquent\Model;
-use App\Modules\Group\Events\GroupEvent;
-use App\Modules\Group\Models\GroupMember;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use App\Modules\Group\Events\PublishableApplicationEvent;
 
-class MemberRemoved extends GroupMemberEvent implements PublishableApplicationEvent
+class MemberRemoved extends GroupMemberEvent implements PublishableEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -42,7 +40,7 @@ class MemberRemoved extends GroupMemberEvent implements PublishableApplicationEv
     {
         return 'member_removed';
     }
-    
+
 
     /**
      * Get the channels the event should broadcast on.

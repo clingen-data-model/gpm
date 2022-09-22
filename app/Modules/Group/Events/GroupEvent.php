@@ -53,6 +53,11 @@ abstract class GroupEvent extends RecordableEvent
         return Carbon::now();
     }
 
+    public function getTopic(): string
+    {
+        return config('dx.topics.outgoing.gpm-general-events');
+    }
+
     abstract public function getLogEntry() :string;
 
     /**

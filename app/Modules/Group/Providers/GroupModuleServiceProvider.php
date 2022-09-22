@@ -4,6 +4,7 @@ namespace App\Modules\Group\Providers;
 
 use App\Models\Activity;
 use App\Models\LogEntry;
+use App\Events\PublishableEvent;
 use App\Policies\LogEntryPolicy;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Event;
@@ -78,7 +79,7 @@ class GroupModuleServiceProvider extends ModuleServiceProvider
             $this->classGetter->atPath(app_path('Modules/ExpertPanel/Events'))
         );
         foreach ($eventClasses as $class) {
-            if (array_key_exists(PublishableApplicationEvent::class, class_implements($class))) {
+            if (array_key_exists(PublishableEvent::class, class_implements($class))) {
                 Event::listen($class, [EventApplicationPublish::class, 'handle']);
             }
         }
