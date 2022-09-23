@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Route;
 use App\Modules\Person\Models\Institution;
 use App\Modules\Person\Actions\InviteReset;
@@ -8,7 +9,9 @@ use App\Modules\Person\Actions\PersonMerge;
 use App\Modules\Person\Actions\InviteRedeem;
 use App\Modules\Person\Actions\PersonDelete;
 use App\Modules\Person\Actions\ProfileUpdate;
+use App\Modules\Person\Actions\PersonPhotoStore;
 use App\Modules\Person\Actions\InstitutionCreate;
+use App\Modules\Person\Actions\InstitutionDelete;
 use App\Modules\Person\Actions\InstitutionsMerge;
 use App\Modules\Person\Actions\InstitutionUpdate;
 use App\Modules\Person\Actions\InviteValidateCode;
@@ -17,14 +20,12 @@ use App\Modules\Person\Actions\MarkNotificationRead;
 use App\Modules\Person\Actions\InstitutionMarkApproved;
 use App\Modules\Person\Http\Controllers\Api\ApiController;
 use App\Modules\Person\Actions\InviteRedeemForExistingUser;
-use App\Modules\Person\Actions\PersonPhotoStore;
 use App\Modules\Person\Http\Controllers\Api\InviteController;
 use App\Modules\Person\Http\Controllers\Api\PeopleController;
 use App\Modules\Person\Http\Controllers\Api\TimezoneController;
 use App\Modules\Person\Http\Controllers\Api\PersonEmailController;
 use App\Modules\Person\Http\Controllers\Api\ActivityLogsController;
 use App\Modules\Person\Http\Controllers\Api\PersonNotificationController;
-use App\Modules\Person\Models\Person;
 
 Route::group([
     'prefix' => 'api/people',
@@ -92,6 +93,7 @@ Route::group([
         Route::post('/', InstitutionCreate::class);
         Route::put('/merge', InstitutionsMerge::class);
         Route::put('/{institution}', InstitutionUpdate::class);
+        Route::delete('/{institution}', InstitutionDelete::class);
         Route::put('/{institution}/approved', InstitutionMarkApproved::class);
     });
 });

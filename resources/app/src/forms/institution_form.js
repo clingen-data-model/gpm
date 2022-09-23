@@ -16,7 +16,7 @@ export const fields = computed(() => [
         placeholder: 'https://lilu.edu'
     },
     {
-        name: 'country_id', 
+        name: 'country_id',
         label: 'Country',
         type: 'select',
         options: countries.value
@@ -67,4 +67,8 @@ export const markApproved = (institution) => {
 
 export const mergeInstitutions = (authorityId, obsoleteIds) => {
     return api.put(`/api/institutions/merge`, {authority_id: authorityId, obsolete_ids: obsoleteIds});
+}
+
+export const deleteInstitution = (institution) => {
+    return api.delete(`/api/institutions/${institution.id}`);
 }
