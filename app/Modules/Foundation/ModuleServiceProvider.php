@@ -43,7 +43,7 @@ abstract class ModuleServiceProvider extends ServiceProvider
         $eventClasses = $this->classGetter->atPath($this->getEventPath());
         $this->registerRecordableEventListeners($eventClasses);
         $this->registerPublishableEventListeners($eventClasses);
-        $this->registerExplicitListeners();
+        $this->registerExplicitListeners($this->listeners);
         $this->registerFollowActionListeners($eventClasses);
     }
 
