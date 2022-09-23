@@ -36,13 +36,14 @@ class ApplicationApprovalTest extends TestCase
         $this->setupPermission(['ep-applications-manage']);
         $this->setupForGroupTest();
         $this->runSeeder(SubmissionTypeAndStatusSeeder::class);
-        
+
         $this->person = Person::factory()->create();
         $this->expertPanel = ExpertPanel::factory()->vcep()->create();
         ContactAdd::run($this->expertPanel->uuid, $this->person->uuid);
 
         $this->user = User::factory()->create();
         Sanctum::actingAs($this->user);
+        Carbon::setTestNow('2022-06-01');
     }
 
     /**
@@ -55,7 +56,7 @@ class ApplicationApprovalTest extends TestCase
             'notify_contacts' => false,
         ];
 
-        
+
         $this->makeRequest($approvalData)
             ->assertStatus(200)
             ->assertJson($this->expertPanel->fresh()->toArray());
@@ -66,7 +67,7 @@ class ApplicationApprovalTest extends TestCase
             'step_1_approval_date' => $approvalData['date_approved'],
         ]);
     }
-    
+
     /**
      * @test
      */
@@ -78,11 +79,11 @@ class ApplicationApprovalTest extends TestCase
 
         $badUuid = Uuid::uuid4();
 
-        
+
         $this->json('POST', '/api/applications/'.$badUuid.'/current-step/approve', $approvalData)
             ->assertStatus(404);
     }
-    
+
     /**
      * @test
      */
@@ -92,12 +93,12 @@ class ApplicationApprovalTest extends TestCase
             'date_approved' => 'Carbon::now()',
         ];
 
-        
+
         $this->makeRequest($approvalData)
             ->assertStatus(422)
             ->assertJsonFragment(['date_approved' => ['The date approved is not a valid date.']]);
     }
-    
+
     /**
      * @test
      */
@@ -109,7 +110,7 @@ class ApplicationApprovalTest extends TestCase
         ];
 
         Mail::fake();
-        
+
         $this->makeRequest($approvalData)
             ->assertStatus(200);
 
@@ -140,7 +141,7 @@ class ApplicationApprovalTest extends TestCase
 
         Mail::fake();
 
-        
+
         $this->makeRequest($approvalData);
 
         Mail::assertSent(
@@ -174,14 +175,14 @@ class ApplicationApprovalTest extends TestCase
 
         Notification::fake();
 
-        
+
         $this->makeRequest($approvalData)
             ->assertStatus(200);
 
         Notification::assertSentTo($person1, ApplicationStepApprovedNotification::class);
         Notification::assertSentTo($person2, ApplicationStepApprovedNotification::class);
     }
-    
+
 
     /**
      * @test
@@ -218,7 +219,7 @@ class ApplicationApprovalTest extends TestCase
             'submitter_id' => $person->id,
         ]);
 
-        
+
         $this->makeRequest([
             'date_approved' => Carbon::now(),
             'notify_contacts' => false,
@@ -243,7 +244,7 @@ class ApplicationApprovalTest extends TestCase
             'submitter_id' => $person->id,
         ]);
 
-        
+
         $this->makeRequest([
             'date_approved' => Carbon::now(),
             'notify_contacts' => false,
@@ -272,7 +273,7 @@ class ApplicationApprovalTest extends TestCase
             'submitter_id' => $person->id,
         ]);
 
-        
+
         $this->makeRequest([
             'date_approved' => Carbon::now(),
             'notify_contacts' => false,
@@ -289,7 +290,6 @@ class ApplicationApprovalTest extends TestCase
      */
     public function completes_review_submission_next_action_if_any_pending()
     {
-        Carbon::setTestNow('2022-06-01');
         $this->runSeeder(NextActionAssigneesTableSeeder::class);
         $this->runSeeder(NextActionTypesTableSeeder::class);
         $nextAction = NextAction::factory()->create([
@@ -297,7 +297,7 @@ class ApplicationApprovalTest extends TestCase
             'expert_panel_id' => $this->expertPanel->id
         ]);
 
-        
+
         $this->makeRequest()
             ->assertStatus(200);
 
@@ -306,7 +306,7 @@ class ApplicationApprovalTest extends TestCase
             'date_completed' => Carbon::now()
         ]);
     }
-    
+
 
     private function makeRequest($data = null)
     {
@@ -314,5 +314,5 @@ class ApplicationApprovalTest extends TestCase
 
         return $this->json('POST', '/api/applications/'.$this->expertPanel->group->uuid.'/current-step/approve', $data);
     }
-    
+
 }

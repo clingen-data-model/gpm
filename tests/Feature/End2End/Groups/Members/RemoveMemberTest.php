@@ -32,6 +32,7 @@ class RemoveMemberTest extends TestCase
 
         $this->url = 'api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id;
         Sanctum::actingAs($this->user);
+        Carbon::setTestNow('2022-09-22');
     }
 
     /**
@@ -39,16 +40,12 @@ class RemoveMemberTest extends TestCase
      */
     public function can_remove_member_from_group()
     {
-        $endDate = (new DateTime());
+        $endDate = Carbon::now();
         $response = $this->json('DELETE', $this->url, [
             'end_date' => $endDate->format(DateTime::ATOM),
         ]);
 
         $response->assertStatus(200);
-        // $response->assertJsonFragment([
-        //     'id' => $this->groupMember->id,
-        //     'deleted_at' =>
-        // ]);
 
         $this->assertDatabaseHas('group_members', [
             'id' => $this->groupMember->id,

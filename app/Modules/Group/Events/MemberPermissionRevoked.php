@@ -2,10 +2,10 @@
 
 namespace App\Modules\Group\Events;
 
+use App\Events\PublishableEvent;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Database\Eloquent\Model;
-use App\Modules\Group\Events\GroupEvent;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Broadcasting\PrivateChannel;
 use Spatie\Permission\Contracts\Permission;
@@ -13,9 +13,8 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use App\Modules\Group\Events\PublishableApplicationEvent;
 
-class MemberPermissionRevoked extends GroupMemberEvent implements PublishableApplicationEvent
+class MemberPermissionRevoked extends GroupMemberEvent implements PublishableEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -33,7 +32,7 @@ class MemberPermissionRevoked extends GroupMemberEvent implements PublishableApp
     {
         return $this->groupMember->group;
     }
-    
+
     public function getLogEntry(): string
     {
         return 'Permission '.$this->permission->name.' revoked from member '.$this->groupMember->person->name.'.';
@@ -52,7 +51,7 @@ class MemberPermissionRevoked extends GroupMemberEvent implements PublishableApp
     {
         return 'member_permission_revoked';
     }
-    
+
 
 
     /**

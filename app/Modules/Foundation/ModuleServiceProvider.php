@@ -4,18 +4,24 @@ namespace App\Modules\Foundation;
 
 use Exception;
 use RegexIterator;
-use App\Listeners\RecordEvent;
 use RecursiveIteratorIterator;
-use App\Events\RecordableEvent;
 use RecursiveDirectoryIterator;
 use App\Actions\FollowActionRun;
+use App\Providers\RegisterFollowActionEventListeners;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Lorisleiva\Actions\Facades\Actions;
+use App\Providers\RegistersExplicitEventListeners;
+use App\Providers\RegistersRecordableEventListeners;
+use App\Providers\RegistersPublishableEventListeners;
 
 abstract class ModuleServiceProvider extends ServiceProvider
 {
+    use RegistersRecordableEventListeners;
+    use RegistersPublishableEventListeners;
+    use RegistersExplicitEventListeners;
+    use RegisterFollowActionEventListeners;
+
     protected $classGetter;
     protected $listeners = [
         // EventClass::class => [ListenerClass::class]
@@ -34,9 +40,11 @@ abstract class ModuleServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->registerRecordableEventListeners();
-        $this->registerExpliciteListeners();
-        $this->registerFollowActionListeners();
+        $eventClasses = $this->classGetter->atPath($this->getEventPath());
+        $this->registerRecordableEventListeners($eventClasses);
+        $this->registerPublishableEventListeners($eventClasses);
+        $this->registerExplicitListeners($this->listeners);
+        $this->registerFollowActionListeners($eventClasses);
     }
 
     /**
@@ -62,34 +70,6 @@ abstract class ModuleServiceProvider extends ServiceProvider
             Gate::policy($key, $value);
         }
     }
-
-    private function registerRecordableEventListeners()
-    {
-        $eventClasses = $this->classGetter->atPath($this->getEventPath());
-        foreach ($eventClasses as $class) {
-            if (is_subclass_of($class, RecordableEvent::class)) {
-                Event::listen($class, [RecordEvent::class, 'handle']);
-            }
-        }
-    }
-
-    private function registerFollowActionListeners()
-    {
-        $eventClasses = $this->classGetter->atPath($this->getEventPath());
-        foreach ($eventClasses as $class) {
-            Event::listen($class, FollowActionRun::class);
-        }
-    }
-
-    private function registerExpliciteListeners()
-    {
-        foreach ($this->listeners as $event => $listeners) {
-            foreach ($listeners as $listener) {
-                Event::listen($event, [$listener, 'handle']);
-            }
-        }
-    }
-
 
     protected function registerCommands()
     {

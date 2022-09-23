@@ -19,7 +19,7 @@ class PublishApplicationEventsTest extends TestCase
 {
     use RefreshDatabase;
     use SeedsHgncGenesAndDiseases;
-    
+
     public function setup():void
     {
         parent::setup();
@@ -40,7 +40,7 @@ class PublishApplicationEventsTest extends TestCase
         $this->approveEpDef();
 
         $this->assertDatabaseHas('stream_messages', [
-            'topic' => config('dx.topics.outgoing.gpm-applications'),
+            'topic' => config('dx.topics.outgoing.gpm-general-events'),
             'message->event_type' => 'ep_definition_approved',
             'sent_at' => null,
         ]);
@@ -54,11 +54,11 @@ class PublishApplicationEventsTest extends TestCase
         $this->addPerson();
 
         $this->assertDatabaseMissing('stream_messages', [
-            'topic' => config('dx.topics.outgoing.gpm-applications'),
+            'topic' => config('dx.topics.outgoing.gpm-general-events'),
             'message->event_type' => 'member_added',
         ]);
     }
-    
+
 
     /**
      * @test
@@ -69,7 +69,7 @@ class PublishApplicationEventsTest extends TestCase
         $this->addPerson();
 
         $this->assertDatabaseHas('stream_messages', [
-            'topic' => config('dx.topics.outgoing.gpm-applications'),
+            'topic' => config('dx.topics.outgoing.gpm-general-events'),
             'message->event_type' => 'member_added',
             'sent_at' => null,
         ]);
@@ -83,11 +83,11 @@ class PublishApplicationEventsTest extends TestCase
         $this->addGene();
 
         $this->assertDatabaseMissing('stream_messages', [
-            'topic' => config('dx.topics.outgoing.gpm-applications'),
+            'topic' => config('dx.topics.outgoing.gpm-general-events'),
             'message->event_type' => 'gene_added',
         ]);
     }
-    
+
 
     /**
      * @test
@@ -98,7 +98,7 @@ class PublishApplicationEventsTest extends TestCase
         $this->addGene();
 
         $this->assertDatabaseHas('stream_messages', [
-            'topic' => config('dx.topics.outgoing.gpm-applications'),
+            'topic' => config('dx.topics.outgoing.gpm-general-events'),
             'message->event_type' => 'gene_added',
             'sent_at' => null,
         ]);
@@ -120,7 +120,7 @@ class PublishApplicationEventsTest extends TestCase
         $action = app()->make(GenesAdd::class);
         $action->handle($this->expertPanel->group, $genes->pluck('gene_symbol'));
     }
-    
+
 
     private function approveEpDef()
     {

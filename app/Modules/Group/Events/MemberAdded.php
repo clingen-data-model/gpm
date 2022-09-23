@@ -3,6 +3,7 @@
 namespace App\Modules\Group\Events;
 
 use Illuminate\Support\Carbon;
+use App\Events\PublishableEvent;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -11,9 +12,8 @@ use App\Modules\Group\Events\GroupMemberEvent;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use App\Modules\Group\Events\PublishableApplicationEvent;
 
-class MemberAdded extends GroupMemberEvent implements PublishableApplicationEvent
+class MemberAdded extends GroupMemberEvent implements PublishableEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

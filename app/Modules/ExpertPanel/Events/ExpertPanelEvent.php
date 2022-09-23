@@ -27,7 +27,7 @@ abstract class ExpertPanelEvent extends RecordableEvent
     {
         return 'applications';
     }
-    
+
     public function hasSubject():bool
     {
         return true;
@@ -46,6 +46,22 @@ abstract class ExpertPanelEvent extends RecordableEvent
     public function getStep()
     {
         return $this->application->current_step;
+    }
+
+    /**
+     * For PublishableEvent interface that is applied to many sub-classes
+     */
+    public function getTopic(): string
+    {
+        return config('dx.topics.outgoing.gpm-general-events');
+    }
+
+    /**
+     * For PublishableEvent interface that is applied to many sub-classes
+     */
+    public function shouldPublish(): bool
+    {
+        return $this->group->isEp;
     }
 
     public function __get($key)
