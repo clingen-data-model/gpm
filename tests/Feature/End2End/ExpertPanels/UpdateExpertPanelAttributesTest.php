@@ -211,7 +211,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
     /**
      * @test
      */
-    public function ep_info_updated_event_published_if_EP_definition_NOT_approved()
+    public function ep_info_updated_event_NOT_published_if_EP_definition_NOT_approved()
     {
         Carbon::setTestNow('2022-09-26');
         $ep = ExpertPanel::factory()->create();
