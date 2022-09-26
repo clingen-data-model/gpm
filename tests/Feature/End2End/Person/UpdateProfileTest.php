@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\End2End\Person\Profile;
+namespace Tests\Feature\End2End\Person;
 
 use DateTime;
 use Tests\TestCase;
@@ -21,6 +21,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Person\Models\PrimaryOccupation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Actions\MemberGrantPermissions;
+use Tests\Feature\End2End\Person\TestEventPublished;
 
 /**
  * @group people
@@ -31,7 +32,8 @@ class UpdateProfileTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
-    
+    use TestEventPublished;
+
     public function setup():void
     {
         parent::setup();
@@ -53,7 +55,7 @@ class UpdateProfileTest extends TestCase
         $data = $this->getDefaultData();
 
         $this->person->update(['user_id' => $this->user->id]);
-        
+
         $this->makeRequest($data)
             ->assertStatus(200)
             ->assertJsonFragment($data);
@@ -78,12 +80,12 @@ class UpdateProfileTest extends TestCase
     public function associated_user_name_and_email_updated_when_person_updated()
     {
         $this->person->update(['user_id' => $this->user->id]);
-        
+
         $data = $this->getDefaultData();
         $data['first_name'] = 'beans';
         $data['last_name'] = 'mccradden';
         $data['email'] = 'beans@beans.com';
-        
+
         $this->makeRequest($data)
             ->assertStatus(200);
 
@@ -93,8 +95,8 @@ class UpdateProfileTest extends TestCase
             'email' => 'beans@beans.com'
         ]);
     }
-    
-    
+
+
     /**
      * @test
      */
@@ -110,7 +112,7 @@ class UpdateProfileTest extends TestCase
         $this->makeRequest(['biography' => 'I like beans and George Wendt.'])
             ->assertStatus(403);
     }
-    
+
     /**
      * @test
      */
@@ -147,7 +149,7 @@ class UpdateProfileTest extends TestCase
             'biography' => null,
         ]);
     }
-    
+
 
     /**
      * @test
@@ -250,7 +252,24 @@ class UpdateProfileTest extends TestCase
             'email' => ['Somebody is already using that email address.']
         ]);
     }
-    
+
+    /**
+     * @test
+     *
+     * @group dx
+     * @group gpm-person-events
+     */
+    public function publishes_updated_event_to_gpm_person_events()
+    {
+        $this->user->givePermissionTo('people-manage');
+
+        $this->makeRequest()
+            ->assertStatus(200);
+        $person = $this->person->fresh();
+
+        $this->assertEventPublished(config('dx.topics.outgoing.gpm-person-events'), 'updated', $person);
+    }
+
 
     private function makeRequest($data = null)
     {
@@ -278,8 +297,8 @@ class UpdateProfileTest extends TestCase
             'timezone' => $this->faker->timezone()
         ];
     }
-    
-    
+
+
 
     private function setupLookups()
     {

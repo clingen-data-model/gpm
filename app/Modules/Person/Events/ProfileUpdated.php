@@ -2,19 +2,22 @@
 
 namespace App\Modules\Person\Events;
 
+use App\Events\PublishableEvent;
 use Illuminate\Broadcasting\Channel;
 use App\Modules\Person\Models\Person;
 use Illuminate\Queue\SerializesModels;
 use App\Modules\Person\Events\PersonEvent;
+use App\Modules\Person\Events\Traits\PublishesEvent;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class ProfileUpdated extends PersonEvent
+class ProfileUpdated extends PersonEvent implements PublishableEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+    use PublishesEvent;
 
     /**
      * Create a new event instance.
@@ -34,7 +37,13 @@ class ProfileUpdated extends PersonEvent
     {
         return $this->data;
     }
-    
+
+    public function getEventType(): string
+    {
+        return 'updated';
+    }
+
+
     /**
      * Get the channels the event should broadcast on.
      *
