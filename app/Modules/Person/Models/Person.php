@@ -94,7 +94,7 @@ class Person extends Model implements HasLogEntries
     {
         return $this->groups()->whereNull('group_members.end_date');
     }
-   
+
     /**
      * The expertPanels that belong to the Person
      *
@@ -114,7 +114,7 @@ class Person extends Model implements HasLogEntries
     {
         return $this->activeGroups()->typeExpertPanel();
     }
-    
+
     // /**
     //  * @return \Illuminate\Database\Eloquent\Relations\MorphMany
     //  */
@@ -252,7 +252,7 @@ class Person extends Model implements HasLogEntries
                     $q->pending();
                 });
     }
-    
+
 
     /**
      * QUERIES
@@ -279,18 +279,18 @@ class Person extends Model implements HasLogEntries
                 $this->state,
                 $this->zip
             ];
-            
+
         return implode(', ', array_filter($parts, function ($part) {
             return !is_null($part);
         }));
     }
-    
+
     public function getIsCoordinatorAttribute()
     {
         return $this->activeMemberships->pluck('roles')->flatten()->pluck('name')->contains('coordinator');
     }
 
-    public function getProfilePhotoUrl()
+    public function getProfilePhotoUrlAttribute()
     {
         return url('/storage/profile-photos/'.$this->profile_photo);
     }
@@ -319,7 +319,7 @@ class Person extends Model implements HasLogEntries
                             ->whereHas('roles', function ($q) {
                                 $q->where('name', 'coordinator');
                             });
-                            
+
         if (is_array($group)) {
             $query->whereIn(
                 'group_id',

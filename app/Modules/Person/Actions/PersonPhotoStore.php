@@ -2,6 +2,7 @@
 
 namespace App\Modules\Person\Actions;
 
+use App\Modules\Person\Events\ProfileUpdated;
 use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Storage;
 use Lorisleiva\Actions\ActionRequest;
@@ -13,13 +14,13 @@ class PersonPhotoStore
 
     public function handle(ActionRequest $request, Person $person): Person
     {
-        // dd($request->file('profile_photo'));
         $filePath = Storage::putFile('profile-photos', $request->file('profile_photo'));
-        // $filePath = $request->file('profile_photo')->store('profile-photos');
         $pathParts = explode('/', $filePath);
-        
+
         $filename = array_pop($pathParts);
         $person->update(['profile_photo' => $filename]);
+
+        event(new ProfileUpdated($person, ['profile_photo']));
 
         return $person;
     }

@@ -26,12 +26,12 @@ use App\Modules\Group\Events\GeneRemovedApproved;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Events\MemberPermissionRevoked;
 use App\Modules\Group\Events\MemberPermissionsGranted;
-use App\DataExchange\MessageFactories\ApplicationEventV1MessageFactory;
+use App\DataExchange\MessageFactories\DxMessageFactory;
 
 /**
  * @group dx
  */
-class ApplicationEventV1MessageFactoryTest extends TestCase
+class DxMessageFactoryTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -46,7 +46,7 @@ class ApplicationEventV1MessageFactoryTest extends TestCase
 
         $this->expertPanel->load('genes', 'group', 'group.members', 'group.members.person');
 
-        $this->factory = new ApplicationEventV1MessageFactory();
+        $this->factory = new DxMessageFactory();
     }
 
     /**

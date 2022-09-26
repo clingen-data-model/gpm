@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use App\Events\PublishableEvent;
 use App\DataExchange\MessageFactories\MessageFactoryInterface;
 
-class ApplicationEventV1MessageFactory implements MessageFactoryInterface
+class DxMessageFactory implements MessageFactoryInterface
 {
     public function make(
         string $eventType,
