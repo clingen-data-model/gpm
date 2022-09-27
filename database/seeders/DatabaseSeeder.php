@@ -45,6 +45,7 @@ class DatabaseSeeder extends Seeder
             SubmissionTypeAndStatusSeeder::class,
             TaskTypeSeeder::class,
             CommentTypesSeeder::class,
+            CredentialSeeder::class
         ]);
 
         if (app()->environment('testing')) {
