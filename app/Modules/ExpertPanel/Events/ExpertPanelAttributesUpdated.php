@@ -63,6 +63,14 @@ class ExpertPanelAttributesUpdated extends ExpertPanelEvent implements Publishab
         ];
     }
 
+    /**
+     * For PublishableEvent interface that is applied to many sub-classes
+     */
+    public function shouldPublish(): bool
+    {
+        return parent::shouldPublish()
+            && $this->application->definitionIsApproved;
+    }
 
     /**
      * Get the channels the event should broadcast on.
