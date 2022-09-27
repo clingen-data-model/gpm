@@ -183,10 +183,10 @@ class UpdateExpertPanelAttributesTest extends TestCase
     /**
      * @test
      */
-    public function stream_message_is_published()
+    public function ep_info_updated_event_published_if_EP_definition_approved()
     {
         Carbon::setTestNow('2022-09-26');
-        $ep = ExpertPanel::factory()->create();
+        $ep = ExpertPanel::factory()->create(['step_1_approval_date' => Carbon::now()]);
         $this->makeRequest($ep)
             ->assertStatus(200);
         $ep->refresh();
@@ -206,6 +206,26 @@ class UpdateExpertPanelAttributesTest extends TestCase
             'message->data->expert_panel->membership_description' => $ep->membership_description,
             'message->data->expert_panel->scope_description' => $ep->scope_description
         ]);
+    }
+
+    /**
+     * @test
+     */
+    public function ep_info_updated_event_published_if_EP_definition_NOT_approved()
+    {
+        Carbon::setTestNow('2022-09-26');
+        $ep = ExpertPanel::factory()->create();
+        $this->makeRequest($ep)
+            ->assertStatus(200);
+        $ep->refresh();
+
+        $this->assertDatabaseMissing(
+            'stream_messages',
+            [
+                'topic' => config('dx.topics.outgoing.gpm_general_events'),
+                'message->event_type' => 'ep_info_updated'
+            ]
+        );
     }
 
     private function makeRequest($expertPanel, $data = null): TestResponse
