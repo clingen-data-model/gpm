@@ -2,23 +2,19 @@
 
 namespace Tests\Feature\End2End\Person\Profile;
 
-use DateTime;
 use Tests\TestCase;
-use App\Models\Permission;
 use App\Models\Role;
+use App\Models\Credential;
+use App\Models\Permission;
 use Laravel\Sanctum\Sanctum;
-use Illuminate\Validation\Rule;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Race;
-use App\Modules\Person\Models\Gender;
 use App\Modules\Person\Models\Person;
-use App\Modules\Person\Models\Country;
+use Database\Seeders\CredentialSeeder;
 use App\Modules\Group\Actions\MemberAdd;
-use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Person\Models\Institution;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\Person\Models\PrimaryOccupation;
+use App\Modules\Group\Actions\MemberAssignRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 
@@ -31,7 +27,14 @@ class UpdateProfileTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
-    
+
+    private $institution;
+    private $race;
+    private $primaryOcc;
+    private $gender;
+    private $country;
+    private $credential;
+
     public function setup():void
     {
         parent::setup();
@@ -51,14 +54,28 @@ class UpdateProfileTest extends TestCase
     public function a_person_can_update_their_own_profile_info()
     {
         $data = $this->getDefaultData();
+        $expected = $data;
+        unset($expected['credential_ids']);
 
-        $this->person->update(['user_id' => $this->user->id]);
-        
-        $this->makeRequest($data)
+        $this->person->update([
+            'user_id' => $this->user->id
+        ]);
+
+        $rsp = $this->makeRequest($data)
             ->assertStatus(200)
-            ->assertJsonFragment($data);
+            ->assertJsonFragment($expected)
+            ->assertJsonFragment([
+                $this->credential->toArray()
+            ]);
 
-        $this->assertDatabaseHas('people', $data);
+        $this->assertDatabaseHas('people', $expected);
+        $this->assertDatabaseHas(
+            'credential_person',
+            [
+                'credential_id' => $this->credential->id,
+                'person_id' => $this->person->id
+            ]
+        );
     }
 
     /**
@@ -78,12 +95,12 @@ class UpdateProfileTest extends TestCase
     public function associated_user_name_and_email_updated_when_person_updated()
     {
         $this->person->update(['user_id' => $this->user->id]);
-        
+
         $data = $this->getDefaultData();
         $data['first_name'] = 'beans';
         $data['last_name'] = 'mccradden';
         $data['email'] = 'beans@beans.com';
-        
+
         $this->makeRequest($data)
             ->assertStatus(200);
 
@@ -93,8 +110,8 @@ class UpdateProfileTest extends TestCase
             'email' => 'beans@beans.com'
         ]);
     }
-    
-    
+
+
     /**
      * @test
      */
@@ -110,7 +127,7 @@ class UpdateProfileTest extends TestCase
         $this->makeRequest(['biography' => 'I like beans and George Wendt.'])
             ->assertStatus(403);
     }
-    
+
     /**
      * @test
      */
@@ -135,19 +152,34 @@ class UpdateProfileTest extends TestCase
         $userMember = MemberAdd::run($group, $userPerson);
         $action = new MemberAssignRole();
         $action->handle($userMember, [$role]);
+        $credentials = Credential::factory()->count(2)->create();
 
-        $this->makeRequest(['first_name' => 'butt', 'last_name' => 'munch', 'email' => 'buttmunch@turds.com', 'credentials' => 'FhD, LD', 'biography' => 'A real turd burgler'])
+        $this->makeRequest([
+                'first_name' => 'early',
+                'last_name' => 'dog',
+                'email' => 'earlydog@turds.com',
+                'credential_ids' => $credentials->pluck('id')->toArray(),
+                'biography' => 'A real turd burgler'
+            ])
             ->assertStatus(200);
 
         $this->assertDatabaseHas('people', [
-            'first_name' => 'butt',
-            'last_name' => 'munch',
-            'email' => 'buttmunch@turds.com',
-            'credentials' => 'FhD, LD',
+            'first_name' => 'early',
+            'last_name' => 'dog',
+            'email' => 'earlydog@turds.com',
             'biography' => null,
         ]);
+
+        $this->assertDatabaseHas('credential_person', [
+            'credential_id' => $credentials->first()->id,
+            'person_id' => $this->person->id
+        ]);
+        $this->assertDatabaseHas('credential_person', [
+            'credential_id' => $credentials->last()->id,
+            'person_id' => $this->person->id
+        ]);
     }
-    
+
 
     /**
      * @test
@@ -159,8 +191,7 @@ class UpdateProfileTest extends TestCase
             ->assertStatus(422)
             ->assertJsonFragment([
                 'institution_id' => ['This is required.'],
-                // 'primary_occupation_id' => ['This is required.'],
-                // 'gender_id' => ['This is required.'],
+                'credential_ids' => ['This is required.'],
                 'country_id' => ['This is required.'],
                 'timezone' => ['This is required.'],
             ]);
@@ -180,7 +211,8 @@ class UpdateProfileTest extends TestCase
             'biography' => 'I\'m a little teapot.'
         ])
         ->assertStatus(200)
-        ->assertJsonFragment(['biography' => 'I\'m a little teapot.']);
+        ->assertJsonFragment(['biography' => 'I\'m a little teapot.'])
+        ->assertJsonMissingValidationErrors(['credential_ids']);
     }
 
     /**
@@ -197,17 +229,16 @@ class UpdateProfileTest extends TestCase
             'orcid_id' => 12345,
             'hypothesis_id' => 12345,
             'biography' => $this->faker->paragraph(),
-            'timezone' => $this->faker->timezone()
+            'timezone' => $this->faker->timezone(),
+            'credential_ids' => [999]
         ];
 
         $this->user->givePermissionTo($this->perm);
         $this->makeRequest($data)
             ->assertJsonFragment([
                 'institution_id' => ['The selection is invalid.'],
-                // 'race_id' => ['The selection is invalid.'],
-                // 'primary_occupation_id' => ['The selection is invalid.'],
-                // 'gender_id' => ['The selection is invalid.'],
                 'country_id' => ['The selection is invalid.'],
+                'credential_ids.0' => ['The selection is invalid.'],
             ]);
     }
 
@@ -223,7 +254,7 @@ class UpdateProfileTest extends TestCase
             'first_name' => $this->person->first_name,
             'last_name' => $this->person->last_name,
             'email' => 'beans@beans.com',
-            'biography' => 'I\'m a little teapot.'
+            'biography' => 'I\'m a little teapot.',
         ])
         ->assertStatus(422)
         ->assertJsonFragment([
@@ -243,14 +274,14 @@ class UpdateProfileTest extends TestCase
             'first_name' => $this->person->first_name,
             'last_name' => $this->person->last_name,
             'email' => 'beans@beans.com',
-            'biography' => 'I\'m a little teapot.'
+            'biography' => 'I\'m a little teapot.',
         ])
         ->assertStatus(422)
         ->assertJsonFragment([
             'email' => ['Somebody is already using that email address.']
         ]);
     }
-    
+
 
     private function makeRequest($data = null)
     {
@@ -261,34 +292,35 @@ class UpdateProfileTest extends TestCase
 
     private function getDefaultData(): array
     {
-        [$institution, $race, $primaryOcc, $gender, $country] = $this->setupLookups();
+        $this->setupLookups();
 
         return [
             'first_name' => $this->person->first_name,
             'last_name' => $this->person->last_name,
             'email' => $this->person->email,
-            'institution_id' => $institution->id,
-            'race_id' => $race->id,
-            'primary_occupation_id' => $primaryOcc->id,
-            'gender_id' => $gender->id,
-            'country_id' => $country->id,
+            'institution_id' => $this->institution->id,
+            'credential_ids' => [$this->credential->id],
+            'race_id' => $this->race->id,
+            'primary_occupation_id' => $this->primaryOcc->id,
+            'gender_id' => $this->gender->id,
+            'country_id' => $this->country->id,
             'orcid_id' => 12345,
             'hypothesis_id' => 12345,
             'biography' => $this->faker->paragraph(),
             'timezone' => $this->faker->timezone()
         ];
     }
-    
-    
+
+
 
     private function setupLookups()
     {
-        $institution = \App\Modules\Person\Models\Institution::factory()->create();
-        $race = \App\Modules\Person\Models\Race::factory()->create();
-        $primaryOcc = \App\Modules\Person\Models\PrimaryOccupation::factory()->create();
-        $gender = \App\Modules\Person\Models\Gender::factory()->create();
-        $country = \App\Modules\Person\Models\Country::factory()->create();
+        $this->institution = \App\Modules\Person\Models\Institution::factory()->create();
+        $this->race = \App\Modules\Person\Models\Race::factory()->create();
+        $this->primaryOcc = \App\Modules\Person\Models\PrimaryOccupation::factory()->create();
+        $this->gender = \App\Modules\Person\Models\Gender::factory()->create();
+        $this->country = \App\Modules\Person\Models\Country::factory()->create();
+        $this->credential = Credential::factory()->create();
 
-        return [$institution, $race, $primaryOcc, $gender, $country];
     }
 }

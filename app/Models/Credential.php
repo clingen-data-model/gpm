@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use App\ControlledVocabularies\HasSynonymInterface;
+use App\ControlledVocabularies\HasSynonymTrait;
 use App\Modules\Person\Models\Person;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Credential extends Model
+class Credential extends Model implements HasSynonymInterface
 {
     use HasFactory;
+    use HasSynonymTrait;
 
     public $fillable = [
         'name',
@@ -20,6 +23,8 @@ class Credential extends Model
         'id' => 'integer',
         'approved' => 'boolean',
     ];
+
+    public $hidden = ['pivot'];
 
     // RELATIONS
     /**

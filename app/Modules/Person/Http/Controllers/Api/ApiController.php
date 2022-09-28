@@ -8,12 +8,12 @@ class ApiController extends BaseController
 {
     protected function getModelNamespace(): string
     {
-        return 'App\\Modules\\Person\Models\\';
+        return 'App\\Modules\\Person\\Models\\';
     }
 
     protected function getResourceNamespace(): string
     {
-        return 'App\\Modules\\Person\Http\Resources\\';
+        return 'App\\Modules\\Person\\Http\\Resources\\';
     }
 
     protected function getHiddenModels(): array
