@@ -1,7 +1,7 @@
 <script setup>
     import { computed, ref, watch } from 'vue'
     import axios from 'axios'
-import {hasPermission} from '../../auth_utils';
+    import {hasPermission} from '../../auth_utils';
 
     const props = defineProps({
         members: {
@@ -106,55 +106,52 @@ import {hasPermission} from '../../auth_utils';
                             <badge size="xxs">{{g.members.length}}</badge>
                         </th>
                     </tr>
-                    <tr class="text-sm">
-                        <th v-for="key in fields" :key="key">
-                            {{key}}
-                        </th>
-                        <th>Publications</th>
-                    </tr>
                 </thead>
-                <tbody class="text-sm">
-                    <tr v-for="m in g.members" :key="m.id">
-                        <td v-for="key in fields" :key="key">
-                            {{m[key]}}
-                        </td>
-                        <td>
-                            <!-- <popper v-if="m.pubCount" arrow hover class="cursor-pointer">
-                                <template v-slot:content>
-                                    <h5>Publications</h5>
-                                    <div v-if="m.pubCount == 0">
-                                        None.
+                <template v-if="g.members.length > 0">
+                    <thead>
+                        <tr class="text-sm">
+                            <th>Name</th>
+                            <th>Credentials</th>
+                            <th>Expertise</th>
+                            <th>Institution</th>
+                            <!-- <th v-for="key in fields" :key="key">
+                                {{key}}
+                            </th> -->
+                            <th>Publications</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm">
+                        <tr v-for="m in g.members" :key="m.id">
+                            <td>{{m.name}}</td>
+                            <td>
+                                {{m.credentials.map(c => c.name).join(', ')}}
+                                <div v-if="m.legacy_credentials && m.credentials.length == 0">
+                                    <div>
+                                        {{m.legacy_credentials}}
                                     </div>
-                                    <div v-else>
-                                        <ul class="list-disc ml-4">
-                                            <li v-for="pub in m.publications" :key="pub.uid" class="mb-1">
-                                                <a :href="`https://pubmed.ncbi.nlm.nih.gov/${pub.uid}`" target="pubmed" class="text-black">
-                                                    <PubmedCitation :summary="pub" />
-                                                </a>
-                                            </li>
-                                        </ul>
-                                        <a v-if="m.pubCount > 10"
-                                            :href="`https://pubmed.ncbi.nlm.nih.gov/?term=${m.last_name},+${m.first_name}%5BAuthor%5D`"
+                                    <note>(legacy data)</note>
+                                </div>
+                            </td>
+                            <td>
+                                {{m.expertise}}
+                            </td>
+                            <td>{{m.institution}}</td>
+                            <td>
+                                <div v-if="m.pubCount">
+                                    <popper v-if="m.pubCount > 0" content="Go to PubMed results." hover arrow placement="left">
+                                        <a :href="`https://pubmed.ncbi.nlm.nih.gov/?term=${m.last_name},+${m.first_name}%5BAuthor%5D`"
                                             target="pubmed"
-                                        >+{{m.pubCount - 10}} more.</a>
-                                    </div>
-                                </template>
-                                <badge size="xxs">{{m.pubCount}}</badge>
-                            </popper> -->
-                            <div v-if="m.pubCount">
-                                <popper v-if="m.pubCount > 0" content="Go to PubMed results." hover arrow placement="left">
-                                    <a :href="`https://pubmed.ncbi.nlm.nih.gov/?term=${m.last_name},+${m.first_name}%5BAuthor%5D`"
-                                        target="pubmed"
-                                        >
-                                        <badge size="xxs">{{m.pubCount}}</badge>
-                                    </a>
-                                </popper>
-                                <badge v-else size="xxs">{{m.pubCount}}</badge>
-                            </div>
-                            <button v-else class="btn btn-xs" @click="getPublications(m)">Get</button>
-                        </td>
-                    </tr>
-                </tbody>
+                                            >
+                                            <badge size="xxs">{{m.pubCount}}</badge>
+                                        </a>
+                                    </popper>
+                                    <badge v-else size="xxs">{{m.pubCount}}</badge>
+                                </div>
+                                <button v-else class="btn btn-xs" @click="getPublications(m)">Get</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </template>
             </template>
         </table>
     </div>

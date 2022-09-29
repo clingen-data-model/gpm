@@ -7,14 +7,24 @@
 
         <div class="md:flex flex-wrap space-x-4 text-sm">
             <div>
-                <profile-picture :person="member.person" style="width: 100px; height: 100px;" class="rounded"></profile-picture>
+                <profile-picture :person="member.person" style="width: 100px; height: 100px;" class="rounded" />
                 <note>member id: {{member.id}}</note>
             </div>
             <div class="flex-1 md:flex flex-wrap">
                 <div class="flex-1 mr-8">
                     <dictionary-row label="Email">{{member.person.email}}</dictionary-row>
-                    <dictionary-row label="Institution">{{member.person.institution ? member.person.institution.name : '--'}}</dictionary-row>
-                    <dictionary-row label="Credentials">{{member.person.credentials}}</dictionary-row>
+                    <dictionary-row label="Institution">
+                        {{member.person.institution ? member.person.institution.name : '--'}}
+                    </dictionary-row>
+                    <dictionary-row label="Credentials">
+                        {{
+                        member.person.credentials.length > 0
+                            ? member.person.credentials.map(c => c.name).join(', ')
+                            : member.person.legacy_credentials
+                                ? member.person.legacy_credentials
+                                : '--'
+                        }}
+                    </dictionary-row>
                     <object-dictionary
                         :obj="member"
                         :only="['expertise', 'notes']"
@@ -53,7 +63,7 @@
             <div>
             </div>
         </div>
-        <router-link class="link" 
+        <router-link class="link"
             :to="{name: 'PersonDetail', params: {uuid: this.member.person.uuid}}">
             View profile
         </router-link>

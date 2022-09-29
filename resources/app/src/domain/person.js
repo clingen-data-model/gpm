@@ -13,7 +13,6 @@ class Person extends Entity {
         primary_occupation_id: null,
         primary_occupation: {},
         profile_photo: null,
-        credentials: null,
         race_id: null,
         race: {},
         race_other: null,
@@ -33,12 +32,12 @@ class Person extends Entity {
         'updated_at',
         'deleted_at'
     ]
-    
+
     constructor(attributes = {}) {
         if (attributes instanceof Person) {
             attributes = {
-                ...attributes.attributes, 
-                memberships: [attributes.memberships.map(m => m.attributes)], 
+                ...attributes.attributes,
+                memberships: [attributes.memberships.map(m => m.attributes)],
             };
         }
 
@@ -56,6 +55,10 @@ class Person extends Entity {
 
     get institutionName () {
         return this.institution ? this.institution.name : null;
+    }
+
+    get credentialsString () {
+        return this.credentials ? this.credentials.map(c => c.name).join(', ') : null;
     }
 
     get primaryOccupationName () {
@@ -139,7 +142,7 @@ class Person extends Entity {
                 return true;
             }
         }
-        
+
         return false;
     }
 

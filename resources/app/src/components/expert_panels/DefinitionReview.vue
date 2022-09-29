@@ -21,6 +21,7 @@ import {hasPermission} from '../../auth_utils';
                 name: m.person.name,
                 institution: m.person.institution ? m.person.institution.name : null,
                 credentials: m.person.credentials,
+                legacy_credentials: m.person.legacy_credentials,
                 expertise: m.expertise,
                 roles: m.roles.map(r => r.name).join(', '),
             }
