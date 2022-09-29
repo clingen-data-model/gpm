@@ -1,6 +1,7 @@
 <script setup>
     import {useStore} from 'vuex'
     import {ref, computed, watch, onMounted} from 'vue'
+    import Person from '@/domain/person'
     import isValidationError from '@/http/is_validation_error'
     import {getLookups, lookups} from '@/forms/profile_form';
     import ProfilePhotoForm from '@/components/people/ProfilePhotoForm.vue';
@@ -8,8 +9,7 @@
     import InstitutionSearchSelect from '../forms/InstitutionSearchSelect.vue';
     import AddressInput from '../forms/AddressInput.vue';
     import TimezoneSearchSelect from '../forms/TimezoneSearchSelect.vue';
-    import SearchSelect from '../forms/SearchSelect.vue';
-    import {api} from '@/http'
+    import CredentialsInput from '../forms/CredentialsInput.vue'
 
     const store = useStore();
     const props = defineProps({
@@ -29,7 +29,6 @@
     const initProfile = () => {
         profile.value = {...props.person.attributes};
         profile.value.credential_ids = props.person.credentials ? props.person.credentials.map(c => c.id) : null;
-        console.log(profile.value)
     };
 
     const save = async () => {
@@ -37,17 +36,18 @@
             if (profile.value.credential_ids) {
                 profile.value.credential_ids = profile.value.credentials.map(c => c.id)
             }
-            await store.dispatch(
+            const updatedPerson = await store.dispatch(
                     'people/updateProfile',
                     {uuid: props.person.uuid, attributes: profile.value}
                 )
-                .then(() => {
+                .then(rsp => {
                     store.dispatch('getCurrentUser', {force: true})
                     store.commit('pushSuccess', 'Your profile has been updated.')
+                    return rsp.data;
                 })
 
-            errors.value = {};
-            emits('saved');
+                errors.value = {};
+                emits('saved', new Person(updatedPerson));
         } catch (error) {
             if (isValidationError(error)) {
                 errors.value = error.response.data.errors;
@@ -61,13 +61,7 @@
         emits('canceled');
     };
 
-    const canEditAllFields = computed(() => hasPermission('people-manage') || userIsPerson(this.person));
-
-    const credentials = ref([]);
-    const getCredentials = async () => {
-        credentials.value = await api.get('/api/credentials')
-                                .then(rsp => rsp.data);
-    }
+    const canEditAllFields = computed(() => hasPermission('people-manage') || userIsPerson(props.person));
 
     watch(() => props.person, () => {
         initProfile()
@@ -75,17 +69,7 @@
 
     onMounted(() => {
         getLookups();
-        getCredentials();
     });
-
-    const searchCredentials = async(keyword, options) => {
-        return options.filter(o => {
-            const pattern = /[.,-]/g
-            const normedKeyword = keyword.replace(pattern, '').toLowerCase();
-            return o.name.toLowerCase().match(normedKeyword)
-                || o.synonyms.some(s => s.name.toLowerCase().match(normedKeyword));
-        })
-    }
 
 </script>
 
@@ -123,19 +107,7 @@
                 Credentials
                 <note>Degrees and Certifications</note>
             </template>
-            <SearchSelect
-                v-model="profile.credentials"
-                :options="credentials"
-                :multiple="true"
-                showOptionsOnFocus
-                :searchFunction="searchCredentials"
-            >
-                <template v-slot:fixedBottomOption>
-                    <div class="text-sm">
-                        Don't see your credential? <button class="link">Create a new one.</button>
-                    </div>
-                </template>
-            </SearchSelect>
+            <CredentialsInput v-model="profile.credentials"></CredentialsInput>
             <template  v-slot:after-input>
                 <note>Include degrees and certifications such as PhD, MD, CGC, etc. Please include professional roles and associations in your biography.</note>
             </template>

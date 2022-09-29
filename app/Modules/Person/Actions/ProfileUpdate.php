@@ -48,7 +48,7 @@ class ProfileUpdate
 
     public function asController(ActionRequest $request, Person $person)
     {
-        $profileData = $request->only(['first_name', 'last_name', 'email', 'credential_ids']);
+        $profileData = $request->only(['first_name', 'last_name', 'email', 'credential_ids', 'institution_id']);
         if ($request->user()->can('update', $person)) {
             $profileData = $request->all();
         }

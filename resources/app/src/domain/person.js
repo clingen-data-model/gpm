@@ -10,6 +10,7 @@ class Person extends Entity {
         phone:null,
         institution_id: null,
         institution: {},
+        credentials: [],
         primary_occupation_id: null,
         primary_occupation: {},
         profile_photo: null,
