@@ -50,7 +50,6 @@ class Person extends Model implements HasLogEntries
         'phone',
         'user_id',
         'institution_id',
-        'credentials',
         'biography',
         'profile_photo',
         'orcid_id',
