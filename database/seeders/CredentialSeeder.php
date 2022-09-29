@@ -74,6 +74,12 @@ class CredentialSeeder extends Seeder
                 'name' => 'VMD',
                 'approved' => 1,
                 'synonyms' => ['veterinary medicines', 'directorate', 'doctor', 'doctorate']
+            ],
+            [
+                'id' => 100,
+                'name' => 'None',
+                'approved' => 1,
+                'synonymes' => ['n/a', 'na']
             ]
         ];
 
