@@ -25,7 +25,7 @@ trait HasSynonymTrait
     {
         $query->whereHas('synonyms', function ($q) use ($keyword, $operator) {
             $searchString = preg_replace('/\./', '', strtolower($keyword));
-            return $q->where('name', 'LIKE', '%'.$searchString.'%', $operator);
+            return $q->where('synonyms.name', 'LIKE', '%'.$searchString.'%');
         });
 
         return $query;
