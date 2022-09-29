@@ -50,18 +50,42 @@ class SearchCredentialsTest extends TestCase
     {
         $this->login();
 
-        $this->makeRequest('m')
+        $response = $this->makeRequest('m')
             ->assertStatus(200)
-            ->assertJsonCount(2);
+            ->assertJsonCount(6);
 
         $this->makeRequest('ms')
             ->assertStatus(200)
             ->assertJsonCount(1);
+    }
 
+    /**
+     * @test
+     */
+    public function ignores_case_and_punctuation()
+    {
+        $this->login();
         $this->makeRequest('p.h.d')
             ->assertStatus(200)
             ->assertJsonCount(1);
     }
+
+    /**
+     * @test
+     */
+    public function searches_against_synonyms()
+    {
+        $this->login();
+        $this->makeRequest('lcgc')
+            ->assertStatus(200)
+            ->assertJsonCount(1)
+            ->assertJsonFragment([
+                'id' => 1,
+                'name' => 'CGC'
+            ]);
+    }
+
+
 
 
     private function makeRequest(?string $keyword = null): TestResponse
