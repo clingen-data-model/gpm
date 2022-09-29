@@ -23,12 +23,12 @@ class PersonAsMemberResource extends JsonResource
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'email' => $this->email,
-            'credentials' => $this->credentials,
             'timezone' => $this->timezone,
             'profile_photo' => $this->profile_photo,
+            'legacy_credentials' => $this->legacy_credentials
         ];
         $data['institution'] = $this->whenLoaded('institution', new InstitutionResource($this->institution));
-        // $data['country'] = $this->whenLoaded('country', ['id' => $this->country->id, 'name' => $this->country->name]);
+        $data['credentials'] = $this->whenLoaded('credentials', $this->credentials);
 
         return $data;
     }
