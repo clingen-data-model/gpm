@@ -16,6 +16,13 @@ class Synonym extends Model
         'id' => 'integer',
         'synonym_of_id' => 'integer'
     ];
+    public $hidden = [
+        'pivot',
+        'created_at',
+        'updated_at',
+        'synonym_of_id',
+        'synonym_of_type'
+    ];
 
     // RELATIONS
     public function synonymOf(): MorphTo
