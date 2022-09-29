@@ -1,13 +1,13 @@
 <template>
     <div :class="{'cursor-wait': saving}">
         <div class="border border-gray-200 rounded-lg">
-            <img 
-                :src="srcPath" 
+            <img
+                :src="srcPath"
                 :alt="altText"
                 class="rounded-t-lg w-full"
                 @click="initUpload"
             >
-            <button 
+            <button
                 @click="initUpload"
                 class="border border-t-0 bg-gray-200 block w-full"
             >
@@ -17,8 +17,8 @@
 
         <teleport to='body'>
             <modal-dialog v-model="showForm" title="Upload a new profile photo">
-                <ImageCropper 
-                    :image-src="srcPath" 
+                <ImageCropper
+                    :image-src="srcPath"
                     @cropped="setCroppedImageBlob"
                 />
 
@@ -70,7 +70,6 @@ export default {
     computed: {
         srcPath () {
             if (this.file) {
-                console.log('create from this.file');
                 return URL.createObjectURL(this.file);
             }
             if (this.person.profile_photo) {
@@ -85,8 +84,8 @@ export default {
             return '/images/default_profile.jpg';
         },
         altText () {
-            return this.person.profile_photo_path 
-                ? `${this.person.name} profile photo.` 
+            return this.person.profile_photo_path
+                ? `${this.person.name} profile photo.`
                 : 'Default profile image';
         },
     },
@@ -100,7 +99,7 @@ export default {
         setFile () {
             this.file = this.$refs.fileInput.files[0]
         },
-        setCroppedImageBlob (blob) {            
+        setCroppedImageBlob (blob) {
             this.croppedImageBlob = blob;
         },
         async fetchProfileImage () {
