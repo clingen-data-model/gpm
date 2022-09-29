@@ -40,7 +40,9 @@ class MigrateCredentials extends Command
      */
     public function handle()
     {
-        $people = Person::whereNotNull('legacy_credentials')
+        $people = Person::whereNotNull('legacy_credentials')->withTrashed()
+                    // ->whereIn('id', [1948, 2017, 1746, 266, 342, 974, 984, 1147, 1187, 1228, 720, 1976, 2107])
+                    // ->whereIn('id', [492])
                     ->get();
 
         $credentialsById = Credential::all()->keyBy('id')->all();
@@ -51,11 +53,12 @@ class MigrateCredentials extends Command
 
         foreach ($people as $person ) {
             $credentialTokens = $this->tokenize($person->legacy_credentials, array_merge($credentialsIndex, $synonymsIndex));
-            $credentials = array_intersect_key($credentialsById, array_flip(array_intersect_key($credentialsIndex, array_flip($credentialTokens))));
 
+            $credentials = array_intersect_key($credentialsById, array_flip(array_intersect_key($credentialsIndex, array_flip($credentialTokens))));
             $synonyms = array_intersect_key($synonymsIndex, array_flip($credentialTokens));
             $uniqueSynonymOfIds = collect($synonyms)->values()->flatten()->unique()->flip()->toArray();
             $synonymCredentials = array_intersect_key($credentialsById, $uniqueSynonymOfIds);
+
             $credentials = array_merge($credentials, $synonymCredentials);
 
             $person->credentials()->sync(collect($credentials)->pluck('id'));
@@ -90,9 +93,11 @@ class MigrateCredentials extends Command
     private function tokenize($string, $termIndex)
     {
         $matches = [];
-        $pattern = '/'.strtolower(implode('|',array_keys($termIndex))).'/i';
+        $pattern = '/('.strtolower(implode(')[$\(\/\s,;-]|(',array_keys($termIndex))).')[$\(\/\s,;-]/i';
+
         preg_match_all($pattern, strtolower($string), $matches);
-        $words = collect(preg_split('/\s|,/', strtolower($string)));
+
+        $words = collect(preg_split('/\s|,|\/-;/', preg_replace('/[\.]/', '', strtolower($string))));
 
         $tokens = collect($matches)->flatten()->merge($words)->filter()->unique()->toArray();
 
