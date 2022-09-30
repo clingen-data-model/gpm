@@ -4,6 +4,7 @@ namespace App\Modules\Person\Models;
 
 use App\Models\Email;
 use App\Models\Activity;
+use App\Models\Expertise;
 use App\Models\Credential;
 use App\Models\Traits\HasUuid;
 use App\Models\Traits\HasEmail;
@@ -115,14 +116,6 @@ class Person extends Model implements HasLogEntries
         return $this->activeGroups()->typeExpertPanel();
     }
 
-    // /**
-    //  * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-    //  */
-    // public function logEntries()
-    // {
-    //     return $this->morphMany(Activity::class, 'subject');
-    // }
-
     /**
      * @return \Illuminate\Database\Eloquent\Relations\MorphOne
      */
@@ -153,9 +146,19 @@ class Person extends Model implements HasLogEntries
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function Credentials(): BelongsToMany
+    public function credentials(): BelongsToMany
     {
         return $this->belongsToMany(Credential::class);
+    }
+
+    /**
+     * The Expertises that belong to the Person
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function expertises(): BelongsToMany
+    {
+        return $this->belongsToMany(Expertise::class);
     }
 
     /**
@@ -303,6 +306,11 @@ class Person extends Model implements HasLogEntries
     public function getProfilePhotoUrl()
     {
         return url('/storage/profile-photos/'.$this->profile_photo);
+    }
+
+    public function getLegacyExpertiseAttribute()
+    {
+        return $this->memberships->pluck('legacy_expertise')->unique()->filter();
     }
 
     /**

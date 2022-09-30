@@ -9,6 +9,11 @@ use App\Modules\Person\Actions\PersonMerge;
 use App\Modules\Person\Actions\InviteRedeem;
 use App\Modules\Person\Actions\PersonDelete;
 use App\Modules\Person\Actions\ProfileUpdate;
+use App\Modules\Person\Actions\ExpertiseCreate;
+use App\Modules\Person\Actions\ExpertiseDelete;
+use App\Modules\Person\Actions\ExpertiseSearch;
+use App\Modules\Person\Actions\ExpertisesMerge;
+use App\Modules\Person\Actions\ExpertiseUpdate;
 use App\Modules\Person\Actions\CredentialCreate;
 use App\Modules\Person\Actions\CredentialDelete;
 use App\Modules\Person\Actions\CredentialSearch;
@@ -110,4 +115,15 @@ Route::group([
     Route::put('/merge', CredentialsMerge::class);
     Route::put('/{credential}', CredentialUpdate::class);
     Route::delete('/{credential}', CredentialDelete::class);
+});
+
+Route::group([
+    'prefix' => 'api/expertises',
+    'middleware' => ['api', 'auth:sanctum']
+], function () {
+    Route::post('/', ExpertiseCreate::class);
+    Route::get('/', ExpertiseSearch::class);
+    Route::put('/merge', ExpertisesMerge::class);
+    Route::put('/{expertise}', ExpertiseUpdate::class);
+    Route::delete('/{expertise}', ExpertiseDelete::class);
 });

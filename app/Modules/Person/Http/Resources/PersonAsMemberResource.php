@@ -30,6 +30,7 @@ class PersonAsMemberResource extends JsonResource
         ];
         $data['institution'] = $this->whenLoaded('institution', new InstitutionResource($this->institution));
         $data['credentials'] = $this->whenLoaded('credentials', $this->credentials);
+        $data['expertises'] = $this->whenLoaded('expertises', $this->expertises);
 
         return $data;
     }

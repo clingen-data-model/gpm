@@ -4,6 +4,7 @@ namespace Tests\Feature\End2End\Person\Profile;
 
 use Tests\TestCase;
 use App\Models\Role;
+use App\Models\Expertise;
 use App\Models\Credential;
 use App\Models\Permission;
 use Laravel\Sanctum\Sanctum;
@@ -56,6 +57,7 @@ class UpdateProfileTest extends TestCase
         $data = $this->getDefaultData();
         $expected = $data;
         unset($expected['credential_ids']);
+        unset($expected['expertise_ids']);
 
         $this->person->update([
             'user_id' => $this->user->id
@@ -66,6 +68,9 @@ class UpdateProfileTest extends TestCase
             ->assertJsonFragment($expected)
             ->assertJsonFragment([
                 $this->credential->toArray()
+            ])
+            ->assertJsonFragment([
+                $this->expertise->toArray()
             ]);
 
         $this->assertDatabaseHas('people', $expected);
@@ -153,12 +158,14 @@ class UpdateProfileTest extends TestCase
         $action = new MemberAssignRole();
         $action->handle($userMember, [$role]);
         $credentials = Credential::factory()->count(2)->create();
+        $expertises = Expertise::factory()->count(2)->create();
 
         $this->makeRequest([
                 'first_name' => 'early',
                 'last_name' => 'dog',
                 'email' => 'earlydog@turds.com',
                 'credential_ids' => $credentials->pluck('id')->toArray(),
+                'expertise_ids' => $expertises->pluck('id')->toArray(),
                 'biography' => 'A real turd burgler'
             ])
             ->assertStatus(200);
@@ -192,6 +199,7 @@ class UpdateProfileTest extends TestCase
             ->assertJsonFragment([
                 'institution_id' => ['This is required.'],
                 'credential_ids' => ['This is required.'],
+                'expertise_ids' => ['This is required.'],
                 'country_id' => ['This is required.'],
                 'timezone' => ['This is required.'],
             ]);
@@ -212,7 +220,8 @@ class UpdateProfileTest extends TestCase
         ])
         ->assertStatus(200)
         ->assertJsonFragment(['biography' => 'I\'m a little teapot.'])
-        ->assertJsonMissingValidationErrors(['credential_ids']);
+        ->assertJsonMissingValidationErrors(['credential_ids'])
+        ->assertJsonMissingValidationErrors(['expertise_ids']);
     }
 
     /**
@@ -230,7 +239,8 @@ class UpdateProfileTest extends TestCase
             'hypothesis_id' => 12345,
             'biography' => $this->faker->paragraph(),
             'timezone' => $this->faker->timezone(),
-            'credential_ids' => [999]
+            'credential_ids' => [999],
+            'expertise_ids' => [999]
         ];
 
         $this->user->givePermissionTo($this->perm);
@@ -239,6 +249,7 @@ class UpdateProfileTest extends TestCase
                 'institution_id' => ['The selection is invalid.'],
                 'country_id' => ['The selection is invalid.'],
                 'credential_ids.0' => ['The selection is invalid.'],
+                'expertise_ids.0' => ['The selection is invalid.'],
             ]);
     }
 
@@ -300,6 +311,7 @@ class UpdateProfileTest extends TestCase
             'email' => $this->person->email,
             'institution_id' => $this->institution->id,
             'credential_ids' => [$this->credential->id],
+            'expertise_ids' => [$this->expertise->id],
             'race_id' => $this->race->id,
             'primary_occupation_id' => $this->primaryOcc->id,
             'gender_id' => $this->gender->id,
@@ -321,6 +333,7 @@ class UpdateProfileTest extends TestCase
         $this->gender = \App\Modules\Person\Models\Gender::factory()->create();
         $this->country = \App\Modules\Person\Models\Country::factory()->create();
         $this->credential = Credential::factory()->create();
+        $this->expertise = Expertise::factory()->create(['approved' => true]);
 
     }
 }

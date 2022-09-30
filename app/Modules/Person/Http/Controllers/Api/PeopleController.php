@@ -95,7 +95,8 @@ class PeopleController extends Controller
             'ethnicity',
             'gender',
             'invite',
-            'credentials'
+            'credentials',
+            'expertises',
         ]);
         return new PersonDetailResource($person);
     }

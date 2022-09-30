@@ -91,7 +91,15 @@ class GroupController extends Controller
     public function members(Request $request, $groupUuid)
     {
         $group = Group::findByUuidOrFail($groupUuid);
-        $members = $group->members->load('roles', 'permissions', 'cois', 'person', 'person.institution', 'person.credentials');
+        $members = $group->members->load(
+            'roles',
+            'permissions',
+            'cois',
+            'person',
+            'person.institution',
+            'person.credentials',
+            'person.expertises',
+        );
         return MemberResource::collection($members);
     }
 }
