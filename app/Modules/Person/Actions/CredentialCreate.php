@@ -19,7 +19,7 @@ class CredentialCreate
         return Credential::create([
             'name' => $name,
             'approved' => $approved,
-        ]);
+        ])->load('synonyms');
     }
 
     public function asController(ActionRequest $request)

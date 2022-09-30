@@ -37,16 +37,19 @@ class CreateCredentialsTest extends TestCase
     {
 
         $this->login();
-        $this->makeRequest()
+            $this->makeRequest([
+                'name' => 'Cptn.',
+                'approved' => 1,
+            ])
             ->assertStatus(201)
             ->assertJson([
                 'name' => 'Cptn.',
-                'approved' => 0,
+                'approved' => true,
             ]);
 
         $this->assertDatabaseHas('credentials', [
             'name' => 'Cptn.',
-            'approved' => 0,
+            'approved' => 1,
         ]);
     }
 
@@ -74,7 +77,6 @@ class CreateCredentialsTest extends TestCase
     {
         $data = $data ?? [
             'name' => 'Cptn.',
-            'approved' => 0
         ];
 
         return $this->json('POST', '/api/credentials', $data);

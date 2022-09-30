@@ -3,13 +3,13 @@
     import {api} from '@/http'
     import {setupMirror, mirrorProps, mirrorEmits} from '@/composables/setup_working_mirror'
     import SearchSelect from '../forms/SearchSelect.vue';
+    import CredentialCreateForm from './CredentialCreateForm'
 
     const props = defineProps({
         ...mirrorProps
     });
 
     const emit = defineEmits([...mirrorEmits]);
-
 
     const {workingCopy} = setupMirror(props, {emit})
 
@@ -20,6 +20,7 @@
     }
 
     const searchCredentials = async(keyword, options) => {
+        searchText.value = keyword
         return options.filter(o => {
             const pattern = /[.,-]/g
             const normedKeyword = keyword.replace(pattern, '').toLowerCase();
@@ -31,6 +32,24 @@
     onMounted(() => {
         getCredentials();
     });
+
+    const showCreateForm = ref(false);
+    const initNewCredential = () => {
+        showCreateForm.value = true;
+    }
+
+    const handleNewCredential = async (cred) => {
+        console.log('added ', cred);
+        showCreateForm.value = false;
+        credentials.value = [...credentials.value, cred]
+        workingCopy.value.push(credentials.value.find(c => c.id == cred.id));
+    }
+
+    const cancelNewCredential = () => {
+        showCreateForm.value = false;
+    }
+
+    const searchText = ref('');
 </script>
 
 <template>
@@ -39,12 +58,22 @@
         :options="credentials"
         multiple
         showOptionsOnFocus
+        showOptionsWhenEmpty
         :searchFunction="searchCredentials"
     >
         <template v-slot:fixedBottomOption>
             <div class="text-sm">
-                Don't see your credential? <button class="link">Create a new one.</button>
+                Don't see your credential? <button class="link" @click="initNewCredential">Create a new one.</button>
             </div>
         </template>
     </SearchSelect>
+    <teleport to='body'>
+        <modal-dialog v-model="showCreateForm" title="Add a new credential">
+            <CredentialCreateForm
+                :starterString="searchText"
+                @saved="handleNewCredential"
+                @canceled="cancelNewCredential"
+            />
+        </modal-dialog>
+    </teleport>
 </template>

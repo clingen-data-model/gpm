@@ -68,6 +68,10 @@ export default {
             type: Boolean,
             default: false
         },
+        showOptionsWhenEmpty: {
+            type: Boolean,
+            default: false
+        },
         multiple: {
             type: Boolean,
             default: false
@@ -76,17 +80,12 @@ export default {
             type: String,
             default: 'id'
         },
-        matchValueFunction: {
-            type: Function
-        },
-        emitValueFunction: {
-            type: Function
-        }
     },
     emits: [
         'update:modelValue',
         'removed',
         'added',
+        'searchTextUpdated',
     ],
     data() {
         return {
@@ -120,7 +119,7 @@ export default {
             return !this.hasSelection || this.multiple;
         },
         showingOptions() {
-            if (this.hasAdditionalOption && (this.searchText || this.hasFocus)) {
+            if ((this.showOptionsWhenEmpty || this.hasAdditionalOption) && (this.searchText || this.hasFocus)) {
                 return true;
             }
             return this.filteredOptions.length > 0 && this.hasFocus;
@@ -143,6 +142,7 @@ export default {
     watch: {
         searchText: function () {
             this.search(this.searchText, this.options);
+            this.$emit('searchTextUpdated', this.searchText);
         },
         filteredOptions: function () {
             this.cursorPosition = 0;
