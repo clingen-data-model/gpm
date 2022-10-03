@@ -45,14 +45,10 @@ class User extends Entity {
         console.log(!this.person.country_id
             || !this.person.timezone
             || !this.person.institution_id
-            || !this.person.expertises || this.person.expertises.length == 0
-            || !this.person.credentials || this.person.credentials.length == 0
 )
         return !this.person.country_id
             || !this.person.timezone
             || !this.person.institution_id
-            || !this.person.expertises || this.person.expertises.length == 0
-            || !this.person.credentials || this.person.credentials.length == 0
     }
 
     get hasPendingCois () {
