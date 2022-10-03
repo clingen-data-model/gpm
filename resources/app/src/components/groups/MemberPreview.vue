@@ -17,14 +17,7 @@
                         {{member.person.institution ? member.person.institution.name : '--'}}
                     </dictionary-row>
                     <dictionary-row label="Credentials">
-
-                        {{
-                        member.person.credentials.length > 0
-                            ? member.person.credentials.map(c => c.name).join(', ')
-                            : member.person.legacy_credentials
-                                ? member.person.legacy_credentials
-                                : '--'
-                        }}
+                        <CredentialsView :person="member.person" />
                     </dictionary-row>
                     <dictionary-row label="Expertise">
                         <ExpertisesView :person="member.person" :legacyExpertise="member.legacy_expertise" />
