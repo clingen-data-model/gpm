@@ -1,26 +1,26 @@
 <template>
     <div>
         <p class="text-lg font-bold">Please fill out your profile</p>
-        <data-form 
-            :fields="fields" 
-            v-model="profile" 
-            :errors="errors"
-        ></data-form>
-        <div class="flex flex-row-reverse justify-between">
-            <button class="btn blue" @click="goToNext">Next &gt;</button>
-        </div>
+        <PeopleProfileForm :person="person" @saved="handleSaved"
+            :allowCancel="false"
+            :showTitle="false"
+            saveButtonText="Next"
+        />
         <dev-component class="mt-4">
             <collapsible>{{person}}</collapsible>
         </dev-component>
     </div>
 </template>
 <script>
-import isValidationError from '@/http/is_validation_error'
 import {onMounted} from 'vue'
-import {getLookups, profileFields} from '@/forms/profile_form';
+import {getLookups} from '@/forms/profile_form';
+import PeopleProfileForm from '@/components/people/ProfileForm.vue'
 
 export default {
     name: 'ProfileForm',
+    components: {
+        PeopleProfileForm
+    },
     props: {
         person: {
             type: Object,
@@ -31,57 +31,20 @@ export default {
         return {
             errors: {},
             profile: {},
-            page: 'profile',
-            fields: profileFields
+            page: 'profile'
         }
     },
     methods: {
         initProfile () {
             this.profile = {...this.$store.getters['people/currentItem'].attributes};
         },
-        async save () {
-            try {
-                await this.$store.dispatch(
-                        'people/updateProfile', 
-                        {uuid: this.person.uuid, attributes: this.profile}
-                    );
-                await this.$store.dispatch('forceGetCurrentUser', {force: true})
-                    
-                this.$emit('saved');
-            } catch (error) {
-                if (isValidationError(error)) {
-                    this.errors = error.response.data.errors;
-                }
-            }
+        async handleSaved () {
+            this.$store.dispatch('forceGetCurrentUser');
+            this.$emit('saved');
         },
-        goToNext() {
-            if (!this.validateProfile()) {
-                return;
-            }
-            this.save();
-        },
-        validateProfile() {
-            this.errors = {};
-            let returnValue = true;
-            if (!this.profile.institution_id) {
-                this.errors.institution_id = ['This field is required.']
-                returnValue = false;
-            }
-            if (!this.profile.timezone) {
-                this.errors.timezone = ['This field is required'];
-                returnValue = false;
-            }
-
-            return returnValue
-        }
     },
     setup () {
         onMounted(() => getLookups());
-
-        return {
-            profileFields,
-            getLookups,
-        }
     },
     async mounted () {
         await this.$store.dispatch('people/getPerson', {uuid: this.person.uuid})

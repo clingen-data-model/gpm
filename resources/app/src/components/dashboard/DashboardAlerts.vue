@@ -11,7 +11,12 @@
         }
     })
     const sustainedCurationReviews = ref([]);
+
     const getSustainedCurationReviewTasks = async () => {
+        if (coordinatingGroups.value.length == 0) {
+            return;
+        }
+
         const params = {
             with: ['assignee'],
             where: {
@@ -21,6 +26,7 @@
                 pending: 1
             }
         }
+
         const queryString = queryStringFromParams(params);
         const url = `/api/tasks${queryString}`;
         sustainedCurationReviews.value = await api.get(url)
@@ -31,6 +37,7 @@
                                                 })
                                                 return uniqueTasks;
                                             });
+        console.log(sustainedCurationReviews.value);
     }
 
     const coordinatingGroups = computed(() => {
@@ -41,7 +48,7 @@
                 .map(group => new Group(group))
     });
 
-    
+
     onMounted (() => {
         getSustainedCurationReviewTasks();
     })
@@ -49,21 +56,21 @@
 <template>
     <div>
         <sustained-curation-review-alert
-            v-for="task in sustainedCurationReviews" 
+            v-for="task in sustainedCurationReviews"
             :key="task.id"
             :group="task.assignee"
             class="mb-2"
         />
 
-        <annual-update-alert 
-            v-for="group in coordinatingGroups" :key="group.id" 
+        <annual-update-alert
+            v-for="group in coordinatingGroups" :key="group.id"
             :group="group"
             :show-group-name="true"
             class="mb-2"
         />
 
         <coi-alert
-            v-for="membership in user.person.membershipsWithPendingCois" 
+            v-for="membership in user.person.membershipsWithPendingCois"
             :key="membership.id"
             :membership="membership"
             class="mb-2"

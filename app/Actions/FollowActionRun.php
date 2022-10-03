@@ -13,7 +13,6 @@ class FollowActionRun
 
     public function handle(FollowAction $followAction, Event $event)
     {
-        // $followerClass = $followAction->follower;
         $follower = app()->make($followAction->follower);
 
         $args = $followAction->args ?? [];

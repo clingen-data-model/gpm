@@ -4,7 +4,6 @@ import {ref, watch} from 'vue';
 export const mirrorProps = {
     modelValue: {
         type: Object,
-        required: true
     }
 };
 

@@ -170,6 +170,10 @@ export default {
             type: [Number, null],
             default: 20
         },
+        resetPageOnDataChange: {
+            type: Boolean,
+            default: true
+        }
     },
     data() {
         return {
@@ -210,7 +214,9 @@ export default {
             immediate: true,
             deep: true,
             handler: function () {
-                this.resetCurrentPage();
+                if (this.resetPageOnDataChange) {
+                    this.resetCurrentPage();
+                }
                 this.getItems()
             }
         },

@@ -2,6 +2,7 @@
 
 namespace App\Modules\Group\Events;
 
+use App\Events\PublishableEvent;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -33,7 +34,7 @@ class ScopeDescriptionUpdated extends GroupEvent
     public function getProperties():array
     {
         return ['scope_description' => $this->description];
-    }    
+    }
 
     /**
      * Get the channels the event should broadcast on.

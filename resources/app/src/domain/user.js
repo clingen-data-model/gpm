@@ -33,13 +33,39 @@ class User extends Entity {
         return [...this.permissions, ...this.rolePermissions]
     }
 
-    hasRole (role, group = null) 
+    get needsCredentials () {
+        return !this.person.credentials || this.person.credentials.length == 0
+    }
+
+    get needsExpertise () {
+        return !this.person.expertises || this.person.expertises.length == 0
+    }
+
+    get profileIncomplete () {
+        console.log(!this.person.country_id
+            || !this.person.timezone
+            || !this.person.institution_id
+            || !this.person.expertises || this.person.expertises.length == 0
+            || !this.person.credentials || this.person.credentials.length == 0
+)
+        return !this.person.country_id
+            || !this.person.timezone
+            || !this.person.institution_id
+            || !this.person.expertises || this.person.expertises.length == 0
+            || !this.person.credentials || this.person.credentials.length == 0
+    }
+
+    get hasPendingCois () {
+        return this.person.hasPendingCois;
+    }
+
+    hasRole (role, group = null)
     {
         return arrayContains(role, this.roles)
             || this.hasGroupRole(role, group);
     }
 
-    hasNoRole() 
+    hasNoRole()
     {
         console.log(this.roles);
         return this.roles.length == 0;
@@ -60,12 +86,12 @@ class User extends Entity {
        return groups.some(g => this.hasGroupRole(role, g));
     }
 
-    hasAnyPermission (permissions) 
+    hasAnyPermission (permissions)
     {
         if (!Array.isArray(permissions)) {
             throw new Error('user.hasAnyArray expected array got '+(typeof permissions));
         }
-        
+
         return permissions.map(p => {
             let perm = p;
             let group = null;
@@ -76,7 +102,7 @@ class User extends Entity {
             // check all possible permission sets
             return this.hasDirectPermission(perm)
                 || this.hasPermissionThroughRole(perm)
-                || this.hasGroupPermission(perm, group);    
+                || this.hasGroupPermission(perm, group);
             })
             .filter(r => r) //filter for true values only
             .length > 0; // check we have at least one true result

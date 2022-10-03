@@ -2,20 +2,17 @@
 
 namespace App\Modules\Group\Events;
 
+use App\Events\PublishableEvent;
 use App\Modules\Group\Models\Group;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Database\Eloquent\Model;
-use App\Modules\Group\Events\GroupEvent;
-use App\Modules\Group\Models\GroupMember;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use App\Modules\Group\Events\PublishableApplicationEvent;
 
-class MemberRetired extends GroupMemberEvent implements PublishableApplicationEvent
+class MemberRetired extends GroupMemberEvent implements PublishableEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -37,12 +34,12 @@ class MemberRetired extends GroupMemberEvent implements PublishableApplicationEv
             'end_date' => $this->groupMember->end_date->toAtomString()
         ];
     }
-    
+
     public function getEventType(): string
     {
         return 'member_retired';
     }
-    
+
     /**
      * Get the channels the event should broadcast on.
      *

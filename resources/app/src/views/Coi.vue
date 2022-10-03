@@ -12,7 +12,7 @@
                 Review ClinGen’s <coi-policy-link />
             </p>
             <div class="relative">
-                <div 
+                <div
                     v-for="question in survey.questions"
                     :key="question.name"
                             :class="question.class"
@@ -24,7 +24,7 @@
                             :vertical="true"
                             v-show="showQuestion(question)"
                         >
-                        
+
                             <textarea  v-if="question.type == 'text'"
                                 class="w-full h-24"
                                 v-model="response[question.name]"
@@ -33,8 +33,8 @@
 
                             <div v-if="question.type == 'multiple-choice'">
                                 <label v-for="option in question.options" :key="option.value" class="mb-1">
-                                    <input type="radio" 
-                                        :value="option.value" 
+                                    <input type="radio"
+                                        :value="option.value"
                                         :name="question.name"
                                         v-model="response[question.name]"
                                     >
@@ -42,8 +42,8 @@
                                 </label>
                             </div>
 
-                            <input 
-                                type="text" 
+                            <input
+                                type="text"
                                 v-if="question.type == 'string'"
                                 v-model="response[question.name]"
                                 :name="question.name"
@@ -153,15 +153,15 @@ export default {
             this.saving = true;
             try {
                 await this.$store.dispatch(
-                    'storeCoi', 
+                    'storeCoi',
                     {
-                        code: this.code, 
+                        code: this.code,
                         groupMemberId: this.groupMemberId,
-                        coiData: this.response, 
+                        coiData: this.response,
                     }
                 );
                 this.saved = true;
-                this.$store.dispatch('forceGetCurrentUser');
+                await this.$store.dispatch('forceGetCurrentUser');
                 this.$router.push({name: 'Dashboard'});
             } catch (error) {
                 if (is_validation_error(error)) {

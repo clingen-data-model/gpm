@@ -58,17 +58,17 @@ class PeopleController extends Controller
                     return $query->join('institutions', 'institutions.id', '=', 'people.institution_id')
                         ->orderBy('institutions.name', $dir);
                 }
-                
+
                 if ($field == 'name') {
                     return $query->orderBy('first_name', $dir)
                         ->orderBy('last_name', $dir);
                 }
-                
+
 
                 return $query->orderBy($field, $dir);
             }
         );
-        
+
         $searchQuery = $search->buildQuery($request->only(['where', 'sort', 'with']));
         if ($request->page_size || $request->page) {
             return PersonResource::collection($searchQuery->paginate($request->get('page_size', 20)));
@@ -76,7 +76,7 @@ class PeopleController extends Controller
 
         return PersonResource::collection($searchQuery->get($request->all()));
     }
-        
+
     public function show(Person $person)
     {
         $person->load([
@@ -94,7 +94,9 @@ class PeopleController extends Controller
             'race',
             'ethnicity',
             'gender',
-            'invite'
+            'invite',
+            'credentials',
+            'expertises',
         ]);
         return new PersonDetailResource($person);
     }

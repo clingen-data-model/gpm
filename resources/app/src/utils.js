@@ -81,7 +81,6 @@ export const arrayContains = (needle, haystack) => {
 }
 
 export const featureIsEnabled = feature => {
-    console.log(camelCase(feature))
     return configs.appFeatures[camelCase(feature)]
 }
 

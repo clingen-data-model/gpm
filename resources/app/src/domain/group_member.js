@@ -137,7 +137,7 @@ class GroupMember extends Entity {
     matchesKeyword (keyword) {
         if (this.person.matchesKeyword(keyword)) {
             return true;
-        } 
+        }
 
         const regexp = new RegExp(`.*${keyword}.*`, 'i');
 

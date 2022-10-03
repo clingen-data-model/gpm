@@ -2,12 +2,9 @@
 
 namespace App\Modules\Group\Events;
 
-use App\Events\Event;
 use Illuminate\Support\Carbon;
+use App\Events\PublishableEvent;
 
-interface PublishableApplicationEvent extends Event
+interface PublishableApplicationEvent extends PublishableEvent
 {
-    public function getLogDate(): Carbon;
-    public function getEventType(): string;
-    public function getPublishableMessage(): array;
 }

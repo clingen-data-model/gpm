@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Database\Seeders\CountrySeeder;
+use Database\Seeders\ExpertiseSeeder;
 use Database\Seeders\GroupTypeSeeder;
 use Database\Seeders\UsersTableSeeder;
 use Database\Seeders\GroupStatusSeeder;
@@ -45,6 +46,8 @@ class DatabaseSeeder extends Seeder
             SubmissionTypeAndStatusSeeder::class,
             TaskTypeSeeder::class,
             CommentTypesSeeder::class,
+            CredentialSeeder::class,
+            ExpertiseSeeder::class,
         ]);
 
         if (app()->environment('testing')) {

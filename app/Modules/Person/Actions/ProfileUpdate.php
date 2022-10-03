@@ -10,20 +10,27 @@ use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsObject;
 use App\Modules\Person\Events\ProfileUpdated;
-use Lorisleiva\Actions\Concerns\AsController;
-use App\Modules\Person\Http\Requests\ProfileUpdateRequest;
 use App\Modules\Person\Policies\PersonPolicy;
+use Lorisleiva\Actions\Concerns\AsController;
+use App\Modules\Person\Actions\PersonExpertisesSync;
+use App\Modules\Person\Actions\PersonCredentialsSync;
+use App\Modules\Person\Http\Requests\ProfileUpdateRequest;
 
 class ProfileUpdate
 {
     use AsObject;
     use AsController;
 
+    public function __construct(
+        private PersonCredentialsSync $personSyncCredentials,
+        private PersonExpertisesSync $personSyncExpertises
+    )
+    {
+    }
+
+
     public function handle(Person $person, array $data)
     {
-        if (Auth::guest()) {
-            abort(403);
-        }
         $person->update($data);
 
         if ($person->user_id) {
@@ -33,6 +40,14 @@ class ProfileUpdate
             ]);
         }
 
+        if (isset($data['credential_ids'])) {
+            $person = $this->personSyncCredentials->handle($person, $data['credential_ids']);
+        }
+
+        if (isset($data['expertise_ids'])) {
+            $person = $this->personSyncExpertises->handle($person, $data['expertise_ids']);
+        }
+
         Event::dispatch(new ProfileUpdated($person, $data));
 
         return $person;
@@ -40,7 +55,7 @@ class ProfileUpdate
 
     public function asController(ActionRequest $request, Person $person)
     {
-        $profileData = $request->only(['first_name', 'last_name', 'email', 'credentials']);
+        $profileData = $request->only(['first_name', 'last_name', 'email', 'credential_ids', 'expertise_ids', 'institution_id']);
         if ($request->user()->can('update', $person)) {
             $profileData = $request->all();
         }
@@ -48,6 +63,8 @@ class ProfileUpdate
 
         $person->load(
             'institution',
+            'credentials',
+            'expertises',
             'primaryOccupation',
             'race',
             'ethnicity',
@@ -79,7 +96,11 @@ class ProfileUpdate
             'first_name' => ['required','max:255'],
             'last_name' => ['required','max:255'],
             'institution_id' => ['exists:institutions,id'],
-            // 'race_id' => ['exists:races,id'],
+            'credential_ids' => ['array'],
+            'credential_ids.*' => ['exists:credentials,id'],
+            'expertise_ids' => ['array'],
+            'expertise_ids.*' => ['exists:expertises,id'],
+            // 'race_id' => ['exists:races,id'],;
             // 'primary_occupation_id' => ['exists:primary_occupations,id'],
             // 'gender_id' => ['exists:genders,id'],
             'country_id' => ['exists:countries,id'],

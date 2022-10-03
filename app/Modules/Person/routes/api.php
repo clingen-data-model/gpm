@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Route;
 use App\Modules\Person\Models\Institution;
 use App\Modules\Person\Actions\InviteReset;
@@ -8,7 +9,19 @@ use App\Modules\Person\Actions\PersonMerge;
 use App\Modules\Person\Actions\InviteRedeem;
 use App\Modules\Person\Actions\PersonDelete;
 use App\Modules\Person\Actions\ProfileUpdate;
+use App\Modules\Person\Actions\ExpertiseCreate;
+use App\Modules\Person\Actions\ExpertiseDelete;
+use App\Modules\Person\Actions\ExpertiseSearch;
+use App\Modules\Person\Actions\ExpertisesMerge;
+use App\Modules\Person\Actions\ExpertiseUpdate;
+use App\Modules\Person\Actions\CredentialCreate;
+use App\Modules\Person\Actions\CredentialDelete;
+use App\Modules\Person\Actions\CredentialSearch;
+use App\Modules\Person\Actions\CredentialsMerge;
+use App\Modules\Person\Actions\CredentialUpdate;
+use App\Modules\Person\Actions\PersonPhotoStore;
 use App\Modules\Person\Actions\InstitutionCreate;
+use App\Modules\Person\Actions\InstitutionDelete;
 use App\Modules\Person\Actions\InstitutionsMerge;
 use App\Modules\Person\Actions\InstitutionUpdate;
 use App\Modules\Person\Actions\InviteValidateCode;
@@ -17,14 +30,12 @@ use App\Modules\Person\Actions\MarkNotificationRead;
 use App\Modules\Person\Actions\InstitutionMarkApproved;
 use App\Modules\Person\Http\Controllers\Api\ApiController;
 use App\Modules\Person\Actions\InviteRedeemForExistingUser;
-use App\Modules\Person\Actions\PersonPhotoStore;
 use App\Modules\Person\Http\Controllers\Api\InviteController;
 use App\Modules\Person\Http\Controllers\Api\PeopleController;
 use App\Modules\Person\Http\Controllers\Api\TimezoneController;
 use App\Modules\Person\Http\Controllers\Api\PersonEmailController;
 use App\Modules\Person\Http\Controllers\Api\ActivityLogsController;
 use App\Modules\Person\Http\Controllers\Api\PersonNotificationController;
-use App\Modules\Person\Models\Person;
 
 Route::group([
     'prefix' => 'api/people',
@@ -85,13 +96,34 @@ Route::group([
 
 Route::group([
     'prefix' => 'api/institutions',
-    'middleware' => ['api']
+    'middleware' => ['api', 'auth:sanctum']
 ], function () {
-    Route::group(['middleware' => 'auth:sanctum'], function () {
-        Route::get('/', [InstitutionController::class, 'index']);
-        Route::post('/', InstitutionCreate::class);
-        Route::put('/merge', InstitutionsMerge::class);
-        Route::put('/{institution}', InstitutionUpdate::class);
-        Route::put('/{institution}/approved', InstitutionMarkApproved::class);
-    });
+    Route::get('/', [InstitutionController::class, 'index']);
+    Route::post('/', InstitutionCreate::class);
+    Route::put('/merge', InstitutionsMerge::class);
+    Route::put('/{institution}', InstitutionUpdate::class);
+    Route::delete('/{institution}', InstitutionDelete::class);
+    Route::put('/{institution}/approved', InstitutionMarkApproved::class);
+});
+
+Route::group([
+    'prefix' => 'api/credentials',
+    'middleware' => ['api', 'auth:sanctum']
+], function () {
+    Route::post('/', CredentialCreate::class);
+    Route::get('/', CredentialSearch::class);
+    Route::put('/merge', CredentialsMerge::class);
+    Route::put('/{credential}', CredentialUpdate::class);
+    Route::delete('/{credential}', CredentialDelete::class);
+});
+
+Route::group([
+    'prefix' => 'api/expertises',
+    'middleware' => ['api', 'auth:sanctum']
+], function () {
+    Route::post('/', ExpertiseCreate::class);
+    Route::get('/', ExpertiseSearch::class);
+    Route::put('/merge', ExpertisesMerge::class);
+    Route::put('/{expertise}', ExpertiseUpdate::class);
+    Route::delete('/{expertise}', ExpertiseDelete::class);
 });

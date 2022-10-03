@@ -2,14 +2,14 @@
 
 namespace App\Modules\Group\Events;
 
+use App\Events\PublishableEvent;
 use App\Modules\Group\Models\Group;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use App\Modules\Group\Events\PublishableApplicationEvent;
 
-class MemberUnretired extends GroupMemberEvent implements PublishableApplicationEvent
+class MemberUnretired extends GroupMemberEvent implements PublishableEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -31,8 +31,8 @@ class MemberUnretired extends GroupMemberEvent implements PublishableApplication
             'group' => $this->groupMember->group
         ];
     }
-    
-    
+
+
     public function getEventType(): string
     {
         return 'member_unretired';

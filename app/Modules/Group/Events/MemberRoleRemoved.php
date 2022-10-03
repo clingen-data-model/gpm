@@ -2,7 +2,7 @@
 
 namespace App\Modules\Group\Events;
 
-use Illuminate\Support\Collection;
+use App\Events\PublishableEvent;
 use App\Modules\Group\Models\Group;
 use Illuminate\Broadcasting\Channel;
 use Spatie\Permission\Contracts\Role;
@@ -13,9 +13,8 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use App\Modules\Group\Events\PublishableApplicationEvent;
 
-class MemberRoleRemoved extends GroupMemberEvent implements PublishableApplicationEvent
+class MemberRoleRemoved extends GroupMemberEvent implements PublishableEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -34,7 +33,7 @@ class MemberRoleRemoved extends GroupMemberEvent implements PublishableApplicati
     {
         return 'Removed role '.$this->role->name.' from member '.$this->groupMember->person->name.'.';
     }
-    
+
     public function getProperties(): ?array
     {
         return [
@@ -43,7 +42,7 @@ class MemberRoleRemoved extends GroupMemberEvent implements PublishableApplicati
             'person' => $this->groupMember->person->only('id', 'name', 'email'),
         ];
     }
-    
+
     public function getEventType(): string
     {
         return 'member_role_removed';

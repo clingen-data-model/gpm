@@ -3,10 +3,13 @@
 namespace App\Modules\Person\Models;
 
 use App\Models\Email;
-use App\Models\Traits\HasUuid;
 use App\Models\Activity;
+use App\Models\Expertise;
+use App\Models\Credential;
+use App\Models\Traits\HasUuid;
 use App\Models\Traits\HasEmail;
 use App\Modules\User\Models\User;
+use Illuminate\Support\Collection;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Race;
 use App\Modules\Person\Models\Gender;
@@ -27,7 +30,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Traits\HasLogEntries as HasLogEntriesTrait;
-use Illuminate\Support\Collection;
 
 class Person extends Model implements HasLogEntries
 {
@@ -49,7 +51,6 @@ class Person extends Model implements HasLogEntries
         'phone',
         'user_id',
         'institution_id',
-        'credentials',
         'biography',
         'profile_photo',
         'orcid_id',
@@ -94,7 +95,7 @@ class Person extends Model implements HasLogEntries
     {
         return $this->groups()->whereNull('group_members.end_date');
     }
-   
+
     /**
      * The expertPanels that belong to the Person
      *
@@ -114,14 +115,6 @@ class Person extends Model implements HasLogEntries
     {
         return $this->activeGroups()->typeExpertPanel();
     }
-    
-    // /**
-    //  * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-    //  */
-    // public function logEntries()
-    // {
-    //     return $this->morphMany(Activity::class, 'subject');
-    // }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\MorphOne
@@ -146,6 +139,26 @@ class Person extends Model implements HasLogEntries
     public function country()
     {
         return $this->belongsTo(Country::class);
+    }
+
+    /**
+     * The Credential that belong to the Person
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function credentials(): BelongsToMany
+    {
+        return $this->belongsToMany(Credential::class);
+    }
+
+    /**
+     * The Expertises that belong to the Person
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function expertises(): BelongsToMany
+    {
+        return $this->belongsToMany(Expertise::class);
     }
 
     /**
@@ -252,7 +265,7 @@ class Person extends Model implements HasLogEntries
                     $q->pending();
                 });
     }
-    
+
 
     /**
      * QUERIES
@@ -279,12 +292,12 @@ class Person extends Model implements HasLogEntries
                 $this->state,
                 $this->zip
             ];
-            
+
         return implode(', ', array_filter($parts, function ($part) {
             return !is_null($part);
         }));
     }
-    
+
     public function getIsCoordinatorAttribute()
     {
         return $this->activeMemberships->pluck('roles')->flatten()->pluck('name')->contains('coordinator');
@@ -293,6 +306,11 @@ class Person extends Model implements HasLogEntries
     public function getProfilePhotoUrl()
     {
         return url('/storage/profile-photos/'.$this->profile_photo);
+    }
+
+    public function getLegacyExpertiseAttribute()
+    {
+        return $this->memberships->pluck('legacy_expertise')->unique()->filter();
     }
 
     /**
@@ -319,7 +337,7 @@ class Person extends Model implements HasLogEntries
                             ->whereHas('roles', function ($q) {
                                 $q->where('name', 'coordinator');
                             });
-                            
+
         if (is_array($group)) {
             $query->whereIn(
                 'group_id',

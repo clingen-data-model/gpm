@@ -53,7 +53,6 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
         'start_date',
         'end_date',
         'is_contact',
-        'expertise',
         'notes',
         'training_level_1',
         'training_level_2'
@@ -137,17 +136,17 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
     {
         return $query->where('is_contact', 1);
     }
-    
+
     public function scopeContact($query)
     {
         return $query->where('is_contact', 1);
     }
-    
+
     public function scopeIsActive($query)
     {
         return $query->whereNull('end_date');
     }
-    
+
     public function scopeIsRetired($query)
     {
         return $query->whereNotNull('end_date');
@@ -170,9 +169,9 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
                 $q->where('completed_at', '>', Carbon::today()->subDays(365));
             });
     }
-    
-    
-    
+
+
+
     // ACCESSORS
     public function getCoiLastCompletedAttribute()
     {
@@ -209,9 +208,13 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
 
         return false;
     }
-    
-    
-    
+
+     public function getExpertiseAttribute(): string
+     {
+         return $this->person->expertises->count() > 0 ? $this->person->expertises->pluck('name')->join(', ') : $this->legacy_expertise;
+     }
+
+
 
     protected static function newFactory()
     {
