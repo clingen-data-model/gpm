@@ -156,7 +156,7 @@ router.beforeEach(async (to, from, next) => {
     } catch (error) {
         console.log(error);
     }
-    
+
     if (!to.name.includes('login') && !store.getters.isAuthed) {
         next({name: 'login', query: { redirect: to.fullPath }});
         return;
@@ -175,9 +175,26 @@ router.beforeEach(async (to, from, next) => {
         router.replace({name: 'Dashboard'})
         store.commit('pushError', 'You don\'t have permission to access '+to.path)
     }
-    
+
     next();
 })
 
+router.beforeEach(async (to, from, next) => {
+    if (!to.meta.protected) {
+        next();
+        return;
+    }
+    if (to.name == 'MandatoryProfileUpdate' || to.name == 'RedeemInvite' || to.name == 'InviteWithCode') {
+        next();
+        return;
+    }
+    console.log('needsCredentials', store.getters.currentUser.needsCredentials);
+    console.log('store.getters.currentUser.needsExpertises', store.getters.currentUser.needsExpertise);
+    if (store.getters.currentUser.needsCredentials || store.getters.currentUser.needsExpertise) {
+        router.replace({name: 'MandatoryProfileUpdate', params: {redirectTo: to}});
+    }
+
+    next();
+})
 
 export default router

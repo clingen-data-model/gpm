@@ -17,6 +17,10 @@
                     person: {
                         type: Object,
                         required: true
+                    },
+                    showTitle: {
+                        type: Boolean,
+                        required: true
                     }
                 });
     const emits = defineEmits([
@@ -43,8 +47,7 @@
             const updatedPerson = await store.dispatch(
                     'people/updateProfile',
                     {uuid: props.person.uuid, attributes: profile.value}
-                )
-                .then(rsp => {
+                ).then(rsp => {
                     store.dispatch('getCurrentUser', {force: true})
                     store.commit('pushSuccess', 'Your profile has been updated.')
                     return rsp.data;
@@ -79,7 +82,7 @@
 
 <template>
     <div>
-        <h3>Profile</h3>
+        <h3 v-if="showTitle">Profile</h3>
         <div class="float-right" v-if="(hasPermission('people-manage') || userIsPerson(person))"
         >
             <profile-photo-form :person="person" style="width: 100px; height: 100px;" />

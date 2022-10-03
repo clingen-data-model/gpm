@@ -25,7 +25,7 @@ axios.interceptors.response.use(
     response => {
         store.commit('removeRequest');
         return response
-    }, 
+    },
     error => {
         store.commit('removeRequest');
         switch (error.response.status) {
@@ -58,7 +58,7 @@ axios.interceptors.response.use(
 );
 
 const docTypeStore = module_factory({
-    baseUrl: '/api/document-types', 
+    baseUrl: '/api/document-types',
     namespace: 'doctypes'
 })
 
@@ -105,7 +105,7 @@ const store = createStore({
         currentUser: (state) => state.user,
         authed: (state) => state.authenticated,
         isAuthed: (state) => state.authenticated,
-    },  
+    },
     mutations: mutations,
     actions: {
         async getCurrentUser({commit, dispatch, state}) {
@@ -113,12 +113,13 @@ const store = createStore({
                 try {
                     await axios.get('/api/current-user')
                         .then(response => {
+                            console.log(response.data.data)
                             commit('setCurrentUser', response.data.data)
                         })
                         dispatch('getSystemInfo');
                     } catch (error) {
-                    commit('clearCurrentUser');
-                }
+                        commit('clearCurrentUser');
+                    }
             }
         },
         async forceGetCurrentUser({commit}) {
@@ -170,7 +171,7 @@ const store = createStore({
                     .then(response => {
                         state.systemInfo = response.data
                     })
-                
+
             }
         }
     },
