@@ -39,6 +39,9 @@
                     <dictionary-row label="Credentials">
                         <credentials-view :person="newMember.person" />
                     </dictionary-row>
+                    <dictionary-row label="Expertise">
+                        <ExpertisesView :person="newMember.person" :legacy-expertise="newMember.legacy_expertise" />
+                    </dictionary-row>
                     <static-alert v-if="!newMember.id">
                         Adding existing person, {{newMember.person.name}}, as a group member.
                     </static-alert>
@@ -52,10 +55,6 @@
                 </div>
 
 
-
-                <input-row label="Expertise" :errors="errors.expertise">
-                    <textarea rows="5" v-model="newMember.expertise" class="w-full"></textarea>
-                </input-row>
 
                 <input-row label="Notes" :errors="errors.notes">
                     <textarea rows="5" v-model="newMember.notes" class="w-full"></textarea>
@@ -137,11 +136,21 @@
             @cancel="cancel"
             submit-text="Save"
         ></button-row>
-        <pre>{{newMember.person}}</pre>
     </div>
 
     <teleport to='body'>
         <modal-dialog v-model="showProfileForm" title="Edit Member Profile">
+            <div v-if="needsCredentials || needsExpertise" class="mb-2 p-2 alert alert-warning">
+                We need updated <strong v-if="needsCredentials">credentials</strong>
+                <span v-if="needsExpertise && needsCredentials">and</span>
+                <strong v-if="needsExpertise">expertise</strong> information for this member.
+                <div v-if="needsCredentials && newMember.person.legacy_credentials">
+                    <strong>Legacy Credentials Data:</strong> {{newMember.person.legacy_credentials}}
+                </div>
+                <div v-if="needsExpertise && newMember.legacy_expertise">
+                    <strong>Legacy Expertise Data:</strong> {{newMember.legacy_expertise}}
+                </div>
+            </div>
             <ProfileForm v-if="newMember.person" :person="newMember.person"
                 @saved="handleProfileUpdate"
                 @canceled="showProfileForm = false"
@@ -159,6 +168,7 @@ import GroupMember from '@/domain/group_member'
 import MemberSuggestions from '@/components/groups/MemberSuggestions.vue'
 import config from '@/configs'
 import CredentialsView from '../people/CredentialsView.vue'
+import ExpertisesView from '../people/ExpertisesView.vue'
 import ProfileForm from '../people/ProfileForm.vue'
 
 const groups = config.groups;
@@ -168,6 +178,7 @@ export default {
     components: {
         MemberSuggestions,
         CredentialsView,
+        ExpertisesView,
         ProfileForm
     },
     props: {
@@ -203,6 +214,12 @@ export default {
                     .flat()
                     .filter(i => i);
         },
+        needsCredentials () {
+            return !this.newMember.person.credentials || this.newMember.person.credentials.length == 0;
+        },
+        needsExpertise () {
+            return !this.newMember.person.expertises || this.newMember.person.expertises.length == 0
+        }
     },
     setup () {
         const store = useStore();

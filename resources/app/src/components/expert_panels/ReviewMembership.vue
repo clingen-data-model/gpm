@@ -2,6 +2,9 @@
     import { computed, ref, watch } from 'vue'
     import axios from 'axios'
     import {hasPermission} from '../../auth_utils';
+    import CredentialsView from '../people/CredentialsView.vue';
+    import ExpertisesView from '../people/ExpertisesView.vue';
+    import { formatDate } from '@/date_utils'
 
     const props = defineProps({
         members: {
@@ -18,8 +21,8 @@
     }
 
     const members = ref([]);
-    const chairs = computed(() => members.value.filter(m => m.roles.includes('chair')));
-    const experts = computed(() => members.value.filter(m => m.roles.includes('expert')));
+    const chairs = computed(() => tableRows.value.filter(m => m.roles.includes('chair')));
+    const experts = computed(() => tableRows.value.filter(m => m.roles.includes('expert')));
 
     const memberGroups = computed(() => [
         {
@@ -28,11 +31,11 @@
         },
         {
             title: 'Coordination',
-            members: members.value.filter(m => m.roles.includes('coordinator'))
+            members: tableRows.value.filter(m => m.roles.includes('coordinator'))
         },
         {
             title: 'Biocuration',
-            members: members.value.filter(m => m.roles.includes('biocurator'))
+            members: tableRows.value.filter(m => m.roles.includes('biocurator'))
         },
         {
             title: 'Expertise',
@@ -93,6 +96,28 @@
         }
     }, {immediate: true})
 
+    const tableRows = computed( () => {
+        return props.members.map(m => {
+            const retVal = {
+                id: m.id,
+                first_name: m.person.first_name,
+                last_name: m.person.last_name,
+                name: m.person.name,
+                institution: m.person.institution ? m.person.institution.name : null,
+                // credentials: m.person.credentials,
+                legacy_credentials: m.person.legacy_credentials,
+                legacy_expertise: m.legacy_expertise,
+                roles: m.roles.map(r => r.name).join(', '),
+                person: m.person
+            }
+            if (hasPermission('ep-applications-manage')) {
+                retVal.coi_completed = formatDate(m.coi_last_completed);
+            }
+
+            return retVal;
+        });
+    })
+
 </script>
 <template>
     <div>
@@ -114,26 +139,17 @@
                             <th>Credentials</th>
                             <th>Expertise</th>
                             <th>Institution</th>
-                            <!-- <th v-for="key in fields" :key="key">
-                                {{key}}
-                            </th> -->
                             <th>Publications</th>
                         </tr>
                     </thead>
                     <tbody class="text-sm">
                         <tr v-for="m in g.members" :key="m.id">
-                            <td>{{m.name}}</td>
+                            <td>{{m.person.name}}</td>
                             <td>
-                                {{m.credentials.map(c => c.name).join(', ')}}
-                                <div v-if="m.legacy_credentials && m.credentials.length == 0">
-                                    <div>
-                                        {{m.legacy_credentials}}
-                                    </div>
-                                    <note>(legacy data)</note>
-                                </div>
+                                <CredentialsView :person="m.person" />
                             </td>
                             <td>
-                                {{m.expertise}}
+                                <ExpertisesView :person="m.person" :legacyExpertise="m.legacy_expertise" />
                             </td>
                             <td>{{m.institution}}</td>
                             <td>

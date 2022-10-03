@@ -17,6 +17,7 @@
                         {{member.person.institution ? member.person.institution.name : '--'}}
                     </dictionary-row>
                     <dictionary-row label="Credentials">
+
                         {{
                         member.person.credentials.length > 0
                             ? member.person.credentials.map(c => c.name).join(', ')
@@ -25,9 +26,12 @@
                                 : '--'
                         }}
                     </dictionary-row>
+                    <dictionary-row label="Expertise">
+                        <ExpertisesView :person="member.person" :legacyExpertise="member.legacy_expertise" />
+                    </dictionary-row>
                     <object-dictionary
                         :obj="member"
-                        :only="['expertise', 'notes']"
+                        :only="['notes']"
                     ></object-dictionary>
                         <dictionary-row label="Start - End">
                             {{formatDate(member.start_date)}} - {{formatDate(member.end_date) || 'present'}}
@@ -73,6 +77,8 @@
 import GroupMember from '@/domain/group_member';
 import Group from '@/domain/group';
 import ProfilePicture from '@/components/people/ProfilePicture.vue'
+import CredentialsView from '../people/CredentialsView.vue';
+import ExpertisesView from '../people/ExpertisesView.vue'
 import {formatDate} from '@/date_utils'
 
 
@@ -81,6 +87,8 @@ export default {
     name: 'MemberPreview',
     components: {
         ProfilePicture,
+        CredentialsView,
+        ExpertisesView
     },
     props: {
         member: {

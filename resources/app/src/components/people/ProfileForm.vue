@@ -9,7 +9,8 @@
     import InstitutionSearchSelect from '../forms/InstitutionSearchSelect.vue';
     import AddressInput from '../forms/AddressInput.vue';
     import TimezoneSearchSelect from '../forms/TimezoneSearchSelect.vue';
-    import CredentialsInput from '../forms/CredentialsInput.vue'
+    import CredentialsInput from '../forms/CredentialsInput.vue';
+    import ExpertisesInput from '../forms/ExpertisesInput.vue';
 
     const store = useStore();
     const props = defineProps({
@@ -33,8 +34,11 @@
 
     const save = async () => {
         try {
-            if (profile.value.credential_ids) {
+            if (profile.value.credentials) {
                 profile.value.credential_ids = profile.value.credentials.map(c => c.id)
+            }
+            if (profile.value.expertises) {
+                profile.value.expertise_ids = profile.value.expertises.map(c => c.id)
             }
             const updatedPerson = await store.dispatch(
                     'people/updateProfile',
@@ -112,6 +116,15 @@
                 <note>Include degrees and certifications such as PhD, MD, CGC, etc. Please include professional roles and associations in your biography.</note>
             </template>
         </input-row>
+
+        <input-row
+            :errors="errors.expertise_ids">
+            <template v-slot:label>
+                Expertise
+            </template>
+            <ExpertisesInput v-model="profile.expertises" />
+        </input-row>
+
 
         <input-row v-if="canEditAllFields" label="Biography"
             v-model="profile.biography"

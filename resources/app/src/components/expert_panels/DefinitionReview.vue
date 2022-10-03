@@ -13,24 +13,7 @@ import {hasPermission} from '../../auth_utils';
         if (!group.value) {
             return [];
         }
-        return group.value.members.map(m => {
-            const retVal = {
-                id: m.id,
-                first_name: m.person.first_name,
-                last_name: m.person.last_name,
-                name: m.person.name,
-                institution: m.person.institution ? m.person.institution.name : null,
-                credentials: m.person.credentials,
-                legacy_credentials: m.person.legacy_credentials,
-                expertise: m.expertise,
-                roles: m.roles.map(r => r.name).join(', '),
-            }
-            if (hasPermission('ep-applications-manage')) {
-                retVal.coi_completed = formatDate(m.coi_last_completed);
-            }
-
-            return retVal;
-        });
+        return group.value.members;
     });
 
     const basicInfo = computed(() => {
@@ -52,7 +35,6 @@ import {hasPermission} from '../../auth_utils';
         </ReviewSection>
 
         <ReviewSection title="Membership" name="membership">
-            <!-- {{members}} -->
             <ReviewMembership :members="members" />
 
             <div v-if="group.isVcep()" class="mt-6">

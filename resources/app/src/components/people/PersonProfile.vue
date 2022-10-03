@@ -26,11 +26,13 @@
                     <h3>Profile</h3>
                     <div>
                         <dictionary-row class="pb-2" label-class="w-40" label="Institution">{{person.institutionName}}</dictionary-row>
-                        <dictionary-row class="pb-2" label-class="w-40" label="Credentials">{{person.credentialsString}}</dictionary-row>
-                        <!-- <dictionary-row class="pb-2" label-class="w-40" label="Primary Occupation">{{person.primaryOccupationName}}</dictionary-row> -->
+                        <dictionary-row class="pb-2" label-class="w-40" label="Credentials">
+                            <CredentialsView :person="person"></CredentialsView>
+                        </dictionary-row>
+                        <dictionary-row class="pb-2" label-class="w-40" label="Expertise">
+                            <ExpertisesView :person="person" />
+                        </dictionary-row>
                         <dictionary-row class="pb-2" label-class="w-40" label="Biography">{{person.biography}}</dictionary-row>
-                        <!-- <dictionary-row class="pb-2" label-class="w-40" label="ORCID">{{person.orcid_id}}</dictionary-row>
-                        <dictionary-row class="pb-2" label-class="w-40" label="Hypothes.is ID">{{person.hypothesis_id}}</dictionary-row> -->
                     </div>
                 </section>
 
@@ -119,6 +121,8 @@ import Person from '@/domain/person'
 import ProfileForm from '@/components/people/ProfileForm'
 import ProfilePicture from '@/components/people/ProfilePicture'
 import ProfilePhotoForm from '@/components/people/ProfilePhotoForm'
+import CredentialsView from './CredentialsView.vue'
+import ExpertisesView from './ExpertisesView.vue'
 
 export default {
     name: 'PersonProfile',
@@ -126,6 +130,8 @@ export default {
         ProfileForm,
         ProfilePicture,
         ProfilePhotoForm,
+        CredentialsView,
+        ExpertisesView
     },
     props: {
         person: {
