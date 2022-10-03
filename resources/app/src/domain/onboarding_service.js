@@ -23,7 +23,6 @@ export const redeemInvite = async (invite, email, password, password_confirmatio
 export const redeemInviteForExistingUser = async (invite) => {
     return api.put(`/api/people/existing-user/invites/${invite.code}`);
 }
-
 export default {
     fetchInvite
 }

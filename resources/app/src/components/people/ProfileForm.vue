@@ -20,9 +20,18 @@
                     },
                     showTitle: {
                         type: Boolean,
-                        required: true
+                        default: true
+                    },
+                    allowCancel: {
+                        type: Boolean,
+                        default: true,
+                    },
+                    saveButtonText: {
+                        type: String,
+                        default: 'Save'
                     }
                 });
+
     const emits = defineEmits([
                         'saved',
                         'canceled'
@@ -32,7 +41,11 @@
     const profile = ref({});
 
     const initProfile = () => {
-        profile.value = {...props.person.attributes};
+        if (props.person.clone) {
+            profile.value = {...props.person.attributes};
+        } else {
+            profile.value = {...props.person};
+        }
         profile.value.credential_ids = props.person.credentials ? props.person.credentials.map(c => c.id) : null;
     };
 
@@ -97,7 +110,6 @@
             v-model="profile.last_name"
             :errors="errors.last_name"
         />
-
         <input-row label="Email"
             v-model="profile.email"
             :errors="errors.email"
@@ -157,6 +169,6 @@
 
         <hr class="my-4">
 
-        <button-row @submitted="save" @canceled="cancel()" submit-text="Save"></button-row>
+        <button-row @submitted="save" @canceled="cancel()" :submit-text="saveButtonText" :show-cancel="allowCancel"></button-row>
     </div>
 </template>

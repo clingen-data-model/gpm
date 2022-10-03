@@ -68,11 +68,15 @@ export default [
             protected: false
         }
     },
+    { name: 'InitialProfileForm',
+        path: '/onboarding/profile',
+        component: () => import (/* onboarding */ '@/views/OnboardingProfileForm.vue')
+    },
     { name: 'MandatoryProfileUpdate',
       path: '/required-profile-update',
       component: RequiredProfileUpdate,
       meta: {
         protected: true
       }
-    }
+    },
 ]

@@ -41,6 +41,24 @@ class User extends Entity {
         return !this.person.expertises || this.person.expertises.length == 0
     }
 
+    get profileIncomplete () {
+        console.log(!this.person.country_id
+            || !this.person.timezone
+            || !this.person.institution_id
+            || !this.person.expertises || this.person.expertises.length == 0
+            || !this.person.credentials || this.person.credentials.length == 0
+)
+        return !this.person.country_id
+            || !this.person.timezone
+            || !this.person.institution_id
+            || !this.person.expertises || this.person.expertises.length == 0
+            || !this.person.credentials || this.person.credentials.length == 0
+    }
+
+    get hasPendingCois () {
+        return this.person.hasPendingCois;
+    }
+
     hasRole (role, group = null)
     {
         return arrayContains(role, this.roles)

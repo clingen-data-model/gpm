@@ -8,6 +8,7 @@ import groupRoutes from './groups'
 import adminRoutes from './admin'
 import userRoutes from './users'
 import MemberForm from '@/components/groups/MemberForm.vue'
+import {redirectToProfileForm} from '@/domain/onboarding_service.js'
 
 const routes = [
     { name: 'Dashboard',
@@ -114,6 +115,15 @@ const routes = [
         component: () =>
             import ( /* webpackChunkName: "about" */ '@/views/About.vue')
     },
+    { name: 'PendingCoiList',
+        path: '/onboarding/cois',
+        component: () => import( /* webpackChunkName "coi-survey" */ '@/views/PendingCoiList.vue'),
+        props: true,
+        meta: {
+            protected: true
+        }
+
+    },
     {
         name: 'mail-log',
         path:'/mail-log',
@@ -144,6 +154,10 @@ const router = createRouter({
     routes
 })
 
+
+/**
+ * Auth checks before all protected routes.
+ */
 router.beforeEach(async (to, from, next) => {
     if (!to.meta.protected) {
         next();
@@ -179,22 +193,52 @@ router.beforeEach(async (to, from, next) => {
     next();
 })
 
+/**
+ * Required data checks before protected routes.
+ */
 router.beforeEach(async (to, from, next) => {
     if (!to.meta.protected) {
         next();
         return;
     }
-    if (to.name == 'MandatoryProfileUpdate' || to.name == 'RedeemInvite' || to.name == 'InviteWithCode') {
+    if (to.name == 'MandatoryProfileUpdate'
+        || to.name == 'RedeemInvite'
+        || to.name == 'InviteWithCode'
+        || to.name == 'InitialProfileForm'
+        || to.name == 'PendingCoiList'
+        || to.name == 'coi'
+    ) {
         next();
         return;
     }
-    console.log('needsCredentials', store.getters.currentUser.needsCredentials);
-    console.log('store.getters.currentUser.needsExpertises', store.getters.currentUser.needsExpertise);
+
+    // Check to see if the user's profile is incomplete
+    console.log({'store.getters.currentUser.profileIncomplete': store.getters.currentUser.profileIncomplete});
+    if (store.getters.currentUser.profileIncomplete) {
+        console.log('user profile incomplete')
+        router.replace({name: 'InitialProfileForm', params: {redirectTo: to}});
+        next();
+        return;
+    }
+
+    // Check to see if the user has pending COIs
+    console.log('store.getters.currentUser.hasPendingCois', store.getters.currentUser.hasPendingCois)
+    if (store.getters.currentUser.hasPendingCois) {
+        console.log('has pending cois  go there.')
+        router.replace({name: 'PendingCoiList', params: {redirectTo: to}});
+        next();
+        return;
+    }
+
+    // Check if the user needs to update credentials or expertise
     if (store.getters.currentUser.needsCredentials || store.getters.currentUser.needsExpertise) {
         router.replace({name: 'MandatoryProfileUpdate', params: {redirectTo: to}});
+        next();
+        return;
     }
 
     next();
+
 })
 
 export default router
