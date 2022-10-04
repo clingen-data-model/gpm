@@ -53,7 +53,7 @@ export default {
         placeholder: {
             required: false,
             type: String,
-            default: ''
+            default: 'type to search'
         },
         disabled: {
             required: false,
@@ -156,7 +156,7 @@ export default {
                 this.resetCursor();
             },
             immediate: true
-       }
+        }
     },
     methods: {
         handleInputFocus () {
@@ -418,7 +418,8 @@ export default {
     .search-select-component {
         position: relative;
         overflow: visible;
-        height: 2.5rem
+        height: 2.5rem;
+        width: 100%;
     }
 
     .search-select-container {
@@ -448,19 +449,19 @@ export default {
     }
 
     .search-select-container .input {
-        @apply border-none block w-80;
+        @apply border-none block w-40;
         display: block;
-        width: 2rem; /* Set the width small b/c this will grow with flex */
+        min-width: 2rem; /* Set the width small b/c this will grow with flex */
         outline: none;
         padding: 0px;
         flex-grow: 1;
         flex-shrink: 1;
-        z-index: 5;
     }
 
     .result-container {
         position:relative;
         z-index: 10;
+        overflow-x: auto;
     }
 
     .result-container > * {

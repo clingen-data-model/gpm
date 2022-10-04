@@ -12,7 +12,7 @@ class InstitutionController extends Controller
     public function __construct()
     {
     }
-    
+
 
     public function index(Request $request)
     {
@@ -21,7 +21,8 @@ class InstitutionController extends Controller
             defaultWith: ['country']
         );
 
-        return $searchService->buildQuery($request->all())
+        $query = $searchService->buildQuery($request->all());
+        return $query
                 ->withCount('people')
                 ->get();
     }

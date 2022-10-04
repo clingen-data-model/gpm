@@ -99,6 +99,7 @@ class GroupController extends Controller
             'person.institution',
             'person.credentials',
             'person.expertises',
+            'person.country',
         );
         return MemberResource::collection($members);
     }

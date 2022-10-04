@@ -127,9 +127,9 @@
                 <note>Degrees and Certifications</note>
             </template>
             <CredentialsInput v-model="profile.credentials"></CredentialsInput>
-            <template  v-slot:after-input>
+            <!-- <template  v-slot:after-input>
                 <note>Include degrees and certifications such as PhD, MD, CGC, etc. Please include professional roles and associations in your biography.</note>
-            </template>
+            </template> -->
         </input-row>
 
         <input-row

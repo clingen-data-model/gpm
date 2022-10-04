@@ -1,12 +1,14 @@
 <template>
     <div>
-        <search-select 
-            v-model="selectedInstitution" 
+        <search-select
+            v-model="selectedInstitution"
             :search-function="search"
             style="z-index: 2"
             placeholder="Institution name or abbreviation"
             @update:modelValue="searchText = null"
             keyOptionsBy="id"
+            showOptionsOnFocus
+            :options="institutions"
         >
             <template v-slot:selection-label="{selection}">
                 <div>
@@ -21,23 +23,23 @@
                     {{option}}
                 </div>
             </template>
-            <template v-slot:additionalOption  v-if="allowAdd">
+            <template v-slot:fixedBottomOption  v-if="allowAdd">
                 <button class="font-bold link cursor-pointer" @click="initAddNew">Add your institution</button>
             </template>
         </search-select>
         <teleport to='body'>
             <modal-dialog title="Add an institution" v-model="showAddForm">
-                <institution-form 
+                <institution-form
                     :name="formName"
-                    @saved="useNewInstitution" 
-                    @canceled="cancelNewInstitution" 
+                    @saved="useNewInstitution"
+                    @canceled="cancelNewInstitution"
                 />
             </modal-dialog>
         </teleport>
     </div>
 </template>
 <script>
-import api from '@/http/api'
+import {api, queryStringFromParams} from '@/http'
 import SearchSelect from '@/components/forms/SearchSelect.vue'
 import InstitutionForm from '@/components/institutions/InstitutionCreateForm.vue'
 
@@ -88,9 +90,9 @@ export default {
     },
     methods: {
         search (searchText) {
-            if (!searchText || searchText.length < 1) {
-                return [];
-            }
+            // if (!searchText || searchText.length < 1) {
+            //     return this.institutions.slice(0, 20);
+            // }
             this.formName = searchText;
             const pattern = new RegExp(`.*${searchText}.*`, 'i');
             return this.institutions.filter(i => {
@@ -111,7 +113,11 @@ export default {
             this.showAddForm = false;
         },
         getInstitutions () {
-            api.get('/api/people/institutions')
+            const query = {
+                sort: {field: 'name', dir: 'asc'},
+                select: ['name', 'abbreviation', 'id', 'url']
+            }
+            api.get('/api/people/institutions'+queryStringFromParams(query))
                 .then(response => {
                     this.institutions = response.data
                 })

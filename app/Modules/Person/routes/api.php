@@ -41,9 +41,7 @@ Route::group([
     'prefix' => 'api/people',
     'middleware' => ['api']
 ], function () {
-    Route::get('/institutions', function (Request $request) {
-        return Institution::select('name', 'abbreviation', 'id', 'url')->get();
-    });
+    Route::get('/institutions', [InstitutionController::class, 'index']);
 
     Route::get('/timezones', function (Request $request) {
         return Institution::select('name', 'abbreviation', 'id')->get();
