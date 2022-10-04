@@ -38,17 +38,17 @@
 <template>
     <div>
         <div class="border-bottom pb-2 rounded-lg mb-4 w-3/4">
-            <h3>Please review your profile</h3>
+            <h2>Please review your profile</h2>
             <collapsible v-model="showMoreInfo" :showCheveron="false">
                 <template v-slot:title>
                     We've changed the way we collect information about your credentials and expertise.  Please help us out by updating this information.
                 </template>
                 <p>
-                    <strong>Credentials:</strong> We are now collecting credentials as selections from controlled vocabularies.  Credentials indicate the degree or official certifications you hold.
+                    <strong>Credentials:</strong> We are now collecting credentials as selections from a controlled vocabulary.  Credentials indicate the degree or official certifications you hold.
                 </p>
 
                 <p>
-                    <strong>Expertise:</strong> Expert panels collect the "expertise" of their members so ClinGen can ensure the necessary domains and skillsets are represented.  Previously, expertise was added for you for each group you were a part of.  We are now collecting your expertise once and it will be used for all expert panels of which you are a part.
+                    <strong>Expertise:</strong> Expert panels collect the "expertise" of their members so ClinGen can ensure the necessary domains and skill sets are represented.  Previously, expertise was added for you for each group you were a part of.  We are now collecting your expertise once and it will be used for all expert panels of which you are a part.
                 </p>
             </collapsible>
             <button class="link text-sm" @click="showMoreInfo = !showMoreInfo">
