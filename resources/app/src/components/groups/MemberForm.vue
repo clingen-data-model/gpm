@@ -45,13 +45,17 @@
                     <static-alert v-if="!newMember.id">
                         Adding existing person, {{newMember.person.name}}, as a group member.
                     </static-alert>
-                    <dictionary-row label="" class="text-sm">
+                    <dictionary-row label="" class="text-sm"  v-if="newMember.id">
                         <popover content="As a coordinator you can edit some attributes of a group member's profile including name, email, institution, and credentials." hover arrow>
                             <button @click="showProfileForm=true" class="link text-sm">
                                 Edit profile attributes
                             </button>
                         </popover>
                     </dictionary-row>
+                    <note v-if="!newMember.id">
+                        You can edit the member's profile attributes from here once you've added them to your group.
+                    </note>
+
                 </div>
 
 
