@@ -332,7 +332,7 @@ export default {
                 if (!this.newMember.isPersisted()) {
                     if (!this.newMember.person.isPersisted()) {
                         const groupMember = await this.inviteNewMember(this.group, this.newMember);
-                        this.$store.commit('pushSuccess', `${groupMember.person.name} added to ${groupMember.group.name}`);
+                        this.$store.commit('pushSuccess', `${groupMember.person.name} invited to join ${groupMember.group.name}`);
                         return groupMember;
 
                     }
@@ -344,7 +344,7 @@ export default {
                 }
                 if (this.newMember.isPersisted()) {
                     const groupMember = await this.updateExistingMember(this.group, this.newMember);
-                    this.$store.commit('pushSuccess', `${groupMember.person.name} added to ${groupMember.group.name}`);
+                    this.$store.commit('pushSuccess', `${groupMember.person.name}'s membership was updated.`);
                     return groupMember;
                 }
             } catch (error) {
@@ -430,7 +430,7 @@ export default {
         },
 
         async syncPermissions(group, member) {
-            const originalMember = group.findMember(this.memberId);
+            const originalMember = group.findMember(this.newMember.id);
 
             const existingPermIds = originalMember.permissions.map(p => p.id);
             const assignedPermIds = member.permissions.map(p => p.id);
