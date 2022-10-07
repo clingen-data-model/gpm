@@ -24,8 +24,8 @@ class Group extends Entity {
     constructor(attributes = {}) {
         if (attributes instanceof Group) {
             attributes = {
-                ...attributes.attributes, 
-                members: [attributes.members.map(m => m.attributes)], 
+                ...attributes.attributes,
+                members: [attributes.members.map(m => m.attributes)],
                 expert_panel: attributes.expert_panel.attributes
             };
         }
@@ -131,11 +131,11 @@ class Group extends Entity {
     addMember(member) {
         const idx = this.members.findIndex(m => m && m.id == member.id);
         if (idx > -1) {
-            this.members.splice(idx, 1, new GroupMember(member))
+            this.members.splice(idx, 1, new GroupMember({...member}))
             return;
         }
 
-        this.members.push(new GroupMember(member));
+        this.members.push(new GroupMember({...member}));
     }
 
     removeMember(member) {
@@ -172,7 +172,7 @@ class Group extends Entity {
     expertPanelLoaded () {
         return this.isEp() && this.expert_panel.id;
     }
-    
+
     isEp() {
         return this.attributes.group_type_id === configs.groups.types.gcep.id
             || this.attributes.group_type_id === configs.groups.types.vcep.id;
@@ -208,8 +208,8 @@ class Group extends Entity {
 
     clone(){
         const attributes = {
-            ...this.attributes, 
-            members: [this.members.map(m => m.attributes)], 
+            ...this.attributes,
+            members: [this.members.map(m => m.attributes)],
             expert_panel: this.expert_panel.attributes
         };
 
