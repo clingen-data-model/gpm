@@ -54,9 +54,7 @@
                 member.pubCount = rsp.data.esearchresult.count
             })
             .catch(async error => {
-                console.log(error);
                 if (error.response.status == 429) {
-                    console.log('wait and try again')
                     await delay();
                     getPublications(member);
                 }

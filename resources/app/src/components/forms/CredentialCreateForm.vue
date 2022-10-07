@@ -18,7 +18,6 @@
     const newCredentialName = ref(null);
 
     watch(() => props.starterString, to => {
-        console.log(to);
         newCredentialName.value = to
     });
 
@@ -29,7 +28,6 @@
             newCredentialName.value = null;
             emits('saved', newCredential);
         } catch (e) {
-            console.log(e.response)
             if (isValidationError(e)) {
                 errors.value = e.response.data.errors;
             }

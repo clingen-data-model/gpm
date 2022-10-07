@@ -1,8 +1,8 @@
 <template>
     <div>
-        <search-select 
-            v-model="selectedPerson" 
-            :search-function="search"   
+        <search-select
+            v-model="selectedPerson"
+            :search-function="search"
             style="z-index: 2"
             placeholder="Person name or email"
             @update:modelValue="searchText = null"
@@ -73,7 +73,6 @@ export default {
                     .then(response => {
                         return response.data.data;
                     })
-            console.log(this.options)
             return this.options;
         },
     },

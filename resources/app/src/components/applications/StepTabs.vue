@@ -3,9 +3,9 @@
         <div v-if="application.isGcep">
             <step-one @stepApproved="handleApproved" @updated="handleUpdated"></step-one>
         </div>
-            <tabs-container 
-                tab-location="right" 
-                v-model="activeIndex" 
+            <tabs-container
+                tab-location="right"
+                v-model="activeIndex"
                 v-if="this.application.expert_panel_type_id == 2"
             >
             <tab-item label="Group Definition">
@@ -60,16 +60,14 @@ export default {
                 this.activeStep = value+1
             }
 
-        } 
+        }
     },
     methods: {
         handleApproved () {
-            console.log('StepTabs - approved');
             this.$emit('approved');
             this.$emit('updated');
         },
         handleUpdated () {
-            console.log('StepTabs - updated');
             this.$emit('updated')
         }
     }

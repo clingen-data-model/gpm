@@ -151,7 +151,6 @@ export default {
                     }
                     ctx.drawImage(oc, 0, 0, cur.width, cur.height, 0, 0, canvas.width, canvas.height);
                     canvas.toBlob(blob => {
-                        console.log(blob.size/1000/1000);
                         this.storeImage(blob);
                     }, null, .5)
                 });

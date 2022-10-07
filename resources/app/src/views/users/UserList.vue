@@ -1,10 +1,10 @@
 <template>
     <div>
         <h1>Users</h1>
-        <data-table 
-            :fields="fields" 
-            :data="getUsers" 
-            v-model:sort="sort" 
+        <data-table
+            :fields="fields"
+            :data="getUsers"
+            v-model:sort="sort"
             @rowClick="goToUser"
             row-class="cursor-pointer"
             ref="dataTable"
@@ -24,7 +24,7 @@ import sortAndFilterSetup from '@/composables/router_aware_sort_and_filter'
 export default {
     name: 'ComponentName',
     props: {
-        
+
     },
     data() {
         return {
@@ -71,7 +71,7 @@ export default {
                 //     sortable: false,
                 //     label: ''
                 // }
-                
+
             ]
         }
     },
@@ -116,7 +116,6 @@ export default {
                 'with': ['roles', 'permissions'],
                 paginated: true
             }
-            console.log({params});
             const pageResponse = await api.get('/api/users', {params: params})
                                 .then(response => response.data);
             setTotalItems(pageResponse.meta.total);

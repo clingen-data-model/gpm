@@ -1,22 +1,22 @@
 <template>
     <div>
-        <application-step 
-            id="definition" 
+        <application-step
+            id="definition"
             title="Group Definition"
             :disabled="group.expert_panel.hasPendingSubmission"
         >
             <app-section title="Basic Information" id="basicInfo">
-                <group-form 
+                <group-form
                     :group="group" ref="groupForm"
                     @update="handleUpdate"
                 />
             </app-section>
             <app-section v-if="group" title="Membership" id="membership">
                 <p>
-                    Expert Panels are expected to represent the diversity of expertise and backgrounds in the field and should refer to 
-                    <vcep-protocol-link>Section 2.1 of the VCEP Protocol</vcep-protocol-link> 
-                    and the 
-                    <nih-diversity-toolkit-link /> 
+                    Expert Panels are expected to represent the diversity of expertise and backgrounds in the field and should refer to
+                    <vcep-protocol-link>Section 2.1 of the VCEP Protocol</vcep-protocol-link>
+                    and the
+                    <nih-diversity-toolkit-link />
                     for guidance to complete the Member List below. Please list the VCEP Chair(s) and Coordinator(s) first.
                 </p>
                 <member-list :group="group" />
@@ -36,9 +36,9 @@
             </app-section>
         </application-step>
 
-        <!-- <application-step 
-            id="specifications-development" 
-            title="Specifications Development" 
+        <!-- <application-step
+            id="specifications-development"
+            title="Specifications Development"
             :disabled="group.expert_panel.current_step < 2 || group.expert_panel.hasPendingSubmission"
             :no-submit="true"
         >
@@ -48,9 +48,9 @@
         </application-step>
         -->
 
-        <application-step 
-            id="draft-specifications" 
-            title="Draft Specifications" 
+        <application-step
+            id="draft-specifications"
+            title="Draft Specifications"
             :disabled="group.expert_panel.current_step < 2  || group.expert_panel.hasPendingSubmission"
             :no-submit="true"
         >
@@ -59,8 +59,8 @@
             </app-section>
         </application-step>
 
-        <application-step 
-            id="pilot-specifications" 
+        <application-step
+            id="pilot-specifications"
             title="Pilot Specifications"
             :disabled="group.expert_panel.current_step < 3  || group.expert_panel.hasPendingSubmission"
             :no-submit="true"
@@ -70,8 +70,8 @@
             </app-section>
         </application-step>
 
-        <application-step 
-            id="sustained-curation" 
+        <application-step
+            id="sustained-curation"
             title="Sustained Curation"
             :disabled="group.expert_panel.current_step < 4 || group.expert_panel.hasPendingSubmission"
         >
@@ -157,7 +157,7 @@ export default {
                                     }
                                 });
             promises.push(this.saveUpdates());
-            
+
             try {
                 await Promise.all(promises);
                 this.$emit('saved');
@@ -179,7 +179,6 @@ export default {
             }
         },
         async autosave () {
-            console.log('autosave...')
             if (this.applicationIsDirty()) {
                 await this.save();
                 this.$emit('autosaved');
@@ -187,7 +186,7 @@ export default {
             }
         },
         applicationIsDirty () {
-            return  this.group.expert_panel.isDirty() 
+            return  this.group.expert_panel.isDirty()
                 || this.group.isDirty()
                 || this.genesChanged
         },

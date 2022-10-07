@@ -18,7 +18,6 @@
     const newExpertiseName = ref(null);
 
     watch(() => props.starterString, to => {
-        console.log(to);
         newExpertiseName.value = to
     });
 
@@ -29,7 +28,6 @@
             newExpertiseName.value = null;
             emits('saved', newExpertise);
         } catch (e) {
-            console.log(e.response)
             if (isValidationError(e)) {
                 errors.value = e.response.data.errors;
             }

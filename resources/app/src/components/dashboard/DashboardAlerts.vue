@@ -37,7 +37,6 @@
                                                 })
                                                 return uniqueTasks;
                                             });
-        console.log(sustainedCurationReviews.value);
     }
 
     const coordinatingGroups = computed(() => {

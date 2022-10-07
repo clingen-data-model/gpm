@@ -213,18 +213,14 @@ router.beforeEach(async (to, from, next) => {
     }
 
     // Check to see if the user's profile is incomplete
-    console.log({'store.getters.currentUser.profileIncomplete': store.getters.currentUser.profileIncomplete});
     if (store.getters.currentUser.profileIncomplete) {
-        console.log('user profile incomplete')
         router.replace({name: 'InitialProfileForm', params: {redirectTo: to}});
         next();
         return;
     }
 
     // Check to see if the user has pending COIs
-    console.log('store.getters.currentUser.hasPendingCois', store.getters.currentUser.hasPendingCois)
     if (store.getters.currentUser.hasPendingCois) {
-        console.log('has pending cois  go there.')
         router.replace({name: 'PendingCoiList', params: {redirectTo: to}});
         next();
         return;
