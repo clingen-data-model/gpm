@@ -60,13 +60,13 @@
         showOptionsWhenEmpty
         :searchFunction="searchExpertises"
     >
-        <template v-slot:fixedBottomOption>
+        <!-- <template v-slot:fixedBottomOption>
             <div class="text-sm">
                 Don't see your credential? <button class="link" @click="initNewExpertise">Create a new one.</button>
             </div>
-        </template>
+        </template> -->
     </SearchSelect>
-    <teleport to='body'>
+    <!-- <teleport to='body'>
         <modal-dialog v-model="showCreateForm" title="Add a new credential">
             <ExpertiseCreateForm
                 :starterString="searchText"
@@ -74,5 +74,5 @@
                 @canceled="cancelNewExpertise"
             />
         </modal-dialog>
-    </teleport>
+    </teleport> -->
 </template>
