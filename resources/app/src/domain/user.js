@@ -34,18 +34,14 @@ class User extends Entity {
     }
 
     get needsCredentials () {
-        return !this.person.credentials || this.person.credentials.length == 0
+        return this.person.needsCredentials;
     }
 
     get needsExpertise () {
-        return !this.person.expertises || this.person.expertises.length == 0
+        return this.person.needsExpertise
     }
 
     get profileIncomplete () {
-        console.log(!this.person.country_id
-            || !this.person.timezone
-            || !this.person.institution_id
-)
         return !this.person.country_id
             || !this.person.timezone
             || !this.person.institution_id
@@ -63,7 +59,6 @@ class User extends Entity {
 
     hasNoRole()
     {
-        console.log(this.roles);
         return this.roles.length == 0;
     }
 

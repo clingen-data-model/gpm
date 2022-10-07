@@ -124,6 +124,14 @@ class Person extends Entity {
         return this.memberships.filter(m => m.has_coi_requirement)
     }
 
+    get needsCredentials () {
+        return !this.credentials || this.credentials.length == 0
+    }
+
+    get needsExpertise () {
+        return !this.expertises || this.expertises.length == 0
+    }
+
     matchesKeyword(keyword) {
 
         const {first_name, last_name, email} = this.attributes;
