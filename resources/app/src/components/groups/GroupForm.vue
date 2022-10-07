@@ -1,42 +1,42 @@
 <template>
     <div>
-        <input-row 
+        <input-row
             v-if="canSetType"
             v-model="group.group_type_id"
             :errors="errors.group_type_id"
             type="select"
             :options="typeOptions"
-            label="Type" 
+            label="Type"
         />
 
         <dictionary-row label="Type" v-else>
             {{typeDisplayName}}
         </dictionary-row>
-        
+
         <transition name="slide-fade-down" mode="out-in">
             <div v-if="group.group_type_id > 2 && group.expert_panel">
-                <input-row 
-                    label="Long Base Name" 
+                <input-row
+                    label="Long Base Name"
                     v-model="group.expert_panel.long_base_name"
                     @update:modelValue="emitUpdate"
                     placeholder="Long base name"
                     :errors="errors.long_base_name"
                     input-class="w-full"
                 />
-                <input-row 
-                    label="Short Base Name" 
-                    v-model="group.expert_panel.short_base_name" 
+                <input-row
+                    label="Short Base Name"
+                    v-model="group.expert_panel.short_base_name"
                     @update:modelValue="emitUpdate"
                     placeholder="Short base name"
                     :errors="errors.short_base_name"
                     input-class="w-full"
                 />
                 <div v-if="hasAnyPermission(['groups-manage'])">
-                    <input-row 
-                        label="Affiliation ID" 
-                        v-model="group.expert_panel.affiliation_id" 
+                    <input-row
+                        label="Affiliation ID"
+                        v-model="group.expert_panel.affiliation_id"
                         :placeholder="affiliationIdPlaceholder"
-                        :errors="errors.affiliation_id"  
+                        :errors="errors.affiliation_id"
                         input-class="w-full"
                         @update:modelValue="emitUpdate"
                     >
@@ -52,10 +52,10 @@
                 </dictionary-row>
             </div>
             <div v-else>
-                <input-row 
-                    v-model="group.name" 
-                    placeholder="Name" 
-                    label="Name" 
+                <input-row
+                    v-model="group.name"
+                    placeholder="Name"
+                    label="Name"
                     input-class="w-full"
                     :errors="errors.name"
                     @update:modelValue="emitUpdate"
@@ -63,7 +63,7 @@
             </div>
         </transition>
         <div v-if="hasPermission('groups-manage')">
-            <input-row 
+            <input-row
                 v-model="group.group_status_id"
                 type="select"
                 :options="statusOptions"
@@ -143,15 +143,15 @@ export default {
             return this.groupTypes.map(type => ({value: type.id, label: type.fullname}));
         },
         canSetType() {
-            return this.hasPermission('groups-manage') && !this.group.id 
+            return this.hasPermission('groups-manage') && !this.group.id
         },
         typeDisplayName () {
             if (!this.group.type) {
                 return "🐇🥚";
             }
             if (this.group.type.name) {
-                return (this.group.type.id < 3) 
-                    ? this.group.type.name.toUpperCase() 
+                return (this.group.type.id < 3)
+                    ? this.group.type.name.toUpperCase()
                     : this.group.expert_panel.type.name.toUpperCase();
             }
             return null;
@@ -167,10 +167,6 @@ export default {
                 || this.group.expert_panel.isDirty('short_base_name');
         },
         affiliationIdDirty () {
-            console.log({
-                new: this.group.expert_panel.attributes.affiliation_id,
-                original: this.group.expert_panel.original.affiliation_id
-            });
             return this.group.expert_panel.isDirty('affiliation_id');
         },
         parentOptions () {
@@ -195,7 +191,7 @@ export default {
                     // this.$store.dispatch('groups/find', this.group.uuid);
                     // this.$store.commit('pushSuccess', 'Group info updated.');
                     return;
-                } 
+                }
 
                 const newGroup = await this.createGroup()
                                     .then(response => response.data.data);
@@ -211,9 +207,9 @@ export default {
         },
         createGroup () {
             let {
-                name, 
-                parent_id, 
-                group_type_id, 
+                name,
+                parent_id,
+                group_type_id,
                 group_status_id
             } = this.group.attributes;
 
@@ -224,7 +220,7 @@ export default {
             }
 
             return this.$store.dispatch(
-                'groups/create', 
+                'groups/create',
                 {
                     name,
                     parent_id,
@@ -240,7 +236,7 @@ export default {
             if (this.group.expert_panel) {
                 promises.push(this.saveEpData());
             }
-            
+
             return Promise.all(promises);
         },
         saveGroupData () {
@@ -265,7 +261,7 @@ export default {
                 const {long_base_name, short_base_name} = this.group.expert_panel;
                 promises.push(this.submitFormData({
                     method: 'put',
-                    url: `/api/groups/${this.group.uuid}/expert-panel/name`, 
+                    url: `/api/groups/${this.group.uuid}/expert-panel/name`,
                     data: { long_base_name, short_base_name }
                 }));
             }
@@ -273,7 +269,7 @@ export default {
             if (this.affiliationIdDirty) {
                 promises.push(this.submitFormData({
                     method: 'put',
-                    url: `/api/groups/${this.group.uuid}/expert-panel/affiliation-id`, 
+                    url: `/api/groups/${this.group.uuid}/expert-panel/affiliation-id`,
                     data: { affiliation_id: this.group.expert_panel.affiliation_id }
                 }));
             }
@@ -284,11 +280,11 @@ export default {
         isDirty (attribute) {
             return this.group[attribute] != this.group[attribute]
         },
-        
+
         saveParent () {
             return this.submitFormData({
                 method: 'put',
-                url: `/api/groups/${this.group.uuid}/parent`, 
+                url: `/api/groups/${this.group.uuid}/parent`,
                 data: { parent_id: this.group.parent_id }
             })
         },

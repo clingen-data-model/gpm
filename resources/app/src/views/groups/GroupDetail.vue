@@ -49,7 +49,7 @@
               />
             </submission-wrapper>
           </tab-item>
-          
+
           <tab-item label="Scope" :visible="group.isEp()">
             <h3>
               Plans for Ongoing Gene Review and Reanalysis and Discrepancy
@@ -142,9 +142,9 @@
                 has been approved.
               </static-alert>
               <div>
-                <specifications-section 
-                  :doc-type-id="group.expert_panel.draftSpecApproved ? [2,3,4,7] : 2" 
-                  :step="group.expert_panel.draftSpecApproved ? 3 : 2" 
+                <specifications-section
+                  :doc-type-id="group.expert_panel.draftSpecApproved ? [2,3,4,7] : 2"
+                  :step="group.expert_panel.draftSpecApproved ? 3 : 2"
                 />
             </div>
 
@@ -176,7 +176,7 @@
             <h3>NHGRI Data Availability</h3>
             <attestation-nhgri class="pb-2 mb-4 border-b" :disabled="true" />
           </tab-item>
-          
+
           <tab-item label="Log" :visible="hasPermission('groups-manage') || userInGroup(group)">
             <activity-log
               :log-entries="logEntries"
@@ -200,7 +200,7 @@
               />
               <hr />
             </div>
-            <section 
+            <section
               class="border my-4 p-4 rounded"
               v-if="group.isEp()"
             >
@@ -210,7 +210,7 @@
                 >
                   Create Annual Update for latest window.
                 </button>
-                <a 
+                <a
                   v-else-if="group.expert_panel.annualUpdate"
                   :href="`/annual-updates/${this.group.expert_panel.annualUpdate.id}`"
                   target="annual update"
@@ -545,7 +545,6 @@ export default {
       this.$router.push({ name: "GroupList" });
     },
     async fakeCspecPilotApproved() {
-      console.log("fake-pilot-approved");
       try {
         await api.post(`/api/groups/${this.uuid}/dev/fake-pilot-approved`);
         this.$store.dispatch("groups/getPendingTasks", this.group);

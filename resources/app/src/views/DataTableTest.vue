@@ -6,9 +6,9 @@
 
         <hr>
         <input type="text" v-model="testProviderFilterTerm">
-        <data-table 
-            :data="testDataProvider" 
-            :fields="testProviderFields" v-model:sort="testProviderSort" 
+        <data-table
+            :data="testDataProvider"
+            :fields="testProviderFields" v-model:sort="testProviderSort"
             :filterTerm="testDataFilterTerm" :page-size="5" paginated
             ref="testProviderTable"
         />
@@ -20,7 +20,7 @@ import {sortBy} from 'lodash-es'
 export default {
     name: 'ComponentName',
     props: {
-        
+
     },
     data() {
         return {
@@ -46,12 +46,12 @@ export default {
             testDataFilterTerm: null,
 
             testProviderFields: [
-                {name: 'artist', sortable: true, type: String}, 
+                {name: 'artist', sortable: true, type: String},
                 {name: 'album', sortable: true, type: String}
             ],
             testProviderSort: {field: 'artist', desc: false},
             testProviderFilterTerm: null,
-            
+
         }
     },
     computed: {
@@ -59,8 +59,6 @@ export default {
     },
     methods: {
         async testDataProvider (currentPage, pageSize, sort, setTotalItems) {
-            console.log({currentPage, pageSize, sort});
-
             const allItems = [
                 {'artist': 'the cure', 'album': '17 seconds'},
                 {'artist': 'the smiths', 'album': 'Meat is Murder'},
@@ -76,8 +74,8 @@ export default {
             ];
 
             const rx = new RegExp(`${this.testProviderFilterTerm}`);
-            const filteredItems = this.testProviderFilterTerm 
-                                    ? allItems.filter(i => i.artist.match(rx) || i.album.match(rx)) 
+            const filteredItems = this.testProviderFilterTerm
+                                    ? allItems.filter(i => i.artist.match(rx) || i.album.match(rx))
                                     : allItems;
 
             let sortedItems = sortBy(filteredItems, sort.field.name);

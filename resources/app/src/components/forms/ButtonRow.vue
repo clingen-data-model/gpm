@@ -17,6 +17,7 @@
             >
                 {{submitText}}
             </button>
+            <slot name="extra-buttons"></slot>
         </slot>
     </div>
 </template>

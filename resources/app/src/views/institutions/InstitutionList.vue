@@ -155,7 +155,6 @@ export default {
             this.showMergeDialog = true;
         },
         async getInstitutions () {
-            console.log('**Get institutions')
             this.items = await getAllInstitutions();
         },
         handleSaved() {
@@ -173,10 +172,8 @@ export default {
             this.currentItem = {country: {}}
         },
         handleMerge() {
-            console.log('handle merge');
             this.items.splice(this.currentIndex, 1);
             this.showMergeDialog = false;
-            console.log('handled merge');
             this.$store.commit("pushSuccess", 'Institution merged.')
         },
         updateItem() {

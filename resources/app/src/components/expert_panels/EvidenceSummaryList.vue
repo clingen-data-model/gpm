@@ -1,13 +1,13 @@
 <template>
     <div>
         <ul v-if="summaries.length > 0">
-            <transition-group name="slide-fade-down">            
+            <transition-group name="slide-fade-down">
                 <li class="my-4 flex" v-for="(summary, idx) in group.expert_panel.evidence_summaries" :key="idx">
                     <div class="text-lg pr-4">{{idx+1}}</div>
-                    <evidence-summary 
-                        :summary="summary" 
+                    <evidence-summary
+                        :summary="summary"
                         :group="group"
-                        @saved="handleSavedSummary" 
+                        @saved="handleSavedSummary"
                         @deleted="handleDeleted"
                         class="flex-1"
                         :readonly="readonly"
@@ -20,11 +20,11 @@
         <ul v-show="adding">
             <li class="my-4 flex" v-for="(newSummary, idx) in newSummaries" :key="idx">
                 <div class="text-lg pr-4">{{(idx+1+summaries.length)}}</div>
-                <evidence-summary-form 
-                    class="flex-1" 
-                    :group="group" 
-                    :summary="newSummary" 
-                    @saved="handleSavedSummary" 
+                <evidence-summary-form
+                    class="flex-1"
+                    :group="group"
+                    :summary="newSummary"
+                    @saved="handleSavedSummary"
                     @canceled="cancelAdd"
                 ></evidence-summary-form>
             </li>
@@ -68,7 +68,7 @@ export default {
         group: {
             get () {
                 return this.$store.getters['groups/currentItemOrNew'];
-            }, 
+            },
             set (value) {
                 this.$store.commit('groups/addItem', value)
             }
@@ -103,7 +103,7 @@ export default {
                 console.log(error);
             }
             this.loading = false;
-            
+
         },
         startNewSummary() {
             if (this.readonly) {

@@ -9,8 +9,8 @@
 <template>
     <div>
         <h1>Mail Log</h1>
-        <data-table 
-            :fields="fields" 
+        <data-table
+            :fields="fields"
             :data="getPage"
             row-class="cursor-pointer"
             :row-click-handler="showMailDetail"
@@ -26,7 +26,7 @@
                 <ul>
                     <li v-for="recipient in item.to" :key="recipient.address">
                         <span v-if="recipient.name">
-                            {{recipient.name}} - 
+                            {{recipient.name}} -
                         </span>
                         {{recipient.address}}
                     </li>
@@ -57,7 +57,7 @@ import sortAndFilter from '../composables/router_aware_sort_and_filter'
 
 export default {
     props: {
-        
+
     },
     setup() {
         const {sort, filter} = sortAndFilter({field: 'created_at', desc: true});
@@ -71,7 +71,7 @@ export default {
         return {
             showDetail: false,
             fields: [
-                {        
+                {
                     name: 'to',
                     sortable: true,
                     type: Array,
@@ -99,7 +99,7 @@ export default {
                         return formatDateTime(item.created_at)
                     },
                     resolveSort(item) {
-                        return item.created_at;                        
+                        return item.created_at;
                     },
                     type: String
                 },
@@ -127,7 +127,6 @@ export default {
             deep: true,
             immediate: true,
             handler: function () {
-                console.log('sorted')
                 if (this.triggerSearch) {
                     this.triggerSearch();
                 }
@@ -171,4 +170,4 @@ export default {
         this.triggerSearch = debounce(() => this.$refs.dataTable.getItems(), 500)
     },
 }
-</script>   
+</script>

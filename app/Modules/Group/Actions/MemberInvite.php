@@ -16,12 +16,13 @@ use App\Modules\Person\Actions\PersonCreate;
 use App\Modules\Person\Actions\PersonInvite;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Http\Resources\MemberResource;
+use App\Modules\Group\Models\GroupMember;
 
 class MemberInvite
 {
     use AsController;
     use AsObject;
-    
+
     public function __construct(
         private PersonCreate $createPerson,
         private PersonInvite $invitePerson,
@@ -30,7 +31,7 @@ class MemberInvite
     ) {
     }
 
-    public function handle(Group $group, array $data)
+    public function handle(Group $group, array $data): GroupMember
     {
         $roleIds = null;
         if (isset($data['role_ids'])) {
@@ -48,7 +49,7 @@ class MemberInvite
         );
 
         $this->invitePerson->handle(person: $person, inviter: $group);
-        
+
         $isContact = valueAtIndex($data, 'is_contact', false);
         $newMember = $this->addMember
                         ->cancelNotification()
@@ -82,7 +83,7 @@ class MemberInvite
 
         return Response::allow();
     }
-    
+
 
     public function rules(): array
     {
@@ -92,7 +93,7 @@ class MemberInvite
             'email' => 'required|email|unique:people,email',
         ];
     }
-    
+
 
     public function getValidationMessages(): array
     {

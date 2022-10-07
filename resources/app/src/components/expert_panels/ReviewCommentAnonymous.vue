@@ -25,7 +25,7 @@
             case 'suggestion':
                 return 'blue'
             case 'internal comment':
-                return 'gray' 
+                return 'gray'
             default:
                 null
                 break;
@@ -36,7 +36,6 @@
     const toggleReplies = async () => {
         if (!showReplyList.value) {
             await replyManager.value.getComments();
-            console.log(replyManager.value.comments)
         }
         showReplyList.value = !showReplyList.value;
     }
@@ -59,8 +58,8 @@
                             </li>
                         </ul>
                         <button class="link text-sm" v-if="comment.comments_count > 0" @click="toggleReplies">
-                            {{showReplyList ? 'Hide' : 'Show'}} 
-                            {{comment.comments_count}} 
+                            {{showReplyList ? 'Hide' : 'Show'}}
+                            {{comment.comments_count}}
                             {{comment.comments_count > 1 ? 'replies' : 'reply'}}
                         </button>
                     </div>

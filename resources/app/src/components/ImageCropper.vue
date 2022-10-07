@@ -19,14 +19,14 @@
                         <li>Resize the cropped region by clicking on the edges or corners of the cropper and dragging.</li>
                         <li>Drag the image outside of the cropper to move.</li>
                         <li>
-                            Use the 
+                            Use the
                             <zoom-in-icon height="12" width="12" class="inline-block" />
                             and
                             <zoom-out-icon height="12" width="12" class="inline-block" />
                             to zoom in and out.
                         </li>
                     </ul>
-                    
+
                     <note class="pl-6 mt-3">The cropper must be entirely on the image so you may need to reduce the cropped are or zoom out to move the image.</note>
                 </template>
                 <icon-question height="14" widht="14" />
@@ -38,9 +38,9 @@
             </div>
             <div>
                 <h4>Preview</h4>
-                <img 
-                    class="border border-gray-700 overflow-hidden drop-shadow" 
-                    style="width: 100px; height: 100px" 
+                <img
+                    class="border border-gray-700 overflow-hidden drop-shadow"
+                    style="width: 100px; height: 100px"
                     ref="previewEl"
                     :src="previewUrl"
                 >
@@ -62,7 +62,7 @@
     const imageEl = ref(null);
     const previewUrl = ref(null);
     const cropperInst = ref(null);
-    
+
     const emitCropped = debounce(() => {
         if (cropperInst.value && cropperInst.value.getCroppedCanvas()) {
             cropperInst.value.getCroppedCanvas().toBlob(blob => {
@@ -105,15 +105,13 @@
     }
 
     const zoomIn = () => {
-        console.log('zoom in')
         cropperInst.value.zoom(0.1);
     }
-    
+
     const zoomOut = () => {
-        console.log('zoom out')
         cropperInst.value.zoom(-0.1);
     }
-    
+
     watch(() => props.imageSrc, (to) => {
         cropperInst.value.replace(to);
         sizeCropper();

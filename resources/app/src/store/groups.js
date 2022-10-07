@@ -168,7 +168,7 @@ export const actions = {
 
     async getMembers ({commit}, group) {
         const members = await api.get(`${baseUrl}/${group.uuid}/members`)
-                         .then(response => response.data.data);
+                            .then(response => response.data.data);
 
         members.forEach(member => {
             commit('addMemberToGroup', member);
@@ -185,10 +185,10 @@ export const actions = {
             ...data
         };
         return await api.post(url, memberData)
-        .then(response => {
-            commit('addMemberToGroup', response.data.data);
-            return response.data;
-        });
+            .then(response => {
+                commit('addMemberToGroup', response.data.data);
+                return response.data;
+            });
     },
 
     async memberUpdate ( {commit}, {groupUuid, memberId, data}) {

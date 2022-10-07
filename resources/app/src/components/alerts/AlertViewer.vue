@@ -1,5 +1,5 @@
 <template>
-    <div class="fixed right-4 top-8 w-64 z-50">
+    <div class="fixed right-4 top-8 w-64" style="z-index: 100">
       <ul>
         <transition-group name="slide-fade" tag="li">
           <alert v-for="alert in $store.state.alerts.alerts" :key="alert.uuid" :alert="alert"></alert>

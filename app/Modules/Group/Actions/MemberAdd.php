@@ -28,7 +28,7 @@ class MemberAdd
     public function __construct(private MemberAssignRole $assignRoleAction)
     {
     }
-    
+
 
     public function handle(Group $group, Person $person, ?array $data = []): GroupMember
     {
@@ -59,7 +59,7 @@ class MemberAdd
             $member = $this->assignRoleAction->handle($member, $roles);
         }
 
-        $member->load('cois');
+        $member->load('cois', 'person', 'group');
 
         return new MemberResource($member);
     }
@@ -81,7 +81,7 @@ class MemberAdd
         return $this;
     }
 
- 
+
     public function rules(): array
     {
         return [

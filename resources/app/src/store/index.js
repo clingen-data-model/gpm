@@ -113,7 +113,6 @@ const store = createStore({
                 try {
                     await axios.get('/api/current-user')
                         .then(response => {
-                            console.log(response.data.data)
                             commit('setCurrentUser', response.data.data)
                         })
                         dispatch('getSystemInfo');
