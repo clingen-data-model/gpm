@@ -88,7 +88,7 @@
                         </div>
                     </transition>
                 </div>
-                <collapsible class="border-t mt-4 pt-2">
+                <collapsible class="border-t mt-4 pt-2 mb-2">
                     <template v-slot:title>
                         <h3 class="flex justify-between w-full items-center">
                             Group Permissions
@@ -134,12 +134,28 @@
                     ></member-suggestions>
                 </div>
             </transition>
+
         </div>
-        <button-row
-            @submit="save"
-            @cancel="cancel"
-            submit-text="Save"
-        ></button-row>
+        <div>
+            <!-- <div class="border-t-2 p-2 mt-4 bg-gray-100" v-if="!newMember.id">
+                <label class="text-xs">
+                    Add another member:
+                    &nbsp;
+                    <label><input type="radio" v-model="addAnother" :value="true">&nbsp;Yes</label>
+                    <label><input type="radio" v-model="addAnother" :value="false">&nbsp;No</label>
+                </label>
+            </div> -->
+            <button-row
+                @submit="saveAndExit"
+                @cancel="cancel"
+                submit-text="Save"
+                style="margin-top: 0"
+            >
+                <template v-slot:extra-buttons>
+                    <button class="btn blue" @click="saveAndEditProfile" v-if="!newMember.id">Save and edit profle</button>
+                </template>
+            </button-row>
+        </div>
     </div>
 
     <teleport to='body'>
@@ -206,7 +222,8 @@ export default {
             errors: {},
             suggestedPeople: [],
             legendValues: [1,2],
-            showProfileForm: false
+            showProfileForm: false,
+            addAnother: false
         }
     },
     computed: {
@@ -294,21 +311,42 @@ export default {
             this.clearForm();
             this.$emit('canceled');
         },
+        async saveAndExit () {
+            await this.save();
+            this.clearForm();
+            this.suggestedPeople = [];
+            if (!this.addAnother) {
+                this.$emit('saved');
+            }
+            if (this.newMember.id) {
+                this.$router.replace({name: 'AddMember'})
+            }
+        },
+        async saveAndEditProfile () {
+            const groupMember = await this.save();
+            this.newMember = new GroupMember(groupMember);
+            this.showProfileForm = true;
+        },
         async save () {
             try {
                 if (!this.newMember.isPersisted()) {
                     if (!this.newMember.person.isPersisted()) {
-                        await this.inviteNewMember(this.group, this.newMember);
+                        const groupMember = await this.inviteNewMember(this.group, this.newMember);
+                        this.$store.commit('pushSuccess', `${groupMember.person.name} added to ${groupMember.group.name}`);
+                        return groupMember;
+
                     }
                     if (this.newMember.person.isPersisted()) {
-                        await this.addPersonAsMember(this.group, this.newMember);
+                        const groupMember = await this.addPersonAsMember(this.group, this.newMember);
+                        this.$store.commit('pushSuccess', `${groupMember.person.name} added to ${groupMember.group.name}`);
+                        return groupMember;
                     }
                 }
                 if (this.newMember.isPersisted()) {
-                    await this.updateExistingMember(this.group, this.newMember);
+                    const groupMember = await this.updateExistingMember(this.group, this.newMember);
+                    this.$store.commit('pushSuccess', `${groupMember.person.name} added to ${groupMember.group.name}`);
+                    return groupMember;
                 }
-                this.clearForm();
-                this.$emit('saved');
             } catch (error) {
                 if (isValidationError(error)) {
                     this.errors = error.response.data.errors
@@ -340,6 +378,8 @@ export default {
                     permissionIds: member.permissions.map(p => p.id)
                 });
             }
+
+            return response.data;
         },
         async addPersonAsMember(group, member) {
             const data = {
@@ -355,6 +395,7 @@ export default {
                 }
             };
             const memberData = await this.$store.dispatch('groups/memberAdd', data);
+
             if (member.permissions.length > 0) {
                 await this.$store.dispatch('groups/memberGrantPermission', {
                     uuid: group.uuid,
@@ -362,10 +403,12 @@ export default {
                     permissionIds: member.permissions.map(p => p.id)
                 });
             }
+
+            return memberData;
         },
 
         async updateExistingMember(group, member) {
-            await this.$store.dispatch(
+            const groupMember = await this.$store.dispatch(
                 'groups/memberUpdate',
                 {
                     groupUuid: group.uuid,
@@ -378,10 +421,12 @@ export default {
                         training_level_2: this.newMember.training_level_2,
                     }
                 }
-            )
+            ).then(rsp => rsp.data);
 
             await this.$store.dispatch('groups/memberSyncRoles', {group, member});
             await this.syncPermissions(group, member);
+
+            return groupMember;
         },
 
         async syncPermissions(group, member) {
