@@ -6,8 +6,12 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\Comment;
 use Laravel\Sanctum\Sanctum;
+use App\Modules\Group\Models\Submission;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Modules\Group\Notifications\CommentActivityNotification;
+use Tests\Feature\End2End\Comments\TestsCommentActivityNotificationSent;
 
 class CommentDeleteTest extends CommentTest
 {
@@ -62,13 +66,62 @@ class CommentDeleteTest extends CommentTest
             'deleted_at' => null
         ]);
     }
-    
-    
-    
+
+    /**
+     * @test
+     */
+    public function assertNotificationSent()
+    {
+        $submission = Submission::factory()->create([
+            'group_id' => $this->expertPanel->group_id,
+            'submission_status_id' => config('submissions.statuses.under-chair-review.id'),
+            'sent_to_chairs_at' => Carbon::now()
+        ]);
+
+        $approver = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
+
+        Notification::fake();
+        $response = $this->makeRequest();
+
+        Notification::assertSentTo(
+            $approver->person,
+            CommentActivityNotification::class,
+            function ($notification) {
+                return true
+                    && $notification->group->id = $this->expertPanel->group_id
+                    && $notification->comment->id = $this->comment->id
+                    && $notification->event = 'deleted';
+            }
+        );
+    }
+
+
+    /**
+     * @test
+     */
+    public function assertNotificationNotSent()
+    {
+        $submission = Submission::factory()->create([
+            'group_id' => $this->expertPanel->group_id,
+            'submission_status_id' => config('submissions.statuses.pending.id'),
+        ]);
+
+        $approver = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
+
+        Notification::fake();
+        $response = $this->makeRequest();
+
+        Notification::assertNotSentTo(
+            $approver->person,
+            CommentActivityNotification::class
+        );
+    }
+
+
     private function makeRequest()
     {
         return $this->json('DELETE', '/api/comments/'.$this->comment->id);
     }
-    
-    
+
+
 }
