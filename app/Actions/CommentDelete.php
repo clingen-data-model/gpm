@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Events\CommentDeleted;
 use App\Models\Comment;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
@@ -12,7 +13,9 @@ class CommentDelete
 
     public function handle(Comment $comment)
     {
+        $cmt = $comment;
         $comment->delete();
+        event(new CommentDeleted($cmt));
     }
 
     public function asController(ActionRequest $request, Comment $comment)
