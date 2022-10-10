@@ -2,6 +2,7 @@
 
 namespace App\Modules\Group\Actions;
 
+use App\Modules\Group\Events\JudgementUpdated;
 use Illuminate\Validation\Rule;
 use App\Modules\Group\Models\Group;
 use Illuminate\Validation\Validator;
@@ -20,6 +21,9 @@ class JudgementUpdate
             'decision' => $decision,
             'notes' => $notes
         ]);
+
+        event(new JudgementUpdated($judgement));
+
         return $judgement;
     }
 

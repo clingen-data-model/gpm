@@ -2,6 +2,7 @@
 
 namespace App\Modules\Group\Events;
 
+use App\Events\Event;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use App\Modules\Group\Models\Judgement;
@@ -11,7 +12,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class JudgementEvent
+class JudgementEvent implements Event
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

@@ -7,6 +7,7 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Validation\Validator;
 use Lorisleiva\Actions\ActionRequest;
 use App\Modules\Group\Models\Judgement;
+use App\Modules\Group\Events\JudgementDeleted;
 use Illuminate\Validation\ValidationException;
     use Lorisleiva\Actions\Concerns\AsController;
 
@@ -16,7 +17,9 @@ class JudgementDelete
 
     public function handle(ActionRequest $request, Group $group, $judgementId): void
     {
-        Judgement::findOrFail($judgementId)->delete();
+        $judgement = Judgement::findOrFail($judgementId);
+        $judgement->delete();
+        event(new JudgementDeleted($judgement));
     }
 
     public function authorize(ActionRequest $request):bool

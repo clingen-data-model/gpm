@@ -2,11 +2,13 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use App\Notifications\JudgementActivityNotification;
+use App\Modules\Group\Notifications\JudgementActivityNotification as NotificationsJudgementActivityNotification;
+use Laravel\Sanctum\Sanctum;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Support\Facades\Notification;
+use App\Notifications\JudgementActivityNotification;
 
-class JudgementCreateTest extends JudgementTest
+class CreateJudgementTest extends JudgementTest
 {
 
     /**
@@ -94,13 +96,23 @@ class JudgementCreateTest extends JudgementTest
         $otherApprover = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
         $commenter = $this->setupUserWithPerson(permissions: ['ep-applications-comment']);
 
-        Notification::fake();
+        // Not using Notification:fake b/c it's not registering notifications being sent,
+        // but they're getting added the database without that. 🤷‍♀️
         $this->makeRequest()
             ->assertStatus(201);
 
-        Notification::assertNotSentTo($this->user, JudgementActivityNotification::class);
-        Notification::assertSentTo($otherApprover, JudgementActivityNotification::class);
-        Notification::assertSentTo($commenter, JudgementActivityNotification::class);
+        $this->assertDatabaseHas('notifications', [
+            'notifiable_id' => $otherApprover->person->id,
+            'type' => NotificationsJudgementActivityNotification::class
+        ]);
+        $this->assertDatabaseHas('notifications', [
+            'notifiable_id' => $commenter->person->id,
+            'type' => NotificationsJudgementActivityNotification::class
+        ]);
+        $this->assertDatabaseMissing('notifications', [
+            'notifiable_id' => $this->user->person->id,
+            'type' => NotificationsJudgementActivityNotification::class
+        ]);
     }
 
 

@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Event;
 use App\Actions\CommentNotifyAboutEvent;
 use App\Modules\User\Events\UserLoggedIn;
 use App\Modules\User\Events\UserLoggedOut;
+use App\Modules\Group\Events\JudgementCreated;
+use App\Modules\Group\Events\JudgementDeleted;
+use App\Modules\Group\Events\JudgementUpdated;
+use App\Modules\Group\Actions\JudgementNotifyAboutEvent;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -31,7 +35,11 @@ class EventServiceProvider extends ServiceProvider
         CommentCreated::class => [CommentNotifyAboutEvent::class],
         CommentUpdated::class => [CommentNotifyAboutEvent::class],
         CommentDeleted::class => [CommentNotifyAboutEvent::class],
-        CommentResolved::class => [CommentNotifyAboutEvent::class]
+        CommentResolved::class => [CommentNotifyAboutEvent::class],
+
+        JudgementCreated::class => [JudgementNotifyAboutEvent::class],
+        JudgementUpdated::class => [JudgementNotifyAboutEvent::class],
+        JudgementDeleted::class => [JudgementNotifyAboutEvent::class],
     ];
 
     /**

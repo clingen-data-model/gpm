@@ -4,7 +4,9 @@ namespace Tests\Feature\End2End\Groups;
 
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Testing\TestResponse;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Modules\Group\Notifications\JudgementActivityNotification;
 
 class JudgementUpdateTest extends JudgementTest
 {
@@ -67,16 +69,22 @@ class JudgementUpdateTest extends JudgementTest
     }
 
     /**
-     * A basic feature test example.
-     *
-     * @return void
+     * @test
      */
-    public function test_example()
+    public function notifies_other_notifiables_when_judgement_updated()
     {
-        $response = $this->get('/');
+        $otherApprover = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
+        $commenter = $this->setupUserWithPerson(permissions: ['ep-applications-comment']);
 
-        $response->assertStatus(200);
+        Notification::fake();
+        $this->makeRequest()
+            ->assertStatus(200);
+
+        Notification::assertNotSentTo($this->user->person, JudgementActivityNotification::class);
+        Notification::assertSentTo($otherApprover->person, JudgementActivityNotification::class);
+        Notification::assertSentTo($commenter->person, JudgementActivityNotification::class);
     }
+
 
     private function makeRequest($data = null): TestResponse
     {

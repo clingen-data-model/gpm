@@ -9,7 +9,11 @@ class SubmissionNotifiablesGet
 {
     public function handle(Collection $except): Collection
     {
-        return User::permission(['ep-applications-approve', 'ep-applications-comment'])
+        return User::query()
+                ->whereHas('permissions', function ($q) {
+                    $q->whereIn('name', ['ep-applications-approve', 'ep-applications-comment']);
+                })
+                //->permission(['ep-applications-approve', 'ep-applications-comment'])
                 ->with('person')
                 ->whereDoesntHave('person', function($q) use ($except) {
                     $q->whereIn('id', $except);
