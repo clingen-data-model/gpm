@@ -10,7 +10,7 @@ use App\Modules\Group\Models\Judgement;
 use Illuminate\Validation\ValidationException;
     use Lorisleiva\Actions\Concerns\AsController;
 
-class ApplicationJudgementUpdate
+class JudgementUpdate
 {
     use AsController;
 
@@ -26,7 +26,7 @@ class ApplicationJudgementUpdate
     public function asController(ActionRequest $request, Group $group, Judgement $judgement)
     {
         return $this->handle(
-            judgement: Judgement::find($request->id), 
+            judgement: Judgement::find($request->id),
             decision: $request->decision,
             notes: $request->notes
         );
@@ -49,7 +49,7 @@ class ApplicationJudgementUpdate
     public function authorize(ActionRequest $request):bool
     {
         $judgement = Judgement::find($request->id);
-        return $request->user()->hasPermissionTo('ep-applications-manage') 
+        return $request->user()->hasPermissionTo('ep-applications-manage')
             || $request->user()->person->id == $judgement->person_id;
     }
 

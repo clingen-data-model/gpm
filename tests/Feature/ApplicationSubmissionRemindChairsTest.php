@@ -14,7 +14,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use App\Modules\Group\Actions\ApplicationSubmitStep;
 use Database\Seeders\NextActionAssigneesTableSeeder;
-use App\Modules\Group\Actions\ApplicationJudgementSubmit;
+use App\Modules\Group\Actions\JudgementCreate;
 use App\Modules\Group\Actions\ApplicationSendToChairs;
 use App\Modules\Group\Actions\ApplicationSubmissionRemindChairs;
 use App\Modules\Group\Notifications\ApprovalReminderNotification;
@@ -33,7 +33,7 @@ class ApplicationSubmissionRemindChairsTest extends TestCase
 
         $this->submit = app()->make(ApplicationSubmitStep::class);
         $this->sendToChairs = app()->make(ApplicationSendToChairs::class);
-        $this->makeJudgement = app()->make(ApplicationJudgementSubmit::class);
+        $this->makeJudgement = app()->make(JudgementCreate::class);
         $this->remindChairs = app()->make(ApplicationSubmissionRemindChairs::class);
 
         $epAndSub = $this->setupExpertPanelAndSubmission();

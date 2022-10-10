@@ -10,7 +10,7 @@ use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
 use App\Modules\Group\Events\ApplicationJudgementCreated;
 
-class ApplicationJudgementSubmit
+class JudgementCreate
 {
     use AsController;
 

@@ -10,7 +10,7 @@ use App\Modules\Group\Models\Judgement;
 use Illuminate\Validation\ValidationException;
     use Lorisleiva\Actions\Concerns\AsController;
 
-class ApplicationJudgementDelete
+class JudgementDelete
 {
     use AsController;
 
@@ -22,7 +22,7 @@ class ApplicationJudgementDelete
     public function authorize(ActionRequest $request):bool
     {
         $judgement = Judgement::findOrFail($request->id);
-        return $request->user()->hasPermissionTo('ep-applications-manage') 
+        return $request->user()->hasPermissionTo('ep-applications-manage')
             || $request->user()->person->id == $judgement->person_id;
     }
 
