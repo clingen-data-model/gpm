@@ -2,9 +2,11 @@
 
 namespace Tests\Feature\End2End\Groups;
 
+use App\Notifications\JudgementActivityNotification;
 use Illuminate\Testing\TestResponse;
+use Illuminate\Support\Facades\Notification;
 
-class JudgementSubmissionTest extends JudgementTest
+class JudgementCreateTest extends JudgementTest
 {
 
     /**
@@ -83,6 +85,24 @@ class JudgementSubmissionTest extends JudgementTest
             description: $this->user->person->name.' made a decision on the submission: request-revisions'
         );
     }
+
+    /**
+     * @test
+     */
+    public function notifies_other_notifiables_when_judgement_created()
+    {
+        $otherApprover = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
+        $commenter = $this->setupUserWithPerson(permissions: ['ep-applications-comment']);
+
+        Notification::fake();
+        $this->makeRequest()
+            ->assertStatus(201);
+
+        Notification::assertNotSentTo($this->user, JudgementActivityNotification::class);
+        Notification::assertSentTo($otherApprover, JudgementActivityNotification::class);
+        Notification::assertSentTo($commenter, JudgementActivityNotification::class);
+    }
+
 
 
     private function makeRequest($data = null): TestResponse
