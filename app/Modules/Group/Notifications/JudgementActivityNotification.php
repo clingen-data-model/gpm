@@ -55,6 +55,8 @@ class JudgementActivityNotification extends Notification implements DigestibleNo
      */
     public function toArray($notifiable)
     {
+        $this->judgement->load('person');
+        $this->group->display_name = $this->group->getDisplayNameAttribute();
         return [
             'group' => $this->group,
             'judgement' => $this->judgement,
@@ -74,7 +76,7 @@ class JudgementActivityNotification extends Notification implements DigestibleNo
      */
     public static function filterInvalid(Collection $collection):Collection
     {
-        $includesDeleted = $collection->pluck('data.event')->includes('deleted');
+        $includesDeleted = $collection->pluck('data.event')->contains('deleted');
         if ($includesDeleted) {
             return collect();
         }
@@ -89,6 +91,6 @@ class JudgementActivityNotification extends Notification implements DigestibleNo
 
     static public function getDigestTemplate(): string
     {
-        return 'email.digest.submission_judgement_activity';
+        return 'email.digest.judgement_activity';
     }
 }

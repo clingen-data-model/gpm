@@ -46,6 +46,8 @@ class ApprovalReminder extends Notification implements DigestibleNotificationInt
      */
     public function toArray($notifiable)
     {
+        $this->group->load('expertPanel');
+        $this->group->display_name = $this->group->displayName;
         return [
             'group' => $this->group,
             'submission' => $this->submission,
@@ -55,7 +57,7 @@ class ApprovalReminder extends Notification implements DigestibleNotificationInt
 
     public static function getUnique(Collection $notifications): Collection
     {
-        return $notifications->unique(fn ($n) => $n->group->id);
+        return $notifications->unique(fn ($n) => $n->data['group']['id']);
     }
 
     public static function filterInvalid(Collection $notifications): Collection
@@ -74,7 +76,7 @@ class ApprovalReminder extends Notification implements DigestibleNotificationInt
 
     public static function getDigestTemplate(): string
     {
-        return 'email.digest.approvalReminder';
+        return 'email.digest.approval_reminder';
     }
 
 

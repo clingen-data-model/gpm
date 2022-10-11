@@ -13,6 +13,12 @@ The EPAM is a Laravel application using MySQL for persistance and Redis as a cac
 
 The app, scheduler, and queue containers all use the same image. The entry point script (found in `.docker/start.sh`) determines the behavior of each container based on the `CONTAINER_ROLE` environment variable.
 
+### Notifications
+Most notifications in the GPM use standard [laravel notifications infrastructure](https://laravel.com/docs/9.x/notifications).  The exception is notifications intended to be aggregated into digest emails.
+
+#### DigestibleNotification
+Digestible notification should implement `App\Notifications\ContractsDigestibleNotificationInterface` and be sent via the database.  These notifications will be stored in the database and sent together on a schedule by `App\Actions\SendApprovalDigestNotifications`
+
 ### Follow Actions
 A follow action is an operation that has been serialized and persisted that is waiting to be run when an event of a certain type is fired.
 
@@ -23,6 +29,8 @@ For example, suppose we wanted to assign a system permission to all members of g
 The follower attribute of a FollowAction is an instance of an invokable class that accepts the Event as it's argument:
 ```
 namespace App\Actions
+
+use App\Notifications\Contracts\DigestibleNotificationInterface;
 
 class MyFollowAction implements AsFollowAction
 {

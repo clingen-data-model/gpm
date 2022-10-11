@@ -51,6 +51,8 @@ class CommentActivityNotification extends Notification implements DigestibleNoti
      */
     public function toArray($notifiable)
     {
+        $this->comment->load('creator');
+        $this->group->display_name = $this->group->getDisplayNameAttribute();
         return [
             'group' => $this->group,
             'comment' => $this->comment,
@@ -60,9 +62,11 @@ class CommentActivityNotification extends Notification implements DigestibleNoti
 
     public static function getUnique(Collection $collection):Collection
     {
-        return $collection->unique(function ($notification) {
+        $unique = $collection->unique(function ($notification) {
             return $notification->data['comment']['id'];
         });
+
+        return $unique;
     }
 
     /**
@@ -70,7 +74,7 @@ class CommentActivityNotification extends Notification implements DigestibleNoti
      */
     public static function filterInvalid(Collection $collection):Collection
     {
-        $includesDeleted = $collection->pluck('data.event')->includes('deleted');
+        $includesDeleted = $collection->pluck('data.event')->contains('deleted');
         if ($includesDeleted) {
             return collect();
         }
@@ -80,11 +84,14 @@ class CommentActivityNotification extends Notification implements DigestibleNoti
 
     static public function getValidUnique(Collection $collection): Collection
     {
-        return static::getUnique(static::filterInvalid($collection));
+        $valid = static::filterInvalid($collection);
+        $validUnique = static::getUnique($valid);
+
+        return $validUnique;
     }
 
     static public function getDigestTemplate(): string
     {
-        return 'email.digest.submission_comment_activity';
+        return 'email.digest.comment_activity';
     }
 }
