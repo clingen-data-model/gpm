@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 
-class RolesAndPermissionsUpdate
+class UserRolesAndPermissionsUpdate
 {
     use AsController;
 

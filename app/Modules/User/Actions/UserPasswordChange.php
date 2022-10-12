@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Lorisleiva\Actions\Concerns\AsObject;
 use Lorisleiva\Actions\Concerns\AsCommand;
 
-class PasswordChange
+class UserPasswordChange
 {
     use AsObject;
     use AsCommand;
@@ -45,7 +45,7 @@ class PasswordChange
             $command->info('Random password generated for user '.$user->email);
             return;
         }
-        
+
         $newPassword = $command->secret('New password');
         if (empty($newPassword)) {
             $command->error('You must enter a password.');
