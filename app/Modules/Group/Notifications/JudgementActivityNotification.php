@@ -11,13 +11,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use App\Notifications\Contracts\DigestibleNotificationInterface;
 
-enum JudgementEvents
-{
-    case created;
-    case updated;
-    case deleted;
-}
-
 class JudgementActivityNotification extends Notification implements DigestibleNotificationInterface
 {
     use Queueable;

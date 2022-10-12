@@ -11,14 +11,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use App\Notifications\Contracts\DigestibleNotificationInterface;
 
-Enum CommentEvent
-{
-    case created;
-    case updated;
-    case deleted;
-    case resolved;
-}
-
 class CommentActivityNotification extends Notification implements DigestibleNotificationInterface
 {
     use Queueable;
