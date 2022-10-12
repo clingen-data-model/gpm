@@ -2,9 +2,13 @@
 
 namespace Tests\Feature\End2End\Groups;
 
+use App\Modules\Group\Notifications\JudgementActivityNotification as NotificationsJudgementActivityNotification;
+use Laravel\Sanctum\Sanctum;
 use Illuminate\Testing\TestResponse;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\JudgementActivityNotification;
 
-class JudgementSubmissionTest extends JudgementTest
+class CreateJudgementTest extends JudgementTest
 {
 
     /**
@@ -83,6 +87,34 @@ class JudgementSubmissionTest extends JudgementTest
             description: $this->user->person->name.' made a decision on the submission: request-revisions'
         );
     }
+
+    /**
+     * @test
+     */
+    public function notifies_other_notifiables_when_judgement_created()
+    {
+        $otherApprover = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
+        $commenter = $this->setupUserWithPerson(permissions: ['ep-applications-comment']);
+
+        // Not using Notification:fake b/c it's not registering notifications being sent,
+        // but they're getting added the database without that. 🤷‍♀️
+        $this->makeRequest()
+            ->assertStatus(201);
+
+        $this->assertDatabaseHas('notifications', [
+            'notifiable_id' => $otherApprover->person->id,
+            'type' => NotificationsJudgementActivityNotification::class
+        ]);
+        $this->assertDatabaseHas('notifications', [
+            'notifiable_id' => $commenter->person->id,
+            'type' => NotificationsJudgementActivityNotification::class
+        ]);
+        $this->assertDatabaseMissing('notifications', [
+            'notifiable_id' => $this->user->person->id,
+            'type' => NotificationsJudgementActivityNotification::class
+        ]);
+    }
+
 
 
     private function makeRequest($data = null): TestResponse

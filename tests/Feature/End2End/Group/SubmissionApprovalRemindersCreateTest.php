@@ -1,40 +1,44 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\End2End\Group;
 
+use Carbon\Carbon;
 use Tests\TestCase;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
 use App\Modules\Group\Models\Judgement;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
+use App\Modules\Group\Actions\JudgementCreate;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Database\Seeders\NextActionTypesTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use App\Modules\Group\Actions\ApplicationSubmitStep;
 use Database\Seeders\NextActionAssigneesTableSeeder;
-use App\Modules\Group\Actions\ApplicationJudgementSubmit;
+use App\Modules\Group\Notifications\ApprovalReminder;
 use App\Modules\Group\Actions\ApplicationSendToChairs;
-use App\Modules\Group\Actions\ApplicationSubmissionRemindChairs;
-use App\Modules\Group\Notifications\ApprovalReminderNotification;
+use App\Modules\Group\Actions\SubmissionApprovalRemindersCreate;
+use App\Modules\Group\Actions\SubmissionApprovalRemeindersCreate;
 
-class ApplicationSubmissionRemindChairsTest extends TestCase
+class SubmissionApprovalRemindersCreateTest extends TestCase
 {
     use RefreshDatabase;
 
     public function setup():void
     {
         parent::setup();
+
+        // Seed data necessary for test and side-effects.
         $this->setupForGroupTest();
         $this->seed(SubmissionTypeAndStatusSeeder::class);
         $this->seed(NextActionAssigneesTableSeeder::class);
         $this->seed(NextActionTypesTableSeeder::class);
 
+        // Actions needed to setup and run the test.
         $this->submit = app()->make(ApplicationSubmitStep::class);
         $this->sendToChairs = app()->make(ApplicationSendToChairs::class);
-        $this->makeJudgement = app()->make(ApplicationJudgementSubmit::class);
-        $this->remindChairs = app()->make(ApplicationSubmissionRemindChairs::class);
+        $this->makeJudgement = app()->make(JudgementCreate::class);
 
         $epAndSub = $this->setupExpertPanelAndSubmission();
         $this->expertPanel = $epAndSub['expertPanel'];
@@ -42,15 +46,16 @@ class ApplicationSubmissionRemindChairsTest extends TestCase
 
         $this->approver1 = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
         $this->approver2 = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
-        $this->user = $this->setupUserWithPerson(permissions: ['ep-appications-manage']);
+        $this->user = $this->setupUserWithPerson(permissions: ['ep-applications-manage']);
 
         $this->sendToChairs->handle($this->expertPanel->group);
     }
 
+
     /**
      * @test
      */
-    public function sends_email_to_approvers_who_have_not_made_a_judgement()
+    public function creates_ApprovalReminderNotification_only_for_truant_approvers()
     {
         $epAndSub = $this->setupExpertPanelAndSubmission();
         $ep2 = $epAndSub['expertPanel'];
@@ -62,19 +67,24 @@ class ApplicationSubmissionRemindChairsTest extends TestCase
 
         Notification::fake();
 
-        $this->remindChairs->handle();
+        Carbon::setTestNow('monday at 6:10 am');
 
-        Notification::assertNotSentTo($this->approver1->person, ApprovalReminderNotification::class);
-        Notification::assertNotSentTo($this->user->person, ApprovalReminderNotification::class);
+        $this->artisan('schedule:run');
+
+        Notification::assertNotSentTo($this->approver1->person, ApprovalReminder::class);
+        Notification::assertNotSentTo($this->user->person, ApprovalReminder::class);
         Notification::assertSentTo(
             $this->approver2->person,
-            ApprovalReminderNotification::class,
+            ApprovalReminder::class,
             function ($notification) use ($submission2) {
-                return $notification->waitingSubmissions->count() == 2
-                 && $notification->waitingSubmissions->pluck('id')->toArray() == [$this->submission->id, $submission2->id];
+                return $notification->group->id == $submission2->group_id
+                    && $notification->submission->id == $submission2->id
+                    && $notification->approver->id == $this->approver2->person->id;
             }
         );
     }
+
+
 
     protected function setupExpertPanelAndSubmission($expertPanel = null, $submitter = null): array
     {
@@ -95,6 +105,7 @@ class ApplicationSubmissionRemindChairsTest extends TestCase
         );
 
     }
+
 
 
 }

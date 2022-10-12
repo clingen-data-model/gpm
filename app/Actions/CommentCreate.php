@@ -2,8 +2,10 @@
 
 namespace App\Actions;
 use App\Models\Comment;
+use App\Events\CommentCreated;
 use Illuminate\Support\Facades\Auth;
 use Lorisleiva\Actions\ActionRequest;
+use Illuminate\Support\Facades\Notification;
 use Lorisleiva\Actions\Concerns\AsController;
 
 class CommentCreate
@@ -14,7 +16,12 @@ class CommentCreate
     {
         $data['creator_type'] = get_class(Auth::user()->person);
         $data['creator_id'] = Auth::user()->person->id;
-        return Comment::create($data);
+
+        $comment = Comment::create($data);
+
+        event(new CommentCreated($comment));
+
+        return $comment;
     }
 
     public function asController(ActionRequest $request)

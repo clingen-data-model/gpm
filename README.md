@@ -13,6 +13,23 @@ The EPAM is a Laravel application using MySQL for persistance and Redis as a cac
 
 The app, scheduler, and queue containers all use the same image. The entry point script (found in `.docker/start.sh`) determines the behavior of each container based on the `CONTAINER_ROLE` environment variable.
 
+### Actions
+The GPM makes heavy use of "actions" and in particular the [laravel-actions](https://github.com/lorisleiva/laravel-actions) package.  In this context, and action can be defined as class that performs a task.  Actions can take advantage of Laravel's dependency injection to compose an action of other actions.
+
+The laravel-actions package adds decorator traits that allow you use an action as a controller, event listener, queued job, or artisan command.
+
+Actions are used as controllers for nearly all write operations in the GPM as well as some read operations.
+
+By convention, actions in this code-base are named NounVerb to support easy location of the action you're looking for.
+
+Actions are currently found in `app/Actions` and in the `app/Modules/ModuleName/Actions`.
+
+### Notifications
+Most notifications in the GPM use standard [laravel notifications infrastructure](https://laravel.com/docs/9.x/notifications).  The exception is notifications intended to be aggregated into digest emails. 
+
+#### DigestibleNotification
+Digestible notification should implement `App\Notifications\ContractsDigestibleNotificationInterface` and be sent via the database.  These notifications will be stored in the database and sent together on a schedule.  Currently all digestible notifications are related to EP application submissions and are sent together by `App\Actions\SendSubmissionDigestNotifications`.  For details on these notifications see the [Submission Notifications docs](/documentation/submission-notifications.md).
+
 ### Follow Actions
 A follow action is an operation that has been serialized and persisted that is waiting to be run when an event of a certain type is fired.
 
@@ -23,6 +40,8 @@ For example, suppose we wanted to assign a system permission to all members of g
 The follower attribute of a FollowAction is an instance of an invokable class that accepts the Event as it's argument:
 ```
 namespace App\Actions
+
+use App\Notifications\Contracts\DigestibleNotificationInterface;
 
 class MyFollowAction implements AsFollowAction
 {

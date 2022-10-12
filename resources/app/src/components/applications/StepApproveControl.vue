@@ -26,8 +26,8 @@
     };
 
     const handleApproved = () => {
-            this.hideApproveForm();
-            this.$emit('stepApproved');
+            hideApproveForm();
+            emits('stepApproved');
     };
 
     const hideApproveForm = () => {

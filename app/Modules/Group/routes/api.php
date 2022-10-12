@@ -39,9 +39,9 @@ use App\Modules\Group\Actions\ApplicationSaveChanges;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Group\Actions\MemberRevokePermission;
 use App\Modules\Group\Actions\ScopeDescriptionUpdate;
-use App\Modules\Group\Actions\ApplicationJudgementDelete;
-use App\Modules\Group\Actions\ApplicationJudgementSubmit;
-use App\Modules\Group\Actions\ApplicationJudgementUpdate;
+use App\Modules\Group\Actions\JudgementDelete;
+use App\Modules\Group\Actions\JudgementCreate;
+use App\Modules\Group\Actions\JudgementUpdate;
 use App\Modules\Group\Actions\AttestationReanalysisStore;
 use App\Modules\Group\Actions\ApplicationSubmissionReject;
 use App\Modules\Group\Actions\MembershipDescriptionUpdate;
@@ -89,9 +89,9 @@ Route::group([
             Route::get('/latest-submission', [GroupSubmissionsController::class, 'latestSubmission']);
 
             Route::group(['prefix' => '/judgements'], function () {
-                Route::post('/', ApplicationJudgementSubmit::class);
-                Route::put('/{id}', ApplicationJudgementUpdate::class);
-                Route::delete('/{id}', ApplicationJudgementDelete::class);
+                Route::post('/', JudgementCreate::class);
+                Route::put('/{id}', JudgementUpdate::class);
+                Route::delete('/{id}', JudgementDelete::class);
             });
 
         });

@@ -2,18 +2,17 @@
 
 namespace App\Modules\Group\Actions;
 
-use App\Modules\Group\Models\Submission;
-use App\Modules\Group\Notifications\ApprovalReminderNotification;
 use App\Modules\User\Models\User;
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Notification;
+use App\Modules\Group\Models\Submission;
 use Lorisleiva\Actions\Concerns\AsCommand;
+use Illuminate\Support\Facades\Notification;
+use App\Modules\Group\Notifications\ApprovalReminder;
 
-class ApplicationSubmissionRemindChairs
+class SubmissionApprovalRemindersCreate
 {
     use AsCommand;
 
-    public $commandSignature = 'submissions:remind-approvers';
+    public $commandSignature = 'submissions:create-approval-reminders';
 
     public function handle()
     {
@@ -24,23 +23,19 @@ class ApplicationSubmissionRemindChairs
 
         $approvers->each(function ($person) {
             $query = Submission::sentToChair()
+                                ->with('group')
                                 ->whereDoesntHave(
                                     'judgements',
                                     fn ($q) => $q->where('person_id', $person->id)
                                 );
 
-            $waitingSubmissions = $query->get();
-
-            if ($waitingSubmissions->count() > 0) {
-                Notification::send($person, new ApprovalReminderNotification($waitingSubmissions));
-            }
+            $query->get()->each(function ($submission) use ($person) {
+                Notification::send($person, new ApprovalReminder($submission->group, $submission, $person));
+            });
         });
 
 
+
     }
 
-    public function asCommand(Command $command)
-    {
-        $this->handle();
-    }
 }

@@ -5,7 +5,6 @@ use Illuminate\Console\Command;
 use Lorisleiva\Actions\ActionRequest;
 use App\Modules\ExpertPanel\Models\Gene;
 use App\Actions\Utils\TransformArrayForCsv;
-use Lorisleiva\Actions\Concerns\AsListener;
 use Lorisleiva\Actions\Concerns\AsController;
 
 class ReportVcepGenesMake
@@ -39,7 +38,7 @@ class ReportVcepGenesMake
     {
         dump(collect($this->handle()));
     }
-    
+
 
     private function pullData(): array
     {

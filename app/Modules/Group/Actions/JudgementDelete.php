@@ -7,22 +7,25 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Validation\Validator;
 use Lorisleiva\Actions\ActionRequest;
 use App\Modules\Group\Models\Judgement;
+use App\Modules\Group\Events\JudgementDeleted;
 use Illuminate\Validation\ValidationException;
     use Lorisleiva\Actions\Concerns\AsController;
 
-class ApplicationJudgementDelete
+class JudgementDelete
 {
     use AsController;
 
     public function handle(ActionRequest $request, Group $group, $judgementId): void
     {
-        Judgement::findOrFail($judgementId)->delete();
+        $judgement = Judgement::findOrFail($judgementId);
+        $judgement->delete();
+        event(new JudgementDeleted($judgement));
     }
 
     public function authorize(ActionRequest $request):bool
     {
         $judgement = Judgement::findOrFail($request->id);
-        return $request->user()->hasPermissionTo('ep-applications-manage') 
+        return $request->user()->hasPermissionTo('ep-applications-manage')
             || $request->user()->person->id == $judgement->person_id;
     }
 

@@ -7,6 +7,7 @@ use Laravel\Sanctum\Sanctum;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Modules\Group\Notifications\JudgementActivityNotification;
 
 class JudgementDeleteTest extends JudgementTest
 {
@@ -22,7 +23,7 @@ class JudgementDeleteTest extends JudgementTest
     public function person_other_than_approver_cannot_delete_anothers_judgment()
     {
         $this->otherUser = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
-        
+
         Sanctum::actingAs($this->otherUser);
         $this->makeRequest()
             ->assertStatus(403);
@@ -56,12 +57,39 @@ class JudgementDeleteTest extends JudgementTest
             'id' => $this->judgement->id,
         ]);
     }
-    
+
+    /**
+     * @test
+     */
+    public function notifies_other_notifiables_when_judgement_deleted()
+    {
+        $otherApprover = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
+        $commenter = $this->setupUserWithPerson(permissions: ['ep-applications-comment']);
+
+        // Not using Notification:fake b/c it's not registering notifications being sent,
+        // but they're getting added the database without that. 🤷‍♀️
+        $this->makeRequest()
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('notifications', [
+            'notifiable_id' => $otherApprover->person->id,
+            'type' =>JudgementActivityNotification::class
+        ]);
+        $this->assertDatabaseHas('notifications', [
+            'notifiable_id' => $commenter->person->id,
+            'type' => JudgementActivityNotification::class
+        ]);
+        $this->assertDatabaseMissing('notifications', [
+            'notifiable_id' => $this->user->person->id,
+            'type' => JudgementActivityNotification::class
+        ]);
+    }
+
 
     private function makeRequest($data = null): TestResponse
     {
         $url = '/api/groups/'.$this->expertPanel->group->uuid.'/application/judgements/'.$this->judgement->id;
         return $this->json('delete', $url);
     }
-    
+
 }

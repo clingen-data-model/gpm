@@ -6,11 +6,13 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Validation\Validator;
 use App\Modules\Person\Models\Person;
 use Lorisleiva\Actions\ActionRequest;
+use App\Modules\Group\Events\JudgementEvent;
 use Lorisleiva\Actions\Concerns\AsController;
+use App\Modules\Group\Events\JudgementCreated;
 use Illuminate\Validation\ValidationException;
 use App\Modules\Group\Events\ApplicationJudgementCreated;
 
-class ApplicationJudgementSubmit
+class JudgementCreate
 {
     use AsController;
 
@@ -23,6 +25,7 @@ class ApplicationJudgementSubmit
         ]);
 
         event(new ApplicationJudgementCreated($judgement));
+        event(new JudgementCreated($judgement));
 
         return $judgement;
     }

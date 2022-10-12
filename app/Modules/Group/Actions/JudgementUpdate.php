@@ -2,6 +2,7 @@
 
 namespace App\Modules\Group\Actions;
 
+use App\Modules\Group\Events\JudgementUpdated;
 use Illuminate\Validation\Rule;
 use App\Modules\Group\Models\Group;
 use Illuminate\Validation\Validator;
@@ -10,7 +11,7 @@ use App\Modules\Group\Models\Judgement;
 use Illuminate\Validation\ValidationException;
     use Lorisleiva\Actions\Concerns\AsController;
 
-class ApplicationJudgementUpdate
+class JudgementUpdate
 {
     use AsController;
 
@@ -20,13 +21,16 @@ class ApplicationJudgementUpdate
             'decision' => $decision,
             'notes' => $notes
         ]);
+
+        event(new JudgementUpdated($judgement));
+
         return $judgement;
     }
 
     public function asController(ActionRequest $request, Group $group, Judgement $judgement)
     {
         return $this->handle(
-            judgement: Judgement::find($request->id), 
+            judgement: Judgement::find($request->id),
             decision: $request->decision,
             notes: $request->notes
         );
@@ -49,7 +53,7 @@ class ApplicationJudgementUpdate
     public function authorize(ActionRequest $request):bool
     {
         $judgement = Judgement::find($request->id);
-        return $request->user()->hasPermissionTo('ep-applications-manage') 
+        return $request->user()->hasPermissionTo('ep-applications-manage')
             || $request->user()->person->id == $judgement->person_id;
     }
 

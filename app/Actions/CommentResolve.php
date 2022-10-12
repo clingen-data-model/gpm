@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Actions;
-use App\Models\Comment;
 use Carbon\Carbon;
+use App\Models\Comment;
+use App\Events\CommentResolved;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 
@@ -18,6 +19,8 @@ class CommentResolve
 
         $comment->resolved_at = Carbon::now();
         $comment->save();
+
+        event(new CommentResolved($comment));
 
         return $comment;
     }
