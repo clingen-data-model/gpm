@@ -209,9 +209,11 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
         return false;
     }
 
-     public function getExpertiseAttribute(): string
+     public function getExpertiseAttribute(): ?string
      {
-         return $this->person->expertises->count() > 0 ? $this->person->expertises->pluck('name')->join(', ') : $this->legacy_expertise;
+         return $this->person->expertises->count() > 0
+            ? $this->person->expertises->pluck('name')->join(', ')
+            : $this->legacy_expertise;
      }
 
 

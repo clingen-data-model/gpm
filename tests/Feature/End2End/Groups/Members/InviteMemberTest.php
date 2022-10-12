@@ -22,7 +22,7 @@ use App\Modules\Group\Notifications\AddedToGroupNotification;
 class InviteMemberTest extends TestCase
 {
     use RefreshDatabase;
-    
+
     public function setup():void
     {
         parent::setup();
@@ -45,7 +45,7 @@ class InviteMemberTest extends TestCase
         $this->json('POST', $this->url, [])
             ->assertStatus(401);
     }
-    
+
 
     /**
      * @test
@@ -57,7 +57,7 @@ class InviteMemberTest extends TestCase
             ->assertStatus(403);
     }
 
-    
+
     /**
      * @test
      */
@@ -89,7 +89,7 @@ class InviteMemberTest extends TestCase
             'email' => ['A person with this email address is already in the GPM.  Please click \'Add as member\' next the person\'s name to the right.']
         ]);
     }
-    
+
 
     /**
      * @test
@@ -106,7 +106,6 @@ class InviteMemberTest extends TestCase
             'first_name' => 'Test',
             'last_name' => 'Testerson',
             'email' => 'test@test.com',
-            'expertise' => 'test expertise',
             'notes' => 'test notes',
             'training_level_1' => true,
             'training_level_2' => true
@@ -144,7 +143,6 @@ class InviteMemberTest extends TestCase
         $this->assertDatabaseHas('group_members', [
             'group_id' => $this->group->id,
             'person_id' => $newPerson->id,
-            'expertise' => 'test expertise',
             'notes' => 'test notes',
             'training_level_1' => 1,
             'training_level_2' => 1
@@ -175,7 +173,7 @@ class InviteMemberTest extends TestCase
         $response->assertStatus(201);
         $this->assertEquals($role->id, $response->original->roles[0]->id);
     }
-    
+
 
     /**
      * @test
@@ -220,7 +218,7 @@ class InviteMemberTest extends TestCase
         );
 
         Sanctum::actingAs($this->user->fresh());
-        
+
         Notification::fake();
         $response = $this->json('POST', $this->url, [
             'first_name' => 'Test',
@@ -230,7 +228,7 @@ class InviteMemberTest extends TestCase
             'inviter_type' => get_class($this->group)
         ]);
         $response->assertStatus(201);
-        
+
         $newPerson = Person::orderBy('id', 'desc')->first();
         Notification::assertSentTo($newPerson, InviteNotification::class);
         Notification::assertNotSentTo($newPerson, AddedToGroupNotification::class);

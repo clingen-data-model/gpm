@@ -27,7 +27,7 @@ class CommentDeleteTest extends CommentTest
      */
     public function user_can_delete_own_comment()
     {
-        Carbon::setTestNow();
+        Carbon::setTestNow('8:00');
         $this->makeRequest()->assertStatus(200);
 
         $this->assertDatabaseHas('comments', [
