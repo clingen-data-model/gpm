@@ -1,16 +1,15 @@
-<p>
-    <h3>New comments have been made on applications pending approval:</h3>
+<div>
+    <h4>New comments have been made on applications pending approval:</h4>
     <ul>
         @php
             $groupNotifications = $notifications->groupBy('data.group.id');
         @endphp
         @foreach ($groupNotifications as $nots)
-        <li>
-            {{$nots->first()->data['group']['display_name']}}:
-            {{$nots->count()}}
-            by
-            {{$nots->pluck('data.comment.creator.name')->join(', ', ', and ')}}
-        </li>
+            @php $group = $nots->first()->data['group'] @endphp
+            <li>
+                <a href="{{url('/applications/'.$group['uuid'])}}">{{$group['display_name']}}</a>:
+                {{$nots->count()}} comments by {{$nots->pluck('data.comment.creator.name')->unique()->join(', ', ' and ')}}
+            </li>
         @endforeach
     </ul>
-</p>
+</div>

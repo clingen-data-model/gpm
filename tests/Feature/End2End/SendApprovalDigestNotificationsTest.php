@@ -152,13 +152,23 @@ class SendApprovalDigestNotificationsTest extends TestCase
         $renderedHtml = $digestNotification->toMail($person)->render();
 
         $this->assertStringContainsString('There is an application awaiting your decision:', $renderedHtml);
-        $this->assertStringContainsString($group->display_name.' - Step 1', $renderedHtml);
+        $this->assertStringContainsString(
+            stripTagsAndSpaces($group->display_name.' - Step 1'),
+            stripTagsAndSpaces($renderedHtml)
+        );
 
         $this->assertStringContainsString('New comments have been made on applications pending approval:', $renderedHtml);
-        $this->assertStringContainsString(preg_replace('/\s/', '', $group->display_name).":2", preg_replace('/\s/', '', $renderedHtml));
+        $this->assertStringContainsString(
+            stripTagsAndSpaces($group->display_name).":2",
+            stripTagsAndSpaces($renderedHtml)
+        );
 
         $this->assertStringContainsString('New judgements have been made for applications:', $renderedHtml);
-        $this->assertStringContainsString(preg_replace('/\s/', '', $group->display_name).":".preg_replace('/\s/', '', $judgement->person->name), preg_replace('/\s/', '', $renderedHtml));
+        $this->assertStringContainsString(
+            stripTagsAndSpaces($group->display_name).":".stripTagsAndSpaces($judgement->person->name),
+            stripTagsAndSpaces($renderedHtml)
+        );
+
     }
 
 

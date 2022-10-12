@@ -4,7 +4,9 @@ namespace Tests\Feature\End2End\Comments;
 
 use Carbon\Carbon;
 use Tests\TestCase;
+use App\Models\Comment;
 use Laravel\Sanctum\Sanctum;
+use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\Submission;
 use Database\Seeders\CommentTypesSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -92,13 +94,52 @@ class CommentCreateTest extends CommentTest
         );
     }
 
+    /**
+     * @test
+     */
+    public function notification_sent_if_subject_is_reply_to_group_comment()
+    {
+        Submission::factory()->create([
+            'group_id' => $this->expertPanel->group_id,
+            'submission_status_id' => config('submissions.statuses.under-chair-review.id'),
+        ]);
+
+        $originalComment = Comment::factory()->create(['subject_type' => Group::class, 'subject_id' => $this->expertPanel->group_id]);
+
+        $approver = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
+
+        Notification::fake();
+        $response = $this->makeRequest($this->getDefaultData([
+            'subject_type' => Comment::class,
+            'subject_id' => $originalComment->id,
+            'metadata' => [
+                'section' => 'basic-info',
+                'root_subject_type' => Group::class,
+                'root_subject_id' => $this->expertPanel->group_id
+            ]
+        ]));
+
+        $comment = $response->original;
+
+        Notification::assertSentTo(
+            $approver->person,
+            CommentActivityNotification::class,
+            function ($notification) use ($comment) {
+                return true
+                    && $notification->group->id = $this->expertPanel->group_id
+                    && $notification->comment->id = $comment->id
+                    && $notification->event = 'created'
+                    ;
+            }
+        );
+    }
 
     /**
      * @test
      */
-    public function assertNotificationNotSent_if_submission_not_sent_to_chairs()
+    public function notification_not_sent_if_submission_not_sent_to_chairs()
     {
-        $submission = Submission::factory()->create([
+        Submission::factory()->create([
             'group_id' => $this->expertPanel->group_id,
             'submission_status_id' => config('submissions.statuses.pending.id'),
         ]);
