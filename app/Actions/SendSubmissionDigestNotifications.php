@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Notifications\ApprovalDigestNotification;
 use App\Notifications\Contracts\DigestibleNotificationInterface;
 
-class SendApprovalDigestNotifications
+class SendSubmissionDigestNotifications
 {
     use AsCommand;
 

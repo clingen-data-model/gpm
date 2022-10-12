@@ -2,7 +2,7 @@
 
 namespace App\Console;
 
-use App\Actions\SendApprovalDigestNotifications;
+use App\Actions\SendSubmissionDigestNotifications;
 use App\Actions\SendCoiReminders;
 use Illuminate\Support\Facades\Log;
 use App\Actions\SendInviteReminders;
@@ -50,10 +50,12 @@ class Kernel extends ConsoleKernel
             ->weeklyOn(1, '6:00');
         $schedule->job(new SendInviteReminders)
             ->weeklyOn(1, '6:00');
+
         $schedule->job(new SubmissionApprovalRemindersCreate)
-            ->weeklyOn(1, '6:10')
+            ->dailyAt('6:10')
+            ->days([1, 4])
             ->after(function () {
-                app()->make(SendApprovalDigestNotifications::class)->handle();
+                app()->make(SendSubmissionDigestNotifications::class)->handle();
             });
     }
 

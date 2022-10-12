@@ -10,15 +10,16 @@ use App\Modules\Group\Models\Judgement;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Actions\SendApprovalDigestNotifications;
+use App\Actions\SendSubmissionDigestNotifications;
 use App\Notifications\ApprovalDigestNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Notifications\ApprovalReminder;
 use App\Notifications\UserDefinedDatabaseNotification;
 use App\Modules\Group\Notifications\CommentActivityNotification;
 use App\Modules\Group\Notifications\JudgementActivityNotification;
+use Carbon\Carbon;
 
-class SendApprovalDigestNotificationsTest extends TestCase
+class SendSubmissionDigestNotificationsTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -37,7 +38,7 @@ class SendApprovalDigestNotificationsTest extends TestCase
 
         Notification::fake();
 
-        (new SendApprovalDigestNotifications)->handle();
+        (new SendSubmissionDigestNotifications)->handle();
 
         Notification::assertNothingSent();
     }
@@ -60,7 +61,7 @@ class SendApprovalDigestNotificationsTest extends TestCase
 
         Notification::fake();
 
-        (new SendApprovalDigestNotifications)->handle();
+        (new SendSubmissionDigestNotifications)->handle();
 
         Notification::assertSentTo(
             $person,
@@ -96,7 +97,7 @@ class SendApprovalDigestNotificationsTest extends TestCase
         Notification::send($person, new JudgementActivityNotification($group, $judgement, 'created'));
         Notification::send($person, new ApprovalReminder($group, $judgement->submission, $person));
 
-        (new SendApprovalDigestNotifications)->handle();
+        (new SendSubmissionDigestNotifications)->handle();
 
         $this->assertEquals(0, $person->unreadNotifications->count());
     }
@@ -116,7 +117,7 @@ class SendApprovalDigestNotificationsTest extends TestCase
 
         Notification::fake();
 
-        (new SendApprovalDigestNotifications)->handle();
+        (new SendSubmissionDigestNotifications)->handle();
 
         Notification::assertNotSentTo(
             $person,
@@ -171,5 +172,59 @@ class SendApprovalDigestNotificationsTest extends TestCase
 
     }
 
+    /**
+     * @test
+     */
+    public function approval_digests_sent_on_monday_at_610_am()
+    {
+       ['person' => $person] = $this->setupForScheduleTest();
+
+        Carbon::setTestnow('monday at 6:10 am');
+        Notification::fake();
+        $this->artisan('schedule:run');
+        Notification::assertSentTo($person, ApprovalDigestNotification::class);
+    }
+
+    /**
+     * @test
+     */
+    public function approval_digests_sent_on_thursday_at_610_am()
+    {
+        ['person' => $person] = $this->setupForScheduleTest();
+
+        Carbon::setTestnow('thursday at 6:10 am');
+        Notification::fake();
+        $this->artisan('schedule:run');
+        Notification::assertSentTo($person, ApprovalDigestNotification::class);
+    }
+
+
+    /**
+     * @test
+     */
+    public function does_not_send_any_other_day()
+    {
+        $this->setupForScheduleTest();
+
+        Notification::fake();
+        foreach (['tuesday', 'wednesday', 'friday', 'saturday', 'sunday'] as $day) {
+            Carbon::setTestnow($day.' at 6:10 am');
+            $this->artisan('schedule:run');
+            Notification::assertNothingSent(ApprovalDigestNotification::class);
+        }
+    }
+
+
+    private function setupForScheduleTest()
+    {
+        $this->setupPermission(['ep-applications-approve', 'ep-applications-comment']);
+        $group = ExpertPanel::factory()->create()->group;
+        $comment = Comment::factory()->create(['subject_type' => get_class($group), 'subject_id' => $group->id]);
+
+        $person = Person::factory()->create();
+        Notification::send($person, new CommentActivityNotification($group, $comment, 'created'));
+
+        return compact('person', 'group', 'comment');
+    }
 
 }
