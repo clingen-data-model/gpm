@@ -105,9 +105,6 @@ abstract class TestCase extends BaseTestCase
         }
 
         if ($properties) {
-            // if (!isset($properties['step'])) {
-            //     $properties['step'] = $subject->current_step;
-            // }
             foreach ($properties as $key => $val) {
                 $dbVal = $val;
                 if (is_array($val) || is_object($val)) {
