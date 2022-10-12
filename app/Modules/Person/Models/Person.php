@@ -303,7 +303,7 @@ class Person extends Model implements HasLogEntries
         return $this->activeMemberships->pluck('roles')->flatten()->pluck('name')->contains('coordinator');
     }
 
-    public function getProfilePhotoUrl()
+    public function getProfilePhotoUrlAttribute()
     {
         return url('/storage/profile-photos/'.$this->profile_photo);
     }

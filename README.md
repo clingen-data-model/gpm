@@ -80,7 +80,7 @@ If you want to create a FollowAction that always runs just have `asFollowAction`
 ### ClinGen Data Exchange Integration
 The ClinGen Data Exchange (DX) is a [Kafka](https://kafka.apache.org/) message broker run by the Broad Grant, hosted on https://conflluent.io.
 
-The GPM integrates with the DX to publish messages about its data and consume messages from the [CSPEC Registry](https://https://cspec.genome.network/cspec/ui/svi/) about VCEP AMCG/AMP Guidelines Specfications.
+The GPM integrates with the DX to publish messages about its data and consume messages from the [CSPEC Registry](https://cspec.genome.network/cspec/ui/svi/) about VCEP AMCG/AMP Guidelines Specfications.
 
 
 The GPM produces to one (soon two) topic(s):

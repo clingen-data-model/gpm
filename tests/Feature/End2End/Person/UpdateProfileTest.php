@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\End2End\Person\Profile;
+namespace Tests\Feature\End2End\Person;
 
 use Tests\TestCase;
 use App\Models\Role;
@@ -18,6 +18,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Group\Actions\MemberAssignRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Actions\MemberGrantPermissions;
+use Tests\Feature\End2End\Person\TestEventPublished;
 
 /**
  * @group people
@@ -35,6 +36,7 @@ class UpdateProfileTest extends TestCase
     private $gender;
     private $country;
     private $credential;
+    use TestEventPublished;
 
     public function setup():void
     {
@@ -59,11 +61,9 @@ class UpdateProfileTest extends TestCase
         unset($expected['credential_ids']);
         unset($expected['expertise_ids']);
 
-        $this->person->update([
-            'user_id' => $this->user->id
-        ]);
+        $this->person->update(['user_id' => $this->user->id]);
 
-        $rsp = $this->makeRequest($data)
+        $this->makeRequest($data)
             ->assertStatus(200)
             ->assertJsonFragment($expected)
             ->assertJsonFragment([
@@ -291,6 +291,23 @@ class UpdateProfileTest extends TestCase
         ->assertJsonFragment([
             'email' => ['Somebody is already using that email address.']
         ]);
+    }
+
+    /**
+     * @test
+     *
+     * @group dx
+     * @group gpm-person-events
+     */
+    public function publishes_updated_event_to_gpm_person_events()
+    {
+        $this->user->givePermissionTo('people-manage');
+
+        $this->makeRequest()
+            ->assertStatus(200);
+        $person = $this->person->fresh();
+
+        $this->assertEventPublished(config('dx.topics.outgoing.gpm-person-events'), 'updated', $person);
     }
 
 
