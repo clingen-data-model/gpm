@@ -303,7 +303,6 @@ export default {
             window.location = reportUrl;
         },
         confirmUnretire (member) {
-            console.log(member);
             this.showConfirmUnretire = true;
             this.selectedMember = member;
         },

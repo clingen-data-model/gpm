@@ -1,16 +1,18 @@
 <template>
     <div class="collapsible-container">
         <div class="collapsible-header" @click="expanded = !expanded">
-            <div class="flex items-center">
-                <icon-cheveron-right v-if="!expanded" class="-ml-1" />
-                <icon-cheveron-down v-if="expanded" class="-ml-1" />
+            <div class="flex items-start">
+                <div v-if="showCheveron">
+                    <icon-cheveron-right v-if="!expanded" class="-ml-1 mt-1" />
+                    <icon-cheveron-down v-if="expanded" class="-ml-1 mt-1" />
+                </div>
                 <slot name="title">
                     <strong>{{title}}</strong>
                 </slot>
             </div>
         </div>
         <transition name="slide-fade-down">
-            <div v-show="opened">
+            <div v-show="expanded">
                 <slot></slot>
             </div>
         </transition>
@@ -29,6 +31,10 @@ export default {
             type: String,
             required: false,
             default: null,
+        },
+        showCheveron: {
+            type: Boolean,
+            default: true
         }
     },
     emits: [

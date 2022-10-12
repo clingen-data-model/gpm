@@ -122,6 +122,13 @@ The demo and production instances of the GPM are hosted on UNC's [Cloudapps Open
 ### Topics
 * [Updating SSL Certificates](documentation/devops/ssl-cert-updated.md)
 
+### Controlled vocabularies and synonyms
+In the GPM there are several controlled vocabularies.  Some controlled vocabularies make use of synonyms, a polymorphic relationship allowing synonyms to be attached to a term in the vocabulary.  These include:
+* Credentials
+* Expertises
+
+A model with synonyms implements the `App\ControlledVocabularies\HasSynonymsInterface` interface.  A base implementation can be found in `App\ControlledVocabularies\HasSynonymsTrait` trait.
+
 ### Training
 ClinGen needs to track the training of bio-curators to ensure compliance with FDA regulations.  
 

@@ -8,7 +8,8 @@ use Symfony\Component\Finder\Finder;
 if (!function_exists('renderQuery')) {
     function renderQuery($query)
     {
-        $treated = preg_replace('/\?/', '"%s"', $query->toSql());
+        $treated = preg_replace('/%/', '%%', $query->toSql());
+        $treated = preg_replace('/\?/', '"%s"', $treated);
 
         return call_user_func_array('sprintf', array_merge([$treated], $query->getBindings()));
     }

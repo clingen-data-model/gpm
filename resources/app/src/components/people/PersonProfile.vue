@@ -1,8 +1,8 @@
 <template>
     <div>
 
-        <edit-icon-button 
-            class="btn btn-sm float-right" 
+        <edit-icon-button
+            class="btn btn-sm float-right"
             @click="editPerson"
             v-if="userIsPerson(person) || hasPermission('people-manage')"
         >
@@ -14,7 +14,7 @@
                 <component :is="profilePhotoComponent" :person="person" style="width: 120px"/>
             </div>
             <div>
-                <dictionary-row class="pb-2" label-class="w-40" 
+                <dictionary-row class="pb-2" label-class="w-40"
                     v-for="key in ['name', 'email']"
                     :key="key"
                     :label="titleCase(key)"
@@ -26,11 +26,13 @@
                     <h3>Profile</h3>
                     <div>
                         <dictionary-row class="pb-2" label-class="w-40" label="Institution">{{person.institutionName}}</dictionary-row>
-                        <dictionary-row class="pb-2" label-class="w-40" label="Credentials">{{person.credentials}}</dictionary-row>
-                        <!-- <dictionary-row class="pb-2" label-class="w-40" label="Primary Occupation">{{person.primaryOccupationName}}</dictionary-row> -->
+                        <dictionary-row class="pb-2" label-class="w-40" label="Credentials">
+                            <CredentialsView :person="person"></CredentialsView>
+                        </dictionary-row>
+                        <dictionary-row class="pb-2" label-class="w-40" label="Expertise">
+                            <ExpertisesView :person="person" />
+                        </dictionary-row>
                         <dictionary-row class="pb-2" label-class="w-40" label="Biography">{{person.biography}}</dictionary-row>
-                        <!-- <dictionary-row class="pb-2" label-class="w-40" label="ORCID">{{person.orcid_id}}</dictionary-row>
-                        <dictionary-row class="pb-2" label-class="w-40" label="Hypothes.is ID">{{person.hypothesis_id}}</dictionary-row> -->
                     </div>
                 </section>
 
@@ -64,7 +66,7 @@
                                 <icon-info class="text-gray-500" width="12" height="12"></icon-info>
                             </popover>
                         </div>
-                    </header>    
+                    </header>
                     <dictionary-row class="pb-2" label-class="w-40" label="Primary Occupation">{{person.primaryOccupationName}}</dictionary-row>
                     <dictionary-row class="pb-2" label-class="w-40" label="Race">{{person.raceName}}</dictionary-row>
                     <dictionary-row class="pb-2" label-class="w-40" label="Ethnicity">{{person.ethnicityName}}</dictionary-row>
@@ -82,8 +84,8 @@
                         &nbsp;
                         <span v-if="person.invite.redeemed_at"> redeemed on {{formatDate(person.invite.redeemed_at)}}</span>
                     </dictionary-row>
-                    
-                    <dictionary-row class="pb-2" label-class="w-40" 
+
+                    <dictionary-row class="pb-2" label-class="w-40"
                         v-for="key in ['created_at', 'updated_at']"
                         :key="key"
                         :label="key"
@@ -94,8 +96,8 @@
                     <div v-if="hasPermission('people-manage') || userIsPerson(person)"
                         class="pt-4 border-t mt-4"
                     >
-                        <button 
-                            class="btn btn-sm" 
+                        <button
+                            class="btn btn-sm"
                             @click="editPerson"
                         >
                             Edit Info
@@ -119,6 +121,8 @@ import Person from '@/domain/person'
 import ProfileForm from '@/components/people/ProfileForm'
 import ProfilePicture from '@/components/people/ProfilePicture'
 import ProfilePhotoForm from '@/components/people/ProfilePhotoForm'
+import CredentialsView from './CredentialsView.vue'
+import ExpertisesView from './ExpertisesView.vue'
 
 export default {
     name: 'PersonProfile',
@@ -126,6 +130,8 @@ export default {
         ProfileForm,
         ProfilePicture,
         ProfilePhotoForm,
+        CredentialsView,
+        ExpertisesView
     },
     props: {
         person: {

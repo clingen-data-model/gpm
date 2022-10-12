@@ -7,17 +7,24 @@
 
         <div class="md:flex flex-wrap space-x-4 text-sm">
             <div>
-                <profile-picture :person="member.person" style="width: 100px; height: 100px;" class="rounded"></profile-picture>
+                <profile-picture :person="member.person" style="width: 100px; height: 100px;" class="rounded" />
                 <note>member id: {{member.id}}</note>
             </div>
             <div class="flex-1 md:flex flex-wrap">
                 <div class="flex-1 mr-8">
                     <dictionary-row label="Email">{{member.person.email}}</dictionary-row>
-                    <dictionary-row label="Institution">{{member.person.institution ? member.person.institution.name : '--'}}</dictionary-row>
-                    <dictionary-row label="Credentials">{{member.person.credentials}}</dictionary-row>
+                    <dictionary-row label="Institution">
+                        {{member.person.institution ? member.person.institution.name : '--'}}
+                    </dictionary-row>
+                    <dictionary-row label="Credentials">
+                        <CredentialsView :person="member.person" />
+                    </dictionary-row>
+                    <dictionary-row label="Expertise">
+                        <ExpertisesView :person="member.person" :legacyExpertise="member.legacy_expertise" />
+                    </dictionary-row>
                     <object-dictionary
                         :obj="member"
-                        :only="['expertise', 'notes']"
+                        :only="['notes']"
                     ></object-dictionary>
                         <dictionary-row label="Start - End">
                             {{formatDate(member.start_date)}} - {{formatDate(member.end_date) || 'present'}}
@@ -53,7 +60,7 @@
             <div>
             </div>
         </div>
-        <router-link class="link" 
+        <router-link class="link"
             :to="{name: 'PersonDetail', params: {uuid: this.member.person.uuid}}">
             View profile
         </router-link>
@@ -63,6 +70,8 @@
 import GroupMember from '@/domain/group_member';
 import Group from '@/domain/group';
 import ProfilePicture from '@/components/people/ProfilePicture.vue'
+import CredentialsView from '../people/CredentialsView.vue';
+import ExpertisesView from '../people/ExpertisesView.vue'
 import {formatDate} from '@/date_utils'
 
 
@@ -71,6 +80,8 @@ export default {
     name: 'MemberPreview',
     components: {
         ProfilePicture,
+        CredentialsView,
+        ExpertisesView
     },
     props: {
         member: {

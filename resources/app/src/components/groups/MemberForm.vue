@@ -3,28 +3,28 @@
         <div class="flex">
             <div class="flex-1">
                 <div v-if="!newMember.id && !newMember.person_id">
-                    <input-row label="Name" 
+                    <input-row label="Name"
                         :errors="nameErrors"
                     >
                         <div class="flex space-x-2">
-                            <input type="text" 
-                                v-model="newMember.person.first_name" 
-                                placeholder="First" 
+                            <input type="text"
+                                v-model="newMember.person.first_name"
+                                placeholder="First"
                                 class="block w-1/2"
                                 @input="debounceSuggestions"
                             >
-                            <input type="text" 
-                                v-model="newMember.person.last_name" 
-                                placeholder="Last" 
+                            <input type="text"
+                                v-model="newMember.person.last_name"
+                                placeholder="Last"
                                 class="block w-1/2"
                                 @input="debounceSuggestions"
                                 :errors="errors.last_name"
                             >
                         </div>
                     </input-row>
-                    <input-row label="Email" 
-                        v-model="newMember.person.email" 
-                        placeholder="example@example.com" 
+                    <input-row label="Email"
+                        v-model="newMember.person.email"
+                        placeholder="example@example.com"
                         input-class="w-full"
                         @input="debounceSuggestions"
                         :errors="errors.email"
@@ -35,14 +35,30 @@
                         {{newMember.person.name}}
                     </dictionary-row>
                     <dictionary-row label="Email">{{newMember.person.email}}</dictionary-row>
+                    <dictionary-row label="Institution">{{newMember.person.institution ? newMember.person.institution.name : '--'}}</dictionary-row>
+                    <dictionary-row label="Credentials">
+                        <credentials-view :person="newMember.person" />
+                    </dictionary-row>
+                    <dictionary-row label="Expertise">
+                        <ExpertisesView :person="newMember.person" :legacy-expertise="newMember.legacy_expertise" />
+                    </dictionary-row>
                     <static-alert v-if="!newMember.id">
                         Adding existing person, {{newMember.person.name}}, as a group member.
                     </static-alert>
+                    <dictionary-row label="" class="text-sm"  v-if="newMember.id">
+                        <popover content="As a coordinator you can edit some attributes of a group member's profile including name, email, institution, and credentials." hover arrow>
+                            <button @click="showProfileForm=true" class="link text-sm">
+                                Edit profile attributes
+                            </button>
+                        </popover>
+                    </dictionary-row>
+                    <note v-if="!newMember.id">
+                        You can edit the member's profile attributes from here once you've added them to your group.
+                    </note>
+
                 </div>
-                
-                <input-row label="Expertise" :errors="errors.expertise">
-                    <textarea rows="5" v-model="newMember.expertise" class="w-full"></textarea>
-                </input-row>
+
+
 
                 <input-row label="Notes" :errors="errors.notes">
                     <textarea rows="5" v-model="newMember.notes" class="w-full"></textarea>
@@ -58,25 +74,25 @@
                         <checkbox v-for="role in roles" :key="role.id" v-model="newMember.roles" :value="role" :label="titleCase(role.name)" @input="handleRoleChange" />
                     </div>
                     <transition name="fade-down">
-                        <div 
+                        <div
                             v-if="newMember.hasRole('biocurator') && group.isVcep()"
                             class="border-t mt-2 pt-2 pl-2"
                         >
                             <h4>Training</h4>
-                            <checkbox 
-                                v-for="num in [1, 2]" :key="num" 
-                                v-model="newMember[`training_level_${num}`]" 
+                            <checkbox
+                                v-for="num in [1, 2]" :key="num"
+                                v-model="newMember[`training_level_${num}`]"
                                 :value="1"
                                 :label="`Level ${num}`"
                             />
                         </div>
                     </transition>
                 </div>
-                <collapsible class="border-t mt-4 pt-2">
+                <collapsible class="border-t mt-4 pt-2 mb-2">
                     <template v-slot:title>
                         <h3 class="flex justify-between w-full items-center">
                             Group Permissions
-                            <badge 
+                            <badge
                                 v-if="newMember.permissions.length > 0"
                                 color="gray"
                             >{{newMember.permissions.length}}</badge>
@@ -84,9 +100,9 @@
                     </template>
                     <div class="flex flex-col h-24 flex-wrap">
                         <checkbox
-                            v-for="permission in permissions" 
+                            v-for="permission in permissions"
                             :key="permission.id"
-                            v-model="newMember.permissions" 
+                            v-model="newMember.permissions"
                             :value="permission"
                             :disabled="newMember.hasPermissionThroughRole(permission)"
                             :checked="newMember.hasPermissionThroughRole(permission)"
@@ -107,23 +123,60 @@
                 </collapsible>
 
             </div>
-            <transition name="slide-fade">            
-                <div class="pt-2 border-l pl-2  ml-2 flex-1" v-if="suggestedPeople.length > 0 && newMember.person_id === null">
+            <transition name="slide-fade">
+                <div v-if="suggestedPeople.length > 0 && newMember.person_id === null"
+                    class="pt-2 border-l pl-2  ml-2 flex-1"
+                >
                     <h5 class="font-bold border-b mb-1 pb-1">Matching people</h5>
-                    <member-suggestions 
+                    <member-suggestions
                         :suggestions="suggestedPeople"
                         @selected="useExistingPerson"
                     ></member-suggestions>
                 </div>
             </transition>
+
         </div>
-        <button-row
-            @submit="save"
-            @cancel="cancel"
-            submit-text="Save"
-        ></button-row>
-        <!-- <dev-todo class="mt-8" :items="[]"></dev-todo> -->
+        <div>
+            <!-- <div class="border-t-2 p-2 mt-4 bg-gray-100" v-if="!newMember.id">
+                <label class="text-xs">
+                    Add another member:
+                    &nbsp;
+                    <label><input type="radio" v-model="addAnother" :value="true">&nbsp;Yes</label>
+                    <label><input type="radio" v-model="addAnother" :value="false">&nbsp;No</label>
+                </label>
+            </div> -->
+            <button-row
+                @submit="saveAndExit"
+                @cancel="cancel"
+                submit-text="Save"
+                style="margin-top: 0"
+            >
+                <template v-slot:extra-buttons>
+                    <button class="btn blue" @click="saveAndEditProfile" v-if="!newMember.id">Save and edit profle</button>
+                </template>
+            </button-row>
+        </div>
     </div>
+
+    <teleport to='body'>
+        <modal-dialog v-model="showProfileForm" title="Edit Member Profile">
+            <div v-if="needsCredentials || needsExpertise" class="mb-2 p-2 alert alert-warning">
+                We need updated <strong v-if="needsCredentials">credentials</strong>
+                <span v-if="needsExpertise && needsCredentials">and</span>
+                <strong v-if="needsExpertise">expertise</strong> information for this member.
+                <div v-if="needsCredentials && newMember.person.legacy_credentials">
+                    <strong>Legacy Credentials Data:</strong> {{newMember.person.legacy_credentials}}
+                </div>
+                <div v-if="needsExpertise && newMember.legacy_expertise">
+                    <strong>Legacy Expertise Data:</strong> {{newMember.legacy_expertise}}
+                </div>
+            </div>
+            <ProfileForm v-if="newMember.person" :person="newMember.person"
+                @saved="handleProfileUpdate"
+                @canceled="showProfileForm = false"
+            />
+        </modal-dialog>
+    </teleport>
 </template>
 <script>
 import {debounce} from 'lodash-es'
@@ -134,13 +187,19 @@ import {Person} from '@/domain'
 import GroupMember from '@/domain/group_member'
 import MemberSuggestions from '@/components/groups/MemberSuggestions.vue'
 import config from '@/configs'
+import CredentialsView from '../people/CredentialsView.vue'
+import ExpertisesView from '../people/ExpertisesView.vue'
+import ProfileForm from '../people/ProfileForm.vue'
 
 const groups = config.groups;
 
 export default {
     name: 'AddMemberForm',
     components: {
-        MemberSuggestions
+        MemberSuggestions,
+        CredentialsView,
+        ExpertisesView,
+        ProfileForm
     },
     props: {
         uuid: {
@@ -163,6 +222,8 @@ export default {
             errors: {},
             suggestedPeople: [],
             legendValues: [1,2],
+            showProfileForm: false,
+            addAnother: false
         }
     },
     computed: {
@@ -174,6 +235,12 @@ export default {
                     .flat()
                     .filter(i => i);
         },
+        needsCredentials () {
+            return !this.newMember.person.credentials || this.newMember.person.credentials.length == 0;
+        },
+        needsExpertise () {
+            return !this.newMember.person.expertises || this.newMember.person.expertises.length == 0
+        }
     },
     setup () {
         const store = useStore();
@@ -182,7 +249,7 @@ export default {
         const roles = groups.roles;
         const permissions = groups.permissions;
 
-        return {    
+        return {
             group,
             people,
             roles,
@@ -244,21 +311,42 @@ export default {
             this.clearForm();
             this.$emit('canceled');
         },
+        async saveAndExit () {
+            await this.save();
+            this.clearForm();
+            this.suggestedPeople = [];
+            if (!this.addAnother) {
+                this.$emit('saved');
+            }
+            if (this.newMember.id) {
+                this.$router.replace({name: 'AddMember'})
+            }
+        },
+        async saveAndEditProfile () {
+            const groupMember = await this.save();
+            this.newMember = new GroupMember(groupMember);
+            this.showProfileForm = true;
+        },
         async save () {
             try {
                 if (!this.newMember.isPersisted()) {
                     if (!this.newMember.person.isPersisted()) {
-                        await this.inviteNewMember(this.group, this.newMember);
+                        const groupMember = await this.inviteNewMember(this.group, this.newMember);
+                        this.$store.commit('pushSuccess', `${groupMember.person.name} invited to join ${groupMember.group.name}`);
+                        return groupMember;
+
                     }
                     if (this.newMember.person.isPersisted()) {
-                        await this.addPersonAsMember(this.group, this.newMember);
+                        const groupMember = await this.addPersonAsMember(this.group, this.newMember);
+                        this.$store.commit('pushSuccess', `${groupMember.person.name} added to ${groupMember.group.name}`);
+                        return groupMember;
                     }
                 }
                 if (this.newMember.isPersisted()) {
-                    await this.updateExistingMember(this.group, this.newMember);
+                    const groupMember = await this.updateExistingMember(this.group, this.newMember);
+                    this.$store.commit('pushSuccess', `${groupMember.person.name}'s membership was updated.`);
+                    return groupMember;
                 }
-                this.clearForm();
-                this.$emit('saved');
             } catch (error) {
                 if (isValidationError(error)) {
                     this.errors = error.response.data.errors
@@ -282,7 +370,7 @@ export default {
                     training_level_2: member.training_level_2,
                 }
             })
-        
+
             if (member.permissions.length > 0) {
                 await this.$store.dispatch('groups/memberGrantPermission', {
                     uuid: group.uuid,
@@ -290,6 +378,8 @@ export default {
                     permissionIds: member.permissions.map(p => p.id)
                 });
             }
+
+            return response.data;
         },
         async addPersonAsMember(group, member) {
             const data = {
@@ -305,6 +395,7 @@ export default {
                 }
             };
             const memberData = await this.$store.dispatch('groups/memberAdd', data);
+
             if (member.permissions.length > 0) {
                 await this.$store.dispatch('groups/memberGrantPermission', {
                     uuid: group.uuid,
@@ -312,14 +403,16 @@ export default {
                     permissionIds: member.permissions.map(p => p.id)
                 });
             }
+
+            return memberData;
         },
 
         async updateExistingMember(group, member) {
-            await this.$store.dispatch(
-                'groups/memberUpdate', 
+            const groupMember = await this.$store.dispatch(
+                'groups/memberUpdate',
                 {
-                    groupUuid: group.uuid, 
-                    memberId: member.id, 
+                    groupUuid: group.uuid,
+                    memberId: member.id,
                     data: {
                         is_contact: this.newMember.is_contact,
                         expertise: this.newMember.expertise,
@@ -328,25 +421,27 @@ export default {
                         training_level_2: this.newMember.training_level_2,
                     }
                 }
-            )
+            ).then(rsp => rsp.data);
 
             await this.$store.dispatch('groups/memberSyncRoles', {group, member});
             await this.syncPermissions(group, member);
+
+            return groupMember;
         },
 
         async syncPermissions(group, member) {
-            const originalMember = group.findMember(this.memberId);
+            const originalMember = group.findMember(this.newMember.id);
 
             const existingPermIds = originalMember.permissions.map(p => p.id);
             const assignedPermIds = member.permissions.map(p => p.id);
             const newPermIds = assignedPermIds.filter(p => !existingPermIds.includes(p));
             const removedPermIds = existingPermIds.filter(p => !assignedPermIds.includes(p));
             // const promises = [];
-            
+
             if (newPermIds.length > 0) {
                 // promises.push(
                     this.$store.dispatch(
-                        'groups/memberGrantPermission', 
+                        'groups/memberGrantPermission',
                         {
                             uuid: group.uuid,
                             memberId: member.id,
@@ -355,11 +450,11 @@ export default {
                     )
                 // );
             }
-            
+
             removedPermIds.forEach(permId => {
                 // promises.push(
                     this.$store.dispatch(
-                        'groups/memberRevokePermission', 
+                        'groups/memberRevokePermission',
                         {
                             uuid: group.uuid,
                             memberId: member.id,
@@ -386,6 +481,12 @@ export default {
             //         this.newMember.is_contact = true;
             //     }
             // }, 1)
+        },
+
+        handleProfileUpdate (updatedPerson) {
+            this.newMember.person = updatedPerson;
+            this.showProfileForm = false;
+            this.$store.dispatch('groups/getMembers', this.group)
         }
     },
     mounted () {

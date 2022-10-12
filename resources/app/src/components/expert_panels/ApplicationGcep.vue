@@ -2,7 +2,7 @@
     <div class="relative">
         <application-step id="definition" :disabled="group.expert_panel.hasPendingSubmission">
             <app-section title="Basic Information" id="basicInfo">
-                <group-form 
+                <group-form
                     :group="group" ref="groupForm"
                     @update="handleUpdate"
                 />
@@ -15,21 +15,21 @@
             </app-section>
             <app-section title="Scope of Work" id="scope">
                 <p>
-                    It is expected that the expert panel will utilize 
-                    <lumping-and-splitting-link /> 
-                    during pre-curation and should use the 
+                    It is expected that the expert panel will utilize
+                    <lumping-and-splitting-link />
+                    during pre-curation and should use the
                     <gene-tracker-link />
                     to enter their precuration information. Focus should be on the canonical disease, and splitting into multiple phenotypes should be avoided. The precurations will be published to
                     <website-link />.
                 </p>
-                
-                <gcep-gene-list 
-                    :group="group" 
-                    ref="geneList" 
+
+                <gcep-gene-list
+                    :group="group"
+                    ref="geneList"
                     @geneschanged="genesChanged = true"
                     @update="handleUpdate"
                 />
-                
+
                 <hr>
 
                 <scope-description-form @update="handleUpdate" />
@@ -110,7 +110,7 @@ export default {
                                     }
                                 });
             promises.push(this.saveUpdates());
-            
+
             try {
                 await Promise.all(promises);
                 this.$emit('saved');
@@ -132,7 +132,6 @@ export default {
             }
         },
         async autosave () {
-            console.log('autosave...')
             if (this.applicationIsDirty()) {
                 await this.save();
                 this.$emit('autosaved');
@@ -140,7 +139,7 @@ export default {
             }
         },
         applicationIsDirty () {
-            return  this.group.expert_panel.isDirty() 
+            return  this.group.expert_panel.isDirty()
                 || this.group.isDirty()
                 || this.genesChanged
         },

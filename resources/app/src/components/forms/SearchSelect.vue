@@ -10,7 +10,7 @@ function inView(elem)
     }
     const parentBounding = elem.parentNode.getBoundingClientRect();
     if (
-        itemBounding.top >= parentBounding.top 
+        itemBounding.top >= parentBounding.top
         && itemBounding.bottom <= parentBounding.bottom
     ) {
         return true;
@@ -53,7 +53,7 @@ export default {
         placeholder: {
             required: false,
             type: String,
-            default: ''
+            default: 'type to search'
         },
         disabled: {
             required: false,
@@ -68,6 +68,10 @@ export default {
             type: Boolean,
             default: false
         },
+        showOptionsWhenEmpty: {
+            type: Boolean,
+            default: false
+        },
         multiple: {
             type: Boolean,
             default: false
@@ -75,12 +79,13 @@ export default {
         keyOptionsBy: {
             type: String,
             default: 'id'
-        }
+        },
     },
     emits: [
         'update:modelValue',
         'removed',
         'added',
+        'searchTextUpdated',
     ],
     data() {
         return {
@@ -103,8 +108,8 @@ export default {
             return this.filteredOptions.length > 0 || this.hasAdditionalOption;
         },
         optionsListHeight () {
-            return this.showingOptions 
-                    ? this.optionsHeight 
+            return this.showingOptions
+                    ? this.optionsHeight
                     : 0;
         },
         selection() {
@@ -114,7 +119,7 @@ export default {
             return !this.hasSelection || this.multiple;
         },
         showingOptions() {
-            if (this.hasAdditionalOption && (this.searchText || this.hasFocus)) {
+            if ((this.showOptionsWhenEmpty || this.hasAdditionalOption) && (this.searchText || this.hasFocus)) {
                 return true;
             }
             return this.filteredOptions.length > 0 && this.hasFocus;
@@ -129,29 +134,32 @@ export default {
             return this.selections.length > 0
         },
         filteredUniqueOptions () {
-            const selectionIds = this.selections.map(s => s.value);
+            const selectionIds = this.selections.map(s => s[this.keyOptionsBy]);
             return this.filteredOptions
-                    .filter(i => !selectionIds.includes(i.value))
+                    .filter(i => !selectionIds.includes(i[this.keyOptionsBy]))
         }
     },
     watch: {
         searchText: function () {
             this.search(this.searchText, this.options);
+            this.$emit('searchTextUpdated', this.searchText);
         },
         filteredOptions: function () {
             this.cursorPosition = 0;
         },
-        modelValue (to) {
-            if (to) {
-                this.selections = Array.isArray(to) ? to : [to]
-            }
-            this.clearInput();
-            this.resetCursor();
+        modelValue: {
+            handler (to) {
+                if (to) {
+                    this.selections = Array.isArray(to) ? to : [to]
+                }
+                this.clearInput();
+                this.resetCursor();
+            },
+            immediate: true
         }
     },
     methods: {
         handleInputFocus () {
-            console.log('handleInputFocus', this.showOptionsOnFocus)
             this.hasFocus = true;
             if (this.showOptionsOnFocus) {
                 this.search(this.searchText, this.options);
@@ -186,10 +194,10 @@ export default {
         },
         removeSelection(selectionIdx){
             this.log('removeSelection')
-            this.selections.splice(selectionIdx, 1);
+            const removed = this.selections.splice(selectionIdx, 1);
 
             this.emitModelUpdate();
-            this.$emit('removed', this.selections[selectionIdx])
+            this.$emit('removed', removed[0])
             this.$nextTick(() => {
                 this.$refs.input.focus();
             })
@@ -199,7 +207,7 @@ export default {
             this.emitModelUpdate();
             this.clearInput();
             this.resetCursor();
-            this.$emit('added', this.selection)
+            this.$emit('added', selection)
         },
         emitModelUpdate () {
             if (this.multiple) {
@@ -334,7 +342,6 @@ export default {
         this.search = debounce( async (searchText, options) => {
             if (searchText == '' || searchText === null || typeof searchText == 'undefined') {
                 if (this.showOptionsOnFocus) {
-                    console.log('show options b/ focus')
                     this.filteredOptions = [...options];
                     return;
                 }
@@ -352,32 +359,28 @@ export default {
 }
 </script>
 <template>
-    <!-- Trying to get v-click-outside to work, but option slot markup doesn't appear to be in complenent $el when running $el.contains() in v-click-outisde directive -->
-    <!-- <div class="search-select-component" v-click-outside="{handler: ()=> {}, exclude: []}"> -->
     <div class="search-select-component">
         <div class="search-select-container bg-white">
-            <div v-if="hasSelection" >
+            <div v-if="hasSelection"
+                v-for="selection, idx in selections" :key="idx"
+                class="selection" :class="{disabled: disabled}"
+            >
+                <label>
+                    <slot name="selection-label" :selection="selection">
+                        {{resolveDefaultOptionLabel(selection)}}
+                    </slot>
+                </label>
                 <div
-                    v-for="selection, idx in selections" :key="idx"
-                    class="selection" :class="{disabled: disabled}"
-                >
-                    <label>
-                        <slot name="selection-label" :selection="selection">
-                            {{resolveDefaultOptionLabel(selection)}}
-                        </slot>
-                    </label>  
-                    <div 
-                        @click="removeSelection(idx)" 
-                        :disabled="disabled" 
-                        class="remove-btn"
-                    >x</div>
-                </div>
+                    @click="removeSelection(idx)"
+                    :disabled="disabled"
+                    class="remove-btn"
+                >x</div>
             </div>
-            <input 
+            <input
                 v-show="showInput"
-                type="text" 
-                v-model="searchText" 
-                ref="input" 
+                type="text"
+                v-model="searchText"
+                ref="input"
                 class="input"
                 @keydown="handleKeyDown"
                 @keyup="handleKeyEvent"
@@ -389,20 +392,25 @@ export default {
             >
         </div>
         <div v-show="showingOptions" class="result-container">
-            <ul class="option-list" :style="`max-height: ${optionsListHeight}px`">
-                <li v-for="(opt, idx) in filteredUniqueOptions" 
-                    :key="idx" 
-                    class="filtered-option"
-                    :class="{highlighted: (idx === cursorPosition)}"
-                    :id="`option-${idx}`"
-                    @click="setSelection(opt)"
-                >
-                    <slot :option="opt" :index="idx" name="option">{{resolveDefaultOptionLabel(opt)}}</slot>
-                </li>
-                <li v-if="$slots.additionalOption" class="filtered-option additional-option">
-                    <slot name="additionalOption"></slot>
-                </li>
-            </ul>
+            <div>
+                <ul class="option-list" :style="`max-height: ${optionsListHeight}px`">
+                    <li v-for="(opt, idx) in filteredUniqueOptions"
+                        :key="idx"
+                        class="filtered-option"
+                        :class="{highlighted: (idx === cursorPosition)}"
+                        :id="`option-${idx}`"
+                        @click="setSelection(opt)"
+                    >
+                        <slot :option="opt" :index="idx" name="option">{{resolveDefaultOptionLabel(opt)}}</slot>
+                    </li>
+                    <li v-if="$slots.additionalOption" class="filtered-option additional-option">
+                        <slot name="additionalOption"></slot>
+                    </li>
+                </ul>
+                <div v-if="$slots.fixedBottomOption" class="bg-white p-2 border">
+                    <slot name="fixedBottomOption"></slot>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -410,7 +418,8 @@ export default {
     .search-select-component {
         position: relative;
         overflow: visible;
-        height: 2.5rem
+        height: 2.5rem;
+        width: 100%;
     }
 
     .search-select-container {
@@ -437,30 +446,31 @@ export default {
 
     .remove-btn {
         /* @apply bg-inherit border border-t-0 border-r-0 border-b-0 border-gray-400 rounded-r-md pt-0.5 cursor-pointer; */
-        @apply border border-t-0 border-r-0 border-b-0 border-gray-400 rounded-r-md pt-0.5 cursor-pointer;
     }
-    
+
     .search-select-container .input {
-        @apply border-none block w-80;
+        @apply border-none block w-40;
         display: block;
-        width: 2rem; /* Set the width small b/c this will grow with flex */
+        min-width: 2rem; /* Set the width small b/c this will grow with flex */
         outline: none;
         padding: 0px;
         flex-grow: 1;
         flex-shrink: 1;
-        z-index: 5;
     }
 
     .result-container {
         position:relative;
         z-index: 10;
+        overflow-x: auto;
     }
 
-    .option-list {
+    .result-container > * {
         @apply bg-gray-50;
         box-shadow: 0 0 5px #666;
         margin: 0 .5rem;
         padding: 0;
+    }
+    .option-list {
         overflow: auto;
     }
 
@@ -484,7 +494,7 @@ export default {
     }
     .filtered-option.highlighted {
         @apply bg-blue-200 bg-opacity-50;
-    } 
+    }
     .filtered-option.additional-option {
         @apply border-t border-gray-400 bg-white;
     }

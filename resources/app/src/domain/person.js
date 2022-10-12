@@ -10,10 +10,11 @@ class Person extends Entity {
         phone:null,
         institution_id: null,
         institution: {},
+        credentials: [],
+        expertises: [],
         primary_occupation_id: null,
         primary_occupation: {},
         profile_photo: null,
-        credentials: null,
         race_id: null,
         race: {},
         race_other: null,
@@ -33,12 +34,12 @@ class Person extends Entity {
         'updated_at',
         'deleted_at'
     ]
-    
+
     constructor(attributes = {}) {
         if (attributes instanceof Person) {
             attributes = {
-                ...attributes.attributes, 
-                memberships: [attributes.memberships.map(m => m.attributes)], 
+                ...attributes.attributes,
+                memberships: [attributes.memberships.map(m => m.attributes)],
             };
         }
 
@@ -56,6 +57,10 @@ class Person extends Entity {
 
     get institutionName () {
         return this.institution ? this.institution.name : null;
+    }
+
+    get credentialsString () {
+        return this.credentials ? this.credentials.map(c => c.name).join(', ') : null;
     }
 
     get primaryOccupationName () {
@@ -119,6 +124,14 @@ class Person extends Entity {
         return this.memberships.filter(m => m.has_coi_requirement)
     }
 
+    get needsCredentials () {
+        return !this.credentials || this.credentials.length == 0
+    }
+
+    get needsExpertise () {
+        return !this.expertises || this.expertises.length == 0
+    }
+
     matchesKeyword(keyword) {
 
         const {first_name, last_name, email} = this.attributes;
@@ -139,7 +152,7 @@ class Person extends Entity {
                 return true;
             }
         }
-        
+
         return false;
     }
 

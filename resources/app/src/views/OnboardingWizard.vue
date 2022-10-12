@@ -1,27 +1,27 @@
 <template>
     <div>
         <div class="flex justify-center">
-                <div class="onboarding-container" :style="`width: ${currentStepWidth}`">
-                    <keep-alive>
-                        <transition :name="animationDirection" mode="out-in">        
-                            <component 
-                                :is="currentStepComponent" 
-                                v-bind:invite="invite" 
-                                v-bind:person="invite.person"
-                                v-bind:code="invite.coi_code"
-                                ref="stepForm"
-                                @codeverified="handleCodeVerified"
-                                @ok="goForward"
-                                @saved="goForward"
-                                @back="goBack"
-                            ></component>
-                        </transition>
-                    </keep-alive>
-                </div>
-                <p>
-                    <router-link class="block link pt-2" :to="{name: 'login'}" v-if="!this.$store.getters.isAuthed">&lt; Log In</router-link>
-                </p>
+            <div class="onboarding-container" :style="`width: ${currentStepWidth}`">
+                <keep-alive>
+                    <transition :name="animationDirection" mode="out-in">
+                        <component
+                            :is="currentStepComponent"
+                            v-bind:invite="invite"
+                            v-bind:person="invite.person"
+                            v-bind:code="invite.coi_code"
+                            ref="stepForm"
+                            @codeverified="handleCodeVerified"
+                            @ok="goForward"
+                            @saved="goForward"
+                            @back="goBack"
+                        ></component>
+                    </transition>
+                </keep-alive>
             </div>
+            <p>
+                <router-link class="block link pt-2" :to="{name: 'login'}" v-if="!this.$store.getters.isAuthed">&lt; Log In</router-link>
+            </p>
+        </div>
     </div>
 </template>
 <script>
@@ -37,7 +37,6 @@ const stepComponents = [
     InviteRedemptionForm,
     OnboardingSteps,
     AccountCreationForm,
-    ProfileForm,
 ];
 
 const stepWidths = [
@@ -80,22 +79,13 @@ export default {
         canContinue () {
             return !this.$store.getters.isAuthed
                 || (
-                    this.$store.getters.isAuthed && 
+                    this.$store.getters.isAuthed &&
                     !this.$store.getters.currentUser.person.timezone
                 );
         }
 
     },
     watch: {
-        invite: {
-            deep: true,
-            immediate: true,
-            handler: function (to) {
-                if (to.inviter && new Group(to.inviter).isEp()) {
-                    stepComponents.push(Coi)
-                }
-            }
-        },
         code: {
             immediate: true,
             handler: function (to) {
@@ -156,7 +146,7 @@ export default {
     .backwards-leave-active {
         transition: all 0.3s ease-out;
     }
-    
+
     .forwards-enter-from{
         transform: translateX(20rem);
         /* opacity: 0; */

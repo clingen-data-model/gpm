@@ -1,7 +1,10 @@
 <script setup>
     import { computed, ref, watch } from 'vue'
     import axios from 'axios'
-import {hasPermission} from '../../auth_utils';
+    import {hasPermission} from '../../auth_utils';
+    import CredentialsView from '../people/CredentialsView.vue';
+    import ExpertisesView from '../people/ExpertisesView.vue';
+    import { formatDate } from '@/date_utils'
 
     const props = defineProps({
         members: {
@@ -18,8 +21,8 @@ import {hasPermission} from '../../auth_utils';
     }
 
     const members = ref([]);
-    const chairs = computed(() => members.value.filter(m => m.roles.includes('chair')));
-    const experts = computed(() => members.value.filter(m => m.roles.includes('expert')));
+    const chairs = computed(() => tableRows.value.filter(m => m.roles.includes('chair')));
+    const experts = computed(() => tableRows.value.filter(m => m.roles.includes('expert')));
 
     const memberGroups = computed(() => [
         {
@@ -28,11 +31,11 @@ import {hasPermission} from '../../auth_utils';
         },
         {
             title: 'Coordination',
-            members: members.value.filter(m => m.roles.includes('coordinator'))
+            members: tableRows.value.filter(m => m.roles.includes('coordinator'))
         },
         {
             title: 'Biocuration',
-            members: members.value.filter(m => m.roles.includes('biocurator'))
+            members: tableRows.value.filter(m => m.roles.includes('biocurator'))
         },
         {
             title: 'Expertise',
@@ -51,9 +54,7 @@ import {hasPermission} from '../../auth_utils';
                 member.pubCount = rsp.data.esearchresult.count
             })
             .catch(async error => {
-                console.log(error);
                 if (error.response.status == 429) {
-                    console.log('wait and try again')
                     await delay();
                     getPublications(member);
                 }
@@ -93,6 +94,28 @@ import {hasPermission} from '../../auth_utils';
         }
     }, {immediate: true})
 
+    const tableRows = computed( () => {
+        return props.members.map(m => {
+            const retVal = {
+                id: m.id,
+                first_name: m.person.first_name,
+                last_name: m.person.last_name,
+                name: m.person.name,
+                institution: m.person.institution ? m.person.institution.name : null,
+                // credentials: m.person.credentials,
+                legacy_credentials: m.person.legacy_credentials,
+                legacy_expertise: m.legacy_expertise,
+                roles: m.roles.map(r => r.name).join(', '),
+                person: m.person
+            }
+            if (hasPermission('ep-applications-manage')) {
+                retVal.coi_completed = formatDate(m.coi_last_completed);
+            }
+
+            return retVal;
+        });
+    })
+
 </script>
 <template>
     <div>
@@ -106,55 +129,43 @@ import {hasPermission} from '../../auth_utils';
                             <badge size="xxs">{{g.members.length}}</badge>
                         </th>
                     </tr>
-                    <tr class="text-sm">
-                        <th v-for="key in fields" :key="key">
-                            {{key}}
-                        </th>
-                        <th>Publications</th>
-                    </tr>
                 </thead>
-                <tbody class="text-sm">
-                    <tr v-for="m in g.members" :key="m.id">
-                        <td v-for="key in fields" :key="key">
-                            {{m[key]}}
-                        </td>
-                        <td>
-                            <!-- <popper v-if="m.pubCount" arrow hover class="cursor-pointer">
-                                <template v-slot:content>
-                                    <h5>Publications</h5>
-                                    <div v-if="m.pubCount == 0">
-                                        None.
-                                    </div>
-                                    <div v-else>
-                                        <ul class="list-disc ml-4">
-                                            <li v-for="pub in m.publications" :key="pub.uid" class="mb-1">
-                                                <a :href="`https://pubmed.ncbi.nlm.nih.gov/${pub.uid}`" target="pubmed" class="text-black">
-                                                    <PubmedCitation :summary="pub" />
-                                                </a>
-                                            </li>
-                                        </ul>
-                                        <a v-if="m.pubCount > 10"
-                                            :href="`https://pubmed.ncbi.nlm.nih.gov/?term=${m.last_name},+${m.first_name}%5BAuthor%5D`"
+                <template v-if="g.members.length > 0">
+                    <thead>
+                        <tr class="text-sm">
+                            <th>Name</th>
+                            <th>Credentials</th>
+                            <th>Expertise</th>
+                            <th>Institution</th>
+                            <th>Publications</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm">
+                        <tr v-for="m in g.members" :key="m.id">
+                            <td>{{m.person.name}}</td>
+                            <td>
+                                <CredentialsView :person="m.person" />
+                            </td>
+                            <td>
+                                <ExpertisesView :person="m.person" :legacyExpertise="m.legacy_expertise" />
+                            </td>
+                            <td>{{m.institution}}</td>
+                            <td>
+                                <div v-if="m.pubCount">
+                                    <popper v-if="m.pubCount > 0" content="Go to PubMed results." hover arrow placement="left">
+                                        <a :href="`https://pubmed.ncbi.nlm.nih.gov/?term=${m.last_name},+${m.first_name}%5BAuthor%5D`"
                                             target="pubmed"
-                                        >+{{m.pubCount - 10}} more.</a>
-                                    </div>
-                                </template>
-                                <badge size="xxs">{{m.pubCount}}</badge>
-                            </popper> -->
-                            <div v-if="m.pubCount">
-                                <popper v-if="m.pubCount > 0" content="Go to PubMed results." hover arrow placement="left">
-                                    <a :href="`https://pubmed.ncbi.nlm.nih.gov/?term=${m.last_name},+${m.first_name}%5BAuthor%5D`"
-                                        target="pubmed"
-                                        >
-                                        <badge size="xxs">{{m.pubCount}}</badge>
-                                    </a>
-                                </popper>
-                                <badge v-else size="xxs">{{m.pubCount}}</badge>
-                            </div>
-                            <button v-else class="btn btn-xs" @click="getPublications(m)">Get</button>
-                        </td>
-                    </tr>
-                </tbody>
+                                            >
+                                            <badge size="xxs">{{m.pubCount}}</badge>
+                                        </a>
+                                    </popper>
+                                    <badge v-else size="xxs">{{m.pubCount}}</badge>
+                                </div>
+                                <button v-else class="btn btn-xs" @click="getPublications(m)">Get</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </template>
             </template>
         </table>
     </div>

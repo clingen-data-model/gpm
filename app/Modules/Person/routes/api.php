@@ -9,6 +9,16 @@ use App\Modules\Person\Actions\PersonMerge;
 use App\Modules\Person\Actions\InviteRedeem;
 use App\Modules\Person\Actions\PersonDelete;
 use App\Modules\Person\Actions\ProfileUpdate;
+use App\Modules\Person\Actions\ExpertiseCreate;
+use App\Modules\Person\Actions\ExpertiseDelete;
+use App\Modules\Person\Actions\ExpertiseSearch;
+use App\Modules\Person\Actions\ExpertisesMerge;
+use App\Modules\Person\Actions\ExpertiseUpdate;
+use App\Modules\Person\Actions\CredentialCreate;
+use App\Modules\Person\Actions\CredentialDelete;
+use App\Modules\Person\Actions\CredentialSearch;
+use App\Modules\Person\Actions\CredentialsMerge;
+use App\Modules\Person\Actions\CredentialUpdate;
 use App\Modules\Person\Actions\PersonPhotoStore;
 use App\Modules\Person\Actions\InstitutionCreate;
 use App\Modules\Person\Actions\InstitutionDelete;
@@ -31,9 +41,7 @@ Route::group([
     'prefix' => 'api/people',
     'middleware' => ['api']
 ], function () {
-    Route::get('/institutions', function (Request $request) {
-        return Institution::select('name', 'abbreviation', 'id', 'url')->get();
-    });
+    Route::get('/institutions', [InstitutionController::class, 'index']);
 
     Route::get('/timezones', function (Request $request) {
         return Institution::select('name', 'abbreviation', 'id')->get();
@@ -86,14 +94,34 @@ Route::group([
 
 Route::group([
     'prefix' => 'api/institutions',
-    'middleware' => ['api']
+    'middleware' => ['api', 'auth:sanctum']
 ], function () {
-    Route::group(['middleware' => 'auth:sanctum'], function () {
-        Route::get('/', [InstitutionController::class, 'index']);
-        Route::post('/', InstitutionCreate::class);
-        Route::put('/merge', InstitutionsMerge::class);
-        Route::put('/{institution}', InstitutionUpdate::class);
-        Route::delete('/{institution}', InstitutionDelete::class);
-        Route::put('/{institution}/approved', InstitutionMarkApproved::class);
-    });
+    Route::get('/', [InstitutionController::class, 'index']);
+    Route::post('/', InstitutionCreate::class);
+    Route::put('/merge', InstitutionsMerge::class);
+    Route::put('/{institution}', InstitutionUpdate::class);
+    Route::delete('/{institution}', InstitutionDelete::class);
+    Route::put('/{institution}/approved', InstitutionMarkApproved::class);
+});
+
+Route::group([
+    'prefix' => 'api/credentials',
+    'middleware' => ['api', 'auth:sanctum']
+], function () {
+    Route::post('/', CredentialCreate::class);
+    Route::get('/', CredentialSearch::class);
+    Route::put('/merge', CredentialsMerge::class);
+    Route::put('/{credential}', CredentialUpdate::class);
+    Route::delete('/{credential}', CredentialDelete::class);
+});
+
+Route::group([
+    'prefix' => 'api/expertises',
+    'middleware' => ['api', 'auth:sanctum']
+], function () {
+    Route::post('/', ExpertiseCreate::class);
+    Route::get('/', ExpertiseSearch::class);
+    Route::put('/merge', ExpertisesMerge::class);
+    Route::put('/{expertise}', ExpertiseUpdate::class);
+    Route::delete('/{expertise}', ExpertiseDelete::class);
 });

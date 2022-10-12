@@ -3,7 +3,7 @@
         <button @click="initAnnouncement" class="link">Make an announcement</button>
         <teleport to='body'>
             <modal-dialog title="Make an announcement" v-model="showForm">
-                <data-form 
+                <data-form
                     :fields="formFields"
                     v-model="announcement"
                     :errors="errors"
@@ -44,11 +44,9 @@ export default {
     },
     methods: {
         initAnnouncement () {
-            console.log('initAnnouncment')
             this.showForm = true;
         },
         confirmSubmission () {
-            console.log('confirmSubmission')
             this.showConfirmation = true;
         },
         async saveConfirmed () {

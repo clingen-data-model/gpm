@@ -1,8 +1,23 @@
 <template>
     <div class="border-t pt-3 mb-1 mt-3 flex space-x-3">
         <slot>
-            <button class="btn" :class="['btn-'+size]" @click="cancel" v-if="showCancel" :disabled="$attrs.disabled">{{cancelText}}</button>
-            <button class="btn" :class="[submitVariant, 'btn-'+size]" @click="submit" :disabled="$attrs.disabled">{{submitText}}</button>
+            <button v-if="showCancel"
+                class="btn"
+                :class="['btn-'+size]"
+                @click="cancel"
+                :disabled="$attrs.disabled"
+            >
+                {{cancelText}}
+            </button>
+            <button
+                class="btn"
+                :class="[submitVariant, 'btn-'+size]"
+                @click="submit"
+                :disabled="$attrs.disabled"
+            >
+                {{submitText}}
+            </button>
+            <slot name="extra-buttons"></slot>
         </slot>
     </div>
 </template>

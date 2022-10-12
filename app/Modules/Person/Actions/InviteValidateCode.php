@@ -19,7 +19,7 @@ class InviteValidateCode
             // if ($invite->hasBeenRedeemed()) {
             //     throw ValidationException::withMessages(['code' => ['It looks like this invite has already been redeemed. Please log in to access your account, update your profile and complete any COI disclosures.']]);
             // }
-            $invite->load(['person', 'person.user', 'inviter']);
+            $invite->load(['person', 'person.user', 'person.credentials', 'person.expertises', 'inviter']);
             return new InviteResource($invite);
         }
 

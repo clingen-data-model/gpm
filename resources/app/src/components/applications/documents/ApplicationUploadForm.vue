@@ -146,7 +146,6 @@ export default {
                     })
                 data.append('file', this.$refs.fileInput.files[0]);
                 data.append('document_type_id', this.documentTypeId);
-                data.forEach(v => console.log(v));
                 await this.$store.dispatch('groups/addApplicationDocument', {group: this.group, data});
 
                 this.clearForm();

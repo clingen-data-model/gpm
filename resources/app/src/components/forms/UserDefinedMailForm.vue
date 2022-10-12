@@ -7,9 +7,9 @@
             </static-alert>
             <ul v-if="group.hasContacts">
                 <li v-for="contact in workingEmail.to" :key="contact.email">
-                    <router-link 
+                    <router-link
                         :to="{name: 'PersonDetail', params: {uuid: contact.uuid}}"
-                        class="text-blue-600 hover:underline" 
+                        class="text-blue-600 hover:underline"
                         target="person"
                     >
                         {{contact.name}} &lt;{{contact.email}}&gt;</router-link>
@@ -46,7 +46,7 @@ export default {
     },
     data() {
         return {
-            
+
         }
     },
     computed: {
@@ -58,7 +58,6 @@ export default {
                 return this.modelValue;
             },
             set (value) {
-                console.log('workingEmail.set', value);
                 this.emitEmailUpdate(value);
             }
         },
@@ -82,7 +81,7 @@ export default {
                 emailData.files.push(file);
             });
             this.$emit('update:email', data);
-        } 
+        }
     }
 }
 </script>
