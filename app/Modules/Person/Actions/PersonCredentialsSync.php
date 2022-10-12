@@ -9,6 +9,7 @@ class PersonCredentialsSync
     public function handle(Person $person, $credentialIds): Person
     {
         $person->credentials()->sync($credentialIds);
+        $person->touch();
         return $person;
     }
 

@@ -19,10 +19,8 @@ class DeleteCredentialTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->credential = Credential::factory()
-                            ->has(Person::factory())
-                            ->create();
-        $this->person = $this->credential->people->first();
+        $this->credential = Credential::factory()->create();
+        $this->person = Person::factory()->create();
     }
 
     /**
@@ -49,16 +47,17 @@ class DeleteCredentialTest extends TestCase
      */
     public function permissioned_user_can_delete_a_credential()
     {
+        $credentialId = $this->credential->id;
         $this->login(permissions: ['people-manage']);
         $this->makeRequest()
             ->assertStatus(200);
 
         $this->assertDatabaseMissing('credentials', [
-            'id' => $this->credential->id
+            'id' => $credentialId
         ]);
 
         $this->assertDatabaseMissing('credential_person', [
-            'credential_id' => $this->credential->id,
+            'credential_id' => $credentialId,
             'person_id' => $this->person->id
         ]);
     }
