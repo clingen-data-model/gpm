@@ -13,6 +13,17 @@ The EPAM is a Laravel application using MySQL for persistance and Redis as a cac
 
 The app, scheduler, and queue containers all use the same image. The entry point script (found in `.docker/start.sh`) determines the behavior of each container based on the `CONTAINER_ROLE` environment variable.
 
+### Actions
+The GPM makes heavy use of "actions" and in particular the [laravel-actions](https://github.com/lorisleiva/laravel-actions) package.  In this context, and action can be defined as class that performs a task.  Actions can take advantage of Laravel's dependency injection to compose an action of other actions.
+
+The laravel-actions package adds decorator traits that allow you use an action as a controller, event listener, queued job, or artisan command.
+
+Actions are used as controllers for nearly all write operations in the GPM as well as some read operations.
+
+By convention, actions in this code-base are named NounVerb to support easy location of the action you're looking for.
+
+Actions are currently found in `app/Actions` and in the `app/Modules/ModuleName/Actions`.
+
 ### Notifications
 Most notifications in the GPM use standard [laravel notifications infrastructure](https://laravel.com/docs/9.x/notifications).  The exception is notifications intended to be aggregated into digest emails. 
 
