@@ -1,22 +1,22 @@
 <?php
 
-namespace App\DataExchange\Jobs;
+namespace App\DataExchange\Actions;
 
+use Exception;
 use Carbon\Carbon;
-use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
+use App\DataExchange\Events\Created;
+use Lorisleiva\Actions\Concerns\AsJob;
 use App\DataExchange\Models\StreamMessage;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
+use Lorisleiva\Actions\Concerns\AsListener;
 use App\DataExchange\Contracts\MessagePusher;
 use App\DataExchange\Exceptions\StreamingServiceException;
 use App\DataExchange\Exceptions\StreamingServiceDisabledException;
 
-class PushMessage implements ShouldQueue
+class MessagePush
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use AsJob;
+    use AsListener;
 
     private $message;
 
@@ -25,9 +25,8 @@ class PushMessage implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(StreamMessage $message)
+    public function __construct(private MessagePusher $pusher)
     {
-        $this->message = $message;
     }
 
     /**
@@ -35,15 +34,16 @@ class PushMessage implements ShouldQueue
      *
      * @return void
      */
-    public function handle(MessagePusher $pusher)
+    public function handle(StreamMessage $streamMessage)
     {
         try {
-            $pusher->topic($this->message->topic);
-            $message = $this->getMessageString($this->message->message);
-            $pusher->push($message);
-            $this->message->update([
-                'sent_at' => Carbon::now()
-            ]);
+
+            $this->pusher->topic($streamMessage->topic);
+
+            $this->pusher->push($this->getMessageString($streamMessage->message));
+
+            $streamMessage->update(['sent_at' => Carbon::now()]);
+
         } catch (StreamingServiceDisabledException $e) {
             if (config('dx.warn-disabled', true)) {
                 Log::warning($e->getMessage());
@@ -53,6 +53,17 @@ class PushMessage implements ShouldQueue
             return;
         }
     }
+
+    public function asJob(StreamMessage $streamMessage)
+    {
+        $this->handle($streamMessage);
+    }
+
+    public function asListener(Created $event): void
+    {
+        $this->handle($event->streamMessage);
+    }
+
 
     private function getMessageString($message)
     {
@@ -66,4 +77,5 @@ class PushMessage implements ShouldQueue
 
         throw new Exception("Expected message to be string, object, or array.  Got ".gettype($message));
     }
+
 }
