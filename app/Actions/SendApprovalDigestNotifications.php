@@ -3,13 +3,16 @@
 namespace App\Actions;
 
 use App\Modules\Person\Models\Person;
+use Lorisleiva\Actions\Concerns\AsCommand;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\ApprovalDigestNotification;
 use App\Notifications\Contracts\DigestibleNotificationInterface;
 
 class SendApprovalDigestNotifications
 {
+    use AsCommand;
 
+    public $commandSignature = 'submissions:send-notification-digest';
 
     public function handle()
     {
