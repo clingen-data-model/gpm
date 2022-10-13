@@ -124,18 +124,49 @@
             :errors="errors.credential_ids">
             <template v-slot:label>
                 Credentials
-                <note>Degrees and Certifications</note>
+                <div>
+                    <popover hover arrow>
+                        <div class="text-xs cursor-pointer text-blue-600">What is this?</div>
+                        <template v-slot:content>
+                            <div style="max-width: 500px">
+                                <h4>What do you mean by credentials?</h4>
+                                <p>
+                                    Credentials are any degrees or professional certifications you have earned.  Typically, these will be the acronyms you list after your name on your CV.
+                                </p>
+                                <p>
+                                    We recommend choosing one or more options already in the list of credentials, but if you do not see yours feel free to add it.
+                                </p>
+                                <p>
+                                    Please do not include current job titles or specific.  If you would like to add that information to your profile please do so in the biography field below.
+                                </p>
+                            </div>
+                        </template>
+                    </popover>
+                </div>
             </template>
             <CredentialsInput v-model="profile.credentials"></CredentialsInput>
-            <!-- <template  v-slot:after-input>
-                <note>Include degrees and certifications such as PhD, MD, CGC, etc. Please include professional roles and associations in your biography.</note>
-            </template> -->
         </input-row>
 
         <input-row
             :errors="errors.expertise_ids">
             <template v-slot:label>
-                Expertise
+                Area of Expertise
+                <div>
+                    <popover hover arrow>
+                        <div class="text-xs cursor-pointer text-blue-600">What is this?</div>
+                        <template v-slot:content>
+                            <div style="max-width: 500px">
+                                <h4>What do you mean by <em>Area of Expertise</em>?</h4>
+                                <p>
+                                    We use this information to determine if the make up of gene and variant expert panels includes the breadth of expertise needed to do it's work.
+                                </p>
+                                <p>
+                                    Please choose the option from list that best describes your area of expertise. If you don't feel any of these options fit, select 'None'.
+                                </p>
+                            </div>
+                        </template>
+                    </popover>
+                </div>
             </template>
             <ExpertisesInput v-model="profile.expertises" />
         </input-row>
