@@ -311,7 +311,7 @@ export default {
                 return false;
             }
 
-            if (this.group.isEp() && member.hasAnyExpertise) {
+            if (this.group.isEp() && !member.hasAnyExpertise) {
                 return false;
             }
 
