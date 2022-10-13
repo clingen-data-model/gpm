@@ -37,11 +37,11 @@ export const coordinators = new Requirement('1+ Coordinator', group => !isEmpty(
 export const coisComplete = new Requirement('All members completed COI', group => isEmpty(group.members.filter(member => member.needsCoi)));
 // export const diversityOfExpertise = new Requirement('Diveristy of Expertise (need def)', group => (true));
 export const institutions = new Requirement(
-    '3+ institutions represented', 
+    '3+ institutions represented',
     group => {
         const institutionIds = group.members
                                 .filter(m => Boolean(m.person.institution))
-                                .map(m => m.person.institution.id);        
+                                .map(m => m.person.institution.id);
         return new Set(institutionIds).size > 2
     }
 );
@@ -54,7 +54,7 @@ export const genes = new Requirement('1+ genes in scope', group => group.expert_
 export const scopeDescription = new Requirement('Description of scope', group => !isEmpty(group.expert_panel.scope_description));
 
 export const curationProcess = new Requirement(
-    'Plans for sustained curation', 
+    'Plans for sustained curation',
     group => Boolean(group.expert_panel.curation_review_protocol_id)
 );
 export const meetingFrequency = new Requirement('Meeting frequency', group => !isEmpty(group.expert_panel.meeting_frequency));
@@ -66,7 +66,7 @@ export const gcepAttestation = new Requirement('GCEP processes Attestation', gro
 export const reanalysisAttestation = new Requirement('Reanalysis & discrepany resolution', group => !isEmpty(group.expert_panel.reanalysis_attestation_date));
 
 export const exampleSummaries = new Requirement(
-                                    '5+ Example Evidence Summaries', 
+                                    '5+ Example Evidence Summaries',
                                     group => group.expert_panel.evidence_summaries.length > 4
                                 );
 
@@ -85,7 +85,7 @@ export const minimumBiocurators = new Requirement(
     group => {
         return group.biocurators
                 .filter(biocurator => {
-                    return biocurator.training_level_1 
+                    return biocurator.training_level_1
                         && biocurator.training_level_2
                 }).length > 2
     }
@@ -109,9 +109,9 @@ export const memberExpertise = new Requirement (
     'Expertise information must be provided for each group member',
     group => group.members
                 .filter(m => {
-                    return m.expertise === null 
-                        || typeof m.expertise === 'undefined' 
-                        || m.expertise == ''
+                    return m.person.expertises === null
+                        || typeof m.person.expertises === 'undefined'
+                        || m.person.expertises.length == 0
                 })
                 .length == 0
 )
