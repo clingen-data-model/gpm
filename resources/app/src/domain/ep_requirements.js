@@ -109,9 +109,7 @@ export const memberExpertise = new Requirement (
     'Expertise information must be provided for each group member',
     group => group.members
                 .filter(m => {
-                    return m.person.expertises === null
-                        || typeof m.person.expertises === 'undefined'
-                        || m.person.expertises.length == 0
+                    return !m.hasAnyExpertise
                 })
                 .length == 0
 )

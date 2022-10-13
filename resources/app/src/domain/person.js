@@ -128,8 +128,12 @@ class Person extends Entity {
         return !this.credentials || this.credentials.length == 0
     }
 
+    get hasExpertise () {
+        return this.expertises && this.expertises.length > 0;
+    }
+
     get needsExpertise () {
-        return !this.expertises || this.expertises.length == 0
+        return !this.hasExpertise;
     }
 
     matchesKeyword(keyword) {

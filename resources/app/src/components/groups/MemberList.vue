@@ -130,7 +130,7 @@ export default {
                 fields.splice(fields.findIndex(f => f.name == 'coi_last_completed'), 1);
             }
             if (!this.group.isEp()) {
-               fields.splice(fields.findIndex(f => f.name == 'requirements'), 1);
+                fields.splice(fields.findIndex(f => f.name == 'requirements'), 1);
             }
             return fields;
         },
@@ -311,7 +311,7 @@ export default {
                 return false;
             }
 
-            if (this.group.isEp() && !member.expertise) {
+            if (this.group.isEp() && member.hasAnyExpertise) {
                 return false;
             }
 
@@ -328,7 +328,7 @@ export default {
             if (this.group.isEp()) {
                 requirements.expertise = {
                     label: 'Expertise provided',
-                    met: member.expertise,
+                    met: member.hasAnyExpertise,
                 };
             }
 
@@ -495,7 +495,6 @@ export default {
                 </template>
 
                 <template v-slot:cell-requirements="{item}">
-                        <!-- <pre>{{item}}</pre> -->
                     <popover hover arrow placement="top">
                         <icon-checkmark v-if="requirementsMet(item)" :width="12" :height="12" class="text-green-600"/>
                         <icon-exclamation v-else :width="12" :height="12" class="text-red-700"/>
