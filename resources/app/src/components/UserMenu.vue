@@ -1,20 +1,20 @@
 <template>
-    <div class="relative -top-3 right-0 text-right">
+    <div class="relative -top-3 right-0 text-right" style="z-index: 500">
         <div v-show="isAuthed">
             <div class="flex flex-row-reverse align-middle -mb-7 pt-3 pb-3 pr-2 relative z-20 cursor-pointer w-48"
                 :class="{'w-48': menuOpen, 'bg-yellow-300': user.is_impersonating}"
-                ref="menuButton" 
+                ref="menuButton"
                 @click.stop="toggleMenu"
             >
                 <icon-cheveron-down></icon-cheveron-down>
                 {{user.name}} <span v-if="user.is_impersonating">*</span>
             </div>
-            <transition name="slide-fade-down">            
-                <div 
-                    v-show="menuOpen" 
+            <transition name="slide-fade-down">
+                <div
+                    v-show="menuOpen"
                     v-click-outside="{exclude: ['menuButton'], handler: handleOutsideClick}"
                     ref="dropdownMenu"
-                    class="absolute right-0 top-0 pt-11 bg-white border w-48 z-10 shadow" 
+                    class="absolute right-0 top-0 pt-11 bg-white border w-48 z-10 shadow"
                 >
                     <ul>
                         <li class="menu-item">
@@ -36,9 +36,12 @@
                             <router-link :to="{name: 'InviteAdmin'}">
                                 Invites
                             </router-link>
-                        </li> 
+                        </li>
                         <li class="menu-item" v-if="hasPermission('people-manage')">
                             <a href="/admin/institutions">Institutions</a>
+                        </li>
+                        <li class="menu-item" v-if="hasPermission('people-manage')">
+                            <a href="/admin/credentials">Credentials</a>
                         </li>
                         <li class="menu-item" v-if="hasPermission('mail-log-view')">
                             <router-link :to="{name: 'mail-log'}" @click="showMenu = false">Mail log</router-link>

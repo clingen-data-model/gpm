@@ -3,10 +3,14 @@
     import {api} from '@/http'
     import {setupMirror, mirrorProps, mirrorEmits} from '@/composables/setup_working_mirror'
     import SearchSelect from '../forms/SearchSelect.vue';
-    import CredentialCreateForm from './CredentialCreateForm'
+    import CredentialCreateForm from '../credentials/CredentialCreateForm'
 
     const props = defineProps({
-        ...mirrorProps
+        ...mirrorProps,
+        multiple: {
+            type: Boolean,
+            default: true
+        }
     });
 
     const emit = defineEmits([...mirrorEmits]);
@@ -55,7 +59,7 @@
     <SearchSelect
         v-model="workingCopy"
         :options="credentials"
-        multiple
+        :multiple="multiple"
         showOptionsOnFocus
         showOptionsWhenEmpty
         :searchFunction="searchCredentials"

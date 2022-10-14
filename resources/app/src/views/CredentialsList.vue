@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Institutions</h1>
+        <h1>Credentials</h1>
         <data-table
             paginated
             :data="filteredItems"
@@ -19,10 +19,8 @@
                     <template v-slot:label>
                         <button class="btn btn-xs">&hellip;</button>
                     </template>
-
-
                     <dropdown-item @click="edit(item)">Edit</dropdown-item>
-                    <dropdown-item @click="initApprove(item)">Approve</dropdown-item>
+                    <dropdown-item v-if="!item.approved" @click="initApprove(item)">Approve</dropdown-item>
                     <dropdown-item @click="initMerge(item)">Merge into another</dropdown-item>
                     <dropdown-item @click="initDelete(item)">Delete</dropdown-item>
                 </dropdown-menu>
@@ -30,18 +28,23 @@
         </data-table>
         <teleport to="body">
             <modal-dialog v-model="showApproveDialog" :title="`Approve ${currentItem.name}`">
-                <institution-approval-form v-model="currentItem" @saved="handleSaved" @canceled="handleCancel" />
+                <CredentialsApprovalForm v-model="currentItem" @saved="handleSaved" @canceled="handleCancel" />
             </modal-dialog>
             <modal-dialog v-model="showEditDialog" :title="`Edit ${currentItem.name}`">
-                <institution-update-form v-model="currentItem" @saved="handleSaved" @canceled="handleCancel" />
+                <CredentialUpdateForm v-model="currentItem" @saved="handleSaved" @canceled="handleCancel" />
             </modal-dialog>
-            <modal-dialog v-model="showMergeDialog" title="Merge Institutions">
-                <institution-merge-form :obsoletes="[currentItem]" @saved="handleMerge" @canceled="showMergeDialog = false" />
+            <modal-dialog v-model="showMergeDialog" title="Merge Credentials">
+                <CredentialMergeForm
+                    :obsoletes="currentItem"
+                    :credentials="items"
+                    @saved="handleMerge"
+                    @canceled="showMergeDialog = false"
+                />
             </modal-dialog>
-            <modal-dialog v-model="showDeleteConfirmation" title="Delete Institution" size="sm">
+            <modal-dialog v-model="showDeleteConfirmation" title="Delete Credential" size="sm">
                 <div v-if="currentItem.people_count > 0">
-                    <p>You cannot delete an institution people are using.</p>
-                    <p>Either edit this this institution or merge it into another.</p>
+                    <p>You cannot delete an credential people are using.</p>
+                    <p>Either edit this this credential or merge it into another.</p>
                 </div>
                 <div v-else>
                     You are about to delete the {{currentItem.name}}
@@ -56,19 +59,19 @@
     </div>
 </template>
 <script>
+import {api} from '@/http'
 import sortAndFilter from '@/composables/router_aware_sort_and_filter';
-import {getAllInstitutions, deleteInstitution} from '@/forms/institution_form'
-import InstitutionApprovalForm from '@/components/institutions/InstitutionApprovalForm.vue'
-import InstitutionUpdateForm from '@/components/institutions/InstitutionUpdateForm.vue'
-import InstitutionMergeForm from '@/components/institutions/InstitutionMergeForm.vue'
+import CredentialUpdateForm from '@/components/credentials/CredentialUpdateForm.vue'
+import CredentialsApprovalForm from '../components/credentials/CredentialsApprovalForm.vue';
+import CredentialMergeForm from '../components/credentials/CredentialMergeForm.vue';
 
 export default {
     name: 'InstitutionList',
     components: {
-        InstitutionUpdateForm,
-        InstitutionApprovalForm,
-        InstitutionMergeForm,
-    },
+    CredentialUpdateForm,
+    CredentialsApprovalForm,
+    CredentialMergeForm
+},
     data() {
         return {
             items: [],
@@ -83,17 +86,6 @@ export default {
                     name: 'name',
                     type: String,
                     sortable: true
-                },
-                {
-                    name: 'abbreviation',
-                    type: String,
-                    sortable: true
-                },
-                {
-                    name: 'country.name',
-                    label: 'Country',
-                    type: String,
-                    sortable: true,
                 },
                 {
                     name: 'people_count',
@@ -119,7 +111,7 @@ export default {
                 }
 
             ],
-            currentItem: {country: {}},
+            currentItem: {},
             showApproveDialog: false,
             showEditDialog: false,
             showMergeDialog: false,
@@ -132,11 +124,9 @@ export default {
                 return this.items;
             }
             const pattern = new RegExp(`.*${this.filter}.*`, 'i');
-            return this.items.filter(item => {
-                return item.name.match(pattern)
-                    || (item.abbreviation && item.abbreviation.match(pattern))
-                    || (item.country && item.country.name.match(pattern));
-            })
+            return this.items.filter(item =>  item.name.match(pattern)
+                                        || (item.abbreviation && item.abbreviation.match(pattern))
+                                        || (item.country && item.country.name.match(pattern)))
         },
         currentIndex () {
             return this.items.findIndex(i => i.id == this.currentItem.id);
@@ -155,16 +145,12 @@ export default {
             this.currentItem = item;
             this.showMergeDialog = true;
         },
-        async getInstitutions () {
-            this.items = await getAllInstitutions();
-        },
         handleSaved() {
             this.showApproveDialog = false;
             this.showEditDialog = false;
 
             this.updateItem();
-            this.currentItem = {country: {}}
-            this.$store.commit("pushSuccess", 'Institution saved.')
+            this.$store.commit("pushSuccess", 'Credential saved.')
         },
         handleCancel() {
             this.showApproveDialog = false;
@@ -178,6 +164,8 @@ export default {
             this.$store.commit("pushSuccess", 'Institution merged.')
         },
         updateItem() {
+            console.log(this.currentItem)
+            console.log(this.currentIndex)
             if (!this.currentItem.id) {
                 return;
             }
@@ -196,12 +184,16 @@ export default {
             }
 
             if (this.currentItem.people_count > 0) {
-                alert('You cannot delete an institution because it is in use.  Pelaes edit the institution or merge it into another.')
+                alert('You cannot delete an credential because it is in use.  Please edit the credential or merge it into another.')
             }
-            await deleteInstitution(this.currentItem);
+            await api.delete(`/api/credentials/${this.currentItem.id}`);
             this.items.splice(this.currentIndex, 1);
             this.showDeleteConfirmation = false;
             this.$store.commit("pushSuccess", `${this.currentItem.name} deleted.`);
+        },
+        async getCredentials () {
+            this.items = await api.get('/api/credentials?withCount[]=people')
+                            .then(rsp => rsp.data);
         }
     },
     setup() {
@@ -213,7 +205,7 @@ export default {
         }
     },
     mounted () {
-        this.getInstitutions();
-    }
+        this.getCredentials();
+    },
 }
 </script>
