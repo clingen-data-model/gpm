@@ -213,7 +213,7 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
      {
          return $this->person->expertises->count() > 0
             ? $this->person->expertises->pluck('name')->join(', ')
-            : $this->legacy_expertise;
+            : $this->legacy_expertise ?? '';
      }
 
 

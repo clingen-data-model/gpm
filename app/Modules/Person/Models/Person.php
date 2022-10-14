@@ -361,6 +361,15 @@ class Person extends Model implements HasLogEntries
         return true;
     }
 
+        public function getCredentialsAsStringAttribute()
+        {
+            if ($this->credentials->count() == 0) {
+                return $this->legacy_credentials;
+            }
+            return $this->credentials->join(', ');
+        }
+
+
     // Factory
     protected static function newFactory()
     {
