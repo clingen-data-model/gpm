@@ -20,7 +20,9 @@ class CredentialUpdate
 
     public function asController(ActionRequest $request, Credential $credential)
     {
-        return $this->handle($credential, $request->safe(['name', 'approved']));
+        $credential = $this->handle($credential, $request->safe(['name', 'approved']));
+
+        return $credential->loadCount('people');
     }
 
     public function rules(): array
