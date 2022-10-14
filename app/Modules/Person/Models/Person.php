@@ -366,7 +366,7 @@ class Person extends Model implements HasLogEntries
             if ($this->credentials->count() == 0) {
                 return $this->legacy_credentials;
             }
-            return $this->credentials->join(', ');
+            return $this->credentials->pluck('name')->join(', ');
         }
 
 

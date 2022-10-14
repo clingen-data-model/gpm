@@ -31,7 +31,7 @@ class GroupMembersMakeCsv
                             'training_level_1' => $member->training_level_1 ? 'Yes' : 'No',
                             'training_level_2' => $member->training_level_2 ? 'Yes' : 'No',
                             'institution' => ($member->person->institution) ? $member->person->institution->name : null,
-                            'credentials' => $member->person->credentials,
+                            'credentials' => $member->person->credentialsAsString,
                             'biography' => $member->person->biography,
                             'phone' => $member->person->phone,
                             'address' => $member->person->addressString,
