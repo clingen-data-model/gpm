@@ -82,58 +82,11 @@ The ClinGen Data Exchange (DX) is a [Kafka](https://kafka.apache.org/) message b
 
 The GPM integrates with the DX to publish messages about its data and consume messages from the [CSPEC Registry](https://cspec.genome.network/cspec/ui/svi/) about VCEP AMCG/AMP Guidelines Specfications.
 
-
 The GPM produces to one (soon two) topic(s):
 * `gpm-general-events` - While a bit mis-named, this topic publishes messages about events related to GPM groups, their scope, and their members.  See [gpm-general-events documention](public/data-exchange/gpm-general-events.md) for details.
 * `gpm-person-events` - This topic publishes messages about events related to people in the GPM (i.e. profile information about group members). See [gpm-person-events documentation](public/data-exchange/gpm-person-events.md) for details.
 
-#### Notes about the DX implementation
-* All topics are on a single partition.
-
-#### Configuration
-A number of environment variables can be set to configure DX authentication and topics.
-[TODO]
-
-#### Concepts
-`MessageStream`: An object with consumes messages from a set of topics, yielding `DxMessage` DTOs as messages are consumed.
-
-`DxMessage`: A data transfer object representing a DX message.
-
-`MessageProcessor`: An action who's handle method takes a `DxMessage` an argument, does some processing, and returns the `DxMessage`.
-
-#### Consuming Topics
-The GPM consumes all available fmessages from subscribed topics every hour.
-Consuming topics from the data exchange can be done using `App\DataExchnage\Actions\DxConsume`:
-```
-    // or $consume = app()->make(DxConsume::class);
-    $consume->handle(['topic_1', 'topic_2']);
-```
-The consumer adds topics to a `MessageStream` and passes consumed messages to a `MessageProcessor` which processes the messages.
-
-By default the GPM binds `KafkaMessageStream` to the `MessageStream` contract, and `IncomingMessageProcess` to the `MessageProcessorContract`.
-
-`IncomingMessageProcessor` delegates creation of a `StreamMessage` model based on the `DxMessage` to `IncomingMessageStore` and uses the `MessageHandlerFactory` to instantiate message specific processing.
-
-#### Actions taken on receipt of CSPEC messages
-If the affiliation associated with the event does not exist, or has an incompatible application status a `DataSynchronizationException` is thrown, an error is logged and the message is left unprocessed.
-
-<table>
-    <tr>
-        <th>Event Type</th>
-        <th>Action Taken</th>
-        <th>Action Class</th>
-    </tr>
-    <tr>
-        <td>classified-rules-approved</td>
-        <td>Marks Draft Rules step (2) approved.</td>
-        <td>App\DataExchange\Actions\ClassifiedRulesApprovedProcessor</td>
-    </tr>
-    <tr>
-        <td>pilot-rules-approved</td>
-        <td>Marks Pilot Rules step (3) approved if not previously already approved.  If previously approved, assigns a task to review sustained curation responses.</td>
-        <td>App\DataExchange\Actions\ClassifiedRulesApprovedProcessor</td>
-    </tr>
-</table>
+For more details about implementation of DX integration see the [DX Implementation documentation](/documentation/dx-implementation.md)
 
 ## DevOps
 The demo and production instances of the GPM are hosted on UNC's [Cloudapps OpenShift cluster](https://console.cloudapps.unc.edu) in the `dept-gpm` project.  OpenShift is RedHat's value-add to the Kubernetes open source project.  You're better off referencing Kubernetes documentation for anything that is not a proprietary OpenShift thing (i.e. Builds, BuildConfigs, etc.).
@@ -148,7 +101,7 @@ In the GPM there are several controlled vocabularies.  Some controlled vocabular
 
 A model with synonyms implements the `App\ControlledVocabularies\HasSynonymsInterface` interface.  A base implementation can be found in `App\ControlledVocabularies\HasSynonymsTrait` trait.
 
-### Training
+### TODO: Training
 ClinGen needs to track the training of bio-curators to ensure compliance with FDA regulations.  
 
 ClinGen members in all curation activities must receive training to participate in ClinGen groups and expert panels.
