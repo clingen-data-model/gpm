@@ -38,8 +38,8 @@ class CredentialsMerge
     public function rules(): array
     {
         return [
-           'obsolete_id' => 'required|numeric|exists:credentials,id|different:authority_id',
-           'authority_id' => 'required|numeric|exists:credentials,id|different:obsolete_id',
+            'obsolete_id' => 'required|numeric|exists:credentials,id|different:authority_id',
+            'authority_id' => 'required|numeric|exists:credentials,id|different:obsolete_id',
         ];
     }
 
