@@ -43,6 +43,9 @@
                         <li class="menu-item" v-if="hasPermission('people-manage')">
                             <a href="/admin/credentials">Credentials</a>
                         </li>
+                        <li class="menu-item" v-if="hasPermission('people-manage')">
+                            <a href="/admin/experises">Expertises</a>
+                        </li>
                         <li class="menu-item" v-if="hasPermission('mail-log-view')">
                             <router-link :to="{name: 'mail-log'}" @click="showMenu = false">Mail log</router-link>
                         </li>
