@@ -5,6 +5,7 @@ namespace App\Modules\Group\Models;
 use InvalidArgumentException;
 use App\Modules\Person\Models\Person;
 use Illuminate\Database\Eloquent\Model;
+use Database\Factories\JudgementFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
@@ -41,7 +42,7 @@ class Judgement extends Model
     {
         return $this->belongsTo(Person::class);
     }
-    
+
 
     // SCOPES
     public function scopeForSubmission($query, $submission)
@@ -57,7 +58,7 @@ class Judgement extends Model
 
         return $query->where('submission_id', $submissionId);
     }
-   
+
     public function scopeByPerson($query, $person)
     {
         if (is_iterable($person)) {
@@ -71,7 +72,7 @@ class Judgement extends Model
 
         return $query->where('person_id', $personId);
     }
-    
+
 
     // MUTATORS
     public function setDecisionAttribute($value)
@@ -81,5 +82,10 @@ class Judgement extends Model
         }
         $this->attributes['decision'] = $value;
     }
-    
+
+
+    protected static function newFactory()
+    {
+        return new JudgementFactory();
+    }
 }

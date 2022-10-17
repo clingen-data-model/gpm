@@ -52,7 +52,7 @@ class SearchCredentialsTest extends TestCase
 
         $response = $this->makeRequest('m')
             ->assertStatus(200)
-            ->assertJsonCount(6);
+            ->assertJsonCount(8);
 
         $this->makeRequest('ms')
             ->assertStatus(200)

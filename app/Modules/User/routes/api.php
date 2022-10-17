@@ -1,6 +1,6 @@
 <?php
 
-use App\Modules\User\Actions\RolesAndPermissionsUpdate;
+use App\Modules\User\Actions\UserRolesAndPermissionsUpdate;
 use Illuminate\Support\Facades\Route;
 use App\Modules\User\Http\Controllers\Api\UserController;
 
@@ -10,5 +10,5 @@ Route::group([
 ], function () {
     Route::get('/', [UserController::class, 'index']);
     Route::get('/{user}', [UserController::class, 'show']);
-    Route::put('/{user}/roles-and-permissions', RolesAndPermissionsUpdate::class);
+    Route::put('/{user}/roles-and-permissions', UserRolesAndPermissionsUpdate::class);
 });

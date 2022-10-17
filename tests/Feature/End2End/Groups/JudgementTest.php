@@ -14,7 +14,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use App\Modules\Group\Actions\ApplicationSubmitStep;
 use Database\Seeders\NextActionAssigneesTableSeeder;
-use App\Modules\Group\Actions\ApplicationJudgementSubmit;
+use App\Modules\Group\Actions\JudgementCreate;
 
 abstract class JudgementTest extends TestCase
 {
@@ -28,8 +28,8 @@ abstract class JudgementTest extends TestCase
         $this->seed(NextActionAssigneesTableSeeder::class);
         $this->seed(NextActionTypesTableSeeder::class);
         $this->submit = app()->make(ApplicationSubmitStep::class);
-        $this->makeJudgement = app()->make(ApplicationJudgementSubmit::class);
-        
+        $this->makeJudgement = app()->make(JudgementCreate::class);
+
         $this->user = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
         $epAndSub = $this->setupExpertPanelAndSubmission();
         $this->expertPanel = $epAndSub['expertPanel'];
@@ -50,9 +50,9 @@ abstract class JudgementTest extends TestCase
     protected function setupJudgement(Group $group): Judgement
     {
         return $this->makeJudgement->handle(
-            group: $group, 
-            person: $this->user->person, 
-            decision: 'request-revisions', 
+            group: $group,
+            person: $this->user->person,
+            decision: 'request-revisions',
             notes: 'blah blah blah'
         );
 

@@ -30,13 +30,15 @@ class ApplicationSnapshotCreate
                 $q->select([
                     'id',
                     'first_name', 'last_name', 'email',
-                    'credentials',
+                    'legacy_credentials',
                 ]);
             },
             'members.person.institution',
+            'members.person.credentials',
+            'members.person.expertises',
             'members.roles',
             'comments',
-            'comments.creator'
+            'comments.creator',
         ]);
 
         $snapshot =  $this->snapshotter->createSnapshot($group);
@@ -63,5 +65,5 @@ class ApplicationSnapshotCreate
 
         return $latestVersion->version ?? 0;
     }
-    
+
 }

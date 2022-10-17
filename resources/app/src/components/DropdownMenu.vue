@@ -73,7 +73,7 @@ export default {
     //         <div class={containerClass.join(' ')}>
     //             <div class="dropdown" class={this.orientation}>
     //                 <div class="dropdown-label"
-    //                     ref="menuButton" 
+    //                     ref="menuButton"
     //                     onClick={this.toggleMenu}
     //                 >
     //                     <span v-show={!this.hideCheveron}>
@@ -83,15 +83,15 @@ export default {
     //                 </div>
     //                 <teleport to="body">
     //                     <transition name="slide-fade-down">
-    //                         <div 
+    //                         <div
     //                             v-show={this.menuOpen}
     //                             v-click-outside={{exclude: ['menuButton'], handler: this.handleOutsideClick}}
     //                             ref="dropdownMenu"
     //                             class="dropdown-items-container"
     //                             style={`top: ${this.menuY}px; left: ${this.menuX}px`}
     //                         >
-    //                             <ul 
-    //                                 class="dropdown-items" 
+    //                             <ul
+    //                                 class="dropdown-items"
     //                                 onClick="{this.toggleMenu}"
     //                             >
     //                                 {this.$slots.default()}
@@ -119,7 +119,7 @@ export default {
     <div>
         <div class="dropdown" :class="orientation">
             <div class="dropdown-label"
-                ref="menuButton" 
+                ref="menuButton"
                 @click.stop="toggleMenu"
             >
                 <span v-show="!hideCheveron">
@@ -129,15 +129,15 @@ export default {
             </div>
             <teleport to="body">
                 <transition name="slide-fade-down">
-                    <div 
+                    <div
                         v-show="menuOpen"
                         v-click-outside="{exclude: ['menuButton'], handler: this.handleOutsideClick}"
                         ref="dropdownMenu"
-                        class="dropdown-items-container"
+                        class="dropdown-items-container z-50"
                         :style="{top: `${menuY}px`, left: `${this.menuX}px`}"
                     >
-                        <ul 
-                            class="dropdown-items" 
+                        <ul
+                            class="dropdown-items"
                             onClick="{this.toggleMenu}"
                         >
                             <slot></slot>
@@ -172,8 +172,8 @@ export default {
     }
     .dropdown-items {
         @apply bg-transparent shadow-md w-48;
-        z-index: 1000;
-    },
+        z-index: 100;
+    }
     .dropdown-items > li {
         @apply bg-white hover:bg-blue-100 cursor-pointer py-2 px-2;
         @apply border border-b-0 border-gray-300;

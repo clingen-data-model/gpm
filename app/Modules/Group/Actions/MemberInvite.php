@@ -55,7 +55,6 @@ class MemberInvite
                         ->cancelNotification()
                         ->handle($group, $person, [
                             'is_contact' => $isContact,
-                            'expertise' => valueAtIndex($data, 'expertise'),
                             'notes' => valueAtIndex($data, 'notes'),
                             'training_level_1' => valueAtIndex($data, 'training_level_1'),
                             'training_level_2' => valueAtIndex($data, 'training_level_2'),

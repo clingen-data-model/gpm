@@ -12,7 +12,8 @@ class ExpertiseSearch
 
     public function handle(ActionRequest $request)
     {
-        $query = Expertise::query()->with('synonyms');
+        $query = Expertise::query()->with('synonyms')
+                    ->withCount('people');
 
         if ($request->has('keyword')) {
             $query->whereRaw('LOWER(expertises.name) LIKE ?', '%'.$this->normalizeString($request->keyword.'%'));

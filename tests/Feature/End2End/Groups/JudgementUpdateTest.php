@@ -2,18 +2,11 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Testing\TestResponse;
-use App\Modules\Person\Models\Person;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Database\Seeders\NextActionTypesTableSeeder;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Database\Seeders\SubmissionTypeAndStatusSeeder;
-use App\Modules\Group\Actions\ApplicationSubmitStep;
-use Database\Seeders\NextActionAssigneesTableSeeder;
-use App\Modules\Group\Actions\ApplicationJudgementSubmit;
+use App\Modules\Group\Notifications\JudgementActivityNotification;
 
 class JudgementUpdateTest extends JudgementTest
 {
@@ -22,7 +15,7 @@ class JudgementUpdateTest extends JudgementTest
     public function setup():void
     {
         parent::setup();
-        
+
         $this->judgement = $this->setupJudgement($this->expertPanel->group);
         Sanctum::actingAs($this->user);
     }
@@ -33,7 +26,7 @@ class JudgementUpdateTest extends JudgementTest
     public function person_other_than_approver_cannot_update_anothers_judgment()
     {
         $this->otherUser = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
-        
+
         Sanctum::actingAs($this->otherUser);
         $this->makeRequest()
             ->assertStatus(403);
@@ -56,8 +49,8 @@ class JudgementUpdateTest extends JudgementTest
             'notes' => 'These are my comments I want to add.'
         ]);
     }
-    
-    
+
+
 
     /**
      * @test
@@ -76,16 +69,22 @@ class JudgementUpdateTest extends JudgementTest
     }
 
     /**
-     * A basic feature test example.
-     *
-     * @return void
+     * @test
      */
-    public function test_example()
+    public function notifies_other_notifiables_when_judgement_updated()
     {
-        $response = $this->get('/');
+        $otherApprover = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
+        $commenter = $this->setupUserWithPerson(permissions: ['ep-applications-comment']);
 
-        $response->assertStatus(200);
+        Notification::fake();
+        $this->makeRequest()
+            ->assertStatus(200);
+
+        Notification::assertNotSentTo($this->user->person, JudgementActivityNotification::class);
+        Notification::assertSentTo($otherApprover->person, JudgementActivityNotification::class);
+        Notification::assertSentTo($commenter->person, JudgementActivityNotification::class);
     }
+
 
     private function makeRequest($data = null): TestResponse
     {

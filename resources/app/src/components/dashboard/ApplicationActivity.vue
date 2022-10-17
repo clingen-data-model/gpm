@@ -79,8 +79,10 @@
 <template>
     <div>
         <h2>Application activity</h2>
-        <!-- <pre>{{groups}}</pre> -->
-        <data-table
+        <div v-if="groups.length == 0" class="alert bg-gray-100 p-2 text-gray-400">
+            No application activity.
+        </div>
+        <data-table v-else
             :data="groups"
             :fields="fields"
             v-model:sort="sort"

@@ -15,7 +15,8 @@
                 "completed",
                 "deleted",
                 "member_added",
-                "member_removed"
+                "member_removed",
+                "ep_info_updated"
             ]
         },
         "schema_version": { "type": "integer" },

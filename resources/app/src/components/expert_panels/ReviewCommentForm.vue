@@ -4,17 +4,17 @@
 
     const group = inject('group');
 
-    const props = defineProps({ 
+    const props = defineProps({
         commentManager: {
             type: Object,
             required: true
         },
         section: {
-            type: [String, null], 
+            type: [String, null],
             default: null
         },
-        subjectType: { 
-            type: String, 
+        subjectType: {
+            type: String,
             default: 'App\\Modules\\Group\\Models\\Group'
         },
         subjectId: {
@@ -70,7 +70,13 @@
     const create = () => {
         newComment.value.subject_type = props.subjectType,
         newComment.value.subject_id = props.subjectId || group.value.id,
-        newComment.value.metadata = {section: props.section}
+        newComment.value.metadata = {
+            section: props.section,
+            // This metadata is necessary to ensure reply comments are included in notifications.
+            root_subject_type: 'App\\Modules\\Group\\Models\\Group',
+            root_subject_id: group.value.id
+        }
+
         if (props.onlyInternal) {
             newComment.value.comment_type_id = 1
         }

@@ -20,14 +20,14 @@ class ExpertiseUpdate
 
     public function asController(ActionRequest $request, Expertise $expertise)
     {
-        return $this->handle($expertise, $request->safe(['name', 'approved']));
+        return $this->handle($expertise, $request->safe(['name', 'approved']))->loadCount('people');
     }
 
     public function rules(): array
     {
         return [
-           'name' => ['required', 'max:255', Rule::unique('expertises', 'name')->ignore(request()->expertise->id)],
-           'approved' => 'nullable|boolean'
+            'name' => ['required', 'max:255', Rule::unique('expertises', 'name')->ignore(request()->expertise->id)],
+            'approved' => 'nullable|boolean'
         ];
     }
 

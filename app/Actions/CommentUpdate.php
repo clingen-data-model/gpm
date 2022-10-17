@@ -2,17 +2,21 @@
 
 namespace App\Actions;
 
+use App\Events\CommentUpdated;
 use App\Models\Comment;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 
 class CommentUpdate
 {
-    	use AsController;
+    use AsController;
 
     public function handle(Comment $comment, array $data)
-    {   
+    {
         $comment->update($data);
+
+        event(new CommentUpdated($comment));
+
         return $comment;
     }
 
@@ -36,7 +40,7 @@ class CommentUpdate
 
     public function authorize(ActionRequest $request, Comment $comment):bool
     {
-        return $request->user()->id == $request->comment->creator_id 
+        return $request->user()->id == $request->comment->creator_id
             || $request->user()->hasPermissionTo('comments-manage');
     }
 

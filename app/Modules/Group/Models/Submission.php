@@ -159,6 +159,12 @@ class Submission extends Model
         return in_array($this->submission_status_id, $pendingStatuses);
     }
 
+    public function getIsUnderChairReviewAttribute(): bool
+    {
+        return $this->submission_status_id == config('submissions.statuses.under-chair-review.id');
+    }
+
+
 
     /**
      * DOMAIN

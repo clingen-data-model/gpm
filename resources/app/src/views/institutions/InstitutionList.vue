@@ -20,6 +20,7 @@
                         <button class="btn btn-xs">&hellip;</button>
                     </template>
 
+
                     <dropdown-item @click="edit(item)">Edit</dropdown-item>
                     <dropdown-item @click="initApprove(item)">Approve</dropdown-item>
                     <dropdown-item @click="initMerge(item)">Merge into another</dropdown-item>

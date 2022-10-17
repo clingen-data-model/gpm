@@ -1,23 +1,26 @@
 <script setup>
-    import {ref, onMounted } from 'vue'
-    import {api} from '@/http'
+    import {computed, ref, onMounted } from 'vue'
+    import {useStore} from 'vuex'
     import {setupMirror, mirrorProps, mirrorEmits} from '@/composables/setup_working_mirror'
     import SearchSelect from '../forms/SearchSelect.vue';
-    import CredentialCreateForm from './CredentialCreateForm'
+    import CredentialCreateForm from '../credentials/CredentialCreateForm'
 
+    const store = useStore();
     const props = defineProps({
-        ...mirrorProps
+        ...mirrorProps,
+        multiple: {
+            type: Boolean,
+            default: true
+        }
     });
 
     const emit = defineEmits([...mirrorEmits]);
 
     const {workingCopy} = setupMirror(props, {emit})
 
-    const credentials = ref([]);
-    const getCredentials = async () => {
-        credentials.value = await api.get('/api/credentials')
-                                .then(rsp => rsp.data);
-    }
+    const credentials = computed(() => {
+        return store.getters['credentials/items'];
+    });
 
     const searchCredentials = async(keyword, options) => {
         searchText.value = keyword
@@ -30,7 +33,7 @@
     }
 
     onMounted(() => {
-        getCredentials();
+        store.dispatch('credentials/getItems');
     });
 
     const showCreateForm = ref(false);
@@ -55,7 +58,7 @@
     <SearchSelect
         v-model="workingCopy"
         :options="credentials"
-        multiple
+        :multiple="multiple"
         showOptionsOnFocus
         showOptionsWhenEmpty
         :searchFunction="searchCredentials"

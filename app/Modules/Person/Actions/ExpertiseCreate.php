@@ -24,7 +24,7 @@ class ExpertiseCreate
 
     public function asController(ActionRequest $request)
     {
-        return $this->handle(...$request->only('name', 'approved'));
+        return $this->handle(...$request->only('name', 'approved'))->loadCount('people');
     }
 
     public function rules(): array

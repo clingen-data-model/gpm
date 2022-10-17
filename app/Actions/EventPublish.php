@@ -8,13 +8,13 @@ use App\Modules\Group\Events\GeneEvent;
 use App\DataExchange\Models\StreamMessage;
 use App\Modules\Group\Events\GroupMemberEvent;
 use App\DataExchange\Actions\StreamMessageCreate;
-use App\DataExchange\MessageFactories\ApplicationEventV1MessageFactory;
+use App\DataExchange\MessageFactories\DxMessageFactory;
 
 class EventPublish
 {
     public function __construct(
         public StreamMessageCreate $streamMessageCreate,
-        public ApplicationEventV1MessageFactory $messageFactory
+        public DxMessageFactory $messageFactory
     ) {
     }
 

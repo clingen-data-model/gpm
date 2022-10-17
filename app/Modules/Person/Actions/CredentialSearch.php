@@ -12,7 +12,15 @@ class CredentialSearch
 
     public function handle(ActionRequest $request)
     {
-        $query = Credential::query()->with('synonyms');
+        $with = ['synonyms'];
+        if ($request->has('with')) {
+            $with = array_merge($with, $request->with);
+        }
+        $query = Credential::query()->with($with);
+
+        if ($request->has('withCount')) {
+            $query->withCount($request->withCount);
+        }
 
         if ($request->has('keyword')) {
             $query->whereRaw('LOWER(credentials.name) LIKE ?', '%'.$this->normalizeString($request->keyword.'%'));

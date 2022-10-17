@@ -15,7 +15,7 @@ class ConsumeDxMessages extends Command
      *
      * @var string
      */
-    protected $signature = 'kafka:consume {actions*} {--topic=* : Topic to consume} {--offset= : offset to assign} {--limit= : number of messages to read before stopping.} {--only-offset : Only update the topic offset} {--print-offset : print the offset}';
+    protected $signature = 'dev:dx:consume {actions*} {--topic=* : Topic to consume} {--offset= : offset to assign} {--limit= : number of messages to read before stopping.} {--only-offset : Only update the topic offset} {--print-offset : print the offset}';
 
     /**
      * The console command description.

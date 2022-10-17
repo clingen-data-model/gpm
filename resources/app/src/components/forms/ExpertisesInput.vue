@@ -3,7 +3,6 @@
     import {api} from '@/http'
     import {setupMirror, mirrorProps, mirrorEmits} from '@/composables/setup_working_mirror'
     import SearchSelect from '../forms/SearchSelect.vue';
-    import ExpertiseCreateForm from './ExpertiseCreateForm'
 
     const props = defineProps({
         ...mirrorProps
@@ -60,19 +59,5 @@
         showOptionsWhenEmpty
         :searchFunction="searchExpertises"
     >
-        <!-- <template v-slot:fixedBottomOption>
-            <div class="text-sm">
-                Don't see your credential? <button class="link" @click="initNewExpertise">Create a new one.</button>
-            </div>
-        </template> -->
     </SearchSelect>
-    <!-- <teleport to='body'>
-        <modal-dialog v-model="showCreateForm" title="Add a new credential">
-            <ExpertiseCreateForm
-                :starterString="searchText"
-                @saved="handleNewExpertise"
-                @canceled="cancelNewExpertise"
-            />
-        </modal-dialog>
-    </teleport> -->
 </template>

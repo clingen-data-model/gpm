@@ -2,9 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\CommentType;
 use App\Modules\Person\Models\Person;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CommentFactory extends Factory
 {
@@ -19,7 +20,7 @@ class CommentFactory extends Factory
     {
         $person = Person::factory()->create();
         return [
-            'comment_type_id' => $this->faker()->randomElement(config('comments.types'))['id'],
+            'comment_type_id' => CommentType::factory(),
             'content' => $this->faker()->sentence,
             'resolved_at' => null,
             'creator_type' => Person::class,

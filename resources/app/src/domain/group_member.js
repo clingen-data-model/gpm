@@ -134,6 +134,16 @@ class GroupMember extends Entity {
         return false;
     }
 
+    get hasLegacyExpertise () {
+        return this.legacy_expertise !== null
+        && typeof this.legacy_expertise !== 'undefined'
+        && this.legacy_expertise != ''
+    }
+
+    get hasAnyExpertise () {
+        return this.hasLegacyExpertise || this.person.hasExpertise;
+    }
+
     matchesKeyword (keyword) {
         if (this.person.matchesKeyword(keyword)) {
             return true;

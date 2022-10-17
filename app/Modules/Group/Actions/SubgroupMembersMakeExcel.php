@@ -59,7 +59,7 @@ class SubgroupMembersMakeExcel {
                 $person->email,
                 ($person->institution) ? $person->institution->name : null,
                 $memberships->map(function ($mem) use ($groupsById) {
-                    return (isset($groupsById[$mem->group_id])) 
+                    return (isset($groupsById[$mem->group_id]))
                         ? $groupsById[$mem->group_id]->display_name
                         : null;
                 })->filter()->join(', ')
@@ -68,19 +68,19 @@ class SubgroupMembersMakeExcel {
 
         $writer->addRows($rows);
     }
-    
 
-    
+
+
     private function writeGroupSheet($writer, $group) {
         $sheet = $writer->addNewSheetAndMakeItCurrent();
-        $sheetName = $group->name.' '.strtoupper($group->type->name); 
+        $sheetName = $group->name.' '.strtoupper($group->type->name);
         if (strlen($group->name) > 26) {
             $sheetName = substr($group->name, 0, 23).'... '.strtoupper($group->type->name);
         }
         $sheet->setName(preg_replace('/[\/\?\*\[\]\\\]/', '', $sheetName));
 
         $headerRow = $this->getGroupHeaderRow();
-        
+
         $noWrapStyle = (new StyleBuilder())->setShouldWrapText(false)->build();
 
         $memberRows = $group->members->map(function ($member) use ($noWrapStyle) {
@@ -102,8 +102,8 @@ class SubgroupMembersMakeExcel {
             $member->person->last_name,
             $member->person->email,
             $member->start_date->format('Y-m-d'),
-            ($member->latestCoi && $member->latestCoi->completed_at) 
-                ? $member->latestCoi->completed_at->format('Y-m-d') 
+            ($member->latestCoi && $member->latestCoi->completed_at)
+                ? $member->latestCoi->completed_at->format('Y-m-d')
                 : null,
             $member->end_date ? $member->end_date->format('Y-m-d') : null,
             $member->is_contact ? 'Yes' : 'No',
@@ -113,7 +113,7 @@ class SubgroupMembersMakeExcel {
             $member->training_level_1 ? 'Yes' : 'No',
             $member->training_level_2 ? 'Yes' : 'No',
             ($member->person->institution) ? $member->person->institution->name : null,
-            $member->person->credentials,
+            $member->person->credentialsAsString,
             $member->person->biography,
             $member->person->phone,
             $member->person->addressString,
@@ -121,7 +121,7 @@ class SubgroupMembersMakeExcel {
             $member->person->timezone,
        ]);
     }
-    
+
     private function getGroupHeaderRow()
     {
         return WriterEntityFactory::createRowFromArray([
@@ -146,13 +146,13 @@ class SubgroupMembersMakeExcel {
             'timezone',
         ], $this->getHeaderStyle());
     }
-    
-    
+
+
     private function makeFileName(Group $group)
     {
         return preg_replace('/[\/\?\*\[\]\\\]/', '', $group->display_name).'-full-membership'.Carbon::now()->format('Y-m-d').'.xlsx';
     }
-    
+
     private function getXLSXWriter($fileName)
     {
         $writer = WriterEntityFactory::createXLSXWriter();
@@ -170,6 +170,6 @@ class SubgroupMembersMakeExcel {
             ->setBorder($border)
             ->build();
     }
-    
-    
+
+
 }

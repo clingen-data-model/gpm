@@ -15,6 +15,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class PersonDeleteTest extends TestCase
 {
     use RefreshDatabase;
+    use TestEventPublished;
 
     public function setup():void
     {
@@ -69,6 +70,22 @@ class PersonDeleteTest extends TestCase
             'subject_type' => get_class($this->person),
             'subject_id' => $this->person->id
         ]);
+    }
+
+    /**
+     * @test
+     *
+     * @group dx
+     * @group gpm-person-events
+     */
+    public function publishes_deleted_event_to_gpm_person_events()
+    {
+        $this->user->givePermissionTo('people-manage');
+        $this->makeRequest()
+            ->assertStatus(200);
+        $person = $this->person->fresh();
+
+        $this->assertEventPublished(config('dx.topics.outgoing.gpm-person-events'), 'deleted', $person);
     }
 
 

@@ -13,6 +13,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class PersonPhotoStoreTest extends TestCase
 {
     use RefreshDatabase;
+    use TestEventPublished;
 
     public function setup():void
     {
@@ -57,7 +58,7 @@ class PersonPhotoStoreTest extends TestCase
         $this->makeRequest()
             ->assertStatus(200);
     }
-    
+
     /**
      * @test
      */
@@ -67,15 +68,29 @@ class PersonPhotoStoreTest extends TestCase
             ->assertStatus(200);
 
         Storage::disk('profile-photos')->assertExists($this->fakeFile->hashName());
-        
-        // dd($this->fakeFile);
 
         $this->assertDatabaseHas('people', [
             'id' => $this->person->id,
             'profile_photo' => $this->fakeFile->hashName()
         ]);
     }
-    
+
+    /**
+     * @test
+     */
+    public function publishses_updated_event_to_gpm_person_events()
+    {
+        $this->makeRequest()
+            ->assertStatus(200);
+
+        $this->assertEventPublished(
+            'gpm-person-events',
+            'updated',
+            $this->person->fresh()
+        );
+    }
+
+
     /**
      * @test
      */
@@ -102,8 +117,8 @@ class PersonPhotoStoreTest extends TestCase
                 ]
             ]);
     }
-    
-    
+
+
 
     private function makeRequest($data = null)
     {
@@ -114,6 +129,6 @@ class PersonPhotoStoreTest extends TestCase
         Storage::fake('public/profile-photos');
         return $this->json('POST', '/api/people/'.$this->person->uuid.'/profile-photo', $data);
     }
-    
-    
+
+
 }

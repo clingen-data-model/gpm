@@ -2,6 +2,8 @@
 
 namespace App\Modules\Person\Events;
 
+use App\Events\PublishableEvent;
+use App\Modules\Person\Events\Traits\PublishesEvent;
 use App\Modules\Person\Models\Person;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
@@ -11,9 +13,10 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class PersonCreated extends PersonEvent
+class PersonCreated extends PersonEvent implements PublishableEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+    use PublishesEvent;
 
     public function __construct(public Person $person)
     {
@@ -21,13 +24,19 @@ class PersonCreated extends PersonEvent
 
     public function getLogEntry():string
     {
-        return 'Person created.';           
+        return 'Person created.';
     }
 
     public function getProperties(): array
     {
         return $this->person->getAttributes();
     }
+
+    public function getEventType(): string
+    {
+        return 'created';
+    }
+
 
 
     /**

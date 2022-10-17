@@ -303,7 +303,7 @@ class Person extends Model implements HasLogEntries
         return $this->activeMemberships->pluck('roles')->flatten()->pluck('name')->contains('coordinator');
     }
 
-    public function getProfilePhotoUrl()
+    public function getProfilePhotoUrlAttribute()
     {
         return url('/storage/profile-photos/'.$this->profile_photo);
     }
@@ -360,6 +360,15 @@ class Person extends Model implements HasLogEntries
 
         return true;
     }
+
+        public function getCredentialsAsStringAttribute()
+        {
+            if ($this->credentials->count() == 0) {
+                return $this->legacy_credentials;
+            }
+            return $this->credentials->pluck('name')->join(', ');
+        }
+
 
     // Factory
     protected static function newFactory()

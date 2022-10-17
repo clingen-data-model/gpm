@@ -17,7 +17,11 @@ class ApprovalReminderNotification extends Notification
      *
      * @return void
      */
-    public function __construct(public Collection $waitingSubmissions)
+    public function __construct(
+        public Collection $waitingSubmissions,
+        public Collection $judgementActivityNotifications,
+        public Collection $commentActivityNotifications
+    )
     {
     }
 
@@ -45,6 +49,8 @@ class ApprovalReminderNotification extends Notification
                 'email.application_submission_reminder',
                 [
                     'submissions' => $this->waitingSubmissions,
+                    'commentNotifications' => $this->commentActivityNotifications,
+                    'judgementNotifications' => $this->judgementActivityNotifications,
                     'notifiable' => $notifiable
                 ]
             );

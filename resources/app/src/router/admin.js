@@ -33,5 +33,15 @@ export default [
         name: 'InstitutionList',
         path: '/admin/institutions',
         component: () => import ( /* webpackChunkName: "institution-list" */ '@/views/institutions/InstitutionList.vue')
-}
+    },
+    {
+        name: 'CredentialList',
+        path: '/admin/credentials',
+        component: () => import ( /* webpackChunkName: "institution-list" */ '@/views/CredentialsList.vue')
+    },
+    {
+        name: 'ExpertiseList',
+        path: '/admin/expertises',
+        component: () => import ( /* webpackChunkName: "expertise-list" */ '@/views/ExpertiseList.vue')
+    },
 ]
