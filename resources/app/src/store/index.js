@@ -6,6 +6,7 @@ import CdwgStore from '@/store/cdwgs.js'
 import COIStore from '@/store/coi_store.js'
 import GroupStore from '@/store/groups.js'
 import PeopleStore from '@/store/people.js'
+import CredentialStore from '@/store/credentials.js'
 import axios from '@/http/api'
 import isAuthError from '@/http/is_auth_error'
 import module_factory from '@/store/module_factory';
@@ -182,6 +183,7 @@ const store = createStore({
         groups: GroupStore,
         doctypes: docTypeStore,
         people: PeopleStore,
+        credentials: CredentialStore,
     },
     // plugins: process.env.NODE_ENV !== 'production'
     //     ? [createLogger()]

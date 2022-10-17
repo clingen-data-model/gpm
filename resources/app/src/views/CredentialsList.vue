@@ -35,6 +35,7 @@
             </modal-dialog>
             <modal-dialog v-model="showMergeDialog" title="Merge Credentials">
                 <CredentialMergeForm
+                    v-if="currentItem.id"
                     :obsoletes="currentItem"
                     :credentials="items"
                     @saved="handleMerge"
@@ -66,7 +67,7 @@ import CredentialsApprovalForm from '../components/credentials/CredentialsApprov
 import CredentialMergeForm from '../components/credentials/CredentialMergeForm.vue';
 
 export default {
-    name: 'InstitutionList',
+    name: 'CredentialList',
     components: {
     CredentialUpdateForm,
     CredentialsApprovalForm,
@@ -74,13 +75,13 @@ export default {
 },
     data() {
         return {
-            items: [],
             fields: [
                 {
                     name: 'id',
                     label: 'ID',
                     type: Number,
                     sortable: true,
+                    class: 'w-12'
                 },
                 {
                     name: 'name',
@@ -119,6 +120,9 @@ export default {
         }
     },
     computed: {
+        items () {
+            return this.$store.getters['credentials/items']
+        },
         filteredItems () {
             if (!this.filter) {
                 return this.items;
@@ -161,11 +165,10 @@ export default {
         handleMerge() {
             this.items.splice(this.currentIndex, 1);
             this.showMergeDialog = false;
-            this.$store.commit("pushSuccess", 'Institution merged.')
+            this.$store.commit("pushSuccess", 'Credential merged.')
+            this.currentItem = {};
         },
         updateItem() {
-            console.log(this.currentItem)
-            console.log(this.currentIndex)
             if (!this.currentItem.id) {
                 return;
             }
@@ -186,15 +189,10 @@ export default {
             if (this.currentItem.people_count > 0) {
                 alert('You cannot delete an credential because it is in use.  Please edit the credential or merge it into another.')
             }
-            await api.delete(`/api/credentials/${this.currentItem.id}`);
-            this.items.splice(this.currentIndex, 1);
+            await this.$store.dispatch('credentials/delete', this.currentItem)
             this.showDeleteConfirmation = false;
             this.$store.commit("pushSuccess", `${this.currentItem.name} deleted.`);
         },
-        async getCredentials () {
-            this.items = await api.get('/api/credentials?withCount[]=people')
-                            .then(rsp => rsp.data);
-        }
     },
     setup() {
         const {sort, filter} = sortAndFilter({field: 'name', desc: false});
@@ -205,7 +203,7 @@ export default {
         }
     },
     mounted () {
-        this.getCredentials();
+        this.$store.dispatch('credentials/getItems');
     },
 }
 </script>

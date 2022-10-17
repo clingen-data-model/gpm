@@ -31,8 +31,11 @@ export default {
         async save () {
             try {
                 this.initErrors();
-            const newCred = await api.put(`/api/credentials/${this.workingCopy.id}`, this.workingCopy)
-                                    .then(response => response.data);
+                console.log('save!');
+                const newCred = await this.$store.dispatch('credentials/update', this.workingCopy)
+                                    .then(rsp => rsp.data);
+
+                console.log(newCred)
                 this.$emit('update:modelValue', newCred);
                 this.$emit('saved', newCred)
             } catch (error) {

@@ -1,20 +1,22 @@
 <script setup>
-    import {ref, watch} from 'vue'
-    import {api, isValidationError} from '@/http'
+    import {ref, watch} from 'vue';
+    import {useStore} from 'vuex';
+    import {isValidationError} from '@/http';
 
+    const store = useStore();
     const props = defineProps({
         starterString: {
             type: String,
             required: false,
         }
-    })
+    });
 
     const emits = defineEmits([
         'saved',
         'canceled'
     ]);
 
-    const errors = ref({})
+    const errors = ref({});
     const newCredentialName = ref(null);
 
     watch(() => props.starterString, to => {
@@ -23,8 +25,12 @@
 
     const saveNewCredential = async () => {
         try {
-            const newCredential = await api.post('/api/credentials', {name: newCredentialName.value})
+            const newCredential = await store.dispatch(
+                                        'credentials/create',
+                                        {name: newCredentialName.value}
+                                    )
                                     .then(rsp => rsp.data);
+
             newCredentialName.value = null;
             emits('saved', newCredential);
         } catch (e) {
@@ -32,11 +38,12 @@
                 errors.value = e.response.data.errors;
             }
         }
-    }
+    };
+
     const cancelNewCredential = () => {
         newCredentialName.value = null;
         emits('canceled');
-    }
+    };
 </script>
 
 <template>
