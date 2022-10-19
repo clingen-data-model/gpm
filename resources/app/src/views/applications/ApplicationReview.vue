@@ -1,5 +1,5 @@
 <script setup>
-    import {computed, provide} from 'vue';
+    import {computed} from 'vue';
     import {useStore} from 'vuex';
     import {hasPermission} from '@/auth_utils.js'
     import ScreenTemplate from '@/components/ScreenTemplate.vue';

@@ -8,7 +8,6 @@ import groupRoutes from './groups'
 import adminRoutes from './admin'
 import userRoutes from './users'
 import MemberForm from '@/components/groups/MemberForm.vue'
-import {redirectToProfileForm} from '@/domain/onboarding_service.js'
 
 const routes = [
     { name: 'Dashboard',

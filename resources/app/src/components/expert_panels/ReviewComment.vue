@@ -90,15 +90,14 @@
 
     const showReplyForm = ref(false);
     const initReply = () => showReplyForm.value = true;
-    const handleNewReply = (newReply) => {
+    const handleNewReply = () => {
         const commentClone = {...props.comment};
         commentClone.comments_count += 1;
         props.commentManager.updateComment(commentClone);
-        // showReplies();
         showReplyList.value = true;
         showReplyForm.value = false;
     }
-    const handleReplyRemoved = (comment) => {
+    const handleReplyRemoved = () => {
         const commentClone = {...props.comment};
         commentClone.comments_count -= 1;
         props.commentManager.updateComment(commentClone);

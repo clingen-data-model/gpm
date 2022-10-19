@@ -2,7 +2,7 @@
     import {computed, inject, ref} from 'vue'
     import {useStore} from 'vuex'
     import { api } from '@/http'
-    import { titleCase } from '@/utils';
+    import { titleCase } from '@/string_utils.js';
     import JudgementForm from './JudgementForm.vue';
     import {judgementColor} from '@/composables/judgement_utils.js'
 

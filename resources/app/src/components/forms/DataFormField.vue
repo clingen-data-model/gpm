@@ -1,7 +1,7 @@
 <script setup>
     import {defineEmits, computed, h} from 'vue'
     import {setupMirror, mirrorProps, mirrorEmits} from '@/composables/setup_working_mirror'
-    import { titleCase } from '@/utils'
+    import { titleCase } from '@/string_utils.js'
     import {set, get} from 'lodash'
     import InputRowVue from './InputRow.vue';
     import DictionaryRowVue from '../DictionaryRow.vue';
@@ -101,7 +101,7 @@
                 'onUpdate:modelValue': (value) => { fieldValue.value = value },
                 errors: props.errors
             }
-            
+
             return h(props.field.component.component, options,  props.field.component.slots)
         }
         return renderInputRow(renderComponent)
@@ -110,7 +110,7 @@
     const render = () => {
         const children = renderChildren()
         const container = h('div', {class: ''}, evalShow(props.field) ? children : []);
-        
+
         return container
     }
 

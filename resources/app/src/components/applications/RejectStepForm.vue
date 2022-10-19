@@ -25,7 +25,6 @@
     </form-container>
 </template>
 <script>
-import { nextTick } from 'vue';
 import {mapGetters} from 'vuex';
 import {api} from '@/http';
 import isValidationError from '@/http/is_validation_error';

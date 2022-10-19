@@ -5,7 +5,6 @@
     </div>
 </template>
 <script>
-import {api} from '@/http'
 import {setupMirror} from '@/composables/setup_working_mirror'
 import {isValidationError} from '@/http'
 

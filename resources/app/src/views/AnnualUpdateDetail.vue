@@ -1,20 +1,16 @@
 <template>
     <div>
         <annual-update-form :uuid="annualReview.expert_panel.group.uuid" v-if="annualReview.expert_panel.group.uuid"/>
-
     </div>
 </template>
 <script>
 import {api} from '@/http'
 import AnnualUpdateForm from '@/views/AnnualUpdateForm'
-// import formDef from '@/forms/annual_update'
-// import DataForm from '@/components/forms/DataForm.vue'
 
 export default {
     name: 'AnnualUpdateDetail',
     components: {
         AnnualUpdateForm,
-        // DataForm
     },
     props: {
         id: {
@@ -48,7 +44,7 @@ export default {
         submitter () {
             return this.submitter ? this.submitter.person : {}
         },
-        
+
     },
     methods: {
         async getAnnualUpdate () {

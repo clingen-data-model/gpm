@@ -28,10 +28,7 @@
 import OnboardingSteps from '@/components/onboarding/OnboardingSteps.vue'
 import InviteRedemptionForm from '@/components/onboarding/InviteRedemptionForm.vue'
 import AccountCreationForm from '@/components/onboarding/AccountCreationForm.vue'
-import ProfileForm from '@/components/onboarding/ProfileForm.vue'
 import Person from '@/domain/person'
-import Coi from '@/views/Coi'
-import {Group} from '../domain'
 
 const stepComponents = [
     InviteRedemptionForm,
@@ -53,7 +50,6 @@ export default {
         InviteRedemptionForm,
         OnboardingSteps,
         AccountCreationForm,
-        ProfileForm,
     },
     props: {
         code: {

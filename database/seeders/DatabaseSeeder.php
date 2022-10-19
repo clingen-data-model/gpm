@@ -52,6 +52,10 @@ class DatabaseSeeder extends Seeder
             array_push($seederClasses, AnnualUpdateWindowSeeder::class);
         }
 
+        if (app()->environment('local')) {
+            array_push($seederClasses, UsersTableSeeder::class);
+        }
+
         foreach ($seederClasses as $seederClass) {
             $seeder = new $seederClass();
             $seeder->run();

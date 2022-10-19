@@ -15,6 +15,12 @@ export default function (config = {}) {
             currentItemIdx: null,
         },
         getters: {
+            items: (state) => {
+                return state.items
+            },
+            getItems: (state) => {
+                return state.items
+            },
             getItemById: (state) => (id) => {
                 return state.items.find(item => item.id == id);
             },
@@ -25,7 +31,7 @@ export default function (config = {}) {
                     }
                     return {};
                 }
-    
+
                 return state.items[state.currentItemIdx]
             }
         },
@@ -43,14 +49,8 @@ export default function (config = {}) {
 
                 state.items.push(item);
             },
-            clearApplications(state) {
+            clearItems(state) {
                 state.items = [];
-            },
-            setLastFetch(state) {
-                state.lastFetch = new Date();
-            },
-            setLastParams(state, params) {
-                state.lastParams = params;
             },
             setCurrentItemIndex(state, item) {
                 const idx = state.items.findIndex(i => i.uuid == item.uuid);
@@ -66,7 +66,7 @@ export default function (config = {}) {
                     for(let i in items) {
                         commit('addItem', items[i])
                     }
-    
+
             },
 
             ...config.actions

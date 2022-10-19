@@ -3,7 +3,6 @@
     import {ref, computed, watch, onMounted} from 'vue'
     import Person from '@/domain/person'
     import isValidationError from '@/http/is_validation_error'
-    import {getLookups, lookups} from '@/forms/profile_form';
     import ProfilePhotoForm from '@/components/people/ProfilePhotoForm.vue';
     import { hasPermission, userIsPerson } from '../../auth_utils';
     import InstitutionSearchSelect from '../forms/InstitutionSearchSelect.vue';
@@ -39,6 +38,7 @@
 
     const errors = ref({});
     const profile = ref({});
+    const saving = ref(false);
 
     const initProfile = () => {
         if (props.person.clone) {
@@ -57,6 +57,7 @@
             if (profile.value.expertises) {
                 profile.value.expertise_ids = profile.value.expertises.map(c => c.id)
             }
+            saving.value = true;
             const updatedPerson = await store.dispatch(
                     'people/updateProfile',
                     {uuid: props.person.uuid, attributes: profile.value}
@@ -66,6 +67,7 @@
                     return rsp.data;
                 })
 
+                saving.value = false;
                 errors.value = {};
                 emits('saved', new Person(updatedPerson));
         } catch (error) {
@@ -87,8 +89,12 @@
         initProfile()
     }, {immediate: true});
 
+    const countries = computed(() => {
+        return store.getters['countries/items'].map(i => ({value: i.id, label: i.name}))
+    })
+
     onMounted(() => {
-        getLookups();
+        store.dispatch('countries/getItems');
     });
 
 </script>
@@ -185,7 +191,7 @@
         <input-row v-if="canEditAllFields" label="Country"
             v-model="profile.country_id"
             type="select"
-            :options="lookups.countries"
+            :options="countries"
             :errors="errors.country_id"
         />
 
@@ -200,6 +206,12 @@
 
         <hr class="my-4">
 
-        <button-row @submitted="save" @canceled="cancel()" :submit-text="saveButtonText" :show-cancel="allowCancel"></button-row>
+        <div v-if="saving" class="mb-2">Saving...</div>
+        <button-row v-if="!saving"
+            @submitted="save"
+            @canceled="cancel()"
+            :submit-text="saveButtonText"
+            :show-cancel="allowCancel"
+        />
     </div>
 </template>

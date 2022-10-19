@@ -26,6 +26,7 @@ use App\Modules\Person\Actions\InstitutionsMerge;
 use App\Modules\Person\Actions\InstitutionUpdate;
 use App\Modules\Person\Actions\InviteValidateCode;
 use App\Http\Controllers\Api\InstitutionController;
+use App\Http\Controllers\CountryController;
 use App\Modules\Person\Actions\MarkNotificationRead;
 use App\Modules\Person\Actions\InstitutionMarkApproved;
 use App\Modules\Person\Http\Controllers\Api\ApiController;
@@ -124,4 +125,11 @@ Route::group([
     Route::put('/merge', ExpertisesMerge::class);
     Route::put('/{expertise}', ExpertiseUpdate::class);
     Route::delete('/{expertise}', ExpertiseDelete::class);
+});
+
+Route::group([
+    'prefix' => 'api/countries',
+    // 'middleware' => ['api', 'auth:sanctum']
+], function () {
+    Route::get('/', [CountryController::class, 'index']);
 });

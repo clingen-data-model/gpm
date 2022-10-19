@@ -3,11 +3,11 @@
         <div class="sm:flex justify-between">
             <div class="mb-1 sm:flex space-x-2">
                 <label class="block">
-                    Filter: 
+                    Filter:
                     <input type="text" class="sm" v-model="filter" placeholder="filter">
                 </label>
                 <label class="block">
-                    Waiting on: 
+                    Waiting on:
                     <select v-model="waitingOn" class="sm">
                         <option :value="null">Any</option>
                         <option v-for="i in assignees" :key="i.id"
@@ -17,11 +17,11 @@
                         </option>
                     </select>
                 </label>
-                <checkbox 
+                <checkbox
                     v-model="showCompleted"
                     label="Show completed"
                 />
-                <!-- <checkbox 
+                <!-- <checkbox
                     v-model="showDeleted"
                     label="Show Deleted"
                 /> -->
@@ -31,10 +31,10 @@
                 <button class="btn btn-xs" :class="{blue: showAllInfo == 1}" @click="showAllInfo = 1">All Info</button>
             </div>
         </div>
-        <data-table 
-            :data="filteredData" 
-            :fields="selectedFields" 
-            :filter-term="filter" 
+        <data-table
+            :data="filteredData"
+            :fields="selectedFields"
+            :filter-term="filter"
             :row-click-handler="goToApplication"
             row-class="cursor-pointer"
             v-model:sort="sort"
@@ -60,8 +60,8 @@
             <template v-slot:cell-next_actions="{item}">
                 <popper hover arrow placement="left">
                     <template v-slot:content>
-                        <div 
-                            v-for="assignee in assignees.filter(i => item.pendingActionsByAssignee[i.id].length > 0)" 
+                        <div
+                            v-for="assignee in assignees.filter(i => item.pendingActionsByAssignee[i.id].length > 0)"
                             :key="assignee.id"
                             class="whitespace-normal max-w-80"
                         >
@@ -74,7 +74,7 @@
                     </template>
                     <div v-for="assignee in assignees.filter(i => item.pendingActionsByAssignee[i.id].length > 0)" :key="assignee.id">
                         <span>
-                            {{assignee.short_name}}: 
+                            {{assignee.short_name}}:
                             <strong>
                                 {{item.pendingActionsByAssignee[assignee.id].length}}
                             </strong>
@@ -142,8 +142,8 @@ export default {
                     type: Date,
                     sortable: true,
                     resolveValue (item) {
-                        return item.group.latest_submission 
-                            ? formatDate(item.group.latest_submission.created_at) 
+                        return item.group.latest_submission
+                            ? formatDate(item.group.latest_submission.created_at)
                             : null
                     }
                 },
@@ -153,12 +153,12 @@ export default {
                     type: String,
                     sortable: true,
                     resolveValue (item) {
-                        return item.group.latest_submission 
+                        return item.group.latest_submission
                             ? item.group.latest_submission.status.name
                             : null
                     },
                     // resolveSort(item) {
-                    //     return item.group.latest_submission 
+                    //     return item.group.latest_submission
                     //         ? item.group.latest_submission.closed_at ? 'Closed' : 'Pending'
                     //         : <null></null>
                     // }
@@ -170,7 +170,6 @@ export default {
                     sortable: true,
                     resolveSort (item) {
                         if (item && item.group && item.group.latest_log_entry) {
-                            const formatted = formatDate(item.group.latest_log_entry.created_at);
                             return formatDate(item.group.latest_log_entry.created_at);
                         }
                         return null
@@ -276,7 +275,7 @@ export default {
             set(value) {
                 let currentQuery = this.$route.query;
                 let currentPath = this.$route.path;
-                
+
                 let updatedQuery = {...currentQuery};
 
                 if (!value) {
@@ -313,7 +312,7 @@ export default {
                     newQuery.showAllInfo = newValue
 
                     this.$router.replace({path: this.$route.path, query: newQuery})
-                }            
+                }
         },
         remainingHeight () {
             return {height: 'calc(100vh - 220px)'}

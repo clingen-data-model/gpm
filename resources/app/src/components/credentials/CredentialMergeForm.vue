@@ -1,5 +1,4 @@
 <script>
-import {api} from '@/http'
 import { isValidationError } from '@/http';
 import SearchSelect from '@/components/forms/SearchSelect.vue'
 

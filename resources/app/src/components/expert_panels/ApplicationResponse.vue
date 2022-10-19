@@ -14,6 +14,7 @@ const props = defineProps({
 });
 const store = useStore();
 
+// eslint-disable-next-line
 const commentManager = ref(commentManagerFactory('App\\Modules\\Group\\Models\\Group', 0));
 provide('commentManager', null)
 

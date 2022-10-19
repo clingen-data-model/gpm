@@ -4,7 +4,6 @@
     import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
     import ReviewMembership from '@/components/expert_panels/ReviewMembership.vue'
     import { formatDate } from '@/date_utils'
-import {hasPermission} from '../../auth_utils';
 
     const store = useStore();
     const group = computed(() => store.getters['groups/currentItemOrNew'])

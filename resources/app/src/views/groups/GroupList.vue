@@ -56,8 +56,6 @@ import {useRouter} from 'vue-router'
 import {computed, ref} from 'vue'
 import GroupForm from '@/components/groups/GroupForm.vue'
 import SubmissionWrapper from '@/components/groups/SubmissionWrapper.vue'
-import {hasAnyPermission} from '@/auth_utils'
-
 
 export default {
     name: 'ComponentName',

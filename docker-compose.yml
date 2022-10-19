@@ -1,5 +1,5 @@
 version: "3"
-services: 
+services:
     database:
         container_name: ${DOCKER_NAME}-db
         image: mysql:8.0
@@ -41,12 +41,13 @@ services:
             - "6379:6379"
         environment:
             - REDIS_PASSWORD=${REDIS_PASSWORD}
+## Uncomment below to test scheduler and queue containers. Don't forget to update your .env to use QUEUE_CONNECTION
     # scheduler:
     #     image: ${DOCKER_NAME}-app
     #     container_name: ${DOCKER_NAME}-scheduler
-    #     sysctls: 
+    #     sysctls:
     #         - net.ipv4.ip_unprivileged_port_start=0
-    #     depends_on: 
+    #     depends_on:
     #         - app
     #     volumes:
     #         - .:/srv/app
@@ -56,13 +57,12 @@ services:
     # queue:
     #     image: ${DOCKER_NAME}-app
     #     container_name: ${DOCKER_NAME}-queue
-    #     sysctls: 
+    #     sysctls:
     #         - net.ipv4.ip_unprivileged_port_start=0
-    #     depends_on: 
+    #     depends_on:
     #         - app
     #     volumes:
     #         - .:/srv/app
     #     environment:
     #         CONTAINER_ROLE: queue
-    #         CONTAINER_ENV: local        
-        
+    #         CONTAINER_ENV: local

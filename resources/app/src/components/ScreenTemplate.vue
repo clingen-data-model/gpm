@@ -1,4 +1,5 @@
 <script setup>
+    // eslint-disable-next-line
     const props = defineProps({
         breadcrumbs: {
             type: Array,

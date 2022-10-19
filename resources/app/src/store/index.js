@@ -59,11 +59,6 @@ axios.interceptors.response.use(
     }
 );
 
-const docTypeStore = module_factory({
-    baseUrl: '/api/document-types',
-    namespace: 'doctypes'
-})
-
 export const mutations = {
     addRequest(state) {
         state.openRequests++;
@@ -89,6 +84,17 @@ export const mutations = {
         state.authenticating = false;
     },
 };
+
+
+const docTypeStore = module_factory({
+    baseUrl: '/api/document-types',
+    namespace: 'doctypes'
+})
+
+const countryStore = module_factory({
+    baseUrl: '/api/countries',
+    namespace: 'countries'
+})
 
 const store = createStore({
     state: {
@@ -181,11 +187,12 @@ const store = createStore({
         applications: ApplicationStore,
         coiStore: COIStore,
         cdwgs: CdwgStore,
+        credentials: CredentialStore,
         groups: GroupStore,
         doctypes: docTypeStore,
         people: PeopleStore,
-        credentials: CredentialStore,
         expertises: ExpertiseStore,
+        countries: countryStore,
     },
     // plugins: process.env.NODE_ENV !== 'production'
     //     ? [createLogger()]

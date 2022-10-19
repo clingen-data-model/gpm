@@ -361,20 +361,22 @@ export default {
 <template>
     <div class="search-select-component">
         <div class="search-select-container bg-white">
-            <div v-if="hasSelection"
-                v-for="selection, idx in selections" :key="idx"
-                class="selection" :class="{disabled: disabled}"
-            >
-                <label>
-                    <slot name="selection-label" :selection="selection">
-                        {{resolveDefaultOptionLabel(selection)}}
-                    </slot>
-                </label>
+            <div v-if="hasSelection">
                 <div
-                    @click="removeSelection(idx)"
-                    :disabled="disabled"
-                    class="remove-btn"
-                >x</div>
+                    v-for="selection, idx in selections" :key="idx"
+                    class="selection" :class="{disabled: disabled}"
+                >
+                    <label>
+                        <slot name="selection-label" :selection="selection">
+                            {{resolveDefaultOptionLabel(selection)}}
+                        </slot>
+                    </label>
+                    <div
+                        @click="removeSelection(idx)"
+                        :disabled="disabled"
+                        class="remove-btn"
+                    >x</div>
+                </div>
             </div>
             <input
                 v-show="showInput"

@@ -4,7 +4,7 @@ import router from './router'
 import store from './store'
 
 import CKEditor from '@ckeditor/ckeditor5-vue'
-import {titleCase, camelCase, snakeCase, kebabCase, sentenceCase} from '@/utils'
+import {titleCase, camelCase, snakeCase, kebabCase, sentenceCase} from '@/string_utils'
 
 const app = createApp(App)
 const registerComponentsInContext = (context => {

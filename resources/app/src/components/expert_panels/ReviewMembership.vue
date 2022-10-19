@@ -47,7 +47,6 @@
     const getPublications = async member => {
         const baseUri = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils';
         const searchUrl = `${baseUri}/esearch.fcgi?db=pubmed&term=${member.last_name},+${member.first_name}[author]&retmode=json&retmax=0`;
-        const entriesUrl = `${baseUri}/esummary.fcgi?db=pubmed&retmode=json`
 
         return axios.get(searchUrl)
             .then(rsp => {

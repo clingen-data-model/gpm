@@ -12,7 +12,7 @@
     const emits = defineEmits(['deleted', 'saved'])
 
     const store = useStore();
-    const group = computed(() => store.getters['groups/currentItemOrNew'])
+    // const group = computed(() => store.getters['groups/currentItemOrNew'])
 
     const showJudgementDialog = ref(false)
     const initJudgement = () => {
@@ -21,7 +21,7 @@
     const hasMadeJudgment = computed(() => {
         return latestSubmission.value.judgements
             && latestSubmission.value.judgements.length > 0
-             && latestSubmission.value.judgements.filter(j => j.person_id == store.getters.currentUser.person.id).length > 0;
+            && latestSubmission.value.judgements.filter(j => j.person_id == store.getters.currentUser.person.id).length > 0;
     })
 
     const otherJudgements = computed(() => {
