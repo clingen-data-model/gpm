@@ -15,6 +15,12 @@ export default function (config = {}) {
             currentItemIdx: null,
         },
         getters: {
+            items: (state) => {
+                return state.items
+            },
+            getItems: (state) => {
+                return state.items
+            },
             getItemById: (state) => (id) => {
                 return state.items.find(item => item.id == id);
             },
@@ -25,7 +31,7 @@ export default function (config = {}) {
                     }
                     return {};
                 }
-    
+
                 return state.items[state.currentItemIdx]
             }
         },
@@ -66,7 +72,7 @@ export default function (config = {}) {
                     for(let i in items) {
                         commit('addItem', items[i])
                     }
-    
+
             },
 
             ...config.actions

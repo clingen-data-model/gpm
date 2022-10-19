@@ -3,7 +3,6 @@
     import {ref, computed, watch, onMounted} from 'vue'
     import Person from '@/domain/person'
     import isValidationError from '@/http/is_validation_error'
-    import {getLookups, lookups} from '@/forms/profile_form';
     import ProfilePhotoForm from '@/components/people/ProfilePhotoForm.vue';
     import { hasPermission, userIsPerson } from '../../auth_utils';
     import InstitutionSearchSelect from '../forms/InstitutionSearchSelect.vue';
@@ -90,8 +89,12 @@
         initProfile()
     }, {immediate: true});
 
+    const countries = computed(() => {
+        return store.getters['countries/items'].map(i => ({value: i.id, label: i.name}))
+    })
+
     onMounted(() => {
-        getLookups();
+        store.dispatch('countries/getItems');
     });
 
 </script>
@@ -188,7 +191,7 @@
         <input-row v-if="canEditAllFields" label="Country"
             v-model="profile.country_id"
             type="select"
-            :options="lookups.countries"
+            :options="countries"
             :errors="errors.country_id"
         />
 
