@@ -15,7 +15,9 @@ The stand up a local instance of the application
 2. cd into the directory
 3. `composer install`
 3. `cp .env.example .env`
+4. `php artisan key:generate`
 3. `docker-compose up -d --build`
+4. `docker-compose exec app php artisan migrate --seed`
 
 The development server is available at http://localhost:8080
 
