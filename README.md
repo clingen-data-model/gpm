@@ -17,9 +17,13 @@ The stand up a local instance of the application
 3. `cp .env.example .env`
 4. `php artisan key:generate`
 3. `docker-compose up -d --build`
-4. `docker-compose exec app php artisan migrate --seed`
+4. Confirm that the `.docker/data` directory exists (it can take a few minutes for the database to be setup).  When it does run `docker-compose exec app php artisan migrate --seed`
 
 The development server is available at http://localhost:8080
+
+Database seeding run in the last setup step has created two user/people with the following credentials
+* super.user@example.com; tester
+* super.admin@example.com; tester
 
 To work on the front end client you will need:
 * node
