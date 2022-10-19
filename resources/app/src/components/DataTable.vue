@@ -96,7 +96,7 @@
 </template>
 <script>
 import { formatDate } from '@/date_utils'
-import {titleCase} from '@/utils'
+import {titleCase} from '@/string_utils'
 
 /**
  *

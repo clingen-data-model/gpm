@@ -1,5 +1,5 @@
 <script setup>
-import {sentenceCase} from '../../utils';
+import {sentenceCase} from '@/string_utils.js'
 
     const props = defineProps({
         modelValue: {
@@ -42,7 +42,7 @@ import {sentenceCase} from '../../utils';
 
         return option;
     }
-    
+
     const resolveButtonClass = (option) => {
         const classes = [props.size];
         if (isSelected(option)) {
@@ -54,8 +54,8 @@ import {sentenceCase} from '../../utils';
 
 <template>
     <div class="button-group" :class="{'vertical': vertical}">
-        <button v-for="(option, idx) in options" 
-            :key="idx" 
+        <button v-for="(option, idx) in options"
+            :key="idx"
             :class="resolveButtonClass(option)"
             @click="selectItem(option)"
         >

@@ -96,7 +96,6 @@ const countryStore = module_factory({
     namespace: 'countries'
 })
 
-
 const store = createStore({
     state: {
         hostname: process.env.VUE_APP_URL,
@@ -188,10 +187,10 @@ const store = createStore({
         applications: ApplicationStore,
         coiStore: COIStore,
         cdwgs: CdwgStore,
+        credentials: CredentialStore,
         groups: GroupStore,
         doctypes: docTypeStore,
         people: PeopleStore,
-        credentials: CredentialStore,
         expertises: ExpertiseStore,
         countries: countryStore,
     },

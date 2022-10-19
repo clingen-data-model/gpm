@@ -2,7 +2,7 @@
     import {computed} from 'vue'
     import {formatDate} from '@/date_utils.js'
     import {judgementColor} from '@/composables/judgement_utils.js'
-    import { featureIsEnabled } from '../../utils';
+    import { featureIsEnabled } from '@/utils.js';
 import MarkdownBlock from '../MarkdownBlock.vue';
 
     const props = defineProps({

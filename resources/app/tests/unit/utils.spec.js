@@ -1,4 +1,4 @@
-import {titleCase, normalizeCase, kebabCase, snakeCase, camelCase} from '@/utils'
+import {titleCase, normalizeCase, kebabCase, snakeCase, camelCase} from '@/string_utils.js'
 import {expect} from 'chai'
 
 describe('normalizeCase', () => {

@@ -5,11 +5,11 @@
                 <div v-if="userIsPerson(person)">
                     <h3>You must complete a Conflict of Interest Disclosure for the following memberships:</h3>
                     <div class="my-2">
-                        <router-link 
-                            v-for="membership in person.membershipsWithPendingCois" 
-                            :key="membership.id" 
+                        <router-link
+                            v-for="membership in person.membershipsWithPendingCois"
+                            :key="membership.id"
                             class="block my-0 font-bold p-2 border border-gray-300 first:rounded-t-lg last:rounded-b-lg cursor-pointer hover:bg-blue-50 link"
-                            :to="getCoiRoute(membership)" 
+                            :to="getCoiRoute(membership)"
                         >
                             {{membership.group.expert_panel.display_name}}
                         </router-link>
@@ -20,7 +20,7 @@
                     <ul>
                         <li
                             class="list-disc ml-6"
-                            v-for="membership in person.membershipsWithPendingCois" 
+                            v-for="membership in person.membershipsWithPendingCois"
                             :key="membership.id"
                         >
                             {{membership.group.expert_panel.display_name}}
@@ -30,17 +30,17 @@
             </div>
             <section v-if="person.hasCompletedCois">
                 <h3>Completed &amp; Current COI Disclosures</h3>
-                <data-table 
-                    :fields="fields" 
-                    :data="person.membershipsWithCompletedCois" 
+                <data-table
+                    :fields="fields"
+                    :data="person.membershipsWithCompletedCois"
                     v-model:sort="coiSort"
                     class="my-2"
                 >
                     <template v-slot:cell-actions="{item}">
                         <div v-if="item.coi_last_completed">
-                            <button 
-                                class="btn btn-xs" 
-                                @click="showCoiResponse(item)" 
+                            <button
+                                class="btn btn-xs"
+                                @click="showCoiResponse(item)"
                             >
                                 View response
                             </button>
@@ -48,9 +48,9 @@
                             <router-link
                                 v-if="userIsPerson(person)"
                                 :to="{
-                                    name: 'alt-coi', 
+                                    name: 'alt-coi',
                                     params: {code: item.group.expert_panel.coi_code, name: this.kebabCase(item.group.name)}
-                                }" 
+                                }"
                                 class="btn btn-xs"
                             >Update COI</router-link>
                         </div>
@@ -59,25 +59,25 @@
             </section>
             <section v-if="person.hasOutdatedCois">
                 <h3>Past COI Disclosures</h3>
-                <data-table 
-                    :fields="fields" 
-                    :data="person.membershipsWithOutdatedCois" 
+                <data-table
+                    :fields="fields"
+                    :data="person.membershipsWithOutdatedCois"
                     v-model:sort="coiSort"
                     class="my-2"
                 >
                     <template v-slot:cell-actions="{item}">
                         <div v-if="item.coi_last_completed">
-                            <button 
-                                class="btn btn-xs" 
-                                @click="showCoiResponse(item)" 
+                            <button
+                                class="btn btn-xs"
+                                @click="showCoiResponse(item)"
                             >View response</button>
                             &nbsp;
                             <router-link
                                 v-if="userIsPerson(person)"
                                 :to="{
-                                    name: 'alt-coi', 
+                                    name: 'alt-coi',
                                     params: {code: item.group.expert_panel.coi_code, name: this.kebabCase(item.group.name)}
-                                }" 
+                                }"
                                 class="btn btn-xs"
                             >Update COI</router-link>
                         </div>
@@ -100,8 +100,8 @@
 import {ref, computed} from 'vue';
 import CoiDetail from '@/components/applications/CoiDetail.vue';
 import Person from '@/domain/person'
-import {kebabCase} from '@/utils'
-import {hasPermission, userIsPerson} from '@/auth_utils'
+import {kebabCase} from '@/string_utils.js'
+import {hasPermission, userIsPerson} from '@/auth_utils.js'
 
 export default {
     name: 'CoiList',
@@ -115,7 +115,7 @@ export default {
         }
     },
     setup (props) {
-        
+
         const cois = computed(() => {
             return props.person.membershipsWithCompletedCois
                 .map(m => {
@@ -166,7 +166,7 @@ export default {
                 label: 'ID',
                 sortable: true
             }
-            
+
             let fields = [...coiFields];
 
             if (hasPermission('people-manage')) {
@@ -176,7 +176,7 @@ export default {
             if (userIsPerson(props.person)) {
                 return [...fields, actionField];
             }
-            
+
             return coiFields;
         })
         const coiSort = ref({
@@ -185,7 +185,7 @@ export default {
         })
         const getCoiRoute = (membership) => {
             return {
-                name: 'alt-coi', 
+                name: 'alt-coi',
                 params: {
                     name: kebabCase(membership.group.name),
                     code: membership.group.expert_panel.coi_code
@@ -195,7 +195,7 @@ export default {
         const currentCoi = ref(null);
         const currentGroup = ref(null);
         const showResponseDialog = ref(false);
-        
+
         const showCoiResponse = (membership) => {
             const latestCoi = membership.cois[membership.cois.length - 1];
             currentCoi.value = latestCoi;

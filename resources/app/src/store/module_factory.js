@@ -49,14 +49,8 @@ export default function (config = {}) {
 
                 state.items.push(item);
             },
-            clearApplications(state) {
+            clearItems(state) {
                 state.items = [];
-            },
-            setLastFetch(state) {
-                state.lastFetch = new Date();
-            },
-            setLastParams(state, params) {
-                state.lastParams = params;
             },
             setCurrentItemIndex(state, item) {
                 const idx = state.items.findIndex(i => i.uuid == item.uuid);
