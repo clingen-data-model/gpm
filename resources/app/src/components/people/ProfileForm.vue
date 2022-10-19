@@ -39,6 +39,7 @@
 
     const errors = ref({});
     const profile = ref({});
+    const saving = ref(false);
 
     const initProfile = () => {
         if (props.person.clone) {
@@ -57,6 +58,7 @@
             if (profile.value.expertises) {
                 profile.value.expertise_ids = profile.value.expertises.map(c => c.id)
             }
+            saving.value = true;
             const updatedPerson = await store.dispatch(
                     'people/updateProfile',
                     {uuid: props.person.uuid, attributes: profile.value}
@@ -66,6 +68,7 @@
                     return rsp.data;
                 })
 
+                saving.value = false;
                 errors.value = {};
                 emits('saved', new Person(updatedPerson));
         } catch (error) {
@@ -200,6 +203,12 @@
 
         <hr class="my-4">
 
-        <button-row @submitted="save" @canceled="cancel()" :submit-text="saveButtonText" :show-cancel="allowCancel"></button-row>
+        <div v-if="saving" class="mb-2">Saving...</div>
+        <button-row v-if="!saving"
+            @submitted="save"
+            @canceled="cancel()"
+            :submit-text="saveButtonText"
+            :show-cancel="allowCancel"
+        />
     </div>
 </template>
