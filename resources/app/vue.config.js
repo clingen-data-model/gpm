@@ -11,7 +11,8 @@ if (isDockerBuild() && isProduction()) {
 
 module.exports = {
     devServer: {
-        proxy: 'http://localhost:8080'
+        proxy: 'http://localhost:8080',
+        port: 8081
     },
     outputDir: outputDir,
     indexPath: indexPath,

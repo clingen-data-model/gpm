@@ -1,4 +1,4 @@
-import {api, queryStringFromParams} from '@/http';
+import {api} from '@/http';
 
 const baseUrl = '/api/credentials';
 

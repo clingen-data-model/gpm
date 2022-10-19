@@ -1,5 +1,5 @@
 <script setup>
-    import {computed, inject, onMounted, ref} from 'vue'
+    import {computed} from 'vue'
     import {formatDate} from '@/date_utils.js'
     import {judgementColor} from '@/composables/judgement_utils.js'
     import { featureIsEnabled } from '../../utils';

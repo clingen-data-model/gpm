@@ -32,21 +32,6 @@
         getExpertises();
     });
 
-    const showCreateForm = ref(false);
-    const initNewExpertise = () => {
-        showCreateForm.value = true;
-    }
-
-    const handleNewExpertise = async (cred) => {
-        showCreateForm.value = false;
-        expertises.value = [...expertises.value, cred]
-        workingCopy.value.push(expertises.value.find(c => c.id == cred.id));
-    }
-
-    const cancelNewExpertise = () => {
-        showCreateForm.value = false;
-    }
-
     const searchText = ref('');
 </script>
 

@@ -1,11 +1,7 @@
 <script setup>
     import {ref} from 'vue'
-    import ReviewCommentForm from './ReviewCommentForm.vue'
-    import commentFormFactory from '@/forms/comment_form.js'
-    import commentRepository from '../../repositories/comment_repository';
     import commentManagerFactory from '@/composables/comment_manager.js'
 
-    const formDef = commentFormFactory();
     const props = defineProps({
         comment: {
             type: Object,
@@ -15,8 +11,6 @@
 
     const replyManager = ref(commentManagerFactory('App\\Models\\Comment', props.comment.id))
 
-
-    const emits = defineEmits(['created', 'updated', 'resolved', 'unresolved', 'deleted']);
 
     const getVariant = comment => {
         switch (comment.type.name) {

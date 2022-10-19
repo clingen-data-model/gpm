@@ -60,7 +60,6 @@
     </div>
 </template>
 <script>
-import {api} from '@/http'
 import sortAndFilter from '@/composables/router_aware_sort_and_filter';
 import CredentialUpdateForm from '@/components/credentials/CredentialUpdateForm.vue'
 import CredentialsApprovalForm from '../components/credentials/CredentialsApprovalForm.vue';
