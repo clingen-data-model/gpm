@@ -78,7 +78,7 @@ export default {
             <tbody>
                 <member-designation-row
                     :member="member"
-                    v-for="member in group.members"
+                    v-for="member in group.activeMembers"
                     :key="member.id"
                     :ref="`memberRow${member.id}`"
                     :readonly="readonly"
