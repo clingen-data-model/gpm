@@ -10,7 +10,7 @@ use Lorisleiva\Actions\Concerns\AsController;
 
 class CommentCreate
 {
-    	use AsController;
+    use AsController;
 
     public function handle(array $data)
     {
