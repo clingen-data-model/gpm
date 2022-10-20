@@ -7,6 +7,7 @@ services:
             - "13309:3306"
         volumes:
             - .docker/mysql/data:/var/lib/mysql
+            - .docker/mysql/db-init:/docker-entrypoint-initdb.d
         environment:
             - MYSQL_DATABASE=${DB_DATABASE}
             - MYSQL_ROOT_PASSWORD=root
@@ -34,6 +35,8 @@ services:
         environment:
             CONTAINER_ROLE: app
             CONTAINER_ENV: local
+        user: ${DOCKER_USER}:0
+
     redis:
         container_name: ${DOCKER_NAME}-redis
         image: centos/redis-5-centos7
