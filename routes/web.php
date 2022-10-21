@@ -1,5 +1,6 @@
 <?php
 
+use App\Actions\ReportPeopleMake;
 use App\Actions\ReportSummaryMake;
 use App\Actions\ReportCountriesMake;
 use App\Actions\ReportGcepGenesMake;
@@ -36,6 +37,7 @@ Route::group(['prefix' => '/api/report'], function () {
     Route::get('/vcep-genes', ReportVcepGenesMake::class);
     Route::get('/institutions', ReportInstitutionsMake::class);
     Route::get('/countries', ReportCountriesMake::class);
+    Route::get('/people', ReportPeopleMake::class);
     Route::get('/people-in-multiple-eps', ReportMultipleEpsMake::class);
 
     Route::group(['prefix' => '/groups/{group:uuid}'], function () {

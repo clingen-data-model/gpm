@@ -216,6 +216,11 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
             : $this->legacy_expertise ?? '';
      }
 
+         public function getRolesAsStringAttribute()
+         {
+             return $this->roles->pluck('name')->join(', ');
+         }
+
 
 
     protected static function newFactory()
