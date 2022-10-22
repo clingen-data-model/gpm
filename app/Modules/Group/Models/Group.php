@@ -89,6 +89,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     protected $appends = [
         'has_coi_requirement',
         'coi_url',
+        'display_name'
     ];
 
     public static function booted()
