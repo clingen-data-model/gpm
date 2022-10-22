@@ -1,6 +1,5 @@
 <template>
     <div>
-        <pre>{{lastCoiResponse}}</pre>
         <card :title="verifying ? `Loading COI Form` : `COI Form not found`" v-if="!codeIsValid">
             <div v-if="!verifying">We couldn't find this COI.</div>
         </card>
@@ -101,8 +100,8 @@ export default {
             return this.$store.getters
                     .currentUser
                     .person.memberships.find(m => {
-                        return m.group.expert_panel
-                            && m.group.expert_panel.coi_code === this.code
+                        return m.group
+                            && m.group.coi_code === this.code
                     });
         },
         groupMemberId() {
