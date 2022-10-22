@@ -6,8 +6,9 @@ use Illuminate\Support\Str;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\GroupType;
 use App\Modules\Group\Models\GroupStatus;
-use Database\Factories\Traits\GetsRandomConfigValue;
+use App\Modules\Group\Actions\CoiCodeMake;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Database\Factories\Traits\GetsRandomConfigValue;
 
 class GroupFactory extends Factory
 {
@@ -27,11 +28,14 @@ class GroupFactory extends Factory
      */
     public function definition()
     {
+        $code = app()->make(CoiCodeMake::class)->handle();
+
         return [
             'uuid' => $this->faker->uuid(),
             'name' => $this->faker->name(),
             'group_type_id' => 1,
             'group_status_id' => $this->getRandomConfigValue('groups.statuses')['id'],
+            'coi_code' => $code
         ];
     }
 

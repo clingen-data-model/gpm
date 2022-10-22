@@ -7,6 +7,7 @@ use Illuminate\Support\Carbon;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Modules\Group\Actions\CoiCodeMake;
 use App\Modules\Group\Actions\GroupCreate;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Events\ApplicationInitiated;
@@ -16,9 +17,8 @@ class ExpertPanelCreate
 {
     use AsAction;
 
-    public function __construct(GroupCreate $createGroup)
+    public function __construct(private GroupCreate $createGroup, private CoiCodeMake $makeCoiCode)
     {
-        $this->createGroup = $createGroup;
     }
 
     /**
@@ -36,7 +36,7 @@ class ExpertPanelCreate
         if (is_null($date_initiated)) {
             $date_initiated = Carbon::now();
         }
-        
+
         $groupTypeId = $expert_panel_type_id+2;
 
         $group = $this->createGroup->handle([
@@ -52,13 +52,12 @@ class ExpertPanelCreate
         $group->expertPanel->group_id = $group->id;
         $group->expertPanel->expert_panel_type_id = $expert_panel_type_id;
         $group->expertPanel->date_initiated = $date_initiated;
-        $group->expertPanel->coi_code = bin2hex(random_bytes(12));
         $group->expertPanel->cdwg_id = $cdwg_id;
         $group->expertPanel->current_step = 1;
 
 
         $group->expertPanel->save();
-    
+
         Event::dispatch(new ApplicationInitiated($group->expertPanel));
 
         return $group;

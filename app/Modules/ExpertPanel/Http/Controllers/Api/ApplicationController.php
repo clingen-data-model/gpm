@@ -44,7 +44,6 @@ class ApplicationController extends Controller
                 'step_3_approval_date',
                 'step_4_received_date',
                 'step_4_approval_date',
-                'coi_code',
                 'date_completed',
                 'expert_panels.deleted_at'
             ],

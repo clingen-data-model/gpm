@@ -82,7 +82,7 @@ class AnnualUpdateSubmit
             'website_attestation' => 'exclude_if:ep_activity,inactive|accepted'
         ];
 
-        if ($annualReview->expertPanel->isGcep) {
+        if ($annualReview->expertPanel->group->isGcep) {
             $requirements = array_merge(
                 $requirements,
                 [
@@ -104,7 +104,7 @@ class AnnualUpdateSubmit
                 ]
             );
         }
-        if ($annualReview->expertPanel->isVcep) {
+        if ($annualReview->expertPanel->group->isVcep) {
             $requirements = array_merge($requirements, [
                 'vci_use' => 'required|in:yes,no',
                 'vci_use_details' => 'required_if:vci_use,no',
@@ -121,11 +121,11 @@ class AnnualUpdateSubmit
                     }),
                     'variant_counts' => 'required|array|min:1',
                     'variant_counts.*.gene_symbol' => 'required_with:variant_counts.*.in_clinvar,variant_counts.*.gci_approved,variant_counts.*.provisionally_approved',
-        
+
                     'variant_counts.*.in_clinvar' => 'required_with:variant_counts.*.gene_symbol,variant_counts.*.gci_approved,variant_counts.*.provisionally_approved',
-        
+
                     'variant_counts.*.gci_approved' => 'required_with:variant_counts.*.gene_symbol,variant_counts.*.in_clinvar,variant_counts.*.provisionally_approved',
-        
+
                     'variant_counts.*.provisionally_approved' => 'required_with:variant_counts.*.gene_symbol,variant_counts.*.in_clinvar,variant_counts.*.gci_approved',
                 ]);
             }

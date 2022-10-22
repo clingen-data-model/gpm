@@ -39,7 +39,6 @@ class ExpertPanelFactory extends Factory
             'expert_panel_type_id' => $groupTypeId - 2,
             'date_initiated' => Carbon::now(),
             'current_step' => 1,
-            'coi_code' => bin2hex(random_bytes(12)),
         ];
     }
 
@@ -56,7 +55,7 @@ class ExpertPanelFactory extends Factory
             ];
         });
     }
-    
+
     public function vcep()
     {
         return $this->state(function (array $attributes) {

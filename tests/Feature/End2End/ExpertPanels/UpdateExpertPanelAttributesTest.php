@@ -65,7 +65,6 @@ class UpdateExpertPanelAttributesTest extends TestCase
             'date_completed' => '2019-01-01',
             'step_1_approval_date' => '2019-01-01 00:00:00',
             'current_step' => 12,
-            'coi_code' => '123456789012'
         ];
         $dataWithUuid = array_merge($data, $nonEpData);
 
@@ -76,7 +75,6 @@ class UpdateExpertPanelAttributesTest extends TestCase
                 'date_initiated' => $expertPanel->date_initiated->toJson(),
                 'date_completed' => null,
                 'current_step' => 1,
-                'coi_code' => $expertPanel->coi_code,
                 'step_1_approval_date' => null
             ]);
     }

@@ -83,7 +83,7 @@ export default {
             survey: survey,
             response: survey.getResponseTemplate(),
             errors: {},
-            epName: null,
+            groupName: null,
             verifying: false,
             saved: false,
             saving: false,
@@ -92,10 +92,10 @@ export default {
     },
     computed: {
         codeIsValid() {
-            return this.epName !== null;
+            return this.groupName !== null;
         },
         coiTitle() {
-            return survey.name+' for '+this.epName;
+            return survey.name+' for '+this.groupName;
         },
         membership () {
             return this.$store.getters
@@ -141,9 +141,9 @@ export default {
         },
         verifyCode() {
             this.verifying = true;
-            api.get(`/api/coi/${this.code}/application`)
+            api.get(`/api/coi/${this.code}/group`)
                 .then(response => {
-                    this.epName = response.data.display_name
+                    this.groupName = response.data.display_name
                 })
                 .then(() => {
                     this.verifying = false;
@@ -167,7 +167,7 @@ export default {
                 if (is_validation_error(error)) {
                     this.errors = error.response.data.errors
                 } else {
-                    this.$store.commit('pushError', `You can not complete a COI for ${this.epName} because you are not a member.`)
+                    this.$store.commit('pushError', `You can not complete a COI for ${this.groupName} because you are not a member.`)
                 }
             }
             this.saving = false;

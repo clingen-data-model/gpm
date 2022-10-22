@@ -21,6 +21,7 @@ class GroupController extends Controller
                 'name',
                 'group_type_id',
                 'group_status_id',
+                'coi_code'
             ],
             defaultWith: [
                 'type',

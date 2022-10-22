@@ -66,6 +66,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         'group_type_id',
         'group_status_id',
         'parent_id',
+        'coi_code'
     ];
 
     /**
@@ -86,7 +87,8 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     ];
 
     protected $appends = [
-        'has_coi_requirement'
+        'has_coi_requirement',
+        'coi_url',
     ];
 
     public static function booted()
@@ -117,13 +119,13 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     // public function groupType(): BelongsTo
     // {
     // }
-    
+
     public function type(): BelongsTo
     {
         return $this->belongsTo(GroupType::class, 'group_type_id');
         // return $this->groupType();
     }
-    
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -160,6 +162,11 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         return $this->hasMany(Group::class, 'parent_id', 'id');
     }
 
+    public function cois()
+    {
+        return $this->hasMany(Coi::class, 'group_id');
+    }
+
     /**
      * SCOPES
      */
@@ -177,7 +184,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     {
         return $query->ofType(config('groups.types.cdwg.id'));
     }
-    
+
     public function scopeWorkingGroup($query)
     {
         return $query->ofType(config('groups.types.wg.id'));
@@ -203,23 +210,9 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         return $query->ofType(config('groups.types.gcep.id'));
     }
 
-    /**
-     * ACCESSORS
-     */
-    public function getCoiCodeAttribute()
-    {
-        if ($this->expertPanel) {
-            return $this->expertPanel->coi_code;
-        }
-        return null;
-    }
-
     public function getCoiUrlAttribute()
     {
-        if ($this->expertPanel) {
-            return $this->expertPanel->coi_url;
-        }
-        return null;
+        return url('/coi/'.$this->coi_code);
     }
 
     public function getIsExpertPanelAttribute(): bool
@@ -231,7 +224,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     {
         return $this->getIsExpertPanelAttribute();
     }
-    
+
 
     public function getIsVcepAttribute(): bool
     {
@@ -255,17 +248,19 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
     public function getHasCoiRequirementAttribute()
     {
-        if ($this->isExpertPanel) {
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
-    
-    
+    // DOMAIN
+    public static function findByCoiCode($code)
+    {
+        return static::where('coi_code', $code)->first();
+    }
 
-
+    public static function findByCoiCodeOrFail($code)
+    {
+        return static::where('coi_code', $code)->sole();
+    }
 
     protected static function newFactory()
     {

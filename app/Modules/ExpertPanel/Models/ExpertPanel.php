@@ -61,7 +61,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'hypothesis_group',
         'membership_description',
         'scope_description',
-        'coi_code',
         'nhgri_attestation_date',
         'preprint_attestation_date',
         'curation_review_protocol_id',
@@ -132,7 +131,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     protected $appends = [
         // 'working_name',
         'name',
-        'coi_url',
         'full_long_base_name',
         'full_short_base_name',
         'full_name',
@@ -186,11 +184,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $this->hasOne(NextAction::class)
                 ->pending()
                 ->orderBy('created_at', 'desc');
-    }
-
-    public function cois()
-    {
-        return $this->hasMany(Coi::class, 'expert_panel_id');
     }
 
     /**
@@ -347,16 +340,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return static::where('affiliation_id', $affiliationId)->sole();
     }
 
-    public static function findByCoiCode($code)
-    {
-        return static::where('coi_code', $code)->first();
-    }
-
-    public static function findByCoiCodeOrFail($code)
-    {
-        return static::where('coi_code', $code)->sole();
-    }
-
     public static function latestLogEntryForUuid($uuid)
     {
         return static::findByUuid($uuid)->group->latestLogEntry;
@@ -395,18 +378,12 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
     public function getIsVcepAttribute(): bool
     {
-        if (!$this->group) {
-            return false;
-        }
-        return $this->group->isVcep;
+        return $this->expert_panel_type_id == 2;
     }
 
     public function getIsGcepAttribute(): bool
     {
-        if (!$this->group) {
-            return false;
-        }
-        return $this->group->isGcep;
+        return $this->expert_panel_type_id == 1;
     }
 
 
@@ -474,10 +451,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         }
 
         return 'https://clinicalgenome.org/affiliation/'.$this->affiliation_id;
-    }
-    public function getCoiUrlAttribute()
-    {
-        return url('/coi/'.$this->coi_code);
     }
 
     public function getDefinitionIsApprovedAttribute(): bool

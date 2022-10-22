@@ -4,6 +4,7 @@ namespace App\Modules\ExpertPanel\Actions;
 
 use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
+use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Event;
 use App\Modules\ExpertPanel\Models\Coi;
 use App\Http\Requests\CoiStorageRequest;
@@ -18,7 +19,7 @@ class CoiResponseStore
 
     public function handle(String $coiCode, ?int $groupMemberId, array $responseData)
     {
-        $expertPanel = ExpertPanel::findByCoiCodeOrFail($coiCode);
+        $group = Group::findByCoiCodeOrFail($coiCode);
         $groupMember = GroupMember::find($groupMemberId);
 
         $data = $responseData;
@@ -33,16 +34,16 @@ class CoiResponseStore
             $data['first_name'] = 'Legacy';
             $data['last_name'] = 'Coi';
         }
-        
+
         $coi = Coi::create([
             'uuid'=>Uuid::uuid4()->toString(),
             'group_member_id' => $groupMemberId,
             'data' => $data,
-            'expert_panel_id' => $expertPanel->id,
+            'group_id' => $group->id,
             'completed_at' => Carbon::now()
         ]);
 
-        Event::dispatch(new CoiCompleted($expertPanel, $coi));
+        Event::dispatch(new CoiCompleted($group, $coi));
 
         return $coi;
     }

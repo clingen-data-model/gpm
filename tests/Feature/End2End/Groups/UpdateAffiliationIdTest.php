@@ -49,7 +49,7 @@ class UpdateAffiliationIdTest extends TestCase
             'affiliation_id' => '49999'
         ]);
     }
-    
+
     /**
      * @test
      */
@@ -88,7 +88,7 @@ class UpdateAffiliationIdTest extends TestCase
                 'affiliation_id' => ['The affiliation id has already been taken.']
             ]);
     }
-    
+
     /**
      * @test
      */
@@ -96,7 +96,7 @@ class UpdateAffiliationIdTest extends TestCase
     {
         $this->makeRequest()
             ->assertStatus(200);
-        
+
         $this->assertLoggedActivity(
             subject: $this->expertPanel->group,
             description: 'EP affiliation_id set to 49999.',
@@ -104,8 +104,8 @@ class UpdateAffiliationIdTest extends TestCase
             logName: 'groups'
         );
     }
-    
-    
+
+
 
     private function makeRequest($affiliationId = null)
     {
