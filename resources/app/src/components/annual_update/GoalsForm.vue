@@ -1,15 +1,15 @@
 <template>
     <div>
-        <input-row 
+        <input-row
             v-model="workingCopy.data.goals"
             type="large-text"
-            :errors="errors.goals" 
+            :errors="errors.goals"
             vertical
             :disabled="isComplete"
         >
             <template v-slot:label>
                 Describe the Expert Panel’s plans and goals for the next year, for example, finishing curations, working on manuscript, etc.
-                <div v-if="workingCopy.expert_panel.is_vcep">
+                <div v-if="workingCopy.is_vcep">
                     Please include:
                     <ul class="list-decimal pl-8">
                         <li>Progress on resolving discrepancies between existing ClinVar submitters in addition to noting other priorities.</li>
@@ -19,7 +19,7 @@
             </template>
         </input-row>
 
-        <input-row 
+        <input-row
             label="Do the co-chairs plan to continue leading the EP for the next year?"
             v-model="workingCopy.data.cochair_commitment"
             type="radio-group"
@@ -28,12 +28,12 @@
             vertical
             :disabled="isComplete"
         />
-        <transition name="slide-fade-down">                                
-            <input-row 
-                label="Please explain" 
+        <transition name="slide-fade-down">
+            <input-row
+                label="Please explain"
                 v-model="workingCopy.data.cochair_commitment_details"
                 type="large-text"
-                :errors="errors.cochair_commitment_details" 
+                :errors="errors.cochair_commitment_details"
                 vertical
                 class="ml-4"
                 v-if="workingCopy.data.cochair_commitment == 'no'"

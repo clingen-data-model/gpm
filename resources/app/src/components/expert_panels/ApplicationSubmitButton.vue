@@ -46,7 +46,7 @@
                         <textarea v-model="notes" rows="5" class="w-full"></textarea>
                     </input-row>
                     <button-row @submitted="confirmSubmission" @cancelled="cancelSubmission"></button-row>
-                </modal-dialog>            
+                </modal-dialog>
             </transition>
         </teleport>
     </div>
@@ -108,13 +108,13 @@ export default {
             return this.step.evaluateRequirements(this.group);
         },
         submissionName () {
-            if (this.group.expert_panel.type.name == 'gcep') {
+            if (this.group.is_gcep) {
                 return 'GCEP'
             }
             switch (this.group.expert_panel.current_step) {
                 case 1:
                     return 'VCEP Group Definition';
-                case 4: 
+                case 4:
                     return 'VCEP Sustained Curation Plans'
                 default:
                     // alert('Specifications approval is handled in the CSpec registry.  Please go there to develope your AMCG/AMP Guideline Specifications.')

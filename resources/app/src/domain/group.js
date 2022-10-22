@@ -122,6 +122,14 @@ class Group extends Entity {
         return this.children && this.children.length > 0
     }
 
+    get is_vcep () {
+        return this.group_type_id == configs.groups.types.vcep.id;
+    }
+
+    get is_gcep () {
+        return this.group_type_id == configs.groups.types.gcep.id;
+    }
+
     addMembers (members) {
         members.forEach(m => {
             this.addMember(m);
@@ -191,11 +199,11 @@ class Group extends Entity {
     }
 
     isVcep() {
-        return this.isEp() && this.expert_panel && this.expert_panel.expert_panel_type_id == 2;
+        return this.is_vcep;
     }
 
     isGcep() {
-        return this.isEp() && this.expert_panel && this.expert_panel.expert_panel_type_id == 1;
+        return this.is_gcep;
     }
 
     documentsOfType(docTypeId) {
