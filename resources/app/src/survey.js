@@ -7,6 +7,7 @@ class Question {
         this.type = question.type;
         this.show = question.show;
         this.class = question.class;
+        this.content = question.content;
     }
 }
 
@@ -24,8 +25,6 @@ class YesNoQuestion extends Question {
             }
         ];
     }
-
-
 }
 
 function makeQuestion(questionDef) {
@@ -51,16 +50,13 @@ class Survey {
         return this._questions
     }
 
-    responseIsValid(response) {
-        response;
-        return true;
-    }
-
     getResponseTemplate() {
         const rsp = {};
-        this.questions.forEach(q => {
-            rsp[q.name] = null
-        });
+        this.questions
+            .filter(q => q.type == 'content')
+            .forEach(q => {
+                rsp[q.name] = null
+            });
         return rsp;
 
     }

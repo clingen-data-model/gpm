@@ -17,6 +17,9 @@ use App\Modules\Group\Actions\ParentUpdate;
 use App\Modules\Group\Actions\DocumentUpdate;
 use App\Modules\Group\Actions\MemberUnretire;
 use App\Modules\Group\Actions\GroupNameUpdate;
+use App\Modules\Group\Actions\JudgementCreate;
+use App\Modules\Group\Actions\JudgementDelete;
+use App\Modules\Group\Actions\JudgementUpdate;
 use App\Modules\Group\Actions\AnnualUpdateSave;
 use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Group\Actions\MemberRemoveRole;
@@ -28,20 +31,18 @@ use App\Modules\Group\Actions\HandleGroupCommand;
 use App\Modules\Group\Actions\AttestationGcepStore;
 use App\Modules\Group\Actions\DevFakePilotApproved;
 use App\Http\Controllers\Api\AnnualUpdateController;
-use App\Modules\ExpertPanel\Actions\SpecificationsGet;
 use App\Modules\Group\Actions\ApplicationSubmitStep;
 use App\Modules\Group\Actions\AttestationNhgriStore;
 use App\Modules\Group\Actions\EvidenceSummaryDelete;
 use App\Modules\Group\Actions\EvidenceSummaryUpdate;
 use App\Modules\Group\Actions\ExpertPanelNameUpdate;
+use App\Modules\ExpertPanel\Actions\CoiResponseStore;
 use App\Modules\Group\Actions\ApplicationActivityGet;
 use App\Modules\Group\Actions\ApplicationSaveChanges;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Group\Actions\MemberRevokePermission;
 use App\Modules\Group\Actions\ScopeDescriptionUpdate;
-use App\Modules\Group\Actions\JudgementDelete;
-use App\Modules\Group\Actions\JudgementCreate;
-use App\Modules\Group\Actions\JudgementUpdate;
+use App\Modules\ExpertPanel\Actions\SpecificationsGet;
 use App\Modules\Group\Actions\AttestationReanalysisStore;
 use App\Modules\Group\Actions\ApplicationSubmissionReject;
 use App\Modules\Group\Actions\MembershipDescriptionUpdate;
@@ -52,8 +53,23 @@ use App\Modules\Group\Actions\SustainedCurationReviewComplete;
 use App\Modules\Group\Http\Controllers\Api\GeneListController;
 use App\Modules\Group\Http\Controllers\Api\ActivityLogsController;
 use App\Modules\Group\Http\Controllers\Api\GroupRelationsController;
+use App\Modules\ExpertPanel\Http\Controllers\Api\SimpleCoiController;
 use App\Modules\Group\Http\Controllers\Api\EvidenceSummaryController;
 use App\Modules\Group\Http\Controllers\Api\GroupSubmissionsController;
+
+Route::group([
+    'prefix' => 'api',
+    'middleware' => ['api', 'auth:sanctum']
+], function () {
+    Route::group(['prefix' => 'cois'], function () {
+        Route::get('/{Coi:id}', [SimpleCoiController::class, 'show']);
+    });
+
+    Route::group(['prefix' => 'coi'], function () {
+        Route::get('/{code}/group', [SimpleCoiController::class, 'getGroup']);
+        Route::post('/{code}', CoiResponseStore::class);
+    });
+});
 
 Route::group([
     'prefix' => 'api/groups',

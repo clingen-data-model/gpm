@@ -141,17 +141,25 @@ export default {
                         return false;
                     });
         });
+
         const coiFields = [
             {
                 name: 'group.name',
                 label: 'Group',
+                type: String,
+                sortable: true,
+                resolveValue: item => item.group.display_name
+            },
+            {
+                name: 'latest_coi.version',
+                label: 'Version',
                 type: String,
                 sortable: true
             },
             {
                 name: 'coi_last_completed',
                 label: 'Completed',
-                sortable: false,
+                sortable: true,
                 type: Date,
             },
         ];
@@ -179,10 +187,12 @@ export default {
 
             return coiFields;
         })
+
         const coiSort = ref({
             field: 'group.name',
             desc: false
         })
+
         const getCoiRoute = (membership) => {
             return {
                 name: 'alt-coi',

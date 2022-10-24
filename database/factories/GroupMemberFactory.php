@@ -25,8 +25,8 @@ class GroupMemberFactory extends Factory
     public function definition()
     {
         return [
-            'group_id' => Group::factory()->create()->id,
-            'person_id' => Person::factory()->create()->id,
+            'group_id' => Group::factory(),
+            'person_id' => Person::factory(),
             'start_date' => $this->faker->dateTime(),
             'end_date' => null,
             'is_contact' => 0

@@ -40,7 +40,8 @@ class CoiFactory extends Factory
                 'independent_efforts_details' => $this->faker->sentence,
                 'coi' => $this->faker->randomElement([0,1,2]),
                 'coi_details' => $this->faker->sentence
-            ]
+            ],
+            'version' => config('coi.current_version')
         ];
     }
 }

@@ -4,20 +4,27 @@
             <div v-if="!verifying">We couldn't find this COI.</div>
         </card>
         <card title="There's a problem" v-if="!groupMemberId">
-            We can't seem to find your membership id.  Please try refreshing.
+            We can't seem to find your membership for this group id.  Please try refreshing.
         </card>
-        <card :title="coiTitle"  class="max-w-xl mx-auto relative" v-if="codeIsValid">
-            <p>
-                Review ClinGen’s <coi-policy-link />
-            </p>
+
+        <card :title="coiTitle"  class="mx-auto relative" style="max-width:800px" v-else-if="codeIsValid">
+            <CoiPolicy />
+            <hr>
+            <h2>COI</h2>
             <div class="relative">
                 <div
                     v-for="question in survey.questions"
                     :key="question.name"
-                            :class="question.class"
+                    :class="question.class"
                 >
                     <transition name="slide-fade-down">
+                        <div v-if="question.type == 'content'">
+                            <MarkdownBlock
+                                :markdown="question.content"
+                            />
+                        </div>
                         <input-row
+                            v-else
                             :label="question.question_text"
                             :errors="errors[question.name]"
                             :vertical="true"
@@ -57,19 +64,30 @@
                 </button-row>
             </div>
         </card>
+
         <note class="container">GroupMemberId: {{groupMemberId}}</note>
     </div>
 </template>
 <script>
-import coiDef from '../../../surveys/coi.json'
+import coiDef from '../../../surveys/coi_v2.json'
 import Survey from '@/survey'
 import api from '@/http/api'
 import is_validation_error from '@/http/is_validation_error';
+import CoiPolicy from '@/components/coi/CoiPolicy'
+import CoiQuestions from '@/components/coi/CoiQuestions'
+import CoiAttestation from '@/components/coi/CoiAttestation'
+import MarkdownBlock from '@/components/MarkdownBlock'
 
 const survey = new Survey(coiDef);
 
 export default {
     name: 'Coi',
+    components: {
+        CoiPolicy,
+        CoiQuestions,
+        CoiAttestation,
+        MarkdownBlock
+    },
     props: {
         code: {
             required: true,
@@ -78,6 +96,7 @@ export default {
     },
     data() {
         return {
+            pageComponent: CoiQuestions,
             coiDef: coiDef,
             survey: survey,
             response: survey.getResponseTemplate(),
@@ -123,10 +142,37 @@ export default {
     methods: {
         initResponseValues() {
             if (this.membership && this.membership.cois.length > 0) {
-                this.response = {...this.membership.cois[this.membership.cois.length -1].data};
+                const lastResponse = {...this.membership.cois[this.membership.cois.length -1]};
+
+                const v2ResponseData = (lastResponse.version == '1.0.0')
+                    ? this.transformV1Response(lastResponse.data)
+                    : {...lastResponse.data};
+
+                v2ResponseData.coi_attestation = null
+                v2ResponseData.data_policy_attestation = null
+                this.response = v2ResponseData;
             }
 
             return {}
+        },
+
+        transformV1Response (lastResponse) {
+            const v2Response = {
+                work_fee_lab: lastResponse.work_fee_lab,
+                contributions_to_gd_in_group: lastResponse.contributions_to_gd_in_ep,
+                contributions_to_genes: lastResponse.contributions_to_genes,
+                coi: (lastResponse.independent_efforts == 0 && lastResponse.coi == 0) ? 0 : 1,
+                coi_details: [
+                                lastResponse.independent_efforts_details,
+                                lastResponse.coi_details
+                            ].join(";\n")
+            }
+
+            if ((lastResponse.independent_efforts == 2 || lastResponse.coi == 2)) {
+                v2Response.coi = 2;
+            }
+
+            return v2Response;
         },
 
         showQuestion(question) {
