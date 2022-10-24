@@ -74,8 +74,6 @@ import Survey from '@/survey'
 import api from '@/http/api'
 import is_validation_error from '@/http/is_validation_error';
 import CoiPolicy from '@/components/coi/CoiPolicy'
-import CoiQuestions from '@/components/coi/CoiQuestions'
-import CoiAttestation from '@/components/coi/CoiAttestation'
 import MarkdownBlock from '@/components/MarkdownBlock'
 
 const survey = new Survey(coiDef);
@@ -84,8 +82,6 @@ export default {
     name: 'Coi',
     components: {
         CoiPolicy,
-        CoiQuestions,
-        CoiAttestation,
         MarkdownBlock
     },
     props: {
@@ -96,7 +92,6 @@ export default {
     },
     data() {
         return {
-            pageComponent: CoiQuestions,
             coiDef: coiDef,
             survey: survey,
             response: survey.getResponseTemplate(),
