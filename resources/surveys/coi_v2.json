@@ -1,0 +1,86 @@
+{
+    "name": "Conflict of Interest Requirement",
+    "questions": [
+        {
+            "name": "work_fee_lab",
+            "question": "Do you work for a laboratory that offers fee-for-service testing related to the work of your ClinGen group? If this question is not applicable to your working group, please select \"No.\"",
+            "validation": "required",
+            "type": "yes-no"
+        },
+        {
+            "name": "contributions_to_gd_in_group",
+            "question": "Have you made substantial contributions to the literature implicating a gene:disease relationship that relates to the work of your ClinGen group?",
+            "type": "multiple-choice",
+            "options": [
+                { "label": "Yes", "value": 1 },
+                { "label": "No", "value": 0 },
+                { "label": "Not applicable, specific gene:disease relationships do not relate to the work of this working group or committee ", "value": 2 }
+            ],
+            "validation": "required"
+        },
+        {
+            "name": "contributions_to_genes",
+            "question": "Please list the genes:",
+            "type": "text",
+            "validation": "required_if:contributions_to_gd_in_group,1",
+            "show": {
+                "name": "contributions_to_gd_in_group",
+                "value": 1
+            },
+            "class": "ml-4"
+        },
+        {
+            "name": "coi",
+            "question": "Do you have any past or prospective involvement in any activity (e.g. employment, participation on an advisory board, patents, intellectual property ownership, grants or paid consultancies) that reasonably could be interpreted as a possible academic or financial conflict of interest with respect to the activities of this ClinGen group?",
+            "type": "multiple-choice",
+            "options": [
+                { "label": "Yes", "value": 1 },
+                { "label": "No", "value": 0 },
+                { "label": "Unsure", "value": 2 }
+            ],
+            "validation": "required"
+        },
+        {
+            "name": "coi_details",
+            "question": "Please explain:",
+            "type": "text",
+            "validation": "required_unless:coi,0",
+            "show": {
+                "name": "coi",
+                "value": [1, 2]
+            },
+            "class": "ml-4"
+        },
+        {
+            "type": "content",
+            "content": "<h4>Attestation:</h4>"
+        },
+        {
+            "name": "coi_attestation",
+            "question": "I attest that I will inform group leadership (i.e., chairs, coordinators, grant liaisons) about pre-existing activities, new initiatives, or planned publications that overlap with my involvement in this ClinGen group.",
+            "validation": "required|accepted",
+            "type": "multiple-choice",
+            "options": [
+                {"label": "I accept", "value": 1}
+            ]
+        },
+        {
+            "type": "content",
+            "content": "<h3>Use of ClinGen Curation Data Policy:</h3>It is common that members of working groups and expert panels may share information from clinical or research testing that is only allowed to be shared for the purpose of informing the classification of a gene or variant and not for primary research or other uses. Therefore, please attest to the following statement to ensure shared data is treated with its intended use.",
+            "class": "border-t pt-4 mt-4 mb-2"
+        },
+        {
+            "type": "content",
+            "content": "<h4>Attestation:</h4>"
+        },
+        {
+            "name": "data_policy_attestation",
+            "question": "I will not utilize confidential information or documents to which I obtain access through my ClinGen efforts for any purpose outside of ClinGen activities without discussion with the provider of the data. This includes, but is not limited to, discussions or documents relating to the ClinGen group, lists of variants used within the expert panel, documents or datasets marked 'confidential', or unpublished data. If I have any reasonable doubt about whether particular information or a particular document is confidential, I will not utilize such information, documents, or data unless I have first clarified the situation with the appropriate leadership of the ClinGen group (e.g., chairs, grant liaisons) and obtained authorization.",
+            "validation": "required|accepted",
+            "type": "multiple-choice",
+            "options": [
+                {"label": "I accept", "value": 1}
+            ]
+        }
+    ]
+}

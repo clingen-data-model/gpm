@@ -28,15 +28,6 @@ use App\Modules\ExpertPanel\Http\Controllers\Api\NextActionAssigneeController;
 
 Route::get('/next-actions/assignees', [NextActionAssigneeController::class, 'index']);
 
-Route::group(['prefix' => 'api/cois'], function () {
-    Route::get('/{Coi:id}', [SimpleCoiController::class, 'show']);
-});
-
-Route::group(['prefix' => 'api/coi'], function () {
-    Route::get('/{code}/application', [SimpleCoiController::class, 'getApplication']);
-    Route::post('/{code}', CoiResponseStore::class);
-});
-
 Route::group([
     'prefix' => 'api/applications',
     'middleware' => ['api']
@@ -48,24 +39,24 @@ Route::group([
         Route::get('/{app_uuid}', [ApplicationController::class, 'show']);
         Route::put('/{app_uuid}', ExpertPanelUpdateAttributes::class);
         Route::delete('/{app_uuid}', ExpertPanelDelete::class);
-        
+
         Route::get('/{app_uuid}/contacts', [ApplicationContactController::class, 'index']);
         Route::post('/{app_uuid}/contacts', ContactAdd::class);
         Route::delete('/{app_uuid}/contacts/{person_uuid}', ContactRemove::class);
-        
+
         Route::post('/{group:uuid}/current-step/approve', StepApprove::class);
         Route::put('/{app_uuid}/approve', [ApplicationStepController::class, 'updateApprovalDate']);
-        
+
         Route::post('/{app_uuid}/documents', ApplicationDocumentAdd::class);
         Route::put('/{app_uuid}/documents/{doc_uuid}', ApplicationDocumentUpdate::class);
         Route::post('/{app_uuid}/documents/{doc_uuid}/final', ApplicationDocumentMarkFinal::class);
         Route::delete('/{app_uuid}/documents/{doc_uuid}', ApplicationDocumentDelete::class);
-        
+
         Route::get('/{app_uuid}/log-entries', [ApplicationLogController::class, 'index']);
         Route::post('/{app_uuid}/log-entries', LogEntryAdd::class);
         Route::put('/{app_uuid}/log-entries/{id}', LogEntryUpdate::class);
         Route::delete('/{app_uuid}/log-entries/{id}', LogEntryDelete::class);
-        
+
         Route::post('/{expertPanel:uuid}/next-actions', NextActionCreate::class);
         Route::put('/{expertPanel:uuid}/next-actions/{nextAction:id}', NextActionUpdate::class);
         Route::delete('/{expertPanel:uuid}/next-actions/{id}', NextActionDelete::class);

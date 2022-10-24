@@ -369,6 +369,14 @@ class Person extends Model implements HasLogEntries
             return $this->credentials->pluck('name')->join(', ');
         }
 
+        public function getExpertisesAsStringAttribute()
+        {
+            if ($this->expertises->count() == 0) {
+                return $this->memberships->pluck('legacy_expertise')->filter()->join(', ');
+            }
+            return $this->expertises->pluck('name')->join(', ');
+        }
+
 
     // Factory
     protected static function newFactory()

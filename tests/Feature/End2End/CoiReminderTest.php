@@ -25,9 +25,9 @@ class CoiReminderTest extends TestCase
         parent::setup();
         $this->setupForGroupTest();
 
-        $this->ep = ExpertPanel::factory()->create();
+        $this->group = Group::factory()->create();
         $this->user1 = $this->setupUserWithPerson();
-        $this->membership1 = app()->make(MemberAdd::class)->handle($this->ep->group, $this->user1->person);
+        $this->membership1 = app()->make(MemberAdd::class)->handle($this->group, $this->user1->person);
     }
 
     /**
@@ -36,10 +36,10 @@ class CoiReminderTest extends TestCase
     public function groupMember_can_scope_by_hasPendingCois()
     {
         $user2 = $this->setupUserWithPerson();
-        $groupMember = app()->make(MemberAdd::class)->handle($this->ep->group, $user2->person);
+        $groupMember = app()->make(MemberAdd::class)->handle($this->group, $user2->person);
         Coi::factory()->create([
             'group_member_id' => $groupMember->id,
-            'expert_panel_id' => $this->ep->id,
+            'group_id' => $this->group->id,
             'completed_at' => Carbon::now()->subDays(364)
         ]);
         $this->assertEquals(1, GroupMember::hasPendingCoi()->count());
@@ -51,10 +51,10 @@ class CoiReminderTest extends TestCase
     public function person_can_scope_by_hasPendingCois()
     {
         $user2 = $this->setupUserWithPerson();
-        $groupMember = app()->make(MemberAdd::class)->handle($this->ep->group, $user2->person);
+        $groupMember = app()->make(MemberAdd::class)->handle($this->group, $user2->person);
         Coi::factory()->create([
             'group_member_id' => $groupMember->id,
-            'expert_panel_id' => $this->ep->id,
+            'group_id' => $this->group->id,
             'completed_at' => Carbon::now()->subDays(364)
         ]);
         $peopleWithPendingCois = Person::hasPendingCois()->get();
@@ -67,14 +67,14 @@ class CoiReminderTest extends TestCase
      */
     public function person_related_to_memberships_with_pending_coi()
     {
-        $ep2 = ExpertPanel::factory()->create();
-        $ep3 = ExpertPanel::factory()->create();
-        $membership2 = app()->make(MemberAdd::class)->handle($ep2->group, $this->user1->person);
-        $membership3 = app()->make(MemberAdd::class)->handle($ep3->group, $this->user1->person);
+        $group2 = Group::factory()->create();
+        $group3 = Group::factory()->create();
+        $membership2 = app()->make(MemberAdd::class)->handle($group2, $this->user1->person);
+        $membership3 = app()->make(MemberAdd::class)->handle($group3, $this->user1->person);
         app()->make(MemberRetire::class)->handle($membership3, Carbon::today());
         Coi::factory()->create([
             'group_member_id' => $membership2->id,
-            'expert_panel_id' => $ep2->id,
+            'group_id' => $group2->id,
             'completed_at' => Carbon::now()->subDays(364)
         ]);
 
@@ -89,18 +89,18 @@ class CoiReminderTest extends TestCase
     public function sends_notification_to_activited_person_with_pending_coi()
     {
         $user2 = $this->setupUserWithPerson();
-        $groupMember = app()->make(MemberAdd::class)->handle($this->ep->group, $user2->person);
+        $groupMember = app()->make(MemberAdd::class)->handle($this->group, $user2->person);
         Coi::factory()->create([
             'group_member_id' => $groupMember->id,
-            'expert_panel_id' => $this->ep->id,
+            'group_id' => $this->group->id,
             'completed_at' => Carbon::now()->subDays(364)
         ]);
 
-        $ep2 = ExpertPanel::factory()->create();
-        $membership2 = app()->make(MemberAdd::class)->handle($ep2->group, $this->user1->person);
+        $group2 = Group::factory()->create();
+        $membership2 = app()->make(MemberAdd::class)->handle($group2, $this->user1->person);
         Coi::factory()->create([
             'group_member_id' => $membership2->id,
-            'expert_panel_id' => $ep2->id,
+            'group_id' => $group2->id,
             'completed_at' => Carbon::now()->subDays(364)
         ]);
 
@@ -127,7 +127,7 @@ class CoiReminderTest extends TestCase
      */
     public function does_not_send_email_for_inactive_memberships()
     {
-        $ep2 = ExpertPanel::factory()->create();
+        $group2 = Group::factory()->create();
         app()->make(MemberRetire::class)->handle($this->membership1, Carbon::today()->subDays(2));
 
         Notification::fake();
@@ -138,7 +138,7 @@ class CoiReminderTest extends TestCase
     /**
      * @test
      */
-    public function does_not_send_email_to_members_of_non_eps()
+    public function sends_email_to_members_of_non_eps()
     {
         $user = $this->setupUserWithPerson();
         $cdwg = Group::factory()->cdwg()->create();
@@ -148,7 +148,7 @@ class CoiReminderTest extends TestCase
 
         Notification::fake();
         $this->triggerScheduledTask();
-        Notification::assertNotSentTo($user->person, CoiReminderNotification::class);
+        Notification::assertSentTo($user->person, CoiReminderNotification::class);
     }
 
     /**
@@ -157,7 +157,7 @@ class CoiReminderTest extends TestCase
     public function does_not_send_coi_reminder_to_nonactivated_people()
     {
         $person = Person::factory()->create();
-        app()->make(MemberAdd::class)->handle($this->ep->group, $person);
+        app()->make(MemberAdd::class)->handle($this->group, $person);
 
         Notification::fake();
         $this->triggerScheduledTask();

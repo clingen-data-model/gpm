@@ -108,14 +108,14 @@ class AnnualUpdate extends Model
 
     public function getIsGcepAttribute()
     {
-        return $this->expertPanel->expert_panel_type_id === 1;
+        return $this->expertPanel->group->isGcep;
     }
 
     public function getIsVcepAttribute()
     {
-        return $this->expertPanel->expert_panel_type_id === 2;
+        return $this->expertPanel->group->isVcep;
     }
-    
+
 
     public function toCsvArray(): array
     {
@@ -235,10 +235,10 @@ class AnnualUpdate extends Model
                             .(isset($gene['provisionally_approved']) ? $gene['provisionally_approved'] : 0)
                         .'; ';
         }
-        
+
         return $string;
     }
-    
+
 
     private function getDataOrNull($key)
     {

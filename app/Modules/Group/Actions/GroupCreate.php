@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Auth;
 use Lorisleiva\Actions\ActionRequest;
+use App\Modules\Group\Actions\CoiCodeMake;
 use App\Modules\Group\Events\GroupCreated;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
@@ -16,6 +17,11 @@ class GroupCreate
 {
     use AsController;
 
+    public function __construct(private CoiCodeMake $makeCoiCode)
+    {
+    }
+
+
     public function handle($data): Group
     {
         $group = Group::create([
@@ -23,6 +29,7 @@ class GroupCreate
             'name' => $data['name'],
             'group_type_id' => $data['group_type_id'],
             'group_status_id' => $data['group_status_id'],
+            'coi_code' => $this->makeCoiCode->handle(),
             'parent_id' => $this->resolveParentId($data),
         ]);
 
@@ -34,13 +41,12 @@ class GroupCreate
                 'cdwg_id' => $this->resolveParentId($data),
                 'expert_panel_type_id' => ($data['group_type_id'] - 2),
                 'date_initiated' => Carbon::now(),
-                'coi_code' => bin2hex(random_bytes(12)),
                 'current_step' => 1,
             ]);
             $expertPanel->uuid = Uuid::uuid4();
             $group->expertPanel()->save($expertPanel);
         }
-        
+
         event(new GroupCreated($group));
 
         return $group;
@@ -52,28 +58,28 @@ class GroupCreate
 
         $group = $this->handle($data);
         $group->load('expertPanel');
-        
+
         return new GroupResource($group);
     }
 
     public function rules(): array
     {
         return [
-           'name' => 'required|max:255',
-           'long_base_name' => 'max:255',
-           'short_base_name' => 'max:16',
-           'group_type_id' => 'required', // TODO: should check for existence when we merge vcep/gcep into group
-           'group_status_id' => 'required|exists:group_statuses,id',
-           'parent_id' => [
-                            'nullable',
-                            function ($attribute, $value, $fail) {
-                                if ($value != 0) {
-                                    if (!DB::table('groups')->where('id', $value)->exists()) {
-                                        $fail('The selected parent is not valid.');
-                                    }
-                                }
-                            }
-                        ]
+            'name' => 'required|max:255',
+            'long_base_name' => 'max:255',
+            'short_base_name' => 'max:16',
+            'group_type_id' => 'required', // TODO: should check for existence when we merge vcep/gcep into group
+            'group_status_id' => 'required|exists:group_statuses,id',
+            'parent_id' => [
+                'nullable',
+                function ($attribute, $value, $fail) {
+                    if ($value != 0) {
+                        if (!DB::table('groups')->where('id', $value)->exists()) {
+                            $fail('The selected parent is not valid.');
+                        }
+                    }
+                }
+            ]
         ];
     }
 

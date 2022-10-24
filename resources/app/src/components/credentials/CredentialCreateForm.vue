@@ -4,7 +4,6 @@
     import {isValidationError} from '@/http';
 
     const store = useStore();
-    console.log(store.dispatch('credentials/eatBeans'));
     const props = defineProps({
         starterString: {
             type: String,

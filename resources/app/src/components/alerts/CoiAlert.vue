@@ -1,17 +1,17 @@
 <template>
-    <static-alert 
+    <static-alert
         class="pb-3 flex space-x-2 items-center"
         variant="warning"
     >
         <icon-coi height="30" width="30"></icon-coi>
         <div>
             <p>You have a pending <strong>COI</strong> disclosure for <strong>{{groupName}}</strong>.</p>
-            <router-link 
+            <router-link
                 :to="{
-                    name: 'alt-coi', 
+                    name: 'alt-coi',
                     params: {
-                        name: groupName, 
-                        code: membership.group.expert_panel.coi_code
+                        name: groupName,
+                        code: membership.group.coi_code
                     }
                 }"
                 class="btn font-bold"
@@ -32,7 +32,7 @@ export default {
     },
     computed: {
         groupName () {
-            return this.membership.group.expert_panel.display_name
+            return this.membership.group.display_name
         }
     }
 }

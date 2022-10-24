@@ -8,10 +8,10 @@
 </style>
 <template>
     <application-section title="Submitter Information">
-        <dictionary-row label="Expert Panel">{{workingCopy.expert_panel.display_name}}</dictionary-row>
+        <dictionary-row label="Expert Panel">{{workingCopy.display_name}}</dictionary-row>
         <dictionary-row label="Affilation ID">{{workingCopy.expert_panel.affiliation_id}}</dictionary-row>
 
-        <input-row 
+        <input-row
             label="Submitting member"
             v-model="workingCopy.submitter_id"
             type="select"
@@ -20,13 +20,13 @@
         />
 
         <dictionary-row label="EP Coordinator(s)">
-            <span class="csv-item" 
+            <span class="csv-item"
                 v-for="coordinator in coordinators" :key="coordinator.id"
             >{{coordinator.person.name}}</span>
             <span v-if="coordinators.length == 0" class="text-red-600">No coordinators on file for this expert panel.</span>
         </dictionary-row>
 
-        <input-row 
+        <input-row
             label="Liaising ClinGen grant"
             v-model="workingCopy.data.grant"
             type="select"
@@ -34,8 +34,8 @@
             :errors="errors.grant"
             :disabled="isComplete"
         />
-        
-        <input-row v-if="this.workingCopy.expert_panel.is_gcep"
+
+        <input-row v-if="this.workingCopy.is_gcep"
             label="What is the current activity status of the EP?"
             v-model="workingCopy.data.ep_activity"
             type="radio-group"
@@ -59,7 +59,7 @@
         <transition name="slide-fade-down">
             <p v-if="workingCopy.data.submitted_inactive_form == 'no'" class="ml-4 alert-warning p-2 rounded-lg">
                 You must complete and submit the <a href="https://docs.google.com/document/d/13m4xeuh-GDHbYciQYHu1CiE_6HI-Xz_6_-yp8q2Ybp4/edit?usp=sharing" target="inacive-form">ClinGen Inactive GCEP Form</a>
-            </p>        
+            </p>
         </transition>
 
     </application-section>

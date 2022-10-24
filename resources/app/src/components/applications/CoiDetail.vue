@@ -6,9 +6,10 @@
 <template>
     <div v-if="response">
         <h2 class="block-title">
-            COI response for 
+            COI response for
             <span v-if="coi.data.first_name">{{titleCase(`${coi.data.first_name} ${coi.data.last_name}`)}} in </span>
             {{group.name}}
+            (v. {{coi.version}})
         </h2>
         <div class="text-sm response-data">
             <dictionary-row label="Name" label-class="font-bold">
@@ -30,14 +31,15 @@
             <div v-if="!response.document_uuid" class="response-data">
 
                 <dictionary-row :label="response.work_fee_lab.question" :vertical="true"
-                   
+
                     label-class="font-bold"
                 >
                     {{getQuestionValue(response.work_fee_lab.response)}}
                 </dictionary-row>
 
-                <dictionary-row :label="response.contributions_to_gd_in_ep.question" :vertical="true"
-                   
+                <dictionary-row
+                    v-if="version == '1.0.0'"
+                    :label="response.contributions_to_gd_in_ep.question" :vertical="true"
                     label-class="font-bold"
                 >
                     {{getQuestionValue(response.contributions_to_gd_in_ep.response)}}
@@ -50,8 +52,24 @@
                     </dictionary-row>
                 </dictionary-row>
 
-                <dictionary-row 
-                    :label="response.independent_efforts.question" 
+                <dictionary-row
+                    v-if="version == '2.0.0'"
+                    :label="response.contributions_to_gd_in_group.question" :vertical="true"
+                    label-class="font-bold"
+                >
+                    {{getQuestionValue(response.contributions_to_gd_in_group.response)}}
+                    <dictionary-row :label="response.contributions_to_genes.question" :vertical="true"
+                        v-if="response.contributions_to_gd_in_group.response == 1"
+                        class="pb-1 mb-1 ml-4"
+                        label-class="font-bold"
+                    >
+                        {{getQuestionValue(response.contributions_to_genes.response)}}
+                    </dictionary-row>
+                </dictionary-row>
+
+                <dictionary-row
+                    v-if="version == '1.0.0'"
+                    :label="response.independent_efforts.question"
                     :vertical="true"
                     label-class="font-bold"
                 >
@@ -64,7 +82,7 @@
                     >
                         {{getQuestionValue(response.independent_efforts_details.response)}}
                     </dictionary-row>
-                
+
                 </dictionary-row>
 
                 <dictionary-row :label="response.coi.question" :vertical="true"
@@ -99,7 +117,7 @@ export default {
     },
     data() {
         return {
-            
+
         }
     },
     computed: {
@@ -108,6 +126,9 @@ export default {
         },
         response () {
             return this.coi.response_document
+        },
+        version () {
+            return this.coi.version
         }
     },
     methods: {

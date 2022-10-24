@@ -9,8 +9,8 @@
         <data-table :fields="membershipFields" :data="membershipInfo"></data-table>
 
         <teleport to="body">
-            <modal-dialog 
-                v-model="showEditForm" 
+            <modal-dialog
+                v-model="showEditForm"
                 title="Edit System Roles & Permissions"
             >
                 <h3 class="border-b mb-1">Roles</h3>
@@ -23,15 +23,15 @@
                 <h3 class="border-b mb-1">Permissions</h3>
                 <ul class="flex flex-wrap">
                     <li v-for="permission in availableSystemPermissions" :key="permission.id" class="w-1/3 h-12">
-                        <checkbox 
+                        <checkbox
                             v-if="checkedRolePermissionIds.includes(permission.id)"
                             :modelValue="true" :disabled="true" :label="permission.display_name"
                         />
-                        <checkbox 
+                        <checkbox
                             v-else
                             v-model="checkedPermissions"
-                            :label="titleCase(permission.display_name)" 
-                            :value="permission.id" 
+                            :label="titleCase(permission.display_name)"
+                            :value="permission.id"
                         />
                     </li>
                 </ul>
@@ -46,8 +46,8 @@
                     <div class="absolute top-0 left-0 w-full h-full bg-pink-500 opacity-0">&nbsp;</div>
                 </div>
 
-                <button-row 
-                    submit-text="Save" 
+                <button-row
+                    submit-text="Save"
                     @submitted="saveRolesAndPermissions"
                     @canceled="closeEditForm"
                 ></button-row>
@@ -97,7 +97,7 @@ export default {
         membershipInfo () {
             return this.user.person.memberships.map(m => ({
                     id: m.id,
-                    group: m.group.expert_panel ? m.group.expert_panel.display_name : m.group.name,
+                    group: m.group.display_name,
                     roles: m.roles.map(r => r.name).join(', '),
                     extra_permissions: m.permissions.map(r => r.name).join(', ') || '',
                     is_contact: m.is_contact ? 'Yes' : 'No',
@@ -153,7 +153,7 @@ export default {
             }
 
             return false;
-            
+
         },
         currentUserIsUser () {
             return this.$store.getters.currentUser.id == this.user.id;
@@ -177,7 +177,7 @@ export default {
         },
         resetCheckedRolesAndPermissions () {
             this.checkedRoles = this.user.roles.map(r => r.id);
-            this.checkedPermissions = this.user.permissions.map(r => r.id);            
+            this.checkedPermissions = this.user.permissions.map(r => r.id);
         },
         async getSystemRoles () {
             this.systemRoles = await api.get(`/api/roles`)
@@ -188,7 +188,7 @@ export default {
         },
         async saveRolesAndPermissions () {
             const payload = {
-                role_ids: this.checkedRoles, 
+                role_ids: this.checkedRoles,
                 permission_ids: this.checkedPermissions
             };
 

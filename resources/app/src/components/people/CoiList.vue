@@ -11,7 +11,7 @@
                             class="block my-0 font-bold p-2 border border-gray-300 first:rounded-t-lg last:rounded-b-lg cursor-pointer hover:bg-blue-50 link"
                             :to="getCoiRoute(membership)"
                         >
-                            {{membership.group.expert_panel.display_name}}
+                            {{membership.group.display_name}}
                         </router-link>
                     </div>
                 </div>
@@ -23,7 +23,7 @@
                             v-for="membership in person.membershipsWithPendingCois"
                             :key="membership.id"
                         >
-                            {{membership.group.expert_panel.display_name}}
+                            {{membership.group.display_name}}
                         </li>
                     </ul>
                 </div>
@@ -49,7 +49,7 @@
                                 v-if="userIsPerson(person)"
                                 :to="{
                                     name: 'alt-coi',
-                                    params: {code: item.group.expert_panel.coi_code, name: this.kebabCase(item.group.name)}
+                                    params: {code: item.group.coi_code, name: this.kebabCase(item.group.name)}
                                 }"
                                 class="btn btn-xs"
                             >Update COI</router-link>
@@ -76,7 +76,7 @@
                                 v-if="userIsPerson(person)"
                                 :to="{
                                     name: 'alt-coi',
-                                    params: {code: item.group.expert_panel.coi_code, name: this.kebabCase(item.group.name)}
+                                    params: {code: item.group.coi_code, name: this.kebabCase(item.group.name)}
                                 }"
                                 class="btn btn-xs"
                             >Update COI</router-link>
@@ -141,17 +141,25 @@ export default {
                         return false;
                     });
         });
+
         const coiFields = [
             {
                 name: 'group.name',
                 label: 'Group',
+                type: String,
+                sortable: true,
+                resolveValue: item => item.group.display_name
+            },
+            {
+                name: 'latest_coi.version',
+                label: 'Version',
                 type: String,
                 sortable: true
             },
             {
                 name: 'coi_last_completed',
                 label: 'Completed',
-                sortable: false,
+                sortable: true,
                 type: Date,
             },
         ];
@@ -179,16 +187,18 @@ export default {
 
             return coiFields;
         })
+
         const coiSort = ref({
             field: 'group.name',
             desc: false
         })
+
         const getCoiRoute = (membership) => {
             return {
                 name: 'alt-coi',
                 params: {
                     name: kebabCase(membership.group.name),
-                    code: membership.group.expert_panel.coi_code
+                    code: membership.group.coi_code
                 }
             }
         }

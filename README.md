@@ -6,18 +6,18 @@ For lack of a better name we'll call it the EPAM.
 ## Installation
 ### Prerequisites
 You must have the following to stand up the application locally
-* PHP 8.0
-* Composer
+<!-- * PHP 8.0
+* Composer -->
 * Docker
 
 The stand up a local instance of the application
 1. Clone this repository
 2. cd into the directory
-3. `composer install`
-3. `cp .env.example .env`
-4. `php artisan key:generate`
-3. `docker-compose up -d --build`
-4. Confirm that the `.docker/data` directory exists (it can take a few minutes for the database to be setup).  When it does run `docker-compose exec app php artisan migrate --seed`
+4. `cp .env.example .env`
+5. `docker-compose up -d --build`
+3. `docker-compose exec app composer install`
+6. `docker-compose exec app php artisan key:generate`
+7. Confirm that the `.docker/data` directory exists (it can take a few minutes for the database to be setup).  When it does run `docker-compose exec app php artisan migrate --seed`
 
 The development server is available at http://localhost:8080
 
@@ -28,7 +28,7 @@ Database seeding run in the last setup step has created two user/people with the
 To work on the front end client you will need:
 * node
 * npm
-* vue-cli
+<!-- * vue-cli
 
 To start the development server:
 1. `cd resources/app`
@@ -38,7 +38,9 @@ This will start up the webpack development server which will server which you ca
 
 The development server supports hot module replacement (HMR) so changes to code will be hot swapped when the dev server is running.  The dev server will proxy api requests to http://localhost:8080.  Note that the dev server's proxy does only supports xhttp requests.  The handful of regular requests (i.e. impersonation, report downloads, etc.) will require pointing you browser directly at port 8080.
 
-For more information see [vue-cli documentation](https://cli.vuejs.org/)
+For more information see [vue-cli documentation](https://cli.vuejs.org/) -->
+
+
 
 ## Backend Architecture
 
@@ -134,7 +136,6 @@ The GPM produces to one (soon two) topic(s):
 For more details about implementation of DX integration see the [DX Implementation documentation](/documentation/dx-implementation.md)
 
 For more information on the ClinGen DX in general see the [ClinGen Data Exchange Infrastructure Developer Guide](https://docs.google.com/document/d/19D9QmxxzlxQEvMzNNpKccCx_e3Sj8bXZcEEIWN7zK5A/).  For information about available topics see the [Topic Inventory](https://docs.google.com/spreadsheets/d/1yuO9-IM-2MRM1AacKekNJdHRb8fl6ozxO7OFu6WPQ2Q/edit?usp=sharing).
-
 ## Frontend
 The frontend client is developed using [Vue3](https://vuejs.org/guide/introduction.html), [vue-router](https://router.vuejs.org/) for client-side routing, and [vuex](https://vuex.vuejs.org/) for a global data store. [TailwindCss](https://tailwindcss.com/) is the css framework.
 

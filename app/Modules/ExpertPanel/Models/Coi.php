@@ -3,6 +3,7 @@
 namespace App\Modules\ExpertPanel\Models;
 
 use Database\Factories\CoiFactory;
+use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use App\Modules\ExpertPanel\CoiCaster;
@@ -20,22 +21,66 @@ class Coi extends Model
     public $fillable = [
         'uuid',
         'group_member_id',
-        'expert_panel_id',
+        'group_id',
         'completed_at',
-        'data'
+        'data',
+        'version'
     ];
 
     public $casts = [
         'data' => 'object',
         'group_member_id' => 'integer',
-        'expert_panel_id' => 'integer',
+        'group_id' => 'integer',
         'completed_at' => 'datetime'
     ];
-    
+
     public $appends = [
         'response_document'
     ];
-    
+
+    static public function boot()
+    {
+        parent::boot();
+        static::saving(function ($model) {
+            if (!$model->version) {
+                $model->version = config('coi.current_version');
+            }
+        });
+    }
+
+
+    /**
+     * RELATIONS
+     */
+    public function groupMember(): BelongsTo
+    {
+        return $this->belongsTo(GroupMember::class);
+    }
+
+    public function expertPanel()
+    {
+        return $this->belongsTo(ExpertPanel::class);
+    }
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
+    }
+
+
+    /**
+     * SCOPES
+     */
+    public function scopeForApplication($query, $expertPanel)
+    {
+        $id = $expertPanel;
+        if ($expertPanel instanceof ExpertPanel) {
+            $id = $expertPanel->id;
+        }
+        return $query->where('group_id', $id);
+    }
+
+    // ACCESSORS
     public function getResponseDocumentAttribute()
     {
         $coiDef = isset($this->data->document_uuid)
@@ -56,15 +101,15 @@ class Coi extends Model
             ->filter()
             ->toArray();
 
-        $responseData['expert_panel_id'] = $this->expertPanel_id;
-        
+        $responseData['group_id'] = $this->expertPanel_id;
+
         return $responseData;
     }
 
-    public function getResponseForHumans()
+    public function getResponseForHumansAttribute()
     {
         $data = (array)$this->data;
-        $questions = collect(static::getDefinition()->questions)->keyBy('name');
+        $questions = collect($this->getDefinition()->questions)->keyBy('name');
 
         $humanReadable = [];
 
@@ -83,37 +128,14 @@ class Coi extends Model
 
         return $humanReadable;
     }
-    
-    /**
-     * RELATIONS
-     */
-    /**
-     * Get the GroupMember that owns the Coi
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function groupMember(): BelongsTo
-    {
-        return $this->belongsTo(GroupMember::class);
-    }
 
-    /**
-     * SCOPES
-     */
-    public function scopeForApplication($query, $expertPanel)
-    {
-        $id = $expertPanel;
-        if ($expertPanel instanceof ExpertPanel) {
-            $id = $expertPanel->id;
-        }
-        return $query->where('expert_panel_id', $id);
-    }
-    
+    // DOMAIN
 
-    public static function getDefinition()
+    public function getDefinition()
     {
-        return Cache::remember('coi-definition', 360, function () {
-            return json_decode(file_get_contents(base_path('resources/surveys/coi.json')));
+        return Cache::remember('coi-definition-'.$this->version, 360, function () {
+            $defPath = config('coi.definitions')[$this->version];
+            return json_decode(file_get_contents(base_path($defPath)));
         });
     }
 
@@ -123,7 +145,8 @@ class Coi extends Model
             return json_decode(file_get_contents(base_path('resources/surveys/legacy_coi.json')));
         });
     }
-    
+
+
     // Factory
     protected static function newFactory()
     {

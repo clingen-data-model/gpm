@@ -299,7 +299,7 @@ export default {
             this.coi = await api.get(`/api/cois/${coiId}`).then(response => response.data);
         },
         downloadCoiReport() {
-            const reportUrl = `/api/report/${this.group.expert_panel.coi_code}`
+            const reportUrl = `/api/report/${this.group.coi_code}`
             window.location = reportUrl;
         },
         confirmUnretire (member) {

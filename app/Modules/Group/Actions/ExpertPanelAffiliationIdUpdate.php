@@ -18,7 +18,7 @@ class ExpertPanelAffiliationIdUpdate
     {
         if ($affiliationId != $group->expertPanel->affiliation_id) {
             $group->expertPanel->update(['affiliation_id' => $affiliationId]);
-    
+
             event(new ExpertPanelAffiliationIdUpdated($group, $affiliationId));
         }
 
@@ -43,10 +43,10 @@ class ExpertPanelAffiliationIdUpdate
                 'nullable',
                 'size:5',
                 function ($attribute, $value, $fail) use ($expertPanel) {
-                    if ($expertPanel->isVcep && substr($value, 0, 1) != '5') {
+                    if ($expertPanel->group->isVcep && substr($value, 0, 1) != '5') {
                         $fail('VCEP affiliation IDs must start with "5"');
                     }
-                    if ($expertPanel->isGcep && substr($value, 0, 1) != '4') {
+                    if ($expertPanel->group->isGcep && substr($value, 0, 1) != '4') {
                         $fail('GCEP affiliation IDs must start with "4"');
                     }
                 },

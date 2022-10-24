@@ -6,7 +6,7 @@
     const reports = ref([
         {
             url: '/api/report/basic-summary',
-            name: 'Summary' 
+            name: 'Summary'
         },
         {
             url: '/api/report/vcep-application-summary',
@@ -27,6 +27,10 @@
         {
             url: '/api/report/institutions',
             name: 'Institutions'
+        },
+        {
+            url: '/api/report/people',
+            name: 'All people'
         },
         {
             url: '/api/report/people-in-multiple-eps',

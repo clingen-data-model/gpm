@@ -123,7 +123,7 @@ export default {
     },
     computed: {
         prevYearUrl () {
-            return (this.group.expert_panel.is_vcep)
+            return (this.group.is_vcep)
                 ? 'https://docs.google.com/spreadsheets/d/1nmIrsuKa8p1uOy18733P_2JBwQtANxDNmvAo4WTrfqY/edit#gid=1476503765'
                 : 'https://docs.google.com/spreadsheets/d/1-wE9Inu7sUG8jV456EdEsvVp36SWH4qCKX0V3i4dC2I/edit#gid=1788029822'
         },
