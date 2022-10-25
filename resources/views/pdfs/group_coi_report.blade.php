@@ -87,9 +87,9 @@
             </table>
         @endif
 
-        @if ($cois->get('2.0.0')->count() > 0)
+        @if ($cois->get('2.0.0') && $cois->get('2.0.0')->count() > 0)
             <h2>Version 2.0.0 Responses</h2>
-            <table style="page-break-inside: avoid;">
+            <table style="page-break-after: always;">
                 <thead>
                     <tr>
                         <th style="min-width: 10rem; max-width: 10%">Name</th>
