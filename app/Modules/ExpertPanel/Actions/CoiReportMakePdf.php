@@ -22,7 +22,7 @@ class CoiReportMakePdf
     {
         $members = $group->members()->with('person', 'latestCoi')->get();
 
-        $cois = $members->map(fn($member) => $this->transformMemberCoi($member))
+        $cois = $members->sortBy('person.last_name', SORT_NATURAL)->map(fn($member) => $this->transformMemberCoi($member))
                     ->groupBy('version');
 
         $view = View::make('pdfs.group_coi_report', ['cois' => $cois, 'group' => $group]);
