@@ -23,8 +23,7 @@ class CoiReportMakePdf
         $members = $group->members()->with('person', 'latestCoi')->get();
 
         $cois = $members->map(fn($member) => $this->transformMemberCoi($member))
-                    ->groupBy('version')
-                    ;
+                    ->groupBy('version');
 
         $view = View::make('pdfs.group_coi_report', ['cois' => $cois, 'group' => $group]);
 
@@ -64,13 +63,13 @@ class CoiReportMakePdf
 
             return (object)[
                 'name' => $member->person->name,
-                'work_fee_lab' => $this->resolveValue($coi->data->work_fee_lab),
-                'contributions_to_gd_in_ep' => $this->resolveValue($coi->data->contributions_to_gd_in_ep),
-                'contributions_to_genes' => $this->resolveValue($coi->data->contributions_to_genes),
-                'independent_efforts' => $this->resolveValue($coi->data->independent_efforts),
-                'independent_efforts_details' => $this->resolveValue($coi->data->independent_efforts_details),
-                'coi' => $this->resolveValue($coi->data->coi),
-                'coi_details' => $this->resolveValue($coi->data->coi_details),
+                'work_fee_lab' => $this->resolveValue($coi->data, 'work_fee_lab'),
+                'contributions_to_gd_in_ep' => $this->resolveValue($coi->data, 'contributions_to_gd_in_ep'),
+                'contributions_to_genes' => $this->resolveValue($coi->data, 'contributions_to_genes'),
+                'independent_efforts' => $this->resolveValue($coi->data, 'independent_efforts'),
+                'independent_efforts_details' => $this->resolveValue($coi->data, 'independent_efforts_details'),
+                'coi' => $this->resolveValue($coi->data, 'coi'),
+                'coi_details' => $this->resolveValue($coi->data, 'coi_details'),
                 'completed_at' => $coi->completed_at ? $coi->completed_at->format('Y-m-d') : null,
                 'version' => $coi->version ?? '1.0.0'
 
@@ -100,11 +99,11 @@ class CoiReportMakePdf
 
             return (object)[
                 'name' => $member->person->name,
-                'work_fee_lab' => $this->resolveValue($coi->data->work_fee_lab),
-                'contributions_to_gd_in_group' => $this->resolveValue($coi->data->contributions_to_gd_in_group),
-                'contributions_to_genes' => $this->resolveValue($coi->data->contributions_to_genes),
-                'coi' => $this->resolveValue($coi->data->coi),
-                'coi_details' => $this->resolveValue($coi->data->coi_details),
+                'work_fee_lab' => $this->resolveValue($coi->data, 'work_fee_lab'),
+                'contributions_to_gd_in_group' => $this->resolveValue($coi->data, 'contributions_to_gd_in_group'),
+                'contributions_to_genes' => $this->resolveValue($coi->data, 'contributions_to_genes'),
+                'coi' => $this->resolveValue($coi->data, 'coi'),
+                'coi_details' => $this->resolveValue($coi->data, 'coi_details'),
                 'completed_at' => $coi->completed_at ? $coi->completed_at->format('Y-m-d') : null,
                 'version' => $coi->version ?? '2.0.0'
             ];
@@ -113,8 +112,14 @@ class CoiReportMakePdf
         }
     }
 
-    private function resolveValue($value)
+    private function resolveValue($data, $key)
     {
+        if (!isset($data->{$key})) {
+            return null;
+        }
+
+        $value = $data->{$key};
+
         if (is_null($value)) {
             return null;
         }
