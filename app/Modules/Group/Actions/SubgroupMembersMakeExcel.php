@@ -125,7 +125,12 @@ class SubgroupMembersMakeExcel {
     private function truncateValues(Array $array, int $max = 10000): array
     {
         return collect($array)->map(function ($val) use ($max) {
+            if (!is_string($val)) {
+                return $val;
+            }
+
             return strlen($val) > $max ? substr($val, 0, $max-3).'...' : $val;
+
         })->toArray();
     }
 
