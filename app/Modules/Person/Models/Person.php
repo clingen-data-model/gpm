@@ -379,6 +379,11 @@ class Person extends Model implements HasLogEntries
             return $this->expertises->pluck('name')->join(', ');
         }
 
+        public function getExpertiseAsStringAttribute()
+        {
+            return $this->getExpertisesAsStringAttribute();
+        }
+
 
     // Factory
     protected static function newFactory()

@@ -77,7 +77,7 @@ class SubgroupMembersMakeExcel {
         if (strlen($group->name) > 26) {
             $sheetName = substr($group->name, 0, 23).'... '.strtoupper($group->type->name);
         }
-        $sheet->setName(preg_replace('/[\/\?\*\[\]\\\]/', '', $sheetName));
+        $sheet->setName(preg_replace('/[\/\?\*\[\]\\\:]/', '', $sheetName));
 
         $headerRow = $this->getGroupHeaderRow();
 
@@ -97,7 +97,7 @@ class SubgroupMembersMakeExcel {
 
     private function getGroupMemberRow(GroupMember $member)
     {
-        return WriterEntityFactory::createRowFromArray([
+        return WriterEntityFactory::createRowFromArray($this->truncateValues([
             $member->person->first_name,
             $member->person->last_name,
             $member->person->email,
@@ -108,7 +108,7 @@ class SubgroupMembersMakeExcel {
             $member->end_date ? $member->end_date->format('Y-m-d') : null,
             $member->is_contact ? 'Yes' : 'No',
             $member->roles->pluck('name')->join(",\n"),
-            $member->expertise,
+            $member->person->expertiseAsString,
             $member->notes,
             $member->training_level_1 ? 'Yes' : 'No',
             $member->training_level_2 ? 'Yes' : 'No',
@@ -119,8 +119,16 @@ class SubgroupMembersMakeExcel {
             $member->person->addressString,
             ($member->person->contry) ? $member->person->contry->name : null,
             $member->person->timezone,
-       ]);
+       ]));
     }
+
+    private function truncateValues(Array $array, int $max = 10000): array
+    {
+        return collect($array)->map(function ($val) use ($max) {
+            return strlen($val) > $max ? substr($val, 0, $max-3).'...' : $val;
+        })->toArray();
+    }
+
 
     private function getGroupHeaderRow()
     {
