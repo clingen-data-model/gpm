@@ -24,6 +24,7 @@ class InviteRedeem
     {
         $invite->markRedeemed(Carbon::now())->save();
 
+        // TODO: Extract to create User for person
         $user = $this->createUser->handle(
             name: $invite->person->first_name.' '.$invite->person->last_name,
             email: $data['email'],
@@ -34,6 +35,7 @@ class InviteRedeem
             ->user()
             ->associate($user)
             ->save();
+        // END TODO
 
 
         Event::dispatch(new InviteRedeemed($invite, $user));
