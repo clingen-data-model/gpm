@@ -1,6 +1,6 @@
 <template>
     <div>
-        <data-form :fields="fields" :errors="errors" v-model="inst" />
+        <data-form :fields="filteredFields" :errors="errors" v-model="inst" />
         <button-row submit-text="Save" @submitted="save" @cancel="cancel" />
     </div>
 </template>
@@ -33,6 +33,11 @@ export default {
             handler (to) {
                 this.inst.name = to;
             }
+        }
+    },
+    computed: {
+        filteredFields () {
+            return this.fields.filter(f => f.name !== 'reportable');
         }
     },
     methods: {

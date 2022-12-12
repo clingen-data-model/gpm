@@ -9,6 +9,7 @@
             keyOptionsBy="id"
             showOptionsOnFocus
             :options="institutions"
+            showOptionsWhenEmpty
         >
             <template v-slot:selection-label="{selection}">
                 <div>
