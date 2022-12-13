@@ -9,7 +9,7 @@ class CountryController extends Controller
 {
     public function index()
     {
-        $countries = Country::all();
+        $countries = Country::orderBy('name')->get();
 
         return $countries->map(fn ($c) => ['id' => $c->id, 'name' => $c->name]);
     }
