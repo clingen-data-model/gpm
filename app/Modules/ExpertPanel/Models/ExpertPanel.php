@@ -277,7 +277,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function annualReviews(): HasMany
+    public function annualUpdates(): HasMany
     {
         return $this->hasMany(AnnualUpdate::class);
     }
@@ -285,6 +285,15 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     public function latestAnnualUpdate(): HasOne
     {
         return $this->hasOne(AnnualUpdate::class)->latestOfMany();
+    }
+
+    public function previousYearAnnualUpdate(): HasOne
+    {
+        return $this->hasOne(AnnualUpdate::class)->ofMany([], function($query) {
+            $query->whereHas('window', function ($q) {
+                $q->forYear(Carbon::now()->year - 2);
+            });
+        });
     }
 
     // SCOPES

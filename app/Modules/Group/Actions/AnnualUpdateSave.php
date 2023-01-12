@@ -17,7 +17,7 @@ class AnnualUpdateSave
         $annualReview->submitter_id = $submitterId;
         $annualReview->data = $data;
         $annualReview->save();
-        
+
         return $annualReview;
     }
 
@@ -25,7 +25,7 @@ class AnnualUpdateSave
     {
         $group = Group::findByUuidOrFail($groupUuid);
         $annualReview = $group->expertPanel
-                            ->annualReviews()
+                            ->annualUpdates()
                             ->find($annualReviewId);
         $submitterId = $request->get('submitter_id');
         $data = collect($request->get('data'))

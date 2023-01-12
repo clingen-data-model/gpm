@@ -24,7 +24,7 @@ class AnnualUpdateSubmit
     public function asController(ActionRequest $request, $groupUuid, $annualReviewId)
     {
         $group = Group::findByUuidOrFail($groupUuid);
-        $annualReview = $group->expertPanel->annualReviews()->find($annualReviewId);
+        $annualReview = $group->expertPanel->annualUpdates()->find($annualReviewId);
 
         $validator = $this->makeDataValidator($annualReview);
         if ($validator->fails()) {

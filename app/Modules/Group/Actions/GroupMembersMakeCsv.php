@@ -53,7 +53,20 @@ class GroupMembersMakeCsv
             fclose($handle);
         };
 
-        $dlFileName = Str::snake(strtolower($group->display_name).'_members_').Carbon::now()->toISOString().'.csv';
+
+
+        $dlFileName = $this->makeFileName($group->display_name);
         return response()->streamDownload($callback, $dlFileName, ['Content-Type' => 'text/csv']);
     }
+
+    private function makeFileName($string): string
+    {
+        $formatted = Str::snake(
+                        strtolower(
+                            preg_replace('/[\/,;:\\\]/', '_', $string)
+                        )
+                    );
+        return $formatted.'_members_'.Carbon::now()->toISOString().'.csv';
+    }
+
 }

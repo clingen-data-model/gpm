@@ -92,6 +92,11 @@ const routes = [
     ...adminRoutes,
     ...userRoutes,
     {
+        name: 'CoiNoCode',
+        path: '/coi',
+        redirect: '/'
+    },
+    {
         name: 'coi',
         path: '/coi/:code',
         component: () => import (/* webpackChunkName "coi-survey" */ '@/views/Coi.vue'),

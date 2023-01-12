@@ -51,10 +51,13 @@ export default {
             required: true,
             type: String
         },
+        id: {
+            required: false,
+        }
     },
     data() {
         return {
-            annualReview: {
+            annualUpdate: {
                 expert_panel: {
                     group: {
                         members: [],
@@ -122,36 +125,37 @@ export default {
         }
     },
     computed: {
-        prevYearUrl () {
-            return (this.group.is_vcep)
-                ? 'https://docs.google.com/spreadsheets/d/1nmIrsuKa8p1uOy18733P_2JBwQtANxDNmvAo4WTrfqY/edit#gid=1476503765'
-                : 'https://docs.google.com/spreadsheets/d/1-wE9Inu7sUG8jV456EdEsvVp36SWH4qCKX0V3i4dC2I/edit#gid=1788029822'
+        showLastYearLink () {
+            return this.expertPanel &&
+                this.expertPanel.previous_year_annual_update &&
+                this.annualUpdate &&
+                this.expertPanel.previous_year_annual_update.id !== this.annualUpdate.id
         },
         group () {
             return this.$store.getters['groups/currentItemOrNew'];
         },
         year () {
-            const thisYear = this.annualReview.window ? this.annualReview.window.for_year : (new Date()).getFullYear()-1;
+            const thisYear = this.annualUpdate.window ? this.annualUpdate.window.for_year : (new Date()).getFullYear()-1;
             return thisYear;
         },
         hasErrors () {
             return Object.keys(this.errors).length > 0;
         },
         window () {
-            return this.annualReview.window || {}
+            return this.annualUpdate.window || {}
         },
         dueDateAlertVariant () {
             return 'info';
         },
         expertPanel () {
-            return this.annualReview.expert_panel || {};
+            return this.annualUpdate.expert_panel || {};
         },
         groupDetailRoute () {
             return {name: 'GroupDetail', params: {uuid: this.group.uuid}}
         }
     },
     watch: {
-        annualReview: {
+        annualUpdate: {
             handler: function () {
                 this.debounceSave();
             },
@@ -182,9 +186,9 @@ export default {
             this.saving = true;
             this.errors = {};
             try {
-                const updatedAnnualUpdate = await api.post(`/api/groups/${this.group.uuid}/expert-panel/annual-updates/${this.annualReview.id}`)
+                const updatedAnnualUpdate = await api.post(`/api/groups/${this.group.uuid}/expert-panel/annual-updates/${this.annualUpdate.id}`)
                     .then(response => response.data);
-                this.annualReview.completed_at = updatedAnnualUpdate.completed_at;
+                this.annualUpdate.completed_at = updatedAnnualUpdate.completed_at;
                 this.saving = false;
             } catch (error) {
                 this.saving = false;
@@ -208,20 +212,26 @@ export default {
             }
         },
         async getAnnualUpdate () {
-            this.annualReview = await api.get(`/api/groups/${this.group.uuid}/expert-panel/annual-updates`)
+            console.log('AnnualUpdateForm.getAnnualUpdate', this.$route.params.id)
+            let url = `/api/groups/${this.group.uuid}/expert-panel/annual-updates`;
+            if (this.id) {
+                url += `/${this.id}`
+            }
+            console.log(url);
+            this.annualUpdate = await api.get(url)
                 .then(response => {
-                    const mergedData = {...this.annualReview.data, ...response.data.data}
+                    const mergedData = {...this.annualUpdate.data, ...response.data.data}
                     const reviewData = response.data;
                     reviewData.data = mergedData;
                     return reviewData;
                 });
-            this.lastSaved = new Date(Date.parse(this.annualReview.updated_at));
+            this.lastSaved = new Date(Date.parse(this.annualUpdate.updated_at));
         },
         async save() {
-            if (!this.annualReview.id)  return;
+            if (!this.annualUpdate.id)  return;
             try {
                 this.saving = true;
-                await api.put( `/api/groups/${this.group.uuid}/expert-panel/annual-updates/${this.annualReview.id}`,  this.annualReview);
+                await api.put( `/api/groups/${this.group.uuid}/expert-panel/annual-updates/${this.annualUpdate.id}`,  this.annualUpdate);
                 this.saving = false;
                 this.lastSaved = new Date();
             } catch (error) {
@@ -249,11 +259,11 @@ export default {
 </script>
 <template>
     <div class="annual-update relative">
-        <static-alert :variant="dueDateAlertVariant" class="mb-4" v-if="!annualReview.completed_at">
-                This annual update for {{window.for_year}} is due on {{formatDate(window.end)}}
+        <static-alert :variant="dueDateAlertVariant" class="mb-4" v-if="!annualUpdate.completed_at">
+            This annual update for {{window.for_year}} is due on {{formatDate(window.end)}}
         </static-alert>
-        <static-alert class="mb-4"  v-if="window.for_year == 2021">
-            Refer to <a :href="prevYearUrl"  class="font-bold" target="ann-up-responses">your responses from last year</a>.
+        <static-alert  v-if="showLastYearLink" class="mb-4">
+            Refer to <a :href="`/annual-updates/${expertPanel.previous_year_annual_update.id}`"  class="font-bold" target="ann-up-responses">your responses from last year</a>.
         </static-alert>
         <group-breadcrumbs :group="group" />
 
@@ -264,63 +274,64 @@ export default {
                 |
                 ExpertPanel ID: {{group.expert_panel.id}}
                 |
-                AnnualUpdate ID: {{annualReview.id}}
+                AnnualUpdate ID: {{annualUpdate.id}}
                 |
                 Last Saved: {{formatDateTime(lastSaved)}}
             </note>
         </h1>
 
-        <static-alert variant="success" class="mb-4" v-if="annualReview.completed_at">
-            Your annual update was submitted on {{formatDate(annualReview.completed_at)}}
+        <static-alert v-if="annualUpdate.completed_at" variant="success" class="mb-4">
+            Your annual update was submitted on {{formatDate(annualUpdate.completed_at)}}
         </static-alert>
 
-            <submitter-information v-model="annualReview" :errors="errors" />
+            <submitter-information v-model="annualUpdate" :errors="errors" />
 
             <transition name="slide-fade-down">
-                <div v-if="expertPanel.is_vcep || (expertPanel.is_gcep && annualReview.data.ep_activity == 'active') ">
-                    <membership-update v-model="annualReview" :errors="errors" />
+                <!-- <div v-if="group.is_vcep || (group.is_gcep && annualUpdate.data.ep_activity == 'active') "> -->
+                <div>
+                    <membership-update v-model="annualUpdate" :errors="errors" />
 
                     <template v-if="expertPanel.is_gcep">
                         <app-section title="Use of GCI and GeneTracker Systems">
-                            <gci-gt-use v-model="annualReview" :errors="errors" />
+                            <gci-gt-use v-model="annualUpdate" :errors="errors" />
                         </app-section>
 
                         <app-section title="Summary of total numbers of genes curated">
-                            <gene-curation-totals v-model="annualReview" :errors="errors" />
+                            <gene-curation-totals v-model="annualUpdate" :errors="errors" />
                         </app-section>
 
                         <app-section title="Changes to plans for ongoing curation">
-                            <gcep-ongoing-plans-update-form v-model="annualReview" :errors="errors" @updated="saveOngoingPlans"></gcep-ongoing-plans-update-form>
+                            <gcep-ongoing-plans-update-form v-model="annualUpdate" :errors="errors" @updated="saveOngoingPlans"></gcep-ongoing-plans-update-form>
                         </app-section>
 
                         <app-section title="Gene Re-curation/Re-review">
-                            <gcep-rereview-form v-model="annualReview" :errors="errors"></gcep-rereview-form>
+                            <gcep-rereview-form v-model="annualUpdate" :errors="errors"></gcep-rereview-form>
                         </app-section>
                     </template>
 
                     <app-section v-if="expertPanel.is_vcep" title="Use of Variant Curation Interface (VCI)">
-                        <vci-use v-model="annualReview" :errors="errors"></vci-use>
+                        <vci-use v-model="annualUpdate" :errors="errors"></vci-use>
                     </app-section>
 
                     <app-section title="Goals for next year">
-                        <goals-form v-model="annualReview" :errors="errors" />
+                        <goals-form v-model="annualUpdate" :errors="errors" />
                     </app-section>
 
                     <app-section title="Additional Funding">
-                        <funding-form v-model="annualReview" :errors="errors" />
+                        <funding-form v-model="annualUpdate" :errors="errors" />
                     </app-section>
 
-                    <website-attestation v-model="annualReview" :errors="errors" />
+                    <website-attestation v-model="annualUpdate" :errors="errors" />
 
                     <template
                         v-if="expertPanel.is_vcep && expertPanel.has_approved_draft">
                         <!-- <dev-component>Begin questions for specifcation-ed VCEPS</dev-component> -->
                         <app-section title="Progress on Rule Specification">
-                            <specification-progress v-model="annualReview" :errors="errors" />
+                            <specification-progress v-model="annualUpdate" :errors="errors" />
                         </app-section>
 
                         <app-section title="Summary of total number of variants curated">
-                            <vcep-totals v-model="annualReview" :errors="errors" />
+                            <vcep-totals v-model="annualUpdate" :errors="errors" />
                         </app-section>
                         <!-- <dev-component>End questions for specifcation-ed VCEPS</dev-component> -->
                     </template>
@@ -328,21 +339,21 @@ export default {
                     <template v-if="expertPanel.is_vcep && expertPanel.sustained_curation_is_approved">
                         <!-- <dev-component>Begin Questions for sustained curation</dev-component> -->
 
-                        <!-- <variant-curation-workflow v-model="annualReview" :errors="errors" /> -->
+                        <!-- <variant-curation-workflow v-model="annualUpdate" :errors="errors" /> -->
 
-                        <variant-reanalysis v-model="annualReview" :errors="errors" />
+                        <variant-reanalysis v-model="annualUpdate" :errors="errors" />
 
-                        <vcep-ongoing-plans-update-form v-model="annualReview" :errors="errors"  @updated="saveOngoingPlans"/>
+                        <vcep-ongoing-plans-update-form v-model="annualUpdate" :errors="errors"  @updated="saveOngoingPlans"/>
 
                         <member-designation-update
-                            v-model="annualReview"
+                            v-model="annualUpdate"
                             :errors="errors"
                             @updated="debounceSave"
                             ref="memberDesignationUpdate"
                         />
 
                         <!-- <vcep-plans-for-specifications
-                            v-model="annualReview"
+                            v-model="annualUpdate"
                             :errors="errors"
                         /> -->
 
@@ -352,14 +363,14 @@ export default {
                 </div>
             </transition>
             <hr>
-            <button class="btn btn-lg" @click="submit" v-if="!annualReview.completed_at">Submit annual update</button>
+            <button class="btn btn-lg" @click="submit" v-if="!annualUpdate.completed_at">Submit annual update</button>
             <static-alert variant="danger mt-4" v-if="hasErrors">
                 There are problems with your annual update that must be corrected before you can submit.
                 <br>
                 Please see items highlighted in red above.
             </static-alert>
 
-            <static-alert variant="success" v-if="annualReview.completed_at">
+            <static-alert variant="success" v-if="annualUpdate.completed_at">
                 Thank you for submitting your annual update.
             </static-alert>
 

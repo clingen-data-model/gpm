@@ -1,4 +1,4 @@
-<style lang="postcss" scoped>
+<style scoped>
     .csv-item:after {
         content: ', ';
     }
@@ -8,7 +8,7 @@
 </style>
 <template>
     <application-section title="Submitter Information">
-        <dictionary-row label="Expert Panel">{{workingCopy.display_name}}</dictionary-row>
+        <dictionary-row label="Expert Panel">{{workingCopy.expert_panel.display_name}}</dictionary-row>
         <dictionary-row label="Affilation ID">{{workingCopy.expert_panel.affiliation_id}}</dictionary-row>
 
         <input-row

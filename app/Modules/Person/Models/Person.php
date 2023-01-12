@@ -305,7 +305,9 @@ class Person extends Model implements HasLogEntries
 
     public function getProfilePhotoUrlAttribute()
     {
-        return url('/storage/profile-photos/'.$this->profile_photo);
+        return $this->profile_photo
+            ? url('/profile-photos/'.$this->profile_photo)
+            : null;
     }
 
     public function getLegacyExpertiseAttribute()
@@ -375,6 +377,11 @@ class Person extends Model implements HasLogEntries
                 return $this->memberships->pluck('legacy_expertise')->filter()->join(', ');
             }
             return $this->expertises->pluck('name')->join(', ');
+        }
+
+        public function getExpertiseAsStringAttribute()
+        {
+            return $this->getExpertisesAsStringAttribute();
         }
 
 

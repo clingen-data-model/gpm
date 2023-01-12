@@ -61,8 +61,8 @@ class RedeemInviteTest extends TestCase
         $this->json('PUT', static::URL.'/gobbeldy-guk', $this->validData)
             ->assertStatus(404);
     }
-    
-    
+
+
     /**
      * @test
      */
@@ -89,14 +89,14 @@ class RedeemInviteTest extends TestCase
                 'password' => ['The password confirmation does not match.']
             ]);
 
-        $user = User::factory()->create();
-        $this->json('PUT', static::URL.'/'.$this->invite->code, ['email' => $user->email, 'password' => 'beans', 'password_confirmation' => 'farts'])
+        $otherUser = User::factory()->create();
+        $this->json('PUT', static::URL.'/'.$this->invite->code, ['email' => $otherUser->email, 'password' => 'beans', 'password_confirmation' => 'farts'])
             ->assertStatus(422)
             ->assertJsonFragment([
                 'email' => ['The email has already been taken.'],
             ]);
     }
-    
+
 
     /**
      * @test
@@ -131,7 +131,7 @@ class RedeemInviteTest extends TestCase
             'user_id' => $user->id
         ]);
     }
-    
+
 
     /**
      * @test

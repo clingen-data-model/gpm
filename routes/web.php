@@ -25,10 +25,14 @@ use App\Modules\Group\Actions\SubgroupMembersMakeExcel;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 Route::get('/{any}', [ViewController::class, 'app'])
-    ->where('any', '^(?!(api|sanctum|impersonate|dev|documents|downloads|clockwork|profile-photos)).*$');
+    ->where('any', '^(?!(api|sanctum|impersonate|dev|documents|downloads|clockwork|profile-photos|storage)).*$');
 
 Route::get('/documents/{uuid?}', [DocumentController::class, 'show'])->middleware('auth:sanctum');
+Route::get('/storage/profile-photos/{filename}', function ($filename) {
+    return redirect('/profile-photos/'.$filename, 301);
+});
 
 Route::group(['prefix' => '/api/report'], function () {
     Route::get('/basic-summary', ReportSummaryMake::class);

@@ -3,131 +3,143 @@
         {
             "event_type": "ep_definition_approved",
             "date": "2020-06-01",
-            "expert_panel": {
-                "id": "some-random-uuid",
-                "name": "Some Random VCEP",
-                "type": "VCEP",
-                "affiliation_id": 500099
-            },
-            "scope": {
-                "statement": "A human readable description of Some Random VCEPs scope which wil probably include a description of the gene or genes in the scope and the disease(s) we will look at in relatio the gene(s).",
-                "genes": [
+            "data": {
+                "expert_panel": {
+                    "id": "some-random-uuid",
+                    "name": "Some Random VCEP",
+                    "type": "VCEP",
+                    "affiliation_id": 500099
+                },
+                "scope": {
+                    "statement": "A human readable description of Some Random VCEPs scope which wil probably include a description of the gene or genes in the scope and the disease(s) we will look at in relatio the gene(s).",
+                    "genes": [
+                        {
+                            "hgnc_id": "hgnc:12345",
+                            "hgnc_symbol": "GNE1",
+                            "disease_entity": "MONDO:1234567"
+                        }
+                    ]
+                },
+                "members": [
                     {
-                        "hgnc_id": "hgnc:12345",
-                        "hgnc_symbol": "GNE1",
-                        "disease_entity": "MONDO:1234567"
+                        "id": "c000558b-330d-477f-829b-1580caef9ca4",
+                        "first_name": "Elenor",
+                        "last_name": "Shelstrop",
+                        "email": "elenor@medplace.com",
+                        "group_role": "coordinator"
+                    },
+                    {
+                        "id": "eafb106c-1b0c-4637-9ec5-10ff1efd31d7",
+                        "first_name": "Janet",
+                        "last_name": "Nadagurl",
+                        "email": "janet@void.edu",
+                        "group_role": "chair"
+                    },
+                    {
+                        "id": "a98fb1a4-c022-47ae-95a2-a8c26d125ee2",
+                        "first_name": "Chidi",
+                        "last_name": "Anagonye",
+                        "email": "chidi@unsw.edu",
+                        "group_role": "biocurator"
                     }
-                ],
-            },
-            "members": [
-                {
-                    "id": "c000558b-330d-477f-829b-1580caef9ca4",
-                    "first_name": "Elenor",
-                    "last_name": "Shelstrop",
-                    "email": "elenor@medplace.com",
-                    "group_role": "coordinator"
-                },
-                {
-                    "id": "eafb106c-1b0c-4637-9ec5-10ff1efd31d7",
-                    "first_name": "Janet",
-                    "last_name": "Nadagurl",
-                    "email": "janet@void.edu",
-                    "group_role": "chair"
-                },
-                {
-                    "id": "a98fb1a4-c022-47ae-95a2-a8c26d125ee2",
-                    "first_name": "Chidi",
-                    "last_name": "Anagonye",
-                    "email": "chidi@unsw.edu",
-                    "group_role": "biocurator"
-                }
-            ]
+                ]
+            }
         },
         {
             "event_type": "member_added",
             "date": "2021-06-04",
-            "expert_panel": {
-                "id": "some-random-uuid",
-                "name": "Some Random VCEP",
-                "type": "VCEP",
-                "affiliation_id": 500099
-            },
-            "members": [
-                {
-                    "id": "a98fb1a4-c022-47ae-95a2-a8c26d125eha",
-                    "first_name": "Tehani",
-                    "last_name": "Al Jamil",
-                    "email": "tehani@unsw.edu",
-                    "group_role": ["biocurator"]
-                }
-            ]
+            "data": {
+                "expert_panel": {
+                    "id": "some-random-uuid",
+                    "name": "Some Random VCEP",
+                    "type": "VCEP",
+                    "affiliation_id": 500099
+                },
+                "members": [
+                    {
+                        "id": "a98fb1a4-c022-47ae-95a2-a8c26d125eha",
+                        "first_name": "Tehani",
+                        "last_name": "Al Jamil",
+                        "email": "tehani@unsw.edu",
+                        "group_role": ["biocurator"]
+                    }
+                ]
+            }
         },
         {
             "event_type": "member_removed",
             "date": "2021-06-04",
-            "expert_panel": {
-                "id": "some-random-uuid",
-                "name": "Some Random VCEP",
-                "type": "VCEP",
-                "affiliation_id": 500099
-            },
-            "members": [
-                {
-                    "id": "a98fb1a4-c022-47ae-95a2-a8c26d125eha",
-                    "first_name": "Tehani",
-                    "last_name": "Al Jamil",
-                    "email": "tehani@unsw.edu",
-                    "group_role": ["biocurator"]
-                }
-            ]
+            "data": {
+                "expert_panel": {
+                    "id": "some-random-uuid",
+                    "name": "Some Random VCEP",
+                    "type": "VCEP",
+                    "affiliation_id": 500099
+                },
+                "members": [
+                    {
+                        "id": "a98fb1a4-c022-47ae-95a2-a8c26d125eha",
+                        "first_name": "Tehani",
+                        "last_name": "Al Jamil",
+                        "email": "tehani@unsw.edu",
+                        "group_role": ["biocurator"]
+                    }
+                ]
+            }
         },
         {
             "event_type": "gene_added",
             "date": "2021-06-16",
-            "expert_panel": {
-                "id": "some-random-uuid",
-                "name": "Some Random VCEP",
-                "type": "VCEP",
-                "affiliation_id": 500099
-            },
-            "genes": [
-                {
-                    "hgnc_id": "hgnc:67890",
-                    "symbol": "GNE2",
-                    "mondo_id": "MONDO:7654321"
-                }
-            ]
+            "data": {
+                "expert_panel": {
+                    "id": "some-random-uuid",
+                    "name": "Some Random VCEP",
+                    "type": "VCEP",
+                    "affiliation_id": 500099
+                },
+                "genes": [
+                    {
+                        "hgnc_id": "hgnc:67890",
+                        "symbol": "GNE2",
+                        "mondo_id": "MONDO:7654321"
+                    }
+                ]
+            }
         },
         {
             "event_type": "gene_removed",
             "date": "2021-06-16",
-            "expert_panel": {
-                "id": "some-random-uuid",
-                "name": "Some Random VCEP",
-                "type": "VCEP",
-                "affiliation_id": 500099
-            },
-            "genes": [
-                {
-                    "hgnc_id": "hgnc:67890",
-                    "symbol": "GNE2",
-                    "mondo_id": "MONDO:7654321"
-                }
-            ]
+            "data": {
+                "expert_panel": {
+                    "id": "some-random-uuid",
+                    "name": "Some Random VCEP",
+                    "type": "VCEP",
+                    "affiliation_id": 500099
+                },
+                "genes": [
+                    {
+                        "hgnc_id": "hgnc:67890",
+                        "symbol": "GNE2",
+                        "mondo_id": "MONDO:7654321"
+                    }
+                ]
+            }
         },
         {
             "event_type": "ep_info_updated",
             "date": "2022-09-16",
-            "expert_panel": {
-                "id": "some-random-uuid",
-                "name": "Midnight Meow Disorder VCEP",
-                "type": "VCEP",
-                "affiliation_id": 500099,
-                "long_base_name": "Midnight Meow Disorder",
-                "short_base_name": "MMD",
-                "hypothesis_group": "123181",
-                "membership_description": "Blah blah blah",
-                "scope_description": "Our scope is cosmic. Blah blah blah."
+            "data": {
+                "expert_panel": {
+                    "id": "some-random-uuid",
+                    "name": "Midnight Meow Disorder VCEP",
+                    "type": "VCEP",
+                    "affiliation_id": 500099,
+                    "long_base_name": "Midnight Meow Disorder",
+                    "short_base_name": "MMD",
+                    "hypothesis_group": "123181",
+                    "membership_description": "Blah blah blah",
+                    "scope_description": "Our scope is cosmic. Blah blah blah."
+                }
             }
         }
     ]
