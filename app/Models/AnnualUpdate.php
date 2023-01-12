@@ -93,6 +93,12 @@ class AnnualUpdate extends Model
         return $query->whereNull('completed_at');
     }
 
+    public function scopeForWindow($query, $windowId)
+    {
+        return $query->where('annual_update_window_id', $windowId);
+    }
+
+
     /**
      * ACCESSORS
      */
@@ -210,6 +216,10 @@ class AnnualUpdate extends Model
             },
             'expertPanel.group.coordinators',
             'expertPanel.group.coordinators.person',
+            'expertPanel.previousYearAnnualUpdate' => function ($query) {
+                $query->select('id', 'annual_updates.expert_panel_id', 'annual_update_window_id');
+            },
+            'expertPanel.previousYearAnnualUpdate.window',
             'submitter' => function ($query) {
                 $query->select(['id', 'person_id']);
             },

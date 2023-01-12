@@ -160,7 +160,10 @@ Route::group([
             // ANNUAL UPDATES
             Route::group(['prefix' => '/annual-updates'], function () {
                 Route::get('/', [AnnualUpdateController::class, 'showLatestForGroup']);
+                Route::get('/{id}', [AnnualUpdateController::class, 'showForGroup']);
+
                 Route::post('/', AnnualUpdateCreate::class);
+
                 Route::put('/{review}', AnnualUpdateSave::class);
                 Route::post('/{review}', AnnualUpdateSubmit::class);
             });

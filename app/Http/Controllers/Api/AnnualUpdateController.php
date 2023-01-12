@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Carbon\Carbon;
 use App\Models\AnnualUpdate;
 use Illuminate\Http\Request;
 use App\Models\AnnualUpdateWindow;
@@ -13,27 +14,38 @@ class AnnualUpdateController extends Controller
 {
     public function index(Request $request)
     {
-        $reviews = AnnualUpdate::query()
+        $windowId = $request->window_id ?? AnnualUpdateWindow::forYear(Carbon::now()->year-1)->first()->id;
+
+        if (!$windowId) {
+            $windowId = AnnualUpdateWindow::latest();
+        }
+
+        $reviewQuery = AnnualUpdate::query()
             ->select(['id', 'expert_panel_id', 'submitter_id', 'completed_at'])
             ->with([
-                    'expertPanel' => function ($query) {
-                        $query->with('group')->select(['id', 'expert_panel_type_id', 'long_base_name', 'group_id']);
-                    },
-                    'submitter' => function ($query) {
-                        $query->select(['id', 'person_id']);
-                    },
-                    'submitter.person' => function ($query) {
-                        $query->select('id', 'first_name', 'last_name', 'email');
-                    }
-                ])->get();
+                'expertPanel' => function ($query) {
+                    $query->with('group')->select(['id', 'expert_panel_type_id', 'long_base_name', 'group_id']);
+                },
+                'submitter' => function ($query) {
+                    $query->select(['id', 'person_id']);
+                },
+                'submitter.person' => function ($query) {
+                    $query->select('id', 'first_name', 'last_name', 'email');
+                }
+            ])
+            ->forWindow($windowId);
+
+        $reviews = $reviewQuery->get();
 
         return $reviews;
     }
 
     public function show($id)
     {
-        $annualReview = AnnualUpdate::findOrFail($id);
-        return $annualReview->loadForUse();
+        $annualUpdate = AnnualUpdate::findOrFail($id);
+        $annualUpdate->loadForUse();
+
+        return $annualUpdate;
     }
 
     public function showLatestForGroup(Group $group)
@@ -50,6 +62,15 @@ class AnnualUpdateController extends Controller
 
         return $review;
     }
+
+    public function showForGroup(Group $group, $updateId)
+    {
+        $update = AnnualUpdate::find($updateId);
+        $update->loadForUse();
+
+        return $update;
+    }
+
 
     public function windows(Request $request)
     {
@@ -69,17 +90,17 @@ class AnnualUpdateController extends Controller
         );
 
         $columns = array_keys($annualReviews->first()->toCsvArray());
-        
+
         $callback = function () use ($annualReviews, $columns) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
-    
+
             foreach ($annualReviews as $annualReview) {
                 fputcsv($file, $annualReview->toCsvArray());
             }
             fclose($file);
         };
-        
+
         return Response::stream($callback, 200, $headers);
     }
 }

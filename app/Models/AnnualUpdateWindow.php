@@ -36,4 +36,18 @@ class AnnualUpdateWindow extends Model
     {
         return $this->hasMany(AnnualUpdate::class);
     }
+
+    // SCOPES
+
+    public function scopeForYear($query, $year)
+    {
+        return $query->where('for_year', $year);
+    }
+
+    static public function latest()
+    {
+        return self::query()->order_by('for_year', 'desc')->order_by('created_at')->first();
+    }
+
+
 }
