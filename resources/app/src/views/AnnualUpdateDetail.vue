@@ -1,8 +1,3 @@
-<template>
-    <div>
-        <annual-update-form :uuid="annualReview.expert_panel.group.uuid" v-if="annualReview.expert_panel.group.uuid"/>
-    </div>
-</template>
 <script>
 import {api} from '@/http'
 import AnnualUpdateForm from '@/views/AnnualUpdateForm'
@@ -48,6 +43,7 @@ export default {
     },
     methods: {
         async getAnnualUpdate () {
+            console.log(`AnnualUpdateDetail.getAnnualUpdate: ${this.id}`)
             this.annualReview = await api.get(`/api/annual-updates/${this.id}`)
                 .then(response => {
                     return response.data;
@@ -59,3 +55,12 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <AnnualUpdateForm
+            v-if="annualReview.expert_panel.group.uuid"
+            :uuid="annualReview.expert_panel.group.uuid"
+            :id="id"
+        />
+    </div>
+</template>
