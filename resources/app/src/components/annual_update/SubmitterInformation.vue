@@ -35,7 +35,7 @@
             :disabled="isComplete"
         />
 
-        <input-row v-if="this.workingCopy.is_gcep"
+        <input-row v-if="workingCopy.expert_panel.is_gcep"
             label="What is the current activity status of the EP?"
             v-model="workingCopy.data.ep_activity"
             type="radio-group"
