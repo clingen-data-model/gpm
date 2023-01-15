@@ -1,29 +1,3 @@
-<template>
-    <form-container>
-        <dictionary-row label="">
-            <div>
-                <label class="text-sm">
-                    <input type="checkbox" v-model="notifyContacts" :value="true">
-                    <div>Send notification email to contacts</div>
-                </label>
-            </div>
-        </dictionary-row>
-        <static-alert
-            v-if="!application.hasPendingSubmissionForCurrentStep"
-            variant="warning"
-        >
-            The expert panel has not yet submitted the application for approval.
-            <br>
-            You can approve this application but be aware that it is not part of the "normal" application workflow.
-        </static-alert>
-
-        <transition name="slide-fade-down">
-            <user-defined-mail-form v-model="email" v-show="notifyContacts"/>
-        </transition>
-
-        <button-row @canceled="cancel" @submitted="save" :submit-text="submissionText" />
-    </form-container>
-</template>
 <script>
 import {mapGetters} from 'vuex';
 import {api} from '@/http';
@@ -122,3 +96,29 @@ export default {
 
 }
 </script>
+<template>
+    <form-container>
+        <dictionary-row label="">
+            <div>
+                <label class="text-sm">
+                    <input type="checkbox" v-model="notifyContacts" :value="true">
+                    <div>Send notification email to contacts</div>
+                </label>
+            </div>
+        </dictionary-row>
+        <static-alert
+            v-if="!application.hasPendingSubmissionForCurrentStep"
+            variant="warning"
+        >
+            The expert panel has not yet submitted the application for approval.
+            <br>
+            You can approve this application but be aware that it is not part of the "normal" application workflow.
+        </static-alert>
+
+        <transition name="slide-fade-down">
+            <user-defined-mail-form v-model="email" v-show="notifyContacts"/>
+        </transition>
+
+        <button-row @canceled="cancel" @submitted="save" :submit-text="submissionText" />
+    </form-container>
+</template>

@@ -13,9 +13,11 @@
     })
     const emits = defineEmits(['revisionsRequested'])
 
+    const rejectsubmissionform = ref(null);
     const showRejectForm = ref(false);
     const startRejectSubmission = () => {
         showRejectForm.value = true;
+        rejectsubmissionform.value.getEmailTemplate()
     };
     const handleRejected = () => {
         hideRejectForm();
