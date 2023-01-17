@@ -14,7 +14,8 @@ class AnnualUpdateController extends Controller
 {
     public function index(Request $request)
     {
-        $windowId = $request->window_id ?? AnnualUpdateWindow::forYear(Carbon::now()->year-1)->first()->id;
+        $window = $request->window_id ?? AnnualUpdateWindow::forYear(Carbon::now()->year-1)->first();
+        $windowId = $window ? $window->id : null;
 
         if (!$windowId) {
             $windowId = AnnualUpdateWindow::latest();
