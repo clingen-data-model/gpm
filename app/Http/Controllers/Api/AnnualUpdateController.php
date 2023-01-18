@@ -14,11 +14,14 @@ class AnnualUpdateController extends Controller
 {
     public function index(Request $request)
     {
-        $window = $request->window_id ?? AnnualUpdateWindow::forYear(Carbon::now()->year-1)->first();
-        $windowId = $window ? $window->id : null;
+        $window = AnnualUpdateWindow::find($request->window_id);
 
-        if (!$windowId) {
-            $windowId = AnnualUpdateWindow::latest();
+        if (!$window) {
+            $window = $request->window_id ?? AnnualUpdateWindow::forYear(Carbon::now()->year-1)->first();
+        }
+
+        if (!$window) {
+            $window = AnnualUpdateWindow::latest();
         }
 
         $reviewQuery = AnnualUpdate::query()
@@ -34,7 +37,7 @@ class AnnualUpdateController extends Controller
                     $query->select('id', 'first_name', 'last_name', 'email');
                 }
             ])
-            ->forWindow($windowId);
+            ->forWindow($window->id);
 
         $reviews = $reviewQuery->get();
 
