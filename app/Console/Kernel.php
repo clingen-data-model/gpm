@@ -32,11 +32,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->call(function () {
-            if (config('app.test_scheduler')) {
+        if (config('app.test_scheduler')) {
+            $schedule->call(function () {
                 Log::debug('scheduler is running.');
-            }
-        })->everyMinute();
+            })->everyMinute();
+        }
 
         $schedule->call(function () {
             if (!config('dx.consume')) {
