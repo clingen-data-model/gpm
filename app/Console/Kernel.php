@@ -40,7 +40,7 @@ class Kernel extends ConsoleKernel
 
         if (config('dx.consume')) {
             $schedule->command(DxConsume::class, array_values(config('dx.topics.incoming')))
-                ->everyMinute()
+                ->hourly()
                 ->withoutOverlapping()
                 ->runInBackground();
         }
