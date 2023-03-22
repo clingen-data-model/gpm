@@ -38,13 +38,12 @@ class Kernel extends ConsoleKernel
             })->everyMinute();
         }
 
-        $schedule->call(function () {
-            if (!config('dx.consume')) {
-                return;
-            }
-            $consumeDxMessages = app()->make(DxConsume::class);
-            $consumeDxMessages->handle(array_values(config('dx.topics.incoming')));
-        })->hourly();
+        if (config('dx.consume')) {
+            $schedule->command(DxConsume::class, array_values(config('dx.topics.incoming')))
+                ->everyMinute()
+                ->withoutOverlapping()
+                ->runInBackground();
+        }
 
         $schedule->job(new SendCoiReminders)
             ->weeklyOn(1, '6:00');
