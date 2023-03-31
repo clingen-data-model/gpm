@@ -81,8 +81,8 @@ COPY . /srv/app
 # Change ownership of files so non-root user can use them.
 RUN chgrp -R 0 /srv/app \
     && chmod -R g+w /srv/app \
-    && chmod g+x /srv/app/.openshift/deploy.sh \
-    && chmod g+x /usr/local/bin/start
+    && chmod a+x /srv/app/.openshift/deploy.sh \
+    && chmod a+x /usr/local/bin/start
     # && pecl install xdebug-2.9.5 \
     # && docker-php-ext-enable xdebug \
 

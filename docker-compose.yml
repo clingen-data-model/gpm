@@ -1,7 +1,7 @@
 version: "3"
 services:
     database:
-        container_name: ${DOCKER_NAME}-db
+        container_name: ${DOCKER_NAME:-gpm}-db
         image: mysql:8.0
         ports:
             - "13309:3306"
@@ -16,8 +16,8 @@ services:
             - MYSQL_SORT_BUFFER_SIZE=256000000
     app:
         build: .
-        image: ${DOCKER_NAME}-app
-        container_name: ${DOCKER_NAME}-app
+        image: ${DOCKER_NAME:-gpm}-app
+        container_name: ${DOCKER_NAME:-gpm}-app
         sysctls:
             - net.ipv4.ip_unprivileged_port_start=0
         depends_on:
@@ -35,10 +35,10 @@ services:
         environment:
             CONTAINER_ROLE: app
             CONTAINER_ENV: local
-        user: ${DOCKER_USER}:0
+        user: ${DOCKER_USER:-1001:0}
 
     redis:
-        container_name: ${DOCKER_NAME}-redis
+        container_name: ${DOCKER_NAME:-gpm}-redis
         image: centos/redis-5-centos7
         ports:
             - "6379:6379"
@@ -46,8 +46,8 @@ services:
             - REDIS_PASSWORD=${REDIS_PASSWORD}
 ## Uncomment below to test scheduler and queue containers. Don't forget to update your .env to use QUEUE_CONNECTION
     # scheduler:
-    #     image: ${DOCKER_NAME}-app
-    #     container_name: ${DOCKER_NAME}-scheduler
+    #     image: ${DOCKER_NAME:-gpm}-app
+    #     container_name: ${DOCKER_NAME:-gpm}-scheduler
     #     sysctls:
     #         - net.ipv4.ip_unprivileged_port_start=0
     #     depends_on:
@@ -58,8 +58,8 @@ services:
     #         CONTAINER_ROLE: scheduler
     #         CONTAINER_ENV: local
     # queue:
-    #     image: ${DOCKER_NAME}-app
-    #     container_name: ${DOCKER_NAME}-queue
+    #     image: ${DOCKER_NAME:-gpm}-app
+    #     container_name: ${DOCKER_NAME:-gpm}-queue
     #     sysctls:
     #         - net.ipv4.ip_unprivileged_port_start=0
     #     depends_on:
