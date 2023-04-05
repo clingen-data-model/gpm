@@ -1,3 +1,13 @@
+# TODOS
+
+- vscode [devcontainers](https://code.visualstudio.com/docs/devcontainers/containers)
+  (not mac-specific)
+- consider [colima](https://github.com/abiosoft/colima) vs Docker Desktop
+- explain some of the rationale for this setup
+- ensure compatibility with podman/podman desktop?
+- switch to kubernetes-based dev environment (e.g., with minikube or k3s)
+  to make more similar to production? 
+
 # Setup some general things (not per-project, should just need to do once)
 
 ## DOCKER_USER variable
