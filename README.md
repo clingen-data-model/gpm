@@ -1,23 +1,23 @@
 # ClinGen Group & Personnel Management
 
 A system for managing and streamlining the Application process for ClinGen Expert panels.
-For lack of a better name we'll call it the EPAM.
+For lack of a better name we'll call it by its initials "GPM"
 
 ## Installation
 ### Prerequisites
 You must have the following to stand up the application locally
-<!-- * PHP 8.0
-* Composer -->
 * Docker
+* (if on a mac, you'll also need docker-deskop or colima-- for instance as in [macos-setup.md](macos-setup.md))
 
 The stand up a local instance of the application
 1. Clone this repository
 2. cd into the directory
 4. `cp .env.example .env`
-5. `docker-compose up -d --build`
-3. `docker-compose exec app composer install`
-6. `docker-compose exec app php artisan key:generate`
-7. Confirm that the `.docker/data` directory exists (it can take a few minutes for the database to be setup).  When it does run `docker-compose exec app php artisan migrate --seed`
+5. Make sure that DOCKER_USER is defined as ${UID}:${GID} (either in `.env` or by exporting the environment variable in your shell's init file
+6. `docker-compose up -d --build`
+7. `docker-compose exec app composer install`
+8. `docker-compose exec app php artisan key:generate`
+9. Confirm that the `.docker/data` directory exists (it can take a few minutes for the database to be setup).  When it does run `docker-compose exec app php artisan migrate --seed`
 
 The development server is available at http://localhost:8080
 
