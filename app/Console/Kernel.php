@@ -32,19 +32,18 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->call(function () {
-            if (config('app.test_scheduler')) {
+        if (config('app.test_scheduler')) {
+            $schedule->call(function () {
                 Log::debug('scheduler is running.');
-            }
-        })->everyMinute();
+            })->everyMinute();
+        }
 
-        $schedule->call(function () {
-            if (!config('dx.consume')) {
-                return;
-            }
-            $consumeDxMessages = app()->make(DxConsume::class);
-            $consumeDxMessages->handle(array_values(config('dx.topics.incoming')));
-        })->hourly();
+        if (config('dx.consume')) {
+            $schedule->command(DxConsume::class, array_values(config('dx.topics.incoming')))
+                ->hourly()
+                ->withoutOverlapping()
+                ->runInBackground();
+        }
 
         $schedule->job(new SendCoiReminders)
             ->weeklyOn(1, '6:00');
