@@ -20,15 +20,15 @@
 # RUN npm run build
 
 # Final stage
-FROM jward3/php:8.0-apache
+FROM ghcr.io/clingen-data-model/berglab-php-8.0-bullseye:sha256-d87a29dd1c522b1d87d112741707e78ab5945224d5e68d7f6241f5355d8b717b.sig
 
 # Set a bunch of labels for k8s and Openshift.
-LABEL maintainer="TJ Ward" \
-    io.openshift.tags="laravel-epam:v1" \
-    io.k8s.description="A system to manage the Expert Panel Application process." \
+LABEL maintainer="UNC ClinGen Infrastructure Team" \
+    io.openshift.tags="laravel-gpm:v1" \
+    io.k8s.description="A system to manage the ClinGen Personnel information" \
     io.openshift.expose-services="8080:http,8443:https" \
-    io.k8s.display-name="epam version 1" \
-    io.openshift.tags="php,apache"
+    io.k8s.display-name="gpm version 1" \
+    io.openshift.tags="php"
 
 # Use root user to set things up.
 USER root
@@ -38,22 +38,7 @@ WORKDIR /srv/app
 # Copy/Run the stuff that doesn't change that much first.
 # This speeds up builds.
 
-# Kafka client stuff
-# RUN apt-get install -yqq librdkafka-dev \
-#     && pecl install rdkafka-5.0.0 \
-#     && apt-get install -y --no-install-recommends openssl \
-#     && sed -i 's,^\(MinProtocol[ ]*=\).*,\1'TLSv1.0',g' /etc/ssl/openssl.cnf \
-#     && sed -i 's,^\(CipherString[ ]*=\).*,\1'DEFAULT@SECLEVEL=1',g' /etc/ssl/openssl.cnf\
-#     && rm -rf /var/lib/apt/lists/*
-
-# PHP configs (including loading phprdkafka)
-COPY .docker/php/conf.d/* $PHP_INI_DIR/conf.d/
-
-COPY .docker/start.sh /usr/local/bin/start
-
 COPY ./composer.lock ./composer.json /srv/app/
-COPY ./database/seeders ./database/seeders
-COPY ./database/factories ./database/factories
 
 RUN composer install \
         # --optimize-autoloader \
@@ -81,8 +66,7 @@ COPY . /srv/app
 # Change ownership of files so non-root user can use them.
 RUN chgrp -R 0 /srv/app \
     && chmod -R g+w /srv/app \
-    && chmod a+x /srv/app/.openshift/deploy.sh \
-    && chmod a+x /usr/local/bin/start
+    && chmod a+x /srv/app/.openshift/deploy.sh
     # && pecl install xdebug-2.9.5 \
     # && docker-php-ext-enable xdebug \
 
@@ -90,7 +74,7 @@ RUN chgrp -R 0 /srv/app \
 RUN php artisan storage:link
 
 # Switch to non-root user for security (and to make OpenShift happy).
-USER 1001
+USER www-data:0
 
 # Run the start command.
-CMD ["/usr/local/bin/start"]
+CMD ["/bin/bash"]

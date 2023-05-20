@@ -1,41 +1,46 @@
 version: "3"
 services:
-    database:
+    db:
         container_name: ${DOCKER_NAME:-gpm}-db
         image: mysql:8.0
         ports:
             - "13309:3306"
         volumes:
-            - .docker/mysql/data:/var/lib/mysql
+            - db:/var/lib/mysql
             - .docker/mysql/db-init:/docker-entrypoint-initdb.d
         environment:
             - MYSQL_DATABASE=${DB_DATABASE}
-            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
             - MYSQL_USER=${DB_USERNAME}
             - MYSQL_PASSWORD=${DB_PASSWORD}
             - MYSQL_SORT_BUFFER_SIZE=256000000
+        user: ${DOCKER_USER:-501:20}
+
     app:
         build: .
         image: ${DOCKER_NAME:-gpm}-app
         container_name: ${DOCKER_NAME:-gpm}-app
-        sysctls:
-            - net.ipv4.ip_unprivileged_port_start=0
+        entrypoint:
+            - bash
+            - -c
+            - |-
+                php artisan serve -vvv --host 0.0.0.0 --port "${APP_PORT:-8013}"
         depends_on:
-            - database
+            - db
             - redis
         ports:
-            - "8080:8080"
+            - "${APP_PORT:-8013}:${APP_PORT:-8013}"
+            - "9000:9000"
         links:
-            - database:database
+            - db:db
             - redis:redis
         volumes:
             - .:/srv/app
-            # - ./storage:/srv/app/storage
-            # - ./.env:/srv/app/.env
         environment:
-            CONTAINER_ROLE: app
-            CONTAINER_ENV: local
-        user: ${DOCKER_USER:-1001:0}
+            DB_HOST: ${DOCKER_NAME:-gpm}-db
+            REDIS_HOST: ${DOCKER_NAME:-gpm}-redis
+            SANCTUM_STATEFUL_DOMAINS: localhost:${APP_PORT:-8013},127.0.0.1:${APP_PORT:-8013}
+        user: ${DOCKER_USER:-501:20}
 
     redis:
         container_name: ${DOCKER_NAME:-gpm}-redis
@@ -44,28 +49,50 @@ services:
             - "6379:6379"
         environment:
             - REDIS_PASSWORD=${REDIS_PASSWORD}
-## Uncomment below to test scheduler and queue containers. Don't forget to update your .env to use QUEUE_CONNECTION
-    # scheduler:
-    #     image: ${DOCKER_NAME:-gpm}-app
-    #     container_name: ${DOCKER_NAME:-gpm}-scheduler
-    #     sysctls:
-    #         - net.ipv4.ip_unprivileged_port_start=0
-    #     depends_on:
-    #         - app
-    #     volumes:
-    #         - .:/srv/app
-    #     environment:
-    #         CONTAINER_ROLE: scheduler
-    #         CONTAINER_ENV: local
-    # queue:
-    #     image: ${DOCKER_NAME:-gpm}-app
-    #     container_name: ${DOCKER_NAME:-gpm}-queue
-    #     sysctls:
-    #         - net.ipv4.ip_unprivileged_port_start=0
-    #     depends_on:
-    #         - app
-    #     volumes:
-    #         - .:/srv/app
-    #     environment:
-    #         CONTAINER_ROLE: queue
-    #         CONTAINER_ENV: local
+
+    mailpit:
+        image: 'axllent/mailpit:latest'
+        ports:
+            - '${FORWARD_MAILPIT_PORT:-1025}:1025'
+            - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
+
+    scheduler:
+        image: ${DOCKER_NAME:-gpm}-app
+        container_name: ${DOCKER_NAME:-gpm}-scheduler
+        entrypoint:
+            - bash
+            - -c
+            - |-
+                while true
+                do
+                  php artisan schedule: run --verbose --no-interaction &
+                  sleep 60
+                done
+        volumes:
+            - .:/srv/app
+        environment:
+            DB_HOST: ${DOCKER_NAME:-gpm}-db
+            REDIS_HOST: ${DOCKER_NAME:-gpm}-redis
+        user: ${DOCKER_USER:-501:20}
+
+    queue:
+        image: ${DOCKER_NAME:-gpm}-app
+        container_name: ${DOCKER_NAME:-gpm}-scheduler
+        entrypoint:
+            - bash
+            - -c
+            - |-
+                echo "role: queue"
+                echo "SESSION_DRIVER: $SESSION_DRIVER"
+                echo "CACHE_DRIVER: $CACHE_DRIVER"
+                echo "QUEUE_CONNECTION: $QUEUE_CONNECTION..."
+                php /srv/app/artisan queue:work --verbose --tries=3 --timeout=90
+        volumes:
+            - .:/srv/app
+        environment:
+            DB_HOST: ${DOCKER_NAME:-gpm}-db
+            REDIS_HOST: ${DOCKER_NAME:-gpm}-redis
+        user: ${DOCKER_USER:-501:20}
+
+volumes:
+    db:
