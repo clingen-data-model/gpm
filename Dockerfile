@@ -49,19 +49,16 @@ RUN composer install \
         --no-suggest \
         --prefer-dist
 
-# We need this directory because Tinker depends on psysh
-# and psysh doesn't provide a good way to change the directory
-# to the project directory.
-RUN mkdir -p /.config/psysh \
-    && chgrp -R 0 /.config/psysh \
-    && chmod g+wx /.config/psysh
-
 # Copy the source code.
 COPY . /srv/app
 
 # Copy over the build artifacts from the node build container.
 # COPY --from=builder /usr/src/dist ./public
 # COPY --from=builder /usr/src/dist/index.html ./resources/views/app.blade.php
+
+# This is here mostly because Tinker depends on psysh, which
+# wants config to be in $HOME/.config/psysh, so $HOME needs to be writeable
+ENV HOME=/srv/app
 
 # Change ownership of files so non-root user can use them.
 RUN chgrp -R 0 /srv/app \

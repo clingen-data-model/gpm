@@ -42,6 +42,7 @@ services:
         volumes:
             - .:/srv/app
         environment:
+            HOME: /srv/app
             DB_HOST: ${DOCKER_NAME:-gpm}-db
             REDIS_HOST: ${DOCKER_NAME:-gpm}-redis
             SANCTUM_STATEFUL_DOMAINS: localhost:${APP_PORT:-8013},127.0.0.1:${APP_PORT:-8013}
