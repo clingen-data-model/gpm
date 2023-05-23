@@ -17,12 +17,19 @@ npm-debug.log
 yarn-error.log
 .openshift/secrets.env
 .openshift/epam.env
+.config/psysh
 psysh/*
 gpm_clinicalgenome_org.csr
 gpm_clinicalgenome_org.key
 public/js/chunk-2d0e5e97.25ca8499.js.map
 kafkaConsumedMessages.csv
 consumed_messages/*
+
+# things that php tools may add since HOME=/srv/app
+.cache
+.bash_history
+.local
+.config
 
 .docker/mysql/db-init/*.sql.gz
 
