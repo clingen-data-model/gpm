@@ -20,7 +20,7 @@
 # RUN npm run build
 
 # Final stage
-FROM ghcr.io/clingen-data-model/berglab-php-8.0-bullseye:sha256-d87a29dd1c522b1d87d112741707e78ab5945224d5e68d7f6241f5355d8b717b.sig
+FROM ghcr.io/clingen-data-model/cgwi-php-11.7-8.0:v1.1.3
 
 # Set a bunch of labels for k8s and Openshift.
 LABEL maintainer="UNC ClinGen Infrastructure Team" \
@@ -63,9 +63,8 @@ ENV HOME=/srv/app
 # Change ownership of files so non-root user can use them.
 RUN chgrp -R 0 /srv/app \
     && chmod -R g+w /srv/app \
-    && chmod a+x /srv/app/.openshift/deploy.sh
-    # && pecl install xdebug-2.9.5 \
-    # && docker-php-ext-enable xdebug \
+    && chmod a+x /srv/app/.openshift/deploy.sh \
+    && chmod a+x /srv/app/.docker/entrypoint.sh
 
 # Link the uploads storage directory to public for downloads.
 RUN php artisan storage:link
@@ -73,5 +72,4 @@ RUN php artisan storage:link
 # Switch to non-root user for security (and to make OpenShift happy).
 USER www-data:0
 
-# Run the start command.
 CMD ["/bin/bash"]
