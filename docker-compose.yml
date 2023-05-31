@@ -3,6 +3,11 @@ services:
     db:
         container_name: ${DOCKER_NAME:-gpm}-db
         image: mysql:8.0
+        healthcheck:
+            test: MYSQL_PWD=$${MYSQL_PASSWORD} mysqladmin -u $${MYSQL_USER} -h db ping
+            interval: 60s
+            start_period: 120s
+            retries: 5
         ports:
             - "13309:3306"
         volumes:
