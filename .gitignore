@@ -24,6 +24,7 @@ public/js/chunk-2d0e5e97.25ca8499.js.map
 kafkaConsumedMessages.csv
 consumed_messages/*
 
+.docker/mysql/db-init/*.sql.gz
 
 # built css & js
 # /public/css/*
