@@ -13,6 +13,8 @@ if [[ -n ${APP_DO_INIT-} || ! -d vendor ]]; then
     composer dump-autoload
 fi
 
+/srv/app/scripts/awaitdb.bash || echo "Unable to connect to DB!"
+
 echo "Running migrations..."
 php artisan migrate --force --no-interaction
 
