@@ -34,7 +34,7 @@ Route::get('/storage/profile-photos/{filename}', function ($filename) {
     return redirect('/profile-photos/'.$filename, 301);
 });
 
-Route::group(['prefix' => '/api/report'], function () {
+Route::prefix('/api/report')->group(function () {
     Route::get('/basic-summary', ReportSummaryMake::class);
     Route::get('/vcep-application-summary', ReportVcepApplicationMake::class);
     Route::get('/gcep-genes', ReportGcepGenesMake::class);
@@ -44,7 +44,7 @@ Route::group(['prefix' => '/api/report'], function () {
     Route::get('/people', ReportPeopleMake::class);
     Route::get('/people-in-multiple-eps', ReportMultipleEpsMake::class);
 
-    Route::group(['prefix' => '/groups/{group:uuid}'], function () {
+    Route::prefix('/groups/{group:uuid}')->group(function () {
         Route::get('/coi-report', CoiReportMakePdf::class);
         Route::get('/member-export', GroupMembersMakeCsv::class);
         Route::get('/subgroup-member-export', SubgroupMembersMakeExcel::class);

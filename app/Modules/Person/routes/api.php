@@ -37,19 +37,14 @@ use App\Modules\Person\Models\Person;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::group([
-    'prefix' => 'api/people',
-    'middleware' => ['api'],
-], function () {
+Route::prefix('api/people')->middleware('api')->group(function () {
     Route::get('/institutions', [InstitutionController::class, 'index']);
 
     Route::get('/timezones', function (Request $request) {
         return Institution::select('name', 'abbreviation', 'id')->get();
     });
 
-    Route::group([
-        'middleware' => ['auth:sanctum'],
-    ], function () {
+    Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [PeopleController::class, 'index']);
         Route::get('/invites/', [InviteController::class, 'index']);
 
@@ -90,10 +85,7 @@ Route::group([
         ->name('people.catchall.show');
 });
 
-Route::group([
-    'prefix' => 'api/institutions',
-    'middleware' => ['api', 'auth:sanctum'],
-], function () {
+Route::prefix('api/institutions')->middleware('api', 'auth:sanctum')->group(function () {
     Route::get('/', [InstitutionController::class, 'index']);
     Route::post('/', InstitutionCreate::class);
     Route::put('/merge', InstitutionsMerge::class);
@@ -102,10 +94,7 @@ Route::group([
     Route::put('/{institution}/approved', InstitutionMarkApproved::class);
 });
 
-Route::group([
-    'prefix' => 'api/credentials',
-    'middleware' => ['api', 'auth:sanctum'],
-], function () {
+Route::prefix('api/credentials')->middleware('api', 'auth:sanctum')->group(function () {
     Route::post('/', CredentialCreate::class);
     Route::get('/', CredentialSearch::class);
     Route::put('/merge', CredentialsMerge::class);
@@ -113,10 +102,7 @@ Route::group([
     Route::delete('/{credential}', CredentialDelete::class);
 });
 
-Route::group([
-    'prefix' => 'api/expertises',
-    'middleware' => ['api', 'auth:sanctum'],
-], function () {
+Route::prefix('api/expertises')->middleware('api', 'auth:sanctum')->group(function () {
     Route::post('/', ExpertiseCreate::class);
     Route::get('/', ExpertiseSearch::class);
     Route::put('/merge', ExpertisesMerge::class);
@@ -124,9 +110,6 @@ Route::group([
     Route::delete('/{expertise}', ExpertiseDelete::class);
 });
 
-Route::group([
-    'prefix' => 'api/countries',
-    // 'middleware' => ['api', 'auth:sanctum']
-], function () {
+Route::prefix('api/countries')->group(function () {
     Route::get('/', [CountryController::class, 'index']);
 });

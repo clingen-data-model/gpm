@@ -40,7 +40,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware' => ['guest']], function () {
+Route::middleware('guest')->group(function () {
     Route::post('/send-reset-password-link', [AuthController::class, 'sendResetPasswordLink']);
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 });
@@ -51,7 +51,7 @@ Route::get('/document-types', function () {
 
 Route::get('/authenticated', [AuthController::class, 'isAuthenticated']);
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::get('/system-info', [SystemInfoController::class, 'index']);
     Route::get('/user', function (Request $request) {
         return $request->user();
@@ -72,7 +72,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::put('/notifications/{notificationId}', NotificationMarkRead::class);
 
-    Route::group(['prefix' => '/annual-updates'], function () {
+    Route::prefix('/annual-updates')->group(function () {
         Route::get('', [AnnualUpdateController::class, 'index']);
         Route::get('/windows', [AnnualUpdateController::class, 'windows']);
         Route::post('/export', [AnnualUpdateController::class, 'export']);
@@ -81,7 +81,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/roles', [RolesController::class, 'index']);
 
-    Route::group(['prefix' => '/comments'], function () {
+    Route::prefix('/comments')->group(function () {
         Route::post('/', CommentCreate::class);
         Route::get('/', CommentList::class);
         Route::get('/{comment:id}', CommentFind::class);

@@ -26,13 +26,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/next-actions/assignees', [NextActionAssigneeController::class, 'index']);
 
-Route::group([
-    'prefix' => 'api/applications',
-    'middleware' => ['api'],
-], function () {
+Route::prefix('api/applications')->middleware('api')->group(function () {
     Route::get('/', [ApplicationController::class, 'index']);
 
-    Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', ExpertPanelCreate::class);
         Route::get('/{app_uuid}', [ApplicationController::class, 'show']);
         Route::put('/{app_uuid}', ExpertPanelUpdateAttributes::class);
