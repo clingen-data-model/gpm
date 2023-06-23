@@ -22,9 +22,9 @@ class InstitutionFactory extends Factory
     public function definition()
     {
         return [
-            'uuid' => $this->faker->uuid,
-            'name' => $this->faker->name,
-            'abbreviation' => $this->faker->word,
+            'uuid' => $this->faker->uuid(),
+            'name' => $this->faker->name(),
+            'abbreviation' => $this->faker->word(),
             'reportable' => true,
         ];
     }
