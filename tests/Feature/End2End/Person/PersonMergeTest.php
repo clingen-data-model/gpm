@@ -178,7 +178,7 @@ class PersonMergeTest extends TestCase
             'user_id' => $user1->id,
         ]);
 
-        $this->assertDeleted('users', [
+        $this->assertModelMissing('users', [
             'id' => $user2->id,
         ]);
     }
