@@ -56,35 +56,29 @@ use App\Modules\Group\Http\Controllers\Api\GroupRelationsController;
 use App\Modules\Group\Http\Controllers\Api\GroupSubmissionsController;
 use Illuminate\Support\Facades\Route;
 
-Route::group([
-    'prefix' => 'api',
-    'middleware' => ['api', 'auth:sanctum'],
-], function () {
-    Route::group(['prefix' => 'cois'], function () {
+Route::prefix('api')->middleware('api', 'auth:sanctum')->group(function () {
+    Route::prefix('cois')->group(function () {
         Route::get('/{Coi:id}', [SimpleCoiController::class, 'show']);
     });
 
-    Route::group(['prefix' => 'coi'], function () {
+    Route::prefix('coi')->group(function () {
         Route::get('/{code}/group', [SimpleCoiController::class, 'getGroup']);
         Route::post('/{code}', CoiResponseStore::class);
     });
 });
 
-Route::group([
-    'prefix' => 'api/groups',
-    'middleware' => ['api', 'auth:sanctum'],
-], function () {
+Route::prefix('api/groups')->middleware('api', 'auth:sanctum')->group(function () {
     Route::get('/', [GroupController::class, 'index']);
     Route::post('/', GroupCreate::class);
 
     Route::get('/applications', ApplicationActivityGet::class);
 
-    Route::group(['prefix' => '/{group:uuid}'], function () {
+    Route::prefix('/{group:uuid}')->group(function () {
         Route::get('/', [GroupController::class, 'show']);
         Route::delete('/', GroupDelete::class);
 
         // ACTIVITY LOGS
-        Route::group(['prefix' => '/activity-logs'], function () {
+        Route::prefix('/activity-logs')->group(function () {
             Route::get('/', [ActivityLogsController::class, 'index']);
             Route::post('/', [ActivityLogsController::class, 'store']);
             Route::put('/{logEntryId}', [ActivityLogsController::class, 'update']);
@@ -92,10 +86,10 @@ Route::group([
         });
 
         // APPLICATION
-        Route::group(['prefix' => '/application'], function () {
+        Route::prefix('/application')->group(function () {
             Route::put('/', ApplicationSaveChanges::class);
 
-            Route::group(['prefix' => '/submission'], function () {
+            Route::prefix('/submission')->group(function () {
                 Route::get('/', [GroupSubmissionsController::class, 'index']);
                 Route::post('/', ApplicationSubmitStep::class);
                 Route::post('/{submission}/rejection', ApplicationSubmissionReject::class);
@@ -103,7 +97,7 @@ Route::group([
 
             Route::get('/latest-submission', [GroupSubmissionsController::class, 'latestSubmission']);
 
-            Route::group(['prefix' => '/judgements'], function () {
+            Route::prefix('/judgements')->group(function () {
                 Route::post('/', JudgementCreate::class);
                 Route::put('/{id}', JudgementUpdate::class);
                 Route::delete('/{id}', JudgementDelete::class);
@@ -117,14 +111,14 @@ Route::group([
         Route::post('/dev/fake-pilot-approved', DevFakePilotApproved::class);
 
         // DOCUMENTS
-        Route::group(['prefix' => '/documents'], function () {
+        Route::prefix('/documents')->group(function () {
             Route::get('/', [GroupRelationsController::class, 'documents']);
             Route::post('/', DocumentAdd::class);
             Route::put('/{document:uuid}', DocumentUpdate::class);
         });
 
         // EXPERT PANEL INFO
-        Route::group(['prefix' => '/expert-panel'], function () {
+        Route::prefix('/expert-panel')->group(function () {
             Route::put('/curation-review-protocols', CurationReviewProtocolUpdate::class);
             Route::put('/membership-description', MembershipDescriptionUpdate::class);
             Route::put('/name', ExpertPanelNameUpdate::class);
@@ -133,14 +127,14 @@ Route::group([
             Route::put('/sustained-curation-reviews', SustainedCurationReviewComplete::class);
 
             // ATTESTATIONS
-            Route::group(['prefix' => '/attestations'], function () {
+            Route::prefix('/attestations')->group(function () {
                 Route::post('/nhgri', AttestationNhgriStore::class);
                 Route::post('/reanalysis', AttestationReanalysisStore::class);
                 Route::post('/gcep', AttestationGcepStore::class);
             });
 
             // GENES
-            Route::group(['prefix' => '/genes'], function () {
+            Route::prefix('/genes')->group(function () {
                 Route::get('/', [GeneListController::class, 'index']);
                 Route::post('/', GenesAdd::class);
                 Route::put('/{gene_id}', GeneUpdate::class);
@@ -148,7 +142,7 @@ Route::group([
             });
 
             // EVIDENCE SUMMARIES
-            Route::group(['prefix' => '/evidence-summaries'], function () {
+            Route::prefix('/evidence-summaries')->group(function () {
                 Route::get('/', [EvidenceSummaryController::class, 'index']);
                 Route::post('/', EvidenceSummaryAdd::class);
                 Route::put('/{summaryId}', EvidenceSummaryUpdate::class);
@@ -156,7 +150,7 @@ Route::group([
             });
 
             // ANNUAL UPDATES
-            Route::group(['prefix' => '/annual-updates'], function () {
+            Route::prefix('/annual-updates')->group(function () {
                 Route::get('/', [AnnualUpdateController::class, 'showLatestForGroup']);
                 Route::get('/{id}', [AnnualUpdateController::class, 'showForGroup']);
 
@@ -168,22 +162,22 @@ Route::group([
         });
 
         // MEMBERS
-        Route::group(['prefix' => '/members'], function () {
+        Route::prefix('/members')->group(function () {
             Route::get('/', [GroupController::class, 'members']);
             Route::post('/', MemberAdd::class);
 
-            Route::group(['prefix' => '/{member_id}'], function () {
+            Route::prefix('/{member_id}')->group(function () {
                 Route::delete('/', MemberRemove::class);
                 Route::put('/', MemberUpdate::class);
                 Route::post('/retire', MemberRetire::class);
                 Route::post('/unretire', MemberUnretire::class);
 
-                Route::group(['prefix' => '/roles'], function () {
+                Route::prefix('/roles')->group(function () {
                     Route::post('/', MemberAssignRole::class);
                     Route::delete('/{role_id}', MemberRemoveRole::class);
                 });
 
-                Route::group(['prefix' => '/permissions'], function () {
+                Route::prefix('/permissions')->group(function () {
                     Route::post('/', MemberGrantPermissions::class);
                     Route::delete('/{permission_id}', MemberRevokePermission::class);
                 });
