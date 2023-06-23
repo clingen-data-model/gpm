@@ -9,13 +9,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class AnnualUpdateWindowFactory extends Factory
 {
     /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
-    protected $model = AnnualUpdateWindow::class;
-
-    /**
      * Define the model's default state.
      *
      * @return array
