@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-class UpdateExpertPanelPolymorphicTypeAttributes extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -28,4 +28,4 @@ class UpdateExpertPanelPolymorphicTypeAttributes extends Migration
         //     ->where('subject_type', 'App\Modules\Application\Models\ExpertPanel')
         //     ->update(['subject_type' =>'App\Modules\Application\Models\Application']);
     }
-}
+};

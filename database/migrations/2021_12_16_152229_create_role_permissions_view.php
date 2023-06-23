@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-class CreateRolePermissionsView extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -39,4 +39,4 @@ class CreateRolePermissionsView extends Migration
         DB::statement('DROP VIEW IF EXISTS `view_user_data`;
         SQL;');
     }
-}
+};

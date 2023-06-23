@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTestGtDiseasesTable extends Migration
+return new class extends Migration
 {
     public function __construct()
     {
@@ -37,4 +37,4 @@ class CreateTestGtDiseasesTable extends Migration
     {
         $this->schema->dropIfExists('diseases');
     }
-}
+};

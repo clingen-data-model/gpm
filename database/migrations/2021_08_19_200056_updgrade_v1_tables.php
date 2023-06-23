@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class UpdgradeV1Tables extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -89,4 +89,4 @@ class UpdgradeV1Tables extends Migration
         Schema::rename('document_types_v1', 'document_types');
         Schema::rename('documents_v1', 'documents');
     }
-}
+};

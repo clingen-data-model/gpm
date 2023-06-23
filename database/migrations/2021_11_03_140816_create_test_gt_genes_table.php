@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTestGtGenesTable extends Migration
+return new class extends Migration
 {
     public function __construct()
     {
@@ -36,4 +36,4 @@ class CreateTestGtGenesTable extends Migration
     {
         $this->schema->dropIfExists('genes');
     }
-}
+};

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateNextActionsV2Table extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -49,4 +49,4 @@ class CreateNextActionsV2Table extends Migration
     {
         Schema::dropIfExists('next_actions_v2');
     }
-}
+};
