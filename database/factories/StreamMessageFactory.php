@@ -28,7 +28,7 @@ class StreamMessageFactory extends Factory
             'topic' => 'test',
             'message' => $this->faker->sentence(),
             'sent_at' => $success ? Carbon::now() : null,
-            'error' => $success ? null : $this->faker->sentence,
+            'error' => $success ? null : $this->faker->sentence(),
         ];
     }
 }

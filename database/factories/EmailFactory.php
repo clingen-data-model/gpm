@@ -22,12 +22,12 @@ class EmailFactory extends Factory
     public function definition()
     {
         return [
-            'to' => [['name' => $this->faker->name, 'address' => $this->faker->email]],
-            'from' => [['name' => $this->faker->name, 'address' => $this->faker->email]],
-            'cc' => [['name' => $this->faker->name, 'address' => $this->faker->email]],
-            'bcc' => [['name' => $this->faker->name, 'address' => $this->faker->email]],
+            'to' => [['name' => $this->faker->name(), 'address' => $this->faker->email()]],
+            'from' => [['name' => $this->faker->name(), 'address' => $this->faker->email()]],
+            'cc' => [['name' => $this->faker->name(), 'address' => $this->faker->email()]],
+            'bcc' => [['name' => $this->faker->name(), 'address' => $this->faker->email()]],
             'reply_to' => null,
-            'subject' => $this->faker->sentence,
+            'subject' => $this->faker->sentence(),
             'body' => $this->faker->paragraph(),
         ];
     }
@@ -36,10 +36,10 @@ class EmailFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'to' => [$this->faker->email => $this->faker->name],
-                'from' => [$this->faker->email => $this->faker->name],
-                'cc' => [$this->faker->email => $this->faker->name],
-                'bcc' => [$this->faker->email => $this->faker->name],
+                'to' => [$this->faker->email() => $this->faker->name()],
+                'from' => [$this->faker->email() => $this->faker->name()],
+                'cc' => [$this->faker->email() => $this->faker->name()],
+                'bcc' => [$this->faker->email() => $this->faker->name()],
             ];
         });
     }

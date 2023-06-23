@@ -24,10 +24,10 @@ class PreferenceFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name,
-            'description' => $this->faker->text,
+            'name' => $this->faker->name(),
+            'description' => $this->faker->text(),
             'data_type' => $this->faker->randomElement(['boolean', 'integer', 'string', 'float', 'array', 'object']),
-            'default' => $this->faker->text,
+            'default' => $this->faker->text(),
             'applies_to_role' => AppliesToRole::factory(),
             'applies_to_permission' => AppliesToPermission::factory(),
         ];

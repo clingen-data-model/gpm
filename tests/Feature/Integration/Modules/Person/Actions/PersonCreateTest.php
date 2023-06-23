@@ -27,11 +27,11 @@ class PersonCreateTest extends TestCase
 
         $action = app()->make(PersonCreate::class);
         $person = $action->handle(
-            uuid: $this->faker->uuid,
-            first_name: $this->faker->firstName,
-            last_name: $this->faker->lastName,
-            email: $this->faker->email,
-            phone: $this->faker->phoneNumber,
+            uuid: $this->faker->uuid(),
+            first_name: $this->faker->firstName(),
+            last_name: $this->faker->lastName(),
+            email: $this->faker->email(),
+            phone: $this->faker->phoneNumber(),
             user_id: $user->id
         );
 

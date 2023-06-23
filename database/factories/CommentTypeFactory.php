@@ -15,7 +15,7 @@ class CommentTypeFactory extends Factory
     {
         return [
             'name' => uniqid(),
-            'description' => $this->faker->sentence,
+            'description' => $this->faker->sentence(),
         ];
     }
 }

@@ -27,9 +27,9 @@ class InviteFactory extends Factory
 
         return [
             'code' => bin2hex(random_bytes(8)),
-            'first_name' => $this->faker->firstName,
-            'last_name' => $this->faker->lastName,
-            'email' => $this->faker->email,
+            'first_name' => $this->faker->firstName(),
+            'last_name' => $this->faker->lastName(),
+            'email' => $this->faker->email(),
             'inviter_id' => $group->id,
             'inviter_type' => get_class($group),
             'person_id' => Person::factory()->create()->id,

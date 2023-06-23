@@ -30,7 +30,7 @@ class EvidenceSummaryFactory extends Factory
             'gene_id' => Gene::factory()->create(['expert_panel_id' => $ep->id]),
             'summary' => $this->faker->paragraph(4),
             'variant' => $this->faker->word(),
-            'vci_url' => $this->faker->url,
+            'vci_url' => $this->faker->url(),
         ];
     }
 }

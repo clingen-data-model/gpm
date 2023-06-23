@@ -23,7 +23,7 @@ class IncomingStreamMessageFactory extends Factory
     {
         return [
             'topic' => 'cspec-general-events',
-            'key' => $this->faker->uuid,
+            'key' => $this->faker->uuid(),
             'partition' => 0,
             'offset' => $this->faker->numberBetween(1000, 10000),
             'timestamp' => time(),
@@ -40,13 +40,13 @@ class IncomingStreamMessageFactory extends Factory
                 'payload' => [
                     'cspecDoc' => [
                         'cspecId' => 'ABC1',
-                        'uuid' => $this->faker->uuid,
+                        'uuid' => $this->faker->uuid(),
                         'status' => [
                             'event' => 'classified-rules-approved',
                             'current' => 'Classified Rules Approved',
                         ],
                         'affiliationId' => '50666',
-                        'name' => $this->faker->sentence,
+                        'name' => $this->faker->sentence(),
                         'ruleSets' => [],
                     ],
                 ],
@@ -62,13 +62,13 @@ class IncomingStreamMessageFactory extends Factory
                 'payload' => [
                     'cspecDoc' => [
                         'cspecId' => 'ABC1',
-                        'uuid' => $this->faker->uuid,
+                        'uuid' => $this->faker->uuid(),
                         'status' => [
                             'event' => 'pilot-rules-approved',
                             'current' => 'Pilot Rules Approved',
                         ],
                         'affiliationId' => '50666',
-                        'name' => $this->faker->sentence,
+                        'name' => $this->faker->sentence(),
                         'ruleSets' => [],
                     ],
                 ],
