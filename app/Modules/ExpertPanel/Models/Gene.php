@@ -50,13 +50,10 @@ class Gene extends Model
      * @var array
      */
     protected $casts = [
+        'date_approved' => 'datetime',
         'id' => 'integer',
         'hgnc_id' => 'integer',
         'expert_panel_id' => 'integer',
-    ];
-
-    protected $dates = [
-        'date_approved',
     ];
 
     /**
