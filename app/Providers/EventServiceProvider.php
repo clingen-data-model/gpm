@@ -30,7 +30,7 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         // NOTE That intra-module listeners are registered in the module's service provider.
         'Illuminate\Mail\Events\MessageSent' => [
-            'App\Listeners\Mail\StoreMailInDatabase',
+            \App\Listeners\Mail\StoreMailInDatabase::class,
         ],
         CommentCreated::class => [CommentNotifyAboutEvent::class],
         CommentUpdated::class => [CommentNotifyAboutEvent::class],
