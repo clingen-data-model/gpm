@@ -56,4 +56,15 @@ class EventServiceProvider extends ServiceProvider
             Event::dispatch(new UserLoggedOut($event->user));
         });
     }
+
+    /**
+     * Determine if events and listeners should be automatically discovered.
+     *
+     * @return bool
+     */
+    public function shouldDiscoverEvents()
+    {
+        return false;
+    }
 }
+
