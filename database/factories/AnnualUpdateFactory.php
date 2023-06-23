@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\AnnualUpdate;
 use App\Models\AnnualUpdateWindow;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Carbon\Carbon;
