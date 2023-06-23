@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Schema;
 
-class RenameCoiVersionTables extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -32,4 +32,4 @@ class RenameCoiVersionTables extends Migration
         Schema::rename('cois', 'cois_v2');
         Schema::rename('cois_v1', 'cois');
     }
-}
+};

@@ -4,7 +4,7 @@ use App\Actions\DataMigration;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-class MigrateApplicationDataToExpertPanels extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -25,4 +25,4 @@ class MigrateApplicationDataToExpertPanels extends Migration
     {
         DB::table('expert_panels')->delete();
     }
-}
+};

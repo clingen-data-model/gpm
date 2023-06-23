@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlterPersonRenameProfilePhotoPath extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -29,4 +29,4 @@ class AlterPersonRenameProfilePhotoPath extends Migration
             $table->renameColumn('profile_photo', 'profile_photo_path');
         });
     }
-}
+};
