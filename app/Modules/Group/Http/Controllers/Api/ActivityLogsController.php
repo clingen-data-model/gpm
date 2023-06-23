@@ -46,8 +46,8 @@ class ActivityLogsController extends Controller
             'properties',
         ])
                         ->with(['causer' => function ($q) {
-            return $q->select(['id', 'name']);
-        }])
+                            return $q->select(['id', 'name']);
+                        }])
                         ->where(function ($q) {
                             $q->whereNotIn('activity_type', ['coi-completed', 'next-action-updated'])
                             ->orWhereNull('activity_type');
