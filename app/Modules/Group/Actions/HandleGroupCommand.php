@@ -69,7 +69,7 @@ class HandleGroupCommand
     private function resolveCommandClass($commandString): string
     {
         $namespaceParts = array_map(function ($i) {
-        return Str::studly($i);
+            return Str::studly($i);
         }, explode('.', $commandString));
         $className = '\\'.implode('\\', $namespaceParts);
 

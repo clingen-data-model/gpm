@@ -36,6 +36,5 @@ class EvidenceSummaryDelete
         }
 
         $this->handle($group, $evidenceSummary);
-
     }
 }
