@@ -36,13 +36,10 @@ class BiocuratorOnboardingAttestation extends Model
      * @var array
      */
     protected $casts = [
+        'attested_at' => 'datetime',
         'id' => 'integer',
         'expert_panel_id' => 'integer',
         'data' => 'array',
-    ];
-
-    protected $dates = [
-        'attested_at',
     ];
 
     /**

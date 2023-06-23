@@ -63,17 +63,14 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
      * @var array
      */
     protected $casts = [
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
         'id' => 'integer',
         'group_id' => 'integer',
         'person_id' => 'integer',
         'is_contact' => 'boolean',
         'training_level_1' => 'boolean',
         'training_level_2' => 'boolean',
-    ];
-
-    protected $dates = [
-        'start_date',
-        'end_date',
     ];
 
     public static function boot(): void

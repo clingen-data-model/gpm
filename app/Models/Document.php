@@ -35,13 +35,10 @@ class Document extends Model
     ];
 
     protected $casts = [
+        'date_received' => 'datetime',
         'owner_id' => 'integer',
         'document_type_id' => 'integer',
         'metadata' => 'array',
-    ];
-
-    protected $dates = [
-        'date_received',
     ];
 
     protected $appends = [
