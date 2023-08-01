@@ -19,6 +19,9 @@ services:
             - MYSQL_USER=${DB_USERNAME}
             - MYSQL_PASSWORD=${DB_PASSWORD}
             - MYSQL_SORT_BUFFER_SIZE=256000000
+            - GT_DB_DATABASE
+            - GT_DB_USERNAME
+            - GT_DB_PASSWORD
         user: ${DOCKER_USER:-501:20}
 
     app:
