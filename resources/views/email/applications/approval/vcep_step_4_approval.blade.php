@@ -6,7 +6,7 @@
     </p>
 
     <p>
-        Please refer to the <a href="https://www.clinicalgenome.org/docs/clingen-variant-curation-expert-panel-vcep-protocol/">ClinGen VCEP Protocol</a> sections 2.5 “Post Approval Requirements” and 3. Variant “Prioritization and Reanalysis” for information on next steps. You may now publish your variant curations to the ClinGen Evidence Repository and submit to ClinVar. Please review the <a href="https://gpm.clinicalgenome.org/downloads/VCEP%20SOP%20-%20Registering%20and%20Submitting%20to%20ClinVar.pdf">SOP for registering and submitting to ClinVar as a 3-star approved VCEP</a>.
+        Please refer to the <a href="https://www.clinicalgenome.org/docs/clingen-variant-curation-expert-panel-vcep-protocol/">ClinGen VCEP Protocol</a> sections 2.5 “Post Approval Requirements” and 3. Variant “Prioritization and Reanalysis” for information on next steps. You may now publish your variant curations to the ClinGen Evidence Repository and submit to ClinVar. Please review the <a href="https://docs.google.com/document/d/1CsczQMyC3aHqjZgsZD5DUXEIFWlGdigFDKfn7Qr2g6Y/edit?usp=sharing">SOP for registering and submitting to ClinVar as a 3-star approved VCEP</a>.      
     </p>
 
     <p>
