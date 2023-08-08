@@ -51,9 +51,9 @@ class JudgementActivityNotification extends Notification implements DigestibleNo
         $this->judgement->load('person');
         $this->group->display_name = $this->group->getDisplayNameAttribute();
         return [
-            'group' => $this->group,
-            'judgement' => $this->judgement,
-            'event' => $this->event
+            'group' => $this->group->toArray(),
+            'judgement' => $this->judgement->toArray(),
+            'event' => $this->event->toArray()
         ];
     }
 
