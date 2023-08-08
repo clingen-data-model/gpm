@@ -49,9 +49,9 @@ class ApprovalReminder extends Notification implements DigestibleNotificationInt
         $this->group->load('expertPanel');
         $this->group->display_name = $this->group->displayName;
         return [
-            'group' => $this->group,
-            'submission' => $this->submission,
-            'approver' => $this->approver
+            'group' => $this->group->toArray(),
+            'submission' => $this->submission->toArray(),
+            'approver' => $this->approver->toArray()
         ];
     }
 
