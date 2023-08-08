@@ -46,9 +46,9 @@ class CommentActivityNotification extends Notification implements DigestibleNoti
         $this->comment->load('creator');
         $this->group->display_name = $this->group->getDisplayNameAttribute();
         return [
-            'group' => $this->group,
-            'comment' => $this->comment,
-            'event' => $this->event
+            'group' => $this->group->toArray(),
+            'comment' => $this->comment->toArray(),
+            'event' => $this->event->toArray()
         ];
     }
 
