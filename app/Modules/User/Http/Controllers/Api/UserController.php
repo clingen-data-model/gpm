@@ -29,12 +29,13 @@ class UserController extends Controller
                 foreach ($where as $key => $value) {
                     if ($key == 'filterString') {
                         $query->where('users.email', 'like', '%'.$value.'%')
+                            ->orWhere('users.name', 'like', '%'.$value.'%')
                             ->orWhereHas('person', function ($q) use ($value) {
                                 $q->where('first_name', 'like', '%'.$value.'%')
                                     ->orWhere('last_name', 'like', '%'.$value.'%')
                                     ->orWhere('email', 'like', '%'.$value.'%');
                             })
-                            ->orwhereHas('roles', function ($q) use ($value) {
+                            ->orWhereHas('roles', function ($q) use ($value) {
                                 $q->where('display_name', 'like', '%'.$value.'%');
                             })
                             ->orWhereHas('permissions', function ($q) use ($value) {
