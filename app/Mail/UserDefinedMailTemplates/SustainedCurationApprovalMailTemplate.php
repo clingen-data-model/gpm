@@ -26,8 +26,9 @@ class SustainedCurationApprovalMailTemplate extends AbstractUserDefinedMailTempl
             ['address' => 'erepo@clinicalgenome.org', 'name' => 'ERepo Support'],
             ['address' => 'clingen-helpdesk@lists.stanford.edu', 'name' => 'GCI/VCI Support'],
             ['address' => 'clinvar@ncbi.nlm.nih.gov', 'name' => 'ClinVar'],
+            ['address' => 'brl-cspec@bcm.edu', 'name' => 'CSpec Support'],
         ];
     }
-    
-    
+
+
 }

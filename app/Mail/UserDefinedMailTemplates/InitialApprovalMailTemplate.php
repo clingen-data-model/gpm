@@ -18,7 +18,7 @@ class InitialApprovalMailTemplate extends AbstractUserDefinedMailTemplate
     {
         return 'Scope and Membership application for your ClinGen expert panel '
                 . $this->group->name
-                . ' has been approved.';       
+                . ' has been approved.';
     }
 
     public function getCC(): array
@@ -29,8 +29,9 @@ class InitialApprovalMailTemplate extends AbstractUserDefinedMailTemplate
             ['address' => 'volunteer@clinicalgenome.org', 'name' => 'CCDB Support'],
             ['address' => 'erepo@clinicalgenome.org', 'name' => 'ERepo Support'],
             ['address' => 'clingen-helpdesk@lists.stanford.edu', 'name' => 'GCI/VCI Support'],
+            ['address' => 'brl-cspec@bcm.edu', 'name' => 'CSpec Support'],
         ];
     }
-    
-    
+
+
 }
