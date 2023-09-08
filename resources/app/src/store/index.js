@@ -38,9 +38,9 @@ axios.interceptors.response.use(
                 if (error.response.data.includes('The request to access this resource was rejected.')) {
                     const matches = error.response.data.match(/Reference this support identifier:\s*(\d+)/)
                     const supportId = matches[1] || null;
-                    store.commit('pushError', 'There is a Network Firewall issue.  Please contact support GPM Support ASAP at "gpm_support@clinicalgenome.org" and provide details on your network connection.')
+                    store.commit('pushError', 'There is a Network Firewall issue.  Please contact support GPM Support ASAP at "gpm_support@clinicalgenome.org", providing details on your network connection and the following support ID: ' + supportId)
                 } else {
-                    store.commit('pushError', 'You do not have permission to complete that action.  If you think this is an error please contact support.')
+                    store.commit('pushError', 'You do not have permission to complete that action.  If you think this is an error please contact support at gpm_support@clinicalgenome.org')
                 }
                 return error;
             case 404:
