@@ -18,8 +18,11 @@ fi
 echo "Running migrations..."
 php artisan migrate --force --no-interaction
 
-# make a new APP_KEY if the one in .env is not properly formatted
-grep APP_KEY=base64 .env >/dev/null || php artisan key:generate -q
+# make a new APP_KEY if not in environment and if the one in .env is not properly formatted
+if [[ ${APP_KEY:-invalid} != base64* ]]; then
+    touch .env # make sure we have an .env file soe key:generate doesn't complain
+    grep APP_KEY=base64 .env >/dev/null || php artisan key:generate -q
+fi
 
 if [[ $env != "local" ]]; then
     echo "Caching configuration..."
