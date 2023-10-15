@@ -2,6 +2,7 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Database\Factories\RulesetFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -51,7 +52,7 @@ class Ruleset extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function specification()
+    public function specification(): BelongsTo
     {
         return $this->belongsTo(Specification::class, 'specification_id', 'cspec_id');
     }

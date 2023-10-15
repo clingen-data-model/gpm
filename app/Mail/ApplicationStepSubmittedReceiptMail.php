@@ -25,7 +25,7 @@ class ApplicationStepSubmittedReceiptMail extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->view('email.application_step_submitted_receipt', ['expertPanel' => $this->expertPanel]);
     }

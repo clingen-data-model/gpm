@@ -21,7 +21,7 @@ class LogEntryAdd
         string $logDate,
         string $entry,
         int $step = null
-    ) {
+    ): void {
         $logEntry = activity('applications')
             ->performedOn($subject)
             ->createdAt(Carbon::parse($logDate))

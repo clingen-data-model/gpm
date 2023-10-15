@@ -21,7 +21,7 @@ class ContactRemove
      *
      * @return void
      */
-    public function handle(string $expertPanelUuid, string $personUuid)
+    public function handle(string $expertPanelUuid, string $personUuid): void
     {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         $person = Person::findByUuidOrFail($personUuid);

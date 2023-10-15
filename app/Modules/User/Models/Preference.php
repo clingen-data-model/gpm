@@ -2,6 +2,8 @@
 
 namespace App\Modules\User\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Database\Factories\PreferenceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -49,7 +51,7 @@ class Preference extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(\App\Models\User::class);
     }
@@ -57,7 +59,7 @@ class Preference extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function appliesToRole()
+    public function appliesToRole(): BelongsTo
     {
         return $this->belongsTo(\App\Models\AppliesToRole::class);
     }
@@ -65,7 +67,7 @@ class Preference extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function appliesToPermission()
+    public function appliesToPermission(): BelongsTo
     {
         return $this->belongsTo(\App\Models\AppliesToPermission::class);
     }

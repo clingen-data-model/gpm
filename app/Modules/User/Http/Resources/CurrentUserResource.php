@@ -2,6 +2,7 @@
 
 namespace App\Modules\User\Http\Resources;
 
+use Illuminate\Http\Request;
 use App\Http\Resources\RoleResource;
 use App\Modules\Group\Http\Resources\MemberResource;
 use App\Modules\Person\Http\Resources\PersonDetailResource;
@@ -15,7 +16,7 @@ class CurrentUserResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function toArray($request): array
+    public function toArray(Request $request): array
     {
         $data = parent::toArray($request);
         $data['roles'] = $this->whenLoaded('roles', RoleResource::collection($this->roles));

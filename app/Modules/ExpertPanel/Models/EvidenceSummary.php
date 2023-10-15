@@ -2,6 +2,7 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Modules\ExpertPanel\Models\Contracts\BelongsToExpertPanel;
 use App\Modules\ExpertPanel\Models\Traits\BelongsToExpertPanel as TraitsBelongsToExpertPanel;
 use Database\Factories\EvidenceSummaryFactory;
@@ -50,7 +51,7 @@ class EvidenceSummary extends Model implements BelongsToExpertPanel
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function gene()
+    public function gene(): BelongsTo
     {
         return $this->belongsTo(Gene::class);
     }

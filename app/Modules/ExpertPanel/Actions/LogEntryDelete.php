@@ -22,7 +22,7 @@ class LogEntryDelete
      *
      * @return void
      */
-    public function handle(string $expertPanelUuid, int $logEntryId)
+    public function handle(string $expertPanelUuid, int $logEntryId): void
     {
         $logEntry = ExpertPanel::findByUuidOrFail($expertPanelUuid)
             ->group

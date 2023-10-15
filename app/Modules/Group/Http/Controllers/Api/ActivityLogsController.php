@@ -2,6 +2,7 @@
 
 namespace App\Modules\Group\Http\Controllers\Api;
 
+use Illuminate\Http\Response;
 use App\Actions\LogEntryAdd;
 use App\Actions\LogEntryDelete;
 use App\Actions\LogEntryUpdate;
@@ -111,7 +112,7 @@ class ActivityLogsController extends Controller
         return $logEntry;
     }
 
-    public function destroy($groupUuid, $logEntryId)
+    public function destroy($groupUuid, $logEntryId): Response
     {
         $group = Group::findByUuidOrFail($groupUuid);
         $logEntry = $group->logEntries()->findOrFail($logEntryId);

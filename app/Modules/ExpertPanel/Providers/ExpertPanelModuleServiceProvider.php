@@ -22,7 +22,7 @@ class ExpertPanelModuleServiceProvider extends ModuleServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         parent::register();
     }
@@ -32,7 +32,7 @@ class ExpertPanelModuleServiceProvider extends ModuleServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         parent::boot();
         $this->registerPolicies();

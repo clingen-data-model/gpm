@@ -28,7 +28,7 @@ class UserDefinedMailable extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): static
     {
         return $this->view('email.user_defined_email')
             ->with([

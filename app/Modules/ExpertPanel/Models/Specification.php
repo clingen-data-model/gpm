@@ -2,6 +2,7 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Contracts\HasNotes;
 use App\Models\Traits\HasNotes as HasNotesTrait;
 use App\Modules\ExpertPanel\Models\Contracts\BelongsToExpertPanel;
@@ -61,7 +62,7 @@ class Specification extends Model implements HasNotes, BelongsToExpertPanel, Con
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function rulesets()
+    public function rulesets(): HasMany
     {
         return $this->hasMany(Ruleset::class, 'specification_id');
     }

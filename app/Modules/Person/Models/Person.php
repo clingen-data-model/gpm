@@ -2,6 +2,7 @@
 
 namespace App\Modules\Person\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use App\Models\Activity;
 use App\Models\Contracts\HasLogEntries;
 use App\Models\Credential;
@@ -106,7 +107,7 @@ class Person extends Model implements HasLogEntries
     /**
      * @return \Illuminate\Database\Eloquent\Relations\MorphOne
      */
-    public function latestLogEntry()
+    public function latestLogEntry(): MorphOne
     {
         return $this->morphOne(Activity::class, 'subject')
             ->orderBy('created_at', 'desc');
@@ -115,7 +116,7 @@ class Person extends Model implements HasLogEntries
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function institution()
+    public function institution(): BelongsTo
     {
         return $this->belongsTo(Institution::class);
     }
@@ -123,7 +124,7 @@ class Person extends Model implements HasLogEntries
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function country()
+    public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
     }
@@ -147,7 +148,7 @@ class Person extends Model implements HasLogEntries
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function primaryOccupation()
+    public function primaryOccupation(): BelongsTo
     {
         return $this->belongsTo(PrimaryOccupation::class);
     }
@@ -155,7 +156,7 @@ class Person extends Model implements HasLogEntries
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function race()
+    public function race(): BelongsTo
     {
         return $this->belongsTo(Race::class);
     }
@@ -163,7 +164,7 @@ class Person extends Model implements HasLogEntries
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function ethnicity()
+    public function ethnicity(): BelongsTo
     {
         return $this->belongsTo(Ethnicity::class);
     }
@@ -171,7 +172,7 @@ class Person extends Model implements HasLogEntries
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function gender()
+    public function gender(): BelongsTo
     {
         return $this->belongsTo(Gender::class);
     }

@@ -20,7 +20,7 @@ class ExpertPanelUpdateAttributes
     public function handle(
         string $uuid,
         array $attributes
-    ) {
+    ): void {
         $attributes = collect($attributes);
         $expertPanel = ExpertPanel::findByUuidOrFail($uuid);
         $expertPanel->fill($attributes->toArray());

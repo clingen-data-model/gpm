@@ -43,7 +43,7 @@ class StepApprove
         string $subject = null,
         string $body = null,
         $attachments = []
-    ) {
+    ): void {
         dump('fuck me 1');
         $stepManager = app()->make(StepManagerFactory::class)($expertPanel);
         dump('fuck me 2');

@@ -2,6 +2,7 @@
 
 namespace App\Modules\User\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\Contracts\HasLogEntries;
 use App\Models\Traits\HasEmail;
 use App\Models\Traits\HasLogEntries as HasLogEntriesTrait;
@@ -62,7 +63,7 @@ class User extends Authenticatable implements CanResetPassword, HasLogEntries
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function person()
+    public function person(): HasOne
     {
         return $this->hasOne(Person::class);
     }

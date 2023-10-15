@@ -31,7 +31,7 @@ trait HasRoles
      * @param  array|string|\Spatie\Permission\Contracts\Role  ...$roles
      * @return $this
      */
-    public function assignRole(...$roles)
+    public function assignRole(...$roles): static
     {
         $roles = collect($roles)
             ->flatten()
@@ -79,7 +79,7 @@ trait HasRoles
      * @param  string|array|\Spatie\Permission\Contracts\Permission|\Illuminate\Support\Collection  $permissions
      * @return $this
      */
-    public function givePermissionTo(...$permissions)
+    public function givePermissionTo(...$permissions): static
     {
         $permissions = collect($permissions)
             ->flatten()

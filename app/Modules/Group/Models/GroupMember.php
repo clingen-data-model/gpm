@@ -2,6 +2,7 @@
 
 namespace App\Modules\Group\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Contracts\HasNotes;
 use App\Models\Traits\HasNotes as HasNotesTrait;
 use App\Models\Traits\HasRoles;
@@ -92,7 +93,7 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function person()
+    public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class);
     }

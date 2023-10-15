@@ -41,7 +41,7 @@ class BusServiceProvider extends ServiceProvider implements DeferrableProvider
      *
      * @return void
      */
-    protected function registerBatchServices()
+    protected function registerBatchServices(): void
     {
         $this->app->singleton(BatchRepository::class, DatabaseBatchRepository::class);
 
@@ -59,7 +59,7 @@ class BusServiceProvider extends ServiceProvider implements DeferrableProvider
      *
      * @return array
      */
-    public function provides()
+    public function provides(): array
     {
         return [
             Dispatcher::class,

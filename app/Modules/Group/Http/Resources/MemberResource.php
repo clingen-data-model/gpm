@@ -2,6 +2,7 @@
 
 namespace App\Modules\Group\Http\Resources;
 
+use Illuminate\Http\Request;
 use App\Http\Resources\PermissionResource;
 use App\Http\Resources\RoleResource;
 use App\Modules\Person\Http\Resources\PersonAsMemberResource;
@@ -15,7 +16,7 @@ class MemberResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function toArray($request): array
+    public function toArray(Request $request): array
     {
         $data = parent::toArray($request);
         unset(

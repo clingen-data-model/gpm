@@ -2,6 +2,7 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -45,7 +46,7 @@ class BiocuratorOnboardingAttestation extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function expertPanel()
+    public function expertPanel(): BelongsTo
     {
         return $this->belongsTo(\App\Models\ExpertPanel::class);
     }

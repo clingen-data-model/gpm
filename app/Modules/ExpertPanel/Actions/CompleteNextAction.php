@@ -27,7 +27,7 @@ class CompleteNextAction
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $expertPanel = ExpertPanel::findByUuidOrFail($this->expertPanelUuid);
         $nextAction = NextAction::findByUuidOrFail($this->nextActionUuid);

@@ -2,6 +2,7 @@
 
 namespace App\Modules\Group\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class MembershipResource extends JsonResource
@@ -12,7 +13,7 @@ class MembershipResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function toArray($request): array
+    public function toArray(Request $request): array
     {
         $data = parent::toArray($request);
         $data['cois'] = $this->whenLoaded('cois', $this->cois);

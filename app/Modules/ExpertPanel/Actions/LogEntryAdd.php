@@ -27,7 +27,7 @@ class LogEntryAdd
         string $logDate,
         string $entry,
         int $step = null
-    ) {
+    ): void {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         $logEntry = $this->logEntryAdd->handle(subject: $expertPanel->group, logDate: $logDate, entry: $entry, step: $step);
 

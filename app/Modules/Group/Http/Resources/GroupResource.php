@@ -2,6 +2,7 @@
 
 namespace App\Modules\Group\Http\Resources;
 
+use Illuminate\Http\Request;
 use App\Http\Resources\ExpertPanelResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -13,7 +14,7 @@ class GroupResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function toArray($request): array
+    public function toArray(Request $request): array
     {
         $data = parent::toArray($request);
 

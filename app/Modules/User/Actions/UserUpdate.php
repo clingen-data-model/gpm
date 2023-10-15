@@ -26,7 +26,7 @@ class UserUpdate
      *
      * @return void
      */
-    public function handle(int $id, string $name, string $email)
+    public function handle(int $id, string $name, string $email): void
     {
         $user = User::find($id);
 

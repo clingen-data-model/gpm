@@ -24,7 +24,7 @@ class NextActionDelete
      *
      * @return void
      */
-    public function handle(ExpertPanel $expertPanel, $nextActionId)
+    public function handle(ExpertPanel $expertPanel, $nextActionId): void
     {
         $expertPanel
             ->nextActions()

@@ -22,7 +22,7 @@ class ContactAdd
     public function handle(
         string $expertPanelUuid,
         string $uuid
-    ) {
+    ): void {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         $person = Person::findByUuidOrFail($uuid);
 

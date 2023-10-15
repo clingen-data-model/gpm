@@ -59,7 +59,7 @@ class Gene extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function expertPanel()
+    public function expertPanel(): BelongsTo
     {
         return $this->belongsTo(ExpertPanel::class);
     }

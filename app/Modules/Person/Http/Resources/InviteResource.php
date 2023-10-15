@@ -2,6 +2,7 @@
 
 namespace App\Modules\Person\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class InviteResource extends JsonResource
@@ -12,7 +13,7 @@ class InviteResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function toArray($request): array
+    public function toArray(Request $request): array
     {
         $data = parent::toArray($request);
         if ($this->relationLoaded('inviter')) {

@@ -34,7 +34,7 @@ class MessagePush
      *
      * @return void
      */
-    public function handle(StreamMessage $streamMessage)
+    public function handle(StreamMessage $streamMessage): void
     {
         try {
             $this->pusher->topic($streamMessage->topic);

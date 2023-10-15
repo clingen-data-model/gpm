@@ -31,7 +31,7 @@ class ExpertPanelCreate
         ?int $cdwg_id,
         int $expert_panel_type_id,
         DateTime $date_initiated = null,
-    ) {
+    ): void {
         if (is_null($date_initiated)) {
             $date_initiated = Carbon::now();
         }

@@ -18,7 +18,7 @@ class KafkaConfig
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function __construct($group = null)
+    public function __construct(string $group = null)
     {
         $this->conf = new Conf();
         $this->setGroup($group);

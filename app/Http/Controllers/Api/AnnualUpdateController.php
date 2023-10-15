@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Http\Controllers\Controller;
 use App\Models\AnnualUpdate;
 use App\Models\AnnualUpdateWindow;
@@ -80,7 +81,7 @@ class AnnualUpdateController extends Controller
         return AnnualUpdateWindow::all();
     }
 
-    public function export(Request $request)
+    public function export(Request $request): StreamedResponse
     {
         $annualReviews = AnnualUpdate::find($request->annual_update_ids);
 

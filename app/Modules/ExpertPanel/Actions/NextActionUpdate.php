@@ -29,7 +29,7 @@ class NextActionUpdate
         int $step = null,
         string $assignedTo = null,
         string $assignedToName = null
-    ) {
+    ): void {
         $oldData = $nextAction->toArray();
         $data = [
             'date_created' => $dateCreated,

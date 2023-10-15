@@ -17,7 +17,7 @@ class StepApprovalUpdate
      *
      * @return void
      */
-    public function handle(string $expertPanelUuid, int $step, string $dateApproved)
+    public function handle(string $expertPanelUuid, int $step, string $dateApproved): void
     {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         $expertPanel->{'step_'.$step.'_approval_date'} = $dateApproved;
