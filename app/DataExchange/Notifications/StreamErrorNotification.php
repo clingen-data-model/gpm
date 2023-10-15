@@ -28,7 +28,6 @@ class StreamErrorNotification extends Notification implements DigestibleNotifica
      * Get the notification's delivery channels.
      *
      * @param  mixed  $notifiable
-     * @return array
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
@@ -41,7 +40,6 @@ class StreamErrorNotification extends Notification implements DigestibleNotifica
      * Get the array representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return array
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */

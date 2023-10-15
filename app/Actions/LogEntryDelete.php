@@ -12,8 +12,6 @@ class LogEntryDelete
 
     /**
      * Create a new job instance.
-     *
-     * @return void
      */
     public function handle(Activity $logEntry): void
     {

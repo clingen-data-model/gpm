@@ -59,9 +59,6 @@ class Specification extends Model implements HasNotes, BelongsToExpertPanel, Con
         'status_id' => 'integer',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function rulesets(): HasMany
     {
         return $this->hasMany(Ruleset::class, 'specification_id');

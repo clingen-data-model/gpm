@@ -23,8 +23,6 @@ class UserUpdate
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function handle(int $id, string $name, string $email): void
     {

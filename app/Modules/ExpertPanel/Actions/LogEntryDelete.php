@@ -19,8 +19,6 @@ class LogEntryDelete
 
     /**
      * Create a new job instance.
-     *
-     * @return void
      */
     public function handle(string $expertPanelUuid, int $logEntryId): void
     {

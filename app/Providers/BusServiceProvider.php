@@ -14,8 +14,6 @@ class BusServiceProvider extends ServiceProvider implements DeferrableProvider
 {
     /**
      * Register the service provider.
-     *
-     * @return void
      */
     public function register(): void
     {
@@ -38,8 +36,6 @@ class BusServiceProvider extends ServiceProvider implements DeferrableProvider
 
     /**
      * Register the batch handling services.
-     *
-     * @return void
      */
     protected function registerBatchServices(): void
     {
@@ -56,8 +52,6 @@ class BusServiceProvider extends ServiceProvider implements DeferrableProvider
 
     /**
      * Get the services provided by the provider.
-     *
-     * @return array
      */
     public function provides(): array
     {

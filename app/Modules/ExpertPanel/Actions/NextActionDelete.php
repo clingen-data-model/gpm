@@ -21,8 +21,6 @@ class NextActionDelete
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function handle(ExpertPanel $expertPanel, $nextActionId): void
     {

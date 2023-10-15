@@ -29,7 +29,6 @@ trait HasRoles
      * Assign the given role to the model.
      *
      * @param  array|string|\Spatie\Permission\Contracts\Role  ...$roles
-     * @return $this
      */
     public function assignRole(...$roles): static
     {
@@ -77,7 +76,6 @@ trait HasRoles
      * Grant the given permission(s) to a role.
      *
      * @param  string|array|\Spatie\Permission\Contracts\Permission|\Illuminate\Support\Collection  $permissions
-     * @return $this
      */
     public function givePermissionTo(...$permissions): static
     {

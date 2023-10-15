@@ -36,7 +36,6 @@ class UserCreate
      * @param  string  $name User's name
      * @param  string  $email Email for the user account
      * @param  string|null  $password Password (or null).
-     * @return void
      */
     public function handle(string $name, string $email, string $password = null): User
     {

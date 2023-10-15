@@ -59,8 +59,6 @@ class ConsumeCspecMessagesTest extends TestCase
 
     /**
      * @test
-     *
-     * @return void
      */
     public function cspec_draft_rules_approved_message_consumed_and_handled(): void
     {

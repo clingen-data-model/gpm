@@ -13,8 +13,6 @@ trait RecordsEvents
 
     /**
      * Get the latest event for model
-     *
-     * @return \Illumninate\Database\Eloquent\Relations\MorphMany
      */
     public function latestEvent(): MorphMany
     {

@@ -48,9 +48,6 @@ class EvidenceSummary extends Model implements BelongsToExpertPanel
         'gene_id' => 'integer',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function gene(): BelongsTo
     {
         return $this->belongsTo(Gene::class);

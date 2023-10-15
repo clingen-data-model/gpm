@@ -47,8 +47,6 @@ class GroupModuleServiceProvider extends ModuleServiceProvider
 
     /**
      * Register services.
-     *
-     * @return void
      */
     public function register(): void
     {
@@ -57,8 +55,6 @@ class GroupModuleServiceProvider extends ModuleServiceProvider
 
     /**
      * Bootstrap services.
-     *
-     * @return void
      */
     public function boot(): void
     {

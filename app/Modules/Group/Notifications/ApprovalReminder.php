@@ -28,7 +28,6 @@ class ApprovalReminder extends Notification implements DigestibleNotificationInt
      * Get the notification's delivery channels.
      *
      * @param  mixed  $notifiable
-     * @return array
      */
     public function via($notifiable): array
     {
@@ -39,7 +38,6 @@ class ApprovalReminder extends Notification implements DigestibleNotificationInt
      * Get the array representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return array
      */
     public function toArray($notifiable): array
     {

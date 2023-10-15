@@ -14,8 +14,6 @@ class StepApprovalUpdate
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function handle(string $expertPanelUuid, int $step, string $dateApproved): void
     {

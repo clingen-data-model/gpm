@@ -36,8 +36,6 @@ class CreateInitialPersonDxMessages extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle(DxMessageFactory $messageFactory, StreamMessageCreate $streamMessageCreate): int
     {

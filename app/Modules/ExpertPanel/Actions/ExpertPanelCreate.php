@@ -22,8 +22,6 @@ class ExpertPanelCreate
 
     /**
      * Create a new job instance.
-     *
-     * @return void
      */
     public function handle(
         string $uuid,

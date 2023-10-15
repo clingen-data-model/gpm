@@ -12,8 +12,6 @@ trait HasDocuments
 {
     /**
      * Get all of the documents for the HasDocuments
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function documents(): MorphMany
     {

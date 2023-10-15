@@ -49,9 +49,6 @@ class Ruleset extends Model
         'status_id' => 'integer',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function specification(): BelongsTo
     {
         return $this->belongsTo(Specification::class, 'specification_id', 'cspec_id');

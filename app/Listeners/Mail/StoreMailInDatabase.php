@@ -21,8 +21,6 @@ class StoreMailInDatabase
 
     /**
      * Handle the event.
-     *
-     * @return void
      */
     public function handle(MessageSent $event): void
     {

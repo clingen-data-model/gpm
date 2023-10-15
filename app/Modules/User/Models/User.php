@@ -60,8 +60,6 @@ class User extends Authenticatable implements CanResetPassword, HasLogEntries
 
     /**
      * Get the person associated with the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function person(): HasOne
     {

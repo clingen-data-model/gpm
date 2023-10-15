@@ -43,9 +43,6 @@ class BiocuratorOnboardingAttestation extends Model
         'data' => 'array',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function expertPanel(): BelongsTo
     {
         return $this->belongsTo(\App\Models\ExpertPanel::class);

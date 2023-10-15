@@ -7,9 +7,6 @@ use App\Modules\Group\Models\Group;
 
 trait BelongsToGroup
 {
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function group(): BelongsTo
     {
         return $this->belongsTo(Group::class);

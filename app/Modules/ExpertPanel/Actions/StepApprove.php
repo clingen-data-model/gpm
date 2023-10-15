@@ -33,8 +33,6 @@ class StepApprove
 
     /**
      * Create a new job instance.
-     *
-     * @return void
      */
     public function handle(
         ExpertPanel $expertPanel,

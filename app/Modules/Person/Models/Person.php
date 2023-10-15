@@ -104,26 +104,17 @@ class Person extends Model implements HasLogEntries
         return $this->activeGroups()->typeExpertPanel();
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
-     */
     public function latestLogEntry(): MorphOne
     {
         return $this->morphOne(Activity::class, 'subject')
             ->orderBy('created_at', 'desc');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function institution(): BelongsTo
     {
         return $this->belongsTo(Institution::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
@@ -145,33 +136,21 @@ class Person extends Model implements HasLogEntries
         return $this->belongsToMany(Expertise::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function primaryOccupation(): BelongsTo
     {
         return $this->belongsTo(PrimaryOccupation::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function race(): BelongsTo
     {
         return $this->belongsTo(Race::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function ethnicity(): BelongsTo
     {
         return $this->belongsTo(Ethnicity::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function gender(): BelongsTo
     {
         return $this->belongsTo(Gender::class);

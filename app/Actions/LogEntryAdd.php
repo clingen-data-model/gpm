@@ -13,8 +13,6 @@ class LogEntryAdd
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function handle(
         Model $subject,

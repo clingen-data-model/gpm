@@ -17,8 +17,6 @@ class PersonServiceProvider extends ModuleServiceProvider
 
     /**
      * Register services.
-     *
-     * @return void
      */
     public function register(): void
     {
@@ -27,8 +25,6 @@ class PersonServiceProvider extends ModuleServiceProvider
 
     /**
      * Bootstrap services.
-     *
-     * @return void
      */
     public function boot(): void
     {

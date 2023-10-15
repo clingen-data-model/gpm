@@ -90,9 +90,6 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
         });
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class);

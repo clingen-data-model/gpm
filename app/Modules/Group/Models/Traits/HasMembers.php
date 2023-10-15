@@ -12,8 +12,6 @@ trait HasMembers
 {
     /**
      * Get all of the Members for the ExpertPanel
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function members(): Relation
     {

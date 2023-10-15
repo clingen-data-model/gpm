@@ -174,41 +174,26 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
             ->orderBy('created_at', 'desc');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function genes(): HasMany
     {
         return $this->hasMany(Gene::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function evidenceSummaries(): HasMany
     {
         return $this->hasMany(EvidenceSummary::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
     public function leadershipAttestation(): HasOne
     {
         return $this->hasOne(\App\Modules\ExpertPanels\Models\LeadershipAttestation::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
     public function biocuratorOnboardingAttestation(): HasOne
     {
         return $this->hasOne(\App\Modules\ExpertPanels\Models\BiocuratorOnboardingAttestation::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function curtionReviewProtocol(): BelongsTo
     {
         return $this->belongsTo(\App\Modules\ExpertPanels\Models\CurtionReviewProtocol::class);

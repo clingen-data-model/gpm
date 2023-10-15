@@ -13,8 +13,6 @@ class UserModuleServiceProvider extends ModuleServiceProvider
 
     /**
      * Register services.
-     *
-     * @return void
      */
     public function register(): void
     {

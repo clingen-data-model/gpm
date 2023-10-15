@@ -48,25 +48,16 @@ class Preference extends Model
         'applies_to_permission' => 'integer',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(\App\Models\User::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function appliesToRole(): BelongsTo
     {
         return $this->belongsTo(\App\Models\AppliesToRole::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function appliesToPermission(): BelongsTo
     {
         return $this->belongsTo(\App\Models\AppliesToPermission::class);

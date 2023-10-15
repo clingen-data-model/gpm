@@ -14,8 +14,6 @@ trait IsGroupMember
 {
     /**
      * Get all of the Members for the ExpertPanel
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function memberships(): Relation
     {
