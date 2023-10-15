@@ -20,7 +20,7 @@ class GeneFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'hgnc_id' => $this->faker->numberBetween(1),

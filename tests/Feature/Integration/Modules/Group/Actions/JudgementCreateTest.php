@@ -27,7 +27,7 @@ class JudgementCreateTest extends TestCase
     /**
      * @test
      */
-    public function fires_JudgementCreated_test()
+    public function fires_JudgementCreated_test(): void
     {
         $action = app()->make(JudgementCreate::class);
 

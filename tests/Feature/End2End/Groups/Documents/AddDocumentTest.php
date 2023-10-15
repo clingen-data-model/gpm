@@ -28,7 +28,7 @@ class AddDocumentTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_add_document_for_group()
+    public function unprivileged_user_cannot_add_document_for_group(): void
     {
         $this->user->revokePermissionTo('groups-manage');
         $this->makeRequest()
@@ -38,7 +38,7 @@ class AddDocumentTest extends TestCase
     /**
      * @test
      */
-    public function validates_data()
+    public function validates_data(): void
     {
         $this->makeRequest([])
             ->assertStatus(422)
@@ -51,7 +51,7 @@ class AddDocumentTest extends TestCase
     /**
      * @test
      */
-    public function privilged_user_can_upload_a_file()
+    public function privilged_user_can_upload_a_file(): void
     {
         $this->makeRequest()
             ->assertStatus(201)

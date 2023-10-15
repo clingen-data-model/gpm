@@ -39,7 +39,7 @@ class ConsumeDxMessages extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $offset = $this->option('offset');
         $onlyOffset = $this->option('only-offset');

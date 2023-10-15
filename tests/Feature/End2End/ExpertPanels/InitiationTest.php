@@ -24,7 +24,7 @@ class InitiationTest extends TestCase
     /**
      * @test
      */
-    public function can_create_initiate_an_application()
+    public function can_create_initiate_an_application(): void
     {
         $data = $this->makeApplicationData();
         $data['cdwg_id'] = null;
@@ -43,7 +43,7 @@ class InitiationTest extends TestCase
     /**
      * @test
      */
-    public function validates_required_parameters_before_initiating_application()
+    public function validates_required_parameters_before_initiating_application(): void
     {
         $data = [];
         $response = $this->json('Post', '/api/applications', $data);
@@ -62,7 +62,7 @@ class InitiationTest extends TestCase
     /**
      * @test
      */
-    public function validates_uuid_is_a_uuid()
+    public function validates_uuid_is_a_uuid(): void
     {
         $data = ['uuid' => 'bob is yer uncle'];
         $response = $this->json('Post', '/api/applications', $data);
@@ -74,7 +74,7 @@ class InitiationTest extends TestCase
     /**
      * @test
      */
-    public function validates_date_initiated_is_a_date()
+    public function validates_date_initiated_is_a_date(): void
     {
         $data = ['date_initiated' => 'bob is yer uncle'];
         $response = $this->json('Post', '/api/applications', $data);
@@ -86,7 +86,7 @@ class InitiationTest extends TestCase
     /**
      * @test
      */
-    public function validates_working_name_lenghth()
+    public function validates_working_name_lenghth(): void
     {
         $data = ['working_name' => 'Aliqua anim et excepteur amet exercitation. Consequat duis fugiat qui labore laborum culpa amet. Exercitation eiusmod id velit excepteur incididunt minim magna cupidatat. Excepteur ullamco culpa ut labore exercitation laborum veniam. Cupidatat ex laborum di'];
 
@@ -105,7 +105,7 @@ class InitiationTest extends TestCase
     /**
      * @test
      */
-    public function validates_cdwg_id_exists()
+    public function validates_cdwg_id_exists(): void
     {
         $data = ['cdwg_id' => '2'];
         $response = $this->json('Post', '/api/applications', $data);
@@ -117,7 +117,7 @@ class InitiationTest extends TestCase
     /**
      * @test
      */
-    public function validates_expert_panel_types_id_exists()
+    public function validates_expert_panel_types_id_exists(): void
     {
         $data = ['expert_panel_type_id' => 3];
         $response = $this->json('Post', '/api/applications', $data);

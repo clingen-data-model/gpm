@@ -30,7 +30,7 @@ class AddedToGroupNotificationTest extends TestCase
     /**
      * @test
      */
-    public function includes_invite_info_if_invite_pending()
+    public function includes_invite_info_if_invite_pending(): void
     {
         $group = Group::factory()->create();
         $this->invite->update(['redeemed_at' => null]);
@@ -43,7 +43,7 @@ class AddedToGroupNotificationTest extends TestCase
     /**
      * @test
      */
-    public function does_not_include_invite_info_if_invite_redeemed()
+    public function does_not_include_invite_info_if_invite_redeemed(): void
     {
         $group = Group::factory()->create();
         $notification = new AddedToGroupNotification($group);

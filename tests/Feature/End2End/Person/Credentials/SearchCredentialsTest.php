@@ -24,7 +24,7 @@ class SearchCredentialsTest extends TestCase
     /**
      * @test
      */
-    public function guests_cannot_search_credentials()
+    public function guests_cannot_search_credentials(): void
     {
         $this->makeRequest()
             ->assertStatus(401);
@@ -33,7 +33,7 @@ class SearchCredentialsTest extends TestCase
     /**
      * @test
      */
-    public function gets_all_credentials_if_no_keyword()
+    public function gets_all_credentials_if_no_keyword(): void
     {
         $this->login();
 
@@ -45,7 +45,7 @@ class SearchCredentialsTest extends TestCase
     /**
      * @test
      */
-    public function gets_matching_credentials_if_keyword_given()
+    public function gets_matching_credentials_if_keyword_given(): void
     {
         $this->login();
 
@@ -61,7 +61,7 @@ class SearchCredentialsTest extends TestCase
     /**
      * @test
      */
-    public function ignores_case_and_punctuation()
+    public function ignores_case_and_punctuation(): void
     {
         $this->login();
         $this->makeRequest('p.h.d')
@@ -72,7 +72,7 @@ class SearchCredentialsTest extends TestCase
     /**
      * @test
      */
-    public function searches_against_synonyms()
+    public function searches_against_synonyms(): void
     {
         $this->login();
         $this->makeRequest('lcgc')

@@ -32,7 +32,7 @@ class GetTasksTest extends TestCase
     /**
      * @test
      */
-    public function retrieves_all_tasks()
+    public function retrieves_all_tasks(): void
     {
         $this->json('get', '/api/groups/'.$this->expertPanel->group->uuid.'/tasks')
             ->assertStatus(200)
@@ -42,7 +42,7 @@ class GetTasksTest extends TestCase
     /**
      * @test
      */
-    public function retrieves_pending_tasks()
+    public function retrieves_pending_tasks(): void
     {
         $this->json('get', '/api/groups/'.$this->expertPanel->group->uuid.'/tasks?pending')
             ->assertStatus(200)
@@ -55,7 +55,7 @@ class GetTasksTest extends TestCase
     /**
      * @test
      */
-    public function retrieves_complete_tasks()
+    public function retrieves_complete_tasks(): void
     {
         $this->json('get', '/api/groups/'.$this->expertPanel->group->uuid.'/tasks?completed')
             ->assertStatus(200)

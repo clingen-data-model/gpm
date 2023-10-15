@@ -24,7 +24,7 @@ class UpdateAffiliationIdTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_update_affiliation_id()
+    public function unprivileged_user_cannot_update_affiliation_id(): void
     {
         $this->user->revokePermissionTo('groups-manage');
         $this->makeRequest()
@@ -34,7 +34,7 @@ class UpdateAffiliationIdTest extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_set_affiliation_id()
+    public function privileged_user_can_set_affiliation_id(): void
     {
         $this->makeRequest()
             ->assertStatus(200)
@@ -52,7 +52,7 @@ class UpdateAffiliationIdTest extends TestCase
     /**
      * @test
      */
-    public function validates_affiliation_id_format()
+    public function validates_affiliation_id_format(): void
     {
         $this->makeRequest('400000')
             ->assertStatus(422)
@@ -77,7 +77,7 @@ class UpdateAffiliationIdTest extends TestCase
     /**
      * @test
      */
-    public function validates_that_affiliation_id_is_not_already_in_use()
+    public function validates_that_affiliation_id_is_not_already_in_use(): void
     {
         $otherEp = ExpertPanel::factory()->gcep()->create(['affiliation_id' => '40666']);
 
@@ -91,7 +91,7 @@ class UpdateAffiliationIdTest extends TestCase
     /**
      * @test
      */
-    public function records_affiliation_id_updated()
+    public function records_affiliation_id_updated(): void
     {
         $this->makeRequest()
             ->assertStatus(200);

@@ -28,7 +28,7 @@ class AttestationReanalysisTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_submit_reanalysis_attestation()
+    public function unprivileged_user_cannot_submit_reanalysis_attestation(): void
     {
         $this->user->revokePermissionTo('ep-applications-manage');
         $this->submitRequest()
@@ -38,7 +38,7 @@ class AttestationReanalysisTest extends TestCase
     /**
      * @test
      */
-    public function validates_data()
+    public function validates_data(): void
     {
         $this->submitRequest([])
             ->assertStatus(422)
@@ -59,7 +59,7 @@ class AttestationReanalysisTest extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_submit_reanalysis_attestation()
+    public function privileged_user_can_submit_reanalysis_attestation(): void
     {
         $this->submitRequest()
             ->assertStatus(200);
@@ -77,7 +77,7 @@ class AttestationReanalysisTest extends TestCase
     /**
      * @test
      */
-    public function logs_activity()
+    public function logs_activity(): void
     {
         $this->submitRequest()
             ->assertStatus(200);
@@ -93,7 +93,7 @@ class AttestationReanalysisTest extends TestCase
     /**
      * @test
      */
-    public function handler_does_not_set_attestation_date_if_requirements_not_met()
+    public function handler_does_not_set_attestation_date_if_requirements_not_met(): void
     {
         $data = [
             'reanalysis_conflicting' => false,

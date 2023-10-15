@@ -13,7 +13,7 @@ class CdwgsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $names = [
             'Neurodevelopmental Disorders CDWG',

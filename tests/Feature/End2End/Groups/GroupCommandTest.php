@@ -14,7 +14,7 @@ class GroupCommandTest extends TestCase
     /**
      * @test
      */
-    public function can_run_command_via_endpoint()
+    public function can_run_command_via_endpoint(): void
     {
         $user = $this->setupUser();
         $this->setupForGroupTest();

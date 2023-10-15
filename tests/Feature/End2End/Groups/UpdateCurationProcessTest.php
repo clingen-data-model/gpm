@@ -28,7 +28,7 @@ class UpdateCurationProcessTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_update_curationReviewProtocol()
+    public function unprivileged_user_cannot_update_curationReviewProtocol(): void
     {
         $this->user->revokePermissionTo('ep-applications-manage');
 
@@ -39,7 +39,7 @@ class UpdateCurationProcessTest extends TestCase
     /**
      * @test
      */
-    public function validates_required_data()
+    public function validates_required_data(): void
     {
         $this->makeRequest(['expert_panel_type_id' => $this->expertPanel->expert_panel_type_id])
             ->assertStatus(422)
@@ -60,7 +60,7 @@ class UpdateCurationProcessTest extends TestCase
     /**
      * @test
      */
-    public function validates_data_formats()
+    public function validates_data_formats(): void
     {
         $this->makeRequest([
             'curation_review_protocol_id' => 8000,
@@ -74,7 +74,7 @@ class UpdateCurationProcessTest extends TestCase
     /**
      * @test
      */
-    public function priveleged_user_can_update_curation_protocol_information()
+    public function priveleged_user_can_update_curation_protocol_information(): void
     {
         $this->makeRequest()
             ->assertStatus(200)

@@ -22,7 +22,7 @@ class UnresolveCommentTest extends CommentTest
     /**
      * @test
      */
-    public function permissioned_user_can_resolve_comment()
+    public function permissioned_user_can_resolve_comment(): void
     {
         Carbon::setTestNow('2022-07-11');
         $this->makeRequest()
@@ -41,7 +41,7 @@ class UnresolveCommentTest extends CommentTest
     /**
      * @test
      */
-    public function unpermissioned_user_cannot_resolve_comment()
+    public function unpermissioned_user_cannot_resolve_comment(): void
     {
         $this->user->revokePermissionTo('ep-applications-comment');
         $this->makeRequest()

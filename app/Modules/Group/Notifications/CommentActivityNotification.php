@@ -28,7 +28,7 @@ class CommentActivityNotification extends Notification implements DigestibleNoti
      * @param  mixed  $notifiable
      * @return array
      */
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return ['database'];
     }
@@ -39,7 +39,7 @@ class CommentActivityNotification extends Notification implements DigestibleNoti
      * @param  mixed  $notifiable
      * @return array
      */
-    public function toArray($notifiable)
+    public function toArray($notifiable): array
     {
         $this->comment->load('creator');
         $this->group->display_name = $this->group->getDisplayNameAttribute();

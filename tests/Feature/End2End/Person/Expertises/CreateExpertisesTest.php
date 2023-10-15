@@ -22,7 +22,7 @@ class CreateExpertisesTest extends TestCase
     /**
      * @test
      */
-    public function guest_cannot_create_expertise()
+    public function guest_cannot_create_expertise(): void
     {
         $this->makeRequest()
             ->assertStatus(401);
@@ -31,7 +31,7 @@ class CreateExpertisesTest extends TestCase
     /**
      * @test
      */
-    public function authed_user_can_created_a_expertise()
+    public function authed_user_can_created_a_expertise(): void
     {
         $this->login();
         $this->makeRequest([
@@ -53,7 +53,7 @@ class CreateExpertisesTest extends TestCase
     /**
      * @test
      */
-    public function validates_input()
+    public function validates_input(): void
     {
         $this->login();
         $this->makeRequest([])

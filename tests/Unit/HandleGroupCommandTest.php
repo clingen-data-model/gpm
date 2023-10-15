@@ -12,7 +12,7 @@ class HandleGroupCommandTest extends TestCase
     /**
      * @test
      */
-    public function runs_group_command()
+    public function runs_group_command(): void
     {
         $cmd = new SetGroupName;
 

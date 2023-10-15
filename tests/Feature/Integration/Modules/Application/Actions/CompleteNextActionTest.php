@@ -29,7 +29,7 @@ class CompleteNextActionTest extends TestCase
     /**
      * @test
      */
-    public function raises_NextActionCompleted_event()
+    public function raises_NextActionCompleted_event(): void
     {
         $nextAction = NextAction::factory()->make();
         NextActionCreate::run(
@@ -56,7 +56,7 @@ class CompleteNextActionTest extends TestCase
     /**
      * @test
      */
-    public function NextActionCompleted_logged()
+    public function NextActionCompleted_logged(): void
     {
         $nextAction = NextActionCreate::run(
             expertPanel: $this->expertPanel,

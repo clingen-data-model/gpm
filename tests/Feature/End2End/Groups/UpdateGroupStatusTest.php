@@ -24,7 +24,7 @@ class UpdateGroupStatusTest extends TestCase
     /**
      * @test
      */
-    public function unauthorized_user_cannot_update_group_status()
+    public function unauthorized_user_cannot_update_group_status(): void
     {
         $this->user->revokePermissionTo('groups-manage');
         $this->makeRequest()
@@ -34,7 +34,7 @@ class UpdateGroupStatusTest extends TestCase
     /**
      * @test
      */
-    public function validates_parameters()
+    public function validates_parameters(): void
     {
         $this->makeRequest([])
             ->assertStatus(422)
@@ -52,7 +52,7 @@ class UpdateGroupStatusTest extends TestCase
     /**
      * @test
      */
-    public function authorized_user_can_update_group_status()
+    public function authorized_user_can_update_group_status(): void
     {
         $this->makeRequest()
             ->assertStatus(200)
@@ -69,7 +69,7 @@ class UpdateGroupStatusTest extends TestCase
     /**
      * @test
      */
-    public function logs_status_updated()
+    public function logs_status_updated(): void
     {
         $oldStatus = $this->group->status->name;
         $this->makeRequest();

@@ -38,7 +38,7 @@ class GetSummariesTest extends TestCase
     /**
      * @test
      */
-    public function retrieves_evidence_summaries_for_expert_panel()
+    public function retrieves_evidence_summaries_for_expert_panel(): void
     {
         $this->json('GET', '/api/groups/'.$this->vcep->group->uuid.'/expert-panel/evidence-summaries')
             ->assertStatus(200)

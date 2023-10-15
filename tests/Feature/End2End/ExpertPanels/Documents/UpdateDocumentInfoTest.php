@@ -33,7 +33,7 @@ class UpdateDocumentInfoTest extends TestCase
     /**
      * @test
      */
-    public function it_updates_info_for_a_document()
+    public function it_updates_info_for_a_document(): void
     {
         $this->json('PUT', $this->docUrl, [
             'date_received' => Carbon::now(),
@@ -49,7 +49,7 @@ class UpdateDocumentInfoTest extends TestCase
     /**
      * @test
      */
-    public function it_validates_required_data()
+    public function it_validates_required_data(): void
     {
         $this->json('PUT', $this->docUrl, [])
             ->assertStatus(422)

@@ -53,7 +53,7 @@ class CspecDataSyncProcessorTest extends TestCase
     /**
      * @test
      */
-    public function creates_specification_and_rulset_if_none_exists()
+    public function creates_specification_and_rulset_if_none_exists(): void
     {
         app()->make(CspecDataSyncProcessor::class)
             ->handle($this->message);
@@ -64,7 +64,7 @@ class CspecDataSyncProcessorTest extends TestCase
     /**
      * @test
      */
-    public function updates_specification_and_ruleset_if_exists()
+    public function updates_specification_and_ruleset_if_exists(): void
     {
         $specification = Specification::factory()->create([
             'cspec_id' => 'BL004',
@@ -87,7 +87,7 @@ class CspecDataSyncProcessorTest extends TestCase
     /**
      * @test
      */
-    public function status_change_is_logged()
+    public function status_change_is_logged(): void
     {
         $specification = Specification::factory()->create([
             'cspec_id' => 'BL004',

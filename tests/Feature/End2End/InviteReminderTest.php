@@ -31,7 +31,7 @@ class InviteReminderTest extends TestCase
     /**
      * @test
      */
-    public function person_can_scope_to_hasActiveMembership()
+    public function person_can_scope_to_hasActiveMembership(): void
     {
         $this->assertEquals(1, Person::hasActiveMembership()->count());
 
@@ -43,7 +43,7 @@ class InviteReminderTest extends TestCase
     /**
      * @test
      */
-    public function it_sends_an_email_to_each_person_that_has_not_redeemed_their_invite()
+    public function it_sends_an_email_to_each_person_that_has_not_redeemed_their_invite(): void
     {
         Notification::fake();
         $this->triggerReminders();
@@ -53,7 +53,7 @@ class InviteReminderTest extends TestCase
     /**
      * @test
      */
-    public function it_does_not_send_a_reminder_to_a_person_that_has_already_activated_their_account()
+    public function it_does_not_send_a_reminder_to_a_person_that_has_already_activated_their_account(): void
     {
         $user = $this->setupUserWithPerson();
         $invite = Invite::factory()->create(['person_id' => $user->person->id, 'redeemed_at' => Carbon::now()]);
@@ -70,7 +70,7 @@ class InviteReminderTest extends TestCase
     /**
      * @test
      */
-    public function the_email_body_has_the_correct_content()
+    public function the_email_body_has_the_correct_content(): void
     {
         $notification = new InviteReminderNotification($this->invite);
         $mailable = $notification->toMail($this->invite->person);
@@ -84,7 +84,7 @@ class InviteReminderTest extends TestCase
     /**
      * @test
      */
-    public function it_does_not_email_inactive_group_members()
+    public function it_does_not_email_inactive_group_members(): void
     {
         $retireMember = app()->make(MemberRetire::class);
 

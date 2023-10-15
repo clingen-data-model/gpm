@@ -12,7 +12,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (! Schema::hasColumn('cois', 'group_id')) {
             Schema::table('cois', function (Blueprint $table) {
@@ -36,7 +36,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('cois', function (Blueprint $table) {
             $table->unsignedBigInteger('expert_panel_id');

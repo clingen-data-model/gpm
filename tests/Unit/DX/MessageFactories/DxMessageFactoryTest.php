@@ -48,7 +48,7 @@ class DxMessageFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_a_definition_approved_message()
+    public function it_creates_a_definition_approved_message(): void
     {
         $event = new StepApproved($this->expertPanel, 1, Carbon::now());
         $message = $this->factory->makeFromEvent($event);
@@ -64,7 +64,7 @@ class DxMessageFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_a_member_added_message()
+    public function it_creates_a_member_added_message(): void
     {
         $event = new MemberAdded($this->expertPanel->group->members->first());
 
@@ -77,7 +77,7 @@ class DxMessageFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_member_role_assigned_message()
+    public function it_creates_member_role_assigned_message(): void
     {
         $roles = Role::where('name', 'coordinator')->get();
         $event = new MemberRoleAssigned($this->expertPanel->group->members->first(), $roles);
@@ -90,7 +90,7 @@ class DxMessageFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_member_role_removed_message()
+    public function it_creates_member_role_removed_message(): void
     {
         $roles = Role::where('name', 'coordinator')->get();
         $event = new MemberRoleRemoved($this->expertPanel->group->members->first(), $roles->first());
@@ -103,7 +103,7 @@ class DxMessageFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_member_permission_granted_message()
+    public function it_creates_member_permission_granted_message(): void
     {
         $permissions = Permission::where('name', 'application-edit')->get();
         $event = new MemberPermissionsGranted($this->expertPanel->group->members->first(), $permissions);
@@ -116,7 +116,7 @@ class DxMessageFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_member_permission_revoked_message()
+    public function it_creates_member_permission_revoked_message(): void
     {
         $permissions = Permission::where('name', 'application-edit')->get();
         $event = new MemberPermissionRevoked($this->expertPanel->group->members->first(), $permissions->first());
@@ -129,7 +129,7 @@ class DxMessageFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_a_member_removed_event()
+    public function it_creates_a_member_removed_event(): void
     {
         $event = new MemberRemoved($this->expertPanel->group->members->first());
 
@@ -142,7 +142,7 @@ class DxMessageFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_a_member_retireded_event()
+    public function it_creates_a_member_retireded_event(): void
     {
         $event = new MemberRetired($this->expertPanel->group->members->first());
 
@@ -155,7 +155,7 @@ class DxMessageFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_a_member_unretireded_event()
+    public function it_creates_a_member_unretireded_event(): void
     {
         $event = new MemberUnretired($this->expertPanel->group->members->first());
 
@@ -168,7 +168,7 @@ class DxMessageFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_a_gene_added_message_when_new_gene_added_to_scope()
+    public function it_creates_a_gene_added_message_when_new_gene_added_to_scope(): void
     {
         $event = new GenesAdded($this->expertPanel->group, collect([$this->expertPanel->genes->first()]));
         $message = $this->factory->makeFromEvent($event);
@@ -180,7 +180,7 @@ class DxMessageFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_a_gene_removed_message_when_removed_gene_approved()
+    public function it_creates_a_gene_removed_message_when_removed_gene_approved(): void
     {
         $event = new GeneRemoved($this->expertPanel->group, $this->expertPanel->genes->first());
         $message = $this->factory->makeFromEvent($event);

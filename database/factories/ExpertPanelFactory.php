@@ -25,7 +25,7 @@ class ExpertPanelFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         $groupTypeId = $this->faker->randomElement([config('groups.types.gcep.id'), config('groups.types.vcep.id')]);
 

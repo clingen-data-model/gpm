@@ -27,7 +27,7 @@ class UpdateMembershipDescriptionTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_users_cannot_save_membership_description()
+    public function unprivileged_users_cannot_save_membership_description(): void
     {
         $unprivileged = User::factory()->create();
         Sanctum::actingAs($unprivileged);
@@ -38,7 +38,7 @@ class UpdateMembershipDescriptionTest extends TestCase
     /**
      * @test
      */
-    public function validates_input()
+    public function validates_input(): void
     {
         Sanctum::actingAs($this->user);
         $this->json('PUT', $this->url, [])
@@ -51,7 +51,7 @@ class UpdateMembershipDescriptionTest extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_store_membership_description()
+    public function privileged_user_can_store_membership_description(): void
     {
         Sanctum::actingAs($this->user);
         $description = 'I am a description of the membership.  I can be greater than 255 characters.I am a description of the membership.  I can be greater than 255 characters.I am a description of the membership.  I can be greater than 255 characters.I am a description of the membership.  I can be greater than 255 characters.';
@@ -71,7 +71,7 @@ class UpdateMembershipDescriptionTest extends TestCase
     /**
      * @test
      */
-    public function logs_activity()
+    public function logs_activity(): void
     {
         $description = 'Test description';
         Sanctum::actingAs($this->user);
@@ -91,7 +91,7 @@ class UpdateMembershipDescriptionTest extends TestCase
     /**
      * @test
      */
-    public function throws_validation_error_if_group_is_not_an_expert_panel()
+    public function throws_validation_error_if_group_is_not_an_expert_panel(): void
     {
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.gcep.id')]);
 

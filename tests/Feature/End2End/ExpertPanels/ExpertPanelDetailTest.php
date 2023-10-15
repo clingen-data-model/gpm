@@ -59,7 +59,7 @@ class ExpertPanelDetailTest extends TestCase
     /**
      * @test
      */
-    public function gets_application_with_uuid()
+    public function gets_application_with_uuid(): void
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $this->json('get', '/api/applications/'.$this->ep->uuid)
@@ -70,7 +70,7 @@ class ExpertPanelDetailTest extends TestCase
     /**
      * @test
      */
-    public function loads_latestLogEntry_by_default()
+    public function loads_latestLogEntry_by_default(): void
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $response = $this->json('get', '/api/applications/'.$this->ep->uuid)
@@ -81,7 +81,7 @@ class ExpertPanelDetailTest extends TestCase
     /**
      * @test
      */
-    public function loads_latestPendingNextAction_by_default()
+    public function loads_latestPendingNextAction_by_default(): void
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $this->json('get', '/api/applications/'.$this->ep->uuid)

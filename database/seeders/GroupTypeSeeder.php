@@ -11,7 +11,7 @@ class GroupTypeSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $this->seedFromConfig('groups.types', GroupType::class);
     }

@@ -36,7 +36,7 @@ class DeleteActivityLogTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_delete_a_log_entry()
+    public function unprivileged_user_cannot_delete_a_log_entry(): void
     {
         $this->user->RevokePermissionTo('groups-manage');
         $this->json('delete', $this->url)
@@ -46,7 +46,7 @@ class DeleteActivityLogTest extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_delete_a_log_entry()
+    public function privileged_user_can_delete_a_log_entry(): void
     {
         $this->json('delete', $this->url)
             ->assertStatus(200);

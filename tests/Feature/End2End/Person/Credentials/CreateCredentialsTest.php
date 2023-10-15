@@ -22,7 +22,7 @@ class CreateCredentialsTest extends TestCase
     /**
      * @test
      */
-    public function guest_cannot_create_credential()
+    public function guest_cannot_create_credential(): void
     {
         $this->makeRequest()
             ->assertStatus(401);
@@ -31,7 +31,7 @@ class CreateCredentialsTest extends TestCase
     /**
      * @test
      */
-    public function authed_user_can_created_a_credential()
+    public function authed_user_can_created_a_credential(): void
     {
         $this->login();
         $this->makeRequest([
@@ -53,7 +53,7 @@ class CreateCredentialsTest extends TestCase
     /**
      * @test
      */
-    public function validates_input()
+    public function validates_input(): void
     {
         $this->login();
         $this->makeRequest([])

@@ -27,7 +27,7 @@ class CoiResponseStoreTest extends TestCase
     /**
      * @test
      */
-    public function responds_404_if_group_with_code_not_found()
+    public function responds_404_if_group_with_code_not_found(): void
     {
         $this->makeRequest(code: 'blahblahblah')
             ->assertStatus(404);
@@ -36,7 +36,7 @@ class CoiResponseStoreTest extends TestCase
     /**
      * @test
      */
-    public function responds_404_if_group_member_not_found()
+    public function responds_404_if_group_member_not_found(): void
     {
         $data = $this->makeDefaultData();
         $data['group_member_id'] = 666;
@@ -47,7 +47,7 @@ class CoiResponseStoreTest extends TestCase
     /**
      * @test
      */
-    public function validates_base_required_data()
+    public function validates_base_required_data(): void
     {
         $this->makeRequest(data: [])
             ->assertStatus(422)
@@ -67,7 +67,7 @@ class CoiResponseStoreTest extends TestCase
     /**
      * @test
      */
-    public function validates_follow_required_questions()
+    public function validates_follow_required_questions(): void
     {
         $data = $this->makeDefaultData();
         $data['contributions_to_genes'] = null;
@@ -83,7 +83,7 @@ class CoiResponseStoreTest extends TestCase
     /**
      * @test
      */
-    public function validates_attetestations_are_accepted()
+    public function validates_attetestations_are_accepted(): void
     {
         $data = $this->makeDefaultData();
         $data['coi_attestation'] = 0;
@@ -99,7 +99,7 @@ class CoiResponseStoreTest extends TestCase
     /**
      * @test
      */
-    public function stores_a_valid_coi_response()
+    public function stores_a_valid_coi_response(): void
     {
         $this->makeRequest()
             ->assertStatus(200);

@@ -34,7 +34,7 @@ class AddContactsTest extends TestCase
     /**
      * @test
      */
-    public function adds_a_person_as_a_contact_to_an_application()
+    public function adds_a_person_as_a_contact_to_an_application(): void
     {
         $person = Person::factory()->create();
 
@@ -53,7 +53,7 @@ class AddContactsTest extends TestCase
     /**
      * @test
      */
-    public function validates_new_contact_data()
+    public function validates_new_contact_data(): void
     {
         $data = [];
         $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/contacts', $data);
@@ -95,7 +95,7 @@ class AddContactsTest extends TestCase
     /**
      * @test
      */
-    public function can_retrieve_contacts_for_an_application()
+    public function can_retrieve_contacts_for_an_application(): void
     {
         $contacts = Person::factory(2)->create();
 

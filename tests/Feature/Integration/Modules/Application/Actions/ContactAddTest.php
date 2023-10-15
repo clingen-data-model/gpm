@@ -31,7 +31,7 @@ class ContactAddTest extends TestCase
     /**
      * @test
      */
-    public function ContactAdded_event_logged_when_dispatched()
+    public function ContactAdded_event_logged_when_dispatched(): void
     {
         $this->action->handle($this->expertPanel->uuid, $this->person->uuid);
 
@@ -45,7 +45,7 @@ class ContactAddTest extends TestCase
     /**
      * @test
      */
-    public function Person_added_ast_contact_for_ExpertPanel()
+    public function Person_added_ast_contact_for_ExpertPanel(): void
     {
         $this->action->handle($this->expertPanel->uuid, $this->person->uuid);
 

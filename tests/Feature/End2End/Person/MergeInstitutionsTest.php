@@ -31,7 +31,7 @@ class MergeInstitutionsTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_merge_institutions()
+    public function unprivileged_user_cannot_merge_institutions(): void
     {
         $this->user->revokePermissionTo('people-manage');
         $this->makeRequest()
@@ -41,7 +41,7 @@ class MergeInstitutionsTest extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_merge_institutions()
+    public function privileged_user_can_merge_institutions(): void
     {
         $this->makeRequest()
             ->assertStatus(200);
@@ -50,7 +50,7 @@ class MergeInstitutionsTest extends TestCase
     /**
      * @test
      */
-    public function obsolete_institutions_are_deleted()
+    public function obsolete_institutions_are_deleted(): void
     {
         $this->makeRequest()
             ->assertStatus(200);
@@ -63,7 +63,7 @@ class MergeInstitutionsTest extends TestCase
     /**
      * @test
      */
-    public function people_belonging_to_obsolete_are_moved_to_authority()
+    public function people_belonging_to_obsolete_are_moved_to_authority(): void
     {
         $this->makeRequest()
             ->assertStatus(200);
@@ -81,7 +81,7 @@ class MergeInstitutionsTest extends TestCase
     /**
      * @test
      */
-    public function validates_required_data()
+    public function validates_required_data(): void
     {
         $this->makeRequest([])
             ->assertStatus(422)
@@ -92,7 +92,7 @@ class MergeInstitutionsTest extends TestCase
     /**
      * @test
      */
-    public function validates_existing_institutions()
+    public function validates_existing_institutions(): void
     {
         $this->makeRequest(['authority_id' => 777, 'obsolete_ids' => [555, 666]])
             ->assertStatus(422)
@@ -104,7 +104,7 @@ class MergeInstitutionsTest extends TestCase
     /**
      * @test
      */
-    public function validates_obsolete_cannot_match_authority()
+    public function validates_obsolete_cannot_match_authority(): void
     {
         $this->makeRequest([
             'authority_id' => $this->institution1->id,

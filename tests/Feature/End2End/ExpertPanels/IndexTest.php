@@ -36,7 +36,7 @@ class IndexTest extends TestCase
     /**
      * @test
      */
-    public function sorts_results_by_name()
+    public function sorts_results_by_name(): void
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $response = $this->json('GET', self::URL.'?sort[field]=name&sort[dir]=desc');
@@ -47,7 +47,7 @@ class IndexTest extends TestCase
     /**
      * @test
      */
-    public function sorts_results_by_current_step()
+    public function sorts_results_by_current_step(): void
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $response = $this->json('GET', self::URL.'?sort[field]=current_step&sort[dir]=asc');
@@ -57,7 +57,7 @@ class IndexTest extends TestCase
     /**
      * @test
      */
-    public function sorts_results_by_cdwg_name()
+    public function sorts_results_by_cdwg_name(): void
     {
         $this->expertPanels->load('group.parent');
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
@@ -68,7 +68,7 @@ class IndexTest extends TestCase
     /**
      * @test
      */
-    public function sorts_results_by_last_activity()
+    public function sorts_results_by_last_activity(): void
     {
         $this->expertPanels->each(function ($app) {
             $app->group->logEntries()->create([
@@ -88,7 +88,7 @@ class IndexTest extends TestCase
     /**
      * @test
      */
-    public function can_filter_applications_by_last_updated()
+    public function can_filter_applications_by_last_updated(): void
     {
         $this->expertPanels = ExpertPanel::factory(3)
             ->randomStep()

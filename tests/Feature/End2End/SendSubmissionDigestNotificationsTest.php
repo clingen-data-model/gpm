@@ -30,7 +30,7 @@ class SendSubmissionDigestNotificationsTest extends TestCase
     /**
      * @test
      */
-    public function does_not_send_notification_if_no_unsent_digestible_submission_notifications()
+    public function does_not_send_notification_if_no_unsent_digestible_submission_notifications(): void
     {
         $person = Person::factory()->create();
 
@@ -44,7 +44,7 @@ class SendSubmissionDigestNotificationsTest extends TestCase
     /**
      * @test
      */
-    public function sends_notification_if_unsent_digestible_submission_notifications()
+    public function sends_notification_if_unsent_digestible_submission_notifications(): void
     {
         $group = ExpertPanel::factory()->create()->group;
         $comment = Comment::factory()->create(['subject_type' => get_class($group), 'subject_id' => $group->id]);
@@ -80,7 +80,7 @@ class SendSubmissionDigestNotificationsTest extends TestCase
     /**
      * @test
      */
-    public function marks_all_submission_notifications_read()
+    public function marks_all_submission_notifications_read(): void
     {
         $group = ExpertPanel::factory()->create()->group;
         $comment = Comment::factory()->create(['subject_type' => get_class($group), 'subject_id' => $group->id]);
@@ -100,7 +100,7 @@ class SendSubmissionDigestNotificationsTest extends TestCase
     /**
      * @test
      */
-    public function does_not_include_non_digestible_notifications()
+    public function does_not_include_non_digestible_notifications(): void
     {
         $group = ExpertPanel::factory()->create()->group;
         $comment = Comment::factory()->create(['subject_type' => get_class($group), 'subject_id' => $group->id]);
@@ -127,7 +127,7 @@ class SendSubmissionDigestNotificationsTest extends TestCase
     /**
      * @test
      */
-    public function correctly_renders_email()
+    public function correctly_renders_email(): void
     {
         $group = ExpertPanel::factory()->create()->group;
         $comment1 = Comment::factory()->create(['subject_type' => get_class($group), 'subject_id' => $group->id]);
@@ -168,7 +168,7 @@ class SendSubmissionDigestNotificationsTest extends TestCase
     /**
      * @test
      */
-    public function approval_digests_sent_on_monday_at_610_am()
+    public function approval_digests_sent_on_monday_at_610_am(): void
     {
         ['person' => $person] = $this->setupForScheduleTest();
 
@@ -181,7 +181,7 @@ class SendSubmissionDigestNotificationsTest extends TestCase
     /**
      * @test
      */
-    public function approval_digests_sent_on_thursday_at_610_am()
+    public function approval_digests_sent_on_thursday_at_610_am(): void
     {
         ['person' => $person] = $this->setupForScheduleTest();
 
@@ -194,7 +194,7 @@ class SendSubmissionDigestNotificationsTest extends TestCase
     /**
      * @test
      */
-    public function does_not_send_any_other_day()
+    public function does_not_send_any_other_day(): void
     {
         $this->setupForScheduleTest();
 

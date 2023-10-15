@@ -27,7 +27,7 @@ class UpdateEpNameTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_update_short_or_log_base_name()
+    public function unprivileged_user_cannot_update_short_or_log_base_name(): void
     {
         $this->user->revokePermissionTo('groups-manage');
         $this->makeRequest()
@@ -37,7 +37,7 @@ class UpdateEpNameTest extends TestCase
     /**
      * @test
      */
-    public function validates_data_types()
+    public function validates_data_types(): void
     {
         $this->makeRequest([
             'long_base_name' => 'This is very long text that should more that 255 characters so that we can verify that a user cannot add a string that is too long for the database field.  I should really be surfing or walking quietly in the woods right now instead of typing this, but work.',
@@ -55,7 +55,7 @@ class UpdateEpNameTest extends TestCase
      *
      * @group thisone
      */
-    public function validates_long_base_name_must_be_unique_for_type_if_not_null()
+    public function validates_long_base_name_must_be_unique_for_type_if_not_null(): void
     {
         $existingGcep = ExpertPanel::factory()->gcep()->create(['long_base_name' => 'Early is a bad dog']);
 
@@ -85,7 +85,7 @@ class UpdateEpNameTest extends TestCase
     /**
      * @test
      */
-    public function validates_short_base_name_must_be_unique_for_type_if_not_null()
+    public function validates_short_base_name_must_be_unique_for_type_if_not_null(): void
     {
         $existingGcep = ExpertPanel::factory()->gcep()->create(['short_base_name' => 'Early']);
         $this->makeRequest([
@@ -114,7 +114,7 @@ class UpdateEpNameTest extends TestCase
     /**
      * @test
      */
-    public function a_privileged_user_can_update_ep_names()
+    public function a_privileged_user_can_update_ep_names(): void
     {
         $this->makeRequest()
             ->assertStatus(200)

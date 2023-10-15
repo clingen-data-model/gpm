@@ -32,7 +32,7 @@ class JudgementActivityNotification extends Notification implements DigestibleNo
      * @param  mixed  $notifiable
      * @return array
      */
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return ['database'];
     }
@@ -43,7 +43,7 @@ class JudgementActivityNotification extends Notification implements DigestibleNo
      * @param  mixed  $notifiable
      * @return array
      */
-    public function toArray($notifiable)
+    public function toArray($notifiable): array
     {
         $this->judgement->load('person');
         $this->group->display_name = $this->group->getDisplayNameAttribute();

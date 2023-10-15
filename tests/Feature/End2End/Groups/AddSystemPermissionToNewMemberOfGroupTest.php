@@ -35,7 +35,7 @@ class AddSystemPermissionToNewMemberOfGroupTest extends TestCase
     /**
      * @test
      */
-    public function permission_given_to_activated_person_when_added_to_group()
+    public function permission_given_to_activated_person_when_added_to_group(): void
     {
         $user = $this->setupUserWithPerson();
 
@@ -52,7 +52,7 @@ class AddSystemPermissionToNewMemberOfGroupTest extends TestCase
     /**
      * @test
      */
-    public function permission_not_added_to_activited_person_when_added_to_other_group()
+    public function permission_not_added_to_activited_person_when_added_to_other_group(): void
     {
         $user = $this->setupUserWithPerson();
         $otherGroup = Group::factory()->create();
@@ -70,7 +70,7 @@ class AddSystemPermissionToNewMemberOfGroupTest extends TestCase
     /**
      * @test
      */
-    public function adds_follow_action_if_person_not_activated()
+    public function adds_follow_action_if_person_not_activated(): void
     {
         $person = Person::factory()->create();
 

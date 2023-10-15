@@ -36,7 +36,7 @@ class AddNextActionTest extends TestCase
     /**
      * @test
      */
-    public function user_can_create_next_action()
+    public function user_can_create_next_action(): void
     {
         $this->json('POST', $this->baseUrl, [
             'uuid' => Uuid::uuid4()->toString(),
@@ -63,7 +63,7 @@ class AddNextActionTest extends TestCase
     /**
      * @test
      */
-    public function validates_required_fields()
+    public function validates_required_fields(): void
     {
         $this->json('POST', $this->baseUrl, [])
             ->assertStatus(422)
@@ -78,7 +78,7 @@ class AddNextActionTest extends TestCase
     /**
      * @test
      */
-    public function validates_field_types()
+    public function validates_field_types(): void
     {
         $this->json('POST', $this->baseUrl, [
             'uuid' => 'eat-my-shorts',

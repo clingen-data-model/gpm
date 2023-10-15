@@ -32,7 +32,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
     /**
      * @test
      */
-    public function sets_ep_attributes()
+    public function sets_ep_attributes(): void
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create();
 
@@ -46,7 +46,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
     /**
      * @test
      */
-    public function will_not_update_other_non_ep_attributes()
+    public function will_not_update_other_non_ep_attributes(): void
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create();
         $data = [
@@ -82,7 +82,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
     /**
      * @test
      */
-    public function validates_data_types()
+    public function validates_data_types(): void
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create();
         $this->makeRequest($expertPanel, [
@@ -103,7 +103,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
     /**
      * @test
      */
-    public function validates_long_base_name_must_be_unique_for_type_if_not_null()
+    public function validates_long_base_name_must_be_unique_for_type_if_not_null(): void
     {
         $nullLongName = ExpertPanel::factory()->gcep()->create();
         $existingGcep = ExpertPanel::factory()->gcep()->create(['long_base_name' => 'Early is a bad dog']);
@@ -141,7 +141,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
     /**
      * @test
      */
-    public function validates_short_base_name_must_be_unique_for_type_if_not_null()
+    public function validates_short_base_name_must_be_unique_for_type_if_not_null(): void
     {
         $nullShortName = ExpertPanel::factory()->gcep()->create();
         $existingGcep = ExpertPanel::factory()->gcep()->create(['short_base_name' => 'Early']);
@@ -179,7 +179,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
     /**
      * @test
      */
-    public function ep_info_updated_event_published_if_EP_definition_approved()
+    public function ep_info_updated_event_published_if_EP_definition_approved(): void
     {
         Carbon::setTestNow('2022-09-26');
         $ep = ExpertPanel::factory()->create(['step_1_approval_date' => Carbon::now()]);
@@ -207,7 +207,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
     /**
      * @test
      */
-    public function ep_info_updated_event_NOT_published_if_EP_definition_NOT_approved()
+    public function ep_info_updated_event_NOT_published_if_EP_definition_NOT_approved(): void
     {
         Carbon::setTestNow('2022-09-26');
         $ep = ExpertPanel::factory()->create();

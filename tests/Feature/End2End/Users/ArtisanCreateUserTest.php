@@ -28,7 +28,7 @@ class ArtisanCreateUserTest extends TestCase
     /**
      * @test
      */
-    public function it_exits_if_credentials_are_bad()
+    public function it_exits_if_credentials_are_bad(): void
     {
         $this->artisan('user:create')
             ->expectsQuestion('Your email address:', 'linda@bobsburgers.com')
@@ -40,7 +40,7 @@ class ArtisanCreateUserTest extends TestCase
     /**
      * @test
      */
-    public function it_asks_for_auth_info_if_and_new_user_info_and_creates_a_user()
+    public function it_asks_for_auth_info_if_and_new_user_info_and_creates_a_user(): void
     {
         $this->artisan('user:create')
             ->expectsQuestion('Your email address:', $this->admin->email)
@@ -51,7 +51,7 @@ class ArtisanCreateUserTest extends TestCase
     /**
      * @test
      */
-    public function it_asks_for_user_info_if_not_provided()
+    public function it_asks_for_user_info_if_not_provided(): void
     {
         $this->artisan('user:create')
             ->expectsQuestion('Your email address:', $this->admin->email)
@@ -67,7 +67,7 @@ class ArtisanCreateUserTest extends TestCase
     /**
      * @test
      */
-    public function it_takes_user_email_new_name_and_email_as_options()
+    public function it_takes_user_email_new_name_and_email_as_options(): void
     {
         $this->artisan('user:create --actingas='.$this->admin->email.' --name="'.$this->name.'" --email="'.$this->email.'"')
             ->doesntExpectOutput('Your email address:')
@@ -83,7 +83,7 @@ class ArtisanCreateUserTest extends TestCase
     /**
      * @test
      */
-    public function validates_new_name_and_email()
+    public function validates_new_name_and_email(): void
     {
         $this->artisan('user:create --actingas='.$this->admin->email)
             ->expectsQuestion('Your password:', 'password')

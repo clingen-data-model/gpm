@@ -15,7 +15,7 @@ class StepApproveTest extends TestCase
     /**
      * @test
      */
-    public function fires_StepApproved_event_when_step_approved_and_logs_activity()
+    public function fires_StepApproved_event_when_step_approved_and_logs_activity(): void
     {
         $this->setupForGroupTest();
         $expertPanel = ExpertPanel::factory()->create(['current_step' => 1]);

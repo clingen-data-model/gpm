@@ -28,7 +28,7 @@ class UpdateLogEntryTest extends TestCase
     /**
      * @test
      */
-    public function updates_log_entry()
+    public function updates_log_entry(): void
     {
         Sanctum::actingAs($this->user);
         $response = $this->json(

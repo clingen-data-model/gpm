@@ -26,7 +26,7 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function boot()
+    public function boot(): void
     {
         ResetPassword::createUrlUsing(function ($user, string $token) {
             return url('/reset-password?token='.$token);

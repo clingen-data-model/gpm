@@ -29,7 +29,7 @@ class MarkNotificationReadTest extends TestCase
     /**
      * @test
      */
-    public function user_who_is_not_notifiable_cannot_mark_notification_read()
+    public function user_who_is_not_notifiable_cannot_mark_notification_read(): void
     {
         $otherUser = $this->setupUser();
         $otherPerson = Person::factory()->create(['user_id' => $otherUser->id]);
@@ -48,7 +48,7 @@ class MarkNotificationReadTest extends TestCase
     /**
      * @test
      */
-    public function user_who_i_not_notifiable_can_mark_notification_read()
+    public function user_who_i_not_notifiable_can_mark_notification_read(): void
     {
         Carbon::setTestNow();
 

@@ -12,7 +12,7 @@ class CreateFollowActionTest extends TestCase
     /**
      * @test
      */
-    public function generates_name()
+    public function generates_name(): void
     {
         $action = app()->make(FollowActionCreate::class);
 

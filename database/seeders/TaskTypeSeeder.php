@@ -11,7 +11,7 @@ class TaskTypeSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $this->seedFromConfig('tasks.types', TaskType::class);
     }

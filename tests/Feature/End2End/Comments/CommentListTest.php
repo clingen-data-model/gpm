@@ -33,7 +33,7 @@ class CommentListTest extends CommentTest
     /**
      * @test
      */
-    public function can_retrieve_all_comments()
+    public function can_retrieve_all_comments(): void
     {
         $this->makeRequest()
             ->assertStatus(200)
@@ -43,7 +43,7 @@ class CommentListTest extends CommentTest
     /**
      * @test
      */
-    public function can_retrieve_all_comments_for_a_subject()
+    public function can_retrieve_all_comments_for_a_subject(): void
     {
         $expectedComments = Comment::where([
             'subject_type' => get_class($this->expertPanel),

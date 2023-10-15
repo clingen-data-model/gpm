@@ -36,7 +36,7 @@ class UpdateDocumentTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_update_document_in_group()
+    public function unprivileged_user_cannot_update_document_in_group(): void
     {
         $this->user->revokePermissionTo('groups-manage');
         $this->makeRequest()
@@ -46,7 +46,7 @@ class UpdateDocumentTest extends TestCase
     /**
      * @test
      */
-    public function validates_data()
+    public function validates_data(): void
     {
         $this->makeRequest([])
             ->assertStatus(422)
@@ -64,7 +64,7 @@ class UpdateDocumentTest extends TestCase
     /**
      * @test
      */
-    public function privilged_user_can_update_file_info()
+    public function privilged_user_can_update_file_info(): void
     {
         $this->makeRequest()
             ->assertStatus(200)

@@ -15,7 +15,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (app()->environment('testing')) {
             if (! $this->schema->hasTable('genes')) {
@@ -32,7 +32,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         $this->schema->dropIfExists('genes');
     }

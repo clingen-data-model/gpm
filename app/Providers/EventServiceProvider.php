@@ -47,7 +47,7 @@ class EventServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         Event::listen(function (Login $event) {
             Event::dispatch(new UserLoggedIn($event->user));
@@ -62,7 +62,7 @@ class EventServiceProvider extends ServiceProvider
      *
      * @return bool
      */
-    public function shouldDiscoverEvents()
+    public function shouldDiscoverEvents(): bool
     {
         return false;
     }

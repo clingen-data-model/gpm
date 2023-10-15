@@ -20,7 +20,7 @@ class SendPasswordResetLinkTest extends TestCase
     /**
      * @test
      */
-    public function returns_validation_errors_if_email_not_set()
+    public function returns_validation_errors_if_email_not_set(): void
     {
         $response = $this->json('POST', '/api/send-reset-password-link', []);
         $response->assertStatus(422);
@@ -36,7 +36,7 @@ class SendPasswordResetLinkTest extends TestCase
     /**
      * @test
      */
-    public function returns_validation_error_if_email_not_valid_email()
+    public function returns_validation_error_if_email_not_valid_email(): void
     {
         $this->json('POST', '/api/send-reset-password-link', ['email' => 'email'])
             ->assertStatus(422)
@@ -51,7 +51,7 @@ class SendPasswordResetLinkTest extends TestCase
     /**
      * @test
      */
-    public function returns_error_if_email_not_registered()
+    public function returns_error_if_email_not_registered(): void
     {
         $this->json('POST', '/api/send-reset-password-link', ['email' => 'email@example.com'])
             ->assertStatus(422)
@@ -66,7 +66,7 @@ class SendPasswordResetLinkTest extends TestCase
     /**
      * @test
      */
-    public function sends_reset_notification_if_email_valid_and_registered()
+    public function sends_reset_notification_if_email_valid_and_registered(): void
     {
         Notification::fake();
         $user = User::factory()->create();

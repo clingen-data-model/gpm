@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('people', function (Blueprint $table) {
             $table->renameColumn('profile_photo_path', 'profile_photo');
@@ -23,7 +23,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('people', function (Blueprint $table) {
             $table->renameColumn('profile_photo', 'profile_photo_path');

@@ -21,7 +21,7 @@ class EvidenceSummaryFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         $ep = ExpertPanel::factory()->vcep()->create();
 

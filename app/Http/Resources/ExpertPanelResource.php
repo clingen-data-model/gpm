@@ -12,7 +12,7 @@ class ExpertPanelResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         $data = parent::toArray($request);
         unset($data['cdwg_id'], $data['created_at'], $data['updated_at'], $data['']);

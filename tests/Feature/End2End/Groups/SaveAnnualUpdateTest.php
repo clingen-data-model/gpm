@@ -33,7 +33,7 @@ class SaveAnnualUpdateTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_save_annual_update()
+    public function unprivileged_user_cannot_save_annual_update(): void
     {
         $this->user->revokePermissionTo('annual-updates-manage');
 
@@ -44,7 +44,7 @@ class SaveAnnualUpdateTest extends TestCase
     /**
      * @test
      */
-    public function saves_data_submitted_by_privileged_user()
+    public function saves_data_submitted_by_privileged_user(): void
     {
         $this->makeRequest()
             ->assertStatus(200);
@@ -62,7 +62,7 @@ class SaveAnnualUpdateTest extends TestCase
     /**
      * @test
      */
-    public function does_not_save_data_field_not_in_list()
+    public function does_not_save_data_field_not_in_list(): void
     {
         $expectedData = $this->makeRequestData();
 

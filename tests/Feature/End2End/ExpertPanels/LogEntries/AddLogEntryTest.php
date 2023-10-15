@@ -25,7 +25,7 @@ class AddLogEntryTest extends TestCase
     /**
      * @test
      */
-    public function user_can_add_a_log_entry()
+    public function user_can_add_a_log_entry(): void
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $this->json('POST', $this->baseUrl, [
@@ -57,7 +57,7 @@ class AddLogEntryTest extends TestCase
     /**
      * @test
      */
-    public function validates_required_fields()
+    public function validates_required_fields(): void
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $this->json('POST', $this->baseUrl, [])
@@ -71,7 +71,7 @@ class AddLogEntryTest extends TestCase
     /**
      * @test
      */
-    public function validates_field_types()
+    public function validates_field_types(): void
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $this->json('POST', $this->baseUrl, [

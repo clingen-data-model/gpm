@@ -39,7 +39,7 @@ class PersonMergeTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_delete_person()
+    public function unprivileged_user_cannot_delete_person(): void
     {
         $this->user->revokePermissionTo('people-manage');
 
@@ -49,7 +49,7 @@ class PersonMergeTest extends TestCase
     /**
      * @test
      */
-    public function validates_params()
+    public function validates_params(): void
     {
         $this->makeRequest([])
             ->assertStatus(422)
@@ -84,7 +84,7 @@ class PersonMergeTest extends TestCase
     /**
      * @test
      */
-    public function merge_gives_authority_memberships_matching_obsolete_and_deletes_obsolete_membeships()
+    public function merge_gives_authority_memberships_matching_obsolete_and_deletes_obsolete_membeships(): void
     {
         Carbon::setTestNow('2022-03-15');
         $this->makeRequest()
@@ -117,7 +117,7 @@ class PersonMergeTest extends TestCase
     /**
      * @test
      */
-    public function merge_migrates_obsoletes_cois_to_authority()
+    public function merge_migrates_obsoletes_cois_to_authority(): void
     {
         Carbon::setTestNow('2022-04-25');
         $coi = Coi::factory()->create([
@@ -140,7 +140,7 @@ class PersonMergeTest extends TestCase
     /**
      * @test
      */
-    public function obsolete_user_transfered_to_unlinked_authority()
+    public function obsolete_user_transfered_to_unlinked_authority(): void
     {
         $user = User::factory()->create();
         $this->person2->update(['user_id' => $user->id]);
@@ -162,7 +162,7 @@ class PersonMergeTest extends TestCase
     /**
      * @test
      */
-    public function obsolete_user_not_transfered_if_authority_has_user()
+    public function obsolete_user_not_transfered_if_authority_has_user(): void
     {
         $user1 = User::factory()->create();
         $user2 = User::factory()->create();
@@ -186,7 +186,7 @@ class PersonMergeTest extends TestCase
     /**
      * @test
      */
-    public function records_merge_activity()
+    public function records_merge_activity(): void
     {
         Carbon::setTestNow('2022-04-25');
         $coi = Coi::factory()->create([

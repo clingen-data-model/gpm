@@ -22,7 +22,7 @@ class InstitutionDeleteTest extends TestCase
     /**
      * @test
      */
-    public function guest_cannot_delete_an_institution()
+    public function guest_cannot_delete_an_institution(): void
     {
         $this->makeRequest()->assertStatus(401);
     }
@@ -30,7 +30,7 @@ class InstitutionDeleteTest extends TestCase
     /**
      * @test
      */
-    public function user_without_permission_cannot_delete_an_institution()
+    public function user_without_permission_cannot_delete_an_institution(): void
     {
         $user = $this->setupUser();
         Sanctum::actingAs($user);
@@ -41,7 +41,7 @@ class InstitutionDeleteTest extends TestCase
     /**
      * @test
      */
-    public function permissioned_user_can_delete_an_institution()
+    public function permissioned_user_can_delete_an_institution(): void
     {
         $user = $this->setupUser(permissions: ['people-manage']);
         Sanctum::actingAs($user);

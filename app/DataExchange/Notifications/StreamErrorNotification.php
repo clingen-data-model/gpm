@@ -32,7 +32,7 @@ class StreamErrorNotification extends Notification implements DigestibleNotifica
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return ['database'];
     }
@@ -45,7 +45,7 @@ class StreamErrorNotification extends Notification implements DigestibleNotifica
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function toArray($notifiable)
+    public function toArray($notifiable): array
     {
         $uniqueErrors = $this->streamErrors
             ->unique(function ($error) {

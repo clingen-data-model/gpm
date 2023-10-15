@@ -22,7 +22,7 @@ class PermissionRemoveTest extends TestCase
     /**
      * @test
      */
-    public function throws_Exception_if_permission_not_found()
+    public function throws_Exception_if_permission_not_found(): void
     {
         $user = $this->setupUserWithPerson();
 
@@ -33,7 +33,7 @@ class PermissionRemoveTest extends TestCase
     /**
      * @test
      */
-    public function throws_exception_if_perm_scoped_for_group()
+    public function throws_exception_if_perm_scoped_for_group(): void
     {
         $person = new Person();
         $this->setupPermission(['test-perm'], 'group');
@@ -45,7 +45,7 @@ class PermissionRemoveTest extends TestCase
     /**
      * @test
      */
-    public function removes_permission_to_acivated_person()
+    public function removes_permission_to_acivated_person(): void
     {
         $user = $this->setupUserWithPerson();
         $perms = $this->setupPermission(['test-perm'], 'system');

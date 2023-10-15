@@ -25,7 +25,7 @@ class UseDatabaseTransactionsTest extends TestCase
     /**
      * @test
      */
-    public function rollsback_transaction_on_error()
+    public function rollsback_transaction_on_error(): void
     {
         $user = User::factory()->make();
 
@@ -41,7 +41,7 @@ class UseDatabaseTransactionsTest extends TestCase
     /**
      * @test
      */
-    public function commits_transaction_if_no_exceptions()
+    public function commits_transaction_if_no_exceptions(): void
     {
         $user = User::factory()->make();
 

@@ -33,7 +33,7 @@ class ApplicationActivityTest extends TestCase
     /**
      * @test
      */
-    public function user_without_permission_unauthorized()
+    public function user_without_permission_unauthorized(): void
     {
         $this->makeRequest()
             ->assertStatus(403);
@@ -42,7 +42,7 @@ class ApplicationActivityTest extends TestCase
     /**
      * @test
      */
-    public function application_managers_see_submitted_applications()
+    public function application_managers_see_submitted_applications(): void
     {
         $this->setupPermission(['ep-applications-manage']);
         $this->user->givePermissionTo('ep-applications-manage');
@@ -57,7 +57,7 @@ class ApplicationActivityTest extends TestCase
     /**
      * @test
      */
-    public function application_commenters_see_submitted_applications()
+    public function application_commenters_see_submitted_applications(): void
     {
         $this->setupPermission(['ep-applications-comment']);
         $this->user->givePermissionTo('ep-applications-comment');
@@ -73,7 +73,7 @@ class ApplicationActivityTest extends TestCase
     /**
      * @test
      */
-    public function application_approvers_only_see_applications_under_chair_review()
+    public function application_approvers_only_see_applications_under_chair_review(): void
     {
         $this->setupPermission(['ep-applications-approve', 'ep-applications-comment']);
         $this->user->givePermissionTo(['ep-applications-approve', 'ep-applications-comment']);

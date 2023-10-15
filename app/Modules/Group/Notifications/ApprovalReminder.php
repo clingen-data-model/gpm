@@ -30,7 +30,7 @@ class ApprovalReminder extends Notification implements DigestibleNotificationInt
      * @param  mixed  $notifiable
      * @return array
      */
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return ['database'];
     }
@@ -41,7 +41,7 @@ class ApprovalReminder extends Notification implements DigestibleNotificationInt
      * @param  mixed  $notifiable
      * @return array
      */
-    public function toArray($notifiable)
+    public function toArray($notifiable): array
     {
         $this->group->load('expertPanel');
         $this->group->display_name = $this->group->displayName;

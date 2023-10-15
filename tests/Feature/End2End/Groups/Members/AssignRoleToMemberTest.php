@@ -32,7 +32,7 @@ class AssignRoleToMemberTest extends TestCase
     /**
      * @test
      */
-    public function can_assign_group_roles_to_a_group_member()
+    public function can_assign_group_roles_to_a_group_member(): void
     {
         $this->withoutExceptionHandling();
 
@@ -71,7 +71,7 @@ class AssignRoleToMemberTest extends TestCase
     /**
      * @test
      */
-    public function validates_role_ids_are_present()
+    public function validates_role_ids_are_present(): void
     {
         Sanctum::actingAs($this->user);
         $response = $this->json(
@@ -87,7 +87,7 @@ class AssignRoleToMemberTest extends TestCase
     /**
      * @test
      */
-    public function validates_that_all_roles_are_scoped_to_group()
+    public function validates_that_all_roles_are_scoped_to_group(): void
     {
         $systemRole = config('permission.models.role')::factory()->create(['scope' => 'system']);
 
@@ -103,7 +103,7 @@ class AssignRoleToMemberTest extends TestCase
     /**
      * @test
      */
-    public function logs_member_role_assignment_activity()
+    public function logs_member_role_assignment_activity(): void
     {
         Sanctum::actingAs($this->user);
         $response = $this->json(

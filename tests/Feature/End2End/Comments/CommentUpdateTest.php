@@ -22,7 +22,7 @@ class CommentUpdateTest extends CommentTest
     /**
      * @test
      */
-    public function creator_can_update_own_comment()
+    public function creator_can_update_own_comment(): void
     {
         $expectedData = $this->getDefaultData();
         $this->makeRequest()
@@ -35,7 +35,7 @@ class CommentUpdateTest extends CommentTest
     /**
      * @test
      */
-    public function user_with_comments_manage_perm_can_update_others_comment()
+    public function user_with_comments_manage_perm_can_update_others_comment(): void
     {
         $otherUser = $this->setupUser(null, ['comments-manage']);
         Sanctum::actingAs($otherUser);
@@ -50,7 +50,7 @@ class CommentUpdateTest extends CommentTest
     /**
      * @test
      */
-    public function user_cannot_update_others_comment()
+    public function user_cannot_update_others_comment(): void
     {
         $otherUser = $this->setupUser();
         Sanctum::actingAs($otherUser);
@@ -64,7 +64,7 @@ class CommentUpdateTest extends CommentTest
     /**
      * @test
      */
-    public function assertNotificationSent()
+    public function assertNotificationSent(): void
     {
         $submission = Submission::factory()->create([
             'group_id' => $this->expertPanel->group_id,
@@ -94,7 +94,7 @@ class CommentUpdateTest extends CommentTest
     /**
      * @test
      */
-    public function assertNotificationNotSent()
+    public function assertNotificationNotSent(): void
     {
         $submission = Submission::factory()->create([
             'group_id' => $this->expertPanel->group_id,

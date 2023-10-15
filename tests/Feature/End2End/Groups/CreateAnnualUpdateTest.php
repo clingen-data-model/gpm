@@ -25,7 +25,7 @@ class CreateAnnualUpdateTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_an_annual_update_for_the_expert_panel()
+    public function it_creates_an_annual_update_for_the_expert_panel(): void
     {
         $action = new AnnualUpdateCreate();
 
@@ -39,7 +39,7 @@ class CreateAnnualUpdateTest extends TestCase
     /**
      * @test
      */
-    public function unpriveleged_user_cannot_create_via_post()
+    public function unpriveleged_user_cannot_create_via_post(): void
     {
         $user = $this->setupUser();
         Sanctum::actingAs($user);
@@ -55,7 +55,7 @@ class CreateAnnualUpdateTest extends TestCase
     /**
      * @test
      */
-    public function priveleged_user_can_create_via_post()
+    public function priveleged_user_can_create_via_post(): void
     {
         $user = $this->setupUser(permissions: ['annual-updates-manage']);
         Sanctum::actingAs($user);

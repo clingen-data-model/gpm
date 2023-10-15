@@ -11,7 +11,7 @@ class NextActionAssigneesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $this->seedFromConfig('next_actions.assignees', NextActionAssignee::class);
     }

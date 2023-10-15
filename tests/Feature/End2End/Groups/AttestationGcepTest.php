@@ -33,7 +33,7 @@ class AttestationGcepTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_submit_gcep_attestation()
+    public function unprivileged_user_cannot_submit_gcep_attestation(): void
     {
         $this->submitRequest()
             ->assertStatus(403);
@@ -42,7 +42,7 @@ class AttestationGcepTest extends TestCase
     /**
      * @test
      */
-    public function validates_required_data()
+    public function validates_required_data(): void
     {
         $this->user->givePermissionTo('ep-applications-manage');
 
@@ -80,7 +80,7 @@ class AttestationGcepTest extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_submit_gcep_attestation()
+    public function privileged_user_can_submit_gcep_attestation(): void
     {
         $this->user->givePermissionTo('ep-applications-manage');
 
@@ -105,7 +105,7 @@ class AttestationGcepTest extends TestCase
     /**
      * @test
      */
-    public function logs_activity()
+    public function logs_activity(): void
     {
         $this->user->givePermissionTo('ep-applications-manage');
 
@@ -123,7 +123,7 @@ class AttestationGcepTest extends TestCase
     /**
      * @test
      */
-    public function does_not_update_gcep_attestation_fields_if_already_completed()
+    public function does_not_update_gcep_attestation_fields_if_already_completed(): void
     {
         $this->user->givePermissionTo('ep-applications-manage');
 
@@ -154,7 +154,7 @@ class AttestationGcepTest extends TestCase
     /**
      * @test
      */
-    public function handler_does_not_set_gcep_attestation_date_if_not_all_fields_are_true()
+    public function handler_does_not_set_gcep_attestation_date_if_not_all_fields_are_true(): void
     {
         $action = new AttestationGcepStore();
 
@@ -188,7 +188,7 @@ class AttestationGcepTest extends TestCase
     /**
      * @test
      */
-    public function does_not_fire_event_if_not_all_attestation_fields_are_true()
+    public function does_not_fire_event_if_not_all_attestation_fields_are_true(): void
     {
         $action = new AttestationGcepStore();
 

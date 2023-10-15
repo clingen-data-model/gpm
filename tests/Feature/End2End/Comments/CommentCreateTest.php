@@ -18,7 +18,7 @@ class CommentCreateTest extends CommentTest
     /**
      * @test
      */
-    public function user_can_create_a_comment()
+    public function user_can_create_a_comment(): void
     {
         $expectedData = $this->getDefaultData();
         $this->makeRequest()
@@ -31,7 +31,7 @@ class CommentCreateTest extends CommentTest
     /**
      * @test
      */
-    public function unprivileged_user_cannot_create_a_comment()
+    public function unprivileged_user_cannot_create_a_comment(): void
     {
         $this->user->revokePermissionTo('ep-applications-comment');
         $this->makeRequest()
@@ -41,7 +41,7 @@ class CommentCreateTest extends CommentTest
     /**
      * @test
      */
-    public function validates_input()
+    public function validates_input(): void
     {
         $this->makeRequest([])
             ->assertValidationErrors([
@@ -61,7 +61,7 @@ class CommentCreateTest extends CommentTest
     /**
      * @test
      */
-    public function comment_created_assertNotificationSent()
+    public function comment_created_assertNotificationSent(): void
     {
         $submission = Submission::factory()->create([
             'group_id' => $this->expertPanel->group_id,
@@ -91,7 +91,7 @@ class CommentCreateTest extends CommentTest
     /**
      * @test
      */
-    public function notification_sent_if_subject_is_reply_to_group_comment()
+    public function notification_sent_if_subject_is_reply_to_group_comment(): void
     {
         Submission::factory()->create([
             'group_id' => $this->expertPanel->group_id,
@@ -130,7 +130,7 @@ class CommentCreateTest extends CommentTest
     /**
      * @test
      */
-    public function notification_not_sent_if_submission_not_sent_to_chairs()
+    public function notification_not_sent_if_submission_not_sent_to_chairs(): void
     {
         Submission::factory()->create([
             'group_id' => $this->expertPanel->group_id,
@@ -151,7 +151,7 @@ class CommentCreateTest extends CommentTest
     /**
      * @test
      */
-    public function notification_not_sent_to_comment_creator()
+    public function notification_not_sent_to_comment_creator(): void
     {
         $submission = Submission::factory()->create([
             'group_id' => $this->expertPanel->group_id,

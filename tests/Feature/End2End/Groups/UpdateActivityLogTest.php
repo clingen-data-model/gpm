@@ -36,7 +36,7 @@ class UpdateActivityLogTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_update_a_log_entry()
+    public function unprivileged_user_cannot_update_a_log_entry(): void
     {
         $this->user->revokePermissionTo('groups-manage');
         $this->makeRequest()
@@ -46,7 +46,7 @@ class UpdateActivityLogTest extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_update_a_log_entry()
+    public function privileged_user_can_update_a_log_entry(): void
     {
         $this->makeRequest(['entry' => 'farts!', 'log_date' => '2021-12-01T00:00:00'])
             ->assertStatus(200)
@@ -63,7 +63,7 @@ class UpdateActivityLogTest extends TestCase
     /**
      * @test
      */
-    public function validates_data()
+    public function validates_data(): void
     {
         $this->makeRequest([])
             ->assertStatus(422)

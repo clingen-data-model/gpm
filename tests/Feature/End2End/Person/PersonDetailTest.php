@@ -25,7 +25,7 @@ class PersonDetailTest extends TestCase
     /**
      * @test
      */
-    public function user_can_retrieve_a_person_with_uuid()
+    public function user_can_retrieve_a_person_with_uuid(): void
     {
         Sanctum::actingAs($this->user);
         $person = Person::factory()->create();
@@ -37,7 +37,7 @@ class PersonDetailTest extends TestCase
     /**
      * @test
      */
-    public function responds_with_404_when_person_not_found()
+    public function responds_with_404_when_person_not_found(): void
     {
         Sanctum::actingAs($this->user);
         $this->json('GET', '/api/people/'.Uuid::uuid4()->toString())
@@ -47,7 +47,7 @@ class PersonDetailTest extends TestCase
     /**
      * @test
      */
-    public function guest_cannot_retrieve_person_with_uuid()
+    public function guest_cannot_retrieve_person_with_uuid(): void
     {
         $person = Person::factory()->create();
         $this->json('GET', '/api/people/'.$person->uuid)

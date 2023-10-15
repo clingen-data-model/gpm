@@ -30,7 +30,7 @@ class RedeemInviteTest extends TestCase
     /**
      * @test
      */
-    public function can_check_if_code_is_valid()
+    public function can_check_if_code_is_valid(): void
     {
         $this->json('GET', static::URL.'/'.$this->invite->code)
             ->assertStatus(200);
@@ -56,7 +56,7 @@ class RedeemInviteTest extends TestCase
     /**
      * @test
      */
-    public function returns_404_if_invite_not_found_by_code()
+    public function returns_404_if_invite_not_found_by_code(): void
     {
         $this->json('PUT', static::URL.'/gobbeldy-guk', $this->validData)
             ->assertStatus(404);
@@ -79,7 +79,7 @@ class RedeemInviteTest extends TestCase
     /**
      * @test
      */
-    public function validates_params()
+    public function validates_params(): void
     {
         $this->json('PUT', static::URL.'/'.$this->invite->code, ['email' => 'bob', 'password' => 'beans', 'password_confirmation' => 'farts'])
             ->assertStatus(422)
@@ -99,7 +99,7 @@ class RedeemInviteTest extends TestCase
     /**
      * @test
      */
-    public function sets_redeemed_at_date_for_invite()
+    public function sets_redeemed_at_date_for_invite(): void
     {
         Carbon::setTestNow('2021-09-16');
         $this->json('PUT', static::URL.'/'.$this->invite->code, $this->validData)
@@ -114,7 +114,7 @@ class RedeemInviteTest extends TestCase
     /**
      * @test
      */
-    public function user_created_and_linked_to_invited_person()
+    public function user_created_and_linked_to_invited_person(): void
     {
         $this->json('PUT', static::URL.'/'.$this->invite->code, $this->validData)
             ->assertStatus(200);
@@ -133,7 +133,7 @@ class RedeemInviteTest extends TestCase
     /**
      * @test
      */
-    public function logs_invite_redemption_activity()
+    public function logs_invite_redemption_activity(): void
     {
         $this->json('PUT', static::URL.'/'.$this->invite->code, $this->validData)
             ->assertStatus(200);

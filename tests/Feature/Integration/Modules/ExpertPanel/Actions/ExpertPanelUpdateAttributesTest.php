@@ -23,7 +23,7 @@ class ExpertPanelUpdateAttributesTest extends TestCase
     /**
      * @test
      */
-    public function raises_ExpertPanelAttributesUpdated_event()
+    public function raises_ExpertPanelAttributesUpdated_event(): void
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create();
 
@@ -36,7 +36,7 @@ class ExpertPanelUpdateAttributesTest extends TestCase
     /**
      * @test
      */
-    public function logs_ExpertPanelAttributesUpdated()
+    public function logs_ExpertPanelAttributesUpdated(): void
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create(['long_base_name' => 'aabb']);
 
@@ -50,7 +50,7 @@ class ExpertPanelUpdateAttributesTest extends TestCase
     /**
      * @test
      */
-    public function updates_group_parent_id_if_cdwg_id_is_updated()
+    public function updates_group_parent_id_if_cdwg_id_is_updated(): void
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create(['long_base_name' => 'aabb']);
         $cdwg = Group::factory()->cdwg()->create();

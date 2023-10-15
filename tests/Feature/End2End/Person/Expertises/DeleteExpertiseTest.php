@@ -27,7 +27,7 @@ class DeleteExpertiseTest extends TestCase
     /**
      * @test
      */
-    public function guest_cannot_delete_a_expertise()
+    public function guest_cannot_delete_a_expertise(): void
     {
         $this->makeRequest()
             ->assertStatus(401);
@@ -36,7 +36,7 @@ class DeleteExpertiseTest extends TestCase
     /**
      * @test
      */
-    public function unpermissioned_user_cannot_delete_a_expertise()
+    public function unpermissioned_user_cannot_delete_a_expertise(): void
     {
         $this->login();
         $this->makeRequest()
@@ -46,7 +46,7 @@ class DeleteExpertiseTest extends TestCase
     /**
      * @test
      */
-    public function permissioned_user_can_delete_a_expertise()
+    public function permissioned_user_can_delete_a_expertise(): void
     {
         $this->login(permissions: ['people-manage']);
         $this->makeRequest()

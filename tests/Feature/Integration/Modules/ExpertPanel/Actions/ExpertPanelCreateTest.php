@@ -26,7 +26,7 @@ class ExpertPanelCreateTest extends TestCase
     /**
      * @test
      */
-    public function creates_new_group_with_cdwg_as_parent_for_expert_panel()
+    public function creates_new_group_with_cdwg_as_parent_for_expert_panel(): void
     {
         $expertPanel = ExpertPanelCreate::run(...$this->data);
         $this->assertDatabaseHas('groups', [
@@ -44,7 +44,7 @@ class ExpertPanelCreateTest extends TestCase
     /**
      * @test
      */
-    public function stores_new_application_model_when_initiated()
+    public function stores_new_application_model_when_initiated(): void
     {
         $expertPanel = ExpertPanelCreate::run(...$this->data);
         unset($this->data['working_name']);
@@ -55,7 +55,7 @@ class ExpertPanelCreateTest extends TestCase
     /**
      * @test
      */
-    public function fires_ApplicationInitiated_event_when_initiated()
+    public function fires_ApplicationInitiated_event_when_initiated(): void
     {
         Event::fake();
 
@@ -67,7 +67,7 @@ class ExpertPanelCreateTest extends TestCase
     /**
      * @test
      */
-    public function activity_logged_when_application_initiated()
+    public function activity_logged_when_application_initiated(): void
     {
         $user = User::factory()->create();
 

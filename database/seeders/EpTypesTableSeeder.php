@@ -11,7 +11,7 @@ class EpTypesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $this->seedFromConfig('expert_panels.types', ExpertPanelType::class);
     }

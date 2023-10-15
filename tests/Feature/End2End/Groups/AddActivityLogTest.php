@@ -33,7 +33,7 @@ class AddActivityLogTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_create_a_log_entry()
+    public function unprivileged_user_cannot_create_a_log_entry(): void
     {
         $this->makeRequest()
             ->assertStatus(403);
@@ -42,7 +42,7 @@ class AddActivityLogTest extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_create_a_log_entry()
+    public function privileged_user_can_create_a_log_entry(): void
     {
         $this->user->givePermissionTo('groups-manage');
         $logEntry = Activity::factory(1)->create();
@@ -57,7 +57,7 @@ class AddActivityLogTest extends TestCase
     /**
      * @test
      */
-    public function validates_data()
+    public function validates_data(): void
     {
         $this->user->givePermissionTo('groups-manage');
         $logEntry = Activity::factory(1)->create();

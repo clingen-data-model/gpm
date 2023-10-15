@@ -42,7 +42,7 @@ class RemoveSystemPermissionFromRemovedOrRetiredGroupMemberTest extends TestCase
     /**
      * @test
      */
-    public function permission_removed_when_member_removed()
+    public function permission_removed_when_member_removed(): void
     {
         $user = $this->setupUserWithPerson(permissions: ['test-perm']);
         $groupMember = app()->make(MemberAdd::class)->handle($this->group, $user->person);
@@ -59,7 +59,7 @@ class RemoveSystemPermissionFromRemovedOrRetiredGroupMemberTest extends TestCase
     /**
      * @test
      */
-    public function permission_removed_when_member_retired()
+    public function permission_removed_when_member_retired(): void
     {
         $user = $this->setupUserWithPerson(permissions: ['test-perm']);
         $groupMember = app()->make(MemberAdd::class)->handle($this->group, $user->person);
@@ -76,7 +76,7 @@ class RemoveSystemPermissionFromRemovedOrRetiredGroupMemberTest extends TestCase
     /**
      * @test
      */
-    public function permission_not_removed_to_activited_person_when_added_to_other_group()
+    public function permission_not_removed_to_activited_person_when_added_to_other_group(): void
     {
         $user = $this->setupUserWithPerson(permissions: ['test-perm']);
         $otherGroup = Group::factory()->create();

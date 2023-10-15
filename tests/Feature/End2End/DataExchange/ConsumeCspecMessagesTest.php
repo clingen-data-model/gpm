@@ -35,7 +35,7 @@ class ConsumeCspecMessagesTest extends TestCase
     /**
      * @test
      */
-    public function does_not_consume_if_dx_consume_config_is_false()
+    public function does_not_consume_if_dx_consume_config_is_false(): void
     {
         config(['dx.consume' => false]);
         app()->bind(MessageStream::class, fn () => new FakeMessageStream([
@@ -62,7 +62,7 @@ class ConsumeCspecMessagesTest extends TestCase
      *
      * @return void
      */
-    public function cspec_draft_rules_approved_message_consumed_and_handled()
+    public function cspec_draft_rules_approved_message_consumed_and_handled(): void
     {
         $topic = 'cspec_general_events_test';
         $timestamp = time();
@@ -88,7 +88,7 @@ class ConsumeCspecMessagesTest extends TestCase
     /**
      * @test
      */
-    public function cspec_pilot_rules_approved_message_consumed_and_handled()
+    public function cspec_pilot_rules_approved_message_consumed_and_handled(): void
     {
         $topic = 'cspec_general_events_test';
         $this->vcep->current_step = 3;

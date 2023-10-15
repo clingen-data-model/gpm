@@ -16,7 +16,7 @@ class DocumentPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         return $user->hasAnyPermission(['groups-manage', 'ep-applications-manage']);
     }
@@ -26,7 +26,7 @@ class DocumentPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Document $document)
+    public function view(User $user, Document $document): bool
     {
         if ($this->viewAny($user)) {
             return true;
@@ -48,7 +48,7 @@ class DocumentPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         return true;
     }
@@ -58,7 +58,7 @@ class DocumentPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Document $document)
+    public function update(User $user, Document $document): bool
     {
         return $this->canEdit($user, $document);
     }
@@ -68,7 +68,7 @@ class DocumentPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Document $document)
+    public function delete(User $user, Document $document): bool
     {
         return $this->canEdit($user, $document);
     }
@@ -78,7 +78,7 @@ class DocumentPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Document $document)
+    public function restore(User $user, Document $document): bool
     {
         return $this->canEdit($user, $document);
     }
@@ -88,7 +88,7 @@ class DocumentPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Document $document)
+    public function forceDelete(User $user, Document $document): bool
     {
         return $this->canEdit($user, $document);
     }

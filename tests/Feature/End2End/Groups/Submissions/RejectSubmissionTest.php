@@ -46,7 +46,7 @@ class RejectSubmissionTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_reject_submission()
+    public function unprivileged_user_cannot_reject_submission(): void
     {
         $this->admin->revokePermissionTo('ep-applications-manage');
 
@@ -57,7 +57,7 @@ class RejectSubmissionTest extends TestCase
     /**
      * @test
      */
-    public function permissioned_user_can_reject_a_submission()
+    public function permissioned_user_can_reject_a_submission(): void
     {
         Carbon::setTestNow('2022-07-12');
         $this->makeRequest()
@@ -77,7 +77,7 @@ class RejectSubmissionTest extends TestCase
     /**
      * @test
      */
-    public function emails_group_contacts_when_specified_and_saves_email_body_to_response_content()
+    public function emails_group_contacts_when_specified_and_saves_email_body_to_response_content(): void
     {
         Carbon::setTestNow('2022-07-12');
         Mail::fake();
@@ -112,7 +112,7 @@ class RejectSubmissionTest extends TestCase
     /**
      * @test
      */
-    public function records_revisions_requested_activity()
+    public function records_revisions_requested_activity(): void
     {
         $this->makeRequest();
 
@@ -130,7 +130,7 @@ class RejectSubmissionTest extends TestCase
     /**
      * @test
      */
-    public function assigns_make_revisions_next_action_to_expert_panel()
+    public function assigns_make_revisions_next_action_to_expert_panel(): void
     {
         $this->makeRequest()
             ->assertStatus(200);
@@ -145,7 +145,7 @@ class RejectSubmissionTest extends TestCase
     /**
      * @test
      */
-    public function completes_review_submission_action_if_any()
+    public function completes_review_submission_action_if_any(): void
     {
         Carbon::setTestNow('2022-06-01');
         $nextAction = NextAction::factory()->create([

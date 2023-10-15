@@ -33,7 +33,7 @@ class PilotRulesApprovedProcessorTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_if_expert_panel_is_not_draft_approved()
+    public function it_throws_exception_if_expert_panel_is_not_draft_approved(): void
     {
         try {
             $this->action->handle($this->message);
@@ -47,7 +47,7 @@ class PilotRulesApprovedProcessorTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_a_new_SustainedCurationReviewTask_when_expert_panel_already_has_approved_pilot()
+    public function it_creates_a_new_SustainedCurationReviewTask_when_expert_panel_already_has_approved_pilot(): void
     {
         $this->expertPanel->step_1_approval_date = Carbon::parse('2020-01-01');
         $this->expertPanel->step_2_approval_date = Carbon::parse('2021-01-01');
@@ -76,7 +76,7 @@ class PilotRulesApprovedProcessorTest extends TestCase
     /**
      * @test
      */
-    public function it_approves_pilot_specifications_if_ep_draftApproved_and_not_pilotApproved()
+    public function it_approves_pilot_specifications_if_ep_draftApproved_and_not_pilotApproved(): void
     {
         $this->expertPanel->step_1_approval_date = Carbon::parse('2020-01-01');
         $this->expertPanel->step_2_approval_date = Carbon::parse('2021-01-01');

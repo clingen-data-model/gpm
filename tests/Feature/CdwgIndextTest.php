@@ -28,7 +28,7 @@ class CdwgIndextTest extends TestCase
     /**
      * @test
      */
-    public function lists_all_cdwgs_sorted_by_name()
+    public function lists_all_cdwgs_sorted_by_name(): void
     {
         $this->json('GET', '/api/cdwgs', ['*'])
             ->assertStatus(200)

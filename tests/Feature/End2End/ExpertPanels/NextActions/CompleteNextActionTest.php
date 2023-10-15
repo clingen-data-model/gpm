@@ -45,7 +45,7 @@ class CompleteNextActionTest extends TestCase
     /**
      * @test
      */
-    public function can_mark_next_action_complete()
+    public function can_mark_next_action_complete(): void
     {
         $this->makeRequest()
             ->assertStatus(200)
@@ -58,7 +58,7 @@ class CompleteNextActionTest extends TestCase
     /**
      * @test
      */
-    public function validates_input()
+    public function validates_input(): void
     {
         $this->makeRequest([])
             ->assertStatus(422)

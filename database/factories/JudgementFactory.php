@@ -21,7 +21,7 @@ class JudgementFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'decision' => $this->faker->randomElement(['request-revisions', 'approve-after-revisions', 'approve']),

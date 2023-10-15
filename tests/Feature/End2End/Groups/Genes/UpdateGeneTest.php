@@ -35,7 +35,7 @@ class UpdateGeneTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_users_cannot_update_genes()
+    public function unprivileged_users_cannot_update_genes(): void
     {
         $this->user->revokePermissionTo('ep-applications-manage');
 
@@ -51,7 +51,7 @@ class UpdateGeneTest extends TestCase
     /**
      * @test
      */
-    public function checks_group_is_an_expert_panel()
+    public function checks_group_is_an_expert_panel(): void
     {
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.wg.id')]);
 
@@ -70,7 +70,7 @@ class UpdateGeneTest extends TestCase
     /**
      * @test
      */
-    public function validates_input_for_vceps()
+    public function validates_input_for_vceps(): void
     {
         Sanctum::actingAs($this->user);
 
@@ -107,7 +107,7 @@ class UpdateGeneTest extends TestCase
     /**
      * @test
      */
-    public function validates_input_for_gceps()
+    public function validates_input_for_gceps(): void
     {
         Sanctum::actingAs($this->user);
 
@@ -133,7 +133,7 @@ class UpdateGeneTest extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_update_gene()
+    public function privileged_user_can_update_gene(): void
     {
         $this->seedGenes(['hgnc_id' => 67890, 'gene_symbol' => 'BRD1']);
         $this->json('PUT', $this->url, ['hgnc_id' => 67890, 'mondo_id' => 'MONDO:9876543'])

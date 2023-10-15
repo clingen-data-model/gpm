@@ -51,7 +51,7 @@ class SubmissionApprovalRemindersCreateTest extends TestCase
     /**
      * @test
      */
-    public function creates_ApprovalReminderNotification_only_for_truant_approvers()
+    public function creates_ApprovalReminderNotification_only_for_truant_approvers(): void
     {
         $epAndSub = $this->setupExpertPanelAndSubmission();
         $ep2 = $epAndSub['expertPanel'];

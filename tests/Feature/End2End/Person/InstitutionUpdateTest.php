@@ -25,7 +25,7 @@ class InstitutionUpdateTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_update_institution()
+    public function unprivileged_user_cannot_update_institution(): void
     {
         $this->user->revokePermissionTo('people-manage');
 
@@ -36,7 +36,7 @@ class InstitutionUpdateTest extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_update_institution()
+    public function privileged_user_can_update_institution(): void
     {
         $this->makeRequest()
             ->assertStatus(200)
@@ -58,7 +58,7 @@ class InstitutionUpdateTest extends TestCase
     /**
      * @test
      */
-    public function validates_data()
+    public function validates_data(): void
     {
         $this->makeRequest(['country_id' => 777])
             ->assertStatus(422)

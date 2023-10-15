@@ -19,7 +19,7 @@ class CheckAuthTest extends TestCase
     /**
      * @test
      */
-    public function returns_401_if_not_authed()
+    public function returns_401_if_not_authed(): void
     {
         $this->json('GET', '/api/authenticated')
             ->assertStatus(401);
@@ -28,7 +28,7 @@ class CheckAuthTest extends TestCase
     /**
      * @test
      */
-    public function returns_200_if_authenticated()
+    public function returns_200_if_authenticated(): void
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $this->json('GET', '/api/authenticated')

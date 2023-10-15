@@ -34,7 +34,7 @@ class RemoveMemberTest extends TestCase
     /**
      * @test
      */
-    public function can_remove_member_from_group()
+    public function can_remove_member_from_group(): void
     {
         $endDate = Carbon::now();
         $response = $this->json('DELETE', $this->url, [
@@ -52,7 +52,7 @@ class RemoveMemberTest extends TestCase
     /**
      * @test
      */
-    public function validates_required_information()
+    public function validates_required_information(): void
     {
         $response = $this->json('DELETE', $this->url, []);
         $response->assertStatus(422);
@@ -65,7 +65,7 @@ class RemoveMemberTest extends TestCase
     /**
      * @test
      */
-    public function validates_end_date_is_a_valid_date()
+    public function validates_end_date_is_a_valid_date(): void
     {
         $response = $this->json('DELETE', $this->url, ['end_date' => uniqid()]);
         $response->assertStatus(422);
@@ -78,7 +78,7 @@ class RemoveMemberTest extends TestCase
     /**
      * @test
      */
-    public function logs_member_retired_activity()
+    public function logs_member_retired_activity(): void
     {
         $response = $this->json('DELETE', $this->url, [
             'start_date' => (new DateTime())->format(DateTime::ATOM),

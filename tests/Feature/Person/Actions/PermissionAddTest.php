@@ -25,7 +25,7 @@ class PermissionAddTest extends TestCase
     /**
      * @test
      */
-    public function throws_Exception_if_permission_not_found()
+    public function throws_Exception_if_permission_not_found(): void
     {
         $person = new Person();
 
@@ -36,7 +36,7 @@ class PermissionAddTest extends TestCase
     /**
      * @test
      */
-    public function throws_exception_if_perm_scoped_for_group()
+    public function throws_exception_if_perm_scoped_for_group(): void
     {
         $person = new Person();
         $this->setupPermission(['test-perm'], 'group');
@@ -48,7 +48,7 @@ class PermissionAddTest extends TestCase
     /**
      * @test
      */
-    public function adds_permission_to_acivated_person()
+    public function adds_permission_to_acivated_person(): void
     {
         $user = $this->setupUserWithPerson();
         $perms = $this->setupPermission(['test-perm'], 'system');
@@ -65,7 +65,7 @@ class PermissionAddTest extends TestCase
     /**
      * @test
      */
-    public function adds_follow_action_if_person_not_activated()
+    public function adds_follow_action_if_person_not_activated(): void
     {
         $person = Person::factory()->create();
         $perms = $this->setupPermission(['test-perm'], 'system');
@@ -84,7 +84,7 @@ class PermissionAddTest extends TestCase
     /**
      * @test
      */
-    public function runs_as_follow_action()
+    public function runs_as_follow_action(): void
     {
         // Setup
         Carbon::setTestNow('2022-07-18');

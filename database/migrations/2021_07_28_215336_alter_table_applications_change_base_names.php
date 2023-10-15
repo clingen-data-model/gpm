@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('applications', function (Blueprint $table) {
             $table->dropUnique(['short_base_name']);
@@ -27,7 +27,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('applications', function (Blueprint $table) {
             $table->dropUnique(['short_base_name', 'ep_type_id']);

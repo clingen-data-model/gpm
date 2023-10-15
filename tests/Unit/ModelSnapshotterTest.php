@@ -28,7 +28,7 @@ class ModelSnapshotterTest extends TestCase
     /**
      * @test
      */
-    public function creates_snapshot_of_model_with_no_relations_loaded()
+    public function creates_snapshot_of_model_with_no_relations_loaded(): void
     {
         $snapshot = $this->snapshotter->createSnapshot($this->model);
 
@@ -44,7 +44,7 @@ class ModelSnapshotterTest extends TestCase
     /**
      * @test
      */
-    public function creates_snapshot_of_model_with_scalar_relations()
+    public function creates_snapshot_of_model_with_scalar_relations(): void
     {
         $typeAttr = ['name' => 'Monkey'];
         $this->model->setRelation('type', new GroupType($typeAttr));
@@ -69,7 +69,7 @@ class ModelSnapshotterTest extends TestCase
     /**
      * @test
      */
-    public function can_create_snapshot_for_model_with_nonscalar_relation()
+    public function can_create_snapshot_for_model_with_nonscalar_relation(): void
     {
         $memberAttrs = [
             ['person_id' => 1, 'group_id' => 1],
@@ -102,7 +102,7 @@ class ModelSnapshotterTest extends TestCase
     /**
      * @test
      */
-    public function can_create_snapshot_with_null_relations()
+    public function can_create_snapshot_with_null_relations(): void
     {
         $this->model->setRelation('type', null);
 
@@ -114,7 +114,7 @@ class ModelSnapshotterTest extends TestCase
     /**
      * @test
      */
-    public function can_create_snapshot_with_nested_relations()
+    public function can_create_snapshot_with_nested_relations(): void
     {
         $epAttr = ['long_base_name' => 'Long VCEP Name'];
         $epModel = new ExpertPanel($epAttr);
@@ -150,7 +150,7 @@ class ModelSnapshotterTest extends TestCase
     /**
      * @test
      */
-    public function can_init_model_with_nested_relations_from_snapshot()
+    public function can_init_model_with_nested_relations_from_snapshot(): void
     {
         $snapshot = [
             'class' => get_class($this->model),

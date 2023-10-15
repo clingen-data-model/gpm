@@ -29,7 +29,7 @@ class UpdateMemberTest extends TestCase
     /**
      * @test
      */
-    public function returns_404_if_group_not_found()
+    public function returns_404_if_group_not_found(): void
     {
         $url = '/api/groups/'.uniqid().'/members/'.uniqid();
 
@@ -47,7 +47,7 @@ class UpdateMemberTest extends TestCase
     /**
      * @test
      */
-    public function a_unprivileged_user_may_not_update_a_group_member()
+    public function a_unprivileged_user_may_not_update_a_group_member(): void
     {
         $url = '/api/groups/'.$this->groupMember->group->uuid.'/members/'.$this->groupMember->id;
 
@@ -63,7 +63,7 @@ class UpdateMemberTest extends TestCase
     /**
      * @test
      */
-    public function a_privileged_use_may_update_a_group_member()
+    public function a_privileged_use_may_update_a_group_member(): void
     {
         $this->admin->givePermissionTo('groups-manage');
         $url = '/api/groups/'.$this->groupMember->group->uuid.'/members/'.$this->groupMember->id;
@@ -90,7 +90,7 @@ class UpdateMemberTest extends TestCase
     /**
      * @test
      */
-    public function logs_update()
+    public function logs_update(): void
     {
         $this->admin->givePermissionTo('groups-manage');
         $url = '/api/groups/'.$this->groupMember->group->uuid.'/members/'.$this->groupMember->id;

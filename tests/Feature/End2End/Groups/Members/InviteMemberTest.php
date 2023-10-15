@@ -38,7 +38,7 @@ class InviteMemberTest extends TestCase
     /**
      * @test
      */
-    public function guests_cannot_invite_members()
+    public function guests_cannot_invite_members(): void
     {
         $this->json('POST', $this->url, [])
             ->assertStatus(401);
@@ -47,7 +47,7 @@ class InviteMemberTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_member_cannot_invite_members()
+    public function unprivileged_member_cannot_invite_members(): void
     {
         Sanctum::actingAs($this->user);
         $this->json('POST', $this->url, [])
@@ -57,7 +57,7 @@ class InviteMemberTest extends TestCase
     /**
      * @test
      */
-    public function validates_data()
+    public function validates_data(): void
     {
         MemberGrantPermissions::run(
             $this->userMember,
@@ -89,7 +89,7 @@ class InviteMemberTest extends TestCase
     /**
      * @test
      */
-    public function privileged_member_can_invite_new_member()
+    public function privileged_member_can_invite_new_member(): void
     {
         MemberGrantPermissions::run(
             $this->userMember,
@@ -147,7 +147,7 @@ class InviteMemberTest extends TestCase
     /**
      * @test
      */
-    public function invite_can_also_give_roles_to_invited_member()
+    public function invite_can_also_give_roles_to_invited_member(): void
     {
         MemberGrantPermissions::run(
             $this->userMember,
@@ -172,7 +172,7 @@ class InviteMemberTest extends TestCase
     /**
      * @test
      */
-    public function logs_invite_created_activity()
+    public function logs_invite_created_activity(): void
     {
         MemberGrantPermissions::run(
             $this->userMember,
@@ -204,7 +204,7 @@ class InviteMemberTest extends TestCase
     /**
      * @test
      */
-    public function invitee_is_sent_an_email_notification_about_the_invite()
+    public function invitee_is_sent_an_email_notification_about_the_invite(): void
     {
         MemberGrantPermissions::run(
             $this->userMember,
@@ -231,7 +231,7 @@ class InviteMemberTest extends TestCase
     /**
      * @test
      */
-    public function saves_is_contact_attribute()
+    public function saves_is_contact_attribute(): void
     {
         MemberGrantPermissions::run(
             $this->userMember,

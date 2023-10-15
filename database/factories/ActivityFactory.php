@@ -12,7 +12,7 @@ class ActivityFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'log_name' => 'users',

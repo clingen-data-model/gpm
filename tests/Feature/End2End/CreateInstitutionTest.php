@@ -23,7 +23,7 @@ class CreateInstitutionTest extends TestCase
     /**
      * @test
      */
-    public function can_create_an_institution()
+    public function can_create_an_institution(): void
     {
         $this->makeRequest()
             ->assertStatus(201)
@@ -41,7 +41,7 @@ class CreateInstitutionTest extends TestCase
     /**
      * @test
      */
-    public function validates_required_params()
+    public function validates_required_params(): void
     {
         $this->makeRequest([])
             ->assertStatus(422)
@@ -53,7 +53,7 @@ class CreateInstitutionTest extends TestCase
     /**
      * @test
      */
-    public function validates_unique_params()
+    public function validates_unique_params(): void
     {
         Institution::factory([
             'name' => 'University of Trollberg',
@@ -71,7 +71,7 @@ class CreateInstitutionTest extends TestCase
     /**
      * @test
      */
-    public function validates_country_exists()
+    public function validates_country_exists(): void
     {
         $this->makeRequest(['country_id' => 666])
             ->assertStatus(422)

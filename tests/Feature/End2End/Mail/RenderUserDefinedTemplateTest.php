@@ -27,7 +27,7 @@ class RenderUserDefinedTemplateTest extends TestCase
     /**
      * @test
      */
-    public function returns_data_for_step_1_approved()
+    public function returns_data_for_step_1_approved(): void
     {
         $response = $this->makeRequest();
         $response->assertStatus(200);
@@ -47,7 +47,7 @@ class RenderUserDefinedTemplateTest extends TestCase
     /**
      * @test
      */
-    public function renders_draft_email()
+    public function renders_draft_email(): void
     {
         $response = $this->makeRequest(null, SpecificationDraftMailTemplate::class);
         $response->assertStatus(200);
@@ -61,7 +61,7 @@ class RenderUserDefinedTemplateTest extends TestCase
     /**
      * @test
      */
-    public function renders_pilot_email()
+    public function renders_pilot_email(): void
     {
         $response = $this->makeRequest(null, SpecificationPilotMailTemplate::class);
         $response->assertStatus(200);
@@ -75,7 +75,7 @@ class RenderUserDefinedTemplateTest extends TestCase
     /**
      * @test
      */
-    public function renders_sustained_curation_email()
+    public function renders_sustained_curation_email(): void
     {
         $response = $this->makeRequest(null, SustainedCurationApprovalMailTemplate::class);
         $response->assertStatus(200);

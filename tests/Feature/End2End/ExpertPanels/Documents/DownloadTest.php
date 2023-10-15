@@ -44,7 +44,7 @@ class DownloadTest extends TestCase
     /**
      * @test
      */
-    public function responds_with_404_if_document_not_found()
+    public function responds_with_404_if_document_not_found(): void
     {
         $url = '/documents/'.Uuid::uuid4()->toString();
         $response = $this->json('GET', $url);
@@ -54,7 +54,7 @@ class DownloadTest extends TestCase
     /**
      * @test
      */
-    public function responds_with_404_if_file_not_found()
+    public function responds_with_404_if_file_not_found(): void
     {
         $this->doc->storage_path = 'beans.txt';
         $response = $this->json('GET', '/documents/'.$this->doc->uuid)
@@ -64,7 +64,7 @@ class DownloadTest extends TestCase
     /**
      * @test
      */
-    public function authed_user_can_download_a_file()
+    public function authed_user_can_download_a_file(): void
     {
         $data = $this->makeDocumentUploadRequestData(filename: 'test_download.docx');
 

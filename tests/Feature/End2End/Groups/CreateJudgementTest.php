@@ -11,7 +11,7 @@ class CreateJudgementTest extends JudgementTest
     /**
      * @test
      */
-    public function only_users_with_approval_permission_can_submit_a_judgement()
+    public function only_users_with_approval_permission_can_submit_a_judgement(): void
     {
         $this->user->revokePermissionTo('ep-applications-approve');
 
@@ -22,7 +22,7 @@ class CreateJudgementTest extends JudgementTest
     /**
      * @test
      */
-    public function validates_judgement_data()
+    public function validates_judgement_data(): void
     {
         $this->makeRequest([])
             ->assertValidationErrors([
@@ -38,7 +38,7 @@ class CreateJudgementTest extends JudgementTest
     /**
      * @test
      */
-    public function returns_422_if_no_pending_submission_for_group()
+    public function returns_422_if_no_pending_submission_for_group(): void
     {
         $this->submission->delete();
 
@@ -51,7 +51,7 @@ class CreateJudgementTest extends JudgementTest
     /**
      * @test
      */
-    public function permissioned_user_can_submit_a_judgement()
+    public function permissioned_user_can_submit_a_judgement(): void
     {
         $this->makeRequest()
             ->assertStatus(201)
@@ -73,7 +73,7 @@ class CreateJudgementTest extends JudgementTest
     /**
      * @test
      */
-    public function logs_judgement_submitted_activity()
+    public function logs_judgement_submitted_activity(): void
     {
         $this->makeRequest()
             ->assertStatus(201);
@@ -87,7 +87,7 @@ class CreateJudgementTest extends JudgementTest
     /**
      * @test
      */
-    public function notifies_other_notifiables_when_judgement_created()
+    public function notifies_other_notifiables_when_judgement_created(): void
     {
         $otherApprover = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
         $commenter = $this->setupUserWithPerson(permissions: ['ep-applications-comment']);

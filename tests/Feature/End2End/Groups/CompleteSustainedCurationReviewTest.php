@@ -36,7 +36,7 @@ class CompleteSustainedCurationReviewTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_complete_sustained_curation_task()
+    public function unprivileged_user_cannot_complete_sustained_curation_task(): void
     {
         $this->user->revokePermissionTo('ep-applications-manage');
         $this->makeRequest()
@@ -46,7 +46,7 @@ class CompleteSustainedCurationReviewTest extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_complete_sustained_curation_review()
+    public function privileged_user_can_complete_sustained_curation_review(): void
     {
         Carbon::setTestNow('2022-01-01');
         $this->makeRequest()

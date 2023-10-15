@@ -28,7 +28,7 @@ class ListPeopleTest extends TestCase
     /**
      * @test
      */
-    public function guests_cannot_get_list_of_people()
+    public function guests_cannot_get_list_of_people(): void
     {
         $this->json('GET', static::URL)
             ->assertStatus(401);
@@ -37,7 +37,7 @@ class ListPeopleTest extends TestCase
     /**
      * @test
      */
-    public function authed_user_can_get_paginated_list_of_people()
+    public function authed_user_can_get_paginated_list_of_people(): void
     {
         Sanctum::actingAs($this->user);
         $response = $this->json('GET', static::URL);

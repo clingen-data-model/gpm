@@ -20,7 +20,7 @@ class CommentDeleteTest extends CommentTest
     /**
      * @test
      */
-    public function user_can_delete_own_comment()
+    public function user_can_delete_own_comment(): void
     {
         Carbon::setTestNow('8:00');
         $this->makeRequest()->assertStatus(200);
@@ -34,7 +34,7 @@ class CommentDeleteTest extends CommentTest
     /**
      * @test
      */
-    public function user_with_comments_manage_permission_can_delete_any_comment()
+    public function user_with_comments_manage_permission_can_delete_any_comment(): void
     {
         $otherUser = $this->setupUser(null, ['comments-manage']);
         Sanctum::actingAs($otherUser);
@@ -49,7 +49,7 @@ class CommentDeleteTest extends CommentTest
     /**
      * @test
      */
-    public function user_without_special_permission_cannot_delete_another_users_comment()
+    public function user_without_special_permission_cannot_delete_another_users_comment(): void
     {
         $otherUser = $this->setupUser(null, ['ep-applications-comment']);
         Sanctum::actingAs($otherUser);
@@ -65,7 +65,7 @@ class CommentDeleteTest extends CommentTest
     /**
      * @test
      */
-    public function assertNotificationSent()
+    public function assertNotificationSent(): void
     {
         $submission = Submission::factory()->create([
             'group_id' => $this->expertPanel->group_id,
@@ -93,7 +93,7 @@ class CommentDeleteTest extends CommentTest
     /**
      * @test
      */
-    public function assertNotificationNotSent()
+    public function assertNotificationNotSent(): void
     {
         $submission = Submission::factory()->create([
             'group_id' => $this->expertPanel->group_id,

@@ -28,7 +28,7 @@ class ResendMailTest extends TestCase
     /**
      * @test
      */
-    public function user_without_permissions_cannot_resend_email()
+    public function user_without_permissions_cannot_resend_email(): void
     {
         $this->user->revokePermissionTo('mail-log-view');
         $this->makeRequest()
@@ -38,7 +38,7 @@ class ResendMailTest extends TestCase
     /**
      * @test
      */
-    public function user_with_permissions_can_resend_email()
+    public function user_with_permissions_can_resend_email(): void
     {
         Mail::fake();
 

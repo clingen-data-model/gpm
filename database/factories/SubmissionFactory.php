@@ -22,7 +22,7 @@ class SubmissionFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'group_id' => Group::factory()->create()->id,

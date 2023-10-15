@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (config('database.connections')[config('database.default')]['driver'] != 'sqlite') {
             Schema::table('groups', function (Blueprint $table) {
@@ -25,7 +25,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         if (config('database.connections')[config('database.default')]['driver'] != 'sqlite') {
             Schema::table('groups', function (Blueprint $table) {

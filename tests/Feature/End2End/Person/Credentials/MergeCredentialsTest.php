@@ -25,7 +25,7 @@ class MergeCredentialsTest extends TestCase
     /**
      * @test
      */
-    public function guest_cannot_merge_credentials()
+    public function guest_cannot_merge_credentials(): void
     {
         $this->makeRequest()
             ->assertStatus(401);
@@ -34,7 +34,7 @@ class MergeCredentialsTest extends TestCase
     /**
      * @test
      */
-    public function unpermissioned_user_cannot_merge_credentials()
+    public function unpermissioned_user_cannot_merge_credentials(): void
     {
         $this->login();
         $this->makeRequest()
@@ -44,7 +44,7 @@ class MergeCredentialsTest extends TestCase
     /**
      * @test
      */
-    public function permissioned_user_can_merge_credentials()
+    public function permissioned_user_can_merge_credentials(): void
     {
         $this->login(permissions: ['people-manage']);
         $this->makeRequest()
@@ -62,7 +62,7 @@ class MergeCredentialsTest extends TestCase
     /**
      * @test
      */
-    public function validates_required_params()
+    public function validates_required_params(): void
     {
         $this->login(permissions: ['people-manage']);
         $this->makeRequest([])
@@ -76,7 +76,7 @@ class MergeCredentialsTest extends TestCase
     /**
      * @test
      */
-    public function validates_both_credentials_exist()
+    public function validates_both_credentials_exist(): void
     {
         $this->login(permissions: ['people-manage']);
         $this->makeRequest(['obsolete_id' => 100, 'authority_id' => 99])
@@ -90,7 +90,7 @@ class MergeCredentialsTest extends TestCase
     /**
      * @test
      */
-    public function validates_obsolete_is_not_authority()
+    public function validates_obsolete_is_not_authority(): void
     {
         $this->login(permissions: ['people-manage']);
         $this->makeRequest(['obsolete_id' => $this->authority->id, 'authority_id' => $this->authority->id])

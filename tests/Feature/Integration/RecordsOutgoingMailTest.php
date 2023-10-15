@@ -22,7 +22,7 @@ class RecordsOutgoingMailTest extends TestCase
     /**
      * @test
      */
-    public function stores_email_in_emails_table()
+    public function stores_email_in_emails_table(): void
     {
         $inviteNotification = new UserDefinedMailNotification('test subject', 'body body body');
         Notification::send($this->person, $inviteNotification);
@@ -36,7 +36,7 @@ class RecordsOutgoingMailTest extends TestCase
     /**
      * @test
      */
-    public function associates_email_record_with_person()
+    public function associates_email_record_with_person(): void
     {
         $inviteNotification = new UserDefinedMailNotification('test subject', 'body body body');
         Notification::send($this->person, $inviteNotification);

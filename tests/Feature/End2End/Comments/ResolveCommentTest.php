@@ -23,7 +23,7 @@ class ResolveCommentTest extends CommentTest
     /**
      * @test
      */
-    public function permissioned_user_can_resolve_comment()
+    public function permissioned_user_can_resolve_comment(): void
     {
         Carbon::setTestNow('2022-07-11');
         $this->makeRequest()
@@ -42,7 +42,7 @@ class ResolveCommentTest extends CommentTest
     /**
      * @test
      */
-    public function unpermissioned_user_cannot_resolve_comment()
+    public function unpermissioned_user_cannot_resolve_comment(): void
     {
         $this->user->revokePermissionTo('ep-applications-comment');
         $this->makeRequest()
@@ -52,7 +52,7 @@ class ResolveCommentTest extends CommentTest
     /**
      * @test
      */
-    public function does_not_overwrite_not_null_resolved_at()
+    public function does_not_overwrite_not_null_resolved_at(): void
     {
         Carbon::setTestNow('2021-07-11');
         $originalDate = Carbon::now();
@@ -75,7 +75,7 @@ class ResolveCommentTest extends CommentTest
     /**
      * @test
      */
-    public function resolve_assertNotificationSent()
+    public function resolve_assertNotificationSent(): void
     {
         $submission = Submission::factory()->create([
             'group_id' => $this->expertPanel->group_id,
@@ -105,7 +105,7 @@ class ResolveCommentTest extends CommentTest
     /**
      * @test
      */
-    public function resolve_assertNotificationNotSent()
+    public function resolve_assertNotificationNotSent(): void
     {
         $submission = Submission::factory()->create([
             'group_id' => $this->expertPanel->group_id,

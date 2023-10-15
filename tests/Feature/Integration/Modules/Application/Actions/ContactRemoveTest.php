@@ -27,7 +27,7 @@ class ContactRemoveTest extends TestCase
     /**
      * @test
      */
-    public function logs_contact_removed()
+    public function logs_contact_removed(): void
     {
         $expertPanel = ExpertPanel::factory()->create();
         $person = Person::factory()->create();

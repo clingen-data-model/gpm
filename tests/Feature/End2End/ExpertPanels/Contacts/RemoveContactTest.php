@@ -37,7 +37,7 @@ class RemoveContactTest extends TestCase
     /**
      * @test
      */
-    public function removes_contact_from_application()
+    public function removes_contact_from_application(): void
     {
         $this->json('DELETE', '/api/applications/'.$this->expertPanel->uuid.'/contacts/'.$this->person->uuid)
             ->assertStatus(200);
@@ -51,7 +51,7 @@ class RemoveContactTest extends TestCase
     /**
      * @test
      */
-    public function responds_with_404_if_application_or_person_not_found()
+    public function responds_with_404_if_application_or_person_not_found(): void
     {
         $this->json('DELETE', '/api/applications/'.$this->expertPanel->uuid.'/contacts/bob-is-your-uncle')
             ->assertStatus(404);
@@ -63,7 +63,7 @@ class RemoveContactTest extends TestCase
     /**
      * @test
      */
-    public function response_with_422_if_person_not_a_contact_of_application()
+    public function response_with_422_if_person_not_a_contact_of_application(): void
     {
         $person2 = Person::factory()->create();
 

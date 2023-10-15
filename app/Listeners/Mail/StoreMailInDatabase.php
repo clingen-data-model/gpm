@@ -24,7 +24,7 @@ class StoreMailInDatabase
      *
      * @return void
      */
-    public function handle(MessageSent $event)
+    public function handle(MessageSent $event): void
     {
         $email = Email::create([
             'from' => $this->addressConverter->convert($event->message->getFrom()),

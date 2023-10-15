@@ -29,7 +29,7 @@ class UpdateExpertiseTest extends TestCase
     /**
      * @test
      */
-    public function unpermissioned_user_cannot_update_a_expertise()
+    public function unpermissioned_user_cannot_update_a_expertise(): void
     {
         $this->login();
         $this->makeRequest()
@@ -39,7 +39,7 @@ class UpdateExpertiseTest extends TestCase
     /**
      * @test
      */
-    public function permissioned_user_can_update_a_expertise()
+    public function permissioned_user_can_update_a_expertise(): void
     {
         $this->login(permissions: ['people-manage']);
         $this->makeRequest()
@@ -58,7 +58,7 @@ class UpdateExpertiseTest extends TestCase
     /**
      * @test
      */
-    public function validates_params()
+    public function validates_params(): void
     {
         $this->login(permissions: ['people-manage']);
         $this->makeRequest([])

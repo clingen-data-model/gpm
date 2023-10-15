@@ -14,7 +14,7 @@ class IncomingMessageStoreTest extends TestCase
     /**
      * @test
      */
-    public function stores_a_message_with_key_value_as_key()
+    public function stores_a_message_with_key_value_as_key(): void
     {
         $dxMessage = $this->makeDxMessage();
 
@@ -30,7 +30,7 @@ class IncomingMessageStoreTest extends TestCase
     /**
      * @test
      */
-    public function stores_a_message_with_uuid_value_if_no_key_and_is_present()
+    public function stores_a_message_with_uuid_value_if_no_key_and_is_present(): void
     {
         $data = $this->makeData();
         $data['key'] = null;
@@ -50,7 +50,7 @@ class IncomingMessageStoreTest extends TestCase
     /**
      * @test
      */
-    public function stores_message_with_topic_and_timestamp_as_key_if_no_key_or_uuid()
+    public function stores_message_with_topic_and_timestamp_as_key_if_no_key_or_uuid(): void
     {
         $data = $this->makeData();
         $payload = json_decode($data['payload']);

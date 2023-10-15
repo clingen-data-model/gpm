@@ -10,7 +10,7 @@ class ActivityTest extends TestCase
     /**
      * @test
      */
-    public function has_fillable_activity_type_attribute()
+    public function has_fillable_activity_type_attribute(): void
     {
         $activity = new Activity();
         $activity->fill(['activity_type' => 'test_type']);
@@ -21,7 +21,7 @@ class ActivityTest extends TestCase
     /**
      * @test
      */
-    public function has_type_accessor_and_mutator()
+    public function has_type_accessor_and_mutator(): void
     {
         $activity = new Activity(['activity_type' => 'test']);
 

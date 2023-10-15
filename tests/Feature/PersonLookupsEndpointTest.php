@@ -26,7 +26,7 @@ class PersonLookupsEndpointTest extends TestCase
     /**
      * @test
      */
-    public function can_get_list_of_countries()
+    public function can_get_list_of_countries(): void
     {
         $response = $this->json('GET', '/api/people/lookups/countries');
         $response->assertStatus(200);
@@ -37,7 +37,7 @@ class PersonLookupsEndpointTest extends TestCase
     /**
      * @test
      */
-    public function get_get_a_single_country()
+    public function get_get_a_single_country(): void
     {
         $response = $this->json('GET', '/api/people/lookups/countries/226');
         $response->assertStatus(200);
@@ -47,7 +47,7 @@ class PersonLookupsEndpointTest extends TestCase
     /**
      * @test
      */
-    public function can_get_a_list_of_primary_occupations()
+    public function can_get_a_list_of_primary_occupations(): void
     {
         $response = $this->json('GET', '/api/people/lookups/primary-occupations');
         $response->assertStatus(200);
@@ -58,7 +58,7 @@ class PersonLookupsEndpointTest extends TestCase
     /**
      * @test
      */
-    public function can_get_a_list_of_genders()
+    public function can_get_a_list_of_genders(): void
     {
         $response = $this->json('GET', '/api/people/lookups/genders');
         $response->assertStatus(200);

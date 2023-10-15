@@ -21,7 +21,7 @@ class InviteFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         $group = Group::factory()->create();
 

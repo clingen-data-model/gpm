@@ -31,7 +31,7 @@ class ListActivityLogsTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_get_group_activity_log()
+    public function unprivileged_user_cannot_get_group_activity_log(): void
     {
         $this->user->revokePermissionTo('groups-manage');
         $this->json('GET', $this->url)
@@ -41,7 +41,7 @@ class ListActivityLogsTest extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_get_group_activity_logs()
+    public function privileged_user_can_get_group_activity_logs(): void
     {
         $logEntries = Activity::factory(3)->create();
 

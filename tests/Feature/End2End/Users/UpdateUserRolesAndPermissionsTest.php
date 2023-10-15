@@ -26,7 +26,7 @@ class UpdateUserRolesAndPermissionsTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_update_user_roles_and_permissions()
+    public function unprivileged_user_cannot_update_user_roles_and_permissions(): void
     {
         $this->actingUser->revokePermissionTo('users-manage');
 
@@ -43,7 +43,7 @@ class UpdateUserRolesAndPermissionsTest extends TestCase
     /**
      * @test
      */
-    public function privileged_can_update_user_roles_and_permissions()
+    public function privileged_can_update_user_roles_and_permissions(): void
     {
         $this->makeRequest()
             ->assertStatus(200)

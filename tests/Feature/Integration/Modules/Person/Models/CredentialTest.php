@@ -17,7 +17,7 @@ class CredentialTest extends TestCase
     /**
      * @test
      */
-    public function implements_HasSynonymsInterface()
+    public function implements_HasSynonymsInterface(): void
     {
         $cred = Credential::factory()->make();
         $this->assertTrue(implementsInterface($cred, HasSynonymInterface::class));
@@ -26,7 +26,7 @@ class CredentialTest extends TestCase
     /**
      * @test
      */
-    public function can_add_synonyms()
+    public function can_add_synonyms(): void
     {
         $cred = Credential::factory()->create();
         $cred->addSynonyms('test');
@@ -42,7 +42,7 @@ class CredentialTest extends TestCase
     /**
      * @test
      */
-    public function only_adds_a_synonym_once()
+    public function only_adds_a_synonym_once(): void
     {
         $cred = Credential::factory()->create();
         $cred->addSynonyms(['elenor', 'chidi']);
@@ -54,7 +54,7 @@ class CredentialTest extends TestCase
     /**
      * @test
      */
-    public function can_search_synonyms()
+    public function can_search_synonyms(): void
     {
         $cred1 = Credential::factory()->create();
         $cred1->addSynonyms(['elli', 'blah', 'blub']);

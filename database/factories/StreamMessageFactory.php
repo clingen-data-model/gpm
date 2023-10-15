@@ -20,7 +20,7 @@ class StreamMessageFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         $success = (bool) rand(0, 1);
 

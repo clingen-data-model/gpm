@@ -25,7 +25,7 @@ class DeleteApplicationTest extends TestCase
     /**
      * @test
      */
-    public function user_must_be_authenticated_to_delete()
+    public function user_must_be_authenticated_to_delete(): void
     {
         $this->json('DELETE', $this->url)
             ->assertStatus(401);
@@ -34,7 +34,7 @@ class DeleteApplicationTest extends TestCase
     /**
      * @test
      */
-    public function authenticated_user_can_delete_application()
+    public function authenticated_user_can_delete_application(): void
     {
         Sanctum::actingAs($this->user);
         $response = $this->json('DELETE', $this->url)
@@ -49,7 +49,7 @@ class DeleteApplicationTest extends TestCase
     /**
      * @test
      */
-    public function activity_is_logged_when_application_is_deleted()
+    public function activity_is_logged_when_application_is_deleted(): void
     {
         Sanctum::actingAs($this->user);
         $response = $this->json('DELETE', $this->url);

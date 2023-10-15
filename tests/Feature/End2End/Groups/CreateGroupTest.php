@@ -22,7 +22,7 @@ class CreateGroupTest extends TestCase
     /**
      * @test
      */
-    public function unauthoried_user_cannot_create_a_group()
+    public function unauthoried_user_cannot_create_a_group(): void
     {
         $this->user->revokePermissionTo('groups-manage');
         $this->makeRequest()
@@ -32,7 +32,7 @@ class CreateGroupTest extends TestCase
     /**
      * @test
      */
-    public function validates_params()
+    public function validates_params(): void
     {
         $this->makeRequest([])
             ->assertStatus(422)
@@ -62,7 +62,7 @@ class CreateGroupTest extends TestCase
     /**
      * @test
      */
-    public function authorized_user_can_create_a_new_group()
+    public function authorized_user_can_create_a_new_group(): void
     {
         $this->makeRequest()
             ->assertStatus(201)
@@ -84,7 +84,7 @@ class CreateGroupTest extends TestCase
     /**
      * @test
      */
-    public function creates_expert_panel_if_group_type_is_ep()
+    public function creates_expert_panel_if_group_type_is_ep(): void
     {
         $response = $this->makeRequest([
             'name' => 'Test EP',

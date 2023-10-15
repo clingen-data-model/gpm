@@ -25,7 +25,7 @@ class DeleteCredentialTest extends TestCase
     /**
      * @test
      */
-    public function guest_cannot_delete_a_credential()
+    public function guest_cannot_delete_a_credential(): void
     {
         $this->makeRequest()
             ->assertStatus(401);
@@ -34,7 +34,7 @@ class DeleteCredentialTest extends TestCase
     /**
      * @test
      */
-    public function unpermissioned_user_cannot_delete_a_credential()
+    public function unpermissioned_user_cannot_delete_a_credential(): void
     {
         $this->login();
         $this->makeRequest()
@@ -44,7 +44,7 @@ class DeleteCredentialTest extends TestCase
     /**
      * @test
      */
-    public function permissioned_user_can_delete_a_credential()
+    public function permissioned_user_can_delete_a_credential(): void
     {
         $credentialId = $this->credential->id;
         $this->login(permissions: ['people-manage']);

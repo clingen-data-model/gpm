@@ -37,7 +37,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_users_cannot_remove_genes()
+    public function unprivileged_users_cannot_remove_genes(): void
     {
         $this->user->revokePermissionTo('ep-applications-manage');
 
@@ -55,7 +55,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
     /**
      * @test
      */
-    public function does_not_try_to_delete_if_group_is_not_an_expert_panel()
+    public function does_not_try_to_delete_if_group_is_not_an_expert_panel(): void
     {
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.wg.id')]);
         Sanctum::actingAs($this->user);
@@ -66,7 +66,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_remove_genes()
+    public function privileged_user_can_remove_genes(): void
     {
         Carbon::setTestNow('2021-11-01');
         Sanctum::actingAs($this->user);
@@ -83,7 +83,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
     /**
      * @test
      */
-    public function activity_logged()
+    public function activity_logged(): void
     {
         Sanctum::actingAs($this->user);
         $this->json('DELETE', $this->url.'/'.$this->gene1->id)

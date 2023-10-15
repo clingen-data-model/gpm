@@ -24,7 +24,7 @@ class SearchExpertisesTest extends TestCase
     /**
      * @test
      */
-    public function guests_cannot_search_expertises()
+    public function guests_cannot_search_expertises(): void
     {
         $this->makeRequest()
             ->assertStatus(401);
@@ -33,7 +33,7 @@ class SearchExpertisesTest extends TestCase
     /**
      * @test
      */
-    public function gets_all_expertises_if_no_keyword()
+    public function gets_all_expertises_if_no_keyword(): void
     {
         $this->login();
 
@@ -45,7 +45,7 @@ class SearchExpertisesTest extends TestCase
     /**
      * @test
      */
-    public function gets_matching_expertises_if_keyword_given()
+    public function gets_matching_expertises_if_keyword_given(): void
     {
         $this->login();
 
@@ -61,7 +61,7 @@ class SearchExpertisesTest extends TestCase
     /**
      * @test
      */
-    public function ignores_case()
+    public function ignores_case(): void
     {
         $this->login();
         $this->makeRequest('physician')
@@ -72,7 +72,7 @@ class SearchExpertisesTest extends TestCase
     /**
      * @test
      */
-    public function searches_against_synonyms()
+    public function searches_against_synonyms(): void
     {
         $this->login();
         $this->makeRequest('lcgc')

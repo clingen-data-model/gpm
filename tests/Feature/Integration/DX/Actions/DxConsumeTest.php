@@ -40,7 +40,7 @@ class DxConsumeTest extends TestCase
     /**
      * @test
      */
-    public function consumes_dx_messages_and_dispatches_processor()
+    public function consumes_dx_messages_and_dispatches_processor(): void
     {
         config(['queue.default' => 'redis']);
         Bus::fake();
@@ -57,7 +57,7 @@ class DxConsumeTest extends TestCase
     /**
      * @test
      */
-    public function consums_limited_number_of_messages_if_limit_supplied()
+    public function consums_limited_number_of_messages_if_limit_supplied(): void
     {
         config(['queue.default' => 'redis']);
         Bus::fake();

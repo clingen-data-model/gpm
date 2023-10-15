@@ -30,7 +30,7 @@ class FollowActionsTest extends TestCase
     /**
      * @test
      */
-    public function runs_followAction_on_target_event()
+    public function runs_followAction_on_target_event(): void
     {
         app()->make(GroupStatusUpdate::class)->handle($this->group, GroupStatus::find(2));
 
@@ -48,7 +48,7 @@ class FollowActionsTest extends TestCase
     /**
      * @test
      */
-    public function completes_followAction_if_follower_returns_true()
+    public function completes_followAction_if_follower_returns_true(): void
     {
         Carbon::setTestNow('2022-07-15');
         app()->make(GroupStatusUpdate::class)->handle($this->group, GroupStatus::find(4));

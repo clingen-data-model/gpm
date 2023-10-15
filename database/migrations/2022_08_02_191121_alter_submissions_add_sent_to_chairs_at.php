@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('submissions', function (Blueprint $table) {
             $table->datetime('sent_to_chairs_at')->nullable()->after('data');
@@ -24,7 +24,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('submissions', function (Blueprint $table) {
             $table->dropColumn('sent_to_chairs_at');

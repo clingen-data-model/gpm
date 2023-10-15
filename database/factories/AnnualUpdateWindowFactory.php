@@ -12,7 +12,7 @@ class AnnualUpdateWindowFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'start' => Carbon::now()->subDays(30),

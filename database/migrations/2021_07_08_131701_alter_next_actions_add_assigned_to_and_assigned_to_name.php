@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('next_actions', function (Blueprint $table) {
             if (! Schema::hasColumn('next_actions', 'assigned_to')) {
@@ -36,7 +36,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('next_actions', function (Blueprint $table) {
             $table->dropColumn('assigned_to');

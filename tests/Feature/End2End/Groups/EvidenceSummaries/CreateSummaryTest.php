@@ -37,7 +37,7 @@ class CreateSummaryTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_create_new_evidenceSummary()
+    public function unprivileged_user_cannot_create_new_evidenceSummary(): void
     {
         $this->user->revokePermissionTo('ep-applications-manage');
         $this->makeRequest()
@@ -47,7 +47,7 @@ class CreateSummaryTest extends TestCase
     /**
      * @test
      */
-    public function validates_required_data()
+    public function validates_required_data(): void
     {
         $this->makeRequest([])
             ->assertStatus(422)
@@ -61,7 +61,7 @@ class CreateSummaryTest extends TestCase
     /**
      * @test
      */
-    public function validates_data_format()
+    public function validates_data_format(): void
     {
         $this->makeRequest([
             'gene_id' => 1823198319,
@@ -78,7 +78,7 @@ class CreateSummaryTest extends TestCase
     /**
      * @test
      */
-    public function validates_group_is_vcep()
+    public function validates_group_is_vcep(): void
     {
         $this->vcep->group->update(['group_type_id' => config('groups.types.gcep.id')]);
         $this->makeRequest()
@@ -91,7 +91,7 @@ class CreateSummaryTest extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_add_an_evidence_summary()
+    public function privileged_user_can_add_an_evidence_summary(): void
     {
         $expectedData = [
             'expert_panel_id' => $this->vcep->id,
@@ -113,7 +113,7 @@ class CreateSummaryTest extends TestCase
     /**
      * @test
      */
-    public function logs_activity()
+    public function logs_activity(): void
     {
         $this->makeRequest();
 

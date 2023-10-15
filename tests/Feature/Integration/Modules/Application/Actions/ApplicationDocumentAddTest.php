@@ -25,7 +25,7 @@ class ApplicationDocumentAddTest extends TestCase
     /**
      * @test
      */
-    public function sets_version_based_existing_versions()
+    public function sets_version_based_existing_versions(): void
     {
         ApplicationDocumentAdd::run(
             expertPanelUuid: $this->expertPanel->uuid,
@@ -53,7 +53,7 @@ class ApplicationDocumentAddTest extends TestCase
     /**
      * @test
      */
-    public function sets_step_1_received_date_if_v1_and_scope_document_type()
+    public function sets_step_1_received_date_if_v1_and_scope_document_type(): void
     {
         Carbon::setTestNow('2021-08-30');
         ApplicationDocumentAdd::run(
@@ -73,7 +73,7 @@ class ApplicationDocumentAddTest extends TestCase
     /**
      * @test
      */
-    public function sets_step_4_received_date_if_v1_and_scope_document_type()
+    public function sets_step_4_received_date_if_v1_and_scope_document_type(): void
     {
         Carbon::setTestNow('2021-08-30');
         $this->document->document_type_id = config('documents.types.final-app.id');
@@ -94,7 +94,7 @@ class ApplicationDocumentAddTest extends TestCase
     /**
      * @test
      */
-    public function does_not_set_step_1_received_date_if_version_not_1()
+    public function does_not_set_step_1_received_date_if_version_not_1(): void
     {
         Carbon::setTestNow('2021-01-01');
 

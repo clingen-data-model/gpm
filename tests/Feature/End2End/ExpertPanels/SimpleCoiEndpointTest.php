@@ -27,7 +27,7 @@ class SimpleCoiEndpointTest extends TestCase
     /**
      * @test
      */
-    public function can_get_group_from_coi_code()
+    public function can_get_group_from_coi_code(): void
     {
         $this->json('GET', '/api/coi/'.$this->group->coi_code.'/group')
             ->assertStatus(200)
@@ -37,7 +37,7 @@ class SimpleCoiEndpointTest extends TestCase
     /**
      * @test
      */
-    public function returns_404_if_group_not_found_for_code()
+    public function returns_404_if_group_not_found_for_code(): void
     {
         $this->json('GET', '/api/coi/some-fake-code/group')
             ->assertStatus(404);
@@ -46,7 +46,7 @@ class SimpleCoiEndpointTest extends TestCase
     /**
      * @test
      */
-    public function validates_coi_response_data()
+    public function validates_coi_response_data(): void
     {
         $this->json('POST', '/api/coi/'.$this->group->coi_code, [])
             ->assertStatus(422)
@@ -64,7 +64,7 @@ class SimpleCoiEndpointTest extends TestCase
     /**
      * @test
      */
-    public function stores_valid_coi_response()
+    public function stores_valid_coi_response(): void
     {
         $groupMember = GroupMember::factory()->create();
         $data = [
@@ -95,7 +95,7 @@ class SimpleCoiEndpointTest extends TestCase
     /**
      * @test
      */
-    public function stores_legacy_coi()
+    public function stores_legacy_coi(): void
     {
         $document = Document::factory()->create([
             'owner_id' => $this->group->id,

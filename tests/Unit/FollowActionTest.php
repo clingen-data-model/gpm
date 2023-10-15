@@ -15,7 +15,7 @@ class FollowActionTest extends TestCase
     /**
      * @test
      */
-    public function can_exec_a_follower()
+    public function can_exec_a_follower(): void
     {
         $fa = new FollowAction([
             'event_class' => TestEvent::class,

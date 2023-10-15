@@ -34,7 +34,7 @@ class TaskIndexTest extends TestCase
     /**
      * @test
      */
-    public function can_get_all_tasks_for_a_single_assignee()
+    public function can_get_all_tasks_for_a_single_assignee(): void
     {
         $this->makeRequest([
             'where' => [
@@ -49,7 +49,7 @@ class TaskIndexTest extends TestCase
     /**
      * @test
      */
-    public function can_get_all_tasks_for_multiple_assignees_of_the_same_type()
+    public function can_get_all_tasks_for_multiple_assignees_of_the_same_type(): void
     {
         $vcep3 = ExpertPanel::factory()->vcep()->create();
         $task1 = (new TaskCreate)->handle($vcep3->group, 'sustained-curation-review');

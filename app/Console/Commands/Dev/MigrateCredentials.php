@@ -38,7 +38,7 @@ class MigrateCredentials extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $people = Person::whereNotNull('legacy_credentials')->withTrashed()
                     // ->whereIn('id', [1948, 2017, 1746, 266, 342, 974, 984, 1147, 1187, 1228, 720, 1976, 2107])

@@ -32,7 +32,7 @@ class MarkFinalTest extends TestCase
     /**
      * @test
      */
-    public function marks_a_document_final()
+    public function marks_a_document_final(): void
     {
         Sanctum::actingAs($this->user);
         $this->call('POST', $this->docUrl)
@@ -45,7 +45,7 @@ class MarkFinalTest extends TestCase
     /**
      * @test
      */
-    public function marks_any_previous_final_documents_for_same_application_and_type_as_not_final()
+    public function marks_any_previous_final_documents_for_same_application_and_type_as_not_final(): void
     {
         Sanctum::actingAs($this->user);
         $d = Document::factory()->make(['metadata' => ['is_final' => 1], 'document_type_id' => $this->document->document_type_id]);
@@ -66,7 +66,7 @@ class MarkFinalTest extends TestCase
     /**
      * @test
      */
-    public function event_recorded_when_marked_final()
+    public function event_recorded_when_marked_final(): void
     {
         Sanctum::actingAs($this->user);
         $this->call('POST', $this->docUrl)

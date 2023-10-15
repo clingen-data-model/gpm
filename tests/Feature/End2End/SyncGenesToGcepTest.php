@@ -38,7 +38,7 @@ class SyncGenesToGcepTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_can_not_add_genes_to_an_gcep()
+    public function unprivileged_user_can_not_add_genes_to_an_gcep(): void
     {
         $this->user->revokePermissionTo('ep-applications-manage');
 
@@ -53,7 +53,7 @@ class SyncGenesToGcepTest extends TestCase
     /**
      * @test
      */
-    public function validates_input_for_gceps()
+    public function validates_input_for_gceps(): void
     {
         $this->json('POST', $this->url, ['genes' => ['ZXC', 'ABC1']])
             ->assertStatus(422)
@@ -68,7 +68,7 @@ class SyncGenesToGcepTest extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_add_new_genes_to_a_gcep()
+    public function privileged_user_can_add_new_genes_to_a_gcep(): void
     {
         $this->json('POST', $this->url, [
             'genes' => ['ABC1', 'BCD'],
@@ -95,7 +95,7 @@ class SyncGenesToGcepTest extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_remove_genes()
+    public function privileged_user_can_remove_genes(): void
     {
         // Add some genes to the expert panel
         $this->expertPanel->genes()->saveMany([
@@ -124,7 +124,7 @@ class SyncGenesToGcepTest extends TestCase
     /**
      * @test
      */
-    public function logs_appropriate_activities()
+    public function logs_appropriate_activities(): void
     {
         $this->seedGenes([
             ['hgnc_id' => 888, 'gene_symbol' => 'DEF'],

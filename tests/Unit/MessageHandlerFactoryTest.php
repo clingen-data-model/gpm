@@ -21,7 +21,7 @@ class MessageHandlerFactoryTest extends TestCase
     /**
      * @test
      */
-    public function throws_unsupportedIncomingMessage_exception_if_type_not_supported()
+    public function throws_unsupportedIncomingMessage_exception_if_type_not_supported(): void
     {
         $message = new IncomingStreamMessage([
             'topic' => 'test-test',
@@ -42,7 +42,7 @@ class MessageHandlerFactoryTest extends TestCase
     /**
      * @test
      */
-    public function returns_CspecDataSyncProcessor_if_cspec_general_topic_by_default()
+    public function returns_CspecDataSyncProcessor_if_cspec_general_topic_by_default(): void
     {
         $message = new IncomingStreamMessage([
             'topic' => config('dx.topics.incoming.cspec-general'),
@@ -62,7 +62,7 @@ class MessageHandlerFactoryTest extends TestCase
     /**
      * @test
      */
-    public function returns_event_type_based_handler()
+    public function returns_event_type_based_handler(): void
     {
         $message = new IncomingStreamMessage([
             'payload' => (object) ['cspecDoc' => [
@@ -79,7 +79,7 @@ class MessageHandlerFactoryTest extends TestCase
     /**
      * @test
      */
-    public function returns_ErrorMessageHandler_if_error_code_not_0()
+    public function returns_ErrorMessageHandler_if_error_code_not_0(): void
     {
         $message = new IncomingStreamMessage(['error_code' => 30]);
         $this->assertInstanceOf(ErrorMessageHandler::class, $this->factory->make($message));

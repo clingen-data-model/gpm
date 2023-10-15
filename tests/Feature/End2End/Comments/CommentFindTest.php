@@ -13,7 +13,7 @@ class CommentFindTest extends CommentTest
     /**
      * @test
      */
-    public function can_get_a_comment()
+    public function can_get_a_comment(): void
     {
         $this->json('get', '/api/comments/'.$this->comment->id)
             ->assertStatus(200)

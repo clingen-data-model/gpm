@@ -36,7 +36,7 @@ class DeleteDocumentTest extends TestCase
     /**
      * @test
      */
-    public function it_can_delete_a_document()
+    public function it_can_delete_a_document(): void
     {
         $this->json('DELETE', $this->docUrl)
             ->assertStatus(200);
@@ -50,7 +50,7 @@ class DeleteDocumentTest extends TestCase
     /**
      * @test
      */
-    public function it_logs_a_document_deleted_event()
+    public function it_logs_a_document_deleted_event(): void
     {
         $this->json('DELETE', $this->docUrl)
             ->assertStatus(200);

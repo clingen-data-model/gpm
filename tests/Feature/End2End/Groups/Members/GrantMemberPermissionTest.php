@@ -34,7 +34,7 @@ class GrantMemberPermissionTest extends TestCase
     /**
      * @test
      */
-    public function can_grant_group_permissions_to_group_member()
+    public function can_grant_group_permissions_to_group_member(): void
     {
         $response = $this->json('POST', $this->url, ['permission_ids' => $this->permissions->pluck('id')->toArray()]);
         $response->assertStatus(200);
@@ -51,7 +51,7 @@ class GrantMemberPermissionTest extends TestCase
     /**
      * @test
      */
-    public function logs_permission_granted_to_member()
+    public function logs_permission_granted_to_member(): void
     {
         $response = $this->json('POST', $this->url, ['permission_ids' => $this->permissions->pluck('id')->toArray()]);
         $response->assertStatus(200);
@@ -70,7 +70,7 @@ class GrantMemberPermissionTest extends TestCase
     /**
      * @test
      */
-    public function validates_required_params()
+    public function validates_required_params(): void
     {
         $response = $this->json('POST', $this->url, []);
         $response->assertStatus(422);
@@ -83,7 +83,7 @@ class GrantMemberPermissionTest extends TestCase
     /**
      * @test
      */
-    public function validates_permission_ids_is_array()
+    public function validates_permission_ids_is_array(): void
     {
         $response = $this->json('POST', $this->url, ['permission_ids' => 1]);
         $response->assertStatus(422);
@@ -96,7 +96,7 @@ class GrantMemberPermissionTest extends TestCase
     /**
      * @test
      */
-    public function validates_permissions_exist()
+    public function validates_permissions_exist(): void
     {
         $response = $this->json('POST', $this->url, ['permission_ids' => [666]]);
         $response->assertStatus(422);
@@ -109,7 +109,7 @@ class GrantMemberPermissionTest extends TestCase
     /**
      * @test
      */
-    public function validates_permission_is_scoped_to_group()
+    public function validates_permission_is_scoped_to_group(): void
     {
         $sysPerm = config('permission.models.permission')::factory()->create(['scope' => 'system']);
         $response = $this->json('POST', $this->url, ['permission_ids' => [$sysPerm->id]]);

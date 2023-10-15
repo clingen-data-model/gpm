@@ -21,7 +21,7 @@ class PersonCreateTest extends TestCase
      * @group dx
      * @group gpm-person-events
      */
-    public function publishes_created_event_to_gpm_person_events()
+    public function publishes_created_event_to_gpm_person_events(): void
     {
         $user = $this->setupUser();
 

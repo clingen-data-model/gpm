@@ -12,7 +12,7 @@ class LogEntryResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         $data = parent::toArray($request);
         $data['step'] = $this->step;

@@ -45,7 +45,7 @@ class DeleteNextActionTest extends TestCase
     /**
      * @test
      */
-    public function deletes_next_action()
+    public function deletes_next_action(): void
     {
         $this->json('DELETE', $this->baseUrl.'/'.$this->nextAction->id)
             ->assertStatus(200);

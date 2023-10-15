@@ -30,7 +30,7 @@ class PersonEndpointTest extends TestCase
     /**
      * @test
      */
-    public function authed_user_can_get_a_person()
+    public function authed_user_can_get_a_person(): void
     {
         $person = $this->people->first();
         $this->json('get', '/api/people/'.$person->uuid)

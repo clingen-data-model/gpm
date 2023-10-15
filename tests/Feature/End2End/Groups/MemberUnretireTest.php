@@ -29,7 +29,7 @@ class MemberUnretireTest extends TestCase
     /**
      * @test
      */
-    public function unpermissioned_user_cannot_unretire_a_member()
+    public function unpermissioned_user_cannot_unretire_a_member(): void
     {
         $this->user->revokePermissionTo('groups-manage');
 
@@ -40,7 +40,7 @@ class MemberUnretireTest extends TestCase
     /**
      * @test
      */
-    public function system_permissioned_user_can_unretire_a_member()
+    public function system_permissioned_user_can_unretire_a_member(): void
     {
         $this->makeRequest()
             ->assertStatus(200);
@@ -55,7 +55,7 @@ class MemberUnretireTest extends TestCase
     /**
      * @test
      */
-    public function membersRetire_permissioned_member_can_unretire_member()
+    public function membersRetire_permissioned_member_can_unretire_member(): void
     {
         $this->user->revokePermissionTo('groups-manage');
 

@@ -32,7 +32,7 @@ class UploadTest extends TestCase
     /**
      * @test
      */
-    public function can_upload_step_1_document_to_application()
+    public function can_upload_step_1_document_to_application(): void
     {
         Carbon::setTestNow('2021-01-01');
 
@@ -64,7 +64,7 @@ class UploadTest extends TestCase
     /**
      * @test
      */
-    public function sets_version_based_existing_versions()
+    public function sets_version_based_existing_versions(): void
     {
         $document = Document::factory()->make(['document_type_id' => 1]);
         (new ApplicationDocumentAdd)->handle(
@@ -91,7 +91,7 @@ class UploadTest extends TestCase
     /**
      * @test
      */
-    public function validates_required_fields()
+    public function validates_required_fields(): void
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/documents', [])
@@ -106,7 +106,7 @@ class UploadTest extends TestCase
     /**
      * @test
      */
-    public function validates_field_types()
+    public function validates_field_types(): void
     {
         $data = [
             'document_type_id' => 999,
@@ -129,7 +129,7 @@ class UploadTest extends TestCase
     /**
      * @test
      */
-    public function sets_is_final_based_on_input()
+    public function sets_is_final_based_on_input(): void
     {
         Carbon::setTestNow('2021-01-01');
 

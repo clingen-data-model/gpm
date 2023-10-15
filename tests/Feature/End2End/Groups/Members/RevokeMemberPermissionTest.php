@@ -36,7 +36,7 @@ class RevokeMemberPermissionTest extends TestCase
     /**
      * @test
      */
-    public function can_revoke_a_permission()
+    public function can_revoke_a_permission(): void
     {
         $response = $this->json('DELETE', $this->url.'/'.$this->permissions->first()->id);
         $response->assertStatus(200);
@@ -63,7 +63,7 @@ class RevokeMemberPermissionTest extends TestCase
     /**
      * @test
      */
-    public function logs_permission_revoked_activity()
+    public function logs_permission_revoked_activity(): void
     {
         $response = $this->json('DELETE', $this->url.'/'.$this->permissions->first()->id);
         $response->assertStatus(200);

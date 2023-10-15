@@ -12,7 +12,7 @@ class PersonAsMemberResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         // $data = parent::toArray($request);
         $data = [

@@ -26,7 +26,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
-    public function name_is_working_name_if_long_base_name_is_null()
+    public function name_is_working_name_if_long_base_name_is_null(): void
     {
         $expertPanel = ExpertPanel::factory()->create(['long_base_name' => null]);
 
@@ -36,7 +36,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
-    public function name_is_long_base_name_if_not_null()
+    public function name_is_long_base_name_if_not_null(): void
     {
         $expertPanel = ExpertPanel::factory()->create(['long_base_name' => 'Beans']);
 
@@ -46,7 +46,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
-    public function appends_clingen_url_based_on_affiliation_id()
+    public function appends_clingen_url_based_on_affiliation_id(): void
     {
         $expertPanel = ExpertPanel::factory()->make();
 
@@ -60,7 +60,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
-    public function can_get_first_scope_document()
+    public function can_get_first_scope_document(): void
     {
         $expertPanel = ExpertPanel::factory()->create();
         $document1 = Document::factory()
@@ -84,7 +84,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
-    public function can_get_first_final_document()
+    public function can_get_first_final_document(): void
     {
         $expertPanel = ExpertPanel::factory()->create();
         $document1 = Document::factory()
@@ -109,7 +109,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
-    public function removes_epType_display_name_suffix_when_storing_long_and_short_base_name()
+    public function removes_epType_display_name_suffix_when_storing_long_and_short_base_name(): void
     {
         $expertPanel = ExpertPanel::factory()->make();
 

@@ -11,7 +11,7 @@ class CoiDataCasterTest extends TestCase
     /**
      * @test
      */
-    public function it_gets_a_CoiData_object_from_a_json_string()
+    public function it_gets_a_CoiData_object_from_a_json_string(): void
     {
         $json = json_encode([
             'coi' => 1,
@@ -27,7 +27,7 @@ class CoiDataCasterTest extends TestCase
     /**
      * @test
      */
-    public function it_converts_a_CoiData_object_to_a_json_string()
+    public function it_converts_a_CoiData_object_to_a_json_string(): void
     {
         $data = (object) ['coi' => 1, 'coi_detail' => 'bob\''];
         $coiData = new CoiData($data);

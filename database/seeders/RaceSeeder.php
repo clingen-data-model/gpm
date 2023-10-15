@@ -11,7 +11,7 @@ class RaceSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $items = [
             ['id' => 1, 'name' => 'American Indian or Alaska Native'],

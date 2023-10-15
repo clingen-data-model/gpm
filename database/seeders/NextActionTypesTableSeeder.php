@@ -11,7 +11,7 @@ class NextActionTypesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $this->seedFromConfig('next_actions.types', NextActionType::class);
     }

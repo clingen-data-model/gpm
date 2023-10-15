@@ -27,7 +27,7 @@ class StepManagerFactoryTest extends TestCase
     /**
      * @test
      */
-    public function returns_GcepDefinitionStepManager_if_gcep_and_step_1()
+    public function returns_GcepDefinitionStepManager_if_gcep_and_step_1(): void
     {
         $this->returnsManagerForTypeAndStep(GcepDefinitionStepManager::class, config('expert_panels.types.gcep.id'), 1);
     }
@@ -35,7 +35,7 @@ class StepManagerFactoryTest extends TestCase
     /**
      * @test
      */
-    public function returns_VcepDefinitionStepManager_if_vcep_and_step_1()
+    public function returns_VcepDefinitionStepManager_if_vcep_and_step_1(): void
     {
         $this->returnsManagerForTypeAndStep(VcepDefinitionStepManager::class, config('expert_panels.types.vcep.id'), 1);
     }
@@ -43,7 +43,7 @@ class StepManagerFactoryTest extends TestCase
     /**
      * @test
      */
-    public function returns_VcepDraftStepManager_if_vcep_and_step_2()
+    public function returns_VcepDraftStepManager_if_vcep_and_step_2(): void
     {
         $this->returnsManagerForTypeAndStep(VcepDraftStepManager::class, config('expert_panels.types.vcep.id'), 2);
     }
@@ -51,7 +51,7 @@ class StepManagerFactoryTest extends TestCase
     /**
      * @test
      */
-    public function returns_VcepPilotStepManager_if_vcep_and_step_3()
+    public function returns_VcepPilotStepManager_if_vcep_and_step_3(): void
     {
         $this->returnsManagerForTypeAndStep(VcepPilotStepManager::class, config('expert_panels.types.vcep.id'), 3);
     }
@@ -59,7 +59,7 @@ class StepManagerFactoryTest extends TestCase
     /**
      * @test
      */
-    public function returns_VcepFinalizeStepManager_if_vcep_and_step_3()
+    public function returns_VcepFinalizeStepManager_if_vcep_and_step_3(): void
     {
         $this->returnsManagerForTypeAndStep(VcepFinalizeStepManager::class, config('expert_panels.types.vcep.id'), 4);
     }
@@ -67,7 +67,7 @@ class StepManagerFactoryTest extends TestCase
     /**
      * @test
      */
-    public function throws_UnexpectedStepException_if_step_cant_be_matched()
+    public function throws_UnexpectedStepException_if_step_cant_be_matched(): void
     {
         $factory = new StepManagerFactory();
         $expertPanel = new ExpertPanel([

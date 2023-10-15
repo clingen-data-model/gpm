@@ -45,7 +45,7 @@ class UpdateNextActionTest extends TestCase
     /**
      * @test
      */
-    public function updates_next_action()
+    public function updates_next_action(): void
     {
         $this->json(
             'PUT',
@@ -74,7 +74,7 @@ class UpdateNextActionTest extends TestCase
     /**
      * @test
      */
-    public function logs_next_action_updated()
+    public function logs_next_action_updated(): void
     {
         $this->json(
             'PUT',

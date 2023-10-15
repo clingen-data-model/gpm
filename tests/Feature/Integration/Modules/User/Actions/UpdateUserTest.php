@@ -21,7 +21,7 @@ class UpdateUserTest extends TestCase
     /**
      * @test
      */
-    public function updates_user_details()
+    public function updates_user_details(): void
     {
         UserUpdate::run(id: $this->user->id, name: 'Lana Kain', email: 'lana.kain@archer.com');
 
@@ -31,7 +31,7 @@ class UpdateUserTest extends TestCase
     /**
      * @test
      */
-    public function logs_user_created_event()
+    public function logs_user_created_event(): void
     {
         $user = UserUpdate::run(id: $this->user->id, name: 'Lana Kain', email: 'lana.kain@archer.com');
 
@@ -49,7 +49,7 @@ class UpdateUserTest extends TestCase
     /**
      * @test
      */
-    public function does_not_create_activity_log_entry_if_no_change()
+    public function does_not_create_activity_log_entry_if_no_change(): void
     {
         UserUpdate::run(id: $this->user->id, name: 'Lana Kane', email: 'lana@archer.com');
 

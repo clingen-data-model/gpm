@@ -17,7 +17,7 @@ class JudgementDeleteTest extends JudgementTest
     /**
      * @test
      */
-    public function person_other_than_approver_cannot_delete_anothers_judgment()
+    public function person_other_than_approver_cannot_delete_anothers_judgment(): void
     {
         $this->otherUser = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
 
@@ -29,7 +29,7 @@ class JudgementDeleteTest extends JudgementTest
     /**
      * @test
      */
-    public function user_with_ep_manage_applications_can_delete_another_users_judgement()
+    public function user_with_ep_manage_applications_can_delete_another_users_judgement(): void
     {
         $this->otherUser = $this->setupUserWithPerson(permissions: ['ep-applications-manage']);
         Sanctum::actingAs($this->otherUser);
@@ -45,7 +45,7 @@ class JudgementDeleteTest extends JudgementTest
     /**
      * @test
      */
-    public function user_who_made_judgement_can_delete_it()
+    public function user_who_made_judgement_can_delete_it(): void
     {
         $this->makeRequest()
             ->assertStatus(200);
@@ -58,7 +58,7 @@ class JudgementDeleteTest extends JudgementTest
     /**
      * @test
      */
-    public function notifies_other_notifiables_when_judgement_deleted()
+    public function notifies_other_notifiables_when_judgement_deleted(): void
     {
         $otherApprover = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
         $commenter = $this->setupUserWithPerson(permissions: ['ep-applications-comment']);

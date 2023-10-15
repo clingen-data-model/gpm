@@ -48,7 +48,7 @@ class SubmitApplicationStepTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_submit_application()
+    public function unprivileged_user_cannot_submit_application(): void
     {
         $this->user->revokePermissionTo('ep-applications-manage');
         $this->makeRequest()
@@ -58,7 +58,7 @@ class SubmitApplicationStepTest extends TestCase
     /**
      * @test
      */
-    public function a_privileged_user_can_submit_application()
+    public function a_privileged_user_can_submit_application(): void
     {
         $this->makeRequest()
             ->assertStatus(201)
@@ -95,7 +95,7 @@ class SubmitApplicationStepTest extends TestCase
     /**
      * @test
      */
-    public function automatically_sets_type_to_match_current_step()
+    public function automatically_sets_type_to_match_current_step(): void
     {
         $this->expertPanel->current_step = 4;
         $this->expertPanel->save();
@@ -112,7 +112,7 @@ class SubmitApplicationStepTest extends TestCase
     /**
      * @test
      */
-    public function sets_step_1_date_received_set_when_definition_submitted()
+    public function sets_step_1_date_received_set_when_definition_submitted(): void
     {
         Carbon::setTestNow('2022-01-01');
         $this->expertPanel->current_step = 1;
@@ -135,7 +135,7 @@ class SubmitApplicationStepTest extends TestCase
     /**
      * @test
      */
-    public function sets_step_4_date_received_set_when_sustainedcuration_submitted()
+    public function sets_step_4_date_received_set_when_sustainedcuration_submitted(): void
     {
         Carbon::setTestNow('2022-01-01');
         $this->expertPanel->current_step = 4;
@@ -158,7 +158,7 @@ class SubmitApplicationStepTest extends TestCase
     /**
      * @test
      */
-    public function fires_ApplicationStepSubmitted_event()
+    public function fires_ApplicationStepSubmitted_event(): void
     {
         Event::fake(ApplicationStepSubmitted::class);
         $this->makeRequest()
@@ -170,7 +170,7 @@ class SubmitApplicationStepTest extends TestCase
     /**
      * @test
      */
-    public function records_ApplicationStepSubmitted_activity()
+    public function records_ApplicationStepSubmitted_activity(): void
     {
         $this->makeRequest()
             ->assertStatus(201);
@@ -185,7 +185,7 @@ class SubmitApplicationStepTest extends TestCase
     /**
      * @test
      */
-    public function cdwg_oc_receives_mail_of_submitted_vcep()
+    public function cdwg_oc_receives_mail_of_submitted_vcep(): void
     {
         Mail::fake();
 
@@ -202,7 +202,7 @@ class SubmitApplicationStepTest extends TestCase
     /**
      * @test
      */
-    public function gcwg_receives_mail_of_submitted_vcep()
+    public function gcwg_receives_mail_of_submitted_vcep(): void
     {
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.gcep.id')]);
 
@@ -221,7 +221,7 @@ class SubmitApplicationStepTest extends TestCase
     /**
      * @test
      */
-    public function contacts_receive_receipt_of_submission_email()
+    public function contacts_receive_receipt_of_submission_email(): void
     {
         $person = Person::factory()->create();
         $this->setupMember($this->expertPanel->group, $person, ['is_contact' => true]);
@@ -241,7 +241,7 @@ class SubmitApplicationStepTest extends TestCase
     /**
      * @test
      */
-    public function completes_pending_revise_and_resubmit_next_actions()
+    public function completes_pending_revise_and_resubmit_next_actions(): void
     {
         Carbon::setTestNow('2022-06-01');
         $nextAction = app()->make(NextActionCreate::class)->handle(
@@ -262,7 +262,7 @@ class SubmitApplicationStepTest extends TestCase
     /**
      * @test
      */
-    public function next_action_created_for_admin_group()
+    public function next_action_created_for_admin_group(): void
     {
         Carbon::setTestNow('2022-06-01');
         $this->makeRequest();
@@ -289,7 +289,7 @@ class SubmitApplicationStepTest extends TestCase
     /**
      * @test
      */
-    public function stores_snapshot_of_application_when_submitted()
+    public function stores_snapshot_of_application_when_submitted(): void
     {
         $this->makeRequest()
             ->assertStatus(201);

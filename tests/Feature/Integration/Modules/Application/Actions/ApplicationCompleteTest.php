@@ -25,7 +25,7 @@ class ApplicationCompleteTest extends TestCase
     /**
      * @test
      */
-    public function raises_ApplicationCompleted_event()
+    public function raises_ApplicationCompleted_event(): void
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create([
             'current_step' => 1,
@@ -40,7 +40,7 @@ class ApplicationCompleteTest extends TestCase
     /**
      * @test
      */
-    public function logs_Application_completed()
+    public function logs_Application_completed(): void
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create([
             'current_step' => 1,

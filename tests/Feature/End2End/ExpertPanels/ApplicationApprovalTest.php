@@ -46,7 +46,7 @@ class ApplicationApprovalTest extends TestCase
     /**
      * @test
      */
-    public function can_approve_step()
+    public function can_approve_step(): void
     {
         $approvalData = [
             'date_approved' => Carbon::now(),
@@ -67,7 +67,7 @@ class ApplicationApprovalTest extends TestCase
     /**
      * @test
      */
-    public function returns_404_if_application_not_found()
+    public function returns_404_if_application_not_found(): void
     {
         $approvalData = [
             'date_approved' => Carbon::now(),
@@ -82,7 +82,7 @@ class ApplicationApprovalTest extends TestCase
     /**
      * @test
      */
-    public function validates_date_approved()
+    public function validates_date_approved(): void
     {
         $approvalData = [
             'date_approved' => 'Carbon::now()',
@@ -96,7 +96,7 @@ class ApplicationApprovalTest extends TestCase
     /**
      * @test
      */
-    public function sends_no_mail_if_not_specified()
+    public function sends_no_mail_if_not_specified(): void
     {
         $approvalData = [
             'date_approved' => Carbon::now(),
@@ -114,7 +114,7 @@ class ApplicationApprovalTest extends TestCase
     /**
      * @test
      */
-    public function sends_mail_to_contacts_if_specified()
+    public function sends_mail_to_contacts_if_specified(): void
     {
         $person1 = Person::factory()->create();
         ContactAdd::run($this->expertPanel->uuid, $person1->uuid);
@@ -151,7 +151,7 @@ class ApplicationApprovalTest extends TestCase
     /**
      * @test
      */
-    public function sends_database_notification_to_contacts_if_specified()
+    public function sends_database_notification_to_contacts_if_specified(): void
     {
         $person1 = Person::factory()->create();
         ContactAdd::run($this->expertPanel->uuid, $person1->uuid);
@@ -176,7 +176,7 @@ class ApplicationApprovalTest extends TestCase
     /**
      * @test
      */
-    public function test_mailable_content()
+    public function test_mailable_content(): void
     {
         $subject = 'This is a <strong>test</strong> custom message';
         $body = '<p>this is the body of a <em>custom message<em>.</p>';
@@ -199,7 +199,7 @@ class ApplicationApprovalTest extends TestCase
     /**
      * @test
      */
-    public function marks_submission_approved_if_exists()
+    public function marks_submission_approved_if_exists(): void
     {
         $person = Person::factory()->create();
         $submission = Submission::factory()->create([
@@ -223,7 +223,7 @@ class ApplicationApprovalTest extends TestCase
     /**
      * @test
      */
-    public function records_submission_approved_if_exists()
+    public function records_submission_approved_if_exists(): void
     {
         $person = Person::factory()->create();
         $submission = Submission::factory()->create([
@@ -248,7 +248,7 @@ class ApplicationApprovalTest extends TestCase
     /**
      * @test
      */
-    public function group_status_set_to_active_when_last_step_is_approved()
+    public function group_status_set_to_active_when_last_step_is_approved(): void
     {
         $this->expertPanel->current_step = 4;
         $this->expertPanel->save();
@@ -274,7 +274,7 @@ class ApplicationApprovalTest extends TestCase
     /**
      * @test
      */
-    public function completes_review_submission_next_action_if_any_pending()
+    public function completes_review_submission_next_action_if_any_pending(): void
     {
         $this->runSeeder(NextActionAssigneesTableSeeder::class);
         $this->runSeeder(NextActionTypesTableSeeder::class);

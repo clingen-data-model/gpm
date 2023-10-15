@@ -30,7 +30,7 @@ class DeleteGroupTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_delete_group()
+    public function unprivileged_user_cannot_delete_group(): void
     {
         $this->user->revokePermissionTo('groups-manage');
 
@@ -41,7 +41,7 @@ class DeleteGroupTest extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_delete_group()
+    public function privileged_user_can_delete_group(): void
     {
         $this->makeRequest()
             ->assertStatus(200);
@@ -52,7 +52,7 @@ class DeleteGroupTest extends TestCase
     /**
      * @test
      */
-    public function group_memberships_are_marked_deleted_when_group_deleted()
+    public function group_memberships_are_marked_deleted_when_group_deleted(): void
     {
         $groupMember = GroupMember::factory()->create(['group_id' => $this->group->id]);
 
@@ -69,7 +69,7 @@ class DeleteGroupTest extends TestCase
     /**
      * @test
      */
-    public function group_expert_panel_and_ep_is_deleted()
+    public function group_expert_panel_and_ep_is_deleted(): void
     {
         $expertPanel = ExpertPanel::factory()->create(['group_id' => $this->group->id]);
 

@@ -23,7 +23,7 @@ class RecordEvent
      *
      * @return void
      */
-    public function handle(RecordableEvent $event)
+    public function handle(RecordableEvent $event): void
     {
         $causer = Auth::user();
 

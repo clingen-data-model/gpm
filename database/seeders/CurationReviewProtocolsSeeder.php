@@ -11,7 +11,7 @@ class CurationReviewProtocolsSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $this->seedFromConfig('expert_panels.curation_protocols', CurationReviewProtocol::class);
     }

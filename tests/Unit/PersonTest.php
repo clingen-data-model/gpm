@@ -20,7 +20,7 @@ class PersonTest extends TestCase
     /**
      * @test
      */
-    public function can_determine_if_person_in_group()
+    public function can_determine_if_person_in_group(): void
     {
         $groupMember = GroupMember::factory()->create();
         $this->assertTrue($groupMember->person->inGroup($groupMember->group));

@@ -19,7 +19,7 @@ class IncomingStreamMessageFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'topic' => 'cspec-general-events',

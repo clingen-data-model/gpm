@@ -7,7 +7,7 @@ class CommentTypeListTest extends CommentTest
     /**
      * @test
      */
-    public function retrieves_all_comment_types()
+    public function retrieves_all_comment_types(): void
     {
         $this->json('get', '/api/comment-types')
             ->assertStatus(200)

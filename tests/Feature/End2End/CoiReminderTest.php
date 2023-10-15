@@ -31,7 +31,7 @@ class CoiReminderTest extends TestCase
     /**
      * @test
      */
-    public function groupMember_can_scope_by_hasPendingCois()
+    public function groupMember_can_scope_by_hasPendingCois(): void
     {
         $user2 = $this->setupUserWithPerson();
         $groupMember = app()->make(MemberAdd::class)->handle($this->group, $user2->person);
@@ -46,7 +46,7 @@ class CoiReminderTest extends TestCase
     /**
      * @test
      */
-    public function person_can_scope_by_hasPendingCois()
+    public function person_can_scope_by_hasPendingCois(): void
     {
         $user2 = $this->setupUserWithPerson();
         $groupMember = app()->make(MemberAdd::class)->handle($this->group, $user2->person);
@@ -63,7 +63,7 @@ class CoiReminderTest extends TestCase
     /**
      * @test
      */
-    public function person_related_to_memberships_with_pending_coi()
+    public function person_related_to_memberships_with_pending_coi(): void
     {
         $group2 = Group::factory()->create();
         $group3 = Group::factory()->create();
@@ -84,7 +84,7 @@ class CoiReminderTest extends TestCase
     /**
      * @test
      */
-    public function sends_notification_to_activited_person_with_pending_coi()
+    public function sends_notification_to_activited_person_with_pending_coi(): void
     {
         $user2 = $this->setupUserWithPerson();
         $groupMember = app()->make(MemberAdd::class)->handle($this->group, $user2->person);
@@ -111,7 +111,7 @@ class CoiReminderTest extends TestCase
     /**
      * @test
      */
-    public function only_sends_notifications_on_monday_at_6am()
+    public function only_sends_notifications_on_monday_at_6am(): void
     {
         Carbon::setTestNow('2022-02-14 06:01:00');
 
@@ -123,7 +123,7 @@ class CoiReminderTest extends TestCase
     /**
      * @test
      */
-    public function does_not_send_email_for_inactive_memberships()
+    public function does_not_send_email_for_inactive_memberships(): void
     {
         $group2 = Group::factory()->create();
         app()->make(MemberRetire::class)->handle($this->membership1, Carbon::today()->subDays(2));
@@ -136,7 +136,7 @@ class CoiReminderTest extends TestCase
     /**
      * @test
      */
-    public function sends_email_to_members_of_non_eps()
+    public function sends_email_to_members_of_non_eps(): void
     {
         $user = $this->setupUserWithPerson();
         $cdwg = Group::factory()->cdwg()->create();
@@ -152,7 +152,7 @@ class CoiReminderTest extends TestCase
     /**
      * @test
      */
-    public function does_not_send_coi_reminder_to_nonactivated_people()
+    public function does_not_send_coi_reminder_to_nonactivated_people(): void
     {
         $person = Person::factory()->create();
         app()->make(MemberAdd::class)->handle($this->group, $person);

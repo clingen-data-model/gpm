@@ -24,7 +24,7 @@ class ResetInviteTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_reset_invite()
+    public function unprivileged_user_cannot_reset_invite(): void
     {
         $user = $this->setupUser();
         Sanctum::actingAs($user);
@@ -36,7 +36,7 @@ class ResetInviteTest extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_reset_invite()
+    public function privileged_user_can_reset_invite(): void
     {
         $user = $this->setupUser(null, ['people-manage']);
         Sanctum::actingAs($user);

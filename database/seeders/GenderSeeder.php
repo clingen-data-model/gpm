@@ -11,7 +11,7 @@ class GenderSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $items = [
             ['id' => 1, 'name' => 'Female'],

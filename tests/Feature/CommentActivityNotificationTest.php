@@ -27,7 +27,7 @@ class CommentActivityNotificationTest extends TestCase
     /**
      * @test
      */
-    public function gets_single_notification_for_a_comment_if_no_deleted_notification()
+    public function gets_single_notification_for_a_comment_if_no_deleted_notification(): void
     {
         Notification::send($this->person, new CommentActivityNotification($this->group, $this->comment, 'created'));
         Notification::send($this->person, new CommentActivityNotification($this->group, $this->comment, 'updated'));
@@ -40,7 +40,7 @@ class CommentActivityNotificationTest extends TestCase
     /**
      * @test
      */
-    public function returns_no_notification_if_comment_is_deleted()
+    public function returns_no_notification_if_comment_is_deleted(): void
     {
         Notification::send($this->person, new CommentActivityNotification($this->group, $this->comment, 'created'));
         Notification::send($this->person, new CommentActivityNotification($this->group, $this->comment, 'updated'));

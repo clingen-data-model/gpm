@@ -16,7 +16,7 @@ class CoiDataTest extends TestCase
     /**
      * @test
      */
-    public function returns_null_if_data_element_not_found()
+    public function returns_null_if_data_element_not_found(): void
     {
         $this->assertNull($this->coiData->beans);
     }
@@ -24,7 +24,7 @@ class CoiDataTest extends TestCase
     /**
      * @test
      */
-    public function returns_value_if_data_element_found()
+    public function returns_value_if_data_element_found(): void
     {
         $this->assertEquals(1, $this->coiData->coi);
         $this->assertEquals('Bob\'s Burgers', $this->coiData->coi_detail);

@@ -32,7 +32,7 @@ class PersonDeleteTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_delete_person()
+    public function unprivileged_user_cannot_delete_person(): void
     {
         $this->user->revokePermissionTo('people-manage');
 
@@ -42,7 +42,7 @@ class PersonDeleteTest extends TestCase
     /**
      * @test
      */
-    public function permissioned_user_can_delete_person_and_all_relations()
+    public function permissioned_user_can_delete_person_and_all_relations(): void
     {
         Carbon::setTestNow('2022-03-15');
         $this->makeRequest()
@@ -57,7 +57,7 @@ class PersonDeleteTest extends TestCase
     /**
      * @test
      */
-    public function records_PersonDeleted_activity()
+    public function records_PersonDeleted_activity(): void
     {
         Carbon::setTestNow('2022-03-15');
         $this->makeRequest()
@@ -77,7 +77,7 @@ class PersonDeleteTest extends TestCase
      * @group dx
      * @group gpm-person-events
      */
-    public function publishes_deleted_event_to_gpm_person_events()
+    public function publishes_deleted_event_to_gpm_person_events(): void
     {
         $this->user->givePermissionTo('people-manage');
         $this->makeRequest()

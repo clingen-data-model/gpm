@@ -35,7 +35,7 @@ class DeleteSummaryTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_delete_evidenceSummary()
+    public function unprivileged_user_cannot_delete_evidenceSummary(): void
     {
         $this->user->revokePermissionTo('ep-applications-manage');
         $this->makeRequest()
@@ -50,7 +50,7 @@ class DeleteSummaryTest extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_delete_an_evidence_summary()
+    public function privileged_user_can_delete_an_evidence_summary(): void
     {
         Carbon::setTestNow('2021-01-01');
         $this->makeRequest()
@@ -65,7 +65,7 @@ class DeleteSummaryTest extends TestCase
     /**
      * @test
      */
-    public function logs_activity()
+    public function logs_activity(): void
     {
         $this->makeRequest();
 

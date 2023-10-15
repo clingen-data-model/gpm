@@ -38,7 +38,7 @@ class IsGroupMemberTest extends TestCase
     /**
      * @test
      */
-    public function determines_if_person_has_permission_for_group()
+    public function determines_if_person_has_permission_for_group(): void
     {
         $this->assertTrue($this->person->hasGroupPermissionTo('test-permission', collect([$this->group])));
 

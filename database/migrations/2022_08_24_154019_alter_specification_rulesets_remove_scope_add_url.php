@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('specification_rulesets', function (Blueprint $table) {
             $table->dropColumn('gene_symbol');
@@ -32,7 +32,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('specification_rulesets', function (Blueprint $table) {
             $table->string('gene_symbol');

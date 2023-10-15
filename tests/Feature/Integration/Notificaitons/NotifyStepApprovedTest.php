@@ -31,7 +31,7 @@ class NotifyStepApprovedTest extends TestCase
     /**
      * @test
      */
-    public function does_not_send_StepApprovedNotification_if_notify_contacts_is_false()
+    public function does_not_send_StepApprovedNotification_if_notify_contacts_is_false(): void
     {
         Notification::fake();
         StepApprove::run($this->expertPanel, Carbon::now(), false);
@@ -41,7 +41,7 @@ class NotifyStepApprovedTest extends TestCase
     /**
      * @test
      */
-    public function does_not_send_StepApprovedNotification_if_is_last_step()
+    public function does_not_send_StepApprovedNotification_if_is_last_step(): void
     {
         Notification::fake(UserDefinedMailNotification::class);
         StepApprove::run($this->expertPanel, Carbon::now(), true);
@@ -51,7 +51,7 @@ class NotifyStepApprovedTest extends TestCase
     /**
      * @test
      */
-    public function sends_StepApprovedNotification_if_not_last_step_and_notify_contacts_is_true()
+    public function sends_StepApprovedNotification_if_not_last_step_and_notify_contacts_is_true(): void
     {
         $this->expertPanel->update(['expert_panel_type_id' => config('expert_panels.types.vcep.id')]);
 
@@ -77,7 +77,7 @@ class NotifyStepApprovedTest extends TestCase
     /**
      * @test
      */
-    public function step_1_approved_email_carbon_copies_clingen_addresses()
+    public function step_1_approved_email_carbon_copies_clingen_addresses(): void
     {
         $this->expertPanel->expert_panel_type_id = config('expert_panels.types.vcep.id');
         $this->expertPanel->current_step = 1;
@@ -106,7 +106,7 @@ class NotifyStepApprovedTest extends TestCase
     /**
      * @test
      */
-    public function step_4_approved_email_carbon_copies_clingen_addresses()
+    public function step_4_approved_email_carbon_copies_clingen_addresses(): void
     {
         $this->expertPanel->expert_panel_type_id = config('expert_panels.types.vcep.id');
 
@@ -136,7 +136,7 @@ class NotifyStepApprovedTest extends TestCase
     /**
      * @test
      */
-    public function steps_2_approved_does_not_cc_clingen_addresses()
+    public function steps_2_approved_does_not_cc_clingen_addresses(): void
     {
         $this->expertPanel->expert_panel_type_id = config('expert_panels.types.vcep.id');
 
@@ -158,7 +158,7 @@ class NotifyStepApprovedTest extends TestCase
     /**
      * @test
      */
-    public function steps_3_approved_does_not_cc_clingen_addresses()
+    public function steps_3_approved_does_not_cc_clingen_addresses(): void
     {
         $this->expertPanel->expert_panel_type_id = config('expert_panels.types.vcep.id');
 

@@ -57,7 +57,7 @@ class UpdateProfileTest extends TestCase
     /**
      * @test
      */
-    public function a_person_can_update_their_own_profile_info()
+    public function a_person_can_update_their_own_profile_info(): void
     {
         $data = $this->getDefaultData();
         $expected = $data;
@@ -89,7 +89,7 @@ class UpdateProfileTest extends TestCase
     /**
      * @test
      */
-    public function a_user_who_can_update_others_profile_can_update_a_profile()
+    public function a_user_who_can_update_others_profile_can_update_a_profile(): void
     {
         $this->user->givePermissionTo($this->perm);
 
@@ -100,7 +100,7 @@ class UpdateProfileTest extends TestCase
     /**
      * @test
      */
-    public function associated_user_name_and_email_updated_when_person_updated()
+    public function associated_user_name_and_email_updated_when_person_updated(): void
     {
         $this->person->update(['user_id' => $this->user->id]);
 
@@ -122,7 +122,7 @@ class UpdateProfileTest extends TestCase
     /**
      * @test
      */
-    public function a_user_with_group_permission_cannot_update_profile()
+    public function a_user_with_group_permission_cannot_update_profile(): void
     {
         $group = Group::factory()->create();
         MemberAdd::run($group, $this->person);
@@ -138,7 +138,7 @@ class UpdateProfileTest extends TestCase
     /**
      * @test
      */
-    public function another_user_without_permission_cannot_update_profile()
+    public function another_user_without_permission_cannot_update_profile(): void
     {
         Sanctum::actingAs($this->user);
         $this->makeRequest()
@@ -148,7 +148,7 @@ class UpdateProfileTest extends TestCase
     /**
      * @test
      */
-    public function a_coordinator_can_edit_some_profile_fields_of_members()
+    public function a_coordinator_can_edit_some_profile_fields_of_members(): void
     {
         $group = Group::factory()->create();
         MemberAdd::run($group, $this->person);
@@ -192,7 +192,7 @@ class UpdateProfileTest extends TestCase
     /**
      * @test
      */
-    public function validates_required_if_user_cannot_update_another_persons_profile()
+    public function validates_required_if_user_cannot_update_another_persons_profile(): void
     {
         $this->person->update(['user_id' => $this->user->id]);
         $response = $this->makeRequest([])
@@ -209,7 +209,7 @@ class UpdateProfileTest extends TestCase
     /**
      * @test
      */
-    public function does_not_require_fields_if_user_can_update_another_persons_profile()
+    public function does_not_require_fields_if_user_can_update_another_persons_profile(): void
     {
         $this->user->givePermissionTo($this->perm);
 
@@ -228,7 +228,7 @@ class UpdateProfileTest extends TestCase
     /**
      * @test
      */
-    public function validates_relation_ids_exist()
+    public function validates_relation_ids_exist(): void
     {
         $data = [
             'institution_id' => 666,
@@ -257,7 +257,7 @@ class UpdateProfileTest extends TestCase
     /**
      * @test
      */
-    public function validates_email_is_unique_to_people()
+    public function validates_email_is_unique_to_people(): void
     {
         $this->user->givePermissionTo('people-manage');
         Person::factory()->create(['email' => 'beans@beans.com']);
@@ -277,7 +277,7 @@ class UpdateProfileTest extends TestCase
     /**
      * @test
      */
-    public function validates_email_is_unique_to_users()
+    public function validates_email_is_unique_to_users(): void
     {
         $this->user->givePermissionTo('people-manage');
         User::factory()->create(['email' => 'beans@beans.com']);
@@ -300,7 +300,7 @@ class UpdateProfileTest extends TestCase
      * @group dx
      * @group gpm-person-events
      */
-    public function publishes_updated_event_to_gpm_person_events()
+    public function publishes_updated_event_to_gpm_person_events(): void
     {
         $this->user->givePermissionTo('people-manage');
 

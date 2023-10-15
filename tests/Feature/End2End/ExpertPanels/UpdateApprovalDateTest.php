@@ -29,7 +29,7 @@ class UpdateApprovalDateTest extends TestCase
     /**
      * @test
      */
-    public function it_validates_request_params()
+    public function it_validates_request_params(): void
     {
         Sanctum::actingAs($this->user);
         $this->json('put', '/api/applications/'.$this->expertPanel->uuid.'/approve', [])
@@ -54,7 +54,7 @@ class UpdateApprovalDateTest extends TestCase
     /**
      * @test
      */
-    public function it_stores_new_date_and_returns_the_document()
+    public function it_stores_new_date_and_returns_the_document(): void
     {
         Sanctum::actingAs($this->user);
         $response = $this->json('put', '/api/applications/'.$this->expertPanel->uuid.'/approve', [

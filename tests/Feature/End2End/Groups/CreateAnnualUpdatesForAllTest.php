@@ -23,7 +23,7 @@ class CreateAnnualUpdatesForAllTest extends TestCase
     /**
      * @test
      */
-    public function can_create_annual_updates_for_all_expert_panels_via_artisan()
+    public function can_create_annual_updates_for_all_expert_panels_via_artisan(): void
     {
         $start = Carbon::tomorrow()->format('Y-m-d');
         $end = Carbon::today()->addDays(7)->format('Y-m-d');

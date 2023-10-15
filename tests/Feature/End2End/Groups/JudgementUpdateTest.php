@@ -23,7 +23,7 @@ class JudgementUpdateTest extends JudgementTest
     /**
      * @test
      */
-    public function person_other_than_approver_cannot_update_anothers_judgment()
+    public function person_other_than_approver_cannot_update_anothers_judgment(): void
     {
         $this->otherUser = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
 
@@ -35,7 +35,7 @@ class JudgementUpdateTest extends JudgementTest
     /**
      * @test
      */
-    public function user_with_ep_manage_applications_can_update_another_users_judgement()
+    public function user_with_ep_manage_applications_can_update_another_users_judgement(): void
     {
         $this->otherUser = $this->setupUserWithPerson(permissions: ['ep-applications-manage']);
         Sanctum::actingAs($this->otherUser);
@@ -53,7 +53,7 @@ class JudgementUpdateTest extends JudgementTest
     /**
      * @test
      */
-    public function validates_judgement_data()
+    public function validates_judgement_data(): void
     {
         $this->makeRequest([])
             ->assertValidationErrors([
@@ -69,7 +69,7 @@ class JudgementUpdateTest extends JudgementTest
     /**
      * @test
      */
-    public function notifies_other_notifiables_when_judgement_updated()
+    public function notifies_other_notifiables_when_judgement_updated(): void
     {
         $otherApprover = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
         $commenter = $this->setupUserWithPerson(permissions: ['ep-applications-comment']);

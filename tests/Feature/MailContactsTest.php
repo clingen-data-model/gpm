@@ -30,7 +30,7 @@ class MailContactsTest extends TestCase
     /**
      * @test
      */
-    public function sends_mailable_to_all_contacts()
+    public function sends_mailable_to_all_contacts(): void
     {
         $group = Group::factory()->create();
         $this->setupMember($group, null, ['is_contact' => true]);

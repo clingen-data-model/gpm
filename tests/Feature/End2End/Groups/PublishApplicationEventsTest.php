@@ -34,7 +34,7 @@ class PublishApplicationEventsTest extends TestCase
     /**
      * @test
      */
-    public function it_publishes_definitionApproved_message_when_definition_approved()
+    public function it_publishes_definitionApproved_message_when_definition_approved(): void
     {
         $this->approveEpDef();
 
@@ -48,7 +48,7 @@ class PublishApplicationEventsTest extends TestCase
     /**
      * @test
      */
-    public function it_should_not_publish_memberAdded_when_def_not_yet_approved()
+    public function it_should_not_publish_memberAdded_when_def_not_yet_approved(): void
     {
         $this->addPerson();
 
@@ -61,7 +61,7 @@ class PublishApplicationEventsTest extends TestCase
     /**
      * @test
      */
-    public function it_publishes_memberAdded_when_member_added_and_def_already_approved()
+    public function it_publishes_memberAdded_when_member_added_and_def_already_approved(): void
     {
         $this->approveEpDef();
         $this->addPerson();
@@ -76,7 +76,7 @@ class PublishApplicationEventsTest extends TestCase
     /**
      * @test
      */
-    public function it_should_not_publish_GeneAdded_when_def_not_yet_approved()
+    public function it_should_not_publish_GeneAdded_when_def_not_yet_approved(): void
     {
         $this->addGene();
 
@@ -89,7 +89,7 @@ class PublishApplicationEventsTest extends TestCase
     /**
      * @test
      */
-    public function it_publishes_GeneAdded_when_gene_added_and_def_already_approved()
+    public function it_publishes_GeneAdded_when_gene_added_and_def_already_approved(): void
     {
         $this->approveEpDef();
         $this->addGene();

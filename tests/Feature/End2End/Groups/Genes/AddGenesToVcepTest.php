@@ -64,7 +64,7 @@ class AddGenesToVcepTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_can_not_add_genes_to_an_ep()
+    public function unprivileged_user_can_not_add_genes_to_an_ep(): void
     {
         $this->user->revokePermissionTo('ep-applications-manage');
         Sanctum::actingAs($this->user);
@@ -81,7 +81,7 @@ class AddGenesToVcepTest extends TestCase
     /**
      * @test
      */
-    public function validates_input_for_vceps()
+    public function validates_input_for_vceps(): void
     {
         Sanctum::actingAs($this->user);
 
@@ -95,7 +95,7 @@ class AddGenesToVcepTest extends TestCase
     /**
      * @test
      */
-    public function validates_group_is_an_vcep()
+    public function validates_group_is_an_vcep(): void
     {
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.wg.id')]);
         Sanctum::actingAs($this->user);
@@ -110,7 +110,7 @@ class AddGenesToVcepTest extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_add_new_genes_to_a_vcep()
+    public function privileged_user_can_add_new_genes_to_a_vcep(): void
     {
         $this->seedGenes(['hgnc_id' => 789012, 'gene_symbol' => 'ABC12']);
         $this->seedDiseases(['mondo_id' => 'MONDO:8901234', 'name' => 'fartsalot']);
@@ -145,7 +145,7 @@ class AddGenesToVcepTest extends TestCase
     /**
      * @test
      */
-    public function activity_logged()
+    public function activity_logged(): void
     {
         Carbon::setTestNow('2022-01-01');
         $this->seedGenes(['hgnc_id' => 789012, 'gene_symbol' => 'ABC12']);

@@ -12,7 +12,7 @@ class SubmissionTypeAndStatusSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $this->seedFromConfig('submissions.statuses', SubmissionStatus::class);
 

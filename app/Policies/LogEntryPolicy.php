@@ -15,7 +15,7 @@ class LogEntryPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         return $this->managesGroupsOrApplications($user);
     }
@@ -25,7 +25,7 @@ class LogEntryPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Activity $activity)
+    public function view(User $user, Activity $activity): bool
     {
         return $this->managesGroupsOrApplications($user);
     }
@@ -35,7 +35,7 @@ class LogEntryPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         return $this->managesGroupsOrApplications($user);
     }
@@ -45,7 +45,7 @@ class LogEntryPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Activity $activity)
+    public function update(User $user, Activity $activity): bool
     {
         return $this->managesGroupsOrApplications($user);
     }
@@ -55,7 +55,7 @@ class LogEntryPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Activity $activity)
+    public function delete(User $user, Activity $activity): bool
     {
         return $this->managesGroupsOrApplications($user);
     }
@@ -65,7 +65,7 @@ class LogEntryPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Activity $activity)
+    public function restore(User $user, Activity $activity): bool
     {
         return $this->managesGroupsOrApplications($user);
     }
@@ -75,7 +75,7 @@ class LogEntryPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Activity $activity)
+    public function forceDelete(User $user, Activity $activity): bool
     {
         return $this->managesGroupsOrApplications($user);
     }

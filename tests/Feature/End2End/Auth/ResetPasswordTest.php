@@ -19,7 +19,7 @@ class ResetPasswordTest extends TestCase
     /**
      * @test
      */
-    public function validates_required_fields()
+    public function validates_required_fields(): void
     {
         $response = $this->json('POST', '/api/reset-password', []);
         $response->assertStatus(422);
@@ -37,7 +37,7 @@ class ResetPasswordTest extends TestCase
     /**
      * @test
      */
-    public function validates_field_requirements()
+    public function validates_field_requirements(): void
     {
         $data = [
             'email' => 'bob',
@@ -58,7 +58,7 @@ class ResetPasswordTest extends TestCase
     /**
      * @test
      */
-    public function resets_password_if_data_is_valid()
+    public function resets_password_if_data_is_valid(): void
     {
         $user = User::factory()->create();
         $this->json('POST', 'api/send-reset-password-link', ['email' => $user->email])

@@ -17,7 +17,7 @@ class InviteTest extends TestCase
     /**
      * @test
      */
-    public function generates_code_before_saving_if_null()
+    public function generates_code_before_saving_if_null(): void
     {
         $invite = Invite::factory()->make(['code' => null]);
 

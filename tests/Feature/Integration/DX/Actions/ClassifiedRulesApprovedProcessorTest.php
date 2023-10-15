@@ -30,7 +30,7 @@ class ClassifiedRulesApprovedProcessorTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_if_expert_panel_is_not_draft_approved()
+    public function it_throws_exception_if_expert_panel_is_not_draft_approved(): void
     {
         try {
             $this->action->handle($this->message);
@@ -44,7 +44,7 @@ class ClassifiedRulesApprovedProcessorTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_if_expert_panel_not_draft_approved_current_step_not_2()
+    public function it_throws_exception_if_expert_panel_not_draft_approved_current_step_not_2(): void
     {
         $this->expertPanel->step_1_approval_date = Carbon::parse('2020-01-01');
         $this->expertPanel->save();
@@ -61,7 +61,7 @@ class ClassifiedRulesApprovedProcessorTest extends TestCase
     /**
      * @test
      */
-    public function it_does_nothing_when_expert_panel_already_has_approved_draft()
+    public function it_does_nothing_when_expert_panel_already_has_approved_draft(): void
     {
         $this->expertPanel->step_1_approval_date = Carbon::parse('2020-01-01');
         $this->expertPanel->step_2_approval_date = Carbon::parse('2021-01-01');
@@ -81,7 +81,7 @@ class ClassifiedRulesApprovedProcessorTest extends TestCase
     /**
      * @test
      */
-    public function it_approves_draft_specifications_if_ep_defApproved_and_not_draftSpecApproved()
+    public function it_approves_draft_specifications_if_ep_defApproved_and_not_draftSpecApproved(): void
     {
         $this->expertPanel->step_1_approval_date = Carbon::parse('2020-01-01');
         $this->expertPanel->current_step = 2;

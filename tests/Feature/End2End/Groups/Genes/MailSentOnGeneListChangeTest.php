@@ -35,7 +35,7 @@ class MailSentOnGeneListChangeTest extends TestCase
     /**
      * @test
      */
-    public function nothing_sent_on_gene_added_to_applying_ep()
+    public function nothing_sent_on_gene_added_to_applying_ep(): void
     {
         Mail::fake();
 
@@ -48,7 +48,7 @@ class MailSentOnGeneListChangeTest extends TestCase
     /**
      * @test
      */
-    public function nothing_sent_on_gene_removed_from_applying_ep()
+    public function nothing_sent_on_gene_removed_from_applying_ep(): void
     {
         Mail::fake();
 
@@ -67,7 +67,7 @@ class MailSentOnGeneListChangeTest extends TestCase
     /**
      * @test
      */
-    public function added_mail_not_sent_if_notify_scope_change_disabled()
+    public function added_mail_not_sent_if_notify_scope_change_disabled(): void
     {
         $this->expertPanel->step_1_approval_date = Carbon::now();
         $this->expertPanel->save();
@@ -85,7 +85,7 @@ class MailSentOnGeneListChangeTest extends TestCase
     /**
      * @test
      */
-    public function remove_mail_not_sent_if_notify_scope_change_disabled()
+    public function remove_mail_not_sent_if_notify_scope_change_disabled(): void
     {
         $this->expertPanel->step_1_approval_date = Carbon::now();
         $this->expertPanel->save();
@@ -109,7 +109,7 @@ class MailSentOnGeneListChangeTest extends TestCase
     /**
      * @test
      */
-    public function email_sent_on_gene_added_to_approved_ep()
+    public function email_sent_on_gene_added_to_approved_ep(): void
     {
         $this->expertPanel->step_1_approval_date = Carbon::now();
         $this->expertPanel->save();
@@ -128,7 +128,7 @@ class MailSentOnGeneListChangeTest extends TestCase
     /**
      * @test
      */
-    public function email_sent_on_gene_removed_from_approved_ep()
+    public function email_sent_on_gene_removed_from_approved_ep(): void
     {
         $this->gene1 = $this->expertPanel->genes()->create([
             'hgnc_id' => 123345,

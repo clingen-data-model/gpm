@@ -46,7 +46,7 @@ class GetGenesForGroupTest extends TestCase
     /**
      * @test
      */
-    public function returns_404_if_group_is_not_an_expert_panel()
+    public function returns_404_if_group_is_not_an_expert_panel(): void
     {
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.wg.id')]);
         $this->json('GET', $this->url)
@@ -56,7 +56,7 @@ class GetGenesForGroupTest extends TestCase
     /**
      * @test
      */
-    public function gets_all_genes_for_a_group()
+    public function gets_all_genes_for_a_group(): void
     {
         $response = $this->json('GET', $this->url);
         $response->assertStatus(200);

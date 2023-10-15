@@ -40,7 +40,7 @@ class DeleteLogEntryTest extends TestCase
     /**
      * @test
      */
-    public function prevents_deleting_typed_log_entries()
+    public function prevents_deleting_typed_log_entries(): void
     {
         Sanctum::actingAs($this->user);
         $response = $this->json(
@@ -59,7 +59,7 @@ class DeleteLogEntryTest extends TestCase
     /**
      * @test
      */
-    public function deletes_manual_log_entries()
+    public function deletes_manual_log_entries(): void
     {
         Sanctum::actingAs($this->user);
         $response = $this->json('delete', '/api/applications/'.$this->expertPanel->uuid.'/log-entries/'.$this->logEntry->id);

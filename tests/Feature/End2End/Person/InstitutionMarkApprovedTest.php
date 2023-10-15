@@ -22,7 +22,7 @@ class InstitutionMarkApprovedTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_approve_institution()
+    public function unprivileged_user_cannot_approve_institution(): void
     {
         $this->user->revokePermissionTo('people-manage');
 
@@ -33,7 +33,7 @@ class InstitutionMarkApprovedTest extends TestCase
     /**
      * @test
      */
-    public function privileged_use_can_approve_institution()
+    public function privileged_use_can_approve_institution(): void
     {
         $this->makeRequest()
             ->assertStatus(200)

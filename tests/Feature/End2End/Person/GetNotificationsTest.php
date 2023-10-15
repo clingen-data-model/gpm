@@ -28,7 +28,7 @@ class GetNotificationsTest extends TestCase
     /**
      * @test
      */
-    public function person_can_get_their_own_notifications()
+    public function person_can_get_their_own_notifications(): void
     {
         $this->json('get', '/api/people/'.$this->person->uuid.'/notifications/unread')
             ->assertStatus(200)

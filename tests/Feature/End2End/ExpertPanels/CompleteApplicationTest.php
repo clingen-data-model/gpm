@@ -24,7 +24,7 @@ class CompleteApplicationTest extends TestCase
     /**
      * @test
      */
-    public function gcep_application_completed_when_step1_approved()
+    public function gcep_application_completed_when_step1_approved(): void
     {
         dump('fuck1');
         $dateApproved = Carbon::parse('2021-09-16');
@@ -47,7 +47,7 @@ class CompleteApplicationTest extends TestCase
     /**
      * @test
      */
-    public function vcep_application_completed_when_step4_approved()
+    public function vcep_application_completed_when_step4_approved(): void
     {
         $this->expertPanel->group->update(['group_type_id' => 3]);
         $this->expertPanel->update(['expert_panel_type_id' => 2]);

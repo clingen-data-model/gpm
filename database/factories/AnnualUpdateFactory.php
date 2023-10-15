@@ -14,7 +14,7 @@ class AnnualUpdateFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         $expertPanel = ExpertPanel::factory()->create();
         $annualReviewWindow = AnnualUpdateWindow::create([

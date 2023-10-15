@@ -30,7 +30,7 @@ class NextActionCreateTest extends TestCase
     /**
      * @test
      */
-    public function raises_NextActionAdded_event()
+    public function raises_NextActionAdded_event(): void
     {
         $nextAction = NextAction::factory()->make();
         Event::fake();
@@ -50,7 +50,7 @@ class NextActionCreateTest extends TestCase
     /**
      * @test
      */
-    public function logs_next_action_added()
+    public function logs_next_action_added(): void
     {
         $nextAction = NextAction::factory()->make(['step' => 3]);
         (new NextActionCreate)->handle(

@@ -41,7 +41,7 @@ class ApplicationSendToChairsTest extends TestCase
     /**
      * @test
      */
-    public function unpermissioned_user_cannot_send_to_chairs()
+    public function unpermissioned_user_cannot_send_to_chairs(): void
     {
         $this->user->revokePermissionTo('ep-applications-manage');
         $this->makeRequest()
@@ -51,7 +51,7 @@ class ApplicationSendToChairsTest extends TestCase
     /**
      * @test
      */
-    public function next_action_assigned_to_oc_chairs()
+    public function next_action_assigned_to_oc_chairs(): void
     {
         $this->runSeeder(SubmissionTypeAndStatusSeeder::class);
         $person = Person::factory()->create();
@@ -70,7 +70,7 @@ class ApplicationSendToChairsTest extends TestCase
     /**
      * @test
      */
-    public function logs_that_chairs_sent_application()
+    public function logs_that_chairs_sent_application(): void
     {
         $this->runSeeder(SubmissionTypeAndStatusSeeder::class);
         $person = Person::factory()->create();
@@ -94,7 +94,7 @@ class ApplicationSendToChairsTest extends TestCase
     /**
      * @test
      */
-    public function pending_submission_status_updated_to_under_chair_review()
+    public function pending_submission_status_updated_to_under_chair_review(): void
     {
         $this->runSeeder(SubmissionTypeAndStatusSeeder::class);
         $person = Person::factory()->create();
@@ -110,7 +110,7 @@ class ApplicationSendToChairsTest extends TestCase
     /**
      * @test
      */
-    public function sent_to_chairs_at_timestamp_set()
+    public function sent_to_chairs_at_timestamp_set(): void
     {
         Carbon::setTestNow('2022-08-01');
         $this->runSeeder(SubmissionTypeAndStatusSeeder::class);
@@ -128,7 +128,7 @@ class ApplicationSendToChairsTest extends TestCase
     /**
      * @test
      */
-    public function sends_notification_to_chairs()
+    public function sends_notification_to_chairs(): void
     {
         $approver1 = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
         $approver2 = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);

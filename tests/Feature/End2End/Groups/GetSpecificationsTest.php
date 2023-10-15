@@ -35,7 +35,7 @@ class GetSpecificationsTest extends TestCase
     /**
      * @test
      */
-    public function gets_specifications_with_rulesets_for_vcep()
+    public function gets_specifications_with_rulesets_for_vcep(): void
     {
         $this->makeRequest()
             ->assertStatus(200)
@@ -45,7 +45,7 @@ class GetSpecificationsTest extends TestCase
     /**
      * @test
      */
-    public function throws_404_if_group_is_not_a_vcep()
+    public function throws_404_if_group_is_not_a_vcep(): void
     {
         $gcep = ExpertPanel::factory()->gcep()->create();
 

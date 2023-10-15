@@ -35,7 +35,7 @@ abstract class ModuleServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $eventClasses = $this->classGetter->atPath($this->getEventPath());
         $this->registerRecordableEventListeners($eventClasses);
@@ -49,7 +49,7 @@ abstract class ModuleServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->loadRoutes();
         $this->registerCommands();

@@ -39,7 +39,7 @@ class CreateInitialPersonDxMessages extends Command
      *
      * @return int
      */
-    public function handle(DxMessageFactory $messageFactory, StreamMessageCreate $streamMessageCreate)
+    public function handle(DxMessageFactory $messageFactory, StreamMessageCreate $streamMessageCreate): int
     {
         config(['dx.push-enable' => false]);
         $people = Person::all();

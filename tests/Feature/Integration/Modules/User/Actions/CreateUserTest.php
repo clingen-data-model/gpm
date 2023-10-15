@@ -19,7 +19,7 @@ class CreateUserTest extends TestCase
     /**
      * @test
      */
-    public function creates_user()
+    public function creates_user(): void
     {
         UserCreate::run(name: 'Lana Kane', email: 'lana@archer.com');
 
@@ -29,7 +29,7 @@ class CreateUserTest extends TestCase
     /**
      * @test
      */
-    public function logs_user_created_event()
+    public function logs_user_created_event(): void
     {
         $user = UserCreate::run(name: 'Lana Kane', email: 'lana@archer.com');
 

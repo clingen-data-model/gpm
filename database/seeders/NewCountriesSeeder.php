@@ -11,7 +11,7 @@ class NewCountriesSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $newCountries = [
             ['id' => 241, 'name' => 'State of Palestine'],

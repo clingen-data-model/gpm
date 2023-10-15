@@ -26,7 +26,7 @@ class PersonPhotoStoreTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_users_cannot_upload_profile_photos()
+    public function unprivileged_users_cannot_upload_profile_photos(): void
     {
         $this->user->revokePermissionTo('people-manage');
 
@@ -39,7 +39,7 @@ class PersonPhotoStoreTest extends TestCase
     /**
      * @test
      */
-    public function user_w_people_manage_can_upload_photo()
+    public function user_w_people_manage_can_upload_photo(): void
     {
         $this->makeRequest()
             ->assertStatus(200);
@@ -48,7 +48,7 @@ class PersonPhotoStoreTest extends TestCase
     /**
      * @test
      */
-    public function person_can_upload_their_own_profile_photo()
+    public function person_can_upload_their_own_profile_photo(): void
     {
         $this->user->revokePermissionTo('people-manage');
         $this->person->update(['user_id' => $this->user->id]);
@@ -60,7 +60,7 @@ class PersonPhotoStoreTest extends TestCase
     /**
      * @test
      */
-    public function stores_photo_and_updates_person()
+    public function stores_photo_and_updates_person(): void
     {
         $this->makeRequest()
             ->assertStatus(200);
@@ -76,7 +76,7 @@ class PersonPhotoStoreTest extends TestCase
     /**
      * @test
      */
-    public function publishses_updated_event_to_gpm_person_events()
+    public function publishses_updated_event_to_gpm_person_events(): void
     {
         $this->makeRequest()
             ->assertStatus(200);
@@ -91,7 +91,7 @@ class PersonPhotoStoreTest extends TestCase
     /**
      * @test
      */
-    public function validates_data()
+    public function validates_data(): void
     {
         $this->makeRequest([])
             ->assertStatus(422)

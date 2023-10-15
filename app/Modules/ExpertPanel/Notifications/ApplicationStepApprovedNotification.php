@@ -31,7 +31,7 @@ class ApplicationStepApprovedNotification extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return ['database'];
     }
@@ -42,7 +42,7 @@ class ApplicationStepApprovedNotification extends Notification
      * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         $template = $this->getTemplate($this->approvedStep);
         if (! $template) {
@@ -74,7 +74,7 @@ class ApplicationStepApprovedNotification extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
-    public function toArray($notifiable)
+    public function toArray($notifiable): array
     {
         $message = 'Congratulations! '.$this->expertPanel->displayName.' was approved for '.config('expert-panels.steps')[$this->approvedStep].' on '.$this->expertPanel->getApprovalDateForStep($this->approvedStep)->format('m/d/Y').'.';
 

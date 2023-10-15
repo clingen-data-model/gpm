@@ -26,7 +26,7 @@ class UpdateGroupParentTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_update_parent()
+    public function unprivileged_user_cannot_update_parent(): void
     {
         $this->user->revokePermissionTo('groups-manage');
         $this->makeRequest()
@@ -36,7 +36,7 @@ class UpdateGroupParentTest extends TestCase
     /**
      * @test
      */
-    public function validates_parameters()
+    public function validates_parameters(): void
     {
         $this->makeRequest([])
             ->assertStatus(422);
@@ -45,7 +45,7 @@ class UpdateGroupParentTest extends TestCase
     /**
      * @test
      */
-    public function privileged_user_can_update_group_parent()
+    public function privileged_user_can_update_group_parent(): void
     {
         $this->makeRequest()
             ->assertStatus(200)
@@ -62,7 +62,7 @@ class UpdateGroupParentTest extends TestCase
     /**
      * @test
      */
-    public function nulls_parent_id_if_parent_id_is_0()
+    public function nulls_parent_id_if_parent_id_is_0(): void
     {
         $parent = Group::factory()->create();
         $this->group->update(['parent_id' => $parent->id]);
@@ -82,7 +82,7 @@ class UpdateGroupParentTest extends TestCase
     /**
      * @test
      */
-    public function logs_activity()
+    public function logs_activity(): void
     {
         $oldParent = Group::factory()->create();
         $this->group->update(['parent_id' => $oldParent->id]);

@@ -34,7 +34,7 @@ class SubmitAnnualUpdateTest extends TestCase
     /**
      * @test
      */
-    public function unprivileged_user_cannot_save_annual_update()
+    public function unprivileged_user_cannot_save_annual_update(): void
     {
         $this->user->revokePermissionTo('annual-updates-manage');
 
@@ -47,7 +47,7 @@ class SubmitAnnualUpdateTest extends TestCase
     /**
      * @test
      */
-    public function stores_completed_at_date_when_submitted_by_privilegged_user()
+    public function stores_completed_at_date_when_submitted_by_privilegged_user(): void
     {
         $annualReview = AnnualUpdate::factory()
             ->create([
@@ -67,7 +67,7 @@ class SubmitAnnualUpdateTest extends TestCase
     /**
      * @test
      */
-    public function validates_base_required_fields_for_gcep()
+    public function validates_base_required_fields_for_gcep(): void
     {
         $annualReview = AnnualUpdate::create(['expert_panel_id' => $this->expertPanel->id]);
 
@@ -102,7 +102,7 @@ class SubmitAnnualUpdateTest extends TestCase
     /**
      * @test
      */
-    public function does_not_require_fields_after_ep_activity_if_inactive_for_gceps()
+    public function does_not_require_fields_after_ep_activity_if_inactive_for_gceps(): void
     {
         $annualReview = AnnualUpdate::create([
             'expert_panel_id' => $this->expertPanel->id,
@@ -126,7 +126,7 @@ class SubmitAnnualUpdateTest extends TestCase
     /**
      * @test
      */
-    public function validates_conditionally_required_fields_for_gceps()
+    public function validates_conditionally_required_fields_for_gceps(): void
     {
         $annualReview = AnnualUpdate::create([
             'expert_panel_id' => $this->expertPanel->id,
@@ -162,7 +162,7 @@ class SubmitAnnualUpdateTest extends TestCase
     /**
      * @test
      */
-    public function validates_base_required_fields_for_vcep()
+    public function validates_base_required_fields_for_vcep(): void
     {
         $this->expertPanel->update([
             'expert_panel_type_id' => config('expert_panels.types.vcep.id'),
@@ -204,7 +204,7 @@ class SubmitAnnualUpdateTest extends TestCase
     /**
      * @test
      */
-    public function only_validates_def_fields_if_not_draft_approved()
+    public function only_validates_def_fields_if_not_draft_approved(): void
     {
         $this->expertPanel->update([
             'expert_panel_type_id' => 2,
@@ -235,7 +235,7 @@ class SubmitAnnualUpdateTest extends TestCase
     /**
      * @test
      */
-    public function validates_base_def_and_spec_fields_if_spec_approved()
+    public function validates_base_def_and_spec_fields_if_spec_approved(): void
     {
         $this->expertPanel->update([
             'expert_panel_type_id' => 2,
@@ -270,7 +270,7 @@ class SubmitAnnualUpdateTest extends TestCase
     /**
      * @test
      */
-    public function validates_base_sustained_curation_fields_if_approved()
+    public function validates_base_sustained_curation_fields_if_approved(): void
     {
         $this->expertPanel->update([
             'expert_panel_type_id' => 2,
@@ -315,7 +315,7 @@ class SubmitAnnualUpdateTest extends TestCase
     /**
      * @test
      */
-    public function validates_conditionally_required_fields_for_vceps()
+    public function validates_conditionally_required_fields_for_vceps(): void
     {
         $this->expertPanel->update([
             'expert_panel_type_id' => 2,

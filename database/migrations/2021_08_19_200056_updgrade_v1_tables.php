@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (! Schema::hasTable('cois_temp')) {
             Schema::create('cois_temp', function ($table) {
@@ -55,7 +55,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         if (! Schema::hasTable('cois_temp')) {
             Schema::create('cois_temp', function ($table) {

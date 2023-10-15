@@ -34,7 +34,7 @@ class RemoveRoleFromMemberTest extends TestCase
     /**
      * @test
      */
-    public function can_remove_a_role_from_a_group_member()
+    public function can_remove_a_role_from_a_group_member(): void
     {
         // (new MemberRemoveRole)->handle($this->groupMember, [$this->roles->first()]);
         Sanctum::actingAs($this->user);
@@ -56,7 +56,7 @@ class RemoveRoleFromMemberTest extends TestCase
     /**
      * @test
      */
-    public function logs_role_removed_activity()
+    public function logs_role_removed_activity(): void
     {
         Sanctum::actingAs($this->user);
         $this->json('DELETE', $this->url.'/'.$this->roles->first()->id)
