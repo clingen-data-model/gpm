@@ -2,10 +2,10 @@
 
 namespace App\Modules\Group\Http\Resources;
 
-use Illuminate\Http\Request;
 use App\Http\Resources\PermissionResource;
 use App\Http\Resources\RoleResource;
 use App\Modules\Person\Http\Resources\PersonAsMemberResource;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class MemberResource extends JsonResource

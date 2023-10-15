@@ -2,7 +2,6 @@
 
 namespace App\Modules\Group\Http\Controllers\Api;
 
-use Illuminate\Http\Response;
 use App\Actions\LogEntryAdd;
 use App\Actions\LogEntryDelete;
 use App\Actions\LogEntryUpdate;
@@ -14,6 +13,7 @@ use App\Models\LogEntry;
 use App\Modules\Group\Models\Group;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;

@@ -2,8 +2,8 @@
 
 namespace App\Modules\Group\Models\Traits;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Modules\Group\Models\Group;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 trait BelongsToGroup
 {

@@ -2,10 +2,10 @@
 
 namespace App\Modules\User\Http\Resources;
 
-use Illuminate\Http\Request;
 use App\Http\Resources\RoleResource;
 use App\Modules\Group\Http\Resources\MemberResource;
 use App\Modules\Person\Http\Resources\PersonDetailResource;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CurrentUserResource extends JsonResource

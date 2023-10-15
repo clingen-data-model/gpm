@@ -2,8 +2,8 @@
 
 namespace App\Modules\Person\Http\Resources;
 
-use Illuminate\Http\Request;
 use App\Modules\Group\Http\Resources\MembershipResource;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PersonDetailResource extends JsonResource

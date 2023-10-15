@@ -2,7 +2,6 @@
 
 namespace App\Modules\Group\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Contracts\HasNotes;
 use App\Models\Traits\HasNotes as HasNotesTrait;
 use App\Models\Traits\HasRoles;
@@ -17,6 +16,7 @@ use Carbon\Carbon;
 use Database\Factories\GroupMemberFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\Relation;

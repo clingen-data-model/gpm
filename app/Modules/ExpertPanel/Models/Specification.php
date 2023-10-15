@@ -2,7 +2,6 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Contracts\HasNotes;
 use App\Models\Traits\HasNotes as HasNotesTrait;
 use App\Modules\ExpertPanel\Models\Contracts\BelongsToExpertPanel;
@@ -12,6 +11,7 @@ use App\Modules\Group\Models\Traits\BelongsToGroup;
 use Database\Factories\SpecificationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
