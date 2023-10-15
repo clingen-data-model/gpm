@@ -25,7 +25,7 @@ class MailDraftController extends Controller
             return abort(404);
         }
 
-        $view = View::make(
+        $view = view(
             $this->stepMessages[$approvedStepNumber],
             [
                 'expertPanel' => $expertPanel,

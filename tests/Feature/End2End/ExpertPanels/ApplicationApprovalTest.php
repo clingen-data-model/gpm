@@ -184,7 +184,7 @@ class ApplicationApprovalTest extends TestCase
         $mailable = (new UserDefinedMailable(body: $body));
         $mailable->subject($subject);
 
-        $view = View::make(
+        $view = view(
             'email.user_defined_email',
             [
                 'body' => $body,

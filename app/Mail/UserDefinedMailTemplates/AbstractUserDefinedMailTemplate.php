@@ -15,7 +15,7 @@ abstract class AbstractUserDefinedMailTemplate
 
     public function renderBody(): string
     {
-        $view = View::make($this->getTemplate(), $this->getContext());
+        $view = view($this->getTemplate(), $this->getContext());
 
         return $view->render();
     }

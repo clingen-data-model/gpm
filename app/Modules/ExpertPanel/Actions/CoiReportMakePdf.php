@@ -24,7 +24,7 @@ class CoiReportMakePdf
         $cois = $members->sortBy('person.last_name', SORT_NATURAL)->map(fn ($member) => $this->transformMemberCoi($member))
             ->groupBy('version');
 
-        $view = View::make('pdfs.group_coi_report', ['cois' => $cois, 'group' => $group]);
+        $view = view('pdfs.group_coi_report', ['cois' => $cois, 'group' => $group]);
 
         $this->dompdf->loadHtml($view->render());
         $this->dompdf->setPaper('legal', 'landscape');

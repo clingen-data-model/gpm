@@ -91,7 +91,7 @@ class ApplicationStepApprovedNotification extends Notification
     {
         $step = $step ?? $expertPanel->currentStep;
         $template = $this->getTemplate($step);
-        $view = View::make($template, compact($expertPanel));
+        $view = view($template, compact($expertPanel));
 
         return $view->render();
     }
