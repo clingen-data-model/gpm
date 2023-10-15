@@ -18,9 +18,9 @@ class GeneListController extends Controller
         }
 
         $query = $group
-                ->expertPanel
-                ->genes()
-                ->select('gene_symbol', 'hgnc_id', 'mondo_id', 'disease_name', 'id');
+            ->expertPanel
+            ->genes()
+            ->select('gene_symbol', 'hgnc_id', 'mondo_id', 'disease_name', 'id');
         if ($request->with) {
             $query->with($request->with);
         }

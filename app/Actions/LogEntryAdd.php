@@ -20,7 +20,7 @@ class LogEntryAdd
         Model $subject,
         string $logDate,
         string $entry,
-        ?int $step = null
+        int $step = null
     ) {
         $logEntry = activity('applications')
             ->performedOn($subject)

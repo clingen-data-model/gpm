@@ -94,15 +94,15 @@ class ApplicationController extends Controller
                 }
                 if ($field == 'latestLogEntry.created_at') {
                     $subQuery = DB::table('activity_log')
-                                    ->select('subject_id', DB::raw('MAX(created_at) as latest_activity_at'))
-                                    ->where('subject_type', ExpertPanel::class)
-                                    ->groupBy('subject_id');
+                        ->select('subject_id', DB::raw('MAX(created_at) as latest_activity_at'))
+                        ->where('subject_type', ExpertPanel::class)
+                        ->groupBy('subject_id');
 
                     return $query->leftJoinSub($subQuery, 'latest_activity', function ($join) {
                         $join->on('latest_activity.subject_id', '=', 'expert_panels.id');
                     })
-                    ->addSelect('latest_activity.latest_activity_at as latest_activity_at')
-                    ->orderBy('latest_activity_at', $dir);
+                        ->addSelect('latest_activity.latest_activity_at as latest_activity_at')
+                        ->orderBy('latest_activity_at', $dir);
                 }
 
                 return $query->orderBy($field, $dir);

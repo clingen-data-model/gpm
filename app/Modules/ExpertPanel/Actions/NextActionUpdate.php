@@ -22,13 +22,13 @@ class NextActionUpdate
     public function handle(
         ExpertPanel $expertPanel,
         NextAction $nextAction,
-        ?string $dateCreated = null,
-        ?string $dateCompleted = null,
-        ?string $targetDate = null,
-        ?string $entry = null,
-        ?int $step = null,
-        ?string $assignedTo = null,
-        ?string $assignedToName = null
+        string $dateCreated = null,
+        string $dateCompleted = null,
+        string $targetDate = null,
+        string $entry = null,
+        int $step = null,
+        string $assignedTo = null,
+        string $assignedToName = null
     ) {
         $oldData = $nextAction->toArray();
         $data = [

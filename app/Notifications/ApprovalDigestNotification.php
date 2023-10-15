@@ -41,7 +41,7 @@ class ApprovalDigestNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                ->view('email.submission_digest', ['notifications' => $this->approvalDigestNotifications]);
+            ->view('email.submission_digest', ['notifications' => $this->approvalDigestNotifications]);
     }
 
     /**

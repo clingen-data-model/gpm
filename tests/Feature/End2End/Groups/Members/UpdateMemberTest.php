@@ -23,7 +23,7 @@ class UpdateMemberTest extends TestCase
         $this->admin = User::factory()->create();
         $this->groupMember = GroupMember::factory()->create();
         $this->role = config('permission.models.role')::factory()
-                        ->create(['scope' => 'group']);
+            ->create(['scope' => 'group']);
     }
 
     /**
@@ -110,7 +110,7 @@ class UpdateMemberTest extends TestCase
         ]);
     }
 
-    private function callUpdateEndpoint($groupMemberId, ?array $data = null)
+    private function callUpdateEndpoint($groupMemberId, array $data = null)
     {
         $data = $data ?? [
             'is_contact' => false,

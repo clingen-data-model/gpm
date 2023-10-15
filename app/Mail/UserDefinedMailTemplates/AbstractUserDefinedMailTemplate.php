@@ -33,14 +33,14 @@ abstract class AbstractUserDefinedMailTemplate
     public function getTo(): array
     {
         return $this->group->contacts
-        ->pluck('person')
-        ->map(function ($c) {
-            return [
-                'name' => $c->name,
-                'email' => $c->email,
-                'uuid' => $c->uuid,
-            ];
-        })->toArray();
+            ->pluck('person')
+            ->map(function ($c) {
+                return [
+                    'name' => $c->name,
+                    'email' => $c->email,
+                    'uuid' => $c->uuid,
+                ];
+            })->toArray();
     }
 
     /**

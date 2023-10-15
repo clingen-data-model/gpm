@@ -58,7 +58,7 @@ class DownloadTest extends TestCase
     {
         $this->doc->storage_path = 'beans.txt';
         $response = $this->json('GET', '/documents/'.$this->doc->uuid)
-                        ->assertStatus(404);
+            ->assertStatus(404);
     }
 
     /**

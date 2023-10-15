@@ -19,15 +19,15 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid');
             $table->foreignId('expert_panel_id')
-                    ->constrained()
-                    ->cascadeOnDelete()
-                    ->cascadeOnUpdate();
+                ->constrained()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->text('entry');
             $table->foreignId('assignee_id')
-                    ->nullable()
-                    ->constrained('next_action_assignees')
-                    ->cascadeOnDelete()
-                    ->cascadeOnUpdate();
+                ->nullable()
+                ->constrained('next_action_assignees')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->string('assignee_name')->nullable();
             $table->dateTime('date_created');
             $table->dateTime('target_date')->nullable();

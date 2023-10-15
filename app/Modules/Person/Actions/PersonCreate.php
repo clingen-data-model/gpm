@@ -13,8 +13,8 @@ class PersonCreate
         string $first_name,
         string $last_name,
         string $email,
-        ?string $phone = null,
-        ?int $user_id = null,
+        string $phone = null,
+        int $user_id = null,
     ): Person {
         $person = Person::create([
             'uuid' => $uuid,

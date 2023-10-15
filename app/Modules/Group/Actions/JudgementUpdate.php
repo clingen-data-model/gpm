@@ -15,7 +15,7 @@ class JudgementUpdate
 {
     use AsController;
 
-    public function handle(Judgement $judgement, string $decision, ?string $notes = null): Judgement
+    public function handle(Judgement $judgement, string $decision, string $notes = null): Judgement
     {
         $judgement->update([
             'decision' => $decision,

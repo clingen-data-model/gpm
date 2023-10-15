@@ -39,11 +39,11 @@ class UpdateDocumentInfoTest extends TestCase
             'date_received' => Carbon::now(),
             'notes' => 'This is a note!',
         ])
-        ->assertStatus(200)
-        ->assertJsonFragment([
-            'date_received' => Carbon::now()->toISOString(),
-            'notes' => 'This is a note!',
-        ]);
+            ->assertStatus(200)
+            ->assertJsonFragment([
+                'date_received' => Carbon::now()->toISOString(),
+                'notes' => 'This is a note!',
+            ]);
     }
 
     /**

@@ -44,7 +44,7 @@ class RemoveSystemPermissionFromRemovedOrRetiredGroupMemberTest extends TestCase
      */
     public function permission_removed_when_member_removed()
     {
-        $user = $this->setupUserWithPerson(permissions:['test-perm']);
+        $user = $this->setupUserWithPerson(permissions: ['test-perm']);
         $groupMember = app()->make(MemberAdd::class)->handle($this->group, $user->person);
 
         app()->make(MemberRemove::class)->handle($groupMember, Carbon::now());
@@ -61,7 +61,7 @@ class RemoveSystemPermissionFromRemovedOrRetiredGroupMemberTest extends TestCase
      */
     public function permission_removed_when_member_retired()
     {
-        $user = $this->setupUserWithPerson(permissions:['test-perm']);
+        $user = $this->setupUserWithPerson(permissions: ['test-perm']);
         $groupMember = app()->make(MemberAdd::class)->handle($this->group, $user->person);
 
         app()->make(MemberRetire::class)->handle($groupMember, Carbon::now());

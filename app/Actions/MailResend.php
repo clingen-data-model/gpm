@@ -35,10 +35,10 @@ class MailResend
     public function asController(ActionRequest $request)
     {
         $attachments = collect($request->attachments)
-                        ->map(function ($file) {
-                            return MailAttachment::createFromUploadedFile($file);
-                        })
-                        ->toArray();
+            ->map(function ($file) {
+                return MailAttachment::createFromUploadedFile($file);
+            })
+            ->toArray();
 
         $mailData = array_merge(
             $request->only('to', 'subject', 'body'),

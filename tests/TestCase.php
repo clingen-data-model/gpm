@@ -143,7 +143,7 @@ abstract class TestCase extends BaseTestCase
         return $user;
     }
 
-    protected function login(?array $userData = null, array $permissions = []): User
+    protected function login(array $userData = null, array $permissions = []): User
     {
         $user = $this->setupUser(userData: $userData, permissions: $permissions);
         Sanctum::actingAs($user);

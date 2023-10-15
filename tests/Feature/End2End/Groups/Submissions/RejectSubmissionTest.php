@@ -34,11 +34,11 @@ class RejectSubmissionTest extends TestCase
 
         (new SubmissionTypeAndStatusSeeder)->run();
         $this->submission = Submission::factory()
-                                ->create([
-                                    'group_id' => $this->expertPanel->group_id,
-                                    'submission_type_id' => config('submissions.types.application.definition.id'),
-                                    'submitter_id' => $this->admin->person->id,
-                                ]);
+            ->create([
+                'group_id' => $this->expertPanel->group_id,
+                'submission_type_id' => config('submissions.types.application.definition.id'),
+                'submitter_id' => $this->admin->person->id,
+            ]);
 
         Sanctum::actingAs($this->admin);
     }
@@ -119,7 +119,7 @@ class RejectSubmissionTest extends TestCase
         $this->assertLoggedActivity(
             subject: $this->expertPanel->group,
             description: 'Revisions requested for step '.$this->expertPanel->current_step,
-            properties:  [
+            properties: [
                 'submission_id' => $this->submission->id,
             ],
             activity_type: 'application-revisions-requested',

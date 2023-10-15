@@ -42,8 +42,8 @@ class TaskIndexTest extends TestCase
                 'assignee_type' => get_class($this->vcep1->group),
             ],
         ])
-        ->assertStatus(200)
-        ->assertJsonCount(2);
+            ->assertStatus(200)
+            ->assertJsonCount(2);
     }
 
     /**
@@ -61,17 +61,17 @@ class TaskIndexTest extends TestCase
                 'assignee_type' => get_class($this->vcep1->group),
             ],
         ])
-        ->assertStatus(200)
-        ->assertJsonCount(4)
-        ->assertJsonFragment([
-            'assignee_id' => $this->vcep1->group_id,
-        ])
-        ->assertJsonFragment([
-            'assignee_id' => $vcep3->group_id,
-        ])
-        ->assertJsonMissing([
-            'assignee_id' => $this->vcep2->group_id,
-        ]);
+            ->assertStatus(200)
+            ->assertJsonCount(4)
+            ->assertJsonFragment([
+                'assignee_id' => $this->vcep1->group_id,
+            ])
+            ->assertJsonFragment([
+                'assignee_id' => $vcep3->group_id,
+            ])
+            ->assertJsonMissing([
+                'assignee_id' => $this->vcep2->group_id,
+            ]);
     }
 
     private function makeRequest($data = [])

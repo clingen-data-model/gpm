@@ -79,7 +79,7 @@ Route::prefix('api/people')->middleware('api')->group(function () {
         ->name('people.timezones.index');
 
     Route::get('/lookups/{model}', [ApiController::class, 'index'])
-    ->name('people.catchall.index');
+        ->name('people.catchall.index');
 
     Route::get('/lookups/{model}/{id}', [ApiController::class, 'show'])
         ->name('people.catchall.show');

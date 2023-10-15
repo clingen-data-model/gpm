@@ -36,7 +36,7 @@ class AddGroupMemberTest extends TestCase
 
         $this->admin = User::factory()->create();
         $this->role = config('permission.models.role')::factory()
-                        ->create(['scope' => 'group']);
+            ->create(['scope' => 'group']);
     }
 
     /**
@@ -215,7 +215,7 @@ class AddGroupMemberTest extends TestCase
         Notification::assertSentTo($this->person, AddedToGroupNotification::class);
     }
 
-    private function makeRequest($personId = null, ?array $roleIds = null, bool $isContact = false)
+    private function makeRequest($personId = null, array $roleIds = null, bool $isContact = false)
     {
         $data = $data ?? [
             'person_id' => $personId ?? $this->person->id,

@@ -17,20 +17,20 @@ class ApplicationActivityGet
         $user = $request->user();
 
         $query = Group::query()
-                    ->whereHas('latestSubmission', function ($q) use ($user) {
-                        $q->withStatus($this->getSubmissionStatusesForUser($user));
-                    })
-                    ->with([
-                        'type',
-                        'latestSubmission',
-                        'latestSubmission.judgements',
-                        'latestSubmission.judgements.person' => function ($q) {
-                            $q->select('first_name', 'last_name', 'email', 'id');
-                        },
-                        'expertPanel' => function ($q) {
-                            $q->select(['id', 'uuid', 'long_base_name', 'short_base_name', 'group_id', 'current_step']);
-                        },
-                    ]);
+            ->whereHas('latestSubmission', function ($q) use ($user) {
+                $q->withStatus($this->getSubmissionStatusesForUser($user));
+            })
+            ->with([
+                'type',
+                'latestSubmission',
+                'latestSubmission.judgements',
+                'latestSubmission.judgements.person' => function ($q) {
+                    $q->select('first_name', 'last_name', 'email', 'id');
+                },
+                'expertPanel' => function ($q) {
+                    $q->select(['id', 'uuid', 'long_base_name', 'short_base_name', 'group_id', 'current_step']);
+                },
+            ]);
 
         return ApplicationActivityResource::collection($query->get());
     }

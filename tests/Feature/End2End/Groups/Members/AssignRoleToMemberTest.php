@@ -93,7 +93,7 @@ class AssignRoleToMemberTest extends TestCase
 
         Sanctum::actingAs($this->user);
         $response = $this->json('POST', $this->url, ['role_ids' => [$this->roles->first()->id, $systemRole->id]])
-                        ->assertStatus(422);
+            ->assertStatus(422);
 
         $response->assertJsonFragment = [
             'role_ids' => ['All roles must be group roles.'],

@@ -25,9 +25,9 @@ class LogEntryDelete
     public function handle(string $expertPanelUuid, int $logEntryId)
     {
         $logEntry = ExpertPanel::findByUuidOrFail($expertPanelUuid)
-                        ->group
-                        ->logEntries()
-                        ->findOrFail($logEntryId);
+            ->group
+            ->logEntries()
+            ->findOrFail($logEntryId);
 
         $this->logEntryDelete->handle(logEntry: $logEntry);
     }

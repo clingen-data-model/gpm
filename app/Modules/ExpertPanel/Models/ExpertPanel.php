@@ -170,8 +170,8 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     public function latestPendingNextAction()
     {
         return $this->hasOne(NextAction::class)
-                ->pending()
-                ->orderBy('created_at', 'desc');
+            ->pending()
+            ->orderBy('created_at', 'desc');
     }
 
     /**
@@ -345,9 +345,9 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     public function getFirstScopeDocumentAttribute()
     {
         return $this->group->documents()
-                ->type(config('documents.types.scope.id'))
-                ->isVersion(1)
-                ->first();
+            ->type(config('documents.types.scope.id'))
+            ->isVersion(1)
+            ->first();
     }
 
     public function getFirstFinalDocumentAttribute()

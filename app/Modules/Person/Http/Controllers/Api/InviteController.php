@@ -41,12 +41,12 @@ class InviteController extends Controller
                 if ($key == 'keyword') {
                     $query->whereHas('person', function ($q) use ($value) {
                         $q->where('first_name', 'like', '%'.$value.'%')
-                        ->orWhere('last_name', 'like', '%'.$value.'%')
-                        ->orWhere('email', 'like', '%'.$value.'%');
+                            ->orWhere('last_name', 'like', '%'.$value.'%')
+                            ->orWhere('email', 'like', '%'.$value.'%');
                     })
-                    ->orWhereHas('inviter', function ($q) use ($value) {
-                        $q->where('name', 'like', '%'.$value.'%');
-                    });
+                        ->orWhereHas('inviter', function ($q) use ($value) {
+                            $q->where('name', 'like', '%'.$value.'%');
+                        });
 
                     continue;
                 }
@@ -71,7 +71,7 @@ class InviteController extends Controller
         );
 
         $invites = $search->buildQuery($request->all())
-                    ->paginate($request->get('page_size', 20));
+            ->paginate($request->get('page_size', 20));
 
         return InviteResource::collection($invites);
     }

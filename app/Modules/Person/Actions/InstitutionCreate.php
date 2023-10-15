@@ -13,10 +13,10 @@ class InstitutionCreate
 
     public function handle(
         string $name,
-        ?string $abbreviation = null,
-        ?string $url = null,
-        ?string $address = null,
-        ?int $country_id = null,
+        string $abbreviation = null,
+        string $url = null,
+        string $address = null,
+        int $country_id = null,
         ?bool $reportable = true,
         // ?int $website_id = null,
     ): Institution {

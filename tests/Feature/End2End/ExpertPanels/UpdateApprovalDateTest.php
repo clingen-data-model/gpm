@@ -20,10 +20,10 @@ class UpdateApprovalDateTest extends TestCase
 
         $this->user = User::factory()->create();
         $this->expertPanel = ExpertPanel::factory()
-                                ->create([
-                                    'expert_panel_type_id' => 2,
-                                    'step_1_approval_date' => '2020-01-01',
-                                ]);
+            ->create([
+                'expert_panel_type_id' => 2,
+                'step_1_approval_date' => '2020-01-01',
+            ]);
     }
 
     /**

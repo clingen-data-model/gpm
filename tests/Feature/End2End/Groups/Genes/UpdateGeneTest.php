@@ -86,7 +86,7 @@ class UpdateGeneTest extends TestCase
             ]);
 
         $rsp2 = $this->json('PUT', $this->url, ['hgnc_id' => 'bob', 'mondo_id' => '920192'])
-        ->assertStatus(422)
+            ->assertStatus(422)
             ->assertJsonFragment([
                 'hgnc_id' => ['The selection is invalid.'],
             ])

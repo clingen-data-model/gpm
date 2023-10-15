@@ -11,7 +11,7 @@ class DxMessageFactory implements MessageFactoryInterface
         string $eventType,
         array $message,
         Carbon $date,
-        ?string $schemaVersion = null
+        string $schemaVersion = null
     ): array {
         $schemaVersion = $schemaVersion ?? config('dx.schema_versions.gpm-general-events');
         $message = [

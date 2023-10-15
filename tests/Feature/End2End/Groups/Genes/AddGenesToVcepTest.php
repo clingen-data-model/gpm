@@ -75,7 +75,7 @@ class AddGenesToVcepTest extends TestCase
                 'mondo_id' => 'MONDO:9876543',
             ]],
         ])
-        ->assertStatus(403);
+            ->assertStatus(403);
     }
 
     /**

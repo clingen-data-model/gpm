@@ -16,7 +16,7 @@ class LogEntryUpdate
         int $logEntryId,
         string $logDate,
         string $entry,
-        ?int $step = null
+        int $step = null
     ) {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         $logEntry = $expertPanel->group->logEntries()->findOrFail($logEntryId);

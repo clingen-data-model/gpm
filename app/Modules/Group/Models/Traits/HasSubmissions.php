@@ -25,9 +25,9 @@ trait HasSubmissions
     public function latestPendingSubmission(): HasOne
     {
         return $this->hasOne(Submission::class)
-                ->ofMany(['created_at' => 'max'], function ($query) {
-                    $query->pending();
-                });
+            ->ofMany(['created_at' => 'max'], function ($query) {
+                $query->pending();
+            });
     }
 
     public function approvedSubmission(): HasOne

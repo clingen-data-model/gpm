@@ -28,7 +28,7 @@ class ApplicationSubmissionAdminMail extends Mailable
     public function build()
     {
         return $this
-                ->subject('An application step was submitted.')
-                ->view('email.application_step_submitted_admin', ['submission' => $this->submission]);
+            ->subject('An application step was submitted.')
+            ->view('email.application_step_submitted_admin', ['submission' => $this->submission]);
     }
 }

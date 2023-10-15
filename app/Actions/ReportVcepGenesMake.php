@@ -46,21 +46,21 @@ class ReportVcepGenesMake
         $genes = Gene::whereHas('expertPanel', function ($q) {
             $q->typeVcep();
         })
-                    ->orderBy('gene_symbol')
-                    ->with([
-                        'disease' => function ($q) {
-                            $q->select(['mondo_id', 'name']);
-                        },
-                        'expertPanel' => function ($q) {
-                            $q->select(['id', 'long_base_name', 'expert_panel_type_id']);
-                        },
-                        'expertPanel.type',
-                        'expertPanel.group' => function ($q) {
-                            $q->select(['id', 'group_type_id']);
-                        },
-                        'expertPanel.group.type',
-                    ])
-                    ->get();
+            ->orderBy('gene_symbol')
+            ->with([
+                'disease' => function ($q) {
+                    $q->select(['mondo_id', 'name']);
+                },
+                'expertPanel' => function ($q) {
+                    $q->select(['id', 'long_base_name', 'expert_panel_type_id']);
+                },
+                'expertPanel.type',
+                'expertPanel.group' => function ($q) {
+                    $q->select(['id', 'group_type_id']);
+                },
+                'expertPanel.group.type',
+            ])
+            ->get();
 
         return $genes
             ->groupBy(function ($g) {

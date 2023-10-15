@@ -12,22 +12,22 @@ class GroupRelationsController extends Controller
     public function children(Group $group)
     {
         $children = $group->children()
-                        ->withCount('members')
-                        ->with([
-                            'type',
-                            'status',
+            ->withCount('members')
+            ->with([
+                'type',
+                'status',
 
-                            'expertPanel',
-                            'expertPanel.type',
+                'expertPanel',
+                'expertPanel.type',
 
-                            'coordinators',
-                            'coordinators.person',
+                'coordinators',
+                'coordinators.person',
 
-                            'chairs',
-                            'chairs.person',
-                        ])
-                        ->get()
-                        ->sortBy('expertPanel.name');
+                'chairs',
+                'chairs.person',
+            ])
+            ->get()
+            ->sortBy('expertPanel.name');
 
         return ChildGroupResource::collection($children);
     }

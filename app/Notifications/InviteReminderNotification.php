@@ -41,12 +41,12 @@ class InviteReminderNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->view(
-                        'email.person.invite_reminder',
-                        [
-                            'invite' => $this->invite,
-                        ]
-                    );
+            ->view(
+                'email.person.invite_reminder',
+                [
+                    'invite' => $this->invite,
+                ]
+            );
     }
 
     /**

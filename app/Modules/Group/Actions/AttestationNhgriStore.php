@@ -19,7 +19,7 @@ class AttestationNhgriStore
     use AsObject;
     use AsController;
 
-    public function handle(Group $group, ?Carbon $attestationDate = null)
+    public function handle(Group $group, Carbon $attestationDate = null)
     {
         if (! $group->isEp) {
             throw ValidationException::withMessages(['group' => 'Only expert panels have NHGRI attestations.']);

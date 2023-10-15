@@ -34,20 +34,20 @@ class UpdateExpertPanelAttributesRequest extends FormRequest
                 'max:255',
                 Rule::unique('expert_panels', 'long_base_name')
                     ->ignore($expertPanel->id)
-                ->where(function ($query) use ($expertPanel) {
-                    $query->whereNotNull('long_base_name')
-                        ->where('expert_panel_type_id', $expertPanel->expert_panel_type_id);
-                }),
+                    ->where(function ($query) use ($expertPanel) {
+                        $query->whereNotNull('long_base_name')
+                            ->where('expert_panel_type_id', $expertPanel->expert_panel_type_id);
+                    }),
             ],
             'short_base_name' => [
                 'nullable',
                 'max:15',
                 Rule::unique('expert_panels', 'short_base_name')
                     ->ignore($expertPanel->id)
-                ->where(function ($query) use ($expertPanel) {
-                    $query->whereNotNull('short_base_name')
-                        ->where('expert_panel_type_id', $expertPanel->expert_panel_type_id);
-                }),
+                    ->where(function ($query) use ($expertPanel) {
+                        $query->whereNotNull('short_base_name')
+                            ->where('expert_panel_type_id', $expertPanel->expert_panel_type_id);
+                    }),
             ],
             'affiliation_id' => 'nullable|digits:5',
         ];

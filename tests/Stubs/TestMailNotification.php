@@ -39,10 +39,10 @@ class TestMailNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->cc('test@test.com')
-                    ->bcc('example@example.com')
-                    ->subject('Test Mail Notification')
-                    ->line('TEST');
+            ->cc('test@test.com')
+            ->bcc('example@example.com')
+            ->subject('Test Mail Notification')
+            ->line('TEST');
     }
 
     /**

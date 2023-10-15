@@ -104,15 +104,15 @@ class PersonPhotoStoreTest extends TestCase
         $fakePdf = UploadedFile::fake()->create('beans.pdf', 2100, 'application/pdf');
 
         $this->makeRequest(['profile_photo' => $fakePdf])
-        ->assertStatus(422)
-        ->assertJson([
-            'errors' => [
-                'profile_photo' => [
-                    'The profile photo may not be greater than 2000 kilobytes.',
-                    'The profile photo must be a file of type: jpeg, jpg, gif, png.',
+            ->assertStatus(422)
+            ->assertJson([
+                'errors' => [
+                    'profile_photo' => [
+                        'The profile photo may not be greater than 2000 kilobytes.',
+                        'The profile photo must be a file of type: jpeg, jpg, gif, png.',
+                    ],
                 ],
-            ],
-        ]);
+            ]);
     }
 
     private function makeRequest($data = null)

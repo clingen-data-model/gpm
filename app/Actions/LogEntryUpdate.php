@@ -16,7 +16,7 @@ class LogEntryUpdate
         Activity $logEntry,
         string $logDate,
         string $entry,
-        ?int $step = null
+        int $step = null
     ) {
         $logEntry->created_at = Carbon::parse($logDate);
         $logEntry->description = $entry;

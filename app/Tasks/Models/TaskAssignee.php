@@ -12,12 +12,12 @@ trait TaskAssignee
     public function pendingTasks()
     {
         return $this->morphMany(Task::class, 'assignee')
-                ->pending();
+            ->pending();
     }
 
     public function completedTasks()
     {
         return $this->morphMany(Task::class, 'assignee')
-                ->completed();
+            ->completed();
     }
 }

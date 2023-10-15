@@ -30,8 +30,8 @@ class SimpleCoiEndpointTest extends TestCase
     public function can_get_group_from_coi_code()
     {
         $this->json('GET', '/api/coi/'.$this->group->coi_code.'/group')
-        ->assertStatus(200)
-        ->assertJson($this->group->toArray());
+            ->assertStatus(200)
+            ->assertJson($this->group->toArray());
     }
 
     /**
@@ -40,7 +40,7 @@ class SimpleCoiEndpointTest extends TestCase
     public function returns_404_if_group_not_found_for_code()
     {
         $this->json('GET', '/api/coi/some-fake-code/group')
-        ->assertStatus(404);
+            ->assertStatus(404);
     }
 
     /**
@@ -77,7 +77,7 @@ class SimpleCoiEndpointTest extends TestCase
         ];
 
         $this->json('POST', '/api/coi/'.$this->group->coi_code, $data)
-        ->assertStatus(200);
+            ->assertStatus(200);
 
         unset($data['group_member_id']);
 

@@ -41,13 +41,13 @@ class ApplicationReadyForApproverReview extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->view(
-                        'email.application_submission_ready_for_review',
-                        [
-                            'notifiable' => $notifiable,
-                            'group' => $this->group,
-                        ]
-                    );
+            ->view(
+                'email.application_submission_ready_for_review',
+                [
+                    'notifiable' => $notifiable,
+                    'group' => $this->group,
+                ]
+            );
     }
 
     /**

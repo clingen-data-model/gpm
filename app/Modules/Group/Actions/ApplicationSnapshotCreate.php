@@ -59,9 +59,9 @@ class ApplicationSnapshotCreate
     private function getLatestVersion(Group $group): int
     {
         $latestVersion = DB::table('application_snapshots')
-                            ->selectRaw('MAX(version) as version')
-                            ->where('group_id', $group->id)
-                            ->sole();
+            ->selectRaw('MAX(version) as version')
+            ->where('group_id', $group->id)
+            ->sole();
 
         return $latestVersion->version ?? 0;
     }

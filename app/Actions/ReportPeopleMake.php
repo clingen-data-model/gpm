@@ -22,7 +22,7 @@ class ReportPeopleMake extends ReportMakeAbstract
             'credentials',
             'expertises',
         ])
-                ->get();
+            ->get();
 
         $people = $people->map(function ($person) {
             $data = [];

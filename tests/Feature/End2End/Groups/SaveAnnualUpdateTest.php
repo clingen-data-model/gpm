@@ -23,8 +23,8 @@ class SaveAnnualUpdateTest extends TestCase
         $this->user = $this->setupUser(permissions: ['annual-updates-manage']);
         $this->expertPanel = ExpertPanel::factory()->gcep()->create();
         $this->coordinator = GroupMember::factory()
-                                ->create(['group_id' => $this->expertPanel->group->id])
-                                ->assignRole('coordinator');
+            ->create(['group_id' => $this->expertPanel->group->id])
+            ->assignRole('coordinator');
 
         $this->annualReview = AnnualUpdate::create(['expert_panel_id' => $this->expertPanel->id]);
         Sanctum::actingAs($this->user);

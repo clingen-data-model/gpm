@@ -109,7 +109,7 @@ class Person extends Model implements HasLogEntries
     public function latestLogEntry()
     {
         return $this->morphOne(Activity::class, 'subject')
-                ->orderBy('created_at', 'desc');
+            ->orderBy('created_at', 'desc');
     }
 
     /**
@@ -234,9 +234,9 @@ class Person extends Model implements HasLogEntries
     public function scopeHasPendingInvite($query)
     {
         return $query->hasActiveMembership()
-                ->whereHas('invite', function ($q) {
-                    $q->pending();
-                });
+            ->whereHas('invite', function ($q) {
+                $q->pending();
+            });
     }
 
     /**
@@ -308,9 +308,9 @@ class Person extends Model implements HasLogEntries
     public function coordinatesGroup($group)
     {
         $query = $this->activeMemberships()
-                            ->whereHas('roles', function ($q) {
-                                $q->where('name', 'coordinator');
-                            });
+            ->whereHas('roles', function ($q) {
+                $q->where('name', 'coordinator');
+            });
 
         if (is_array($group)) {
             $query->whereIn(
@@ -323,7 +323,7 @@ class Person extends Model implements HasLogEntries
 
         if (is_object($group)) {
             $query->where('group_id', $group->id)
-                            ->first();
+                ->first();
         }
 
         $membership = $query->first();
@@ -334,28 +334,28 @@ class Person extends Model implements HasLogEntries
         return true;
     }
 
-        public function getCredentialsAsStringAttribute()
-        {
-            if ($this->credentials->count() == 0) {
-                return $this->legacy_credentials;
-            }
-
-            return $this->credentials->pluck('name')->join(', ');
+    public function getCredentialsAsStringAttribute()
+    {
+        if ($this->credentials->count() == 0) {
+            return $this->legacy_credentials;
         }
 
-        public function getExpertisesAsStringAttribute()
-        {
-            if ($this->expertises->count() == 0) {
-                return $this->memberships->pluck('legacy_expertise')->filter()->join(', ');
-            }
+        return $this->credentials->pluck('name')->join(', ');
+    }
 
-            return $this->expertises->pluck('name')->join(', ');
+    public function getExpertisesAsStringAttribute()
+    {
+        if ($this->expertises->count() == 0) {
+            return $this->memberships->pluck('legacy_expertise')->filter()->join(', ');
         }
 
-        public function getExpertiseAsStringAttribute()
-        {
-            return $this->getExpertisesAsStringAttribute();
-        }
+        return $this->expertises->pluck('name')->join(', ');
+    }
+
+    public function getExpertiseAsStringAttribute()
+    {
+        return $this->getExpertisesAsStringAttribute();
+    }
 
     // Factory
     protected static function newFactory()

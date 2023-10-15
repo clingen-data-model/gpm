@@ -29,10 +29,10 @@ class DiseaseLookupController extends Controller
             return [];
         }
         $results = DB::connection(config('database.gt_db_connection'))->table('diseases')
-                    ->where('name', 'like', '%'.$queryString.'%')
-                    ->orWhere('mondo_id', 'like', '%'.$queryString.'%')
-                    ->limit(50)
-                    ->get();
+            ->where('name', 'like', '%'.$queryString.'%')
+            ->orWhere('mondo_id', 'like', '%'.$queryString.'%')
+            ->limit(50)
+            ->get();
 
         return $results->toArray();
     }

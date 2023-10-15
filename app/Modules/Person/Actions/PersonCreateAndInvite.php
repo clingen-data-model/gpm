@@ -28,8 +28,8 @@ class PersonCreateAndInvite extends PersonCreate
         string $first_name,
         string $last_name,
         string $email,
-        ?string $phone = null,
-        ?int $user_id = null,
+        string $phone = null,
+        int $user_id = null,
     ): Person {
         $person = parent::handle($uuid, $first_name, $last_name, $email, $phone, $user_id);
 

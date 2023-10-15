@@ -38,11 +38,11 @@ class CreateExpertisesTest extends TestCase
             'name' => 'Cptn.',
             'approved' => 1,
         ])
-        ->assertStatus(201)
-        ->assertJson([
-            'name' => 'Cptn.',
-            'approved' => true,
-        ]);
+            ->assertStatus(201)
+            ->assertJson([
+                'name' => 'Cptn.',
+                'approved' => true,
+            ]);
 
         $this->assertDatabaseHas('expertises', [
             'name' => 'Cptn.',

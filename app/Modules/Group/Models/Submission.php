@@ -128,7 +128,7 @@ class Submission extends Model
     public function scopeSentToChair($query)
     {
         return $query->whereNotNull('sent_to_chairs_at')
-                ->pending();
+            ->pending();
     }
 
     // ACCESSORS
@@ -150,7 +150,7 @@ class Submission extends Model
     /**
      * DOMAIN
      */
-    public function reject(?string $responseContent = null): Submission
+    public function reject(string $responseContent = null): Submission
     {
         $this->update([
             'submission_status_id' => config('submissions.statuses.revisions-requested.id'),

@@ -10,6 +10,6 @@ interface MessageFactoryInterface
         string $eventType,
         array $message,
         Carbon $date,
-        ?string $schemaVersion = null
+        string $schemaVersion = null
     ): array;
 }

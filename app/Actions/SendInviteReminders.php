@@ -13,9 +13,9 @@ class SendInviteReminders
     public function handle()
     {
         $people = Person::query()
-                            ->hasPendingInvite()
-                            ->with('invite')
-                            ->get();
+            ->hasPendingInvite()
+            ->with('invite')
+            ->get();
 
         $people->each(function ($person) {
             $person->notify(new InviteReminderNotification($person->invite));

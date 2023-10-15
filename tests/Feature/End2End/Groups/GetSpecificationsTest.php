@@ -25,9 +25,9 @@ class GetSpecificationsTest extends TestCase
         $this->setupForGroupTest();
         $this->expertPanel = ExpertPanel::factory()->vcep()->create();
         $this->specifications = Specification::factory()
-                                ->count(2)
-                                ->has(Ruleset::factory()->count(3))
-                                ->create(['expert_panel_id' => $this->expertPanel->id]);
+            ->count(2)
+            ->has(Ruleset::factory()->count(3))
+            ->create(['expert_panel_id' => $this->expertPanel->id]);
 
         Sanctum::actingAs($this->setupUser());
     }

@@ -41,14 +41,14 @@ class ApplicationSaveChanges
         if ($group->isVcep) {
             $group = $this->memberDescription->handle($group, $data->get('membership_description'));
             $group = $this->reanalysisAttestation
-                        ->handle(
-                            $group,
-                            $data->get('reanalysis_conflicting'),
-                            $data->get('reanalysis_review_lp'),
-                            $data->get('reanalysis_review_lb'),
-                            $data->get('reanalysis_other'),
-                            $data->get('reanalysis_attestation_date')
-                        );
+                ->handle(
+                    $group,
+                    $data->get('reanalysis_conflicting'),
+                    $data->get('reanalysis_review_lp'),
+                    $data->get('reanalysis_review_lb'),
+                    $data->get('reanalysis_other'),
+                    $data->get('reanalysis_attestation_date')
+                );
         }
 
         return $group;

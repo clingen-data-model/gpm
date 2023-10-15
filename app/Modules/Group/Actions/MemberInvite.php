@@ -47,13 +47,13 @@ class MemberInvite
 
         $isContact = valueAtIndex($data, 'is_contact', false);
         $newMember = $this->addMember
-                        ->cancelNotification()
-                        ->handle($group, $person, [
-                            'is_contact' => $isContact,
-                            'notes' => valueAtIndex($data, 'notes'),
-                            'training_level_1' => valueAtIndex($data, 'training_level_1'),
-                            'training_level_2' => valueAtIndex($data, 'training_level_2'),
-                        ]);
+            ->cancelNotification()
+            ->handle($group, $person, [
+                'is_contact' => $isContact,
+                'notes' => valueAtIndex($data, 'notes'),
+                'training_level_1' => valueAtIndex($data, 'training_level_1'),
+                'training_level_2' => valueAtIndex($data, 'training_level_2'),
+            ]);
 
         if ($roleIds) {
             $newMember = $this->assignRole->handle($newMember, $roleIds);

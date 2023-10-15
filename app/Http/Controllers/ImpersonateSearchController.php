@@ -11,14 +11,14 @@ class ImpersonateSearchController extends Controller
     public function index(Request $request)
     {
         $userQuery = User::query()
-                    ->with('roles')
-                    ->select('name', 'email', 'id')
-                    ->where(function ($query) use ($request) {
-                        $pattern = '%'.$request->query_string.'%';
-                        $query->where('name', 'LIKE', $pattern)
-                            ->orWhere('email', 'LIKE', $pattern)
-                            ->orWhere('id', 'LIKE', $pattern);
-                    });
+            ->with('roles')
+            ->select('name', 'email', 'id')
+            ->where(function ($query) use ($request) {
+                $pattern = '%'.$request->query_string.'%';
+                $query->where('name', 'LIKE', $pattern)
+                    ->orWhere('email', 'LIKE', $pattern)
+                    ->orWhere('id', 'LIKE', $pattern);
+            });
 
         $users = $userQuery->get();
 

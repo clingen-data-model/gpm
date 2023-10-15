@@ -43,7 +43,7 @@ class MigrateCredentials extends Command
         $people = Person::whereNotNull('legacy_credentials')->withTrashed()
                     // ->whereIn('id', [1948, 2017, 1746, 266, 342, 974, 984, 1147, 1187, 1228, 720, 1976, 2107])
                     // ->whereIn('id', [492])
-                    ->get();
+            ->get();
 
         $credentialsById = Credential::all()->keyBy('id')->all();
         $credentialsIndex = $this->getCredentialsIndex();
@@ -81,11 +81,11 @@ class MigrateCredentials extends Command
     private function getSynonymsIndex(): array
     {
         return Synonym::forType(Credential::class)->get()
-                        ->groupBy(fn ($i) => strtolower($i->name))
-                        ->map(function ($syn) {
-                            return $syn->pluck('synonym_of_id');
-                        })
-                        ->toArray();
+            ->groupBy(fn ($i) => strtolower($i->name))
+            ->map(function ($syn) {
+                return $syn->pluck('synonym_of_id');
+            })
+            ->toArray();
     }
 
     private function tokenize($string, $termIndex)

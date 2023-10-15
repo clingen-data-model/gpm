@@ -18,18 +18,18 @@ class ReportGcepGenesMake extends ReportMakeAbstract
         $genes = Gene::whereHas('expertPanel', function ($q) {
             $q->typeGcep();
         })
-        ->orderBy('gene_symbol')
-        ->with([
-            'expertPanel' => function ($q) {
-                $q->select(['id', 'long_base_name', 'expert_panel_type_id']);
-            },
-            'expertPanel.type',
-            'expertPanel.group' => function ($q) {
-                $q->select(['id', 'group_type_id']);
-            },
-            'expertPanel.group.type',
-        ])
-        ->get();
+            ->orderBy('gene_symbol')
+            ->with([
+                'expertPanel' => function ($q) {
+                    $q->select(['id', 'long_base_name', 'expert_panel_type_id']);
+                },
+                'expertPanel.type',
+                'expertPanel.group' => function ($q) {
+                    $q->select(['id', 'group_type_id']);
+                },
+                'expertPanel.group.type',
+            ])
+            ->get();
 
         return $genes
             ->groupBy('hgnc_id')

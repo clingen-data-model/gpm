@@ -40,8 +40,8 @@ class StepApprove
         ExpertPanel $expertPanel,
         $dateApproved,
         bool $notifyContacts = false,
-        ?string $subject = null,
-        ?string $body = null,
+        string $subject = null,
+        string $body = null,
         $attachments = []
     ) {
         dump('fuck me 1');

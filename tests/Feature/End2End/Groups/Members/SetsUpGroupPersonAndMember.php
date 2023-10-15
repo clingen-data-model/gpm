@@ -18,7 +18,7 @@ trait SetsUpGroupPersonAndMember
         return $this;
     }
 
-    public function setupMember(?Group $group = null, ?Person $person = null, $memberAttributes = [])
+    public function setupMember(Group $group = null, Person $person = null, $memberAttributes = [])
     {
         $group = $group ?? $this->group;
         $person = $person ?? $this->person;

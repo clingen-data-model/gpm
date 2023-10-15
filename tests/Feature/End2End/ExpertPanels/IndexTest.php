@@ -26,11 +26,11 @@ class IndexTest extends TestCase
         Group::factory(3)->cdwg()->create();
         $this->user = User::factory()->create();
         $this->expertPanels = ExpertPanel::factory(1)
-                                ->randomStep()
-                                ->create([
-                                    'created_at' => Carbon::now()->subDays(10),
-                                    'updated_at' => Carbon::now()->subDays(10),
-                                ]);
+            ->randomStep()
+            ->create([
+                'created_at' => Carbon::now()->subDays(10),
+                'updated_at' => Carbon::now()->subDays(10),
+            ]);
     }
 
     /**
@@ -91,11 +91,11 @@ class IndexTest extends TestCase
     public function can_filter_applications_by_last_updated()
     {
         $this->expertPanels = ExpertPanel::factory(3)
-                                ->randomStep()
-                                ->create([
-                                    'created_at' => Carbon::now()->subDays(10),
-                                    'updated_at' => Carbon::now()->subDays(10),
-                                ]);
+            ->randomStep()
+            ->create([
+                'created_at' => Carbon::now()->subDays(10),
+                'updated_at' => Carbon::now()->subDays(10),
+            ]);
         $this->expertPanels->take(2)->each(function ($app) {
             $app->updated_at = $this->faker->dateTimeBetween('-5 days', 'now');
             $app->save();

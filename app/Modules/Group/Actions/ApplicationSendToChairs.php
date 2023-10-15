@@ -18,7 +18,7 @@ class ApplicationSendToChairs
     {
     }
 
-    public function handle(Group $group, ?string $additionalComments = null)
+    public function handle(Group $group, string $additionalComments = null)
     {
         DB::transaction(function () use ($group, $additionalComments) {
             $this->notifyChairs($group);
@@ -56,9 +56,9 @@ class ApplicationSendToChairs
     private function notifyChairs(Group $group): void
     {
         $chairs = User::permission('ep-applications-approve')
-                    ->with('person')
-                    ->get()
-                    ->pluck('person');
+            ->with('person')
+            ->get()
+            ->pluck('person');
 
         Notification::send($chairs, new ApplicationReadyForApproverReview($group));
     }

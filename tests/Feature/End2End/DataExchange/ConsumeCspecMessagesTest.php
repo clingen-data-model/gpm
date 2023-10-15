@@ -23,12 +23,12 @@ class ConsumeCspecMessagesTest extends TestCase
         parent::setup();
         $this->setupForGroupTest();
         $this->vcep = ExpertPanel::factory()
-                        ->vcep()
-                        ->create([
-                            'current_step' => 2,
-                            'step_1_approval_date' => Carbon::now(),
-                            'affiliation_id' => '59999',
-                        ]);
+            ->vcep()
+            ->create([
+                'current_step' => 2,
+                'step_1_approval_date' => Carbon::now(),
+                'affiliation_id' => '59999',
+            ]);
         config(['dx.consume' => true]);
     }
 

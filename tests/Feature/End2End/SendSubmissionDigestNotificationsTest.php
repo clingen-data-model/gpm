@@ -65,8 +65,8 @@ class SendSubmissionDigestNotificationsTest extends TestCase
             ApprovalDigestNotification::class,
             function ($notification) {
                 return $notification->approvalDigestNotifications
-                            ->get(CommentActivityNotification::class)
-                            ->count() == 1
+                    ->get(CommentActivityNotification::class)
+                    ->count() == 1
                         && $notification->approvalDigestNotifications
                             ->get(JudgementActivityNotification::class)
                             ->count() == 1

@@ -40,7 +40,7 @@ class CoiReminderNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->view('email.coi_reminder', compact('notifiable'));
+            ->view('email.coi_reminder', compact('notifiable'));
     }
 
     /**

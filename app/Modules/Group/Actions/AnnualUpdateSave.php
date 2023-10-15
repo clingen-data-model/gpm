@@ -25,12 +25,12 @@ class AnnualUpdateSave
     {
         $group = Group::findByUuidOrFail($groupUuid);
         $annualReview = $group->expertPanel
-                            ->annualUpdates()
-                            ->find($annualReviewId);
+            ->annualUpdates()
+            ->find($annualReviewId);
         $submitterId = $request->get('submitter_id');
         $data = collect($request->get('data'))
-                    ->only($this->getDataFields())
-                    ->toArray();
+            ->only($this->getDataFields())
+            ->toArray();
 
         return $this->handle($annualReview, $submitterId, $data);
     }

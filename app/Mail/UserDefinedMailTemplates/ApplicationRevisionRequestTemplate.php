@@ -26,10 +26,10 @@ class ApplicationRevisionRequestTemplate extends AbstractUserDefinedMailTemplate
         $context['requiredRevisions'] = $this->group->comments()->pending()->requiredRevision()->get();
         $context['suggestions'] = $this->group->comments()->pending()->suggestion()->get();
         $context['judgementNotes'] = $this->group
-                                        ->latestSubmission
-                                        ->judgements
-                                        ->filter(fn ($j) => $j->notes !== null)
-                                        ->map(fn ($j) => $j->notes);
+            ->latestSubmission
+            ->judgements
+            ->filter(fn ($j) => $j->notes !== null)
+            ->map(fn ($j) => $j->notes);
 
         return $context;
     }

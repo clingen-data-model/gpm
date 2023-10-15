@@ -160,11 +160,11 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
     public function getCoiLastCompletedAttribute()
     {
         $latestCoi = $this->cois
-                        ->filter(function ($coi) {
-                            return ! is_null($coi->completed_at);
-                        })
-                        ->sortByDesc('completed_at')
-                        ->first();
+            ->filter(function ($coi) {
+                return ! is_null($coi->completed_at);
+            })
+            ->sortByDesc('completed_at')
+            ->first();
 
         return $latestCoi ? $latestCoi->completed_at : null;
     }
@@ -187,17 +187,17 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
         return true;
     }
 
-     public function getExpertiseAttribute(): ?string
-     {
-         return $this->person->expertises->count() > 0
-            ? $this->person->expertises->pluck('name')->join(', ')
-            : $this->legacy_expertise ?? '';
-     }
+    public function getExpertiseAttribute(): ?string
+    {
+        return $this->person->expertises->count() > 0
+           ? $this->person->expertises->pluck('name')->join(', ')
+           : $this->legacy_expertise ?? '';
+    }
 
-         public function getRolesAsStringAttribute()
-         {
-             return $this->roles->pluck('name')->join(', ');
-         }
+    public function getRolesAsStringAttribute()
+    {
+        return $this->roles->pluck('name')->join(', ');
+    }
 
     protected static function newFactory()
     {

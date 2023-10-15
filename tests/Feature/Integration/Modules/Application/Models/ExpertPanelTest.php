@@ -64,15 +64,15 @@ class ExpertPanelTest extends TestCase
     {
         $expertPanel = ExpertPanel::factory()->create();
         $document1 = Document::factory()
-                        ->make([
-                            'document_type_id' => config('documents.types.scope.id'),
-                            'version' => 1,
-                        ]);
+            ->make([
+                'document_type_id' => config('documents.types.scope.id'),
+                'version' => 1,
+            ]);
         $document2 = Document::factory()
-                        ->make([
-                            'document_type_id' => config('documents.types.scope.id'),
-                            'version' => 2,
-                        ]);
+            ->make([
+                'document_type_id' => config('documents.types.scope.id'),
+                'version' => 2,
+            ]);
 
         $expertPanel->group->documents()->save($document1);
         $expertPanel->group->documents()->save($document2);
@@ -88,15 +88,15 @@ class ExpertPanelTest extends TestCase
     {
         $expertPanel = ExpertPanel::factory()->create();
         $document1 = Document::factory()
-                        ->make([
-                            'document_type_id' => config('documents.types.final-app.id'),
-                            'version' => 1,
-                        ]);
+            ->make([
+                'document_type_id' => config('documents.types.final-app.id'),
+                'version' => 1,
+            ]);
         $document2 = Document::factory()
-                        ->make([
-                            'document_type_id' => config('documents.types.final-app.id'),
-                            'version' => 2,
-                        ]);
+            ->make([
+                'document_type_id' => config('documents.types.final-app.id'),
+                'version' => 2,
+            ]);
 
         $expertPanel->group->documents()->save($document1);
         $expertPanel->group->documents()->save($document2);

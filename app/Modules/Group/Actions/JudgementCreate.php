@@ -16,7 +16,7 @@ class JudgementCreate
 {
     use AsController;
 
-    public function handle(Group $group, Person $person, string $decision, ?string $notes = null)
+    public function handle(Group $group, Person $person, string $decision, string $notes = null)
     {
         $judgement = $group->latestPendingSubmission->judgements()->create([
             'decision' => $decision,

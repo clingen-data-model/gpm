@@ -21,13 +21,13 @@ class ModelSearchService
     public function search($params): Collection
     {
         return $this->buildQuery($params)
-                ->get();
+            ->get();
     }
 
     public function buildQuery($params): Builder
     {
         $query = $this->modelClass::query()
-                    ->with($this->defaultWith);
+            ->with($this->defaultWith);
 
         $query->select($this->getSelect());
 

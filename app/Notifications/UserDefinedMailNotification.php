@@ -48,10 +48,10 @@ class UserDefinedMailNotification extends Notification
     public function toMail($notifiable)
     {
         $mail = (new MailMessage)
-                    ->subject($this->subject)
-                    ->view('email.user_defined_email', [
-                        'body' => $this->body,
-                    ]);
+            ->subject($this->subject)
+            ->view('email.user_defined_email', [
+                'body' => $this->body,
+            ]);
 
         if ($this->fromEmail) {
             $mail->from($this->fromEmail, $this->fromName);

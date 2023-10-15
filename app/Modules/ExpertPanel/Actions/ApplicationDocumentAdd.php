@@ -21,11 +21,11 @@ class ApplicationDocumentAdd
         string $filename,
         string $storage_path,
         int $document_type_id,
-        ?int $step = null,
-        ?string $date_received = null,
+        int $step = null,
+        string $date_received = null,
         ?array $metadata = [],
         ?bool $is_final = false,
-        ?string $notes = null
+        string $notes = null
     ): Document {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         $dateReceived = $date_received ? Carbon::parse($date_received) : Carbon::now();

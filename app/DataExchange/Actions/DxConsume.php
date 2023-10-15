@@ -18,7 +18,7 @@ class DxConsume
     ) {
     }
 
-    public function handle(array $topics, ?int $limit = null): void
+    public function handle(array $topics, int $limit = null): void
     {
         $stream = app()->make(MessageStream::class);
         $processor = app()->make(MessageProcessor::class);

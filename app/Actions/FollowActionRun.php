@@ -24,9 +24,9 @@ class FollowActionRun
     public function asListener(Event $event)
     {
         $followActions = FollowAction::query()
-                            ->forEvent(get_class($event))
-                            ->incomplete()
-                            ->get();
+            ->forEvent(get_class($event))
+            ->incomplete()
+            ->get();
 
         $followActions->each(fn ($fa) => $this->handle($fa, $event));
     }

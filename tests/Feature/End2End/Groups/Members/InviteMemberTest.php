@@ -80,10 +80,10 @@ class InviteMemberTest extends TestCase
             'last_name' => $person->last_name,
             'email' => $person->email,
         ])
-        ->assertStatus(422)
-        ->assertJsonFragment([
-            'email' => ['A person with this email address is already in the GPM.  Please click \'Add as member\' next the person\'s name to the right.'],
-        ]);
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                'email' => ['A person with this email address is already in the GPM.  Please click \'Add as member\' next the person\'s name to the right.'],
+            ]);
     }
 
     /**

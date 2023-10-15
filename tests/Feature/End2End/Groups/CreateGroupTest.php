@@ -49,14 +49,14 @@ class CreateGroupTest extends TestCase
             'group_type_id' => 999,
             'group_status_id' => 999,
         ])
-        ->assertStatus(422)
-        ->assertJsonFragment([
-            'errors' => [
-                'name' => ['The name may not be greater than 255 characters.'],
-                // 'group_type_id' => ['The selection is invalid.'],
-                'group_status_id' => ['The selection is invalid.'],
-            ],
-        ]);
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                'errors' => [
+                    'name' => ['The name may not be greater than 255 characters.'],
+                    // 'group_type_id' => ['The selection is invalid.'],
+                    'group_status_id' => ['The selection is invalid.'],
+                ],
+            ]);
     }
 
     /**

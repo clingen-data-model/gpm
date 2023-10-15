@@ -38,7 +38,7 @@ class UserCreate
      * @param  string|null  $password Password (or null).
      * @return void
      */
-    public function handle(string $name, string $email, ?string $password = null): User
+    public function handle(string $name, string $email, string $password = null): User
     {
         $pass = $password ?? uniqid();
         $user = User::create(['name' => $name, 'email' => $email, 'password' => Hash::make($pass)]);

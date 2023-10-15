@@ -28,7 +28,7 @@ class RolesAndPermissionsSeeder extends Seeder
             }, $permIds);
             foreach ($rows as $values) {
                 DB::table('role_has_permissions')
-                        ->updateOrInsert($values);
+                    ->updateOrInsert($values);
             }
         }
         DB::commit();

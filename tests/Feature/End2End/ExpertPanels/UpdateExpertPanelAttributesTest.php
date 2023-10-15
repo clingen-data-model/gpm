@@ -115,7 +115,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
             'short_base_name' => 'blah',
             'affiliation_id' => '40001',
         ])
-        ->assertStatus(200);
+            ->assertStatus(200);
 
         $this->makeRequest($expertPanel, [
             'cdwg_id' => 1,
@@ -135,7 +135,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
             'short_base_name' => 'blah',
             'affiliation_id' => '40001',
         ])
-        ->assertStatus(200);
+            ->assertStatus(200);
     }
 
     /**
@@ -153,7 +153,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
             'short_base_name' => null,
             'affiliation_id' => '40001',
         ])
-        ->assertStatus(200);
+            ->assertStatus(200);
 
         $this->makeRequest($expertPanel, [
             'cdwg_id' => 1,
@@ -173,7 +173,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
             'long_base_name' => 'blah',
             'affiliation_id' => '40001',
         ])
-        ->assertStatus(200);
+            ->assertStatus(200);
     }
 
     /**

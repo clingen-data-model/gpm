@@ -45,11 +45,11 @@ class ApplicationSubmissionNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                ->subject('An application step was submitted.')
-                ->view('email.application_step_submitted', [
-                    'notifiable' => $notifiable,
-                    'submission' => $this->submission,
-                ]);
+            ->subject('An application step was submitted.')
+            ->view('email.application_step_submitted', [
+                'notifiable' => $notifiable,
+                'submission' => $this->submission,
+            ]);
     }
 
     /**

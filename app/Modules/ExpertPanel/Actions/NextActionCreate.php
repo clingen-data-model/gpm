@@ -23,13 +23,13 @@ class NextActionCreate
         ExpertPanel $expertPanel,
         string $entry,
         string $dateCreated,
-        ?string $uuid = null,
-        ?string $dateCompleted = null,
-        ?string $targetDate = null,
-        ?int $step = null,
-        ?string $assignedTo = null,
-        ?string $assignedToName = null,
-        ?int $typeId = null
+        string $uuid = null,
+        string $dateCompleted = null,
+        string $targetDate = null,
+        int $step = null,
+        string $assignedTo = null,
+        string $assignedToName = null,
+        int $typeId = null
     ): NextAction {
         $nextAction = NextAction::make([
             'uuid' => $uuid ?? Uuid::uuid4()->toString(),

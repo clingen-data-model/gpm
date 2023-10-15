@@ -11,7 +11,7 @@ class LogEntryAdd
 {
     use AsAction;
 
-    private ExpertPanel  $expertPanel;
+    private ExpertPanel $expertPanel;
 
     public function __construct(private AppLogEntry $logEntryAdd)
     {
@@ -26,7 +26,7 @@ class LogEntryAdd
         string $expertPanelUuid,
         string $logDate,
         string $entry,
-        ?int $step = null
+        int $step = null
     ) {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         $logEntry = $this->logEntryAdd->handle(subject: $expertPanel->group, logDate: $logDate, entry: $entry, step: $step);

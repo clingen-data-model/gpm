@@ -21,10 +21,10 @@ class GeneLookupController extends Controller
             return [];
         }
         $results = DB::connection(config('database.gt_db_connection'))->table('genes')
-                        ->where('gene_symbol', 'like', '%'.$queryString.'%')
-                        ->orWhere('hgnc_id', 'like', '%'.$queryString.'%')
-                        ->limit(250)
-                        ->get();
+            ->where('gene_symbol', 'like', '%'.$queryString.'%')
+            ->orWhere('hgnc_id', 'like', '%'.$queryString.'%')
+            ->limit(250)
+            ->get();
 
         return $results->toArray();
     }

@@ -84,7 +84,7 @@ class SearchExpertisesTest extends TestCase
             ]);
     }
 
-    private function makeRequest(?string $keyword = null): TestResponse
+    private function makeRequest(string $keyword = null): TestResponse
     {
         $url = '/api/expertises';
         if ($keyword) {

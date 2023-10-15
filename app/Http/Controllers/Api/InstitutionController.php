@@ -23,7 +23,7 @@ class InstitutionController extends Controller
         $query = $searchService->buildQuery($request->all());
 
         return $query
-                ->withCount('people')
-                ->get();
+            ->withCount('people')
+            ->get();
     }
 }

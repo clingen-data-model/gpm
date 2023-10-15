@@ -86,13 +86,13 @@ class ModelSnapshotterTest extends TestCase
             'attributes' => $this->groupAttr,
             'relations' => [
                 'members' => collect($memberAttrs)
-                                ->map(function ($ma) {
-                                    return [
-                                        'class' => GroupMember::class,
-                                        'attributes' => $ma,
-                                        'relations' => [],
-                                    ];
-                                })->toArray(),
+                    ->map(function ($ma) {
+                        return [
+                            'class' => GroupMember::class,
+                            'attributes' => $ma,
+                            'relations' => [],
+                        ];
+                    })->toArray(),
             ],
         ];
 

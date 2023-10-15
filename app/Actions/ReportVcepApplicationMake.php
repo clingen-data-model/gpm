@@ -18,14 +18,14 @@ class ReportVcepApplicationMake extends ReportMakeAbstract
     private function pullData(): array
     {
         $vceps = ExpertPanel::typeVcep()
-                    ->with([
-                        'coordinators',
-                        'coordinators.person',
-                        'chairs',
-                        'chairs.person',
-                        'group',
-                    ])
-                    ->get();
+            ->with([
+                'coordinators',
+                'coordinators.person',
+                'chairs',
+                'chairs.person',
+                'group',
+            ])
+            ->get();
 
         $data = $vceps->map(function ($vcep) {
             $coordinators = $vcep->coordinators->map(function ($crd) {

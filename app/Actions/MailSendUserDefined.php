@@ -12,10 +12,10 @@ class MailSendUserDefined
         $to,
         string $subject,
         string $body,
-        ?array $attachments = null,
-        ?array $ccAddresses = null,
-        ?array $bccAddresses = null,
-        ?array $from = null,
+        array $attachments = null,
+        array $ccAddresses = null,
+        array $bccAddresses = null,
+        array $from = null,
     ) {
         $ccAddresses = $ccAddresses ?? [];
         $bccAddresses = $bccAddresses ?? [];

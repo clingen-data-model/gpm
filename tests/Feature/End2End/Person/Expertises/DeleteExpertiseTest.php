@@ -19,8 +19,8 @@ class DeleteExpertiseTest extends TestCase
     {
         parent::setup();
         $this->expertise = Expertise::factory()
-                            ->has(Person::factory())
-                            ->create();
+            ->has(Person::factory())
+            ->create();
         $this->person = $this->expertise->people->first();
     }
 

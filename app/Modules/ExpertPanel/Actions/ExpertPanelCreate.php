@@ -28,9 +28,9 @@ class ExpertPanelCreate
     public function handle(
         string $uuid,
         string $working_name,
-        int|null $cdwg_id,
+        ?int $cdwg_id,
         int $expert_panel_type_id,
-        ?DateTime $date_initiated = null,
+        DateTime $date_initiated = null,
     ) {
         if (is_null($date_initiated)) {
             $date_initiated = Carbon::now();

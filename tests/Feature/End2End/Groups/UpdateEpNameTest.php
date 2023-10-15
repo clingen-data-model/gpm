@@ -63,7 +63,7 @@ class UpdateEpNameTest extends TestCase
             'long_base_name' => null,
             'short_base_name' => 'blah',
         ])
-        ->assertStatus(200);
+            ->assertStatus(200);
 
         $this->makeRequest([
             'long_base_name' => $existingGcep->getAttributes()['long_base_name'],
@@ -79,7 +79,7 @@ class UpdateEpNameTest extends TestCase
             'long_base_name' => 'Bird',
             'short_base_name' => 'blah',
         ])
-        ->assertStatus(200);
+            ->assertStatus(200);
     }
 
     /**
@@ -92,7 +92,7 @@ class UpdateEpNameTest extends TestCase
             'long_base_name' => null,
             'short_base_name' => null,
         ])
-        ->assertStatus(200);
+            ->assertStatus(200);
 
         $this->makeRequest([
             'long_base_name' => $existingGcep->long_base_name,
@@ -108,7 +108,7 @@ class UpdateEpNameTest extends TestCase
             'short_base_name' => 'Bird',
             'long_base_name' => 'blah',
         ])
-        ->assertStatus(200);
+            ->assertStatus(200);
     }
 
     /**

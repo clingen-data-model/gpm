@@ -45,14 +45,14 @@ class ActivityLogsController extends Controller
             'subject_id',
             'properties',
         ])
-                        ->with(['causer' => function ($q) {
-                            return $q->select(['id', 'name']);
-                        }])
-                        ->where(function ($q) {
-                            $q->whereNotIn('activity_type', ['coi-completed', 'next-action-updated'])
-                            ->orWhereNull('activity_type');
-                        })
-                        ->orderBy('created_at', 'desc');
+            ->with(['causer' => function ($q) {
+                return $q->select(['id', 'name']);
+            }])
+            ->where(function ($q) {
+                $q->whereNotIn('activity_type', ['coi-completed', 'next-action-updated'])
+                    ->orWhereNull('activity_type');
+            })
+            ->orderBy('created_at', 'desc');
 
         $allLogs = $query->get();
 
@@ -63,9 +63,9 @@ class ActivityLogsController extends Controller
         $autoLogs = $allLogs->filter(function ($entry) {
             return $entry->activity_type !== null;
         })
-        ->unique(function ($i) {
-            return $i->activity_type.'-'.$i->created_at->format('Y-m-d_H:i');
-        });
+            ->unique(function ($i) {
+                return $i->activity_type.'-'.$i->created_at->format('Y-m-d_H:i');
+            });
 
         $logEntries = $autoLogs->merge($customLogs)->sortByDesc('created_at');
 

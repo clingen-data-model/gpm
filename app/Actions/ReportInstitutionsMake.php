@@ -11,14 +11,14 @@ class ReportInstitutionsMake extends ReportMakeAbstract
     public function handle(): array
     {
         return Institution::has('people')
-                ->withCount('people')
-                ->orderBy('name')
-                ->get()
-                ->map(function ($c) {
-                    return [
-                        'Name' => $c->name,
-                        '# of People' => $c->people_count,
-                    ];
-                })->toArray();
+            ->withCount('people')
+            ->orderBy('name')
+            ->get()
+            ->map(function ($c) {
+                return [
+                    'Name' => $c->name,
+                    '# of People' => $c->people_count,
+                ];
+            })->toArray();
     }
 }

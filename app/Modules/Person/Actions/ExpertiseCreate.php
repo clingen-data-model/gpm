@@ -13,7 +13,7 @@ class ExpertiseCreate
     public function handle(
         string $name,
         ?bool $approved = false,
-        ?array $synonyms = null
+        array $synonyms = null
     ): Expertise {
         return Expertise::create([
             'name' => $name,

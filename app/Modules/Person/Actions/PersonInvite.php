@@ -14,7 +14,7 @@ class PersonInvite
     {
     }
 
-    public function handle(Person $person, ?Model $inviter = null): Invite
+    public function handle(Person $person, Model $inviter = null): Invite
     {
         $invite = Invite::create([
             'inviter_id' => ($inviter) ? $inviter->id : null,

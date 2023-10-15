@@ -24,8 +24,8 @@ class SubmitAnnualUpdateTest extends TestCase
         $this->user = $this->setupUser(permissions: ['annual-updates-manage']);
         $this->expertPanel = ExpertPanel::factory()->gcep()->create();
         $this->coordinator = GroupMember::factory()
-                                ->create(['group_id' => $this->expertPanel->group->id])
-                                ->assignRole('coordinator');
+            ->create(['group_id' => $this->expertPanel->group->id])
+            ->assignRole('coordinator');
 
         Sanctum::actingAs($this->user);
         Carbon::setTestNow('2022-02-16');
@@ -50,10 +50,10 @@ class SubmitAnnualUpdateTest extends TestCase
     public function stores_completed_at_date_when_submitted_by_privilegged_user()
     {
         $annualReview = AnnualUpdate::factory()
-                            ->create([
-                                'expert_panel_id' => $this->expertPanel->id,
-                                'submitter_id' => $this->coordinator->id,
-                            ]);
+            ->create([
+                'expert_panel_id' => $this->expertPanel->id,
+                'submitter_id' => $this->coordinator->id,
+            ]);
 
         $this->makeRequest($annualReview)
             ->assertStatus(200);
@@ -152,7 +152,7 @@ class SubmitAnnualUpdateTest extends TestCase
         ];
 
         $response = $this->makeRequest($annualReview)
-                        ->assertStatus(422);
+            ->assertStatus(422);
 
         foreach ($conditionalRequiredFields as $field) {
             $response = $response->assertJsonFragment([$field => ['This is required.']]);
@@ -352,7 +352,7 @@ class SubmitAnnualUpdateTest extends TestCase
         ];
 
         $response = $this->makeRequest($annualReview)
-                        ->assertStatus(422);
+            ->assertStatus(422);
 
         foreach ($conditionalRequiredFields as $field) {
             $response = $response->assertJsonFragment([$field => ['This is required.']]);

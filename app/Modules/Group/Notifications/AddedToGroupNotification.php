@@ -40,11 +40,11 @@ class AddedToGroupNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                ->subject('You have been added to '.$this->group->displayName)
-                ->view('email.added_to_group', [
-                    'notifiable' => $notifiable,
-                    'group' => $this->group,
-                ]);
+            ->subject('You have been added to '.$this->group->displayName)
+            ->view('email.added_to_group', [
+                'notifiable' => $notifiable,
+                'group' => $this->group,
+            ]);
     }
 
     /**

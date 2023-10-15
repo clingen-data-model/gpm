@@ -219,10 +219,10 @@ class UpdateProfileTest extends TestCase
             'email' => $this->person->email,
             'biography' => 'I\'m a little teapot.',
         ])
-        ->assertStatus(200)
-        ->assertJsonFragment(['biography' => 'I\'m a little teapot.'])
-        ->assertJsonMissingValidationErrors(['credential_ids'])
-        ->assertJsonMissingValidationErrors(['expertise_ids']);
+            ->assertStatus(200)
+            ->assertJsonFragment(['biography' => 'I\'m a little teapot.'])
+            ->assertJsonMissingValidationErrors(['credential_ids'])
+            ->assertJsonMissingValidationErrors(['expertise_ids']);
     }
 
     /**
@@ -268,10 +268,10 @@ class UpdateProfileTest extends TestCase
             'email' => 'beans@beans.com',
             'biography' => 'I\'m a little teapot.',
         ])
-        ->assertStatus(422)
-        ->assertJsonFragment([
-            'email' => ['Somebody is already using that email address.'],
-        ]);
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                'email' => ['Somebody is already using that email address.'],
+            ]);
     }
 
     /**
@@ -288,10 +288,10 @@ class UpdateProfileTest extends TestCase
             'email' => 'beans@beans.com',
             'biography' => 'I\'m a little teapot.',
         ])
-        ->assertStatus(422)
-        ->assertJsonFragment([
-            'email' => ['Somebody is already using that email address.'],
-        ]);
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                'email' => ['Somebody is already using that email address.'],
+            ]);
     }
 
     /**

@@ -50,11 +50,11 @@ class ReportSummaryMake extends ReportMakeAbstract
     private function getVcepGenesCount(): int
     {
         return Gene::query()
-                ->distinct('hgnc_id')
-                ->whereHas('expertPanel', function ($q) {
-                    $q->typeVcep();
-                })
-                ->count();
+            ->distinct('hgnc_id')
+            ->whereHas('expertPanel', function ($q) {
+                $q->typeVcep();
+            })
+            ->count();
     }
 
     private function getGcepGenesCount(): int
@@ -64,7 +64,7 @@ class ReportSummaryMake extends ReportMakeAbstract
             ->whereHas('expertPanel', function ($q) {
                 $q->typeGcep();
             })
-                    ->count();
+            ->count();
     }
 
     private function getTotalEpMembersCount(): int
@@ -119,16 +119,16 @@ class ReportSummaryMake extends ReportMakeAbstract
     private function getVcepStepSummary(): array
     {
         return DB::table('expert_panels')
-                    ->select(['current_step'])
-                    ->selectRaw('count(*) as count')
-                    ->where('expert_panel_type_id', config('expert_panels.types.vcep.id'))
-                    ->whereNull('date_completed')
-                    ->whereNull('deleted_at')
-                    ->groupBy('current_step')
-                    ->get()
-                    ->sortBy('current_step')
-                    ->pluck('count', 'current_step')
-                    ->toArray();
+            ->select(['current_step'])
+            ->selectRaw('count(*) as count')
+            ->where('expert_panel_type_id', config('expert_panels.types.vcep.id'))
+            ->whereNull('date_completed')
+            ->whereNull('deleted_at')
+            ->groupBy('current_step')
+            ->get()
+            ->sortBy('current_step')
+            ->pluck('count', 'current_step')
+            ->toArray();
     }
 
     private function getVcepApprovedCount(): int
@@ -149,15 +149,15 @@ class ReportSummaryMake extends ReportMakeAbstract
     private function getCountriesRepresentedCount(): int
     {
         return Country::query()
-                ->has('people')
-                ->count();
+            ->has('people')
+            ->count();
     }
 
     private function getInstitutionsRepresentedCount(): int
     {
         return Institution::query()
-                ->has('people')
-                ->count();
+            ->has('people')
+            ->count();
     }
 
     private function getPeopleInManyEpsCount(): int

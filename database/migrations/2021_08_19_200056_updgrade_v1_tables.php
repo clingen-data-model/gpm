@@ -26,14 +26,14 @@ return new class extends Migration
         }
 
         $coiData = DB::table('cois')
-                        ->get()
-                        ->map(function ($coi) {
-                            $coi->expert_panel_id = $coi->application_id;
-                            unset($coi->application_id);
+            ->get()
+            ->map(function ($coi) {
+                $coi->expert_panel_id = $coi->application_id;
+                unset($coi->application_id);
 
-                            return (array) $coi;
-                        })
-                        ->toArray();
+                return (array) $coi;
+            })
+            ->toArray();
         foreach ($coiData as $row) {
             DB::table('cois_temp')->insert($row);
         }

@@ -17,17 +17,17 @@ class SendSubmissionDigestNotifications
     public function handle()
     {
         $people = Person::has('unreadNotifications')
-                    ->with('unreadNotifications')
-                    ->get();
+            ->with('unreadNotifications')
+            ->get();
 
         $people->each(function ($person) {
             $submissionNotifications = $person->unreadNotifications
-                                ->filter(function ($notification) {
-                                    return implementsInterface(
-                                        $notification->type,
-                                        DigestibleNotificationInterface::class
-                                    );
-                                });
+                ->filter(function ($notification) {
+                    return implementsInterface(
+                        $notification->type,
+                        DigestibleNotificationInterface::class
+                    );
+                });
             $validNotifications = $submissionNotifications->groupBy('type')
                 ->map(function ($group, $class) {
                     $validUnique = $class::getValidUnique($group);

@@ -20,7 +20,7 @@ class ApplicationSubmissionReject
     ) {
     }
 
-    public function handle(Group $group, Submission $submission, ?string $responseContent = null): Submission
+    public function handle(Group $group, Submission $submission, string $responseContent = null): Submission
     {
         $submission
             ->reject($responseContent);

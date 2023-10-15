@@ -21,7 +21,7 @@ class DeleteGroupTest extends TestCase
         $this->setupPermission('groups-manage');
         $this->setupForGroupTest();
 
-        $this->user = $this->setupUser(permissions:['groups-manage']);
+        $this->user = $this->setupUser(permissions: ['groups-manage']);
         $this->group = Group::factory()->create();
 
         Sanctum::actingAs($this->user);

@@ -22,10 +22,10 @@ class NotifyContacts
         array $ccAddresses
     ) {
         $contacts = $expertPanel
-                        ->contacts()
-                        ->with('person')
-                        ->get()
-                        ->pluck('person');
+            ->contacts()
+            ->with('person')
+            ->get()
+            ->pluck('person');
 
         $this->sendUserDefinedMail->handle(
             subject: $subject,

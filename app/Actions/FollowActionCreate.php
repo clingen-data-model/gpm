@@ -23,9 +23,9 @@ class FollowActionCreate
     public function handle(
         string $eventClass,
         string $follower,
-        ?array $args = null,
-        ?string $name = null,
-        ?string $description = null
+        array $args = null,
+        string $name = null,
+        string $description = null
     ) {
         if (! class_exists($follower)) {
             throw new InvalidArgumentException('Failed to create FollowAction. The follower class '.$follower.' does not appear to exist.');

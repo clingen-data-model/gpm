@@ -169,14 +169,14 @@ class ConsumeDxMessages extends Command
         );
     }
 
-    private function buildKafkaConsumer(?int $offset = null): RdKafkaConsumer
+    private function buildKafkaConsumer(int $offset = null): RdKafkaConsumer
     {
         $rdKafkaConfig = $this->buildKafkaConfig($offset);
 
         return new RdKafkaConsumer($rdKafkaConfig);
     }
 
-    private function buildKafkaConfig(?int $offset = null)
+    private function buildKafkaConfig(int $offset = null)
     {
         $config = app()->make(KafkaConfig::class);
         $config->setRebalanceCallback(

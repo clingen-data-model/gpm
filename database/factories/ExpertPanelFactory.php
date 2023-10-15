@@ -32,10 +32,10 @@ class ExpertPanelFactory extends Factory
         return [
             'uuid' => Uuid::uuid4()->toString(),
             'group_id' => Group::factory()
-                            ->create([
-                                'name' => 'group '.uniqid(),
-                                'group_type_id' => $groupTypeId,
-                            ])->id,
+                ->create([
+                    'name' => 'group '.uniqid(),
+                    'group_type_id' => $groupTypeId,
+                ])->id,
             'expert_panel_type_id' => $groupTypeId - 2,
             'date_initiated' => Carbon::now(),
             'current_step' => 1,
@@ -48,10 +48,10 @@ class ExpertPanelFactory extends Factory
             return [
                 'expert_panel_type_id' => config('expert_panels.types.gcep.id'),
                 'group_id' => Group::factory()
-                                ->create([
-                                    'name' => 'group '.uniqid(),
-                                    'group_type_id' => config('groups.types.gcep.id'),
-                                ])->id,
+                    ->create([
+                        'name' => 'group '.uniqid(),
+                        'group_type_id' => config('groups.types.gcep.id'),
+                    ])->id,
             ];
         });
     }
@@ -62,10 +62,10 @@ class ExpertPanelFactory extends Factory
             return [
                 'expert_panel_type_id' => config('expert_panels.types.vcep.id'),
                 'group_id' => Group::factory()
-                                ->create([
-                                    'name' => 'group '.uniqid(),
-                                    'group_type_id' => config('groups.types.vcep.id'),
-                                ])->id,
+                    ->create([
+                        'name' => 'group '.uniqid(),
+                        'group_type_id' => config('groups.types.vcep.id'),
+                    ])->id,
             ];
         });
     }

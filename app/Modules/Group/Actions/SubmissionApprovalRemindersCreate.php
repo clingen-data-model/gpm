@@ -17,17 +17,17 @@ class SubmissionApprovalRemindersCreate
     public function handle()
     {
         $approvers = User::permission('ep-applications-approve')
-                        ->with('person')
-                        ->get()
-                        ->map(fn ($u) => $u->person);
+            ->with('person')
+            ->get()
+            ->map(fn ($u) => $u->person);
 
         $approvers->each(function ($person) {
             $query = Submission::sentToChair()
-                                ->with('group')
-                                ->whereDoesntHave(
-                                    'judgements',
-                                    fn ($q) => $q->where('person_id', $person->id)
-                                );
+                ->with('group')
+                ->whereDoesntHave(
+                    'judgements',
+                    fn ($q) => $q->where('person_id', $person->id)
+                );
 
             $query->get()->each(function ($submission) use ($person) {
                 Notification::send($person, new ApprovalReminder($submission->group, $submission, $person));

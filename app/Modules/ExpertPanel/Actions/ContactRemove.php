@@ -26,10 +26,10 @@ class ContactRemove
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         $person = Person::findByUuidOrFail($personUuid);
         $contact = $expertPanel
-                    ->contacts()
-                    ->whereHas('person', function ($q) use ($personUuid) {
-                        $q->where('uuid', $personUuid);
-                    })->first();
+            ->contacts()
+            ->whereHas('person', function ($q) use ($personUuid) {
+                $q->where('uuid', $personUuid);
+            })->first();
 
         if (! $contact) {
             throw new PersonNotContactException($expertPanel, $person);

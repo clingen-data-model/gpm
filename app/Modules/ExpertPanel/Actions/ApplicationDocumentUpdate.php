@@ -19,7 +19,7 @@ class ApplicationDocumentUpdate
         string $expertPanelUuid,
         string $uuid,
         string $dateReceived,
-        string|null $notes = null
+        string $notes = null
     ): Document {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         $document = Document::findByUuidOrFail($uuid);

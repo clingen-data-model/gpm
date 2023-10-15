@@ -31,7 +31,7 @@ class MemberRevokePermission
     public function asController(Request $request, $groupUuid, $groupMemberId, $permissionId)
     {
         $groupMember = Group::findByUuidOrFail($groupUuid)
-                        ->members()->findOrFail($groupMemberId);
+            ->members()->findOrFail($groupMemberId);
 
         $permission = config('permission.models.permission')::find($permissionId);
 

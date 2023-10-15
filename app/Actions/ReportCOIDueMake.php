@@ -25,6 +25,6 @@ class ReportCOIDueMake extends ReportMakeAbstract
                     }),
                 ];
             })
-        ->toArray();
+            ->toArray();
     }
 }

@@ -15,9 +15,9 @@ class ContactsMail
     public function handle(Group $group, Mailable $mailable)
     {
         $contacts = $group->contacts()
-                        ->with('person')
-                        ->get()
-                        ->pluck('person');
+            ->with('person')
+            ->get()
+            ->pluck('person');
 
         if ($contacts->count() == 0) {
             return;

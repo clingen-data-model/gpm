@@ -47,7 +47,7 @@ class SyncGenesToGcepTest extends TestCase
                 'ABC1',
             ]],
         ])
-        ->assertStatus(403);
+            ->assertStatus(403);
     }
 
     /**

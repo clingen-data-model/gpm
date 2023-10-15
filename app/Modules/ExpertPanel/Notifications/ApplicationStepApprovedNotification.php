@@ -49,10 +49,10 @@ class ApplicationStepApprovedNotification extends Notification
             return;
         }
         $mailMessage = (new MailMessage)
-                    ->subject($this->renderSubject($this->expertPanel))
-                    ->view($template, [
-                        'expertPanel' => $this->expertPanel,
-                    ]);
+            ->subject($this->renderSubject($this->expertPanel))
+            ->view($template, [
+                'expertPanel' => $this->expertPanel,
+            ]);
 
         if (in_array($this->approvedStep, config('expert-panels.notifications.cc.steps'))) {
             foreach (config('expert-panels.notifications.cc.recipients') as $cc) {
@@ -90,7 +90,7 @@ class ApplicationStepApprovedNotification extends Notification
         ];
     }
 
-    public function renderTemplate(ExpertPanel $expertPanel, ?int $step = null): string
+    public function renderTemplate(ExpertPanel $expertPanel, int $step = null): string
     {
         $step = $step ?? $expertPanel->currentStep;
         $template = $this->getTemplate($step);
@@ -99,7 +99,7 @@ class ApplicationStepApprovedNotification extends Notification
         return $view->render();
     }
 
-    public function renderSubject(ExpertPanel $expertPanel, ?int $step = null): string
+    public function renderSubject(ExpertPanel $expertPanel, int $step = null): string
     {
         $step = $step ?? $expertPanel->current_step;
 

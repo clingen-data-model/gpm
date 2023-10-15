@@ -37,7 +37,7 @@ class InstitutionSeeder extends Seeder
         });
     }
 
-    private function resolveCountryId($inst): int|null
+    private function resolveCountryId($inst): ?int
     {
         if (is_null($inst->countries)) {
             return null;
@@ -62,9 +62,9 @@ class InstitutionSeeder extends Seeder
                 return 115;
             default:
                 $countryRow = DB::table('countries')
-                                ->where('name', $countryName)
-                                ->select('id')
-                                ->first();
+                    ->where('name', $countryName)
+                    ->select('id')
+                    ->first();
 
                 if ($countryRow) {
                     return $countryRow->id;

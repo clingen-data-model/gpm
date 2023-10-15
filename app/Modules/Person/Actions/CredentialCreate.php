@@ -13,7 +13,7 @@ class CredentialCreate
     public function handle(
         string $name,
         ?bool $approved = false,
-        ?array $synonyms = null
+        array $synonyms = null
     ): Credential {
         return Credential::create([
             'name' => $name,

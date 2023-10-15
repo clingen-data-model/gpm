@@ -30,7 +30,7 @@ trait IsGroupMember
     public function groups(): BelongsToMany
     {
         return $this->belongsToMany(Group::class, 'group_members', 'person_id', 'group_id')
-                ->withPivot('start_date', 'end_date');
+            ->withPivot('start_date', 'end_date');
     }
 
     public function hasGroupPermissionTo(string $permission, $groups): bool
@@ -57,7 +57,7 @@ trait IsGroupMember
     public function isMemberOf(Group $group): bool
     {
         return $this->memberships()
-                ->where('group_id', $group->id)
-                ->count() > 0;
+            ->where('group_id', $group->id)
+            ->count() > 0;
     }
 }
