@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\SendPasswordResetRequest;
@@ -50,8 +51,8 @@ class AuthController extends Controller
                 ], 200);
     }
 
-    public function isAuthenticated()
+    public function isAuthenticated(Request $request)
     {
-        return Auth::check() ? response(null, 200) : response(null, 401);
+        return $request->user() ? response(null, 200) : response(null, 401);
     }
 }

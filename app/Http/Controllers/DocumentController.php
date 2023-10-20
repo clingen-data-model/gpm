@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\Document;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Auth;
@@ -9,11 +10,11 @@ use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
-    public function show($uuid)
+    public function show(Request $request, $uuid)
     {
         $doc = Document::findByUuidOrFail($uuid);
 
-        if (Auth::user()->cannot('view', $doc)) {
+        if ($request->user()->cannot('view', $doc)) {
             throw new AuthorizationException('You don\'t have permission to download this doucment.');
         }
 
