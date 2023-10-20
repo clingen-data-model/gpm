@@ -53,7 +53,7 @@ class ActivityLogsController extends Controller
                 $q->whereNotIn('activity_type', ['coi-completed', 'next-action-updated'])
                     ->orWhereNull('activity_type');
             })
-            ->orderBy('created_at', 'desc');
+            ->orderByDesc('created_at');
 
         $allLogs = $query->get();
 

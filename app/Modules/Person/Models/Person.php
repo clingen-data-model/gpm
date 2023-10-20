@@ -107,7 +107,7 @@ class Person extends Model implements HasLogEntries
     public function latestLogEntry(): MorphOne
     {
         return $this->morphOne(Activity::class, 'subject')
-            ->orderBy('created_at', 'desc');
+            ->orderByDesc('created_at');
     }
 
     public function institution(): BelongsTo

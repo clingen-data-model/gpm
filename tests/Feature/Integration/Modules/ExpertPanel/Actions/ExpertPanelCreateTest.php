@@ -34,7 +34,7 @@ class ExpertPanelCreateTest extends TestCase
             'parent_id' => $this->data['cdwg_id'],
         ]);
 
-        $group = Group::orderBy('id', 'desc')->first();
+        $group = Group::orderByDesc('id')->first();
 
         $this->assertDatabaseHas('expert_panels', [
             'group_id' => $group->id,

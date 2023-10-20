@@ -138,7 +138,7 @@ class RedeemInviteTest extends TestCase
         $this->json('PUT', static::URL.'/'.$this->invite->code, $this->validData)
             ->assertStatus(200);
 
-        $user = User::orderBy('id', 'desc')->firstOrFail();
+        $user = User::orderByDesc('id')->firstOrFail();
         $this->assertDatabaseHas('activity_log', [
             'subject_type' => Person::class,
             'subject_id' => $this->invite->person_id,

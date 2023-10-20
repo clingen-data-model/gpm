@@ -33,7 +33,7 @@ class AnnualUpdate extends Model
 
         static::saving(function ($model) {
             if (is_null($model->annual_update_window_id)) {
-                $model->annual_update_window_id = AnnualUpdateWindow::orderBy('start', 'desc')->first()->id;
+                $model->annual_update_window_id = AnnualUpdateWindow::orderByDesc('start')->first()->id;
             }
         });
     }

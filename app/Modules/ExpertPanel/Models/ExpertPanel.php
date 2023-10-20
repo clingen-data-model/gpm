@@ -171,7 +171,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     {
         return $this->hasOne(NextAction::class)
             ->pending()
-            ->orderBy('created_at', 'desc');
+            ->orderByDesc('created_at');
     }
 
     public function genes(): HasMany
