@@ -2,6 +2,7 @@
 
 namespace App\Modules\ExpertPanel\Actions;
 
+use Illuminate\Support\Facades\Log;
 use App\Mail\UserDefinedMailTemplates\InitialApprovalMailTemplate;
 use App\Mail\UserDefinedMailTemplates\SpecificationDraftMailTemplate;
 use App\Mail\UserDefinedMailTemplates\SpecificationPilotMailTemplate;
@@ -152,7 +153,7 @@ class StepApprove
     {
         if ($expertPanel->contacts->count() == 0) {
             if (! app()->environment('testing')) {
-                \Log::error('Tried to send a step approval notifications for group '.$expertPanel->display_name.' ('.$expertPanel->group_id.') that has no contacts.  This is a data entry issue and not a code defect.');
+                Log::error('Tried to send a step approval notifications for group '.$expertPanel->display_name.' ('.$expertPanel->group_id.') that has no contacts.  This is a data entry issue and not a code defect.');
             }
 
             return;

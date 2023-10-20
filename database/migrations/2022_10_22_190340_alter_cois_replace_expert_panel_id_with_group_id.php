@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use App\Modules\ExpertPanel\Models\Coi;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -21,7 +22,7 @@ return new class extends Migration
         $this->replaceExpertPanelIdWithGroupId();
 
         Schema::table('cois', function (Blueprint $table) {
-            if (\DB::connection()->getDriverName() != 'sqlite') {
+            if (DB::connection()->getDriverName() != 'sqlite') {
                 $table->dropForeign('cois_v2_expert_panel_id_foreign');
             }
             $table->dropColumn('expert_panel_id');
@@ -41,7 +42,7 @@ return new class extends Migration
         $this->replaceGroupIdWithExpertPanelId();
 
         Schema::table('cois', function (Blueprint $table) {
-            if (\DB::connection()->getDriverName() == 'mysql') {
+            if (DB::connection()->getDriverName() == 'mysql') {
                 $table->dropForeign(['group_id']);
             }
             $table->dropColumn('group_id');

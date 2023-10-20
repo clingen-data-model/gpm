@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Api\InstitutionController;
 use App\Http\Controllers\CountryController;
 use App\Modules\Person\Actions\CredentialCreate;
@@ -61,11 +62,11 @@ Route::prefix('api/people')->middleware('api')->group(function () {
 
         Route::post('/{person:uuid}/profile-photo', PersonPhotoStore::class);
         Route::get('/{person:uuid}/profile-photo', function (Person $person) {
-            if (! \Storage::disk('profile-photos')->exists($person->profile_photo)) {
+            if (! Storage::disk('profile-photos')->exists($person->profile_photo)) {
                 return response()->file(public_path('images/default_profile.jpg'));
             }
 
-            return \Storage::disk('profile-photos')->get($person->profile_photo);
+            return Storage::disk('profile-photos')->get($person->profile_photo);
         });
     });
 
