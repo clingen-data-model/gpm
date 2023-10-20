@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Api\InstitutionController;
 use App\Http\Controllers\CountryController;
 use App\Modules\Person\Actions\CredentialCreate;
@@ -37,6 +36,7 @@ use App\Modules\Person\Models\Institution;
 use App\Modules\Person\Models\Person;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 Route::prefix('api/people')->middleware('api')->group(function () {
     Route::get('/institutions', [InstitutionController::class, 'index']);

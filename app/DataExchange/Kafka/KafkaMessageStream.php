@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\DataExchange\Kafka;
 
-use Illuminate\Support\Facades\Log;
 use App\DataExchange\Contracts\MessageStream;
 use App\DataExchange\DxMessage;
 use Generator;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @property array $topics

@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Support\Facades\Bus;
 use App\Modules\ExpertPanel\Jobs\InitiateApplication;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Bus;
 
 class ApplicationsTableSeeder extends Seeder
 {

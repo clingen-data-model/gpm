@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Document;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
@@ -20,7 +19,7 @@ class DocumentController extends Controller
 
         $path = $doc->storage_path;
         if (! Storage::disk('local')->exists($path)) {
-            return response('could not find file at path '.$path, );
+            return response('could not find file at path '.$path);
         }
 
         return Storage::disk('local')->download($path, $doc->filename);
