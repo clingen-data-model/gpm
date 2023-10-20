@@ -3,7 +3,6 @@
 namespace App\Mail\UserDefinedMailTemplates;
 
 use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\View;
 
 abstract class AbstractUserDefinedMailTemplate
 {

@@ -18,7 +18,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\View;
 use Laravel\Sanctum\Sanctum;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
