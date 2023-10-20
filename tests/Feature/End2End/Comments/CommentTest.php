@@ -26,10 +26,10 @@ abstract class CommentTest extends TestCase
     protected function createComment($data = null)
     {
         $data = $data ?? [
-            'subject_type' => get_class($this->expertPanel->group),
+            'subject_type' => $this->expertPanel->group::class,
             'subject_id' => $this->expertPanel->group_id,
             'creator_id' => $this->user->id,
-            'creator_type' => get_class($this->user),
+            'creator_type' => $this->user::class,
         ];
 
         return Comment::factory()->create($data);

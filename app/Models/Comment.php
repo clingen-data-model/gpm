@@ -82,7 +82,7 @@ class Comment extends Model implements ContractsHasComments
             $query->whereIn('comment_type_id', $type);
         }
 
-        if (is_object($type) && get_class($type) == CommentType::class) {
+        if (is_object($type) && $type::class == CommentType::class) {
             $typeId = $type->id;
         }
         $query->where('comment_type_id', $typeId);

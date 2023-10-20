@@ -14,7 +14,7 @@ class CommentCreate
 
     public function handle(array $data)
     {
-        $data['creator_type'] = get_class(Auth::user()->person);
+        $data['creator_type'] = Auth::user()->person::class;
         $data['creator_id'] = Auth::user()->person->id;
 
         $comment = Comment::create($data);

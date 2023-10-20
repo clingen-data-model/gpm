@@ -21,7 +21,7 @@ class CommentActivityNotificationTest extends TestCase
 
         $this->person = Person::factory()->create();
         $this->group = Group::factory()->create();
-        $this->comment = Comment::factory()->create(['subject_type' => get_class($this->group), 'subject_id' => $this->group->id]);
+        $this->comment = Comment::factory()->create(['subject_type' => $this->group::class, 'subject_id' => $this->group->id]);
     }
 
     /**

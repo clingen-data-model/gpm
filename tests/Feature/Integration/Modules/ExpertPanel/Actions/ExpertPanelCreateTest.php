@@ -80,7 +80,7 @@ class ExpertPanelCreateTest extends TestCase
             'Application initiated',
             // $properties,  // comment out properties b/c can't get a match.
             null,
-            get_class($user),
+            $user::class,
             $user->id
         );
     }

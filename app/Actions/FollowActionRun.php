@@ -24,7 +24,7 @@ class FollowActionRun
     public function asListener(Event $event)
     {
         $followActions = FollowAction::query()
-            ->forEvent(get_class($event))
+            ->forEvent($event::class)
             ->incomplete()
             ->get();
 

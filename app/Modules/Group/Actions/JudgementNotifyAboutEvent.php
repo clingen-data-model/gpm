@@ -33,7 +33,7 @@ class JudgementNotifyAboutEvent
 
     private function getEventString(JudgementEvent $event): string
     {
-        $classParts = explode('\\', get_class($event));
+        $classParts = explode('\\', $event::class);
 
         return preg_replace('/Comment/i', '', $classParts[count($classParts) - 1]);
     }

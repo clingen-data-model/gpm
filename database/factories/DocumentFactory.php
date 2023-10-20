@@ -19,7 +19,7 @@ class DocumentFactory extends Factory
         return [
             'uuid' => Uuid::uuid4(),
             'owner_id' => $group->id,
-            'owner_type' => get_class($group),
+            'owner_type' => $group::class,
             'document_type_id' => $this->faker->randomElement(config('documents.types'))['id'],
             'filename' => uniqid(),
             'storage_path' => $this->faker->file(base_path('tests/files')),

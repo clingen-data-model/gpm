@@ -87,7 +87,7 @@ class RemoveMemberTest extends TestCase
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('activity_log', [
-            'subject_type' => get_class($this->group),
+            'subject_type' => $this->group::class,
             'subject_id' => $this->group->id,
             'activity_type' => 'member-removed',
             'properties->group_member_id' => $this->groupMember->id,

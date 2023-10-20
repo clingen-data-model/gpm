@@ -99,7 +99,7 @@ class SimpleCoiEndpointTest extends TestCase
     {
         $document = Document::factory()->create([
             'owner_id' => $this->group->id,
-            'owner_type' => get_class($this->group),
+            'owner_type' => $this->group::class,
             'document_type_id' => config('documents.types.coi.id'),
         ]);
 

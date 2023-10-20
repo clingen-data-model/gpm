@@ -72,7 +72,7 @@ class UpdateUserRolesAndPermissionsTest extends TestCase
     private function assertUserHasRole($roleId)
     {
         $this->assertDatabaseHas('model_has_roles', [
-            'model_type' => get_class($this->user),
+            'model_type' => $this->user::class,
             'model_id' => $this->user->id,
             'role_id' => $roleId,
         ]);
@@ -81,7 +81,7 @@ class UpdateUserRolesAndPermissionsTest extends TestCase
     private function assertUserMissingRole($roleId)
     {
         $this->assertDatabaseMissing('model_has_roles', [
-            'model_type' => get_class($this->user),
+            'model_type' => $this->user::class,
             'model_id' => $this->user->id,
             'role_id' => $roleId,
         ]);
@@ -90,7 +90,7 @@ class UpdateUserRolesAndPermissionsTest extends TestCase
     private function assertUserHasPermission($permissionId)
     {
         $this->assertDatabaseHas('model_has_permissions', [
-            'model_type' => get_class($this->user),
+            'model_type' => $this->user::class,
             'model_id' => $this->user->id,
             'permission_id' => $permissionId,
         ]);
@@ -99,7 +99,7 @@ class UpdateUserRolesAndPermissionsTest extends TestCase
     private function assertUserMissingPermission($permissionId)
     {
         $this->assertDatabaseMissing('model_has_permissions', [
-            'model_type' => get_class($this->user),
+            'model_type' => $this->user::class,
             'model_id' => $this->user->id,
             'permission_id' => $permissionId,
         ]);

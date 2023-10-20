@@ -120,7 +120,7 @@ class InviteMemberTest extends TestCase
         $this->assertDatabaseHas('invites', [
             'email' => 'test@test.com',
             'inviter_id' => $this->group->id,
-            'inviter_type' => get_class($this->group),
+            'inviter_type' => $this->group::class,
             'first_name' => 'Test',
             'last_name' => 'Testerson',
             'redeemed_at' => null,
@@ -162,7 +162,7 @@ class InviteMemberTest extends TestCase
             'last_name' => 'Testerson',
             'email' => 'test@test.com',
             'inviter_id' => $this->group->id,
-            'inviter_type' => get_class($this->group),
+            'inviter_type' => $this->group::class,
             'role_ids' => [$role->id],
         ]);
         $response->assertStatus(201);
@@ -185,7 +185,7 @@ class InviteMemberTest extends TestCase
             'last_name' => 'Testerson',
             'email' => 'test@test.com',
             'inviter_id' => $this->group->id,
-            'inviter_type' => get_class($this->group),
+            'inviter_type' => $this->group::class,
         ]);
         $response->assertStatus(201);
 
@@ -219,7 +219,7 @@ class InviteMemberTest extends TestCase
             'last_name' => 'Testerson',
             'email' => 'test@test.com',
             'inviter_id' => $this->group->id,
-            'inviter_type' => get_class($this->group),
+            'inviter_type' => $this->group::class,
         ]);
         $response->assertStatus(201);
 

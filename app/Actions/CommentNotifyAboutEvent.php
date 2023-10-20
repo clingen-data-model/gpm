@@ -49,7 +49,7 @@ class CommentNotifyAboutEvent
 
     private function getEventString(CommentEvent $event): string
     {
-        $classParts = explode('\\', get_class($event));
+        $classParts = explode('\\', $event::class);
 
         return preg_replace('/Comment/i', '', $classParts[count($classParts) - 1]);
     }

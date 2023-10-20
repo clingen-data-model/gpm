@@ -57,7 +57,7 @@ trait HasRoles
             $this->roles()->sync($roles, false);
             $model->load('roles');
         } else {
-            $class = \get_class($model);
+            $class = $model::class;
 
             $class::saved(
                 function ($object) use ($roles, $model) {
@@ -104,7 +104,7 @@ trait HasRoles
             $this->permissions()->sync($permissions, false);
             $model->load('permissions');
         } else {
-            $class = \get_class($model);
+            $class = $model::class;
 
             $class::saved(
                 function ($object) use ($permissions, $model) {

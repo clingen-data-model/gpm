@@ -29,7 +29,7 @@ class InviteFactory extends Factory
             'last_name' => $this->faker->lastName(),
             'email' => $this->faker->email(),
             'inviter_id' => $group->id,
-            'inviter_type' => get_class($group),
+            'inviter_type' => $group::class,
             'person_id' => Person::factory()->create()->id,
             'redeemed_at' => $this->faker->date(),
         ];

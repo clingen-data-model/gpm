@@ -66,7 +66,7 @@ class PersonDeleteTest extends TestCase
         $this->assertDatabaseHas('activity_log', [
             'activity_type' => 'person-deleted',
             'log_name' => 'people',
-            'subject_type' => get_class($this->person),
+            'subject_type' => $this->person::class,
             'subject_id' => $this->person->id,
         ]);
     }
