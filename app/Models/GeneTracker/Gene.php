@@ -11,8 +11,6 @@ class Gene extends Model
 {
     use HasFactory;
 
-    protected $table = 'genes';
-
     protected $primaryKey = 'hgnc_id';
     // protected $connection = 'genetracker';
 
