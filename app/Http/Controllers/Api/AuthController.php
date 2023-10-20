@@ -21,14 +21,14 @@ class AuthController extends Controller
         );
 
         return $status === Password::RESET_LINK_SENT
-                    ? response(['status' => __($status)], 200)
+                    ? response(['status' => __($status)])
                     : response(
                         [
                             'message' => 'There was a problem with your submission.',
                             'errors' => [
                                 'email' => [__($status)],
                             ],
-                        ], 422);
+                        ], );
     }
 
     public function resetPassword(ResetPasswordRequest $request)
@@ -43,16 +43,16 @@ class AuthController extends Controller
         );
 
         return $status == Password::PASSWORD_RESET
-                ? response(['status' => __($status)], 200)
+                ? response(['status' => __($status)])
                 : response([
                     'errors' => [
                         'email' => [__($status)],
                     ],
-                ], 200);
+                ], );
     }
 
     public function isAuthenticated(Request $request)
     {
-        return $request->user() ? response(null, 200) : response(null, 401);
+        return $request->user() ? response()->noContent(200) : response(, 401);
     }
 }

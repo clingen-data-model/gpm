@@ -115,10 +115,7 @@ class StepApprove
 
             return $ep;
         } catch (UnmetStepRequirementsException $e) {
-            return response([
-                'message' => $e->getMessage(),
-                'errors' => $e->getUnmetRequirements(),
-            ], 422);
+            return response(['message' => $e->getMessage(), 'errors' => $e->getUnmetRequirements()], 422);
         }
     }
 

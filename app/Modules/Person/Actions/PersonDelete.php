@@ -42,7 +42,7 @@ class PersonDelete
     {
         $this->handle($person);
 
-        return response('Person was deleted', 200);
+        return response('Person was deleted');
     }
 
     public function authorize(ActionRequest $request): bool

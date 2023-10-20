@@ -29,9 +29,7 @@ class AnnualUpdateSubmit
 
         $validator = $this->makeDataValidator($annualReview);
         if ($validator->fails()) {
-            return response([
-                'errors' => $validator->errors(),
-            ], 422);
+            return response(['errors' => $validator->errors()], 422);
         }
 
         return $this->handle($annualReview);

@@ -18,7 +18,7 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return response(null, 200);
+                return response()->noContent(200);
             }
         }
 

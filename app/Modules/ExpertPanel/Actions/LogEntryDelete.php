@@ -38,7 +38,7 @@ class LogEntryDelete
                 logEntryId: $logEntryId,
             );
 
-            return response('', 200);
+            return response()->noContent(200);
         } catch (InvalidArgumentException $e) {
             throw ValidationException::withMessages(['activity_type' => ['Only manual log entries can be deleted.']]);
         }

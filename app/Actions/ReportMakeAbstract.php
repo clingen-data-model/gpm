@@ -31,7 +31,7 @@ abstract class ReportMakeAbstract
 
         $data = $this->csvTransformer->handle($this->handle());
 
-        return response($data, 200, ['Content-type' => 'text/csv']);
+        return response($data)->withHeaders(['Content-type' => 'text/csv']);
     }
 
     public function asCommand(Command $command)

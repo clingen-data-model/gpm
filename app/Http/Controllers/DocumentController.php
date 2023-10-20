@@ -20,7 +20,7 @@ class DocumentController extends Controller
 
         $path = $doc->storage_path;
         if (! Storage::disk('local')->exists($path)) {
-            return response('could not find file at path '.$path, 404);
+            return response('could not find file at path '.$path, );
         }
 
         return Storage::disk('local')->download($path, $doc->filename);

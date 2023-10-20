@@ -43,6 +43,6 @@ class LogEntryAdd
 
         $logEntry->load(['causer']);
 
-        return response($logEntry, 200);
+        return response($logEntry);
     }
 }
