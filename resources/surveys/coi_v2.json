@@ -31,7 +31,7 @@
         },
         {
             "name": "coi",
-            "question": "Do you have any past or prospective involvement in any activity (e.g. employment, participation on an advisory board, patents, intellectual property ownership, grants or paid consultancies) that reasonably could be interpreted as a possible academic or financial conflict of interest with respect to the activities of this ClinGen group?",
+            "question": "Do you have any past, current or planned involvement in any activity (e.g. employment, participation on an advisory board, patents, intellectual property ownership, grants or paid consultancies, relationship with drug development) that reasonably could be interpreted as a possible academic or financial conflict of interest with respect to the activities of this ClinGen group?",
             "type": "multiple-choice",
             "options": [
                 { "label": "Yes", "value": 1 },
