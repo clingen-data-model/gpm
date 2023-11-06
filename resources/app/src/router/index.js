@@ -8,6 +8,7 @@ import groupRoutes from './groups'
 import adminRoutes from './admin'
 import userRoutes from './users'
 import MemberForm from '@/components/groups/MemberForm.vue'
+import SurveyForm from '@/components/SurveyForm.vue'; // Assuming SurveyForm.vue is in the components directory
 
 const routes = [
     { name: 'Dashboard',
@@ -17,6 +18,11 @@ const routes = [
             protected: true
         }
     },
+    {   
+        path: '/survey',
+        name: 'SurveyForm',
+        component: SurveyForm
+      },
     {
         name: 'ApplicationSummary',
         path: '/application-summary',

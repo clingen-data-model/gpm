@@ -31,6 +31,11 @@
                 v-if="hasPermission('users-manage')"
               >Users</router-link>
               <router-link 
+                :to="{name: 'SurveyForm'}" 
+                class="link nav-item"
+               
+              >Surveys</router-link>
+              <router-link 
                 to="/reports" 
                 class="link nav-item"
                 v-if="hasPermission('reports-pull')"
