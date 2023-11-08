@@ -8,9 +8,9 @@
          <b> Why are we asking for this information?</b>The Clinical Genome Resource values the diversity of our participants and works to maintain a culture of acceptance, accessibility, and diversity (see our Justice, Equity, Diversity, and Inclusion (JEDI) Action Plan): 
           <a href="https://clinicalgenome.org/working-groups/jedi-advisory-board/" target="_blank">Visit site</a>  Providing this information will help us to better understand our ClinGen community, focus current efforts to enhance diversity, and identify areas for future outreach. We sincerely appreciate your time, attention, and willingness to help.
         </p>
-        <p>Who can access my data? Only a small number of ClinGen staff members will have access to the demographic data.  We will not share any individual data. Data may be shared/presented in aggregate.</p>
+        <p><b>Who can access my data?</b> Only a small number of ClinGen staff members will have access to the demographic data.  We will not share any individual data. Data may be shared/presented in aggregate.</p>
     
-        <p>What do we do with this data? This is entirely for internal and informational use to understand our participants. For example, we might use this information to focus efforts on engaging early or mid-career scientists, or to develop materials for enhanced learning accessibility based on participant feedback.</p>
+        <p><b>What do we do with this data?</b>This is entirely for internal and informational use to understand our participants. For example, we might use this information to focus efforts on engaging early or mid-career scientists, or to develop materials for enhanced learning accessibility based on participant feedback.</p>
     
         <p> Please note: Select 'Prefer not to answer' for any questions you do not wish to answer</p>
 
@@ -200,12 +200,24 @@
         <label>
           <input type="checkbox" name="gender" value="Cis">Cisgender<br> 
         </label>
+
+
         <label>
           <input type="checkbox" name="gender" value="Nonbinary">Nonbinary<br>
         </label>  
         <label>
           <input type="checkbox" name="gender" value="Transgender">Transgender<br> 
         </label>
+        <label>
+          <input type="checkbox" name="gender" value="Genderqueer">Genderqueer<br> 
+        </label>
+        <label>
+          <input type="checkbox" name="gender" value="Agender">Agender<br> 
+        </label>
+        <label>
+          <input type="checkbox" name="gender" value="Intersex">Intersex<br> 
+        </label>
+
         <label>
           <input type="checkbox" name="gender" value="Unsure">Unsure<br> 
         </label>
@@ -554,6 +566,9 @@ form {
 }
 
 
+input {
+  margin: 0.4rem;
+}
 
 span {
     color: red;

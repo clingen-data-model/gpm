@@ -19,7 +19,7 @@ const routes = [
         }
     },
     {   
-        path: '/survey',
+        path: '/demosurvey',
         name: 'SurveyForm',
         component: SurveyForm
       },
