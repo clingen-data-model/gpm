@@ -5,23 +5,31 @@
       <section>
         <h2>Background and Purpose</h2>
         <p>
-          Why are we asking for this information? The Clinical Genome Resource values the diversity of our participants and works to maintain a culture of acceptance, accessibility, and diversity (see our Justice, Equity, Diversity, and Inclusion (JEDI) Action Plan): 
+         <b> Why are we asking for this information?</b>The Clinical Genome Resource values the diversity of our participants and works to maintain a culture of acceptance, accessibility, and diversity (see our Justice, Equity, Diversity, and Inclusion (JEDI) Action Plan): 
           <a href="https://clinicalgenome.org/working-groups/jedi-advisory-board/" target="_blank">Visit site</a>  Providing this information will help us to better understand our ClinGen community, focus current efforts to enhance diversity, and identify areas for future outreach. We sincerely appreciate your time, attention, and willingness to help.
         </p>
         <p>Who can access my data? Only a small number of ClinGen staff members will have access to the demographic data.  We will not share any individual data. Data may be shared/presented in aggregate.</p>
     
         <p>What do we do with this data? This is entirely for internal and informational use to understand our participants. For example, we might use this information to focus efforts on engaging early or mid-career scientists, or to develop materials for enhanced learning accessibility based on participant feedback.</p>
     
-        <p> Please note:  Please select 'Prefer not to answer' for any questions you do not wish to answer</p>
+        <p> Please note: Select 'Prefer not to answer' for any questions you do not wish to answer</p>
 
         <!-- Additional paragraphs and sections -->
       </section>
       <!-- Participant Information section -->
       <section>
-        <h2>Participant Information on Country, Race/Ethnicity, Age, and Identity</h2>
         <form @submit.prevent="addSurvey">
+        <h2>Participant Information on Country</h2>
+        
+          <p>The current list of countries comes from the international standard ISO 3166 country codes (<a href="https://www.iso.org/iso-3166-country-codes.html" target="_blank">Visit site</a>). We recognize that this list may not be complete or satisfy all, so please feel free to choose “other” and provide a free text response.</p>
+          <div>
+    <select v-model="selectedItem">
+      <option disabled value="">Please select one</option>
+      <option v-for="item in items" :key="item.id" :value="item.id">{{ item.name }}</option>
+    </select>
+  </div>
           <!-- Country of Birth Dropdown -->
-          <div style="display: flex;">
+          <div>
           <label for="born_country">Country of Birth:  </label>
           <select id="born_country" name="born_country"  v-model="born_country">
             <option value="">Select country</option>
@@ -41,11 +49,12 @@
         </div>  
         
         <div style="display: flex;">
-          <label for="optOutBornCountry">Prefer not to answer</label>
-          <input type="checkbox" id="optOutBornCountry" v-model="optOutBornCountry">
+          <input type="checkbox" class="checkbox-margin" id="optOutBornCountry" v-model="optOutBornCountry">
+          <label for="optOutBornCountry">   Prefer not to answer</label>
+          
         </div> 
           <br>
-          <div style="display: flex;">
+          <div>
           <!-- Country of Residence Dropdown -->
           <label for="reside_country">Country of Residence: </label>
           <select id="reside_country" name="reside_country" v-model="reside_country">
@@ -65,16 +74,19 @@
             <input class="w3-input" type="text">
         </div>
         <div style="display: flex;">
-          <label for="optOutResideCountry">Prefer not to answer </label>
           <input type="checkbox" id="optOutResideCountry" v-model="optOutResideCountry">
+          <label for="optOutResideCountry">Prefer not to answer </label>
+          
         </div>
         <br>
-          <p>The current list of countries comes from the international standard ISO 3166 country codes (<a href="https://www.iso.org/iso-3166-country-codes.html" target="_blank">Visit site</a>). We recognize that this list may not be complete or satisfy all, so please feel free to choose “other” and provide a free text response.</p>
+          
           <!-- Additional inputs and sections -->
           <br>
-          <div style="display: flex;">
-          <label for="state">If you currently live in the United States, what is your state/territory of residence?</label><span style="color: red !important; display: inline; float: none;"></span>
+          <div>
+          <label for="country-state">If you currently live in the United States, what is your state/territory of residence?</label>
+          
             <!--- United States states -->
+          
     <select id="country-state" name="country-state" v-model="country_state">
     <option value="">Select state</option>
     <option value="AL">Alabama</option>
@@ -85,86 +97,165 @@
     </select>
 </div>
 <div style="display: flex;">
+  <input id="opt_out" class="w3-check" type="checkbox" v-model="optOutState">
     <label>Prefer not to answer </label>
-    <input id="opt_out" class="w3-check" type="checkbox" v-model="optOutState">
+    
 </div>
    <br> 
-     
+   <h2>Participant Information on Race/Ethnicity</h2>
 
    <p>ClinGen Participant Diversity: We ask the following question for aggregate informational purposes to understand ClinGen participant diversity. The free-text response can be used in place or in addition to the listed categories. </p>
 
    <p> The options below come from updates by the U.S. 2020 Census (<a href="https://www.census.gov/" target="_blank">Visit site</a>), and the All Of Us Basic Survey Questions (<a href="https://www.researchallofus.org/data-tools/survey-explorer/the-basics-survey/" target="_blank">Visit site</a>).  We understand that these options do not capture the diversity of racial and ethnic identities in the US, let alone around the world. </p>
    
-   <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.</legend>      
+   <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.</legend>  
+   <div style="display: flex;">
         <input type="checkbox" id = "ethnicity1" name="ethnicity1" value="American Indian" class = "container" v-model="ethnicity1_val">
         <label for="ethnicity1">American Indian or Alaska Native (For example: Aztec, Blackfeet Tribe, Mayan, Navajo Nation, Native Village of Barrow (Utqiagvik) Inupiat Traditional Government, Nome Eskimo Community, etc.)</label><br>
+      </div>
+
+      <div style="display: flex;">
         <input type="checkbox" id = "ethnicity2" name="ethnicity2" value="Asian" class = "container" v-model="ethnicity2_val">
         <label for="ethnicity2">Asian (For example: Asian Indian, Chinese, Filipino, Japanese, Korean, Vietnamese, etc.)</label><br>
+      </div>
+      
+      <div style="display: flex;">
         <input type="checkbox" id = "ethnicity3" name="ethnicity3" value="Black" class = "container" v-model="ethnicity3_val">
         <label for ethnicity3>Black, African American, or African (For example: African American, Ethiopian, Haitian, Jamaican, Nigerian, Somali, etc.)</label><br>
+      </div>
+      <div style="display: flex;">
         <input type="checkbox" id = "ethnicity4" name="ethnicity4" value="Hispanic" class = "container" v-model="ethnicity4_val">
         <label for ethnicity4>Hispanic, Latino, or Spanish (For example: Colombian, Cuban, Dominican, Mexican or Mexican American, Puerto Rican, Salvadoran, etc.)</label><br>
+      </div>
+      <div style="display: flex;">
         <input type="checkbox" id = "ethnicity5" name="ethnicity5" value="Middle Eastern" class = "container" v-model="ethnicity5_val">
         <label for ethnicity5>Middle Eastern or North African (For example: Algerian, Egyptian, Iranian, Lebanese, Moroccan, Syrian, etc.)</label><br>
+      </div>
+      <div style="display: flex;">
         <input type="checkbox" id = "ethnicity6" name="ethnicity6" value="Pacific" class = "container" v-model="ethnicity6_val">
         <label for ethnicity6>Native Hawaiian or other Pacific Islander (For example: Chamorro, Fijian, Marshallese, Native Hawaiian, Tongan, etc.)</label><br>
+      </div>
+      <div style="display: flex;">
         <input type="checkbox" id = "ethnicity7" name="ethnicity7" value="White" class = "container" v-model="ethnicity7_val">
         <label for ethnicity7>White (For example: English, European, French, German, Irish, Italian, Polish, etc.)</label>
-    
-        <br>
+      </div>
+
+      <div style="display: flex;">
+        <input id="optOutEthnicity" class="w3-check" type="checkbox"><br>
         <label>Prefer not to answer</label>
-            <input id="optOutEthnicity" class="w3-check" type="checkbox"><br>
-        <br>   
-        <div class="w3-section"> 
-                <label>What year were you born?</label>     
+            
+          </div>  
+          <br>
+          <h2>Participant Information on Age</h2>
+        <br>
+          <div style="display: flex; align-items: center;">
+            <label>What year were you born?</label>     
             <input class="w3-input" type="text" id="birth_year" v-model = "birth_year" required>
-            <br>
+          </div>
+                
+            
+            <div style="display: flex;">
+              <input id="optOutBirth" class="w3-check" type="checkbox">
             <label> Prefer not to answer</label>
-            <input id="optOutBirth" class="w3-check" type="checkbox">
-        </div>
+            
+          </div>
 
         <br> 
+        <h2>Participant Information on Identity</h2>
+
          <p>We ask the following questions about identity to understand participation across the ClinGen ecosystem. The framing of the questions around sex and gender reflects recommendations made by the National Academies of Sciences, Engineering, and Medicine in 2022. (<a href="https://nap.nationalacademies.org/read/26424/chapter/1#xi" target="_blank">Visit site</a>)   </p> 
         
         <div class="w3-section">
-        <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.</legend>      
-        <input type="checkbox" name="birth" value="Female">Female<br>      
-        <input type="checkbox" name="birth" value="Male">Male<br> 
-        <input type="checkbox" name="birth" value="Unsure">Unsure<br> 
-        <input type="checkbox" name="birth" value="None">Prefer not to answer<br> 
-        <label>Other</label>     
+        <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.</legend>  
+        <label>
+          <input type="checkbox" name="birth" value="Female">Female<br> 
+        </label>    
+        <label>
+          <input type="checkbox" name="birth" value="Male">Male<br> 
+        </label>
+        <label>
+          <input type="checkbox" name="birth" value="Unsure">Unsure<br> 
+        </label>
+        <label>
+          <input type="checkbox" name="birth" value="None">Prefer not to answer<br>
+        </label>
+        </div>
+
+        <div style="display: flex;">
+          <label>Other:  </label>     
             <input class="w3-input" type="text">
-        </div>    
+        </div>  
+         
+    
           <br>
           <br> 
         <div class="w3-section">
-        <legend>What term best describes your gender identity? Select all that apply.</legend>      
-        <input type="checkbox" name="gender" value="Man">Man<br>      
-        <input type="checkbox" name="gender" value="Woman">Woman<br>
-        <input type="checkbox" name="gender" value="Cis">Cisgender<br>      
-        <input type="checkbox" name="gender" value="Nonbinary">Nonbinary<br>
-        <input type="checkbox" name="gender" value="Transgender">Transgender<br>      
-        <input type="checkbox" name="gender" value="Unsure">Unsure<br> 
-        <input type="checkbox" name="gender" value="None">Prefer not to answer<br> 
-        <label>My preferred term is</label>     
+        <legend>What term best describes your gender identity? Select all that apply.</legend> 
+        <label>
+          <input type="checkbox" name="gender" value="Man">Man<br>
+        </label>     
+        <label>
+          <input type="checkbox" name="gender" value="Woman">Woman<br>
+        </label>
+        <label>
+          <input type="checkbox" name="gender" value="Cis">Cisgender<br> 
+        </label>
+        <label>
+          <input type="checkbox" name="gender" value="Nonbinary">Nonbinary<br>
+        </label>  
+        <label>
+          <input type="checkbox" name="gender" value="Transgender">Transgender<br> 
+        </label>
+        <label>
+          <input type="checkbox" name="gender" value="Unsure">Unsure<br> 
+        </label>
+        <label>
+          <input type="checkbox" name="gender" value="None">Prefer not to answer<br>
+        </label>     
+      </div>
+         
+      <div style="display: flex;">
+        <label>My preferred term is  </label>     
             <input class="w3-input" type="text">
-        </div>
+      </div>
+        
+        
         <br>
         <h2>ClinGen Background and Experience</h2>
         
         <br> 
         <div class="w3-section">
-        <legend>How is your ClinGen work supported? Select all that apply.</legend>      
-        <input type="checkbox" name="support" value="volunteer">Volunteer outside of work environment<br> 
-        <input type="checkbox" name="support" value="grant">Grants (e.g. NIH, foundational)
-        <label>Provide more details on source of funding</label>     
+        <legend>How is your ClinGen work supported? Select all that apply.</legend> 
+        <label>
+          <input type="checkbox" name="support" value="volunteer">Volunteer outside of work environment<br> 
+        </label>     
+        <label>
+          <input type="checkbox" name="support" value="grant">Grants (e.g. NIH, foundational)
+        </label>
+        <div style="display: flex;">
+          <label>Provide more details on source of funding</label>     
             <input class="w3-input" type="text">
+
+        </div>
+        
         <br>
-        <input type="checkbox" name="support" value="employer">Employer supports/allows participation<br>    
-        <input type="checkbox" name="support" value="Unsure">Unsure<br> 
-        <input type="checkbox" name="support" value="None">Prefer not to answer<br> 
-        <label>Other</label>     
+        <label>
+          <input type="checkbox" name="support" value="employer">Employer supports/allows participation<br>
+        </label>
+          <label>
+            <input type="checkbox" name="support" value="Unsure">Unsure<br>
+          </label> 
+         <label>
+          <input type="checkbox" name="support" value="None">Prefer not to answer<br> 
+         </label>
+        
+         <div style="display: flex;">
+          <label>Other:  </label>     
             <input class="w3-input" type="text">
+        </div>  
+
+
+       
         </div>
         <br>
 
@@ -175,29 +266,41 @@
             <p>The following text pertains to the disadvantaged background question below.  If you are not a US-based participant, please answer the question based on similar criteria in your own country:</p>
             <br>
             <p>An individual is considered to be from a disadvantaged background if meeting two or more of the following criteria:<br>
-            Were or currently are homeless, as defined by the McKinney-Vento Homeless Assistance Act (<a href="https://nche.ed.gov/mckinney-vento/">Definition</a>);<br>
-            Were or currently are in the foster care system, as defined by the Administration for Children and Families (<a href="https://www.acf.hhs.gov/cb/focus-areas/foster-care">Definition</a>);<br>
-            Were eligible for the Federal Free and Reduced Lunch Program for two or more years  (<a href="https://www.fns.usda.gov/school-meals/income-eligibility-guidelines">Definition</a>); <br> 
-            Have/had no parents or legal guardians who completed a bachelor’s degree (<a href="https://nces.ed.gov/pubs2018/2018009.pdf">See</a>);<br>
-            Were or currently are eligible for Federal Pell grants (<a href="https://www2.ed.gov/programs/fpg/eligibility.html">Definition</a>);<br>  
-            Received support from the Special Supplemental Nutrition Program for Women, Infants and Children (WIC) as a parent or child (<a href="https://www.fns.usda.gov/wic/wic-eligibility-requirements">Definition</a>);<br>    
+            Were or currently are homeless, as defined by the McKinney-Vento Homeless Assistance Act (<a href="https://nche.ed.gov/mckinney-vento/" target="_blank">Definition</a>);<br>
+            Were or currently are in the foster care system, as defined by the Administration for Children and Families (<a href="https://www.acf.hhs.gov/cb/focus-areas/foster-care" target="_blank">Definition</a>);<br>
+            Were eligible for the Federal Free and Reduced Lunch Program for two or more years  (<a href="https://www.fns.usda.gov/school-meals/income-eligibility-guidelines" target="_blank">Definition</a>); <br> 
+            Have/had no parents or legal guardians who completed a bachelor’s degree (<a href="https://nces.ed.gov/pubs2018/2018009.pdf" target="_blank">See</a>);<br>
+            Were or currently are eligible for Federal Pell grants (<a href="https://www2.ed.gov/programs/fpg/eligibility.html" target="_blank">Definition</a>);<br>  
+            Received support from the Special Supplemental Nutrition Program for Women, Infants and Children (WIC) as a parent or child (<a href="https://www.fns.usda.gov/wic/wic-eligibility-requirements" target="_blank">Definition</a>);<br>    
             Grew up in one of the following areas: <br>
-             a) a U.S. rural area, as designated by the Health Resources and Services Administration (HRSA) Rural Health Grants Eligibility Analyzer  (<a href="https://data.hrsa.gov/tools/rural-health">Definition</a>); or<br>   
-             b) a Centers for Medicare and Medicaid Services-designated Low-Income and Health Professional Shortage Areas (qualifying zip codes are included in the file). (<a href="https://www.qhpcertification.cms.gov/s/LowIncomeandHPSAZipCodeListingPY2020.xlsx?v=1">View File</a>) Only one of these two possibilities can be used as a criterion for the disadvantaged background definition.
+             a) a U.S. rural area, as designated by the Health Resources and Services Administration (HRSA) Rural Health Grants Eligibility Analyzer  (<a href="https://data.hrsa.gov/tools/rural-health" target="_blank">Definition</a>); or<br>   
+             b) a Centers for Medicare and Medicaid Services-designated Low-Income and Health Professional Shortage Areas (qualifying zip codes are included in the file). (<a href="https://www.qhpcertification.cms.gov/s/LowIncomeandHPSAZipCodeListingPY2020.xlsx?v=1" target="_blank">View File</a>) Only one of these two possibilities can be used as a criterion for the disadvantaged background definition.
  
             </p>
 
-            <p>
-        Based on the NIH definition above, do you consider yourself currently in or having come from a disadvantaged background? Note: If you are not a US-based participant, please answer based on similar criteria in your own country.<br>
-            <input type="checkbox" name="disadvantaged" value="yes">Yes<br> 
-            <input type="checkbox" name="disadvantaged" value="no">No<br> 
-            <input type="checkbox" name="disadvantaged" value="Unsure">Unsure<br> 
-            <input type="checkbox" name="disadvantaged" value="None">Prefer not to answer<br> 
-            <label>Optional: Use this free text box to provide any additional detail.</label>     
-            <input class="w3-input" type="text">
-        
             
-           </p>
+        Based on the NIH definition above, do you consider yourself currently in or having come from a disadvantaged background? Note: If you are not a US-based participant, please answer based on similar criteria in your own country.<br>
+        <label>
+          <input type="radio" name="disadvantaged" value="yes">Yes<br>
+        </label>   
+         <label>
+          <input type="radio" name="disadvantaged" value="no">No<br> 
+         </label>
+           <label>
+            <input type="radio" name="disadvantaged" value="Unsure">Unsure<br> 
+           </label> 
+            <label>
+              <input type="radio" name="disadvantaged" value="None">Prefer not to answer<br>
+            </label>
+
+            <div style="display: flex;">
+          <label>Optional: Use this free text box to provide any additional detail.</label>     
+            <input class="w3-input" type="text">
+        </div>  
+             
+
+            
+          
 
 <br>
         <h2>Employment</h2>
@@ -209,31 +312,70 @@
             <input type="checkbox" id="genetics-physician" name="occupation" value="genetics physician">
             <label for="genetics-physician">Medical genetics physician</label>
             </div>
+            
+        <div style="display: flex; align-items: center; margin-bottom: 5px;">
+            <input type="checkbox" id="non genetics-physician" name="occupation" value="non genetics physician"> 
+            <label for="non genetics-physician">Medical non-genetics physician</label>
+        </div>
 
-            <input type="checkbox" name="occupation" value="genetics physician">Medical genetics physician<br> 
-            <input type="checkbox" name="occupation" value="non genetics physician">Medical non-genetics physician<br>         
-            <input type="checkbox" name="occupation" value="pathologist">Molecular pathologist<br> 
+
+        <div style="display: flex; align-items: center; margin-bottom: 5px;">
+            <input type="checkbox" name="occupation" value="pathologist" class="container checkbox-margin"> 
+            <label for="pathologist">Molecular pathologist</label>
+          </div>
+
+          <label>
             <input type="checkbox" name="occupation" value="clinical geneticist">Clinical laboratory geneticist<br> 
-            
+          </label>
+          <label>
             <input type="checkbox" name="occupation" value="Genetic counselor">Genetic counselor<br> 
-            <input type="checkbox" name="occupation" value="resident">Clinical resident or fellow <br> 
-            <input type="checkbox" name="occupation" value="Basic researcher">Basic researcher<br> 
-            <input type="checkbox" name="occupation" value="Clinical researcher">Clinical researcher<br> 
-
-            <input type="checkbox" name="occupation" value="Variant Analyst">Variant Analyst<br> 
-            <input type="checkbox" name="occupation" value="Staff Scientist">Staff Scientist<br> 
-            <input type="checkbox" name="occupation" value="Bioinformatician">Bioinformatician<br> 
-            <input type="checkbox" name="occupation" value="Biocurator">Biocurator<br> 
+          </label>
+            <label>
+              <input type="checkbox" name="occupation" value="resident">Clinical resident or fellow <br>
+            </label>
+            <label>
+              <input type="checkbox" name="occupation" value="Basic researcher">Basic researcher<br>
+            </label> 
+             <label>
+              <input type="checkbox" name="occupation" value="Clinical researcher">Clinical researcher<br> 
+             </label>
+            <label>
+              <input type="checkbox" name="occupation" value="Variant Analyst">Variant Analyst<br> 
+            </label>
+            <label>
+              <input type="checkbox" name="occupation" value="Staff Scientist">Staff Scientist<br>
+            </label>
+             <label>
+              <input type="checkbox" name="occupation" value="Bioinformatician">Bioinformatician<br>
+             </label>
+             <label>
+              <input type="checkbox" name="occupation" value="Biocurator">Biocurator<br> 
+             </label>
+            <label>
+              <input type="checkbox" name="occupation" value="Graduate Student">Graduate Student<br> 
+            </label>
+            <label>
+              <input type="checkbox" name="occupation" value="Software Engineer/Developer">Software Engineer/Developer<br>
+            </label>
+            <label>
+              <input type="checkbox" name="occupation" value="Educator">Educator<br> 
+            </label>
+             <label>
+              <input type="checkbox" name="occupation" value="General Geneticist">General Geneticist<br> 
+             </label>
+            <label>
+              <input type="checkbox" name="occupation" value="Science Policy">Health Care Policy or Science Policy<br> 
+            </label>
+            <label>
+              <input type="checkbox" name="disadvantaged" value="None">Prefer not to answer<br>
+            </label>
             
-            <input type="checkbox" name="occupation" value="Graduate Student">Graduate Student<br> 
-            <input type="checkbox" name="occupation" value="Software Engineer/Developer">Software Engineer/Developer<br> 
-            <input type="checkbox" name="occupation" value="Educator">Educator<br> 
-            <input type="checkbox" name="occupation" value="General Geneticist">General Geneticist<br> 
-            <input type="checkbox" name="occupation" value="Science Policy">Health Care Policy or Science Policy<br> 
-            <input type="checkbox" name="disadvantaged" value="None">Prefer not to answer<br> 
-            <label>Other: Use this free text box to provide any additional detail.</label>     
-            <input class="w3-input" type="text"><br> 
-       
+            <div style="display: flex;">
+          <label>Other: Use this free text box to provide any additional detail. </label>     
+            <input class="w3-input" type="text">
+        </div>   
+
+        
             
             <br>
         
@@ -306,13 +448,16 @@
 
 
           <!-- Submission Button -->
-          <button type="submit" class="btn-submit">Submit Survey</button>
+          <button type="submit" class="btn-submit">Submit Basic Demographics</button>
         </form>
       </section>
     </div>
   </template>
   
   <script>
+
+
+
   export default {
     name: 'SurveyForm',
     data() {
@@ -336,6 +481,9 @@
 
 
         // ... Other data properties if needed ...
+
+        items: [], // The array of items to be filled by the API call
+      selectedItem: '' // The selected item
       };
     },
     methods: {
@@ -345,71 +493,102 @@
         // For instance, sending the data to a server or storing it locally
         console.log("Survey submitted with the following data:", this.born_country, this.reside_country);
         // Reset the form or provide feedback to the user
+        document.getElementById("SurveyForm").reset();
       },
+     
+
+      }
+
+
+      
       // ... Other methods if needed ...
     }
-  }
+  
   </script>
 
  <style>
-.centered-container {
-    max-width: 800px;
-    margin: 0 auto;
-    text-align: left;
-  }
-  
-  h1, h2 {
+/* Base styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
     color: #333;
-  }
-  
-  .form-control {
-    margin: 10px 0;
+}
+
+a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+h1, h2, h3 {
+    margin: 0;
+    padding: 0;
+}
+
+/* Container styling */
+body > h1 {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+}
+
+section {
+    margin: 20px 3%;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+}
+
+/* Form styling */
+form {
+    margin: 20px 3%;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+}
+
+
+
+span {
+    color: red;
+}
+
+.form-control {
+    width: 100%;
     padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  .btn-submit {
-    background-color: #5cb85c;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 20px;
-  }
-  
-  .btn-submit:hover {
-    background-color: #4cae4c;
-  }
-  
-  a {
-    color: #0275d8;
-  }
-  
-  a:hover {
-    color: #025aa5;
-  }
-  
-
-  .checkbox {
-  display: flex;
-  align-items: center;
-  margin-bottom: 5px;
+    margin: 5px 0;
+    box-sizing: border-box;
 }
 
-.checkbox input[type="checkbox"] {
-  margin-right: 10px; /* Adjust as needed */
-}
-
-/* The .w3-input class might already have styles defined from W3.CSS if you're using it */
 .w3-input {
-  margin-left: 10px; /* To space it from the label */
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
 }
 
+.w3-check {
+    margin-right: 5px;
+}
 
-  
-  
-  /* Additional styles if needed */
-  </style>
-  
+/* Clearfix for floating elements */
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.checkbox-margin {
+  margin-right: 200px; /* Adjust the space as needed */
+}
+
+</style>
+
+
