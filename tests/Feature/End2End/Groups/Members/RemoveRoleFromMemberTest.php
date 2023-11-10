@@ -42,12 +42,12 @@ class RemoveRoleFromMemberTest extends TestCase
             ->assertStatus(200);
 
         $this->assertDatabaseMissing('model_has_roles', [
-            'model_type' => $this->groupMember::class,
+            'model_type' => get_class($this->groupMember),
             'model_id' => $this->groupMember->id,
             'role_id' => $this->roles->first()->id,
         ]);
         $this->assertDatabaseHas('model_has_roles', [
-            'model_type' => $this->groupMember::class,
+            'model_type' => get_class($this->groupMember),
             'model_id' => $this->groupMember->id,
             'role_id' => $this->roles->last()->id,
         ]);
@@ -63,7 +63,7 @@ class RemoveRoleFromMemberTest extends TestCase
             ->assertStatus(200);
 
         $this->assertDatabaseHas('activity_log', [
-            'subject_type' => $this->group::class,
+            'subject_type' => get_class($this->group),
             'subject_id' => $this->group->id,
             'activity_type' => 'member-role-removed',
             'description' => 'Removed role '.$this->roles->first()->name.' from member '.$this->person->name.'.',

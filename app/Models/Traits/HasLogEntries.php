@@ -16,6 +16,6 @@ trait HasLogEntries
     {
         return $this->morphOne(config('activitylog.activity_model'), 'subject')
             ->where('description', 'not like', 'Added next action:%')
-            ->orderByDesc('created_at');
+            ->orderBy('created_at', 'desc');
     }
 }

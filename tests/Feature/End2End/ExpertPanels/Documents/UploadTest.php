@@ -48,7 +48,7 @@ class UploadTest extends TestCase
             'document_type_id' => config('documents.types.scope.id'),
             'notes' => 'this is a note',
             'owner_id' => $this->expertPanel->group->id,
-            'owner_type' => $this->expertPanel->group::class,
+            'owner_type' => get_class($this->expertPanel->group),
             'metadata' => [
                 'date_received' => Carbon::now()->toJson(),
                 'version' => 1,
@@ -84,7 +84,7 @@ class UploadTest extends TestCase
             'uuid' => $data['uuid'],
             'version' => 2,
             'owner_id' => $this->expertPanel->group->id,
-            'owner_type' => $this->expertPanel->group::class,
+            'owner_type' => get_class($this->expertPanel->group),
         ]);
     }
 

@@ -115,7 +115,7 @@ class RetireMemberTest extends TestCase
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('activity_log', [
-            'subject_type' => $this->group::class,
+            'subject_type' => get_class($this->group),
             'subject_id' => $this->group->id,
             'activity_type' => 'member-retired',
             'properties->group_member_id' => $this->groupMember->id,

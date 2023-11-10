@@ -36,7 +36,7 @@ class DocumentPolicy
             return true;
         }
 
-        if ($document->owner::class == Group::class && $user->person->inGroup($document->owner)) {
+        if (get_class($document->owner) == Group::class && $user->person->inGroup($document->owner)) {
             return true;
         }
 
@@ -105,7 +105,7 @@ class DocumentPolicy
 
         if (
             $document->owner &&
-            $document->owner::class == Group::class
+            get_class($document->owner) == Group::class
             && $document
                 ->owner
                 ->coordinators

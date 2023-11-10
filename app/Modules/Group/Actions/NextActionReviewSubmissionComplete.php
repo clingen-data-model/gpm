@@ -39,7 +39,7 @@ class NextActionReviewSubmissionComplete
         }
 
         if (! $expertPanel) {
-            throw new InvalidArgumentException('Cannot get expertPanel from event of type '.$event::class);
+            throw new InvalidArgumentException('Cannot get expertPanel from event of type '.get_class($event));
         }
         $this->handle($expertPanel);
     }

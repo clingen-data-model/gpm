@@ -53,7 +53,7 @@ class ActivityLogsController extends Controller
                 $q->whereNotIn('activity_type', ['coi-completed', 'next-action-updated'])
                     ->orWhereNull('activity_type');
             })
-            ->orderByDesc('created_at');
+            ->orderBy('created_at', 'desc');
 
         $allLogs = $query->get();
 
@@ -126,7 +126,7 @@ class ActivityLogsController extends Controller
                 logEntry: $logEntry,
             );
 
-            return response()->noContent(200);
+            return response('', 200);
         } catch (InvalidArgumentException $e) {
             throw ValidationException::withMessages(['activity_type' => ['Only manual log entries can be deleted.']]);
         }

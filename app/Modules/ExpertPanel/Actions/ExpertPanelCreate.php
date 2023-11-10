@@ -66,6 +66,6 @@ class ExpertPanelCreate
         $data['date_initiated'] = $request->date_initiated ? Carbon::parse($request->date_initiated) : null;
         $group = $this->handle(...$data);
 
-        return response($group);
+        return response($group, 200);
     }
 }

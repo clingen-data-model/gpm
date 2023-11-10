@@ -120,7 +120,7 @@ class InviteMemberTest extends TestCase
         $this->assertDatabaseHas('invites', [
             'email' => 'test@test.com',
             'inviter_id' => $this->group->id,
-            'inviter_type' => $this->group::class,
+            'inviter_type' => get_class($this->group),
             'first_name' => 'Test',
             'last_name' => 'Testerson',
             'redeemed_at' => null,
@@ -133,7 +133,7 @@ class InviteMemberTest extends TestCase
             'last_name' => 'Testerson',
         ]);
 
-        $newPerson = Person::orderByDesc('id')->first();
+        $newPerson = Person::orderBy('id', 'desc')->first();
         $this->assertNotEquals($this->user->person->id, $newPerson->id);
         $this->assertDatabaseHas('group_members', [
             'group_id' => $this->group->id,
@@ -162,7 +162,7 @@ class InviteMemberTest extends TestCase
             'last_name' => 'Testerson',
             'email' => 'test@test.com',
             'inviter_id' => $this->group->id,
-            'inviter_type' => $this->group::class,
+            'inviter_type' => get_class($this->group),
             'role_ids' => [$role->id],
         ]);
         $response->assertStatus(201);
@@ -185,7 +185,7 @@ class InviteMemberTest extends TestCase
             'last_name' => 'Testerson',
             'email' => 'test@test.com',
             'inviter_id' => $this->group->id,
-            'inviter_type' => $this->group::class,
+            'inviter_type' => get_class($this->group),
         ]);
         $response->assertStatus(201);
 
@@ -219,11 +219,11 @@ class InviteMemberTest extends TestCase
             'last_name' => 'Testerson',
             'email' => 'test@test.com',
             'inviter_id' => $this->group->id,
-            'inviter_type' => $this->group::class,
+            'inviter_type' => get_class($this->group),
         ]);
         $response->assertStatus(201);
 
-        $newPerson = Person::orderByDesc('id')->first();
+        $newPerson = Person::orderBy('id', 'desc')->first();
         Notification::assertSentTo($newPerson, InviteNotification::class);
         Notification::assertNotSentTo($newPerson, AddedToGroupNotification::class);
     }
@@ -247,7 +247,7 @@ class InviteMemberTest extends TestCase
         ]);
         $response->assertStatus(201);
 
-        $newPerson = Person::orderByDesc('id')->first();
+        $newPerson = Person::orderBy('id', 'desc')->first();
         $this->assertNotEquals($this->user->person->id, $newPerson->id);
         $this->assertDatabaseHas('group_members', [
             'group_id' => $this->group->id,

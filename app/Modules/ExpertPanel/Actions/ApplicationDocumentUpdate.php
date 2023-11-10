@@ -46,6 +46,6 @@ class ApplicationDocumentUpdate
             notes: $request->notes
         );
 
-        return response($document);
+        return response($document, 200);
     }
 }

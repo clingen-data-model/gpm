@@ -85,7 +85,7 @@ abstract class TestCase extends BaseTestCase
     ) {
         $data = [
             'description' => $description,
-            'subject_type' => $subject::class,
+            'subject_type' => get_class($subject),
             'subject_id' => $subject->id,
         ];
 

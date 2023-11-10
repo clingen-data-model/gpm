@@ -22,7 +22,7 @@ class TaskCreate
 
     private function resolveTaskTypeId($type)
     {
-        if (is_object($type) && $type::class == TaskType::class) {
+        if (is_object($type) && get_class($type) == TaskType::class) {
             return $type->id;
         }
 

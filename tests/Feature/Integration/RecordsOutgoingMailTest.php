@@ -41,7 +41,7 @@ class RecordsOutgoingMailTest extends TestCase
         $inviteNotification = new UserDefinedMailNotification('test subject', 'body body body');
         Notification::send($this->person, $inviteNotification);
 
-        $mail = Email::orderByDesc('created_at')->first();
+        $mail = Email::orderBy('created_at', 'desc')->first();
 
         $this->assertDatabaseHas('email_person', [
             'person_id' => $this->person->id,

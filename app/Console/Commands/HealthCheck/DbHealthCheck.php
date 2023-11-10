@@ -3,7 +3,6 @@
 namespace App\Console\Commands\HealthCheck;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 class DbHealthCheck extends Command
 {
@@ -37,7 +36,7 @@ class DbHealthCheck extends Command
     public function handle(): int
     {
         try {
-            DB::connection()->getPdo();
+            \DB::connection()->getPdo();
             $this->info('Database is up and running.');
         } catch (\Exception $e) {
             $this->error('Database is down.');

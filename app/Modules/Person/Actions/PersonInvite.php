@@ -18,7 +18,7 @@ class PersonInvite
     {
         $invite = Invite::create([
             'inviter_id' => ($inviter) ? $inviter->id : null,
-            'inviter_type' => ($inviter) ? $inviter::class : null,
+            'inviter_type' => ($inviter) ? get_class($inviter) : null,
             'person_id' => $person->id,
             'email' => $person->email,
             'first_name' => $person->first_name,

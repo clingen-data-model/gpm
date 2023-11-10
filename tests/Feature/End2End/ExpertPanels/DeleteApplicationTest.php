@@ -55,10 +55,10 @@ class DeleteApplicationTest extends TestCase
         $response = $this->json('DELETE', $this->url);
 
         $this->assertDatabaseHas('activity_log', [
-            'subject_type' => $this->expertPanel->group::class,
+            'subject_type' => get_class($this->expertPanel->group),
             'subject_id' => $this->expertPanel->group->id,
             'activity_type' => 'expert-panel-deleted',
-            'causer_type' => $this->user::class,
+            'causer_type' => get_class($this->user),
             'causer_id' => $this->user->id,
         ]);
     }

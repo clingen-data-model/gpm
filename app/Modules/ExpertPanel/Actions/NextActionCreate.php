@@ -63,6 +63,6 @@ class NextActionCreate
             assignedToName: $request->assigned_to_name
         );
 
-        return response($na->load('assignee'));
+        return response($na->load('assignee'), 200);
     }
 }

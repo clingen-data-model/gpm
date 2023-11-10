@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Models\Group;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 
 class MailDraftController extends Controller
 {

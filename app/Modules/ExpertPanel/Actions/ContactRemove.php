@@ -50,6 +50,6 @@ class ContactRemove
             ]);
         }
 
-        return response(['message' => 'deleted person '.$personUuid.' from application '.$expertPanelUuid]);
+        return response(['message' => 'deleted person '.$personUuid.' from application '.$expertPanelUuid], 200);
     }
 }

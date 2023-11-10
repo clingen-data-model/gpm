@@ -15,7 +15,6 @@ use App\Modules\Group\Actions\SubmissionApprove;
 use App\Modules\Group\Models\Group;
 use App\Notifications\ValueObjects\MailAttachment;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use InvalidArgumentException;
 use Lorisleiva\Actions\ActionRequest;
@@ -115,7 +114,10 @@ class StepApprove
 
             return $ep;
         } catch (UnmetStepRequirementsException $e) {
-            return response(['message' => $e->getMessage(), 'errors' => $e->getUnmetRequirements()], 422);
+            return response([
+                'message' => $e->getMessage(),
+                'errors' => $e->getUnmetRequirements(),
+            ], 422);
         }
     }
 
@@ -150,7 +152,7 @@ class StepApprove
     {
         if ($expertPanel->contacts->count() == 0) {
             if (! app()->environment('testing')) {
-                Log::error('Tried to send a step approval notifications for group '.$expertPanel->display_name.' ('.$expertPanel->group_id.') that has no contacts.  This is a data entry issue and not a code defect.');
+                \Log::error('Tried to send a step approval notifications for group '.$expertPanel->display_name.' ('.$expertPanel->group_id.') that has no contacts.  This is a data entry issue and not a code defect.');
             }
 
             return;

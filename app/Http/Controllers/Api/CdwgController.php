@@ -10,7 +10,7 @@ class CdwgController extends Controller
 {
     public function index(Request $request)
     {
-        $cdwgs = Group::cdwg()->orderBy('name')->get();
+        $cdwgs = Group::cdwg()->orderBy('name', 'asc')->get();
 
         return $cdwgs;
     }

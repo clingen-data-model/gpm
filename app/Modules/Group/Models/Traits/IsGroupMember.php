@@ -33,7 +33,7 @@ trait IsGroupMember
 
     public function hasGroupPermissionTo(string $permission, $groups): bool
     {
-        if (is_object($groups) && $groups::class == Group::class) {
+        if (is_object($groups) && get_class($groups) == Group::class) {
             $groups = collect([$groups]);
         }
 

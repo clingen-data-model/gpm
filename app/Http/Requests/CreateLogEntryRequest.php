@@ -20,18 +20,9 @@ class CreateLogEntryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'entry' => [
-                'required',
-            ],
-            'log_date' => [
-                'required',
-                'date',
-            ],
-            'step' => [
-                'nullable',
-                'numeric',
-                'between:1,4',
-            ],
+            'entry' => 'required',
+            'log_date' => 'required|date',
+            'step' => 'nullable|numeric|between:1,4',
         ];
     }
 }

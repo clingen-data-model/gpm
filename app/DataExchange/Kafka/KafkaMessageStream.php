@@ -7,7 +7,6 @@ namespace App\DataExchange\Kafka;
 use App\DataExchange\Contracts\MessageStream;
 use App\DataExchange\DxMessage;
 use Generator;
-use Illuminate\Support\Facades\Log;
 
 /**
  * @property array $topics
@@ -44,7 +43,7 @@ class KafkaMessageStream implements MessageStream
                 dump($message);
             }
             if ($dxMessage->isReportableError()) {
-                Log::warning('Error message received from kafka broker: '.$dxMessage->errorString);
+                \Log::warning('Error message received from kafka broker: '.$dxMessage->errorString);
             }
             yield $dxMessage;
         }

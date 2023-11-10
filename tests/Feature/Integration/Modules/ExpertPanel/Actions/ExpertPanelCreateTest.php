@@ -34,7 +34,7 @@ class ExpertPanelCreateTest extends TestCase
             'parent_id' => $this->data['cdwg_id'],
         ]);
 
-        $group = Group::orderByDesc('id')->first();
+        $group = Group::orderBy('id', 'desc')->first();
 
         $this->assertDatabaseHas('expert_panels', [
             'group_id' => $group->id,
@@ -80,7 +80,7 @@ class ExpertPanelCreateTest extends TestCase
             'Application initiated',
             // $properties,  // comment out properties b/c can't get a match.
             null,
-            $user::class,
+            get_class($user),
             $user->id
         );
     }

@@ -39,7 +39,7 @@ class CoiResponseStore
     {
         $this->handle($coiCode, $request->group_member_id, $request->except('group_member_id'));
 
-        return response(['message' => 'COI response stored.']);
+        return response(['message' => 'COI response stored.'], 200);
     }
 
     public function rules(ActionRequest $request): array

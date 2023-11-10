@@ -25,7 +25,7 @@ class GroupSubmissionsController extends Controller
                     return $q->select(['id', 'first_name', 'last_name', 'email']);
                 },
             ])
-            ->orderBy('created_at')
+            ->orderBy('created_at', 'asc')
             ->get();
     }
 

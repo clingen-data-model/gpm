@@ -36,7 +36,6 @@ use App\Modules\Person\Models\Institution;
 use App\Modules\Person\Models\Person;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 
 Route::prefix('api/people')->middleware('api')->group(function () {
     Route::get('/institutions', [InstitutionController::class, 'index']);
@@ -62,11 +61,11 @@ Route::prefix('api/people')->middleware('api')->group(function () {
 
         Route::post('/{person:uuid}/profile-photo', PersonPhotoStore::class);
         Route::get('/{person:uuid}/profile-photo', function (Person $person) {
-            if (! Storage::disk('profile-photos')->exists($person->profile_photo)) {
+            if (! \Storage::disk('profile-photos')->exists($person->profile_photo)) {
                 return response()->file(public_path('images/default_profile.jpg'));
             }
 
-            return Storage::disk('profile-photos')->get($person->profile_photo);
+            return \Storage::disk('profile-photos')->get($person->profile_photo);
         });
     });
 

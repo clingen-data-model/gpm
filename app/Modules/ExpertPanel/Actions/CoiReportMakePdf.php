@@ -6,6 +6,7 @@ use App\Modules\ExpertPanel\Models\Coi;
 use App\Modules\Group\Models\Group;
 use Dompdf\Dompdf;
 use Exception;
+use Illuminate\Support\Facades\View;
 use Lorisleiva\Actions\Concerns\AsController;
 
 class CoiReportMakePdf

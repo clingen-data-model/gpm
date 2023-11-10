@@ -47,7 +47,7 @@ class SendSubmissionDigestNotificationsTest extends TestCase
     public function sends_notification_if_unsent_digestible_submission_notifications(): void
     {
         $group = ExpertPanel::factory()->create()->group;
-        $comment = Comment::factory()->create(['subject_type' => $group::class, 'subject_id' => $group->id]);
+        $comment = Comment::factory()->create(['subject_type' => get_class($group), 'subject_id' => $group->id]);
         $judgement = Judgement::factory()->create();
 
         $person = Person::factory()->create();
@@ -83,7 +83,7 @@ class SendSubmissionDigestNotificationsTest extends TestCase
     public function marks_all_submission_notifications_read(): void
     {
         $group = ExpertPanel::factory()->create()->group;
-        $comment = Comment::factory()->create(['subject_type' => $group::class, 'subject_id' => $group->id]);
+        $comment = Comment::factory()->create(['subject_type' => get_class($group), 'subject_id' => $group->id]);
         $judgement = Judgement::factory()->create();
 
         $person = Person::factory()->create();
@@ -103,7 +103,7 @@ class SendSubmissionDigestNotificationsTest extends TestCase
     public function does_not_include_non_digestible_notifications(): void
     {
         $group = ExpertPanel::factory()->create()->group;
-        $comment = Comment::factory()->create(['subject_type' => $group::class, 'subject_id' => $group->id]);
+        $comment = Comment::factory()->create(['subject_type' => get_class($group), 'subject_id' => $group->id]);
 
         $person = Person::factory()->create();
         Notification::send($person, new UserDefinedDatabaseNotification('test test test'));
@@ -130,8 +130,8 @@ class SendSubmissionDigestNotificationsTest extends TestCase
     public function correctly_renders_email(): void
     {
         $group = ExpertPanel::factory()->create()->group;
-        $comment1 = Comment::factory()->create(['subject_type' => $group::class, 'subject_id' => $group->id]);
-        $comment2 = Comment::factory()->create(['subject_type' => $group::class, 'subject_id' => $group->id]);
+        $comment1 = Comment::factory()->create(['subject_type' => get_class($group), 'subject_id' => $group->id]);
+        $comment2 = Comment::factory()->create(['subject_type' => get_class($group), 'subject_id' => $group->id]);
         $judgement = Judgement::factory()->create();
         $judgement2 = Judgement::factory()->create();
 
@@ -210,7 +210,7 @@ class SendSubmissionDigestNotificationsTest extends TestCase
     {
         $this->setupPermission(['ep-applications-approve', 'ep-applications-comment']);
         $group = ExpertPanel::factory()->create()->group;
-        $comment = Comment::factory()->create(['subject_type' => $group::class, 'subject_id' => $group->id]);
+        $comment = Comment::factory()->create(['subject_type' => get_class($group), 'subject_id' => $group->id]);
 
         $person = Person::factory()->create();
         Notification::send($person, new CommentActivityNotification($group, $comment, 'created'));

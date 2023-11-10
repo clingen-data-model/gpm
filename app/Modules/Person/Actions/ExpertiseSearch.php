@@ -20,8 +20,8 @@ class ExpertiseSearch
             $query->orWhere(fn ($q) => $q->matchesSynonym($request->keyword));
         }
 
-        $query->orderByDesc('approved');
-        $query->orderBy('name');
+        $query->orderBy('approved', 'DESC');
+        $query->orderBy('name', 'ASC');
 
         return $query->get();
     }

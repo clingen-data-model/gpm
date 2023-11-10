@@ -57,12 +57,12 @@ class AssignRoleToMemberTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('model_has_roles', [
-            'model_type' => $this->groupMember::class,
+            'model_type' => get_class($this->groupMember),
             'model_id' => $this->groupMember->id,
             'role_id' => $this->roles->first()->id,
         ]);
         $this->assertDatabaseHas('model_has_roles', [
-            'model_type' => $this->groupMember::class,
+            'model_type' => get_class($this->groupMember),
             'model_id' => $this->groupMember->id,
             'role_id' => $this->roles->last()->id,
         ]);

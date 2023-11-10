@@ -158,25 +158,25 @@ class ApplicationSendToChairsTest extends TestCase
 
         return collect([
             Comment::factory()->create([
-                'subject_type' => $this->group::class,
+                'subject_type' => get_class($this->group),
                 'subject_id' => $this->group->id,
                 'comment_type_id' => config('comments.types.internal-comment.id'),
                 'metadata' => ['section' => 'membership'],
             ]),
             Comment::factory()->create([
-                'subject_type' => $this->group::class,
+                'subject_type' => get_class($this->group),
                 'subject_id' => $this->group->id,
                 'comment_type_id' => config('comments.types.suggestion.id'),
                 'metadata' => ['section' => 'scope'],
             ]),
             Comment::factory()->create([
-                'subject_type' => $this->group::class,
+                'subject_type' => get_class($this->group),
                 'subject_id' => $this->group->id,
                 'comment_type_id' => config('comments.types.required-revision.id'),
                 'metadata' => ['section' => 'scope'],
             ]),
             Comment::factory()->create([
-                'subject_type' => $this->group::class,
+                'subject_type' => get_class($this->group),
                 'subject_id' => $this->group->id,
                 'comment_type_id' => config('comments.types.required-revision.id'),
                 'metadata' => ['section' => 'attestations'],

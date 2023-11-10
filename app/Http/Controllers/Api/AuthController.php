@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\SendPasswordResetRequest;
@@ -21,14 +20,14 @@ class AuthController extends Controller
         );
 
         return $status === Password::RESET_LINK_SENT
-                    ? response(['status' => __($status)])
+                    ? response(['status' => __($status)], 200)
                     : response(
                         [
                             'message' => 'There was a problem with your submission.',
                             'errors' => [
                                 'email' => [__($status)],
                             ],
-                        ], );
+                        ], 422);
     }
 
     public function resetPassword(ResetPasswordRequest $request)
@@ -43,16 +42,16 @@ class AuthController extends Controller
         );
 
         return $status == Password::PASSWORD_RESET
-                ? response(['status' => __($status)])
+                ? response(['status' => __($status)], 200)
                 : response([
                     'errors' => [
                         'email' => [__($status)],
                     ],
-                ], );
+                ], 200);
     }
 
-    public function isAuthenticated(Request $request)
+    public function isAuthenticated()
     {
-        return $request->user() ? response()->noContent(200) : response(, 401);
+        return Auth::check() ? response(null, 200) : response(null, 401);
     }
 }

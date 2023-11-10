@@ -33,7 +33,7 @@ class ModelSnapshotterTest extends TestCase
         $snapshot = $this->snapshotter->createSnapshot($this->model);
 
         $expected = [
-            'class' => $this->model::class,
+            'class' => get_class($this->model),
             'attributes' => $this->groupAttr,
             'relations' => [],
         ];
@@ -55,7 +55,7 @@ class ModelSnapshotterTest extends TestCase
         $snapshot = $this->snapshotter->createSnapshot($this->model);
 
         $expected = [
-            'class' => $this->model::class,
+            'class' => get_class($this->model),
             'attributes' => $this->groupAttr,
             'relations' => [
                 'type' => ['class' => GroupType::class, 'attributes' => $typeAttr, 'relations' => []],
@@ -82,7 +82,7 @@ class ModelSnapshotterTest extends TestCase
         $snapshot = $this->snapshotter->createSnapshot($this->model);
 
         $expected = [
-            'class' => $this->model::class,
+            'class' => get_class($this->model),
             'attributes' => $this->groupAttr,
             'relations' => [
                 'members' => collect($memberAttrs)
@@ -127,7 +127,7 @@ class ModelSnapshotterTest extends TestCase
         $snapshot = $this->snapshotter->createSnapshot($this->model);
 
         $expected = [
-            'class' => $this->model::class,
+            'class' => get_class($this->model),
             'attributes' => $this->groupAttr,
             'relations' => [
                 'expertPanel' => [
@@ -153,7 +153,7 @@ class ModelSnapshotterTest extends TestCase
     public function can_init_model_with_nested_relations_from_snapshot(): void
     {
         $snapshot = [
-            'class' => $this->model::class,
+            'class' => get_class($this->model),
             'attributes' => array_merge($this->groupAttr, ['id' => 1]),
             'relations' => [
                 'type' => [
@@ -199,12 +199,12 @@ class ModelSnapshotterTest extends TestCase
 
         $model = $this->snapshotter->initModelFromSnapshot($snapshot);
 
-        $this->assertEquals(Group::class, $model::class);
+        $this->assertEquals(Group::class, get_class($model));
 
-        $this->assertEquals(GroupType::class, $model->type::class);
+        $this->assertEquals(GroupType::class, get_class($model->type));
         $this->assertEquals(4, $model->type->id);
 
-        $this->assertEquals(ExpertPanel::class, $model->expertPanel::class);
+        $this->assertEquals(ExpertPanel::class, get_class($model->expertPanel));
         $this->assertEquals('Long VCEP Name', $model->expertPanel->long_base_name);
 
         $this->assertEquals(2, $model->members->count());

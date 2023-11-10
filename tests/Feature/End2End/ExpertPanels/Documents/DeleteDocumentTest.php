@@ -57,7 +57,7 @@ class DeleteDocumentTest extends TestCase
 
         $this->assertDatabaseHas('activity_log', [
             'subject_id' => $this->expertPanel->group->id,
-            'subject_type' => $this->expertPanel->group::class,
+            'subject_type' => get_class($this->expertPanel->group),
             'activity_type' => 'document-deleted',
             'properties->document_uuid' => $this->document->uuid,
         ]);

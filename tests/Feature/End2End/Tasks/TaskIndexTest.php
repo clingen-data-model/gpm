@@ -39,7 +39,7 @@ class TaskIndexTest extends TestCase
         $this->makeRequest([
             'where' => [
                 'assignee_id' => $this->vcep1->group->id,
-                'assignee_type' => $this->vcep1->group::class,
+                'assignee_type' => get_class($this->vcep1->group),
             ],
         ])
             ->assertStatus(200)
@@ -58,7 +58,7 @@ class TaskIndexTest extends TestCase
         $this->makeRequest([
             'where' => [
                 'assignee_id' => [$this->vcep1->group->id, $vcep3->group->id],
-                'assignee_type' => $this->vcep1->group::class,
+                'assignee_type' => get_class($this->vcep1->group),
             ],
         ])
             ->assertStatus(200)

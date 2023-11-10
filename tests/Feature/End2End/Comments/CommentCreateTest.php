@@ -188,7 +188,7 @@ class CommentCreateTest extends CommentTest
         return array_merge([
             'comment_type_id' => config('comments.types.suggestion.id'),
             'subject_id' => $this->expertPanel->group->id,
-            'subject_type' => $this->expertPanel->group::class,
+            'subject_type' => get_class($this->expertPanel->group),
             'content' => 'This is just a suggestion.',
             'metadata' => ['section' => 'basic-info'],
         ], $data);

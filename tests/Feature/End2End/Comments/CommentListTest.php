@@ -12,20 +12,20 @@ class CommentListTest extends CommentTest
         parent::setup();
         Comment::factory()->create([
             'subject_id' => $this->expertPanel->id,
-            'subject_type' => $this->expertPanel::class,
-            'creator_type' => $this->user::class,
+            'subject_type' => get_class($this->expertPanel),
+            'creator_type' => get_class($this->user),
             'creator_id' => $this->user->id,
         ]);
         Comment::factory()->create([
             'subject_id' => $this->expertPanel->id,
-            'subject_type' => $this->expertPanel::class,
-            'creator_type' => $this->user::class,
+            'subject_type' => get_class($this->expertPanel),
+            'creator_type' => get_class($this->user),
             'creator_id' => $this->user->id,
         ]);
         Comment::factory()->create([
             'subject_id' => $this->expertPanel->group_id,
             'subject_type' => Group::class,
-            'creator_type' => $this->user::class,
+            'creator_type' => get_class($this->user),
             'creator_id' => $this->user->id,
         ]);
     }
@@ -46,13 +46,13 @@ class CommentListTest extends CommentTest
     public function can_retrieve_all_comments_for_a_subject(): void
     {
         $expectedComments = Comment::where([
-            'subject_type' => $this->expertPanel::class,
+            'subject_type' => get_class($this->expertPanel),
             'subject_id' => $this->expertPanel->id,
         ])->get();
 
         $this->makeRequest([
             'where' => [
-                'subject_type' => $this->expertPanel::class,
+                'subject_type' => get_class($this->expertPanel),
                 'subject_id' => $this->expertPanel->id,
             ],
         ])

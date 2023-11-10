@@ -31,6 +31,6 @@ class NotificationMarkRead
 
         $this->handle($notification);
 
-        return response('marked read');
+        return response('marked read', 200);
     }
 }

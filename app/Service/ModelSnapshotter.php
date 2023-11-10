@@ -10,7 +10,7 @@ class ModelSnapshotter
     public function createSnapshot(Model $model): array
     {
         $snapshot = [
-            'class' => $model::class,
+            'class' => get_class($model),
             'attributes' => $model->getAttributes(),
             'relations' => $this->snapshotRelations($model),
         ];

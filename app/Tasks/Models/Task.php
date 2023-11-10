@@ -63,7 +63,7 @@ class Task extends Model
             return $query->where('task_type_id', config('tasks.types.'.$type.'.id'));
         }
 
-        if (is_object($type) && $type::class == TaskType::class) {
+        if (is_object($type) && get_class($type) == TaskType::class) {
             return $query->where('task_type_id', $type->id);
         }
 
@@ -75,7 +75,7 @@ class Task extends Model
      */
     public function for(TaskAssignee $assignee)
     {
-        $this->assignee_type = $assignee::class;
+        $this->assignee_type = get_class($assignee);
         $this->assignee_id = $assignee->id;
 
         return $this;

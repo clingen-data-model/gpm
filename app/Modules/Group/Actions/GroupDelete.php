@@ -27,7 +27,7 @@ class GroupDelete
     {
         $this->handle($group);
 
-        return response('group deleted');
+        return response('group deleted', 200);
     }
 
     public function asCommand(Command $command)

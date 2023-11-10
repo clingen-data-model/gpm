@@ -104,7 +104,7 @@ class Submission extends Model
     public function scopeOfType($query, $type)
     {
         $typeId = $type;
-        if (is_object($type) && $type::class == SubmissionType::class) {
+        if (is_object($type) && get_class($type) == SubmissionType::class) {
             $typeId = $type->id;
         }
         if (is_array($type)) {

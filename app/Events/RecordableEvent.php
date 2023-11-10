@@ -17,7 +17,7 @@ abstract class RecordableEvent implements Event
 
     public function getActivityType(): string
     {
-        $type = Str::kebab(array_slice(explode('\\', $this::class), -1, 1)[0]);
+        $type = Str::kebab(array_slice(explode('\\', get_class($this)), -1, 1)[0]);
 
         return $type;
     }

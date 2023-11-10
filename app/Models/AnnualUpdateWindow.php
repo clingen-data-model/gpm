@@ -44,6 +44,6 @@ class AnnualUpdateWindow extends Model
 
     public static function latest()
     {
-        return self::query()->orderByDesc('for_year')->orderBy('created_at')->first();
+        return self::query()->orderBy('for_year', 'desc')->orderBy('created_at')->first();
     }
 }
