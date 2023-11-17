@@ -23,15 +23,12 @@
         
           <p>The current list of countries comes from the international standard ISO 3166 country codes (<a href="https://www.iso.org/iso-3166-country-codes.html" target="_blank">Visit site</a>). We recognize that this list may not be complete or satisfy all, so please feel free to choose “other” and provide a free text response.</p>
           <div>
-    <select v-model="selectedItem">
-      <option disabled value="">Please select one</option>
-      <option v-for="item in items" :key="item.id" :value="item.id">{{ item.name }}</option>
-    </select>
+   
   </div>
           <!-- Country of Birth Dropdown -->
           <div>
-          <label for="born_country">Country of Birth:  </label>
-          <select id="born_country" name="born_country"  v-model="born_country">
+          <label for="birth_country">Country of Birth:  </label>
+          <select id="birth_country" name="birth_country"  v-model="birth_country">
             <option value="">Select country</option>
                 <option value="Afghanistan">Afghanistan</option>
                 <option value="Åland Islands">Åland Islands</option>
@@ -168,16 +165,17 @@
         <div class="w3-section">
         <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.</legend>  
         <label>
-          <input type="checkbox" name="birth" value="Female">Female<br> 
+          <input type="checkbox" name="identity1" v-model="identity1" value="Female">Female<br> 
+        
         </label>    
         <label>
-          <input type="checkbox" name="birth" value="Male">Male<br> 
+          <input type="checkbox" name="identity2" value="Male">Male<br> 
         </label>
         <label>
-          <input type="checkbox" name="birth" value="Unsure">Unsure<br> 
+          <input type="checkbox" name="identify3" value="Unsure">Unsure<br> 
         </label>
         <label>
-          <input type="checkbox" name="birth" value="None">Prefer not to answer<br>
+          <input type="checkbox" name="identity4" value="None">Prefer not to answer<br>
         </label>
         </div>
 
@@ -293,21 +291,21 @@
             
         Based on the NIH definition above, do you consider yourself currently in or having come from a disadvantaged background? Note: If you are not a US-based participant, please answer based on similar criteria in your own country.<br>
         <label>
-          <input type="radio" name="disadvantaged" value="yes">Yes<br>
+          <input type="radio" name="disadvantaged" id = "disadvantaged" value="yes">Yes<br>
         </label>   
          <label>
-          <input type="radio" name="disadvantaged" value="no">No<br> 
+          <input type="radio" name="disadvantaged" id = "disadvantaged"  value="no">No<br> 
          </label>
            <label>
-            <input type="radio" name="disadvantaged" value="Unsure">Unsure<br> 
+            <input type="radio" name="disadvantaged" id = "disadvantaged" value="Unsure">Unsure<br> 
            </label> 
             <label>
-              <input type="radio" name="disadvantaged" value="None">Prefer not to answer<br>
+              <input type="radio" name="disadvantaged" id = "disadvantaged" value="None">Prefer not to answer<br>
             </label>
 
             <div style="display: flex;">
           <label>Optional: Use this free text box to provide any additional detail.</label>     
-            <input class="w3-input" type="text">
+            <input id="optOutDisadvantaged" class="w3-input" type="text">
         </div>  
              
 
@@ -379,12 +377,12 @@
               <input type="checkbox" name="occupation" value="Science Policy">Health Care Policy or Science Policy<br> 
             </label>
             <label>
-              <input type="checkbox" name="disadvantaged" value="None">Prefer not to answer<br>
+              <input type="checkbox" name="occupation" value="None">Prefer not to answer<br>
             </label>
             
             <div style="display: flex;">
           <label>Other: Use this free text box to provide any additional detail. </label>     
-            <input class="w3-input" type="text">
+            <input id="optOutOccupation" class="w3-input" type="text">
         </div>   
 
         
@@ -460,21 +458,33 @@
 
 
           <!-- Submission Button -->
-          <button type="submit" class="btn-submit">Submit Basic Demographics</button>
+          <button @click="addSurvey">Submit Demographic Survey</button>
+
+          
         </form>
       </section>
     </div>
   </template>
   
   <script>
+  import axios from 'axios'
+ // import {useStore} from 'vuex'
+  // import {useRouter} from 'vue-router'
+  //  import ProfileForm from '../components/people/ProfileForm.vue';
 
+  //  const store = useStore();
+  //  const router = useRouter();
 
+    import {api, queryStringFromParams} from '@/http';
+import Person from '@/domain/person'
+
+    const baseUrl = '/api/people';
 
   export default {
     name: 'SurveyForm',
     data() {
       return {
-        born_country: '',
+        birth_country: '',
         optOutBornCountry: false,
         reside_country: '',
         optOutResideCountry: false,
@@ -490,11 +500,19 @@
         optOutEthnicity: false,
         birth_year: '',
         optOutBirth: false,
+        specialty: '',
+        optOutSpeciality: false,
+        disadvantaged: Boolean,
+        occupation: '',
+        optOutOccupation: false,
+        identity1: '',
+
+
 
 
         // ... Other data properties if needed ...
 
-        items: [], // The array of items to be filled by the API call
+    //    items: [birth_country, reside_country], // The array of items to be filled by the API call
       selectedItem: '' // The selected item
       };
     },
@@ -503,9 +521,27 @@
         // Implementation for addSurvey method
         // Here you would typically handle the form submission,
         // For instance, sending the data to a server or storing it locally
-        console.log("Survey submitted with the following data:", this.born_country, this.reside_country);
+        let item = {
+          birth_country: this.birth_country,
+          reside_country: this.reside_country
+        
+        }
+       // this.bith_country = null
+        //this.reside_country=null
+       // async updateAttributes({ commit }, {uuid, attributes}) {
+       // await api.put(`${baseUrl}/${uuid}`, attributes)
+       //     .then(response => {
+       //         commit('addItem', response.data);
+      //      })
+   // },
+
+        axios
+          .put('api/people/8557/item')
+
+
+        console.log("Survey submitted with the following data:", this.birth_country, this.reside_country);
         // Reset the form or provide feedback to the user
-        document.getElementById("SurveyForm").reset();
+     //   document.getElementById("SurveyForm").reset();
       },
      
 
@@ -515,7 +551,7 @@
       
       // ... Other methods if needed ...
     }
-  
+  //  app.mount('#app')
   </script>
 
  <style>
@@ -603,6 +639,34 @@ span {
 .checkbox-margin {
   margin-right: 200px; /* Adjust the space as needed */
 }
+
+
+button {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    padding: 15px 32px; /* Padding around the text */
+    text-align: center; /* Center the text inside the button */
+    text-decoration: none; /* Remove underlines from any text */
+    display: inline-block; /* Align the button next to other elements */
+    font-size: 16px; /* Set the font size */
+    margin: 4px 2px; /* Spacing around the button */
+    cursor: pointer; /* Change mouse pointer to indicate clickable */
+    border: none; /* No border */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px #999; /* Shadow effect for depth */
+}
+
+button:hover {
+    background-color: #45a049; /* Darker shade of green on hover */
+}
+
+button:active {
+    background-color: #3e8e41;
+    box-shadow: 0 2px #666; /* Change shadow for pressed effect */
+    transform: translateY(2px); /* Move the button down slightly when pressed */
+}
+
+
 
 </style>
 
