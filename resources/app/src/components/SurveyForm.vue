@@ -118,23 +118,23 @@
       
       <div style="display: flex;">
         <input type="checkbox" id = "ethnicity3" name="ethnicity3" value="Black" class = "container" v-model="ethnicity3_val">
-        <label for ethnicity3>Black, African American, or African (For example: African American, Ethiopian, Haitian, Jamaican, Nigerian, Somali, etc.)</label><br>
+        <label for="ethnicity3">Black, African American, or African (For example: African American, Ethiopian, Haitian, Jamaican, Nigerian, Somali, etc.)</label><br>
       </div>
       <div style="display: flex;">
         <input type="checkbox" id = "ethnicity4" name="ethnicity4" value="Hispanic" class = "container" v-model="ethnicity4_val">
-        <label for ethnicity4>Hispanic, Latino, or Spanish (For example: Colombian, Cuban, Dominican, Mexican or Mexican American, Puerto Rican, Salvadoran, etc.)</label><br>
+        <label for="ethnicity4">Hispanic, Latino, or Spanish (For example: Colombian, Cuban, Dominican, Mexican or Mexican American, Puerto Rican, Salvadoran, etc.)</label><br>
       </div>
       <div style="display: flex;">
         <input type="checkbox" id = "ethnicity5" name="ethnicity5" value="Middle Eastern" class = "container" v-model="ethnicity5_val">
-        <label for ethnicity5>Middle Eastern or North African (For example: Algerian, Egyptian, Iranian, Lebanese, Moroccan, Syrian, etc.)</label><br>
+        <label for="ethnicity5">Middle Eastern or North African (For example: Algerian, Egyptian, Iranian, Lebanese, Moroccan, Syrian, etc.)</label><br>
       </div>
       <div style="display: flex;">
         <input type="checkbox" id = "ethnicity6" name="ethnicity6" value="Pacific" class = "container" v-model="ethnicity6_val">
-        <label for ethnicity6>Native Hawaiian or other Pacific Islander (For example: Chamorro, Fijian, Marshallese, Native Hawaiian, Tongan, etc.)</label><br>
+        <label for="ethnicity6">Native Hawaiian or other Pacific Islander (For example: Chamorro, Fijian, Marshallese, Native Hawaiian, Tongan, etc.)</label><br>
       </div>
       <div style="display: flex;">
         <input type="checkbox" id = "ethnicity7" name="ethnicity7" value="White" class = "container" v-model="ethnicity7_val">
-        <label for ethnicity7>White (For example: English, European, French, German, Irish, Italian, Polish, etc.)</label>
+        <label for="ethnicity7">White (For example: English, European, French, German, Irish, Italian, Polish, etc.)</label>
       </div>
 
       <div style="display: flex;">
@@ -291,16 +291,16 @@
             
         Based on the NIH definition above, do you consider yourself currently in or having come from a disadvantaged background? Note: If you are not a US-based participant, please answer based on similar criteria in your own country.<br>
         <label>
-          <input type="radio" name="disadvantaged" id = "disadvantaged" value="yes">Yes<br>
+          <input type="radio" name="disadvantaged" id = "yes" value="yes">Yes<br>
         </label>   
          <label>
-          <input type="radio" name="disadvantaged" id = "disadvantaged"  value="no">No<br> 
+          <input type="radio" name="disadvantaged" id = "no"  value="no">No<br> 
          </label>
            <label>
-            <input type="radio" name="disadvantaged" id = "disadvantaged" value="Unsure">Unsure<br> 
+            <input type="radio" name="disadvantaged" id = "unsure" value="Unsure">Unsure<br> 
            </label> 
             <label>
-              <input type="radio" name="disadvantaged" id = "disadvantaged" value="None">Prefer not to answer<br>
+              <input type="radio" name="disadvantaged" id = "none" value="None">Prefer not to answer<br>
             </label>
 
             <div style="display: flex;">
@@ -330,7 +330,7 @@
 
 
         <div style="display: flex; align-items: center; margin-bottom: 5px;">
-            <input type="checkbox" name="occupation" value="pathologist" class="container checkbox-margin"> 
+            <input type="checkbox" id= "pathologist" name="occupation" value="pathologist" class="container checkbox-margin"> 
             <label for="pathologist">Molecular pathologist</label>
           </div>
 
@@ -391,7 +391,7 @@
         
 
         <label for="specialty">If you indicated “Medical non-genetics physician”, please select your specialty.</label><span style="color: red !important; display: inline; float: none;"></span>
-            <select id="speciality" name="specialty"><br>
+            <select id="specialty" name="specialty"><br>
             <option value="">Select specialty</option>
             
             <option value="Allergy & Immunology">Allergy & Immunology</option>
@@ -468,6 +468,10 @@
   
   <script>
   import axios from 'axios'
+ // import {getters, mutations, actions} from '@/store/people'
+ // import api from '@/http/api'
+//import Person from '../../../src/domain/person';
+ // import axios from from '@/http/api'
  // import {useStore} from 'vuex'
   // import {useRouter} from 'vue-router'
   //  import ProfileForm from '../components/people/ProfileForm.vue';
@@ -485,27 +489,27 @@ import Person from '@/domain/person'
     data() {
       return {
         birth_country: '',
-        optOutBornCountry: false,
+       optOutBornCountry: false,
         reside_country: '',
         optOutResideCountry: false,
         country_state:'',
-        optOutState: false,
-        ethnicity1_val: '',
-        ethnicity2_val: '',
+       optOutState: false,
+       ethnicity1_val: '',
+       ethnicity2_val: '',
         ethnicity3_val: '',
-        ethnicity4_val: '',
+       ethnicity4_val: '',
         ethnicity5_val: '',
-        ethnicity6_val: '',
+       ethnicity6_val: '',
         ethnicity7_val: '',
         optOutEthnicity: false,
         birth_year: '',
         optOutBirth: false,
         specialty: '',
         optOutSpeciality: false,
-        disadvantaged: Boolean,
+       disadvantaged: Boolean,
         occupation: '',
         optOutOccupation: false,
-        identity1: '',
+       identity1: '',
 
 
 
@@ -526,6 +530,7 @@ import Person from '@/domain/person'
           reside_country: this.reside_country
         
         }
+        let url = '';
        // this.bith_country = null
         //this.reside_country=null
        // async updateAttributes({ commit }, {uuid, attributes}) {
@@ -534,11 +539,34 @@ import Person from '@/domain/person'
        //         commit('addItem', response.data);
       //      })
    // },
+       
+      //   fetch('')
+     //   fetch() {
+     //     this.item = await axios.put("api/people/:8557/item");
+     //   }     
+        try{
 
-        axios
-          .put('api/people/8557/item')
+          axios
+          //.get('http://localhost:8013/api/people/8557')
+         // .then(response => (this.info = response))
 
+      //  .get('https://api.coindesk.com/v1/bpi/currentprice.json')
+     // .then(response => (this.info = response))
 
+     .get('/api/people/8557')
+
+     //   .put('/api/people/8557'. data)
+      //  .put('/api/people/8557/item')
+        .then(response => (this.info = response))
+
+        }
+        
+        catch(error)
+    {
+      console.log(error)
+    //  next('/login')
+    }
+        
         console.log("Survey submitted with the following data:", this.birth_country, this.reside_country);
         // Reset the form or provide feedback to the user
      //   document.getElementById("SurveyForm").reset();
@@ -642,8 +670,7 @@ span {
 
 
 button {
-    background-color: #4CAF50; /* Green background */
-    color: white; /* White text */
+   
     padding: 15px 32px; /* Padding around the text */
     text-align: center; /* Center the text inside the button */
     text-decoration: none; /* Remove underlines from any text */
@@ -656,15 +683,7 @@ button {
     box-shadow: 0 4px #999; /* Shadow effect for depth */
 }
 
-button:hover {
-    background-color: #45a049; /* Darker shade of green on hover */
-}
 
-button:active {
-    background-color: #3e8e41;
-    box-shadow: 0 2px #666; /* Change shadow for pressed effect */
-    transform: translateY(2px); /* Move the button down slightly when pressed */
-}
 
 
 
