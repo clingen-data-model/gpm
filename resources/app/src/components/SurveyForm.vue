@@ -678,10 +678,15 @@ button {
     font-size: 16px; /* Set the font size */
     margin: 4px 2px; /* Spacing around the button */
     cursor: pointer; /* Change mouse pointer to indicate clickable */
-    border: none; /* No border */
+    
     border-radius: 8px; /* Rounded corners */
     box-shadow: 0 4px #999; /* Shadow effect for depth */
+
+    background-color: white;  /* White background */
+    color: black;             /* Black text color */
+    border: 1px solid black;  /* Add a solid black border */
 }
+
 
 
 
