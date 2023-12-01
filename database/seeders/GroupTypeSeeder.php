@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\Seeder;
 use App\Modules\Group\Models\GroupType;
 
 class GroupTypeSeeder extends Seeder

@@ -3,8 +3,8 @@
 namespace App\Modules\Person\Models;
 
 use Database\Factories\GenderFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id

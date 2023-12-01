@@ -2,14 +2,12 @@
 
 namespace App\Modules\Group\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Support\Collection;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\Judgement;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use App\Notifications\Contracts\DigestibleNotificationInterface;
+use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Collection;
 
 class JudgementActivityNotification extends Notification implements DigestibleNotificationInterface
 {
@@ -24,8 +22,7 @@ class JudgementActivityNotification extends Notification implements DigestibleNo
         public Group $group,
         public Judgement $judgement,
         public string $event
-    )
-    {
+    ) {
         //
     }
 
@@ -50,14 +47,15 @@ class JudgementActivityNotification extends Notification implements DigestibleNo
     {
         $this->judgement->load('person');
         $this->group->display_name = $this->group->getDisplayNameAttribute();
+
         return [
             'group' => $this->group,
             'judgement' => $this->judgement,
-            'event' => $this->event
+            'event' => $this->event,
         ];
     }
 
-    public static function getUnique(Collection $collection):Collection
+    public static function getUnique(Collection $collection): Collection
     {
         return $collection->unique(function ($notification) {
             return $notification->data['judgement']['id'];
@@ -67,7 +65,7 @@ class JudgementActivityNotification extends Notification implements DigestibleNo
     /**
      * Filter all messages out if includes deleted event.
      */
-    public static function filterInvalid(Collection $collection):Collection
+    public static function filterInvalid(Collection $collection): Collection
     {
         $includesDeleted = $collection->pluck('data.event')->contains('deleted');
         if ($includesDeleted) {
@@ -77,12 +75,12 @@ class JudgementActivityNotification extends Notification implements DigestibleNo
         return $collection;
     }
 
-    static public function getValidUnique(Collection $collection): Collection
+    public static function getValidUnique(Collection $collection): Collection
     {
         return static::getUnique(static::filterInvalid($collection));
     }
 
-    static public function getDigestTemplate(): string
+    public static function getDigestTemplate(): string
     {
         return 'email.digest.judgement_activity';
     }

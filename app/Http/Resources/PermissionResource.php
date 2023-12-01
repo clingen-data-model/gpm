@@ -20,8 +20,9 @@ class PermissionResource extends JsonResource
             'updated_at',
             'guard_name',
             'pivot',
-            'scope'
+            'scope',
         ], $data);
+
         return $data;
     }
 
@@ -32,6 +33,7 @@ class PermissionResource extends JsonResource
                 unset($data[$key]);
             }
         }
+
         return $data;
     }
 }

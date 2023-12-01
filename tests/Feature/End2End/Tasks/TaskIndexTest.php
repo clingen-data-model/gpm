@@ -2,19 +2,18 @@
 
 namespace Tests\Feature\End2End\Tasks;
 
-use Tests\TestCase;
-use App\Tasks\Actions\TaskCreate;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Tasks\Actions\TaskCreate;
 use Database\Seeders\TaskTypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class TaskIndexTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -40,8 +39,8 @@ class TaskIndexTest extends TestCase
         $this->makeRequest([
             'where' => [
                 'assignee_id' => $this->vcep1->group->id,
-                'assignee_type' => get_class($this->vcep1->group)
-            ]
+                'assignee_type' => get_class($this->vcep1->group),
+            ],
         ])
         ->assertStatus(200)
         ->assertJsonCount(2);
@@ -52,7 +51,6 @@ class TaskIndexTest extends TestCase
      */
     public function can_get_all_tasks_for_multiple_assignees_of_the_same_type()
     {
-
         $vcep3 = ExpertPanel::factory()->vcep()->create();
         $task1 = (new TaskCreate)->handle($vcep3->group, 'sustained-curation-review');
         $task2 = (new TaskCreate)->handle($vcep3->group, 'sustained-curation-review');
@@ -60,8 +58,8 @@ class TaskIndexTest extends TestCase
         $this->makeRequest([
             'where' => [
                 'assignee_id' => [$this->vcep1->group->id, $vcep3->group->id],
-                'assignee_type' => get_class($this->vcep1->group)
-            ]
+                'assignee_type' => get_class($this->vcep1->group),
+            ],
         ])
         ->assertStatus(200)
         ->assertJsonCount(4)
@@ -72,11 +70,9 @@ class TaskIndexTest extends TestCase
             'assignee_id' => $vcep3->group_id,
         ])
         ->assertJsonMissing([
-            'assignee_id' => $this->vcep2->group_id
-        ])
-        ;
+            'assignee_id' => $this->vcep2->group_id,
+        ]);
     }
-    
 
     private function makeRequest($data = [])
     {

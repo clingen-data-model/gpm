@@ -2,18 +2,16 @@
 
 namespace Tests\Feature\End2End\Groups\Members;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
-use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Person;
 use App\Modules\Group\Actions\MemberAdd;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Actions\MemberGrantPermissions;
-use App\Modules\Person\Notifications\InviteNotification;
+use App\Modules\Group\Models\Group;
 use App\Modules\Group\Notifications\AddedToGroupNotification;
+use App\Modules\Person\Models\Person;
+use App\Modules\Person\Notifications\InviteNotification;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 /**
  * @group groups
@@ -23,7 +21,7 @@ class InviteMemberTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -46,7 +44,6 @@ class InviteMemberTest extends TestCase
             ->assertStatus(401);
     }
 
-
     /**
      * @test
      */
@@ -56,7 +53,6 @@ class InviteMemberTest extends TestCase
         $this->json('POST', $this->url, [])
             ->assertStatus(403);
     }
-
 
     /**
      * @test
@@ -86,10 +82,9 @@ class InviteMemberTest extends TestCase
         ])
         ->assertStatus(422)
         ->assertJsonFragment([
-            'email' => ['A person with this email address is already in the GPM.  Please click \'Add as member\' next the person\'s name to the right.']
+            'email' => ['A person with this email address is already in the GPM.  Please click \'Add as member\' next the person\'s name to the right.'],
         ]);
     }
-
 
     /**
      * @test
@@ -108,7 +103,7 @@ class InviteMemberTest extends TestCase
             'email' => 'test@test.com',
             'notes' => 'test notes',
             'training_level_1' => true,
-            'training_level_2' => true
+            'training_level_2' => true,
         ]);
         $response->assertStatus(201);
 
@@ -128,7 +123,7 @@ class InviteMemberTest extends TestCase
             'inviter_type' => get_class($this->group),
             'first_name' => 'Test',
             'last_name' => 'Testerson',
-            'redeemed_at' => null
+            'redeemed_at' => null,
         ]);
 
         $this->assertDatabaseHas('people', [
@@ -145,7 +140,7 @@ class InviteMemberTest extends TestCase
             'person_id' => $newPerson->id,
             'notes' => 'test notes',
             'training_level_1' => 1,
-            'training_level_2' => 1
+            'training_level_2' => 1,
         ]);
     }
 
@@ -168,12 +163,11 @@ class InviteMemberTest extends TestCase
             'email' => 'test@test.com',
             'inviter_id' => $this->group->id,
             'inviter_type' => get_class($this->group),
-            'role_ids' => [$role->id]
+            'role_ids' => [$role->id],
         ]);
         $response->assertStatus(201);
         $this->assertEquals($role->id, $response->original->roles[0]->id);
     }
-
 
     /**
      * @test
@@ -191,7 +185,7 @@ class InviteMemberTest extends TestCase
             'last_name' => 'Testerson',
             'email' => 'test@test.com',
             'inviter_id' => $this->group->id,
-            'inviter_type' => get_class($this->group)
+            'inviter_type' => get_class($this->group),
         ]);
         $response->assertStatus(201);
 
@@ -225,7 +219,7 @@ class InviteMemberTest extends TestCase
             'last_name' => 'Testerson',
             'email' => 'test@test.com',
             'inviter_id' => $this->group->id,
-            'inviter_type' => get_class($this->group)
+            'inviter_type' => get_class($this->group),
         ]);
         $response->assertStatus(201);
 
@@ -249,7 +243,7 @@ class InviteMemberTest extends TestCase
             'first_name' => 'Test',
             'last_name' => 'Testerson',
             'email' => 'test@test.com',
-            'is_contact' => true
+            'is_contact' => true,
         ]);
         $response->assertStatus(201);
 
@@ -258,7 +252,7 @@ class InviteMemberTest extends TestCase
         $this->assertDatabaseHas('group_members', [
             'group_id' => $this->group->id,
             'person_id' => $newPerson->id,
-            'is_contact' => 1
+            'is_contact' => 1,
         ]);
     }
 }

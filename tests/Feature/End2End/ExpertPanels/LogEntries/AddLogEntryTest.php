@@ -2,19 +2,17 @@
 
 namespace Tests\Feature\End2End\ExpertPanels\LogEntries;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Models\Group;
-use App\Modules\User\Models\User;
-use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
+use Tests\TestCase;
 
 class AddLogEntryTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -31,10 +29,10 @@ class AddLogEntryTest extends TestCase
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $this->json('POST', $this->baseUrl, [
-                'step' => $this->expertPanel->current_step,
-                'log_date' => '2021-01-01',
-                'entry' => 'A log entry description',
-            ])
+            'step' => $this->expertPanel->current_step,
+            'log_date' => '2021-01-01',
+            'entry' => 'A log entry description',
+        ])
             ->assertStatus(200)
             ->assertJson([
                 'description' => 'A log entry description',
@@ -42,17 +40,17 @@ class AddLogEntryTest extends TestCase
                 'causer' => [
                     'id' => $this->user->id,
                     'name' => $this->user->name,
-                    'email' => $this->user->email
+                    'email' => $this->user->email,
                 ],
                 'properties' => [
-                    'step' => $this->expertPanel->current_step
-                ]
+                    'step' => $this->expertPanel->current_step,
+                ],
             ]);
 
         $this->assertDatabaseHas('activity_log', [
             'subject_type' => Group::class,
             'subject_id' => $this->expertPanel->group_id,
-            'description' => 'A log entry description'
+            'description' => 'A log entry description',
         ]);
     }
 
@@ -77,9 +75,9 @@ class AddLogEntryTest extends TestCase
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $this->json('POST', $this->baseUrl, [
-                'log_date' => 'bob\'s yer uncle',
-                'step' => 'four'
-            ])
+            'log_date' => 'bob\'s yer uncle',
+            'step' => 'four',
+        ])
             ->assertStatus(422)
             ->assertJsonFragment([
                 'step' => ['The step must be a number.'],

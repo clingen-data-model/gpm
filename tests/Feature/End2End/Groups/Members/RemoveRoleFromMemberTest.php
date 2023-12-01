@@ -2,15 +2,11 @@
 
 namespace Tests\Feature\End2End\Groups\Members;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
-use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Person;
-use App\Modules\Group\Actions\MemberAdd;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Group\Actions\MemberAssignRole;
+use App\Modules\Group\Models\Group;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 /**
  * @group groups
@@ -21,7 +17,7 @@ class RemoveRoleFromMemberTest extends TestCase
     use RefreshDatabase;
     use SetsUpGroupPersonAndMember;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -48,12 +44,12 @@ class RemoveRoleFromMemberTest extends TestCase
         $this->assertDatabaseMissing('model_has_roles', [
             'model_type' => get_class($this->groupMember),
             'model_id' => $this->groupMember->id,
-            'role_id' => $this->roles->first()->id
+            'role_id' => $this->roles->first()->id,
         ]);
         $this->assertDatabaseHas('model_has_roles', [
             'model_type' => get_class($this->groupMember),
             'model_id' => $this->groupMember->id,
-            'role_id' => $this->roles->last()->id
+            'role_id' => $this->roles->last()->id,
         ]);
     }
 

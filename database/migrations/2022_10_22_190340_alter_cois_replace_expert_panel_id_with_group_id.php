@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
 use App\Modules\ExpertPanel\Models\Coi;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AlterCoisReplaceExpertPanelIdWithGroupId extends Migration
 {
@@ -14,7 +14,7 @@ class AlterCoisReplaceExpertPanelIdWithGroupId extends Migration
      */
     public function up()
     {
-        if (!Schema::hasColumn('cois', 'group_id')) {
+        if (! Schema::hasColumn('cois', 'group_id')) {
             Schema::table('cois', function (Blueprint $table) {
                 $table->unsignedBigInteger('group_id')->after('group_member_id');
             });
@@ -23,7 +23,7 @@ class AlterCoisReplaceExpertPanelIdWithGroupId extends Migration
         $this->replaceExpertPanelIdWithGroupId();
 
         Schema::table('cois', function (Blueprint $table) {
-            if(\DB::connection()->getDriverName() != 'sqlite') {
+            if (\DB::connection()->getDriverName() != 'sqlite') {
                 $table->dropForeign('cois_v2_expert_panel_id_foreign');
             }
             $table->dropColumn('expert_panel_id');
@@ -45,14 +45,13 @@ class AlterCoisReplaceExpertPanelIdWithGroupId extends Migration
         $this->replaceGroupIdWithExpertPanelId();
 
         Schema::table('cois', function (Blueprint $table) {
-            if(\DB::connection()->getDriverName() == 'mysql') {
+            if (\DB::connection()->getDriverName() == 'mysql') {
                 $table->dropForeign(['group_id']);
             }
             $table->dropColumn('group_id');
             $table->foreign('expert_panel_id')->references('id')->on('expert_panels');
         });
     }
-
 
     private function replaceExpertPanelIdWithGroupId()
     {
@@ -75,5 +74,4 @@ class AlterCoisReplaceExpertPanelIdWithGroupId extends Migration
                 $coi->update(['expert_panel_id' => $coi->group->expert_panel_id]);
             });
     }
-
 }

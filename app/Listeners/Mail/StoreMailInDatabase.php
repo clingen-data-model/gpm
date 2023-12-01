@@ -6,8 +6,6 @@ use App\Models\Email;
 use App\Modules\Person\Models\Person;
 use App\Services\AddressStructureConverter;
 use Illuminate\Mail\Events\MessageSent;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class StoreMailInDatabase
 {
@@ -24,7 +22,6 @@ class StoreMailInDatabase
     /**
      * Handle the event.
      *
-     * @param  MessageSent  $event
      * @return void
      */
     public function handle(MessageSent $event)

@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
 use App\Modules\ExpertPanel\CoiData;
 use App\Modules\ExpertPanel\CoiDataCaster;
+use PHPUnit\Framework\TestCase;
 
 class CoiDataCasterTest extends TestCase
 {
@@ -15,10 +15,10 @@ class CoiDataCasterTest extends TestCase
     {
         $json = json_encode([
             'coi' => 1,
-            'coi_detail' => 'bob\'s burgers'
+            'coi_detail' => 'bob\'s burgers',
         ]);
 
-        $coiData =  (new CoiDataCaster)->get(null, 'data', $json, ['data' => $json]);
+        $coiData = (new CoiDataCaster)->get(null, 'data', $json, ['data' => $json]);
 
         $this->assertInstanceOf(CoiData::class, $coiData);
         $this->assertEquals(json_decode($json), $coiData->data);
@@ -29,9 +29,9 @@ class CoiDataCasterTest extends TestCase
      */
     public function it_converts_a_CoiData_object_to_a_json_string()
     {
-        $data = (object)['coi' => 1, 'coi_detail' => 'bob\''];
+        $data = (object) ['coi' => 1, 'coi_detail' => 'bob\''];
         $coiData = new CoiData($data);
-        
+
         $jsonString = (new CoiDataCaster)->set(null, 'data', $coiData, ['data' => null]);
 
         $this->assertEquals(json_encode($data), $jsonString);

@@ -12,6 +12,4 @@ class DuplicateMessageException extends StreamingServiceException
     {
         return $this->additionalLogData;
     }
-
-
 }

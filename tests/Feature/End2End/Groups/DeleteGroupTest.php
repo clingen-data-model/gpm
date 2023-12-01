@@ -2,20 +2,19 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Carbon\Carbon;
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\GroupMember;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class DeleteGroupTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         Carbon::setTestNow();
@@ -27,7 +26,7 @@ class DeleteGroupTest extends TestCase
 
         Sanctum::actingAs($this->user);
     }
-    
+
     /**
      * @test
      */
@@ -79,10 +78,9 @@ class DeleteGroupTest extends TestCase
 
         $this->assertDatabaseHas('expert_panels', [
             'id' => $expertPanel->id,
-            'deleted_at' => Carbon::now()
+            'deleted_at' => Carbon::now(),
         ]);
     }
-    
 
     private function makeRequest()
     {

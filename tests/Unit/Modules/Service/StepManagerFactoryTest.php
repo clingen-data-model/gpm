@@ -2,23 +2,23 @@
 
 namespace Tests\Unit\Modules\Service;
 
-use Tests\TestCase;
-use Illuminate\Support\Carbon;
+use App\Modules\ExpertPanel\Exceptions\UnexpectedCurrentStepException;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Service\StepManagerFactory;
-use App\Modules\ExpertPanel\Service\Steps\VcepDraftStepManager;
-use App\Modules\ExpertPanel\Service\Steps\VcepPilotStepManager;
-use App\Modules\ExpertPanel\Service\Steps\VcepFinalizeStepManager;
 use App\Modules\ExpertPanel\Service\Steps\GcepDefinitionStepManager;
 use App\Modules\ExpertPanel\Service\Steps\VcepDefinitionStepManager;
-use App\Modules\ExpertPanel\Exceptions\UnexpectedCurrentStepException;
+use App\Modules\ExpertPanel\Service\Steps\VcepDraftStepManager;
+use App\Modules\ExpertPanel\Service\Steps\VcepFinalizeStepManager;
+use App\Modules\ExpertPanel\Service\Steps\VcepPilotStepManager;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
+use Tests\TestCase;
 
 class StepManagerFactoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -29,9 +29,9 @@ class StepManagerFactoryTest extends TestCase
      */
     public function returns_GcepDefinitionStepManager_if_gcep_and_step_1()
     {
-        $this->returnsManagerForTypeAndStep(GcepDefinitionStepManager::class, config("expert_panels.types.gcep.id"), 1);
+        $this->returnsManagerForTypeAndStep(GcepDefinitionStepManager::class, config('expert_panels.types.gcep.id'), 1);
     }
-    
+
     /**
      * @test
      */
@@ -39,7 +39,7 @@ class StepManagerFactoryTest extends TestCase
     {
         $this->returnsManagerForTypeAndStep(VcepDefinitionStepManager::class, config('expert_panels.types.vcep.id'), 1);
     }
-    
+
     /**
      * @test
      */
@@ -47,7 +47,7 @@ class StepManagerFactoryTest extends TestCase
     {
         $this->returnsManagerForTypeAndStep(VcepDraftStepManager::class, config('expert_panels.types.vcep.id'), 2);
     }
-    
+
     /**
      * @test
      */
@@ -55,7 +55,7 @@ class StepManagerFactoryTest extends TestCase
     {
         $this->returnsManagerForTypeAndStep(VcepPilotStepManager::class, config('expert_panels.types.vcep.id'), 3);
     }
-    
+
     /**
      * @test
      */
@@ -63,7 +63,6 @@ class StepManagerFactoryTest extends TestCase
     {
         $this->returnsManagerForTypeAndStep(VcepFinalizeStepManager::class, config('expert_panels.types.vcep.id'), 4);
     }
-    
 
     /**
      * @test
@@ -74,9 +73,9 @@ class StepManagerFactoryTest extends TestCase
         $expertPanel = new ExpertPanel([
             'current_step' => 5,
             'expert_panel_type_id' => 2,
-            'date_initiated' => Carbon::now()
+            'date_initiated' => Carbon::now(),
         ]);
-        
+
         $this->expectException(UnexpectedCurrentStepException::class);
         $factory($expertPanel);
     }

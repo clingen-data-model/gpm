@@ -2,13 +2,13 @@
 
 namespace App\Providers;
 
-use Illuminate\Bus\Dispatcher;
-use Illuminate\Support\ServiceProvider;
 use App\Jobs\Pipes\UseDatabaseTransactions;
-use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Bus\Dispatcher;
 use Illuminate\Contracts\Bus\Dispatcher as DispatcherContract;
-use Illuminate\Contracts\Queue\Factory as QueueFactoryContract;
 use Illuminate\Contracts\Bus\QueueingDispatcher as QueueingDispatcherContract;
+use Illuminate\Contracts\Queue\Factory as QueueFactoryContract;
+use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Support\ServiceProvider;
 
 class BusServiceProvider extends ServiceProvider implements DeferrableProvider
 {

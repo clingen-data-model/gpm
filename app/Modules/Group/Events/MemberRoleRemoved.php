@@ -4,21 +4,19 @@ namespace App\Modules\Group\Events;
 
 use App\Events\PublishableEvent;
 use App\Modules\Group\Models\Group;
-use Illuminate\Broadcasting\Channel;
-use Spatie\Permission\Contracts\Role;
-use Illuminate\Queue\SerializesModels;
 use App\Modules\Group\Models\GroupMember;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+use Spatie\Permission\Contracts\Role;
 
 class MemberRoleRemoved extends GroupMemberEvent implements PublishableEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public Group $group;
+
     /**
      * Create a new event instance.
      *

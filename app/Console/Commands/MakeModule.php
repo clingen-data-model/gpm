@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Support\Str;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
 class MakeModule extends Command
 {
@@ -48,21 +48,21 @@ class MakeModule extends Command
 
         $studlyName = Str::studly($moduleName);
 
-        if (!file_exists($this->modDir)) {
+        if (! file_exists($this->modDir)) {
             mkdir($this->modDir);
         }
 
         $newModDir = $this->modDir.'/'.$studlyName;
 
-        if (!file_exists($newModDir)) {
+        if (! file_exists($newModDir)) {
             mkdir($newModDir);
         }
 
         $dirs = ['Events', 'Exceptions', 'Jobs', 'Models', 'Providers'];
-        
+
         foreach ($dirs as $dir) {
             $newDir = $newModDir.'/'.$dir;
-            if (!file_exists($newDir)) {
+            if (! file_exists($newDir)) {
                 mkdir($newDir);
             }
         }
@@ -74,7 +74,6 @@ class MakeModule extends Command
         $this->info('Scaffolded out '.$studlyName.' module in '.$newModDir);
         $this->info("Don't forget to add add the service provider to config/app.php: \n App\Modules\\$studlyName\\Providers\\$providerName::class");
 
-        
         return 0;
     }
 }

@@ -5,7 +5,7 @@ namespace App\Mail\UserDefinedMailTemplates;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\View;
 
-Abstract Class AbstractUserDefinedMailTemplate
+abstract class AbstractUserDefinedMailTemplate
 {
     public function __construct(protected Group $group)
     {
@@ -16,7 +16,7 @@ Abstract Class AbstractUserDefinedMailTemplate
     public function renderBody(): string
     {
         $view = View::make($this->getTemplate(), $this->getContext());
-        
+
         return $view->render();
     }
 
@@ -38,11 +38,11 @@ Abstract Class AbstractUserDefinedMailTemplate
             return [
                 'name' => $c->name,
                 'email' => $c->email,
-                'uuid' => $c->uuid
+                'uuid' => $c->uuid,
             ];
         })->toArray();
     }
-    
+
     /**
      * Returns associative array of cc addresses with keys name, email
      */
@@ -55,5 +55,4 @@ Abstract Class AbstractUserDefinedMailTemplate
     {
         return [];
     }
-
 }

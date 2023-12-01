@@ -17,7 +17,7 @@ class LogEntryDelete
      */
     public function handle(Activity $logEntry)
     {
-        if (!is_null($logEntry->activity_type)) {
+        if (! is_null($logEntry->activity_type)) {
             throw new InvalidArgumentException('Only manual log entries can be deleted.');
         }
 

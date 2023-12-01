@@ -2,17 +2,16 @@
 
 namespace App\Modules\Group\Actions;
 
-use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Auth;
-use App\Services\HgncLookupInterface;
-use Lorisleiva\Actions\ActionRequest;
-use App\Services\MondoLookupInterface;
 use App\Modules\ExpertPanel\Models\Gene;
-use Lorisleiva\Actions\Concerns\AsObject;
-use Lorisleiva\Actions\Concerns\AsController;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Auth\Access\AuthorizationException;
 use App\Modules\Group\Http\Resources\GroupResource;
+use App\Modules\Group\Models\Group;
+use App\Services\HgncLookupInterface;
+use App\Services\MondoLookupInterface;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsController;
+use Lorisleiva\Actions\Concerns\AsObject;
 
 class GeneUpdate
 {
@@ -22,7 +21,6 @@ class GeneUpdate
     public function __construct(private HgncLookupInterface $hgncLookup, private MondoLookupInterface $mondoLookup)
     {
     }
-    
 
     public function handle(Group $group, Gene $gene, array $data): Group
     {
@@ -37,7 +35,7 @@ class GeneUpdate
     {
         $gene = $group->expertPanel->genes()->findOrFail($geneId);
 
-        if (!$group->isEp) {
+        if (! $group->isEp) {
             throw ValidationException::withMessages(['group' => ['Only expert panels have a gene list.  You can not update a gene on a '.$group->type->full_name]]);
         }
 
@@ -56,7 +54,6 @@ class GeneUpdate
 
         return true;
     }
-    
 
     public function rules(ActionRequest $request): array
     {

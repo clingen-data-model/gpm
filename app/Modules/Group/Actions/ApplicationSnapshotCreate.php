@@ -2,12 +2,12 @@
 
 namespace App\Modules\Group\Actions;
 
+use App\Models\ApplicationSnapshot;
+use App\Modules\Group\Events\ApplicationStepSubmitted;
+use App\Modules\Group\Models\Group;
 use App\Service\ModelSnapshotter;
 use Illuminate\Support\Facades\DB;
-use App\Models\ApplicationSnapshot;
-use App\Modules\Group\Models\Group;
 use Lorisleiva\Actions\Concerns\AsListener;
-use App\Modules\Group\Events\ApplicationStepSubmitted;
 
 class ApplicationSnapshotCreate
 {
@@ -41,13 +41,13 @@ class ApplicationSnapshotCreate
             'comments.creator',
         ]);
 
-        $snapshot =  $this->snapshotter->createSnapshot($group);
+        $snapshot = $this->snapshotter->createSnapshot($group);
 
         ApplicationSnapshot::create([
             'group_id' => $group->id,
             'submission_id' => $submissionId,
-            'version' => $latestVersion+1,
-            'snapshot' => $snapshot
+            'version' => $latestVersion + 1,
+            'snapshot' => $snapshot,
         ]);
     }
 
@@ -65,5 +65,4 @@ class ApplicationSnapshotCreate
 
         return $latestVersion->version ?? 0;
     }
-
 }

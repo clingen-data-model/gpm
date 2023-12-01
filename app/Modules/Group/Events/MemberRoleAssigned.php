@@ -3,15 +3,12 @@
 namespace App\Modules\Group\Events;
 
 use App\Events\PublishableEvent;
-use Illuminate\Support\Collection;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
 use App\Modules\Group\Models\GroupMember;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 
 class MemberRoleAssigned extends GroupMemberEvent implements PublishableEvent
 {
@@ -36,7 +33,7 @@ class MemberRoleAssigned extends GroupMemberEvent implements PublishableEvent
     {
         return [
             'member' => $this->groupMember->person->only('id', 'name', 'email'),
-            'roles' => $this->roles->pluck('name')->toArray()
+            'roles' => $this->roles->pluck('name')->toArray(),
         ];
     }
 

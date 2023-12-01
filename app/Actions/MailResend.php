@@ -1,11 +1,10 @@
 <?php
+
 namespace App\Actions;
 
-use App\Models\Email;
-use App\Mail\UserDefinedMailable;
+use App\Notifications\ValueObjects\MailAttachment;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
-use App\Notifications\ValueObjects\MailAttachment;
 
 class MailResend
 {
@@ -65,7 +64,7 @@ class MailResend
             'bcc' => 'nullable|array',
             'bcc.*.address' => 'required|email',
             'subject' => 'required',
-            'body' => 'required'
+            'body' => 'required',
         ];
     }
 }

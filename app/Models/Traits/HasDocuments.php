@@ -3,7 +3,6 @@
 namespace App\Models\Traits;
 
 use App\Models\Document;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**

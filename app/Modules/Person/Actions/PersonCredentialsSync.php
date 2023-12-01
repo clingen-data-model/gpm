@@ -10,7 +10,7 @@ class PersonCredentialsSync
     {
         $person->credentials()->sync($credentialIds);
         $person->touch();
+
         return $person;
     }
-
 }

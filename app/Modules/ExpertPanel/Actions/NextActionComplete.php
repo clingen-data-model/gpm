@@ -1,13 +1,13 @@
 <?php
+
 namespace App\Modules\ExpertPanel\Actions;
 
-use Illuminate\Support\Carbon;
+use App\Modules\ExpertPanel\Events\NextActionCompleted;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Models\NextAction;
 use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
-use App\Modules\ExpertPanel\Models\NextAction;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Events\NextActionCompleted;
 
 class NextActionComplete
 {
@@ -32,8 +32,7 @@ class NextActionComplete
     public function rules(): array
     {
         return [
-            'date_completed' => 'required|date'
+            'date_completed' => 'required|date',
         ];
     }
-    
 }

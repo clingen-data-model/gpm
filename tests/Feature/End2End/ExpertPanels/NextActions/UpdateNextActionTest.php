@@ -2,16 +2,13 @@
 
 namespace Tests\Feature\End2End\ExpertPanels\NextActions;
 
-use Tests\TestCase;
-use Ramsey\Uuid\Uuid;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Database\Seeders\NextActionAssigneesTableSeeder;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Database\Seeders\NextActionAssigneesTableSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Ramsey\Uuid\Uuid;
+use Tests\TestCase;
 
 /**
  * @group next-actions
@@ -22,7 +19,7 @@ class UpdateNextActionTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -30,7 +27,7 @@ class UpdateNextActionTest extends TestCase
 
         $this->user = $this->setupUser();
         Sanctum::actingAs($this->user);
-        
+
         $this->expertPanel = ExpertPanel::factory()->vcep()->create();
         $this->baseUrl = '/api/applications/'.$this->expertPanel->uuid.'/next-actions';
 
@@ -59,7 +56,7 @@ class UpdateNextActionTest extends TestCase
                 'assigned_to' => 2,
                 'assigned_to_name' => 'Early Dog',
                 'entry' => 'This is the edited next action',
-                'step' => 1
+                'step' => 1,
             ]
         )->assertStatus(200);
 
@@ -70,7 +67,7 @@ class UpdateNextActionTest extends TestCase
             'assignee_id' => 2,
             'assignee_name' => 'Early Dog',
             'entry' => 'This is the edited next action',
-            'application_step' => 1
+            'application_step' => 1,
         ]);
     }
 
@@ -88,15 +85,15 @@ class UpdateNextActionTest extends TestCase
                 'assigned_to' => 2,
                 'assigned_to_name' => 'Early Dog',
                 'entry' => 'This is the edited next action',
-                'step' => 1
+                'step' => 1,
             ]
         )->assertStatus(200);
-        
+
         $this->assertDatabaseHas('activity_log', [
             'subject_type' => get_class($this->expertPanel->group),
             'subject_id' => $this->expertPanel->group->id,
             'description' => 'Updated next action '.$this->nextAction->id,
-            'properties->previous_data->date_created' => '2020-01-01T00:00:00.000000Z'
+            'properties->previous_data->date_created' => '2020-01-01T00:00:00.000000Z',
         ]);
     }
 }

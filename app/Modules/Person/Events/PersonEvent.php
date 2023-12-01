@@ -2,17 +2,13 @@
 
 namespace App\Modules\Person\Events;
 
-use Illuminate\Support\Carbon;
 use App\Events\RecordableEvent;
 use App\Modules\Person\Models\Person;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Carbon;
 
 abstract class PersonEvent extends RecordableEvent
 {
@@ -22,22 +18,22 @@ abstract class PersonEvent extends RecordableEvent
     {
     }
 
-    public function getLog():string
+    public function getLog(): string
     {
         return 'people';
     }
-    
-    public function hasSubject():bool
+
+    public function hasSubject(): bool
     {
         return true;
     }
 
-    public function getSubject():Model
+    public function getSubject(): Model
     {
         return $this->person;
     }
 
-    public function getLogDate():Carbon
+    public function getLogDate(): Carbon
     {
         return Carbon::now();
     }

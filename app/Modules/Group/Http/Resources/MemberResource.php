@@ -2,10 +2,10 @@
 
 namespace App\Modules\Group\Http\Resources;
 
-use App\Http\Resources\RoleResource;
 use App\Http\Resources\PermissionResource;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\RoleResource;
 use App\Modules\Person\Http\Resources\PersonAsMemberResource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class MemberResource extends JsonResource
 {
@@ -26,7 +26,6 @@ class MemberResource extends JsonResource
             $data['deleted_at'],
             $data['cois'] // really do need this.
         );
-
 
         $data['person'] = $this->whenLoaded('person', new PersonAsMemberResource($this->person));
         $data['roles'] = $this->whenLoaded('roles', RoleResource::collection($this->roles));

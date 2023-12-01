@@ -2,9 +2,9 @@
 
 namespace App\Modules\Person\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Database\Factories\PrimaryOccupationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id
@@ -33,7 +33,6 @@ class PrimaryOccupation extends Model
     protected $casts = [
         'id' => 'integer',
     ];
-
 
     // Factory
     protected static function newFactory()

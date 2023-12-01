@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Listeners\RecordEvent;
 use App\Events\RecordableEvent;
+use App\Listeners\RecordEvent;
 use Illuminate\Support\Facades\Event;
 
 /**
@@ -14,9 +14,7 @@ trait RegistersRecordableEventListeners
     /**
      * Registers RecordEvent listener for all RecordableEvents in $eventClasses
      *
-     * @param array $eventClasses Array of event classes.
-     *
-     * @return void
+     * @param  array  $eventClasses Array of event classes.
      */
     protected function registerRecordableEventListeners(array $eventClasses): void
     {
@@ -26,6 +24,4 @@ trait RegistersRecordableEventListeners
             }
         }
     }
-
-
 }

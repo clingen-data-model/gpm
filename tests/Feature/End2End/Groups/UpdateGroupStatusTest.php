@@ -2,18 +2,16 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class UpdateGroupStatusTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -41,17 +39,16 @@ class UpdateGroupStatusTest extends TestCase
         $this->makeRequest([])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'status_id' => ['This field is required.']
+                'status_id' => ['This field is required.'],
             ]);
-
 
         $this->makeRequest(['status_id' => 99999])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'status_id' => ['The status you selected is invalid.']
+                'status_id' => ['The status you selected is invalid.'],
             ]);
     }
-    
+
     /**
      * @test
      */
@@ -60,12 +57,12 @@ class UpdateGroupStatusTest extends TestCase
         $this->makeRequest()
             ->assertStatus(200)
             ->assertJsonFragment([
-                'group_status_id' => config('groups.statuses.active.id')
+                'group_status_id' => config('groups.statuses.active.id'),
             ]);
 
         $this->assertDatabaseHas('groups', [
             'id' => $this->group->id,
-            'group_status_id' => config('groups.statuses.active.id')
+            'group_status_id' => config('groups.statuses.active.id'),
         ]);
     }
 
@@ -83,10 +80,11 @@ class UpdateGroupStatusTest extends TestCase
             description: 'Status updated from "'.$oldStatus.'" to "'.config('groups.statuses.active.name').'"',
         );
     }
-    
+
     private function makeRequest($data = null)
     {
         $data = $data ?? ['status_id' => config('groups.statuses.active.id')];
+
         return $this->json('PUT', '/api/groups/'.$this->group->uuid.'/status', $data);
     }
 }

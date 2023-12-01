@@ -26,7 +26,7 @@ class ActivityFactory extends Factory
             'log_name' => 'users',
             'subject_type' => User::class,
             'subject_id' => User::all()->random()->id,
-            'description' => $this->faker->sentence()
+            'description' => $this->faker->sentence(),
         ];
     }
 }

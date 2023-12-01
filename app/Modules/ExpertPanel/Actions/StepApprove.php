@@ -2,26 +2,23 @@
 
 namespace App\Modules\ExpertPanel\Actions;
 
-use Illuminate\Support\Carbon;
-use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Event;
-use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
-use Illuminate\Support\Facades\Notification;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Events\StepApproved;
-use App\Modules\Group\Actions\SubmissionApprove;
-use App\Notifications\ValueObjects\MailAttachment;
-use App\Modules\ExpertPanel\Actions\NotifyContacts;
-use App\Modules\ExpertPanel\Service\StepManagerFactory;
-use App\Modules\ExpertPanel\Actions\ApplicationComplete;
 use App\Mail\UserDefinedMailTemplates\InitialApprovalMailTemplate;
 use App\Mail\UserDefinedMailTemplates\SpecificationDraftMailTemplate;
 use App\Mail\UserDefinedMailTemplates\SpecificationPilotMailTemplate;
 use App\Mail\UserDefinedMailTemplates\SustainedCurationApprovalMailTemplate;
+use App\Modules\ExpertPanel\Events\StepApproved;
 use App\Modules\ExpertPanel\Exceptions\UnmetStepRequirementsException;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Notifications\ApplicationStepApprovedNotification;
+use App\Modules\ExpertPanel\Service\StepManagerFactory;
+use App\Modules\Group\Actions\SubmissionApprove;
+use App\Modules\Group\Models\Group;
+use App\Notifications\ValueObjects\MailAttachment;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Notification;
 use InvalidArgumentException;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class StepApprove
 {
@@ -63,7 +60,7 @@ class StepApprove
         $approvedStep = $expertPanel->current_step;
         dump('fuck me 6');
 
-        if (!$stepManager->isLastStep()) {
+        if (! $stepManager->isLastStep()) {
             $expertPanel->current_step++;
         }
         dump('fuck me 7');
@@ -116,6 +113,7 @@ class StepApprove
             dump('fuck me 14');
             $ep = $expertPanel->fresh();
             dump('fuck me 15');
+
             return $ep;
         } catch (UnmetStepRequirementsException $e) {
             return response([
@@ -129,7 +127,7 @@ class StepApprove
     {
         return [
             'date_approved' => 'required|date',
-            'notify_contacts' => 'nullable'
+            'notify_contacts' => 'nullable',
         ];
     }
 
@@ -139,7 +137,6 @@ class StepApprove
             'notify_contacts' => filter_var($request->notify_contacts, FILTER_VALIDATE_BOOL),
         ]);
     }
-
 
     private function getSubmission($expertPanel, $approvedStep)
     {
@@ -153,18 +150,17 @@ class StepApprove
         }
     }
 
-
     private function notifyContacts($expertPanel, $approvedStep, $subject, $body, $attachments)
     {
         if ($expertPanel->contacts->count() == 0) {
-            if (!app()->environment('testing')) {
+            if (! app()->environment('testing')) {
                 \Log::error('Tried to send a step approval notifications for group '.$expertPanel->display_name.' ('.$expertPanel->group_id.') that has no contacts.  This is a data entry issue and not a code defect.');
             }
+
             return;
         }
 
         $defaultMail = $this->makeMailTemplate($expertPanel, $approvedStep);
-
 
         $this->notifyContactsAction->handle(
             expertPanel: $expertPanel,
@@ -195,5 +191,4 @@ class StepApprove
                 throw new InvalidArgumentException('Unexpected approvedStep recieved: '.$approvedStep.'.  1-4 expected.');
         }
     }
-
 }

@@ -5,7 +5,6 @@ namespace Tests\Feature\Integration\DX\Actions;
 use App\DataExchange\Actions\IncomingMessageStore;
 use App\DataExchange\DxMessage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class IncomingMessageStoreTest extends TestCase
@@ -22,7 +21,7 @@ class IncomingMessageStoreTest extends TestCase
         $inStrMsg = app()->make(IncomingMessageStore::class)->handle($dxMessage);
 
         $expectedData = array_merge($this->makeData(), [
-            'processed_at' => null
+            'processed_at' => null,
         ]);
         $this->assertDatabaseHas('incoming_stream_messages', $expectedData);
         $this->assertEquals($inStrMsg->key, $dxMessage->key);
@@ -41,7 +40,7 @@ class IncomingMessageStoreTest extends TestCase
 
         $expectedData = array_merge($data, [
             'processed_at' => null,
-            'key' => $dxMessage->payload->uuid
+            'key' => $dxMessage->payload->uuid,
         ]);
 
         $this->assertDatabaseHas('incoming_stream_messages', $expectedData);
@@ -65,12 +64,11 @@ class IncomingMessageStoreTest extends TestCase
 
         $expectedData = array_merge($data, [
             'processed_at' => null,
-            'key' => $dxMessage->topic.'-'.$dxMessage->timestamp
+            'key' => $dxMessage->topic.'-'.$dxMessage->timestamp,
         ]);
         $this->assertDatabaseHas('incoming_stream_messages', $expectedData);
         $this->assertEquals($inStrMsg->key, $dxMessage->topic.'-'.$dxMessage->timestamp);
     }
-
 
     private function makeDxMessage($data = null)
     {
@@ -87,11 +85,11 @@ class IncomingMessageStoreTest extends TestCase
             'payload' => json_encode([
                 'test' => 'test',
                 'beans' => 'fava',
-                'uuid' => 'abc-def-hij-klmno'
+                'uuid' => 'abc-def-hij-klmno',
             ]),
             'offset' => 0,
             'partition' => 0,
-            'key' => '1234-5678-910123-12345'
+            'key' => '1234-5678-910123-12345',
         ];
     }
 }

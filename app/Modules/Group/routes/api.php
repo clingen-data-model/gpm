@@ -1,65 +1,64 @@
 <?php
 
-use App\Models\AnnualUpdate;
-use Illuminate\Support\Facades\Route;
-use App\Modules\Group\Actions\GenesAdd;
-use App\Modules\Group\Actions\MemberAdd;
-use App\Modules\Group\Actions\GeneRemove;
-use App\Modules\Group\Actions\GeneUpdate;
+use App\Http\Controllers\Api\AnnualUpdateController;
+use App\Modules\ExpertPanel\Actions\CoiResponseStore;
+use App\Modules\ExpertPanel\Actions\SpecificationsGet;
+use App\Modules\ExpertPanel\Http\Controllers\Api\SimpleCoiController;
+use App\Modules\Group\Actions\AnnualUpdateCreate;
+use App\Modules\Group\Actions\AnnualUpdateSave;
+use App\Modules\Group\Actions\AnnualUpdateSubmit;
+use App\Modules\Group\Actions\ApplicationActivityGet;
+use App\Modules\Group\Actions\ApplicationSaveChanges;
+use App\Modules\Group\Actions\ApplicationSubmissionReject;
+use App\Modules\Group\Actions\ApplicationSubmitStep;
+use App\Modules\Group\Actions\AttestationGcepStore;
+use App\Modules\Group\Actions\AttestationNhgriStore;
+use App\Modules\Group\Actions\AttestationReanalysisStore;
+use App\Modules\Group\Actions\CurationReviewProtocolUpdate;
+use App\Modules\Group\Actions\DevFakePilotApproved;
 use App\Modules\Group\Actions\DocumentAdd;
+use App\Modules\Group\Actions\DocumentUpdate;
+use App\Modules\Group\Actions\EvidenceSummaryAdd;
+use App\Modules\Group\Actions\EvidenceSummaryDelete;
+use App\Modules\Group\Actions\EvidenceSummaryUpdate;
+use App\Modules\Group\Actions\ExpertPanelAffiliationIdUpdate;
+use App\Modules\Group\Actions\ExpertPanelNameUpdate;
+use App\Modules\Group\Actions\GeneRemove;
+use App\Modules\Group\Actions\GenesAdd;
+use App\Modules\Group\Actions\GeneUpdate;
 use App\Modules\Group\Actions\GroupCreate;
 use App\Modules\Group\Actions\GroupDelete;
-use App\Modules\Group\Actions\MemberInvite;
-use App\Modules\Group\Actions\MemberRemove;
-use App\Modules\Group\Actions\MemberRetire;
-use App\Modules\Group\Actions\MemberUpdate;
-use App\Modules\Group\Actions\ParentUpdate;
-use App\Modules\Group\Actions\DocumentUpdate;
-use App\Modules\Group\Actions\MemberUnretire;
 use App\Modules\Group\Actions\GroupNameUpdate;
+use App\Modules\Group\Actions\GroupStatusUpdate;
+use App\Modules\Group\Actions\HandleGroupCommand;
 use App\Modules\Group\Actions\JudgementCreate;
 use App\Modules\Group\Actions\JudgementDelete;
 use App\Modules\Group\Actions\JudgementUpdate;
-use App\Modules\Group\Actions\AnnualUpdateSave;
+use App\Modules\Group\Actions\MemberAdd;
 use App\Modules\Group\Actions\MemberAssignRole;
-use App\Modules\Group\Actions\MemberRemoveRole;
-use App\Modules\Group\Actions\GroupStatusUpdate;
-use App\Modules\Group\Actions\AnnualUpdateCreate;
-use App\Modules\Group\Actions\AnnualUpdateSubmit;
-use App\Modules\Group\Actions\EvidenceSummaryAdd;
-use App\Modules\Group\Actions\HandleGroupCommand;
-use App\Modules\Group\Actions\AttestationGcepStore;
-use App\Modules\Group\Actions\DevFakePilotApproved;
-use App\Http\Controllers\Api\AnnualUpdateController;
-use App\Modules\Group\Actions\ApplicationSubmitStep;
-use App\Modules\Group\Actions\AttestationNhgriStore;
-use App\Modules\Group\Actions\EvidenceSummaryDelete;
-use App\Modules\Group\Actions\EvidenceSummaryUpdate;
-use App\Modules\Group\Actions\ExpertPanelNameUpdate;
-use App\Modules\ExpertPanel\Actions\CoiResponseStore;
-use App\Modules\Group\Actions\ApplicationActivityGet;
-use App\Modules\Group\Actions\ApplicationSaveChanges;
 use App\Modules\Group\Actions\MemberGrantPermissions;
+use App\Modules\Group\Actions\MemberInvite;
+use App\Modules\Group\Actions\MemberRemove;
+use App\Modules\Group\Actions\MemberRemoveRole;
+use App\Modules\Group\Actions\MemberRetire;
 use App\Modules\Group\Actions\MemberRevokePermission;
-use App\Modules\Group\Actions\ScopeDescriptionUpdate;
-use App\Modules\ExpertPanel\Actions\SpecificationsGet;
-use App\Modules\Group\Actions\AttestationReanalysisStore;
-use App\Modules\Group\Actions\ApplicationSubmissionReject;
 use App\Modules\Group\Actions\MembershipDescriptionUpdate;
-use App\Modules\Group\Actions\CurationReviewProtocolUpdate;
-use App\Modules\Group\Http\Controllers\Api\GroupController;
-use App\Modules\Group\Actions\ExpertPanelAffiliationIdUpdate;
+use App\Modules\Group\Actions\MemberUnretire;
+use App\Modules\Group\Actions\MemberUpdate;
+use App\Modules\Group\Actions\ParentUpdate;
+use App\Modules\Group\Actions\ScopeDescriptionUpdate;
 use App\Modules\Group\Actions\SustainedCurationReviewComplete;
-use App\Modules\Group\Http\Controllers\Api\GeneListController;
 use App\Modules\Group\Http\Controllers\Api\ActivityLogsController;
-use App\Modules\Group\Http\Controllers\Api\GroupRelationsController;
-use App\Modules\ExpertPanel\Http\Controllers\Api\SimpleCoiController;
 use App\Modules\Group\Http\Controllers\Api\EvidenceSummaryController;
+use App\Modules\Group\Http\Controllers\Api\GeneListController;
+use App\Modules\Group\Http\Controllers\Api\GroupController;
+use App\Modules\Group\Http\Controllers\Api\GroupRelationsController;
 use App\Modules\Group\Http\Controllers\Api\GroupSubmissionsController;
+use Illuminate\Support\Facades\Route;
 
 Route::group([
     'prefix' => 'api',
-    'middleware' => ['api', 'auth:sanctum']
+    'middleware' => ['api', 'auth:sanctum'],
 ], function () {
     Route::group(['prefix' => 'cois'], function () {
         Route::get('/{Coi:id}', [SimpleCoiController::class, 'show']);
@@ -73,7 +72,7 @@ Route::group([
 
 Route::group([
     'prefix' => 'api/groups',
-    'middleware' => ['api', 'auth:sanctum']
+    'middleware' => ['api', 'auth:sanctum'],
 ], function () {
     Route::get('/', [GroupController::class, 'index']);
     Route::post('/', GroupCreate::class);
@@ -109,7 +108,6 @@ Route::group([
                 Route::put('/{id}', JudgementUpdate::class);
                 Route::delete('/{id}', JudgementDelete::class);
             });
-
         });
 
         Route::post('/command', HandleGroupCommand::class);
@@ -192,16 +190,13 @@ Route::group([
             });
         });
 
-
         Route::get('/next-actions', [GroupRelationsController::class, 'nextActions']);
         Route::put('/name', GroupNameUpdate::class);
         Route::put('/parent', ParentUpdate::class);
         Route::get('/tasks', [GroupRelationsController::class, 'tasks']);
         Route::get('/specifications', SpecificationsGet::class);
         Route::put('/status', GroupStatusUpdate::class);
-
     });
 
     Route::post('/{uuid}/invites', MemberInvite::class);
-
 });

@@ -2,17 +2,17 @@
 
 namespace App\Models\GeneTracker;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use App\Modules\ExpertPanel\Models\Gene as GpmGene;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Gene extends Model
 {
     use HasFactory;
 
     protected $table = 'genes';
+
     protected $primaryKey = 'hgnc_id';
     // protected $connection = 'genetracker';
 
@@ -23,8 +23,6 @@ class Gene extends Model
 
     /**
      * Get all of the scopedGenes for the Gene
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function gpmGenes(): HasMany
     {

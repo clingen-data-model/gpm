@@ -2,13 +2,12 @@
 
 namespace App\Modules\Group\Models;
 
-use InvalidArgumentException;
 use App\Modules\Person\Models\Person;
-use Illuminate\Database\Eloquent\Model;
 use Database\Factories\JudgementFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use InvalidArgumentException;
 
 class Judgement extends Model
 {
@@ -18,7 +17,7 @@ class Judgement extends Model
         'decision',
         'notes',
         'submission_id',
-        'person_id'
+        'person_id',
     ];
 
     public $casts = [
@@ -30,8 +29,6 @@ class Judgement extends Model
     // RELATIONSHIPS
     /**
      * Get the submission that owns the Judgement
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function submission(): BelongsTo
     {
@@ -42,7 +39,6 @@ class Judgement extends Model
     {
         return $this->belongsTo(Person::class);
     }
-
 
     // SCOPES
     public function scopeForSubmission($query, $submission)
@@ -73,16 +69,14 @@ class Judgement extends Model
         return $query->where('person_id', $personId);
     }
 
-
     // MUTATORS
     public function setDecisionAttribute($value)
     {
-        if (!in_array($value, config('submissions.decisions'))) {
-            throw new InvalidArgumentException('Cannot set decision attribute. '. $value .' not found in '.implode(', ', config('submissions.decisions')));
+        if (! in_array($value, config('submissions.decisions'))) {
+            throw new InvalidArgumentException('Cannot set decision attribute. '.$value.' not found in '.implode(', ', config('submissions.decisions')));
         }
         $this->attributes['decision'] = $value;
     }
-
 
     protected static function newFactory()
     {

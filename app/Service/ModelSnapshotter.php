@@ -2,8 +2,8 @@
 
 namespace App\Service;
 
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class ModelSnapshotter
 {
@@ -12,7 +12,7 @@ class ModelSnapshotter
         $snapshot = [
             'class' => get_class($model),
             'attributes' => $model->getAttributes(),
-            'relations' => $this->snapshotRelations($model)
+            'relations' => $this->snapshotRelations($model),
         ];
 
         return $snapshot;
@@ -42,8 +42,9 @@ class ModelSnapshotter
 
         if (isset($snapshot['relations'])) {
             foreach ($snapshot['relations'] as $key => $relation) {
-                if (!isset($relation['class'])) {
-                    $model->setRelation($key, collect($relation)->map(fn($r) => $this->initModelFromSnapshot($r)));
+                if (! isset($relation['class'])) {
+                    $model->setRelation($key, collect($relation)->map(fn ($r) => $this->initModelFromSnapshot($r)));
+
                     continue;
                 }
 
@@ -53,5 +54,4 @@ class ModelSnapshotter
 
         return $model;
     }
-
 }

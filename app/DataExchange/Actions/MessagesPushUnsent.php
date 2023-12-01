@@ -2,9 +2,8 @@
 
 namespace App\DataExchange\Actions;
 
-use Illuminate\Console\Command;
-use App\DataExchange\Actions\MessagePush;
 use App\DataExchange\Models\StreamMessage;
+use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsCommand;
 
 class MessagesPushUnsent
@@ -21,7 +20,6 @@ class MessagesPushUnsent
     public function __construct(private MessagePush $messagePush)
     {
     }
-
 
     /**
      * Execute the console command.
@@ -50,10 +48,9 @@ class MessagesPushUnsent
     {
         if (config('queue.default') == 'sync') {
             $this->messagePush->handle($message);
+
             return;
         }
         MessagePush::dispatch($message);
-
     }
-
 }

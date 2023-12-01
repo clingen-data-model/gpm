@@ -2,16 +2,11 @@
 
 namespace App\Modules\Group\Events;
 
-use Illuminate\Support\Carbon;
 use App\Modules\Group\Models\Group;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class ExpertPanelAffiliationIdUpdated extends GroupEvent
 {
@@ -32,12 +27,13 @@ class ExpertPanelAffiliationIdUpdated extends GroupEvent
     {
         return 'EP affiliation_id set to '.$this->affiliationId.'.';
     }
-    
+
     public function getProperties(): ?array
     {
         $properties = [
-            'affiliation_id' => $this->affiliationId
+            'affiliation_id' => $this->affiliationId,
         ];
+
         return count($properties) > 0 ? $properties : null;
     }
 

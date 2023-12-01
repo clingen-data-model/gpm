@@ -2,22 +2,21 @@
 
 namespace Tests\Feature\End2End\Person;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
+use App\Modules\Group\Actions\MemberAdd;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Invite;
 use App\Modules\Person\Models\Person;
-use App\Modules\Group\Actions\MemberAdd;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class PersonDeleteTest extends TestCase
 {
     use RefreshDatabase;
     use TestEventPublished;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -68,7 +67,7 @@ class PersonDeleteTest extends TestCase
             'activity_type' => 'person-deleted',
             'log_name' => 'people',
             'subject_type' => get_class($this->person),
-            'subject_id' => $this->person->id
+            'subject_id' => $this->person->id,
         ]);
     }
 
@@ -87,8 +86,6 @@ class PersonDeleteTest extends TestCase
 
         $this->assertEventPublished(config('dx.topics.outgoing.gpm-person-events'), 'deleted', $person);
     }
-
-
 
     private function makeRequest()
     {

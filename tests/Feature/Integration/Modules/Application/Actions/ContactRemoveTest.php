@@ -2,13 +2,12 @@
 
 namespace Tests\Feature\Integration\Modules\Application\Actions;
 
-use Tests\TestCase;
-use App\Modules\Person\Models\Person;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Actions\ContactRemove;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 /**
  * @group applications
@@ -19,12 +18,11 @@ class ContactRemoveTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
     }
-    
 
     /**
      * @test

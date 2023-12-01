@@ -8,5 +8,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 interface MessageProcessor extends ShouldQueue
 {
     public function handle(DxMessage $dxMessage): DxMessage;
-    static public function makeJob(): ShouldQueue;
+
+    public static function makeJob(): ShouldQueue;
 }

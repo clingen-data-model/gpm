@@ -13,7 +13,6 @@ class CreateCoisTable extends Migration
      */
     public function up()
     {
-        
         Schema::create('cois', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('application_id');

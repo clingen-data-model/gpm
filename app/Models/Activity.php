@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Models\Activity as BaseActivity;
 
 class Activity extends BaseActivity
@@ -12,17 +11,16 @@ class Activity extends BaseActivity
 
     protected $appends = ['step'];
 
-    static public function boot():void
+    public static function boot(): void
     {
         parent::boot();
 
         /*
-         * Copy activity_type from properties json column to 
+         * Copy activity_type from properties json column to
          * activity_type column for indexing, speed of retrieval,
          * and accessor
          */
         static::saving(function ($activity) {
-
             if ($activity->properties && $activity->getExtraProperty('activity_type')) {
                 $activity->activity_type = $activity->getExtraProperty('activity_type');
             }
@@ -53,6 +51,4 @@ class Activity extends BaseActivity
                 ? $this->properties['step']
                 : null;
     }
-    
-    
 }

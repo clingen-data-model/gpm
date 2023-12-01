@@ -3,20 +3,19 @@
 namespace Tests\Feature\End2End\Groups\Documents;
 
 use App\Models\Document;
-use Tests\TestCase;
-use Ramsey\Uuid\Uuid;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Http\UploadedFile;
 use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Laravel\Sanctum\Sanctum;
+use Ramsey\Uuid\Uuid;
+use Tests\TestCase;
 
 class UpdateDocumentTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -27,7 +26,7 @@ class UpdateDocumentTest extends TestCase
             'filename' => 'Test Scope Document.docx',
             'owner_id' => $this->group->id,
             'owner_type' => Group::class,
-            'document_type_id' => 1
+            'document_type_id' => 1,
         ]);
         $this->document = $this->group->documents()->save($document);
 
@@ -54,11 +53,11 @@ class UpdateDocumentTest extends TestCase
             ->assertJsonFragment([
                 'document_type_id' => ['This is required.'],
             ]);
-        
+
         $this->makeRequest(['document_type_id' => 9999])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'document_type_id' => ['The selection is invalid.']
+                'document_type_id' => ['The selection is invalid.'],
             ]);
     }
 
@@ -80,7 +79,7 @@ class UpdateDocumentTest extends TestCase
                     'long_name' => 'draft specifications',
                     'is_versioned' => true,
                     'application_document' => true,
-                ]
+                ],
             ]);
 
         $this->assertDatabaseHas('documents', [
@@ -88,10 +87,10 @@ class UpdateDocumentTest extends TestCase
             'owner_type' => Group::class,
             'filename' => 'Test Scope Document.docx',
             'notes' => 'I am a note',
-            'document_type_id' => 2
+            'document_type_id' => 2,
         ]);
     }
-    
+
     private function makeRequest($data = null)
     {
         Storage::fake();
@@ -101,7 +100,7 @@ class UpdateDocumentTest extends TestCase
         $data = $data ?? [
             'uuid' => Uuid::uuid4()->toString(),
             'document_type_id' => 2,
-            'notes' => 'I am a note'
+            'notes' => 'I am a note',
         ];
 
         return $this->json('PUT', '/api/groups/'.$this->group->uuid.'/documents/'.$this->document->uuid, $data);

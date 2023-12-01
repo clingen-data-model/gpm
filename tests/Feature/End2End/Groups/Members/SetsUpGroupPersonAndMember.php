@@ -1,14 +1,12 @@
 <?php
+
 namespace Tests\Feature\End2End\Groups\Members;
 
-use App\Modules\User\Models\User;
+use App\Modules\Group\Actions\MemberAdd;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
-use App\Modules\Group\Actions\MemberAdd;
+use App\Modules\User\Models\User;
 
-/**
- * 
- */
 trait SetsUpGroupPersonAndMember
 {
     public function setupEntities()
@@ -25,7 +23,7 @@ trait SetsUpGroupPersonAndMember
         $group = $group ?? $this->group;
         $person = $person ?? $this->person;
         $this->groupMember = app()->make(MemberAdd::class)->handle($group, $person, $memberAttributes);
+
         return $this;
     }
-    
 }

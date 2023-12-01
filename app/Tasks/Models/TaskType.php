@@ -12,10 +12,10 @@ class TaskType extends Model
     public $fillable = [
         'name',
         'full_name',
-        'description'
+        'description',
     ];
 
     public $casts = [
-        'id' => 'integer'
+        'id' => 'integer',
     ];
 }

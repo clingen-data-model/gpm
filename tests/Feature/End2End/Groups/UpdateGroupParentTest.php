@@ -2,18 +2,16 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class UpdateGroupParentTest extends TestCase
 {
     use RefreshDatabase;
-    
-    public function setup():void
+
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -52,12 +50,12 @@ class UpdateGroupParentTest extends TestCase
         $this->makeRequest()
             ->assertStatus(200)
             ->assertJsonFragment([
-                'parent_id' => $this->parent->id
+                'parent_id' => $this->parent->id,
             ]);
 
         $this->assertDatabaseHas('groups', [
             'id' => $this->group->id,
-            'parent_id' => $this->parent->id
+            'parent_id' => $this->parent->id,
         ]);
     }
 
@@ -72,15 +70,14 @@ class UpdateGroupParentTest extends TestCase
         $response = $this->makeRequest(['parent_id' => 0])
             ->assertStatus(200)
             ->assertJsonFragment([
-                'parent_id' => null
+                'parent_id' => null,
             ]);
 
         $this->assertDatabaseHas('groups', [
             'id' => $this->group->id,
-            'parent_id' => null
+            'parent_id' => null,
         ]);
     }
-    
 
     /**
      * @test
@@ -92,15 +89,13 @@ class UpdateGroupParentTest extends TestCase
 
         $this->makeRequest();
 
-
         $this->assertLoggedActivity(
             subject: $this->group,
             description: 'Parent changed from '.$oldParent->name.' to '.$this->parent->name.'.',
             logName: 'groups',
         );
     }
-    
-    
+
     private function makeRequest($data = null)
     {
         $data = $data ?? ['parent_id' => $this->parent->id];

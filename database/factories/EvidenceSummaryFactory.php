@@ -24,12 +24,13 @@ class EvidenceSummaryFactory extends Factory
     public function definition()
     {
         $ep = ExpertPanel::factory()->vcep()->create();
+
         return [
             'expert_panel_id' => $ep->id,
             'gene_id' => Gene::factory()->create(['expert_panel_id' => $ep->id]),
             'summary' => $this->faker->paragraph(4),
             'variant' => $this->faker->word(),
-            'vci_url' => $this->faker->url
+            'vci_url' => $this->faker->url,
         ];
     }
 }

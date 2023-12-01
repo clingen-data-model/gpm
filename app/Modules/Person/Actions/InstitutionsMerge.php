@@ -1,9 +1,10 @@
 <?php
+
 namespace App\Modules\Person\Actions;
 
-use Lorisleiva\Actions\ActionRequest;
 use App\Modules\Person\Models\Institution;
 use Illuminate\Database\Eloquent\Collection;
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 
 class InstitutionsMerge
@@ -14,7 +15,6 @@ class InstitutionsMerge
     {
         //code
     }
-    
 
     public function handle(Institution $authority, Collection $obsoletes)
     {
@@ -40,19 +40,18 @@ class InstitutionsMerge
     public function rules(): array
     {
         return [
-           'authority_id' => 'required|exists:institutions,id',
-           'obsolete_ids' => 'required',
-           'obsolete_ids.*' => 'exists:institutions,id|different:authority_id'
+            'authority_id' => 'required|exists:institutions,id',
+            'obsolete_ids' => 'required',
+            'obsolete_ids.*' => 'exists:institutions,id|different:authority_id',
         ];
     }
 
     public function getValidationMessages()
     {
         return [
-            'different' => 'All obsolete institutions may not include the merge-to institution.'
+            'different' => 'All obsolete institutions may not include the merge-to institution.',
         ];
     }
-    
 
     private function transferPeople(Institution $authority, Collection $obsoletes)
     {

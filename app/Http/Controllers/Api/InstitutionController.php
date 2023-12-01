@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\ModelSearchService;
 use App\Modules\Person\Models\Institution;
+use Illuminate\Http\Request;
 
 class InstitutionController extends Controller
 {
     public function __construct()
     {
     }
-
 
     public function index(Request $request)
     {
@@ -22,6 +21,7 @@ class InstitutionController extends Controller
         );
 
         $query = $searchService->buildQuery($request->all());
+
         return $query
                 ->withCount('people')
                 ->get();

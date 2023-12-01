@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait HasComments
 {
-
-    static public function bootHasComments()
+    public static function bootHasComments()
     {
         static::softDeleted(function ($model) {
             $model->comments->each->delete();
@@ -21,8 +20,6 @@ trait HasComments
 
     /**
      * Get all of the comments for the HasComments
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
     public function comments(): MorphMany
     {
@@ -33,10 +30,9 @@ trait HasComments
     {
         return $this->comments()->pending();
     }
-    
+
     public function resolvedComments(): MorphMany
     {
         return $this->comments()->resolved();
     }
-    
 }

@@ -3,13 +3,13 @@
 namespace App\Modules\Group\Actions;
 
 use App\Modules\Group\Events\JudgementUpdated;
-use Illuminate\Validation\Rule;
 use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\Judgement;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Validator;
 use Lorisleiva\Actions\ActionRequest;
-use App\Modules\Group\Models\Judgement;
-use Illuminate\Validation\ValidationException;
-    use Lorisleiva\Actions\Concerns\AsController;
+use Lorisleiva\Actions\Concerns\AsController;
 
 class JudgementUpdate
 {
@@ -19,7 +19,7 @@ class JudgementUpdate
     {
         $judgement->update([
             'decision' => $decision,
-            'notes' => $notes
+            'notes' => $notes,
         ]);
 
         event(new JudgementUpdated($judgement));
@@ -39,7 +39,7 @@ class JudgementUpdate
     public function rules(ActionRequest $request): array
     {
         return [
-            'decision' => ['required', Rule::in(['request-revisions', 'approve-after-revisions', 'approve'])]
+            'decision' => ['required', Rule::in(['request-revisions', 'approve-after-revisions', 'approve'])],
         ];
     }
 
@@ -50,11 +50,11 @@ class JudgementUpdate
         }
     }
 
-    public function authorize(ActionRequest $request):bool
+    public function authorize(ActionRequest $request): bool
     {
         $judgement = Judgement::find($request->id);
+
         return $request->user()->hasPermissionTo('ep-applications-manage')
             || $request->user()->person->id == $judgement->person_id;
     }
-
 }

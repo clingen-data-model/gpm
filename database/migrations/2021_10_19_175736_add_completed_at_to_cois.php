@@ -30,7 +30,7 @@ class AddCompletedAtToCois extends Migration
     public function down()
     {
         Schema::table('cois', function (Blueprint $table) {
-            if (!Schema::hasColumn('cois', 'completed_at')) {
+            if (! Schema::hasColumn('cois', 'completed_at')) {
                 return;
             }
 

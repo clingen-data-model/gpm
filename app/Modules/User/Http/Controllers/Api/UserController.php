@@ -2,11 +2,11 @@
 
 namespace App\Modules\User\Http\Controllers\Api;
 
-use App\ModelSearchService;
-use Illuminate\Http\Request;
-use App\Modules\User\Models\User;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use App\ModelSearchService;
+use App\Modules\User\Models\User;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -23,7 +23,7 @@ class UserController extends Controller
                 },
                 'permissions' => function ($q) {
                     $q->select('id', 'name');
-                }
+                },
             ],
             whereFunction: function ($query, $where) {
                 foreach ($where as $key => $value) {
@@ -40,13 +40,16 @@ class UserController extends Controller
                             ->orWhereHas('permissions', function ($q) use ($value) {
                                 $q->where('display_name', 'like', '%'.$value.'%');
                             });
+
                         continue;
                     } elseif (is_array($value)) {
                         $query->whereIn($key, $value);
+
                         continue;
                     }
                     $query->where($key, $value);
                 }
+
                 return $query;
             },
             sortFunction: function ($query, $field, $dir) {
@@ -59,8 +62,10 @@ class UserController extends Controller
                     if (substr($field, 7) == 'email') {
                         $query->orderBy('people.email', $dir);
                     }
+
                     return $query;
                 }
+
                 return $query->orderBy($field, $dir);
             }
         );
@@ -69,7 +74,6 @@ class UserController extends Controller
         if ($request->page_size || $request->page) {
             return UserResource::collection($searchQuery->paginate($request->get('page_size', 20)));
         }
-
 
         return UserResource::collection($searchQuery->get($request->all()));
     }
@@ -92,8 +96,9 @@ class UserController extends Controller
             },
             'person.memberships.group.expertPanel' => function ($q) {
                 $q->select(['id', 'group_id', 'long_base_name', 'current_step', 'expert_panel_type_id']);
-            }
+            },
         ]);
+
         return $user;
     }
 }

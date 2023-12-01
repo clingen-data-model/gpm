@@ -19,50 +19,50 @@ class ExpertiseSeeder extends Seeder
                 'id' => 1,
                 'name' => 'Basic research scientist',
                 'approved' => 1,
-                'synonyms' => ['research scientist', 'scientist', 'basic research']
+                'synonyms' => ['research scientist', 'scientist', 'basic research'],
             ],
             [
                 'id' => 2,
                 'name' => 'Clinical genetic testing laboratorian',
                 'synonyms' => ['genetic testing', 'lab', 'lab tech', 'diagnostic laboratory'],
-                'approved' => 1
+                'approved' => 1,
             ],
             [
                 'id' => 3,
                 'name' => 'Physician',
                 'approved' => 1,
-                'synonyms' => ['doctor', 'md']
+                'synonyms' => ['doctor', 'md'],
             ],
             [
                 'id' => 4,
                 'name' => 'Genetic counselor',
                 'approved' => 1,
-                'synonyms' => ['genetic counseling', 'counseling', 'cgc', 'lcgc']
+                'synonyms' => ['genetic counseling', 'counseling', 'cgc', 'lcgc'],
             ],
             [
                 'id' => 5,
                 'name' => 'Statistical geneticist or Bioinformatician',
                 'approved' => 1,
-                'synonyms' => ['bioinformatics', 'analytics', 'data science', 'computation', 'computational']
+                'synonyms' => ['bioinformatics', 'analytics', 'data science', 'computation', 'computational'],
             ],
             [
                 'id' => 6,
                 'name' => 'ClinGen Framework Expert',
                 'approved' => 1,
-                'synonyms' => ['amcg', 'guidelines', 'framework expert']
+                'synonyms' => ['amcg', 'guidelines', 'framework expert'],
             ],
             [
                 'id' => 7,
                 'name' => 'Biocuration',
                 'approved' => 1,
-                'synonyms' => ['curation', 'bio-curation', 'curator']
+                'synonyms' => ['curation', 'bio-curation', 'curator'],
             ],
             [
                 'id' => 8,
                 'name' => 'None',
                 'approved' => 1,
-                'synonyms' => ['na']
-            ]
+                'synonyms' => ['na'],
+            ],
         ];
 
         foreach ($exps as $exp) {

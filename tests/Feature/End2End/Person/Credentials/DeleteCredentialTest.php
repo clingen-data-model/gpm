@@ -2,12 +2,11 @@
 
 namespace Tests\Feature\End2End\Person\Credentials;
 
-use Tests\TestCase;
 use App\Models\Credential;
-use Illuminate\Testing\TestResponse;
 use App\Modules\Person\Models\Person;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\TestResponse;
+use Tests\TestCase;
 
 /**
  * @group credentials
@@ -16,7 +15,7 @@ class DeleteCredentialTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->credential = Credential::factory()->create();
@@ -53,16 +52,14 @@ class DeleteCredentialTest extends TestCase
             ->assertStatus(200);
 
         $this->assertDatabaseMissing('credentials', [
-            'id' => $credentialId
+            'id' => $credentialId,
         ]);
 
         $this->assertDatabaseMissing('credential_person', [
             'credential_id' => $credentialId,
-            'person_id' => $this->person->id
+            'person_id' => $this->person->id,
         ]);
     }
-
-
 
     private function makeRequest($data = null): TestResponse
     {

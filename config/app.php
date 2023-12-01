@@ -115,12 +115,12 @@ return [
     ],
     'jira' => [
         'user' => env('JIRA_USER'),
-        'token' => env('JIRA_API_TOKEN')
+        'token' => env('JIRA_API_TOKEN'),
     ],
     'features' => [
         'notify_scope_change' => env('FEATURE_NOTIFY_SCOPE_CHANGE', true),
         'specification_upload' => env('FEATURE_SPEC_UPLOAD', true),
         'cspec_summary' => env('FEATURE_CSPEC_SUMMARY', true),
         'chair_review' => env('FEATURE_CHAIR_REVIEW', true),
-    ]
+    ],
 ];

@@ -2,8 +2,8 @@
 
 namespace App\Modules\User\Actions;
 
-use App\Modules\User\Models\User;
 use App\Modules\User\Events\UserDeleted;
+use App\Modules\User\Models\User;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class UserDelete

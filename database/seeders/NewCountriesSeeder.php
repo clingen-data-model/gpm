@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\Seeder;
 use App\Modules\Person\Models\Country;
 
 class NewCountriesSeeder extends Seeder
@@ -15,11 +14,9 @@ class NewCountriesSeeder extends Seeder
     public function run()
     {
         $newCountries = [
-            ['id' => 241, 'name' => 'State of Palestine']
+            ['id' => 241, 'name' => 'State of Palestine'],
         ];
 
         $this->seedFromArray($newCountries, Country::class);
-
-
     }
 }

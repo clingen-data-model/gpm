@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Ramsey\Uuid\Uuid;
+use App\Modules\Person\Models\Person;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Hash;
-use App\Modules\Person\Models\Person;
+use Ramsey\Uuid\Uuid;
 
 class UsersTableSeeder extends Seeder
 {
@@ -20,12 +20,12 @@ class UsersTableSeeder extends Seeder
             [
                 'name' => 'Super User',
                 'email' => 'super.user@example.com',
-                'role' => 'super-user'
+                'role' => 'super-user',
             ],
             [
                 'name' => 'Super Admin',
                 'email' => 'super.admin@example.com',
-                'role' => 'super-admin'
+                'role' => 'super-admin',
             ],
         ];
 
@@ -46,7 +46,7 @@ class UsersTableSeeder extends Seeder
                     'user_id' => $user->id,
                 ]
             );
-            if (!app()->environment('testing')) {
+            if (! app()->environment('testing')) {
                 $user->assignRole($role);
             }
         }

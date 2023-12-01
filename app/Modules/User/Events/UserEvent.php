@@ -2,18 +2,14 @@
 
 namespace App\Modules\User\Events;
 
-use App\Modules\User\Models\User;
 use App\Events\RecordableEvent;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
+use App\Modules\User\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
-use phpDocumentor\Reflection\Types\Boolean;
 
 abstract class UserEvent extends RecordableEvent
 {
@@ -33,19 +29,18 @@ abstract class UserEvent extends RecordableEvent
     {
         return true;
     }
-    
 
-    public function getDescription():string
+    public function getDescription(): string
     {
         return 'User Created';
     }
-    
+
     public function getSubject(): Model
     {
         return $this->user;
     }
 
-    public function getProperties():?array
+    public function getProperties(): ?array
     {
         return $this->user->getAttributes();
     }
@@ -55,11 +50,11 @@ abstract class UserEvent extends RecordableEvent
         return Carbon::now();
     }
 
-    public function getLog(): String
+    public function getLog(): string
     {
         return 'users';
     }
-    
+
     /**
      * Get the channels the event should broadcast on.
      *

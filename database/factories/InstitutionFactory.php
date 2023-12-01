@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use Illuminate\Support\Str;
 use App\Modules\Person\Models\Institution;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -26,7 +25,7 @@ class InstitutionFactory extends Factory
             'uuid' => $this->faker->uuid,
             'name' => $this->faker->name,
             'abbreviation' => $this->faker->word,
-            'reportable' => true
+            'reportable' => true,
         ];
     }
 }

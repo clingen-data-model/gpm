@@ -31,7 +31,7 @@ class AddContactRequest extends FormRequest
     public function messages()
     {
         return [
-            'person_uuid.exists' => 'The person must already exist in the database.'
+            'person_uuid.exists' => 'The person must already exist in the database.',
         ];
     }
 }

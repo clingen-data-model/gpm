@@ -2,13 +2,13 @@
 
 namespace App\Modules\User\Actions;
 
+use App\Modules\User\Events\UserCreated;
+use App\Modules\User\Models\User;
 use Exception;
 use Illuminate\Console\Command;
-use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Event;
-use App\Modules\User\Events\UserCreated;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -19,8 +19,6 @@ class UserCreate
     public $commandSignature = 'user:create {--name= : name of new user} {--email= : email for new user} {--actingas= : Email of user doing to creating.}';
 
     public $commandDescription = 'Creates a user given name and email';
-
-
 
     /**
      * Create a new job instance.
@@ -35,10 +33,9 @@ class UserCreate
      * Creates a user entity with name, email, and password.
      * Password value is hashed before storage. If password is null, a random password is created and hashed.
      *
-     * @param string $name User's name
-     * @param string $email Email for the user account
-     * @param string|null $password Password (or null).
-     *
+     * @param  string  $name User's name
+     * @param  string  $email Email for the user account
+     * @param  string|null  $password Password (or null).
      * @return void
      */
     public function handle(string $name, string $email, ?string $password = null): User
@@ -67,6 +64,7 @@ class UserCreate
             return 0;
         } catch (\Exception $e) {
             $command->error($e->getMessage());
+
             return 1;
         }
     }
@@ -74,7 +72,7 @@ class UserCreate
     private function authenticateUser(Command $command)
     {
         $email = $command->option('actingas');
-        if (!$email) {
+        if (! $email) {
             $email = $command->ask('Your email address:');
         }
         $password = $command->secret('Your password:');
@@ -82,6 +80,7 @@ class UserCreate
         if (Auth::attempt(['email' => $email, 'password' => $password])) {
             $user = User::findByEmail($email);
             $command->info('Authenticated as '.$user->name);
+
             return true;
         }
 
@@ -99,8 +98,8 @@ class UserCreate
             compact('name'),
             ['name' => 'required|max:255|min:2'],
             [
-                            'required' => 'name cannot be empty.'
-                        ]
+                'required' => 'name cannot be empty.',
+            ]
         );
         if ($validator->fails()) {
             $messages = implode('; ', $validator->getMessageBag()->all());

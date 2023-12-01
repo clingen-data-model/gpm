@@ -2,13 +2,12 @@
 
 namespace Database\Factories;
 
-use Carbon\Carbon;
-use Ramsey\Uuid\Uuid;
-use App\Modules\Group\Models\Group;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Models\ExpertPanelType;
+use App\Modules\Group\Models\Group;
+use Carbon\Carbon;
 use Database\Factories\Traits\GetsRandomConfigValue;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Ramsey\Uuid\Uuid;
 
 class ExpertPanelFactory extends Factory
 {
@@ -29,12 +28,13 @@ class ExpertPanelFactory extends Factory
     public function definition()
     {
         $groupTypeId = $this->faker->randomElement([config('groups.types.gcep.id'), config('groups.types.vcep.id')]);
+
         return [
             'uuid' => Uuid::uuid4()->toString(),
             'group_id' => Group::factory()
                             ->create([
                                 'name' => 'group '.uniqid(),
-                                'group_type_id' => $groupTypeId
+                                'group_type_id' => $groupTypeId,
                             ])->id,
             'expert_panel_type_id' => $groupTypeId - 2,
             'date_initiated' => Carbon::now(),
@@ -50,8 +50,8 @@ class ExpertPanelFactory extends Factory
                 'group_id' => Group::factory()
                                 ->create([
                                     'name' => 'group '.uniqid(),
-                                    'group_type_id' => config('groups.types.gcep.id')
-                                ])->id
+                                    'group_type_id' => config('groups.types.gcep.id'),
+                                ])->id,
             ];
         });
     }
@@ -64,8 +64,8 @@ class ExpertPanelFactory extends Factory
                 'group_id' => Group::factory()
                                 ->create([
                                     'name' => 'group '.uniqid(),
-                                    'group_type_id' => config('groups.types.vcep.id')
-                                ])->id
+                                    'group_type_id' => config('groups.types.vcep.id'),
+                                ])->id,
             ];
         });
     }
@@ -74,7 +74,7 @@ class ExpertPanelFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'current_step' => $this->faker->randomElement(range(1, 4))
+                'current_step' => $this->faker->randomElement(range(1, 4)),
             ];
         });
     }

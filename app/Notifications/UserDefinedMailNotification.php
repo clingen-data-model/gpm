@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -17,10 +16,10 @@ class UserDefinedMailNotification extends Notification
      * @return void
      */
     public function __construct(
-        public String $subject,
-        public String $body,
-        public ?String $fromEmail = null,
-        public ?String $fromName = null,
+        public string $subject,
+        public string $body,
+        public ?string $fromEmail = null,
+        public ?string $fromName = null,
         public ?array $attachments = [],
         public ?array $ccAddresses = [],
         public ?array $bccAddresses = [],
@@ -51,7 +50,7 @@ class UserDefinedMailNotification extends Notification
         $mail = (new MailMessage)
                     ->subject($this->subject)
                     ->view('email.user_defined_email', [
-                        'body' => $this->body
+                        'body' => $this->body,
                     ]);
 
         if ($this->fromEmail) {
@@ -81,6 +80,7 @@ class UserDefinedMailNotification extends Notification
                 ]);
             }
         }
+
         return $mail;
     }
 

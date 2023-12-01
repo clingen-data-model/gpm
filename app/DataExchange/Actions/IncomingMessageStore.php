@@ -3,8 +3,8 @@
 namespace App\DataExchange\Actions;
 
 use App\DataExchange\DxMessage;
-use App\DataExchange\Models\IncomingStreamMessage;
 use App\DataExchange\Exceptions\DuplicateMessageException;
+use App\DataExchange\Models\IncomingStreamMessage;
 
 class IncomingMessageStore
 {
@@ -31,11 +31,11 @@ class IncomingMessageStore
 
     private function resolveKey(DxMessage $message): string
     {
-        if (!is_null($message->key)) {
+        if (! is_null($message->key)) {
             return $message->key;
         }
 
-        if (isset($message->payload->uuid) && !is_null($message->payload->uuid)) {
+        if (isset($message->payload->uuid) && ! is_null($message->payload->uuid)) {
             return $message->payload->uuid;
         }
 

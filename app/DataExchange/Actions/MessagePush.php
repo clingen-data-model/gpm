@@ -2,16 +2,16 @@
 
 namespace App\DataExchange\Actions;
 
-use Exception;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
-use App\DataExchange\Events\Created;
-use Lorisleiva\Actions\Concerns\AsJob;
-use App\DataExchange\Models\StreamMessage;
-use Lorisleiva\Actions\Concerns\AsListener;
 use App\DataExchange\Contracts\MessagePusher;
-use App\DataExchange\Exceptions\StreamingServiceException;
+use App\DataExchange\Events\Created;
 use App\DataExchange\Exceptions\StreamingServiceDisabledException;
+use App\DataExchange\Exceptions\StreamingServiceException;
+use App\DataExchange\Models\StreamMessage;
+use Carbon\Carbon;
+use Exception;
+use Illuminate\Support\Facades\Log;
+use Lorisleiva\Actions\Concerns\AsJob;
+use Lorisleiva\Actions\Concerns\AsListener;
 
 class MessagePush
 {
@@ -37,19 +37,18 @@ class MessagePush
     public function handle(StreamMessage $streamMessage)
     {
         try {
-
             $this->pusher->topic($streamMessage->topic);
 
             $this->pusher->push($this->getMessageString($streamMessage->message));
 
             $streamMessage->update(['sent_at' => Carbon::now()]);
-
         } catch (StreamingServiceDisabledException $e) {
             if (config('dx.warn-disabled', true)) {
                 Log::warning($e->getMessage());
             }
         } catch (StreamingServiceException $e) {
             report($e);
+
             return;
         }
     }
@@ -64,7 +63,6 @@ class MessagePush
         $this->handle($event->streamMessage);
     }
 
-
     private function getMessageString($message)
     {
         if (is_string($message)) {
@@ -75,7 +73,6 @@ class MessagePush
             return json_encode($message);
         }
 
-        throw new Exception("Expected message to be string, object, or array.  Got ".gettype($message));
+        throw new Exception('Expected message to be string, object, or array.  Got '.gettype($message));
     }
-
 }

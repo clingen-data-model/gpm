@@ -2,15 +2,15 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Group;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class GroupCommandTest extends TestCase
 {
     use RefreshDatabase;
+
     /**
      * @test
      */
@@ -22,22 +22,17 @@ class GroupCommandTest extends TestCase
 
         Sanctum::actingAs($user);
         $this->json(
-                'POST', 
-                '/api/groups/'.$group->uuid.'/command', 
-                [
-                    'name' => 'Test Name!!',
-                    'command' => 'tests.dummies.setGroupName'
-                ]
-            )
+            'POST',
+            '/api/groups/'.$group->uuid.'/command',
+            [
+                'name' => 'Test Name!!',
+                'command' => 'tests.dummies.setGroupName',
+            ]
+        )
             ->assertStatus(200)
             ->assertJson([
                 'id' => $group->id,
-                'name' => 'Test Name!!'
+                'name' => 'Test Name!!',
             ]);
-        
-
-
-
     }
-    
 }

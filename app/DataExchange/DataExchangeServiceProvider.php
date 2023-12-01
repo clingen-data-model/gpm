@@ -2,26 +2,23 @@
 
 namespace App\DataExchange;
 
-use ReflectionClass;
-use Illuminate\Console\Command;
-use Lorisleiva\Actions\Facades\Actions;
+use App\DataExchange\Actions\IncomingMessageProcess;
+use App\DataExchange\Actions\IncomingMessageStore;
 use App\DataExchange\Actions\MessagePush;
-use App\DataExchange\Listeners\PushMessage;
+use App\DataExchange\Contracts\MessageProcessor;
 use App\DataExchange\Contracts\MessagePusher;
 use App\DataExchange\Contracts\MessageStream;
 use App\DataExchange\Kafka\KafkaMessageStream;
-use App\DataExchange\Contracts\MessageProcessor;
-use App\DataExchange\Actions\IncomingMessageStore;
-use App\DataExchange\Actions\IncomingMessageProcess;
-use App\DataExchange\MessagePushers\MessagePusherFactory;
 use App\DataExchange\MessageFactories\MessageFactoryInterface;
+use App\DataExchange\MessagePushers\MessagePusherFactory;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Lorisleiva\Actions\Facades\Actions;
 
 class DataExchangeServiceProvider extends ServiceProvider
 {
     protected $listen = [
         \App\DataExchange\Events\Created::class => [
-            MessagePush::class
+            MessagePush::class,
         ],
         \App\DataExchange\Events\Received::class => [
             IncomingMessageStore::class,
@@ -39,7 +36,7 @@ class DataExchangeServiceProvider extends ServiceProvider
 
         $this->bindMessageClasses();
 
-        if ($this->app->runningInConsole() && !$this->app->environment('testing')) {
+        if ($this->app->runningInConsole() && ! $this->app->environment('testing')) {
             Actions::registerCommands(__DIR__.'/Actions');
         }
     }
@@ -51,5 +48,4 @@ class DataExchangeServiceProvider extends ServiceProvider
         $this->app->bind(MessageStream::class, KafkaMessageStream::class);
         $this->app->bind(MessageProcessor::class, IncomingMessageProcess::class);
     }
-
 }

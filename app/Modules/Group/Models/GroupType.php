@@ -2,9 +2,9 @@
 
 namespace App\Modules\Group\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Database\Factories\GroupTypeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id
@@ -24,7 +24,7 @@ class GroupType extends Model
     protected $fillable = [
         'name',
         'fullname',
-        'can_be_parent'
+        'can_be_parent',
     ];
 
     /**

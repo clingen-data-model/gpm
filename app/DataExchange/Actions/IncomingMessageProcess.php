@@ -2,17 +2,17 @@
 
 namespace App\DataExchange\Actions;
 
-use Carbon\Carbon;
-use App\DataExchange\DxMessage;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use App\DataExchange\MessageHandlerFactory;
 use App\DataExchange\Contracts\MessageProcessor;
+use App\DataExchange\DxMessage;
 use App\DataExchange\Exceptions\DataSynchronizationException;
 use App\DataExchange\Exceptions\DuplicateMessageException;
-use App\DataExchange\Models\IncomingStreamMessage;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\DataExchange\Exceptions\UnsupportedIncomingMessage;
+use App\DataExchange\MessageHandlerFactory;
+use App\DataExchange\Models\IncomingStreamMessage;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Lorisleiva\Actions\Concerns\AsJob;
 
 class IncomingMessageProcess implements MessageProcessor
@@ -25,7 +25,6 @@ class IncomingMessageProcess implements MessageProcessor
     ) {
         //code
     }
-
 
     public function handle(DxMessage $message): DxMessage
     {
@@ -44,7 +43,6 @@ class IncomingMessageProcess implements MessageProcessor
 
                 // Mark the incomingStreamMessageProcessed
                 $incomingStreamMessage->update(['processed_at' => Carbon::now()]);
-
             } catch (ModelNotFoundException $e) {
                 Log::error('Received "classified-rules-approved" event from CSPEC for expert panel with affiliation_id '.$message->payload->affiliationId.', but not found.');
             } catch (UnsupportedIncomingMessage $e) {
@@ -62,5 +60,4 @@ class IncomingMessageProcess implements MessageProcessor
     {
         return $this->handlerFactory->make($message);
     }
-
 }

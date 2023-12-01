@@ -2,21 +2,19 @@
 
 namespace Tests\Feature\End2End;
 
-use Tests\TestCase;
-use App\Models\Email;
-use Laravel\Sanctum\Sanctum;
 use App\Mail\UserDefinedMailable;
-use Illuminate\Support\Facades\Mail;
-use Tests\Stubs\TestMailNotification;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Notification;
+use App\Models\Email;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
+use Laravel\Sanctum\Sanctum;
+use Tests\Stubs\TestMailNotification;
+use Tests\TestCase;
 
 class ResendMailTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
 
@@ -54,8 +52,7 @@ class ResendMailTest extends TestCase
                 && $mail->body == $this->mail->body
                 && $mail->cc == $this->mail->cc
                 // && $mail->bcc == $this->mail->bcc
-                && $mail->replyTo == $this->mail->reply_to
-            ;
+                && $mail->replyTo == $this->mail->reply_to;
         });
     }
 
@@ -67,7 +64,7 @@ class ResendMailTest extends TestCase
             'body' => $this->mail->body,
             'cc' => is_array($this->mail->cc) ? $this->mail->cc : [],
             'bcc' => is_array($this->mail->bcc) ? $this->mail->bcc : [],
-            'reply_to' => $this->mail->reply_to
+            'reply_to' => $this->mail->reply_to,
         ];
         // dd($data);
         return $this->json('POST', '/api/mail', $data);

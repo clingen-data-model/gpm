@@ -6,7 +6,6 @@ use App\Modules\Person\Models\Person;
 
 class ReportMultipleEpsMake extends ReportMakeAbstract
 {
-    
     public $commandSignature = 'reports:multiple-eps';
 
     public function handle()
@@ -19,7 +18,7 @@ class ReportMultipleEpsMake extends ReportMakeAbstract
                     },
                     'activeExpertPanels.type',
                     'activeExpertPanels.expertPanel',
-                    'activeExpertPanels.expertPanel.type'
+                    'activeExpertPanels.expertPanel.type',
                 ])
                 ->get()
                 ->map(function ($p) {
@@ -35,7 +34,6 @@ class ReportMultipleEpsMake extends ReportMakeAbstract
                     // }
 
                     return $row;
-
                 })->toArray();
     }
 }

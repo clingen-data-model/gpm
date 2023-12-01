@@ -57,6 +57,6 @@ return [
             'long_name' => 'miscellaneous',
             'is_versioned' => false,
             'application_document' => false,
-        ]
-    ]
+        ],
+    ],
 ];

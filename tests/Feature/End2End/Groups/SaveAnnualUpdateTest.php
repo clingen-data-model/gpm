@@ -2,20 +2,19 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Tests\TestCase;
 use App\Models\AnnualUpdate;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\Group\Models\GroupMember;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Models\GroupMember;
 use Database\Seeders\AnnualUpdateWindowSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class SaveAnnualUpdateTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -78,7 +77,7 @@ class SaveAnnualUpdateTest extends TestCase
             'submitter_id' => $this->coordinator->id,
             'data' => json_encode($expectedData['data']),
         ]);
-                
+
         $this->assertDatabaseMissing('annual_updates', [
             'id' => $this->annualReview->id,
             'expert_panel_id' => $this->expertPanel->id,
@@ -86,12 +85,13 @@ class SaveAnnualUpdateTest extends TestCase
             'data->farts' => 'yes',
         ]);
     }
-    
+
     private function makeRequest($data = null)
     {
         $data = $data ?? $this->makeRequestData();
 
         $url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/annual-updates/'.$this->annualReview->id;
+
         return $this->json('PUT', $url, $data);
     }
 
@@ -103,8 +103,8 @@ class SaveAnnualUpdateTest extends TestCase
             'data' => [
                 'grant' => 'UNC',
                 'gci_use' => 'yes',
-                'published_count' => 10
-            ]
+                'published_count' => 10,
+            ],
         ];
     }
 }

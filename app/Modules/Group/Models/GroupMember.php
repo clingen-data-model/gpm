@@ -2,25 +2,24 @@
 
 namespace App\Modules\Group\Models;
 
-use Carbon\Carbon;
-use App\Models\Traits\HasRoles;
 use App\Models\Contracts\HasNotes;
-use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Person;
-use App\Modules\ExpertPanel\Models\Coi;
-use Illuminate\Database\Eloquent\Model;
-use Database\Factories\GroupMemberFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Models\Traits\HasNotes as HasNotesTrait;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\Relation;
-use App\Modules\Group\Models\Contracts\BelongsToGroup;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Traits\HasRoles;
+use App\Modules\ExpertPanel\Models\Coi;
 use App\Modules\ExpertPanel\Models\Contracts\BelongsToExpertPanel;
-use App\Modules\Group\Models\Traits\BelongsToGroup as BelongstToGroupTrait;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Models\Traits\BelongsToExpertPanel as BelongsToExpertPanelTrait;
+use App\Modules\Group\Models\Contracts\BelongsToGroup;
+use App\Modules\Group\Models\Traits\BelongsToGroup as BelongstToGroupTrait;
+use App\Modules\Person\Models\Person;
+use Carbon\Carbon;
+use Database\Factories\GroupMemberFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $id
@@ -55,7 +54,7 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
         'is_contact',
         'notes',
         'training_level_1',
-        'training_level_2'
+        'training_level_2',
     ];
 
     /**
@@ -77,7 +76,7 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
         'end_date',
     ];
 
-    public static function boot():void
+    public static function boot(): void
     {
         parent::boot();
 
@@ -87,7 +86,7 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
          * and accessor
          */
         static::saving(function ($model) {
-            if (!$model->start_date) {
+            if (! $model->start_date) {
                 $model->start_date = Carbon::now();
             }
         });
@@ -103,8 +102,6 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
 
     /**
      * Get all of the expertPanel for the GroupMember
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
     public function expertPanel(): Relation
     {
@@ -113,8 +110,6 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
 
     /**
      * Get all of the cois for the GroupMember
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function cois(): HasMany
     {
@@ -123,14 +118,11 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
 
     /**
      * Get the latestCoi associated with the GroupMember
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function latestCoi(): HasOne
     {
         return $this->hasOne(Coi::class)->latestOfMany();
     }
-
 
     public function scopeIsContact($query)
     {
@@ -167,17 +159,16 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
             });
     }
 
-
-
     // ACCESSORS
     public function getCoiLastCompletedAttribute()
     {
-        $latestCoi =  $this->cois
+        $latestCoi = $this->cois
                         ->filter(function ($coi) {
-                            return !is_null($coi->completed_at);
+                            return ! is_null($coi->completed_at);
                         })
                         ->sortByDesc('completed_at')
                         ->first();
+
         return $latestCoi ? $latestCoi->completed_at : null;
     }
 
@@ -210,8 +201,6 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
          {
              return $this->roles->pluck('name')->join(', ');
          }
-
-
 
     protected static function newFactory()
     {

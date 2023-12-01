@@ -28,8 +28,8 @@ class CredentialUpdate
     public function rules(): array
     {
         return [
-           'name' => ['required', 'max:255', Rule::unique('credentials', 'name')->ignore(request()->credential->id)],
-           'approved' => 'nullable|boolean'
+            'name' => ['required', 'max:255', Rule::unique('credentials', 'name')->ignore(request()->credential->id)],
+            'approved' => 'nullable|boolean',
         ];
     }
 
@@ -37,5 +37,4 @@ class CredentialUpdate
     {
         return $request->user()->hasPermissionTo('people-manage');
     }
-
 }

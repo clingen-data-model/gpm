@@ -2,22 +2,21 @@
 
 namespace Tests\Feature\End2End\Groups\EvidenceSummaries;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
-use App\Modules\ExpertPanel\Models\Gene;
-use Tests\Traits\SeedsHgncGenesAndDiseases;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Models\EvidenceSummary;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Models\Gene;
+use App\Modules\User\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
+use Tests\Traits\SeedsHgncGenesAndDiseases;
 
 class GetSummariesTest extends TestCase
 {
     use RefreshDatabase;
     use SeedsHgncGenesAndDiseases;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setUpForGroupTest();
@@ -49,7 +48,7 @@ class GetSummariesTest extends TestCase
                     'expert_panel_id' => $this->vcep->id,
                     'gene_id' => $this->vcepGenes->first()->id,
                     'summary' => $this->summary->summary,
-                ]]
+                ]],
             ]);
     }
 }

@@ -2,15 +2,13 @@
 
 namespace App\Modules\Group\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Support\Collection;
 use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Person;
 use App\Modules\Group\Models\Submission;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use App\Modules\Person\Models\Person;
 use App\Notifications\Contracts\DigestibleNotificationInterface;
+use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Collection;
 
 class ApprovalReminder extends Notification implements DigestibleNotificationInterface
 {
@@ -37,7 +35,6 @@ class ApprovalReminder extends Notification implements DigestibleNotificationInt
         return ['database'];
     }
 
-
     /**
      * Get the array representation of the notification.
      *
@@ -48,10 +45,11 @@ class ApprovalReminder extends Notification implements DigestibleNotificationInt
     {
         $this->group->load('expertPanel');
         $this->group->display_name = $this->group->displayName;
+
         return [
             'group' => $this->group,
             'submission' => $this->submission,
-            'approver' => $this->approver
+            'approver' => $this->approver,
         ];
     }
 
@@ -78,8 +76,4 @@ class ApprovalReminder extends Notification implements DigestibleNotificationInt
     {
         return 'email.digest.approval_reminder';
     }
-
-
-
-
 }

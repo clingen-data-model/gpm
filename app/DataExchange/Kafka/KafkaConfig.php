@@ -2,10 +2,9 @@
 
 namespace App\DataExchange\Kafka;
 
-use Illuminate\Support\Facades\Log;
 use App\DataExchange\Exceptions\StreamingServiceException;
-use App\DataExchange\Kafka\KafkaEnvValidator;
-use \RdKafka\Conf;
+use Illuminate\Support\Facades\Log;
+use RdKafka\Conf;
 
 class KafkaConfig
 {
@@ -14,7 +13,7 @@ class KafkaConfig
     /**
      * Constructs the KafkaConfig
      *
-     * @param string $group kafka group
+     * @param  string  $group kafka group
      * @return void
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
@@ -25,16 +24,16 @@ class KafkaConfig
         $this->setGroup($group);
 
         // Initial list of Kafka brokers
-        $this->conf->set('metadata.broker.list', config("dx.broker"));
+        $this->conf->set('metadata.broker.list', config('dx.broker'));
         $this->conf->set('log_level', (string) LOG_DEBUG);
 
         // security config
-        if (!app()->environment('testing')) {
+        if (! app()->environment('testing')) {
             $this->configSecurity();
         }
 
         $this->conf->setErrorCb(function ($kafka, $err, $reason) {
-            throw new StreamingServiceException("Kafka producer error: ".rd_kafka_err2str($err)." (reason: ".$reason.')');
+            throw new StreamingServiceException('Kafka producer error: '.rd_kafka_err2str($err).' (reason: '.$reason.')');
         });
 
         $this->conf->setStatsCb(function ($kafka, $json, $json_len) {
@@ -47,6 +46,7 @@ class KafkaConfig
             }
         });
     }
+
     public function setGroup($group = null)
     {
         $group = $group ? $group : config('dx.group', 'unc_staging');
@@ -56,6 +56,7 @@ class KafkaConfig
     public function setRebalanceCallback($callback)
     {
         $this->conf->setRebalanceCb($callback);
+
         return $this;
     }
 

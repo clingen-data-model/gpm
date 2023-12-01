@@ -31,15 +31,16 @@ class CreateNextActionRequest extends FormRequest
             'target_date' => 'nullable|date',
             'date_completed' => 'nullable|date',
             'step' => 'nullable|int|between:1,4',
-            'assigned_to' => 'required|exists:next_action_assignees,id'
+            'assigned_to' => 'required|exists:next_action_assignees,id',
         ];
     }
 
     public function messages()
     {
         $assignees = NextActionAssignee::all();
+
         return [
-            'assigned_to.exists' => 'The next action must be assigned to '.$assignees->pluck('name')->join(', ', ', or ')
+            'assigned_to.exists' => 'The next action must be assigned to '.$assignees->pluck('name')->join(', ', ', or '),
         ];
     }
 }

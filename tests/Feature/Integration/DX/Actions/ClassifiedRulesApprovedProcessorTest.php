@@ -2,18 +2,14 @@
 
 namespace Tests\Feature\Integration\DX\Actions;
 
-use Carbon\Carbon;
-use Tests\TestCase;
-use Faker\Provider\el_CY\Person;
-use App\Modules\Group\Models\GroupMember;
-use Database\Seeders\RulesetStatusSeeder;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Database\Seeders\SpecificationStatusSeeder;
-use App\DataExchange\Models\IncomingStreamMessage;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\DataExchange\Exceptions\DataSynchronizationException;
 use App\DataExchange\Actions\ClassifiedRulesApprovedProcessor;
+use App\DataExchange\Exceptions\DataSynchronizationException;
+use App\DataExchange\Models\IncomingStreamMessage;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Carbon\Carbon;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class ClassifiedRulesApprovedProcessorTest extends TestCase
 {
@@ -78,7 +74,7 @@ class ClassifiedRulesApprovedProcessorTest extends TestCase
         $this->assertDatabaseHas('expert_panels', [
             'id' => $this->expertPanel->id,
             'step_1_approval_date' => Carbon::parse('2020-01-01'),
-            'step_2_approval_date' => Carbon::parse('2021-01-01')
+            'step_2_approval_date' => Carbon::parse('2021-01-01'),
         ]);
     }
 
@@ -99,7 +95,7 @@ class ClassifiedRulesApprovedProcessorTest extends TestCase
         $this->assertDatabaseHas('expert_panels', [
             'id' => $this->expertPanel->id,
             'step_1_approval_date' => Carbon::parse('2020-01-01'),
-            'step_2_approval_date' => Carbon::now()
+            'step_2_approval_date' => Carbon::now(),
         ]);
     }
 }

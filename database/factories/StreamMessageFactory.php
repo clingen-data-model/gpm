@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use Carbon\Carbon;
 use App\DataExchange\Models\StreamMessage;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class StreamMessageFactory extends Factory
@@ -22,12 +22,13 @@ class StreamMessageFactory extends Factory
      */
     public function definition()
     {
-        $success = (bool)rand(0, 1);
+        $success = (bool) rand(0, 1);
+
         return [
             'topic' => 'test',
             'message' => $this->faker->sentence(),
             'sent_at' => $success ? Carbon::now() : null,
-            'error' => $success ? null : $this->faker->sentence
+            'error' => $success ? null : $this->faker->sentence,
         ];
     }
 }

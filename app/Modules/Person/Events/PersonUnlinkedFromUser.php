@@ -2,8 +2,8 @@
 
 namespace App\Modules\Person\Events;
 
-use App\Modules\User\Models\User;
 use App\Modules\Person\Models\Person;
+use App\Modules\User\Models\User;
 
 class PersonUnlinkedFromUser extends PersonEvent
 {
@@ -19,7 +19,7 @@ class PersonUnlinkedFromUser extends PersonEvent
     public function getProperties(): array
     {
         return [
-            'user' => $this->user
+            'user' => $this->user,
         ];
     }
 }

@@ -5,7 +5,6 @@ namespace Database\Factories;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Models\Specification;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Modules\ExpertPanel\Models\SpecificationStatus;
 
 class SpecificationFactory extends Factory
 {
@@ -22,7 +21,7 @@ class SpecificationFactory extends Factory
             'cspec_id' => uniqid(),
             'name' => $this->faker->sentence(),
             'status' => 'Start',
-            'expert_panel_id' => ExpertPanel::factory()
+            'expert_panel_id' => ExpertPanel::factory(),
         ];
     }
 }

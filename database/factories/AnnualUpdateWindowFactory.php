@@ -2,11 +2,8 @@
 
 namespace Database\Factories;
 
-use Carbon\Carbon;
-use App\Models\AnnualUpdate;
 use App\Models\AnnualUpdateWindow;
-use App\Modules\Group\Models\GroupMember;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AnnualUpdateWindowFactory extends Factory

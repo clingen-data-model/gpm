@@ -2,15 +2,15 @@
 
 namespace App\Modules\ExpertPanel\Actions;
 
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
-use App\Modules\Person\Models\Person;
-use Illuminate\Support\Facades\Event;
-use Lorisleiva\Actions\Concerns\AsAction;
-use Illuminate\Validation\ValidationException;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Events\ContactRemoved;
 use App\Modules\ExpertPanel\Exceptions\PersonNotContactException;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Person\Models\Person;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class ContactRemove
 {
@@ -46,12 +46,12 @@ class ContactRemove
             $this->handle($expertPanelUuid, $personUuid);
         } catch (PersonNotContactException $e) {
             Log::warning($e->getMessage(), ['application_id' => $e->getApplication()->id, 'person_id' => $e->getPerson()->id]);
-            
+
             throw ValidationException::withMessages([
-                'contact' => ['The specified person is not a contact of this application.']
+                'contact' => ['The specified person is not a contact of this application.'],
             ]);
         }
 
-        return response(['message'=>'deleted person '.$personUuid.' from application '.$expertPanelUuid], 200);
+        return response(['message' => 'deleted person '.$personUuid.' from application '.$expertPanelUuid], 200);
     }
 }

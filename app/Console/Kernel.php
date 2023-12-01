@@ -2,16 +2,14 @@
 
 namespace App\Console;
 
-use App\Actions\SendSubmissionDigestNotifications;
 use App\Actions\SendCoiReminders;
-use Illuminate\Support\Facades\Log;
 use App\Actions\SendInviteReminders;
+use App\Actions\SendSubmissionDigestNotifications;
 use App\DataExchange\Actions\DxConsume;
-use Illuminate\Console\Scheduling\Schedule;
-use App\Console\Commands\Dev\NotifyDeployed;
-use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use App\Modules\Group\Actions\ApplicationSubmissionRemindChairs;
 use App\Modules\Group\Actions\SubmissionApprovalRemindersCreate;
+use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -26,7 +24,6 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)

@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class GroupRoleAndPermissionsSeeder extends Seeder
@@ -26,10 +25,12 @@ class GroupRoleAndPermissionsSeeder extends Seeder
 
         $roles = collect(config('groups.roles'))->map(function ($role) {
             $role['scope'] = 'group';
+
             return $role;
         });
         $permissions = collect(config('groups.permissions'))->map(function ($permission) {
             $permission['scope'] = 'group';
+
             return $permission;
         });
 
@@ -39,9 +40,9 @@ class GroupRoleAndPermissionsSeeder extends Seeder
         foreach (config('groups.role_permissions') as $roleSlug => $permIds) {
             $rows = array_map(function ($permId) use ($roleSlug) {
                 return [
-                        'role_id' => config('groups.roles')[$roleSlug]['id'],
-                        'permission_id' => $permId
-                    ];
+                    'role_id' => config('groups.roles')[$roleSlug]['id'],
+                    'permission_id' => $permId,
+                ];
             }, $permIds);
             foreach ($rows as $values) {
                 DB::table('role_has_permissions')

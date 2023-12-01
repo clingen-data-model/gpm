@@ -2,14 +2,12 @@
 
 namespace App\Modules\Person\Providers;
 
-use App\Listeners\RecordEvent;
-use App\Modules\Person\Models\Person;
-use Illuminate\Support\Facades\Event;
-use App\Modules\Group\Events\MemberInvited;
-use App\Modules\Person\Events\PersonInvited;
-use App\Modules\Person\Policies\PersonPolicy;
 use App\Modules\Foundation\ModuleServiceProvider;
 use App\Modules\Person\Actions\InviteSendNotification;
+use App\Modules\Person\Events\PersonInvited;
+use App\Modules\Person\Models\Person;
+use App\Modules\Person\Policies\PersonPolicy;
+use Illuminate\Support\Facades\Event;
 
 class PersonServiceProvider extends ModuleServiceProvider
 {
@@ -41,6 +39,6 @@ class PersonServiceProvider extends ModuleServiceProvider
 
     protected function getModulePath()
     {
-        return (__DIR__.'/..');
+        return __DIR__.'/..';
     }
 }

@@ -2,14 +2,12 @@
 
 namespace Tests\Feature\End2End\Groups\Members;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
-use App\Modules\Group\Models\GroupMember;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\GroupMember;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 /**
  * @group groups
@@ -20,21 +18,21 @@ class RevokeMemberPermissionTest extends TestCase
     use RefreshDatabase;
     use SetsUpGroupPersonAndMember;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
 
         $this->user = $this->setupUser();
         Sanctum::actingAs($this->user);
-        
+
         $this->setupEntities()->setupMember();
         $this->permissions = config('permission.models.permission')::factory(2)->create(['scope' => 'group']);
         MemberGrantPermissions::run($this->groupMember, $this->permissions);
 
         $this->url = '/api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id.'/permissions';
     }
-    
+
     /**
      * @test
      */
@@ -46,19 +44,19 @@ class RevokeMemberPermissionTest extends TestCase
         $response->assertJsonFragment([
             'id' => $this->groupMember->id,
             'person_id' => $this->person->id,
-            'group_id' => $this->group->id
+            'group_id' => $this->group->id,
         ]);
 
         $this->assertDatabaseMissing('model_has_permissions', [
             'model_type' => GroupMember::class,
             'model_id' => $this->groupMember->id,
-            'permission_id' => $this->permissions->first()->id
+            'permission_id' => $this->permissions->first()->id,
         ]);
 
         $this->assertDatabaseHas('model_has_permissions', [
             'model_type' => GroupMember::class,
             'model_id' => $this->groupMember->id,
-            'permission_id' => $this->permissions->last()->id
+            'permission_id' => $this->permissions->last()->id,
         ]);
     }
 
@@ -77,7 +75,7 @@ class RevokeMemberPermissionTest extends TestCase
             'description' => 'Permission '.$this->permissions->first()->name.' revoked from member '.$this->person->name.'.',
             'properties->group_member_id' => $this->groupMember->id,
             'properties->permission->id' => $this->permissions->first()->id,
-            'properties->permission->name' => $this->permissions->first()->name
+            'properties->permission->name' => $this->permissions->first()->name,
         ]);
     }
 }

@@ -1,8 +1,9 @@
 <?php
+
 namespace App\Modules\Group\Actions;
 
-use Illuminate\Support\Str;
 use App\Modules\Group\Models\Group;
+use Illuminate\Support\Str;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 
@@ -27,29 +28,28 @@ class HandleGroupCommand
 
     public function rules(): array
     {
-
         /**
          * TODO: build validation based on resolved action
          */
 
         return [
-           'command' => [
+            'command' => [
                 'required',
                 function ($attribute, $value, $fail) {
-                    if (!class_exists($this->resolveCommandClass($value))) {
+                    if (! class_exists($this->resolveCommandClass($value))) {
                         return 'The command '.$value.' is not supported.';
                     }
-                }
+                },
             ],
         ];
     }
-    
+
     public function authorize(ActionRequest $request): bool
     {
         /**
          * TODO: Authorize based on resolved action
          */
-        if (!$request->command) {
+        if (! $request->command) {
             return true;
         }
 
@@ -57,7 +57,7 @@ class HandleGroupCommand
         if (method_exists($action, 'authorize')) {
             return $action->authorize($request);
         }
-        
+
         return true;
     }
 
@@ -68,9 +68,11 @@ class HandleGroupCommand
 
     private function resolveCommandClass($commandString): string
     {
-        $namespaceParts = array_map(function ($i) { return Str::studly($i); }, explode('.', $commandString));
+        $namespaceParts = array_map(function ($i) {
+        return Str::studly($i);
+        }, explode('.', $commandString));
         $className = '\\'.implode('\\', $namespaceParts);
-        
+
         return $className;
     }
 }

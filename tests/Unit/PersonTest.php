@@ -2,22 +2,21 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Person;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class PersonTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
     }
-    
+
     /**
      * @test
      */

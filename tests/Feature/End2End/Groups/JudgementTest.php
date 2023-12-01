@@ -2,25 +2,24 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Person;
-use App\Modules\Group\Models\Judgement;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Database\Seeders\NextActionTypesTableSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use App\Modules\Group\Actions\ApplicationSubmitStep;
-use Database\Seeders\NextActionAssigneesTableSeeder;
 use App\Modules\Group\Actions\JudgementCreate;
+use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\Judgement;
+use App\Modules\Person\Models\Person;
+use Database\Seeders\NextActionAssigneesTableSeeder;
+use Database\Seeders\NextActionTypesTableSeeder;
+use Database\Seeders\SubmissionTypeAndStatusSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 abstract class JudgementTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -36,7 +35,6 @@ abstract class JudgementTest extends TestCase
         $this->submission = $epAndSub['submission'];
         Sanctum::actingAs($this->user);
     }
-
 
     protected function setupExpertPanelAndSubmission($expertPanel = null, $submitter = null): array
     {
@@ -55,6 +53,5 @@ abstract class JudgementTest extends TestCase
             decision: 'request-revisions',
             notes: 'blah blah blah'
         );
-
     }
 }

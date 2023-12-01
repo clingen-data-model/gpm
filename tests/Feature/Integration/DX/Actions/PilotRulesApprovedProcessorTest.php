@@ -2,18 +2,16 @@
 
 namespace Tests\Feature\Integration\DX\Actions;
 
-use Carbon\Carbon;
-use Tests\TestCase;
-use App\Modules\Group\Models\Group;
-use Database\Seeders\TaskTypeSeeder;
-use Database\Seeders\RulesetStatusSeeder;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Database\Seeders\SpecificationStatusSeeder;
-use App\DataExchange\Models\IncomingStreamMessage;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\DataExchange\Actions\PilotRulesApprovedProcessor;
 use App\DataExchange\Exceptions\DataSynchronizationException;
+use App\DataExchange\Models\IncomingStreamMessage;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Models\Group;
+use Carbon\Carbon;
+use Database\Seeders\TaskTypeSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class PilotRulesApprovedProcessorTest extends TestCase
 {
@@ -71,7 +69,7 @@ class PilotRulesApprovedProcessorTest extends TestCase
         $this->assertDatabaseHas('tasks', [
             'assignee_type' => Group::class,
             'assignee_id' => $this->expertPanel->group_id,
-            'task_type_id' => config('tasks.types.sustained-curation-review.id')
+            'task_type_id' => config('tasks.types.sustained-curation-review.id'),
         ]);
     }
 
@@ -95,7 +93,7 @@ class PilotRulesApprovedProcessorTest extends TestCase
             'step_1_approval_date' => Carbon::parse('2020-01-01'),
             'step_2_approval_date' => Carbon::parse('2021-01-01'),
             'step_3_approval_date' => Carbon::now(),
-            'current_step' => 4
+            'current_step' => 4,
         ]);
     }
 }

@@ -1,10 +1,10 @@
 <?php
+
 namespace App\Modules\ExpertPanel\Actions;
 
-use App\Models\Document;
-use Lorisleiva\Actions\Concerns\AsAction;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Events\DocumentDeleted;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class ApplicationDocumentDelete
 {

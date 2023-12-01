@@ -2,12 +2,12 @@
 
 namespace App\Modules\Person\Actions;
 
-use Carbon\Carbon;
-use App\Modules\Person\Models\Person;
-use Lorisleiva\Actions\ActionRequest;
-use App\Modules\User\Actions\UserDelete;
 use App\Modules\Group\Actions\MemberRemove;
 use App\Modules\Person\Events\PersonDeleted;
+use App\Modules\Person\Models\Person;
+use App\Modules\User\Actions\UserDelete;
+use Carbon\Carbon;
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 
 class PersonDelete
@@ -17,7 +17,6 @@ class PersonDelete
     public function __construct(private UserDelete $deleteUser, private MemberRemove $removeMember)
     {
     }
-
 
     public function handle(Person $person)
     {

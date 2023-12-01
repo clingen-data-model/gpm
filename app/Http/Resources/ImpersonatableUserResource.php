@@ -17,7 +17,7 @@ class ImpersonatableUserResource extends JsonResource
         return [
             'name' => $this->name,
             'email' => $this->email,
-            'id' => $this->id
+            'id' => $this->id,
         ];
     }
 }

@@ -2,12 +2,9 @@
 
 namespace App\Mail\UserDefinedMailTemplates;
 
-use App\Mail\UserDefinedMailTemplates\AbstractUserDefinedMailTemplate;
-
 class SpecificationDraftMailTemplate extends AbstractUserDefinedMailTemplate
 {
-
-    public function getTemplate():string
+    public function getTemplate(): string
     {
         return 'email.applications.approval.vcep_step_2_approval';
     }
@@ -16,6 +13,6 @@ class SpecificationDraftMailTemplate extends AbstractUserDefinedMailTemplate
     {
         return 'Draft specification for your ClinGen expert panel '
                 .$this->group->name
-                .' has been approved.';       
+                .' has been approved.';
     }
 }

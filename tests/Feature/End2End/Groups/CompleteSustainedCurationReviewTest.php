@@ -2,20 +2,19 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Carbon\Carbon;
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Tasks\Actions\TaskCreate;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Tasks\Actions\TaskCreate;
+use Carbon\Carbon;
 use Database\Seeders\TaskTypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class CompleteSustainedCurationReviewTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -43,7 +42,6 @@ class CompleteSustainedCurationReviewTest extends TestCase
         $this->makeRequest()
             ->assertStatus(403);
     }
-    
 
     /**
      * @test
@@ -55,7 +53,7 @@ class CompleteSustainedCurationReviewTest extends TestCase
             ->assertStatus(200)
             ->assertJsonFragment([
                 'id' => $this->task->id,
-                'completed_at' => Carbon::now()
+                'completed_at' => Carbon::now(),
             ]);
     }
 

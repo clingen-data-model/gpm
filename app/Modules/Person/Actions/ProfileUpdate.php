@@ -2,19 +2,15 @@
 
 namespace App\Modules\Person\Actions;
 
-use DateTimeZone;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Auth;
-use App\Modules\Person\Models\Person;
-use Illuminate\Support\Facades\Event;
-use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsObject;
 use App\Modules\Person\Events\ProfileUpdated;
-use App\Modules\Person\Policies\PersonPolicy;
+use App\Modules\Person\Models\Person;
+use DateTimeZone;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Validation\Rule;
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
-use App\Modules\Person\Actions\PersonExpertisesSync;
-use App\Modules\Person\Actions\PersonCredentialsSync;
-use App\Modules\Person\Http\Requests\ProfileUpdateRequest;
+use Lorisleiva\Actions\Concerns\AsObject;
 
 class ProfileUpdate
 {
@@ -24,10 +20,8 @@ class ProfileUpdate
     public function __construct(
         private PersonCredentialsSync $personSyncCredentials,
         private PersonExpertisesSync $personSyncExpertises
-    )
-    {
+    ) {
     }
-
 
     public function handle(Person $person, array $data)
     {
@@ -35,8 +29,8 @@ class ProfileUpdate
 
         if ($person->user_id) {
             $person->user->update([
-                'name' => $person->first_name. ' '.$person->last_name,
-                'email' => $person->email
+                'name' => $person->first_name.' '.$person->last_name,
+                'email' => $person->email,
             ]);
         }
 
@@ -73,6 +67,7 @@ class ProfileUpdate
             'memberships.group',
             'country'
         );
+
         return $person;
     }
 
@@ -93,8 +88,8 @@ class ProfileUpdate
                 Rule::unique('users', 'email')
                     ->ignore($request->person->user_id),
             ],
-            'first_name' => ['required','max:255'],
-            'last_name' => ['required','max:255'],
+            'first_name' => ['required', 'max:255'],
+            'last_name' => ['required', 'max:255'],
             'institution_id' => ['exists:institutions,id'],
             'credential_ids' => ['array'],
             'credential_ids.*' => ['exists:credentials,id'],
@@ -105,11 +100,11 @@ class ProfileUpdate
             // 'gender_id' => ['exists:genders,id'],
             'country_id' => ['exists:countries,id'],
             'timezone' => [Rule::in(DateTimeZone::listIdentifiers())],
-            'street1' => ['nullable','max:255'],
-            'street2' => ['nullable','max:255'],
-            'city' => ['nullable','max:255'],
-            'state' => ['nullable','max:255'],
-            'zip' => ['nullable','max:255'],
+            'street1' => ['nullable', 'max:255'],
+            'street2' => ['nullable', 'max:255'],
+            'city' => ['nullable', 'max:255'],
+            'state' => ['nullable', 'max:255'],
+            'zip' => ['nullable', 'max:255'],
         ];
 
         if ($request->person->user_id == Auth::user()->id) {
@@ -119,12 +114,14 @@ class ProfileUpdate
                 }
                 array_unshift($rules[$field], 'required');
             }
+
             return $rules;
         }
 
         foreach ($rules as $field => $rule) {
             $rules[$field][] = 'nullable';
         }
+
         return $rules;
     }
 
@@ -133,7 +130,7 @@ class ProfileUpdate
         return [
             'required' => 'This is required.',
             'exists' => 'The selection is invalid.',
-            'email.unique' => 'Somebody is already using that email address.'
+            'email.unique' => 'Somebody is already using that email address.',
         ];
     }
 }

@@ -2,10 +2,9 @@
 
 namespace App\Modules\Group\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Modules\Group\Models\Group;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class EvidenceSummaryController extends Controller
 {
@@ -13,7 +12,7 @@ class EvidenceSummaryController extends Controller
     {
         $group = Group::where('uuid', $groupUuid)->sole();
         $group->expertPanel->load('evidenceSummaries', 'evidenceSummaries.gene', 'evidenceSummaries.gene.gene');
-        
+
         return ['data' => $group->expertPanel->evidenceSummaries];
     }
 }

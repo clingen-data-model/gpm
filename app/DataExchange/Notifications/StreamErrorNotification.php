@@ -2,10 +2,10 @@
 
 namespace App\DataExchange\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Support\Collection;
-use Illuminate\Notifications\Notification;
 use App\Notifications\DigestibleNotificationInterface;
+use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Collection;
 
 class StreamErrorNotification extends Notification implements DigestibleNotificationInterface
 {
@@ -51,21 +51,24 @@ class StreamErrorNotification extends Notification implements DigestibleNotifica
                             ->unique(function ($error) {
                                 return $error->gene->gene.'-'.$error->condition.'-'.$error->moi;
                             });
+
         return [
             'stream_errors' => $uniqueErrors,
-            'template' => 'email.stream_error_notification'
+            'template' => 'email.stream_error_notification',
         ];
     }
 
-    public static function getUnique(Collection $collection):Collection
+    public static function getUnique(Collection $collection): Collection
     {
         return $collection;
     }
-    public static function filterInvalid(Collection $collection):Collection
+
+    public static function filterInvalid(Collection $collection): Collection
     {
         return $collection;
     }
-    public static function getValidUnique(Collection $collection):Collection
+
+    public static function getValidUnique(Collection $collection): Collection
     {
         return $collection;
     }

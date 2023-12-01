@@ -1,16 +1,14 @@
 <?php
+
 namespace App\Modules\Group\Events;
 
 use App\Events\PublishableEvent;
-use App\Modules\Group\Models\Group;
-use Illuminate\Queue\SerializesModels;
-use App\Modules\Group\Events\GeneEvent;
 use App\Modules\ExpertPanel\Models\Gene;
+use App\Modules\Group\Models\Group;
+use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
-use App\Modules\Group\Events\GeneEventInterface;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
+use Illuminate\Queue\SerializesModels;
 
 class GeneRemoved extends GeneEvent implements PublishableEvent, GeneEventInterface
 {
@@ -49,5 +47,4 @@ class GeneRemoved extends GeneEvent implements PublishableEvent, GeneEventInterf
     {
         return new PrivateChannel('channel-name');
     }
-
 }

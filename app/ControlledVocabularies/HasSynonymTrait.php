@@ -10,8 +10,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  */
 trait HasSynonymTrait
 {
-
-    function getSynonymAttribute(): string
+    public function getSynonymAttribute(): string
     {
         return 'name';
     }
@@ -23,8 +22,9 @@ trait HasSynonymTrait
 
     public function scopeMatchesSynonym(Builder $query, string $keyword, ?string $operator = 'and'): Builder
     {
-        $query->whereHas('synonyms', function ($q) use ($keyword, $operator) {
+        $query->whereHas('synonyms', function ($q) use ($keyword) {
             $searchString = preg_replace('/\./', '', strtolower($keyword));
+
             return $q->where('synonyms.name', 'LIKE', '%'.$searchString.'%');
         });
 

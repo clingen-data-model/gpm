@@ -3,25 +3,24 @@
 namespace App\Modules\Group\Actions;
 
 use App\Modules\ExpertPanel\Actions\NextActionComplete;
-use Exception;
-use Carbon\Carbon;
-use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Person;
-use Lorisleiva\Actions\ActionRequest;
-use App\Modules\Group\Models\Submission;
-use App\Modules\Group\Models\SubmissionType;
-use Lorisleiva\Actions\Concerns\AsController;
-use Illuminate\Validation\ValidationException;
 use App\Modules\Group\Events\ApplicationStepSubmitted;
+use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\Submission;
+use App\Modules\Person\Models\Person;
+use Carbon\Carbon;
+use Exception;
+use Illuminate\Validation\ValidationException;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsController;
 
 class ApplicationSubmitStep
 {
     use AsController;
-    
-    public function handle(Group $group, Person $submitter, ?String $notes = null): Submission
+
+    public function handle(Group $group, Person $submitter, ?string $notes = null): Submission
     {
         $submissionType = $this->resolveSubmissionType($group);
-        
+
         if ($group->hasApprovedSubmissionFor($submissionType->id)) {
             $message = 'This group\'s '.$submissionType->name.' has already been approved.';
             throw ValidationException::withMessages(['group' => $message]);
@@ -36,7 +35,7 @@ class ApplicationSubmitStep
         ]);
 
         $submission = $group->submissions()->save($submission);
-        
+
         // Do a couple of things I shouldn't have to do:
         // 1. fresh the instance and load the status and type (b/c not eager loading for some reason)
         $submission = $submission->fresh()->load(['status', 'type']);
@@ -44,11 +43,11 @@ class ApplicationSubmitStep
         $submission->wasRecentlyCreated = true;
 
         $group = $this->setReceivedDate($group);
-        
+
         event(new ApplicationStepSubmitted($group, $submission));
 
         $group->expertPanel->nextActions()->ofType(config('next_actions.types.make-revisions.id'))
-            ->each(function ($nextAction) use ($group){
+            ->each(function ($nextAction) use ($group) {
                 app()->make(NextActionComplete::class)->handle(
                     expertPanel: $group->expertPanel,
                     nextAction: $nextAction,
@@ -62,6 +61,7 @@ class ApplicationSubmitStep
     public function asController(ActionRequest $request, Group $group)
     {
         $submission = $this->handle($group, $request->user()->person, $request->notes);
+
         return $submission;
     }
 
@@ -84,7 +84,7 @@ class ApplicationSubmitStep
                 break;
         }
         $group->expertPanel->save();
-        
+
         return $group;
     }
 

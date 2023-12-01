@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\CommentType;
-use App\Models\Traits\HasComments;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Contracts\HasComments as ContractsHasComments;
+use App\Models\Traits\HasComments;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Comment extends Model implements ContractsHasComments
 {
@@ -24,7 +23,7 @@ class Comment extends Model implements ContractsHasComments
         'creator_type',
         'creator_id',
         'metadata',
-        'resolved_at'
+        'resolved_at',
     ];
 
     public $casts = [
@@ -32,16 +31,16 @@ class Comment extends Model implements ContractsHasComments
         'subject_id' => 'integer',
         'creator_id' => 'integer',
         'metadata' => 'array',
-        'resolved_at' => 'datetime'
+        'resolved_at' => 'datetime',
     ];
 
     public $with = [
         'type',
-        'creator'
+        'creator',
     ];
 
     public $appends = [
-        'is_resolved'
+        'is_resolved',
     ];
 
     /**
@@ -89,7 +88,6 @@ class Comment extends Model implements ContractsHasComments
         $query->where('comment_type_id', $typeId);
     }
 
-
     public function scopeRequiredRevision($query)
     {
         return $query->ofType(config('comments.types.required-revision.id'));
@@ -110,20 +108,16 @@ class Comment extends Model implements ContractsHasComments
         return $query->ofType([config('comments.types.suggestion.id'), config('comments.types.required-revision.id')]);
     }
 
-
     /**
      * ACCESSORS
      */
-
     public function getIsResolvedAttribute(): bool
     {
-        return (bool)$this->resolved_at;
+        return (bool) $this->resolved_at;
     }
 
     public function getIsPendingAttribute(): bool
     {
         return is_null($this->resolved_at);
     }
-
-
 }

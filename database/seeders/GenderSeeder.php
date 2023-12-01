@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\Seeder;
 use App\Modules\Person\Models\Gender;
 
 class GenderSeeder extends Seeder

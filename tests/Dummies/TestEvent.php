@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests\Dummies;
 
 class TestEvent
@@ -7,4 +8,3 @@ class TestEvent
     {
     }
 }
-

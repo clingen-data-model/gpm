@@ -2,15 +2,12 @@
 
 namespace Tests\Feature\End2End\ExpertPanels\Documents;
 
-use Carbon\Carbon;
-use Tests\TestCase;
 use App\Models\Document;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Bus;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 /**
  * @group documents
@@ -19,7 +16,7 @@ class MarkFinalTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -41,7 +38,7 @@ class MarkFinalTest extends TestCase
         $this->call('POST', $this->docUrl)
             ->assertStatus(200)
             ->assertJsonFragment([
-                'is_final' => 1
+                'is_final' => 1,
             ]);
     }
 
@@ -51,18 +48,18 @@ class MarkFinalTest extends TestCase
     public function marks_any_previous_final_documents_for_same_application_and_type_as_not_final()
     {
         Sanctum::actingAs($this->user);
-        $d = Document::factory()->make(['metadata'=>['is_final' => 1], 'document_type_id' => $this->document->document_type_id]);
+        $d = Document::factory()->make(['metadata' => ['is_final' => 1], 'document_type_id' => $this->document->document_type_id]);
         $document = $this->expertPanel->group->documents()->save($d);
 
         $this->call('POST', $this->docUrl)
             ->assertStatus(200)
             ->assertJsonFragment([
-                'is_final' => 1
+                'is_final' => 1,
             ]);
 
         $this->assertDatabaseHas('documents', [
             'id' => $document->id,
-            'metadata->is_final' => 0
+            'metadata->is_final' => 0,
         ]);
     }
 
@@ -75,13 +72,13 @@ class MarkFinalTest extends TestCase
         $this->call('POST', $this->docUrl)
             ->assertStatus(200)
             ->assertJsonFragment([
-                'is_final' => 1
+                'is_final' => 1,
             ]);
 
         $this->assertDatabaseHas('activity_log', [
             'subject_type' => get_class($this->expertPanel->group),
             'subject_id' => $this->expertPanel->group->id,
-            'description' => $this->document->type->name.' version '.$this->document->version.' marked final.'
+            'description' => $this->document->type->name.' version '.$this->document->version.' marked final.',
         ]);
     }
 }

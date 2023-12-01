@@ -2,11 +2,11 @@
 
 namespace App\Modules\Person\Actions;
 
-use App\Modules\Person\Models\Invite;
-use Lorisleiva\Actions\Concerns\AsObject;
 use App\Modules\Person\Events\PersonInvited;
-use Illuminate\Support\Facades\Notification;
+use App\Modules\Person\Models\Invite;
 use App\Modules\Person\Notifications\InviteNotification;
+use Illuminate\Support\Facades\Notification;
+use Lorisleiva\Actions\Concerns\AsObject;
 
 class InviteSendNotification
 {
@@ -15,7 +15,7 @@ class InviteSendNotification
     public function handle(Invite $invite): Invite
     {
         Notification::send($invite->person, new InviteNotification($invite));
-        
+
         return $invite;
     }
 

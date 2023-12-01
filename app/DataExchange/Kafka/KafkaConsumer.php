@@ -1,19 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\DataExchange\Kafka;
 
-use App\DataExchange\Events\Received;
-use App\DataExchange\Contracts\MessageConsumer;
-use App\DataExchange\Kafka\ErrorMessageHandler;
-use App\DataExchange\Kafka\NoNewMessageHandler;
-use App\DataExchange\Kafka\StoreMessageHandler;
-use App\DataExchange\Kafka\NoActionMessageHandler;
 use App\DataExchange\Actions\IncomingMessageProcess;
+use App\DataExchange\Contracts\MessageConsumer;
 use App\DataExchange\DxMessage;
-use App\DataExchange\Kafka\SuccessfulMessageHandler;
-use App\DataExchange\Exceptions\StreamingServiceException;
 use App\DataExchange\Exceptions\StreamingServiceEndOfFIleException;
+use App\DataExchange\Exceptions\StreamingServiceException;
 
 /**
  * @property array $topics
@@ -21,6 +16,7 @@ use App\DataExchange\Exceptions\StreamingServiceEndOfFIleException;
 class KafkaConsumer implements MessageConsumer
 {
     protected $topics = [];
+
     protected $listening = false;
 
     public function __construct(private \RdKafka\KafkaConsumer $kafkaConsumer, private IncomingMessageProcess $processor)
@@ -37,23 +33,22 @@ class KafkaConsumer implements MessageConsumer
     /**
      * Add a topic to consume
      *
-     * @param string $topicName Name of topic to add
-     * @return MessageConsumer
+     * @param  string  $topicName Name of topic to add
      */
-    public function addTopic(String $topicName):MessageConsumer
+    public function addTopic(string $topicName): MessageConsumer
     {
         array_push($this->topics, $topicName);
         $this->cleanTopics();
+
         return $this;
     }
 
     /**
      * Remove topic from topic list
      *
-     * @param string $topicName Name of topic to remove from topic list
-     * @return MessageConsumer
+     * @param  string  $topicName Name of topic to remove from topic list
      */
-    public function removeTopic(String $topicName):MessageConsumer
+    public function removeTopic(string $topicName): MessageConsumer
     {
         if (in_array($topicName, $this->topics)) {
             unset($this->topics[array_search($topicName, $this->topics)]);
@@ -76,13 +71,12 @@ class KafkaConsumer implements MessageConsumer
             function ($topic) {
                 return [
                     'name' => $topic->getName(),
-                    'offset' => $topic->getOffset()
+                    'offset' => $topic->getOffset(),
                 ];
             },
             $availableTopics
         );
     }
-
 
     public function listen(): MessageConsumer
     {
@@ -104,8 +98,6 @@ class KafkaConsumer implements MessageConsumer
 
     /**
      * Begin listening for messages on topics in topic list
-     *
-     * @return MessageConsumer
      */
     public function consume(): MessageConsumer
     {
@@ -148,7 +140,6 @@ class KafkaConsumer implements MessageConsumer
                 report($th);
             }
         }
-
 
         return $this;
     }

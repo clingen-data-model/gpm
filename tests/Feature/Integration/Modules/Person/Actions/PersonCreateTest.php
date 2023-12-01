@@ -3,11 +3,11 @@
 namespace Tests\Feature\Integration\Modules\Person\Actions;
 
 use App\Modules\Person\Actions\PersonCreate;
-use Tests\TestCase;
 use App\Modules\Person\Models\Person;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\End2End\Person\TestEventPublished;
+use Tests\TestCase;
 
 class PersonCreateTest extends TestCase
 {
@@ -37,5 +37,4 @@ class PersonCreateTest extends TestCase
 
         $this->assertEventPublished(config('dx.topics.outgoing.gpm-person-events'), 'created', $person);
     }
-
 }

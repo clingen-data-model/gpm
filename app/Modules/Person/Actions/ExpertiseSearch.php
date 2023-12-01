@@ -17,7 +17,7 @@ class ExpertiseSearch
 
         if ($request->has('keyword')) {
             $query->whereRaw('LOWER(expertises.name) LIKE ?', '%'.$this->normalizeString($request->keyword.'%'));
-            $query->orWhere(fn($q) => $q->matchesSynonym($request->keyword));
+            $query->orWhere(fn ($q) => $q->matchesSynonym($request->keyword));
         }
 
         $query->orderBy('approved', 'DESC');
@@ -30,6 +30,4 @@ class ExpertiseSearch
     {
         return preg_replace('/\./', '', strtolower($string));
     }
-
-
 }

@@ -2,11 +2,11 @@
 
 namespace App\Console\Commands\Dev;
 
-use Exception;
-use \RdKafka\KafkaConsumer as RdKafkaConsumer;
-use Illuminate\Console\Command;
 use App\DataExchange\Kafka\KafkaConfig;
 use App\DataExchange\Kafka\KafkaMessageStream;
+use Exception;
+use Illuminate\Console\Command;
+use RdKafka\KafkaConsumer as RdKafkaConsumer;
 
 class ConsumeDxMessages extends Command
 {
@@ -51,7 +51,7 @@ class ConsumeDxMessages extends Command
         $messageStream = new KafkaMessageStream($kafkaConsumer);
 
         $topics = $this->option('topic', null);
-        if (!$topics) {
+        if (! $topics) {
             $topics = $this->solicitTopics($kafkaConsumer);
         }
 
@@ -60,11 +60,11 @@ class ConsumeDxMessages extends Command
         }
 
         $count = 0;
-        $generator = !is_null($limit)
+        $generator = ! is_null($limit)
                         ? $messageStream->consumeSomeMessages($limit)
                         : $messageStream->consume();
 
-        if (!is_null($limit)) {
+        if (! is_null($limit)) {
             $this->info('Will read '.$limit.' messages.');
         }
 
@@ -83,23 +83,21 @@ class ConsumeDxMessages extends Command
     /**
      * Print the payload to the stdOut
      *
-     * @param mixed $message
+     * @param  mixed  $message
      *
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-     *
      */
     private function printPayload($message)
     {
-        $this->info('Payload:' . json_encode($message->payload, JSON_PRETTY_PRINT));
+        $this->info('Payload:'.json_encode($message->payload, JSON_PRETTY_PRINT));
     }
 
     /**
      * Print the offset to the stdOut
      *
-     * @param mixed $message
+     * @param  mixed  $message
      *
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-     *
      */
     private function printOffset($message)
     {
@@ -109,10 +107,9 @@ class ConsumeDxMessages extends Command
     /**
      * Print the status to the stdOut
      *
-     * @param mixed $message
+     * @param  mixed  $message
      *
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-     *
      */
     private function printStatus($message)
     {
@@ -122,23 +119,21 @@ class ConsumeDxMessages extends Command
     /**
      * Print the event name to the stdOut
      *
-     * @param mixed $message
+     * @param  mixed  $message
      *
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-     *
      */
     private function printEvent($message)
     {
         $this->info('Event: '.json_encode($message->payload->cspecDoc->status->event, JSON_PRETTY_PRINT));
     }
 
-     /**
+    /**
      * Print the message key to the stdOut
      *
-     * @param mixed $message
+     * @param  mixed  $message
      *
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-     *
      */
     private function printKey($message)
     {
@@ -148,10 +143,9 @@ class ConsumeDxMessages extends Command
     /**
      * Store the message as to it's own file
      *
-     * @param mixed $message
+     * @param  mixed  $message
      *
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-     *
      */
     private function persistSingleMessage($message): void
     {
@@ -160,7 +154,7 @@ class ConsumeDxMessages extends Command
         file_put_contents($filepath, $message->toJson(JSON_PRETTY_PRINT));
     }
 
-    private function solicitTopics(\RdKafka\KafkaConsumer $kafkaConsumer)
+    private function solicitTopics(RdKafkaConsumer $kafkaConsumer)
     {
         $availableTopics = [];
 
@@ -178,6 +172,7 @@ class ConsumeDxMessages extends Command
     private function buildKafkaConsumer(?int $offset = null): RdKafkaConsumer
     {
         $rdKafkaConfig = $this->buildKafkaConfig($offset);
+
         return new RdKafkaConsumer($rdKafkaConfig);
     }
 
@@ -216,10 +211,11 @@ class ConsumeDxMessages extends Command
     {
         if (is_null($offset)) {
             $this->info("Don't update offset.");
+
             return;
         }
         if ($offset >= 0) {
-            $this->info("Committing offset set to $offset for topic ".$topicPartition->getTopic()." on partition ".$topicPartition->getPartition()."...");
+            $this->info("Committing offset set to $offset for topic ".$topicPartition->getTopic().' on partition '.$topicPartition->getPartition().'...');
         }
         $topicPartition->setOffset($offset);
         $consumer->commit([$topicPartition]);

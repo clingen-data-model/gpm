@@ -2,9 +2,9 @@
 
 namespace App\Modules\User\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Database\Factories\PreferenceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id
@@ -45,7 +45,6 @@ class Preference extends Model
         'applies_to_role' => 'integer',
         'applies_to_permission' => 'integer',
     ];
-
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

@@ -2,11 +2,10 @@
 
 namespace Tests\Feature\End2End\Person\Expertises;
 
-use Tests\TestCase;
 use App\Models\Expertise;
-use Illuminate\Testing\TestResponse;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\TestResponse;
+use Tests\TestCase;
 
 /**
  * @group expertises
@@ -15,7 +14,7 @@ class UpdateExpertiseTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->expertise = Expertise::factory()->create();
@@ -47,12 +46,12 @@ class UpdateExpertiseTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'name' => 'PhD',
-                'approved' => 0
+                'approved' => 0,
             ]);
 
         $this->assertDatabaseHas('expertises', [
             'id' => $this->expertise->id,
-            'name' => 'PhD'
+            'name' => 'PhD',
         ]);
     }
 
@@ -65,26 +64,23 @@ class UpdateExpertiseTest extends TestCase
         $this->makeRequest([])
             ->assertStatus(422)
             ->assertJsonValidationErrors([
-                'name' => 'This is required.'
+                'name' => 'This is required.',
             ]);
 
         Expertise::factory()->create(['name' => 'PhD']);
         $this->makeRequest()
             ->assertStatus(422)
             ->assertJsonValidationErrors([
-                'name' => 'The name has already been taken.'
+                'name' => 'The name has already been taken.',
             ]);
 
         $this->makeRequest(['name' => str_repeat('x', 256), 'approved' => 2])
             ->assertStatus(422)
             ->assertJsonValidationErrors([
                 'name' => 'The name may not be greater than 255 characters.',
-                'approved' => 'The approved field must be true or false.'
+                'approved' => 'The approved field must be true or false.',
             ]);
     }
-
-
-
 
     private function makeRequest($data = null): TestResponse
     {
@@ -95,5 +91,4 @@ class UpdateExpertiseTest extends TestCase
 
         return $this->json('PUT', '/api/expertises/'.$this->expertise->id, $data);
     }
-
 }

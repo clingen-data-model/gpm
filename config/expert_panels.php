@@ -19,7 +19,7 @@ return [
         'single-biocurator' => [
             'id' => 1,
             'name' => 'single-biocurator',
-            'full_name' => 'Single biocurator followed by EP discussion'
+            'full_name' => 'Single biocurator followed by EP discussion',
         ],
         'biocurator-export' => [
             'id' => 2,
@@ -35,6 +35,6 @@ return [
             'id' => 100,
             'name' => 'other',
             'full_name' => 'other',
-        ]
-    ]
+        ],
+    ],
 ];

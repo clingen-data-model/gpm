@@ -2,17 +2,15 @@
 
 namespace App\Providers;
 
-use GuzzleHttp\Client;
 use App\Services\HgncLookup;
+use App\Services\HgncLookupInterface;
 use App\Services\MondoLookup;
+use App\Services\MondoLookupInterface;
+use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use Illuminate\Support\Facades\URL;
-use App\Services\HgncLookupInterface;
-use App\Services\MondoLookupInterface;
-use Infrastructure\Service\MessageBus;
 use Illuminate\Support\ServiceProvider;
 use Lorisleiva\Actions\Facades\Actions;
-use Infrastructure\Service\MessageBusInterface;
 
 class AppServiceProvider extends ServiceProvider
 {

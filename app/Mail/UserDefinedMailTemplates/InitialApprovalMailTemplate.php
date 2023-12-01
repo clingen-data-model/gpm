@@ -2,13 +2,8 @@
 
 namespace App\Mail\UserDefinedMailTemplates;
 
-use Illuminate\Support\Facades\View;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Mail\UserDefinedMailTemplates\UserDefinedTemplate;
-use App\Mail\UserDefinedMailTemplates\AbstractUserDefinedMailTemplate;
 class InitialApprovalMailTemplate extends AbstractUserDefinedMailTemplate
 {
-
     public function getTemplate(): string
     {
         return 'email.applications.approval.initial_approval';
@@ -32,6 +27,9 @@ class InitialApprovalMailTemplate extends AbstractUserDefinedMailTemplate
             ['address' => 'brl-cspec@bcm.edu', 'name' => 'CSpec Support'],
         ];
     }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> cbebd455 (Apply Laravel coding style)
 }

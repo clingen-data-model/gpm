@@ -3,7 +3,6 @@
 namespace App\Actions;
 
 use App\Models\Activity;
-use App\Models\LogEntry;
 use App\ModelSearchService;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;

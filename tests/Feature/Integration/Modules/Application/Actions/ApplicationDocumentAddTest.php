@@ -2,27 +2,25 @@
 
 namespace Tests\Feature\Integration\Modules\Application\Actions;
 
-use Tests\TestCase;
 use App\Models\Document;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class ApplicationDocumentAddTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
 
         $this->expertPanel = ExpertPanel::factory()->create();
-        $this->document = Document::factory()->make(['document_type_id'=>config('documents.types.scope.id')]);
+        $this->document = Document::factory()->make(['document_type_id' => config('documents.types.scope.id')]);
     }
-    
 
     /**
      * @test
@@ -51,7 +49,7 @@ class ApplicationDocumentAddTest extends TestCase
 
         $this->assertEquals($this->expertPanel->fresh()->group->documents()->count(), 2);
     }
-    
+
     /**
      * @test
      */
@@ -65,13 +63,12 @@ class ApplicationDocumentAddTest extends TestCase
             storage_path: $this->document->storage_path,
             document_type_id: $this->document->document_type_id,
         );
-    
+
         $this->assertDatabaseHas('expert_panels', [
             'uuid' => $this->expertPanel->uuid,
-            'step_1_received_date' => Carbon::now()->format('Y-m-d H:i:s')
+            'step_1_received_date' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
     }
-
 
     /**
      * @test
@@ -87,10 +84,10 @@ class ApplicationDocumentAddTest extends TestCase
             storage_path: $this->document->storage_path,
             document_type_id: $this->document->document_type_id,
         );
-    
+
         $this->assertDatabaseHas('expert_panels', [
             'uuid' => $this->expertPanel->uuid,
-            'step_4_received_date' => Carbon::now()->format('Y-m-d H:i:s')
+            'step_4_received_date' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
     }
 
@@ -111,7 +108,7 @@ class ApplicationDocumentAddTest extends TestCase
         );
 
         // Add Version 2
-        $doc2 = Document::factory()->make(['document_type_id'=>config('documents.types.scope.id')]);
+        $doc2 = Document::factory()->make(['document_type_id' => config('documents.types.scope.id')]);
         ApplicationDocumentAdd::run(
             expertPanelUuid: $this->expertPanel->uuid,
             uuid: $doc2->uuid,
@@ -124,7 +121,7 @@ class ApplicationDocumentAddTest extends TestCase
 
         $this->assertDatabaseHas('expert_panels', [
             'uuid' => $this->expertPanel->uuid,
-            'step_1_received_date' => '2021-01-01 00:00:00'
+            'step_1_received_date' => '2021-01-01 00:00:00',
         ]);
     }
 }

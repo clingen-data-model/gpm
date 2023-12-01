@@ -2,16 +2,11 @@
 
 namespace App\Modules\Group\Events;
 
-use Illuminate\Support\Carbon;
 use App\Modules\Group\Models\Group;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class ExpertPanelNameUpdated extends GroupEvent
 {
@@ -24,10 +19,10 @@ class ExpertPanelNameUpdated extends GroupEvent
      */
     public function __construct(
         public Group $group,
-        public ?String $longName,
+        public ?string $longName,
         public ?string $shortName,
-        public ?String $oldLong,
-        public ?String $oldShort
+        public ?string $oldLong,
+        public ?string $oldShort
     ) {
     }
 
@@ -35,7 +30,7 @@ class ExpertPanelNameUpdated extends GroupEvent
     {
         return 'EP name updated.';
     }
-    
+
     public function getProperties(): ?array
     {
         $properties = [];
@@ -47,7 +42,7 @@ class ExpertPanelNameUpdated extends GroupEvent
             $properties['old_short_base_name'] = $this->oldShort;
             $properties['new_short_base_name'] = $this->shortName;
         }
-        
+
         return count($properties) > 0 ? $properties : null;
     }
 

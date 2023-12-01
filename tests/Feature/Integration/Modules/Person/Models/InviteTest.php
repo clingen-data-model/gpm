@@ -2,10 +2,9 @@
 
 namespace Tests\Feature\Integration\Modules\Person\Models;
 
-use Tests\TestCase;
 use App\Modules\Person\Models\Invite;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 /**
  * @group groups
@@ -25,7 +24,7 @@ class InviteTest extends TestCase
         $this->assertNull($invite->code);
 
         $invite->save();
-        
+
         $this->assertNotNull($invite->code);
     }
 }

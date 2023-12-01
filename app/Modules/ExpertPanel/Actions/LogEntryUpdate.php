@@ -2,13 +2,10 @@
 
 namespace App\Modules\ExpertPanel\Actions;
 
-use App\Models\Activity;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
-use Lorisleiva\Actions\Concerns\AsAction;
-use Illuminate\Foundation\Bus\Dispatchable;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Http\Requests\UpdateApplicationLogEntryRequest;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Illuminate\Support\Carbon;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class LogEntryUpdate
 {
@@ -48,6 +45,7 @@ class LogEntryUpdate
         );
 
         $logEntry->load(['causer']);
+
         return $logEntry;
     }
 }

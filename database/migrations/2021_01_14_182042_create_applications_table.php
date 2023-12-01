@@ -29,7 +29,7 @@ class CreateApplicationsTable extends Migration
             $table->string('coi_code', 24)->unique();
             $table->timestamps();
             $table->softDeletes();
-            
+
             $table->foreign('ep_type_id')->references('id')->on('ep_types');
             $table->foreign('cdwg_id')->references('id')->on('cdwgs');
         });

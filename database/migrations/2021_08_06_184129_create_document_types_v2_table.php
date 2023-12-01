@@ -1,9 +1,9 @@
 <?php
 
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
 
 class CreateDocumentTypesV2Table extends Migration
 {
@@ -16,7 +16,7 @@ class CreateDocumentTypesV2Table extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        if (!Schema::hasTable('document_types_v2')) {
+        if (! Schema::hasTable('document_types_v2')) {
             Schema::create('document_types_v2', function (Blueprint $table) {
                 $table->id();
                 $table->string('name')->unique();

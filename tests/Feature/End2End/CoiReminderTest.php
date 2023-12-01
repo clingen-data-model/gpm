@@ -2,25 +2,23 @@
 
 namespace Tests\Feature\End2End;
 
-use Carbon\Carbon;
-use Tests\TestCase;
-use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Person;
 use App\Modules\ExpertPanel\Models\Coi;
 use App\Modules\Group\Actions\MemberAdd;
-use App\Modules\Group\Models\GroupMember;
 use App\Modules\Group\Actions\MemberRetire;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Notification;
+use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\GroupMember;
+use App\Modules\Person\Models\Person;
 use App\Notifications\CoiReminderNotification;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
+use Tests\TestCase;
 
 class CoiReminderTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -40,7 +38,7 @@ class CoiReminderTest extends TestCase
         Coi::factory()->create([
             'group_member_id' => $groupMember->id,
             'group_id' => $this->group->id,
-            'completed_at' => Carbon::now()->subDays(364)
+            'completed_at' => Carbon::now()->subDays(364),
         ]);
         $this->assertEquals(1, GroupMember::hasPendingCoi()->count());
     }
@@ -55,7 +53,7 @@ class CoiReminderTest extends TestCase
         Coi::factory()->create([
             'group_member_id' => $groupMember->id,
             'group_id' => $this->group->id,
-            'completed_at' => Carbon::now()->subDays(364)
+            'completed_at' => Carbon::now()->subDays(364),
         ]);
         $peopleWithPendingCois = Person::hasPendingCois()->get();
         $this->assertEquals(1, $peopleWithPendingCois->count());
@@ -75,7 +73,7 @@ class CoiReminderTest extends TestCase
         Coi::factory()->create([
             'group_member_id' => $membership2->id,
             'group_id' => $group2->id,
-            'completed_at' => Carbon::now()->subDays(364)
+            'completed_at' => Carbon::now()->subDays(364),
         ]);
 
         $membershipsWithPendingCoi = $this->user1->person->membershipsWithPendingCoi;
@@ -93,7 +91,7 @@ class CoiReminderTest extends TestCase
         Coi::factory()->create([
             'group_member_id' => $groupMember->id,
             'group_id' => $this->group->id,
-            'completed_at' => Carbon::now()->subDays(364)
+            'completed_at' => Carbon::now()->subDays(364),
         ]);
 
         $group2 = Group::factory()->create();
@@ -101,7 +99,7 @@ class CoiReminderTest extends TestCase
         Coi::factory()->create([
             'group_member_id' => $membership2->id,
             'group_id' => $group2->id,
-            'completed_at' => Carbon::now()->subDays(364)
+            'completed_at' => Carbon::now()->subDays(364),
         ]);
 
         Notification::fake();
@@ -162,9 +160,7 @@ class CoiReminderTest extends TestCase
         Notification::fake();
         $this->triggerScheduledTask();
         Notification::assertNotSentTo($person, CoiReminderNotification::class);
-
     }
-
 
     private function triggerScheduledTask()
     {

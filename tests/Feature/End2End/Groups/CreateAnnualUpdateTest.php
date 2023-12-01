@@ -2,19 +2,18 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Actions\AnnualUpdateCreate;
 use Database\Seeders\AnnualUpdateWindowSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class CreateAnnualUpdateTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -53,7 +52,6 @@ class CreateAnnualUpdateTest extends TestCase
         ]);
     }
 
-
     /**
      * @test
      */
@@ -65,7 +63,7 @@ class CreateAnnualUpdateTest extends TestCase
         $this->makeRequest()
             ->assertStatus(201)
             ->assertJsonFragment([
-                'expert_panel_id' => $this->expertPanel->id
+                'expert_panel_id' => $this->expertPanel->id,
             ]);
 
         $this->assertDatabaseHas('annual_updates', [

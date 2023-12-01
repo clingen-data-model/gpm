@@ -2,11 +2,8 @@
 
 namespace App\Modules\Group\Http\Resources;
 
-use App\Http\Resources\RoleResource;
 use App\Http\Resources\ExpertPanelResource;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Modules\Group\Http\Resources\MemberResource;
-use App\Modules\Group\Http\Resources\GroupStatusResource;
 
 class GroupResource extends JsonResource
 {
@@ -27,8 +24,8 @@ class GroupResource extends JsonResource
         $data['coordinators'] = $this->whenLoaded('coordinators', MemberResource::collection($this->members));
         // $data['parent'] = $this->whenLoaded('parent', GroupResource::collection($this->parent));
 
-
         unset($data['members'], $data['created_at'], $data['deleted_at']);
+
         return $data;
     }
 }

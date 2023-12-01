@@ -2,17 +2,16 @@
 
 namespace Tests\Feature\Integration\Modules\Application\Actions;
 
-use Tests\TestCase;
-use Illuminate\Support\Carbon;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\StepApprove;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
+use Tests\TestCase;
 
 class StepApproveTest extends TestCase
 {
     use RefreshDatabase;
-        
+
     /**
      * @test
      */
@@ -30,9 +29,8 @@ class StepApproveTest extends TestCase
             [
                 'date_approved' => $dateApproved->toIsoString(),
                 'step' => 1,
-                'activity_type' => 'step-approved'
+                'activity_type' => 'step-approved',
             ]
         );
     }
-
 }

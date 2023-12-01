@@ -2,8 +2,8 @@
 
 namespace App\Tasks\Http\Controllers\Api;
 
-use App\Tasks\Models\Task;
 use App\ModelSearchService;
+use App\Tasks\Models\Task;
 use Illuminate\Http\Request;
 
 class TaskController
@@ -16,19 +16,23 @@ class TaskController
                 foreach ($where as $key => $value) {
                     if ($key == 'pending') {
                         $query->pending();
+
                         continue;
                     }
                     if ($key == 'completed') {
                         $query->completed();
+
                         continue;
                     }
                     if (is_array($value)) {
                         $query->whereIn($key, $value);
+
                         continue;
                     }
-                    
+
                     $query->where($key, $value);
                 }
+
                 return $query;
             }
         );

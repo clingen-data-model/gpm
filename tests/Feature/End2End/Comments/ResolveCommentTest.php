@@ -2,25 +2,19 @@
 
 namespace Tests\Feature\End2End\Comments;
 
-use Carbon\Carbon;
-use Tests\TestCase;
-use App\Models\Comment;
-use App\Events\CommentCreated;
 use App\Actions\CommentResolve;
-use App\Events\CommentResolved;
-use Illuminate\Testing\TestResponse;
-use Illuminate\Support\Facades\Event;
 use App\Modules\Group\Models\Submission;
 use App\Modules\Group\Notifications\CommentActivityNotification;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Notification;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Testing\TestResponse;
 
 class ResolveCommentTest extends CommentTest
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->comment = $this->createComment();
@@ -36,12 +30,12 @@ class ResolveCommentTest extends CommentTest
             ->assertStatus(200)
             ->assertJson([
                 'id' => $this->comment->id,
-                'resolved_at' => Carbon::now()->toIsoString()
+                'resolved_at' => Carbon::now()->toIsoString(),
             ]);
 
         $this->assertDatabaseHas('comments', [
             'id' => $this->comment->id,
-            'resolved_at' => Carbon::now()
+            'resolved_at' => Carbon::now(),
         ]);
     }
 
@@ -69,12 +63,12 @@ class ResolveCommentTest extends CommentTest
             ->assertStatus(200)
             ->assertJson([
                 'id' => $this->comment->id,
-                'resolved_at' => $originalDate->toISOString()
+                'resolved_at' => $originalDate->toISOString(),
             ]);
 
         $this->assertDatabaseHas('comments', [
             'id' => $this->comment->id,
-            'resolved_at' => $originalDate
+            'resolved_at' => $originalDate,
         ]);
     }
 
@@ -86,7 +80,7 @@ class ResolveCommentTest extends CommentTest
         $submission = Submission::factory()->create([
             'group_id' => $this->expertPanel->group_id,
             'submission_status_id' => config('submissions.statuses.under-chair-review.id'),
-            'sent_to_chairs_at' => Carbon::now()
+            'sent_to_chairs_at' => Carbon::now(),
         ]);
 
         $approver = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
@@ -103,12 +97,10 @@ class ResolveCommentTest extends CommentTest
                 return true
                     && $notification->group->id = $this->expertPanel->group_id
                     && $notification->comment->id = $comment->id
-                    && $notification->event = 'resolved'
-                ;
+                    && $notification->event = 'resolved';
             }
         );
     }
-
 
     /**
      * @test
@@ -131,13 +123,10 @@ class ResolveCommentTest extends CommentTest
         );
     }
 
-
     private function makeRequest($id = null): TestResponse
     {
         $id = $id ?? $this->comment->id;
 
         return $this->json('POST', '/api/comments/'.$id.'/resolved');
     }
-
-
 }

@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AnnualUpdateWindow extends Model
 {
@@ -13,14 +13,14 @@ class AnnualUpdateWindow extends Model
     protected $fillable = [
         'for_year',
         'start',
-        'end'
+        'end',
     ];
 
     protected $casts = [
         'id' => 'int',
         'for_year' => 'int',
         'start' => 'datetime',
-        'end' => 'datetime'
+        'end' => 'datetime',
     ];
 
     /**
@@ -29,8 +29,6 @@ class AnnualUpdateWindow extends Model
 
     /**
      * Get all of the annualReviews for the AnnualUpdateWindow
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function annualReviews(): HasMany
     {
@@ -44,10 +42,8 @@ class AnnualUpdateWindow extends Model
         return $query->where('for_year', $year);
     }
 
-    static public function latest()
+    public static function latest()
     {
         return self::query()->orderBy('for_year', 'desc')->orderBy('created_at')->first();
     }
-
-
 }

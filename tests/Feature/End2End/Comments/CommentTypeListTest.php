@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\End2End\Comments;
 
-use Tests\Feature\End2End\Comments\CommentTest;
-
 class CommentTypeListTest extends CommentTest
 {
     /**
@@ -15,5 +13,4 @@ class CommentTypeListTest extends CommentTest
             ->assertStatus(200)
             ->assertJsonCount(count(config('comments.types')));
     }
-
 }

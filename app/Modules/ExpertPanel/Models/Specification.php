@@ -3,17 +3,15 @@
 namespace App\Modules\ExpertPanel\Models;
 
 use App\Models\Contracts\HasNotes;
-use Illuminate\Database\Eloquent\Model;
-use App\Modules\ExpertPanel\Models\Ruleset;
-use Database\Factories\SpecificationFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Traits\HasNotes as HasNotesTrait;
-use App\Modules\Group\Models\Traits\BelongsToGroup;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Modules\ExpertPanel\Models\SpecificationStatus;
 use App\Modules\ExpertPanel\Models\Contracts\BelongsToExpertPanel;
-use App\Modules\Group\Models\Contracts\BelongsToGroup as ContractsBelongsToGroup;
 use App\Modules\ExpertPanel\Models\Traits\BelongsToExpertPanel as TraitsBelongsToExpertPanel;
+use App\Modules\Group\Models\Contracts\BelongsToGroup as ContractsBelongsToGroup;
+use App\Modules\Group\Models\Traits\BelongsToGroup;
+use Database\Factories\SpecificationFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $id
@@ -34,6 +32,7 @@ class Specification extends Model implements HasNotes, BelongsToExpertPanel, Con
     use TraitsBelongsToExpertPanel;
 
     protected $primaryKey = 'cspec_id';
+
     public $incrementing = false;
 
     /**

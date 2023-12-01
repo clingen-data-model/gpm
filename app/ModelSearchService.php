@@ -2,11 +2,8 @@
 
 namespace App;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Model;
 
 class ModelSearchService
 {
@@ -27,12 +24,10 @@ class ModelSearchService
                 ->get();
     }
 
-
     public function buildQuery($params): Builder
     {
         $query = $this->modelClass::query()
                     ->with($this->defaultWith);
-
 
         $query->select($this->getSelect());
 
@@ -61,23 +56,24 @@ class ModelSearchService
 
     private function getSelect()
     {
-        if (!is_null($this->defaultSelect)) {
+        if (! is_null($this->defaultSelect)) {
             return $this->defaultSelect;
         }
         $dummy = new $this->modelClass();
+
         return $dummy->getTable().'.*';
     }
 
-
     private function addWhereClause($query, $where)
     {
-        if (!is_null($this->whereFunction)) {
+        if (! is_null($this->whereFunction)) {
             return ($this->whereFunction)($query, $where);
         }
 
         foreach ($where as $key => $value) {
             if (is_array($value)) {
                 $query->whereIn($key, $value);
+
                 continue;
             }
             $query->where($key, $value);
@@ -86,17 +82,16 @@ class ModelSearchService
         return $query;
     }
 
-
     private function eagerLoadRelations($query, $with)
     {
         $relations = $with;
 
-        if (!is_null($this->eagerLoadFunction)) {
+        if (! is_null($this->eagerLoadFunction)) {
             return ($this->eagerLoadFunction)($query, $with);
         }
 
         if (is_string($relations)) {
-            $relations = array_map(function ($i) use ($with) {
+            $relations = array_map(function ($i) {
                 return trim($i);
             }, explode(',', $relations));
         }
@@ -115,14 +110,12 @@ class ModelSearchService
         return $query;
     }
 
-
-
     private function sortQuery($query, $sort)
     {
         $field = $sort['field'];
         $dir = $sort['dir'] ?? 'asc';
 
-        if (!is_null($this->sortFunction)) {
+        if (! is_null($this->sortFunction)) {
             return ($this->sortFunction)($query, $field, $dir);
         }
 

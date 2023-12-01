@@ -2,12 +2,9 @@
 
 namespace App\Modules\ExpertPanel\Actions;
 
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Models\RulesetStatus;
-use App\Modules\ExpertPanel\Models\Specification;
-use App\Modules\ExpertPanel\Models\SpecificationStatus;
-use App\Modules\ExpertPanel\Actions\SpecificationRulesetSync;
 use App\Modules\ExpertPanel\Events\SpecificationStatusUpdated;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Models\Specification;
 
 class SpecificationAndRulsetsSync
 {
@@ -16,7 +13,6 @@ class SpecificationAndRulsetsSync
         private SpecificationRulesetSync $syncRuleset
     ) {
     }
-
 
     public function handle(
         string $cspecId,

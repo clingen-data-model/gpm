@@ -13,7 +13,7 @@ class DocumentType extends Model
         'name',
         'long_name',
         'is_versioned',
-        'application_document'
+        'application_document',
     ];
 
     protected $casts = [
@@ -21,12 +21,12 @@ class DocumentType extends Model
         'name' => 'string',
         'long_name' => 'string',
         'is_versioned' => 'boolean',
-        'application_document' => 'boolean'
+        'application_document' => 'boolean',
     ];
 
     protected $hidden = [
         'created_at',
         'deleted_at',
-        'updated_at'
+        'updated_at',
     ];
 }

@@ -3,22 +3,19 @@
 namespace Tests\Feature\End2End\Groups\EvidenceSummaries;
 
 use App\Modules\ExpertPanel\Models\EvidenceSummary;
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
-use App\Modules\Group\Models\Group;
-use App\Modules\ExpertPanel\Models\Gene;
-use Tests\Traits\SeedsHgncGenesAndDiseases;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Models\Group;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
+use Tests\Traits\SeedsHgncGenesAndDiseases;
 
 class UpdateSummaryTest extends TestCase
 {
     use RefreshDatabase;
     use SeedsHgncGenesAndDiseases;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -27,7 +24,7 @@ class UpdateSummaryTest extends TestCase
         $this->user = $this->setupUser(permissions: ['ep-applications-manage']);
         $this->vcep = ExpertPanel::factory()->vcep()->create();
         $this->evidenceSummary = EvidenceSummary::factory()->create([
-            'expert_panel_id' => $this->vcep->id
+            'expert_panel_id' => $this->vcep->id,
         ]);
         Sanctum::actingAs($this->user);
 
@@ -66,15 +63,14 @@ class UpdateSummaryTest extends TestCase
         $this->makeRequest([
             'gene_id' => 1823198319,
             'vci_url' => 'blah blah blah',
-            'variant' => 'thisi s a bunch of charactser that will ultimately be over 255 characters.thisi s a bunch of charactser that will ultimately be over 255 characters.thisi s a bunch of charactser that will ultimately be over 255 characters.thisi s a bunch of charactser that'
+            'variant' => 'thisi s a bunch of charactser that will ultimately be over 255 characters.thisi s a bunch of charactser that will ultimately be over 255 characters.thisi s a bunch of charactser that will ultimately be over 255 characters.thisi s a bunch of charactser that',
         ])->assertStatus(422)
             ->assertJsonFragment([
                 'gene_id' => ['The gene was not found in your scope.'],
                 'vci_url' => ['The vci url format is invalid.'],
-                'variant' => ['The variant may not be greater than 255 characters.']
+                'variant' => ['The variant may not be greater than 255 characters.'],
             ]);
     }
-    
 
     /**
      * @test
@@ -85,7 +81,7 @@ class UpdateSummaryTest extends TestCase
         $this->makeRequest()
             ->assertStatus(422)
             ->assertJsonFragment([
-                'group' => ['You can not add an evidence summary to this group. Only VCEPs have evidence summaries.']
+                'group' => ['You can not add an evidence summary to this group. Only VCEPs have evidence summaries.'],
             ]);
     }
 
@@ -99,13 +95,13 @@ class UpdateSummaryTest extends TestCase
             'summary' => 'Yackety Schmackety',
             'gene_id' => $this->evidenceSummary->gene_id,
             'variant' => 'Some variant',
-            'vci_url' => 'https://clinicalgenome.org'
+            'vci_url' => 'https://clinicalgenome.org',
         ];
 
         $this->makeRequest($expectedData)
             ->assertStatus(200)
             ->assertJson([
-                'data' => $expectedData
+                'data' => $expectedData,
             ]);
 
         $this->assertDatabaseHas('evidence_summaries', $expectedData);
@@ -121,7 +117,7 @@ class UpdateSummaryTest extends TestCase
             'summary' => 'Yackety Schmackety',
             'gene_id' => $this->evidenceSummary->gene_id,
             'variant' => 'Some variant',
-            'vci_url' => 'https://clinicalgenome.org'
+            'vci_url' => 'https://clinicalgenome.org',
         ];
 
         $this->makeRequest($expectedData);
@@ -134,7 +130,6 @@ class UpdateSummaryTest extends TestCase
             'properties->evidence_summary->id' => 1,
         ]);
     }
-    
 
     private function makeRequest($data = null)
     {
@@ -142,8 +137,9 @@ class UpdateSummaryTest extends TestCase
             'gene_id' => $this->evidenceSummary->gene_id,
             'summary' => 'blah blah blah',
             'variant' => 'Some variant',
-            'vci_url' => 'https://clinicalgenome.org'
+            'vci_url' => 'https://clinicalgenome.org',
         ];
+
         return $this->json('PUT', $this->url, $data);
     }
 }

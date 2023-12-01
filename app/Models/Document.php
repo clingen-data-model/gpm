@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasUuid;
-use Illuminate\Support\Carbon;
-use App\Modules\User\Models\User;
-use Illuminate\Database\Eloquent\Model;
 use App\Http\Controllers\DocumentController;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Traits\HasUuid;
+use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 class Document extends Model
 {
@@ -31,7 +31,7 @@ class Document extends Model
         'is_final',
         'step',
         'version',
-        'date_received'
+        'date_received',
     ];
 
     protected $casts = [
@@ -41,7 +41,7 @@ class Document extends Model
     ];
 
     protected $dates = [
-        'date_received'
+        'date_received',
     ];
 
     protected $appends = [
@@ -49,10 +49,10 @@ class Document extends Model
         'version',
         'step',
         'is_final',
-        'date_received'
+        'date_received',
     ];
 
-    # Relationships
+    // Relationships
 
     public function documentType(): BelongsTo
     {
@@ -68,7 +68,6 @@ class Document extends Model
     {
         return $this->morphTo();
     }
-    
 
     /**
      * SCOPES
@@ -79,6 +78,7 @@ class Document extends Model
         if ($type instanceof DocumentType) {
             $id = $type->id;
         }
+
         return $query->where('document_type_id', $id);
     }
 
@@ -91,7 +91,6 @@ class Document extends Model
     {
         return $query->where('metadata->is_final', 1);
     }
-    
 
     /**
      * ACESSORS & MUTATORS
@@ -100,7 +99,7 @@ class Document extends Model
     {
         return isset($this->metadata['step']) ? $this->metadata['step'] : null;
     }
-    
+
     public function setStepAttribute(int $step): void
     {
         $md = $this->metadata;
@@ -108,12 +107,12 @@ class Document extends Model
 
         $this->metadata = $md;
     }
-    
+
     public function getVersionAttribute(): ?int
     {
         return isset($this->metadata['version']) ? $this->metadata['version'] : null;
     }
-    
+
     public function setVersionAttribute(int $version): void
     {
         $md = $this->metadata;
@@ -121,12 +120,12 @@ class Document extends Model
 
         $this->metadata = $md;
     }
-    
+
     public function getDateReceivedAttribute(): ?Carbon
     {
         return isset($this->metadata['date_received']) ? Carbon::parse($this->metadata['date_received']) : null;
     }
-    
+
     public function setDateReceivedAttribute($dateReceived): void
     {
         $dateString = $dateReceived;
@@ -155,7 +154,6 @@ class Document extends Model
     /**
      * DOMAIN
      */
-    
     public function getDownloadUrlAttribute()
     {
         return url()->action([DocumentController::class, 'show'], [$this->uuid]);

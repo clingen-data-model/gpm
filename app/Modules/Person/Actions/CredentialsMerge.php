@@ -3,10 +3,9 @@
 namespace App\Modules\Person\Actions;
 
 use App\Models\Credential;
+use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
-use App\Modules\Person\Actions\CredentialDelete;
-use Illuminate\Support\Facades\DB;
 
 class CredentialsMerge
 {
@@ -15,7 +14,6 @@ class CredentialsMerge
     public function __construct(private CredentialDelete $deleteCredential)
     {
     }
-
 
     public function handle(Credential $obsolete, Credential $authority): Credential
     {
@@ -48,7 +46,6 @@ class CredentialsMerge
         return $request->user()->hasPermissionTo('people-manage');
     }
 
-
     private function transferPeople(Credential $obsolete, Credential $authority): void
     {
         $obsolete->people
@@ -56,7 +53,5 @@ class CredentialsMerge
                 $person->credentials()->detach($obsolete->id);
                 $person->credentials()->syncWithoutDetaching([$authority->id]);
             });
-
     }
-
 }

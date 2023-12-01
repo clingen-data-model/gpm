@@ -2,9 +2,9 @@
 
 namespace App\Modules\Person\Http\Requests;
 
-use Illuminate\Validation\Rule;
 use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class PersonUpdateRequest extends FormRequest
 {
@@ -26,14 +26,15 @@ class PersonUpdateRequest extends FormRequest
     public function rules()
     {
         $person = Person::findByUuidOrFail($this->route('uuid'));
+
         return [
             'email' => [
                 'required',
-                Rule::unique('people')->ignore($person->id)
+                Rule::unique('people')->ignore($person->id),
             ],
             'first_name' => 'required',
             'last_name' => 'required',
-            'phone' => 'nullable'
+            'phone' => 'nullable',
         ];
     }
 }

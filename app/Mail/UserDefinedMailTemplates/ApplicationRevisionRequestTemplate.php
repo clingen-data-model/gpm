@@ -2,11 +2,8 @@
 
 namespace App\Mail\UserDefinedMailTemplates;
 
-use App\Mail\UserDefinedMailTemplates\AbstractUserDefinedMailTemplate;
-
 class ApplicationRevisionRequestTemplate extends AbstractUserDefinedMailTemplate
 {
-
     public function getTemplate(): string
     {
         return 'email.applications.approval.revision_request';
@@ -36,6 +33,4 @@ class ApplicationRevisionRequestTemplate extends AbstractUserDefinedMailTemplate
 
         return $context;
     }
-    
-    
 }

@@ -2,18 +2,13 @@
 
 namespace App\Modules\Group\Events;
 
-use Illuminate\Support\Collection;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Database\Eloquent\Model;
-use App\Modules\Group\Events\GroupEvent;
 use App\Modules\Group\Models\GroupMember;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use App\Modules\Group\Events\PublishableApplicationEvent;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 
 class MemberPermissionsGranted extends GroupMemberEvent implements PublishableApplicationEvent
 {
@@ -32,8 +27,8 @@ class MemberPermissionsGranted extends GroupMemberEvent implements PublishableAp
     public function getLogEntry(): string
     {
         return $this->groupMember->person->name
-                . ' granted permissions '
-                . $this->permissions->pluck('name')
+                .' granted permissions '
+                .$this->permissions->pluck('name')
                     ->join(',', ', and ');
     }
 
@@ -42,7 +37,7 @@ class MemberPermissionsGranted extends GroupMemberEvent implements PublishableAp
         return [
             'group_member_id' => $this->groupMember->id,
             'person' => $this->groupMember->person->only('id', 'name', 'email'),
-            'permissions' => $this->permissions->map(fn ($p) => $p->only('id', 'name'))
+            'permissions' => $this->permissions->map(fn ($p) => $p->only('id', 'name')),
         ];
     }
 
@@ -50,13 +45,11 @@ class MemberPermissionsGranted extends GroupMemberEvent implements PublishableAp
     {
         return $this->groupMember->group;
     }
-    
+
     public function getEventType(): string
     {
         return 'member_permission_granted';
     }
-    
-    
 
     /**
      * Get the channels the event should broadcast on.

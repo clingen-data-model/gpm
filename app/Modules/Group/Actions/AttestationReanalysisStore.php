@@ -1,19 +1,18 @@
 <?php
+
 namespace App\Modules\Group\Actions;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
+use App\Modules\Group\Events\AttestationSigned;
+use App\Modules\Group\Http\Resources\GroupResource;
 use App\Modules\Group\Models\Group;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
-use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsObject;
-use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
-use App\Modules\Group\Events\AttestationSigned;
-use Illuminate\Auth\Access\AuthorizationException;
-use App\Modules\Group\Http\Resources\GroupResource;
-use phpDocumentor\Reflection\Types\Boolean;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsController;
+use Lorisleiva\Actions\Concerns\AsObject;
 
 class AttestationReanalysisStore
 {
@@ -25,13 +24,13 @@ class AttestationReanalysisStore
         ?bool $reanalysis_conflicting,
         ?bool $reanalysis_review_lp,
         ?bool $reanalysis_review_lb,
-        ?String $reanalysis_other,
+        ?string $reanalysis_other,
     ) {
-        if (!$group->isEp) {
+        if (! $group->isEp) {
             throw ValidationException::withMessages(['group' => 'Only expert panels have Reanalysis & Discrepancy Resolution attestations.']);
         }
 
-        if (!is_null($group->expertPanel->reanalysis_attestation_date)) {
+        if (! is_null($group->expertPanel->reanalysis_attestation_date)) {
             return $group;
         }
 
@@ -47,15 +46,15 @@ class AttestationReanalysisStore
 
         $group->expertPanel->save();
         $group->touch();
-        
+
         if ($this->attestationCompleted($group)) {
             $event = new AttestationSigned($group, 'Reanalysis', $attestationDate);
             Event::dispatch($event);
         }
-        
+
         return $group;
     }
-    
+
     public function asController(ActionRequest $request, $groupUuid)
     {
         $group = Group::findByUuidOrFail($groupUuid);
@@ -80,7 +79,7 @@ class AttestationReanalysisStore
             'reanalysis_conflicting' => 'required_without:reanalysis_other|boolean',
             'reanalysis_review_lp' => 'required_without:reanalysis_other|boolean',
             'reanalysis_review_lb' => 'required_without:reanalysis_other|boolean',
-            'reanalysis_other' => 'required_without_all:reanalysis_conflicting,reanalysis_review_lp,reanalysis_review_lb'
+            'reanalysis_other' => 'required_without_all:reanalysis_conflicting,reanalysis_review_lp,reanalysis_review_lb',
         ];
     }
 
@@ -88,7 +87,7 @@ class AttestationReanalysisStore
     {
         return [
             'reanalysis_other.required_without_all' => 'This field is required when no other options are checked.',
-            'required_without' => 'This is required unless you explain differences.'
+            'required_without' => 'This is required unless you explain differences.',
         ];
     }
 

@@ -1,14 +1,15 @@
 <?php
+
 namespace App\Modules\Group\Actions;
 
-use Illuminate\Validation\Rule;
+use App\Modules\Group\Events\ExpertPanelNameUpdated;
+use App\Modules\Group\Http\Resources\GroupResource;
 use App\Modules\Group\Models\Group;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
-use Illuminate\Auth\Access\AuthorizationException;
-use App\Modules\Group\Http\Resources\GroupResource;
-use App\Modules\Group\Events\ExpertPanelNameUpdated;
 
 class ExpertPanelNameUpdate
 {
@@ -19,7 +20,7 @@ class ExpertPanelNameUpdate
         if ($longName != $group->expertPanel->long_base_name || $shortName != $group->expertPanel->short_base_name) {
             $group->expertPanel->update([
                 'long_base_name' => $longName,
-                'short_base_name' => $shortName
+                'short_base_name' => $shortName,
             ]);
 
             $oldLong = $group->expertPanel->long_base_name;
@@ -27,7 +28,7 @@ class ExpertPanelNameUpdate
 
             if ($longName) {
                 $group->update([
-                    'name' => $longName
+                    'name' => $longName,
                 ]);
             }
 
@@ -64,7 +65,7 @@ class ExpertPanelNameUpdate
                         $query->whereNotNull('long_base_name')
                             ->whereNull('deleted_at')
                             ->where('expert_panel_type_id', $expertPanel->expert_panel_type_id);
-                    })
+                    }),
             ],
             'short_base_name' => [
                 'nullable',
@@ -75,7 +76,7 @@ class ExpertPanelNameUpdate
                         $query->whereNotNull('short_base_name')
                             ->whereNull('deleted_at')
                             ->where('expert_panel_type_id', $expertPanel->expert_panel_type_id);
-                    })
+                    }),
             ],
         ];
     }

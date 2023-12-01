@@ -2,26 +2,24 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Tests\TestCase;
-use App\Tasks\Models\Task;
-use Laravel\Sanctum\Sanctum;
-use App\Tasks\Actions\TaskCreate;
-use App\Tasks\Actions\TaskComplete;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Tasks\Actions\TaskComplete;
+use App\Tasks\Actions\TaskCreate;
 use Database\Seeders\TaskTypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class GetTasksTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
         $this->runSeeder(TaskTypeSeeder::class);
-        
+
         $this->expertPanel = ExpertPanel::factory()->vcep()->create();
         $this->pendingTask = (new TaskCreate)->handle($this->expertPanel->group, config('tasks.types.sustained-curation-review.id'));
         $this->completedTask = (new TaskCreate)->handle($this->expertPanel->group, config('tasks.types.sustained-curation-review.id'));
@@ -50,7 +48,7 @@ class GetTasksTest extends TestCase
             ->assertStatus(200)
             ->assertJsonCount(1)
             ->assertJsonFragment([
-                'id' => $this->pendingTask->id
+                'id' => $this->pendingTask->id,
             ]);
     }
 
@@ -63,7 +61,7 @@ class GetTasksTest extends TestCase
             ->assertStatus(200)
             ->assertJsonCount(1)
             ->assertJsonFragment([
-                'id' => $this->completedTask->id
+                'id' => $this->completedTask->id,
             ]);
     }
 }

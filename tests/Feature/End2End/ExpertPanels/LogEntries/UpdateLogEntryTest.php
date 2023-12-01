@@ -2,20 +2,17 @@
 
 namespace Tests\Feature\End2End\ExpertPanels\LogEntries;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Actions\LogEntryAdd;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class UpdateLogEntryTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -27,7 +24,6 @@ class UpdateLogEntryTest extends TestCase
         app()->make(LogEntryAdd::class)->handle($this->expertPanel->uuid, '2020-01-01', 'test test test');
         $this->logEntry = $this->expertPanel->group->fresh()->latestLogEntry;
     }
-    
 
     /**
      * @test
@@ -41,19 +37,19 @@ class UpdateLogEntryTest extends TestCase
             [
                 'entry' => 'puppies are cute',
                 'log_date' => $this->logEntry->created_at->toIsoString(),
-                'step' => $this->logEntry->step
+                'step' => $this->logEntry->step,
             ]
         );
 
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('activity_log', [
-            'id' => (string)$this->expertPanel->fresh()->group->latestLogEntry->id,
+            'id' => (string) $this->expertPanel->fresh()->group->latestLogEntry->id,
             'description' => 'puppies are cute',
             'created_at' => $this->logEntry->created_at->format('Y-m-d H:i:s'),
             'properties->entry' => 'puppies are cute',
             'properties->log_date' => $this->logEntry->created_at->toIsoString(),
-            'properties->step' => $this->logEntry->step
+            'properties->step' => $this->logEntry->step,
         ]);
     }
 }

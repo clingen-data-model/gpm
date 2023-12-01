@@ -2,24 +2,23 @@
 
 namespace Tests\Feature\End2End\Person;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\Person\Models\Person;
 use App\Modules\Person\Models\Institution;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class MergeInstitutionsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupPermission('people-manage');
         $this->user = $this->setupUser(permissions: ['people-manage']);
         Sanctum::actingAs($this->user);
-        
+
         $this->institution1 = Institution::factory()->create();
         $this->institution2 = Institution::factory()->create();
         $this->institution3 = Institution::factory()->create();
@@ -71,14 +70,14 @@ class MergeInstitutionsTest extends TestCase
 
         $this->assertDatabaseHas('people', [
             'id' => $this->person2->id,
-            'institution_id' => $this->institution1->id
+            'institution_id' => $this->institution1->id,
         ]);
         $this->assertDatabaseHas('people', [
             'id' => $this->person3->id,
-            'institution_id' => $this->institution1->id
+            'institution_id' => $this->institution1->id,
         ]);
     }
-    
+
     /**
      * @test
      */
@@ -108,22 +107,18 @@ class MergeInstitutionsTest extends TestCase
     public function validates_obsolete_cannot_match_authority()
     {
         $this->makeRequest([
-                'authority_id' => $this->institution1->id,
-                'obsolete_ids' => [$this->institution1->id, $this->institution2->id]
-            ])
+            'authority_id' => $this->institution1->id,
+            'obsolete_ids' => [$this->institution1->id, $this->institution2->id],
+        ])
             ->assertStatus(422)
             ->assertJsonFragment(['obsolete_ids.0' => ['All obsolete institutions may not include the merge-to institution.']]);
     }
-    
-    
-    
-    
 
     private function makeRequest($data = null)
     {
         $data = $data ?? [
             'authority_id' => $this->institution1->id,
-            'obsolete_ids' => [$this->institution2->id, $this->institution3->id]
+            'obsolete_ids' => [$this->institution2->id, $this->institution3->id],
         ];
 
         return $this->json('PUT', '/api/institutions/merge', $data);

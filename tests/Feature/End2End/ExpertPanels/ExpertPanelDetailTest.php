@@ -2,27 +2,23 @@
 
 namespace Tests\Feature\End2End\ExpertPanels;
 
-use Tests\TestCase;
-use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Carbon;
-use App\Modules\User\Models\User;
-use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Person;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Actions\ContactAdd;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Actions\LogEntryAdd;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Modules\ExpertPanel\Actions\NextActionCreate;
-use App\Modules\ExpertPanel\Actions\ExpertPanelCreate;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
+use App\Modules\ExpertPanel\Actions\ContactAdd;
+use App\Modules\ExpertPanel\Actions\LogEntryAdd;
+use App\Modules\ExpertPanel\Actions\NextActionCreate;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Person\Models\Person;
 use Database\Seeders\NextActionAssigneesTableSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
+use Ramsey\Uuid\Uuid;
+use Tests\TestCase;
 
 class ExpertPanelDetailTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();

@@ -2,11 +2,11 @@
 
 namespace App\DataExchange\Actions;
 
+use App\DataExchange\Contracts\MessageProcessor;
+use App\DataExchange\Contracts\MessageStream;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Lorisleiva\Actions\Concerns\AsCommand;
-use App\DataExchange\Contracts\MessageStream;
-use App\DataExchange\Contracts\MessageProcessor;
 
 class DxConsume
 {
@@ -15,8 +15,7 @@ class DxConsume
     public $commandSignature = 'dx:consume {topic* : topic to be consumed} {--limit= : number of messages to consume}';
 
     public function __construct(
-    )
-    {
+    ) {
     }
 
     public function handle(array $topics, ?int $limit = null): void
@@ -26,7 +25,7 @@ class DxConsume
         $jobBus = app()->make(Dispatcher::class);
         $stream->addTopics($topics);
         $generator = is_null($limit) ? $stream->consume() : $stream->consumeSomeMessages($limit);
-        foreach($generator as $message) {
+        foreach ($generator as $message) {
             $jobBus->dispatch($processor::makeJob($message));
         }
     }
@@ -35,5 +34,4 @@ class DxConsume
     {
         $this->handle($command->argument('topic'), $command->option('limit'));
     }
-
 }

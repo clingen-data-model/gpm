@@ -1,11 +1,11 @@
 <?php
+
 namespace App\Modules\Person\Actions;
 
 use App\Modules\Person\Models\Invite;
-use Lorisleiva\Actions\ActionRequest;
 use App\Modules\User\Actions\UserDelete;
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
-use App\Modules\Person\Actions\PersonUnlinkUser;
 
 class InviteReset
 {
@@ -15,8 +15,6 @@ class InviteReset
     {
         //code
     }
-    
-
 
     public function handle(Invite $invite, $data)
     {
@@ -25,7 +23,7 @@ class InviteReset
         $person = $invite->person;
         $user = $invite->person->user;
 
-        if(is_null($user)) {
+        if (is_null($user)) {
             return $invite;
         }
         $this->unlinkUser->handle($person);
@@ -39,7 +37,7 @@ class InviteReset
         $invite = Invite::findByCodeOrFail($code);
         $invite = $this->handle($invite, $request->all());
         $invite->load('person', 'person.user');
-        
+
         return $invite;
     }
 

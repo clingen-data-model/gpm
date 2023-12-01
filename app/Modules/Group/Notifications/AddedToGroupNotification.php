@@ -2,12 +2,10 @@
 
 namespace App\Modules\Group\Notifications;
 
-use App\Modules\Group\Models\Submission;
-use Illuminate\Bus\Queueable;
 use App\Modules\Group\Models\Group;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class AddedToGroupNotification extends Notification
 {
@@ -45,7 +43,7 @@ class AddedToGroupNotification extends Notification
                 ->subject('You have been added to '.$this->group->displayName)
                 ->view('email.added_to_group', [
                     'notifiable' => $notifiable,
-                    'group' => $this->group
+                    'group' => $this->group,
                 ]);
     }
 
@@ -59,7 +57,7 @@ class AddedToGroupNotification extends Notification
     {
         return [
             'message' => 'You have been added to '.$this->group->displayName.'.',
-            'group' => $this->group->toArray()
+            'group' => $this->group->toArray(),
         ];
     }
 }

@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Modules\Person\Models\Person;
 use App\Modules\Group\Models\Judgement;
 use App\Modules\Group\Models\Submission;
+use App\Modules\Person\Models\Person;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class JudgementFactory extends Factory
@@ -27,7 +27,7 @@ class JudgementFactory extends Factory
             'decision' => $this->faker->randomElement(['request-revisions', 'approve-after-revisions', 'approve']),
             'notes' => $this->faker->paragraph(3),
             'submission_id' => Submission::factory(),
-            'person_id' => Person::factory()
+            'person_id' => Person::factory(),
         ];
     }
 }

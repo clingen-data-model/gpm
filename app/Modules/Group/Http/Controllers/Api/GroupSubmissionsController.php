@@ -2,12 +2,9 @@
 
 namespace App\Modules\Group\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use App\Modules\Group\Models\Group;
 use App\Http\Controllers\Controller;
-use App\ModelSearchService;
-use App\Modules\Group\Http\Resources\GroupResource;
-use App\Modules\Group\Http\Resources\MemberResource;
+use App\Modules\Group\Models\Group;
+use Illuminate\Http\Request;
 
 class GroupSubmissionsController extends Controller
 {
@@ -26,7 +23,7 @@ class GroupSubmissionsController extends Controller
                 'judgements',
                 'judgements.person' => function ($q) {
                     return $q->select(['id', 'first_name', 'last_name', 'email']);
-                }
+                },
             ])
             ->orderBy('created_at', 'asc')
             ->get();
@@ -47,7 +44,7 @@ class GroupSubmissionsController extends Controller
                 'judgements',
                 'judgements.person' => function ($q) {
                     return $q->select(['id', 'first_name', 'last_name', 'email']);
-                }
+                },
             ])->first();
     }
 }

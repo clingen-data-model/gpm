@@ -5,7 +5,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Symfony\Component\Finder\Finder;
 
-if (!function_exists('renderQuery')) {
+if (! function_exists('renderQuery')) {
     function renderQuery($query)
     {
         $treated = preg_replace('/%/', '%%', $query->toSql());
@@ -15,7 +15,7 @@ if (!function_exists('renderQuery')) {
     }
 }
 
-if (!function_exists('backtrace')) {
+if (! function_exists('backtrace')) {
     function backtrace($limit = 0)
     {
         return array_map(function ($result) {
@@ -24,34 +24,37 @@ if (!function_exists('backtrace')) {
     }
 }
 
-if (!function_exists('carbonToString')) {
+if (! function_exists('carbonToString')) {
     function carbonToString(?Carbon $carbon, $format = 'Y-m-d H:i:s')
     {
         return $carbon ? $carbon->format($format) : null;
     }
 }
 
-if (!function_exists('valueAtIndex')) {
+if (! function_exists('valueAtIndex')) {
     function valueAtIndex(array $arr, $index, $default = null)
     {
-        return isset($arr[$index]) ? $arr[$index]  : $default;
+        return isset($arr[$index]) ? $arr[$index] : $default;
     }
 }
 
-if (!function_exists('test_path')) {
-    function test_path(string $path) {
+if (! function_exists('test_path')) {
+    function test_path(string $path)
+    {
         return base_path('tests/'.$path);
     }
 }
 
-if (!function_exists('implementsInteface')) {
-    function implementsInterface($object, $interface) {
+if (! function_exists('implementsInteface')) {
+    function implementsInterface($object, $interface)
+    {
         return in_array($interface, class_implements($object));
     }
 }
 
-if (!function_exists('getClassesInPaths')) {
-    function getClassesInPaths($paths, $namespace = null) {
+if (! function_exists('getClassesInPaths')) {
+    function getClassesInPaths($paths, $namespace = null)
+    {
         $paths = array_unique(Arr::wrap($paths));
         $paths = array_filter($paths, function ($path) {
             return is_dir($path);

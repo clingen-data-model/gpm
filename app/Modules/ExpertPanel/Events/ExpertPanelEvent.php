@@ -2,15 +2,13 @@
 
 namespace App\Modules\ExpertPanel\Events;
 
-use DateTime;
-use Illuminate\Queue\SerializesModels;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Events\RecordableEvent;
-use Illuminate\Foundation\Events\Dispatchable;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
-use Ramsey\Uuid\Type\Integer;
 
 /**
  * @property App\Modules\Group\Models\Group $group
@@ -19,26 +17,26 @@ abstract class ExpertPanelEvent extends RecordableEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public function __construct(public ExpertPanel  $application)
+    public function __construct(public ExpertPanel $application)
     {
     }
 
-    public function getLog():string
+    public function getLog(): string
     {
         return 'applications';
     }
 
-    public function hasSubject():bool
+    public function hasSubject(): bool
     {
         return true;
     }
 
-    public function getSubject():Model
+    public function getSubject(): Model
     {
         return $this->application->group;
     }
 
-    public function getLogDate():Carbon
+    public function getLogDate(): Carbon
     {
         return Carbon::now();
     }

@@ -10,6 +10,7 @@ class ApplicationSnapshot extends Model
     use HasFactory;
 
     public $fillable = ['group_id', 'version', 'snapshot', 'submission_id'];
+
     protected $casts = [
         'id' => 'integer',
         'group_id' => 'integer',
@@ -31,7 +32,7 @@ class ApplicationSnapshot extends Model
         if (is_object($group)) {
             $id = $group->id;
         }
+
         return $query->where('group_id', $id);
     }
-    
 }

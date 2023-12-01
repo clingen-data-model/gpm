@@ -15,6 +15,7 @@ class GroupDelete
     use AsCommand;
 
     public string $commandSignature = 'group:delete {groupId : id or uuid of group} {--force= : force the delete without confirmation}';
+
     public string $commandDescription = 'Deletes group identified by id, uuid, or name';
 
     public function handle(Group $group)
@@ -25,7 +26,7 @@ class GroupDelete
     public function asController(ActionRequest $request, Group $group)
     {
         $this->handle($group);
-        
+
         return response('group deleted', 200);
     }
 
@@ -34,26 +35,26 @@ class GroupDelete
         $identifier = $command->argument('groupId');
         $group = null;
 
-        $group =  (is_numeric($identifier)) ? Group::find($identifier) : Group::findByUuid($identifier);
+        $group = (is_numeric($identifier)) ? Group::find($identifier) : Group::findByUuid($identifier);
 
-        if (!$group) {
+        if (! $group) {
             $command->error('Group with identifier '.$identifier.' not found');
+
             return;
         }
 
-        if (!$command->option('force')) {
+        if (! $command->option('force')) {
             $confMessage = 'You are about to delete the "'.$group->name.'" group. Do you want to continue?';
-            if (!$command->confirm($confMessage, false)) {
+            if (! $command->confirm($confMessage, false)) {
                 $command->info('Canceling group delete.');
                 // return 1;
             }
         }
-        
+
         $this->handle($group);
-        
+
         $command->info('Grup "'.$group->name.'" has been deleted.');
     }
-    
 
     public function authorize(ActionRequest $request, Group $group): bool
     {

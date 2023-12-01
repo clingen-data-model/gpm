@@ -2,12 +2,11 @@
 
 namespace Tests\Feature\End2End\Person\Expertises;
 
-use Tests\TestCase;
 use App\Models\Expertise;
-use Illuminate\Testing\TestResponse;
 use App\Modules\Person\Models\Person;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\TestResponse;
+use Tests\TestCase;
 
 /**
  * @group expertises
@@ -16,7 +15,7 @@ class DeleteExpertiseTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->expertise = Expertise::factory()
@@ -54,16 +53,14 @@ class DeleteExpertiseTest extends TestCase
             ->assertStatus(200);
 
         $this->assertDatabaseMissing('expertises', [
-            'id' => $this->expertise->id
+            'id' => $this->expertise->id,
         ]);
 
         $this->assertDatabaseMissing('expertise_person', [
             'expertise_id' => $this->expertise->id,
-            'person_id' => $this->person->id
+            'person_id' => $this->person->id,
         ]);
     }
-
-
 
     private function makeRequest($data = null): TestResponse
     {

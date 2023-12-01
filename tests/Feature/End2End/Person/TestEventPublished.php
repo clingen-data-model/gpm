@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\End2End\Person;
 
-use App\DataExchange\Models\StreamMessage;
-
 trait TestEventPublished
 {
     protected function assertEventPublished($topic, $eventType, $person): void
@@ -20,5 +18,4 @@ trait TestEventPublished
             'message->data->person->profile_photo' => $person->ProfilePhotoUrl,
         ]);
     }
-
 }

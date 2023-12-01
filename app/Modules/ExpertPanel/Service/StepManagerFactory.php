@@ -2,18 +2,18 @@
 
 namespace App\Modules\ExpertPanel\Service;
 
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Service\Steps\StepManagerInterface;
-use App\Modules\ExpertPanel\Service\Steps\VcepDraftStepManager;
-use App\Modules\ExpertPanel\Service\Steps\VcepPilotStepManager;
-use App\Modules\ExpertPanel\Service\Steps\VcepFinalizeStepManager;
-use App\Modules\ExpertPanel\Service\Steps\GcepDefinitionStepManager;
-use App\Modules\ExpertPanel\Service\Steps\VcepDefinitionStepManager;
 use App\Modules\ExpertPanel\Exceptions\UnexpectedCurrentStepException;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Service\Steps\GcepDefinitionStepManager;
+use App\Modules\ExpertPanel\Service\Steps\StepManagerInterface;
+use App\Modules\ExpertPanel\Service\Steps\VcepDefinitionStepManager;
+use App\Modules\ExpertPanel\Service\Steps\VcepDraftStepManager;
+use App\Modules\ExpertPanel\Service\Steps\VcepFinalizeStepManager;
+use App\Modules\ExpertPanel\Service\Steps\VcepPilotStepManager;
 
 class StepManagerFactory
 {
-    public function __invoke(ExpertPanel  $expertPanel): StepManagerInterface
+    public function __invoke(ExpertPanel $expertPanel): StepManagerInterface
     {
         if (
             $expertPanel->expert_panel_type_id == config('expert_panels.types.gcep.id')

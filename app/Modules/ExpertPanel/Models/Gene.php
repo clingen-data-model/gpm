@@ -2,13 +2,13 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use App\Models\GeneTracker\Gene as GtGene;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\GeneTracker\Disease as GtDisease;
+use App\Models\GeneTracker\Gene as GtGene;
 use Database\Factories\GeneFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $id
@@ -29,7 +29,6 @@ class Gene extends Model
     {
         return config('database.default');
     }
-
 
     /**
      * The attributes that are mass assignable.
@@ -70,8 +69,6 @@ class Gene extends Model
 
     /**
      * Get the gene that owns the Gene
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function gene(): BelongsTo
     {
@@ -80,8 +77,6 @@ class Gene extends Model
 
     /**
      * Get the disease that owns the Gene
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function disease(): BelongsTo
     {
@@ -91,10 +86,9 @@ class Gene extends Model
     /**
      * SCOPES
      */
-
     public function scopeApproved($query)
     {
-       return $query->whereNotNull('date_approved');
+        return $query->whereNotNull('date_approved');
     }
 
     public function scopeApplying($query)

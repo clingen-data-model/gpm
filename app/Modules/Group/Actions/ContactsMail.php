@@ -3,15 +3,14 @@
 namespace App\Modules\Group\Actions;
 
 use App\Modules\Group\Models\Group;
-use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Contracts\Mail\Mailable;
+use Illuminate\Contracts\Mail\Mailer;
 
 class ContactsMail
 {
     public function __construct(private Mailer $mailer)
     {
     }
-    
 
     public function handle(Group $group, Mailable $mailable)
     {
@@ -25,7 +24,5 @@ class ContactsMail
         }
 
         $this->mailer->to($contacts)->send($mailable);
-
     }
-    
 }

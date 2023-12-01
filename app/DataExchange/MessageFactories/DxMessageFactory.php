@@ -2,9 +2,8 @@
 
 namespace App\DataExchange\MessageFactories;
 
-use Carbon\Carbon;
 use App\Events\PublishableEvent;
-use App\DataExchange\MessageFactories\MessageFactoryInterface;
+use Carbon\Carbon;
 
 class DxMessageFactory implements MessageFactoryInterface
 {

@@ -2,12 +2,11 @@
 
 namespace App\Modules\ExpertPanel\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\View;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\View;
 
 class ApplicationStepApprovedNotification extends Notification
 {
@@ -19,7 +18,7 @@ class ApplicationStepApprovedNotification extends Notification
      * @return void
      */
     public function __construct(
-        public ExpertPanel  $expertPanel,
+        public ExpertPanel $expertPanel,
         public int $approvedStep,
         public ?bool $wasLastStep = false
     ) {
@@ -45,9 +44,8 @@ class ApplicationStepApprovedNotification extends Notification
      */
     public function toMail($notifiable)
     {
-
         $template = $this->getTemplate($this->approvedStep);
-        if (!$template) {
+        if (! $template) {
             return;
         }
         $mailMessage = (new MailMessage)
@@ -55,7 +53,7 @@ class ApplicationStepApprovedNotification extends Notification
                     ->view($template, [
                         'expertPanel' => $this->expertPanel,
                     ]);
-                    
+
         if (in_array($this->approvedStep, config('expert-panels.notifications.cc.steps'))) {
             foreach (config('expert-panels.notifications.cc.recipients') as $cc) {
                 $mailMessage->cc($cc[0], $cc[1]);
@@ -66,6 +64,7 @@ class ApplicationStepApprovedNotification extends Notification
                 $mailMessage->cc('clinvar@ncbi.nlm.nih.gov', 'ClinVar');
             }
         }
+
         return $mailMessage;
     }
 
@@ -77,17 +76,17 @@ class ApplicationStepApprovedNotification extends Notification
      */
     public function toArray($notifiable)
     {
-        $message = 'Congratulations! ' . $this->expertPanel->displayName . ' was approved for '.config('expert-panels.steps')[$this->approvedStep].' on '.$this->expertPanel->getApprovalDateForStep($this->approvedStep)->format('m/d/Y').'.';
+        $message = 'Congratulations! '.$this->expertPanel->displayName.' was approved for '.config('expert-panels.steps')[$this->approvedStep].' on '.$this->expertPanel->getApprovalDateForStep($this->approvedStep)->format('m/d/Y').'.';
 
         if ($this->wasLastStep) {
-            $message = 'Congratulations! ' . $this->expertPanel->displayName . ' was given final approval on '.$this->expertPanel->getApprovalDateForStep($this->approvedStep)->format('m/d/Y').'!';
+            $message = 'Congratulations! '.$this->expertPanel->displayName.' was given final approval on '.$this->expertPanel->getApprovalDateForStep($this->approvedStep)->format('m/d/Y').'!';
         }
 
         return [
             'expert_panel' => $this->expertPanel->id,
             'date_approved' => $this->approvedStep,
             'message' => $message,
-            'type' => 'success'
+            'type' => 'success',
         ];
     }
 
@@ -96,7 +95,7 @@ class ApplicationStepApprovedNotification extends Notification
         $step = $step ?? $expertPanel->currentStep;
         $template = $this->getTemplate($step);
         $view = View::make($template, compact($expertPanel));
-        
+
         return $view->render();
     }
 
@@ -104,7 +103,7 @@ class ApplicationStepApprovedNotification extends Notification
     {
         $step = $step ?? $expertPanel->current_step;
 
-        return 'Application step '.$step.' for your ClinGen expert panel '.$expertPanel->name.' has been approved.';       
+        return 'Application step '.$step.' for your ClinGen expert panel '.$expertPanel->name.' has been approved.';
     }
 
     private function getTemplate($step)
@@ -116,11 +115,10 @@ class ApplicationStepApprovedNotification extends Notification
             4 => 'email.applications.approval.vcep_step_4_approval',
         ];
 
-        if (!isset($stepMessages[$step])) {
+        if (! isset($stepMessages[$step])) {
             return null;
         }
 
         return $stepMessages[$step];
     }
-    
 }

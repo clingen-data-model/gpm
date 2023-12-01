@@ -3,21 +3,19 @@
 namespace Tests\Feature\End2End\Groups;
 
 use App\Modules\Group\Actions\MemberAdd;
-use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Group\Actions\MemberGrantPermissions;
-use Carbon\Carbon;
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\GroupMember;
-use Illuminate\Foundation\Testing\WithFaker;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class MemberUnretireTest extends TestCase
 {
     use RefreshDatabase;
-    
-    public function setup():void
+
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -74,7 +72,7 @@ class MemberUnretireTest extends TestCase
             'end_date' => null,
         ]);
     }
-    
+
     private function makeRequest()
     {
         return $this->json('post', '/api/groups/'.$this->groupMember->group->uuid.'/members/'.$this->groupMember->id.'/unretire');

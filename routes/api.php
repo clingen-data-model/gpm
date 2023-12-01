@@ -1,34 +1,33 @@
 <?php
 
-use App\Actions\MailResend;
-use App\Actions\CommentFind;
-use App\Actions\CommentList;
-use App\Models\DocumentType;
-use Illuminate\Http\Request;
-use App\Actions\NotifyPeople;
 use App\Actions\CommentCreate;
 use App\Actions\CommentDelete;
-use App\Actions\CommentUpdate;
+use App\Actions\CommentFind;
+use App\Actions\CommentList;
 use App\Actions\CommentResolve;
-use App\Actions\FeedbackSubmit;
 use App\Actions\CommentTypeList;
 use App\Actions\CommentUnresolve;
+use App\Actions\CommentUpdate;
+use App\Actions\FeedbackSubmit;
 use App\Actions\LogEntrySearch;
+use App\Actions\MailResend;
 use App\Actions\NotificationMarkRead;
-use Illuminate\Support\Facades\Route;
+use App\Actions\NotifyPeople;
+use App\Http\Controllers\Api\AnnualUpdateController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CdwgController;
-use App\Http\Controllers\Api\RolesController;
-use App\Http\Controllers\Api\PeopleController;
-use App\Http\Controllers\Api\MailLogController;
-use App\Http\Controllers\Api\MailDraftController;
-use App\Http\Controllers\Api\GeneLookupController;
-use App\Http\Controllers\Api\SystemInfoController;
-use App\Http\Controllers\Api\AnnualUpdateController;
 use App\Http\Controllers\Api\DiseaseLookupController;
 use App\Http\Controllers\Api\DocumentationController;
+use App\Http\Controllers\Api\GeneLookupController;
+use App\Http\Controllers\Api\MailDraftController;
+use App\Http\Controllers\Api\MailLogController;
+use App\Http\Controllers\Api\RolesController;
+use App\Http\Controllers\Api\SystemInfoController;
 use App\Http\Controllers\ImpersonateSearchController;
+use App\Models\DocumentType;
 use App\Modules\User\Http\Controllers\CurrentUserController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,7 +62,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/email-drafts/groups/{group:uuid}', [MailDraftController::class, 'makeDraft']);
     // Route::get('/email-drafts/{applicationUuid}/{approvedStepNumber}', [MailDraftController::class, 'show']);
-
 
     Route::get('/mail-log', [MailLogController::class, 'index']);
     Route::post('/mail', MailResend::class);

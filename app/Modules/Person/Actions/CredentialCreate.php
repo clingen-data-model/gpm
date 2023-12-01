@@ -14,8 +14,7 @@ class CredentialCreate
         string $name,
         ?bool $approved = false,
         ?array $synonyms = null
-    ): Credential
-    {
+    ): Credential {
         return Credential::create([
             'name' => $name,
             'approved' => $approved,
@@ -30,8 +29,8 @@ class CredentialCreate
     public function rules(): array
     {
         return [
-           'name' => ['required','unique:credentials,name', 'max:255'],
-           'approved' => 'nullable|boolean',
+            'name' => ['required', 'unique:credentials,name', 'max:255'],
+            'approved' => 'nullable|boolean',
         ];
     }
 }

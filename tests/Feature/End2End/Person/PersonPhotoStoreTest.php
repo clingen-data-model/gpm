@@ -2,20 +2,19 @@
 
 namespace Tests\Feature\End2End\Person;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Http\UploadedFile;
 use App\Modules\Person\Models\Person;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class PersonPhotoStoreTest extends TestCase
 {
     use RefreshDatabase;
     use TestEventPublished;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->person = Person::factory()->create();
@@ -35,7 +34,6 @@ class PersonPhotoStoreTest extends TestCase
             ->assertStatus(403);
 
         Storage::disk('profile-photos')->assertMissing($this->fakeFile->hashName());
-
     }
 
     /**
@@ -71,7 +69,7 @@ class PersonPhotoStoreTest extends TestCase
 
         $this->assertDatabaseHas('people', [
             'id' => $this->person->id,
-            'profile_photo' => $this->fakeFile->hashName()
+            'profile_photo' => $this->fakeFile->hashName(),
         ]);
     }
 
@@ -90,7 +88,6 @@ class PersonPhotoStoreTest extends TestCase
         );
     }
 
-
     /**
      * @test
      */
@@ -100,35 +97,32 @@ class PersonPhotoStoreTest extends TestCase
             ->assertStatus(422)
             ->assertJson([
                 'errors' => [
-                    'profile_photo' => ['This is required.']
-                ]
+                    'profile_photo' => ['This is required.'],
+                ],
             ]);
 
-            $fakePdf = UploadedFile::fake()->create('beans.pdf', 2100, 'application/pdf');
+        $fakePdf = UploadedFile::fake()->create('beans.pdf', 2100, 'application/pdf');
 
-            $this->makeRequest(['profile_photo' => $fakePdf])
-            ->assertStatus(422)
-            ->assertJson([
-                'errors' => [
-                    'profile_photo' => [
-                        'The profile photo may not be greater than 2000 kilobytes.',
-                        'The profile photo must be a file of type: jpeg, jpg, gif, png.',
-                    ]
-                ]
-            ]);
+        $this->makeRequest(['profile_photo' => $fakePdf])
+        ->assertStatus(422)
+        ->assertJson([
+            'errors' => [
+                'profile_photo' => [
+                    'The profile photo may not be greater than 2000 kilobytes.',
+                    'The profile photo must be a file of type: jpeg, jpg, gif, png.',
+                ],
+            ],
+        ]);
     }
-
-
 
     private function makeRequest($data = null)
     {
         $data = $data ?? [
-            'profile_photo' => $this->fakeFile
+            'profile_photo' => $this->fakeFile,
         ];
 
         Storage::fake('public/profile-photos');
+
         return $this->json('POST', '/api/people/'.$this->person->uuid.'/profile-photo', $data);
     }
-
-
 }

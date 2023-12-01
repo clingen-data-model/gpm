@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CommentType extends Model
 {
@@ -12,17 +12,15 @@ class CommentType extends Model
 
     public $fillable = [
         'name',
-        'description'
+        'description',
     ];
 
     public $casts = [
-        'id' => 'integer'
+        'id' => 'integer',
     ];
 
     /**
      * Get all of the comments for the CommentType
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function comments(): HasMany
     {

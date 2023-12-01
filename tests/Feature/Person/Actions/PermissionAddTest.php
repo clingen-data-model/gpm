@@ -2,28 +2,25 @@
 
 namespace Tests\Feature\Person\Actions;
 
-use Tests\TestCase;
-use InvalidArgumentException;
-use App\Modules\User\Models\User;
-use App\Modules\Person\Models\Invite;
-use App\Modules\Person\Models\Person;
-use Database\Factories\InviteFactory;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Person\Actions\PermissionAdd;
 use App\Modules\Person\Events\InviteRedeemed;
+use App\Modules\Person\Models\Invite;
+use App\Modules\Person\Models\Person;
+use App\Modules\User\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use InvalidArgumentException;
+use Tests\TestCase;
 
 class PermissionAddTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->action = app()->make(PermissionAdd::class);
     }
-    
 
     /**
      * @test
@@ -31,7 +28,7 @@ class PermissionAddTest extends TestCase
     public function throws_Exception_if_permission_not_found()
     {
         $person = new Person();
-        
+
         $this->expectException(InvalidArgumentException::class);
         $this->action->handle($person, 'skate-ramp');
     }
@@ -61,7 +58,7 @@ class PermissionAddTest extends TestCase
         $this->assertDatabaseHas('model_has_permissions', [
             'model_type' => User::class,
             'model_id' => $user->id,
-            'permission_id' => $perms[0]->id
+            'permission_id' => $perms[0]->id,
         ]);
     }
 
@@ -94,7 +91,7 @@ class PermissionAddTest extends TestCase
         $person = Person::factory()->create();
         $this->assertNull($person->user);
         $invite = Invite::factory()->create([
-            'person_id' => $person->id
+            'person_id' => $person->id,
         ]);
         $perms = $this->setupPermission(['test-perm'], 'system');
 
@@ -110,7 +107,7 @@ class PermissionAddTest extends TestCase
         $this->assertDatabaseHas('model_has_permissions', [
             'model_type' => User::class,
             'model_id' => $user->id,
-            'permission_id' => $perms[0]->id
+            'permission_id' => $perms[0]->id,
         ]);
 
         $this->assertDatabaseHas('follow_actions', [
@@ -119,9 +116,7 @@ class PermissionAddTest extends TestCase
             'follower' => PermissionAdd::class,
             'args->personId' => $person->id,
             'args->permissionName' => 'test-perm',
-            'completed_at' => Carbon::now()
+            'completed_at' => Carbon::now(),
         ]);
     }
-    
-    
 }

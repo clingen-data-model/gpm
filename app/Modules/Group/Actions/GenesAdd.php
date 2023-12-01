@@ -1,15 +1,13 @@
 <?php
+
 namespace App\Modules\Group\Actions;
 
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Auth;
-use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsObject;
-use App\Modules\Group\Actions\GenesSyncToGcep;
-use App\Modules\Group\Actions\GenesAddToVcep;
-use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Auth\Access\AuthorizationException;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsController;
+use Lorisleiva\Actions\Concerns\AsObject;
 
 class GenesAdd
 {
@@ -22,7 +20,7 @@ class GenesAdd
 
     public function handle(Group $group, $genes): Group
     {
-        if (!$group->isExpertPanel) {
+        if (! $group->isExpertPanel) {
             throw ValidationException::withMessages(['group' => 'Genes can only be added to an Expert Panel.']);
         }
 
@@ -32,12 +30,14 @@ class GenesAdd
         if ($group->isGcep) {
             return $this->addGenesToGcep->handle($group, $genes);
         }
+
         return $group;
     }
 
     public function asController(ActionRequest $request, Group $group)
     {
         $this->handle($group, $request->genes);
+
         return $group->fresh()->load('expertPanel.genes');
     }
 
@@ -45,7 +45,7 @@ class GenesAdd
     {
         return Auth::user()->can('addGene', $request->group);
     }
-    
+
     public function rules(ActionRequest $request): array
     {
         $gtConn = config('database.gt_db_connection');
@@ -55,12 +55,12 @@ class GenesAdd
                 'genes' => 'required|array|min:1',
                 'genes.*' => 'required|array:hgnc_id,mondo_id',
                 'genes.*.hgnc_id' => 'required|numeric|exists:'.$gtConn.'.genes,hgnc_id',
-                'genes.*.mondo_id' => 'required|regex:/MONDO:\d\d\d\d\d\d\d/i|exists:'.$gtConn.'.diseases,mondo_id'
+                'genes.*.mondo_id' => 'required|regex:/MONDO:\d\d\d\d\d\d\d/i|exists:'.$gtConn.'.diseases,mondo_id',
             ];
         }
         if ($group->isGcep) {
             return [
-                'genes.*' => 'exists:'.$gtConn.'.genes,gene_symbol'
+                'genes.*' => 'exists:'.$gtConn.'.genes,gene_symbol',
             ];
         }
 
@@ -73,7 +73,7 @@ class GenesAdd
             'required' => 'This field is required.',
             'exists' => 'Your selection is invalid.',
             'numeric' => 'Your selection is invalid.',
-            'regex' => 'Your selection selection should have a mondo_id with the format "MONDO:#######".'
+            'regex' => 'Your selection selection should have a mondo_id with the format "MONDO:#######".',
         ];
     }
 }

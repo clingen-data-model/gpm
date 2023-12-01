@@ -2,9 +2,9 @@
 
 namespace Tests;
 
-use Ramsey\Uuid\Uuid;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Ramsey\Uuid\Uuid;
 
 trait CreatesDocumentUploadRequestData
 {
@@ -20,7 +20,7 @@ trait CreatesDocumentUploadRequestData
             'document_type_id' => $DocumentTypeId,
             'date_received' => $dateReceived,
             'step' => $step,
-            'notes' => 'this is a test'
+            'notes' => 'this is a test',
         ];
     }
 }

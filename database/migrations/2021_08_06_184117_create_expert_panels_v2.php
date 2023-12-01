@@ -20,8 +20,7 @@ class CreateExpertPanelsV2 extends Migration
                 ->nullable()
                 ->constrained()
                 ->cascadeOnDelete()
-                ->cascadeOnUpdate()
-                ;
+                ->cascadeOnUpdate();
             $table->foreignId('expert_panel_type_id')
                 ->constrained()
                 ->cascadeOnDelete()
@@ -50,8 +49,7 @@ class CreateExpertPanelsV2 extends Migration
                 ->nullable()
                 ->constrained()
                 ->cascadeOnDelete()
-                ->cascadeOnUpdate()
-                ;
+                ->cascadeOnUpdate();
             $table->text('curation_review_protocol_other')->nullable();
             $table->string('meeting_frequency')->nullable();
             $table->boolean('reanalysis_conflicting')->nullable();
@@ -70,7 +68,6 @@ class CreateExpertPanelsV2 extends Migration
             $table->boolean('biocurator_mailing_list')->nullable();
             $table->dateTime('gci_training_date')->nullable();
             $table->dateTime('gcep_attestation_date')->nullable();
-    
 
             $table->timestamps();
             $table->softDeletes();

@@ -4,11 +4,9 @@ namespace App\Modules\Group\Events;
 
 use App\Models\Document;
 use App\Modules\Group\Models\Group;
-use App\Modules\Group\Events\GroupEvent;
 
 class DocumentUpdated extends GroupEvent
 {
-
     /**
      * Create a new event instance.
      *
@@ -22,7 +20,6 @@ class DocumentUpdated extends GroupEvent
     {
         return 'Document '.$this->document->filename.' info updated';
     }
-    
 
     /**
      * Get the channels the event should broadcast on.

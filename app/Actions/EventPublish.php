@@ -2,13 +2,10 @@
 
 namespace App\Actions;
 
-use App\Events\PublishableEvent;
-use App\Modules\Group\Models\Group;
-use App\Modules\Group\Events\GeneEvent;
-use App\DataExchange\Models\StreamMessage;
-use App\Modules\Group\Events\GroupMemberEvent;
 use App\DataExchange\Actions\StreamMessageCreate;
 use App\DataExchange\MessageFactories\DxMessageFactory;
+use App\DataExchange\Models\StreamMessage;
+use App\Events\PublishableEvent;
 
 class EventPublish
 {
@@ -20,7 +17,7 @@ class EventPublish
 
     public function handle(PublishableEvent $event): ?StreamMessage
     {
-        if (!$event->shouldPublish()) {
+        if (! $event->shouldPublish()) {
             return null;
         }
 

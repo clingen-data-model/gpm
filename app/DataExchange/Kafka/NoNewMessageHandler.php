@@ -1,10 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\DataExchange\Kafka;
 
-use RdKafka\Message;
 use App\DataExchange\Exceptions\StreamingServiceEndOfFIleException;
+use RdKafka\Message;
 
 class NoNewMessageHandler extends AbstractMessageHandler
 {

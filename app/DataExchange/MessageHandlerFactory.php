@@ -3,10 +3,10 @@
 namespace App\DataExchange;
 
 use App\DataExchange\Actions\CspecDataSyncProcessor;
-use Illuminate\Support\Str;
 use App\DataExchange\Actions\ErrorMessageHandler;
-use App\DataExchange\Models\IncomingStreamMessage;
 use App\DataExchange\Exceptions\UnsupportedIncomingMessage;
+use App\DataExchange\Models\IncomingStreamMessage;
+use Illuminate\Support\Str;
 
 class MessageHandlerFactory
 {
@@ -17,10 +17,9 @@ class MessageHandlerFactory
         }
 
         return $this->resolveHandlerClass($message);
-
     }
 
-    private function resolveHandlerClass($message): Object
+    private function resolveHandlerClass($message): object
     {
         $class = $this->buildHandlerClassName($message);
 
@@ -35,7 +34,6 @@ class MessageHandlerFactory
         throw new UnsupportedIncomingMessage($message);
     }
 
-
     private function buildHandlerClassName($message)
     {
         $namespace = '\\App\\DataExchange\\Actions';
@@ -49,5 +47,4 @@ class MessageHandlerFactory
     {
         return $message->error_code != 0;
     }
-
 }

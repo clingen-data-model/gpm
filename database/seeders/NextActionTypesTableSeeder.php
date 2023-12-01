@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\NextActionType;
-use App\Modules\ExpertPanel\Models\NextActionAssignee;
 
 class NextActionTypesTableSeeder extends Seeder
 {

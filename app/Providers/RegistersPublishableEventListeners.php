@@ -11,9 +11,7 @@ trait RegistersPublishableEventListeners
     /**
      * Registers EventPublish listener for all PublishableEvents in $eventClasses
      *
-     * @param array $eventClasses Array of event classes.
-     *
-     * @return void
+     * @param  array  $eventClasses Array of event classes.
      */
     protected function registerPublishableEventListeners(array $eventClasses): void
     {
@@ -23,6 +21,4 @@ trait RegistersPublishableEventListeners
             }
         }
     }
-
-
 }

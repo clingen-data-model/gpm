@@ -31,12 +31,14 @@ class AnnualUpdateSave
         $data = collect($request->get('data'))
                     ->only($this->getDataFields())
                     ->toArray();
+
         return $this->handle($annualReview, $submitterId, $data);
     }
 
     public function authorize(ActionRequest $request)
     {
         $group = Group::findByUuidOrFail($request->group);
+
         return Auth::user()->can('manageAnnualUpdate', $group);
     }
 

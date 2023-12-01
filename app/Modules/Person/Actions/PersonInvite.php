@@ -2,12 +2,11 @@
 
 namespace App\Modules\Person\Actions;
 
-use Ramsey\Uuid\Uuid;
+use App\Modules\Person\Events\PersonInvited;
 use App\Modules\Person\Models\Invite;
 use App\Modules\Person\Models\Person;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Database\Eloquent\Model;
-use App\Modules\Person\Events\PersonInvited;
+use Illuminate\Support\Facades\Event;
 
 class PersonInvite
 {

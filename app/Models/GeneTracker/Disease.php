@@ -10,6 +10,7 @@ class Disease extends Model
     use HasFactory;
 
     protected $table = 'diseases';
+
     // protected $primaryKey = 'mondo_id';
     protected $connection = 'genetracker';
 

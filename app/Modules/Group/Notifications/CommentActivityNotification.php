@@ -3,13 +3,11 @@
 namespace App\Modules\Group\Notifications;
 
 use App\Models\Comment;
-use Illuminate\Bus\Queueable;
-use Illuminate\Support\Collection;
 use App\Modules\Group\Models\Group;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use App\Notifications\Contracts\DigestibleNotificationInterface;
+use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Collection;
 
 class CommentActivityNotification extends Notification implements DigestibleNotificationInterface
 {
@@ -45,14 +43,15 @@ class CommentActivityNotification extends Notification implements DigestibleNoti
     {
         $this->comment->load('creator');
         $this->group->display_name = $this->group->getDisplayNameAttribute();
+
         return [
             'group' => $this->group,
             'comment' => $this->comment,
-            'event' => $this->event
+            'event' => $this->event,
         ];
     }
 
-    public static function getUnique(Collection $collection):Collection
+    public static function getUnique(Collection $collection): Collection
     {
         $unique = $collection->unique(function ($notification) {
             return $notification->data['comment']['id'];
@@ -64,7 +63,7 @@ class CommentActivityNotification extends Notification implements DigestibleNoti
     /**
      * Filter all messages out if includes deleted event.
      */
-    public static function filterInvalid(Collection $collection):Collection
+    public static function filterInvalid(Collection $collection): Collection
     {
         $includesDeleted = $collection->pluck('data.event')->contains('deleted');
         if ($includesDeleted) {
@@ -74,7 +73,7 @@ class CommentActivityNotification extends Notification implements DigestibleNoti
         return $collection;
     }
 
-    static public function getValidUnique(Collection $collection): Collection
+    public static function getValidUnique(Collection $collection): Collection
     {
         $valid = static::filterInvalid($collection);
         $validUnique = static::getUnique($valid);
@@ -82,7 +81,7 @@ class CommentActivityNotification extends Notification implements DigestibleNoti
         return $validUnique;
     }
 
-    static public function getDigestTemplate(): string
+    public static function getDigestTemplate(): string
     {
         return 'email.digest.comment_activity';
     }

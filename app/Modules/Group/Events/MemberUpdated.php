@@ -2,15 +2,11 @@
 
 namespace App\Modules\Group\Events;
 
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use App\Modules\Group\Events\GroupEvent;
 use App\Modules\Group\Models\GroupMember;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
 
 class MemberUpdated extends GroupMemberEvent
@@ -31,7 +27,7 @@ class MemberUpdated extends GroupMemberEvent
     {
         return $this->groupMember->person->name.' updated';
     }
-    
+
     public function getLogDate(): Carbon
     {
         return Carbon::now();
@@ -44,7 +40,7 @@ class MemberUpdated extends GroupMemberEvent
             'new_data' => $this->data,
         ];
     }
-    
+
     /**
      * Get the channels the event should broadcast on.
      *

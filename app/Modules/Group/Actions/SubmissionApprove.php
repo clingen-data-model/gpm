@@ -3,7 +3,6 @@
 namespace App\Modules\Group\Actions;
 
 use App\Modules\Group\Models\Submission;
-use App\Modules\Group\Events\SubmissionApproved;
 
 class SubmissionApprove
 {
@@ -11,7 +10,7 @@ class SubmissionApprove
     {
         $submission->update([
             'submission_status_id' => config('submissions.statuses.approved.id'),
-            'closed_at' => $dateApproved
+            'closed_at' => $dateApproved,
         ]);
 
         return $submission;

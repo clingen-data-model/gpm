@@ -3,7 +3,6 @@
 namespace App\DataExchange\MessageFactories;
 
 use Carbon\Carbon;
-use App\Events\Event;
 
 interface MessageFactoryInterface
 {

@@ -3,26 +3,26 @@
 $definitionType = [
     'id' => 1,
     'name' => 'Definition',
-    'description' => 'VCEP step 1 and GCEP application'
+    'description' => 'VCEP step 1 and GCEP application',
 ];
 $sustainedCurationType = [
     'id' => 2,
     'name' => 'Sustained Curation',
-    'description' => 'VCEP step 4'
+    'description' => 'VCEP step 4',
 ];
 
 return [
     'types' => [
         'application' => [
             'definition' => $definitionType,
-            'sustained-curation' => $sustainedCurationType
+            'sustained-curation' => $sustainedCurationType,
         ],
     ],
     'types-by-step' => [
         1 => $definitionType,
         2 => null,
         3 => null,
-        4 => $sustainedCurationType
+        4 => $sustainedCurationType,
     ],
     'statuses' => [
         'pending' => [
@@ -43,12 +43,12 @@ return [
         'approved' => [
             'id' => 4,
             'name' => 'Approved',
-            'description' => 'Submitted item is unconditionally approved.'
-        ]
+            'description' => 'Submitted item is unconditionally approved.',
+        ],
     ],
     'decisions' => [
-        'request-revisions', 
-        'approve-after-revisions', 
-        'approve'
-    ]
+        'request-revisions',
+        'approve-after-revisions',
+        'approve',
+    ],
 ];

@@ -18,7 +18,7 @@ class IncomingStreamMessage extends Model
         'offset',
         'timestamp',
         'key',
-        'processed_at'
+        'processed_at',
     ];
 
     protected $casts = [
@@ -34,13 +34,11 @@ class IncomingStreamMessage extends Model
         parent::boot();
     }
 
-
     // SCOPES
     public function scopeProcessed($query)
     {
         return $query->whereNotNull('processed_at');
     }
-
 
     public static function newFactory()
     {

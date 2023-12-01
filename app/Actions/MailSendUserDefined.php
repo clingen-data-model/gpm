@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Actions;
 
 use App\Mail\UserDefinedMailable;
@@ -61,10 +62,12 @@ class MailSendUserDefined
         foreach ($to as $recipient) {
             if (is_string($recipient)) {
                 $mailable->to($recipient);
+
                 continue;
             }
             $mailable->to(...$recipient);
         }
+
         return $mailable;
     }
 }

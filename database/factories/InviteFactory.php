@@ -24,6 +24,7 @@ class InviteFactory extends Factory
     public function definition()
     {
         $group = Group::factory()->create();
+
         return [
             'code' => bin2hex(random_bytes(8)),
             'first_name' => $this->faker->firstName,

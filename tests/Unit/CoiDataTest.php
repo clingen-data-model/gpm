@@ -2,15 +2,15 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
 use App\Modules\ExpertPanel\CoiData;
+use PHPUnit\Framework\TestCase;
 
 class CoiDataTest extends TestCase
 {
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
-        $this->coiData = new CoiData((object)['coi' => 1, 'coi_detail' => 'Bob\'s Burgers']);
+        $this->coiData = new CoiData((object) ['coi' => 1, 'coi_detail' => 'Bob\'s Burgers']);
     }
 
     /**

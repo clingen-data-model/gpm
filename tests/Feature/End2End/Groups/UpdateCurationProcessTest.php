@@ -3,18 +3,16 @@
 namespace Tests\Feature\End2End\Groups;
 
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
 use Database\Seeders\CurationReviewProtocolsSeeder;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class UpdateCurationProcessTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupPermission('ep-applications-manage');
@@ -51,8 +49,8 @@ class UpdateCurationProcessTest extends TestCase
             ]);
 
         $this->makeRequest([
-                'curation_review_protocol_id' => config('expert_panels.curation_protocols.other.id')
-            ])
+            'curation_review_protocol_id' => config('expert_panels.curation_protocols.other.id'),
+        ])
             ->assertStatus(422)
             ->assertJsonFragment([
                 'curation_review_protocol_other' => ['This is required.'],
@@ -65,11 +63,11 @@ class UpdateCurationProcessTest extends TestCase
     public function validates_data_formats()
     {
         $this->makeRequest([
-                'curation_review_protocol_id' => 8000,
-            ])
+            'curation_review_protocol_id' => 8000,
+        ])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'curation_review_protocol_id' => ['The selection is invalid.']
+                'curation_review_protocol_id' => ['The selection is invalid.'],
             ]);
     }
 
@@ -81,20 +79,17 @@ class UpdateCurationProcessTest extends TestCase
         $this->makeRequest()
             ->assertStatus(200)
             ->assertJsonFragment([
-                'curation_review_process_notes' => 'These are some notes.'
+                'curation_review_process_notes' => 'These are some notes.',
             ]);
-    
+
         $this->assertDatabaseHas('expert_panels', [
             'curation_review_protocol_id' => config('expert_panels.curation_protocols.single-biocurator.id'),
             'meeting_frequency' => '2 times a month.',
             'curation_review_process_notes' => 'These are some notes.',
             'id' => $this->expertPanel->id,
-            'long_base_name' => $this->expertPanel->long_base_name
+            'long_base_name' => $this->expertPanel->long_base_name,
         ]);
     }
-    
-    
-    
 
     private function makeRequest($data = null)
     {
@@ -102,9 +97,10 @@ class UpdateCurationProcessTest extends TestCase
             'curation_review_protocol_id' => config('expert_panels.curation_protocols.single-biocurator.id'),
             'meeting_frequency' => '2 times a month.',
             'curation_review_process_notes' => 'These are some notes.',
-            'long_base_name' => 'I should not get updated.'
+            'long_base_name' => 'I should not get updated.',
         ];
         $url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/curation-review-protocols';
+
         return $this->json('put', $url, $data);
     }
 }

@@ -5,7 +5,7 @@ namespace App\Actions\Contracts;
 use App\Events\Event;
 
 /**
- * Adds 
+ * Adds
  */
 interface AsFollowAction
 {

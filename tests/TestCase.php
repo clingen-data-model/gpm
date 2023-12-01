@@ -2,22 +2,22 @@
 
 namespace Tests;
 
-use App\Models\Role;
-use Ramsey\Uuid\Uuid;
 use App\Models\Permission;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Support\Carbon;
-use App\Modules\User\Models\User;
-use App\Modules\Group\Models\Group;
-use Illuminate\Testing\TestResponse;
-use App\Modules\Person\Models\Person;
-use Database\Seeders\GroupTypeSeeder;
-use Database\Seeders\GroupStatusSeeder;
-use Database\Seeders\EpTypesTableSeeder;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Models\Role;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Models\Group;
+use App\Modules\Person\Models\Person;
+use App\Modules\User\Models\User;
+use Database\Seeders\EpTypesTableSeeder;
+use Database\Seeders\GroupStatusSeeder;
+use Database\Seeders\GroupTypeSeeder;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Carbon;
+use Illuminate\Testing\TestResponse;
+use Laravel\Sanctum\Sanctum;
+use Ramsey\Uuid\Uuid;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -25,17 +25,16 @@ abstract class TestCase extends BaseTestCase
     use WithFaker;
     // Helper methods
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
-        TestResponse::macro('assertValidationErrors', function($validationErrrors) {
+        TestResponse::macro('assertValidationErrors', function ($validationErrrors) {
             $this->assertStatus(422)
                 ->assertInvalid($validationErrrors);
 
             return $this;
         });
     }
-
 
     public function makeApplicationData()
     {
@@ -45,28 +44,29 @@ abstract class TestCase extends BaseTestCase
             'working_name' => 'EP Working Name',
             'expert_panel_type_id' => config('expert_panels.types.vcep.id'),
             'cdwg_id' => Group::cdwg()->get()->random()->id,
-            'date_initiated' => Carbon::parse('2020-01-01')
+            'date_initiated' => Carbon::parse('2020-01-01'),
         ];
+
         return $data;
     }
 
     protected function makeContactData(int $number = 1)
     {
         $contacts = [];
-        for ($i=0; $i < $number; $i++) {
+        for ($i = 0; $i < $number; $i++) {
             $contacts[] = [
                 'uuid' => Uuid::uuid4(),
                 'first_name' => $this->faker()->firstName,
                 'last_name' => $this->faker()->lastName,
                 'email' => $this->faker()->email,
-                'phone' => $this->faker()->phoneNumber
+                'phone' => $this->faker()->phoneNumber,
             ];
         }
 
         return $contacts;
     }
 
-    protected function addContactToApplication(ExpertPanel  $expertPanel)
+    protected function addContactToApplication(ExpertPanel $expertPanel)
     {
         $person = Person::factory()->create();
         ContactAdd::run($expertPanel->uuid, $person->uuid);
@@ -147,6 +147,7 @@ abstract class TestCase extends BaseTestCase
     {
         $user = $this->setupUser(userData: $userData, permissions: $permissions);
         Sanctum::actingAs($user);
+
         return $user;
     }
 
@@ -154,11 +155,11 @@ abstract class TestCase extends BaseTestCase
     {
         $user = $this->setupUserWithPerson($userData, $permissions, $personData);
         Sanctum::actingAs($user);
+
         return $user;
     }
 
-
-    protected function setupPermission(String|array $permissions, $scope = 'system')
+    protected function setupPermission(string|array $permissions, $scope = 'system')
     {
         if (is_string($permissions)) {
             return Permission::factory()->create(['name' => $permissions, 'scope' => $scope]);
@@ -172,7 +173,7 @@ abstract class TestCase extends BaseTestCase
         return $perms;
     }
 
-    protected function setupRoles(String|array $roles, $scope = 'system')
+    protected function setupRoles(string|array $roles, $scope = 'system')
     {
         if (is_string($roles)) {
             return Role::factory()->create(['name' => $roles, 'scope' => $scope]);
@@ -182,6 +183,7 @@ abstract class TestCase extends BaseTestCase
         foreach ($roles as $perm) {
             $createdRoles->push(Role::factory()->create(['name' => $perm, 'scope' => $scope]));
         }
+
         return $createdRoles;
     }
 
@@ -189,12 +191,13 @@ abstract class TestCase extends BaseTestCase
     {
         if (is_array($seederClass)) {
             foreach ($seederClass as $class) {
-                if (!class_exists($class)) {
+                if (! class_exists($class)) {
                     throw new \Exception('Bad seeder class given: '.$class);
                 }
                 $seeder = new $class();
                 $seeder->run();
             }
+
             return;
         }
 
@@ -233,6 +236,7 @@ abstract class TestCase extends BaseTestCase
             }
             $jsonified[$key] = $val;
         }
+
         return $jsonified;
     }
 }

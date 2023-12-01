@@ -2,24 +2,21 @@
 
 namespace App\Modules\Person\Events;
 
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Support\Facades\Auth;
 use App\Modules\Person\Models\Invite;
 use App\Modules\Person\Models\Person;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Auth;
 
 class PersonInvited extends PersonEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-
     public ?Model $inviter;
+
     public Person $person;
 
     /**
@@ -46,7 +43,7 @@ class PersonInvited extends PersonEvent
         if (Auth::user()) {
             return 'Invited by '.Auth::user()->name;
         }
-        
+
         return 'Invited by system';
     }
 
@@ -63,12 +60,9 @@ class PersonInvited extends PersonEvent
             'email' => $this->invite->email,
             'inviter_type' => $this->invite->inviter_type,
             'inviter_id' => $this->invite->inviter_id,
-            'person_id' => $this->invite->person_id
+            'person_id' => $this->invite->person_id,
         ];
     }
-    
-    
-    
 
     /**
      * Get the channels the event should broadcast on.

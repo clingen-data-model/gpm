@@ -2,16 +2,15 @@
 
 namespace Tests\Feature\End2End\Auth;
 
-use Tests\TestCase;
 use App\Modules\User\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class CheckAuthTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->user = User::factory()->create();

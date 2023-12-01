@@ -2,16 +2,13 @@
 
 namespace App\Modules\Group\Events;
 
-use Illuminate\Support\Carbon;
 use App\Modules\Group\Models\Group;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class AttestationSigned extends GroupEvent
 {
@@ -22,7 +19,7 @@ class AttestationSigned extends GroupEvent
      *
      * @return void
      */
-    public function __construct(public Group $group, public String $attestationName, public ?Carbon $signedAt)
+    public function __construct(public Group $group, public string $attestationName, public ?Carbon $signedAt)
     {
     }
 
@@ -35,18 +32,19 @@ class AttestationSigned extends GroupEvent
 
         return $this->attestationName.' attestation signature removed by '.$submitterName.' on '.Carbon::now()->format('Y-m-d').'.';
     }
-    
+
     public function getProperties(): ?array
     {
         return [
             'attestation_name' => $this->attestationName,
-            'date_submitted' => $this->signedAt
+            'date_submitted' => $this->signedAt,
         ];
     }
 
     public function getLogDate(): Carbon
     {
         $logDate = $this->signedAt ?? Carbon::now();
+
         return $logDate;
     }
 

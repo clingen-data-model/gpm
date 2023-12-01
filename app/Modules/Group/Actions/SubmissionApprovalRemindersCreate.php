@@ -2,11 +2,11 @@
 
 namespace App\Modules\Group\Actions;
 
-use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Submission;
-use Lorisleiva\Actions\Concerns\AsCommand;
-use Illuminate\Support\Facades\Notification;
 use App\Modules\Group\Notifications\ApprovalReminder;
+use App\Modules\User\Models\User;
+use Illuminate\Support\Facades\Notification;
+use Lorisleiva\Actions\Concerns\AsCommand;
 
 class SubmissionApprovalRemindersCreate
 {
@@ -33,9 +33,5 @@ class SubmissionApprovalRemindersCreate
                 Notification::send($person, new ApprovalReminder($submission->group, $submission, $person));
             });
         });
-
-
-
     }
-
 }

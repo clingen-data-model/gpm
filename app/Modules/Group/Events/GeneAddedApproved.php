@@ -1,14 +1,12 @@
 <?php
+
 namespace App\Modules\Group\Events;
 
 use App\Modules\Group\Models\Group;
-use Illuminate\Queue\SerializesModels;
-use App\Modules\Group\Events\GeneEvent;
+use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
-use App\Modules\Group\Events\GeneEventInterface;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use App\Modules\Group\Events\PublishableApplicationEvent;
+use Illuminate\Queue\SerializesModels;
 
 class GeneAddedApproved extends GeneEvent implements GeneEventInterface //, PublishableApplicationEvent
 {

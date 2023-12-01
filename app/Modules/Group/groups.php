@@ -29,7 +29,7 @@ return [
             'fullname' => 'Variant Curation Expert Panel',
             'description' => 'A Variant curation expert panel',
             'can_be_parent' => false,
-        ]
+        ],
     ],
     'statuses' => [
         'applying' => [
@@ -46,19 +46,19 @@ return [
         ],
         'removed' => [
             'id' => 4,
-            'name' => 'removed'
+            'name' => 'removed',
         ],
         'inactive' => [
             'id' => 5,
-            'name' => 'inactive'
-        ]
+            'name' => 'inactive',
+        ],
     ],
     'status_colors' => [
         1 => 'blue',
         2 => 'green',
         3 => 'gray',
         4 => 'black',
-        5 => 'gray'
+        5 => 'gray',
     ],
     'roles' => [
         'coordinator' => [
@@ -149,6 +149,6 @@ return [
         ],
     ],
     'role_permissions' => [
-        'coordinator' => [1001,1002,1003,1004,1005,1006, 1007, 1008]
+        'coordinator' => [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008],
     ],
 ];

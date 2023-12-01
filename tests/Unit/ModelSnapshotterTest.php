@@ -2,29 +2,28 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
-use App\Service\ModelSnapshotter;
-use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Person;
-use App\Modules\Group\Models\GroupType;
-use App\Modules\Group\Models\GroupMember;
-use App\Modules\Group\Models\GroupStatus;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Models\ExpertPanelType;
+use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\GroupMember;
+use App\Modules\Group\Models\GroupStatus;
+use App\Modules\Group\Models\GroupType;
+use App\Modules\Person\Models\Person;
+use App\Service\ModelSnapshotter;
+use PHPUnit\Framework\TestCase;
 
 class ModelSnapshotterTest extends TestCase
 {
-    public function setup():void
+    public function setup(): void
     {
         $this->snapshotter = new ModelSnapshotter();
         $this->groupAttr = [
-            'name'=>'Beans', 
+            'name' => 'Beans',
             'group_type_id' => 1,
             'group_status_id' => 1,
         ];
         $this->model = new Group($this->groupAttr);
     }
-    
 
     /**
      * @test
@@ -36,10 +35,10 @@ class ModelSnapshotterTest extends TestCase
         $expected = [
             'class' => get_class($this->model),
             'attributes' => $this->groupAttr,
-            'relations' => []
+            'relations' => [],
         ];
 
-        $this->assertEquals($expected, $snapshot);        
+        $this->assertEquals($expected, $snapshot);
     }
 
     /**
@@ -47,10 +46,10 @@ class ModelSnapshotterTest extends TestCase
      */
     public function creates_snapshot_of_model_with_scalar_relations()
     {
-        $typeAttr = [ 'name' => 'Monkey' ];
+        $typeAttr = ['name' => 'Monkey'];
         $this->model->setRelation('type', new GroupType($typeAttr));
 
-        $statusAttr = [ 'name' => 'Beer' ];
+        $statusAttr = ['name' => 'Beer'];
         $this->model->setRelation('status', new GroupStatus($statusAttr));
 
         $snapshot = $this->snapshotter->createSnapshot($this->model);
@@ -64,9 +63,9 @@ class ModelSnapshotterTest extends TestCase
             ],
         ];
 
-        $this->assertEquals($expected, $snapshot);        
+        $this->assertEquals($expected, $snapshot);
     }
-    
+
     /**
      * @test
      */
@@ -77,7 +76,7 @@ class ModelSnapshotterTest extends TestCase
             ['person_id' => 2, 'group_id' => 1],
         ];
 
-        $members = collect($memberAttrs)->map(fn($m) => new GroupMember($m));
+        $members = collect($memberAttrs)->map(fn ($m) => new GroupMember($m));
         $this->model->setRelation('members', $members);
 
         $snapshot = $this->snapshotter->createSnapshot($this->model);
@@ -91,7 +90,7 @@ class ModelSnapshotterTest extends TestCase
                                     return [
                                         'class' => GroupMember::class,
                                         'attributes' => $ma,
-                                        'relations' => []
+                                        'relations' => [],
                                     ];
                                 })->toArray(),
             ],
@@ -111,7 +110,6 @@ class ModelSnapshotterTest extends TestCase
 
         $this->assertEquals(['type' => null], $snapshot['relations']);
     }
-    
 
     /**
      * @test
@@ -120,7 +118,7 @@ class ModelSnapshotterTest extends TestCase
     {
         $epAttr = ['long_base_name' => 'Long VCEP Name'];
         $epModel = new ExpertPanel($epAttr);
-        
+
         $epTypeAttr = ['name' => 'VCEP'];
         $epModel->setRelation('type', new ExpertPanelType($epTypeAttr));
 
@@ -133,22 +131,22 @@ class ModelSnapshotterTest extends TestCase
             'attributes' => $this->groupAttr,
             'relations' => [
                 'expertPanel' => [
-                    'class' => ExpertPanel::class, 
+                    'class' => ExpertPanel::class,
                     'attributes' => $epAttr,
                     'relations' => [
                         'type' => [
                             'class' => ExpertPanelType::class,
                             'attributes' => $epTypeAttr,
-                            'relations' => []
-                        ]
-                    ]
-                ]
-            ]
+                            'relations' => [],
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $this->assertEquals($expected, $snapshot);
     }
-    
+
     /**
      * @test
      */
@@ -161,42 +159,42 @@ class ModelSnapshotterTest extends TestCase
                 'type' => [
                     'class' => GroupType::class,
                     'attributes' => ['name' => 'VCEP', 'id' => 4],
-                    'relations' => []
+                    'relations' => [],
                 ],
                 'expertPanel' => [
-                    'class' => ExpertPanel::class, 
+                    'class' => ExpertPanel::class,
                     'attributes' => ['long_base_name' => 'Long VCEP Name', 'id' => 1],
                     'relations' => [
                         'type' => [
                             'class' => ExpertPanelType::class,
                             'attributes' => ['name' => 'VCEP', 'id' => 2],
-                            'relations' => []
-                        ]
-                    ]
+                            'relations' => [],
+                        ],
+                    ],
                 ],
                 'members' => [
                     [
-                        'class'=>GroupMember::class,
+                        'class' => GroupMember::class,
                         'attributes' => ['person_id' => 1, 'group_id' => 1],
                         'relations' => [
                             'person' => [
                                 'class' => Person::class,
-                                'attributes' => ['first_name' => 'Dale', 'last_name' => 'Cooper', 'id' => 1]
-                            ]
-                        ]
+                                'attributes' => ['first_name' => 'Dale', 'last_name' => 'Cooper', 'id' => 1],
+                            ],
+                        ],
                     ],
                     [
-                        'class'=>GroupMember::class,
+                        'class' => GroupMember::class,
                         'attributes' => ['person_id' => 2, 'group_id' => 1],
                         'relations' => [
                             'person' => [
                                 'class' => Person::class,
-                                'attributes' => ['first_name' => 'Dougie', 'last_name' => 'Jones', 'id' => 2]
-                            ]
-                        ]
+                                'attributes' => ['first_name' => 'Dougie', 'last_name' => 'Jones', 'id' => 2],
+                            ],
+                        ],
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
 
         $model = $this->snapshotter->initModelFromSnapshot($snapshot);
@@ -211,5 +209,4 @@ class ModelSnapshotterTest extends TestCase
 
         $this->assertEquals(2, $model->members->count());
     }
-    
 }

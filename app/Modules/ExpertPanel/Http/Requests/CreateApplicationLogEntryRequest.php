@@ -26,7 +26,7 @@ class CreateApplicationLogEntryRequest extends FormRequest
         return [
             'entry' => 'required',
             'log_date' => 'required|date',
-            'step' => 'nullable|numeric|between:1,4'
+            'step' => 'nullable|numeric|between:1,4',
         ];
     }
 }

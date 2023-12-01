@@ -2,18 +2,14 @@
 
 namespace App\Modules\Group\Events;
 
-use Illuminate\Support\Carbon;
 use App\Events\RecordableEvent;
 use App\Modules\Group\Models\Group;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Broadcasting\PrivateChannel;
-use phpDocumentor\Reflection\Types\Boolean;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Carbon;
 
 abstract class GroupEvent extends RecordableEvent
 {
@@ -69,7 +65,7 @@ abstract class GroupEvent extends RecordableEvent
         return $this->group->isEp;
     }
 
-    abstract public function getLogEntry() :string;
+    abstract public function getLogEntry(): string;
 
     /**
      * Get the channels the event should broadcast on.

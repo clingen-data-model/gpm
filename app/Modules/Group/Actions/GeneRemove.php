@@ -1,15 +1,16 @@
 <?php
+
 namespace App\Modules\Group\Actions;
 
-use Illuminate\Http\Request;
-use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Auth;
 use App\Modules\ExpertPanel\Models\Gene;
 use App\Modules\Group\Events\GeneRemoved;
+use App\Modules\Group\Models\Group;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-use Lorisleiva\Actions\Concerns\AsObject;
 use Lorisleiva\Actions\Concerns\AsController;
+use Lorisleiva\Actions\Concerns\AsObject;
 
 class GeneRemove
 {
@@ -32,8 +33,8 @@ class GeneRemove
             throw new AuthorizationException('You do not have permission to remove genes from this expert panel\'s gene list.');
         }
 
-        if (!$group->isExpertPanel) {
-            throw ValidationException::withMessages(['group'=>['Only expert panels have genes.  You can not remove a gene from a '.$group->type->full_name]]);
+        if (! $group->isExpertPanel) {
+            throw ValidationException::withMessages(['group' => ['Only expert panels have genes.  You can not remove a gene from a '.$group->type->full_name]]);
         }
 
         $gene = $group->expertPanel->genes()->findOrFail($geneId);

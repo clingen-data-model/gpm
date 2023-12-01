@@ -2,12 +2,12 @@
 
 namespace App\Modules\Group\Actions;
 
-use Carbon\Carbon;
-use Ramsey\Uuid\Uuid;
-use App\Modules\Group\Models\Group;
-use Lorisleiva\Actions\Concerns\AsListener;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use App\Modules\Group\Events\ApplicationStepSubmitted;
+use App\Modules\Group\Models\Group;
+use Carbon\Carbon;
+use Lorisleiva\Actions\Concerns\AsListener;
+use Ramsey\Uuid\Uuid;
 
 class ApplicationSubmissionAssignNextAction
 {
@@ -16,7 +16,6 @@ class ApplicationSubmissionAssignNextAction
     public function __construct(private NextActionCreate $createNextAction)
     {
     }
-    
 
     public function handle(Group $group)
     {
@@ -27,16 +26,15 @@ class ApplicationSubmissionAssignNextAction
                 dateCreated: Carbon::now(),
                 entry: 'Review application and respond to EP.',
                 targetDate: Carbon::now()->addDays(14),
-                assignedTo: $group->expertPanel->isVcep 
-                    ? config('next_actions.assignees.cdwg-oc.id') 
+                assignedTo: $group->expertPanel->isVcep
+                    ? config('next_actions.assignees.cdwg-oc.id')
                     : config('next_actions.assignees.gene-curation-core-group.id'),
                 typeId: config('next_actions.types.review-submission.id')
             );
     }
-    
+
     public function asListener(ApplicationStepSubmitted $event)
     {
         $this->handle($event->submission->group);
     }
-    
 }

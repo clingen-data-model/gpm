@@ -1,11 +1,9 @@
 <?php
+
 namespace App\Modules\ExpertPanel\Models\Traits;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
 
-/**
- *
- */
 trait BelongsToExpertPanel
 {
     public function expertPanel(): Relation

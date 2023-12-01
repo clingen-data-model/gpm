@@ -2,21 +2,16 @@
 
 namespace App\Modules\Group\Actions;
 
-use Ramsey\Uuid\Uuid;
+use App\Modules\Group\Http\Resources\MemberResource;
 use App\Modules\Group\Models\Group;
-use App\Modules\Group\Models\Invite;
-use Illuminate\Auth\Access\Response;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Event;
-use Lorisleiva\Actions\ActionRequest;
-use App\Modules\Group\Actions\MemberAdd;
-use Lorisleiva\Actions\Concerns\AsObject;
-use App\Modules\Group\Events\MemberInvited;
+use App\Modules\Group\Models\GroupMember;
 use App\Modules\Person\Actions\PersonCreate;
 use App\Modules\Person\Actions\PersonInvite;
+use Illuminate\Auth\Access\Response;
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
-use App\Modules\Group\Http\Resources\MemberResource;
-use App\Modules\Group\Models\GroupMember;
+use Lorisleiva\Actions\Concerns\AsObject;
+use Ramsey\Uuid\Uuid;
 
 class MemberInvite
 {
@@ -70,6 +65,7 @@ class MemberInvite
     public function asController(ActionRequest $request, $groupUuid)
     {
         $group = Group::findByUuidOrFail($groupUuid);
+
         return new MemberResource($this->handle($group, $request->all()));
     }
 
@@ -83,7 +79,6 @@ class MemberInvite
         return Response::allow();
     }
 
-
     public function rules(): array
     {
         return [
@@ -93,14 +88,13 @@ class MemberInvite
         ];
     }
 
-
     public function getValidationMessages(): array
     {
         return [
             'first_name.required' => 'A first name is required.',
             'last_name.required' => 'A last name is required.',
             'email.required' => 'An email is required.',
-            'email.unique' => 'A person with this email address is already in the GPM.  Please click \'Add as member\' next the person\'s name to the right.'
+            'email.unique' => 'A person with this email address is already in the GPM.  Please click \'Add as member\' next the person\'s name to the right.',
         ];
     }
 }

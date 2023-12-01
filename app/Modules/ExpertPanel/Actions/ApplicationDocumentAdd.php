@@ -2,19 +2,19 @@
 
 namespace App\Modules\ExpertPanel\Actions;
 
-use Carbon\Carbon;
 use App\Models\Document;
+use App\Modules\ExpertPanel\Events\DocumentAdded;
+use App\Modules\ExpertPanel\Http\Requests\ApplicationDocumentStoreRequest;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Lorisleiva\Actions\Concerns\AsAction;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Events\DocumentAdded;
-use App\Modules\ExpertPanel\Http\Requests\ApplicationDocumentStoreRequest;
 
 class ApplicationDocumentAdd
 {
     use AsAction;
-    
+
     public function handle(
         string $expertPanelUuid,
         string $uuid,
@@ -40,9 +40,9 @@ class ApplicationDocumentAdd
                 'is_final' => $is_final,
                 'date_received' => $dateReceived,
             ]),
-            'notes' => $notes
+            'notes' => $notes,
         ]);
-        
+
         $document->version = 1 + $expertPanel->getLatestVersionForDocument($document->document_type_id);
 
         $expertPanel->group->documents()->save($document);
@@ -73,7 +73,7 @@ class ApplicationDocumentAdd
             'metadata',
             'step',
             'is_final',
-            'notes'
+            'notes',
         ]);
 
         $data['storage_path'] = $path;
@@ -95,6 +95,7 @@ class ApplicationDocumentAdd
                 $expertPanel->step_4_received_date = $document->dateReceived;
             }
             $expertPanel->save();
+
             return;
         }
 

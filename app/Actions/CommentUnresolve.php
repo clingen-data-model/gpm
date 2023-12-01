@@ -8,7 +8,7 @@ use Lorisleiva\Actions\Concerns\AsController;
 
 class CommentUnresolve
 {
-    	use AsController;
+    use AsController;
 
     public function handle(Comment $comment)
     {
@@ -18,9 +18,8 @@ class CommentUnresolve
         return $comment;
     }
 
-    public function authorize(ActionRequest $request):bool
+    public function authorize(ActionRequest $request): bool
     {
         return $request->user()->hasPermissionTo('ep-applications-comment');
     }
-
 }

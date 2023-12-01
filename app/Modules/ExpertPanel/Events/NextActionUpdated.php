@@ -2,16 +2,14 @@
 
 namespace App\Modules\ExpertPanel\Events;
 
-use Illuminate\Support\Carbon;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use App\Modules\ExpertPanel\Models\NextAction;
-use Illuminate\Foundation\Events\Dispatchable;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Models\NextAction;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Carbon;
 
 class NextActionUpdated extends ExpertPanelEvent
 {
@@ -22,11 +20,11 @@ class NextActionUpdated extends ExpertPanelEvent
      *
      * @return void
      */
-    public function __construct(public ExpertPanel  $application, public NextAction $nextAction, public array $oldData)
+    public function __construct(public ExpertPanel $application, public NextAction $nextAction, public array $oldData)
     {
     }
 
-    public function getLogEntry():string
+    public function getLogEntry(): string
     {
         return 'Updated next action '.$this->nextAction->id;
     }
@@ -35,11 +33,11 @@ class NextActionUpdated extends ExpertPanelEvent
     {
         return [
             'next_action' => $this->nextAction->toArray(),
-            'previous_data' => $this->oldData
+            'previous_data' => $this->oldData,
         ];
     }
 
-    public function getLogDate():Carbon
+    public function getLogDate(): Carbon
     {
         return Carbon::parse($this->nextAction->date_created);
     }
@@ -48,9 +46,6 @@ class NextActionUpdated extends ExpertPanelEvent
     {
         return $this->nextAction->step;
     }
-    
-
-    
 
     /**
      * Get the channels the event should broadcast on.

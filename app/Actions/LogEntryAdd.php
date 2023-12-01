@@ -2,12 +2,10 @@
 
 namespace App\Actions;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Database\Eloquent\Model;
 use Lorisleiva\Actions\Concerns\AsAction;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Http\Requests\CreateApplicationLogEntryRequest;
 
 class LogEntryAdd
 {
@@ -31,7 +29,7 @@ class LogEntryAdd
             ->withProperties([
                 'entry' => $entry,
                 'log_date' => $logDate,
-                'step' => $step
+                'step' => $step,
             ])->log($entry);
         $subject->touch();
 

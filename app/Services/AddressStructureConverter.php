@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 class AddressStructureConverter
@@ -6,18 +7,19 @@ class AddressStructureConverter
     public function convert($addresses)
     {
         $transformedAddresses = [];
-        if (!$addresses) {
+        if (! $addresses) {
             return $addresses;
         }
-        
+
         foreach ($addresses as $email => $name) {
             if (is_numeric($email) && isset($name['address'])) {
                 $transformedAddresses[] = $name;
+
                 continue;
             }
             $transformedAddresses[] = [
                 'name' => $name,
-                'address' => $email
+                'address' => $email,
             ];
         }
 

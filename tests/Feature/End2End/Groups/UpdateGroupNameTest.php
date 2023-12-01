@@ -2,18 +2,16 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class UpdateGroupNameTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -41,17 +39,16 @@ class UpdateGroupNameTest extends TestCase
         $this->makeRequest([])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'name' => ['This is required.']
+                'name' => ['This is required.'],
             ]);
-
 
         $this->makeRequest(['name' => $this->getLongString()])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'name' => ['The name may not be greater than 255 characters.']
+                'name' => ['The name may not be greater than 255 characters.'],
             ]);
     }
-    
+
     /**
      * @test
      */
@@ -60,12 +57,12 @@ class UpdateGroupNameTest extends TestCase
         $this->makeRequest()
             ->assertStatus(200)
             ->assertJsonFragment([
-                'name' => 'New name'
+                'name' => 'New name',
             ]);
 
         $this->assertDatabaseHas('groups', [
             'id' => $this->group->id,
-            'name' => 'New name'
+            'name' => 'New name',
         ]);
     }
 
@@ -83,10 +80,11 @@ class UpdateGroupNameTest extends TestCase
             description: 'Name changed from "'.$oldName.'" to "New name"',
         );
     }
-    
+
     private function makeRequest($data = null)
     {
         $data = $data ?? ['name' => 'New name'];
+
         return $this->json('PUT', '/api/groups/'.$this->group->uuid.'/name', $data);
     }
 }

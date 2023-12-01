@@ -2,24 +2,20 @@
 
 namespace Tests\Feature\End2End\Groups\Submissions;
 
-use Carbon\Carbon;
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Models\NextActionType;
 use App\Mail\UserDefinedMailable;
-use Illuminate\Support\Facades\Mail;
-use App\Modules\Person\Models\Person;
-use App\Modules\Group\Models\Submission;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\NextAction;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Database\Seeders\NextActionTypesTableSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Database\Seeders\SubmissionTypeAndStatusSeeder;
+use App\Modules\ExpertPanel\Models\NextAction;
+use App\Modules\Group\Models\Submission;
+use App\Modules\Person\Models\Person;
+use Carbon\Carbon;
 use Database\Seeders\NextActionAssigneesTableSeeder;
-use App\Modules\ExpertPanel\Models\NextActionAssignee;
-use App\Modules\Group\Events\ApplicationRevisionsRequested;
+use Database\Seeders\NextActionTypesTableSeeder;
+use Database\Seeders\SubmissionTypeAndStatusSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class RejectSubmissionTest extends TestCase
 {
@@ -27,7 +23,7 @@ class RejectSubmissionTest extends TestCase
 
     const NOTE = 'This is a note about the don\'t-call-it-a-rejection.';
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -102,17 +98,15 @@ class RejectSubmissionTest extends TestCase
                     && $mail->body == $data['body']
                     && $mail->attachments == []
                     && $mail->hasTo($person1->email)
-                    && $mail->hasTo($person2->email)
-                ;
+                    && $mail->hasTo($person2->email);
             }
         );
         $this->assertDatabaseHas('submissions', [
             'id' => $this->submission->id,
             'submission_status_id' => config('submissions.statuses.revisions-requested.id'),
             'closed_at' => Carbon::now(),
-            'response_content' => $data['body']
+            'response_content' => $data['body'],
         ]);
-
     }
 
     /**
@@ -144,7 +138,7 @@ class RejectSubmissionTest extends TestCase
         $this->assertDatabaseHas('next_actions', [
             'expert_panel_id' => $this->expertPanel->id,
             'type_id' => config('next_actions.types.make-revisions'),
-            'assignee_id' => config('next_actions.assignees.expert-panel.id')
+            'assignee_id' => config('next_actions.assignees.expert-panel.id'),
         ]);
     }
 
@@ -156,20 +150,17 @@ class RejectSubmissionTest extends TestCase
         Carbon::setTestNow('2022-06-01');
         $nextAction = NextAction::factory()->create([
             'type_id' => config('next_actions.types.review-submission.id'),
-            'expert_panel_id' => $this->expertPanel->id
+            'expert_panel_id' => $this->expertPanel->id,
         ]);
-
 
         $this->makeRequest()
             ->assertStatus(200);
 
         $this->assertDatabaseHas('next_actions', [
             'id' => $nextAction->id,
-            'date_completed' => Carbon::now()
+            'date_completed' => Carbon::now(),
         ]);
     }
-
-
 
     private function makeRequest($data = null)
     {
@@ -184,11 +175,7 @@ class RejectSubmissionTest extends TestCase
             'notify_contacts' => false,
             'subject' => 'Revise and resubmit your application for '.$this->expertPanel->group->name,
             'notes' => static::NOTE,
-            'body' => static::NOTE
+            'body' => static::NOTE,
         ], $mergeData);
     }
-
-
-
-
 }

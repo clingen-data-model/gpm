@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Actions;
-use Carbon\Carbon;
-use App\Models\Comment;
+
 use App\Events\CommentResolved;
+use App\Models\Comment;
+use Carbon\Carbon;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 
@@ -25,9 +26,8 @@ class CommentResolve
         return $comment;
     }
 
-    public function authorize(ActionRequest $request):bool
+    public function authorize(ActionRequest $request): bool
     {
         return $request->user()->hasPermissionTo('ep-applications-comment');
     }
-
 }

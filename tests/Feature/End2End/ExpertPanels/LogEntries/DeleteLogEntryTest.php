@@ -2,14 +2,12 @@
 
 namespace Tests\Feature\End2End\ExpertPanels\LogEntries;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Modules\ExpertPanel\Actions\LogEntryAdd;
 use App\Modules\ExpertPanel\Actions\StepApprove;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Actions\LogEntryAdd;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 /**
  * @group applications
@@ -19,7 +17,7 @@ class DeleteLogEntryTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -53,8 +51,8 @@ class DeleteLogEntryTest extends TestCase
         $response->assertStatus(422)
             ->assertJson([
                 'errors' => [
-                    'activity_type' => ['Only manual log entries can be deleted.']
-                ]
+                    'activity_type' => ['Only manual log entries can be deleted.'],
+                ],
             ]);
     }
 
@@ -69,7 +67,7 @@ class DeleteLogEntryTest extends TestCase
         $response->assertStatus(200);
 
         $this->assertDatabaseMissing('activity_log', [
-            'id' => $this->logEntry->id
+            'id' => $this->logEntry->id,
         ]);
     }
 }

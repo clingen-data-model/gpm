@@ -2,14 +2,12 @@
 
 namespace Tests\Feature\End2End;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
-use App\Modules\ExpertPanel\Models\Gene;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Models\Gene;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
 
 /**
@@ -23,12 +21,12 @@ class SyncGenesToGcepTest extends TestCase
     use RefreshDatabase;
     use SeedsHgncGenesAndDiseases;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForgroupTest();
-        
-        $this->seedGenes([['hgnc_id' => 678, 'gene_symbol'=>'BCD'], ['hgnc_id' => 12345, 'gene_symbol' => 'ABC1']]);
+
+        $this->seedGenes([['hgnc_id' => 678, 'gene_symbol' => 'BCD'], ['hgnc_id' => 12345, 'gene_symbol' => 'ABC1']]);
 
         $this->user = $this->setupUser(permissions: ['ep-applications-manage']);
 
@@ -46,8 +44,8 @@ class SyncGenesToGcepTest extends TestCase
 
         $this->json('POST', $this->url, [
             'genes' => [[
-                'ABC1'
-            ]]
+                'ABC1',
+            ]],
         ])
         ->assertStatus(403);
     }
@@ -57,13 +55,13 @@ class SyncGenesToGcepTest extends TestCase
      */
     public function validates_input_for_gceps()
     {
-        $this->json('POST', $this->url, ['genes'=>['ZXC', 'ABC1']])
+        $this->json('POST', $this->url, ['genes' => ['ZXC', 'ABC1']])
             ->assertStatus(422)
             ->assertJsonFragment([
-                    'genes.0' => ['Your selection is invalid.']
+                'genes.0' => ['Your selection is invalid.'],
             ])
             ->assertJsonMissing([
-                'genes.1' => ['Your selection is invalid.']
+                'genes.1' => ['Your selection is invalid.'],
             ]);
     }
 
@@ -81,7 +79,7 @@ class SyncGenesToGcepTest extends TestCase
             [
                 'gene_symbol' => 'ABC1',
                 'mondo_id' => null,
-                'expert_panel_id' => $this->expertPanel->id
+                'expert_panel_id' => $this->expertPanel->id,
             ]
         );
         $this->assertDatabaseHas(
@@ -89,7 +87,7 @@ class SyncGenesToGcepTest extends TestCase
             [
                 'gene_symbol' => 'BCD',
                 'mondo_id' => null,
-                'expert_panel_id' => $this->expertPanel->id
+                'expert_panel_id' => $this->expertPanel->id,
             ]
         );
     }
@@ -99,11 +97,10 @@ class SyncGenesToGcepTest extends TestCase
      */
     public function privileged_user_can_remove_genes()
     {
-
         // Add some genes to the expert panel
         $this->expertPanel->genes()->saveMany([
-            new Gene(['hgnc_id' => 12345, 'gene_symbol'=>'ABC1']),
-            new Gene(['hgnc_id' => 678, 'gene_symbol'=>'BCD']),
+            new Gene(['hgnc_id' => 12345, 'gene_symbol' => 'ABC1']),
+            new Gene(['hgnc_id' => 678, 'gene_symbol' => 'BCD']),
         ]);
 
         Carbon::setTestNow();
@@ -114,13 +111,13 @@ class SyncGenesToGcepTest extends TestCase
         $this->assertDatabaseHas('genes', [
             'expert_panel_id' => $this->expertPanel->id,
             'gene_symbol' => 'ABC1',
-            'deleted_at' => Carbon::now()
+            'deleted_at' => Carbon::now(),
         ]);
 
         $this->assertDatabaseHas('genes', [
             'expert_panel_id' => $this->expertPanel->id,
             'gene_symbol' => 'BCD',
-            'deleted_at' => null
+            'deleted_at' => null,
         ]);
     }
 
@@ -134,8 +131,8 @@ class SyncGenesToGcepTest extends TestCase
             ['hgnc_id' => 999, 'gene_symbol' => 'EFG'],
         ]);
         $this->expertPanel->genes()->saveMany([
-            new Gene(['hgnc_id' => 12345, 'gene_symbol'=>'ABC']),
-            new Gene(['hgnc_id' => 678, 'gene_symbol'=>'BCD']),
+            new Gene(['hgnc_id' => 12345, 'gene_symbol' => 'ABC']),
+            new Gene(['hgnc_id' => 678, 'gene_symbol' => 'BCD']),
         ]);
 
         Carbon::setTestNow();

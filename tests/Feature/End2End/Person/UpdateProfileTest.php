@@ -2,23 +2,20 @@
 
 namespace Tests\Feature\End2End\Person;
 
-use Tests\TestCase;
-use App\Models\Role;
-use App\Models\Expertise;
 use App\Models\Credential;
+use App\Models\Expertise;
 use App\Models\Permission;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
+use App\Models\Role;
+use App\Modules\Group\Actions\MemberAdd;
+use App\Modules\Group\Actions\MemberAssignRole;
+use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
-use Database\Seeders\CredentialSeeder;
-use App\Modules\Group\Actions\MemberAdd;
-use App\Modules\Person\Models\Institution;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\Group\Actions\MemberAssignRole;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Modules\Group\Actions\MemberGrantPermissions;
-use Tests\Feature\End2End\Person\TestEventPublished;
+use Illuminate\Foundation\Testing\WithFaker;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 /**
  * @group people
@@ -31,14 +28,20 @@ class UpdateProfileTest extends TestCase
     use WithFaker;
 
     private $institution;
+
     private $race;
+
     private $primaryOcc;
+
     private $gender;
+
     private $country;
+
     private $credential;
+
     use TestEventPublished;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -67,10 +70,10 @@ class UpdateProfileTest extends TestCase
             ->assertStatus(200)
             ->assertJsonFragment($expected)
             ->assertJsonFragment([
-                $this->credential->toArray()
+                $this->credential->toArray(),
             ])
             ->assertJsonFragment([
-                $this->expertise->toArray()
+                $this->expertise->toArray(),
             ]);
 
         $this->assertDatabaseHas('people', $expected);
@@ -78,7 +81,7 @@ class UpdateProfileTest extends TestCase
             'credential_person',
             [
                 'credential_id' => $this->credential->id,
-                'person_id' => $this->person->id
+                'person_id' => $this->person->id,
             ]
         );
     }
@@ -112,10 +115,9 @@ class UpdateProfileTest extends TestCase
         $this->assertDatabaseHas('users', [
             'id' => $this->user->id,
             'name' => 'beans mccradden',
-            'email' => 'beans@beans.com'
+            'email' => 'beans@beans.com',
         ]);
     }
-
 
     /**
      * @test
@@ -161,13 +163,13 @@ class UpdateProfileTest extends TestCase
         $expertises = Expertise::factory()->count(2)->create();
 
         $this->makeRequest([
-                'first_name' => 'early',
-                'last_name' => 'dog',
-                'email' => 'earlydog@turds.com',
-                'credential_ids' => $credentials->pluck('id')->toArray(),
-                'expertise_ids' => $expertises->pluck('id')->toArray(),
-                'biography' => 'A real turd burgler'
-            ])
+            'first_name' => 'early',
+            'last_name' => 'dog',
+            'email' => 'earlydog@turds.com',
+            'credential_ids' => $credentials->pluck('id')->toArray(),
+            'expertise_ids' => $expertises->pluck('id')->toArray(),
+            'biography' => 'A real turd burgler',
+        ])
             ->assertStatus(200);
 
         $this->assertDatabaseHas('people', [
@@ -179,14 +181,13 @@ class UpdateProfileTest extends TestCase
 
         $this->assertDatabaseHas('credential_person', [
             'credential_id' => $credentials->first()->id,
-            'person_id' => $this->person->id
+            'person_id' => $this->person->id,
         ]);
         $this->assertDatabaseHas('credential_person', [
             'credential_id' => $credentials->last()->id,
-            'person_id' => $this->person->id
+            'person_id' => $this->person->id,
         ]);
     }
-
 
     /**
      * @test
@@ -216,7 +217,7 @@ class UpdateProfileTest extends TestCase
             'first_name' => $this->person->first_name,
             'last_name' => $this->person->last_name,
             'email' => $this->person->email,
-            'biography' => 'I\'m a little teapot.'
+            'biography' => 'I\'m a little teapot.',
         ])
         ->assertStatus(200)
         ->assertJsonFragment(['biography' => 'I\'m a little teapot.'])
@@ -240,7 +241,7 @@ class UpdateProfileTest extends TestCase
             'biography' => $this->faker->paragraph(),
             'timezone' => $this->faker->timezone(),
             'credential_ids' => [999],
-            'expertise_ids' => [999]
+            'expertise_ids' => [999],
         ];
 
         $this->user->givePermissionTo($this->perm);
@@ -269,7 +270,7 @@ class UpdateProfileTest extends TestCase
         ])
         ->assertStatus(422)
         ->assertJsonFragment([
-            'email' => ['Somebody is already using that email address.']
+            'email' => ['Somebody is already using that email address.'],
         ]);
     }
 
@@ -289,7 +290,7 @@ class UpdateProfileTest extends TestCase
         ])
         ->assertStatus(422)
         ->assertJsonFragment([
-            'email' => ['Somebody is already using that email address.']
+            'email' => ['Somebody is already using that email address.'],
         ]);
     }
 
@@ -309,7 +310,6 @@ class UpdateProfileTest extends TestCase
 
         $this->assertEventPublished(config('dx.topics.outgoing.gpm-person-events'), 'updated', $person);
     }
-
 
     private function makeRequest($data = null)
     {
@@ -336,11 +336,9 @@ class UpdateProfileTest extends TestCase
             'orcid_id' => 12345,
             'hypothesis_id' => 12345,
             'biography' => $this->faker->paragraph(),
-            'timezone' => $this->faker->timezone()
+            'timezone' => $this->faker->timezone(),
         ];
     }
-
-
 
     private function setupLookups()
     {
@@ -351,6 +349,5 @@ class UpdateProfileTest extends TestCase
         $this->country = \App\Modules\Person\Models\Country::factory()->create();
         $this->credential = Credential::factory()->create();
         $this->expertise = Expertise::factory()->create(['approved' => true]);
-
     }
 }

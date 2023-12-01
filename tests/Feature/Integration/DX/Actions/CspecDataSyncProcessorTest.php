@@ -2,25 +2,24 @@
 
 namespace Tests\Feature\Integration\DX\Actions;
 
-use Tests\TestCase;
-use Illuminate\Support\Collection;
-use App\Modules\Group\Models\Group;
-use Database\Seeders\RulesetStatusSeeder;
-use App\Modules\ExpertPanel\Models\Ruleset;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Database\Seeders\SpecificationStatusSeeder;
-use App\Modules\ExpertPanel\Models\Specification;
-use App\DataExchange\Models\IncomingStreamMessage;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\DataExchange\Actions\CspecDataSyncProcessor;
+use App\DataExchange\Models\IncomingStreamMessage;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Models\Ruleset;
+use App\Modules\ExpertPanel\Models\Specification;
+use App\Modules\Group\Models\Group;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Collection;
+use Tests\TestCase;
 
 class CspecDataSyncProcessorTest extends TestCase
 {
     use RefreshDatabase;
 
     protected IncomingStreamMessage $message;
+
     protected ExpertPanel $expertPanel;
+
     protected Collection $statuses;
 
     public function setup(): void
@@ -31,7 +30,7 @@ class CspecDataSyncProcessorTest extends TestCase
         $this->expertPanel = ExpertPanel::factory()->vcep()->create(['affiliation_id' => 599999]);
 
         $this->message = new IncomingStreamMessage([
-            'payload' => (object)[
+            'payload' => (object) [
                 'cspecDoc' => [
                     'affiliationId' => 599999,
                     'name' => 'blah blah blah',
@@ -39,15 +38,15 @@ class CspecDataSyncProcessorTest extends TestCase
                     'ruleSets' => [
                         [
                             'ruleSetId' => '123456',
-                        ]
+                        ],
                     ],
                     'status' => [
                         'event' => 'classified-rules-submitted',
-                        'current' => 'Classified Rules Submitted'
-                    ]
-                ]
+                        'current' => 'Classified Rules Submitted',
+                    ],
+                ],
             ],
-            'error_code' => 0
+            'error_code' => 0,
         ]);
     }
 
@@ -71,12 +70,12 @@ class CspecDataSyncProcessorTest extends TestCase
             'cspec_id' => 'BL004',
             'name' => 'Early Bird Nini',
             'status' => 'New CSpec Doc Created',
-            'expert_panel_id' => $this->expertPanel->id
+            'expert_panel_id' => $this->expertPanel->id,
         ]);
         $ruleset = Ruleset::factory()->create([
             'cspec_ruleset_id' => '123456',
             'specification_id' => 'BL004',
-            'status' => 'New CSpec Doc Created'
+            'status' => 'New CSpec Doc Created',
         ]);
 
         app()->make(CspecDataSyncProcessor::class)
@@ -94,12 +93,12 @@ class CspecDataSyncProcessorTest extends TestCase
             'cspec_id' => 'BL004',
             'name' => 'Early Bird Nini',
             'status' => 'New CSpec Doc Created',
-            'expert_panel_id' => $this->expertPanel->id
+            'expert_panel_id' => $this->expertPanel->id,
         ]);
         $ruleset = Ruleset::factory()->create([
             'cspec_ruleset_id' => '123456',
             'specification_id' => 'BL004',
-            'status' => 'New CSpec Doc Created'
+            'status' => 'New CSpec Doc Created',
         ]);
 
         app()->make(CspecDataSyncProcessor::class)
@@ -112,10 +111,9 @@ class CspecDataSyncProcessorTest extends TestCase
             'properties->specification_id' => 'BL004',
             'properties->status' => 'Classified Rules Submitted',
             'properties->step' => 2,
-            'description' => 'Specification "blah blah blah" status updated to "Classified Rules Submitted"'
+            'description' => 'Specification "blah blah blah" status updated to "Classified Rules Submitted"',
         ]);
     }
-
 
     private function assertDatabaseSynced(): void
     {
@@ -123,13 +121,13 @@ class CspecDataSyncProcessorTest extends TestCase
             'cspec_id' => 'BL004',
             'name' => 'blah blah blah',
             'expert_panel_id' => $this->expertPanel->id,
-            'status' => 'Classified Rules Submitted'
+            'status' => 'Classified Rules Submitted',
         ]);
 
         $this->assertDatabaseHas('specification_rulesets', [
             'cspec_ruleset_id' => '123456',
             'specification_id' => 'BL004',
-            'status' => 'Classified Rules Submitted'
+            'status' => 'Classified Rules Submitted',
         ]);
     }
 }

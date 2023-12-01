@@ -2,16 +2,12 @@
 
 namespace Tests\Feature\End2End\Groups\Members;
 
-use DateTime;
-use Carbon\Carbon;
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Person;
-use App\Modules\Group\Actions\MemberAdd;
-use Illuminate\Foundation\Testing\WithFaker;
+use Carbon\Carbon;
+use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 /**
  * @group groups
@@ -22,7 +18,7 @@ class RemoveMemberTest extends TestCase
     use RefreshDatabase;
     use SetsUpGroupPersonAndMember;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -49,7 +45,7 @@ class RemoveMemberTest extends TestCase
 
         $this->assertDatabaseHas('group_members', [
             'id' => $this->groupMember->id,
-            'deleted_at' => $endDate->format('Y-m-d H:i:s')
+            'deleted_at' => $endDate->format('Y-m-d H:i:s'),
         ]);
     }
 
@@ -61,7 +57,7 @@ class RemoveMemberTest extends TestCase
         $response = $this->json('DELETE', $this->url, []);
         $response->assertStatus(422);
 
-        $response->assertJsonFragment([ 'errors' => [
+        $response->assertJsonFragment(['errors' => [
             'end_date' => ['This is required.'],
         ]]);
     }

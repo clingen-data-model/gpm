@@ -2,15 +2,14 @@
 
 namespace Tests\Feature\End2End\ExpertPanels;
 
-use Tests\TestCase;
-use App\Models\Document;
-use Illuminate\Support\Carbon;
-use App\Modules\User\Models\User;
-use App\Modules\Group\Models\Group;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Models\Group;
+use App\Modules\User\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Carbon;
+use Tests\TestCase;
 
 class IndexTest extends TestCase
 {
@@ -19,7 +18,7 @@ class IndexTest extends TestCase
 
     const URL = '/api/applications';
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -29,8 +28,8 @@ class IndexTest extends TestCase
         $this->expertPanels = ExpertPanel::factory(1)
                                 ->randomStep()
                                 ->create([
-                                    'created_at'=>Carbon::now()->subDays(10),
-                                    'updated_at' => Carbon::now()->subDays(10)
+                                    'created_at' => Carbon::now()->subDays(10),
+                                    'updated_at' => Carbon::now()->subDays(10),
                                 ]);
     }
 
@@ -54,7 +53,7 @@ class IndexTest extends TestCase
         $response = $this->json('GET', self::URL.'?sort[field]=current_step&sort[dir]=asc');
         $this->assertResultsSorted($this->expertPanels->sortBy('current_step')->slice(0, 20), $response);
     }
-    
+
     /**
      * @test
      */
@@ -65,7 +64,7 @@ class IndexTest extends TestCase
         $response = $this->json('GET', self::URL.'?sort[field]=cdwg.name&sort[dir]=asc');
         $this->assertResultsSorted($this->expertPanels->sortBy('cdwg.name')->slice(0, 20), $response);
     }
-    
+
     /**
      * @test
      */
@@ -81,12 +80,11 @@ class IndexTest extends TestCase
 
         $this->expertPanels->load('group.logEntries');
 
-
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
         $response = $this->json('GET', self::URL.'?sort[field]=latestLogEntry.created_at&sort[dir]=asc');
         $this->assertResultsSorted($this->expertPanels->sortBy('latestLogEntry.created_at')->slice(0, 20), $response);
     }
-    
+
     /**
      * @test
      */
@@ -95,8 +93,8 @@ class IndexTest extends TestCase
         $this->expertPanels = ExpertPanel::factory(3)
                                 ->randomStep()
                                 ->create([
-                                    'created_at'=>Carbon::now()->subDays(10),
-                                    'updated_at' => Carbon::now()->subDays(10)
+                                    'created_at' => Carbon::now()->subDays(10),
+                                    'updated_at' => Carbon::now()->subDays(10),
                                 ]);
         $this->expertPanels->take(2)->each(function ($app) {
             $app->updated_at = $this->faker->dateTimeBetween('-5 days', 'now');

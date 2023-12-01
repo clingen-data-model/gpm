@@ -3,29 +3,29 @@
 namespace App\Modules\Group\Models\Traits;
 
 use App\Modules\Group\Models\Submission;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Adds methods related to Submission models.
  */
 trait HasSubmissions
 {
-    public function submissions():HasMany
+    public function submissions(): HasMany
     {
         return $this->hasMany(Submission::class);
     }
 
-    public function latestSubmission():HasOne
+    public function latestSubmission(): HasOne
     {
         return $this->hasOne(Submission::class)
             ->ofMany(['created_at' => 'max']);
     }
-    
-    public function latestPendingSubmission():HasOne
+
+    public function latestPendingSubmission(): HasOne
     {
         return $this->hasOne(Submission::class)
-                ->ofMany(['created_at'=>'max'], function ($query) {
+                ->ofMany(['created_at' => 'max'], function ($query) {
                     $query->pending();
                 });
     }
@@ -38,8 +38,8 @@ trait HasSubmissions
             });
     }
 
-    public function hasApprovedSubmissionFor():bool
-    {   
-        return (bool)$this->approvedSubmission;
+    public function hasApprovedSubmissionFor(): bool
+    {
+        return (bool) $this->approvedSubmission;
     }
 }

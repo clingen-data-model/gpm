@@ -1,15 +1,15 @@
 <?php
+
 namespace App\Modules\Group\Actions;
 
-use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Event;
-use Lorisleiva\Actions\ActionRequest;
-use App\Modules\Group\Models\GroupMember;
-use Lorisleiva\Actions\Concerns\AsObject;
-use Lorisleiva\Actions\Concerns\AsController;
-use Illuminate\Validation\ValidationException;
 use App\Modules\Group\Events\MemberRoleAssigned;
 use App\Modules\Group\Http\Resources\MemberResource;
+use App\Modules\Group\Models\GroupMember;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Validation\ValidationException;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsController;
+use Lorisleiva\Actions\Concerns\AsObject;
 
 class MemberAssignRole
 {
@@ -23,12 +23,13 @@ class MemberAssignRole
                 if (is_int($role)) {
                     $role = config('permission.models.role')::findOrFail($role);
                 }
+
                 return $role;
             });
         $roles->each(function ($role) {
             if ($role->scope !== 'group') {
                 throw ValidationException::withMessages([
-                    'role_ids' => ['All roles must be group roles.']
+                    'role_ids' => ['All roles must be group roles.'],
                 ]);
             }
         });
@@ -44,13 +45,14 @@ class MemberAssignRole
     {
         $groupMember = $this->handle(GroupMember::findOrFail($memberId), $request->role_ids);
         $groupMember->load('cois', 'permissions', 'roles');
+
         return new MemberResource($groupMember);
     }
 
     public function rules(): array
     {
         return [
-            'role_ids' => 'required|array|exists:roles,id'
+            'role_ids' => 'required|array|exists:roles,id',
         ];
     }
 }

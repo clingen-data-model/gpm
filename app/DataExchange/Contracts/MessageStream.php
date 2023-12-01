@@ -2,33 +2,27 @@
 
 namespace App\DataExchange\Contracts;
 
-use Generator;
 use App\DataExchange\DxMessage;
+use Generator;
 
 interface MessageStream
 {
     /**
      * sets a topic
      *
-     * @param String $topic topic name
-     *
-     * @return MessageStream
+     * @param  string  $topic topic name
      */
-    public function addTopic(String $topic): MessageStream;
+    public function addTopic(string $topic): MessageStream;
 
     /**
      * Add multiple topics at once.
-     *
-     * @param array $topics
-     *
-     * @return MessageStream
      */
-    public function addTopics(Array $topics): MessageStream;
+    public function addTopics(array $topics): MessageStream;
 
     /**
      * remove a topic subscription
      */
-    public function removeTopic(String $topic): MessageStream;
+    public function removeTopic(string $topic): MessageStream;
 
     /**
      * Consumes incoming messages until end-of-file exception
@@ -44,7 +38,6 @@ interface MessageStream
      */
     public function consumeSomeMessages($number): Generator;
 
-
     /**
      * Listen to topic until told to stop
      *
@@ -53,7 +46,7 @@ interface MessageStream
     public function listen(): Generator;
 
     /**
-     * @return Array List of topics
+     * @return array List of topics
      */
     public function listTopics(): array;
 }

@@ -2,14 +2,10 @@
 
 namespace Tests\Feature\End2End\Groups\Members;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Person;
-use App\Modules\Group\Actions\MemberAdd;
-use App\Modules\User\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 /**
  * @group groups
@@ -19,15 +15,15 @@ class AssignRoleToMemberTest extends TestCase
 {
     use RefreshDatabase;
     use SetsUpGroupPersonAndMember;
-    
-    public function setup():void
+
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
 
         $this->user = $this->setupUser();
         $this->setupEntities()->setupMember();
-        
+
         $this->roles = config('permission.models.role')::factory(2)->create(['scope' => 'group']);
 
         $this->url = 'api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id.'/roles';
@@ -45,13 +41,13 @@ class AssignRoleToMemberTest extends TestCase
             'POST',
             $this->url,
             [
-                'role_ids' => $this->roles->pluck('id')->toArray()
+                'role_ids' => $this->roles->pluck('id')->toArray(),
             ]
         );
         $response->assertStatus(200);
         $response->assertJsonFragment([
             'group_id' => $this->group->id,
-            'person_id' => $this->person->id
+            'person_id' => $this->person->id,
         ]);
         $response->assertJsonFragment([
             'name' => $this->roles->first()->name,
@@ -63,12 +59,12 @@ class AssignRoleToMemberTest extends TestCase
         $this->assertDatabaseHas('model_has_roles', [
             'model_type' => get_class($this->groupMember),
             'model_id' => $this->groupMember->id,
-            'role_id' => $this->roles->first()->id
+            'role_id' => $this->roles->first()->id,
         ]);
         $this->assertDatabaseHas('model_has_roles', [
             'model_type' => get_class($this->groupMember),
             'model_id' => $this->groupMember->id,
-            'role_id' => $this->roles->last()->id
+            'role_id' => $this->roles->last()->id,
         ]);
     }
 
@@ -100,7 +96,7 @@ class AssignRoleToMemberTest extends TestCase
                         ->assertStatus(422);
 
         $response->assertJsonFragment = [
-            'role_ids' => ['All roles must be group roles.']
+            'role_ids' => ['All roles must be group roles.'],
         ];
     }
 
@@ -114,7 +110,7 @@ class AssignRoleToMemberTest extends TestCase
             'POST',
             $this->url,
             [
-                'role_ids' => $this->roles->pluck('id')->toArray()
+                'role_ids' => $this->roles->pluck('id')->toArray(),
             ]
         );
 
@@ -125,7 +121,7 @@ class AssignRoleToMemberTest extends TestCase
             'properties->member->id' => $this->groupMember->person->id,
             'properties->member->name' => $this->groupMember->person->name,
             'properties->member->email' => $this->groupMember->person->email,
-            'properties->roles' => json_encode($this->groupMember->roles->pluck('name')->toArray())
+            'properties->roles' => json_encode($this->groupMember->roles->pluck('name')->toArray()),
         ]);
     }
 }

@@ -2,13 +2,13 @@
 
 namespace App\Modules\ExpertPanel\Actions;
 
+use App\Modules\ExpertPanel\Events\ContactAdded;
+use App\Modules\ExpertPanel\Http\Requests\AddContactRequest;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Models\GroupMember;
 use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\Concerns\AsAction;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Events\ContactAdded;
-use App\Modules\ExpertPanel\Http\Requests\AddContactRequest;
-use App\Modules\Group\Models\GroupMember;
 
 class ContactAdd
 {
@@ -33,7 +33,7 @@ class ContactAdd
         GroupMember::firstOrCreate([
             'person_id' => $person->id,
             'group_id' => $expertPanel->group_id,
-            'is_contact' => 1
+            'is_contact' => 1,
         ]);
         $expertPanel->touch();
         Event::dispatch(new ContactAdded($expertPanel, $person));

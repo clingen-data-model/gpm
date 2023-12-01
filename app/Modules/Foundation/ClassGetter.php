@@ -2,16 +2,16 @@
 
 namespace App\Modules\Foundation;
 
-use RegexIterator;
-use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use RegexIterator;
 
 class ClassGetter
 {
     public function atPath($path)
     {
-        $fqcns = array();
-        
+        $fqcns = [];
+
         $allFiles = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
         $phpFiles = new RegexIterator($allFiles, '/\.php$/');
         foreach ($phpFiles as $phpFile) {
@@ -19,7 +19,7 @@ class ClassGetter
             $tokens = token_get_all($content);
             $namespace = '';
             for ($index = 0; isset($tokens[$index]); $index++) {
-                if (!isset($tokens[$index][0])) {
+                if (! isset($tokens[$index][0])) {
                     continue;
                 }
                 if (T_NAMESPACE === $tokens[$index][0]) {
@@ -31,14 +31,14 @@ class ClassGetter
                 if (T_CLASS === $tokens[$index][0] && T_WHITESPACE === $tokens[$index + 1][0] && T_STRING === $tokens[$index + 2][0]) {
                     $index += 2; // Skip class keyword and whitespace
                     $fqcns[] = $namespace.'\\'.$tokens[$index][1];
-        
-                    # break if you have one class per file (psr-4 compliant)
-                    # otherwise you'll need to handle class constants (Foo::class)
+
+                    // break if you have one class per file (psr-4 compliant)
+                    // otherwise you'll need to handle class constants (Foo::class)
                     break;
                 }
             }
-        }   
+        }
+
         return $fqcns;
     }
-    
 }

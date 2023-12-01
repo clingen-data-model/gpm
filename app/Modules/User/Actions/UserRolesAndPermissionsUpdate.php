@@ -15,6 +15,7 @@ class UserRolesAndPermissionsUpdate
     {
         $user->syncRoles($roleIds);
         $user->syncPermissions($permissionIds);
+
         return $user;
     }
 
@@ -26,14 +27,15 @@ class UserRolesAndPermissionsUpdate
             permissionIds: ($request->permission_ids ?? [])
         );
         $updatedUser->load('person', 'roles', 'permissions', 'roles.permissions');
+
         return $updatedUser;
     }
 
     public function rules(): array
     {
         return [
-           'role_ids' => 'nullable|array',
-           'permission_ids' => 'nullable|array'
+            'role_ids' => 'nullable|array',
+            'permission_ids' => 'nullable|array',
         ];
     }
 

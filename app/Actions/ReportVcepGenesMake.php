@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Actions;
+
+use App\Actions\Utils\TransformArrayForCsv;
+use App\Modules\ExpertPanel\Models\Gene;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\ActionRequest;
-use App\Modules\ExpertPanel\Models\Gene;
-use App\Actions\Utils\TransformArrayForCsv;
 use Lorisleiva\Actions\Concerns\AsController;
 
 class ReportVcepGenesMake
@@ -31,6 +32,7 @@ class ReportVcepGenesMake
         }
 
         $data = $this->csvTransformer->handle($this->handle());
+
         return response($data, 200, ['Content-type' => 'text/csv']);
     }
 
@@ -39,16 +41,15 @@ class ReportVcepGenesMake
         dump(collect($this->handle()));
     }
 
-
     private function pullData(): array
     {
-        $genes  = Gene::whereHas('expertPanel', function ($q) {
-                        $q->typeVcep();
-                    })
+        $genes = Gene::whereHas('expertPanel', function ($q) {
+            $q->typeVcep();
+        })
                     ->orderBy('gene_symbol')
                     ->with([
                         'disease' => function ($q) {
-                            $q->select(['mondo_id','name']);
+                            $q->select(['mondo_id', 'name']);
                         },
                         'expertPanel' => function ($q) {
                             $q->select(['id', 'long_base_name', 'expert_panel_type_id']);
@@ -57,7 +58,7 @@ class ReportVcepGenesMake
                         'expertPanel.group' => function ($q) {
                             $q->select(['id', 'group_type_id']);
                         },
-                        'expertPanel.group.type'
+                        'expertPanel.group.type',
                     ])
                     ->get();
 
@@ -73,11 +74,10 @@ class ReportVcepGenesMake
                     'mondo_id' => $group->first()->mondo_id,
                     'VCEPs' => $group->map(function ($g) {
                         return $g->expertPanel->full_long_base_name;
-                    })->join(', ')
+                    })->join(', '),
                 ];
             })
             ->values()
             ->toArray();
     }
-
 }

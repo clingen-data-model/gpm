@@ -2,11 +2,11 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\Models\FollowAction;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Dummies\TestEvent;
 use Tests\Dummies\TestFollower;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class FollowActionTest extends TestCase
 {
@@ -20,7 +20,7 @@ class FollowActionTest extends TestCase
         $fa = new FollowAction([
             'event_class' => TestEvent::class,
             'follower' => TestFollower::class,
-            'args' => ['name' => 'beans']
+            'args' => ['name' => 'beans'],
         ]);
         $fa->save();
 
@@ -32,5 +32,4 @@ class FollowActionTest extends TestCase
 
         $this->assertTrue($follower->asFollowAction($event, 'beans'));
     }
-    
 }

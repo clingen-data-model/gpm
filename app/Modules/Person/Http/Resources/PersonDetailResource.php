@@ -2,8 +2,8 @@
 
 namespace App\Modules\Person\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Modules\Group\Http\Resources\MembershipResource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class PersonDetailResource extends JsonResource
 {
@@ -17,6 +17,7 @@ class PersonDetailResource extends JsonResource
     {
         $data = parent::toArray($request);
         $data['memberships'] = $this->whenLoaded('memberships', MembershipResource::collection($this->memberships));
+
         return $data;
     }
 }

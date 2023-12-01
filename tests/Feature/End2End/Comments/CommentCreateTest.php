@@ -2,19 +2,14 @@
 
 namespace Tests\Feature\End2End\Comments;
 
-use Carbon\Carbon;
-use Tests\TestCase;
 use App\Models\Comment;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\Submission;
-use Database\Seeders\CommentTypesSeeder;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Notification;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use App\Modules\Group\Notifications\CommentActivityNotification;
+use Carbon\Carbon;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
+use Laravel\Sanctum\Sanctum;
 
 class CommentCreateTest extends CommentTest
 {
@@ -59,7 +54,7 @@ class CommentCreateTest extends CommentTest
         $this->makeRequest(['comment_type_id' => 999, 'metadata' => 'bob'])
             ->assertValidationErrors([
                 'comment_type_id' => 'The selection is invalid.',
-                'metadata' => 'This must be an array.'
+                'metadata' => 'This must be an array.',
             ]);
     }
 
@@ -71,7 +66,7 @@ class CommentCreateTest extends CommentTest
         $submission = Submission::factory()->create([
             'group_id' => $this->expertPanel->group_id,
             'submission_status_id' => config('submissions.statuses.under-chair-review.id'),
-            'sent_to_chairs_at' => Carbon::now()
+            'sent_to_chairs_at' => Carbon::now(),
         ]);
 
         $approver = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
@@ -88,8 +83,7 @@ class CommentCreateTest extends CommentTest
                 return true
                     && $notification->group->id = $this->expertPanel->group_id
                     && $notification->comment->id = $comment->id
-                    && $notification->event = 'created'
-                    ;
+                    && $notification->event = 'created';
             }
         );
     }
@@ -115,8 +109,8 @@ class CommentCreateTest extends CommentTest
             'metadata' => [
                 'section' => 'basic-info',
                 'root_subject_type' => Group::class,
-                'root_subject_id' => $this->expertPanel->group_id
-            ]
+                'root_subject_id' => $this->expertPanel->group_id,
+            ],
         ]));
 
         $comment = $response->original;
@@ -128,8 +122,7 @@ class CommentCreateTest extends CommentTest
                 return true
                     && $notification->group->id = $this->expertPanel->group_id
                     && $notification->comment->id = $comment->id
-                    && $notification->event = 'created'
-                    ;
+                    && $notification->event = 'created';
             }
         );
     }
@@ -163,7 +156,7 @@ class CommentCreateTest extends CommentTest
         $submission = Submission::factory()->create([
             'group_id' => $this->expertPanel->group_id,
             'submission_status_id' => config('submissions.statuses.under-chair-review.id'),
-            'sent_to_chairs_at' => Carbon::now()
+            'sent_to_chairs_at' => Carbon::now(),
         ]);
 
         $approver = $this->setupUserWithPerson(permissions: ['ep-applications-approve', 'ep-applications-comment']);
@@ -183,10 +176,10 @@ class CommentCreateTest extends CommentTest
         Notification::assertNotSentTo($approver->person, CommentActivityNotification::class);
     }
 
-
     private function makeRequest($data = null)
     {
         $data = $data ?? $this->getDefaultData();
+
         return $this->json('POST', '/api/comments', $data);
     }
 
@@ -197,12 +190,7 @@ class CommentCreateTest extends CommentTest
             'subject_id' => $this->expertPanel->group->id,
             'subject_type' => get_class($this->expertPanel->group),
             'content' => 'This is just a suggestion.',
-            'metadata' => ['section' => 'basic-info']
+            'metadata' => ['section' => 'basic-info'],
         ], $data);
     }
-
-
-
-
-
 }

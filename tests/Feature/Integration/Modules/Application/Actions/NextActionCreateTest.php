@@ -2,16 +2,14 @@
 
 namespace Tests\Feature\Integration\Modules\Application\Actions;
 
-use Tests\TestCase;
-use App\Modules\ExpertPanel\Models\NextAction;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Events\NextActionAdded;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Models\NextAction;
 use Database\Seeders\NextActionAssigneesTableSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
+use Tests\TestCase;
 
 /**
  * @group next-actions
@@ -20,7 +18,7 @@ class NextActionCreateTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -28,7 +26,7 @@ class NextActionCreateTest extends TestCase
 
         $this->expertPanel = ExpertPanel::factory()->create();
     }
-    
+
     /**
      * @test
      */
@@ -54,7 +52,7 @@ class NextActionCreateTest extends TestCase
      */
     public function logs_next_action_added()
     {
-        $nextAction = NextAction::factory()->make(['step'=>3]);
+        $nextAction = NextAction::factory()->make(['step' => 3]);
         (new NextActionCreate)->handle(
             expertPanel: $this->expertPanel,
             uuid: $nextAction->uuid,
@@ -71,7 +69,7 @@ class NextActionCreateTest extends TestCase
             'subject_id' => $this->expertPanel->group->id,
             'description' => 'Added next action: '.$nextAction->entry,
             'properties->next_action->assignee_id' => 1,
-            'properties->next_action->assignee_name' => 'Bob Dobbs'
+            'properties->next_action->assignee_name' => 'Bob Dobbs',
         ]);
 
         $this->assertEquals(3, $this->expertPanel->group->logEntries->last()->properties['step']);

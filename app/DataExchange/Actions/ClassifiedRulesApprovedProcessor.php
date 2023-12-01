@@ -2,16 +2,13 @@
 
 namespace App\DataExchange\Actions;
 
+use App\DataExchange\Exceptions\DataSynchronizationException;
+use App\DataExchange\Models\IncomingStreamMessage;
+use App\Modules\ExpertPanel\Actions\SpecificationAndRulsetsSync;
+use App\Modules\ExpertPanel\Actions\StepApprove;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Actions\StepApprove;
-use App\DataExchange\Models\IncomingStreamMessage;
-use App\DataExchange\Exceptions\DataSynchronizationException;
-use App\Modules\ExpertPanel\Actions\SpecificationAndRulsetsSync;
-use App\Modules\ExpertPanel\Actions\SpecificationCreate;
-use App\Modules\ExpertPanel\Actions\SpecificationRulesetCreate;
-use App\Modules\ExpertPanel\Actions\SpecificationRulesetSync;
 
 class ClassifiedRulesApprovedProcessor
 {
@@ -25,12 +22,13 @@ class ClassifiedRulesApprovedProcessor
     {
         $cspecDoc = $message->payload->cspecDoc;
         $expertPanel = ExpertPanel::findByAffiliationId($cspecDoc->affiliationId);
-        if (!$expertPanel) {
+        if (! $expertPanel) {
             Log::error('Received pilot-rules-approved event about EP with unkown affiliation id '.$cspecDoc->affiliationId);
+
             return;
         }
 
-        if (!$expertPanel->definitionIsApproved) {
+        if (! $expertPanel->definitionIsApproved) {
             throw new DataSynchronizationException('Received classified-rules-approved message, but expert panel '.$expertPanel->displayName.' is not definition approved.');
         }
 
@@ -46,7 +44,6 @@ class ClassifiedRulesApprovedProcessor
             status: $cspecDoc->status,
             rulesets: $cspecDoc->ruleSets
         );
-
 
         if ($expertPanel->hasApprovedDraft) {
             return;

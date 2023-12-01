@@ -9,9 +9,11 @@ use Ramsey\Uuid\Uuid;
 class KafkaProducer implements MessagePusher
 {
     protected $rdKafkaProducer;
+
     protected $topic;
+
     protected $kafkaConfig;
- 
+
     public function __construct(\RdKafka\Producer $phpRdProducer)
     {
         $this->rdKafkaProducer = $phpRdProducer;
@@ -24,7 +26,7 @@ class KafkaProducer implements MessagePusher
             $uuid = $uuid ?? Uuid::uuid4()->toString();
             $topic->produce(RD_KAFKA_PARTITION_UA, 0, $message, $uuid);
             $this->rdKafkaProducer->poll(0);
-            
+
             for ($flushRetries = 0; $flushRetries < 10; $flushRetries++) {
                 $result = $this->rdKafkaProducer->flush(1000);
                 if (RD_KAFKA_RESP_ERR_NO_ERROR === $result) {
@@ -42,12 +44,13 @@ class KafkaProducer implements MessagePusher
             return $this->topic;
         }
         $this->topic = $this->rdKafkaProducer->newTopic($topic);
+
         return $this;
     }
 
     public function push(string $message, $uuid = null)
     {
-        if (!$this->topic) {
+        if (! $this->topic) {
             throw new StreamingServiceException('You must set a topic on the Producer before you can use KafkaProducer::produce');
         }
         $uuid = $uuid ?? Uuid::uuid4()->toString();

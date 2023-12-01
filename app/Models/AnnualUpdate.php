@@ -2,13 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use App\Modules\Group\Models\GroupMember;
-use Illuminate\Support\Facades\Validator;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Modules\Group\Models\GroupMember;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AnnualUpdate extends Model
 {
@@ -18,7 +16,7 @@ class AnnualUpdate extends Model
         'expert_panel_id',
         'submitter_id',
         'data',
-        'completed_at'
+        'completed_at',
     ];
 
     protected $casts = [
@@ -46,8 +44,6 @@ class AnnualUpdate extends Model
 
     /**
      * Get the expertPanel that owns the AnnualUpdate
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function expertPanel(): BelongsTo
     {
@@ -56,8 +52,6 @@ class AnnualUpdate extends Model
 
     /**
      * Get the window that owns the AnnualUpdate
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function window(): BelongsTo
     {
@@ -66,8 +60,6 @@ class AnnualUpdate extends Model
 
     /**
      * Get the submitter that owns the AnnualUpdate
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function submitter(): BelongsTo
     {
@@ -82,7 +74,6 @@ class AnnualUpdate extends Model
     /**
      * SCOPES
      */
-
     public function scopeCompleted($query)
     {
         return $query->whereNotNull('completed_at');
@@ -97,7 +88,6 @@ class AnnualUpdate extends Model
     {
         return $query->where('annual_update_window_id', $windowId);
     }
-
 
     /**
      * ACCESSORS
@@ -122,29 +112,28 @@ class AnnualUpdate extends Model
         return $this->expertPanel->group->isVcep;
     }
 
-
     public function toCsvArray(): array
     {
         $result = [
-                'record_id' => $this->id,
-                'expert_panel' => $this->expertPanel->displayName,
-                'submitter_name' => $this->submitter
-                    ? $this->submitter->person->name
-                    : null,
-                'submitter_email' => $this->submitter
-                    ? $this->submitter->person->email
-                    : null,
-                'grant' => $this->getDataOrNull('grant'),
-                'submitted_inactive_form' => $this->getDataOrNull('submitted_inactive_form'),
-                'membership_attestation' => $this->getDataOrNull('membership_attestation'),
-                'applied_for_funding' => $this->getDataOrNull('applied_for_funding'),
-                'funding' => $this->getDataOrNull('funding'),
-                'funding_other_details' => $this->getDataOrNull('funding_other_details'),
-                'funding_thoughts' => $this->getDataOrNull('funding_thoughts'),
-                'website_attestation' => $this->getDataOrNull('website_attestation'),
-                'ongoing_plans_updated' => $this->getDataOrNull('ongoing_plans_updated'),
-                'ongoing_plans_update_details' => $this->getDataOrNull('ongoing_plans_update_details'),
-                'goals' => $this->getDataOrNull('goals'),
+            'record_id' => $this->id,
+            'expert_panel' => $this->expertPanel->displayName,
+            'submitter_name' => $this->submitter
+                ? $this->submitter->person->name
+                : null,
+            'submitter_email' => $this->submitter
+                ? $this->submitter->person->email
+                : null,
+            'grant' => $this->getDataOrNull('grant'),
+            'submitted_inactive_form' => $this->getDataOrNull('submitted_inactive_form'),
+            'membership_attestation' => $this->getDataOrNull('membership_attestation'),
+            'applied_for_funding' => $this->getDataOrNull('applied_for_funding'),
+            'funding' => $this->getDataOrNull('funding'),
+            'funding_other_details' => $this->getDataOrNull('funding_other_details'),
+            'funding_thoughts' => $this->getDataOrNull('funding_thoughts'),
+            'website_attestation' => $this->getDataOrNull('website_attestation'),
+            'ongoing_plans_updated' => $this->getDataOrNull('ongoing_plans_updated'),
+            'ongoing_plans_update_details' => $this->getDataOrNull('ongoing_plans_update_details'),
+            'goals' => $this->getDataOrNull('goals'),
         ];
 
         if ($this->isGcep) {
@@ -169,7 +158,7 @@ class AnnualUpdate extends Model
 
         if ($this->isVcep) {
             $variantCounts = $this->getDataOrNull('variant_counts');
-            if (!is_null($variantCounts)) {
+            if (! is_null($variantCounts)) {
                 $variantCountString = $this->getVariantCountString($variantCounts);
             }
 
@@ -204,7 +193,7 @@ class AnnualUpdate extends Model
     {
         $this->load([
             'expertPanel' => function ($query) {
-                $query->select(['id', 'expert_panel_type_id', 'long_base_name', 'group_id', 'affiliation_id', 'step_1_approval_date','step_2_approval_date','step_3_approval_date','step_4_approval_date']);
+                $query->select(['id', 'expert_panel_type_id', 'long_base_name', 'group_id', 'affiliation_id', 'step_1_approval_date', 'step_2_approval_date', 'step_3_approval_date', 'step_4_approval_date']);
             },
             'expertPanel.group' => function ($query) {
                 $query->select(['id', 'group_type_id', 'name', 'uuid']);
@@ -232,7 +221,7 @@ class AnnualUpdate extends Model
         return $this;
     }
 
-    private function getVariantCountString($variantCounts): String
+    private function getVariantCountString($variantCounts): string
     {
         $string = '';
         foreach ($variantCounts as $gene) {
@@ -249,10 +238,9 @@ class AnnualUpdate extends Model
         return $string;
     }
 
-
     private function getDataOrNull($key)
     {
-        if (!$this->data) {
+        if (! $this->data) {
             return null;
         }
         if (array_key_exists($key, $this->data)) {

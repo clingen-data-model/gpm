@@ -2,11 +2,10 @@
 
 namespace Database\Factories;
 
-use Carbon\Carbon;
 use App\Models\AnnualUpdate;
 use App\Models\AnnualUpdateWindow;
-use App\Modules\Group\Models\GroupMember;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AnnualUpdateFactory extends Factory
@@ -27,21 +26,22 @@ class AnnualUpdateFactory extends Factory
     {
         $expertPanel = ExpertPanel::factory()->create();
         $annualReviewWindow = AnnualUpdateWindow::create([
-                                'for_year' => Carbon::now()->year-1,
-                                'start' => Carbon::tomorrow(),
-                                'end' => Carbon::tomorrow()->addDays(7)
-                            ]);
+            'for_year' => Carbon::now()->year - 1,
+            'start' => Carbon::tomorrow(),
+            'end' => Carbon::tomorrow()->addDays(7),
+        ]);
+
         return [
             'expert_panel_id' => $expertPanel->id,
             'annual_update_window_id' => $annualReviewWindow->id,
-            'data' => $this->createData()
+            'data' => $this->createData(),
         ];
     }
 
     public function createData($data = []): array
     {
         $reviewData = [
-            'grant' => $this->faker->randomElement(['Broad/Geisinger','Stanford/Baylor','UNC','Unsure']),
+            'grant' => $this->faker->randomElement(['Broad/Geisinger', 'Stanford/Baylor', 'UNC', 'Unsure']),
             'ep_activity' => 'active',
             'submitted_inactive_form' => null,
             'membership_attestation' => 'yes',
@@ -77,7 +77,7 @@ class AnnualUpdateFactory extends Factory
 
         return array_merge($returnValue, $data);
     }
-    
+
     private function vcepData($data = [])
     {
         $returnValue = [
@@ -90,8 +90,8 @@ class AnnualUpdateFactory extends Factory
                     'gene' => 'ABC1',
                     'in_clinvar' => 10,
                     'gci_approved' => 2,
-                    'provisionally_approved' => 4
-                ]
+                    'provisionally_approved' => 4,
+                ],
             ],
             'variant_workflow_changes' => 'yes',
             'variant_workflow_changes_details' => 'test variant_workflow_changes_details',
@@ -107,7 +107,6 @@ class AnnualUpdateFactory extends Factory
 
         return array_merge($returnValue, $data);
     }
-    
 
     private function yesOrNo()
     {

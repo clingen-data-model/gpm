@@ -1,15 +1,16 @@
 <?php
+
 namespace App\Modules\Group\Actions;
 
-use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Auth;
-use Lorisleiva\Actions\ActionRequest;
-use App\Modules\Group\Models\GroupStatus;
-use Lorisleiva\Actions\Concerns\AsListener;
-use Lorisleiva\Actions\Concerns\AsController;
+use App\Modules\ExpertPanel\Events\ApplicationCompleted;
 use App\Modules\Group\Events\GroupStatusUpdated;
 use App\Modules\Group\Http\Resources\GroupResource;
-use App\Modules\ExpertPanel\Events\ApplicationCompleted;
+use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\GroupStatus;
+use Illuminate\Support\Facades\Auth;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsController;
+use Lorisleiva\Actions\Concerns\AsListener;
 
 class GroupStatusUpdate
 {
@@ -42,6 +43,7 @@ class GroupStatusUpdate
         $newStatus = GroupStatus::findOrFail($request->status_id);
         $group = $this->handle($group, $newStatus);
         $group->load('expertPanel');
+
         return new GroupResource($group);
     }
 
@@ -61,7 +63,7 @@ class GroupStatusUpdate
     {
         return [
             'required' => 'This field is required.',
-            'exists' => 'The status you selected is invalid.'
+            'exists' => 'The status you selected is invalid.',
         ];
     }
 }

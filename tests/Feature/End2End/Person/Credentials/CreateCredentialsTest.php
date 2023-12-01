@@ -2,12 +2,10 @@
 
 namespace Tests\Feature\End2End\Person\Credentials;
 
-use Tests\TestCase;
 use App\Models\Credential;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Testing\TestResponse;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\TestResponse;
+use Tests\TestCase;
 
 /**
  * @group credentials
@@ -16,7 +14,7 @@ class CreateCredentialsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
     }
@@ -35,17 +33,16 @@ class CreateCredentialsTest extends TestCase
      */
     public function authed_user_can_created_a_credential()
     {
-
         $this->login();
-            $this->makeRequest([
-                'name' => 'Cptn.',
-                'approved' => 1,
-            ])
-            ->assertStatus(201)
-            ->assertJson([
-                'name' => 'Cptn.',
-                'approved' => true,
-            ]);
+        $this->makeRequest([
+            'name' => 'Cptn.',
+            'approved' => 1,
+        ])
+        ->assertStatus(201)
+        ->assertJson([
+            'name' => 'Cptn.',
+            'approved' => true,
+        ]);
 
         $this->assertDatabaseHas('credentials', [
             'name' => 'Cptn.',
@@ -67,11 +64,9 @@ class CreateCredentialsTest extends TestCase
         Credential::factory()->create(['name' => 'Cptn.']);
         $this->makeRequest()
             ->assertJsonValidationErrors([
-                'name' => 'The name has already been taken.'
+                'name' => 'The name has already been taken.',
             ]);
     }
-
-
 
     private function makeRequest($data = null): TestResponse
     {
@@ -81,5 +76,4 @@ class CreateCredentialsTest extends TestCase
 
         return $this->json('POST', '/api/credentials', $data);
     }
-
 }

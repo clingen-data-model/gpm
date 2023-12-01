@@ -2,9 +2,6 @@
 
 namespace Database\Factories\Traits;
 
-/**
- *
- */
 trait GetsRandomConfigValue
 {
     public function getRandomConfigValue(string $configString)

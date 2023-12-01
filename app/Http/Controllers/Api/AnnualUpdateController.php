@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use Carbon\Carbon;
+use App\Http\Controllers\Controller;
 use App\Models\AnnualUpdate;
-use Illuminate\Http\Request;
 use App\Models\AnnualUpdateWindow;
 use App\Modules\Group\Models\Group;
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
 class AnnualUpdateController extends Controller
@@ -16,11 +16,11 @@ class AnnualUpdateController extends Controller
     {
         $window = AnnualUpdateWindow::find($request->window_id);
 
-        if (!$window) {
-            $window = $request->window_id ?? AnnualUpdateWindow::forYear(Carbon::now()->year-1)->first();
+        if (! $window) {
+            $window = $request->window_id ?? AnnualUpdateWindow::forYear(Carbon::now()->year - 1)->first();
         }
 
-        if (!$window) {
+        if (! $window) {
             $window = AnnualUpdateWindow::latest();
         }
 
@@ -35,7 +35,7 @@ class AnnualUpdateController extends Controller
                 },
                 'submitter.person' => function ($query) {
                     $query->select('id', 'first_name', 'last_name', 'email');
-                }
+                },
             ])
             ->forWindow($window->id);
 
@@ -54,11 +54,11 @@ class AnnualUpdateController extends Controller
 
     public function showLatestForGroup(Group $group)
     {
-        if (!$group->isEp) {
+        if (! $group->isEp) {
             return response('This group does not have annual update.', 404);
         }
         $review = $group->expertPanel->latestAnnualUpdate;
-        if (!$review) {
+        if (! $review) {
             return response('not found', 404);
         }
 
@@ -75,7 +75,6 @@ class AnnualUpdateController extends Controller
         return $update;
     }
 
-
     public function windows(Request $request)
     {
         return AnnualUpdateWindow::all();
@@ -85,13 +84,13 @@ class AnnualUpdateController extends Controller
     {
         $annualReviews = AnnualUpdate::find($request->annual_update_ids);
 
-        $headers = array(
-            "Content-type" => "text/csv",
-            "Content-Disposition" => "attachment; filename=annual_updates.csv",
-            "Pragma" => "no-cache",
-            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
-            "Expires" => "0"
-        );
+        $headers = [
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename=annual_updates.csv',
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
 
         $columns = array_keys($annualReviews->first()->toCsvArray());
 

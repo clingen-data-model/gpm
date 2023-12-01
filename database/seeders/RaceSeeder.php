@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\Seeder;
 use App\Modules\Person\Models\Race;
 
 class RaceSeeder extends Seeder

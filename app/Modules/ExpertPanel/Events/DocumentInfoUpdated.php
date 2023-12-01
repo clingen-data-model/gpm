@@ -3,14 +3,11 @@
 namespace App\Modules\ExpertPanel\Events;
 
 use App\Models\Document;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class DocumentInfoUpdated extends ExpertPanelEvent
 {
@@ -21,16 +18,16 @@ class DocumentInfoUpdated extends ExpertPanelEvent
      *
      * @return void
      */
-    public function __construct(public ExpertPanel  $application, public Document $document)
+    public function __construct(public ExpertPanel $application, public Document $document)
     {
     }
 
-    public function getLogEntry():string
+    public function getLogEntry(): string
     {
         return 'Document '.$this->document->type->name.' version '.$this->document->version.' info updated';
     }
-    
-    public function getProperties():array
+
+    public function getProperties(): array
     {
         return [
         ];

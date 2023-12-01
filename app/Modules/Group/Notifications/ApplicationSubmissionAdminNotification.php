@@ -2,12 +2,11 @@
 
 namespace App\Modules\Group\Notifications;
 
+use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\Submission;
 use Illuminate\Bus\Queueable;
-use App\Modules\Group\Models\Group;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class ApplicationSubmissionAdminNotification extends Notification
 {
@@ -49,7 +48,7 @@ class ApplicationSubmissionAdminNotification extends Notification
                 ->subject('An application step was submitted.')
                 ->view('email.application_step_submitted_admin', [
                     'notifiable' => $notifiable,
-                    'submission' => $this->submission
+                    'submission' => $this->submission,
                 ]);
     }
 
@@ -62,9 +61,10 @@ class ApplicationSubmissionAdminNotification extends Notification
     public function toArray($notifiable)
     {
         $this->submission->load('type', 'submitter', 'group');
+
         return [
             'message' => $this->submission->group->display_name.' has submited an application.',
-            'submission' => $this->submission->toArray()
+            'submission' => $this->submission->toArray(),
         ];
     }
 }

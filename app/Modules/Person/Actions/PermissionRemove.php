@@ -5,15 +5,13 @@ namespace App\Modules\Person\Actions;
 use App\Actions\Contracts\AsFollowAction;
 use App\Events\Event;
 use App\Models\Permission;
-use App\Actions\FollowActionCreate;
 use App\Modules\Person\Models\Person;
-use App\Modules\Person\Events\InviteRedeemed;
 
 class PermissionRemove implements AsFollowAction
 {
     public function handle(Person $person, $permissionName): Person
     {
-        if (!$this->isSystemPermission($permissionName)) {
+        if (! $this->isSystemPermission($permissionName)) {
             throw new \InvalidArgumentException('Permission '.$permissionName.' is not a valid system permission.  Only system permissions may be added to users via their person record.');
         }
 
@@ -26,14 +24,14 @@ class PermissionRemove implements AsFollowAction
     {
         extract($args);
         $person = Person::find($personId);
+
         return $this->handle($person, $permissionName);
     }
 
     private function isSystemPermission($permissionName): bool
     {
         $perm = Permission::where(['name' => $permissionName])->first();
-        return !$perm || $perm->scope == 'system';
+
+        return ! $perm || $perm->scope == 'system';
     }
-
-
 }

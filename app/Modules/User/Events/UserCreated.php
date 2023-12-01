@@ -2,14 +2,10 @@
 
 namespace App\Modules\User\Events;
 
-use Illuminate\Broadcasting\Channel;
-use App\Modules\User\Events\UserEvent;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class UserCreated extends UserEvent
 {
@@ -19,7 +15,6 @@ class UserCreated extends UserEvent
     {
         return 'User created: '.$this->user->name.' <'.$this->user->email.'> ('.$this->user->id.')';
     }
-    
 
     /**
      * Get the channels the event should broadcast on.

@@ -2,16 +2,12 @@
 
 namespace App\Modules\Group\Events;
 
-use Illuminate\Support\Carbon;
 use App\Events\PublishableEvent;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use App\Modules\Group\Events\GroupMemberEvent;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Carbon;
 
 class MemberAdded extends GroupMemberEvent implements PublishableEvent
 {
@@ -20,7 +16,6 @@ class MemberAdded extends GroupMemberEvent implements PublishableEvent
     /**
      * CONSTRUCTOR of parent sets group instance var to $groupMember->group;
      */
-
     public function getLogEntry(): string
     {
         return $this->groupMember->person->name.' added to '.$this->group->name;

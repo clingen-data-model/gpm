@@ -2,15 +2,12 @@
 
 namespace App\Actions;
 
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\ClientInterface;
-use Illuminate\Validation\Rule;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Log;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsJob;
-use GuzzleHttp\Exception\GuzzleException;
 use Lorisleiva\Actions\Concerns\AsAction;
-use GuzzleHttp\Exception\RequestException;
+use Lorisleiva\Actions\Concerns\AsJob;
 
 class FeedbackSubmit
 {
@@ -18,6 +15,7 @@ class FeedbackSubmit
     use AsJob;
 
     const JIRA_CREATE_URI = 'https://broadinstitute.atlassian.net/rest/api/2/issue';
+
     const JIRA_BOARD_URI = 'https://broadinstitute.atlassian.net/rest/agile/1.0/board/828/issue';
 
     public function __construct(private ClientInterface $http)
@@ -33,14 +31,14 @@ class FeedbackSubmit
         $severity
     ) {
         $issueFields = [
-            "fields" => [
-                "project" => ["key" => "GPMEP"],
-                "issuetype" => ["name" => $type],
+            'fields' => [
+                'project' => ['key' => 'GPMEP'],
+                'issuetype' => ['name' => $type],
                 'summary' => $summary,
                 'description' => $description,
                 'customfield_18050' => $user,
                 'customfield_18049' => $url,
-            ]
+            ],
         ];
 
         if ($type == 'Bug') {
@@ -57,12 +55,13 @@ class FeedbackSubmit
                 'headers' => [
                     'Authorization' => 'Basic '.base64_encode(config('app.jira.user').':'.config('app.jira.token')),
                     'Accept' => 'application/json',
-                    'Content-Type' => 'application/json'
+                    'Content-Type' => 'application/json',
                 ],
-                'json' => $issueFields
+                'json' => $issueFields,
             ]);
         } catch (RequestException $e) {
             Log::error($e->getMessage());
+
             return;
         }
         $responseObj = json_decode($issueResponse->getBody()->getContents());
@@ -72,9 +71,9 @@ class FeedbackSubmit
             'headers' => [
                 'Authorization' => 'Basic '.base64_encode(config('app.jira.user').':'.config('app.jira.token')),
                 'Accept' => 'application/json',
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
             ],
-             'json' => ['issues' => [$issueKey]]
+            'json' => ['issues' => [$issueKey]],
         ]);
 
         return $responseObj;

@@ -36,6 +36,5 @@ class PeopleAddFulltextIndex extends Migration
                 $table->dropFullText('fulltext_email');
             });
         }
-
     }
 }

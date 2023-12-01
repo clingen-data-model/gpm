@@ -2,16 +2,11 @@
 
 namespace App\Modules\Group\Events;
 
-use Illuminate\Support\Carbon;
 use App\Modules\Group\Models\Group;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class ParentUpdated extends GroupEvent
 {
@@ -30,9 +25,10 @@ class ParentUpdated extends GroupEvent
     {
         $oldParentName = $this->oldParent ? $this->oldParent->name : 'none';
         $newParentName = $this->parent ? $this->parent->name : 'none';
+
         return 'Parent changed from '.$oldParentName.' to '.$newParentName.'.';
     }
-    
+
     public function getProperties(): ?array
     {
         return [

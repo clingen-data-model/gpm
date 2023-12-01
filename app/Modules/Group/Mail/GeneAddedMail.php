@@ -2,12 +2,11 @@
 
 namespace App\Modules\Group\Mail;
 
+use App\Modules\Group\Models\Group;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
-use Illuminate\Support\Collection;
-use App\Modules\Group\Models\Group;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Collection;
 
 class GeneAddedMail extends Mailable
 {

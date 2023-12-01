@@ -2,20 +2,18 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Support\Carbon;
-use App\Modules\User\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Actions\AttestationReanalysisStore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class AttestationReanalysisTest extends TestCase
 {
     use RefreshDatabase;
-    
-    public function setup():void
+
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -26,7 +24,7 @@ class AttestationReanalysisTest extends TestCase
         Sanctum::actingAs($this->user);
         Carbon::setTestNow('2021-11-14');
     }
-    
+
     /**
      * @test
      */
@@ -57,7 +55,6 @@ class AttestationReanalysisTest extends TestCase
                 'reanalysis_other' => ['This field is required when no other options are checked.'],
             ]);
     }
-    
 
     /**
      * @test
@@ -73,7 +70,7 @@ class AttestationReanalysisTest extends TestCase
             'reanalysis_review_lp' => 1,
             'reanalysis_review_lb' => 1,
             'reanalysis_other' => 'bob dobs',
-            'reanalysis_attestation_date' => Carbon::now()
+            'reanalysis_attestation_date' => Carbon::now(),
         ]);
     }
 
@@ -102,7 +99,7 @@ class AttestationReanalysisTest extends TestCase
             'reanalysis_conflicting' => false,
             'reanalysis_review_lp' => false,
             'reanalysis_review_lb' => true,
-            'reanalysis_other' => null
+            'reanalysis_other' => null,
         ];
 
         $action = app()->make(AttestationReanalysisStore::class);
@@ -117,8 +114,6 @@ class AttestationReanalysisTest extends TestCase
             'reanalysis_attestation_date' => null,
         ]);
     }
-    
-    
 
     private function submitRequest($data = null)
     {
@@ -126,7 +121,7 @@ class AttestationReanalysisTest extends TestCase
             'reanalysis_conflicting' => true,
             'reanalysis_review_lp' => true,
             'reanalysis_review_lb' => true,
-            'reanalysis_other' => 'bob dobs'
+            'reanalysis_other' => 'bob dobs',
         ];
 
         return $this->json('POST', '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/attestations/reanalysis', $data);

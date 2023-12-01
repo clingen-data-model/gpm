@@ -2,13 +2,10 @@
 
 namespace Tests\Feature\End2End;
 
-use Tests\TestCase;
-use App\Modules\User\Models\User;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Person\Models\Person;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Ramsey\Uuid\Uuid;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 /**
  * @group people
@@ -17,12 +14,12 @@ class PersonEndpointTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         config('permission.models.permission')::factory([
             'name' => 'people-manage',
-            'scope' => 'system'
+            'scope' => 'system',
         ])->create();
         $this->user = $this->setupUser();
         $this->user->givePermissionTo('people-manage');

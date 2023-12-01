@@ -3,12 +3,12 @@
 namespace App\Modules\Group\Actions;
 
 use App\Models\AnnualUpdate;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
-use Illuminate\Validation\ValidationException;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 
 class AnnualUpdateCreate
 {
@@ -23,11 +23,12 @@ class AnnualUpdateCreate
 
     public function asController(ActionRequest $request, Group $group)
     {
-        if (!$group->isEp) {
+        if (! $group->isEp) {
             throw ValidationException::withMessages(['The group must be an expert panel']);
         }
 
         $annualReview = $this->handle($group->expertPanel);
+
         return $annualReview->load('window');
     }
 

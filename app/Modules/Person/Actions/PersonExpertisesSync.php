@@ -9,7 +9,7 @@ class PersonExpertisesSync
     public function handle(Person $person, $expertiseIds): Person
     {
         $person->expertises()->sync($expertiseIds);
+
         return $person;
     }
-
 }

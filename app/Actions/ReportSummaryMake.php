@@ -2,19 +2,14 @@
 
 namespace App\Actions;
 
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Person;
-use Lorisleiva\Actions\ActionRequest;
-use App\Modules\Person\Models\Country;
-use App\Modules\ExpertPanel\Models\Gene;
-use App\Modules\Group\Models\GroupMember;
-use App\Modules\Person\Models\Institution;
-use Lorisleiva\Actions\Concerns\AsCommand;
-use App\Actions\Utils\TransformArrayForCsv;
-use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Models\Gene;
+use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\GroupMember;
+use App\Modules\Person\Models\Country;
+use App\Modules\Person\Models\Institution;
+use App\Modules\Person\Models\Person;
+use Illuminate\Support\Facades\DB;
 
 class ReportSummaryMake extends ReportMakeAbstract
 {
@@ -23,6 +18,7 @@ class ReportSummaryMake extends ReportMakeAbstract
     public function handle(): array
     {
         $vcepStepsSummary = $this->getVcepStepSummary();
+
         return [
             ['Groups', Group::count()],
             ['Working Groups', Group::wg()->count()],
@@ -66,8 +62,8 @@ class ReportSummaryMake extends ReportMakeAbstract
         return Gene::query()
             ->distinct('hgnc_id')
             ->whereHas('expertPanel', function ($q) {
-                        $q->typeGcep();
-                    })
+                $q->typeGcep();
+            })
                     ->count();
     }
 
@@ -120,7 +116,6 @@ class ReportSummaryMake extends ReportMakeAbstract
             })->count();
     }
 
-
     private function getVcepStepSummary(): array
     {
         return DB::table('expert_panels')
@@ -170,8 +165,4 @@ class ReportSummaryMake extends ReportMakeAbstract
         return Person::has('activeExpertPanels', '>', 1)
             ->count();
     }
-
-
-
-
 }

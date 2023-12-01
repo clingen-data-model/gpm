@@ -1,12 +1,9 @@
 <?php
 
 namespace App\Actions;
-use Illuminate\Console\Command;
-use Lorisleiva\Actions\ActionRequest;
+
 use App\Modules\ExpertPanel\Models\Gene;
-use App\Actions\Utils\TransformArrayForCsv;
 use Lorisleiva\Actions\Concerns\AsCommand;
-use Lorisleiva\Actions\Concerns\AsListener;
 use Lorisleiva\Actions\Concerns\AsController;
 
 class ReportGcepGenesMake extends ReportMakeAbstract
@@ -18,7 +15,7 @@ class ReportGcepGenesMake extends ReportMakeAbstract
 
     public function handle()
     {
-        $genes  = Gene::whereHas('expertPanel', function ($q) {
+        $genes = Gene::whereHas('expertPanel', function ($q) {
             $q->typeGcep();
         })
         ->orderBy('gene_symbol')
@@ -30,19 +27,19 @@ class ReportGcepGenesMake extends ReportMakeAbstract
             'expertPanel.group' => function ($q) {
                 $q->select(['id', 'group_type_id']);
             },
-            'expertPanel.group.type'
+            'expertPanel.group.type',
         ])
         ->get();
 
         return $genes
-            ->groupBy("hgnc_id")
+            ->groupBy('hgnc_id')
             ->map(function ($group) {
                 return [
                     'gene_symbol' => $group->first()->gene_symbol,
                     'hgnc_id' => $group->first()->hgnc_id,
                     'GCEPs' => $group->map(function ($g) {
                         return $g->expertPanel->full_long_base_name;
-                    })->join(', ')
+                    })->join(', '),
                 ];
             })
             ->values()

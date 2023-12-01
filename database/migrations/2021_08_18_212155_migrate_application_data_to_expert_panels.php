@@ -1,11 +1,8 @@
 <?php
 
 use App\Actions\DataMigration;
-use Illuminate\Support\Facades\DB;
-use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
 
 class MigrateApplicationDataToExpertPanels extends Migration
 {

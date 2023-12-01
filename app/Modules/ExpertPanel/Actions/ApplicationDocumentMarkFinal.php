@@ -3,9 +3,9 @@
 namespace App\Modules\ExpertPanel\Actions;
 
 use App\Models\Document;
-use Illuminate\Support\Facades\Event;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Events\DocumentMarkedFinal;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class ApplicationDocumentMarkFinal
@@ -22,7 +22,7 @@ class ApplicationDocumentMarkFinal
             ->type($document->document_type_id)
             ->final()
             ->get();
-        
+
         $prevFinal->each(function ($doc) {
             $doc->is_final = 0;
             $doc->save();
@@ -30,7 +30,6 @@ class ApplicationDocumentMarkFinal
 
         $document->isFinal = 1;
         $document->save();
-
 
         Event::dispatch(new DocumentMarkedFinal($expertPanel, $document));
 

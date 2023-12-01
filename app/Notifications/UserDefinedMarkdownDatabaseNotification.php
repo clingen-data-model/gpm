@@ -3,8 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class UserDefinedMarkdownDatabaseNotification extends Notification
@@ -43,7 +41,7 @@ class UserDefinedMarkdownDatabaseNotification extends Notification
         return [
             'message' => $this->message,
             'markdown' => true,
-            'type' => $this->type
+            'type' => $this->type,
         ];
     }
 }

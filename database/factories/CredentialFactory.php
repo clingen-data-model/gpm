@@ -15,7 +15,7 @@ class CredentialFactory extends Factory
     {
         return [
             'name' => uniqid(),
-            'approved' => false
+            'approved' => false,
         ];
     }
 }

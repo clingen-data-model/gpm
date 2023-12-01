@@ -2,17 +2,13 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
-use Database\Factories\CoiFactory;
 use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
-use App\Modules\ExpertPanel\CoiCaster;
-use Illuminate\Database\Eloquent\Model;
 use App\Modules\Group\Models\GroupMember;
-use App\Modules\ExpertPanel\CoiDataCaster;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Database\Factories\CoiFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Cache;
 
 class Coi extends Model
 {
@@ -24,30 +20,29 @@ class Coi extends Model
         'group_id',
         'completed_at',
         'data',
-        'version'
+        'version',
     ];
 
     public $casts = [
         'data' => 'object',
         'group_member_id' => 'integer',
         'group_id' => 'integer',
-        'completed_at' => 'datetime'
+        'completed_at' => 'datetime',
     ];
 
     public $appends = [
-        'response_document'
+        'response_document',
     ];
 
-    static public function boot()
+    public static function boot()
     {
         parent::boot();
         static::saving(function ($model) {
-            if (!$model->version) {
+            if (! $model->version) {
                 $model->version = config('coi.current_version');
             }
         });
     }
-
 
     /**
      * RELATIONS
@@ -67,7 +62,6 @@ class Coi extends Model
         return $this->belongsTo(Group::class);
     }
 
-
     /**
      * SCOPES
      */
@@ -77,6 +71,7 @@ class Coi extends Model
         if ($expertPanel instanceof ExpertPanel) {
             $id = $expertPanel->id;
         }
+
         return $query->where('group_id', $id);
     }
 
@@ -90,12 +85,13 @@ class Coi extends Model
         $responseData = collect($this->data)
             ->map(function ($value, $key) use ($coiDef) {
                 $questions = collect($coiDef->questions)->keyBy('name');
-                if (!isset($questions[$key])) {
+                if (! isset($questions[$key])) {
                     return;
                 }
+
                 return [
                     'question' => $questions->get($key)->question,
-                    'response' => $value
+                    'response' => $value,
                 ];
             })
             ->filter()
@@ -108,7 +104,7 @@ class Coi extends Model
 
     public function getResponseForHumansAttribute()
     {
-        $data = (array)$this->data;
+        $data = (array) $this->data;
         $questions = collect($this->getDefinition()->questions)->keyBy('name');
 
         $humanReadable = [];
@@ -135,6 +131,7 @@ class Coi extends Model
     {
         return Cache::remember('coi-definition-'.$this->version, 360, function () {
             $defPath = config('coi.definitions')[$this->version];
+
             return json_decode(file_get_contents(base_path($defPath)));
         });
     }
@@ -145,7 +142,6 @@ class Coi extends Model
             return json_decode(file_get_contents(base_path('resources/surveys/legacy_coi.json')));
         });
     }
-
 
     // Factory
     protected static function newFactory()

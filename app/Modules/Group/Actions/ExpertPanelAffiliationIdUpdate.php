@@ -2,13 +2,12 @@
 
 namespace App\Modules\Group\Actions;
 
-use Illuminate\Validation\Rule;
+use App\Modules\Group\Events\ExpertPanelAffiliationIdUpdated;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\Group\Events\ExpertPanelAffiliationIdUpdated;
 
 class ExpertPanelAffiliationIdUpdate
 {
@@ -38,8 +37,9 @@ class ExpertPanelAffiliationIdUpdate
     public function rules(ActionRequest $request): array
     {
         $expertPanel = $request->group->expertPanel;
+
         return [
-           'affiliation_id' => [
+            'affiliation_id' => [
                 'nullable',
                 'size:5',
                 function ($attribute, $value, $fail) use ($expertPanel) {
@@ -52,11 +52,11 @@ class ExpertPanelAffiliationIdUpdate
                 },
                 Rule::unique('expert_panels', 'affiliation_id')
                     ->ignore($expertPanel->id)
-                    ->where(function ($query) use ($expertPanel) {
+                    ->where(function ($query) {
                         $query->whereNotNull('affiliation_id')
                             ->whereNull('deleted_at');
-                    })
-           ],
+                    }),
+            ],
         ];
     }
 }

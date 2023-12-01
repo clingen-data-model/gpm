@@ -3,18 +3,17 @@
 namespace Tests\Feature\End2End\Groups\Members;
 
 use App\Modules\Group\Models\GroupMember;
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class UpdateMemberTest extends TestCase
 {
     use RefreshDatabase;
     use SetsUpGroupPersonAndMember;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -26,7 +25,6 @@ class UpdateMemberTest extends TestCase
         $this->role = config('permission.models.role')::factory()
                         ->create(['scope' => 'group']);
     }
-
 
     /**
      * @test
@@ -80,15 +78,15 @@ class UpdateMemberTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonFragment([
             'id' => $this->groupMember->id,
-            'is_contact' => true
+            'is_contact' => true,
         ]);
 
         $this->assertDatabaseHas('group_members', [
             'person_id' => $this->groupMember->person_id,
-            'is_contact' => 1
+            'is_contact' => 1,
         ]);
     }
-    
+
     /**
      * @test
      */
@@ -108,15 +106,14 @@ class UpdateMemberTest extends TestCase
 
         $this->assertDatabaseHas('activity_log', [
             'activity_type' => 'member-updated',
-            'subject_id' => $this->groupMember->group_id
+            'subject_id' => $this->groupMember->group_id,
         ]);
     }
-    
 
     private function callUpdateEndpoint($groupMemberId, ?array $data = null)
     {
         $data = $data ?? [
-            'is_contact' => false
+            'is_contact' => false,
         ];
 
         $url = '/api/groups/'.$this->group->uuid.'/members';
@@ -127,6 +124,7 @@ class UpdateMemberTest extends TestCase
             $url,
             $data
         );
+
         return $response;
     }
 }

@@ -1,11 +1,12 @@
 <?php
+
 namespace App\Modules\Group\Actions;
 
-use Illuminate\Support\Facades\DB;
+use App\Modules\Group\Events\ParentUpdated;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\ActionRequest;
-use App\Modules\Group\Events\ParentUpdated;
 use Lorisleiva\Actions\Concerns\AsController;
 
 class ParentUpdate
@@ -23,7 +24,7 @@ class ParentUpdate
         $parentId = is_null($parent) ? null : $parent->id;
 
         $group->update([
-            'parent_id' => $parentId
+            'parent_id' => $parentId,
         ]);
 
         event(new ParentUpdated($group, $parent, $oldParent));
@@ -34,6 +35,7 @@ class ParentUpdate
     public function asController(ActionRequest $request, Group $group)
     {
         $parent = Group::find($request->parent_id) ?? new Group(['name' => 'none']);
+
         return $this->handle($group, $parent);
     }
 
@@ -41,15 +43,15 @@ class ParentUpdate
     {
         return [
             'parent_id' => [
-                            'required',
-                            function ($attribute, $value, $fail) {
-                                if ($value != 0) {
-                                    if (!DB::table('groups')->where('id', $value)->exists()) {
-                                        $fail('The selected parent is not valid.');
-                                    }
-                                }
-                            }
-                        ]
+                'required',
+                function ($attribute, $value, $fail) {
+                    if ($value != 0) {
+                        if (! DB::table('groups')->where('id', $value)->exists()) {
+                            $fail('The selected parent is not valid.');
+                        }
+                    }
+                },
+            ],
         ];
     }
 

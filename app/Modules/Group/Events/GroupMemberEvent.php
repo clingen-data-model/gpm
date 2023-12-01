@@ -41,5 +41,4 @@ abstract class GroupMemberEvent extends GroupEvent
         return parent::shouldPublish()
             && $this->group->expertPanel->definitionIsApproved;
     }
-
 }

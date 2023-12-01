@@ -1,16 +1,17 @@
 <?php
+
 namespace App\Modules\Foundation\Http;
 
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Modules\Foundation\Http\DefaultResource;
+use Illuminate\Support\Str;
 
 abstract class ApiController
 {
     abstract protected function getModelNamespace(): string;
+
     abstract protected function getResourceNamespace(): string;
+
     abstract protected function getHiddenModels(): array;
-    
 
     public function index(Request $request, $classString)
     {
@@ -32,7 +33,7 @@ abstract class ApiController
     private function resolveModelClass($classString)
     {
         $className = $this->resolveClassName($classString);
-        if (!class_exists($className)) {
+        if (! class_exists($className)) {
             abort(404, 'We couldn\'t find what you were looking for');
         }
 
@@ -43,7 +44,7 @@ abstract class ApiController
     {
         $className = $this->getResourceNamespace().substr($this->resolveClassName($classString), 5).'Resource';
 
-        if (!class_exists($className)) {
+        if (! class_exists($className)) {
             return DefaultResource::class;
         }
 
@@ -54,7 +55,7 @@ abstract class ApiController
     {
         $className = $this->getModelNamespace().ucfirst(Str::camel(Str::singular($classString)));
 
-        if (!class_exists($className)) {
+        if (! class_exists($className)) {
             abort(404, 'We couldn\'t find what you were looking for.');
         }
 
@@ -68,6 +69,7 @@ abstract class ApiController
     private function modelHiddenFromApi($className)
     {
         return in_array($className, $this->getHiddenModels());
+
         return false;
     }
 }

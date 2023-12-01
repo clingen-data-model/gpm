@@ -2,9 +2,9 @@
 
 namespace App\Modules\Group\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Database\Factories\GroupStatusFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id

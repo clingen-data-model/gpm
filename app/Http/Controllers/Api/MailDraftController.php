@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use App\Modules\Group\Models\Group;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\View;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Models\Group;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 
 class MailDraftController extends Controller
 {
@@ -21,7 +21,7 @@ class MailDraftController extends Controller
     {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
 
-        if (!isset($this->stepMessages[$approvedStepNumber])) {
+        if (! isset($this->stepMessages[$approvedStepNumber])) {
             return abort(404);
         }
 
@@ -46,19 +46,19 @@ class MailDraftController extends Controller
                             return [
                                 'name' => $c->name,
                                 'email' => $c->email,
-                                'uuid' => $c->uuid
+                                'uuid' => $c->uuid,
                             ];
                         }),
             'cc' => $ccrecipients,
             'subject' => 'Application step '.$approvedStepNumber.' for your ClinGen expert panel '.$expertPanel->name.' has been approved.',
-            'body' => $view->render()
+            'body' => $view->render(),
         ];
     }
 
     public function makeDraft(Request $request, Group $group)
     {
         $templateClass = $request->templateClass;
-        if (!class_exists($templateClass)) {
+        if (! class_exists($templateClass)) {
             return abort(404);
         }
 
@@ -68,7 +68,7 @@ class MailDraftController extends Controller
             'to' => $tpl->getTo(),
             'cc' => $tpl->getCc(),
             'subject' => $tpl->renderSubject(),
-            'body' => $tpl->renderBody()
+            'body' => $tpl->renderBody(),
         ];
     }
 }

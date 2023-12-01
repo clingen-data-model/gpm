@@ -2,34 +2,27 @@
 
 namespace App\Modules\Person\Models;
 
-use App\Models\Email;
 use App\Models\Activity;
-use App\Models\Expertise;
-use App\Models\Credential;
-use App\Models\Traits\HasUuid;
-use App\Models\Traits\HasEmail;
-use App\Modules\User\Models\User;
-use Illuminate\Support\Collection;
-use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Race;
-use App\Modules\Person\Models\Gender;
-use Database\Factories\PersonFactory;
-use App\Modules\Person\Models\Country;
 use App\Models\Contracts\HasLogEntries;
-use Illuminate\Database\Eloquent\Model;
-use App\Modules\Person\Models\Ethnicity;
-use Illuminate\Notifications\Notifiable;
-use App\Modules\Person\Models\Institution;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Modules\Person\Models\PrimaryOccupation;
-use App\Modules\Group\Models\Traits\IsGroupMember;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\Credential;
+use App\Models\Email;
+use App\Models\Expertise;
+use App\Models\Traits\HasEmail;
 use App\Models\Traits\HasLogEntries as HasLogEntriesTrait;
+use App\Models\Traits\HasUuid;
+use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\Traits\IsGroupMember;
+use App\Modules\User\Models\User;
+use Database\Factories\PersonFactory;
+use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
 
 class Person extends Model implements HasLogEntries
 {
@@ -41,7 +34,6 @@ class Person extends Model implements HasLogEntries
     use HasEmail;
     use IsGroupMember;
     use HasLogEntriesTrait;
-
 
     protected $fillable = [
         'uuid',
@@ -90,7 +82,6 @@ class Person extends Model implements HasLogEntries
     /**
      * RELATIONS
      */
-
     public function activeGroups(): BelongsToMany
     {
         return $this->groups()->whereNull('group_members.end_date');
@@ -98,8 +89,6 @@ class Person extends Model implements HasLogEntries
 
     /**
      * The expertPanels that belong to the Person
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function expertPanels(): BelongsToMany
     {
@@ -108,8 +97,6 @@ class Person extends Model implements HasLogEntries
 
     /**
      * The activeExpertPanels that belong to the Person
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function activeExpertPanels(): BelongsToMany
     {
@@ -143,8 +130,6 @@ class Person extends Model implements HasLogEntries
 
     /**
      * The Credential that belong to the Person
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function credentials(): BelongsToMany
     {
@@ -153,8 +138,6 @@ class Person extends Model implements HasLogEntries
 
     /**
      * The Expertises that belong to the Person
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function expertises(): BelongsToMany
     {
@@ -195,8 +178,6 @@ class Person extends Model implements HasLogEntries
 
     /**
      * Get the user that owns the Person
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user(): BelongsTo
     {
@@ -205,19 +186,14 @@ class Person extends Model implements HasLogEntries
 
     /**
      * The emails that belong to the Person
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function emails(): BelongsToMany
     {
         return $this->belongsToMany(Email::class, 'email_person', 'person_id', 'email_id');
     }
 
-
     /**
      * Get the invite associated with the Person
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function invite(): HasOne
     {
@@ -226,8 +202,6 @@ class Person extends Model implements HasLogEntries
 
     /**
      * Get all of the membershipsWithPendingCoi for the Person
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function membershipsWithPendingCoi(): HasMany
     {
@@ -237,7 +211,6 @@ class Person extends Model implements HasLogEntries
     /**
      * SCOPES
      */
-
     public function scopeIsActivatedUser($query)
     {
         return $query->whereNotNull('user_id');
@@ -266,7 +239,6 @@ class Person extends Model implements HasLogEntries
                 });
     }
 
-
     /**
      * QUERIES
      */
@@ -278,7 +250,7 @@ class Person extends Model implements HasLogEntries
     /**
      * ACCESSORS
      */
-    public function getNameAttribute(): String
+    public function getNameAttribute(): string
     {
         return $this->first_name.' '.$this->last_name;
     }
@@ -286,15 +258,15 @@ class Person extends Model implements HasLogEntries
     public function getAddressStringAttribute()
     {
         $parts = [
-                $this->street1,
-                $this->street2,
-                $this->city,
-                $this->state,
-                $this->zip
-            ];
+            $this->street1,
+            $this->street2,
+            $this->city,
+            $this->state,
+            $this->zip,
+        ];
 
         return implode(', ', array_filter($parts, function ($part) {
-            return !is_null($part);
+            return ! is_null($part);
         }));
     }
 
@@ -320,7 +292,7 @@ class Person extends Model implements HasLogEntries
      */
     public function isLinkedToUser(): bool
     {
-        return !is_null($this->user_id);
+        return ! is_null($this->user_id);
     }
 
     public function isRegistered(): bool
@@ -354,9 +326,8 @@ class Person extends Model implements HasLogEntries
                             ->first();
         }
 
-
         $membership = $query->first();
-        if (!$membership) {
+        if (! $membership) {
             return false;
         }
 
@@ -368,6 +339,7 @@ class Person extends Model implements HasLogEntries
             if ($this->credentials->count() == 0) {
                 return $this->legacy_credentials;
             }
+
             return $this->credentials->pluck('name')->join(', ');
         }
 
@@ -376,6 +348,7 @@ class Person extends Model implements HasLogEntries
             if ($this->expertises->count() == 0) {
                 return $this->memberships->pluck('legacy_expertise')->filter()->join(', ');
             }
+
             return $this->expertises->pluck('name')->join(', ');
         }
 
@@ -383,7 +356,6 @@ class Person extends Model implements HasLogEntries
         {
             return $this->getExpertisesAsStringAttribute();
         }
-
 
     // Factory
     protected static function newFactory()

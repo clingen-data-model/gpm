@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Email;
 use App\ModelSearchService;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class MailLogController extends Controller
 {
@@ -15,7 +15,7 @@ class MailLogController extends Controller
             modelClass: Email::class,
             whereFunction: function ($query, $where) {
                 foreach ($where as $key => $value) {
-                    if (!$value) {
+                    if (! $value) {
                         continue;
                     }
                     if ($key == 'filterString') {
@@ -42,16 +42,17 @@ class MailLogController extends Controller
                         $query->orderBy($field, $dir);
                         break;
                 }
+
                 return $query;
             }
         );
-        
+
         $searchQuery = $search->buildQuery($request->only(['where', 'sort', 'with']));
 
         if ($request->page_size || $request->page) {
             return $searchQuery->paginate($request->get('page_size', 20));
         }
+
         return $searchQuery->get();
     }
-    
 }

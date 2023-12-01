@@ -1,15 +1,14 @@
 <?php
+
 namespace App\Modules\Group\Events;
 
 use App\Events\PublishableEvent;
-use Illuminate\Support\Collection;
 use App\Modules\Group\Models\Group;
-use Illuminate\Queue\SerializesModels;
-use App\Modules\Group\Events\GeneEvent;
+use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
-use App\Modules\Group\Events\GeneEventInterface;
-use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 
 class GenesAdded extends GeneEvent implements PublishableEvent, GeneEventInterface
 {
@@ -43,9 +42,9 @@ class GenesAdded extends GeneEvent implements PublishableEvent, GeneEventInterfa
     {
         $message = $this->getBaseMessage();
         $message['genes'] = $this->genes->map(fn ($gene) => $this->mapGeneForMessage($gene))->toArray();
+
         return $message;
     }
-
 
     /**
      * Get the channels the event should broadcast on.

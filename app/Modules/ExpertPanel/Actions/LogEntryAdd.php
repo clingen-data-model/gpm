@@ -2,12 +2,10 @@
 
 namespace App\Modules\ExpertPanel\Actions;
 
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
-use Lorisleiva\Actions\Concerns\AsAction;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Actions\LogEntryAdd as AppLogEntry;
 use App\Modules\ExpertPanel\Http\Requests\CreateApplicationLogEntryRequest;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class LogEntryAdd
 {
@@ -18,7 +16,6 @@ class LogEntryAdd
     public function __construct(private AppLogEntry $logEntryAdd)
     {
     }
-    
 
     /**
      * Execute the job.
@@ -47,6 +44,7 @@ class LogEntryAdd
         );
 
         $logEntry->load(['causer']);
+
         return response($logEntry, 200);
     }
 }
