@@ -2,12 +2,11 @@
 
 namespace Database\Factories;
 
-use Carbon\Carbon;
-use Ramsey\Uuid\Uuid;
 use App\Models\Document;
-use App\Models\DocumentType;
 use App\Modules\Group\Models\Group;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Ramsey\Uuid\Uuid;
 
 class DocumentFactory extends Factory
 {
@@ -26,6 +25,7 @@ class DocumentFactory extends Factory
     public function definition()
     {
         $group = Group::all()->random() ?? Group::factory()->create();
+
         return [
             'uuid' => Uuid::uuid4(),
             'owner_id' => $group->id,

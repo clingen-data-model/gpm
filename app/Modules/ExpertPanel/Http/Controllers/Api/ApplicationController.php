@@ -2,15 +2,14 @@
 
 namespace App\Modules\ExpertPanel\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
+use App\Http\Resources\ExpertPanelResource;
 use App\ModelSearchService;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use Illuminate\Contracts\Bus\Dispatcher;
-use App\Http\Resources\ExpertPanelResource;
-use App\Http\Resources\ExpertPanelCollection;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 
 class ApplicationController extends Controller
 {
@@ -45,7 +44,7 @@ class ApplicationController extends Controller
                 'step_4_received_date',
                 'step_4_approval_date',
                 'date_completed',
-                'expert_panels.deleted_at'
+                'expert_panels.deleted_at',
             ],
             defaultWith: [
                 'group' => function ($q) {
@@ -69,12 +68,13 @@ class ApplicationController extends Controller
                 'group.latestLogEntry' => function ($q) {
                     $q->select('created_at', 'description', 'subject_id', 'subject_type');
                 },
-                'group.latestSubmission'
+                'group.latestSubmission',
             ],
             whereFunction: function ($query, $where) {
                 foreach ($where as $key => $val) {
                     if ($key == 'since') {
                         $query->where('updated_at', '>', Carbon::parse($val));
+
                         continue;
                     }
                     $query->where($key, $val);
@@ -89,6 +89,7 @@ class ApplicationController extends Controller
                 if ($field == 'cdwg.name') {
                     $query->leftJoin('groups', 'expert_panels.group_id', '=', 'groups.id');
                     $query->leftJoin('groups as parents', 'groups.parent_id', '=', 'parents.id');
+
                     return $query->orderBy('parents.name', $dir);
                 }
                 if ($field == 'latestLogEntry.created_at') {
@@ -103,6 +104,7 @@ class ApplicationController extends Controller
                     ->addSelect('latest_activity.latest_activity_at as latest_activity_at')
                     ->orderBy('latest_activity_at', $dir);
                 }
+
                 return $query->orderBy($field, $dir);
             }
         );
@@ -113,8 +115,7 @@ class ApplicationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($uuid, Request $request)
@@ -130,11 +131,12 @@ class ApplicationController extends Controller
             'group.members.person',
             'group.logEntries',
             'group.latestLogEntry',
-            'nextActions'
+            'nextActions',
         ]);
         if ($request->has('with')) {
             $expertPanel->load($request->with);
         }
+
         return new ExpertPanelResource($expertPanel);
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
-use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use App\Modules\Group\Actions\CoiCodeMake;
-use Illuminate\Database\Migrations\Migration;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Actions\CoiCodeMake;
+use App\Modules\Group\Models\Group;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class MoveCoiCodeToGroups extends Migration
 {
@@ -22,10 +22,9 @@ class MoveCoiCodeToGroups extends Migration
 
         $this->migrateCoiCodeToGroup();
 
-        Schema::table('expert_panels', function(Blueprint $table) {
+        Schema::table('expert_panels', function (Blueprint $table) {
             $table->dropColumn('coi_code');
         });
-
     }
 
     /**
@@ -41,10 +40,9 @@ class MoveCoiCodeToGroups extends Migration
 
         $this->migrateCoiCodeToExpertPanel();
 
-        Schema::table('groups', function(Blueprint $table) {
+        Schema::table('groups', function (Blueprint $table) {
             $table->dropColumn('coi_code');
         });
-
     }
 
     private function migrateCoiCodeToGroup()
@@ -69,5 +67,4 @@ class MoveCoiCodeToGroups extends Migration
                 $g->expertPanel->update(['coi_code' => $g->coi_code]);
             });
     }
-
 }

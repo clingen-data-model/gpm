@@ -2,17 +2,12 @@
 
 namespace App\Modules\Group\Events;
 
-use App\Modules\Group\Models\Submission;
-use Illuminate\Support\Carbon;
 use App\Modules\Group\Models\Group;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
+use App\Modules\Group\Models\Submission;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class ApplicationRevisionsRequested extends GroupEvent
 {
@@ -30,7 +25,7 @@ class ApplicationRevisionsRequested extends GroupEvent
         $this->group = $submission->group;
     }
 
-    public function getProperties():array
+    public function getProperties(): array
     {
         return [
             'submission_id' => $this->submission->id,
@@ -38,7 +33,7 @@ class ApplicationRevisionsRequested extends GroupEvent
         ];
     }
 
-    public function getLogEntry():string
+    public function getLogEntry(): string
     {
         $logEntry = 'Revisions requested for step '.$this->group->expertPanel->current_step;
 

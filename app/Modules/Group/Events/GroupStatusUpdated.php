@@ -4,13 +4,10 @@ namespace App\Modules\Group\Events;
 
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\GroupStatus;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class GroupStatusUpdated extends GroupEvent
 {
@@ -29,12 +26,12 @@ class GroupStatusUpdated extends GroupEvent
     {
         return 'Status updated from "'.$this->oldStatus->name.'" to "'.$this->newStatus->name.'"';
     }
-    
+
     public function getProperties(): ?array
     {
         return [
             'old_status' => $this->oldStatus,
-            'new_status' => $this->newStatus
+            'new_status' => $this->newStatus,
         ];
     }
 

@@ -3,11 +3,10 @@
 namespace App\Modules\Group\Actions;
 
 use App\Models\Document;
-use App\Models\DocumentType;
-use App\Modules\Group\Models\Group;
-use Lorisleiva\Actions\ActionRequest;
-use Illuminate\Support\Facades\Storage;
 use App\Modules\Group\Events\DocumentAdded;
+use App\Modules\Group\Models\Group;
+use Illuminate\Support\Facades\Storage;
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 
 class DocumentAdd
@@ -19,7 +18,7 @@ class DocumentAdd
         $group->documents()->save($document);
 
         event(new DocumentAdded($group, $document));
-        
+
         return $document->load('type');
     }
 
@@ -34,7 +33,7 @@ class DocumentAdd
             'filename' => $file->getClientOriginalName(),
             'storage_path' => $path,
             'document_type_id' => $request->document_type_id,
-            'notes' => $request->notes
+            'notes' => $request->notes,
         ]);
 
         return $this->handle($group, $document);
@@ -45,14 +44,14 @@ class DocumentAdd
         return [
             'file' => 'required',
             'document_type_id' => 'required|exists:document_types,id',
-            'uuid' => 'required'
+            'uuid' => 'required',
         ];
     }
 
     public function getValidationMessages(): array
     {
         return [
-            'required' => 'This is required.'
+            'required' => 'This is required.',
         ];
     }
 

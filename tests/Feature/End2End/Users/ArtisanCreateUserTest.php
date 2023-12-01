@@ -2,23 +2,24 @@
 
 namespace Tests\Feature\End2End\Users;
 
-use Tests\TestCase;
 use App\Modules\User\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class ArtisanCreateUserTest extends TestCase
 {
     use RefreshDatabase;
 
     protected $admin;
+
     protected $name;
+
     protected $email;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
-        
+
         $this->admin = User::factory()->create();
         $this->name = 'Louise Belcher';
         $this->email = 'louise@bobsburgers.com';
@@ -46,7 +47,7 @@ class ArtisanCreateUserTest extends TestCase
             ->expectsQuestion('Your password:', 'password')
             ->expectsOutput('Authenticated as '.$this->admin->name);
     }
-    
+
     /**
      * @test
      */
@@ -78,7 +79,6 @@ class ArtisanCreateUserTest extends TestCase
             ->expectsOutput('Account created for '.$this->name.' with email '.$this->email)
             ->assertExitCode(0);
     }
-    
 
     /**
      * @test
@@ -88,28 +88,28 @@ class ArtisanCreateUserTest extends TestCase
         $this->artisan('user:create --actingas='.$this->admin->email)
             ->expectsQuestion('Your password:', 'password')
             ->expectsQuestion('New user\'s name:', '')
-            ->expectsOutput("name cannot be empty.")
+            ->expectsOutput('name cannot be empty.')
             ->assertExitCode(1);
 
         $this->artisan('user:create --actingas='.$this->admin->email)
             ->expectsQuestion('Your password:', 'password')
             ->expectsQuestion('New user\'s name:', 'test')
             ->expectsQuestion('New user\'s email address:', null)
-            ->expectsOutput("email cannot be empty.")
+            ->expectsOutput('email cannot be empty.')
             ->assertExitCode(1);
 
         $this->artisan('user:create --actingas='.$this->admin->email)
             ->expectsQuestion('Your password:', 'password')
             ->expectsQuestion('New user\'s name:', 'test')
             ->expectsQuestion('New user\'s email address:', 'farts')
-            ->expectsOutput("email is not valid.")
+            ->expectsOutput('email is not valid.')
             ->assertExitCode(1);
 
         $this->artisan('user:create --actingas='.$this->admin->email)
             ->expectsQuestion('Your password:', 'password')
             ->expectsQuestion('New user\'s name:', 'test')
             ->expectsQuestion('New user\'s email address:', $this->admin->email)
-            ->expectsOutput("email is already in use.")
+            ->expectsOutput('email is already in use.')
             ->assertExitCode(1);
     }
 }

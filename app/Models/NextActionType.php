@@ -10,14 +10,12 @@ class NextActionType extends Model
     use HasFactory;
 
     public $fillable = [
-        'name', 
+        'name',
         'description',
-        'default_entry'
+        'default_entry',
     ];
 
     public $casts = [
-        'id' => 'integer'
+        'id' => 'integer',
     ];
-    
-    
 }

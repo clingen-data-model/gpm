@@ -2,10 +2,9 @@
 
 namespace App\Modules\Person\Actions;
 
-use Illuminate\Support\Facades\DB;
+use App\Modules\Person\Events\PersonCreated;
 use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Event;
-use App\Modules\Person\Events\PersonCreated;
 
 class PersonCreate
 {
@@ -26,7 +25,7 @@ class PersonCreate
             'user_id' => $user_id,
         ]);
         Event::dispatch(new PersonCreated($person));
-        
+
         return $person;
     }
 }

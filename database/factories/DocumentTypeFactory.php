@@ -22,7 +22,7 @@ class DocumentTypeFactory extends Factory
     public function definition()
     {
         return [
-            'name' => uniqid()
+            'name' => uniqid(),
         ];
     }
 }

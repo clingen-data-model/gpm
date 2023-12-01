@@ -2,22 +2,20 @@
 
 namespace App\Modules\Group\Actions;
 
-use Carbon\Carbon;
-use App\Modules\Group\Models\Group;
-use Lorisleiva\Actions\Concerns\AsListener;
-use Lorisleiva\Actions\Concerns\AsController;
-use App\Modules\ExpertPanel\Models\NextAction;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
+use App\Modules\ExpertPanel\Models\NextAction;
 use App\Modules\Group\Events\ApplicationRevisionsRequested;
+use App\Modules\Group\Models\Group;
+use Carbon\Carbon;
+use Lorisleiva\Actions\Concerns\AsListener;
 
 class ApplicationRevisionsRequestedAssignNextAction
 {
     use AsListener;
-    
+
     public function __construct(private NextActionCreate $createNextAction)
     {
     }
-    
 
     public function handle(Group $group): NextAction
     {
@@ -36,5 +34,4 @@ class ApplicationRevisionsRequestedAssignNextAction
     {
         $this->handle($event->submission->group);
     }
-    
 }

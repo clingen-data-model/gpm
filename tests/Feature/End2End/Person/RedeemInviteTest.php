@@ -2,20 +2,20 @@
 
 namespace Tests\Feature\End2End\Person;
 
-use Carbon\Carbon;
-use Tests\TestCase;
-use App\Modules\User\Models\User;
 use App\Modules\Person\Models\Invite;
 use App\Modules\Person\Models\Person;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Modules\User\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class RedeemInviteTest extends TestCase
 {
     use RefreshDatabase;
 
     const URL = '/api/people/invites';
-    public function setup():void
+
+    public function setup(): void
     {
         parent::setup();
 
@@ -23,7 +23,7 @@ class RedeemInviteTest extends TestCase
         $this->validData = [
             'email' => 'test@test.com',
             'password' => 'tester',
-            'password_confirmation' => 'tester'
+            'password_confirmation' => 'tester',
         ];
     }
 
@@ -62,7 +62,6 @@ class RedeemInviteTest extends TestCase
             ->assertStatus(404);
     }
 
-
     /**
      * @test
      */
@@ -86,7 +85,7 @@ class RedeemInviteTest extends TestCase
             ->assertStatus(422)
             ->assertJsonFragment([
                 'email' => ['The email must be a valid email address.'],
-                'password' => ['The password confirmation does not match.']
+                'password' => ['The password confirmation does not match.'],
             ]);
 
         $otherUser = User::factory()->create();
@@ -96,7 +95,6 @@ class RedeemInviteTest extends TestCase
                 'email' => ['The email has already been taken.'],
             ]);
     }
-
 
     /**
      * @test
@@ -109,7 +107,7 @@ class RedeemInviteTest extends TestCase
 
         $this->assertDatabaseHas('invites', [
             'code' => $this->invite->code,
-            'redeemed_at' => Carbon::now()->format('Y-m-d H:i:s')
+            'redeemed_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
     }
 
@@ -128,10 +126,9 @@ class RedeemInviteTest extends TestCase
 
         $this->assertDatabaseHas('people', [
             'id' => $this->invite->person_id,
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
     }
-
 
     /**
      * @test

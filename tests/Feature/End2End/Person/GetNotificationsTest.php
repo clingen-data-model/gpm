@@ -3,18 +3,17 @@
 namespace Tests\Feature\End2End\Person;
 
 use App\Modules\Person\Models\Person;
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
+use Laravel\Sanctum\Sanctum;
 use Tests\Stubs\TestDatabaseNotification;
+use Tests\TestCase;
 
 class GetNotificationsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -40,7 +39,7 @@ class GetNotificationsTest extends TestCase
                     'notifiable_id' => $this->person->id,
                     'data' => ['test_attribute' => 'bonkers'],
                     'read_at' => null,
-                ]
+                ],
             ]);
     }
 }

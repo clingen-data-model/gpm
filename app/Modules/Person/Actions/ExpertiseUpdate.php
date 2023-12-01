@@ -27,7 +27,7 @@ class ExpertiseUpdate
     {
         return [
             'name' => ['required', 'max:255', Rule::unique('expertises', 'name')->ignore(request()->expertise->id)],
-            'approved' => 'nullable|boolean'
+            'approved' => 'nullable|boolean',
         ];
     }
 
@@ -35,5 +35,4 @@ class ExpertiseUpdate
     {
         return $request->user()->hasPermissionTo('people-manage');
     }
-
 }

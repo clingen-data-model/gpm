@@ -4,10 +4,10 @@ namespace App\Modules\Group\Events;
 
 use App\Events\PublishableEvent;
 use App\Modules\Group\Models\Group;
-use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Queue\SerializesModels;
 
 class MemberUnretired extends GroupMemberEvent implements PublishableEvent
 {
@@ -28,10 +28,9 @@ class MemberUnretired extends GroupMemberEvent implements PublishableEvent
         return [
             'group_member' => $this->groupMember,
             'person' => $this->groupMember->person->only('id', 'name', 'email'),
-            'group' => $this->groupMember->group
+            'group' => $this->groupMember->group,
         ];
     }
-
 
     public function getEventType(): string
     {

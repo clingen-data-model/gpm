@@ -12,7 +12,6 @@ trait HasUuid
     {
         return $query->where('uuid', $uuid);
     }
-    
 
     public static function findByUuid($uuid, $columns = '*')
     {

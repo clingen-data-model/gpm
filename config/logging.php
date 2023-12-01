@@ -36,11 +36,11 @@ return [
     'channels' => [
         'dev-stack' => [
             'driver' => 'stack',
-            'channels' => ['stderr', 'single']
+            'channels' => ['stderr', 'single'],
         ],
         'stack' => [
             'driver' => 'stack',
-            'channels' => (!is_null(env('LOG_SLACK_WEBHOOK_URL')))
+            'channels' => (! is_null(env('LOG_SLACK_WEBHOOK_URL')))
                             ? ['stderr', 'daily', 'slack']
                             : ['stderr', 'daily'],
             'ignore_exceptions' => false,
@@ -84,7 +84,7 @@ return [
             'with' => [
                 'stream' => 'php://stderr',
             ],
-            'level' => env('LOG_LEVEL', 'debug')
+            'level' => env('LOG_LEVEL', 'debug'),
         ],
 
         'syslog' => [

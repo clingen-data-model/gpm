@@ -3,10 +3,9 @@
 namespace App\Modules\Person\Actions;
 
 use App\Models\Expertise;
+use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
-use App\Modules\Person\Actions\ExpertiseDelete;
-use Illuminate\Support\Facades\DB;
 
 class ExpertisesMerge
 {
@@ -15,7 +14,6 @@ class ExpertisesMerge
     public function __construct(private ExpertiseDelete $deleteExpertise)
     {
     }
-
 
     public function handle(Expertise $obsolete, Expertise $authority): Expertise
     {
@@ -38,8 +36,8 @@ class ExpertisesMerge
     public function rules(): array
     {
         return [
-           'obsolete_id' => 'required|numeric|exists:expertises,id|different:authority_id',
-           'authority_id' => 'required|numeric|exists:expertises,id|different:obsolete_id',
+            'obsolete_id' => 'required|numeric|exists:expertises,id|different:authority_id',
+            'authority_id' => 'required|numeric|exists:expertises,id|different:obsolete_id',
         ];
     }
 
@@ -48,7 +46,6 @@ class ExpertisesMerge
         return $request->user()->hasPermissionTo('people-manage');
     }
 
-
     private function transferPeople(Expertise $obsolete, Expertise $authority): void
     {
         $obsolete->people
@@ -56,7 +53,5 @@ class ExpertisesMerge
                 $person->expertises()->detach($obsolete->id);
                 $person->expertises()->syncWithoutDetaching([$authority->id]);
             });
-
     }
-
 }

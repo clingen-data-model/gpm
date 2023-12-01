@@ -2,30 +2,24 @@
 
 namespace Tests\Feature\End2End\Groups\Submissions;
 
-use Carbon\Carbon;
-use Tests\TestCase;
-use App\Models\Permission;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\Group\Models\Group;
-use Database\Seeders\TaskTypeSeeder;
-use Illuminate\Support\Facades\Mail;
-use App\Modules\Person\Models\Person;
-use Illuminate\Support\Facades\Event;
-use App\Modules\Group\Models\Submission;
-use App\Modules\Group\Models\GroupMember;
-use App\Mail\ApplicationSubmissionAdminMail;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Notification;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Database\Seeders\NextActionTypesTableSeeder;
 use App\Mail\ApplicationStepSubmittedReceiptMail;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Database\Seeders\SubmissionTypeAndStatusSeeder;
-use Database\Seeders\NextActionAssigneesTableSeeder;
+use App\Mail\ApplicationSubmissionAdminMail;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Events\ApplicationStepSubmitted;
+use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\GroupMember;
+use App\Modules\Person\Models\Person;
+use Carbon\Carbon;
+use Database\Seeders\NextActionAssigneesTableSeeder;
+use Database\Seeders\NextActionTypesTableSeeder;
+use Database\Seeders\SubmissionTypeAndStatusSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Mail;
+use Laravel\Sanctum\Sanctum;
 use Tests\Feature\End2End\Groups\Members\SetsUpGroupPersonAndMember;
-use App\Modules\Group\Notifications\ApplicationSubmissionNotification;
+use Tests\TestCase;
 
 /**
  * @group submissions
@@ -35,8 +29,8 @@ class SubmitApplicationStepTest extends TestCase
 {
     use RefreshDatabase;
     use SetsUpGroupPersonAndMember;
-    
-    public function setup():void
+
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -75,13 +69,13 @@ class SubmitApplicationStepTest extends TestCase
                 'status' => config('submissions.statuses.pending'),
                 'type' => config('submissions.types.application.definition'),
                 'notes' => 'Notes from the submitter!',
-                'submitter_id' => $this->user->person->id
+                'submitter_id' => $this->user->person->id,
             ]);
-        
+
         $this->user->revokePermissionTo('ep-applications-manage');
         $person = $this->user->person()->save(Person::factory()->make());
         $membership = $this->user->person->memberships()->save(GroupMember::factory()->make([
-            'group_id' => $this->expertPanel->group->id
+            'group_id' => $this->expertPanel->group->id,
         ]));
         $membership->givePermissionTo('application-edit');
 
@@ -111,7 +105,7 @@ class SubmitApplicationStepTest extends TestCase
                 'group_id' => $this->expertPanel->group->id,
                 'status' => config('submissions.statuses.pending'),
                 'type' => config('submissions.types.application.sustained-curation'),
-                'notes' => 'Notes from the submitter!'
+                'notes' => 'Notes from the submitter!',
             ]);
     }
 
@@ -129,12 +123,12 @@ class SubmitApplicationStepTest extends TestCase
                 'group_id' => $this->expertPanel->group->id,
                 'status' => config('submissions.statuses.pending'),
                 'type' => config('submissions.types.application.definition'),
-                'notes' => 'Notes from the submitter!'
+                'notes' => 'Notes from the submitter!',
             ]);
 
         $this->assertDatabaseHas('expert_panels', [
             'id' => $this->expertPanel->id,
-            'step_1_received_date' => Carbon::now()->format('Y-m-d H:i:s')
+            'step_1_received_date' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
     }
 
@@ -152,12 +146,12 @@ class SubmitApplicationStepTest extends TestCase
                 'group_id' => $this->expertPanel->group->id,
                 'status' => config('submissions.statuses.pending'),
                 'type' => config('submissions.types.application.sustained-curation'),
-                'notes' => 'Notes from the submitter!'
+                'notes' => 'Notes from the submitter!',
             ]);
 
         $this->assertDatabaseHas('expert_panels', [
             'id' => $this->expertPanel->id,
-            'step_4_received_date' => Carbon::now()->format('Y-m-d H:i:s')
+            'step_4_received_date' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
     }
 
@@ -184,7 +178,7 @@ class SubmitApplicationStepTest extends TestCase
         $this->assertDatabaseHas('activity_log', [
             'subject_type' => Group::class,
             'subject_id' => $this->expertPanel->group_id,
-            'activity_type' => 'application-step-submitted'
+            'activity_type' => 'application-step-submitted',
         ]);
     }
 
@@ -194,12 +188,13 @@ class SubmitApplicationStepTest extends TestCase
     public function cdwg_oc_receives_mail_of_submitted_vcep()
     {
         Mail::fake();
-        
+
         $this->makeRequest();
 
         Mail::assertSent(ApplicationSubmissionAdminMail::class, function ($mailable) {
             $mailable->build();
-            return $mailable->to == [['name'=> 'CDWG Oversight Committee', 'address' => 'cdwg_oversightcommittee@clinicalgenome.org']]
+
+            return $mailable->to == [['name' => 'CDWG Oversight Committee', 'address' => 'cdwg_oversightcommittee@clinicalgenome.org']]
                 && $mailable->submission->id == $this->expertPanel->group->latestPendingSubmission->id;
         });
     }
@@ -212,12 +207,13 @@ class SubmitApplicationStepTest extends TestCase
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.gcep.id')]);
 
         Mail::fake();
-        
+
         $this->makeRequest();
 
         Mail::assertSent(ApplicationSubmissionAdminMail::class, function ($mailable) {
             $mailable->build();
-            return $mailable->to == [['name'=> 'Gene Curation Working Group', 'address' => 'genecuration@clinicalgenome.org']]
+
+            return $mailable->to == [['name' => 'Gene Curation Working Group', 'address' => 'genecuration@clinicalgenome.org']]
                 && $mailable->submission->id == $this->expertPanel->group->latestPendingSubmission->id;
         });
     }
@@ -231,12 +227,13 @@ class SubmitApplicationStepTest extends TestCase
         $this->setupMember($this->expertPanel->group, $person, ['is_contact' => true]);
 
         Mail::fake();
-        
+
         $this->makeRequest();
 
         Mail::assertSent(ApplicationStepSubmittedReceiptMail::class, function ($mailable) {
             $mailable->build();
-            return $mailable->to == [['name'=> $this->groupMember->person->name, 'address' => $this->groupMember->person->email]]
+
+            return $mailable->to == [['name' => $this->groupMember->person->name, 'address' => $this->groupMember->person->email]]
                 && $mailable->expertPanel->id == $this->expertPanel->id;
         });
     }
@@ -258,16 +255,15 @@ class SubmitApplicationStepTest extends TestCase
 
         $this->assertDatabaseHas('next_actions', [
             'id' => $nextAction->id,
-            'date_completed' => Carbon::now()
+            'date_completed' => Carbon::now(),
         ]);
     }
-       
+
     /**
      * @test
      */
     public function next_action_created_for_admin_group()
     {
-        
         Carbon::setTestNow('2022-06-01');
         $this->makeRequest();
         $this->assertDatabaseHas('next_actions', [
@@ -275,10 +271,9 @@ class SubmitApplicationStepTest extends TestCase
             'assignee_id' => config('next_actions.assignees.cdwg-oc.id'),
             'entry' => 'Review application and respond to EP.',
             'target_date' => Carbon::now()->addDays(14),
-            'type_id' => config('next_actions.types.review-submission.id')
+            'type_id' => config('next_actions.types.review-submission.id'),
         ]);
 
-        
         $gcep = ExpertPanel::factory()->gcep()->create();
         $this->makeRequest(null, $gcep);
 
@@ -287,7 +282,7 @@ class SubmitApplicationStepTest extends TestCase
             'assignee_id' => config('next_actions.assignees.gene-curation-core-group.id'),
             'entry' => 'Review application and respond to EP.',
             'target_date' => Carbon::now()->addDays(14),
-            'type_id' => config('next_actions.types.review-submission.id')
+            'type_id' => config('next_actions.types.review-submission.id'),
         ]);
     }
 
@@ -305,30 +300,30 @@ class SubmitApplicationStepTest extends TestCase
             'version' => 1,
         ]);
     }
-    
 
-        
     private function makeRequest($data = null, $expertPanel = null)
     {
         $expertPanel = $expertPanel ?? $this->expertPanel;
         $data = $data ?? [
-            'notes' => 'Notes from the submitter!'
+            'notes' => 'Notes from the submitter!',
         ];
 
         $url = '/api/groups/'.$expertPanel->group->uuid.'/application/submission';
+
         return $this->json('post', $url, $data);
     }
-    
 
     private function setupGcep($data = null)
     {
         $data = $data ?? [];
+
         return ExpertPanel::factory()->gcep()->create();
     }
 
     private function setupVcep($data = null)
     {
         $data = $data ?? [];
+
         return ExpertPanel::factory()->vcep()->create($data);
     }
 }

@@ -2,24 +2,22 @@
 
 namespace Tests\Feature\Integration;
 
-use Tests\TestCase;
-use App\Modules\User\Models\User;
-use App\Modules\Group\Models\Group;
-use Illuminate\Contracts\Bus\Dispatcher;
 use App\Jobs\Pipes\UseDatabaseTransactions;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Models\Group;
+use App\Modules\User\Models\User;
+use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class UseDatabaseTransactionsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
-        
+
         $this->dispatcher = app()->make(Dispatcher::class);
         $this->dispatcher->pipeThrough([UseDatabaseTransactions::class]);
     }

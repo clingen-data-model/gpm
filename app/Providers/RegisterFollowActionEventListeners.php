@@ -10,9 +10,7 @@ trait RegisterFollowActionEventListeners
     /**
      * Registers FollowAction listener for all events in $eventClasses
      *
-     * @param array $eventClasses Array of event classes.
-     *
-     * @return void
+     * @param  array  $eventClasses Array of event classes.
      */
     protected function registerFollowActionListeners(array $eventClasses): void
     {
@@ -20,5 +18,4 @@ trait RegisterFollowActionEventListeners
             Event::listen($class, FollowActionRun::class);
         }
     }
-
 }

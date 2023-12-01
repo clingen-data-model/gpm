@@ -2,17 +2,14 @@
 
 namespace Tests\Feature\End2End\DataExchange;
 
-use Carbon\Carbon;
-use Tests\TestCase;
-use App\DataExchange\DxMessage;
-use Tests\Dummies\FakeMessageStream;
-use Illuminate\Support\Facades\Artisan;
-use Database\Seeders\RulesetStatusSeeder;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\DataExchange\Contracts\MessageStream;
+use App\DataExchange\DxMessage;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Database\Seeders\SpecificationStatusSeeder;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
+use Tests\Dummies\FakeMessageStream;
+use Tests\TestCase;
 
 /**
  * @group dx
@@ -55,13 +52,14 @@ class ConsumeCspecMessagesTest extends TestCase
 
         $this->assertDatabaseHas('expert_panels', [
             'id' => $this->vcep->id,
-            'step_2_approval_date' =>  null,
-            'current_step' => 2
+            'step_2_approval_date' => null,
+            'current_step' => 2,
         ]);
     }
 
     /**
      * @test
+     *
      * @return void
      */
     public function cspec_draft_rules_approved_message_consumed_and_handled()
@@ -82,8 +80,8 @@ class ConsumeCspecMessagesTest extends TestCase
 
         $this->assertDatabaseHas('expert_panels', [
             'id' => $this->vcep->id,
-            'step_2_approval_date' =>  Carbon::createFromTimestamp($timestamp),
-            'current_step' => 3
+            'step_2_approval_date' => Carbon::createFromTimestamp($timestamp),
+            'current_step' => 3,
         ]);
     }
 
@@ -113,7 +111,7 @@ class ConsumeCspecMessagesTest extends TestCase
         $this->assertDatabaseHas('expert_panels', [
             'id' => $this->vcep->id,
             'step_3_approval_date' => Carbon::createFromTimestamp($timestamp),
-            'current_step' => 4
+            'current_step' => 4,
         ]);
     }
 }

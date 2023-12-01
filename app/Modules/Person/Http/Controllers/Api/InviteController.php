@@ -2,17 +2,17 @@
 
 namespace App\Modules\Person\Http\Controllers\Api;
 
-use App\ModelSearchService;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Modules\Person\Models\Invite;
+use App\ModelSearchService;
 use App\Modules\Person\Http\Resources\InviteResource;
+use App\Modules\Person\Models\Invite;
+use Illuminate\Http\Request;
 
 class InviteController extends Controller
 {
     public function index(Request $request)
     {
-        $sortFunction =  function ($query, $field, $dir) {
+        $sortFunction = function ($query, $field, $dir) {
             if ($field == 'person.name' || $field == 'person.email') {
                 $query->join('people', 'invites.person_id', '=', 'people.id');
                 if ($field == 'person.name') {
@@ -32,6 +32,7 @@ class InviteController extends Controller
             }
 
             $query->orderBy($field, $dir);
+
             return $query;
         };
 
@@ -46,15 +47,18 @@ class InviteController extends Controller
                     ->orWhereHas('inviter', function ($q) use ($value) {
                         $q->where('name', 'like', '%'.$value.'%');
                     });
+
                     continue;
                 }
 
                 if (is_array($value)) {
                     $query->whereIn($key, $value);
+
                     continue;
                 }
                 $query->where($key, $value);
             }
+
             return $query;
         };
 
@@ -65,9 +69,10 @@ class InviteController extends Controller
             sortFunction: $sortFunction,
             whereFunction: $whereFunction
         );
-        
+
         $invites = $search->buildQuery($request->all())
                     ->paginate($request->get('page_size', 20));
+
         return InviteResource::collection($invites);
     }
 }

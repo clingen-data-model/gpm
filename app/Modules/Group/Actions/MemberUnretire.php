@@ -2,17 +2,15 @@
 
 namespace App\Modules\Group\Actions;
 
-use Carbon\Carbon;
-use Illuminate\Validation\Rule;
+use App\Modules\Group\Events\MemberUnretired;
+use App\Modules\Group\Http\Resources\MemberResource;
 use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\GroupMember;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\ActionRequest;
-use App\Modules\Group\Models\GroupMember;
-use Lorisleiva\Actions\Concerns\AsObject;
-use App\Modules\Group\Events\MemberRetired;
-use App\Modules\Group\Events\MemberUnretired;
 use Lorisleiva\Actions\Concerns\AsController;
-use App\Modules\Group\Http\Resources\MemberResource;
+use Lorisleiva\Actions\Concerns\AsObject;
 
 class MemberUnretire
 {
@@ -22,8 +20,9 @@ class MemberUnretire
     public function handle(GroupMember $groupMember): GroupMember
     {
         $groupMember->update(['end_date' => null]);
-        
+
         Event::dispatch(new MemberUnretired($groupMember));
+
         return $groupMember;
     }
 

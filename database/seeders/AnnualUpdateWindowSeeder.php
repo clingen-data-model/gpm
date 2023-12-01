@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\Seeder;
 use App\Models\AnnualUpdateWindow;
 
 class AnnualUpdateWindowSeeder extends Seeder

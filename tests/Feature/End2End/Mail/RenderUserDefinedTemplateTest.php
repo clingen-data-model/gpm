@@ -2,22 +2,20 @@
 
 namespace Tests\Feature\End2End\Mail;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Mail\UserDefinedMailTemplates\InitialApprovalMailTemplate;
 use App\Mail\UserDefinedMailTemplates\SpecificationDraftMailTemplate;
 use App\Mail\UserDefinedMailTemplates\SpecificationPilotMailTemplate;
 use App\Mail\UserDefinedMailTemplates\SustainedCurationApprovalMailTemplate;
-use App\Modules\ExpertPanel\Notifications\ApplicationStepApprovedNotification;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class RenderUserDefinedTemplateTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -34,16 +32,16 @@ class RenderUserDefinedTemplateTest extends TestCase
         $response = $this->makeRequest();
         $response->assertStatus(200);
         $response->assertJson([
-                'subject' => 'Scope and Membership application for your ClinGen expert panel '.$this->expertPanel->group->name.' has been approved.',
-                'cc' => [
-                    ['address' => 'cdwg_oversightcommittee@clinicalgenome.org', 'name' => 'CDWG Oversite Committee'],
-                    ['address' => 'clingentrackerhelp@unc.edu', 'name' => 'Clingen Tracker Help'],
-                    ['address' => 'volunteer@clinicalgenome.org', 'name' => 'CCDB Support'],
-                    ['address' => 'erepo@clinicalgenome.org', 'name' => 'ERepo Support'],
-                    ['address' => 'clingen-helpdesk@lists.stanford.edu', 'name' => 'GCI/VCI Support'],
-                ],
-                'to' => $this->expectedTo()
-            ]);
+            'subject' => 'Scope and Membership application for your ClinGen expert panel '.$this->expertPanel->group->name.' has been approved.',
+            'cc' => [
+                ['address' => 'cdwg_oversightcommittee@clinicalgenome.org', 'name' => 'CDWG Oversite Committee'],
+                ['address' => 'clingentrackerhelp@unc.edu', 'name' => 'Clingen Tracker Help'],
+                ['address' => 'volunteer@clinicalgenome.org', 'name' => 'CCDB Support'],
+                ['address' => 'erepo@clinicalgenome.org', 'name' => 'ERepo Support'],
+                ['address' => 'clingen-helpdesk@lists.stanford.edu', 'name' => 'GCI/VCI Support'],
+            ],
+            'to' => $this->expectedTo(),
+        ]);
     }
 
     /**
@@ -54,12 +52,12 @@ class RenderUserDefinedTemplateTest extends TestCase
         $response = $this->makeRequest(null, SpecificationDraftMailTemplate::class);
         $response->assertStatus(200);
         $response->assertJson([
-                'subject' => 'Draft specification for your ClinGen expert panel '.$this->expertPanel->group->name.' has been approved.',
-                'cc' => null,
-                'to' => $this->expectedTo()
-            ]);
+            'subject' => 'Draft specification for your ClinGen expert panel '.$this->expertPanel->group->name.' has been approved.',
+            'cc' => null,
+            'to' => $this->expectedTo(),
+        ]);
     }
-    
+
     /**
      * @test
      */
@@ -68,12 +66,12 @@ class RenderUserDefinedTemplateTest extends TestCase
         $response = $this->makeRequest(null, SpecificationPilotMailTemplate::class);
         $response->assertStatus(200);
         $response->assertJson([
-                'subject' => 'Specification pilot for your ClinGen expert panel '.$this->expertPanel->group->name.' has been approved.',
-                'cc' => null,
-                'to' => $this->expectedTo()
-            ]);
+            'subject' => 'Specification pilot for your ClinGen expert panel '.$this->expertPanel->group->name.' has been approved.',
+            'cc' => null,
+            'to' => $this->expectedTo(),
+        ]);
     }
-    
+
     /**
      * @test
      */
@@ -82,20 +80,19 @@ class RenderUserDefinedTemplateTest extends TestCase
         $response = $this->makeRequest(null, SustainedCurationApprovalMailTemplate::class);
         $response->assertStatus(200);
         $response->assertJson([
-                'subject' => 'Your ClinGen expert panel '.$this->expertPanel->group->name.' has received final approval.',
-                'cc' => [
-                    ['address' => 'cdwg_oversightcommittee@clinicalgenome.org', 'name' => 'CDWG Oversite Committee'],
-                    ['address' => 'clingentrackerhelp@unc.edu', 'name' => 'Clingen Tracker Help'],
-                    ['address' => 'volunteer@clinicalgenome.org', 'name' => 'CCDB Support'],
-                    ['address' => 'erepo@clinicalgenome.org', 'name' => 'ERepo Support'],
-                    ['address' => 'clingen-helpdesk@lists.stanford.edu', 'name' => 'GCI/VCI Support'],
-                    ['address' => 'clinvar@ncbi.nlm.nih.gov', 'name' => 'ClinVar'],
-                ],
-                'to' => $this->expectedTo()
-            ]);
+            'subject' => 'Your ClinGen expert panel '.$this->expertPanel->group->name.' has received final approval.',
+            'cc' => [
+                ['address' => 'cdwg_oversightcommittee@clinicalgenome.org', 'name' => 'CDWG Oversite Committee'],
+                ['address' => 'clingentrackerhelp@unc.edu', 'name' => 'Clingen Tracker Help'],
+                ['address' => 'volunteer@clinicalgenome.org', 'name' => 'CCDB Support'],
+                ['address' => 'erepo@clinicalgenome.org', 'name' => 'ERepo Support'],
+                ['address' => 'clingen-helpdesk@lists.stanford.edu', 'name' => 'GCI/VCI Support'],
+                ['address' => 'clinvar@ncbi.nlm.nih.gov', 'name' => 'ClinVar'],
+            ],
+            'to' => $this->expectedTo(),
+        ]);
     }
-    
-    
+
     private function makeRequest($data = null, $templateClass = null)
     {
         $templateClass = $templateClass ?? InitialApprovalMailTemplate::class;
@@ -114,7 +111,7 @@ class RenderUserDefinedTemplateTest extends TestCase
                 return [
                     'name' => $c->name,
                     'email' => $c->email,
-                    'uuid' => $c->uuid
+                    'uuid' => $c->uuid,
                 ];
             })
             ->toArray();

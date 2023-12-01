@@ -2,21 +2,21 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Testing\TestResponse;
-use App\Modules\ExpertPanel\Models\Ruleset;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Models\Ruleset;
 use App\Modules\ExpertPanel\Models\Specification;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\TestResponse;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class GetSpecificationsTest extends TestCase
 {
     use RefreshDatabase;
 
     private ExpertPanel $expertPanel;
+
     private Collection $specifications;
 
     public function setup(): void
@@ -54,11 +54,10 @@ class GetSpecificationsTest extends TestCase
             ->assertJson(['message' => 'Only VCEPs have specifications.']);
     }
 
-
     private function makeRequest($group = null): TestResponse
     {
         $group = $group ?? $this->expertPanel->group;
+
         return $this->json('GET', '/api/groups/'.$group->uuid.'/specifications');
     }
-
 }

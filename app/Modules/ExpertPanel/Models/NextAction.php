@@ -3,13 +3,12 @@
 namespace App\Modules\ExpertPanel\Models;
 
 use App\Models\Traits\HasUuid;
-use Illuminate\Database\Eloquent\Model;
 use Database\Factories\NextActionFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Modules\ExpertPanel\Models\NextActionAssignee;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class NextAction extends Model
 {
@@ -30,7 +29,7 @@ class NextAction extends Model
         'assignee_name',
         'assigned_to',
         'assigned_to_name',
-        'type_id'
+        'type_id',
     ];
 
     protected $casts = [
@@ -41,7 +40,7 @@ class NextAction extends Model
         'date_created' => 'datetime',
         'date_completed' => 'datetime',
         'target_date' => 'datetime',
-        'type_id' => 'int'
+        'type_id' => 'int',
     ];
 
     protected $with = ['assignee'];
@@ -49,13 +48,11 @@ class NextAction extends Model
     protected $appends = [
         'assigned_to',
         'assigned_to_name',
-        'step'
+        'step',
     ];
 
     /**
      * Get the assignedTo that owns the NextAction
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function assignee(): BelongsTo
     {
@@ -64,8 +61,6 @@ class NextAction extends Model
 
     /**
      * Get the type that owns the NextAction
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function type(): BelongsTo
     {
@@ -86,12 +81,10 @@ class NextAction extends Model
 
         return $query->where('type_id', $typeId);
     }
-    
 
     /**
      * ACCESSORS
      */
-
     public function getAssignedToAttribute()
     {
         return $this->assignee_id;
@@ -101,8 +94,7 @@ class NextAction extends Model
     {
         $this->attributes['assignee_id'] = $value;
     }
-    
-     
+
     public function getAssignedToNameAttribute()
     {
         return $this->attributes['assignee_name'];
@@ -112,18 +104,16 @@ class NextAction extends Model
     {
         return $this->attributes['assignee_name'] = $value;
     }
-    
 
     public function getStepAttribute()
     {
         return $this->application_step;
     }
-    
+
     public function setStepAttribute($value)
     {
         $this->attributes['application_step'] = $value;
     }
-         
 
     // Factory
     protected static function newFactory()

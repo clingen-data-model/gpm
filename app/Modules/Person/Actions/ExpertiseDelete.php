@@ -19,5 +19,4 @@ class ExpertiseDelete
     {
         return $request->user()->hasPermissionTo('people-manage');
     }
-
 }

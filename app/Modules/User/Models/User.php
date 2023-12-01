@@ -2,25 +2,23 @@
 
 namespace App\Modules\User\Models;
 
-use App\Models\Traits\HasEmail;
-use Laravel\Sanctum\HasApiTokens;
-use App\Modules\Group\Models\Group;
-use Database\Factories\UserFactory;
-use Illuminate\Support\Facades\Auth;
-use App\Modules\Person\Models\Person;
-use Illuminate\Support\Facades\Cache;
-use Spatie\Permission\Traits\HasRoles;
 use App\Models\Contracts\HasLogEntries;
-use App\Modules\User\Models\Preference;
-use Illuminate\Notifications\Notifiable;
-use Lab404\Impersonate\Models\Impersonate;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Traits\HasEmail;
+use App\Models\Traits\HasLogEntries as HasLogEntriesTrait;
+use App\Modules\Group\Models\Group;
+use App\Modules\Person\Models\Person;
+use Database\Factories\UserFactory;
+use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
 use Illuminate\Contracts\Auth\CanResetPassword;
-use Lab404\Impersonate\Services\ImpersonateManager;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Models\Traits\HasLogEntries as HasLogEntriesTrait;
-use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Lab404\Impersonate\Models\Impersonate;
+use Lab404\Impersonate\Services\ImpersonateManager;
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements CanResetPassword, HasLogEntries
 {
@@ -73,7 +71,7 @@ class User extends Authenticatable implements CanResetPassword, HasLogEntries
     {
         return $this->belongsToMany(Preference::class, 'user_preference');
     }
-    
+
     public function routeNotificationForSlack()
     {
         return config('logging.channels.slack.url');
@@ -105,21 +103,18 @@ class User extends Authenticatable implements CanResetPassword, HasLogEntries
     {
         return $this->person && $this->person->hasGroupPermissionTo($permission, $group);
     }
-    
 
     /**
      * DOMAIN
      */
-
     public function isLinkedToPerson(): bool
     {
-        return (bool)$this->person;
+        return (bool) $this->person;
     }
 
     /**
      * IMPERSONATE
      */
-
     public function canImpersonate()
     {
         return $this->hasAnyRole('super-user', 'super-admin', 'admin');
@@ -161,7 +156,6 @@ class User extends Authenticatable implements CanResetPassword, HasLogEntries
     {
         return app(ImpersonateManager::class)->isImpersonating();
     }
-    
 
     // Factory support
     protected static function newFactory()

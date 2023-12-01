@@ -4,9 +4,7 @@ namespace Tests\Feature\End2End\Groups;
 
 use App\Models\Activity;
 use App\Modules\Group\Models\Group;
-use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -18,7 +16,7 @@ class UpdateActivityLogTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -27,7 +25,7 @@ class UpdateActivityLogTest extends TestCase
         $this->group = Group::factory()->create();
         $this->logEntry = Activity::factory()->create([
             'subject_type' => Group::class,
-            'subject_id' => $this->group->id
+            'subject_id' => $this->group->id,
         ]);
 
         $this->url = '/api/groups/'.$this->group->uuid.'/activity-logs/'.$this->logEntry->id;
@@ -58,7 +56,7 @@ class UpdateActivityLogTest extends TestCase
 
         $this->assertDatabaseHas('activity_log', [
             'id' => $this->logEntry->id,
-            'properties->log_date' => '2021-12-01T00:00:00'
+            'properties->log_date' => '2021-12-01T00:00:00',
         ]);
     }
 
@@ -76,13 +74,12 @@ class UpdateActivityLogTest extends TestCase
                 'log_date' => ['This is required.'],
             ]);
 
-        $this->makeRequest(['log_date'=>'bob'])
+        $this->makeRequest(['log_date' => 'bob'])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'log_date' => ['The log date is not a valid date.']
+                'log_date' => ['The log date is not a valid date.'],
             ]);
     }
-    
 
     private function makeRequest($data = null)
     {
@@ -90,6 +87,7 @@ class UpdateActivityLogTest extends TestCase
             'entry' => 'blah blah blah',
             'log_date' => '2021-11-01T00:00:00',
         ];
+
         return $this->json('PUT', $this->url, $data);
     }
 }

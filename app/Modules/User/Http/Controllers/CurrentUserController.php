@@ -2,11 +2,10 @@
 
 namespace App\Modules\User\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Modules\User\Models\User;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Modules\User\Http\Resources\CurrentUserResource;
+use App\Modules\User\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class CurrentUserController extends Controller
 {
@@ -41,7 +40,7 @@ class CurrentUserController extends Controller
             'person.institution',
             'person.credentials',
             'person.expertises',
-            'preferences'
+            'preferences',
         ]);
 
         return new CurrentUserResource($user);

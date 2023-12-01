@@ -2,19 +2,18 @@
 
 namespace Tests\Feature\End2End\ExpertPanels;
 
-use Tests\TestCase;
-use App\Modules\User\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class UpdateApprovalDateTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -23,14 +22,12 @@ class UpdateApprovalDateTest extends TestCase
         $this->expertPanel = ExpertPanel::factory()
                                 ->create([
                                     'expert_panel_type_id' => 2,
-                                    'step_1_approval_date'=>'2020-01-01'
+                                    'step_1_approval_date' => '2020-01-01',
                                 ]);
     }
-    
 
     /**
      * @test
-     *
      */
     public function it_validates_request_params()
     {
@@ -39,18 +36,18 @@ class UpdateApprovalDateTest extends TestCase
             ->assertStatus(422)
             ->assertJson(['errors' => [
                 'step' => ['This is required.'],
-                'date_approved' => ['This is required.']
-                ]
+                'date_approved' => ['This is required.'],
+            ],
             ]);
 
         $this->json('put', '/api/applications/'.$this->expertPanel->uuid.'/approve', [
-                'step' => '10',
-                'date_approved' => 'beans'
-            ])
+            'step' => '10',
+            'date_approved' => 'beans',
+        ])
             ->assertStatus(422)
             ->assertJsonFragment(['errors' => [
                 'step' => ['The step may not be greater than 4.'],
-                'date_approved' => ['The date approved is not a valid date.']
+                'date_approved' => ['The date approved is not a valid date.'],
             ]]);
     }
 
@@ -62,7 +59,7 @@ class UpdateApprovalDateTest extends TestCase
         Sanctum::actingAs($this->user);
         $response = $this->json('put', '/api/applications/'.$this->expertPanel->uuid.'/approve', [
             'step' => 1,
-            'date_approved' => '2021-04-22T04:00:00.000000Z'
+            'date_approved' => '2021-04-22T04:00:00.000000Z',
         ]);
         $response->assertStatus(200);
 
@@ -70,12 +67,12 @@ class UpdateApprovalDateTest extends TestCase
 
         $this->assertDatabaseHas('expert_panels', [
             'uuid' => $this->expertPanel->uuid,
-            'step_1_approval_date' => '2021-04-22 04:00:00'
+            'step_1_approval_date' => '2021-04-22 04:00:00',
         ]);
 
         $this->assertDatabaseHas('activity_log', [
             'subject_id' => $this->expertPanel->group->id,
-            'description' => 'Approval date updated to 2021-04-22T04:00:00.000000Z for step 1'
+            'description' => 'Approval date updated to 2021-04-22T04:00:00.000000Z for step 1',
         ]);
     }
 }

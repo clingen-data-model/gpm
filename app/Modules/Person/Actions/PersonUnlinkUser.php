@@ -2,9 +2,9 @@
 
 namespace App\Modules\Person\Actions;
 
+use App\Modules\Person\Events\PersonUnlinkedFromUser;
 use App\Modules\Person\Models\Person;
 use Lorisleiva\Actions\Concerns\AsAction;
-use App\Modules\Person\Events\PersonUnlinkedFromUser;
 
 class PersonUnlinkUser
 {
@@ -16,7 +16,7 @@ class PersonUnlinkUser
         if (is_null($user)) {
             return $person;
         }
-        
+
         $person->update(['user_id' => null]);
 
         event(new PersonUnlinkedFromUser($person, $user));

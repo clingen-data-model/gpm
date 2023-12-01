@@ -2,15 +2,14 @@
 
 namespace Tests\Dummies;
 
-use Generator;
 use App\DataExchange\Contracts\MessageStream;
+use Generator;
 
 class FakeMessageStream implements MessageStream
 {
     public function __construct(private array $messages)
     {
     }
-
 
     public function addTopic(string $topic): MessageStream
     {
@@ -40,7 +39,7 @@ class FakeMessageStream implements MessageStream
     public function consumeSomeMessages($number): Generator
     {
         foreach ($this->listen() as $idx => $message) {
-            if ( $idx < $number ) {
+            if ($idx < $number) {
                 yield $message;
             }
         }
@@ -50,8 +49,4 @@ class FakeMessageStream implements MessageStream
     {
         yield from $this->messages;
     }
-
-
-
-
 }

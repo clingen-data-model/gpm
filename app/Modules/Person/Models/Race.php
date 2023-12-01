@@ -3,8 +3,8 @@
 namespace App\Modules\Person\Models;
 
 use Database\Factories\RaceFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id
@@ -33,7 +33,7 @@ class Race extends Model
     protected $casts = [
         'id' => 'integer',
     ];
-    
+
     // Factory
     protected static function newFactory()
     {

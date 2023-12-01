@@ -3,16 +3,13 @@
 namespace App\Modules\Group\Events;
 
 use App\Events\PublishableEvent;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Database\Eloquent\Model;
 use App\Modules\Group\Models\GroupMember;
-use Illuminate\Broadcasting\PrivateChannel;
-use Spatie\Permission\Contracts\Permission;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+use Spatie\Permission\Contracts\Permission;
 
 class MemberPermissionRevoked extends GroupMemberEvent implements PublishableEvent
 {
@@ -43,7 +40,7 @@ class MemberPermissionRevoked extends GroupMemberEvent implements PublishableEve
         return [
             'group_member_id' => $this->groupMember->id,
             'permission' => $this->permission->only('id', 'name'),
-            'person' => $this->groupMember->person->only('id', 'name', 'email')
+            'person' => $this->groupMember->person->only('id', 'name', 'email'),
         ];
     }
 
@@ -51,8 +48,6 @@ class MemberPermissionRevoked extends GroupMemberEvent implements PublishableEve
     {
         return 'member_permission_revoked';
     }
-
-
 
     /**
      * Get the channels the event should broadcast on.

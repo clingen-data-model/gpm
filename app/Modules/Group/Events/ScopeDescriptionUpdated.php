@@ -2,15 +2,11 @@
 
 namespace App\Modules\Group\Events;
 
-use App\Events\PublishableEvent;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use App\Modules\Group\Models\Group;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class ScopeDescriptionUpdated extends GroupEvent
 {
@@ -26,12 +22,12 @@ class ScopeDescriptionUpdated extends GroupEvent
         //
     }
 
-    public function getLogEntry():string
+    public function getLogEntry(): string
     {
         return 'Scope description updated.';
     }
 
-    public function getProperties():array
+    public function getProperties(): array
     {
         return ['scope_description' => $this->description];
     }

@@ -43,12 +43,12 @@ return [
      */
     'topics' => [
         'incoming' => [
-            'cspec-general' => env('DX_INCOMING_CSPEC', 'cspec-general')
+            'cspec-general' => env('DX_INCOMING_CSPEC', 'cspec-general'),
         ],
         'outgoing' => [
             'gpm-general-events' => env('DX_OUTGOING_GPM_GENERAL_EVENTS', 'gpm-general-events'),
             'gpm-person-events' => env('DX_OUTGOING_GPM_PERSON_EVENTS', 'gpm-person-events'),
-        ]
+        ],
     ],
 
     /**
@@ -56,7 +56,7 @@ return [
      */
     'schema_versions' => [
         'gpm-general-events' => '1.1.0',
-        'gpm-person-events' => '1.1.0'
-    ]
+        'gpm-person-events' => '1.1.0',
+    ],
 
 ];

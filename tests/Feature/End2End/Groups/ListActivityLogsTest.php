@@ -4,9 +4,7 @@ namespace Tests\Feature\End2End\Groups;
 
 use App\Models\Activity;
 use App\Modules\Group\Models\Group;
-use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -18,7 +16,7 @@ class ListActivityLogsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();

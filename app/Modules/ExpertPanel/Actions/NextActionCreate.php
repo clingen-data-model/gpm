@@ -2,18 +2,18 @@
 
 namespace App\Modules\ExpertPanel\Actions;
 
+use App\Modules\ExpertPanel\Events\NextActionAdded;
+use App\Modules\ExpertPanel\Http\Requests\CreateNextActionRequest;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Models\NextAction;
 use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\Concerns\AsAction;
-use Illuminate\Foundation\Bus\Dispatchable;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Events\NextActionAdded;
-use App\Modules\ExpertPanel\Http\Requests\CreateNextActionRequest;
 use Ramsey\Uuid\Uuid;
 
 class NextActionCreate
 {
     use AsAction;
+
     /**
      * Execute the job.
      *
@@ -40,14 +40,14 @@ class NextActionCreate
             'date_completed' => $dateCompleted,
             'assignee_id' => $assignedTo ?? 1,
             'assignee_name' => $assignedToName,
-            'type_id' => $typeId
+            'type_id' => $typeId,
         ]);
 
         $expertPanel->nextActions()->save($nextAction);
         $expertPanel->touch();
-        
+
         Event::dispatch(new NextActionAdded($expertPanel, $nextAction));
-        
+
         return $nextAction;
     }
 

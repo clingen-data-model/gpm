@@ -37,7 +37,6 @@ class AlterSpecificationAndRulesetStatusColumn extends Migration
             $table->softDeletes();
         });
 
-
         Schema::enableForeignKeyConstraints();
     }
 

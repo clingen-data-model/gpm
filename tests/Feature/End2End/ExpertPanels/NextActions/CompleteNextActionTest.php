@@ -2,14 +2,14 @@
 
 namespace Tests\Feature\End2End\ExpertPanels\NextActions;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Support\Carbon;
-use App\Modules\ExpertPanel\Models\NextAction;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Database\Seeders\NextActionAssigneesTableSeeder;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Models\NextAction;
+use Database\Seeders\NextActionAssigneesTableSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 /**
  * @group next-actions
@@ -20,7 +20,7 @@ class CompleteNextActionTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -51,10 +51,10 @@ class CompleteNextActionTest extends TestCase
             ->assertStatus(200)
             ->assertJsonFragment([
                 'uuid' => $this->nextAction->uuid,
-                'date_completed' => Carbon::parse('2021-01-01')->toJson()
+                'date_completed' => Carbon::parse('2021-01-01')->toJson(),
             ]);
     }
-    
+
     /**
      * @test
      */
@@ -63,25 +63,24 @@ class CompleteNextActionTest extends TestCase
         $this->makeRequest([])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'date_completed' => ['This is required.']
+                'date_completed' => ['This is required.'],
             ]);
 
         $this->makeRequest(['date_completed' => 'early dog'])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'date_completed' => ['The date completed is not a valid date.']
+                'date_completed' => ['The date completed is not a valid date.'],
             ]);
     }
 
     private function makeRequest($data = null)
     {
         $data = $data ?? ['date_completed' => '2021-01-01'];
+
         return $this->json(
-            'POST', 
-            'api/applications/'.$this->expertPanel->uuid.'/next-actions/'.$this->nextAction->uuid.'/complete', 
+            'POST',
+            'api/applications/'.$this->expertPanel->uuid.'/next-actions/'.$this->nextAction->uuid.'/complete',
             $data
         );
     }
-    
-    
 }

@@ -2,15 +2,15 @@
 
 namespace App\Modules\Group\Actions;
 
-use Illuminate\Http\Request;
-use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Event;
-use Spatie\Permission\Contracts\Role;
-use App\Modules\Group\Models\GroupMember;
-use Lorisleiva\Actions\Concerns\AsObject;
-use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Events\MemberRoleRemoved;
 use App\Modules\Group\Http\Resources\MemberResource;
+use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\GroupMember;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
+use Lorisleiva\Actions\Concerns\AsController;
+use Lorisleiva\Actions\Concerns\AsObject;
+use Spatie\Permission\Contracts\Role;
 
 class MemberRemoveRole
 {
@@ -22,6 +22,7 @@ class MemberRemoveRole
         $groupMember->removeRole($role);
 
         Event::dispatch(new MemberRoleRemoved($groupMember, $role));
+
         return $groupMember;
     }
 
@@ -30,10 +31,9 @@ class MemberRemoveRole
         $group = Group::findByUuidOrFail($groupUuid);
         $groupMember = $group->members()->findOrFail($memberId);
         $role = config('permission.models.role')::findOrFail($roleId);
-        
+
         $groupMember = $this->handle($groupMember, $role);
         $groupMember->load('cois', 'permissions', 'roles');
-
 
         return new MemberResource($groupMember);
     }

@@ -2,26 +2,21 @@
 
 namespace Tests\Feature\Integration\Modules\User\Actions;
 
-use Tests\TestCase;
-use Illuminate\Bus\Dispatcher;
-use App\Modules\User\Models\User;
-use Illuminate\Support\Facades\Bus;
-use App\Modules\User\Jobs\UpdateUser;
 use App\Modules\User\Actions\UserUpdate;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class UpdateUserTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
 
         $this->user = User::factory()->create(['name' => 'Lana Kane', 'email' => 'lana@archer.com']);
     }
-    
 
     /**
      * @test
@@ -46,7 +41,7 @@ class UpdateUserTest extends TestCase
                 'log_name' => 'users',
                 'subject_type' => User::class,
                 'subject_id' => $user->id,
-                'description' => 'User updated'
+                'description' => 'User updated',
             ]
         );
     }

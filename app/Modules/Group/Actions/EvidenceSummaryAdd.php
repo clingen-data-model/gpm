@@ -2,15 +2,15 @@
 
 namespace App\Modules\Group\Actions;
 
-use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Auth;
-use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsObject;
-use Lorisleiva\Actions\Concerns\AsController;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Auth\Access\AuthorizationException;
 use App\Modules\ExpertPanel\Models\EvidenceSummary;
 use App\Modules\Group\Events\EvidenceSummaryAdded;
+use App\Modules\Group\Models\Group;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsController;
+use Lorisleiva\Actions\Concerns\AsObject;
 
 class EvidenceSummaryAdd
 {
@@ -19,7 +19,7 @@ class EvidenceSummaryAdd
 
     public function handle(Group $group, array $data): EvidenceSummary
     {
-        if (!$group->isVcep) {
+        if (! $group->isVcep) {
             throw ValidationException::withMessages(['group' => ['You can not add an evidence summary to this group. Only VCEPs have evidence summaries.']]);
         }
 
@@ -32,13 +32,14 @@ class EvidenceSummaryAdd
     public function asController(ActionRequest $request, $groupUuid)
     {
         $group = Group::findByUuidOrFail($groupUuid);
-        
+
         if (Auth::user()->cannot('addEvidenceSummary', $group)) {
             throw new AuthorizationException('You do not have permission to add an example evidence summary for this VCEP.');
         }
 
         $evidenceSummary = $this->handle($group, $request->all());
         $evidenceSummary->load('gene', 'gene.gene');
+
         return ['data' => $evidenceSummary];
     }
 
@@ -48,7 +49,7 @@ class EvidenceSummaryAdd
             'gene_id' => 'required|exists:genes,id',
             'variant' => 'required|max:255',
             'summary' => 'required|max:66535',
-            'vci_url' => 'nullable|url'
+            'vci_url' => 'nullable|url',
         ];
     }
 

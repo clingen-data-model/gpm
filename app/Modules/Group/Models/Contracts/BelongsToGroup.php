@@ -2,8 +2,6 @@
 
 namespace App\Modules\Group\Models\Contracts;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
 interface BelongsToGroup
 {
     /**

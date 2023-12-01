@@ -2,12 +2,11 @@
 
 namespace Tests\Feature\End2End\Person\Credentials;
 
-use Tests\TestCase;
 use App\Models\Credential;
-use Illuminate\Testing\TestResponse;
 use App\Modules\Person\Models\Person;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\TestResponse;
+use Tests\TestCase;
 
 /**
  * @group credentials
@@ -16,7 +15,7 @@ class MergeCredentialsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->obsolete = Credential::factory()->has(Person::factory())->create();
@@ -52,10 +51,10 @@ class MergeCredentialsTest extends TestCase
             ->assertStatus(200);
 
         $this->assertDatabaseMissing('credentials', [
-            'id' => $this->obsolete->id
+            'id' => $this->obsolete->id,
         ]);
         $this->assertDatabaseMissing('credential_person', [
-            'credential_id' => $this->obsolete->id
+            'credential_id' => $this->obsolete->id,
         ]);
         $this->assertEquals($this->authority->people()->count(), 2);
     }
@@ -70,10 +69,9 @@ class MergeCredentialsTest extends TestCase
             ->assertStatus(422)
             ->assertJsonMissingValidationErrors([
                 'obsolete_id' => 'This is required.',
-                'authority_id' => 'This is required.'
+                'authority_id' => 'This is required.',
             ]);
     }
-
 
     /**
      * @test
@@ -85,7 +83,7 @@ class MergeCredentialsTest extends TestCase
             ->assertStatus(422)
             ->assertJsonMissingValidationErrors([
                 'obsolete_id' => 'This selection is invalid.',
-                'authority_id' => 'This selection is invalid.'
+                'authority_id' => 'This selection is invalid.',
             ]);
     }
 
@@ -99,21 +97,17 @@ class MergeCredentialsTest extends TestCase
             ->assertStatus(422)
             ->assertJsonValidationErrors([
                 'obsolete_id' => 'The obsolete id and authority id must be different.',
-                'authority_id' => 'The authority id and obsolete id must be different.'
+                'authority_id' => 'The authority id and obsolete id must be different.',
             ]);
-
     }
-
-
 
     private function makeRequest($data = null): TestResponse
     {
         $data = $data ?? [
             'obsolete_id' => $this->obsolete->id,
-            'authority_id' => $this->authority->id
+            'authority_id' => $this->authority->id,
         ];
 
         return $this->json('PUT', '/api/credentials/merge', $data);
     }
-
 }

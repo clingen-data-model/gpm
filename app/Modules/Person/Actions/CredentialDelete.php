@@ -19,5 +19,4 @@ class CredentialDelete
     {
         return $request->user()->hasPermissionTo('people-manage');
     }
-
 }

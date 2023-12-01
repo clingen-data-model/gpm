@@ -2,20 +2,15 @@
 
 namespace Tests\Feature\End2End\ExpertPanels\Documents;
 
-use Tests\TestCase;
-use Ramsey\Uuid\Uuid;
 use App\Models\Document;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Storage;
-use App\Modules\Group\Actions\MemberAdd;
-use Tests\CreatesDocumentUploadRequestData;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Actions\MemberAdd;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Ramsey\Uuid\Uuid;
+use Tests\CreatesDocumentUploadRequestData;
+use Tests\TestCase;
 
 /**
  * @group documents
@@ -25,7 +20,7 @@ class DownloadTest extends TestCase
     use RefreshDatabase;
     use CreatesDocumentUploadRequestData;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -65,7 +60,7 @@ class DownloadTest extends TestCase
         $response = $this->json('GET', '/documents/'.$this->doc->uuid)
                         ->assertStatus(404);
     }
-    
+
     /**
      * @test
      */
@@ -74,7 +69,7 @@ class DownloadTest extends TestCase
         $data = $this->makeDocumentUploadRequestData(filename: 'test_download.docx');
 
         $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/documents', $data);
-        
+
         $response = $this->json('GET', '/documents/'.$data['uuid']);
         $response->assertStatus(200);
 

@@ -2,12 +2,10 @@
 
 namespace App\Modules\Person\Models;
 
-use App\Modules\Person\Models\Person;
-use App\Modules\Person\Models\Country;
-use Illuminate\Database\Eloquent\Model;
 use Database\Factories\InstitutionFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -37,7 +35,7 @@ class Institution extends Model
         'country_id',
         'website_id',
         'approved',
-        'reportable'
+        'reportable',
     ];
 
     /**
@@ -49,13 +47,12 @@ class Institution extends Model
         'id' => 'integer',
         'country_id' => 'integer',
         'approved' => 'boolean',
-        'reportable' => 'boolean'
+        'reportable' => 'boolean',
     ];
 
     /**
      * RELATIONS
      */
-
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
@@ -65,8 +62,7 @@ class Institution extends Model
     {
         return $this->hasMany(Person::class);
     }
-    
-    
+
     /**
      * SCOPES
      */
@@ -74,12 +70,11 @@ class Institution extends Model
     {
         return $query->where('approved', 1);
     }
-    
+
     public function scopeNeedsApproval($query)
     {
         return $query->where('approved', '!=', 1);
     }
-    
 
     // Factory
     protected static function newFactory()

@@ -2,14 +2,14 @@
 
 namespace App\Modules\Person\Actions;
 
-use Illuminate\Support\Carbon;
 use App\Modules\Person\Models\Invite;
+use Illuminate\Support\Carbon;
 use Lorisleiva\Actions\Concerns\AsController;
 
 class InviteRedeemForExistingUser
 {
     use AsController;
-    
+
     public function handle(Invite $invite)
     {
         $invite->markRedeemed(Carbon::now())->save();

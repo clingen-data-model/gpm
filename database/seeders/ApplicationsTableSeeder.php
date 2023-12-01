@@ -16,7 +16,7 @@ class ApplicationsTableSeeder extends Seeder
      */
     public function run()
     {
-        foreach(ExpertPanel::factory(2)->make() as $app) {
+        foreach (ExpertPanel::factory(2)->make() as $app) {
             $job = new InitiateApplication($app->uuid, $app->working_name, $app->cdwg_id, $app->expert_panel_type_id, Carbon::now());
             \Bus::dispatch($job);
         }

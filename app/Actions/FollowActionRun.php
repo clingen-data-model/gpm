@@ -2,9 +2,9 @@
 
 namespace App\Actions;
 
-use Carbon\Carbon;
 use App\Events\Event;
 use App\Models\FollowAction;
+use Carbon\Carbon;
 use Lorisleiva\Actions\Concerns\AsListener;
 
 class FollowActionRun

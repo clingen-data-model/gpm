@@ -3,13 +3,9 @@
 namespace App\Actions;
 
 use App\Models\Activity;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Lorisleiva\Actions\Concerns\AsAction;
-use Illuminate\Foundation\Bus\Dispatchable;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Http\Requests\UpdateApplicationLogEntryRequest;
 
 class LogEntryUpdate
 {

@@ -2,11 +2,11 @@
 
 namespace App\Modules\ExpertPanel\Actions;
 
-use Illuminate\Support\Facades\Event;
-use Lorisleiva\Actions\Concerns\AsAction;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Events\ExpertPanelAttributesUpdated;
 use App\Modules\ExpertPanel\Http\Requests\UpdateExpertPanelAttributesRequest;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Illuminate\Support\Facades\Event;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class ExpertPanelUpdateAttributes
 {
@@ -41,13 +41,14 @@ class ExpertPanelUpdateAttributes
             }
             $expertPanel->group->update($groupAttributes);
         }
-        
+
         return $expertPanel;
     }
 
     public function asController(string $uuid, UpdateExpertPanelAttributesRequest $request)
     {
         $data = $request->only('long_base_name', 'short_base_name', 'affiliation_id', 'cdwg_id');
+
         return $this->handle($uuid, $data);
     }
 }

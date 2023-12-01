@@ -2,16 +2,12 @@
 
 namespace App\Modules\ExpertPanel\Events;
 
-use App\Modules\Group\Models\Group;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Models\Specification;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class SpecificationStatusUpdated extends ExpertPanelEvent
 {
@@ -22,7 +18,7 @@ class SpecificationStatusUpdated extends ExpertPanelEvent
      *
      * @return void
      */
-    public function __construct(public ExpertPanel $application, public Specification $specification )
+    public function __construct(public ExpertPanel $application, public Specification $specification)
     {
     }
 
@@ -35,7 +31,7 @@ class SpecificationStatusUpdated extends ExpertPanelEvent
     {
         $props = [
             'specification_id' => $this->specification->cspec_id,
-            'status' => $this->specification->status
+            'status' => $this->specification->status,
         ];
         $step = $this->getStepFromStatus($this->specification->status);
         if ($step) {
@@ -57,8 +53,6 @@ class SpecificationStatusUpdated extends ExpertPanelEvent
         return null;
     }
 
-
-
     /**
      * Get the channels the event should broadcast on.
      *
@@ -68,5 +62,4 @@ class SpecificationStatusUpdated extends ExpertPanelEvent
     {
         return new PrivateChannel('channel-name');
     }
-
 }

@@ -2,12 +2,12 @@
 
 namespace App\Modules\Group\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use App\Modules\Group\Models\Group;
 use App\Http\Controllers\Controller;
 use App\ModelSearchService;
 use App\Modules\Group\Http\Resources\GroupResource;
 use App\Modules\Group\Http\Resources\MemberResource;
+use App\Modules\Group\Models\Group;
+use Illuminate\Http\Request;
 
 class GroupController extends Controller
 {
@@ -21,7 +21,7 @@ class GroupController extends Controller
                 'name',
                 'group_type_id',
                 'group_status_id',
-                'coi_code'
+                'coi_code',
             ],
             defaultWith: [
                 'type',
@@ -39,7 +39,7 @@ class GroupController extends Controller
                         'step_3_approval_date',
                         'step_4_approval_date',
                         'date_completed',
-                        'current_step'
+                        'current_step',
                     ]);
                 },
                 'coordinators' => function ($query) {
@@ -56,13 +56,16 @@ class GroupController extends Controller
                 if ($field == 'type') {
                     $query->innerJoin('group_types', 'groups.group_type_id', '=', 'group_types.id');
                     $query->orderBy('group_types.name', $dir);
+
                     return $query;
                 }
                 if ($field == 'status') {
                     $query->innerJoin('group_statuses', 'groups.group_status_id', '=', 'group_statuses.id');
                     $query->orderBy('group_statuses.name', $dir);
+
                     return $query;
                 }
+
                 return $query->orderBy($field, $dir);
             }
         );
@@ -83,7 +86,7 @@ class GroupController extends Controller
             'members.cois',
             'parent',
             'expertPanel',
-            'expertPanel.curationReviewProtocol'
+            'expertPanel.curationReviewProtocol',
         ]);
 
         return new GroupResource($group);
@@ -102,6 +105,7 @@ class GroupController extends Controller
             'person.expertises',
             'person.country',
         );
+
         return MemberResource::collection($members);
     }
 }

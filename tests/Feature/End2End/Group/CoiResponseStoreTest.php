@@ -2,19 +2,19 @@
 
 namespace Tests\Feature\End2End\Group;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Testing\TestResponse;
 use App\Modules\Group\Models\GroupMember;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Testing\TestResponse;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class CoiResponseStoreTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -56,7 +56,7 @@ class CoiResponseStoreTest extends TestCase
                 'contributions_to_gd_in_group' => 'This is required.',
                 'coi' => 'This is required.',
                 'coi_attestation' => 'This is required',
-                'data_policy_attestation' => 'This is required'
+                'data_policy_attestation' => 'This is required',
             ])
             ->assertJsonMissingValidationErrors([
                 'contributions_to_genes' => 'This is required.',
@@ -92,7 +92,7 @@ class CoiResponseStoreTest extends TestCase
         $this->makeRequest(data: $data)
             ->assertJsonValidationErrors([
                 'coi_attestation' => 'The coi attestation must be accepted.',
-                'data_policy_attestation' => 'The data policy attestation must be accepted.'
+                'data_policy_attestation' => 'The data policy attestation must be accepted.',
             ]);
     }
 
@@ -130,7 +130,6 @@ class CoiResponseStoreTest extends TestCase
         return $this->json('POST', 'api/coi/'.$code, $data);
     }
 
-
     private function makeDefaultData()
     {
         return [
@@ -141,9 +140,7 @@ class CoiResponseStoreTest extends TestCase
             'coi' => 2,
             'coi_details' => 'test test test coi',
             'coi_attestation' => 1,
-            'data_policy_attestation' => 1
+            'data_policy_attestation' => 1,
         ];
     }
-
-
 }

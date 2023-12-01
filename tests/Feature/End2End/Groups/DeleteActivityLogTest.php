@@ -4,9 +4,7 @@ namespace Tests\Feature\End2End\Groups;
 
 use App\Models\Activity;
 use App\Modules\Group\Models\Group;
-use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -18,7 +16,7 @@ class DeleteActivityLogTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -27,7 +25,7 @@ class DeleteActivityLogTest extends TestCase
         $this->group = Group::factory()->create();
         $this->logEntry = Activity::factory()->create([
             'subject_type' => Group::class,
-            'subject_id' => $this->group->id
+            'subject_id' => $this->group->id,
         ]);
 
         $this->url = '/api/groups/'.$this->group->uuid.'/activity-logs/'.$this->logEntry->id;
@@ -54,7 +52,7 @@ class DeleteActivityLogTest extends TestCase
             ->assertStatus(200);
 
         $this->assertDatabaseMissing('activity_log', [
-            'id' => $this->logEntry->id
+            'id' => $this->logEntry->id,
         ]);
     }
 }

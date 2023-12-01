@@ -2,25 +2,24 @@
 
 namespace Tests\Feature\End2End;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Person\Models\Country;
 use App\Modules\Person\Models\Institution;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class CreateInstitutionTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->country = Country::factory(['name' => 'Hildaland'])->create();
         $this->user = $this->setupUser();
         Sanctum::actingAs($this->user);
     }
-    
+
     /**
      * @test
      */
@@ -35,7 +34,7 @@ class CreateInstitutionTest extends TestCase
                 'url' => 'https://trollu.edu',
                 'address' => null,
                 'country_id' => $this->country->id,
-                'reportable' => false
+                'reportable' => false,
             ]);
     }
 
@@ -47,10 +46,10 @@ class CreateInstitutionTest extends TestCase
         $this->makeRequest([])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'name' => ['This is required.']
+                'name' => ['This is required.'],
             ]);
     }
-    
+
     /**
      * @test
      */
@@ -58,17 +57,17 @@ class CreateInstitutionTest extends TestCase
     {
         Institution::factory([
             'name' => 'University of Trollberg',
-            'url' => 'https://trollu.edu'
+            'url' => 'https://trollu.edu',
         ])->create();
 
         $this->makeRequest()
             ->assertStatus(422)
             ->assertJsonFragment([
                 'name' => ['The name has already been taken.'],
-                'url' => ['The url has already been taken.']
+                'url' => ['The url has already been taken.'],
             ]);
     }
-    
+
     /**
      * @test
      */
@@ -80,7 +79,6 @@ class CreateInstitutionTest extends TestCase
                 'country_id' => ['The selection is invalid.'],
             ]);
     }
-    
 
     private function makeRequest($data = null)
     {
@@ -90,7 +88,7 @@ class CreateInstitutionTest extends TestCase
             'url' => 'https://trollu.edu',
             'address' => null,
             'country_id' => $this->country->id,
-            'reportable' => false
+            'reportable' => false,
         ];
 
         return $this->json('POST', '/api/institutions', $data);

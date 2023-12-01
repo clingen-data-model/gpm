@@ -2,18 +2,10 @@
 
 namespace App\Modules\ExpertPanel\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use App\Modules\ExpertPanel\Actions\StepApprovalUpdate;
-use Illuminate\Contracts\Bus\Dispatcher;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Notifications\ValueObjects\MailAttachment;
-use App\Modules\ExpertPanel\Jobs\UpdateApprovalDate;
-use App\Modules\ExpertPanel\Service\StepManagerFactory;
 use App\Modules\ExpertPanel\Http\Requests\UpdateApprovalDateRequest;
-use App\Modules\ExpertPanel\Http\Requests\ApplicationApprovalRequest;
-use App\Modules\ExpertPanel\Exceptions\UnmetStepRequirementsException;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 
 class ApplicationStepController extends Controller
 {
@@ -29,7 +21,7 @@ class ApplicationStepController extends Controller
             step: $request->step,
             dateApproved: $request->date_approved
         );
-        
+
         return ExpertPanel::findByUuidOrFail($expertPanelUuid);
     }
 }

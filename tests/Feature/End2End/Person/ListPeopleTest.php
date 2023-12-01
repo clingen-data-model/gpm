@@ -2,12 +2,10 @@
 
 namespace Tests\Feature\End2End\Person;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
 use App\Modules\Person\Models\Person;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 /**
  * @group people
@@ -18,7 +16,7 @@ class ListPeopleTest extends TestCase
 
     const URL = '/api/people';
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -35,7 +33,7 @@ class ListPeopleTest extends TestCase
         $this->json('GET', static::URL)
             ->assertStatus(401);
     }
-    
+
     /**
      * @test
      */

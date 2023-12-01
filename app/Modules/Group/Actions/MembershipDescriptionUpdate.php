@@ -1,14 +1,14 @@
 <?php
+
 namespace App\Modules\Group\Actions;
 
+use App\Modules\Group\Events\MembershipDescriptionUpdated;
+use App\Modules\Group\Http\Resources\GroupResource;
 use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Validation\ValidationException;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Auth\Access\AuthorizationException;
-use App\Modules\Group\Http\Resources\GroupResource;
-use App\Modules\Group\Events\MembershipDescriptionUpdated;
 
 class MembershipDescriptionUpdate
 {
@@ -16,7 +16,7 @@ class MembershipDescriptionUpdate
 
     public function handle(Group $group, ?string $description): Group
     {
-        if (!$group->isVcep) {
+        if (! $group->isVcep) {
             throw ValidationException::withMessages(['membership_description' => ['A membership description can only be set for VCEPs.']]);
         }
 
@@ -25,14 +25,14 @@ class MembershipDescriptionUpdate
         }
 
         $group->expertPanel->update([
-            'membership_description' => $description
+            'membership_description' => $description,
         ]);
 
         event(new MembershipDescriptionUpdated($group, $description));
 
         return $group;
     }
-    
+
     public function asController(ActionRequest $request, $uuid)
     {
         $group = Group::findByUuidOrFail($uuid);
@@ -48,7 +48,7 @@ class MembershipDescriptionUpdate
     public function rules(): array
     {
         return [
-            'membership_description' => 'required|max:66535'
+            'membership_description' => 'required|max:66535',
         ];
     }
 

@@ -2,11 +2,10 @@
 
 namespace App\Modules\Person\Http\Controllers\Api;
 
-use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Bus\Dispatcher;
 use App\Http\Controllers\Controller;
 use App\Modules\Person\Models\Person;
+use Illuminate\Bus\Dispatcher;
+use Illuminate\Http\Request;
 
 class PersonEmailController extends Controller
 {

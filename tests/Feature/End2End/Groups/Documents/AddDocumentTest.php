@@ -2,20 +2,19 @@
 
 namespace Tests\Feature\End2End\Groups\Documents;
 
-use Tests\TestCase;
-use Ramsey\Uuid\Uuid;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Http\UploadedFile;
 use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Laravel\Sanctum\Sanctum;
+use Ramsey\Uuid\Uuid;
+use Tests\TestCase;
 
 class AddDocumentTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -68,17 +67,17 @@ class AddDocumentTest extends TestCase
                     'long_name' => 'scope and membership application',
                     'is_versioned' => true,
                     'application_document' => true,
-                ]
+                ],
             ]);
 
         $this->assertDatabaseHas('documents', [
             'owner_id' => $this->group->id,
             'owner_type' => Group::class,
             'filename' => 'Test Scope Document.docx',
-            'notes' => null
+            'notes' => null,
         ]);
     }
-    
+
     private function makeRequest($data = null)
     {
         Storage::fake();
@@ -89,7 +88,7 @@ class AddDocumentTest extends TestCase
             'uuid' => Uuid::uuid4()->toString(),
             'file' => $file,
             'document_type_id' => 1,
-            'notes' => null
+            'notes' => null,
         ];
 
         return $this->json('POST', '/api/groups/'.$this->group->uuid.'/documents', $data);

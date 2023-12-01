@@ -2,24 +2,22 @@
 
 namespace Tests\Feature\End2End\Person;
 
-use Carbon\Carbon;
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Testing\TestResponse;
 use App\Modules\Person\Models\Institution;
-use Illuminate\Foundation\Testing\WithFaker;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\TestResponse;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class InstitutionDeleteTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->institution = Institution::factory()->create();
     }
-
 
     /**
      * @test
@@ -53,16 +51,12 @@ class InstitutionDeleteTest extends TestCase
 
         $this->assertDatabaseHas('institutions', [
             'id' => $this->institution->id,
-            'deleted_at' => Carbon::now()
+            'deleted_at' => Carbon::now(),
         ]);
     }
-
 
     private function makeRequest(): TestResponse
     {
         return $this->json('delete', '/api/institutions/'.$this->institution->id);
     }
-
-
-
 }

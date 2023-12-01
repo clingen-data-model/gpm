@@ -2,25 +2,23 @@
 
 namespace Tests\Feature\Integration\Modules\ExpertPanel\Actions;
 
-use Tests\TestCase;
-use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Actions\ExpertPanelUpdateAttributes;
 use App\Modules\ExpertPanel\Events\ExpertPanelAttributesUpdated;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Models\Group;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
+use Tests\TestCase;
 
 class ExpertPanelUpdateAttributesTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
     }
-    
 
     /**
      * @test
@@ -28,10 +26,10 @@ class ExpertPanelUpdateAttributesTest extends TestCase
     public function raises_ExpertPanelAttributesUpdated_event()
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create();
-    
+
         Event::fake();
         ExpertPanelUpdateAttributes::run($expertPanel->uuid, ['short_base_name' => 'test']);
-    
+
         Event::assertDispatched(ExpertPanelAttributesUpdated::class);
     }
 
@@ -40,8 +38,8 @@ class ExpertPanelUpdateAttributesTest extends TestCase
      */
     public function logs_ExpertPanelAttributesUpdated()
     {
-        $expertPanel = ExpertPanel::factory()->gcep()->create(['long_base_name'=>'aabb']);
-    
+        $expertPanel = ExpertPanel::factory()->gcep()->create(['long_base_name' => 'aabb']);
+
         ExpertPanelUpdateAttributes::run($expertPanel->uuid, [
             'short_base_name' => 'test',
             'long_base_name' => 'aabb',
@@ -54,16 +52,16 @@ class ExpertPanelUpdateAttributesTest extends TestCase
      */
     public function updates_group_parent_id_if_cdwg_id_is_updated()
     {
-        $expertPanel = ExpertPanel::factory()->gcep()->create(['long_base_name'=>'aabb']);
+        $expertPanel = ExpertPanel::factory()->gcep()->create(['long_base_name' => 'aabb']);
         $cdwg = Group::factory()->cdwg()->create();
-    
+
         ExpertPanelUpdateAttributes::run($expertPanel->uuid, [
-            'cdwg_id' => $cdwg->id
+            'cdwg_id' => $cdwg->id,
         ]);
 
         $this->assertDatabaseHas('groups', [
             'id' => $expertPanel->group->id,
-            'parent_id' => $cdwg->id
+            'parent_id' => $cdwg->id,
         ]);
     }
 }

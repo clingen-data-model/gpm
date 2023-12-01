@@ -2,18 +2,17 @@
 
 namespace Tests\Feature\End2End\Person;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Person\Models\Country;
 use App\Modules\Person\Models\Institution;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class InstitutionUpdateTest extends TestCase
 {
     use RefreshDatabase;
-    
-    public function setup():void
+
+    public function setup(): void
     {
         parent::setup();
         $this->country = Country::factory()->create();
@@ -45,17 +44,17 @@ class InstitutionUpdateTest extends TestCase
                 'name' => 'Beans University',
                 'abbreviation' => 'BU',
                 'country_id' => $this->country->id,
-                'url' => 'https://www.beansu.edu'
+                'url' => 'https://www.beansu.edu',
             ]);
 
         $this->assertDatabaseHas('institutions', [
             'name' => 'Beans University',
             'abbreviation' => 'BU',
             'country_id' => $this->country->id,
-            'url' => 'https://www.beansu.edu'
+            'url' => 'https://www.beansu.edu',
         ]);
     }
-    
+
     /**
      * @test
      */
@@ -64,13 +63,12 @@ class InstitutionUpdateTest extends TestCase
         $this->makeRequest(['country_id' => 777])
             ->assertStatus(422)
             ->assertJson([
-                'errors'=>[
+                'errors' => [
                     'name' => ['This is required.'],
-                    'country_id' => ['The selection is invalid.']
-                ]
+                    'country_id' => ['The selection is invalid.'],
+                ],
             ]);
     }
-    
 
     private function makeRequest($data = null)
     {
@@ -78,7 +76,7 @@ class InstitutionUpdateTest extends TestCase
             'name' => 'Beans University',
             'abbreviation' => 'BU',
             'country_id' => $this->country->id,
-            'url' => 'https://www.beansu.edu'
+            'url' => 'https://www.beansu.edu',
         ];
 
         return $this->json('PUT', '/api/institutions/'.$this->institution->id, $data);

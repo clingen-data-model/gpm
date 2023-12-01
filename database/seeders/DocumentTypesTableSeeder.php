@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\Seeder;
 use App\Models\DocumentType;
 
 class DocumentTypesTableSeeder extends Seeder

@@ -2,24 +2,21 @@
 
 namespace Tests\Feature\End2End\Groups\EvidenceSummaries;
 
-use Carbon\Carbon;
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
-use App\Modules\Group\Models\Group;
-use App\Modules\ExpertPanel\Models\Gene;
-use Tests\Traits\SeedsHgncGenesAndDiseases;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Models\EvidenceSummary;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Models\Group;
+use Carbon\Carbon;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
+use Tests\Traits\SeedsHgncGenesAndDiseases;
 
 class DeleteSummaryTest extends TestCase
 {
     use RefreshDatabase;
     use SeedsHgncGenesAndDiseases;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -28,7 +25,7 @@ class DeleteSummaryTest extends TestCase
         $this->user = $this->setupUser(permissions: ['ep-applications-manage']);
         $this->vcep = ExpertPanel::factory()->vcep()->create();
         $this->evidenceSummary = EvidenceSummary::factory()->create([
-            'expert_panel_id' => $this->vcep->id
+            'expert_panel_id' => $this->vcep->id,
         ]);
         Sanctum::actingAs($this->user);
 
@@ -46,7 +43,7 @@ class DeleteSummaryTest extends TestCase
 
         $this->assertDatabaseHas('evidence_summaries', [
             'id' => $this->evidenceSummary->id,
-            'deleted_at' => null
+            'deleted_at' => null,
         ]);
     }
 
@@ -61,7 +58,7 @@ class DeleteSummaryTest extends TestCase
 
         $this->assertDatabaseHas('evidence_summaries', [
             'id' => $this->evidenceSummary->id,
-            'deleted_at' => '2021-01-01 00:00:00'
+            'deleted_at' => '2021-01-01 00:00:00',
         ]);
     }
 
@@ -79,7 +76,6 @@ class DeleteSummaryTest extends TestCase
             'properties->evidence_summary_id' => $this->evidenceSummary->id,
         ]);
     }
-    
 
     private function makeRequest($data = null)
     {

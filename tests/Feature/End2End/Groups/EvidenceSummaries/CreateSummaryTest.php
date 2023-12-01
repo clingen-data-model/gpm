@@ -2,22 +2,20 @@
 
 namespace Tests\Feature\End2End\Groups\EvidenceSummaries;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
-use App\Modules\Group\Models\Group;
-use App\Modules\ExpertPanel\Models\Gene;
-use Tests\Traits\SeedsHgncGenesAndDiseases;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Models\Gene;
+use App\Modules\Group\Models\Group;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
+use Tests\Traits\SeedsHgncGenesAndDiseases;
 
 class CreateSummaryTest extends TestCase
 {
     use RefreshDatabase;
     use SeedsHgncGenesAndDiseases;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -68,15 +66,14 @@ class CreateSummaryTest extends TestCase
         $this->makeRequest([
             'gene_id' => 1823198319,
             'vci_url' => 'blah blah blah',
-            'variant' => 'thisi s a bunch of charactser that will ultimately be over 255 characters.thisi s a bunch of charactser that will ultimately be over 255 characters.thisi s a bunch of charactser that will ultimately be over 255 characters.thisi s a bunch of charactser that'
+            'variant' => 'thisi s a bunch of charactser that will ultimately be over 255 characters.thisi s a bunch of charactser that will ultimately be over 255 characters.thisi s a bunch of charactser that will ultimately be over 255 characters.thisi s a bunch of charactser that',
         ])->assertStatus(422)
             ->assertJsonFragment([
                 'gene_id' => ['The gene was not found in your scope.'],
                 'vci_url' => ['The vci url format is invalid.'],
-                'variant' => ['The variant may not be greater than 255 characters.']
+                'variant' => ['The variant may not be greater than 255 characters.'],
             ]);
     }
-    
 
     /**
      * @test
@@ -87,7 +84,7 @@ class CreateSummaryTest extends TestCase
         $this->makeRequest()
             ->assertStatus(422)
             ->assertJsonFragment([
-                'group' => ['You can not add an evidence summary to this group. Only VCEPs have evidence summaries.']
+                'group' => ['You can not add an evidence summary to this group. Only VCEPs have evidence summaries.'],
             ]);
     }
 
@@ -101,13 +98,13 @@ class CreateSummaryTest extends TestCase
             'summary' => 'blah blah blah',
             'gene_id' => $this->vcepGenes->first()->id,
             'variant' => 'Some variant',
-            'vci_url' => 'https://clinicalgenome.org'
+            'vci_url' => 'https://clinicalgenome.org',
         ];
 
         $this->makeRequest()
             ->assertStatus(200)
             ->assertJson([
-                'data' => $expectedData
+                'data' => $expectedData,
             ]);
 
         $this->assertDatabaseHas('evidence_summaries', $expectedData);
@@ -128,7 +125,6 @@ class CreateSummaryTest extends TestCase
             'properties->evidence_summary->id' => 1,
         ]);
     }
-    
 
     private function makeRequest($data = null)
     {
@@ -136,8 +132,9 @@ class CreateSummaryTest extends TestCase
             'gene_id' => $this->vcepGenes->first()->id,
             'summary' => 'blah blah blah',
             'variant' => 'Some variant',
-            'vci_url' => 'https://clinicalgenome.org'
+            'vci_url' => 'https://clinicalgenome.org',
         ];
+
         return $this->json('POST', $this->url, $data);
     }
 }

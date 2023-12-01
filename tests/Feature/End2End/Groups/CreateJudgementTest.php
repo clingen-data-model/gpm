@@ -3,14 +3,11 @@
 namespace Tests\Feature\End2End\Groups;
 
 use App\Modules\Group\Notifications\JudgementActivityNotification as NotificationsJudgementActivityNotification;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Testing\TestResponse;
 use Illuminate\Support\Facades\Notification;
-use App\Notifications\JudgementActivityNotification;
+use Illuminate\Testing\TestResponse;
 
 class CreateJudgementTest extends JudgementTest
 {
-
     /**
      * @test
      */
@@ -29,12 +26,12 @@ class CreateJudgementTest extends JudgementTest
     {
         $this->makeRequest([])
             ->assertValidationErrors([
-                'decision' => ['This is required.']
+                'decision' => ['This is required.'],
             ]);
 
         $this->makeRequest(['decision' => 'hedgehogs'])
             ->assertValidationErrors([
-                'decision' => ['The selection is invalid.']
+                'decision' => ['The selection is invalid.'],
             ]);
     }
 
@@ -47,9 +44,8 @@ class CreateJudgementTest extends JudgementTest
 
         $this->makeRequest()
             ->assertValidationErrors([
-                'group' => ['This group does not have a pending submission.']
+                'group' => ['This group does not have a pending submission.'],
             ]);
-
     }
 
     /**
@@ -63,14 +59,14 @@ class CreateJudgementTest extends JudgementTest
                 'decision' => 'request-revisions',
                 'notes' => 'These are my comments I want to add.',
                 'submission_id' => $this->submission->id,
-                'person_id' => $this->user->person->id
+                'person_id' => $this->user->person->id,
             ]);
 
         $this->assertDatabaseHas('judgements', [
             'decision' => 'request-revisions',
             'notes' => 'These are my comments I want to add.',
             'submission_id' => $this->submission->id,
-            'person_id' => $this->user->person->id
+            'person_id' => $this->user->person->id,
         ]);
     }
 
@@ -103,29 +99,26 @@ class CreateJudgementTest extends JudgementTest
 
         $this->assertDatabaseHas('notifications', [
             'notifiable_id' => $otherApprover->person->id,
-            'type' => NotificationsJudgementActivityNotification::class
+            'type' => NotificationsJudgementActivityNotification::class,
         ]);
         $this->assertDatabaseHas('notifications', [
             'notifiable_id' => $commenter->person->id,
-            'type' => NotificationsJudgementActivityNotification::class
+            'type' => NotificationsJudgementActivityNotification::class,
         ]);
         $this->assertDatabaseMissing('notifications', [
             'notifiable_id' => $this->user->person->id,
-            'type' => NotificationsJudgementActivityNotification::class
+            'type' => NotificationsJudgementActivityNotification::class,
         ]);
     }
-
-
 
     private function makeRequest($data = null): TestResponse
     {
         $data = $data ?? [
             'decision' => 'request-revisions',
-            'notes' => "These are my comments I want to add.",
-            'person_id' => $this->user->person->id
+            'notes' => 'These are my comments I want to add.',
+            'person_id' => $this->user->person->id,
         ];
 
         return $this->json('POST', '/api/groups/'.$this->expertPanel->group->uuid.'/application/judgements', $data);
     }
-
 }

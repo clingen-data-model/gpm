@@ -2,21 +2,20 @@
 
 namespace App\Modules\Group\Http\Controllers\Api;
 
-use App\Models\LogEntry;
 use App\Actions\LogEntryAdd;
-use Illuminate\Http\Request;
-use InvalidArgumentException;
 use App\Actions\LogEntryDelete;
 use App\Actions\LogEntryUpdate;
-use App\Modules\Group\Models\Group;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\LogEntryResource;
 use App\Http\Requests\CreateLogEntryRequest;
 use App\Http\Requests\UpdateLogEntryRequest;
-use Illuminate\Validation\ValidationException;
+use App\Http\Resources\LogEntryResource;
+use App\Models\LogEntry;
+use App\Modules\Group\Models\Group;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+use InvalidArgumentException;
 
 class ActivityLogsController extends Controller
 {
@@ -37,20 +36,20 @@ class ActivityLogsController extends Controller
         }
 
         $query = $group->logEntries()->select([
-                            'id',
-                            'activity_type',
-                            'description',
-                            'causer_id',
-                            'causer_type',
-                            'created_at',
-                            'subject_id',
-                            'properties',
-                        ])
+            'id',
+            'activity_type',
+            'description',
+            'causer_id',
+            'causer_type',
+            'created_at',
+            'subject_id',
+            'properties',
+        ])
                         ->with(['causer' => function ($q) {
-                            return $q->select(['id', 'name']);
-                        }])
-                        ->where(function($q) {
-                            $q->whereNotIn('activity_type', ['coi-completed','next-action-updated'])
+            return $q->select(['id', 'name']);
+        }])
+                        ->where(function ($q) {
+                            $q->whereNotIn('activity_type', ['coi-completed', 'next-action-updated'])
                             ->orWhereNull('activity_type');
                         })
                         ->orderBy('created_at', 'desc');
@@ -99,7 +98,6 @@ class ActivityLogsController extends Controller
             throw new AuthorizationException('You do not have access to update activity logs.');
         }
 
-
         $logEntry = $this->updateEntry->handle(
             subject: $group,
             logEntry: $logEntry,
@@ -109,6 +107,7 @@ class ActivityLogsController extends Controller
         );
 
         $logEntry->load(['causer']);
+
         return $logEntry;
     }
 

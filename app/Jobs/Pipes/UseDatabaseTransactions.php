@@ -4,14 +4,12 @@ namespace App\Jobs\Pipes;
 
 use Illuminate\Support\Facades\DB;
 
-class UseDatabaseTransactions {
-
+class UseDatabaseTransactions
+{
     public function handle($command, $next)
     {
-        return DB::transaction(function() use ($command, $next)
-        {
+        return DB::transaction(function () use ($command, $next) {
             return $next($command);
         });
     }
-
 }

@@ -19,7 +19,7 @@ class SynonymFactory extends Factory
             'synonym_of_id' => Credential::factory(),
             'synonym_of_type' => function (array $attributes) {
                 return Credential::find($attributes['synonym_of_id'])->type;
-            }
+            },
         ];
     }
 }

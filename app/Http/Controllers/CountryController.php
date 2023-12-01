@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Modules\Person\Models\Country;
 
 class CountryController extends Controller

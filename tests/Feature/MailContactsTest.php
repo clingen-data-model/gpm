@@ -2,24 +2,22 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use Illuminate\Mail\Mailable;
-use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Mail;
-use App\Modules\Person\Models\Person;
-use App\Modules\Group\Actions\MemberAdd;
 use App\Modules\Group\Actions\ContactsMail;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Modules\Group\Actions\MemberAdd;
 use App\Modules\Group\Actions\MemberAssignRole;
+use App\Modules\Group\Models\Group;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\Mail;
 use Tests\Feature\End2End\Groups\Members\SetsUpGroupPersonAndMember;
+use Tests\TestCase;
 
 class MailContactsTest extends TestCase
 {
     use RefreshDatabase;
     use SetsUpGroupPersonAndMember;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->seed();
@@ -28,7 +26,7 @@ class MailContactsTest extends TestCase
         $this->addMember = app()->make(MemberAdd::class);
         $this->assignRole = app()->make(MemberAssignRole::class);
     }
-    
+
     /**
      * @test
      */
@@ -41,7 +39,8 @@ class MailContactsTest extends TestCase
         $contact2 = $this->groupMember;
         $contacts = [$contact1, $contact2];
 
-        $mailable = new class extends Mailable {
+        $mailable = new class extends Mailable
+        {
         };
 
         Mail::fake();
@@ -52,5 +51,4 @@ class MailContactsTest extends TestCase
             })->toArray();
         });
     }
-    
 }

@@ -2,11 +2,10 @@
 
 namespace App\Modules\User\Actions;
 
+use App\Modules\User\Events\UserUpdated;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Event;
-use App\Modules\User\Events\UserUpdated;
 use Lorisleiva\Actions\Concerns\AsAction;
-use Illuminate\Contracts\Events\Dispatcher;
 
 class UserUpdate
 {
@@ -33,7 +32,7 @@ class UserUpdate
 
         $user->fill(['name' => $name, 'email' => $email]);
 
-        if (!$user->isDirty()) {
+        if (! $user->isDirty()) {
             return $user;
         }
 

@@ -2,15 +2,15 @@
 
 namespace App\Modules\Group\Actions;
 
-use Illuminate\Http\Request;
+use App\Modules\Group\Events\MemberPermissionRevoked;
+use App\Modules\Group\Http\Resources\MemberResource;
 use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Event;
 use App\Modules\Group\Models\GroupMember;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
+use Lorisleiva\Actions\Concerns\AsController;
 use Lorisleiva\Actions\Concerns\AsObject;
 use Spatie\Permission\Contracts\Permission;
-use Lorisleiva\Actions\Concerns\AsController;
-use App\Modules\Group\Http\Resources\MemberResource;
-use App\Modules\Group\Events\MemberPermissionRevoked;
 
 class MemberRevokePermission
 {
@@ -27,7 +27,7 @@ class MemberRevokePermission
 
         return $groupMember;
     }
-    
+
     public function asController(Request $request, $groupUuid, $groupMemberId, $permissionId)
     {
         $groupMember = Group::findByUuidOrFail($groupUuid)

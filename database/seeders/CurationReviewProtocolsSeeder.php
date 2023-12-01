@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\Seeder;
 use App\Modules\ExpertPanel\Models\CurationReviewProtocol;
 
 class CurationReviewProtocolsSeeder extends Seeder

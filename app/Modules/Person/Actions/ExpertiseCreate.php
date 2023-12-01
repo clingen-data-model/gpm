@@ -14,8 +14,7 @@ class ExpertiseCreate
         string $name,
         ?bool $approved = false,
         ?array $synonyms = null
-    ): Expertise
-    {
+    ): Expertise {
         return Expertise::create([
             'name' => $name,
             'approved' => $approved,
@@ -30,8 +29,8 @@ class ExpertiseCreate
     public function rules(): array
     {
         return [
-           'name' => ['required','unique:expertises,name', 'max:255'],
-           'approved' => 'nullable|boolean',
+            'name' => ['required', 'unique:expertises,name', 'max:255'],
+            'approved' => 'nullable|boolean',
         ];
     }
 }

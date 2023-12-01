@@ -2,8 +2,6 @@
 
 namespace Database\Factories;
 
-use Carbon\Carbon;
-use Faker\Generator as Faker;
 use App\DataExchange\Models\IncomingStreamMessage;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -30,7 +28,7 @@ class IncomingStreamMessageFactory extends Factory
             'offset' => $this->faker->numberBetween(1000, 10000),
             'timestamp' => time(),
             'error_code' => 0,
-            'payload' => []
+            'payload' => [],
         ];
     }
 
@@ -45,13 +43,13 @@ class IncomingStreamMessageFactory extends Factory
                         'uuid' => $this->faker->uuid,
                         'status' => [
                             'event' => 'classified-rules-approved',
-                            'current' => 'Classified Rules Approved'
+                            'current' => 'Classified Rules Approved',
                         ],
                         'affiliationId' => '50666',
                         'name' => $this->faker->sentence,
-                        'ruleSets' => []
-                    ]
-                ]
+                        'ruleSets' => [],
+                    ],
+                ],
             ];
         });
     }
@@ -67,13 +65,13 @@ class IncomingStreamMessageFactory extends Factory
                         'uuid' => $this->faker->uuid,
                         'status' => [
                             'event' => 'pilot-rules-approved',
-                            'current' => 'Pilot Rules Approved'
+                            'current' => 'Pilot Rules Approved',
                         ],
                         'affiliationId' => '50666',
                         'name' => $this->faker->sentence,
                         'ruleSets' => [],
-                    ]
-                ]
+                    ],
+                ],
             ];
         });
     }

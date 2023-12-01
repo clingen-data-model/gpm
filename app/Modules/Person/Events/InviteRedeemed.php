@@ -2,17 +2,13 @@
 
 namespace App\Modules\Person\Events;
 
-use App\Modules\User\Models\User;
-use Illuminate\Broadcasting\Channel;
 use App\Modules\Person\Models\Invite;
 use App\Modules\Person\Models\Person;
-use Illuminate\Queue\SerializesModels;
-use App\Modules\Person\Events\PersonEvent;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
+use App\Modules\User\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class InviteRedeemed extends PersonEvent
 {
@@ -32,17 +28,15 @@ class InviteRedeemed extends PersonEvent
 
     public function getLogEntry(): string
     {
-        return "Invite was redeemed";
+        return 'Invite was redeemed';
     }
 
     public function getProperties(): array
     {
         return [
-            'user' => $this->user->only('id', 'name', 'email')
+            'user' => $this->user->only('id', 'name', 'email'),
         ];
     }
-    
-    
 
     /**
      * Get the channels the event should broadcast on.

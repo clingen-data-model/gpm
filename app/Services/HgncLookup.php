@@ -1,9 +1,9 @@
 <?php
+
 namespace App\Services;
 
 use Exception;
 use Illuminate\Support\Facades\DB;
-use App\Services\HgncLookupInterface;
 
 class HgncLookup implements HgncLookupInterface
 {
@@ -14,9 +14,10 @@ class HgncLookup implements HgncLookupInterface
                 ->select('gene_symbol')
                 ->where('hgnc_id', $hgncId)
                 ->first();
-        if (!$geneData) {
+        if (! $geneData) {
             throw new Exception('No gene with HGNC ID '.$hgncId.' in our records.', 404);
         }
+
         return $geneData->gene_symbol;
     }
 
@@ -27,9 +28,10 @@ class HgncLookup implements HgncLookupInterface
                 ->select('hgnc_id')
                 ->where('gene_symbol', $geneSymbol)
                 ->first();
-        if (!$geneData) {
+        if (! $geneData) {
             throw new Exception('No gene with gene symbol '.$geneSymbol.' in our records.', 404);
         }
+
         return $geneData->hgnc_id;
     }
 }

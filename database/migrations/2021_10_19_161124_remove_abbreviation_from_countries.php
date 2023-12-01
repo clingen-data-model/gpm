@@ -28,7 +28,7 @@ class RemoveAbbreviationFromCountries extends Migration
     public function down()
     {
         Schema::table('countries', function (Blueprint $table) {
-            if (!Schema::hasColumn('countries', 'abbreviation')) {
+            if (! Schema::hasColumn('countries', 'abbreviation')) {
                 $table->string('abbreviation')->nullable();
             }
         });

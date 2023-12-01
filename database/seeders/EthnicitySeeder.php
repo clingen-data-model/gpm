@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Modules\Person\Models\Ethnicity;
-use Database\Seeders\Seeder;
 
 class EthnicitySeeder extends Seeder
 {

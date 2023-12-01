@@ -4,13 +4,10 @@ namespace App\Modules\Group\Events;
 
 use App\Events\PublishableEvent;
 use App\Modules\Group\Models\Group;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class MemberRetired extends GroupMemberEvent implements PublishableEvent
 {
@@ -31,7 +28,7 @@ class MemberRetired extends GroupMemberEvent implements PublishableEvent
         return [
             'group_member_id' => $this->groupMember->id,
             'person' => $this->groupMember->person->only('id', 'name', 'email'),
-            'end_date' => $this->groupMember->end_date->toAtomString()
+            'end_date' => $this->groupMember->end_date->toAtomString(),
         ];
     }
 

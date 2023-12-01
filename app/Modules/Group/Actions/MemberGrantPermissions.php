@@ -2,17 +2,16 @@
 
 namespace App\Modules\Group\Actions;
 
-use Illuminate\Support\Collection;
-use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Event;
-use Lorisleiva\Actions\ActionRequest;
-use App\Modules\Group\Models\GroupMember;
-use Lorisleiva\Actions\Concerns\AsObject;
-use Spatie\Permission\Contracts\Permission;
-use Lorisleiva\Actions\Concerns\AsController;
-use Illuminate\Validation\ValidationException;
-use App\Modules\Group\Http\Resources\MemberResource;
 use App\Modules\Group\Events\MemberPermissionsGranted;
+use App\Modules\Group\Http\Resources\MemberResource;
+use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\GroupMember;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Validation\ValidationException;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsController;
+use Lorisleiva\Actions\Concerns\AsObject;
 
 class MemberGrantPermissions
 {
@@ -24,7 +23,7 @@ class MemberGrantPermissions
         $permissions->each(function ($perm) {
             if ($perm->scope !== 'group') {
                 throw ValidationException::withMessages([
-                    'permission_ids' => ['All permissions must be group permissions.']
+                    'permission_ids' => ['All permissions must be group permissions.'],
                 ]);
             }
         });
@@ -43,14 +42,14 @@ class MemberGrantPermissions
 
         $member = $this->handle($groupMember, $permissions);
         $member->load('cois', 'permissions', 'roles');
-        
+
         return new MemberResource($member);
     }
 
     public function rules(): array
     {
         return [
-            'permission_ids' => 'required|array|exists:permissions,id'
+            'permission_ids' => 'required|array|exists:permissions,id',
         ];
     }
 }

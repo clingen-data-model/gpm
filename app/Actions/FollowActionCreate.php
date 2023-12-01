@@ -2,15 +2,16 @@
 
 namespace App\Actions;
 
-use Illuminate\Support\Str;
 use App\Models\FollowAction;
-use InvalidArgumentException;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
+use InvalidArgumentException;
 use Lorisleiva\Actions\Concerns\AsCommand;
 
 class FollowActionCreate
 {
     use AsCommand;
+
     public $commandSignature = 'follow-action:create
                                     {event : event to follow.}
                                     {class : class from which to build follower.}
@@ -21,13 +22,12 @@ class FollowActionCreate
 
     public function handle(
         string $eventClass,
-        String $follower,
+        string $follower,
         ?array $args = null,
         ?string $name = null,
         ?string $description = null
-    )
-    {
-        if (!class_exists($follower)) {
+    ) {
+        if (! class_exists($follower)) {
             throw new InvalidArgumentException('Failed to create FollowAction. The follower class '.$follower.' does not appear to exist.');
         }
 
@@ -36,7 +36,7 @@ class FollowActionCreate
             'event_class' => $eventClass,
             'follower' => $follower,
             'args' => $args,
-            'description' => $description
+            'description' => $description,
         ]);
     }
 
@@ -54,12 +54,12 @@ class FollowActionCreate
         }, $command->option('args'));
 
         $errors = false;
-        if (!class_exists($event)) {
+        if (! class_exists($event)) {
             $command->error('The event class '.$event.' does not exist');
             $errors = true;
         }
 
-        if (!class_exists($class)) {
+        if (! class_exists($class)) {
             $command->error('The class '.$class.' does not exist');
             $errors = true;
         }
@@ -87,7 +87,6 @@ class FollowActionCreate
         $eventNameString = preg_replace($pattern, '', $eventClass);
         $classNameString = preg_replace($pattern, '', $followerClass);
 
-        return $classNameString.'_ON_'.$eventNameString;//Str::kebab();
+        return $classNameString.'_ON_'.$eventNameString; //Str::kebab();
     }
-
 }

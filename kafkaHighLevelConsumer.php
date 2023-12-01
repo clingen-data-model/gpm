@@ -1,10 +1,10 @@
 <?php
 
+use App\DataExchange\Exceptions\StreamingServiceException;
 use Exception;
 use RdKafka\Conf;
-use App\DataExchange\Exceptions\StreamingServiceException;
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__.'/vendor/autoload.php';
 
 $argments = [];
 $options = [];
@@ -19,29 +19,29 @@ foreach ($argv as $idx => $arg) {
             [$name, $value] = explode('=', $name);
         }
         $options[$name] = $value;
+
         continue;
     }
     $arguments[] = $arg;
 }
 
 $topics = isset($options['topic']) ? explode(',', $options['topic']) : [];
-$offset = (int)(isset($options['offset']) ? $options['offset'] : -1);
-$limit = isset($options['limit']) ? (int)$options['limit'] : false;
-$writeToDisk = isset($options['write-to-disk']) ? (int)$options['write-to-disk'] : false;
-$saveToCsv = isset($options['save-to-csv']) ? (int)$options['save-to-csv'] : false;
-$noPrint = isset($options['no-print']) ? (int)$options['no-print'] : false;
+$offset = (int) (isset($options['offset']) ? $options['offset'] : -1);
+$limit = isset($options['limit']) ? (int) $options['limit'] : false;
+$writeToDisk = isset($options['write-to-disk']) ? (int) $options['write-to-disk'] : false;
+$saveToCsv = isset($options['save-to-csv']) ? (int) $options['save-to-csv'] : false;
+$noPrint = isset($options['no-print']) ? (int) $options['no-print'] : false;
 
 if (file_exists(__DIR__.'/.env')) {
     $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
     $dotenv->load();
 }
 
-
 function rSortByKeys($array)
 {
     $obj = false;
     if (is_object($array)) {
-        $array = (array)$array;
+        $array = (array) $array;
         $obj = true;
     }
     foreach ($array as $key => $value) {
@@ -51,16 +51,17 @@ function rSortByKeys($array)
     }
     ksort($array);
     if ($obj) {
-        return (object)$array;
+        return (object) $array;
     }
+
     return $array;
 }
-
 
 function commitOffset($consumer, $topicPartition, $offset, $attempt = 0)
 {
     if ($offset == 0) {
-        echo "\nCommitting offset set to $offset for topic ".$topicPartition->getTopic()." on partition ".$topicPartition->getPartition()."...\n";
+        echo "\nCommitting offset set to $offset for topic ".$topicPartition->getTopic().' on partition '.$topicPartition->getPartition()."...\n";
+
         return;
     }
     echo "\nDon't update offset.\n";
@@ -76,13 +77,13 @@ function configure($offset)
     // Configure the group.id. All consumer with the same group.id will consume
     // different partitions.
     $conf->setErrorCb(function ($kafka, $err, $reason) {
-        throw new StreamingServiceException("Kafka producer error: ".rd_kafka_err2str($err)." (reason: ".$reason.')');
+        throw new StreamingServiceException('Kafka producer error: '.rd_kafka_err2str($err).' (reason: '.$reason.')');
     });
-    
+
     $conf->setStatsCb(function ($kafka, $json, $json_len) {
         Log::info('Kafka Stats ', json_decode($json));
     });
-    
+
     $conf->setDrMsgCb(function ($kafka, $message) {
         if ($message->err) {
             throw new StreamingServiceException('DrMsg: '.rd_kafka_err2str($message->err));
@@ -90,25 +91,25 @@ function configure($offset)
     });
 
     $conf->set('auto.offset.reset', 'beginning');
-    
+
     // Set a rebalance callback to log partition assignments (optional)
     $conf->setRebalanceCb(function (RdKafka\KafkaConsumer $consumer, $err, array $topicPartitions = null) use ($offset) {
         switch ($err) {
             case RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS:
                 echo "\nAssign partions...\n";
                 $consumer->assign($topicPartitions);
-                
+
                 foreach ($topicPartitions as $tp) {
                     commitOffset($consumer, $tp, $offset);
                 }
-    
+
                 break;
-    
+
             case RD_KAFKA_RESP_ERR__REVOKE_PARTITIONS:
                 $assignments = $consumer->getAssignment();
                 $consumer->assign(null);
                 break;
-    
+
             default:
                 throw new Exception($err);
         }
@@ -120,7 +121,7 @@ function configure($offset)
 function printMessage($message)
 {
     echo "\n-----\n";
-    echo(json_encode([
+    echo json_encode([
         'len' => $message->len,
         'topic_name' => $message->topic_name,
         'timestamp' => $message->timestamp,
@@ -128,20 +129,20 @@ function printMessage($message)
         'payload' => json_decode($message->payload),
         'key' => $message->key,
         'offset' => $message->offset,
-    ], JSON_PRETTY_PRINT));
+    ], JSON_PRETTY_PRINT);
 }
 
 function configureForConfluent($offset)
 {
     $conf = configure($offset);
 
-    echo "\nsetting group to ".env('DX_GROUP', 'unc_staging')." for ".env('DX_BROKER')."...\n";
+    echo "\nsetting group to ".env('DX_GROUP', 'unc_staging').' for '.env('DX_BROKER')."...\n";
     $conf->set('group.id', env('DX_GROUP', 'unc_staging'));
-    
+
     $conf->set('security.protocol', 'sasl_ssl');
     $conf->set('metadata.broker.list', env('DX_BROKER'));
     $conf->set('sasl.mechanism', 'PLAIN');
-    echo "\nAuthenticating ".env('DX_BROKER')." with DX_USERNAME (".env('DX_USERNAME').") and DX_PASSWORD (see .env)\n";
+    echo "\nAuthenticating ".env('DX_BROKER').' with DX_USERNAME ('.env('DX_USERNAME').") and DX_PASSWORD (see .env)\n";
     $conf->set('sasl.username', env('DX_USERNAME'));
     $conf->set('sasl.password', env('DX_PASSWORD'));
 
@@ -151,7 +152,7 @@ function configureForConfluent($offset)
 function writeToDisk($message)
 {
     $messageDir = __DIR__.'/consumed_messages';
-    if (!file_exists($messageDir)) {
+    if (! file_exists($messageDir)) {
         mkdir($messageDir);
         echo "\nmade ".$messageDir.' directory'."\n";
     }
@@ -171,7 +172,7 @@ function saveToCsv($message)
     $eventType = $payload->event_type;
     $data = $payload->data;
 
-    if (!$csvHandle) {
+    if (! $csvHandle) {
         $csvHandle = fopen('kafkaConsumedMessages.csv', 'c');
         fputcsv($csvHandle, [
             'offset',
@@ -251,11 +252,11 @@ while (true) {
                 saveToCsv($message);
             }
 
-            if (!$noPrint) {
+            if (! $noPrint) {
                 printMessage($message);
             }
 
-            if (!isset($keys[$message->key])) {
+            if (! isset($keys[$message->key])) {
                 $keys[$message->key] = [];
             }
             $keys[$message->key][] = json_encode($payload, JSON_PRETTY_PRINT);
@@ -273,7 +274,7 @@ while (true) {
             // echo "\n\nFound all messages. Closing for now.\n\n";
             // break 2;
         case RD_KAFKA_RESP_ERR__TIMED_OUT:
-            if (!$timedOut) {
+            if (! $timedOut) {
                 echo "**timed out - waiting for messages...\n";
                 // echo "Timed out\n";
                 $timedOut = true;
@@ -288,7 +289,7 @@ while (true) {
             $timedOut = false;
             break;
         case RD_KAFKA_RESP_ERR__RESOLVE:
-            echo "**Host resolution failure";
+            echo '**Host resolution failure';
             $timedOut = false;
             break;
         case RD_KAFKA_RESP_ERR__UNKNOWN_TOPIC:
@@ -304,22 +305,21 @@ while (true) {
             $timedOut = false;
             break;
         default:
-            echo "**Unknown Error: ".$message->err."\n";
+            echo '**Unknown Error: '.$message->err."\n";
             $timedOut = false;
             break;
-
     }
 }
 
 echo count($keys)." keys that have the multple messages\n";
 foreach ($keys as $key => $payloads) {
     if (count($payloads) > 1) {
-        echo $key." has ".count($payloads)." messages.\n";
-        for ($i=0; $i < count($payloads); $i++) {
+        echo $key.' has '.count($payloads)." messages.\n";
+        for ($i = 0; $i < count($payloads); $i++) {
             if ($i == 0) {
                 continue;
             }
-            $diff = xdiff_string_diff($payloads[($i-1)], $payloads[$i]);
+            $diff = xdiff_string_diff($payloads[($i - 1)], $payloads[$i]);
             echo(($diff) ? $diff : 'NO DIFFERENCE')."\n";
         }
         echo "-------\n";

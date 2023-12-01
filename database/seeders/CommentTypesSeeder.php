@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\CommentType;
-use Database\Seeders\Seeder;
 
 class CommentTypesSeeder extends Seeder
 {

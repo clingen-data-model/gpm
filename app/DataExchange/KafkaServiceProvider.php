@@ -2,10 +2,10 @@
 
 namespace App\DataExchange;
 
-use \RdKafka\Producer;
 use App\DataExchange\Kafka\KafkaConfig;
 use Illuminate\Support\ServiceProvider;
-use \RdKafka\KafkaConsumer;
+use RdKafka\KafkaConsumer;
+use RdKafka\Producer;
 
 class KafkaServiceProvider extends ServiceProvider
 {
@@ -29,7 +29,6 @@ class KafkaServiceProvider extends ServiceProvider
         $this->bindInstances();
     }
 
-
     private function bindInstances(): void
     {
         $this->app->bind(Producer::class, function () {
@@ -45,5 +44,4 @@ class KafkaServiceProvider extends ServiceProvider
             return new KafkaConsumer($conf);
         });
     }
-
 }

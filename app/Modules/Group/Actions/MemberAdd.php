@@ -2,21 +2,17 @@
 
 namespace App\Modules\Group\Actions;
 
-use Illuminate\Http\Request;
-use App\Models\Role as ModelsRole;
+use App\Modules\Group\Events\MemberAdded;
+use App\Modules\Group\Http\Resources\MemberResource;
 use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\GroupMember;
+use App\Modules\Group\Notifications\AddedToGroupNotification;
 use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Event;
-use Lorisleiva\Actions\ActionRequest;
-use Spatie\Permission\Contracts\Role;
-use App\Modules\Group\Events\MemberAdded;
-use App\Modules\Group\Models\GroupMember;
-use Lorisleiva\Actions\Concerns\AsObject;
 use Illuminate\Support\Facades\Notification;
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
-use App\Modules\Group\Actions\MemberAssignRole;
-use App\Modules\Group\Http\Resources\MemberResource;
-use App\Modules\Group\Notifications\AddedToGroupNotification;
+use Lorisleiva\Actions\Concerns\AsObject;
 
 class MemberAdd
 {
@@ -29,12 +25,11 @@ class MemberAdd
     {
     }
 
-
     public function handle(Group $group, Person $person, ?array $data = []): GroupMember
     {
         $memberData = array_merge([
             'group_id' => $group->id,
-            'person_id' => $person->id
+            'person_id' => $person->id,
         ], $data);
 
         $groupMember = GroupMember::create($memberData);
@@ -72,20 +67,21 @@ class MemberAdd
     public function cancelNotification(): static
     {
         $this->sendNotification = false;
+
         return $this;
     }
 
     public function sendNotification(): static
     {
         $this->sendNotification = true;
+
         return $this;
     }
-
 
     public function rules(): array
     {
         return [
-            'person_id' => 'required|exists:people,id'
+            'person_id' => 'required|exists:people,id',
         ];
     }
 }

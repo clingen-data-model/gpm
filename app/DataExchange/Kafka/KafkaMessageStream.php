@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\DataExchange\Kafka;
 
-use Generator;
-use App\DataExchange\DxMessage;
 use App\DataExchange\Contracts\MessageStream;
+use App\DataExchange\DxMessage;
+use Generator;
 
 /**
  * @property array $topics
@@ -14,6 +14,7 @@ use App\DataExchange\Contracts\MessageStream;
 class KafkaMessageStream implements MessageStream
 {
     protected $topics = [];
+
     protected $listening = false;
 
     public function __construct(private \RdKafka\KafkaConsumer $kafkaConsumer)
@@ -24,7 +25,6 @@ class KafkaMessageStream implements MessageStream
     {
         $this->kafkaConsumer->subscribe($this->topics);
     }
-
 
     /**
      * Continuously listens for new messages and yields them as they are received.
@@ -81,17 +81,16 @@ class KafkaMessageStream implements MessageStream
         }
     }
 
-
     /**
      * Add a topic to consume
      *
-     * @param string $topicName Name of topic to add
-     * @return MessageStream
+     * @param  string  $topicName Name of topic to add
      */
-    public function addTopic(String $topicName): MessageStream
+    public function addTopic(string $topicName): MessageStream
     {
         array_push($this->topics, $topicName);
         $this->cleanTopics();
+
         return $this;
     }
 
@@ -104,14 +103,12 @@ class KafkaMessageStream implements MessageStream
         return $this;
     }
 
-
     /**
      * Remove topic from topic list
      *
-     * @param string $topicName Name of topic to remove from topic list
-     * @return MessageStream
+     * @param  string  $topicName Name of topic to remove from topic list
      */
-    public function removeTopic(String $topicName): MessageStream
+    public function removeTopic(string $topicName): MessageStream
     {
         if (in_array($topicName, $this->topics)) {
             unset($this->topics[array_search($topicName, $this->topics)]);
@@ -134,7 +131,7 @@ class KafkaMessageStream implements MessageStream
             function ($topic) {
                 return [
                     'name' => $topic->getName(),
-                    'offset' => $topic->getOffset()
+                    'offset' => $topic->getOffset(),
                 ];
             },
             $availableTopics

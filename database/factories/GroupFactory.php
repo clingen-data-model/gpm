@@ -2,13 +2,10 @@
 
 namespace Database\Factories;
 
-use Illuminate\Support\Str;
-use App\Modules\Group\Models\Group;
-use App\Modules\Group\Models\GroupType;
-use App\Modules\Group\Models\GroupStatus;
 use App\Modules\Group\Actions\CoiCodeMake;
-use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Modules\Group\Models\Group;
 use Database\Factories\Traits\GetsRandomConfigValue;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class GroupFactory extends Factory
 {
@@ -35,7 +32,7 @@ class GroupFactory extends Factory
             'name' => $this->faker->name(),
             'group_type_id' => 1,
             'group_status_id' => $this->getRandomConfigValue('groups.statuses')['id'],
-            'coi_code' => $code
+            'coi_code' => $code,
         ];
     }
 
@@ -46,7 +43,7 @@ class GroupFactory extends Factory
                 'uuid' => $this->faker->uuid,
                 'name' => uniqid().' CDWG',
                 'group_type_id' => config('groups.types.vcep.id'),
-                'group_status_id' => config('groups.statuses.applying.id')
+                'group_status_id' => config('groups.statuses.applying.id'),
             ];
         });
     }
@@ -58,7 +55,7 @@ class GroupFactory extends Factory
                 'uuid' => $this->faker->uuid,
                 'name' => uniqid().' CDWG',
                 'group_type_id' => config('groups.types.gcep.id'),
-                'group_status_id' => config('groups.statuses.applying.id')
+                'group_status_id' => config('groups.statuses.applying.id'),
             ];
         });
     }
@@ -70,7 +67,7 @@ class GroupFactory extends Factory
                 'uuid' => $this->faker->uuid,
                 'name' => uniqid().' CDWG',
                 'group_type_id' => config('groups.types.cdwg.id'),
-                'group_status_id' => config('groups.statuses.active.id')
+                'group_status_id' => config('groups.statuses.active.id'),
             ];
         });
     }
@@ -80,7 +77,7 @@ class GroupFactory extends Factory
         return $this->state(function ($attributes) {
             return [
                 'group_type_id' => config('groups.types.wg.id'),
-                'group_status_id' => config('groups.statuses.active.id')
+                'group_status_id' => config('groups.statuses.active.id'),
             ];
         });
     }

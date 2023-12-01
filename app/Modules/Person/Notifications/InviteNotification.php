@@ -2,11 +2,10 @@
 
 namespace App\Modules\Person\Notifications;
 
-use Illuminate\Bus\Queueable;
 use App\Modules\Person\Models\Invite;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class InviteNotification extends Notification
 {

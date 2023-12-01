@@ -2,11 +2,11 @@
 
 namespace App\Modules\Group\Actions;
 
-use Illuminate\Support\Carbon;
+use App\Modules\Group\Http\Resources\GroupResource;
 use App\Modules\Group\Models\Group;
+use Illuminate\Support\Carbon;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
-use App\Modules\Group\Http\Resources\GroupResource;
 
 class ApplicationSaveChanges
 {
@@ -23,8 +23,6 @@ class ApplicationSaveChanges
         // private ParentUpdate $groupParent
     ) {
     }
-
-
 
     public function handle(Group $group, $data): Group
     {
@@ -52,6 +50,7 @@ class ApplicationSaveChanges
                             $data->get('reanalysis_attestation_date')
                         );
         }
+
         return $group;
     }
 

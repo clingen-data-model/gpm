@@ -5,19 +5,18 @@ namespace App\DataExchange;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use JsonSerializable;
-use phpDocumentor\Reflection\Types\Boolean;
 
 class DxMessage implements Arrayable, JsonSerializable, Jsonable
 {
     public function __construct(
-        public String $topic,
+        public string $topic,
         public $timestamp,
         private $payload,
         public int $offset,
         public int $partition = 0,
-        public ?String $key = null,
+        public ?string $key = null,
         public ?int $errorCode = null,
-        public ?String $errorString = null
+        public ?string $errorString = null
     ) {
     }
 
@@ -30,12 +29,12 @@ class DxMessage implements Arrayable, JsonSerializable, Jsonable
 
     public function isErrorMessage(): bool
     {
-        return !is_null($this->errorCode);
+        return ! is_null($this->errorCode);
     }
 
     public function isReportableError(): bool
     {
-        return $this->isErrorMessage && !$this->isEndOfFile() && !$this->isTimeOut();
+        return $this->isErrorMessage && ! $this->isEndOfFile() && ! $this->isTimeOut();
     }
 
     public function isEndOfFile(): bool
@@ -47,7 +46,6 @@ class DxMessage implements Arrayable, JsonSerializable, Jsonable
     {
         return $this->errorCode == RD_KAFKA_RESP_ERR__TIMED_OUT;
     }
-
 
     public static function createFromRdKafkaMessage(\RdKafka\Message $message)
     {
@@ -70,7 +68,7 @@ class DxMessage implements Arrayable, JsonSerializable, Jsonable
             'key' => $this->key,
             'timestamp' => $this->timestamp,
             'payload' => $this->__get('payload'),
-            'offset' => $this->offset
+            'offset' => $this->offset,
         ];
     }
 
@@ -83,6 +81,4 @@ class DxMessage implements Arrayable, JsonSerializable, Jsonable
     {
         return json_encode($this->toArray(), $options);
     }
-
-
 }

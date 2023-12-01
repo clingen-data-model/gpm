@@ -2,19 +2,16 @@
 
 namespace Tests\Feature\End2End\Comments;
 
-use Carbon\Carbon;
-use Tests\TestCase;
-use App\Models\Comment;
 use App\Actions\CommentResolve;
-use Illuminate\Testing\TestResponse;
-use Illuminate\Foundation\Testing\WithFaker;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\TestResponse;
 
 class UnresolveCommentTest extends CommentTest
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->comment = $this->createComment();
@@ -32,15 +29,15 @@ class UnresolveCommentTest extends CommentTest
             ->assertStatus(200)
             ->assertJson([
                 'id' => $this->comment->id,
-                'resolved_at' => null
+                'resolved_at' => null,
             ]);
 
         $this->assertDatabaseHas('comments', [
             'id' => $this->comment->id,
-            'resolved_at' => null
+            'resolved_at' => null,
         ]);
     }
-    
+
     /**
      * @test
      */
@@ -50,7 +47,6 @@ class UnresolveCommentTest extends CommentTest
         $this->makeRequest()
             ->assertStatus(403);
     }
-    
 
     private function makeRequest($id = null): TestResponse
     {
@@ -58,6 +54,4 @@ class UnresolveCommentTest extends CommentTest
 
         return $this->json('POST', '/api/comments/'.$id.'/unresolved');
     }
-    
-    
 }

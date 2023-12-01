@@ -2,24 +2,19 @@
 
 namespace Tests\Feature\Integration\Modules\User\Actions;
 
-use Tests\TestCase;
-use Illuminate\Bus\Dispatcher;
-use App\Modules\User\Models\User;
-use Illuminate\Support\Facades\Bus;
-use App\Modules\User\Jobs\CreateUser;
 use App\Modules\User\Actions\UserCreate;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class CreateUserTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
     }
-    
 
     /**
      * @test
@@ -44,7 +39,7 @@ class CreateUserTest extends TestCase
                 'log_name' => 'users',
                 'subject_type' => User::class,
                 'subject_id' => $user->id,
-                'description' => 'User created: Lana Kane <lana@archer.com> ('.$user->id.')'
+                'description' => 'User created: Lana Kane <lana@archer.com> ('.$user->id.')',
             ]
         );
     }

@@ -2,31 +2,27 @@
 
 namespace Tests\Feature\Integration\Modules\ExpertPanel\Actions;
 
-use Tests\TestCase;
-use App\Modules\User\Models\User;
-use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Modules\ExpertPanel\Jobs\InitiateApplication;
 use App\Modules\ExpertPanel\Actions\ExpertPanelCreate;
 use App\Modules\ExpertPanel\Events\ApplicationInitiated;
+use App\Modules\Group\Models\Group;
+use App\Modules\User\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
+use Tests\TestCase;
 
 class ExpertPanelCreateTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
-        
+
         $this->data = $this->makeApplicationData();
     }
-    
+
     /**
      * @test
      */
@@ -35,16 +31,15 @@ class ExpertPanelCreateTest extends TestCase
         $expertPanel = ExpertPanelCreate::run(...$this->data);
         $this->assertDatabaseHas('groups', [
             'name' => $this->data['working_name'],
-            'parent_id' => $this->data['cdwg_id']
+            'parent_id' => $this->data['cdwg_id'],
         ]);
 
         $group = Group::orderBy('id', 'desc')->first();
 
         $this->assertDatabaseHas('expert_panels', [
-            'group_id' => $group->id
+            'group_id' => $group->id,
         ]);
     }
-    
 
     /**
      * @test

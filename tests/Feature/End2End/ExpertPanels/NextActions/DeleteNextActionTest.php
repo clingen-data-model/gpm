@@ -2,16 +2,13 @@
 
 namespace Tests\Feature\End2End\ExpertPanels\NextActions;
 
-use Tests\TestCase;
-use Ramsey\Uuid\Uuid;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Database\Seeders\NextActionAssigneesTableSeeder;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Database\Seeders\NextActionAssigneesTableSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Ramsey\Uuid\Uuid;
+use Tests\TestCase;
 
 /**
  * @group next-actions
@@ -22,7 +19,7 @@ class DeleteNextActionTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -55,7 +52,7 @@ class DeleteNextActionTest extends TestCase
 
         $this->assertDatabaseMissing('next_actions', [
             'id' => $this->nextAction->id,
-            'deleted_at' => null
+            'deleted_at' => null,
         ]);
     }
 }

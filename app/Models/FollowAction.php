@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use App\Exceptions\FollowActionDuplicateException;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class FollowAction extends Model
 {
@@ -22,10 +22,11 @@ class FollowAction extends Model
     protected $casts = [
         'id' => 'integer',
         'args' => 'array',
-        'completed_at' => 'datetime'
+        'completed_at' => 'datetime',
     ];
 
-    static public function boot () {
+    public static function boot()
+    {
         parent::boot();
         static::saving(function ($model) {
             $model->hash = md5($model->event_class.'-'.$model->follower.'-'.json_encode($model->args).'-'.$model->completed_at);
@@ -46,12 +47,10 @@ class FollowAction extends Model
     {
         return $query->whereNull('completed_at');
     }
-    
+
     public function scopeOtherWithHash($query, $hash, $current)
     {
         return $query->where('hash', $hash)
             ->where('id', '!=', $current->id);
     }
-    
-
 }

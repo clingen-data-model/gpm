@@ -2,16 +2,12 @@
 
 namespace Tests\Feature\End2End\Groups\Members;
 
-use DateTime;
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Person;
-use App\Modules\Group\Actions\MemberAdd;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\WithFaker;
+use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 /**
  * @group groups
@@ -22,7 +18,7 @@ class RetireMemberTest extends TestCase
     use RefreshDatabase;
     use SetsUpGroupPersonAndMember;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -32,7 +28,6 @@ class RetireMemberTest extends TestCase
         $this->url = 'api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id.'/retire/';
         Sanctum::actingAs($this->user);
         Carbon::setTestNow('2022-07-18');
-
     }
 
     /**
@@ -49,15 +44,15 @@ class RetireMemberTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonFragment([
             'id' => $this->groupMember->id,
-            'end_date' => $endDate->format('Y-m-d\TH:i:s.000000\Z')
+            'end_date' => $endDate->format('Y-m-d\TH:i:s.000000\Z'),
         ]);
 
         $this->assertDatabaseHas('group_members', [
             'id' => $this->groupMember->id,
-            'end_date' => $endDate->format('Y-m-d H:i:s')
+            'end_date' => $endDate->format('Y-m-d H:i:s'),
         ]);
     }
-    
+
     /**
      * @test
      */
@@ -66,7 +61,7 @@ class RetireMemberTest extends TestCase
         $response = $this->json('POST', $this->url, []);
         $response->assertStatus(422);
 
-        $response->assertJsonFragment([ 'errors' => [
+        $response->assertJsonFragment(['errors' => [
             'start_date' => ['This is required.'],
             'end_date' => ['This is required.'],
         ]]);
@@ -98,17 +93,15 @@ class RetireMemberTest extends TestCase
             $this->url,
             [
                 'start_date' => (new DateTime)->format(DateTime::ATOM),
-                'end_date' => (new DateTime('yesterday'))->format(DateTime::ATOM)
+                'end_date' => (new DateTime('yesterday'))->format(DateTime::ATOM),
             ]
         );
         $response->assertStatus(422);
 
         $response->assertJsonFragment([
-            'end_date' => ['The end date must be a date after or equal to the member\'s start date.']
+            'end_date' => ['The end date must be a date after or equal to the member\'s start date.'],
         ]);
     }
-    
-    
 
     /**
      * @test

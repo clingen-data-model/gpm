@@ -2,16 +2,11 @@
 
 namespace App\Modules\Group\Events;
 
-use Illuminate\Support\Carbon;
 use App\Modules\Group\Models\Group;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class GroupNameUpdated extends GroupEvent
 {
@@ -22,7 +17,7 @@ class GroupNameUpdated extends GroupEvent
      *
      * @return void
      */
-    public function __construct(public Group $group, public String $newName, public String $oldName)
+    public function __construct(public Group $group, public string $newName, public string $oldName)
     {
     }
 
@@ -30,12 +25,12 @@ class GroupNameUpdated extends GroupEvent
     {
         return 'Name changed from "'.$this->oldName.'" to "'.$this->newName.'"';
     }
-    
+
     public function getProperties(): ?array
     {
         return [
             'new_name' => $this->newName,
-            'old_name' => $this->oldName
+            'old_name' => $this->oldName,
         ];
     }
 

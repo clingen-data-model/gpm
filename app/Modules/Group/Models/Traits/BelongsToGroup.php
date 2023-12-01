@@ -1,11 +1,9 @@
 <?php
+
 namespace App\Modules\Group\Models\Traits;
 
 use App\Modules\Group\Models\Group;
 
-/**
- *
- */
 trait BelongsToGroup
 {
     /**

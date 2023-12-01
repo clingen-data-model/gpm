@@ -23,7 +23,7 @@ class SubmissionTypeFactory extends Factory
     {
         return [
             'name' => 'type '.uniqid(),
-            'description' => null
+            'description' => null,
         ];
     }
 }

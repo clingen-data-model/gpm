@@ -2,30 +2,29 @@
 
 namespace Tests\Unit\Notifications;
 
-use Carbon\Carbon;
-use Tests\TestCase;
 use App\Models\Role;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Models\Group;
+use App\Modules\Group\Notifications\AddedToGroupNotification;
 use App\Modules\Person\Models\Invite;
 use App\Modules\Person\Models\Person;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Modules\Group\Notifications\AddedToGroupNotification;
+use Tests\TestCase;
 
 class AddedToGroupNotificationTest extends TestCase
 {
     use RefreshDatabase;
-    
-    public function setup():void
+
+    public function setup(): void
     {
         parent::setup();
-        Role::factory()->create(['name' => 'coordinator', 'scope'=>'group']);
+        Role::factory()->create(['name' => 'coordinator', 'scope' => 'group']);
         $this->ep = ExpertPanel::factory()->create();
         $this->person = Person::factory()->create();
         $this->invite = Invite::factory()->create([
-                            'person_id' => $this->person->id,
-                            'inviter_id' => $this->ep->group_id,
-                        ]);
+            'person_id' => $this->person->id,
+            'inviter_id' => $this->ep->group_id,
+        ]);
     }
 
     /**

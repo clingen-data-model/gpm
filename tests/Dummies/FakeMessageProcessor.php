@@ -2,15 +2,15 @@
 
 namespace Tests\Dummies;
 
-use App\DataExchange\DxMessage;
 use App\DataExchange\Contracts\MessageProcessor;
+use App\DataExchange\DxMessage;
 use Lorisleiva\Actions\Concerns\AsJob;
 
 class FakeMessageProcessor implements MessageProcessor
 {
     use AsJob;
 
-    static public $messages = [];
+    public static $messages = [];
 
     public function handle(DxMessage $message): DxMessage
     {
@@ -18,5 +18,4 @@ class FakeMessageProcessor implements MessageProcessor
 
         return $message;
     }
-
 }

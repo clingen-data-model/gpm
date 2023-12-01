@@ -2,13 +2,13 @@
 
 namespace App\Modules\Group\Actions;
 
-use Carbon\Carbon;
 use App\Models\AnnualUpdate;
-use Illuminate\Validation\Rule;
 use App\Modules\Group\Models\Group;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Lorisleiva\Actions\ActionRequest;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 
 class AnnualUpdateSubmit
@@ -18,6 +18,7 @@ class AnnualUpdateSubmit
     public function handle(AnnualUpdate $annualReview): AnnualUpdate
     {
         $annualReview->update(['completed_at' => Carbon::now()]);
+
         return $annualReview;
     }
 
@@ -29,7 +30,7 @@ class AnnualUpdateSubmit
         $validator = $this->makeDataValidator($annualReview);
         if ($validator->fails()) {
             return response([
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -39,6 +40,7 @@ class AnnualUpdateSubmit
     public function authorize(ActionRequest $request)
     {
         $group = Group::findByUuidOrFail($request->group);
+
         return Auth::user()->can('manageAnnualUpdate', $group);
     }
 
@@ -53,12 +55,12 @@ class AnnualUpdateSubmit
             $data,
             $this->getRequirements($annualReview),
             [
-                    'required' => 'This is required.',
-                    'required_if' => 'This is required.',
-                    'required_with' => 'This is required.',
-                    'in' => 'The selection is invalid.',
-                    'numeric' => 'This must be a number.',
-                    'accepted' => 'This is required.'
+                'required' => 'This is required.',
+                'required_if' => 'This is required.',
+                'required_with' => 'This is required.',
+                'in' => 'The selection is invalid.',
+                'numeric' => 'This must be a number.',
+                'accepted' => 'This is required.',
             ]
         );
     }
@@ -79,7 +81,7 @@ class AnnualUpdateSubmit
             'funding' => 'exclude_if:ep_activity,inactive|required_if:applied_for_funding,yes',
             'funding_other_details' => 'exclude_if:ep_activity,inactive|required_if:funding,other',
             'funding_thoughts' => 'exclude_if:ep_activity,inactive|required_if:applied_for_funding,no',
-            'website_attestation' => 'exclude_if:ep_activity,inactive|accepted'
+            'website_attestation' => 'exclude_if:ep_activity,inactive|accepted',
         ];
 
         if ($annualReview->expertPanel->group->isGcep) {
@@ -88,7 +90,7 @@ class AnnualUpdateSubmit
                 [
                     'ongoing_plans_updated' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
                     'ongoing_plans_update_details' => 'exclude_if:ep_activity,inactive|required_if:ongoing_plans_updated,yes',
-                            'ep_activity' => 'required|in:active,inactive',
+                    'ep_activity' => 'required|in:active,inactive',
                     'submitted_inactive_form' => 'nullable|required_if:ep_activity,inactive|in:yes,no',
                     'gci_use' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
                     'gci_use_details' => 'exclude_if:ep_activity,inactive|required_if:gci_use,no',
@@ -149,6 +151,7 @@ class AnnualUpdateSubmit
                 ]);
             }
         }
+
         return $requirements;
     }
 }

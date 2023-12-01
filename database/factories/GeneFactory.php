@@ -27,7 +27,7 @@ class GeneFactory extends Factory
             'gene_symbol' => uniqid(),
             'mondo_id' => null,
             'disease_name' => null,
-            'expert_panel_id' => ExpertPanel::factory()->create()->id
+            'expert_panel_id' => ExpertPanel::factory()->create()->id,
         ];
     }
 }

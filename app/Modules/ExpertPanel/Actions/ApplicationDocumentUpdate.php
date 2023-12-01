@@ -3,22 +3,22 @@
 namespace App\Modules\ExpertPanel\Actions;
 
 use App\Models\Document;
+use App\Modules\ExpertPanel\Events\DocumentInfoUpdated;
+use App\Modules\ExpertPanel\Http\Requests\DocumentUpdateInfoRequest;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\Concerns\AsAction;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Events\DocumentInfoUpdated;
-use App\Modules\ExpertPanel\Http\Requests\DocumentUpdateInfoRequest;
 
 class ApplicationDocumentUpdate
 {
     use AsAction;
 
     public function handle(
-        String $expertPanelUuid,
-        String $uuid,
-        String $dateReceived,
+        string $expertPanelUuid,
+        string $uuid,
+        string $dateReceived,
         string|null $notes = null
     ): Document {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
@@ -36,7 +36,7 @@ class ApplicationDocumentUpdate
 
         return $document;
     }
-    
+
     public function asController($appUuid, $docUuid, DocumentUpdateInfoRequest $request): Response
     {
         $document = $this->handle(

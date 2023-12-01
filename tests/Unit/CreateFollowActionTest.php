@@ -20,5 +20,4 @@ class CreateFollowActionTest extends TestCase
 
         $this->assertEquals('Group\MemberAddSystemPermission_ON_Group\MemberAdded', $name);
     }
-
 }

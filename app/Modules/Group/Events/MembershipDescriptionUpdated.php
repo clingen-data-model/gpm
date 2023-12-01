@@ -2,14 +2,11 @@
 
 namespace App\Modules\Group\Events;
 
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use App\Modules\Group\Models\Group;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class MembershipDescriptionUpdated extends GroupEvent
 {
@@ -25,15 +22,15 @@ class MembershipDescriptionUpdated extends GroupEvent
         //
     }
 
-    public function getLogEntry():string
+    public function getLogEntry(): string
     {
         return 'Membership description updated.';
     }
 
-    public function getProperties():array
+    public function getProperties(): array
     {
         return ['membership_description' => $this->description];
-    }    
+    }
 
     /**
      * Get the channels the event should broadcast on.

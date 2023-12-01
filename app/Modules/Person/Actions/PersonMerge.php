@@ -2,33 +2,30 @@
 
 namespace App\Modules\Person\Actions;
 
-use App\Modules\Person\Models\Person;
-use Lorisleiva\Actions\ActionRequest;
 use App\Modules\Group\Actions\MemberAdd;
-use App\Modules\Person\Events\PersonMerged;
-use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Group\Actions\MemberGrantPermissions;
+use App\Modules\Person\Events\PersonMerged;
+use App\Modules\Person\Models\Person;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsController;
 
 class PersonMerge
 {
     use AsController;
 
     public function __construct(
-        private PersonDelete $deletePerson, 
-        private MemberAdd $addMember, 
-        private MemberAssignRole $assignRoles, 
+        private PersonDelete $deletePerson,
+        private MemberAdd $addMember,
+        private MemberAssignRole $assignRoles,
         private MemberGrantPermissions $grantPermissions,
         private PersonUnlinkUser $unlinkUser
-    )
-    {
+    ) {
         //code
     }
-    
 
     public function handle(Person $authority, Person $obsolete): Person
     {
-
         $this->transferMemberships($authority, $obsolete);
         $this->transferUser($authority, $obsolete);
 
@@ -45,6 +42,7 @@ class PersonMerge
         $obsolete = Person::findOrFail($request->obsolete_id);
 
         $updatedAuthority = $this->handle($authority, $obsolete);
+
         return $updatedAuthority->load('institution');
     }
 
@@ -52,7 +50,7 @@ class PersonMerge
     {
         return $request->user()->can('people-manage');
     }
-    
+
     public function rules(): array
     {
         return [
@@ -63,7 +61,7 @@ class PersonMerge
 
     private function transferUser($authority, $obsolete)
     {
-        if (!$obsolete->isLinkedToUser()) {
+        if (! $obsolete->isLinkedToUser()) {
             return;
         }
 
@@ -72,16 +70,15 @@ class PersonMerge
         }
 
         $authority->update(['user_id' => $obsolete->user_id]);
-        
+
         $obsolete->user->update(['email' => $authority->email]);
         $obsolete = $this->unlinkUser->handle($obsolete);
     }
-    
 
     private function transferMemberships($authority, $obsolete)
     {
         $obsolete->load(['memberships', 'memberships.group', 'memberships.roles', 'memberships.permissions']);
-        
+
         $obsolete->memberships->each(function ($membership) use ($authority) {
             $membershipData = $membership->only([
                 'start_date',
@@ -90,15 +87,15 @@ class PersonMerge
                 'expertise',
                 'notes',
                 'training_level_1',
-                'training_level_2'
+                'training_level_2',
             ]);
 
             $newMembership = $this->addMember->handle($membership->group, $authority, $membershipData);
-            
+
             if ($membership->roles->count() > 0) {
                 $this->assignRoles->handle($newMembership, $membership->roles);
             }
-            
+
             if ($membership->permissions->count() > 0) {
                 $this->grantPermissions->handle($newMembership, $membership->permissions);
             }
@@ -106,11 +103,10 @@ class PersonMerge
             if ($membership->cois->count() > 0) {
                 $membership->cois->each(function ($coi) use ($newMembership) {
                     $coi->update([
-                        'group_member_id' => $newMembership->id
+                        'group_member_id' => $newMembership->id,
                     ]);
                 });
             }
         });
     }
-    
 }

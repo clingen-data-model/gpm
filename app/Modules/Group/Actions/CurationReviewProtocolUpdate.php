@@ -7,8 +7,8 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Auth;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsObject;
 use Lorisleiva\Actions\Concerns\AsController;
+use Lorisleiva\Actions\Concerns\AsObject;
 
 class CurationReviewProtocolUpdate
 {
@@ -24,6 +24,7 @@ class CurationReviewProtocolUpdate
             'meeting_frequency' => $data->get('meeting_frequency'),
             'curation_review_process_notes' => $data->get('curation_review_process_notes'),
         ]);
+
         return $group;
     }
 
@@ -49,7 +50,7 @@ class CurationReviewProtocolUpdate
         return [
             'curation_review_protocol_id' => 'required|exists:curation_review_protocols,id',
             'curation_review_protocol_other' => 'required_if:curation_review_protocol_id,100',
-            'meeting_frequency' => 'required_if:expert_panel_type_id,2|max:255'
+            'meeting_frequency' => 'required_if:expert_panel_type_id,2|max:255',
         ];
     }
 

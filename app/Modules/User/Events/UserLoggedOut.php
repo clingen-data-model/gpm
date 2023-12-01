@@ -2,16 +2,11 @@
 
 namespace App\Modules\User\Events;
 
-use Carbon\Carbon;
 use App\Modules\User\Models\User;
-use Illuminate\Broadcasting\Channel;
-use App\Modules\User\Events\UserEvent;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class UserLoggedOut extends UserEvent
 {
@@ -27,12 +22,12 @@ class UserLoggedOut extends UserEvent
         //
     }
 
-    public function getLogEntry():String
+    public function getLogEntry(): string
     {
         return 'Logged out.';
     }
 
-    public function getProperties():?array
+    public function getProperties(): ?array
     {
         return null;
     }

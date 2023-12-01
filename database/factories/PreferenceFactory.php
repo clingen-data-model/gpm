@@ -2,9 +2,8 @@
 
 namespace Database\Factories;
 
-use Illuminate\Support\Str;
-use App\Models\AppliesToRole;
 use App\Models\AppliesToPermission;
+use App\Models\AppliesToRole;
 use App\Modules\User\Models\Preference;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -27,7 +26,7 @@ class PreferenceFactory extends Factory
         return [
             'name' => $this->faker->name,
             'description' => $this->faker->text,
-            'data_type' => $this->faker->randomElement(["boolean","integer","string","float","array","object"]),
+            'data_type' => $this->faker->randomElement(['boolean', 'integer', 'string', 'float', 'array', 'object']),
             'default' => $this->faker->text,
             'applies_to_role' => AppliesToRole::factory(),
             'applies_to_permission' => AppliesToPermission::factory(),

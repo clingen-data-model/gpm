@@ -2,12 +2,12 @@
 
 namespace App\Modules\Group\Actions;
 
-use App\Modules\Group\Models\Submission;
-use App\Modules\User\Models\User;
-use Lorisleiva\Actions\Concerns\AsListener;
-use Illuminate\Support\Facades\Notification;
 use App\Modules\Group\Events\ApplicationStepSubmitted;
+use App\Modules\Group\Models\Submission;
 use App\Modules\Group\Notifications\ApplicationSubmissionNotification;
+use App\Modules\User\Models\User;
+use Illuminate\Support\Facades\Notification;
+use Lorisleiva\Actions\Concerns\AsListener;
 
 class ApplicationSubmissionNotificationSend
 {

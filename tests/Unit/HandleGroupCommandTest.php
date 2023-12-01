@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
-use App\Modules\Group\Models\Group;
 use App\Modules\Group\Actions\HandleGroupCommand;
+use App\Modules\Group\Models\Group;
+use PHPUnit\Framework\TestCase;
 use Tests\Dummies\SetGroupName;
 
 class HandleGroupCommandTest extends TestCase
@@ -21,10 +21,10 @@ class HandleGroupCommandTest extends TestCase
         $group = new Group();
 
         $group = $action->handle(
-                    group: $group, 
-                    command: 'tests.dummies.setGroupName', 
-                    args: ['name' => 'test name']
-                );
+            group: $group,
+            command: 'tests.dummies.setGroupName',
+            args: ['name' => 'test name']
+        );
 
         $this->assertEquals('test name', $group->name);
     }

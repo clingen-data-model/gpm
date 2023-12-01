@@ -2,16 +2,15 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use App\Models\Role;
 use App\Models\Permission;
+use App\Models\Role;
+use App\Modules\Group\Actions\MemberAdd;
+use App\Modules\Group\Actions\MemberAssignRole;
+use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
-use App\Modules\Group\Actions\MemberAdd;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\Group\Actions\MemberAssignRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Modules\Group\Actions\MemberGrantPermissions;
+use Tests\TestCase;
 
 /**
  * @group members
@@ -19,8 +18,8 @@ use App\Modules\Group\Actions\MemberGrantPermissions;
 class IsGroupMemberTest extends TestCase
 {
     use RefreshDatabase;
-    
-    public function setup():void
+
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -28,7 +27,7 @@ class IsGroupMemberTest extends TestCase
         $this->group = Group::factory()->create();
         $this->person = Person::factory()->create();
         $this->groupPerm = Permission::factory()->create(['name' => 'test-permission', 'scope' => 'group']);
-        $this->groupRole = Role::factory()->create(['name' => 'group-role', 'scope'=>'group']);
+        $this->groupRole = Role::factory()->create(['name' => 'group-role', 'scope' => 'group']);
         $this->groupRolePerm = Permission::factory()->create();
         $this->groupRole->givePermissionTo($this->groupRolePerm);
         $groupMember = MemberAdd::run($this->group, $this->person);

@@ -37,7 +37,7 @@ return [
 
         'documents' => [
             'driver' => 'local',
-            'root' => storage_path('app/documents')
+            'root' => storage_path('app/documents'),
         ],
 
         'public' => [

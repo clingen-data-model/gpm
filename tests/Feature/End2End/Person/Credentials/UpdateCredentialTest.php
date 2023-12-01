@@ -2,11 +2,10 @@
 
 namespace Tests\Feature\End2End\Person\Credentials;
 
-use Tests\TestCase;
 use App\Models\Credential;
-use Illuminate\Testing\TestResponse;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\TestResponse;
+use Tests\TestCase;
 
 /**
  * @group credentials
@@ -15,7 +14,7 @@ class UpdateCredentialTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->credential = Credential::factory()->create();
@@ -47,12 +46,12 @@ class UpdateCredentialTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'name' => 'PhD',
-                'approved' => 0
+                'approved' => 0,
             ]);
 
         $this->assertDatabaseHas('credentials', [
             'id' => $this->credential->id,
-            'name' => 'PhD'
+            'name' => 'PhD',
         ]);
     }
 
@@ -65,26 +64,23 @@ class UpdateCredentialTest extends TestCase
         $this->makeRequest([])
             ->assertStatus(422)
             ->assertJsonValidationErrors([
-                'name' => 'This is required.'
+                'name' => 'This is required.',
             ]);
 
         Credential::factory()->create(['name' => 'PhD']);
         $this->makeRequest()
             ->assertStatus(422)
             ->assertJsonValidationErrors([
-                'name' => 'The name has already been taken.'
+                'name' => 'The name has already been taken.',
             ]);
 
         $this->makeRequest(['name' => str_repeat('x', 256), 'approved' => 2])
             ->assertStatus(422)
             ->assertJsonValidationErrors([
                 'name' => 'The name may not be greater than 255 characters.',
-                'approved' => 'The approved field must be true or false.'
+                'approved' => 'The approved field must be true or false.',
             ]);
     }
-
-
-
 
     private function makeRequest($data = null): TestResponse
     {
@@ -95,5 +91,4 @@ class UpdateCredentialTest extends TestCase
 
         return $this->json('PUT', '/api/credentials/'.$this->credential->id, $data);
     }
-
 }

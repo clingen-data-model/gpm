@@ -2,19 +2,16 @@
 
 namespace App\Modules\ExpertPanel\Events;
 
-use Exception;
-use Illuminate\Support\Carbon;
 use App\Events\PublishableEvent;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Support\Carbon as SupportCarbon;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
+use Exception;
+use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Carbon;
 
 class StepApproved extends ExpertPanelEvent implements PublishableEvent
 {
@@ -28,24 +25,24 @@ class StepApproved extends ExpertPanelEvent implements PublishableEvent
      *
      * @return void
      */
-    public function __construct(public ExpertPanel  $application, public int $step, public Carbon $dateApproved)
+    public function __construct(public ExpertPanel $application, public int $step, public Carbon $dateApproved)
     {
         //
     }
 
-    public function getProperties():array
+    public function getProperties(): array
     {
         return [
-            'date_approved' => $this->dateApproved
+            'date_approved' => $this->dateApproved,
         ];
     }
 
-    public function getLogEntry():string
+    public function getLogEntry(): string
     {
         return 'Step '.$this->step.' approved';
     }
 
-    public function getLogDate():Carbon
+    public function getLogDate(): Carbon
     {
         return $this->dateApproved;
     }
@@ -90,9 +87,7 @@ class StepApproved extends ExpertPanelEvent implements PublishableEvent
         }
 
         return $message;
-
     }
-
 
     /**
      * Get the channels the event should broadcast on.

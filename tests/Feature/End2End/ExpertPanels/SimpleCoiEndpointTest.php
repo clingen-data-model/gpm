@@ -2,19 +2,12 @@
 
 namespace Tests\Feature\End2End\ExpertPanels;
 
-use Carbon\Carbon;
-use Tests\TestCase;
 use App\Models\Document;
-use Illuminate\Support\Str;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
-use Illuminate\Http\UploadedFile;
-use App\Modules\Group\Models\Group;
 use App\Modules\ExpertPanel\Models\Coi;
+use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\GroupMember;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 /**
  * @group coi
@@ -23,7 +16,7 @@ class SimpleCoiEndpointTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -83,7 +76,6 @@ class SimpleCoiEndpointTest extends TestCase
             'coi' => 'no coi',
         ];
 
-
         $this->json('POST', '/api/coi/'.$this->group->coi_code, $data)
         ->assertStatus(200);
 
@@ -96,7 +88,7 @@ class SimpleCoiEndpointTest extends TestCase
             'data->contributions_to_gd_in_ep' => 1,
             'data->contributions_to_genes' => 'beans',
             'data->independent_efforts' => 'None',
-            'data->coi' => 'no coi'
+            'data->coi' => 'no coi',
         ]);
     }
 
@@ -108,25 +100,24 @@ class SimpleCoiEndpointTest extends TestCase
         $document = Document::factory()->create([
             'owner_id' => $this->group->id,
             'owner_type' => get_class($this->group),
-            'document_type_id' => config('documents.types.coi.id')
+            'document_type_id' => config('documents.types.coi.id'),
         ]);
 
         $data = [
-            "download_url" => "http://localhost:8080/documents/".$document->uuid,
-            "document_uuid" => $document->uuid
+            'download_url' => 'http://localhost:8080/documents/'.$document->uuid,
+            'document_uuid' => $document->uuid,
         ];
         $this->json('POST', '/api/coi/'.$this->group->coi_code, $data)
             ->assertStatus(200);
 
-
         $expectedData = array_merge($data, [
             'email' => 'Legacy Coi',
             'first_name' => 'Legacy',
-            'last_name' => 'Coi'
+            'last_name' => 'Coi',
         ]);
         $this->assertDatabaseHas('cois', [
             'group_id' => $this->group->id,
-            'data' => json_encode($expectedData)
+            'data' => json_encode($expectedData),
         ]);
     }
 }

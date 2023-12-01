@@ -2,8 +2,8 @@
 
 namespace App\Tasks\Actions;
 
-use Carbon\Carbon;
 use App\Tasks\Models\Task;
+use Carbon\Carbon;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 
@@ -15,6 +15,7 @@ class TaskComplete
     {
         $completedAt = $completedAt ?? Carbon::now();
         $task->update(['completed_at' => $completedAt]);
+
         return $task;
     }
 
@@ -28,7 +29,7 @@ class TaskComplete
     public function rules()
     {
         return [
-            'completed_at' => 'nullable|date'
+            'completed_at' => 'nullable|date',
         ];
     }
 }

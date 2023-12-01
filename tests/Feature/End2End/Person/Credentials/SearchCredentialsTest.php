@@ -2,12 +2,11 @@
 
 namespace Tests\Feature\End2End\Person\Credentials;
 
-use Tests\TestCase;
 use App\Models\Credential;
 use Database\Seeders\CredentialSeeder;
-use Illuminate\Testing\TestResponse;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\TestResponse;
+use Tests\TestCase;
 
 /**
  * @group credentials
@@ -16,7 +15,7 @@ class SearchCredentialsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->credentials = $this->seedCredentials();
@@ -81,12 +80,9 @@ class SearchCredentialsTest extends TestCase
             ->assertJsonCount(1)
             ->assertJsonFragment([
                 'id' => 1,
-                'name' => 'CGC'
+                'name' => 'CGC',
             ]);
     }
-
-
-
 
     private function makeRequest(?string $keyword = null): TestResponse
     {
@@ -94,13 +90,14 @@ class SearchCredentialsTest extends TestCase
         if ($keyword) {
             $url .= '?keyword='.$keyword;
         }
+
         return $this->json('GET', $url);
     }
 
     private function seedCredentials()
     {
         (new CredentialSeeder)->run();
+
         return Credential::all();
     }
-
 }

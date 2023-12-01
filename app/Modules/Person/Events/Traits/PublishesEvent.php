@@ -2,7 +2,6 @@
 
 namespace App\Modules\Person\Events\Traits;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 
 /**
@@ -48,17 +47,16 @@ trait PublishesEvent
                     'city' => $this->person->city,
                     'state' => $this->person->state,
                     'zip' => $this->person->zip,
-                    'country' => $this->person->country ? $this->person->country->name : null
+                    'country' => $this->person->country ? $this->person->country->name : null,
                 ],
-                'timezone' => $this->person->timezone
-            ]
+                'timezone' => $this->person->timezone,
+            ],
         ];
     }
 
-
     private function getInstitutionMessage(): ?array
     {
-        if (!$this->person->institution_id) {
+        if (! $this->person->institution_id) {
             return null;
         }
 
@@ -72,6 +70,4 @@ trait PublishesEvent
             'country' => $this->person->institution->country,
         ];
     }
-
-
 }

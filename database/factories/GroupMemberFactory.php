@@ -2,10 +2,9 @@
 
 namespace Database\Factories;
 
-use Illuminate\Support\Str;
 use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Person;
 use App\Modules\Group\Models\GroupMember;
+use App\Modules\Person\Models\Person;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class GroupMemberFactory extends Factory
@@ -29,7 +28,7 @@ class GroupMemberFactory extends Factory
             'person_id' => Person::factory(),
             'start_date' => $this->faker->dateTime(),
             'end_date' => null,
-            'is_contact' => 0
+            'is_contact' => 0,
         ];
     }
 }

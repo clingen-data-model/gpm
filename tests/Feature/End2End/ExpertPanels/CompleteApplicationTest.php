@@ -2,19 +2,17 @@
 
 namespace Tests\Feature\End2End\ExpertPanels;
 
-use Tests\TestCase;
-use Illuminate\Support\Carbon;
-use App\Modules\User\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\StepApprove;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
+use Tests\TestCase;
 
 class CompleteApplicationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -38,12 +36,12 @@ class CompleteApplicationTest extends TestCase
         $request->assertStatus(200);
         dump('fuck5');
         $request->assertJsonFragment([
-                'date_completed' => $dateApproved->toJson(),
+            'date_completed' => $dateApproved->toJson(),
         ]);
         dump('fuck6');
         $request->assertJsonFragment([
-                'current_step' => 1
-            ]);
+            'current_step' => 1,
+        ]);
     }
 
     /**
@@ -74,7 +72,7 @@ class CompleteApplicationTest extends TestCase
         $this->makeRequest(['date_approved' => $dateApproved])
             ->assertStatus(200)
             ->assertJsonFragment([
-                'date_completed' => $dateApproved->toJson()
+                'date_completed' => $dateApproved->toJson(),
             ]);
     }
 
@@ -84,5 +82,4 @@ class CompleteApplicationTest extends TestCase
 
         return $this->json('POST', '/api/applications/'.$this->expertPanel->group->uuid.'/current-step/approve', $data);
     }
-
 }

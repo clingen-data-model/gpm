@@ -2,20 +2,19 @@
 
 namespace Tests\Feature\End2End;
 
-use Carbon\Carbon;
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Person\Models\Person;
-use Tests\Stubs\TestDatabaseNotification;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Notification;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
+use Laravel\Sanctum\Sanctum;
+use Tests\Stubs\TestDatabaseNotification;
+use Tests\TestCase;
 
 class MarkNotificationReadTest extends TestCase
 {
     use RefreshDatabase;
-    
-    public function setup():void
+
+    public function setup(): void
     {
         parent::setup();
 
@@ -52,19 +51,20 @@ class MarkNotificationReadTest extends TestCase
     public function user_who_i_not_notifiable_can_mark_notification_read()
     {
         Carbon::setTestNow();
-        
+
         $this->makeRequest()
             ->assertStatus(200);
 
         $this->assertDatabaseHas('notifications', [
             'id' => $this->notification->id,
-            'read_at' => Carbon::now()
+            'read_at' => Carbon::now(),
         ]);
     }
 
     private function makeRequest()
     {
         $url = '/api/notifications/'.$this->notification->id;
+
         return $this->json('put', $url);
     }
 }

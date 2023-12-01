@@ -2,13 +2,12 @@
 
 namespace App\Actions\Utils;
 
-
 class TransformArrayForCsv
 {
     public function handle(array $data): string
     {
         $rows = [];
-        
+
         $fd = fopen('php://memory', 'rw');
         foreach ($data as $row) {
             if (count($rows) == 0) {
@@ -28,5 +27,4 @@ class TransformArrayForCsv
         $rows[] = trim(fgets($fd));
         rewind($fd);
     }
-    
 }

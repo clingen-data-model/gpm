@@ -1,21 +1,20 @@
 <?php
+
 namespace App\Modules\Person\Actions;
 
-use Carbon\Carbon;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Hash;
-use App\Modules\Person\Models\Invite;
-use Illuminate\Support\Facades\Event;
-use Lorisleiva\Actions\ActionRequest;
-use App\Modules\User\Actions\UserCreate;
 use App\Modules\Person\Events\InviteRedeemed;
-use Lorisleiva\Actions\Concerns\AsController;
+use App\Modules\Person\Models\Invite;
+use App\Modules\User\Actions\UserCreate;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Validation\ValidationException;
-use App\Modules\Person\Http\Requests\InviteRedemptionRequest;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsController;
 
 class InviteRedeem
 {
     use AsController;
+
     public function __construct(private UserCreate $createUser)
     {
     }
@@ -37,7 +36,6 @@ class InviteRedeem
             ->save();
         // END TODO
 
-
         Event::dispatch(new InviteRedeemed($invite, $user));
 
         return $invite;
@@ -56,7 +54,7 @@ class InviteRedeem
     public function rules(): array
     {
         return [
-            'code' => 'required'|'exists:invites,code',
+            'code' => 'required' | 'exists:invites,code',
             'email' => 'required|email|unique:users',
             'password' => 'required|max:255|confirmed',
         ];

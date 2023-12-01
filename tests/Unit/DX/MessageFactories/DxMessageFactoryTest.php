@@ -2,31 +2,27 @@
 
 namespace Tests\Unit\DX\MessageFactories;
 
-use Tests\TestCase;
-use App\Models\Role;
+use App\DataExchange\MessageFactories\DxMessageFactory;
 use App\Models\Permission;
-use Illuminate\Support\Carbon;
-use App\Modules\Group\Models\Group;
-use App\Modules\Group\Actions\GenesAdd;
-use App\Modules\ExpertPanel\Models\Gene;
-use App\Modules\Group\Events\GenesAdded;
-use App\Modules\Group\Events\GeneRemoved;
-use App\Modules\Group\Events\MemberAdded;
-use App\Modules\Group\Models\GroupMember;
-use Database\Factories\GroupMemberFactory;
-use App\Modules\Group\Events\MemberRemoved;
-use App\Modules\Group\Events\MemberRetired;
-use App\Modules\Group\Events\MemberUnretired;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\Group\Events\GeneAddedApproved;
-use App\Modules\Group\Events\MemberRoleRemoved;
+use App\Models\Role;
 use App\Modules\ExpertPanel\Events\StepApproved;
-use App\Modules\Group\Events\MemberRoleAssigned;
-use App\Modules\Group\Events\GeneRemovedApproved;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Models\Gene;
+use App\Modules\Group\Events\GeneRemoved;
+use App\Modules\Group\Events\GenesAdded;
+use App\Modules\Group\Events\MemberAdded;
 use App\Modules\Group\Events\MemberPermissionRevoked;
 use App\Modules\Group\Events\MemberPermissionsGranted;
-use App\DataExchange\MessageFactories\DxMessageFactory;
+use App\Modules\Group\Events\MemberRemoved;
+use App\Modules\Group\Events\MemberRetired;
+use App\Modules\Group\Events\MemberRoleAssigned;
+use App\Modules\Group\Events\MemberRoleRemoved;
+use App\Modules\Group\Events\MemberUnretired;
+use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\GroupMember;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
+use Tests\TestCase;
 
 /**
  * @group dx
@@ -35,12 +31,12 @@ class DxMessageFactoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
         $this->setupPermission('application-edit');
-        $this->expertPanel = ExpertPanel::factory()->create(['long_base_name'=>'TEST GROUP', 'affiliation_id' => 50666]);
+        $this->expertPanel = ExpertPanel::factory()->create(['long_base_name' => 'TEST GROUP', 'affiliation_id' => 50666]);
         Gene::factory(2)->create(['expert_panel_id' => $this->expertPanel->id]);
         GroupMember::factory(2)->create(['group_id' => $this->expertPanel->group->id]);
 
@@ -130,8 +126,6 @@ class DxMessageFactoryTest extends TestCase
         $this->assertMembersInMessage([$this->expertPanel->group->members->first()], $message);
     }
 
-
-
     /**
      * @test
      */
@@ -205,13 +199,12 @@ class DxMessageFactoryTest extends TestCase
         $genesMsg = array_map(function ($gene) {
             return [
                 'hgnc_id' => $gene->hgnc_id,
-                'gene_symbol' => $gene->gene_symbol
+                'gene_symbol' => $gene->gene_symbol,
             ];
         }, $genes);
 
         $this->assertEquals($genesMsg, $comparisonArray['genes']);
     }
-
 
     private function assertMembersInMessage($members, $message)
     {
@@ -229,14 +222,13 @@ class DxMessageFactoryTest extends TestCase
         $this->assertEquals($membersMsg, $message['data']['members']);
     }
 
-
     private function assertExpertPanelInMessage($message)
     {
         $this->assertEquals([
             'id' => $this->expertPanel->group->uuid,
             'name' => $this->expertPanel->group->displayName,
             'type' => $this->expertPanel->group->fullType->name,
-            'affiliation_id' => $this->expertPanel->affiliation_id
-         ], $message['data']['expert_panel']);
+            'affiliation_id' => $this->expertPanel->affiliation_id,
+        ], $message['data']['expert_panel']);
     }
 }

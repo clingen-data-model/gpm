@@ -2,37 +2,36 @@
 
 namespace Tests\Feature\End2End\Groups\Genes;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Mail;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Mail\GeneAddedMail;
 use App\Modules\Group\Mail\GeneRemovedMail;
-use Tests\Traits\SeedsHgncGenesAndDiseases;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Mail;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
+use Tests\Traits\SeedsHgncGenesAndDiseases;
 
 class MailSentOnGeneListChangeTest extends TestCase
 {
     use RefreshDatabase;
     use SeedsHgncGenesAndDiseases;
-    
-    public function setup():void
+
+    public function setup(): void
     {
         parent::setup();
         $this->setupPermission('ep-applications-manage');
         $this->setupForGroupTest();
         $this->seedGenes();
         $this->seedDiseases();
-        
+
         config(['app.features.notify_scope_change' => true]);
         $this->user = $this->setupUser(null, ['ep-applications-manage']);
 
         $this->expertPanel = ExpertPanel::factory()->vcep()->create();
         $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/genes';
     }
-    
+
     /**
      * @test
      */
@@ -42,10 +41,10 @@ class MailSentOnGeneListChangeTest extends TestCase
 
         $this->makeAddRequest()
             ->assertStatus(200);
-        
+
         Mail::assertNotSent(GeneAddedMail::class);
     }
-    
+
     /**
      * @test
      */
@@ -56,15 +55,15 @@ class MailSentOnGeneListChangeTest extends TestCase
         $this->gene1 = $this->expertPanel->genes()->create([
             'hgnc_id' => 123345,
             'mondo_id' => 'MONDO:1234567',
-            'gene_symbol' => uniqid()
+            'gene_symbol' => uniqid(),
         ]);
 
         $this->makeRemoveRequest()
             ->assertStatus(200);
-        
+
         Mail::assertNotSent(GeneRemovedMail::class);
     }
-    
+
     /**
      * @test
      */
@@ -79,10 +78,9 @@ class MailSentOnGeneListChangeTest extends TestCase
 
         $this->makeAddRequest()
             ->assertStatus(200);
-        
+
         Mail::assertNotSent(GeneRemovedMail::class);
     }
-    
 
     /**
      * @test
@@ -99,15 +97,14 @@ class MailSentOnGeneListChangeTest extends TestCase
         $this->gene1 = $this->expertPanel->genes()->create([
             'hgnc_id' => 123345,
             'mondo_id' => 'MONDO:1234567',
-            'gene_symbol' => uniqid()
+            'gene_symbol' => uniqid(),
         ]);
 
         $this->makeRemoveRequest()
             ->assertStatus(200);
-        
+
         Mail::assertNotSent(GeneRemovedMail::class);
     }
-    
 
     /**
      * @test
@@ -120,7 +117,7 @@ class MailSentOnGeneListChangeTest extends TestCase
 
         $this->makeAddRequest()
             ->assertStatus(200);
-        
+
         Mail::assertSent(GeneAddedMail::class);
         Mail::assertSent(function (GeneAddedMail $mail) {
             return $mail->group->id == $this->expertPanel->group->id
@@ -136,7 +133,7 @@ class MailSentOnGeneListChangeTest extends TestCase
         $this->gene1 = $this->expertPanel->genes()->create([
             'hgnc_id' => 123345,
             'mondo_id' => 'MONDO:1234567',
-            'gene_symbol' => uniqid()
+            'gene_symbol' => uniqid(),
         ]);
         $this->expertPanel->step_1_approval_date = Carbon::now();
         $this->expertPanel->save();
@@ -144,7 +141,7 @@ class MailSentOnGeneListChangeTest extends TestCase
 
         $this->makeRemoveRequest()
             ->assertStatus(200);
-        
+
         Mail::assertSent(GeneRemovedMail::class);
         Mail::assertSent(function (GeneRemovedMail $mail) {
             return $mail->group->id == $this->expertPanel->group->id
@@ -152,17 +149,16 @@ class MailSentOnGeneListChangeTest extends TestCase
         });
     }
 
-
-
     private function makeAddRequest($data = null)
     {
         Carbon::setTestNow('2022-01-01');
         $this->seedGenes(['hgnc_id' => 789012, 'gene_symbol' => 'ABC12']);
         $this->seedDiseases(['mondo_id' => 'MONDO:8901234', 'name' => 'fartsalot']);
 
-        $genesData = $data ?? [ ['hgnc_id'=>12345, 'mondo_id' => 'MONDO:9876543'] ];
+        $genesData = $data ?? [['hgnc_id' => 12345, 'mondo_id' => 'MONDO:9876543']];
 
         Sanctum::actingAs($this->user);
+
         return $this->json('POST', $this->url, ['genes' => $genesData]);
     }
 
@@ -170,6 +166,7 @@ class MailSentOnGeneListChangeTest extends TestCase
     {
         Carbon::setTestNow('2021-11-01');
         Sanctum::actingAs($this->user);
+
         return $this->json('DELETE', $this->url.'/'.$this->gene1->id)
             ->assertStatus(200);
     }

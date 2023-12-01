@@ -2,14 +2,14 @@
 
 use Ramsey\Uuid\Uuid;
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__.'/vendor/autoload.php';
 
 if (file_exists(__DIR__.'/.env')) {
     $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
     $dotenv->load();
 }
 
-echo "You are producing as group ".env('DX_GROUP')."\n";
+echo 'You are producing as group '.env('DX_GROUP')."\n";
 
 $argments = [];
 $options = [];
@@ -22,10 +22,11 @@ foreach ($argv as $idx => $arg) {
         $value = true;
         if (preg_match('/=/', $name)) {
             [$name, $value] = explode('=', $name);
-        } elseif (isset($argv[$idx+1])) {
-            $value = $argv[$idx+1];
+        } elseif (isset($argv[$idx + 1])) {
+            $value = $argv[$idx + 1];
         }
         $options[$name] = $value;
+
         continue;
     }
     $arguments[] = $arg;
@@ -39,6 +40,7 @@ function getTopicName($options)
     echo "Topic:\n";
     $stdin = fopen('php://stdin', 'r');
     $topicName = fgets($stdin);
+
     return trim($topicName);
 }
 
@@ -47,7 +49,7 @@ $topicName = getTopicName($options);
 $conf = new RdKafka\Conf();
 
 $conf->setErrorCb(function ($kafka, $err, $reason) {
-    throw new StreamingServiceException("Kafka producer error: ".rd_kafka_err2str($err)." (reason: ".$reason.')');
+    throw new StreamingServiceException('Kafka producer error: '.rd_kafka_err2str($err).' (reason: '.$reason.')');
 });
 
 $conf->setStatsCb(function ($kafka, $json, $json_len) {
@@ -67,14 +69,13 @@ $conf->set('sasl.password', env('DX_PASSWORD'));
 $conf->set('group.id', env('DX_GROUP'));
 $conf->set('metadata.broker.list', env('DX_BROKER'));
 
-
 $producer = new RdKafka\Producer($conf);
 $producer->setLogLevel(LOG_DEBUG);
 $producer->addBrokers(env('DX_BROKER'));
 
 $topic = $producer->newTopic($topicName);
 
-$stdin = fopen("php://stdin", "r");
+$stdin = fopen('php://stdin', 'r');
 
 echo "starting input loop...\n";
 while (true) {
@@ -84,11 +85,10 @@ while (true) {
     }
     dump(trim($line));
     $topic->produce(RD_KAFKA_PARTITION_UA, 0, json_encode(['test' => trim($line)]), Uuid::uuid4()->toString());
-    
+
     echo "tried to produce message '$line'\n";
     $producer->poll(0);
 }
-
 
 for ($flushRetries = 0; $flushRetries < 10; $flushRetries++) {
     $result = $producer->flush(10000);

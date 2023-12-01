@@ -3,10 +3,9 @@
 namespace App\Modules\User\Http\Resources;
 
 use App\Http\Resources\RoleResource;
-use App\Http\Resources\PermissionResource;
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Modules\Group\Http\Resources\MemberResource;
 use App\Modules\Person\Http\Resources\PersonDetailResource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class CurrentUserResource extends JsonResource
 {

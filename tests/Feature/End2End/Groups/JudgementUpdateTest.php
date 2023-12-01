@@ -2,17 +2,17 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Testing\TestResponse;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Notifications\JudgementActivityNotification;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Testing\TestResponse;
+use Laravel\Sanctum\Sanctum;
 
 class JudgementUpdateTest extends JudgementTest
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
 
@@ -46,11 +46,9 @@ class JudgementUpdateTest extends JudgementTest
         $this->assertDatabaseHas('judgements', [
             'id' => $this->judgement->id,
             'decision' => 'approve-after-revisions',
-            'notes' => 'These are my comments I want to add.'
+            'notes' => 'These are my comments I want to add.',
         ]);
     }
-
-
 
     /**
      * @test
@@ -59,12 +57,12 @@ class JudgementUpdateTest extends JudgementTest
     {
         $this->makeRequest([])
             ->assertValidationErrors([
-                'decision' => ['This is required.']
+                'decision' => ['This is required.'],
             ]);
 
         $this->makeRequest(['decision' => 'hedgehogs'])
             ->assertValidationErrors([
-                'decision' => ['The selection is invalid.']
+                'decision' => ['The selection is invalid.'],
             ]);
     }
 
@@ -85,17 +83,16 @@ class JudgementUpdateTest extends JudgementTest
         Notification::assertSentTo($commenter->person, JudgementActivityNotification::class);
     }
 
-
     private function makeRequest($data = null): TestResponse
     {
         $data = $data ?? [
             'decision' => 'approve-after-revisions',
-            'notes' => "These are my comments I want to add.",
-            'person_id' => $this->user->person->id
+            'notes' => 'These are my comments I want to add.',
+            'person_id' => $this->user->person->id,
         ];
 
         $url = '/api/groups/'.$this->expertPanel->group->uuid.'/application/judgements/'.$this->judgement->id;
+
         return $this->json('PUT', $url, $data);
     }
-
 }

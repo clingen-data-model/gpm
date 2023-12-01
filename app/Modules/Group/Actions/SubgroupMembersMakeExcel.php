@@ -1,18 +1,20 @@
 <?php
+
 namespace App\Modules\Group\Actions;
 
-use Carbon\Carbon;
 use App\Modules\Group\Models\Group;
-use Lorisleiva\Actions\ActionRequest;
-use Box\Spout\Common\Entity\Style\Color;
 use App\Modules\Group\Models\GroupMember;
 use Box\Spout\Common\Entity\Style\Border;
-use Lorisleiva\Actions\Concerns\AsController;
-use Box\Spout\Writer\Common\Creator\Style\StyleBuilder;
+use Box\Spout\Common\Entity\Style\Color;
 use Box\Spout\Writer\Common\Creator\Style\BorderBuilder;
+use Box\Spout\Writer\Common\Creator\Style\StyleBuilder;
 use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
+use Carbon\Carbon;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsController;
 
-class SubgroupMembersMakeExcel {
+class SubgroupMembersMakeExcel
+{
     use AsController;
 
     private $memberEagerLoads = ['members', 'members.roles', 'members.permissions', 'members.person', 'members.person.institution', 'members.person.country', 'members.latestCoi'];
@@ -22,7 +24,7 @@ class SubgroupMembersMakeExcel {
         $group->load('children', ...$this->memberEagerLoads);
 
         $filename = sys_get_temp_dir().'/'.$this->makeFileName($group);
-        $writer  = $this->getXLSXWriter($filename);
+        $writer = $this->getXLSXWriter($filename);
 
         $sheet = $writer->getCurrentSheet();
         $sheet->setName('All Group & Subgroup members');
@@ -35,6 +37,7 @@ class SubgroupMembersMakeExcel {
         }
 
         $writer->close();
+
         return response()->download($filename, $this->makeFileName($group), ['Content-Type' => 'application/xlsx']);
     }
 
@@ -44,7 +47,7 @@ class SubgroupMembersMakeExcel {
         $groupsById->put($group->id, $group);
         $members = $group->members->all();
 
-        foreach($group->children as $subgroup) {
+        foreach ($group->children as $subgroup) {
             $members[] = $subgroup->members;
         }
         $groupedMembers = collect($members)->flatten()->groupBy('person_id');
@@ -54,6 +57,7 @@ class SubgroupMembersMakeExcel {
 
         $rows = $groupedMembers->map(function ($memberships) use ($groupsById) {
             $person = $memberships->first()->person;
+
             return WriterEntityFactory::createRowFromArray([
                 $person->name,
                 $person->email,
@@ -62,16 +66,15 @@ class SubgroupMembersMakeExcel {
                     return (isset($groupsById[$mem->group_id]))
                         ? $groupsById[$mem->group_id]->display_name
                         : null;
-                })->filter()->join(', ')
+                })->filter()->join(', '),
             ], (new StyleBuilder())->setShouldWrapText(false)->build());
         })->all();
 
         $writer->addRows($rows);
     }
 
-
-
-    private function writeGroupSheet($writer, $group) {
+    private function writeGroupSheet($writer, $group)
+    {
         $sheet = $writer->addNewSheetAndMakeItCurrent();
         $sheetName = $group->name.' '.strtoupper($group->type->name);
         if (strlen($group->name) > 26) {
@@ -86,6 +89,7 @@ class SubgroupMembersMakeExcel {
         $memberRows = $group->members->map(function ($member) use ($noWrapStyle) {
             $row = $this->getGroupMemberRow($member);
             $row->setStyle($noWrapStyle);
+
             return $row;
         });
         $writer
@@ -119,21 +123,19 @@ class SubgroupMembersMakeExcel {
             $member->person->addressString,
             ($member->person->contry) ? $member->person->contry->name : null,
             $member->person->timezone,
-       ]));
+        ]));
     }
 
-    private function truncateValues(Array $array, int $max = 10000): array
+    private function truncateValues(array $array, int $max = 10000): array
     {
         return collect($array)->map(function ($val) use ($max) {
-            if (!is_string($val)) {
+            if (! is_string($val)) {
                 return $val;
             }
 
-            return strlen($val) > $max ? substr($val, 0, $max-3).'...' : $val;
-
+            return strlen($val) > $max ? substr($val, 0, $max - 3).'...' : $val;
         })->toArray();
     }
-
 
     private function getGroupHeaderRow()
     {
@@ -160,7 +162,6 @@ class SubgroupMembersMakeExcel {
         ], $this->getHeaderStyle());
     }
 
-
     private function makeFileName(Group $group)
     {
         return preg_replace('/[\/\?\*\[\]\\\]/', '', $group->display_name).'-full-membership'.Carbon::now()->format('Y-m-d').'.xlsx';
@@ -170,6 +171,7 @@ class SubgroupMembersMakeExcel {
     {
         $writer = WriterEntityFactory::createXLSXWriter();
         $writer->openToFile($fileName);
+
         return $writer;
     }
 
@@ -183,6 +185,4 @@ class SubgroupMembersMakeExcel {
             ->setBorder($border)
             ->build();
     }
-
-
 }

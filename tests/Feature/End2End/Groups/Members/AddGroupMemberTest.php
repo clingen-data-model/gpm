@@ -2,22 +2,19 @@
 
 namespace Tests\Feature\End2End\Groups\Members;
 
-use Carbon\Carbon;
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
 use App\Models\Role as ModelsRole;
-use Spatie\Permission\Models\Role;
-use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Person;
-use Illuminate\Support\Facades\Event;
 use App\Modules\Group\Events\MemberAdded;
+use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\GroupMember;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Notification;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Notifications\AddedToGroupNotification;
+use App\Modules\Person\Models\Person;
+use App\Modules\User\Models\User;
+use Carbon\Carbon;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Notification;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 /**
  * @group groups
@@ -28,11 +25,11 @@ class AddGroupMemberTest extends TestCase
     use RefreshDatabase;
     use SetsUpGroupPersonAndMember;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
-        $this->group = Group::factory()->create(['group_type_id'=> 1]);
+        $this->group = Group::factory()->create(['group_type_id' => 1]);
         $this->person = Person::factory()->create();
         $this->user = $this->setupUser(permissions: ['groups-manage']);
         Sanctum::actingAs($this->user);
@@ -56,7 +53,7 @@ class AddGroupMemberTest extends TestCase
 
         $response = $this->json('POST', $url, $data)->assertStatus(404);
     }
-    
+
     /**
      * @test
      */
@@ -76,11 +73,11 @@ class AddGroupMemberTest extends TestCase
         $this->user->revokePermissionTo('groups-manage');
         $this->setupPermission('ep-applications-manage');
         $this->user->givePermissionTo('ep-applications-manage');
-        
+
         $this->makeRequest()
             ->assertStatus(201);
     }
-    
+
     /**
      * @test
      */
@@ -92,7 +89,6 @@ class AddGroupMemberTest extends TestCase
         $this->makeRequest()
             ->assertStatus(201);
     }
-    
 
     /**
      * @test
@@ -108,7 +104,6 @@ class AddGroupMemberTest extends TestCase
         $this->makeRequest()
             ->assertStatus(201);
     }
-    
 
     /**
      * @test
@@ -120,10 +115,10 @@ class AddGroupMemberTest extends TestCase
 
         $this->assertDatabaseHas('group_members', [
             'group_id' => $this->group->id,
-            'person_id' => $this->person->id
+            'person_id' => $this->person->id,
         ]);
     }
-    
+
     /**
      * @test
      */
@@ -139,11 +134,11 @@ class AddGroupMemberTest extends TestCase
         $response->assertJsonFragment([
             'uuid' => $this->person->uuid,
             'first_name' => $this->person->first_name,
-            'start_date' => Carbon::now()->toISOString()
+            'start_date' => Carbon::now()->toISOString(),
         ]);
         $this->assertEquals($this->role->id, $response->original->roles[0]->id);
     }
-    
+
     /**
      * @test
      */
@@ -157,12 +152,12 @@ class AddGroupMemberTest extends TestCase
         $this->assertDatabaseHas('model_has_roles', [
             'model_type' => GroupMember::class,
             'model_id' => $response->original->id,
-            'role_id' => $this->role->id
+            'role_id' => $this->role->id,
         ]);
         $this->assertDatabaseHas('model_has_roles', [
             'model_type' => GroupMember::class,
             'model_id' => $response->original->id,
-            'role_id' => $role2->id
+            'role_id' => $role2->id,
         ]);
     }
 
@@ -190,10 +185,10 @@ class AddGroupMemberTest extends TestCase
         $this->assertDatabaseHas('activity_log', [
             'subject_type' => Group::class,
             'subject_id' => $this->group->id,
-            'properties->email' => $this->person->email
+            'properties->email' => $this->person->email,
         ]);
     }
-    
+
     /**
      * @test
      */
@@ -204,10 +199,10 @@ class AddGroupMemberTest extends TestCase
         $this->assertDatabaseHas('group_members', [
             'group_id' => $this->group->id,
             'person_id' => $this->person->id,
-            'is_contact' => 1
+            'is_contact' => 1,
         ]);
     }
-    
+
     /**
      * @test
      */
@@ -219,14 +214,13 @@ class AddGroupMemberTest extends TestCase
 
         Notification::assertSentTo($this->person, AddedToGroupNotification::class);
     }
-    
 
     private function makeRequest($personId = null, ?array $roleIds = null, bool $isContact = false)
     {
         $data = $data ?? [
             'person_id' => $personId ?? $this->person->id,
             'role_ids' => $roleIds ?? [$this->role->id],
-            'is_contact' => $isContact
+            'is_contact' => $isContact,
         ];
 
         $url = '/api/groups/'.$this->group->uuid.'/members';
@@ -236,6 +230,7 @@ class AddGroupMemberTest extends TestCase
             $url,
             $data
         );
+
         return $response;
     }
 }

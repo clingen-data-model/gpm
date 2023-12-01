@@ -1,15 +1,13 @@
 <?php
+
 namespace App\Modules\Group\Actions;
 
-use InvalidArgumentException;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use App\Modules\ExpertPanel\Models\Gene;
+use App\Modules\Group\Events\GeneRemoved;
+use App\Modules\Group\Events\GenesAdded;
 use App\Modules\Group\Models\Group;
 use App\Services\HgncLookupInterface;
-use App\Modules\ExpertPanel\Models\Gene;
-use App\Modules\Group\Events\GenesAdded;
-use App\Modules\Group\Events\GeneRemoved;
-use Illuminate\Validation\ValidationException;
+use InvalidArgumentException;
 
 class GenesSyncToGcep
 {
@@ -21,14 +19,14 @@ class GenesSyncToGcep
     {
         $genes = collect($genes)->filter();
 
-        if (!$group->isGcep) {
+        if (! $group->isGcep) {
             throw new InvalidArgumentException('Expected group '.$group->name.' ('.$group->id.') to be a GCEP.  group is a '.$group->fullType->name);
         }
 
         $existingGeneSymbols = $group->expertPanel->genes->pluck('gene_symbol');
         $this->removeGenes($group, $existingGeneSymbols->diff($genes));
         $this->addNewGenes($group, $genes->diff($existingGeneSymbols));
-        
+
         return $group;
     }
 
@@ -44,7 +42,6 @@ class GenesSyncToGcep
                 });
         }
     }
-    
 
     private function addNewGenes($group, $addedGeneSymbols)
     {
@@ -52,7 +49,7 @@ class GenesSyncToGcep
             $genes = $addedGeneSymbols->map(function ($gs) {
                 return new Gene([
                     'hgnc_id' => $this->hgncLookup->findHgncIdBySymbol($gs),
-                    'gene_symbol' => $gs
+                    'gene_symbol' => $gs,
                 ]);
             });
             $group->expertPanel->genes()->saveMany($genes);

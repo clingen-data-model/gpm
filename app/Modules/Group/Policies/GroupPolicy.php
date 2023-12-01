@@ -2,8 +2,8 @@
 
 namespace App\Modules\Group\Policies;
 
-use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
+use App\Modules\User\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class GroupPolicy
@@ -13,7 +13,6 @@ class GroupPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @param  \App\Modules\User\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function viewAny(User $user)
@@ -24,8 +23,6 @@ class GroupPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\Modules\User\Models\User  $user
-     * @param  \App\Modules\Group\Models\Group  $group
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function view(User $user, Group $group)
@@ -36,7 +33,6 @@ class GroupPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @param  \App\Modules\User\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function create(User $user)
@@ -47,8 +43,6 @@ class GroupPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Modules\User\Models\User  $user
-     * @param  \App\Modules\Group\Models\Group  $group
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function update(User $user, Group $group)
@@ -59,8 +53,6 @@ class GroupPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\Modules\User\Models\User  $user
-     * @param  \App\Modules\Group\Models\Group  $group
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function delete(User $user, Group $group)
@@ -71,8 +63,6 @@ class GroupPolicy
     /**
      * Determine whether the user can restore the model.
      *
-     * @param  \App\Modules\User\Models\User  $user
-     * @param  \App\Modules\Group\Models\Group  $group
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function restore(User $user, Group $group)
@@ -83,8 +73,6 @@ class GroupPolicy
     /**
      * Determine whether the user can permanently delete the model.
      *
-     * @param  \App\Modules\User\Models\User  $user
-     * @param  \App\Modules\Group\Models\Group  $group
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function forceDelete(User $user, Group $group)
@@ -106,7 +94,6 @@ class GroupPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Modules\User\Models\User  $user
      * @param  \App\Models\ExpertPanel  $expertPanel
      * @return \Illuminate\Auth\Access\Response|bool
      */
@@ -119,7 +106,6 @@ class GroupPolicy
     /**
      * Determine whether the user can add a gene to an EPs scope.
      *
-     * @param  \App\Modules\User\Models\User  $user
      * @param  \App\Models\ExpertPanel  $expertPanel
      * @return \Illuminate\Auth\Access\Response|bool
      */
@@ -132,7 +118,6 @@ class GroupPolicy
     /**
      * Determine whether the user can update a gene in the EPs scope.
      *
-     * @param  \App\Modules\User\Models\User  $user
      * @param  \App\Models\ExpertPanel  $expertPanel
      * @return \Illuminate\Auth\Access\Response|bool
      */
@@ -145,7 +130,6 @@ class GroupPolicy
     /**
      * Determine whether the user can remove a gene to an EPs scope.
      *
-     * @param  \App\Modules\User\Models\User  $user
      * @param  \App\Models\ExpertPanel  $expertPanel
      * @return \Illuminate\Auth\Access\Response|bool
      */
@@ -158,7 +142,6 @@ class GroupPolicy
     /**
      * Determine whether the user can add an evidence summary to a VCEP.
      *
-     * @param  \App\Modules\User\Models\User  $user
      * @param  \App\Models\ExpertPanel  $expertPanel
      * @return \Illuminate\Auth\Access\Response|bool
      */
@@ -209,7 +192,6 @@ class GroupPolicy
         return $this->managesGroupsOrApplications($user)
             || ($user->person && $user->person->isMemberOf($group));
     }
-
 
     private function managesGroupsOrApplications(User $user): bool
     {

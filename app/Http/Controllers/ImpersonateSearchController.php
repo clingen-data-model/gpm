@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Modules\User\Models\User;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\ImpersonatableUserResource;
+use App\Modules\User\Models\User;
+use Illuminate\Http\Request;
 
 class ImpersonateSearchController extends Controller
 {

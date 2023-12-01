@@ -2,19 +2,18 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
-use App\Modules\Group\Models\Group;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Models\Group;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class UpdateScopeDescriptionTest extends TestCase
 {
     use RefreshDatabase;
-    
-    public function setup():void
+
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -43,7 +42,7 @@ class UpdateScopeDescriptionTest extends TestCase
         $this->json('PUT', $this->url, [])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'scope_description' => ['This field is required.']
+                'scope_description' => ['This field is required.'],
             ]);
     }
 
@@ -57,16 +56,16 @@ class UpdateScopeDescriptionTest extends TestCase
         $response = $this->json('PUT', $this->url, ['scope_description' => $description]);
         $response->assertStatus(200);
         $response->assertJsonFragment([
-            'uuid' => $this->expertPanel->group->uuid
+            'uuid' => $this->expertPanel->group->uuid,
         ]);
         $response->assertJsonFragment([
-            'uuid' => $this->expertPanel->uuid
+            'uuid' => $this->expertPanel->uuid,
         ]);
         $response->assertJsonFragment([
-            'scope_description' => $description
+            'scope_description' => $description,
         ]);
     }
-    
+
     /**
      * @test
      */
@@ -86,7 +85,7 @@ class UpdateScopeDescriptionTest extends TestCase
             'properties->scope_description' => $description,
         ]);
     }
-    
+
     /**
      * @test
      */
@@ -102,7 +101,7 @@ class UpdateScopeDescriptionTest extends TestCase
         $response->assertStatus(422);
 
         $response->assertJsonFragment([
-            'scope_description' => ['A description of scope can only be set for expert panels.']
+            'scope_description' => ['A description of scope can only be set for expert panels.'],
         ]);
     }
 }

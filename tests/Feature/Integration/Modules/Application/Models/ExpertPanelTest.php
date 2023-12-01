@@ -2,15 +2,11 @@
 
 namespace Tests\Feature\Integration\Modules\Application\Models;
 
-use Tests\TestCase;
 use App\Models\Document;
-use App\Modules\ExpertPanel\Models\NextAction;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Event;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Modules\ExpertPanel\Events\ApplicationCompleted;
-use App\Modules\ExpertPanel\Events\ExpertPanelAttributesUpdated;
+use Illuminate\Support\Carbon;
+use Tests\TestCase;
 
 /**
  * @group applications
@@ -19,14 +15,14 @@ use App\Modules\ExpertPanel\Events\ExpertPanelAttributesUpdated;
 class ExpertPanelTest extends TestCase
 {
     use RefreshDatabase;
-    
-    public function setup():void
+
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
         Carbon::setTestNow('2021-01-01');
     }
-    
+
     /**
      * @test
      */
@@ -46,7 +42,7 @@ class ExpertPanelTest extends TestCase
 
         $this->assertEquals($expertPanel->name, $expertPanel->long_base_name);
     }
-    
+
     /**
      * @test
      */
@@ -70,21 +66,21 @@ class ExpertPanelTest extends TestCase
         $document1 = Document::factory()
                         ->make([
                             'document_type_id' => config('documents.types.scope.id'),
-                            'version' => 1
+                            'version' => 1,
                         ]);
         $document2 = Document::factory()
                         ->make([
-                        'document_type_id' => config('documents.types.scope.id'),
-                        'version' => 2
-                    ]);
-        
+                            'document_type_id' => config('documents.types.scope.id'),
+                            'version' => 2,
+                        ]);
+
         $expertPanel->group->documents()->save($document1);
         $expertPanel->group->documents()->save($document2);
 
         $this->assertEquals($expertPanel->group->documents->count(), 2);
         $this->assertEquals($expertPanel->firstScopeDocument->id, $document1->id);
     }
-    
+
     /**
      * @test
      */
@@ -94,14 +90,14 @@ class ExpertPanelTest extends TestCase
         $document1 = Document::factory()
                         ->make([
                             'document_type_id' => config('documents.types.final-app.id'),
-                            'version' => 1
+                            'version' => 1,
                         ]);
         $document2 = Document::factory()
                         ->make([
-                        'document_type_id' => config('documents.types.final-app.id'),
-                        'version' => 2
-                    ]);
-        
+                            'document_type_id' => config('documents.types.final-app.id'),
+                            'version' => 2,
+                        ]);
+
         $expertPanel->group->documents()->save($document1);
         $expertPanel->group->documents()->save($document2);
 

@@ -2,22 +2,20 @@
 
 namespace Tests\Feature\End2End;
 
-use Carbon\Carbon;
-use Tests\TestCase;
 use App\Models\FollowAction;
-use App\Modules\Group\Models\Group;
-use App\Modules\Group\Models\GroupStatus;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\Group\Events\GroupNameUpdated;
 use App\Modules\Group\Actions\GroupStatusUpdate;
 use App\Modules\Group\Events\GroupStatusUpdated;
+use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\GroupStatus;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class FollowActionsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -25,7 +23,7 @@ class FollowActionsTest extends TestCase
         $this->followAction = FollowAction::create([
             'event_class' => GroupStatusUpdated::class,
             'follower' => TestFollower::class,
-            'args' => ['targetStatusId' => 4]
+            'args' => ['targetStatusId' => 4],
         ]);
     }
 
@@ -38,15 +36,15 @@ class FollowActionsTest extends TestCase
 
         $this->assertDatabaseHas('groups', [
             'id' => $this->group->id,
-            'name' => 'Updated by follow action but it\'s not complete.'
+            'name' => 'Updated by follow action but it\'s not complete.',
         ]);
 
         $this->assertDatabaseHas('follow_actions', [
             'id' => $this->followAction->id,
-            'completed_at' => null
+            'completed_at' => null,
         ]);
     }
-    
+
     /**
      * @test
      */
@@ -57,15 +55,14 @@ class FollowActionsTest extends TestCase
 
         $this->assertDatabaseHas('groups', [
             'id' => $this->group->id,
-            'name' => 'Updated by follow action'
+            'name' => 'Updated by follow action',
         ]);
 
         $this->assertDatabaseHas('follow_actions', [
             'id' => $this->followAction->id,
-            'completed_at' => Carbon::now()
+            'completed_at' => Carbon::now(),
         ]);
     }
-    
 }
 
 class TestFollower
@@ -74,11 +71,11 @@ class TestFollower
     {
         if ($event->group->group_status_id == $targetStatusId) {
             $event->group->update(['name' => 'Updated by follow action']);
+
             return true;
         }
         $event->group->update(['name' => 'Updated by follow action but it\'s not complete.']);
 
         return false;
     }
-    
 }

@@ -2,12 +2,11 @@
 
 namespace App\Modules\Group\Actions;
 
-use App\Modules\Group\Models\Judgement;
-use Lorisleiva\Actions\Concerns\AsListener;
 use App\Modules\Group\Events\JudgementEvent;
-use Illuminate\Support\Facades\Notification;
-use App\Modules\Group\Actions\SubmissionNotifiablesGet;
+use App\Modules\Group\Models\Judgement;
 use App\Modules\Group\Notifications\JudgementActivityNotification;
+use Illuminate\Support\Facades\Notification;
+use Lorisleiva\Actions\Concerns\AsListener;
 
 class JudgementNotifyAboutEvent
 {
@@ -16,7 +15,6 @@ class JudgementNotifyAboutEvent
     public function __construct(private SubmissionNotifiablesGet $getSubmissionNotifiables)
     {
     }
-
 
     public function handle(Judgement $judgement, string $type)
     {
@@ -36,8 +34,7 @@ class JudgementNotifyAboutEvent
     private function getEventString(JudgementEvent $event): string
     {
         $classParts = explode('\\', get_class($event));
-        return preg_replace('/Comment/i', '', $classParts[count($classParts)-1]);
+
+        return preg_replace('/Comment/i', '', $classParts[count($classParts) - 1]);
     }
-
-
 }

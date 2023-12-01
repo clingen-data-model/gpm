@@ -1,15 +1,16 @@
 <?php
+
 namespace App\Modules\Group\Actions;
 
-use Illuminate\Http\Request;
+use App\Modules\Group\Events\MemberUpdated;
+use App\Modules\Group\Http\Resources\MemberResource;
 use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\GroupMember;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
-use App\Modules\Group\Models\GroupMember;
 use Lorisleiva\Actions\Concerns\AsAction;
-use App\Modules\Group\Events\MemberUpdated;
-use Illuminate\Auth\Access\AuthorizationException;
-use App\Modules\Group\Http\Resources\MemberResource;
 
 class MemberUpdate
 {
@@ -34,7 +35,7 @@ class MemberUpdate
 
         $member = $this->handle($groupMember, $request->all());
         $member->load(['cois', 'roles', 'permissions']);
-        
+
         return new MemberResource($member);
     }
 }

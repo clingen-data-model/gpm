@@ -2,24 +2,23 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Tests\TestCase;
 use App\Models\FollowAction;
-use App\Modules\User\Models\User;
-use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Person;
 use App\Modules\Group\Actions\MemberAdd;
+use App\Modules\Group\Actions\MemberAddSystemPermission;
 use App\Modules\Group\Events\MemberAdded;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Modules\Group\Models\Group;
 use App\Modules\Person\Actions\PermissionAdd;
 use App\Modules\Person\Events\InviteRedeemed;
+use App\Modules\Person\Models\Person;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Modules\Group\Actions\MemberAddSystemPermission;
+use Tests\TestCase;
 
 class AddSystemPermissionToNewMemberOfGroupTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -29,7 +28,7 @@ class AddSystemPermissionToNewMemberOfGroupTest extends TestCase
         FollowAction::create([
             'event_class' => MemberAdded::class,
             'follower' => MemberAddSystemPermission::class,
-            'args' => ['groupId' => $this->group->id, 'permissionName' => 'test-perm']
+            'args' => ['groupId' => $this->group->id, 'permissionName' => 'test-perm'],
         ]);
     }
 
@@ -46,7 +45,7 @@ class AddSystemPermissionToNewMemberOfGroupTest extends TestCase
         $this->assertDatabaseHas('model_has_permissions', [
             'model_type' => User::class,
             'model_id' => $user->id,
-            'permission_id' => $this->permission->id
+            'permission_id' => $this->permission->id,
         ]);
     }
 
@@ -64,10 +63,10 @@ class AddSystemPermissionToNewMemberOfGroupTest extends TestCase
         $this->assertDatabaseMissing('model_has_permissions', [
             'model_type' => User::class,
             'model_id' => $user->id,
-            'permission_id' => $this->permission->id
+            'permission_id' => $this->permission->id,
         ]);
     }
-    
+
     /**
      * @test
      */
@@ -86,6 +85,4 @@ class AddSystemPermissionToNewMemberOfGroupTest extends TestCase
             'args->permissionName' => $this->permission->name,
         ]);
     }
-
-    
 }

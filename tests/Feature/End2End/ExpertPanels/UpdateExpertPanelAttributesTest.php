@@ -2,21 +2,21 @@
 
 namespace Tests\Feature\End2End\ExpertPanels;
 
-use Carbon\Carbon;
-use Tests\TestCase;
-use Ramsey\Uuid\Uuid;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
-use App\Modules\Group\Models\Group;
-use Illuminate\Testing\TestResponse;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Models\Group;
+use App\Modules\User\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\TestResponse;
+use Laravel\Sanctum\Sanctum;
+use Ramsey\Uuid\Uuid;
+use Tests\TestCase;
 
 class UpdateExpertPanelAttributesTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -26,7 +26,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
 
         $this->cdwg = Group::factory()->cdwg()->create();
 
-        $this->longText = "Sint nisi commodo nisi tempor adipisicing. Velit officia exercitation voluptate anim consequat eiusmod nisi officia consequat duis aute enim. Eu cupidatat nostrud dolore esse exercitation tempor anim magna ex eiusmod incididunt pariatur. Laboris est eu aup";
+        $this->longText = 'Sint nisi commodo nisi tempor adipisicing. Velit officia exercitation voluptate anim consequat eiusmod nisi officia consequat duis aute enim. Eu cupidatat nostrud dolore esse exercitation tempor anim magna ex eiusmod incididunt pariatur. Laboris est eu aup';
     }
 
     /**
@@ -56,7 +56,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
             'cdwg_id' => $this->cdwg->id,
             'group' => [
                 'name' => 'New Test Working Name',
-            ]
+            ],
         ];
 
         $nonEpData = [
@@ -75,7 +75,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
                 'date_initiated' => $expertPanel->date_initiated->toJson(),
                 'date_completed' => null,
                 'current_step' => 1,
-                'step_1_approval_date' => null
+                'step_1_approval_date' => null,
             ]);
     }
 
@@ -86,11 +86,11 @@ class UpdateExpertPanelAttributesTest extends TestCase
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create();
         $this->makeRequest($expertPanel, [
-                'cdwg_id' => 999,
-                'long_base_name' => $this->longText,
-                'short_base_name' => 'more than sixteen',
-                'affiliation_id' => '4000000001',
-            ])
+            'cdwg_id' => 999,
+            'long_base_name' => $this->longText,
+            'short_base_name' => 'more than sixteen',
+            'affiliation_id' => '4000000001',
+        ])
             ->assertStatus(422)
             ->assertJsonFragment([
                 'cdwg_id' => ['The selection is invalid.'],
@@ -117,13 +117,12 @@ class UpdateExpertPanelAttributesTest extends TestCase
         ])
         ->assertStatus(200);
 
-
         $this->makeRequest($expertPanel, [
-                'cdwg_id' => 1,
-                'long_base_name' => $existingGcep->long_base_name,
-                'short_base_name' => 'blah',
-                'affiliation_id' => '40001',
-            ])
+            'cdwg_id' => 1,
+            'long_base_name' => $existingGcep->long_base_name,
+            'short_base_name' => 'blah',
+            'affiliation_id' => '40001',
+        ])
             ->assertStatus(422)
             ->assertJsonFragment([
                 'long_base_name' => ['The long base name has already been taken.'],
@@ -156,13 +155,12 @@ class UpdateExpertPanelAttributesTest extends TestCase
         ])
         ->assertStatus(200);
 
-
         $this->makeRequest($expertPanel, [
-                'cdwg_id' => 1,
-                'long_base_name' => $existingGcep->long_base_name,
-                'short_base_name' => 'Early',
-                'affiliation_id' => '40001',
-            ])
+            'cdwg_id' => 1,
+            'long_base_name' => $existingGcep->long_base_name,
+            'short_base_name' => 'Early',
+            'affiliation_id' => '40001',
+        ])
             ->assertStatus(422)
             ->assertJsonFragment([
                 'short_base_name' => ['The short base name has already been taken.'],
@@ -202,7 +200,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
             'message->data->expert_panel->short_base_name' => $ep->short_base_name,
             'message->data->expert_panel->hypothesis_group' => $ep->hypothesis_group,
             'message->data->expert_panel->membership_description' => $ep->membership_description,
-            'message->data->expert_panel->scope_description' => $ep->scope_description
+            'message->data->expert_panel->scope_description' => $ep->scope_description,
         ]);
     }
 
@@ -221,7 +219,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
             'stream_messages',
             [
                 'topic' => config('dx.topics.outgoing.gpm_general_events'),
-                'message->event_type' => 'ep_info_updated'
+                'message->event_type' => 'ep_info_updated',
             ]
         );
     }
@@ -237,5 +235,4 @@ class UpdateExpertPanelAttributesTest extends TestCase
 
         return $this->json('PUT', '/api/applications/'.$expertPanel->uuid, $data);
     }
-
 }

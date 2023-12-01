@@ -2,12 +2,10 @@
 
 namespace Tests\Feature\Integration\Modules\Person\Models;
 
-use Tests\TestCase;
-use App\Models\Credential;
-use App\ControlledVocabularies\Synonym;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\ControlledVocabularies\HasSynonymInterface;
+use App\Models\Credential;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 /**
  * @group credentials
@@ -35,7 +33,6 @@ class CredentialTest extends TestCase
 
         $this->assertEquals('test', $cred->synonyms->pluck('name')->first());
 
-
         $cred = Credential::factory()->create();
         $cred->addSynonyms(['elenor', 'chidi']);
 
@@ -54,7 +51,6 @@ class CredentialTest extends TestCase
         $this->assertEquals(3, $cred->synonyms()->count());
     }
 
-
     /**
      * @test
      */
@@ -72,7 +68,4 @@ class CredentialTest extends TestCase
         $this->assertEquals(1, Credential::matchesSynonym('chidi')->count());
         $this->assertEquals(1, Credential::matchesSynonym('C.H.I.D.I')->count());
     }
-
-
-
 }

@@ -4,14 +4,7 @@ namespace App\Modules\Group\Events;
 
 use App\Models\Document;
 use App\Modules\Group\Models\Group;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use App\Modules\Group\Events\GroupEvent;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class DocumentAdded extends GroupEvent
 {
@@ -32,11 +25,9 @@ class DocumentAdded extends GroupEvent
     public function getProperties(): array
     {
         return [
-            'document' => $this->document->toArray()
+            'document' => $this->document->toArray(),
         ];
     }
-    
-    
 
     /**
      * Get the channels the event should broadcast on.

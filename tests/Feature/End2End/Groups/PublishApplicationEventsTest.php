@@ -2,14 +2,13 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Support\Carbon;
-use App\Modules\Person\Models\Person;
-use App\Modules\Group\Actions\GenesAdd;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Actions\GenesAdd;
+use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
 
 /**
@@ -20,7 +19,7 @@ class PublishApplicationEventsTest extends TestCase
     use RefreshDatabase;
     use SeedsHgncGenesAndDiseases;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -59,7 +58,6 @@ class PublishApplicationEventsTest extends TestCase
         ]);
     }
 
-
     /**
      * @test
      */
@@ -88,7 +86,6 @@ class PublishApplicationEventsTest extends TestCase
         ]);
     }
 
-
     /**
      * @test
      */
@@ -110,17 +107,16 @@ class PublishApplicationEventsTest extends TestCase
         $this->json('POST', '/api/groups/'.$this->group->uuid.'/members/', [
             'person_id' => $person->id,
             'role_ids' => [],
-            'is_contact' => 0
+            'is_contact' => 0,
         ]);
     }
 
     private function addGene($genes = null)
     {
-        $genes = $this->seedGenes([['hgnc_id' => 678, 'gene_symbol'=>'BCD'], ['hgnc_id' => 12345, 'gene_symbol' => 'ABC1']]);
+        $genes = $this->seedGenes([['hgnc_id' => 678, 'gene_symbol' => 'BCD'], ['hgnc_id' => 12345, 'gene_symbol' => 'ABC1']]);
         $action = app()->make(GenesAdd::class);
         $action->handle($this->expertPanel->group, $genes->pluck('gene_symbol'));
     }
-
 
     private function approveEpDef()
     {

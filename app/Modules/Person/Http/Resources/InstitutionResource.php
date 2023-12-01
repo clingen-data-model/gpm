@@ -18,7 +18,7 @@ class InstitutionResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'abbreviation' => $this->abbreviation,
-            'uuid' => $this->uuid
+            'uuid' => $this->uuid,
         ];
     }
 }

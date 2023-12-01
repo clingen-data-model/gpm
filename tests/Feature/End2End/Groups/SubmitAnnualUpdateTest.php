@@ -2,21 +2,20 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Carbon\Carbon;
-use Tests\TestCase;
 use App\Models\AnnualUpdate;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\Group\Models\GroupMember;
-use Illuminate\Foundation\Testing\WithFaker;
-use Database\Seeders\AnnualUpdateWindowSeeder;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Models\GroupMember;
+use Carbon\Carbon;
+use Database\Seeders\AnnualUpdateWindowSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class SubmitAnnualUpdateTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGrouptest();
@@ -61,7 +60,7 @@ class SubmitAnnualUpdateTest extends TestCase
 
         $this->assertDatabaseHas('annual_updates', [
             'id' => $annualReview->id,
-            'completed_at' => Carbon::now()->format('Y-m-d H:i:s')
+            'completed_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
     }
 
@@ -70,8 +69,8 @@ class SubmitAnnualUpdateTest extends TestCase
      */
     public function validates_base_required_fields_for_gcep()
     {
-        $annualReview = AnnualUpdate::create(['expert_panel_id'=>$this->expertPanel->id]);
-        
+        $annualReview = AnnualUpdate::create(['expert_panel_id' => $this->expertPanel->id]);
+
         $response = $this->makeRequest($annualReview)
             ->assertStatus(422);
 
@@ -106,24 +105,23 @@ class SubmitAnnualUpdateTest extends TestCase
     public function does_not_require_fields_after_ep_activity_if_inactive_for_gceps()
     {
         $annualReview = AnnualUpdate::create([
-            'expert_panel_id'=>$this->expertPanel->id,
+            'expert_panel_id' => $this->expertPanel->id,
             'submitter_id' => $this->coordinator->id,
             'data' => [
                 'grant' => 'UNC',
                 'ep_activity' => 'inactive',
-                'submitted_inactive_form' => 'yes'
-            ]
+                'submitted_inactive_form' => 'yes',
+            ],
         ]);
-        
+
         $response = $this->makeRequest($annualReview)
             ->assertStatus(200);
 
         $this->assertDatabaseHas('annual_updates', [
             'id' => $annualReview->id,
-            'completed_at' => Carbon::now()
+            'completed_at' => Carbon::now(),
         ]);
     }
-    
 
     /**
      * @test
@@ -131,7 +129,7 @@ class SubmitAnnualUpdateTest extends TestCase
     public function validates_conditionally_required_fields_for_gceps()
     {
         $annualReview = AnnualUpdate::create([
-            'expert_panel_id'=>$this->expertPanel->id,
+            'expert_panel_id' => $this->expertPanel->id,
             'data' => [
                 'ongoing_plans_updated' => 'yes',
                 'cochair_commitment' => 'no',
@@ -141,7 +139,7 @@ class SubmitAnnualUpdateTest extends TestCase
                 'gci_use' => 'no',
                 'gt_gene_list' => 'no',
                 'gt_precuration_info' => 'no',
-            ]
+            ],
         ]);
 
         $conditionalRequiredFields = [
@@ -174,8 +172,8 @@ class SubmitAnnualUpdateTest extends TestCase
             'step_4_approval_date' => Carbon::now(),
         ]);
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.vcep.id')]);
-        $annualReview = AnnualUpdate::create(['expert_panel_id'=>$this->expertPanel->id]);
-        
+        $annualReview = AnnualUpdate::create(['expert_panel_id' => $this->expertPanel->id]);
+
         $response = $this->makeRequest($annualReview)
             ->assertStatus(422);
 
@@ -195,7 +193,7 @@ class SubmitAnnualUpdateTest extends TestCase
             'rereview_lb_progress',
             'member_designation_changed',
             // 'specification_plans', // deprecated by Danielle Azzariti Feb. 2022
-            'changes_to_call_frequency'
+            'changes_to_call_frequency',
         ];
 
         foreach ($baseRequiredFields as $field) {
@@ -213,8 +211,8 @@ class SubmitAnnualUpdateTest extends TestCase
             'step_1_approval_date' => Carbon::now(),
         ]);
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.vcep.id')]);
-        $annualReview = AnnualUpdate::create(['expert_panel_id'=>$this->expertPanel->id]);
-        
+        $annualReview = AnnualUpdate::create(['expert_panel_id' => $this->expertPanel->id]);
+
         $response = $this->makeRequest($annualReview)
             ->assertStatus(422);
 
@@ -245,8 +243,8 @@ class SubmitAnnualUpdateTest extends TestCase
             'step_2_approval_date' => Carbon::now(),
         ]);
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.vcep.id')]);
-        $annualReview = AnnualUpdate::create(['expert_panel_id'=>$this->expertPanel->id]);
-        
+        $annualReview = AnnualUpdate::create(['expert_panel_id' => $this->expertPanel->id]);
+
         $response = $this->makeRequest($annualReview)
             ->assertStatus(422);
 
@@ -268,7 +266,7 @@ class SubmitAnnualUpdateTest extends TestCase
             $response = $response->assertJsonFragment([$field => ['This is required.']]);
         }
     }
-    
+
     /**
      * @test
      */
@@ -282,8 +280,8 @@ class SubmitAnnualUpdateTest extends TestCase
             'step_4_approval_date' => Carbon::now(),
         ]);
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.vcep.id')]);
-        $annualReview = AnnualUpdate::create(['expert_panel_id'=>$this->expertPanel->id]);
-        
+        $annualReview = AnnualUpdate::create(['expert_panel_id' => $this->expertPanel->id]);
+
         $response = $this->makeRequest($annualReview)
             ->assertStatus(422);
 
@@ -313,8 +311,7 @@ class SubmitAnnualUpdateTest extends TestCase
             $response = $response->assertJsonFragment([$field => ['This is required.']]);
         }
     }
-    
-    
+
     /**
      * @test
      */
@@ -329,7 +326,7 @@ class SubmitAnnualUpdateTest extends TestCase
         ]);
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.vcep.id')]);
         $annualReview = AnnualUpdate::create([
-            'expert_panel_id'=>$this->expertPanel->id,
+            'expert_panel_id' => $this->expertPanel->id,
             'data' => [
                 'specification_progress' => 'yes-pending-approval',
                 'ongoing_plans_updated' => 'yes',
@@ -339,7 +336,7 @@ class SubmitAnnualUpdateTest extends TestCase
                 'funding' => 'other',
                 'vci_use' => 'no',
                 'specifications_for_new_gene' => 'yes',
-            ]
+            ],
         ]);
 
         $conditionalRequiredFields = [
@@ -362,10 +359,10 @@ class SubmitAnnualUpdateTest extends TestCase
         }
     }
 
-
     private function makeRequest($annualReview)
     {
         $url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/annual-updates/'.$annualReview->id;
+
         return $this->json('POST', $url);
     }
 }

@@ -13,14 +13,14 @@ class RenamePeopleV1ContactToIsContact extends Migration
      */
     public function up()
     {
-        if (!Schema::hasColumn('group_members', 'v1_contact')) {
+        if (! Schema::hasColumn('group_members', 'v1_contact')) {
             return;
         }
         Schema::table('group_members', function (Blueprint $table) {
             $table->renameColumn('v1_contact', 'is_contact');
         });
     }
-    
+
     /**
      * Reverse the migrations.
      *

@@ -38,10 +38,9 @@ class CommentUpdate
         ];
     }
 
-    public function authorize(ActionRequest $request, Comment $comment):bool
+    public function authorize(ActionRequest $request, Comment $comment): bool
     {
         return $request->user()->id == $request->comment->creator_id
             || $request->user()->hasPermissionTo('comments-manage');
     }
-
 }

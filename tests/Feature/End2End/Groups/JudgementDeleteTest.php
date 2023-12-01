@@ -2,16 +2,13 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Testing\TestResponse;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Notifications\JudgementActivityNotification;
+use Illuminate\Testing\TestResponse;
+use Laravel\Sanctum\Sanctum;
 
 class JudgementDeleteTest extends JudgementTest
 {
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->judgement = $this->setupJudgement($this->expertPanel->group);
@@ -73,23 +70,22 @@ class JudgementDeleteTest extends JudgementTest
 
         $this->assertDatabaseHas('notifications', [
             'notifiable_id' => $otherApprover->person->id,
-            'type' =>JudgementActivityNotification::class
+            'type' => JudgementActivityNotification::class,
         ]);
         $this->assertDatabaseHas('notifications', [
             'notifiable_id' => $commenter->person->id,
-            'type' => JudgementActivityNotification::class
+            'type' => JudgementActivityNotification::class,
         ]);
         $this->assertDatabaseMissing('notifications', [
             'notifiable_id' => $this->user->person->id,
-            'type' => JudgementActivityNotification::class
+            'type' => JudgementActivityNotification::class,
         ]);
     }
-
 
     private function makeRequest($data = null): TestResponse
     {
         $url = '/api/groups/'.$this->expertPanel->group->uuid.'/application/judgements/'.$this->judgement->id;
+
         return $this->json('delete', $url);
     }
-
 }

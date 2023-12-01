@@ -2,23 +2,22 @@
 
 namespace Tests\Feature\Integration\Modules\Application\Actions;
 
-use Carbon\Carbon;
-use Tests\TestCase;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\NextAction;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Database\Seeders\NextActionAssigneesTableSeeder;
-use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use App\Modules\ExpertPanel\Actions\NextActionComplete;
+use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use App\Modules\ExpertPanel\Events\NextActionCompleted;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Models\NextAction;
+use Carbon\Carbon;
+use Database\Seeders\NextActionAssigneesTableSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
+use Tests\TestCase;
 
 class CompleteNextActionTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -53,13 +52,13 @@ class CompleteNextActionTest extends TestCase
 
         Event::assertDispatched(NextActionCompleted::class);
     }
-    
+
     /**
      * @test
      */
     public function NextActionCompleted_logged()
     {
-         $nextAction = NextActionCreate::run(
+        $nextAction = NextActionCreate::run(
             expertPanel: $this->expertPanel,
             dateCreated: Carbon::now(),
             entry: 'Some nextAction',
@@ -75,7 +74,7 @@ class CompleteNextActionTest extends TestCase
 
         $this->assertDatabaseHas('activity_log', [
             'subject_id' => $this->expertPanel->group->id,
-            'description' => 'Next action completed: '.$nextAction->entry
+            'description' => 'Next action completed: '.$nextAction->entry,
         ]);
     }
 }

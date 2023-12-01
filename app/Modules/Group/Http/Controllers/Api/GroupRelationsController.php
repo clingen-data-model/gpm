@@ -2,13 +2,10 @@
 
 namespace App\Modules\Group\Http\Controllers\Api;
 
-use App\ModelSearchService;
-use Illuminate\Http\Request;
-use App\Modules\Group\Models\Group;
 use App\Http\Controllers\Controller;
-use App\Modules\Group\Http\Resources\GroupResource;
-use App\Modules\Group\Http\Resources\MemberResource;
 use App\Modules\Group\Http\Resources\ChildGroupResource;
+use App\Modules\Group\Models\Group;
+use Illuminate\Http\Request;
 
 class GroupRelationsController extends Controller
 {
@@ -22,18 +19,18 @@ class GroupRelationsController extends Controller
 
                             'expertPanel',
                             'expertPanel.type',
-                            
+
                             'coordinators',
                             'coordinators.person',
-                            
+
                             'chairs',
                             'chairs.person',
                         ])
                         ->get()
                         ->sortBy('expertPanel.name');
+
         return ChildGroupResource::collection($children);
     }
-    
 
     public function documents(Request $request, Group $group)
     {
@@ -53,6 +50,7 @@ class GroupRelationsController extends Controller
         } elseif ($request->has('completed')) {
             $query->completed();
         }
+
         return $query->get();
     }
 }

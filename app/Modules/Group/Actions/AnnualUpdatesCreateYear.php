@@ -2,11 +2,11 @@
 
 namespace App\Modules\Group\Actions;
 
+use App\Models\AnnualUpdateWindow;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use App\Models\AnnualUpdateWindow;
 use Lorisleiva\Actions\Concerns\AsCommand;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 
 class AnnualUpdatesCreateYear
 {
@@ -17,16 +17,15 @@ class AnnualUpdatesCreateYear
     public function __construct(private AnnualUpdateCreate $updateCreate)
     {
     }
-    
 
     public function handle($forYear, $start, $end)
     {
         $window = new AnnualUpdateWindow([
             'for_year' => $forYear,
             'start' => $start,
-            'end' => $end
+            'end' => $end,
         ]);
-        
+
         $window->save();
 
         $annualupdates = ExpertPanel::definitionApproved()
@@ -37,13 +36,13 @@ class AnnualUpdatesCreateYear
 
         return [
             $window,
-            $annualupdates
+            $annualupdates,
         ];
     }
 
     public function asCommand(Command $command)
     {
-        $forYear = $command->ask('What year does the window cover?', (Carbon::now()->year-1));
+        $forYear = $command->ask('What year does the window cover?', (Carbon::now()->year - 1));
         $start = $command->ask('When does the update window begin?');
         $end = $command->ask('When does the update window end?');
 

@@ -26,13 +26,13 @@ class CreateAnnualUpdatesTable extends Migration
                 ->references('id')->on('annual_update_windows')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            
+
             $table->unsignedBigInteger('submitter_id')->nullable();
             $table->foreign('submitter_id')
                 ->references('id')->on('group_members')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-                
+
             $table->dateTime('completed_at')->nullable();
             $table->json('data')->nullable();
             $table->timestamps();

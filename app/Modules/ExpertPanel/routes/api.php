@@ -1,36 +1,34 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
+use App\Modules\ExpertPanel\Actions\ApplicationDocumentDelete;
+use App\Modules\ExpertPanel\Actions\ApplicationDocumentMarkFinal;
+use App\Modules\ExpertPanel\Actions\ApplicationDocumentUpdate;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
-use App\Modules\ExpertPanel\Actions\LogEntryAdd;
-use App\Modules\ExpertPanel\Actions\StepApprove;
 use App\Modules\ExpertPanel\Actions\ContactRemove;
+use App\Modules\ExpertPanel\Actions\ExpertPanelCreate;
+use App\Modules\ExpertPanel\Actions\ExpertPanelDelete;
+use App\Modules\ExpertPanel\Actions\ExpertPanelUpdateAttributes;
+use App\Modules\ExpertPanel\Actions\LogEntryAdd;
 use App\Modules\ExpertPanel\Actions\LogEntryDelete;
 use App\Modules\ExpertPanel\Actions\LogEntryUpdate;
-use App\Modules\ExpertPanel\Actions\CoiResponseStore;
+use App\Modules\ExpertPanel\Actions\NextActionComplete;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use App\Modules\ExpertPanel\Actions\NextActionDelete;
 use App\Modules\ExpertPanel\Actions\NextActionUpdate;
-use App\Modules\ExpertPanel\Actions\ExpertPanelCreate;
-use App\Modules\ExpertPanel\Actions\ExpertPanelDelete;
-use App\Modules\ExpertPanel\Actions\NextActionComplete;
-use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
-use App\Modules\ExpertPanel\Actions\ApplicationDocumentDelete;
-use App\Modules\ExpertPanel\Actions\ApplicationDocumentUpdate;
-use App\Modules\ExpertPanel\Actions\ExpertPanelUpdateAttributes;
-use App\Modules\ExpertPanel\Actions\ApplicationDocumentMarkFinal;
-use App\Modules\ExpertPanel\Http\Controllers\Api\SimpleCoiController;
+use App\Modules\ExpertPanel\Actions\StepApprove;
+use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationContactController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationLogController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationStepController;
-use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationContactController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\NextActionAssigneeController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/next-actions/assignees', [NextActionAssigneeController::class, 'index']);
 
 Route::group([
     'prefix' => 'api/applications',
-    'middleware' => ['api']
+    'middleware' => ['api'],
 ], function () {
     Route::get('/', [ApplicationController::class, 'index']);
 

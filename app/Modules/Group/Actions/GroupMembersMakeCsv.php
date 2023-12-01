@@ -1,11 +1,11 @@
 <?php
+
 namespace App\Modules\Group\Actions;
 
-use Illuminate\Support\Str;
 use App\Modules\Group\Models\Group;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Lorisleiva\Actions\ActionRequest;
-use Illuminate\Database\Eloquent\Collection;
 use Lorisleiva\Actions\Concerns\AsController;
 
 class GroupMembersMakeCsv
@@ -53,20 +53,19 @@ class GroupMembersMakeCsv
             fclose($handle);
         };
 
-
-
         $dlFileName = $this->makeFileName($group->display_name);
+
         return response()->streamDownload($callback, $dlFileName, ['Content-Type' => 'text/csv']);
     }
 
     private function makeFileName($string): string
     {
         $formatted = Str::snake(
-                        strtolower(
-                            preg_replace('/[\/,;:\\\]/', '_', $string)
-                        )
-                    );
+            strtolower(
+                preg_replace('/[\/,;:\\\]/', '_', $string)
+            )
+        );
+
         return $formatted.'_members_'.Carbon::now()->toISOString().'.csv';
     }
-
 }

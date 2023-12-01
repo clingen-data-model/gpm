@@ -2,24 +2,21 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use App\DataExchange\Kafka\KafkaProducer;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\DataExchange\MessagePushers\MessageLogger;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\DataExchange\MessagePushers\DisabledPusher;
+use App\DataExchange\MessagePushers\MessageLogger;
 use App\DataExchange\MessagePushers\MessagePusherFactory;
+use Tests\TestCase;
 
 class MessagePusherFactoryTest extends TestCase
 {
     private $factory;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->factory = new MessagePusherFactory();
     }
-
 
     /**
      * @test
@@ -47,5 +44,4 @@ class MessagePusherFactoryTest extends TestCase
         config(['dx.push-enable' => true, 'dx.driver' => 'kafka']);
         $this->assertInstanceOf(KafkaProducer::class, ($this->factory)());
     }
-
 }

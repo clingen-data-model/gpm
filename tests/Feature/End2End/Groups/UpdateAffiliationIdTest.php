@@ -2,17 +2,16 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class UpdateAffiliationIdTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -41,12 +40,12 @@ class UpdateAffiliationIdTest extends TestCase
             ->assertStatus(200)
             ->assertJsonFragment([
                 'id' => $this->expertPanel->id,
-                'affiliation_id' => '49999'
+                'affiliation_id' => '49999',
             ]);
 
         $this->assertDatabaseHas('expert_panels', [
             'id' => $this->expertPanel->id,
-            'affiliation_id' => '49999'
+            'affiliation_id' => '49999',
         ]);
     }
 
@@ -58,20 +57,20 @@ class UpdateAffiliationIdTest extends TestCase
         $this->makeRequest('400000')
             ->assertStatus(422)
             ->assertJsonFragment([
-                'affiliation_id' => ['The affiliation id must be 5 characters.']
+                'affiliation_id' => ['The affiliation id must be 5 characters.'],
             ]);
 
         $this->makeRequest('59999')
             ->assertStatus(422)
             ->assertJsonFragment([
-                'affiliation_id' => ['GCEP affiliation IDs must start with "4"']
+                'affiliation_id' => ['GCEP affiliation IDs must start with "4"'],
             ]);
 
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.vcep.id')]);
         $this->makeRequest('49999')
             ->assertStatus(422)
             ->assertJsonFragment([
-                'affiliation_id' => ['VCEP affiliation IDs must start with "5"']
+                'affiliation_id' => ['VCEP affiliation IDs must start with "5"'],
             ]);
     }
 
@@ -85,7 +84,7 @@ class UpdateAffiliationIdTest extends TestCase
         $this->makeRequest('40666')
             ->assertStatus(422)
             ->assertJsonFragment([
-                'affiliation_id' => ['The affiliation id has already been taken.']
+                'affiliation_id' => ['The affiliation id has already been taken.'],
             ]);
     }
 
@@ -105,11 +104,10 @@ class UpdateAffiliationIdTest extends TestCase
         );
     }
 
-
-
     private function makeRequest($affiliationId = null)
     {
         $affiliationId = $affiliationId ?? '49999';
+
         return $this->json(
             'put',
             '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/affiliation-id',

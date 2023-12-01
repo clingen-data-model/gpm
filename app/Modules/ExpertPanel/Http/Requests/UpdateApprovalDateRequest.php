@@ -25,7 +25,7 @@ class UpdateApprovalDateRequest extends FormRequest
     {
         return [
             'step' => 'required|integer|min:1|max:4',
-            'date_approved' => 'required|date'
+            'date_approved' => 'required|date',
         ];
     }
 }

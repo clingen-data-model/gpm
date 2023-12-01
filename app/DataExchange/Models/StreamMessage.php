@@ -2,8 +2,8 @@
 
 namespace App\DataExchange\Models;
 
-use Database\Factories\StreamMessageFactory;
 use App\DataExchange\Events\Created;
+use Database\Factories\StreamMessageFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,11 +15,11 @@ class StreamMessage extends Model
         'message',
         'topic',
         'sent_at',
-        'error'
+        'error',
     ];
-    
+
     protected $dates = [
-        'sent_at'
+        'sent_at',
     ];
 
     protected $dispatchesEvents = [
@@ -28,9 +28,9 @@ class StreamMessage extends Model
 
     protected $casts = [
         'id' => 'int',
-        'message' => 'array'
+        'message' => 'array',
     ];
-    
+
     public function scopeUnsent($query)
     {
         return $query->whereNull('sent_at');

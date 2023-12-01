@@ -2,12 +2,11 @@
 
 namespace App\Modules\ExpertPanel\Actions;
 
-use App\Models\Activity;
-use InvalidArgumentException;
 use App\Actions\LogEntryDelete as AppLogEntryDelete;
-use Lorisleiva\Actions\Concerns\AsAction;
-use Illuminate\Validation\ValidationException;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Illuminate\Validation\ValidationException;
+use InvalidArgumentException;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class LogEntryDelete
 {
@@ -17,14 +16,13 @@ class LogEntryDelete
     {
         //code
     }
-    
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function handle(string $expertPanelUuid, Int $logEntryId)
+    public function handle(string $expertPanelUuid, int $logEntryId)
     {
         $logEntry = ExpertPanel::findByUuidOrFail($expertPanelUuid)
                         ->group

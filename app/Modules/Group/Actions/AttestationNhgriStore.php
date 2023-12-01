@@ -1,18 +1,18 @@
 <?php
+
 namespace App\Modules\Group\Actions;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
+use App\Modules\Group\Events\AttestationSigned;
+use App\Modules\Group\Http\Resources\GroupResource;
 use App\Modules\Group\Models\Group;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
-use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsObject;
-use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
-use App\Modules\Group\Events\AttestationSigned;
-use Illuminate\Auth\Access\AuthorizationException;
-use App\Modules\Group\Http\Resources\GroupResource;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsController;
+use Lorisleiva\Actions\Concerns\AsObject;
 
 class AttestationNhgriStore
 {
@@ -21,7 +21,7 @@ class AttestationNhgriStore
 
     public function handle(Group $group, ?Carbon $attestationDate = null)
     {
-        if (!$group->isEp) {
+        if (! $group->isEp) {
             throw ValidationException::withMessages(['group' => 'Only expert panels have NHGRI attestations.']);
         }
 
@@ -32,13 +32,13 @@ class AttestationNhgriStore
         $group->expertPanel->nhgri_attestation_date = $attestationDate;
         $group->expertPanel->save();
         $group->touch();
-        
+
         $event = new AttestationSigned($group, 'NHGRI', $attestationDate);
         Event::dispatch($event);
-        
+
         return $group;
     }
-    
+
     public function asController(ActionRequest $request, $groupUuid)
     {
         $group = Group::findByUuidOrFail($groupUuid);
@@ -60,7 +60,7 @@ class AttestationNhgriStore
     public function rules(): array
     {
         return [
-            'attestation' => 'required|accepted'
+            'attestation' => 'required|accepted',
         ];
     }
 }

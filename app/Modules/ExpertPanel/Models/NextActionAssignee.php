@@ -3,9 +3,9 @@
 namespace App\Modules\ExpertPanel\Models;
 
 use Database\Factories\NextActionAssigneeFactory;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class NextActionAssignee extends Model
 {
@@ -24,13 +24,12 @@ class NextActionAssignee extends Model
 
     public function getShortNameAttribute()
     {
-        if (!isset($this->attributes['short_name']) || !$this->attributes['short_name']) {
+        if (! isset($this->attributes['short_name']) || ! $this->attributes['short_name']) {
             return $this->name;
         }
 
         return $this->attributes['short_name'];
     }
-    
 
     // Factory
     protected static function newFactory()

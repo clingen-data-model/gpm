@@ -2,17 +2,12 @@
 
 namespace App\Modules\Group\Events;
 
-use App\Modules\Group\Models\Submission;
-use Illuminate\Support\Carbon;
 use App\Modules\Group\Models\Group;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
+use App\Modules\Group\Models\Submission;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class ApplicationStepSubmitted extends GroupEvent
 {
@@ -30,6 +25,7 @@ class ApplicationStepSubmitted extends GroupEvent
     public function getLogEntry(): string
     {
         $submitterName = $this->submission->submitter ? $this->submission->submitter->name : 'system';
+
         return $this->submission->type->name.' application submitted for approval by '.$submitterName.'.';
     }
 
@@ -38,7 +34,7 @@ class ApplicationStepSubmitted extends GroupEvent
         return [
             'submission' => $this->submission->toArray(),
             'date_submitted' => $this->submission->created_at,
-            'step' => $this->submission->group->expertPanel->current_step
+            'step' => $this->submission->group->expertPanel->current_step,
         ];
     }
 

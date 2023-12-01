@@ -5,5 +5,5 @@ return [
     'definitions' => [
         '1.0.0' => 'resources/surveys/coi_v1.json',
         '2.0.0' => 'resources/surveys/coi_v2.json',
-    ]
+    ],
 ];

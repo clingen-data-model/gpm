@@ -2,8 +2,8 @@
 
 namespace App\DataExchange\Actions;
 
-use Lorisleiva\Actions\Concerns\AsJob;
 use App\DataExchange\Models\StreamMessage;
+use Lorisleiva\Actions\Concerns\AsJob;
 
 class StreamMessageCreate
 {

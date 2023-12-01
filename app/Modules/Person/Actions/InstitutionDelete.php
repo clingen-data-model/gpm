@@ -1,8 +1,9 @@
 <?php
+
 namespace App\Modules\Person\Actions;
 
-use Lorisleiva\Actions\ActionRequest;
 use App\Modules\Person\Models\Institution;
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 
 class InstitutionDelete

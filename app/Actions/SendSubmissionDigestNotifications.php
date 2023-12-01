@@ -3,10 +3,10 @@
 namespace App\Actions;
 
 use App\Modules\Person\Models\Person;
-use Lorisleiva\Actions\Concerns\AsCommand;
-use Illuminate\Support\Facades\Notification;
 use App\Notifications\ApprovalDigestNotification;
 use App\Notifications\Contracts\DigestibleNotificationInterface;
+use Illuminate\Support\Facades\Notification;
+use Lorisleiva\Actions\Concerns\AsCommand;
 
 class SendSubmissionDigestNotifications
 {
@@ -31,6 +31,7 @@ class SendSubmissionDigestNotifications
             $validNotifications = $submissionNotifications->groupBy('type')
                 ->map(function ($group, $class) {
                     $validUnique = $class::getValidUnique($group);
+
                     return $validUnique;
                 })
                 ->filter(fn ($group) => $group->count() > 0);

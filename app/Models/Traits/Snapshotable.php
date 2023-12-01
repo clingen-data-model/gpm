@@ -4,7 +4,7 @@ namespace App\Models\Traits;
 
 interface Snapshotable
 {
-    public function createSnapshot(): Array;
+    public function createSnapshot(): array;
 
-    static public function initFromSnapshot($snapshot): Self;
+    public static function initFromSnapshot($snapshot): self;
 }

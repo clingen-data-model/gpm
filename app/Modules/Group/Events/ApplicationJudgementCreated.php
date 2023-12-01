@@ -2,24 +2,20 @@
 
 namespace App\Modules\Group\Events;
 
-use Illuminate\Support\Carbon;
 use App\Modules\Group\Models\Group;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Queue\SerializesModels;
 use App\Modules\Group\Models\Judgement;
 use App\Modules\Group\Models\Submission;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class ApplicationJudgementCreated extends GroupEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public Group $group;
+
     public Submission $submission;
 
     /**
@@ -33,7 +29,7 @@ class ApplicationJudgementCreated extends GroupEvent
         $this->group = $judgement->submission->group;
     }
 
-    public function getProperties():array
+    public function getProperties(): array
     {
         return [
             'judgement_id' => $this->judgement->id,
@@ -41,7 +37,7 @@ class ApplicationJudgementCreated extends GroupEvent
         ];
     }
 
-    public function getLogEntry():string
+    public function getLogEntry(): string
     {
         $logEntry = $this->judgement->person->name.' made a decision on the submission: '.$this->judgement->decision;
 

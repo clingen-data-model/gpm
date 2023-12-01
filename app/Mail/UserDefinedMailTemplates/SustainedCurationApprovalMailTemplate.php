@@ -2,11 +2,8 @@
 
 namespace App\Mail\UserDefinedMailTemplates;
 
-use App\Mail\UserDefinedMailTemplates\AbstractUserDefinedMailTemplate;
-
 class SustainedCurationApprovalMailTemplate extends AbstractUserDefinedMailTemplate
 {
-
     public function getTemplate(): string
     {
         return 'email.applications.approval.vcep_step_4_approval';
@@ -29,6 +26,4 @@ class SustainedCurationApprovalMailTemplate extends AbstractUserDefinedMailTempl
             ['address' => 'brl-cspec@bcm.edu', 'name' => 'CSpec Support'],
         ];
     }
-
-
 }

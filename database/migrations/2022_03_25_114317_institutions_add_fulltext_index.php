@@ -28,7 +28,7 @@ class InstitutionsAddFulltextIndex extends Migration
     public function down()
     {
         if (config('database.connections')[config('database.default')]['driver'] != 'sqlite') {
-                Schema::table('institutions', function (Blueprint $table) {
+            Schema::table('institutions', function (Blueprint $table) {
                 $table->dropFullText('search_fulltext');
             });
         }

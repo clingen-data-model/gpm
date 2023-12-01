@@ -2,28 +2,26 @@
 
 namespace Tests\Feature\End2End;
 
-use Tests\TestCase;
-use App\Models\Comment;
-use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Person;
-use App\Modules\Group\Models\Judgement;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Notification;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Actions\SendSubmissionDigestNotifications;
-use App\Notifications\ApprovalDigestNotification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Comment;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Models\Judgement;
 use App\Modules\Group\Notifications\ApprovalReminder;
-use App\Notifications\UserDefinedDatabaseNotification;
 use App\Modules\Group\Notifications\CommentActivityNotification;
 use App\Modules\Group\Notifications\JudgementActivityNotification;
+use App\Modules\Person\Models\Person;
+use App\Notifications\ApprovalDigestNotification;
+use App\Notifications\UserDefinedDatabaseNotification;
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
+use Tests\TestCase;
 
 class SendSubmissionDigestNotificationsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -48,7 +46,6 @@ class SendSubmissionDigestNotificationsTest extends TestCase
      */
     public function sends_notification_if_unsent_digestible_submission_notifications()
     {
-
         $group = ExpertPanel::factory()->create()->group;
         $comment = Comment::factory()->create(['subject_type' => get_class($group), 'subject_id' => $group->id]);
         $judgement = Judgement::factory()->create();
@@ -75,12 +72,10 @@ class SendSubmissionDigestNotificationsTest extends TestCase
                             ->count() == 1
                         && $notification->approvalDigestNotifications
                             ->get(ApprovalReminder::class)
-                            ->count() == 1
-                        ;
+                            ->count() == 1;
             }
         );
     }
-
 
     /**
      * @test
@@ -101,7 +96,6 @@ class SendSubmissionDigestNotificationsTest extends TestCase
 
         $this->assertEquals(0, $person->unreadNotifications->count());
     }
-
 
     /**
      * @test
@@ -160,16 +154,15 @@ class SendSubmissionDigestNotificationsTest extends TestCase
 
         $this->assertStringContainsString('New comments have been made on applications pending approval:', $renderedHtml);
         $this->assertStringContainsString(
-            stripTagsAndSpaces($group->display_name).":2",
+            stripTagsAndSpaces($group->display_name).':2',
             stripTagsAndSpaces($renderedHtml)
         );
 
         $this->assertStringContainsString('New judgements have been made for applications:', $renderedHtml);
         $this->assertStringContainsString(
-            stripTagsAndSpaces($group->display_name).":".stripTagsAndSpaces($judgement->person->name),
+            stripTagsAndSpaces($group->display_name).':'.stripTagsAndSpaces($judgement->person->name),
             stripTagsAndSpaces($renderedHtml)
         );
-
     }
 
     /**
@@ -177,7 +170,7 @@ class SendSubmissionDigestNotificationsTest extends TestCase
      */
     public function approval_digests_sent_on_monday_at_610_am()
     {
-       ['person' => $person] = $this->setupForScheduleTest();
+        ['person' => $person] = $this->setupForScheduleTest();
 
         Carbon::setTestnow('monday at 6:10 am');
         Notification::fake();
@@ -198,7 +191,6 @@ class SendSubmissionDigestNotificationsTest extends TestCase
         Notification::assertSentTo($person, ApprovalDigestNotification::class);
     }
 
-
     /**
      * @test
      */
@@ -214,7 +206,6 @@ class SendSubmissionDigestNotificationsTest extends TestCase
         }
     }
 
-
     private function setupForScheduleTest()
     {
         $this->setupPermission(['ep-applications-approve', 'ep-applications-comment']);
@@ -226,5 +217,4 @@ class SendSubmissionDigestNotificationsTest extends TestCase
 
         return compact('person', 'group', 'comment');
     }
-
 }

@@ -2,13 +2,12 @@
 
 namespace Tests\Feature\End2End\Person;
 
-use Tests\TestCase;
-use Ramsey\Uuid\Uuid;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
 use App\Modules\Person\Models\Person;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Ramsey\Uuid\Uuid;
+use Tests\TestCase;
 
 /**
  * @group people
@@ -17,7 +16,7 @@ class PersonDetailTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->user = User::factory()->create();

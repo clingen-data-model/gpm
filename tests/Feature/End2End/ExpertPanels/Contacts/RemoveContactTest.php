@@ -2,16 +2,14 @@
 
 namespace Tests\Feature\End2End\ExpertPanels\Contacts;
 
-use Tests\TestCase;
-use Ramsey\Uuid\Uuid;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
-use App\Modules\Person\Models\Person;
-use Lorisleiva\Actions\Facades\Actions;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Person\Models\Person;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Ramsey\Uuid\Uuid;
+use Tests\TestCase;
 
 /**
  * @group applications
@@ -23,14 +21,14 @@ class RemoveContactTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
         $this->user = User::factory()->create();
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->person = Person::factory()->create();
-        
+
         (new ContactAdd())->handle($this->expertPanel->uuid, $this->person->uuid);
 
         Sanctum::actingAs($this->user);
@@ -46,7 +44,7 @@ class RemoveContactTest extends TestCase
 
         $this->assertDatabaseMissing('group_members', [
             'group_id' => $this->expertPanel->group->id,
-            'person_id' => $this->person->id
+            'person_id' => $this->person->id,
         ]);
     }
 
@@ -72,7 +70,7 @@ class RemoveContactTest extends TestCase
         $this->json('DELETE', '/api/applications/'.$this->expertPanel->uuid.'/contacts/'.$person2->uuid)
             ->assertStatus(422)
             ->assertJsonFragment([
-                'contact' => ['The specified person is not a contact of this application.']
+                'contact' => ['The specified person is not a contact of this application.'],
             ]);
     }
 }

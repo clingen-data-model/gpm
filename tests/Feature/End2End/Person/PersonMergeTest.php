@@ -4,22 +4,21 @@ namespace Tests\Feature\End2End\Person;
 
 use App\Modules\ExpertPanel\Models\Coi;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Carbon\Carbon;
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
+use App\Modules\Group\Actions\MemberAdd;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Invite;
 use App\Modules\Person\Models\Person;
-use App\Modules\Group\Actions\MemberAdd;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Modules\User\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class PersonMergeTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -33,7 +32,7 @@ class PersonMergeTest extends TestCase
 
         $this->person1 = $this->setupPerson($this->group1);
         $this->person2 = $this->setupPerson($this->group2);
-        
+
         Sanctum::actingAs($this->user);
     }
 
@@ -57,8 +56,8 @@ class PersonMergeTest extends TestCase
             ->assertJson([
                 'errors' => [
                     'authority_id' => ['This is required.'],
-                    'obsolete_id' => ['This is required.']
-                ]
+                    'obsolete_id' => ['This is required.'],
+                ],
             ]);
 
         $this->makeRequest(['authority_id' => 555, 'obsolete_id' => 666])
@@ -66,8 +65,8 @@ class PersonMergeTest extends TestCase
             ->assertJson([
                 'errors' => [
                     'authority_id' => ['The selection is invalid.'],
-                    'obsolete_id' => ['The selection is invalid.']
-                ]
+                    'obsolete_id' => ['The selection is invalid.'],
+                ],
             ]);
 
         $this->makeRequest([
@@ -78,10 +77,9 @@ class PersonMergeTest extends TestCase
             ->assertJson([
                 'errors' => [
                     'authority_id' => ['The authority id and obsolete id must be different.'],
-                ]
+                ],
             ]);
     }
-    
 
     /**
      * @test
@@ -99,7 +97,7 @@ class PersonMergeTest extends TestCase
             [
                 'person_id' => $this->person2->id,
                 'group_id' => $this->group2->id,
-                'deleted_at' => Carbon::now()
+                'deleted_at' => Carbon::now(),
             ]
         );
         $this->assertDatabaseHas(
@@ -107,7 +105,7 @@ class PersonMergeTest extends TestCase
             [
                 'person_id' => $this->person1->id,
                 'group_id' => $this->group2->id,
-                'deleted_at' => null
+                'deleted_at' => null,
             ]
         );
         $this->assertDatabaseMissing('users', ['id' => $this->person2->user_id]);
@@ -124,7 +122,7 @@ class PersonMergeTest extends TestCase
         Carbon::setTestNow('2022-04-25');
         $coi = Coi::factory()->create([
             'group_member_id' => $this->person2->memberships->first()->id,
-            'completed_at' => Carbon::now()
+            'completed_at' => Carbon::now(),
         ]);
 
         $this->makeRequest()
@@ -135,10 +133,10 @@ class PersonMergeTest extends TestCase
         $this->assertDatabaseHas('cois', [
             'id' => $coi->id,
             'group_member_id' => $newMembership->id,
-            'completed_at' => Carbon::now()
+            'completed_at' => Carbon::now(),
         ]);
     }
-   
+
     /**
      * @test
      */
@@ -150,15 +148,14 @@ class PersonMergeTest extends TestCase
         $this->makeRequest()
             ->assertStatus(200);
 
-
         $this->assertDatabaseHas('people', [
             'id' => $this->person1->id,
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
 
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
-            'email' => $this->person1->email
+            'email' => $this->person1->email,
         ]);
     }
 
@@ -178,15 +175,13 @@ class PersonMergeTest extends TestCase
 
         $this->assertDatabaseHas('people', [
             'id' => $this->person1->id,
-            'user_id' => $user1->id
+            'user_id' => $user1->id,
         ]);
 
         $this->assertDeleted('users', [
             'id' => $user2->id,
         ]);
-
     }
-    
 
     /**
      * @test
@@ -196,13 +191,13 @@ class PersonMergeTest extends TestCase
         Carbon::setTestNow('2022-04-25');
         $coi = Coi::factory()->create([
             'group_member_id' => $this->person2->memberships->first()->id,
-            'completed_at' => Carbon::now()
+            'completed_at' => Carbon::now(),
         ]);
 
         $this->makeRequest()
             ->assertStatus(200);
 
-        $expectedMessage = $this->person2->name . ' was merged into ' . $this->person1->name;
+        $expectedMessage = $this->person2->name.' was merged into '.$this->person1->name;
 
         $this->assertLoggedActivity(
             logName: 'people',
@@ -211,10 +206,11 @@ class PersonMergeTest extends TestCase
             activity_type: 'person-merged',
         );
     }
-    
+
     private function makeRequest($data = null)
     {
         $data = $data ?? ['authority_id' => $this->person1->id, 'obsolete_id' => $this->person2->id];
+
         return $this->json('put', '/api/people/merge', $data);
     }
 
@@ -226,6 +222,7 @@ class PersonMergeTest extends TestCase
         $membership = app()->make(MemberAdd::class)->handle($group, $person);
         $membership->assignRole('biocurator');
         $membership->givePermissionTo('members-invite');
+
         return $person;
     }
 }

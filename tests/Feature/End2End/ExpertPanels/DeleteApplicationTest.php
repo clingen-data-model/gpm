@@ -2,22 +2,21 @@
 
 namespace Tests\Feature\End2End\ExpertPanels;
 
-use Tests\TestCase;
-use App\Modules\User\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class DeleteApplicationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
-        
+
         $this->user = User::factory()->create();
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->url = '/api/applications/'.$this->expertPanel->uuid;
@@ -40,10 +39,10 @@ class DeleteApplicationTest extends TestCase
         Sanctum::actingAs($this->user);
         $response = $this->json('DELETE', $this->url)
             ->assertStatus(200);
-        
+
         $this->assertDatabaseMissing('applications', [
             'uuid' => $this->expertPanel->uuid,
-            'deleted_at' => null
+            'deleted_at' => null,
         ]);
     }
 
@@ -60,7 +59,7 @@ class DeleteApplicationTest extends TestCase
             'subject_id' => $this->expertPanel->group->id,
             'activity_type' => 'expert-panel-deleted',
             'causer_type' => get_class($this->user),
-            'causer_id' => $this->user->id
+            'causer_id' => $this->user->id,
         ]);
     }
 }

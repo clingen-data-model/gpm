@@ -2,16 +2,15 @@
 
 namespace App\Modules\ExpertPanel\Actions;
 
-use DateTime;
-use Illuminate\Support\Carbon;
-use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Event;
-use Lorisleiva\Actions\Concerns\AsAction;
-use App\Modules\Group\Actions\CoiCodeMake;
-use App\Modules\Group\Actions\GroupCreate;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Events\ApplicationInitiated;
 use App\Modules\ExpertPanel\Http\Requests\InitiateApplicationRequest;
+use App\Modules\Group\Actions\CoiCodeMake;
+use App\Modules\Group\Actions\GroupCreate;
+use App\Modules\Group\Models\Group;
+use DateTime;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Event;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class ExpertPanelCreate
 {
@@ -37,14 +36,14 @@ class ExpertPanelCreate
             $date_initiated = Carbon::now();
         }
 
-        $groupTypeId = $expert_panel_type_id+2;
+        $groupTypeId = $expert_panel_type_id + 2;
 
         $group = $this->createGroup->handle([
             'uuid' => $uuid,
             'name' => $working_name,
             'group_type_id' => $groupTypeId,
             'group_status_id' => config('groups.statuses.applying.id'),
-            'parent_id' => $cdwg_id
+            'parent_id' => $cdwg_id,
         ]);
 
         // EP is created with group when group type is EP.
@@ -54,7 +53,6 @@ class ExpertPanelCreate
         $group->expertPanel->date_initiated = $date_initiated;
         $group->expertPanel->cdwg_id = $cdwg_id;
         $group->expertPanel->current_step = 1;
-
 
         $group->expertPanel->save();
 
@@ -69,6 +67,7 @@ class ExpertPanelCreate
         $data['cdwg_id'] = $request->cdwg_id;
         $data['date_initiated'] = $request->date_initiated ? Carbon::parse($request->date_initiated) : null;
         $group = $this->handle(...$data);
+
         return response($group, 200);
     }
 }

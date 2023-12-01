@@ -2,20 +2,15 @@
 
 namespace Tests\Feature\End2End\Comments;
 
-use Carbon\Carbon;
-use Tests\TestCase;
-use App\Models\Comment;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Submission;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Notifications\CommentActivityNotification;
-use Tests\Feature\End2End\Comments\TestsCommentActivityNotificationSent;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Notification;
+use Laravel\Sanctum\Sanctum;
 
 class CommentDeleteTest extends CommentTest
 {
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupPermission('ep-applications-comments-manage');
@@ -32,7 +27,7 @@ class CommentDeleteTest extends CommentTest
 
         $this->assertDatabaseHas('comments', [
             'id' => $this->comment->id,
-            'deleted_at' => Carbon::now()
+            'deleted_at' => Carbon::now(),
         ]);
     }
 
@@ -47,7 +42,7 @@ class CommentDeleteTest extends CommentTest
 
         $this->assertDatabaseHas('comments', [
             'id' => $this->comment->id,
-            'deleted_at' => Carbon::now()
+            'deleted_at' => Carbon::now(),
         ]);
     }
 
@@ -63,7 +58,7 @@ class CommentDeleteTest extends CommentTest
 
         $this->assertDatabaseHas('comments', [
             'id' => $this->comment->id,
-            'deleted_at' => null
+            'deleted_at' => null,
         ]);
     }
 
@@ -75,7 +70,7 @@ class CommentDeleteTest extends CommentTest
         $submission = Submission::factory()->create([
             'group_id' => $this->expertPanel->group_id,
             'submission_status_id' => config('submissions.statuses.under-chair-review.id'),
-            'sent_to_chairs_at' => Carbon::now()
+            'sent_to_chairs_at' => Carbon::now(),
         ]);
 
         $approver = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
@@ -94,7 +89,6 @@ class CommentDeleteTest extends CommentTest
             }
         );
     }
-
 
     /**
      * @test
@@ -117,11 +111,8 @@ class CommentDeleteTest extends CommentTest
         );
     }
 
-
     private function makeRequest()
     {
         return $this->json('DELETE', '/api/comments/'.$this->comment->id);
     }
-
-
 }

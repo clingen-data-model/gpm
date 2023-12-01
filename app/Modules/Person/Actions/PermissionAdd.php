@@ -3,11 +3,11 @@
 namespace App\Modules\Person\Actions;
 
 use App\Actions\Contracts\AsFollowAction;
+use App\Actions\FollowActionCreate;
 use App\Events\Event;
 use App\Models\Permission;
-use App\Actions\FollowActionCreate;
-use App\Modules\Person\Models\Person;
 use App\Modules\Person\Events\InviteRedeemed;
+use App\Modules\Person\Models\Person;
 
 class PermissionAdd implements AsFollowAction
 {
@@ -17,17 +17,18 @@ class PermissionAdd implements AsFollowAction
 
     public function handle(Person $person, $permissionName): Person
     {
-        if (!$this->isSystemPermission($permissionName)) {
+        if (! $this->isSystemPermission($permissionName)) {
             throw new \InvalidArgumentException('Permission '.$permissionName.' is not a valid system permission.  Only system permissions may be added to users via their person record.');
         }
 
-        if (!$person->isLinkedToUser()) {
+        if (! $person->isLinkedToUser()) {
             $this->FollowActionCreate->handle(
                 eventClass: InviteRedeemed::class,
                 follower: PermissionAdd::class,
                 args: ['personId' => $person->id, 'permissionName' => $permissionName],
                 name: 'Grant '.$permissionName.' permission to '.$person->name.' when invite redeemed.',
             );
+
             return $person;
         }
 
@@ -40,14 +41,14 @@ class PermissionAdd implements AsFollowAction
     {
         extract($args);
         $person = Person::find($personId);
+
         return $this->handle($person, $permissionName);
     }
 
     private function isSystemPermission($permissionName): bool
     {
         $perm = Permission::where(['name' => $permissionName])->first();
-        return !is_null($perm) && $perm->scope == 'system';
+
+        return ! is_null($perm) && $perm->scope == 'system';
     }
-
-
 }

@@ -2,13 +2,11 @@
 
 namespace App\Modules\Group\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Support\Collection;
 use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Collection;
 
 class ApplicationReadyForApproverReview extends Notification
 {
@@ -73,5 +71,4 @@ class ApplicationReadyForApproverReview extends Notification
             ->groupBy('metadata.section')
             ->sortKeys();
     }
-
 }

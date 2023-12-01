@@ -1,11 +1,11 @@
 <?php
 
 namespace App\Actions;
-use App\Models\Comment;
+
 use App\Events\CommentCreated;
+use App\Models\Comment;
 use Illuminate\Support\Facades\Auth;
 use Lorisleiva\Actions\ActionRequest;
-use Illuminate\Support\Facades\Notification;
 use Lorisleiva\Actions\Concerns\AsController;
 
 class CommentCreate
@@ -28,6 +28,7 @@ class CommentCreate
     {
         $comment = $this->handle($request->all());
         $comment->load(['creator', 'type']);
+
         return $comment;
     }
 
@@ -38,13 +39,12 @@ class CommentCreate
             'subject_type' => 'required',
             'subject_id' => 'required',
             'comment_type_id' => 'required|exists:comment_types,id',
-            'metadata' => 'nullable|array'
+            'metadata' => 'nullable|array',
         ];
     }
 
-    public function authorize(ActionRequest $request):bool
+    public function authorize(ActionRequest $request): bool
     {
         return $request->user()->hasPermissionTo('ep-applications-comment');
     }
-
 }

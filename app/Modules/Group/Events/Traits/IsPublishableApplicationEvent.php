@@ -2,8 +2,8 @@
 
 namespace App\Modules\Group\Events\Traits;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 trait IsPublishableApplicationEvent
 {
@@ -24,7 +24,7 @@ trait IsPublishableApplicationEvent
                 'id' => $this->group->uuid,
                 'name' => $this->group->displayName,
                 'type' => $this->group->fullType->name,
-                'affiliation_id' => $this->group->expertPanel->affiliation_id
+                'affiliation_id' => $this->group->expertPanel->affiliation_id,
             ],
         ];
     }

@@ -1,9 +1,7 @@
 <?php
+
 namespace App\Modules\Group\Events;
 
-use App\Modules\Group\Events\GroupEvent;
-use App\Modules\Group\Events\GeneEventInterface;
-use App\Modules\Group\Events\PublishableApplicationEvent;
 use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
 
 abstract class GeneEvent extends GroupEvent implements GeneEventInterface, PublishableApplicationEvent

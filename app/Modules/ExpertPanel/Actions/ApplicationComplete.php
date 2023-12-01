@@ -2,12 +2,12 @@
 
 namespace App\Modules\ExpertPanel\Actions;
 
+use App\Modules\ExpertPanel\Events\ApplicationCompleted;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Service\StepManagerFactory;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\Concerns\AsAction;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Service\StepManagerFactory;
-use App\Modules\ExpertPanel\Events\ApplicationCompleted;
 
 class ApplicationComplete
 {

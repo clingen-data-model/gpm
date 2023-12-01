@@ -2,30 +2,27 @@
 
 namespace Tests\Feature\Integration\Notificaitons;
 
-use Tests\TestCase;
-use Illuminate\Support\Carbon;
 use App\Mail\UserDefinedMailable;
-
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Notification;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Actions\StepApprove;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Notifications\UserDefinedMailNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Modules\Application\Notifications\ApplicationStepApprovedNotification;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
+use Tests\TestCase;
 
 class NotifyStepApprovedTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
-        
+
         $this->expertPanel = ExpertPanel::factory()->create([
-            'expert_panel_type_id' => config('expert_panels.types.gcep.id')
+            'expert_panel_type_id' => config('expert_panels.types.gcep.id'),
         ]);
         $this->addContactToApplication($this->expertPanel);
         $this->addContactToApplication($this->expertPanel);
@@ -50,7 +47,7 @@ class NotifyStepApprovedTest extends TestCase
         StepApprove::run($this->expertPanel, Carbon::now(), true);
         Notification::assertNotSentTo($this->expertPanel->contacts, UserDefinedMailNotification::class);
     }
-    
+
     /**
      * @test
      */
@@ -59,7 +56,7 @@ class NotifyStepApprovedTest extends TestCase
         $this->expertPanel->update(['expert_panel_type_id' => config('expert_panels.types.vcep.id')]);
 
         Mail::fake();
-        
+
         $this->runApproveStep();
 
         Mail::assertSent(
@@ -67,10 +64,11 @@ class NotifyStepApprovedTest extends TestCase
             function ($mail) {
                 $contacts = $this->expertPanel->contacts()->with('person')->get()->pluck('person');
                 foreach ($contacts as $contact) {
-                    if (!$mail->hasTo($contact->email)) {
+                    if (! $mail->hasTo($contact->email)) {
                         return false;
                     }
                 }
+
                 return true;
             }
         );
@@ -95,10 +93,11 @@ class NotifyStepApprovedTest extends TestCase
             UserDefinedMailable::class,
             function ($mail) {
                 foreach (config('expert-panels.notifications.cc.recipients') as $cc) {
-                    if (!$mail->hasCc($cc)) {
+                    if (! $mail->hasCc($cc)) {
                         return false;
                     }
                 }
+
                 return true;
             }
         );
@@ -113,22 +112,22 @@ class NotifyStepApprovedTest extends TestCase
 
         $this->expertPanel->current_step = 4;
         $this->expertPanel->save();
-        
+
         Mail::fake();
         $this->runApproveStep();
-        
+
         $expectedCcs = config('expert-panels.notifications.cc.recipients');
         array_push($expectedCcs, ['clinvar@ncbi.nlm.nih.gov', 'ClinVar']);
-        
-        
+
         Mail::assertSent(
             UserDefinedMailable::class,
             function ($mail) use ($expectedCcs) {
                 foreach ($expectedCcs as $cc) {
-                    if (!$mail->hasCc($cc)) {
+                    if (! $mail->hasCc($cc)) {
                         return false;
                     }
                 }
+
                 return true;
             }
         );
@@ -143,7 +142,6 @@ class NotifyStepApprovedTest extends TestCase
 
         $this->expertPanel->current_step = 2;
         $this->expertPanel->save();
-
 
         Mail::fake();
 
@@ -186,7 +184,7 @@ class NotifyStepApprovedTest extends TestCase
             'dateApproved' => Carbon::now(),
             'notifyContacts' => true,
             'subject' => 'Some subject',
-            'body' => 'some body'
+            'body' => 'some body',
         ];
         StepApprove::run(...$data);
 

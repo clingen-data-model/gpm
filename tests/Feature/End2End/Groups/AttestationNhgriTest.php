@@ -2,19 +2,17 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Tests\TestCase;
-use App\Modules\User\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class AttestationNhgriTest extends TestCase
 {
     use RefreshDatabase;
-    
-    public function setup():void
+
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -44,16 +42,15 @@ class AttestationNhgriTest extends TestCase
         $this->submitRequest([])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'attestation' => ['This is required.']
+                'attestation' => ['This is required.'],
             ]);
 
         $this->submitRequest(['attestation' => 0])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'attestation' => ['The attestation must be accepted.']
+                'attestation' => ['The attestation must be accepted.'],
             ]);
     }
-    
 
     /**
      * @test
@@ -65,7 +62,7 @@ class AttestationNhgriTest extends TestCase
 
         $this->assertDatabaseHas('expert_panels', [
             'id' => $this->expertPanel->id,
-            'nhgri_attestation_date' => Carbon::now()
+            'nhgri_attestation_date' => Carbon::now(),
         ]);
     }
 
@@ -84,7 +81,6 @@ class AttestationNhgriTest extends TestCase
             logName: 'groups'
         );
     }
-    
 
     private function submitRequest($data = null)
     {

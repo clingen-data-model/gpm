@@ -1,9 +1,8 @@
 <?php
 
+use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
 
 class UpdgradeV1Tables extends Migration
 {
@@ -14,7 +13,7 @@ class UpdgradeV1Tables extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('cois_temp')) {
+        if (! Schema::hasTable('cois_temp')) {
             Schema::create('cois_temp', function ($table) {
                 $table->id();
                 $table->foreignId('expert_panel_id')
@@ -31,7 +30,8 @@ class UpdgradeV1Tables extends Migration
                         ->map(function ($coi) {
                             $coi->expert_panel_id = $coi->application_id;
                             unset($coi->application_id);
-                            return (array)$coi;
+
+                            return (array) $coi;
                         })
                         ->toArray();
         foreach ($coiData as $row) {
@@ -57,7 +57,7 @@ class UpdgradeV1Tables extends Migration
      */
     public function down()
     {
-        if (!Schema::hasTable('cois_temp')) {
+        if (! Schema::hasTable('cois_temp')) {
             Schema::create('cois_temp', function ($table) {
                 $table->id();
                 $table->foreignId('application_id')
@@ -72,11 +72,12 @@ class UpdgradeV1Tables extends Migration
         $cois = DB::table('cois')->get()->map(function ($i) {
             $i->application_id = $i->expert_panel_id;
             unset($i->expert_panel_id);
-            return (array)$i;
+
+            return (array) $i;
         })->toArray();
 
         DB::table('cois_temp')->insert($cois);
-        
+
         Schema::dropIfExists('cois');
         Schema::rename('cois_temp', 'cois');
 

@@ -11,9 +11,9 @@ interface UserDefinedTemplate
     public function renderSubject(ExpertPanel $expertPanel): string;
 
     public function getTo(): array;
-    
+
     // public function getFrom(): string;
-    
+
     public function getCC(): array;
 
     public function getAttachments(): array;

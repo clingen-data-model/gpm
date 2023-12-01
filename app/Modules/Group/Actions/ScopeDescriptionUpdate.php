@@ -1,14 +1,14 @@
 <?php
+
 namespace App\Modules\Group\Actions;
 
+use App\Modules\Group\Events\ScopeDescriptionUpdated;
+use App\Modules\Group\Http\Resources\GroupResource;
 use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Validation\ValidationException;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Auth\Access\AuthorizationException;
-use App\Modules\Group\Http\Resources\GroupResource;
-use App\Modules\Group\Events\ScopeDescriptionUpdated;
 
 class ScopeDescriptionUpdate
 {
@@ -16,7 +16,7 @@ class ScopeDescriptionUpdate
 
     public function handle(Group $group, ?string $description): Group
     {
-        if (!$group->isExpertPanel) {
+        if (! $group->isExpertPanel) {
             throw ValidationException::withMessages(['scope_description' => ['A description of scope can only be set for expert panels.']]);
         }
 
@@ -25,14 +25,14 @@ class ScopeDescriptionUpdate
         }
 
         $group->expertPanel->update([
-            'scope_description' => $description
+            'scope_description' => $description,
         ]);
 
         event(new ScopeDescriptionUpdated($group, $description));
 
         return $group;
     }
-    
+
     public function asController(ActionRequest $request, $uuid)
     {
         $group = Group::findByUuidOrFail($uuid);
@@ -48,7 +48,7 @@ class ScopeDescriptionUpdate
     public function rules(): array
     {
         return [
-            'scope_description' => 'required|max:66535'
+            'scope_description' => 'required|max:66535',
         ];
     }
 

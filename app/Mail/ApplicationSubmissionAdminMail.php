@@ -2,12 +2,10 @@
 
 namespace App\Mail;
 
+use App\Modules\Group\Models\Submission;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
-use App\Modules\Group\Models\Group;
 use Illuminate\Queue\SerializesModels;
-use App\Modules\Group\Models\Submission;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class ApplicationSubmissionAdminMail extends Mailable
 {

@@ -2,25 +2,23 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Carbon\Carbon;
-use Tests\TestCase;
 use App\Models\Comment;
 use App\Models\Permission;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Support\Collection;
-use App\Modules\Group\Models\Group;
-use Illuminate\Testing\TestResponse;
-use App\Modules\Person\Models\Person;
-use Database\Seeders\CommentTypesSeeder;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Database\Seeders\NextActionTypesTableSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use App\Modules\Group\Actions\ApplicationSubmitStep;
-use Database\Seeders\NextActionAssigneesTableSeeder;
 use App\Modules\Group\Notifications\ApplicationReadyForApproverReview;
+use App\Modules\Person\Models\Person;
+use Carbon\Carbon;
+use Database\Seeders\CommentTypesSeeder;
+use Database\Seeders\NextActionAssigneesTableSeeder;
+use Database\Seeders\NextActionTypesTableSeeder;
+use Database\Seeders\SubmissionTypeAndStatusSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Testing\TestResponse;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class ApplicationSendToChairsTest extends TestCase
 {
@@ -65,7 +63,7 @@ class ApplicationSendToChairsTest extends TestCase
             'expert_panel_id' => $this->expertPanel->id,
             'entry' => 'Review Step '.$this->expertPanel->current_step.' application.',
             'assignee_id' => config('next_actions.assignees.chairs.id'),
-            'type_id' => config('next_actions.types.chair-review.id')
+            'type_id' => config('next_actions.types.chair-review.id'),
         ]);
     }
 
@@ -86,9 +84,9 @@ class ApplicationSendToChairsTest extends TestCase
             subject: $this->group,
             description: 'Sent to CDWG OC Chairs: Step '.$this->expertPanel->current_step.' application',
             properties: [
-                'additional_comments' =>  'These are my additional notes.',
+                'additional_comments' => 'These are my additional notes.',
                 'comment_ids' => $comments->filter(fn ($c) => is_null($c->resolved_at))->pluck('id'),
-                'step' => $this->expertPanel->current_step
+                'step' => $this->expertPanel->current_step,
             ]
         );
     }
@@ -123,7 +121,7 @@ class ApplicationSendToChairsTest extends TestCase
         $this->assertDatabaseHas('submissions', [
             'id' => $submission->id,
             'sent_to_chairs_at' => Carbon::now(),
-            'notes_for_chairs' => 'These are my additional notes.'
+            'notes_for_chairs' => 'These are my additional notes.',
         ]);
     }
 
@@ -150,13 +148,14 @@ class ApplicationSendToChairsTest extends TestCase
     {
         return $this->json('POST', '/api/groups/'.$this->group->uuid.'/command', [
             'command' => 'app.modules.group.actions.applicationSendToChairs',
-            'additionalComments' => 'These are my additional notes.'
+            'additionalComments' => 'These are my additional notes.',
         ]);
     }
 
     private function setupComments(): Collection
     {
         (new CommentTypesSeeder())->run();
+
         return collect([
             Comment::factory()->create([
                 'subject_type' => get_class($this->group),
@@ -181,7 +180,7 @@ class ApplicationSendToChairsTest extends TestCase
                 'subject_id' => $this->group->id,
                 'comment_type_id' => config('comments.types.required-revision.id'),
                 'metadata' => ['section' => 'attestations'],
-                'resolved_at' => Carbon::now()
+                'resolved_at' => Carbon::now(),
             ]),
         ]);
     }

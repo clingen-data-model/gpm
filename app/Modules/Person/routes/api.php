@@ -1,46 +1,45 @@
 <?php
 
-use Illuminate\Http\Request;
-use App\Modules\Person\Models\Person;
-use Illuminate\Support\Facades\Route;
-use App\Modules\Person\Models\Institution;
-use App\Modules\Person\Actions\InviteReset;
-use App\Modules\Person\Actions\PersonMerge;
-use App\Modules\Person\Actions\InviteRedeem;
-use App\Modules\Person\Actions\PersonDelete;
-use App\Modules\Person\Actions\ProfileUpdate;
-use App\Modules\Person\Actions\ExpertiseCreate;
-use App\Modules\Person\Actions\ExpertiseDelete;
-use App\Modules\Person\Actions\ExpertiseSearch;
-use App\Modules\Person\Actions\ExpertisesMerge;
-use App\Modules\Person\Actions\ExpertiseUpdate;
+use App\Http\Controllers\Api\InstitutionController;
+use App\Http\Controllers\CountryController;
 use App\Modules\Person\Actions\CredentialCreate;
 use App\Modules\Person\Actions\CredentialDelete;
 use App\Modules\Person\Actions\CredentialSearch;
 use App\Modules\Person\Actions\CredentialsMerge;
 use App\Modules\Person\Actions\CredentialUpdate;
-use App\Modules\Person\Actions\PersonPhotoStore;
+use App\Modules\Person\Actions\ExpertiseCreate;
+use App\Modules\Person\Actions\ExpertiseDelete;
+use App\Modules\Person\Actions\ExpertiseSearch;
+use App\Modules\Person\Actions\ExpertisesMerge;
+use App\Modules\Person\Actions\ExpertiseUpdate;
 use App\Modules\Person\Actions\InstitutionCreate;
 use App\Modules\Person\Actions\InstitutionDelete;
+use App\Modules\Person\Actions\InstitutionMarkApproved;
 use App\Modules\Person\Actions\InstitutionsMerge;
 use App\Modules\Person\Actions\InstitutionUpdate;
-use App\Modules\Person\Actions\InviteValidateCode;
-use App\Http\Controllers\Api\InstitutionController;
-use App\Http\Controllers\CountryController;
-use App\Modules\Person\Actions\MarkNotificationRead;
-use App\Modules\Person\Actions\InstitutionMarkApproved;
-use App\Modules\Person\Http\Controllers\Api\ApiController;
+use App\Modules\Person\Actions\InviteRedeem;
 use App\Modules\Person\Actions\InviteRedeemForExistingUser;
+use App\Modules\Person\Actions\InviteReset;
+use App\Modules\Person\Actions\InviteValidateCode;
+use App\Modules\Person\Actions\PersonDelete;
+use App\Modules\Person\Actions\PersonMerge;
+use App\Modules\Person\Actions\PersonPhotoStore;
+use App\Modules\Person\Actions\ProfileUpdate;
+use App\Modules\Person\Http\Controllers\Api\ActivityLogsController;
+use App\Modules\Person\Http\Controllers\Api\ApiController;
 use App\Modules\Person\Http\Controllers\Api\InviteController;
 use App\Modules\Person\Http\Controllers\Api\PeopleController;
-use App\Modules\Person\Http\Controllers\Api\TimezoneController;
 use App\Modules\Person\Http\Controllers\Api\PersonEmailController;
-use App\Modules\Person\Http\Controllers\Api\ActivityLogsController;
 use App\Modules\Person\Http\Controllers\Api\PersonNotificationController;
+use App\Modules\Person\Http\Controllers\Api\TimezoneController;
+use App\Modules\Person\Models\Institution;
+use App\Modules\Person\Models\Person;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 Route::group([
     'prefix' => 'api/people',
-    'middleware' => ['api']
+    'middleware' => ['api'],
 ], function () {
     Route::get('/institutions', [InstitutionController::class, 'index']);
 
@@ -49,7 +48,7 @@ Route::group([
     });
 
     Route::group([
-        'middleware' => ['auth:sanctum']
+        'middleware' => ['auth:sanctum'],
     ], function () {
         Route::get('/', [PeopleController::class, 'index']);
         Route::get('/invites/', [InviteController::class, 'index']);
@@ -67,7 +66,7 @@ Route::group([
 
         Route::post('/{person:uuid}/profile-photo', PersonPhotoStore::class);
         Route::get('/{person:uuid}/profile-photo', function (Person $person) {
-            if (!\Storage::disk('profile-photos')->exists($person->profile_photo)) {
+            if (! \Storage::disk('profile-photos')->exists($person->profile_photo)) {
                 return response()->file(public_path('images/default_profile.jpg'));
             }
 
@@ -89,13 +88,11 @@ Route::group([
 
     Route::get('/lookups/{model}/{id}', [ApiController::class, 'show'])
         ->name('people.catchall.show');
-
 });
-
 
 Route::group([
     'prefix' => 'api/institutions',
-    'middleware' => ['api', 'auth:sanctum']
+    'middleware' => ['api', 'auth:sanctum'],
 ], function () {
     Route::get('/', [InstitutionController::class, 'index']);
     Route::post('/', InstitutionCreate::class);
@@ -107,7 +104,7 @@ Route::group([
 
 Route::group([
     'prefix' => 'api/credentials',
-    'middleware' => ['api', 'auth:sanctum']
+    'middleware' => ['api', 'auth:sanctum'],
 ], function () {
     Route::post('/', CredentialCreate::class);
     Route::get('/', CredentialSearch::class);
@@ -118,7 +115,7 @@ Route::group([
 
 Route::group([
     'prefix' => 'api/expertises',
-    'middleware' => ['api', 'auth:sanctum']
+    'middleware' => ['api', 'auth:sanctum'],
 ], function () {
     Route::post('/', ExpertiseCreate::class);
     Route::get('/', ExpertiseSearch::class);

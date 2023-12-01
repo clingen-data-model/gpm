@@ -17,11 +17,10 @@ class SpecificationsGet
 
     public function asController(Group $group)
     {
-        if (!$group->isVcep) {
+        if (! $group->isVcep) {
             return response(['message' => 'Only VCEPs have specifications.'], 404);
         }
 
         return $this->handle($group);
-
     }
 }

@@ -3,13 +3,12 @@
 namespace App\Modules\Group\Actions;
 
 use App\Models\Document;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
+use App\Modules\Group\Events\DocumentUpdated;
 use App\Modules\Group\Models\Group;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
-use App\Modules\Group\Events\DocumentUpdated;
 
 class DocumentUpdate
 {
@@ -28,7 +27,7 @@ class DocumentUpdate
 
         return $document->load('type');
     }
-    
+
     public function asController(ActionRequest $request, Group $group, Document $document)
     {
         return $this->handle($group, $document, $request->only(['filename', 'document_type_id', 'notes']));
@@ -42,7 +41,7 @@ class DocumentUpdate
     public function rules(): array
     {
         return [
-            'document_type_id' => 'required|exists:document_types,id'
+            'document_type_id' => 'required|exists:document_types,id',
         ];
     }
 

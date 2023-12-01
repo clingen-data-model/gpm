@@ -24,6 +24,7 @@ class MembershipResource extends JsonResource
             $data['coi_needed'] = $this->coiNeeded;
             $data['coi_last_completed'] = $this->coiLastCompleted;
         }
+
         return $data;
     }
 }

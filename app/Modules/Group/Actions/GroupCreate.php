@@ -1,17 +1,17 @@
 <?php
+
 namespace App\Modules\Group\Actions;
 
-use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
-use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Auth;
-use Lorisleiva\Actions\ActionRequest;
-use App\Modules\Group\Actions\CoiCodeMake;
-use App\Modules\Group\Events\GroupCreated;
-use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Events\GroupCreated;
 use App\Modules\Group\Http\Resources\GroupResource;
+use App\Modules\Group\Models\Group;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsController;
+use Ramsey\Uuid\Uuid;
 
 class GroupCreate
 {
@@ -20,7 +20,6 @@ class GroupCreate
     public function __construct(private CoiCodeMake $makeCoiCode)
     {
     }
-
 
     public function handle($data): Group
     {
@@ -74,12 +73,12 @@ class GroupCreate
                 'nullable',
                 function ($attribute, $value, $fail) {
                     if ($value != 0) {
-                        if (!DB::table('groups')->where('id', $value)->exists()) {
+                        if (! DB::table('groups')->where('id', $value)->exists()) {
                             $fail('The selected parent is not valid.');
                         }
                     }
-                }
-            ]
+                },
+            ],
         ];
     }
 
@@ -92,7 +91,7 @@ class GroupCreate
     {
         return [
             'required' => 'This field is required.',
-            'exists' => 'The selection is invalid.'
+            'exists' => 'The selection is invalid.',
         ];
     }
 

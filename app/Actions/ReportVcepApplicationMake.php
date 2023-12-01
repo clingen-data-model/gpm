@@ -1,12 +1,7 @@
 <?php
 
 namespace App\Actions;
-use Illuminate\Console\Command;
-use App\Modules\Group\Models\Group;
-use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsCommand;
-use App\Actions\Utils\TransformArrayForCsv;
-use Lorisleiva\Actions\Concerns\AsController;
+
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 
 class ReportVcepApplicationMake extends ReportMakeAbstract
@@ -28,17 +23,18 @@ class ReportVcepApplicationMake extends ReportMakeAbstract
                         'coordinators.person',
                         'chairs',
                         'chairs.person',
-                        'group'
+                        'group',
                     ])
                     ->get();
-                    
+
         $data = $vceps->map(function ($vcep) {
             $coordinators = $vcep->coordinators->map(function ($crd) {
                 return $crd->person->name;
-            })->join(", ");
+            })->join(', ');
             $chairs = $vcep->chairs->map(function ($chair) {
                 return $chair->person->name;
-            })->join(", ");
+            })->join(', ');
+
             return [
                 'Short name' => $vcep->short_base_name,
                 'Long name' => $vcep->long_base_name,
@@ -58,6 +54,4 @@ class ReportVcepApplicationMake extends ReportMakeAbstract
 
         return $data;
     }
-    
-
 }

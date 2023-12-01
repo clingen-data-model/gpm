@@ -2,23 +2,19 @@
 
 namespace App\Actions;
 
-use Exception;
-use App\Models\Comment;
 use App\Events\CommentEvent;
-use App\Modules\User\Models\User;
-use Illuminate\Support\Collection;
-use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Log;
-use Lorisleiva\Actions\Concerns\AsListener;
-use Illuminate\Support\Facades\Notification;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Models\Comment;
 use App\Modules\Group\Actions\SubmissionNotifiablesGet;
+use App\Modules\Group\Models\Group;
 use App\Modules\Group\Notifications\CommentActivityNotification;
+use Exception;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
+use Lorisleiva\Actions\Concerns\AsListener;
 
 class CommentNotifyAboutEvent
 {
     use AsListener;
-
 
     public function __construct(private SubmissionNotifiablesGet $getSubmissionNotifiables)
     {
@@ -27,10 +23,10 @@ class CommentNotifyAboutEvent
     public function handle(Comment $comment, string $type): void
     {
         if ($this->commentIsAboutGroup($comment)) {
-
             $group = $this->getCommentGroup($comment);
-            if (!$group) {
+            if (! $group) {
                 Log::warning('Could not find group for comment', $comment->toArray);
+
                 return;
             }
             $submission = $group->latestSubmission;
@@ -51,11 +47,11 @@ class CommentNotifyAboutEvent
         $this->handle($event->comment, $this->getEventString($event));
     }
 
-
     private function getEventString(CommentEvent $event): string
     {
         $classParts = explode('\\', get_class($event));
-        return preg_replace('/Comment/i', '', $classParts[count($classParts)-1]);
+
+        return preg_replace('/Comment/i', '', $classParts[count($classParts) - 1]);
     }
 
     private function commentIsAboutGroup(Comment $comment): bool
@@ -83,6 +79,4 @@ class CommentNotifyAboutEvent
 
         throw new Exception('Tried to get group for comment where subject is not Group and metadata.root_subject_id is not Group.');
     }
-
-
 }

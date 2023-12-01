@@ -2,14 +2,11 @@
 
 namespace Tests\Feature\Integration\Modules\Application\Actions;
 
-use Tests\TestCase;
-use App\Modules\Person\Models\Person;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Events\ContactAdded;
+use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 /**
  * @group applications
@@ -21,7 +18,7 @@ class ContactAddTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -30,7 +27,6 @@ class ContactAddTest extends TestCase
         $this->person = Person::factory()->create();
         $this->expertPanel = ExpertPanel::factory()->create();
     }
-    
 
     /**
      * @test
@@ -42,7 +38,7 @@ class ContactAddTest extends TestCase
         $this->assertDatabaseHas('activity_log', [
             'subject_id' => $this->expertPanel->group->id,
             'activity_type' => 'contact-added',
-            'properties->person->uuid' => $this->person->uuid
+            'properties->person->uuid' => $this->person->uuid,
         ]);
     }
 
@@ -55,7 +51,7 @@ class ContactAddTest extends TestCase
 
         $this->assertDatabaseHas('group_members', [
             'group_id' => $this->expertPanel->group_id,
-            'person_id' => $this->person->id
+            'person_id' => $this->person->id,
         ]);
     }
 }

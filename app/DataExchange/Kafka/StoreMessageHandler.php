@@ -2,8 +2,8 @@
 
 namespace App\DataExchange\Kafka;
 
-use Illuminate\Support\Facades\Log;
 use App\DataExchange\Models\IncomingStreamMessage;
+use Illuminate\Support\Facades\Log;
 
 class StoreMessageHandler extends AbstractMessageHandler
 {
@@ -23,7 +23,7 @@ class StoreMessageHandler extends AbstractMessageHandler
 
         if ($storedMessage->payload != $payload) {
             Log::warning('We got a message from the '.$message->topic.' with a key that already exists and a payload that is different', ['storedMessage->payload' => $storedMessage->payload, 'payload' => $payload]);
-            die;
+            exit;
         }
 
         return parent::handle($message);
@@ -35,6 +35,7 @@ class StoreMessageHandler extends AbstractMessageHandler
         if ($data && is_object($data) && isset($data->report_id)) {
             return true;
         }
+
         return false;
     }
 }

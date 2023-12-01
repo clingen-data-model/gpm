@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Modules\Person\Models\PrimaryOccupation;
-use Database\Seeders\Seeder;
 
 class PrimaryOccupationSeeder extends Seeder
 {
@@ -28,7 +27,7 @@ class PrimaryOccupationSeeder extends Seeder
             ['id' => 11, 'name' => 'Medical Student/Graduate Student/Trainee/Fellow'],
             ['id' => 12, 'name' => 'Undergraduate Student'],
             ['id' => 13, 'name' => 'High School Student'],
-            ['id' => 100, 'name' => 'Other']
+            ['id' => 100, 'name' => 'Other'],
         ];
 
         $this->seedFromArray($items, PrimaryOccupation::class);

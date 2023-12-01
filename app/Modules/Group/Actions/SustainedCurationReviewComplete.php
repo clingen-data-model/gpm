@@ -2,13 +2,12 @@
 
 namespace App\Modules\Group\Actions;
 
-use App\Tasks\Models\Task;
-use Illuminate\Support\Collection;
+use App\Modules\Group\Events\SustainedCurationReviewCompleted;
 use App\Modules\Group\Models\Group;
 use App\Tasks\Actions\TaskComplete;
+use Illuminate\Support\Collection;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
-use App\Modules\Group\Events\SustainedCurationReviewCompleted;
 
 class SustainedCurationReviewComplete
 {
@@ -17,7 +16,6 @@ class SustainedCurationReviewComplete
     public function __construct(private TaskComplete $completeTask)
     {
     }
-    
 
     public function handle(Group $group): Collection
     {

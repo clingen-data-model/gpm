@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder as BaseSeeder;
+use Illuminate\Support\Str;
 
 abstract class Seeder extends BaseSeeder
 {
@@ -20,10 +20,10 @@ abstract class Seeder extends BaseSeeder
         Model::unguard();
         $items = config($config);
         foreach ($items as $slug => $value) {
-            if (is_integer($value)) {
+            if (is_int($value)) {
                 $modelClass::updateOrCreate([
-                  'id' => $value,
-                  'name' => ucfirst(preg_replace('/-/', ' ', $slug)),
+                    'id' => $value,
+                    'name' => ucfirst(preg_replace('/-/', ' ', $slug)),
                 ]);
             }
 
@@ -38,11 +38,11 @@ abstract class Seeder extends BaseSeeder
     {
         Model::unguard();
         foreach ($items as $itemData) {
-            $modelClass::updateOrCreate(['id'=>$itemData['id']], $itemData);
+            $modelClass::updateOrCreate(['id' => $itemData['id']], $itemData);
         }
         Model::reguard();
     }
-    
+
     public function seedFromSimpleArray($items, $modelClass)
     {
         Model::unguard();

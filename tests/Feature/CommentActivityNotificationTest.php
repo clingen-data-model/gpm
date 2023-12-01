@@ -2,20 +2,19 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use App\Models\Comment;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Notifications\CommentActivityNotification;
 use App\Modules\Person\Models\Person;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
+use Tests\TestCase;
 
 class CommentActivityNotificationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -49,6 +48,4 @@ class CommentActivityNotificationTest extends TestCase
 
         $this->assertEquals(0, CommentActivityNotification::getValidUnique($this->person->unreadNotifications)->count());
     }
-
-
 }

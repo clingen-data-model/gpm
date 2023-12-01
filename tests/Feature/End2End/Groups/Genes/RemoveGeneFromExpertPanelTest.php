@@ -2,13 +2,11 @@
 
 namespace Tests\Feature\End2End\Groups\Genes;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Support\Carbon;
-use App\Modules\User\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 /**
  * @group groups
@@ -20,7 +18,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -31,7 +29,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
         $this->gene1 = $this->expertPanel->genes()->create([
             'hgnc_id' => 123345,
             'mondo_id' => 'MONDO:1234567',
-            'gene_symbol' => uniqid()
+            'gene_symbol' => uniqid(),
         ]);
         $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/genes';
     }
@@ -50,7 +48,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
         $this->assertDatabaseHas('genes', [
             'hgnc_id' => 123345,
             'expert_panel_id' => $this->expertPanel->id,
-            'deleted_at' => null
+            'deleted_at' => null,
         ]);
     }
 
@@ -64,7 +62,6 @@ class RemoveGeneFromExpertPanelTest extends TestCase
         $this->json('DELETE', $this->url.'/'.$this->gene1->id)
             ->assertStatus(422);
     }
-    
 
     /**
      * @test
@@ -75,11 +72,11 @@ class RemoveGeneFromExpertPanelTest extends TestCase
         Sanctum::actingAs($this->user);
         $this->json('DELETE', $this->url.'/'.$this->gene1->id)
             ->assertStatus(200);
-        
+
         $this->assertDatabaseHas('genes', [
             'hgnc_id' => 123345,
             'expert_panel_id' => $this->expertPanel->id,
-            'deleted_at' => '2021-11-01 00:00:00'
+            'deleted_at' => '2021-11-01 00:00:00',
         ]);
     }
 
@@ -97,7 +94,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
             [
                 'activity_type' => 'gene-removed',
                 'subject_id' => $this->expertPanel->group_id,
-                'properties->hgnc_id' => $this->gene1->hgnc_id
+                'properties->hgnc_id' => $this->gene1->hgnc_id,
             ]
         );
     }

@@ -2,18 +2,17 @@
 
 namespace Tests\Feature\End2End\Auth;
 
-use Tests\TestCase;
 use App\Modules\User\Models\User;
 use Illuminate\Auth\Notifications\ResetPassword;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
+use Tests\TestCase;
 
 class SendPasswordResetLinkTest extends TestCase
 {
     use RefreshDatabase;
-    
-    public function setup():void
+
+    public function setup(): void
     {
         parent::setup();
     }
@@ -27,13 +26,13 @@ class SendPasswordResetLinkTest extends TestCase
         $response->assertStatus(422);
 
         $response->assertJson([
-                "message" => "The given data was invalid.",
-                "errors" => [
-                    'email' => ['This is required.']
-                ]
-            ]);
+            'message' => 'The given data was invalid.',
+            'errors' => [
+                'email' => ['This is required.'],
+            ],
+        ]);
     }
-    
+
     /**
      * @test
      */
@@ -42,10 +41,10 @@ class SendPasswordResetLinkTest extends TestCase
         $this->json('POST', '/api/send-reset-password-link', ['email' => 'email'])
             ->assertStatus(422)
             ->assertJson([
-                "message" => "The given data was invalid.",
-                "errors" => [
-                    'email' => ['The email must be a valid email address.']
-                ]
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'email' => ['The email must be a valid email address.'],
+                ],
             ]);
     }
 
@@ -59,8 +58,8 @@ class SendPasswordResetLinkTest extends TestCase
             ->assertJson([
                 'message' => 'There was a problem with your submission.',
                 'errors' => [
-                    'email' => ['We can\'t find a user with that email address.']
-                ]
+                    'email' => ['We can\'t find a user with that email address.'],
+                ],
             ]);
     }
 

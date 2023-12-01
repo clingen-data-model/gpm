@@ -7,6 +7,7 @@ use Illuminate\Http\UploadedFile;
 class MailAttachment
 {
     protected $originalName;
+
     protected $path;
 
     public function __construct($originalName, $path)

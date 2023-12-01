@@ -3,9 +3,9 @@
 namespace Database\Factories;
 
 use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Person;
 use App\Modules\Group\Models\Submission;
 use App\Modules\Group\Models\SubmissionType;
+use App\Modules\Person\Models\Person;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SubmissionFactory extends Factory
@@ -28,7 +28,7 @@ class SubmissionFactory extends Factory
             'group_id' => Group::factory()->create()->id,
             'submission_type_id' => SubmissionType::factory(),
             'submission_status_id' => 1,
-            'submitter_id' => Person::factory()
+            'submitter_id' => Person::factory(),
         ];
     }
 }

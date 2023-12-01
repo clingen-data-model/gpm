@@ -18,6 +18,7 @@ class InviteResource extends JsonResource
         if ($this->relationLoaded('inviter')) {
             $data['coi_code'] = $this->coi_code;
         }
+
         return $data;
     }
 }

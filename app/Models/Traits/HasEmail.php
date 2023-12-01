@@ -2,9 +2,6 @@
 
 namespace App\Models\Traits;
 
-/**
- * 
- */
 trait HasEmail
 {
     public function scopeEmail($query, $email)
@@ -12,14 +9,13 @@ trait HasEmail
         return $query->where('email', $email);
     }
 
-    static public function findByEmail($email)
+    public static function findByEmail($email)
     {
         return static::email($email)->first();
     }
 
-    static public function findByEmailOrFail($email)
+    public static function findByEmailOrFail($email)
     {
         return static::email($email)->sole();
     }
-
 }

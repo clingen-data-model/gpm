@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use Ramsey\Uuid\Uuid;
-use Database\Seeders\Seeder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Model;
 use App\Modules\Person\Models\Institution;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Ramsey\Uuid\Uuid;
 
 class InstitutionSeeder extends Seeder
 {
@@ -21,10 +20,9 @@ class InstitutionSeeder extends Seeder
 
         // Get institutions from https://clinicalgenome.org/data-pull/organizations/
         $items = [];
-        if (!app()->environment('testing')) {
+        if (! app()->environment('testing')) {
             $items = $this->getWebsiteInstitutions();
         }
-
 
         foreach ($items as $inst) {
             Institution::updateOrCreate(['website_id' => $inst['website_id']], $inst);
@@ -38,7 +36,6 @@ class InstitutionSeeder extends Seeder
             $inst->forceDelete();
         });
     }
-    
 
     private function resolveCountryId($inst): int|null
     {
@@ -47,13 +44,13 @@ class InstitutionSeeder extends Seeder
         }
 
         if (count($inst->countries) > 1) {
-            throw new \Exception("Multiple countries found for ".$inst->title.".  This is not currently supported.");
+            throw new \Exception('Multiple countries found for '.$inst->title.'.  This is not currently supported.');
         }
 
         if (count($inst->countries) == 0) {
             return null;
         }
-        
+
         $countryName = $inst->countries[0]->title;
 
         switch ($inst->countries[0]->id) {
@@ -101,19 +98,21 @@ class InstitutionSeeder extends Seeder
         if (app()->environment('testing')) {
             return $items->take(10);
         }
+
         return $items;
     }
-    
 
     private function resolveName($titleString)
     {
         $split = $this->splitNameAndAbbreviation($titleString);
+
         return $split['name'];
     }
 
     private function resolveAbbreviation($titleString)
     {
         $split = $this->splitNameAndAbbreviation($titleString);
+
         return $split['abbr'];
     }
 
@@ -128,13 +127,13 @@ class InstitutionSeeder extends Seeder
 
         return [
             'name' => $name,
-            'abbr' => $abbr
+            'abbr' => $abbr,
         ];
     }
-    
+
     private function resolveUrl($inst)
     {
-        if (!empty($inst->url_general)) {
+        if (! empty($inst->url_general)) {
             return $inst->url_general;
         }
         if (substr($inst->address, 0, 4) == 'http') {
@@ -149,6 +148,7 @@ class InstitutionSeeder extends Seeder
         if (substr($inst->address, 0, 4) == 'http') {
             return null;
         }
+
         return $inst->address;
     }
 
@@ -156,7 +156,7 @@ class InstitutionSeeder extends Seeder
     {
         Model::unguard();
         foreach ($items as $itemData) {
-            $modelClass::updateOrCreate(['website_id'=>$itemData['website_id']], $itemData);
+            $modelClass::updateOrCreate(['website_id' => $itemData['website_id']], $itemData);
         }
         Model::reguard();
     }

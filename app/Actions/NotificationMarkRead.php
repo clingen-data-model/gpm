@@ -2,10 +2,10 @@
 
 namespace App\Actions;
 
-use Illuminate\Support\Facades\Auth;
 use App\Modules\Person\Models\Person;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Support\Facades\Auth;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 
@@ -30,7 +30,7 @@ class NotificationMarkRead
         }
 
         $this->handle($notification);
-        
+
         return response('marked read', 200);
     }
 }

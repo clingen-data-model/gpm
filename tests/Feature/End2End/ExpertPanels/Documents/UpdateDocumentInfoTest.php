@@ -2,14 +2,12 @@
 
 namespace Tests\Feature\End2End\ExpertPanels\Documents;
 
-use Carbon\Carbon;
-use Tests\TestCase;
 use App\Models\Document;
-use App\Modules\User\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 /**
  * @group documents
@@ -18,7 +16,7 @@ class UpdateDocumentInfoTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -39,12 +37,12 @@ class UpdateDocumentInfoTest extends TestCase
     {
         $this->json('PUT', $this->docUrl, [
             'date_received' => Carbon::now(),
-            'notes' => 'This is a note!'
+            'notes' => 'This is a note!',
         ])
         ->assertStatus(200)
         ->assertJsonFragment([
             'date_received' => Carbon::now()->toISOString(),
-            'notes' => 'This is a note!'
+            'notes' => 'This is a note!',
         ]);
     }
 
@@ -56,7 +54,7 @@ class UpdateDocumentInfoTest extends TestCase
         $this->json('PUT', $this->docUrl, [])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'date_received' => ['This is required.']
+                'date_received' => ['This is required.'],
             ]);
     }
 }

@@ -2,22 +2,22 @@
 
 namespace Tests\Feature\End2End;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Testing\TestResponse;
-use App\Modules\Person\Models\Person;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Actions\ApplicationSubmitStep;
+use App\Modules\Person\Models\Person;
 use Database\Seeders\NextActionAssigneesTableSeeder;
 use Database\Seeders\NextActionTypesTableSeeder;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\TestResponse;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class ApplicationActivityTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -28,7 +28,6 @@ class ApplicationActivityTest extends TestCase
 
         $this->user = $this->setupUser();
         Sanctum::actingAs($this->user);
-
     }
 
     /**
@@ -92,20 +91,19 @@ class ApplicationActivityTest extends TestCase
         $epAndSub1 = $this->setupExpertPanelAndSubmission();
         $epAndSub2 = $this->setupExpertPanelAndSubmission();
         $epAndSub2['submission']->update([
-            'submission_status_id' => config('submissions.statuses.under-chair-review.id')
+            'submission_status_id' => config('submissions.statuses.under-chair-review.id'),
         ]);
         $epAndSub3 = $this->setupExpertPanelAndSubmission();
         $epAndSub3['submission']->update([
-            'submission_status_id' => config('submissions.statuses.revisions-requested.id')
+            'submission_status_id' => config('submissions.statuses.revisions-requested.id'),
         ]);
         $epAndSub4 = $this->setupExpertPanelAndSubmission();
         $epAndSub4['submission']->update([
-            'submission_status_id' => config('submissions.statuses.approved.id')
+            'submission_status_id' => config('submissions.statuses.approved.id'),
         ]);
 
         return [$epAndSub1, $epAndSub2, $epAndSub3, $epAndSub4];
     }
-
 
     private function setupExpertPanelAndSubmission($expertPanel = null, $submitter = null): array
     {
@@ -116,13 +114,8 @@ class ApplicationActivityTest extends TestCase
         return ['expertPanel' => $expertPanel, 'submission' => $submission];
     }
 
-
-
     private function makeRequest(): TestResponse
     {
         return $this->json('GET', '/api/groups/applications');
     }
-
-
-
 }

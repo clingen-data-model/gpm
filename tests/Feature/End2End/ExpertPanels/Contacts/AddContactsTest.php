@@ -2,17 +2,14 @@
 
 namespace Tests\Feature\End2End\ExpertPanels\Contacts;
 
-use Tests\TestCase;
-use Ramsey\Uuid\Uuid;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
-use Illuminate\Support\Facades\Bus;
-use App\Modules\Person\Models\Person;
-use App\Modules\ExpertPanel\Jobs\AddContact;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Person\Models\Person;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Ramsey\Uuid\Uuid;
+use Tests\TestCase;
 
 /**
  * @group applications
@@ -24,7 +21,7 @@ class AddContactsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         // $this->setupForGroupTest();
@@ -33,7 +30,6 @@ class AddContactsTest extends TestCase
         $this->user = User::factory()->create();
         Sanctum::actingAs($this->user);
     }
-    
 
     /**
      * @test
@@ -46,11 +42,11 @@ class AddContactsTest extends TestCase
         $response->assertStatus(200);
         $response->assertJson([
             'email' => $person->email,
-            'uuid' => $person->uuid
+            'uuid' => $person->uuid,
         ]);
         $this->assertDatabaseHas('group_members', [
             'group_id' => $this->expertPanel->group->id,
-            'person_id' => $person->id
+            'person_id' => $person->id,
         ]);
     }
 
@@ -68,11 +64,10 @@ class AddContactsTest extends TestCase
             'message' => 'The given data was invalid.',
             'errors' => [
                 'person_uuid' => ['This is required.'],
-            ]
+            ],
         ]);
 
-
-        $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/contacts', ['person_uuid'=>'this-is-not-a-uuid']);
+        $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/contacts', ['person_uuid' => 'this-is-not-a-uuid']);
 
         $response->assertStatus(422);
 
@@ -80,7 +75,7 @@ class AddContactsTest extends TestCase
             'message' => 'The given data was invalid.',
             'errors' => [
                 'person_uuid' => ['The person uuid must be a valid UUID.'],
-            ]
+            ],
         ]);
 
         $uuid = Uuid::uuid4()->toString();
@@ -93,10 +88,10 @@ class AddContactsTest extends TestCase
             'message' => 'The given data was invalid.',
             'errors' => [
                 'person_uuid' => ['The person must already exist in the database.'],
-            ]
+            ],
         ]);
     }
-    
+
     /**
      * @test
      */

@@ -2,29 +2,22 @@
 
 namespace Tests\Feature\Person\Actions;
 
-use Tests\TestCase;
-use InvalidArgumentException;
-use App\Modules\User\Models\User;
-use App\Modules\Person\Models\Invite;
-use App\Modules\Person\Models\Person;
-use Database\Factories\InviteFactory;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\Person\Actions\PermissionAdd;
 use App\Modules\Person\Actions\PermissionRemove;
-use App\Modules\Person\Events\InviteRedeemed;
-use Carbon\Carbon;
+use App\Modules\Person\Models\Person;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use InvalidArgumentException;
+use Tests\TestCase;
 
 class PermissionRemoveTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->action = app()->make(PermissionRemove::class);
     }
-    
 
     /**
      * @test
@@ -32,7 +25,7 @@ class PermissionRemoveTest extends TestCase
     public function throws_Exception_if_permission_not_found()
     {
         $user = $this->setupUserWithPerson();
-        
+
         $this->expectException(InvalidArgumentException::class);
         $this->action->handle($user->person, 'skate-ramp');
     }
@@ -63,7 +56,7 @@ class PermissionRemoveTest extends TestCase
         $this->assertDatabaseMissing('model_has_permissions', [
             'model_type' => User::class,
             'model_id' => $user->id,
-            'permission_id' => $perms[0]->id
+            'permission_id' => $perms[0]->id,
         ]);
     }
 }

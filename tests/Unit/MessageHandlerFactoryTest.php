@@ -2,17 +2,17 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
-use App\DataExchange\MessageHandlerFactory;
-use App\DataExchange\Actions\ErrorMessageHandler;
-use App\DataExchange\Models\IncomingStreamMessage;
-use App\DataExchange\Exceptions\UnsupportedIncomingMessage;
 use App\DataExchange\Actions\ClassifiedRulesApprovedProcessor;
 use App\DataExchange\Actions\CspecDataSyncProcessor;
+use App\DataExchange\Actions\ErrorMessageHandler;
+use App\DataExchange\Exceptions\UnsupportedIncomingMessage;
+use App\DataExchange\MessageHandlerFactory;
+use App\DataExchange\Models\IncomingStreamMessage;
+use Tests\TestCase;
 
 class MessageHandlerFactoryTest extends TestCase
 {
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->factory = app()->make(MessageHandlerFactory::class);
@@ -28,10 +28,10 @@ class MessageHandlerFactoryTest extends TestCase
             'payload' => [
                 'cspecDoc' => [
                     'status' => [
-                        'event' => 'snow-storm'
-                    ]
-                ]
-            ]
+                        'event' => 'snow-storm',
+                    ],
+                ],
+            ],
         ]);
 
         $this->expectException(UnsupportedIncomingMessage::class);
@@ -46,14 +46,14 @@ class MessageHandlerFactoryTest extends TestCase
     {
         $message = new IncomingStreamMessage([
             'topic' => config('dx.topics.incoming.cspec-general'),
-            'payload' => (object)[
+            'payload' => (object) [
                 'cspecDoc' => [
                     'status' => [
-                        'event' => 'pilot-rules-submitted'
-                    ]
-                ]
+                        'event' => 'pilot-rules-submitted',
+                    ],
+                ],
             ],
-            'error_code' => 0
+            'error_code' => 0,
         ]);
 
         $this->assertInstanceOf(CspecDataSyncProcessor::class, $this->factory->make($message));
@@ -65,12 +65,12 @@ class MessageHandlerFactoryTest extends TestCase
     public function returns_event_type_based_handler()
     {
         $message = new IncomingStreamMessage([
-            'payload' => (object)['cspecDoc' => [
+            'payload' => (object) ['cspecDoc' => [
                 'status' => [
-                    'event' => 'classified-rules-approved'
-                ]
+                    'event' => 'classified-rules-approved',
+                ],
             ]],
-            'error_code' => 0
+            'error_code' => 0,
         ]);
 
         $this->assertInstanceOf(ClassifiedRulesApprovedProcessor::class, $this->factory->make($message));

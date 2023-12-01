@@ -2,15 +2,15 @@
 
 namespace Tests\Feature\Integration\DX\Actions;
 
-use Tests\TestCase;
-use App\DataExchange\DxMessage;
-use Illuminate\Support\Facades\Bus;
-use Tests\Dummies\FakeMessageStream;
 use App\DataExchange\Actions\DxConsume;
-use App\DataExchange\Contracts\MessageStream;
-use Lorisleiva\Actions\Decorators\JobDecorator;
 use App\DataExchange\Contracts\MessageProcessor;
+use App\DataExchange\Contracts\MessageStream;
+use App\DataExchange\DxMessage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Bus;
+use Lorisleiva\Actions\Decorators\JobDecorator;
+use Tests\Dummies\FakeMessageStream;
+use Tests\TestCase;
 
 /**
  * @group dx
@@ -21,13 +21,13 @@ class DxConsumeTest extends TestCase
 
     protected array $messages;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
 
         $this->messages = [];
         $filesDir = base_path('tests/files/cspec');
-        foreach(scandir($filesDir) as $idx => $file) {
+        foreach (scandir($filesDir) as $idx => $file) {
             if ($file == '..' || $file == '.') {
                 continue;
             }
@@ -35,7 +35,6 @@ class DxConsumeTest extends TestCase
         }
 
         app()->bind(MessageStream::class, fn () => new FakeMessageStream($this->messages));
-
     }
 
     /**
@@ -71,5 +70,4 @@ class DxConsumeTest extends TestCase
             return implementsInterface($j->getAction(), MessageProcessor::class);
         });
     }
-
 }

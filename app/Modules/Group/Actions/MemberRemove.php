@@ -2,14 +2,14 @@
 
 namespace App\Modules\Group\Actions;
 
+use App\Modules\Group\Events\MemberRemoved;
+use App\Modules\Group\Http\Resources\MemberResource;
+use App\Modules\Group\Models\GroupMember;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\ActionRequest;
-use App\Modules\Group\Models\GroupMember;
-use Lorisleiva\Actions\Concerns\AsObject;
-use App\Modules\Group\Events\MemberRemoved;
 use Lorisleiva\Actions\Concerns\AsController;
-use App\Modules\Group\Http\Resources\MemberResource;
+use Lorisleiva\Actions\Concerns\AsObject;
 
 class MemberRemove
 {
@@ -20,8 +20,9 @@ class MemberRemove
     {
         $groupMember->update(['end_date' => $endDate]);
         $groupMember->delete();
-        
+
         Event::dispatch(new MemberRemoved($groupMember));
+
         return $groupMember;
     }
 

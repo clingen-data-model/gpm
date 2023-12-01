@@ -3,32 +3,30 @@
 namespace App\Modules\Group\Models;
 
 use App\Models\Contracts\HasComments as ContractsHasComments;
-use App\Models\Traits\HasUuid;
-use App\Models\Contracts\HasNotes;
-use App\Models\Contracts\HasMembers;
-use Database\Factories\GroupFactory;
-use App\Tasks\Contracts\TaskAssignee;
 use App\Models\Contracts\HasDocuments;
 use App\Models\Contracts\HasLogEntries;
+use App\Models\Contracts\HasMembers;
+use App\Models\Contracts\HasNotes;
 use App\Models\Contracts\RecordsEvents;
 use App\Models\Traits\HasComments;
-use App\Modules\Group\Models\GroupType;
-use Illuminate\Database\Eloquent\Model;
-use App\Modules\Group\Models\GroupStatus;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Models\Traits\HasNotes as HasNotesTrait;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Modules\Group\Models\Contracts\HasSubmissions;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Tasks\Models\TaskAssignee as TaskAssigneeTrait;
 use App\Models\Traits\HasDocuments as HasDocumentsTrait;
-use App\Models\Traits\RecordsEvents as RecordsEventsTrait;
 use App\Models\Traits\HasLogEntries as HasLogEntriesTraits;
+use App\Models\Traits\HasNotes as HasNotesTrait;
+use App\Models\Traits\HasUuid;
+use App\Models\Traits\RecordsEvents as RecordsEventsTrait;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Models\Contracts\HasSubmissions;
 use App\Modules\Group\Models\Traits\HasMembers as HasMembersTrait;
 use App\Modules\Group\Models\Traits\HasSubmissions as HasSubmissionsTrait;
+use App\Tasks\Contracts\TaskAssignee;
+use App\Tasks\Models\TaskAssignee as TaskAssigneeTrait;
+use Database\Factories\GroupFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $id
@@ -66,7 +64,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         'group_type_id',
         'group_status_id',
         'parent_id',
-        'coi_code'
+        'coi_code',
     ];
 
     /**
@@ -89,7 +87,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     protected $appends = [
         'has_coi_requirement',
         'coi_url',
-        'display_name'
+        'display_name',
     ];
 
     public static function booted()
@@ -105,18 +103,11 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     /**
      * RELATIONS
      */
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
     public function expertPanel(): HasOne
     {
         return $this->hasOne(ExpertPanel::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     // public function groupType(): BelongsTo
     // {
     // }
@@ -127,9 +118,6 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         // return $this->groupType();
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function groupStatus(): BelongsTo
     {
         return $this->belongsTo(GroupStatus::class);
@@ -137,17 +125,12 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
     /**
      * Get the status that owns the Group
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function status(): BelongsTo
     {
         return $this->groupStatus();
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Group::class);
@@ -155,8 +138,6 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
     /**
      * Get all of the children for the Group
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function children(): HasMany
     {
@@ -171,13 +152,13 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     /**
      * SCOPES
      */
-
     public function scopeOfType($query, $type)
     {
         $typeId = $type;
         if (is_object($type)) {
             $typeId = $type->id;
         }
+
         return $query->where('group_type_id', $typeId);
     }
 
@@ -198,7 +179,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
     public function scopeTypeExpertPanel($query)
     {
-        return $query->whereIn('group_type_id', [config('groups.types.gcep.id'), config('groups.types.vcep.id')] );
+        return $query->whereIn('group_type_id', [config('groups.types.gcep.id'), config('groups.types.vcep.id')]);
     }
 
     public function scopeVcep($query)
@@ -218,14 +199,13 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
     public function getIsExpertPanelAttribute(): bool
     {
-        return in_array($this->group_type_id, [config('groups.types.gcep.id'),config('groups.types.vcep.id')]);
+        return in_array($this->group_type_id, [config('groups.types.gcep.id'), config('groups.types.vcep.id')]);
     }
 
     public function getIsEpAttribute(): bool
     {
         return $this->getIsExpertPanelAttribute();
     }
-
 
     public function getIsVcepAttribute(): bool
     {

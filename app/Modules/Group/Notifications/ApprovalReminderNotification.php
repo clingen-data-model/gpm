@@ -3,7 +3,6 @@
 namespace App\Modules\Group\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Collection;
@@ -21,8 +20,7 @@ class ApprovalReminderNotification extends Notification
         public Collection $waitingSubmissions,
         public Collection $judgementActivityNotifications,
         public Collection $commentActivityNotifications
-    )
-    {
+    ) {
     }
 
     /**
@@ -51,7 +49,7 @@ class ApprovalReminderNotification extends Notification
                     'submissions' => $this->waitingSubmissions,
                     'commentNotifications' => $this->commentActivityNotifications,
                     'judgementNotifications' => $this->judgementActivityNotifications,
-                    'notifiable' => $notifiable
+                    'notifiable' => $notifiable,
                 ]
             );
     }

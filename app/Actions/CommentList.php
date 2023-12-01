@@ -14,15 +14,15 @@ class CommentList
     public function handle($queryParams)
     {
         $search = new ModelSearchService(
-            Comment::class, 
+            Comment::class,
             defaultSelect: [
-                'id', 
-                'comment_type_id', 
-                'creator_id', 
-                'creator_type', 
-                'resolved_at', 
-                'content', 
-                'metadata'
+                'id',
+                'comment_type_id',
+                'creator_id',
+                'creator_type',
+                'resolved_at',
+                'content',
+                'metadata',
             ],
             defaultWith: [
                 'type' => function ($q) {
@@ -30,7 +30,7 @@ class CommentList
                 },
                 'creator' => function ($q) {
                     return $q->select('id', 'first_name', 'last_name', 'email');
-                }
+                },
             ]
         );
 

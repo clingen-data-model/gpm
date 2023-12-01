@@ -2,27 +2,25 @@
 
 namespace Tests\Feature\Integration\Modules\Application\Actions;
 
-use Tests\TestCase;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Actions\ApplicationComplete;
 use App\Modules\ExpertPanel\Events\ApplicationCompleted;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Event;
+use Tests\TestCase;
 
 class ApplicationCompleteTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
 
         $this->action = app()->make(ApplicationComplete::class);
     }
-    
 
     /**
      * @test
@@ -30,12 +28,12 @@ class ApplicationCompleteTest extends TestCase
     public function raises_ApplicationCompleted_event()
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create([
-            'current_step' => 1
+            'current_step' => 1,
         ]);
-    
+
         Event::fake();
         $this->action->handle($expertPanel, Carbon::parse('2020-01-01'));
-    
+
         Event::assertDispatched(ApplicationCompleted::class);
     }
 
@@ -45,9 +43,9 @@ class ApplicationCompleteTest extends TestCase
     public function logs_Application_completed()
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create([
-            'current_step' => 1
+            'current_step' => 1,
         ]);
-    
+
         $this->action->handle($expertPanel, Carbon::parse('2020-01-01'));
         $this->assertLoggedActivity($expertPanel->group, 'Application completed.');
     }

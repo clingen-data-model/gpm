@@ -2,17 +2,14 @@
 
 namespace App\Modules\Person\Actions;
 
-use Exception;
-use Ramsey\Uuid\Uuid;
-use Illuminate\Console\Command;
-use App\Modules\User\Models\User;
-use Illuminate\Support\Facades\Auth;
 use App\Modules\Person\Models\Person;
-use Illuminate\Support\Facades\Event;
+use App\Modules\User\Models\User;
+use Exception;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Lorisleiva\Actions\Concerns\AsCommand;
-use App\Modules\Person\Events\PersonCreated;
-use Lorisleiva\Actions\Concerns\AsController;
+use Ramsey\Uuid\Uuid;
 
 class PersonCreateAndInvite extends PersonCreate
 {
@@ -45,7 +42,7 @@ class PersonCreateAndInvite extends PersonCreate
     {
         try {
             // $this->authenticateUser($command);
-            list($first_name, $last_name) = $this->getUserName($command);
+            [$first_name, $last_name] = $this->getUserName($command);
             $email = $this->getEmail($command);
 
             if ($command->confirm('You are about to create a new person for '.$first_name.' '.$last_name.' <'.$email.'>.  Do you want to continue', true)) {
@@ -64,6 +61,7 @@ class PersonCreateAndInvite extends PersonCreate
             return 0;
         } catch (Exception $e) {
             $command->error($e->getMessage());
+
             return 1;
         }
     }
@@ -71,7 +69,7 @@ class PersonCreateAndInvite extends PersonCreate
     private function authenticateUser(Command $command)
     {
         $email = $command->option('actingas');
-        if (!$email) {
+        if (! $email) {
             $email = $command->ask('Your email address:');
         }
         $password = $command->secret('Your password:');
@@ -79,6 +77,7 @@ class PersonCreateAndInvite extends PersonCreate
         if (Auth::attempt(['email' => $email, 'password' => $password])) {
             $user = User::findByEmail($email);
             $command->info('Authenticated as '.$user->name);
+
             return true;
         }
 
@@ -101,7 +100,7 @@ class PersonCreateAndInvite extends PersonCreate
             compact('first_name', 'last_name'),
             [
                 'first_name' => 'required|max:255',
-                'last_name' => 'required|max:255'
+                'last_name' => 'required|max:255',
             ],
             ['required' => 'name cannot be empty.']
         );

@@ -19,7 +19,7 @@ class CreatePreferencesTable extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->text('description')->nullable();
-            $table->enum('data_type', ["boolean","integer","string","float","array","object"])->default('boolean');
+            $table->enum('data_type', ['boolean', 'integer', 'string', 'float', 'array', 'object'])->default('boolean');
             $table->text('default')->nullable();
             $table->foreignId('applies_to_role')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('applies_to_permission')->constrained()->cascadeOnDelete()->cascadeOnUpdate();

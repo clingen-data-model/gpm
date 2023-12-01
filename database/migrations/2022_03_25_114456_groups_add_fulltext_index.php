@@ -19,7 +19,7 @@ class GroupsAddFulltextIndex extends Migration
             });
         }
     }
-    
+
     /**
      * Reverse the migrations.
      *

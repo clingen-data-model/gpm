@@ -2,19 +2,18 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
-use App\Modules\Group\Models\Group;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Models\Group;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class UpdateMembershipDescriptionTest extends TestCase
 {
     use RefreshDatabase;
-    
-    public function setup():void
+
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -45,7 +44,7 @@ class UpdateMembershipDescriptionTest extends TestCase
         $this->json('PUT', $this->url, [])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'membership_description' => ['This field is required.']
+                'membership_description' => ['This field is required.'],
             ]);
     }
 
@@ -59,16 +58,16 @@ class UpdateMembershipDescriptionTest extends TestCase
         $response = $this->json('PUT', $this->url, ['membership_description' => $description]);
         $response->assertStatus(200);
         $response->assertJsonFragment([
-            'uuid' => $this->expertPanel->group->uuid
+            'uuid' => $this->expertPanel->group->uuid,
         ]);
         $response->assertJsonFragment([
-            'uuid' => $this->expertPanel->uuid
+            'uuid' => $this->expertPanel->uuid,
         ]);
         $response->assertJsonFragment([
-            'membership_description' => $description
+            'membership_description' => $description,
         ]);
     }
-    
+
     /**
      * @test
      */
@@ -88,7 +87,7 @@ class UpdateMembershipDescriptionTest extends TestCase
             'properties->membership_description' => $description,
         ]);
     }
-    
+
     /**
      * @test
      */
@@ -102,7 +101,7 @@ class UpdateMembershipDescriptionTest extends TestCase
         $response->assertStatus(422);
 
         $response->assertJsonFragment([
-            'membership_description' => ['A membership description can only be set for VCEPs.']
+            'membership_description' => ['A membership description can only be set for VCEPs.'],
         ]);
     }
 }

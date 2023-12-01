@@ -2,7 +2,6 @@
 
 namespace App\Modules\Group\Models\Traits;
 
-use App\Modules\Person\Models\Person;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
@@ -20,13 +19,13 @@ trait HasMembers
     {
         return $this->hasMany(GroupMember::class);
     }
-    
+
     public function chairs(): Relation
     {
         return $this->members()
             ->role('chair');
     }
-    
+
     public function coordinators(): Relation
     {
         return $this->members()
@@ -37,8 +36,8 @@ trait HasMembers
     {
         return $this->members()->isContact();
     }
-    
-    public function getHasCoordinatorAttribute():bool
+
+    public function getHasCoordinatorAttribute(): bool
     {
         return $this->coordinators->count() > 0;
     }

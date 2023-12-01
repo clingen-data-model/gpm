@@ -4,7 +4,6 @@ namespace App\Modules\ExpertPanel\Actions;
 
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Models\Specification;
-use App\Modules\ExpertPanel\Models\SpecificationStatus;
 
 class SpecificationSync
 {
@@ -22,7 +21,7 @@ class SpecificationSync
             [
                 'name' => $name,
                 'status' => $status,
-                'expert_panel_id' => $expertPanel->id
+                'expert_panel_id' => $expertPanel->id,
             ]
         );
 

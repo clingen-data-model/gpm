@@ -33,7 +33,6 @@ class AlterTableApplicationsChangeBaseNames extends Migration
             $table->dropUnique(['short_base_name', 'ep_type_id']);
             $table->dropUnique(['long_base_name', 'ep_type_id']);
 
-
             $table->unique('short_base_name');
             $table->unique('long_base_name');
         });

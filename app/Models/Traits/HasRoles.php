@@ -3,8 +3,8 @@
 namespace App\Models\Traits;
 
 use Exception;
-use Spatie\Permission\Contracts\Role;
 use Spatie\Permission\Contracts\Permission;
+use Spatie\Permission\Contracts\Role;
 use Spatie\Permission\Traits\HasRoles as SpatieHasRoles;
 
 trait HasRoles
@@ -14,7 +14,7 @@ trait HasRoles
     }
 
     /**
-     * @param \Spatie\Permission\Contracts\Permission|\Spatie\Permission\Contracts\Role $roleOrPermission
+     * @param  \Spatie\Permission\Contracts\Permission|\Spatie\Permission\Contracts\Role  $roleOrPermission
      *
      * @throws \Exception
      */
@@ -24,13 +24,11 @@ trait HasRoles
             throw new Exception('Invalid role or permission given to '.__CLASS__, 422);
         }
     }
-    
-    
+
     /**
      * Assign the given role to the model.
      *
-     * @param array|string|\Spatie\Permission\Contracts\Role ...$roles
-     *
+     * @param  array|string|\Spatie\Permission\Contracts\Role  ...$roles
      * @return $this
      */
     public function assignRole(...$roles)
@@ -78,8 +76,7 @@ trait HasRoles
     /**
      * Grant the given permission(s) to a role.
      *
-     * @param string|array|\Spatie\Permission\Contracts\Permission|\Illuminate\Support\Collection $permissions
-     *
+     * @param  string|array|\Spatie\Permission\Contracts\Permission|\Illuminate\Support\Collection  $permissions
      * @return $this
      */
     public function givePermissionTo(...$permissions)

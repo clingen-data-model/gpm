@@ -2,21 +2,21 @@
 
 namespace App\Providers;
 
+use App\Actions\CommentNotifyAboutEvent;
 use App\Events\CommentCreated;
 use App\Events\CommentDeleted;
-use App\Events\CommentUpdated;
 use App\Events\CommentResolved;
-use Illuminate\Auth\Events\Login;
-use Illuminate\Auth\Events\Logout;
-use Illuminate\Support\Facades\Event;
-use App\Actions\CommentNotifyAboutEvent;
-use App\Modules\User\Events\UserLoggedIn;
-use App\Modules\User\Events\UserLoggedOut;
+use App\Events\CommentUpdated;
+use App\Modules\Group\Actions\JudgementNotifyAboutEvent;
 use App\Modules\Group\Events\JudgementCreated;
 use App\Modules\Group\Events\JudgementDeleted;
 use App\Modules\Group\Events\JudgementUpdated;
-use App\Modules\Group\Actions\JudgementNotifyAboutEvent;
+use App\Modules\User\Events\UserLoggedIn;
+use App\Modules\User\Events\UserLoggedOut;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -30,7 +30,7 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         // NOTE That intra-module listeners are registered in the module's service provider.
         'Illuminate\Mail\Events\MessageSent' => [
-            'App\Listeners\Mail\StoreMailInDatabase'
+            'App\Listeners\Mail\StoreMailInDatabase',
         ],
         CommentCreated::class => [CommentNotifyAboutEvent::class],
         CommentUpdated::class => [CommentNotifyAboutEvent::class],
@@ -49,7 +49,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
         Event::listen(function (Login $event) {
             Event::dispatch(new UserLoggedIn($event->user));
         });

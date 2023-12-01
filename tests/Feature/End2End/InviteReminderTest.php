@@ -2,24 +2,23 @@
 
 namespace Tests\Feature\End2End;
 
-use Carbon\Carbon;
-use Tests\TestCase;
 use App\Models\Role;
+use App\Modules\Group\Actions\MemberAdd;
+use App\Modules\Group\Actions\MemberRetire;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Invite;
 use App\Modules\Person\Models\Person;
-use App\Modules\Group\Actions\MemberAdd;
-use App\Modules\Group\Actions\MemberRetire;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Notification;
 use App\Notifications\InviteReminderNotification;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
+use Tests\TestCase;
 
 class InviteReminderTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         Role::factory()->create(['name' => 'coordinator', 'scope' => 'group']);
@@ -40,7 +39,6 @@ class InviteReminderTest extends TestCase
 
         $this->assertEquals(0, person::hasActiveMembership()->count());
     }
-
 
     /**
      * @test
@@ -103,10 +101,6 @@ class InviteReminderTest extends TestCase
         $retireMember->handle($gm2, Carbon::now());
         Notification::assertNotSentTo($this->invite->person, InviteReminderNotification::class);
     }
-
-
-
-
 
     private function triggerReminders()
     {

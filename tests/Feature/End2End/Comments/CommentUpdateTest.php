@@ -2,21 +2,18 @@
 
 namespace Tests\Feature\End2End\Comments;
 
-use Carbon\Carbon;
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Submission;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Notification;
-use Tests\Feature\End2End\Comments\CommentTest;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Notifications\CommentActivityNotification;
+use Carbon\Carbon;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
+use Laravel\Sanctum\Sanctum;
 
 class CommentUpdateTest extends CommentTest
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->comment = $this->createComment();
@@ -30,8 +27,7 @@ class CommentUpdateTest extends CommentTest
         $expectedData = $this->getDefaultData();
         $this->makeRequest()
             ->assertStatus(200)
-            ->assertJson($expectedData)
-            ;
+            ->assertJson($expectedData);
 
         $this->assertDatabaseHas('comments', $this->jsonifyArrays($expectedData));
     }
@@ -46,8 +42,7 @@ class CommentUpdateTest extends CommentTest
         $expectedData = $this->getDefaultData();
         $this->makeRequest()
             ->assertStatus(200)
-            ->assertJson($expectedData)
-            ;
+            ->assertJson($expectedData);
 
         $this->assertDatabaseHas('comments', $this->jsonifyArrays($expectedData));
     }
@@ -74,7 +69,7 @@ class CommentUpdateTest extends CommentTest
         $submission = Submission::factory()->create([
             'group_id' => $this->expertPanel->group_id,
             'submission_status_id' => config('submissions.statuses.under-chair-review.id'),
-            'sent_to_chairs_at' => Carbon::now()
+            'sent_to_chairs_at' => Carbon::now(),
         ]);
 
         $approver = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
@@ -95,7 +90,6 @@ class CommentUpdateTest extends CommentTest
             }
         );
     }
-
 
     /**
      * @test
@@ -121,6 +115,7 @@ class CommentUpdateTest extends CommentTest
     private function makeRequest($data = null)
     {
         $data = $data ?? $this->getDefaultData();
+
         return $this->json('PUT', '/api/comments/'.$this->comment->id, $data);
     }
 
@@ -128,11 +123,7 @@ class CommentUpdateTest extends CommentTest
     {
         return array_merge([
             'content' => 'updated content',
-            'comment_type_id' => config('comments.types.required-revision.id')
+            'comment_type_id' => config('comments.types.required-revision.id'),
         ], $data);
     }
-
-
-
-
 }

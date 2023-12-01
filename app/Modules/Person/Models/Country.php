@@ -3,9 +3,9 @@
 namespace App\Modules\Person\Models;
 
 use Database\Factories\CountryFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -37,11 +37,8 @@ class Country extends Model
         'id' => 'integer',
     ];
 
-
     /**
      * Get all of the people for the Country
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function people(): HasMany
     {

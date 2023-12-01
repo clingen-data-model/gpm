@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -19,7 +18,7 @@ class UserDefinedMailable extends Mailable
     public function __construct(
         // don't bind b/c "Type of App\Mail\UserDefinedMailable::$subject must not be defined (as in class Illuminate\Mail\Mailable)"
         // String $subject,
-        public String $body,
+        public string $body,
     ) {
         // $this->subject = $subject;
     }
@@ -33,7 +32,7 @@ class UserDefinedMailable extends Mailable
     {
         return $this->view('email.user_defined_email')
             ->with([
-                'body' => $this->body
+                'body' => $this->body,
             ]);
     }
 }

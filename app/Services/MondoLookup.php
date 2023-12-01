@@ -1,7 +1,7 @@
 <?php
+
 namespace App\Services;
 
-use App\Services\MondoLookupInterface;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -15,7 +15,7 @@ class MondoLookup implements MondoLookupInterface
                 ->where('mondo_id', $mondoId)
                 ->first();
 
-        if (!$diseaseData) {
+        if (! $diseaseData) {
             throw new Exception('No disease with MONDO ID '.$mondoId.' in our records.');
         }
 

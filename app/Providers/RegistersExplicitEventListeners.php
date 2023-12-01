@@ -9,9 +9,7 @@ trait RegistersExplicitEventListeners
     /**
      * Registers event listeners for events defined in $this->listeners array.
      *
-     * @param array $listenerMap An associative array that maps an Event class to an array Listener classes.
-     *
-     * @return void
+     * @param  array  $listenerMap An associative array that maps an Event class to an array Listener classes.
      */
     protected function registerExplicitListeners(array $listenerMap): void
     {

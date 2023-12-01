@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 
 class SystemInfoController extends Controller
 {
@@ -14,9 +13,10 @@ class SystemInfoController extends Controller
             'env' => config('app.env'),
             'app' => [
                 'name' => config('app.name'),
-                'features' => config('app.features')
-            ]
+                'features' => config('app.features'),
+            ],
         ];
+
         return $data;
     }
 }

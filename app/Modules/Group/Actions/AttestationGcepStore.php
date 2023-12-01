@@ -1,19 +1,18 @@
 <?php
+
 namespace App\Modules\Group\Actions;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
+use App\Modules\Group\Events\AttestationSigned;
+use App\Modules\Group\Http\Resources\GroupResource;
 use App\Modules\Group\Models\Group;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
-use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsObject;
-use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
-use App\Modules\Group\Events\AttestationSigned;
-use Illuminate\Auth\Access\AuthorizationException;
-use App\Modules\Group\Http\Resources\GroupResource;
-use phpDocumentor\Reflection\Types\Boolean;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsController;
+use Lorisleiva\Actions\Concerns\AsObject;
 
 class AttestationGcepStore
 {
@@ -24,7 +23,7 @@ class AttestationGcepStore
         Group $group,
         array $data
     ) {
-        if (!$group->isGcep) {
+        if (! $group->isGcep) {
             throw ValidationException::withMessages(['group' => 'Only GCEPs have GCEP Attestations.']);
         }
 
@@ -42,7 +41,7 @@ class AttestationGcepStore
             'gci_training_date',
         ];
 
-        if (!is_null($group->expertPanel->gcep_attestation_date)) {
+        if (! is_null($group->expertPanel->gcep_attestation_date)) {
             return $group;
         }
 
@@ -50,7 +49,7 @@ class AttestationGcepStore
         foreach ($attestationFields as $fieldName) {
             $group->expertPanel->{$fieldName} = $data->get($fieldName);
 
-            if (!$data->get($fieldName)) {
+            if (! $data->get($fieldName)) {
                 $allTrue = false;
             }
         }
@@ -61,15 +60,15 @@ class AttestationGcepStore
 
         $group->expertPanel->save();
         $group->touch();
-        
+
         if ($allTrue) {
             $event = new AttestationSigned($group, 'GCEP', Carbon::now());
             Event::dispatch($event);
         }
-        
+
         return $group;
     }
-    
+
     public function asController(ActionRequest $request, $groupUuid)
     {
         $group = Group::findByUuidOrFail($groupUuid);
@@ -108,7 +107,7 @@ class AttestationGcepStore
     {
         return [
             'required' => 'This is required.',
-            'accepted' => 'This is required.'
+            'accepted' => 'This is required.',
         ];
     }
 }

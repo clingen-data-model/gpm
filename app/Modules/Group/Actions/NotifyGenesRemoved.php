@@ -2,11 +2,11 @@
 
 namespace App\Modules\Group\Actions;
 
-use App\Modules\Group\Models\Group;
-use Illuminate\Support\Facades\Mail;
 use App\Modules\ExpertPanel\Models\Gene;
 use App\Modules\Group\Events\GeneRemoved;
 use App\Modules\Group\Mail\GeneRemovedMail;
+use App\Modules\Group\Models\Group;
+use Illuminate\Support\Facades\Mail;
 use Lorisleiva\Actions\Concerns\AsListener;
 
 class NotifyGenesRemoved
@@ -15,7 +15,7 @@ class NotifyGenesRemoved
 
     public function handle(Group $group, Gene $gene): void
     {
-        if (!config('app.features.notify_scope_change')) {
+        if (! config('app.features.notify_scope_change')) {
             return;
         }
         $mailClass = new GeneRemovedMail($group, $gene);
@@ -24,7 +24,7 @@ class NotifyGenesRemoved
 
     public function asListener(GeneRemoved $event): void
     {
-        if (!$event->group->expertPanel->definitionIsApproved) {
+        if (! $event->group->expertPanel->definitionIsApproved) {
             return;
         }
 

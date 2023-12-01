@@ -2,15 +2,13 @@
 
 namespace App\Modules\ExpertPanel\Actions;
 
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
-use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Lorisleiva\Actions\Concerns\AsController;
-use App\Modules\ExpertPanel\Models\NextAction;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Events\NextActionUpdated;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Models\NextAction;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsController;
 
 class NextActionUpdate
 {
@@ -24,13 +22,13 @@ class NextActionUpdate
     public function handle(
         ExpertPanel $expertPanel,
         NextAction $nextAction,
-        ?String $dateCreated = null,
-        ?String $dateCompleted = null,
-        ?String $targetDate = null,
-        ?String $entry = null,
+        ?string $dateCreated = null,
+        ?string $dateCompleted = null,
+        ?string $targetDate = null,
+        ?string $entry = null,
         ?int $step = null,
-        ?String $assignedTo = null,
-        ?String $assignedToName = null
+        ?string $assignedTo = null,
+        ?string $assignedToName = null
     ) {
         $oldData = $nextAction->toArray();
         $data = [
@@ -40,7 +38,7 @@ class NextActionUpdate
             'entry' => $entry,
             'step' => $step,
             'assigned_to' => $assignedTo,
-            'assigned_to_name' => $assignedToName
+            'assigned_to_name' => $assignedToName,
         ];
         $nextAction->fill($data);
         DB::transaction(fn () => $nextAction->save());
@@ -56,7 +54,7 @@ class NextActionUpdate
         $params = $request->except('id', 'uuid');
         $cmdParams = [
             'expertPanel' => $expertPanel,
-            'nextAction' => $nextAction
+            'nextAction' => $nextAction,
         ];
         foreach ($params as $key => $value) {
             $cmdParams[Str::camel($key)] = $value;

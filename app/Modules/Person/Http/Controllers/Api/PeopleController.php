@@ -2,15 +2,12 @@
 
 namespace App\Modules\Person\Http\Controllers\Api;
 
-use Exception;
-use App\ModelSearchService;
-use Illuminate\Http\Request;
-use Illuminate\Bus\Dispatcher;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use App\Modules\Person\Models\Person;
-use App\Modules\Person\Http\Resources\PersonResource;
+use App\ModelSearchService;
 use App\Modules\Person\Http\Resources\PersonDetailResource;
+use App\Modules\Person\Http\Resources\PersonResource;
+use App\Modules\Person\Models\Person;
+use Illuminate\Http\Request;
 
 class PeopleController extends Controller
 {
@@ -22,11 +19,11 @@ class PeopleController extends Controller
             defaultWith: [
                 'institution' => function ($q) {
                     $q->select('name', 'id');
-                }
+                },
             ],
             whereFunction: function ($query, $where) {
                 foreach ($where as $key => $value) {
-                    if (!$value) {
+                    if (! $value) {
                         continue;
                     }
                     switch ($key) {
@@ -46,6 +43,7 @@ class PeopleController extends Controller
                         default:
                             if (is_array($value)) {
                                 $query->whereIn($key, $value);
+
                                 continue 2;
                             }
                     }
@@ -63,7 +61,6 @@ class PeopleController extends Controller
                     return $query->orderBy('first_name', $dir)
                         ->orderBy('last_name', $dir);
                 }
-
 
                 return $query->orderBy($field, $dir);
             }
@@ -98,6 +95,7 @@ class PeopleController extends Controller
             'credentials',
             'expertises',
         ]);
+
         return new PersonDetailResource($person);
     }
 }

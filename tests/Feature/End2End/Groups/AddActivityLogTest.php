@@ -6,7 +6,6 @@ use App\Models\Activity;
 use App\Modules\Group\Models\Group;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -18,7 +17,7 @@ class AddActivityLogTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -51,7 +50,7 @@ class AddActivityLogTest extends TestCase
         $this->makeRequest()
             ->assertStatus(201)
             ->assertJsonFragment([
-                'description' => 'blah blah blah'
+                'description' => 'blah blah blah',
             ]);
     }
 
@@ -72,13 +71,12 @@ class AddActivityLogTest extends TestCase
                 'log_date' => ['This is required.'],
             ]);
 
-        $this->makeRequest(['log_date'=>'bob'])
+        $this->makeRequest(['log_date' => 'bob'])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'log_date' => ['The log date is not a valid date.']
+                'log_date' => ['The log date is not a valid date.'],
             ]);
     }
-    
 
     private function makeRequest($data = null)
     {
@@ -86,6 +84,7 @@ class AddActivityLogTest extends TestCase
             'entry' => 'blah blah blah',
             'log_date' => '2021-11-01T00:00:00',
         ];
+
         return $this->json('POST', $this->url, $data);
     }
 }

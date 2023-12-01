@@ -2,13 +2,11 @@
 
 namespace Tests\Feature\End2End\Groups\Genes;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Actions\GenesAdd;
-use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
 
 /**
@@ -22,16 +20,16 @@ class GetGenesForGroupTest extends TestCase
     use RefreshDatabase;
     use SeedsHgncGenesAndDiseases;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->seedGenes([
             ['hgnc_id' => 12345, 'gene_symbol' => 'ABC1'],
-            ['hgnc_id' => 987654, 'gene_symbol' => 'DEF1']
+            ['hgnc_id' => 987654, 'gene_symbol' => 'DEF1'],
         ]);
         $this->seedDiseases([
             ['mondo_id' => 'MONDO:1234567', 'name' => 'beans'],
-            ['mondo_id' => 'MONDO:9876543', 'name' => 'monkeys']
+            ['mondo_id' => 'MONDO:9876543', 'name' => 'monkeys'],
         ]);
         $this->setupForGroupTest();
 
@@ -54,7 +52,6 @@ class GetGenesForGroupTest extends TestCase
         $this->json('GET', $this->url)
             ->assertStatus(404);
     }
-    
 
     /**
      * @test

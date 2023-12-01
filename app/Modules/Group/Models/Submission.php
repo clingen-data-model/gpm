@@ -2,19 +2,14 @@
 
 namespace App\Modules\Group\Models;
 
-use Carbon\Carbon;
-use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
-use App\Modules\Group\Models\Judgement;
-use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 use Database\Factories\SubmissionFactory;
-use App\Modules\Group\Models\SubmissionType;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Modules\Group\Models\SubmissionStatus;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Submission extends Model
 {
@@ -46,15 +41,12 @@ class Submission extends Model
 
     protected $with = ['status', 'type'];
 
-
     protected $appends = ['isPending', 'is_pending'];
 
-    # RELATIONS
+    // RELATIONS
 
     /**
      * Get the group that owns the Submission
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function group(): BelongsTo
     {
@@ -63,8 +55,6 @@ class Submission extends Model
 
     /**
      * Get the type that owns the Submission
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function type(): BelongsTo
     {
@@ -73,8 +63,6 @@ class Submission extends Model
 
     /**
      * Get the status that owns the Submission
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function status(): BelongsTo
     {
@@ -88,35 +76,30 @@ class Submission extends Model
 
     /**
      * Get the submitter that owns the Submission
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function submitter(): BelongsTo
     {
         return $this->belongsTo(Person::class, 'submitter_id');
     }
 
-
     /**
      * Get all of the judgements for the Submission
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function judgements(): HasMany
     {
         return $this->hasMany(Judgement::class);
     }
 
-    # SCOPES
+    // SCOPES
 
     public function scopeWithStatus($query, $status)
     {
         if (is_array($status)) {
             return $query->whereIn('submission_status_id', $status);
         }
+
         return $query->where('submission_status_id', $status);
     }
-
 
     public function scopeOfType($query, $type)
     {
@@ -137,7 +120,7 @@ class Submission extends Model
             'submission_status_id',
             [
                 config('submissions.statuses.pending.id'),
-                config('submissions.statuses.under-chair-review.id')
+                config('submissions.statuses.under-chair-review.id'),
             ]
         );
     }
@@ -148,14 +131,14 @@ class Submission extends Model
                 ->pending();
     }
 
-
     // ACCESSORS
     public function getIsPendingAttribute()
     {
         $pendingStatuses = [
-                            config('submissions.statuses.pending.id'),
-                            config('submissions.statuses.under-chair-review.id')
-                        ];
+            config('submissions.statuses.pending.id'),
+            config('submissions.statuses.under-chair-review.id'),
+        ];
+
         return in_array($this->submission_status_id, $pendingStatuses);
     }
 
@@ -164,23 +147,19 @@ class Submission extends Model
         return $this->submission_status_id == config('submissions.statuses.under-chair-review.id');
     }
 
-
-
     /**
      * DOMAIN
      */
-
     public function reject(?string $responseContent = null): Submission
     {
         $this->update([
             'submission_status_id' => config('submissions.statuses.revisions-requested.id'),
             'response_content' => $responseContent,
-            'closed_at' => Carbon::now()
+            'closed_at' => Carbon::now(),
         ]);
 
         return $this;
     }
-
 
     protected static function newFactory()
     {

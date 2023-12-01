@@ -15,6 +15,7 @@ class GroupTypeResource extends JsonResource
     public function toArray($request)
     {
         $data = parent::toArray($request);
+
         return [
             'id' => $data['id'],
             'name' => $data['name'],
