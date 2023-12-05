@@ -47,34 +47,24 @@ class StepApprove
         ?string $body = null,
         $attachments = []
     ) {
-        dump('fuck me 1');
         $stepManager = app()->make(StepManagerFactory::class)($expertPanel);
-        dump('fuck me 2');
         $dateApproved = $dateApproved ? Carbon::parse($dateApproved) : Carbon::now();
-        dump('fuck me 3');
 
         if (! $stepManager->canApprove()) {
             throw new UnmetStepRequirementsException($expertPanel, $stepManager->getUnmetRequirements());
         }
-        dump('fuck me 4');
 
         $expertPanel->{'step_'.$expertPanel->current_step.'_approval_date'} = $dateApproved;
-        dump('fuck me 5');
         $approvedStep = $expertPanel->current_step;
-        dump('fuck me 6');
 
         if (!$stepManager->isLastStep()) {
             $expertPanel->current_step++;
         }
-        dump('fuck me 7');
         $expertPanel->save();
-        dump('fuck me 8');
 
         $submission = $this->getSubmission($expertPanel, $approvedStep);
-        dump('fuck me 9');
         if ($submission) {
             $this->approveSubmission->handle($submission, $dateApproved);
-            dump('fuck me 10');
         }
 
         event(new StepApproved(
@@ -82,17 +72,14 @@ class StepApprove
             step: $approvedStep,
             dateApproved: $dateApproved
         ));
-        dump('fuck me 11');
 
         if ($stepManager->isLastStep()) {
             $this->applicationCompleteAction->handle($expertPanel, $dateApproved);
         }
-        dump('fuck me 12');
 
         if ($notifyContacts) {
             $this->notifyContacts($expertPanel, $approvedStep, $subject, $body, $attachments);
         }
-        dump('fuck me 13');
     }
 
     public function asController(ActionRequest $request, Group $group)
@@ -113,9 +100,7 @@ class StepApprove
                 body: $request->body,
                 attachments: $attachments
             );
-            dump('fuck me 14');
             $ep = $expertPanel->fresh();
-            dump('fuck me 15');
             return $ep;
         } catch (UnmetStepRequirementsException $e) {
             return response([
