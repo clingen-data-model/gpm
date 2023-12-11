@@ -12,7 +12,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class UpdateGroupParentTest extends TestCase
 {
     use RefreshDatabase;
-    
+   
+    private $user, $parent, $group;
+
     public function setup():void
     {
         parent::setup();
@@ -49,6 +51,7 @@ class UpdateGroupParentTest extends TestCase
      */
     public function privileged_user_can_update_group_parent()
     {
+
         $this->makeRequest()
             ->assertStatus(200)
             ->assertJsonFragment([

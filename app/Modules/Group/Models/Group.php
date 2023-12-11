@@ -244,7 +244,8 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
     public function getDisplayNameAttribute()
     {
-        return $this->name.' '.strtoupper($this->type->name);
+        $typeName = $this->type ? $this->type->name : '';
+        return $this->name.' '.strtoupper($typeName);
     }
 
     public function getHasCoiRequirementAttribute()
