@@ -33,6 +33,6 @@ class CreateSpecificationRuleStatusesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('specification_rule_statuses');
+        Schema::dropIfExists('ruleset_statuses');
     }
 }

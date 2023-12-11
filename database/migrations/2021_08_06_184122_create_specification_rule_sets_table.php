@@ -19,7 +19,7 @@ class CreateSpecificationRuleSetsTable extends Migration
             $table->string('cspec_ruleset_id')->primary();
             $table->string('specification_id');
             $table->foreign('specification_id')->references('cspec_id')->on('specifications')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('status_id')->constrained('specification_ruleset_statuses')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('status_id')->constrained('ruleset_statuses')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('gene_symbol');
             $table->string('mondo_id', 13);
             $table->string('disease_name');
@@ -37,6 +37,6 @@ class CreateSpecificationRuleSetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('specification_rule_sets');
+        Schema::dropIfExists('specification_rulesets');
     }
 }
