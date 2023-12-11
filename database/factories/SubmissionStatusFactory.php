@@ -22,7 +22,8 @@ class SubmissionStatusFactory extends Factory
     public function definition()
     {
         return [
-            'name' => 'status '.uniqid()
+            'name' => 'status '.uniqid(),
+            'description' => 'some descriptions',
         ];
     }
 }
