@@ -20,7 +20,7 @@
 # RUN npm run build
 
 # Final stage
-FROM ghcr.io/clingen-data-model/cgwi-php-11.7-8.0:v1.1.3
+FROM ghcr.io/clingen-data-model/cgwi-php-11.7-8.2:v1.1.6
 
 # Set a bunch of labels for k8s and Openshift.
 LABEL maintainer="UNC ClinGen Infrastructure Team" \
