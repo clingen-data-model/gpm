@@ -2,22 +2,22 @@
 
 namespace Tests\Feature\End2End;
 
+use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\Comment;
-use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
 use App\Modules\Group\Models\Judgement;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Modules\Group\Models\SubmissionType;
 use Illuminate\Support\Facades\Notification;
+use App\Modules\Group\Models\SubmissionStatus;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Actions\SendSubmissionDigestNotifications;
 use App\Notifications\ApprovalDigestNotification;
+use App\Actions\SendSubmissionDigestNotifications;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Notifications\ApprovalReminder;
 use App\Notifications\UserDefinedDatabaseNotification;
 use App\Modules\Group\Notifications\CommentActivityNotification;
 use App\Modules\Group\Notifications\JudgementActivityNotification;
-use Carbon\Carbon;
 
 class SendSubmissionDigestNotificationsTest extends TestCase
 {
@@ -27,6 +27,9 @@ class SendSubmissionDigestNotificationsTest extends TestCase
     {
         parent::setup();
         $this->setupForGroupTest();
+        
+        SubmissionStatus::factory()->create();
+        SubmissionType::factory()->create();
     }
 
     /**
@@ -49,6 +52,8 @@ class SendSubmissionDigestNotificationsTest extends TestCase
     public function sends_notification_if_unsent_digestible_submission_notifications()
     {
 
+
+        
         $group = ExpertPanel::factory()->create()->group;
         $comment = Comment::factory()->create(['subject_type' => get_class($group), 'subject_id' => $group->id]);
         $judgement = Judgement::factory()->create();
