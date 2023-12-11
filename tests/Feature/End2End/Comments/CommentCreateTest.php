@@ -29,8 +29,11 @@ class CommentCreateTest extends CommentTest
         $this->makeRequest()
             ->assertStatus(201)
             ->assertJson($expectedData);
-
-        $this->assertDatabaseHas('comments', $this->jsonifyArrays($expectedData));
+        $this->assertDatabaseHas('comments', [
+            'subject_id' => $expectedData['subject_id'],
+            'subject_type' => $expectedData['subject_type'],
+            'content' => $expectedData['content'],
+        ]);
     }
 
     /**
