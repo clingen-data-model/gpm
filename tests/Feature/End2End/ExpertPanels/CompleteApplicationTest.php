@@ -28,19 +28,13 @@ class CompleteApplicationTest extends TestCase
      */
     public function gcep_application_completed_when_step1_approved()
     {
-        dump('fuck1');
         $dateApproved = Carbon::parse('2021-09-16');
-        dump('fuck2');
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        dump('fuck3');
         $request = $this->makeRequest(['date_approved' => $dateApproved]);
-        dump('fuck4');
         $request->assertStatus(200);
-        dump('fuck5');
         $request->assertJsonFragment([
                 'date_completed' => $dateApproved->toJson(),
         ]);
-        dump('fuck6');
         $request->assertJsonFragment([
                 'current_step' => 1
             ]);
