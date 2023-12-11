@@ -19,7 +19,6 @@ use App\Modules\ExpertPanel\Actions\ApplicationDocumentDelete;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentUpdate;
 use App\Modules\ExpertPanel\Actions\ExpertPanelUpdateAttributes;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentMarkFinal;
-use App\Modules\ExpertPanel\Http\Controllers\Api\SimpleCoiController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationLogController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationStepController;
