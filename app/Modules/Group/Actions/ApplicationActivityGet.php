@@ -5,7 +5,6 @@ namespace App\Modules\Group\Actions;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use Lorisleiva\Actions\ActionRequest;
-use App\Modules\Group\Models\Submission;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Http\Resources\ApplicationActivityResource;
 
@@ -16,7 +15,7 @@ class ApplicationActivityGet
     public function handle(ActionRequest $request)
     {
         $user = $request->user();
-        
+
         $query = Group::query()
                     ->whereHas('latestSubmission', function ($q) use ($user) {
                         $q->withStatus($this->getSubmissionStatusesForUser($user));

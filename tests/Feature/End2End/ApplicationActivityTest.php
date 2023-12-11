@@ -3,20 +3,23 @@
 namespace Tests\Feature\End2End;
 
 use Tests\TestCase;
+use App\Models\Role;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Testing\TestResponse;
 use App\Modules\Person\Models\Person;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Actions\StepApprove;
+use Database\Seeders\NextActionTypesTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use App\Modules\Group\Actions\ApplicationSubmitStep;
 use Database\Seeders\NextActionAssigneesTableSeeder;
-use Database\Seeders\NextActionTypesTableSeeder;
-use Database\Seeders\SubmissionTypeAndStatusSeeder;
 
 class ApplicationActivityTest extends TestCase
 {
     use RefreshDatabase;
+
+    private $user;
+    private $submit;
 
     public function setup():void
     {
@@ -27,7 +30,8 @@ class ApplicationActivityTest extends TestCase
         $this->seed(NextActionTypesTableSeeder::class);
         $this->submit = app()->make(ApplicationSubmitStep::class);
 
-        $this->user = $this->setupUser();
+        $this->user = $this->setupUser(null, []);
+        $this->setupPermission(['ep-applications-manage']);
         Sanctum::actingAs($this->user);
 
     }
@@ -37,6 +41,7 @@ class ApplicationActivityTest extends TestCase
      */
     public function user_without_permission_unauthorized()
     {
+        $this->user->revokePermissionTo('ep-applications-manage');
         $this->makeRequest()
             ->assertStatus(403);
     }
@@ -46,13 +51,13 @@ class ApplicationActivityTest extends TestCase
      */
     public function application_managers_see_submitted_applications_not_completed()
     {
-        $this->setupPermission(['ep-applications-manage']);
         $this->user->givePermissionTo('ep-applications-manage');
 
         $this->setupAllEpsWithSubmissions();
 
-        $this->makeRequest()
-            ->assertStatus(200)
+        $response = $this->makeRequest();
+
+        $response->assertStatus(200)
             ->assertJsonCount(3, 'data');
     }
 
