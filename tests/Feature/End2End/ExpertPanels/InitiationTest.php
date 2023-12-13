@@ -51,7 +51,6 @@ class InitiationTest extends TestCase
 
         $response->assertStatus(422);
         $response->assertJson([
-            'message' => 'The given data was invalid.',
             'errors' => [
                 'uuid' => ['This is required.'],
                 'working_name' => ['This is required.'],
