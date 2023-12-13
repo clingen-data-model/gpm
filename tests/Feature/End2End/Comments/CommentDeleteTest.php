@@ -15,11 +15,19 @@ use Tests\Feature\End2End\Comments\TestsCommentActivityNotificationSent;
 
 class CommentDeleteTest extends CommentTest
 {
+    private $comment;
+
     public function setup():void
     {
         parent::setup();
+        Carbon::setTestNow('8:00');
         $this->setupPermission('ep-applications-comments-manage');
         $this->comment = $this->createComment();
+    }
+
+    public function teardown():void
+    {
+        Carbon::setTestNow();
     }
 
     /**
@@ -27,7 +35,6 @@ class CommentDeleteTest extends CommentTest
      */
     public function user_can_delete_own_comment()
     {
-        Carbon::setTestNow('8:00');
         $this->makeRequest()->assertStatus(200);
 
         $this->assertDatabaseHas('comments', [

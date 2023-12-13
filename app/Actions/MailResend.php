@@ -23,6 +23,8 @@ class MailResend
         ?array $ccAddresses = [],
         ?array $bccAddresses = [],
     ) {
+
+        // TOMORROW: Need to convert $to, $ccAddresses, $bccAddresses into array of [["name"=>"beans mccradden", "address" => 'beans@farts.com']]
         $this->sendUserDefinedMail->handle(
             to: $to,
             subject: $subject,
@@ -40,11 +42,15 @@ class MailResend
                             return MailAttachment::createFromUploadedFile($file);
                         })
                         ->toArray();
-
-        $mailData = array_merge(
-            $request->only('to', 'subject', 'body'),
-            ['attachments' => $attachments, 'ccAddresses' => $request->cc, 'bccAddresses' => $request->bcc]
-        );
+        
+        $mailData = [
+            'subject' => $request->subject,
+            'body' => $request->body,
+            'to' => $this->structureAddressArray($request->to),
+            'ccAddresses' => $this->structureAddressArray($request->cc),
+            'bccAddresses' => $this->structureAddressArray($request->bcc),
+            'attachments' => $attachments,
+        ];
 
         $this->handle(...$mailData);
     }
@@ -59,13 +65,27 @@ class MailResend
     {
         return [
             'to' => 'required|array',
-            'to.*.address' => 'required|email',
+            // 'to.*.address' => 'required|email',
             'cc' => 'nullable|array',
-            'cc.*.address' => 'required|email',
+            // 'cc.*.address' => 'required|email',
             'bcc' => 'nullable|array',
-            'bcc.*.address' => 'required|email',
+            // 'bcc.*.address' => 'required|email',
             'subject' => 'required',
             'body' => 'required'
         ];
+    }
+
+    private function structureAddressArray(array $addressArray): array
+    {
+        return array_map(
+            function ($address, $name) { 
+                if (is_array($name)) {
+                    return $name;
+                }
+                return ['address' => $address, 'name' => $name];
+            },
+            array_keys($addressArray), 
+            array_values($addressArray)
+        );
     }
 }
