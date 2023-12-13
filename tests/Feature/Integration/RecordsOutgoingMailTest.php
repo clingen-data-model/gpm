@@ -13,6 +13,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class RecordsOutgoingMailTest extends TestCase
 {
     use RefreshDatabase;
+
+    private $person;
     
     public function setup():void
     {
