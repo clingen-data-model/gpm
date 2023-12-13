@@ -1,12 +1,23 @@
 <?php
 namespace App\Actions;
 
+use InvalidArgumentException;
 use App\Mail\UserDefinedMailable;
 use Illuminate\Support\Facades\Mail;
-use InvalidArgumentException;
+use App\Notifications\ValueObjects\MailAttachment;
 
 class MailSendUserDefined
 {
+    /**
+     * Sends a UserDefinedMailable
+     * 
+     * @param string $subject Subject of email
+     * @param string $body Body content of email
+     * @param MailAttachment[] $attachments attachments to be sent with email
+     * @param array[] $ccAddresses array of arrays with structure ['name' => 'name', 'address' => 'address@example.com']
+     * @param array[] $bccAddresses array of arrays with structure ['name' => 'name', 'address' => 'address@example.com']
+     * @param array $from array with structure ['name' => 'name', 'address' => 'address@example.com']
+     */
     public function handle(
         $to,
         string $subject,
@@ -14,7 +25,6 @@ class MailSendUserDefined
         ?array $attachments = null,
         ?array $ccAddresses = null,
         ?array $bccAddresses = null,
-        ?array $from = null,
     ) {
         $ccAddresses = $ccAddresses ?? [];
         $bccAddresses = $bccAddresses ?? [];
