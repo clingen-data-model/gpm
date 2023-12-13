@@ -3,6 +3,7 @@
 namespace Tests\Feature\End2End\ExpertPanels;
 
 use Tests\TestCase;
+use App\Models\Activity;
 use App\Models\Document;
 use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
@@ -18,6 +19,7 @@ class IndexTest extends TestCase
     use WithFaker;
 
     const URL = '/api/applications';
+    private $user, $expertPanels;
 
     public function setup():void
     {
@@ -72,11 +74,14 @@ class IndexTest extends TestCase
     public function sorts_results_by_last_activity()
     {
         $this->expertPanels->each(function ($app) {
-            $app->group->logEntries()->create([
+            $activity = new Activity([
                 'description' => 'test',
                 'created_at' => $this->faker->dateTimeBetween('-30 days', 'now'),
                 'updated_at' => $this->faker->dateTimeBetween('-30 days', 'now'),
+                'subject_type' => get_class($app->group),
+                'subject_id' => $app->group->id
             ]);
+            $activity->save();
         });
 
         $this->expertPanels->load('group.logEntries');
