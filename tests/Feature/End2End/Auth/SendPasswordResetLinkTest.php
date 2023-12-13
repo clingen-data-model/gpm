@@ -27,7 +27,6 @@ class SendPasswordResetLinkTest extends TestCase
         $response->assertStatus(422);
 
         $response->assertJson([
-                "message" => "The given data was invalid.",
                 "errors" => [
                     'email' => ['This is required.']
                 ]
@@ -42,7 +41,6 @@ class SendPasswordResetLinkTest extends TestCase
         $this->json('POST', '/api/send-reset-password-link', ['email' => 'email'])
             ->assertStatus(422)
             ->assertJson([
-                "message" => "The given data was invalid.",
                 "errors" => [
                     'email' => ['The email must be a valid email address.']
                 ]
@@ -57,7 +55,6 @@ class SendPasswordResetLinkTest extends TestCase
         $this->json('POST', '/api/send-reset-password-link', ['email' => 'email@example.com'])
             ->assertStatus(422)
             ->assertJson([
-                'message' => 'There was a problem with your submission.',
                 'errors' => [
                     'email' => ['We can\'t find a user with that email address.']
                 ]

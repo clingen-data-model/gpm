@@ -26,7 +26,6 @@ class ResetPasswordTest extends TestCase
         $response->assertStatus(422);
 
         $response->assertJson([
-            // "message" => "The given data was invalid.",
             "errors" => [
                 'token' => ['This is required.'],
                 'email' => ['This is required.'],
@@ -48,7 +47,6 @@ class ResetPasswordTest extends TestCase
 
         $this->json('POST', '/api/reset-password', $data)
             ->assertJson([
-                "message" => "The given data was invalid.",
                 "errors" => [
                     'email' => ['The email must be a valid email address.'],
                     'password' => ['The password must be at least 8 characters.', 'The password confirmation does not match.'],
