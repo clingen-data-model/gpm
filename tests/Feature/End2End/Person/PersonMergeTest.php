@@ -19,6 +19,8 @@ class PersonMergeTest extends TestCase
 {
     use RefreshDatabase;
 
+    private $user, $group1, $group2, $person1, $person2;
+
     public function setup():void
     {
         parent::setup();
@@ -181,9 +183,7 @@ class PersonMergeTest extends TestCase
             'user_id' => $user1->id
         ]);
 
-        $this->assertDeleted('users', [
-            'id' => $user2->id,
-        ]);
+        $this->assertModelMissing($user2);
 
     }
     
