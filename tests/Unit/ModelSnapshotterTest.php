@@ -14,6 +14,8 @@ use App\Modules\ExpertPanel\Models\ExpertPanelType;
 
 class ModelSnapshotterTest extends TestCase
 {
+    private $snapshotter, $groupAttr, $model;
+
     public function setup():void
     {
         $this->snapshotter = new ModelSnapshotter();
