@@ -14,6 +14,8 @@ class CompleteApplicationTest extends TestCase
 {
     use RefreshDatabase;
 
+    private $user, $expertPanel;
+
     public function setup():void
     {
         parent::setup();
@@ -30,12 +32,12 @@ class CompleteApplicationTest extends TestCase
     {
         $dateApproved = Carbon::parse('2021-09-16');
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        $request = $this->makeRequest(['date_approved' => $dateApproved]);
-        $request->assertStatus(200);
-        $request->assertJsonFragment([
-                'date_completed' => $dateApproved->toJson(),
+        $response = $this->makeRequest(['date_approved' => $dateApproved]);
+        $response->assertStatus(200);
+        $response->assertJsonFragment([
+                'date_completed' => $dateApproved->format('Y-m-d H:i:s'),
         ]);
-        $request->assertJsonFragment([
+        $response->assertJsonFragment([
                 'current_step' => 1
             ]);
     }
@@ -68,7 +70,7 @@ class CompleteApplicationTest extends TestCase
         $this->makeRequest(['date_approved' => $dateApproved])
             ->assertStatus(200)
             ->assertJsonFragment([
-                'date_completed' => $dateApproved->toJson()
+                'date_completed' => $dateApproved->format('Y-m-d H:i:s')
             ]);
     }
 
