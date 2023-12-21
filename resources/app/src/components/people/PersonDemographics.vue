@@ -523,8 +523,6 @@
       </form>
     </section>
   </div>
-
-  
 </template>
   
 <script>
@@ -603,21 +601,21 @@ export default {
       // console.log(this.data)
 
       const axios = require('axios');
-     
+
     },
 
-  
+
 
   },
 
 
-   //update logic for only items that have changed
+  //update logic for only items that have changed
   //async updateItem({ commit }, { uuid, item }) {
   //  await api.put(`${baseUrl}/${uuid}`, item)
   //    .then(response => {
-   //     commit('addItem', response.data);
-   //   })
- // },
+  //     commit('addItem', response.data);
+  //   })
+  // },
 
 
 
@@ -627,13 +625,13 @@ export default {
 async function getUser(uuid) {
 
   try {
-  // let uuid = "3716f9f6-8f04-479e-af3e-5e6ce1f2abaa";
+    // let uuid = "3716f9f6-8f04-479e-af3e-5e6ce1f2abaa";
     const response = await axios.get(`${baseUrl}/${uuid}`);
     user.value = response.data
     console.log(user.value)
     const jsonString = JSON.stringify(user.value);
     //console.log(jsonString);
-   // jsonString.birth_country = "United States"
+    // jsonString.birth_country = "United States"
     //console.log(jsonString.birth_country)
     updateUser3(uuid, jsonString)
   }
@@ -645,31 +643,31 @@ async function getUser(uuid) {
 async function updateUser3(uuid, jsonString) {
 
   try {
-      const response = await axios.put(`${baseUrl}/${uuid}`, jsonString);
-      
-        let y = response.data
-        console.log(response.data)
- 
+    const response = await axios.put(`${baseUrl}/${uuid}`, jsonString);
+
+    let y = response.data
+    console.log(response.data)
+
   }
   catch (error) {
-     error.value = error;
+    error.value = error;
   }
 }
-  
-  
-  //update logic for people store
-
-  //async function updateAttributes({ commit }, {uuid, attributes}) {
-  //      await api.put(`${baseUrl}/${uuid}`, attributes)
-   //         .then(response => {
-   //             commit('addItem', response.data);
-   //         })
-   // },
 
 
+//update logic for people store
 
-  
-  </script>
+//async function updateAttributes({ commit }, {uuid, attributes}) {
+//      await api.put(`${baseUrl}/${uuid}`, attributes)
+//         .then(response => {
+//             commit('addItem', response.data);
+//         })
+// },
+
+
+
+
+</script>
 
 <style>
 /* Base styles */
@@ -789,6 +787,7 @@ button {
   /* Black text color */
   border: 1px solid black;
   /* Add a solid black border */
-}</style>
+}
+</style>
 
 
