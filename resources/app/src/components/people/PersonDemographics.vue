@@ -525,5 +525,57 @@
   </div>
 </template>
   
-<script>
+<script setup>
+import { ref } from 'vue'
+import { useStore } from 'vuex'
+import Person from '@/domain/person'
+
+const store = useStore()
+const props = defineProps({
+  person: {
+    type: Object,
+    required: true
+  },
+})
+
+const errors = ref({})
+const demographicsProfile = ref({})
+const saving = ref(false)
+
+const initDemographicsProfile = () => {
+  demographicsProfile.value = { ...props.person.demographics }
+}
+
+const save = async () => {
+  try {
+    saving.value = true
+    const updatedPerson = await store.dispatch(
+      'people/updateDemographics',
+      { uuid: props.person.uuid, attributes: demographicsProfile.value }
+    ).then(rsp => {
+      store.dispatch('getCurrentUser', { force: true })
+      store.commit('pushSuccess', 'Your demographics profile has been updated.')
+      return rsp.data;
+    })
+
+    saving.value = false;
+    errors.value = {};
+    emits('saved', new Person(updatedPerson));
+  } catch (error) {
+    if (isValidationError(error)) {
+      errors.value = error.response.data.errors;
+    }
+  }
+}
+
+const cancel = () => {
+  initDemographicsProfile();
+  errors.value = {};
+  emits('canceled');
+};
+
+onMounted(() => {
+  store.dispatch('countries/getItems');
+});
+
 </script>
