@@ -40,13 +40,7 @@
         <label for="birth_country">Country of Birth: </label>
         <select id="birth_country" name="birth_country" v-model="birth_country">
           <option value="">Select country</option>
-          <option value="Afghanistan">Afghanistan</option>
-          <option value="Åland Islands">Åland Islands</option>
-          <option value="Albania">Albania</option>
-          <option value="Algeria">Algeria</option>
-          <option value="United States">United States</option>
-          <option value="United States Minor Outlying Islands">United States Minor Outlying Islands</option>
-          <!-- Options will be dynamically generated here -->
+          <option v-for="country in countries" :key="country.value" :value="country.value">{{ country.label }}</option>
         </select>
       </div>
 
@@ -67,11 +61,7 @@
         <select id="reside_country" name="reside_country" v-model="reside_country">
 
           <option value="">Select country</option>
-          <option value="Afghanistan">Afghanistan</option>
-
-          <option value="United States">United States</option>
-          <option value="United States Minor Outlying Islands">United States Minor Outlying Islands</option>
-          <!-- Options will be dynamically generated here -->
+          <option v-for="country in countries" :key="country.value" :value="country.value">{{ country.label }}</option>
         </select>
       </div>
 
@@ -571,6 +561,10 @@ const cancel = () => {
   errors.value = {};
   emits('canceled');
 };
+
+const countries = computed(() => {
+  return store.getters['countries/items'].map(i => ({ value: i.id, label: i.name }))
+})
 
 onMounted(() => {
   store.dispatch('countries/getItems');
