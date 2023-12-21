@@ -527,11 +527,11 @@ const props = defineProps({
 })
 
 const errors = ref({})
-const demographicsProfile = ref({})
+const profile = ref({})
 const saving = ref(false)
 
 const initDemographicsProfile = () => {
-  demographicsProfile.value = { ...props.person.demographics }
+  profile.value = { ...props.person.demographics }
 }
 
 const save = async () => {
@@ -539,10 +539,10 @@ const save = async () => {
     saving.value = true
     const updatedPerson = await store.dispatch(
       'people/updateDemographics',
-      { uuid: props.person.uuid, attributes: demographicsProfile.value }
+      { uuid: props.person.uuid, attributes: profile.value }
     ).then(rsp => {
       store.dispatch('getCurrentUser', { force: true })
-      store.commit('pushSuccess', 'Your demographics profile has been updated.')
+      store.commit('pushSuccess', 'Your profile has been updated.')
       return rsp.data;
     })
 
