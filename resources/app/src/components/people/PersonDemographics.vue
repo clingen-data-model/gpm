@@ -85,13 +85,13 @@
         <div>
           <label for="country-state">If you currently live in the United States, what is your state/territory of
             residence?</label>
-          <select id="country-state" name="country-state" v-model="country_state">
+          <select id="country-state" name="country-state" v-model="demographics.reside_state">
             <option value="">Select state</option>
             <option v-for="state in states" :key="state.value" :value="state.value">{{ state.label }}</option>
           </select>
         </div>
         <div style="display: flex;">
-          <input id="opt_out" class="w3-check" type="checkbox" v-model="optOutState">
+          <input id="reside_state_opt_out" class="w3-check" type="checkbox" v-model="demographics.reside_state_opt_out">
           <label>Prefer not to answer </label>
         </div>
       </div>
@@ -125,7 +125,7 @@
       <br>
       <div style="display: flex; align-items: center;">
         <label>What year were you born?</label>
-        <input class="w3-input" type="text" id="birth_year" v-model="birth_year" required>
+        <input class="w3-input" type="text" id="birth_year" v-model="demographics.birth_year" required>
       </div>
 
 
@@ -422,9 +422,9 @@
 
 
     </section>
-    <div v-if="saving" class="mb-2">Saving...</div>
+    <!--     <div v-if="saving" class="mb-2">Saving...</div>
     <button-row v-if="!saving" @submitted="save" @canceled="cancel()" :submit-text="saveButtonText"
-      :show-cancel="allowCancel" />
+      :show-cancel="allowCancel" /> -->
   </div>
 </template>
   
