@@ -38,7 +38,7 @@
       <!-- Country of Birth Dropdown -->
       <div>
         <label for="birth_country">Country of Birth: </label>
-        <select id="birth_country" name="birth_country" v-model="birth_country">
+        <select id="birth_country" name="birth_country" v-model="demographics.birth_country">
           <option value="">Select country</option>
           <option v-for="country in countries" :key="country.value" :value="country.value">{{ country.label }}</option>
         </select>
@@ -50,15 +50,16 @@
       </div>
 
       <div style="display: flex;">
-        <input type="checkbox" class="checkbox-margin" id="optOutBornCountry" v-model="optOutBornCountry">
-        <label for="optOutBornCountry"> Prefer not to answer</label>
+        <input type="checkbox" class="checkbox-margin" id="birth_country_opt_out"
+          v-model="demographics.birth_country_opt_out">
+        <label for="birth_country_opt_out"> Prefer not to answer</label>
 
       </div>
       <br>
       <div>
         <!-- Country of Residence Dropdown -->
         <label for="reside_country">Country of Residence: </label>
-        <select id="reside_country" name="reside_country" v-model="reside_country">
+        <select id="reside_country" name="reside_country" v-model="demographics.reside_country">
 
           <option value="">Select country</option>
           <option v-for="country in countries" :key="country.value" :value="country.value">{{ country.label }}</option>
@@ -71,8 +72,8 @@
         <input class="w3-input" type="text">
       </div>
       <div style="display: flex;">
-        <input type="checkbox" id="optOutResideCountry" v-model="optOutResideCountry">
-        <label for="optOutResideCountry">Prefer not to answer </label>
+        <input type="checkbox" id="reside_country_opt_out" v-model="demographics.reside_country_opt_out">
+        <label for="reside_country_opt_out">Prefer not to answer </label>
 
       </div>
       <br>
@@ -80,25 +81,19 @@
       <!-- Additional inputs and sections -->
       <br>
       <!-- 226 is United States -->
-      <div v-if="reside_country == 226">
-        <label for="country-state">If you currently live in the United States, what is your state/territory of
-          residence?</label>
-
-        <!--- United States states -->
-
-        <select id="country-state" name="country-state" v-model="country_state">
-          <option value="">Select state</option>
-          <option value="AL">Alabama</option>
-          <option value="AK">Alaska</option>
-          <option value="AS">American Samoa</option>
-          <option value="AZ">Arizona</option>
-          <option value="AR">Arkansas</option>
-        </select>
-      </div>
-      <div style="display: flex;">
-        <input id="opt_out" class="w3-check" type="checkbox" v-model="optOutState">
-        <label>Prefer not to answer </label>
-
+      <div v-if="demographics.reside_country == 226">
+        <div>
+          <label for="country-state">If you currently live in the United States, what is your state/territory of
+            residence?</label>
+          <select id="country-state" name="country-state" v-model="country_state">
+            <option value="">Select state</option>
+            <option v-for="state in states" :key="state.value" :value="state.value">{{ state.label }}</option>
+          </select>
+        </div>
+        <div style="display: flex;">
+          <input id="opt_out" class="w3-check" type="checkbox" v-model="optOutState">
+          <label>Prefer not to answer </label>
+        </div>
       </div>
       <br>
       <h2>Participant Information on Race/Ethnicity</h2>
@@ -533,6 +528,18 @@ const profile = ref({})
 const saving = ref(false)
 
 const reside_country = ref()
+// TODO: should fill from profile
+const demographics = ref({
+  birth_country: null,
+  birth_country_other: null,
+  birth_country_opt_out: false,
+  reside_country: null,
+  reside_country_other: null,
+  reside_country_opt_out: false,
+  reside_state: null,
+  reside_state_opt_out: false,
+  birth_year: null,
+})
 
 const initDemographicsProfile = () => {
   profile.value = { ...props.person.demographics }
@@ -574,4 +581,63 @@ onMounted(() => {
   store.dispatch('countries/getItems');
 });
 
+// TODO: get from database via store
+const states = [
+  { label: 'ALABAMA', value: 'AL' },
+  { label: 'ALASKA', value: 'AK' },
+  { label: 'AMERICAN SAMOA', value: 'AS' },
+  { label: 'ARIZONA', value: 'AZ' },
+  { label: 'ARKANSAS', value: 'AR' },
+  { label: 'CALIFORNIA', value: 'CA' },
+  { label: 'COLORADO', value: 'CO' },
+  { label: 'CONNECTICUT', value: 'CT' },
+  { label: 'DELAWARE', value: 'DE' },
+  { label: 'DISTRICT OF COLUMBIA', value: 'DC' },
+  { label: 'FLORIDA', value: 'FL' },
+  { label: 'GEORGIA', value: 'GA' },
+  { label: 'GUAM', value: 'GU' },
+  { label: 'HAWAII', value: 'HI' },
+  { label: 'IDAHO', value: 'ID' },
+  { label: 'ILLINOIS', value: 'IL' },
+  { label: 'INDIANA', value: 'IN' },
+  { label: 'IOWA', value: 'IA' },
+  { label: 'KANSAS', value: 'KS' },
+  { label: 'KENTUCKY', value: 'KY' },
+  { label: 'LOUISIANA', value: 'LA' },
+  { label: 'MAINE', value: 'ME' },
+  { label: 'MARYLAND', value: 'MD' },
+  { label: 'MASSACHUSETTS', value: 'MA' },
+  { label: 'MICHIGAN', value: 'MI' },
+  { label: 'MINNESOTA', value: 'MN' },
+  { label: 'MISSISSIPPI', value: 'MS' },
+  { label: 'MISSOURI', value: 'MO' },
+  { label: 'MONTANA', value: 'MT' },
+  { label: 'NEBRASKA', value: 'NE' },
+  { label: 'NEVADA', value: 'NV' },
+  { label: 'NEW HAMPSHIRE', value: 'NH' },
+  { label: 'NEW JERSEY', value: 'NJ' },
+  { label: 'NEW MEXICO', value: 'NM' },
+  { label: 'NEW YORK', value: 'NY' },
+  { label: 'NORTH CAROLINA', value: 'NC' },
+  { label: 'NORTH DAKOTA', value: 'ND' },
+  { label: 'NORTHERN MARIANA IS', value: 'MP' },
+  { label: 'OHIO', value: 'OH' },
+  { label: 'OKLAHOMA', value: 'OK' },
+  { label: 'OREGON', value: 'OR' },
+  { label: 'PENNSYLVANIA', value: 'PA' },
+  { label: 'PUERTO RICO', value: 'PR' },
+  { label: 'RHODE ISLAND', value: 'RI' },
+  { label: 'SOUTH CAROLINA', value: 'SC' },
+  { label: 'SOUTH DAKOTA', value: 'SD' },
+  { label: 'TENNESSEE', value: 'TN' },
+  { label: 'TEXAS', value: 'TX' },
+  { label: 'UTAH', value: 'UT' },
+  { label: 'VERMONT', value: 'VT' },
+  { label: 'VIRGINIA', value: 'VA' },
+  { label: 'VIRGIN ISLANDS', value: 'VI' },
+  { label: 'WASHINGTON', value: 'WA' },
+  { label: 'WEST VIRGINIA', value: 'WV' },
+  { label: 'WISCONSIN', value: 'WI' },
+  { label: 'WYOMING', value: 'WY' },
+]
 </script>
