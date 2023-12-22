@@ -290,79 +290,22 @@
       <br>
 
 
-      <label for="specialty">If you indicated “Medical non-genetics physician”, please select your
-        specialty.</label><span style="color: red !important; display: inline; float: none;"></span>
-      <select id="specialty" name="specialty"><br>
-        <option value="">Select specialty</option>
-
-        <option value="Allergy & Immunology">Allergy & Immunology</option>
-        <option value="Anesthesiology">Anesthesiology</option>
-        <option value="Cardiology/Cardiovascular Disease">Cardiology/Cardiovascular Disease</option>
-        <option value="Child and Adolescent Psychiatry">Child and Adolescent Psychiatry</option>
-        <option value="Colon & Rectal Surgery">Colon & Rectal Surgery</option>
-        <option value="Critical Care Medicine">Critical Care Medicine</option>
-
-        <option value="Cytopathology">Cytopathology</option>
-        <option value="Dermatology">Dermatology</option>
-        <option value="Emergency Medicine">Emergency Medicine</option>
-        <option value="Endocrinology, Diabetes and Metabolism">Endocrinology, Diabetes and Metabolism</option>
-        <option value="Family Medicine">Family Medicine</option>
-        <option value="Gastroenterology">Gastroenterology</option>
-
-        <option value="General Preventive Medicine and Public Health">General Preventive Medicine and Public Health
-        </option>
-        <option value="Geriatric Medicine">Geriatric Medicine</option>
-        <option value="Hematology">Hematology</option>
-        <option value="Hospice and Palliative Medicine">Hospice and Palliative Medicine</option>
-        <option value="Infectious Diseases">Infectious Diseases</option>
-        <option value="Internal Medicine">Internal Medicine</option>
-
-        <option value="Interventional Cardiology">Interventional Cardiology</option>
-        <option value="Medical Genetics and Genomics">Medical Genetics and Genomics</option>
-        <option value="Nephrology">Nephrology</option>
-        <option value="Ophthalmology">Ophthalmology</option>
-        <option value="Neurological Surgery">Neurological Surgery</option>
-        <option value="Neurology">Neurology</option>
-
-        <option value="Nuclear Medicine">Nuclear Medicine</option>
-        <option value="Obstetrics & Gynecology">Obstetrics & Gynecology</option>
-        <option value="Occupational Medicine">Occupational Medicine</option>
-        <option value="Oncology">Oncology</option>
-        <option value="Orthopaedic Sports Medicine">Orthopaedic Sports Medicine</option>
-        <option value="Orthopaedic Surgery">Orthopaedic Surgery</option>
-
-        <option value="Otolaryngology">Otolaryngology</option>
-        <option value="Pain Medicine">Pain Medicine</option>
-        <option value="Pathology">Pathology</option>
-        <option value="Pediatric Surgery">Pediatric Surgery</option>
-        <option value="Pediatrics">Pediatrics</option>
-        <option value="Physical Medicine & Rehabilitation">Physical Medicine & Rehabilitation</option>
-
-        <option value="Plastic Surgery">Plastic Surgery</option>
-        <option value="Preventive Medicine">Preventive Medicine</option>
-        <option value="Psychiatry">Psychiatry</option>
-        <option value="Pulmonary Disease and Critical Care Medicine">Pulmonary Disease and Critical Care Medicine
-        </option>
-        <option value="Radiation Oncology">Radiation Oncology</option>
-        <option value="Radiology">Radiology</option>
-
-        <option value="Rheumatology">Rheumatology</option>
-        <option value="Sleep Medicine">Sleep Medicine</option>
-        <option value="Surgery - General">Surgery - General</option>
-        <option value="Thoracic Surgery">Thoracic Surgery</option>
-        <option value="Urology">Urology</option>
-        <option value="Vascular Surgery">Vascular Surgery</option>
-      </select>
-      <br>
-
-
+      <div v-if="demographics.occupations.includes('non genetics physician')">
+        <label for="specialty">If you indicated “Medical non-genetics physician”, please select your
+          specialty.</label><span style="color: red !important; display: inline; float: none;"></span>
+        <!-- TODO: check with invested parties: should this be multi-select/checkbox? -->
+        <select id="specialty" name="specialty"><br>
+          <option value="">Select specialty</option>
+          <option v-for="specialty in non_genetics_specialties" :key="specialty" :value="specialty">{{ specialty }}
+          </option>
+        </select>
+      </div>
 
       <br>
-
+      <br>
 
       <!-- Submission Button -->
       <button @click="addSurvey">Submit Demographic Survey</button>
-
 
     </section>
     <!--     <div v-if="saving" class="mb-2">Saving...</div>
@@ -551,5 +494,56 @@ const occupations = [
   { value: 'general geneticist', label: 'General Geneticist' },
   { value: 'science policy', label: 'Health Care Policy or Science Policy' },
   { value: 'no answer', label: 'Prefer not to answer' },
+]
+
+const non_genetics_specialties = [
+  "Allergy & Immunology",
+  "Anesthesiology",
+  "Cardiology/Cardiovascular Disease",
+  "Child and Adolescent Psychiatry",
+  "Colon & Rectal Surgery",
+  "Critical Care Medicine",
+  "Cytopathology",
+  "Dermatology",
+  "Emergency Medicine",
+  "Endocrinology, Diabetes and Metabolism",
+  "Family Medicine",
+  "Gastroenterology",
+  "General Preventive Medicine and Public Health",
+  "Geriatric Medicine",
+  "Hematology",
+  "Hospice and Palliative Medicine",
+  "Infectious Diseases",
+  "Internal Medicine",
+  "Interventional Cardiology",
+  "Medical Genetics and Genomics",
+  "Nephrology",
+  "Ophthalmology",
+  "Neurological Surgery",
+  "Neurology",
+  "Nuclear Medicine",
+  "Obstetrics & Gynecology",
+  "Occupational Medicine",
+  "Oncology",
+  "Orthopaedic Sports Medicine",
+  "Orthopaedic Surgery",
+  "Otolaryngology",
+  "Pain Medicine",
+  "Pathology",
+  "Pediatric Surgery",
+  "Pediatrics",
+  "Physical Medicine & Rehabilitation",
+  "Plastic Surgery",
+  "Preventive Medicine",
+  "Psychiatry",
+  "Pulmonary Disease and Critical Care Medicine",
+  "Radiation Oncology",
+  "Radiology",
+  "Rheumatology",
+  "Sleep Medicine",
+  "Surgery - General",
+  "Thoracic Surgery",
+  "Urology",
+  "Vascular Surgery",
 ]
 </script>
