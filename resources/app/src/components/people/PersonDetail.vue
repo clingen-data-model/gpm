@@ -39,6 +39,9 @@
                 <h2>Profile</h2>
                 <person-profile :person="person"></person-profile>
             </tab-item>
+            <tab-item label="Demographics" :visible="hasPermission('people-manage') || userIsPerson(person)">
+                <person-demographics :person="person"></person-demographics>
+            </tab-item>
             <tab-item label="Conflict of Interest">
                 <coi-list :person="person"></coi-list>
             </tab-item>
@@ -115,6 +118,7 @@ import { logEntries, fetchEntries } from "@/adapters/log_entry_repository";
 import TabsContainer from '../TabsContainer.vue'
 import MembershipList from './MembershipList.vue'
 import PersonProfile from '@/components/people/PersonProfile.vue'
+import PersonDemographics from '@/components/people/PersonDemographics.vue'
 import PersonMergeForm from '@/components/people/PersonMergeForm.vue'
 import CoiList from '@/components/people/CoiList.vue'
 import ActivityLog from "@/components/log_entries/ActivityLog";
@@ -128,6 +132,7 @@ export default {
         TabsContainer,
         MembershipList,
         PersonProfile,
+        PersonDemographics,
         PersonMergeForm,
         CoiList,
         ActivityLog,

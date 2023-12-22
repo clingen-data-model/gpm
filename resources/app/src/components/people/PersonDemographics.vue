@@ -514,9 +514,10 @@
 </template>
   
 <script setup>
-import { ref } from 'vue'
+import { ref, emits, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import Person from '@/domain/person'
+import isValidationError from '@/http/is_validation_error'
 
 const store = useStore()
 const props = defineProps({
