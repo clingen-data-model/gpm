@@ -145,69 +145,25 @@
 
       <div class="w3-section">
         <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.</legend>
-        <label>
-          <input type="checkbox" name="identity1" v-model="identity1" value="Female">Female<br>
-
-        </label>
-        <label>
-          <input type="checkbox" name="identity2" value="Male">Male<br>
-        </label>
-        <label>
-          <input type="checkbox" name="identify3" value="Unsure">Unsure<br>
-        </label>
-        <label>
-          <input type="checkbox" name="identity4" value="None">Prefer not to answer<br>
-        </label>
+        <div v-for="gender_identity in gender_identities" :key="gender_identity">
+          <label><input type="checkbox" :value="gender_identity" v-model="demographics.gender_identities">
+            {{ gender_identity }}
+          </label>
+        </div>
+        <span>Gender identites selected: {{ demographics.gender_identities }}</span>
       </div>
 
       <div style="display: flex;">
         <label>Other: </label>
-        <input class="w3-input" type="text">
+        <input class="w3-input" type="text" v-model="demographics.gender_identites_other">
       </div>
 
 
       <br>
-      <br>
-      <div class="w3-section">
-        <legend>What term best describes your gender identity? Select all that apply.</legend>
-        <label>
-          <input type="checkbox" name="gender" value="Man">Man<br>
-        </label>
-        <label>
-          <input type="checkbox" name="gender" value="Woman">Woman<br>
-        </label>
-        <label>
-          <input type="checkbox" name="gender" value="Cis">Cisgender<br>
-        </label>
-
-
-        <label>
-          <input type="checkbox" name="gender" value="Nonbinary">Nonbinary<br>
-        </label>
-        <label>
-          <input type="checkbox" name="gender" value="Transgender">Transgender<br>
-        </label>
-        <label>
-          <input type="checkbox" name="gender" value="Genderqueer">Genderqueer<br>
-        </label>
-        <label>
-          <input type="checkbox" name="gender" value="Agender">Agender<br>
-        </label>
-        <label>
-          <input type="checkbox" name="gender" value="Intersex">Intersex<br>
-        </label>
-
-        <label>
-          <input type="checkbox" name="gender" value="Unsure">Unsure<br>
-        </label>
-        <label>
-          <input type="checkbox" name="gender" value="None">Prefer not to answer<br>
-        </label>
-      </div>
 
       <div style="display: flex;">
         <label>My preferred term is </label>
-        <input class="w3-input" type="text">
+        <input class="w3-input" type="text" v-model="demographics.gender_preferred_term">
       </div>
 
 
@@ -502,6 +458,9 @@ const demographics = ref({
   reside_state: null,
   reside_state_opt_out: false,
   ethnicities: [],
+  gender_identities: [],
+  gender_identities_other: null,
+  gender_preferred_term: null,
   birth_year: null,
 })
 
@@ -613,5 +572,18 @@ const ethnicities = [
   { value: 'Middle Eastern', label: 'Middle Eastern or North African (For example: Algerian, Egyptian, Iranian, Lebanese, Moroccan, Syrian, etc.)' },
   { value: 'Pacific', label: 'Native Hawaiian or other Pacific Islander (For example: Chamorro, Fijian, Marshallese, Native Hawaiian, Tongan, etc.)' },
   { value: 'White', label: 'White (For example: English, European, French, German, Irish, Italian, Polish, etc.)' },
+]
+
+const gender_identities = [
+  'Man',
+  'Woman',
+  'Cisgender',
+  'Nonbinary',
+  'Transgender',
+  'Genderqueer',
+  'Agender',
+  'Intersex',
+  'Unsure',
+  'Prefer not to answer',
 ]
 </script>
