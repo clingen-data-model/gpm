@@ -109,47 +109,10 @@
         the US, let alone around the world. </p>
 
       <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.</legend>
-      <div style="display: flex;">
-        <input type="checkbox" id="ethnicity1" name="ethnicity1" value="American Indian" class="container"
-          v-model="ethnicity1_val">
-        <label for="ethnicity1">American Indian or Alaska Native (For example: Aztec, Blackfeet Tribe, Mayan, Navajo
-          Nation, Native Village of Barrow (Utqiagvik) Inupiat Traditional Government, Nome Eskimo Community,
-          etc.)</label><br>
-      </div>
 
-      <div style="display: flex;">
-        <input type="checkbox" id="ethnicity2" name="ethnicity2" value="Asian" class="container" v-model="ethnicity2_val">
-        <label for="ethnicity2">Asian (For example: Asian Indian, Chinese, Filipino, Japanese, Korean, Vietnamese,
-          etc.)</label><br>
-      </div>
-
-      <div style="display: flex;">
-        <input type="checkbox" id="ethnicity3" name="ethnicity3" value="Black" class="container" v-model="ethnicity3_val">
-        <label for="ethnicity3">Black, African American, or African (For example: African American, Ethiopian, Haitian,
-          Jamaican, Nigerian, Somali, etc.)</label><br>
-      </div>
-      <div style="display: flex;">
-        <input type="checkbox" id="ethnicity4" name="ethnicity4" value="Hispanic" class="container"
-          v-model="ethnicity4_val">
-        <label for="ethnicity4">Hispanic, Latino, or Spanish (For example: Colombian, Cuban, Dominican, Mexican or
-          Mexican American, Puerto Rican, Salvadoran, etc.)</label><br>
-      </div>
-      <div style="display: flex;">
-        <input type="checkbox" id="ethnicity5" name="ethnicity5" value="Middle Eastern" class="container"
-          v-model="ethnicity5_val">
-        <label for="ethnicity5">Middle Eastern or North African (For example: Algerian, Egyptian, Iranian, Lebanese,
-          Moroccan, Syrian, etc.)</label><br>
-      </div>
-      <div style="display: flex;">
-        <input type="checkbox" id="ethnicity6" name="ethnicity6" value="Pacific" class="container"
-          v-model="ethnicity6_val">
-        <label for="ethnicity6">Native Hawaiian or other Pacific Islander (For example: Chamorro, Fijian, Marshallese,
-          Native Hawaiian, Tongan, etc.)</label><br>
-      </div>
-      <div style="display: flex;">
-        <input type="checkbox" id="ethnicity7" name="ethnicity7" value="White" class="container" v-model="ethnicity7_val">
-        <label for="ethnicity7">White (For example: English, European, French, German, Irish, Italian, Polish,
-          etc.)</label>
+      <div v-for="ethnicity in ethnicities" :key="ethnicity.value">
+        <input type="checkbox" :value="ethnicity.value" v-model="demographics.ethnicities">
+        <label>{{ ethnicity.label }}</label>
       </div>
 
       <div style="display: flex;">
@@ -538,6 +501,7 @@ const demographics = ref({
   reside_country_opt_out: false,
   reside_state: null,
   reside_state_opt_out: false,
+  ethnicities: [],
   birth_year: null,
 })
 
@@ -639,5 +603,15 @@ const states = [
   { label: 'WEST VIRGINIA', value: 'WV' },
   { label: 'WISCONSIN', value: 'WI' },
   { label: 'WYOMING', value: 'WY' },
+]
+
+const ethnicities = [
+  { value: 'American Indian', label: 'American Indian or Alaska Native (For example: Aztec, Blackfeet Tribe, Mayan, Navajo Nation, Native Village of Barrow (Utqiagvik) Inupiat Traditional Government, Nome Eskimo Community' },
+  { value: 'Asian', label: 'Asian (For example: Asian Indian, Chinese, Filipino, Japanese, Korean, Vietnamese, etc.)' },
+  { value: 'Black', label: 'Black, African American, or African (For example: African American, Ethiopian, Haitian, Jamaican, Nigerian, Somali, etc.)' },
+  { value: 'Hispanic', label: 'Hispanic, Latino, or Spanish (For example: Colombian, Cuban, Dominican, Mexican or Mexican American, Puerto Rican, Salvadoran, etc.)' },
+  { value: 'Middle Eastern', label: 'Middle Eastern or North African (For example: Algerian, Egyptian, Iranian, Lebanese, Moroccan, Syrian, etc.)' },
+  { value: 'Pacific', label: 'Native Hawaiian or other Pacific Islander (For example: Chamorro, Fijian, Marshallese, Native Hawaiian, Tongan, etc.)' },
+  { value: 'White', label: 'White (For example: English, European, French, German, Irish, Italian, Polish, etc.)' },
 ]
 </script>
