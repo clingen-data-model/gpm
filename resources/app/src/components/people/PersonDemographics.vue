@@ -79,7 +79,8 @@
 
       <!-- Additional inputs and sections -->
       <br>
-      <div>
+      <!-- 226 is United States -->
+      <div v-if="reside_country == 226">
         <label for="country-state">If you currently live in the United States, what is your state/territory of
           residence?</label>
 
@@ -530,6 +531,8 @@ const props = defineProps({
 const errors = ref({})
 const profile = ref({})
 const saving = ref(false)
+
+const reside_country = ref()
 
 const initDemographicsProfile = () => {
   profile.value = { ...props.person.demographics }
