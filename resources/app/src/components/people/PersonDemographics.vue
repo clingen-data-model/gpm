@@ -275,71 +275,14 @@
 
 
       Please choose the option that most accurately describes your role or occupation [select all that apply].<br>
-      <div style="display: flex; align-items: center; margin-bottom: 5px;">
-        <input type="checkbox" id="genetics-physician" name="occupation" value="genetics physician">
-        <label for="genetics-physician">Medical genetics physician</label>
+      <div v-for="occupation in occupations" :key="occupation.value">
+        <input type="checkbox" :value="occupation.value" v-model="demographics.occupations">
+        <label>{{ occupation.label }}</label>
       </div>
-
-      <div style="display: flex; align-items: center; margin-bottom: 5px;">
-        <input type="checkbox" id="non genetics-physician" name="occupation" value="non genetics physician">
-        <label for="non genetics-physician">Medical non-genetics physician</label>
-      </div>
-
-
-      <div style="display: flex; align-items: center; margin-bottom: 5px;">
-        <input type="checkbox" id="pathologist" name="occupation" value="pathologist" class="container checkbox-margin">
-        <label for="pathologist">Molecular pathologist</label>
-      </div>
-
-      <label>
-        <input type="checkbox" name="occupation" value="clinical geneticist">Clinical laboratory geneticist<br>
-      </label>
-      <label>
-        <input type="checkbox" name="occupation" value="Genetic counselor">Genetic counselor<br>
-      </label>
-      <label>
-        <input type="checkbox" name="occupation" value="resident">Clinical resident or fellow <br>
-      </label>
-      <label>
-        <input type="checkbox" name="occupation" value="Basic researcher">Basic researcher<br>
-      </label>
-      <label>
-        <input type="checkbox" name="occupation" value="Clinical researcher">Clinical researcher<br>
-      </label>
-      <label>
-        <input type="checkbox" name="occupation" value="Variant Analyst">Variant Analyst<br>
-      </label>
-      <label>
-        <input type="checkbox" name="occupation" value="Staff Scientist">Staff Scientist<br>
-      </label>
-      <label>
-        <input type="checkbox" name="occupation" value="Bioinformatician">Bioinformatician<br>
-      </label>
-      <label>
-        <input type="checkbox" name="occupation" value="Biocurator">Biocurator<br>
-      </label>
-      <label>
-        <input type="checkbox" name="occupation" value="Graduate Student">Graduate Student<br>
-      </label>
-      <label>
-        <input type="checkbox" name="occupation" value="Software Engineer/Developer">Software Engineer/Developer<br>
-      </label>
-      <label>
-        <input type="checkbox" name="occupation" value="Educator">Educator<br>
-      </label>
-      <label>
-        <input type="checkbox" name="occupation" value="General Geneticist">General Geneticist<br>
-      </label>
-      <label>
-        <input type="checkbox" name="occupation" value="Science Policy">Health Care Policy or Science Policy<br>
-      </label>
-      <label>
-        <input type="checkbox" name="occupation" value="None">Prefer not to answer<br>
-      </label>
-
+      <span>Selected occupations: {{ demographics.occupations }}</span>
       <div style="display: flex;">
         <label>Other: Use this free text box to provide any additional detail. </label>
-        <input id="optOutOccupation" class="w3-input" type="text">
+        <input id="occupations_other" class="w3-input" type="text">
       </div>
 
 
@@ -462,6 +405,8 @@ const demographics = ref({
   gender_identities_other: null,
   gender_preferred_term: null,
   birth_year: null,
+  occupations: [],
+  occupations_other: null,
 })
 
 const initDemographicsProfile = () => {
@@ -585,5 +530,26 @@ const gender_identities = [
   'Intersex',
   'Unsure',
   'Prefer not to answer',
+]
+
+const occupations = [
+  { value: 'genetics physician', label: 'Medical genetics physician' },
+  { value: 'non genetics physician', label: 'Medical non-genetics physician' },
+  { value: 'pathologist', label: 'Molecular pathologist' },
+  { value: 'clinical geneticist', label: 'Clinical laboratory geneticist' },
+  { value: 'Genetic counselor', label: 'Genetic counselor' },
+  { value: 'resident', label: 'Clinical resident or fellow' },
+  { value: 'Basic researcher', label: 'Basic researcher' },
+  { value: 'Clinical researcher', label: 'Clinical researcher' },
+  { value: 'Variant Analyst', label: 'Variant Analyst' },
+  { value: 'Staff Scientist', label: 'Staff Scientist' },
+  { value: 'Bioinformatician', label: 'Bioinformatician' },
+  { value: 'Biocurator', label: 'Biocurator' },
+  { value: 'Graduate Student', label: 'Graduate Student' },
+  { value: 'Software Engineer/Developer', label: 'Software Engineer/Developer' },
+  { value: 'Educator', label: 'Educator' },
+  { value: 'General Geneticist', label: 'General Geneticist' },
+  { value: 'Science Policy', label: 'Health Care Policy or Science Policy' },
+  { value: 'No answer', label: 'Prefer not to answer' },
 ]
 </script>
