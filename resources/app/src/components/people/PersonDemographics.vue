@@ -547,3 +547,103 @@ const non_genetics_specialties = [
   "Vascular Surgery",
 ]
 </script>
+
+<style scoped>
+/* Base styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+a {
+  color: #007BFF;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  padding: 0;
+}
+
+/* Container styling */
+body>h1 {
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 20px 0;
+}
+
+section {
+  margin: 20px 3%;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+input {
+  margin: 0.4rem;
+}
+
+span {
+  color: red;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  box-sizing: border-box;
+}
+
+.w3-input {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+}
+
+.w3-check {
+  margin-right: 5px;
+}
+
+/* Clearfix for floating elements */
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.checkbox-margin {
+  margin-right: 200px;
+}
+
+
+button {
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  /* Remove underlines from any text */
+  display: inline-block;
+  /* Align the button next to other elements */
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  /* Change mouse pointer to indicate clickable */
+
+  border-radius: 8px;
+  box-shadow: 0 4px #999;
+
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+}</style>
