@@ -6,12 +6,11 @@
       <h2>Background and Purpose</h2>
       <p>
         <b>Why are we asking for this information?</b> The Clinical Genome Resource values the diversity of our
-        participants and works to maintain a culture of acceptance, accessibility, and diversity (see our Justice, Equity,
-        Diversity, and Inclusion (JEDI) Action Plan):
-        <a href="https://clinicalgenome.org/working-groups/jedi-advisory-board/" target="_blank">Visit site</a> Providing
-        this information will help us to better understand our ClinGen community, focus current efforts to enhance
-        diversity, and identify areas for future outreach. We sincerely appreciate your time, attention, and willingness
-        to help.
+        participants and works to maintain a culture of acceptance, accessibility, and diversity (see our
+        <a href="https://clinicalgenome.org/working-groups/jedi-advisory-board/" target="_blank">Justice, Equity,
+          Diversity, and Inclusion (JEDI) Action Plan</a>). Providing this information will help us to better understand
+        our ClinGen community, focus current efforts to enhance diversity, and identify areas for future outreach. We
+        sincerely appreciate your time, attention, and willingness to help.
       </p>
       <p><b>Who can access my data?</b> Only a small number of ClinGen staff members will have access to the demographic
         data. We will not share any individual data. Data may be shared/presented in aggregate.</p>
@@ -28,9 +27,10 @@
     <section>
       <h2>Participant Information on Country</h2>
 
-      <p>The current list of countries comes from the international standard ISO 3166 country codes (<a
-          href="https://www.iso.org/iso-3166-country-codes.html" target="_blank">Visit site</a>). We recognize that this
-        list may not be complete or satisfy all, so please feel free to choose “other” and provide a free text response.
+      <p>The current list of countries comes from the international standard <a
+          href="https://www.iso.org/iso-3166-country-codes.html" target="_blank">ISO 3166 country codes</a>. We recognize
+        that this list may not be complete or satisfy all, so please feel free to choose “other” and provide a free text
+        response.
       </p>
       <div>
 
@@ -100,13 +100,16 @@
 
       <p>ClinGen Participant Diversity: We ask the following question for aggregate informational purposes to understand
         ClinGen participant diversity. The free-text response can be used in place or in addition to the listed
-        categories. </p>
+        categories.</p>
 
-      <p> The options below come from updates by the U.S. 2020 Census (<a href="https://www.census.gov/"
-          target="_blank">Visit site</a>), and the All Of Us Basic Survey Questions (<a
-          href="https://www.researchallofus.org/data-tools/survey-explorer/the-basics-survey/" target="_blank">Visit
-          site</a>). We understand that these options do not capture the diversity of racial and ethnic identities in
-        the US, let alone around the world. </p>
+      <p>
+        The options below come from updates by the <a href="https://www.census.gov/" target="_blank">U.S. 2020 Census</a>,
+        and the
+        <a href="https://www.researchallofus.org/data-tools/survey-explorer/the-basics-survey/" target="_blank">All Of
+          Us Basic Survey Questions</a>.
+        We understand that these options do not capture the diversity of racial and ethnic identities in the US, let alone
+        around the world.
+      </p>
 
       <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.</legend>
 
@@ -138,10 +141,12 @@
       <br>
       <h2>Participant Information on Identity</h2>
 
-      <p>We ask the following questions about identity to understand participation across the ClinGen ecosystem. The
-        framing of the questions around sex and gender reflects recommendations made by the National Academies of
-        Sciences, Engineering, and Medicine in 2022. (<a href="https://nap.nationalacademies.org/read/26424/chapter/1#xi"
-          target="_blank">Visit site</a>) </p>
+      <p>
+        We ask the following questions about identity to understand participation across the ClinGen ecosystem. The
+        framing of the questions around sex and gender reflects <a
+          href="https://nap.nationalacademies.org/read/26424/chapter/1#xi" target="_blank">recommendations made by the
+          National Academies of Sciences, Engineering, and Medicine in 2022.</a>
+      </p>
 
       <div class="w3-section">
         <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.</legend>
@@ -214,33 +219,55 @@
 
       <p>The following text pertains to the disadvantaged background question below. If you are not a US-based
         participant, please answer the question based on similar criteria in your own country:</p>
-      <br>
-      <p>An individual is considered to be from a disadvantaged background if meeting two or more of the following
-        criteria:<br>
-        Were or currently are homeless, as defined by the McKinney-Vento Homeless Assistance Act (<a
-          href="https://nche.ed.gov/mckinney-vento/" target="_blank">Definition</a>);<br>
-        Were or currently are in the foster care system, as defined by the Administration for Children and Families (<a
-          href="https://www.acf.hhs.gov/cb/focus-areas/foster-care" target="_blank">Definition</a>);<br>
-        Were eligible for the Federal Free and Reduced Lunch Program for two or more years (<a
-          href="https://www.fns.usda.gov/school-meals/income-eligibility-guidelines" target="_blank">Definition</a>);
-        <br>
-        Have/had no parents or legal guardians who completed a bachelor’s degree (<a
-          href="https://nces.ed.gov/pubs2018/2018009.pdf" target="_blank">See</a>);<br>
-        Were or currently are eligible for Federal Pell grants (<a
-          href="https://www2.ed.gov/programs/fpg/eligibility.html" target="_blank">Definition</a>);<br>
-        Received support from the Special Supplemental Nutrition Program for Women, Infants and Children (WIC) as a
-        parent or child (<a href="https://www.fns.usda.gov/wic/wic-eligibility-requirements"
-          target="_blank">Definition</a>);<br>
-        Grew up in one of the following areas: <br>
-        a) a U.S. rural area, as designated by the Health Resources and Services Administration (HRSA) Rural Health
-        Grants Eligibility Analyzer (<a href="https://data.hrsa.gov/tools/rural-health" target="_blank">Definition</a>);
-        or<br>
-        b) a Centers for Medicare and Medicaid Services-designated Low-Income and Health Professional Shortage Areas
-        (qualifying zip codes are included in the file). (<a
-          href="https://www.qhpcertification.cms.gov/s/LowIncomeandHPSAZipCodeListingPY2020.xlsx?v=1" target="_blank">View
-          File</a>) Only one of these two possibilities can be used as a criterion for the
-        disadvantaged background definition.
+      <p>
+        An individual is considered to be from a disadvantaged background if meeting two or more of the following
+        criteria:
+        <!-- TODO: something (tailwind?) is messing with standard ul/ol indentation in an annoying way -->
+      <ul class="list-disc">
+        <li>
+          Were or currently are homeless, as <a href="https://nche.ed.gov/mckinney-vento/" target="_blank">defined by the
+            McKinney-Vento Homeless Assistance Act</a>;
+        </li>
+        <li>
+          Were or currently are in the foster care system, as <a href="https://www.acf.hhs.gov/cb/focus-areas/foster-care"
+            target="_blank">defined by the Administration for Children and Families</a>;
+        </li>
+        <li>
+          Were <a href="https://www.fns.usda.gov/school-meals/income-eligibility-guidelines" target="_blank">eligible for
+            the Federal Free and Reduced Lunch Program</a> for two or more years;
+        </li>
+        <li>
+          Have/had <a href="https://nces.ed.gov/pubs2018/2018009.pdf" target="_blank">no parents or legal guardians who
+            completed a bachelor’s degree</a>;
+        </li>
+        <li>
+          Were or currently are <a href="https://www2.ed.gov/programs/fpg/eligibility.html" target="_blank">eligible for
+            Federal Pell grants</a>;
+        </li>
+        <li>
+          Received support from the <a href="https://www.fns.usda.gov/wic/wic-eligibility-requirements"
+            target="_blank">Special Supplemental Nutrition Program for Women, Infants and Children (WIC)</a> as a parent
+          or child;
+        </li>
+        <li>
+          Grew up in one of the following areas:
+          <ol class="list-decimal">
+            <li>
+              a U.S. rural area, as designated by the Health Resources and Services Administration (HRSA) Rural Health
+              Grants Eligibility Analyzer (<a href="https://data.hrsa.gov/tools/rural-health"
+                target="_blank">Definition</a>); or
+            </li>
+            <li>
+              a <a href="https://www.qhpcertification.cms.gov/s/LowIncomeandHPSAZipCodeListingPY2020.xlsx?v=1"
+                target="_blank">Centers for Medicare and Medicaid Services-designated Low-Income and Health Professional
+                Shortage Area</a> (qualifying zip codes are included in the linked file).
+            </li>
+          </ol>
 
+          Only one of these two possibilities can be used as a criterion for the
+          disadvantaged background definition.
+        </li>
+      </ul>
       </p>
 
 
@@ -646,4 +673,5 @@ button {
   background-color: white;
   color: black;
   border: 1px solid black;
-}</style>
+}
+</style>
