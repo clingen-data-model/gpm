@@ -113,7 +113,7 @@
 
       <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.</legend>
 
-      <div v-for="ethnicity in ethnicities" :key="ethnicity.value">
+      <div v-for="ethnicity in ethnicities" :key="ethnicity.value" class="flex">
         <input type="checkbox" :value="ethnicity.value" v-model="demographics.ethnicities">
         <label>{{ ethnicity.label }}</label>
       </div>
@@ -178,32 +178,24 @@
       <br>
       <div class="w3-section">
         <legend>How is your ClinGen work supported? Select all that apply.</legend>
-        <label>
-          <input type="checkbox" name="support" value="volunteer">Volunteer outside of work environment<br>
-        </label>
-        <label>
-          <input type="checkbox" name="support" value="grant">Grants (e.g. NIH, foundational)
-        </label>
-        <div style="display: flex;">
-          <label>Provide more details on source of funding</label>
-          <input class="w3-input" type="text">
 
+        <div v-for="support_type in support_types" :key="support_type.value" class="flex">
+          <input type="checkbox" :value="support_type.value" v-model="demographics.support">
+          <label>{{ support_type.label }}</label>
+          <div v-if="support_type.value == 'grant' && demographics.support.indexOf('grant') != -1" style="display: flex;">
+            <br>
+            <label>Provide more details on source of funding</label>
+            <input class="w3-input" type="text" v-model="demographics.grant_detail">
+          </div>
         </div>
 
-        <br>
         <label>
-          <input type="checkbox" name="support" value="employer">Employer supports/allows participation<br>
-        </label>
-        <label>
-          <input type="checkbox" name="support" value="Unsure">Unsure<br>
-        </label>
-        <label>
-          <input type="checkbox" name="support" value="None">Prefer not to answer<br>
+          <input type="checkbox" v-model="demographics.support_opt_out">Prefer not to answer<br>
         </label>
 
         <div style="display: flex;">
           <label>Other: </label>
-          <input class="w3-input" type="text">
+          <input class="w3-input" type="text" v-model="demographics.support_other">
         </div>
 
 
@@ -225,15 +217,18 @@
         <!-- TODO: something (tailwind?) is messing with standard ul/ol indentation in an annoying way -->
       <ul class="list-disc">
         <li>
-          Were or currently are homeless, as <a href="https://nche.ed.gov/mckinney-vento/" target="_blank">defined by the
+          Were or currently are homeless, as <a href="https://nche.ed.gov/mckinney-vento/" target="_blank">defined by
+            the
             McKinney-Vento Homeless Assistance Act</a>;
         </li>
         <li>
           Were or currently are in the foster care system, as <a href="https://www.acf.hhs.gov/cb/focus-areas/foster-care"
-            target="_blank">defined by the Administration for Children and Families</a>;
+            target="_blank">defined by the Administration for
+            Children and Families</a>;
         </li>
         <li>
-          Were <a href="https://www.fns.usda.gov/school-meals/income-eligibility-guidelines" target="_blank">eligible for
+          Were <a href="https://www.fns.usda.gov/school-meals/income-eligibility-guidelines" target="_blank">eligible
+            for
             the Federal Free and Reduced Lunch Program</a> for two or more years;
         </li>
         <li>
@@ -274,22 +269,14 @@
       Based on the NIH definition above, do you consider yourself currently in or having come from a disadvantaged
       background? Note: If you are not a US-based participant, please answer based on similar criteria in your own
       country.<br>
-      <label>
-        <input type="radio" name="disadvantaged" id="yes" value="yes">Yes<br>
-      </label>
-      <label>
-        <input type="radio" name="disadvantaged" id="no" value="no">No<br>
-      </label>
-      <label>
-        <input type="radio" name="disadvantaged" id="unsure" value="Unsure">Unsure<br>
-      </label>
-      <label>
-        <input type="radio" name="disadvantaged" id="none" value="None">Prefer not to answer<br>
-      </label>
+      <div v-for="y_n_unsure_optout in y_n_unsure_optout" :key="y_n_unsure_optout.value" class="flex">
+        <input type="radio" :value="y_n_unsure_optout.value" v-model="demographics.disadvantaged">
+        <label>{{ y_n_unsure_optout.label }}</label>
+      </div>
 
-      <div style="display: flex;">
+      <div class="flex">
         <label>Optional: Use this free text box to provide any additional detail.</label>
-        <input id="optOutDisadvantaged" class="w3-input" type="text">
+        <input id="disadvantaged-detail" class="w3-input" type="text" v-model="demographics.disadvantaged_detail">
       </div>
 
 
@@ -302,7 +289,7 @@
 
 
       Please choose the option that most accurately describes your role or occupation [select all that apply].<br>
-      <div v-for="occupation in occupations" :key="occupation.value">
+      <div v-for="occupation in occupations" :key="occupation.value" class="flex">
         <input type="checkbox" :value="occupation.value" v-model="demographics.occupations">
         <label>{{ occupation.label }}</label>
       </div>
@@ -374,6 +361,12 @@ const demographics = ref({
   gender_identities: [],
   gender_identities_other: null,
   gender_preferred_term: null,
+  support: [],
+  grant_detail: null,
+  support_opt_out: false,
+  support_other: null,
+  disadvantaged: null,
+  disadvantaged_detail: null,
   birth_year: null,
   occupations: [],
   occupations_other: null,
@@ -500,6 +493,20 @@ const gender_identities = [
   'Intersex',
   'Unsure',
   'Prefer not to answer',
+]
+
+const support_types = [
+  { value: 'volunteer', label: 'Volunteer outside of work environment' },
+  { value: 'grant', label: 'Grants (e.g. NIH, foundational)' },
+  { value: 'employer', label: 'Employer supports/allows participation' },
+  { value: 'unsure', label: 'Unsure' },
+]
+
+const y_n_unsure_optout = [
+  { value: 'yes', label: 'Yes' },
+  { value: 'no', label: 'No' },
+  { value: 'unsure', label: 'Unsure' },
+  { value: 'optout', label: 'Prefer not to answer' },
 ]
 
 const occupations = [
