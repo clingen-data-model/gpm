@@ -69,6 +69,7 @@ class Person extends Model implements HasLogEntries
         'ethnicity_id',
         'gender_id',
         'gender_other',
+        'profile_demographics',
     ];
 
     protected $casts = [
@@ -81,6 +82,7 @@ class Person extends Model implements HasLogEntries
         'race_id' => 'integer',
         'ethnicity_id' => 'integer',
         'gender_id' => 'integer',
+        'profile_demographics' => 'array',
     ];
 
     protected $appends = [

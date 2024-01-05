@@ -17,6 +17,9 @@ class PersonDetailResource extends JsonResource
     {
         $data = parent::toArray($request);
         $data['memberships'] = $this->whenLoaded('memberships', MembershipResource::collection($this->memberships));
+
+        // Only show demographics if user can manage people or for themselves
+        $data['profile_demographics'] = $this->when($request->user()->can('people-manage') || $request->user()->isLinkedToPerson($request->person), $this->profile_demographics);
         return $data;
     }
 }

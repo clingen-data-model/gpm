@@ -20,6 +20,7 @@ use App\Modules\Person\Actions\CredentialSearch;
 use App\Modules\Person\Actions\CredentialsMerge;
 use App\Modules\Person\Actions\CredentialUpdate;
 use App\Modules\Person\Actions\PersonPhotoStore;
+use App\Modules\Person\Actions\PersonDemographicsStore;
 use App\Modules\Person\Actions\InstitutionCreate;
 use App\Modules\Person\Actions\InstitutionDelete;
 use App\Modules\Person\Actions\InstitutionsMerge;
@@ -72,6 +73,14 @@ Route::group([
             }
 
             return \Storage::disk('profile-photos')->get($person->profile_photo);
+        });
+        Route::post('/{person:uuid}/demographics', PersonDemographicsStore::class);
+        Route::get('/{person:uuid}/demographics', function (Request $request, Person $person) {
+            // TODO: probably should have new role more specific to managing profile demographics
+            if ($request->user()->cannot('people-manage') && !$request->user()->isLinkedToPerson($person)) {
+                abort(403);
+            }
+            return $person->profile_demographics;
         });
     });
 
