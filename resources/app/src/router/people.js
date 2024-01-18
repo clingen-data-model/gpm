@@ -75,12 +75,12 @@ export default [
     },
 
     {   name: 'DemographicsForm',
-        path: '/demosurvey',
+        path: '/demographics',
        // component: DemographicsForm
        component: () =>
      import ( /* webpackChunkName: "application-summary" */ '@/components/people/DemographicsForm.vue'),
        },
-       
+
     { name: 'MandatoryProfileUpdate',
       path: '/required-profile-update',
       component: RequiredProfileUpdate,
