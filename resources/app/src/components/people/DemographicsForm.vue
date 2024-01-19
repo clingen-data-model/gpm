@@ -334,8 +334,9 @@
   var jsonString
   var uservalue
   let user = ref(null);
-let error = ref(null);
-const baseUrl = '/api/people';
+  let error = ref(null);
+  const baseUrl = '/api/people';
+
 //console.log(person.last_name)
   
   const store = useStore()
@@ -437,6 +438,8 @@ const baseUrl = '/api/people';
   const saving = ref(false)
   let uuid = "3716f9f6-8f04-479e-af3e-5e6ce1f2abaa";
   console.log(uuid);
+
+ // getUserinitial();
   getUser(uuid);
   
   var items = []
@@ -464,7 +467,6 @@ const baseUrl = '/api/people';
   const birth_country = ref();
   //const reside_country = null;
 
-  console.log(demographics.value);
   
   const initDemographicsProfile = () => {
     profile.value = { ...props.person.demographics }
@@ -527,18 +529,47 @@ const baseUrl = '/api/people';
     store.dispatch('countries/getItems');
   });
   
+  //attempt to retrieve current user.  Fails with JavaScript not enabled error
+  
+ // async function getUserinitial() {
+
+//try {
+
+//  const response = await axios.get(`/current-user`);
+ // userinit.value = response.data
+ 
+  //log response of loading uuid data
+ //   console.log(response.data)
+
+ //console.log(user.value.data.name)
+ //console.log(user.value.data.email)
+ //user.value.data.name = "thomas"
+ //console.log(user.value.data.name)
+
+ 
+//}
+//catch (error) {
+ // error.value = error;
+//}
+ // }
+ 
+ 
   async function getUser(uuid) {
 
 try {
-// let uuid = "3716f9f6-8f04-479e-af3e-5e6ce1f2abaa";
+
   const response = await axios.get(`${baseUrl}/${uuid}`);
   user.value = response.data
-  console.log(user.value)
+ 
+  //log response of loading uuid data
+    console.log(user.value)
 
  console.log(user.value.data.name)
  console.log(user.value.data.email)
- user.value.data.name = "thomas"
- console.log(user.value.data.name)
+
+
+ user.value.data.first_name = "Mell"
+ //console.log(user.value.data.name)
 
  
 }
@@ -547,61 +578,55 @@ catch (error) {
 }
 }
 
+
 async function updateUser3(uuid, items) {
-
-try {
-   const response = await axios.put(`${baseUrl}/${uuid}/demographics`, items);
-     // const response = await axios.put('/api/people/${uuid}/profile', jsonString);
-    
-  //profile api with non-stringify data
-//const response = await axios.put('$(baseurl)/${uuid}/profile', items);
-
-//profile api with stringify data
-//const response = await axios.put(`${baseUrl}/${uuid}/profile`, myJSON)
-
-      let y = response.data
-      console.log(response.data)
-
+    try {
+        const response = await axios.put(`${baseUrl}/${uuid}/demographics`, items);
+        console.log(response.data);
+        return response.data; // Or handle the response data as needed
+    } catch (error) {
+        console.error("Error updating user:", error);
+        // Handle the error appropriately in your application
+        // Maybe set an error message in your data properties or state
+    }
 }
-catch (error) {
-   error.value = error;
-}
-}
- 
+
+//value is correct, throws an error
+//console.log(user.value.data.person.race_id)
+
 function addSurvey() {
      // Implementation for addSurvey method
       // Here you would typically handle the form submission,
       // For instance, sending the data to a server or storing it locally
 
       items = {
-         id : user.value.data.id,
+      id : user.value.data.id,
        email : user.value.data.email,
        user_id : user.value.data.user_id,
        institution_id : user.value.data.institution_id,
        primary_occupation_id : user.value.data.primary_occupation_id,
-       first_name: user.value.data.first_name,
+       first_name : user.value.data.first_name,
+       last_name : user.value.data.last_name,
+     // credential_ids : cred_array,
+      // credential_ids : user.value.data.credentials[0].id,
+      // credential_key : user.value.data.credentials[0].key,
+       country_id: user.value.data.country_id,
+       timezone: user.value.data.timezone,
        birth_country : demographics.birth_country,
       reside_country: demographics.reside_country,
+      //expertise_ids: user.value.data.expertises[0]
       // reside_state: demographics.reside_state,
       // ethnicities: demographics.ethnicities,
-       race_id: demographics.race,
-       ethnicity_id: user.value.data.ethnicity_id,
-       gender_id: user.value.data.gender_id
+      // race_id: user.value.data.person.race_id
+      // ethnicity_id: user.value.data.ethnicity_id,
+      // gender_id: user.value.data.gender_id
      
     }
 
     console.log(items);
-    //console.log(jsonString.indexOf('birth_country'));
-    console.log(uservalue.data.first_name)
-    uservalue.data.birth_country = demographics.birth_country;
-    uservalue.data.reside_country = demographics.reside_country;
-    uservalue.data.first_name = "thomas";
-   // console.log(uservalue.indexOf('birth_country'));
-  console.log(uservalue.data.birth_country)
-  jsonString = JSON.stringify(uservalue);
-
-  updateUser3(uuid, jsonString);
-  //  console.log(items);
+   
+  updateUser3(uuid, items);
+ 
       }
 
 
@@ -703,7 +728,7 @@ function addSurvey() {
     { value: 'staff scientist', label: 'Staff scientist' },
     { value: 'bioinformatician', label: 'Bioinformatician' },
     { value: 'biocurator', label: 'Biocurator' },
-    { value: 'graduate student', label: 'Graduate tudent' },
+    { value: 'graduate student', label: 'Graduate student' },
     { value: 'software engineer/developer', label: 'Software engineer/developer' },
     { value: 'educator', label: 'Educator' },
     { value: 'general geneticist', label: 'General eneticist' },

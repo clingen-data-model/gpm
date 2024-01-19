@@ -9,6 +9,7 @@ use App\Modules\Person\Actions\PersonMerge;
 use App\Modules\Person\Actions\InviteRedeem;
 use App\Modules\Person\Actions\PersonDelete;
 use App\Modules\Person\Actions\ProfileUpdate;
+use App\Modules\Person\Actions\DemographicsUpdate;
 use App\Modules\Person\Actions\ExpertiseCreate;
 use App\Modules\Person\Actions\ExpertiseDelete;
 use App\Modules\Person\Actions\ExpertiseSearch;
@@ -59,6 +60,7 @@ Route::group([
         Route::get('/{person:uuid}', [PeopleController::class, 'show']);
         Route::delete('/{person:uuid}', PersonDelete::class);
         Route::put('/{person:uuid}/profile', ProfileUpdate::class);
+        Route::put('/{person:uuid}/demographics', DemographicsUpdate::class);
         // No post route b/c person creation currently happens when adding members to groups.
 
         Route::get('/{person:uuid}/activity-logs', [ActivityLogsController::class, 'index']);
