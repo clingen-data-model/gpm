@@ -3,7 +3,7 @@
             <input-row :errors="errors.website_attestation" vertical>
                 <template v-slot:label>
                     <p>
-                        Please review your ClinGen EP webpage, including Expert Panel Status, description, membership, COI and relevant documentation, including publications. See the <coordinator-resource-link /> for instructions on how to update web pages.
+                        Please review your ClinGen EP webpage, including description, membership, and relevant documentation, including publications. See the <coordinator-resource-link /> for instructions on how to update web pages.
                     </p>
                 </template>
                 <checkbox 

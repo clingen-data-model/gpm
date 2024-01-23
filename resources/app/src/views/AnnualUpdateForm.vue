@@ -21,7 +21,7 @@ import GeneCurationTotals from '@/components/annual_update/GeneCurationTotals.vu
 import VciUse from '@/components/annual_update/VciUse.vue'
 import VcepOngoingPlansUpdateForm from '@/components/annual_update/VcepOngoingPlansUpdateForm.vue'
 // import VcepPlansForSpecifications from '@/components/annual_update/VcepPlansForSpecifications.vue'
-import VcepTotals from '@/components/annual_update/VcepTotals.vue'
+//import VcepTotals from '@/components/annual_update/VcepTotals.vue'
 import VariantReanalysis from '@/components/annual_update/VariantReanalysis.vue'
 import SpecificationProgress from '@/components/annual_update/SpecificationProgress.vue'
 
@@ -31,6 +31,7 @@ export default {
         'app-section': ApplicationSection,
         SubmitterInformation,
         GciGtUse,
+       // SystemIssues,
         GeneCurationTotals,
         VcepOngoingPlansUpdateForm,
         GcepRereviewForm,
@@ -39,7 +40,7 @@ export default {
         GcepOngoingPlansUpdateForm,
         VciUse,
         SpecificationProgress,
-        VcepTotals,
+       // VcepTotals,
         VariantReanalysis,
         MemberDesignationUpdate,
         // VcepPlansForSpecifications,
@@ -81,6 +82,7 @@ export default {
                     website_attestation: null,
                     ongoing_plans_updated: null,
                     ongoing_plans_update_details: null,
+                   // expert_panels_change,
                     //GCEP
                     gci_use: null,
                     gci_use_details: null,
@@ -91,6 +93,7 @@ export default {
                     published_count: null,
                     approved_unpublished_count: null,
                     in_progress_count: null,
+                    publishing_issues: null,
                     recuration_begun: null,
                     recuration_designees: null,
                     //VCEP
