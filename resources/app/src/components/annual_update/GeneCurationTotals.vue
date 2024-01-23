@@ -1,14 +1,16 @@
 <template>
     <div>
+
         <p>
             In reviewing the GCEPs progress over the last year ({{lastYear}}), please answer the following questions. Note, This information can be accessed from the GCI, GeneTracker, and in some instances (e.g. published curations) from the ClinGen website.
             This information can be downloaded from the <gene-tracker-link /> or the <gci-link />. 
             <br>
-            Please cross reference <website-link /> for published records.
+            Please cross reference <website-link /> for published records.  Estimates are acceptable.
         </p>
         <input-row
             :disabled="isComplete" 
-            label="Approved and published on the ClinGen Website." 
+            label="Published on the ClinGen Website.  (curations with a “date last evaluated” from Jan 1 to Dec 31 of the prior year).
+" 
             type="number" 
             v-model="workingCopy.data.published_count"
             :errors="errors.published_count" 
@@ -17,7 +19,8 @@
         />
         <input-row
             :disabled="isComplete" 
-            label="Approved and pending publishing on the Clingen Website." 
+            label="Entered in the GCI, not published to the ClinGen website (i.e. records with the following statuses: “in progress;” “provisional;” “approved/not published”).
+" 
             type="number" 
             v-model="workingCopy.data.approved_unpublished_count"
             :errors="errors.approved_unpublished_count" 
@@ -26,13 +29,29 @@
         />
         <input-row
             :disabled="isComplete" 
-            label="In progress in the GCI." 
+            label="Curations not entered in the GCI (e.g., reviewed on calls but data not entered in the ClinGen systems)
+" 
             type="number" 
             v-model="workingCopy.data.in_progress_count"
             :errors="errors.in_progress_count" 
             labelWidthClass="w-80"
             input-class="w-16"
         />
+
+
+        <input-row
+            :disabled="isComplete" 
+            label="Please describe if there are any issues with the publishing of curations." 
+            type="text" 
+            v-model="workingCopy.data.publishing_issues"
+            :errors="errors.publishing_issues" 
+            labelWidthClass="w-80"
+            input-class="w-16"
+        />
+
+        
+        
+        
     </div>
 </template>
 <script>
