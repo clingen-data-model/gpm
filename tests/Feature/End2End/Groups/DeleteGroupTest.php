@@ -15,6 +15,8 @@ class DeleteGroupTest extends TestCase
 {
     use RefreshDatabase;
 
+    private $user, $group;
+
     public function setup():void
     {
         parent::setup();

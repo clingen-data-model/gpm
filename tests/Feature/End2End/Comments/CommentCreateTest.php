@@ -20,7 +20,7 @@ class CommentCreateTest extends CommentTest
 {
     use RefreshDatabase;
 
-    private $expertPanel, $user;
+    protected $expertPanel, $user;
 
     /**
      * @test

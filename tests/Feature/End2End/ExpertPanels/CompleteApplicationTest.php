@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\End2End\ExpertPanels;
 
+use App\Models\Activity;
 use Tests\TestCase;
 use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
