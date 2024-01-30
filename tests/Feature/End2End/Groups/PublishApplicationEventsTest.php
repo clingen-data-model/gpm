@@ -9,6 +9,7 @@ use App\Modules\Person\Models\Person;
 use App\Modules\Group\Actions\GenesAdd;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Actions\ExpertPanelAffiliationIdUpdate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
 
@@ -19,6 +20,8 @@ class PublishApplicationEventsTest extends TestCase
 {
     use RefreshDatabase;
     use SeedsHgncGenesAndDiseases;
+
+    private $user, $expertPanel, $group;
 
     public function setup():void
     {
@@ -103,6 +106,21 @@ class PublishApplicationEventsTest extends TestCase
             'sent_at' => null,
         ]);
     }
+    
+    /**
+     * @test
+     */
+     public function it_publishes_ep_info_updated_when_affiliation_id_added():void
+     {
+            $this->approveEpDef();
+            (new ExpertPanelAffiliationIdUpdate())->handle($this->group, '12345');
+    
+            $this->assertDatabaseHas('stream_messages', [
+                'topic' => config('dx.topics.outgoing.gpm-general-events'),
+                'message->event_type' => 'ep_info_updated',
+                'sent_at' => null,
+            ]);
+     }
 
     private function addPerson()
     {
