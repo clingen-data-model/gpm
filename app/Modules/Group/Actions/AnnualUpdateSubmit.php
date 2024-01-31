@@ -80,6 +80,7 @@ class AnnualUpdateSubmit
             'funding_other_details' => 'exclude_if:ep_activity,inactive|required_if:funding,other',
             'funding_thoughts' => 'exclude_if:ep_activity,inactive|required_if:applied_for_funding,no',
             'website_attestation' => 'exclude_if:ep_activity,inactive|accepted'
+            
         ];
 
         if ($annualReview->expertPanel->group->isGcep) {
@@ -101,6 +102,11 @@ class AnnualUpdateSubmit
                     'in_progress_count' => 'exclude_if:ep_activity,inactive|required|numeric',
                     'recuration_begun' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
                     'recuration_designees' => 'exclude_if:ep_activity,inactive|required',
+                    'cochair_name1' => 'exclude_if:ep_activity,inactive|accepted',
+                    'cochair_name2' => 'exclude_if:ep_activity,inactive|accepted',
+                    'cochair_name3' => 'exclude_if:ep_activity,inactive|accepted',
+                    'cochair_name4' => 'exclude_if:ep_activity,inactive|accepted',
+
                 ]
             );
         }
