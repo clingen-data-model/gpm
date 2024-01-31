@@ -83,6 +83,7 @@ export default {
                     cochair_name2: null,
                     cochair_name3: null,
                     cochair_name4: null,
+                    expert_panels_change: null,
                     website_attestation: null,
                     ongoing_plans_updated: null,
                     ongoing_plans_update_details: null,
