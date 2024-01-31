@@ -62,6 +62,7 @@ class AnnualUpdateSave
             'cochair_name2',
             'cochair_name3',
             'cochair_name4',
+            'expert_panels_change',
             'gt_gene_list',
             'gt_gene_list_details',
             'gt_precuration_info',

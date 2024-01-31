@@ -106,6 +106,8 @@ class AnnualUpdateSubmit
                     'cochair_name2' => 'exclude_if:ep_activity,inactive',
                     'cochair_name3' => 'exclude_if:ep_activity,inactive',
                     'cochair_name4' => 'exclude_if:ep_activity,inactive',
+                    'expert_panels_change' => 'exclude_if:ep_activity,inactive',
+                    
 
                 ]
             );

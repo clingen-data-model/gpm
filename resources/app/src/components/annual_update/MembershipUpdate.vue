@@ -23,6 +23,19 @@
                         ]"
                         :disabled="isComplete"
                     />
+
+                    <input-row
+                        vertical
+                        label="Has the Expert Panel chair changed over the last year?"
+                        :errors="errors.expert_panels_change"
+                        type="radio-group"
+                        v-model="workingCopy.data.expert_panels_change"
+                        :options="[
+                            {value: 'Yes'},
+                            {value: 'No'}
+                        ]"
+                        :disabled="isComplete"
+                    />
                     
                 </app-section>
 
