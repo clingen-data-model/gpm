@@ -102,10 +102,10 @@ class AnnualUpdateSubmit
                     'in_progress_count' => 'exclude_if:ep_activity,inactive|required|numeric',
                     'recuration_begun' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
                     'recuration_designees' => 'exclude_if:ep_activity,inactive|required',
-                    'cochair_name1' => 'exclude_if:ep_activity,inactive|required',
-                    'cochair_name2' => 'exclude_if:ep_activity,inactive|required',
-                    'cochair_name3' => 'exclude_if:ep_activity,inactive|required',
-                    'cochair_name4' => 'exclude_if:ep_activity,inactive|required',
+                    'cochair_name1' => 'exclude_if:ep_activity,inactive',
+                    'cochair_name2' => 'exclude_if:ep_activity,inactive',
+                    'cochair_name3' => 'exclude_if:ep_activity,inactive',
+                    'cochair_name4' => 'exclude_if:ep_activity,inactive',
 
                 ]
             );
