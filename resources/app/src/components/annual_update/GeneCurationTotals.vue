@@ -42,11 +42,11 @@
         <input-row
             :disabled="isComplete" 
             label="Please describe if there are any issues with the publishing of curations." 
-            type="text" 
+            type="large-text" 
             v-model="workingCopy.data.publishing_issues"
             :errors="errors.publishing_issues" 
             labelWidthClass="w-80"
-            input-class="w-16"
+            input-class="w-120"
         />
 
         
