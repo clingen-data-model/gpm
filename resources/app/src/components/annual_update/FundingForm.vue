@@ -5,7 +5,7 @@
             v-model="workingCopy.data.applied_for_funding"
             type="radio-group"
             :options="[{value: 'yes'}, {value: 'no'}]"
-            label="Have you applied for external funding o directly support the work of your EP (e.g. NIH U24, industry, etc.)?" 
+            label="Have you applied for external funding to directly support the work of your EP (e.g. NIH U24, industry, etc.)?" 
             :errors="errors.applied_for_funding" 
             vertical
         />
