@@ -2,6 +2,8 @@
     <div>
         <search-select
             v-model="selectedPerson"
+            :multiple="multiple"
+            :disabled="disabled"
             :search-function="search"
             style="z-index: 2"
             placeholder="Person name or email"
@@ -28,7 +30,7 @@ import {api} from '@/http'
 import SearchSelect from '@/components/forms/SearchSelect.vue'
 
 export default {
-    name: 'InstitutionSearchSelect',
+    name: 'PersonSearchSelect',
     components: {
         SearchSelect,
     },
@@ -39,6 +41,14 @@ export default {
         allowAdd: {
             type: Boolean,
             default: true
+        },
+        multiple: {
+            type: Boolean,
+            default: false
+        },
+        disabled: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
