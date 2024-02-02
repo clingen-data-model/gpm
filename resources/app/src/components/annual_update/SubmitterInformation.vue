@@ -30,7 +30,7 @@
             label="Liaising ClinGen grant"
             v-model="workingCopy.data.grant"
             type="select"
-            :options="grants.map(g => ({value: g}))"
+            :options="grants.map(g => ({value: g, label: g}))"
             :errors="errors.grant"
             :disabled="isComplete"
         />
