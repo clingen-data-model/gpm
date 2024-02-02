@@ -193,6 +193,9 @@ export default {
             })
         },
         removeSelection(selectionIdx){
+            if (this.disabled) {
+                return;
+            }
             this.log('removeSelection')
             const removed = this.selections.splice(selectionIdx, 1);
 
@@ -364,7 +367,7 @@ export default {
             <div v-if="hasSelection">
                 <div
                     v-for="selection, idx in selections" :key="idx"
-                    class="selection" :class="{disabled: disabled}"
+                    class="selection" :class="{'disabled': disabled }"
                 >
                     <label>
                         <slot name="selection-label" :selection="selection">
