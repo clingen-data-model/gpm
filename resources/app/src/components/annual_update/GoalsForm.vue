@@ -42,32 +42,17 @@
         </transition>
 
         <input-row
-            label="Please list the co chairs that have led the EP for 3 or more years?"
-       
-            v-model="workingCopy.data.cochair_name1"
-            type="text"
-            
+            label="Please list any chairs that have led the EP for 3 or more years:"
             vertical
-            
-        />
-
-        <input-row
-            v-model="workingCopy.data.cochair_name2"
-            type="text"
-            vertical
-        />
-
-        <input-row
-            v-model="workingCopy.data.cochair_name3"
-            type="text"
-            vertical
-        />
-
-        <input-row
-            v-model="workingCopy.data.cochair_name4"
-            type="text"
-            vertical
-        />
+            :errors="errors.long_term_chairs"
+        >
+            <person-search-select
+                v-model="workingCopy.data.long_term_chairs"
+                :allow-add="false"
+                :disabled="isComplete"
+                :multiple="true"
+            />
+        </input-row>
     </div>
 </template>
 
