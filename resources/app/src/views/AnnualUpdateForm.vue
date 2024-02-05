@@ -109,7 +109,8 @@ export default {
                     cochair_commitment: null,
                     cochair_commitment_details: null,
                     specification_url: null,
-                    variant_counts: [],
+                    system_discrepancies: null,
+                   // variant_counts: [],
                     variant_workflow_changes: null,
                     variant_workflow_changes_details: null,
                     specification_progress_url: null,
@@ -123,6 +124,8 @@ export default {
                     rereview_lp_and_vus_progress: null,
                     rereview_lb_progress: null,
                     member_designation_changed: null,
+                    submit_clinvar: null,
+                    vcep_publishing_issues: null,
                 }
             },
             errors: {},
@@ -339,10 +342,6 @@ export default {
                             <specification-progress v-model="annualUpdate" :errors="errors" />
                         </app-section>
 
-                        <app-section title="Summary of total number of variants curated">
-                            <vcep-totals v-model="annualUpdate" :errors="errors" />
-                        </app-section>
-                        <!-- <dev-component>End questions for specifcation-ed VCEPS</dev-component> -->
                     </template>
 
                     <template v-if="expertPanel.is_vcep && expertPanel.sustained_curation_is_approved">

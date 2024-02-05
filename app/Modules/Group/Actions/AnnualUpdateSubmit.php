@@ -74,7 +74,7 @@ class AnnualUpdateSubmit
             'membership_attestation' => 'exclude_if:ep_activity,inactive|required',
             'goals' => 'exclude_if:ep_activity,inactive|required',
             'cochair_commitment' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
-            'cochair_commitment_details' => 'exclude_if:ep_activity,inactive|required_if:cochair_commitment,no',
+            'cochair_commitment_details' => 'exclude_if:ep_activity,inactive',
             'applied_for_funding' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
             'funding' => 'exclude_if:ep_activity,inactive|required_if:applied_for_funding,yes',
             'funding_other_details' => 'exclude_if:ep_activity,inactive|required_if:funding,other',
@@ -123,19 +123,20 @@ class AnnualUpdateSubmit
                 $requirements = array_merge($requirements, [
                     'specification_progress' => 'required|in:not-applicable,no-changes,yes-pending-approval,yes-approved',
                     'specification_progress_url' => 'required',
+                    'submit_clinvar' => 'required',
+                    'vcep_publishing_issues',
                     // Can't get this to work.  Should really be required in this case, but validation always fails.
                     'specification_progress_details' => Rule::requiredIf(function () use ($annualReview) {
                         return isset($annualReview->data['specification_progress'])
                             && preg_match('/yes/', $annualReview->data['specification_progress']);
                     }),
-                    'variant_counts' => 'required|array|min:1',
-                    'variant_counts.*.gene_symbol' => 'required_with:variant_counts.*.in_clinvar,variant_counts.*.gci_approved,variant_counts.*.provisionally_approved',
+                  //  'variant_counts' => 'required|array|min:1',
+                  //  'variant_counts.*.gene_symbol' => 'required_with:variant_counts.*.in_clinvar,variant_counts.*.gci_approved,variant_counts.*.provisionally_approved',
+//  'variant_counts.*.in_clinvar' => 'required_with:variant_counts.*.gene_symbol,variant_counts.*.gci_approved,variant_counts.*.provisionally_approved',
 
-                    'variant_counts.*.in_clinvar' => 'required_with:variant_counts.*.gene_symbol,variant_counts.*.gci_approved,variant_counts.*.provisionally_approved',
+                   // 'variant_counts.*.gci_approved' => 'required_with:variant_counts.*.gene_symbol,variant_counts.*.in_clinvar,variant_counts.*.provisionally_approved',
 
-                    'variant_counts.*.gci_approved' => 'required_with:variant_counts.*.gene_symbol,variant_counts.*.in_clinvar,variant_counts.*.provisionally_approved',
-
-                    'variant_counts.*.provisionally_approved' => 'required_with:variant_counts.*.gene_symbol,variant_counts.*.in_clinvar,variant_counts.*.gci_approved',
+                   // 'variant_counts.*.provisionally_approved' => 'required_with:variant_counts.*.gene_symbol,variant_counts.*.in_clinvar,variant_counts.*.gci_approved',
                 ]);
             }
 
@@ -143,9 +144,10 @@ class AnnualUpdateSubmit
                 $requirements = array_merge($requirements, [
                     // 'variant_workflow_changes' => 'required|in:yes,no',
                     // 'variant_workflow_changes_details' => 'required_if:variant_workflow_changes,yes',
-                    'rereview_discrepencies_progress' => 'required',
-                    'rereview_lp_and_vus_progress' => 'required',
-                    'rereview_lb_progress' => 'required',
+                  //  'rereview_discrepencies_progress' => 'required',
+                  //  'rereview_lp_and_vus_progress' => 'required',
+                  //  'rereview_lb_progress' => 'required',
+                    'system_discrepancies' => 'required',
                     'member_designation_changed' => 'required|in:yes,no',
                     // 'specification_plans' => 'required|in:yes,no',
                     // 'specification_plans_details' => 'required_if:specification_plans,yes',
