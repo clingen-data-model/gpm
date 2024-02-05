@@ -9,7 +9,7 @@
         </p>
         <input-row
             :disabled="isComplete" 
-            label="Published on the ClinGen Website.  (curations with a “date last evaluated” from Jan 1 to Dec 31 of the prior year).
+            label="Published on the ClinGen Website.  (curations with a “date last evaluated” from Jan 1 to Dec 31 of the prior year)
 " 
             type="number" 
             v-model="workingCopy.data.published_count"
@@ -19,7 +19,7 @@
         />
         <input-row
             :disabled="isComplete" 
-            label="Entered in the GCI, not published to the ClinGen website (i.e. records with the following statuses: “in progress;” “provisional;” “approved/not published”).
+            label="Entered in the GCI, not published to the ClinGen website (i.e. records with the following statuses: “in progress;” “provisional;” “approved/not published”)
 " 
             type="number" 
             v-model="workingCopy.data.approved_unpublished_count"
