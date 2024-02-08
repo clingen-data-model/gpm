@@ -30,6 +30,7 @@ class ReportPeopleMake extends ReportMakeAbstract
                     $data['email'] = $person->email;
                     $data['institution'] = $person->institution ? $person->institution->name : null;
                     // $data['address'] = implode(', ', collect([$person->street1, $person->street2, $person->city, $person->state, $person->zip])->filter()->toArray());
+                    $data['state'] = $person->state ? $person->state : null;
                     $data['country'] = $person->country ? $person->country->name : null;
                     $data['timezone'] = $person->timezone;
                     $data['phone'] = $person->phone;
