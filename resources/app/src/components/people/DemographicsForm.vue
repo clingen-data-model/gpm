@@ -482,11 +482,11 @@ async function getUser(uuid) {
     //log response of loading uuid data
     console.log(user.value)
 
-    console.log(user.value.data.name)
-    console.log(user.value.data.email)
+    console.log(user.value.name)
+    console.log(user.value.email)
 
 
-    user.value.data.first_name = "Mell"
+    user.value.first_name = "Mell"
     //console.log(user.value.data.name)
 
 
@@ -516,18 +516,18 @@ function addSurvey() {
   // For instance, sending the data to a server or storing it locally
 
   items = {
-    id: user.value.data.id,
-    email: user.value.data.email,
-    user_id: user.value.data.user_id,
-    institution_id: user.value.data.institution_id,
-    primary_occupation_id: user.value.data.primary_occupation_id,
-    first_name: user.value.data.first_name,
-    last_name: user.value.data.last_name,
+    id: user.value.id,
+    email: user.value.email,
+    user_id: user.value.user_id,
+    institution_id: user.value.institution_id,
+   // primary_occupation_id: user.value.data.primary_occupation_id,
+    first_name: user.value.first_name,
+    last_name: user.value.last_name,
     // credential_ids : cred_array,
     // credential_ids : user.value.data.credentials[0].id,
     // credential_key : user.value.data.credentials[0].key,
-    country_id: user.value.data.country_id,
-    timezone: user.value.data.timezone,
+    country_id: user.value.country_id,
+    timezone: user.value.timezone,
     birth_country: demographics.birth_country,
     reside_country: demographics.reside_country,
     //expertise_ids: user.value.data.expertises[0]
