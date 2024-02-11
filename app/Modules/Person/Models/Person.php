@@ -70,7 +70,8 @@ class Person extends Model implements HasLogEntries
         'gender_id',
         'gender_other',
         'birth_country',
-        'reside_country'
+        'reside_country',
+        'birth_year'
     ];
 
     protected $casts = [
