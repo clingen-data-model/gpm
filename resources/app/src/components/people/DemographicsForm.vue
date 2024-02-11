@@ -64,7 +64,6 @@
           <option value="">Select country</option>
           <option v-for="country in countries" :key="country.value" :value="country.value">{{ country.label }}</option>
         </select>
-        console.log(value)
       </div>
 
       <div style="display: flex;">
@@ -530,10 +529,11 @@ function addSurvey() {
     timezone: user.value.timezone,
     birth_country: demographics.birth_country,
     reside_country: demographics.reside_country,
-    birth_year: demographics.birth_year
+    birth_year: demographics.birth_year,
+    gender_preferred_term: demographics.gender_preferred_term,
     //expertise_ids: user.value.data.expertises[0]
     // reside_state: demographics.reside_state,
-    // ethnicities: demographics.ethnicities,
+  // ethnicities: demographics.ethnicities[0],
     // race_id: user.value.data.person.race_id
     // ethnicity_id: user.value.data.ethnicity_id,
     // gender_id: user.value.data.gender_id
@@ -541,6 +541,7 @@ function addSurvey() {
   }
 
   console.log(items);
+ // console.log(demographics.ethnicties);
  // console.log(demographics.birth)
   updateUser3(uuid, items);
 
