@@ -530,6 +530,7 @@ function addSurvey() {
     timezone: user.value.timezone,
     birth_country: demographics.birth_country,
     reside_country: demographics.reside_country,
+    birth_year: demographics.birth_year
     //expertise_ids: user.value.data.expertises[0]
     // reside_state: demographics.reside_state,
     // ethnicities: demographics.ethnicities,
@@ -540,7 +541,7 @@ function addSurvey() {
   }
 
   console.log(items);
-
+ // console.log(demographics.birth)
   updateUser3(uuid, items);
 
 }
