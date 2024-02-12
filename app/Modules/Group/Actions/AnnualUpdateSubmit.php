@@ -68,7 +68,7 @@ class AnnualUpdateSubmit
         $requirements = [
             'submitter_id' => [
                 'required',
-                'exists:group_members,id',
+ //               'exists:group_members,id',
             ],
             'grant' => 'required|in:Broad/Geisinger,Stanford/Baylor,UNC,Unsure',
             'membership_attestation' => 'exclude_if:ep_activity,inactive|required',
