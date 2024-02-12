@@ -13,7 +13,7 @@
 
         <input-row
             label="Submitting member"
-            v-model="workingCopy.data.submitter_id"
+            v-model="workingCopy.submitter_id"
             type="select"
             :options="members.map(m => ({value: m.id, label:m.person.name}))"
             :errors="errors.submitter_id"

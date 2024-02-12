@@ -65,13 +65,13 @@ export default {
                         coordinators: []
                     }
                 },
-       //         window: {},
-      //          submitter_id: null,
-     //           submitter: {
-      //              person: {},
-      //          },
+                window: {},
+               submitter_id: null,
+                submitter: {
+                    person: {},
+                },
                 data: {
-                    submitter_id:null,
+                  //  submitter_id:null,
                     grant: null,
                     ep_activity: null,
                     submitted_inactive_form: null,
