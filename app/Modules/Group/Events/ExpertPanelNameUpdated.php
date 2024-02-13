@@ -2,6 +2,8 @@
 
 namespace App\Modules\Group\Events;
 
+use App\Events\PublishableEvent;
+use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
 use Illuminate\Support\Carbon;
 use App\Modules\Group\Models\Group;
 use Illuminate\Broadcasting\Channel;
@@ -13,9 +15,12 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class ExpertPanelNameUpdated extends GroupEvent
+class ExpertPanelNameUpdated extends GroupEvent implements PublishableEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, 
+        InteractsWithSockets, 
+        SerializesModels, 
+        IsPublishableApplicationEvent;
 
     /**
      * Create a new event instance.
@@ -49,6 +54,11 @@ class ExpertPanelNameUpdated extends GroupEvent
         }
         
         return count($properties) > 0 ? $properties : null;
+    }
+
+    public function getEventType(): string
+    {
+        return 'ep_info_updated';
     }
 
     /**
