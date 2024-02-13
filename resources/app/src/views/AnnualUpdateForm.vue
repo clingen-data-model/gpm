@@ -21,7 +21,7 @@ import GeneCurationTotals from '@/components/annual_update/GeneCurationTotals.vu
 import VciUse from '@/components/annual_update/VciUse.vue'
 import VcepOngoingPlansUpdateForm from '@/components/annual_update/VcepOngoingPlansUpdateForm.vue'
 // import VcepPlansForSpecifications from '@/components/annual_update/VcepPlansForSpecifications.vue'
-//import VcepTotals from '@/components/annual_update/VcepTotals.vue'
+// import VcepTotals from '@/components/annual_update/VcepTotals.vue'
 import VariantReanalysis from '@/components/annual_update/VariantReanalysis.vue'
 import SpecificationProgress from '@/components/annual_update/SpecificationProgress.vue'
 
@@ -31,7 +31,7 @@ export default {
         'app-section': ApplicationSection,
         SubmitterInformation,
         GciGtUse,
-       // SystemIssues,
+        // SystemIssues,
         GeneCurationTotals,
         VcepOngoingPlansUpdateForm,
         GcepRereviewForm,
@@ -40,7 +40,7 @@ export default {
         GcepOngoingPlansUpdateForm,
         VciUse,
         SpecificationProgress,
-       // VcepTotals,
+        // VcepTotals,
         VariantReanalysis,
         MemberDesignationUpdate,
         // VcepPlansForSpecifications,
@@ -71,58 +71,66 @@ export default {
                     person: {},
                 },
                 data: {
+                    // SubmitterInformation
+                    // submitter_id is in top level
                     grant: null,
                     ep_activity: null,
                     submitted_inactive_form: null,
+                    // MembershipUpdate
                     membership_attestation: null,
-                    applied_for_funding: null,
-                    funding: null,
-                    funding_other_details: null,
-                    funding_thoughts: null,
-                    long_term_chairs: null,
                     expert_panels_change: null,
-                  //  publishing_issues: null,
-                    website_attestation: null,
-                    ongoing_plans_updated: null,
-                    ongoing_plans_update_details: null,
-                   // expert_panels_change,
-                    //GCEP
+                    // GciGtUse (GCEP)
                     gci_use: null,
                     gci_use_details: null,
                     gt_gene_list: null,
                     gt_gene_list_details: null,
                     gt_precuration_info: null,
                     gt_precuration_info_details: null,
+                    // GeneCurationTotals (GCEP)
                     published_count: null,
                     approved_unpublished_count: null,
                     in_progress_count: null,
                     publishing_issues: null,
+                    // GcepOngoingPlansUpdateForm (GCEP)
+                    // ongoing_plans_updated: null, // same var used in VCEP form
+                    // ongoing_plans_update_details: null, // same var used in VCEP form
+                    // GcepOngoingPlansForm (GCEP) appears to interact directly through `group`?
+                    // GcepRereviewForm (GCEP)
                     recuration_begun: null,
                     recuration_designees: null,
-                    //VCEP
+                    // VciUse (VCEP)
                     vci_use: null,
                     vci_use_details: null,
+                    // GoalsForm
                     goals: null,
                     cochair_commitment: null,
                     cochair_commitment_details: null,
-                    specification_url: null,
-                    system_discrepancies: null,
-                   // variant_counts: [],
-                    variant_workflow_changes: null,
-                    variant_workflow_changes_details: null,
+                    long_term_chairs: null,
+                    // FundingForm
+                    applied_for_funding: null,
+                    funding: null,
+                    funding_other_details: null,
+                    funding_thoughts: null,
+                    // WebsiteAttestation
+                    website_attestation: null,
+                    // SpecificationProgress (VCEP with approved draft)
                     specification_progress_url: null,
                     specification_progress: null,
                     specification_progress_details: null,
                     specifications_for_new_gene: null,
                     specifications_for_new_gene_details: null,
-                    specification_plans: null,
-                    specification_plans_details: null,
-                    rereview_discrepencies_progress: null,
-                    rereview_lp_and_vus_progress: null,
-                    rereview_lb_progress: null,
-                    member_designation_changed: null,
                     submit_clinvar: null,
                     vcep_publishing_issues: null,
+                    system_discrepancies: null,
+                    // VariantReanalysis (VCEP with sustained curation)
+                    rereview_discrepencies_progress: null,
+                    // VcepOngoingPlansUpdateForm (VCEP with sustained curation)
+                    ongoing_plans_updated: null,
+                    ongoing_plans_update_details: null,
+                    changes_to_call_frequency: null,
+                    changes_to_call_frequency_details: null,
+                    // MemberDesignationUpdate (VCEP with sustained curation)
+                    member_designation_changed: null,
                 }
             },
             errors: {},
