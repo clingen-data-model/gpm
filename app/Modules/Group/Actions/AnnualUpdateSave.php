@@ -44,56 +44,66 @@ class AnnualUpdateSave
     {
         return [
             'submitter_id',
+            // SubmitterInformation
+            // submitter_id is in top level
             'grant',
             'ep_activity',
             'submitted_inactive_form',
+            // MembershipUpdate
             'membership_attestation',
-            'applied_for_funding',
-            'funding',
-            'funding_thoughts',
-            'website_attestation',
-            'ongoing_plans_updated',
-            'ongoing_plans_update_details',
-            'changes_to_call_frequency',
-            'changes_to_call_frequency_details',
+            'expert_panels_change',
+            // GciGtUse (GCEP)
             'gci_use',
             'gci_use_details',
-            'long_term_chairs',
-            'expert_panels_change',
-            'publishing_issues',
             'gt_gene_list',
             'gt_gene_list_details',
             'gt_precuration_info',
             'gt_precuration_info_details',
+            // GeneCurationTotals (GCEP)
             'published_count',
             'approved_unpublished_count',
             'in_progress_count',
+            'publishing_issues',
+            // GcepOngoingPlansUpdateForm (GCEP)
+            // 'ongoing_plans_updated', // samve var used in VCEP form
+            // 'ongoing_plans_update_details', // samve var used in VCEP form
+            // GcepOngoingPlansForm (GCEP) appears to interact directly through `group`?
+            // GcepRereviewForm (GCEP)
             'recuration_begun',
             'recuration_designees',
+            // VciUse (VCEP)
             'vci_use',
             'vci_use_details',
+            // GoalsForm
             'goals',
             'cochair_commitment',
             'cochair_commitment_details',
+            'long_term_chairs',
+            // FundingForm
+            'applied_for_funding',
+            'funding',
+            'funding_other_details',
+            'funding_thoughts',
+            // WebsiteAttestation
+            'website_attestation',
+            // SpecificationProgress (VCEP with approved draft)
+            'specification_progress_url',
             'specification_progress',
             'specification_progress_details',
             'specifications_for_new_gene',
             'specifications_for_new_gene_details',
-            'specification_url',
-            'system_discrepancies',
-            //'variant_counts',
-            // 'variant_workflow_changes',
-            // 'variant_workflow_changes_details',
-            'specification_progress',
-            'specification_progress_url',
-            // 'specification_plans',
-            // 'specification_plans_details',
-            //'rereview_discrepencies_progress',
-           // 'rereview_lp_and_vus_progress',
-            //'rereview_lb_progress',
-            'member_designation_changed',
             'submit_clinvar',
             'vcep_publishing_issues',
+            'system_discrepancies',
+            // VariantReanalysis (VCEP with sustained curation)
+            'rereview_discrepencies_progress',
+            // VcepOnGoingPlansUpdateForm (VCEP with sustained curation)
+            'ongoing_plans_updated',
+            'ongoing_plans_update_details',
+            'changes_to_call_frequency',
+            'changes_to_call_frequency_details',
+            // MemberDesignationUpdate (VCEP with sustained curation)
+            'member_designation_changed',
         ];
     }
 }
