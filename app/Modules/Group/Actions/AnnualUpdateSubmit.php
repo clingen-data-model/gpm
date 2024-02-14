@@ -88,9 +88,6 @@ class AnnualUpdateSubmit
             $requirements = array_merge(
                 $requirements,
                 [
-                    'ongoing_plans_updated' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
-                    'ongoing_plans_update_details' => 'exclude_if:ep_activity,inactive|required_if:ongoing_plans_updated,yes',
-                            'ep_activity' => 'required|in:active,inactive',
                     'submitted_inactive_form' => 'nullable|required_if:ep_activity,inactive|in:yes,no',
                     'gci_use' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
                     'gci_use_details' => 'exclude_if:ep_activity,inactive|required_if:gci_use,no',
@@ -107,9 +104,6 @@ class AnnualUpdateSubmit
                     'publishing_issues' => 'exclude_if:ep_activity,inactive',
                     'ongoing_plans_updated' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
                     'ongoing_plans_update_details' => 'exclude_if:ep_activity,inactive|required_if:ongoing_plans_updated,yes',
-
-
-
                 ]
             );
         }

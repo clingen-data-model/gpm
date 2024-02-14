@@ -92,7 +92,7 @@ export default {
                     in_progress_count: null,
                     publishing_issues: null,
                     // GcepOngoingPlansUpdateForm (GCEP)
-                    // ongoing_plans_updated: null, // same var used in VCEP form
+                    // ongoing_plans_updated: null, // same var used in VCEP form, leaving here as comment to show it's also in a GCEP form
                     // ongoing_plans_update_details: null, // same var used in VCEP form
                     // GcepOngoingPlansForm (GCEP) appears to interact directly through `group`?
                     // GcepRereviewForm (GCEP)
