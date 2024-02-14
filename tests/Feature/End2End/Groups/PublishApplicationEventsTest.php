@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\End2End\Groups;
 
+use App\DataExchange\Models\StreamMessage;
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Carbon;
@@ -10,6 +11,7 @@ use App\Modules\Group\Actions\GenesAdd;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Actions\ExpertPanelAffiliationIdUpdate;
+use App\Modules\Group\Actions\ExpertPanelNameUpdate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
 
@@ -21,7 +23,7 @@ class PublishApplicationEventsTest extends TestCase
     use RefreshDatabase;
     use SeedsHgncGenesAndDiseases;
 
-    private $user, $expertPanel, $group;
+    protected $user, $expertPanel, $group;
 
     public function setup():void
     {
@@ -114,13 +116,31 @@ class PublishApplicationEventsTest extends TestCase
      {
             $this->approveEpDef();
             (new ExpertPanelAffiliationIdUpdate())->handle($this->group, '12345');
+            
     
             $this->assertDatabaseHas('stream_messages', [
                 'topic' => config('dx.topics.outgoing.gpm-general-events'),
                 'message->event_type' => 'ep_info_updated',
-                'sent_at' => null,
+                'message->data->expert_panel->affiliation_id' => '12345',
+                // 'sent_at' => null,
             ]);
      }
+
+    /**
+     * @test
+     */
+    public function it_publishes_ep_info_updated_when_name_changed():void
+    {
+        $this->approveEpDef();
+        (new ExpertPanelNameUpdate())->handle($this->group, 'new name', 'new name');
+
+        $this->assertDatabaseHas('stream_messages', [
+            'topic' => config('dx.topics.outgoing.gpm-general-events'),
+            'message->event_type' => 'ep_info_updated',
+            'message->data->expert_panel->name' => 'new name GCEP',
+            // 'sent_at' => null,
+        ]);
+    }
 
     private function addPerson()
     {

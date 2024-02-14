@@ -29,7 +29,7 @@ trait IsPublishableApplicationEvent
         ];
     }
 
-    protected function mapGeneForMessage($gene): array
+    public function mapGeneForMessage($gene): array
     {
         $messageGene = [
             'hgnc_id' => $gene->hgnc_id,
@@ -45,7 +45,7 @@ trait IsPublishableApplicationEvent
         return $messageGene;
     }
 
-    protected function mapMemberForMessage($member): array
+    public function mapMemberForMessage($member): array
     {
         return [
             'id' => $member->person->uuid,
