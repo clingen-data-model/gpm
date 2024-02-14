@@ -87,9 +87,9 @@ class AnnualUpdateSave
             // WebsiteAttestation
             'website_attestation',
             // SpecificationProgress (VCEP with approved draft)
-            'specification_progress_url',
-            'specification_progress',
-            'specification_progress_details',
+           // 'specification_progress_url',
+            //'specification_progress',
+            //'specification_progress_details',
             'specifications_for_new_gene',
             'specifications_for_new_gene_details',
             'submit_clinvar',
