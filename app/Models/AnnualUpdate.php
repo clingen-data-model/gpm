@@ -148,6 +148,7 @@ class AnnualUpdate extends Model
                 'cochair_commitment' => $this->getDataOrNull('cochair_commitment'),
                 'cochair_commitment_details' => $this->getDataOrNull('cochair_commitment_details'),
                 'expert_panels_change' => $this->getDataOrNull('expert_panels_change'),
+              //  'long_term_chairs' => $this->getDataOrNull('long_term_chairs'),
         ];
 
         if ($this->isGcep) {
@@ -198,6 +199,14 @@ class AnnualUpdate extends Model
                     'rereview_lp_and_vus_progress' => $this->getDataOrNull('rereview_lp_and_vus_progress'),
                     'rereview_lb_progress' => $this->getDataOrNull('rereview_lb_progress'),
                     'member_designation_changed' => $this->getDataOrNull('member_designation_changed'),
+                    'specification_progress_details' => $this->getDataOrNull('specification_progress_details'),
+                    'specifications_for_new_gene' => $this->getDataOrNull('specifications_for_new_gene'),
+                    'specifications_for_new_gene_details' => $this->getDataOrNull('specifications_for_new_gene_details'),
+                    'submit_clinvar' => $this->getDataOrNull('submit_clinvar'),
+                    'vcep_publishing_issues' => $this->getDataOrNull('vcep_publishing_issues'),
+                    'rereview_discrepancies_progress' => $this->getDataOrNull('rereview_discrepancies_progress'),
+                    'changes_to_call_frequency' => $this->getDataOrNull('changes_to_call_frequency'),
+                    'member_designation_changed'  => $this->getDataOrNull('member_designation_changed'),
                 ],
             );
         }
