@@ -145,6 +145,9 @@ class AnnualUpdate extends Model
                 'ongoing_plans_updated' => $this->getDataOrNull('ongoing_plans_updated'),
                 'ongoing_plans_update_details' => $this->getDataOrNull('ongoing_plans_update_details'),
                 'goals' => $this->getDataOrNull('goals'),
+                'cochair_commitment' => $this->getDataOrNull('cochair_commitment'),
+                'cochair_commitment_details' => $this->getDataOrNull('cochair_commitment_details'),
+                'expert_panels_change' => $this->getDataOrNull('expert_panels_change'),
         ];
 
         if ($this->isGcep) {
@@ -163,6 +166,8 @@ class AnnualUpdate extends Model
                     'in_progress_count' => $this->getDataOrNull('in_progress_count'),
                     'recuration_begun' => $this->getDataOrNull('recuration_begun'),
                     'recuration_designees' => $this->getDataOrNull('recuration_designees'),
+                    'system_discrepancies' => $this->getDataOrNull('system_discrepancies'),
+                    'publishing_issues' => $this->getDataOrNull('publishing_issues'),
                 ]
             );
         }
@@ -182,7 +187,7 @@ class AnnualUpdate extends Model
                     'cochair_commitment_details' => $this->getDataOrNull('cochair_commitment_details'),
                     'sepcification_progress' => $this->getDataOrNull('sepcification_progress'),
                     'specification_url' => $this->getDataOrNull('specification_url'),
-                    'variant_counts' => $variantCountString,
+                 //   'variant_counts' => $variantCountString,
                     'variant_workflow_changes' => $this->getDataOrNull('variant_workflow_changes'),
                     'variant_workflow_changes_details' => $this->getDataOrNull('variant_workflow_changes_details'),
                     'specification_progress' => $this->getDataOrNull('specification_progress'),
