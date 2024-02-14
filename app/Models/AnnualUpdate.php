@@ -148,7 +148,8 @@ class AnnualUpdate extends Model
                 'cochair_commitment' => $this->getDataOrNull('cochair_commitment'),
                 'cochair_commitment_details' => $this->getDataOrNull('cochair_commitment_details'),
                 'expert_panels_change' => $this->getDataOrNull('expert_panels_change'),
-              //  'long_term_chairs' => $this->getDataOrNull('long_term_chairs'),
+                // TODO: need to reach into this object to get the long_term_chair data
+                // 'long_term_chairs' => $this->getDataOrNull('long_term_chairs'),
         ];
 
         if ($this->isGcep) {
@@ -188,7 +189,8 @@ class AnnualUpdate extends Model
                     'cochair_commitment_details' => $this->getDataOrNull('cochair_commitment_details'),
                     'sepcification_progress' => $this->getDataOrNull('sepcification_progress'),
                     'specification_url' => $this->getDataOrNull('specification_url'),
-                 //   'variant_counts' => $variantCountString,
+                    // TODO: per tmbattey, this was preventing report export
+                    // 'variant_counts' => $variantCountString,
                     'variant_workflow_changes' => $this->getDataOrNull('variant_workflow_changes'),
                     'variant_workflow_changes_details' => $this->getDataOrNull('variant_workflow_changes_details'),
                     'specification_progress' => $this->getDataOrNull('specification_progress'),
