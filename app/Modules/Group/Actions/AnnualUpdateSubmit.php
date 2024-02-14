@@ -121,15 +121,15 @@ class AnnualUpdateSubmit
 
             if ($annualReview->expertPanel->hasApprovedDraft) {
                 $requirements = array_merge($requirements, [
-                    'specification_progress' => 'required|in:not-applicable,no-changes,yes-pending-approval,yes-approved',
-                    'specification_progress_url' => 'required',
+                   // 'specification_progress' => 'required|in:not-applicable,no-changes,yes-pending-approval,yes-approved',
+                   // 'specification_progress_url' => 'required',
                     'submit_clinvar' => 'required',
                     'vcep_publishing_issues',
                     // Can't get this to work.  Should really be required in this case, but validation always fails.
-                    'specification_progress_details' => Rule::requiredIf(function () use ($annualReview) {
-                        return isset($annualReview->data['specification_progress'])
-                            && preg_match('/yes/', $annualReview->data['specification_progress']);
-                    }),
+                   // 'specification_progress_details' => Rule::requiredIf(function () use ($annualReview) {
+                    //    return isset($annualReview->data['specification_progress'])
+                      //      && preg_match('/yes/', $annualReview->data['specification_progress']);
+                   // }),
                   //  'variant_counts' => 'required|array|min:1',
                   //  'variant_counts.*.gene_symbol' => 'required_with:variant_counts.*.in_clinvar,variant_counts.*.gci_approved,variant_counts.*.provisionally_approved',
 //  'variant_counts.*.in_clinvar' => 'required_with:variant_counts.*.gene_symbol,variant_counts.*.gci_approved,variant_counts.*.provisionally_approved',
