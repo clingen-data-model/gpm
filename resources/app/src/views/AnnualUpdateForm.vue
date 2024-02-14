@@ -114,9 +114,6 @@ export default {
                     // WebsiteAttestation
                     website_attestation: null,
                     // SpecificationProgress (VCEP with approved draft)
-                    //specification_progress_url: null,
-                    //specification_progress: null,
-                    //specification_progress_details: null,
                     specifications_for_new_gene: null,
                     specifications_for_new_gene_details: null,
                     submit_clinvar: null,
