@@ -79,7 +79,8 @@ class AnnualUpdateSubmit
             'funding' => 'exclude_if:ep_activity,inactive|required_if:applied_for_funding,yes',
             'funding_other_details' => 'exclude_if:ep_activity,inactive|required_if:funding,other',
             'funding_thoughts' => 'exclude_if:ep_activity,inactive|required_if:applied_for_funding,no',
-            'website_attestation' => 'exclude_if:ep_activity,inactive|accepted'
+            'website_attestation' => 'exclude_if:ep_activity,inactive|accepted',
+            'expert_panels_change' => 'exclude_if:ep_activity,inactive',
 
         ];
 
@@ -102,7 +103,7 @@ class AnnualUpdateSubmit
                     'in_progress_count' => 'exclude_if:ep_activity,inactive|required|numeric',
                     'recuration_begun' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
                     'recuration_designees' => 'exclude_if:ep_activity,inactive|required',
-                    'expert_panels_change' => 'exclude_if:ep_activity,inactive',
+                    
                     'publishing_issues' => 'exclude_if:ep_activity,inactive',
                     'ongoing_plans_updated' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
                     'ongoing_plans_update_details' => 'exclude_if:ep_activity,inactive|required_if:ongoing_plans_updated,yes',
