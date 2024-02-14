@@ -104,6 +104,9 @@ class AnnualUpdateSubmit
                     'recuration_designees' => 'exclude_if:ep_activity,inactive|required',
                     'expert_panels_change' => 'exclude_if:ep_activity,inactive',
                     'publishing_issues' => 'exclude_if:ep_activity,inactive',
+                    'ongoing_plans_updated' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
+                    'ongoing_plans_update_details' => 'exclude_if:ep_activity,inactive|required_if:ongoing_plans_updated,yes',
+
 
 
                 ]
@@ -147,8 +150,7 @@ class AnnualUpdateSubmit
                     'member_designation_changed' => 'required|in:yes,no',
                     // 'specification_plans' => 'required|in:yes,no',
                     // 'specification_plans_details' => 'required_if:specification_plans,yes',
-                    'ongoing_plans_updated' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
-                    'ongoing_plans_update_details' => 'exclude_if:ep_activity,inactive|required_if:ongoing_plans_updated,yes',
+
                     'changes_to_call_frequency' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
                     'changes_to_call_frequency_details' => 'exclude_if:ep_activity,inactive|required_if:changes_to_call_frequency,yes',
                     'specifications_for_new_gene' => 'required|in:yes,no',
