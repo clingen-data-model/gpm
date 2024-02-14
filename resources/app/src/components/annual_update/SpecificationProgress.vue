@@ -1,50 +1,6 @@
 <template>
     <div>
-        <input-row 
-            :disabled="isComplete"
-            label="Link to approved specification in Cspec" 
-            :errors="errors.specification_progress_url" 
-            vertical
-            class="ml-4"
-            v-model="workingCopy.data.specification_progress_url"
-        />
-        <input-row 
-            :disabled="isComplete"
-            v-model="workingCopy.data.specification_progress"
-            type="radio-group"
-            :errors="errors.specification_progress" 
-            vertical
-            label="Have you made any changes or additions to your ACMG/AMP specifications for the gene(s) of interest, including evidence and rationale to support the rule specifications."
-            :options="[
-                {
-                    value: 'not-applicable',
-                    label: 'Not applicable, VCEP specifications to the ACMG/AMP guidelines in progress'
-                },
-                {
-                    value: 'no-changes',
-                    label: 'No, VCEP has made no changes to the ClinGen-approved VCEP specifications to the ACMG/AMP guidelines'
-                },
-                {   value: 'yes-pending-approval',  
-                    label:'Yes, VCEP has proposed changes to the ClinGen-approved VCEP specifications to the ACMG/AMP guidelines, but the updates are not yet approved by the SVI VCEP Review Committee'
-                },
-                {
-                    value: 'yes-approved',
-                    label: 'Yes, VCEP has proposed changes to the ClinGen-approved VCEP specifications to the ACMG/AMP guidelines and the updates have been approved by the SVI VCEP Review Committee'
-                }
-            ]"
-        />
-        <transition name="slide-fade-down">
-            <input-row 
-                v-if="['yes-pending-approval', 'yes-approved'].includes(workingCopy.data.specification_progress)"
-                label="Describe changes" 
-                v-model="workingCopy.data.specification_progress_details" 
-                :errors="errors.specification_progress_details"
-                type="large-text"
-                vertical
-                :disabled="isComplete"
-            />
-        </transition>
-
+       
         <input-row 
             label="Are you planning to start the rule specification process for a gene within your scope in the coming year?"
             type="radio-group"
