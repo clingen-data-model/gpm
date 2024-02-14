@@ -65,8 +65,8 @@ class AnnualUpdateSave
             'in_progress_count',
             'publishing_issues',
             // GcepOngoingPlansUpdateForm (GCEP)
-             'ongoing_plans_updated', // samve var used in VCEP form
-             'ongoing_plans_update_details', // samve var used in VCEP form
+            // 'ongoing_plans_updated', // same var used in VCEP form, leaving here as comment to show it's also in a GCEP form
+            // 'ongoing_plans_update_details', // same var used in VCEP form
             // GcepOngoingPlansForm (GCEP) appears to interact directly through `group`?
             // GcepRereviewForm (GCEP)
             'recuration_begun',
