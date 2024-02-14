@@ -4,19 +4,19 @@ namespace App\Modules\ExpertPanel\Events;
 
 use Exception;
 use Illuminate\Support\Carbon;
-use App\Events\PublishableEvent;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Events\PublishableApplicationEvent;
 use Illuminate\Support\Carbon as SupportCarbon;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
 
-class StepApproved extends ExpertPanelEvent implements PublishableEvent
+class StepApproved extends ExpertPanelEvent implements PublishableApplicationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     use IsPublishableApplicationEvent {
