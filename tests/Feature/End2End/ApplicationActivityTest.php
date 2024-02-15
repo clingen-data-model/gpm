@@ -9,6 +9,7 @@ use Illuminate\Testing\TestResponse;
 use App\Modules\Person\Models\Person;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Database\Seeders\NextActionTypesTableSeeder;
+use App\Modules\ExpertPanel\Actions\StepApprove;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use App\Modules\Group\Actions\ApplicationSubmitStep;
@@ -49,7 +50,7 @@ class ApplicationActivityTest extends TestCase
     /**
      * @test
      */
-    public function application_managers_see_submitted_applications()
+    public function application_managers_see_submitted_applications_not_completed()
     {
         $this->user->givePermissionTo('ep-applications-manage');
 
@@ -64,7 +65,7 @@ class ApplicationActivityTest extends TestCase
     /**
      * @test
      */
-    public function application_commenters_see_submitted_applications()
+    public function application_commenters_see_submitted_applications_that_are_not_completed()
     {
         $this->setupPermission(['ep-applications-comment']);
         $this->user->givePermissionTo('ep-applications-comment');
@@ -108,8 +109,16 @@ class ApplicationActivityTest extends TestCase
         $epAndSub4['submission']->update([
             'submission_status_id' => config('submissions.statuses.approved.id')
         ]);
+        $epAndSubApproved = $this->setupExpertPanelAndSubmission();
+        $epAndSubApproved['submission']->update([
+            'submission_status_id' => config('submissions.statuses.revisions-requested.id')
+        ]);
+        app()->make(StepApprove::class)->handle($epAndSubApproved['expertPanel'], \Carbon\Carbon::now());
+        app()->make(StepApprove::class)->handle($epAndSubApproved['expertPanel'], \Carbon\Carbon::now());
+        app()->make(StepApprove::class)->handle($epAndSubApproved['expertPanel'], \Carbon\Carbon::now());
+        app()->make(StepApprove::class)->handle($epAndSubApproved['expertPanel'], \Carbon\Carbon::now());
 
-        return [$epAndSub1, $epAndSub2, $epAndSub3, $epAndSub4];
+        return [$epAndSub1, $epAndSub2, $epAndSub3, $epAndSub4, $epAndSubApproved];
     }
 
 
