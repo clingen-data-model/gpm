@@ -4,11 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\Group\Models\GroupMember;
-use Illuminate\Support\Facades\Validator;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class AnnualUpdate extends Model
 {
@@ -148,8 +146,7 @@ class AnnualUpdate extends Model
                 'cochair_commitment' => $this->getDataOrNull('cochair_commitment'),
                 'cochair_commitment_details' => $this->getDataOrNull('cochair_commitment_details'),
                 'expert_panels_change' => $this->getDataOrNull('expert_panels_change'),
-                // TODO: need to reach into this object to get the long_term_chair data
-                // 'long_term_chairs' => $this->getDataOrNull('long_term_chairs'),
+                'long_term_chairs' => $this->getLongTermChairsString(),
         ];
 
         if ($this->isGcep) {
@@ -178,6 +175,8 @@ class AnnualUpdate extends Model
             $variantCounts = $this->getDataOrNull('variant_counts');
             if (!is_null($variantCounts)) {
                 $variantCountString = $this->getVariantCountString($variantCounts);
+            } else {
+                $variantCountString = '';
             }
 
             $result = array_merge(
@@ -189,8 +188,7 @@ class AnnualUpdate extends Model
                     'cochair_commitment_details' => $this->getDataOrNull('cochair_commitment_details'),
                     'sepcification_progress' => $this->getDataOrNull('sepcification_progress'),
                     'specification_url' => $this->getDataOrNull('specification_url'),
-                    // TODO: per tmbattey, this was preventing report export
-                    // 'variant_counts' => $variantCountString,
+                    'variant_counts' => $variantCountString,
                     'variant_workflow_changes' => $this->getDataOrNull('variant_workflow_changes'),
                     'variant_workflow_changes_details' => $this->getDataOrNull('variant_workflow_changes_details'),
                     'specification_progress' => $this->getDataOrNull('specification_progress'),
@@ -263,6 +261,18 @@ class AnnualUpdate extends Model
         }
 
         return $string;
+    }
+
+
+    private function getLongTermChairsString(): String
+    {
+        $longTermChairs = $this->getDataOrNull('long_term_chairs');
+        if (!$longTermChairs) {
+            return '';
+        }
+        return implode('; ', array_map(function ($chair) {
+            return $chair['name'];
+        }, $longTermChairs));
     }
 
 
