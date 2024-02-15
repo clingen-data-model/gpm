@@ -2,8 +2,10 @@
 
 namespace App\Modules\ExpertPanel\Actions;
 
+use InvalidArgumentException;
 use Illuminate\Support\Carbon;
 use App\Modules\Group\Models\Group;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -18,10 +20,9 @@ use App\Modules\ExpertPanel\Actions\ApplicationComplete;
 use App\Mail\UserDefinedMailTemplates\InitialApprovalMailTemplate;
 use App\Mail\UserDefinedMailTemplates\SpecificationDraftMailTemplate;
 use App\Mail\UserDefinedMailTemplates\SpecificationPilotMailTemplate;
-use App\Mail\UserDefinedMailTemplates\SustainedCurationApprovalMailTemplate;
 use App\Modules\ExpertPanel\Exceptions\UnmetStepRequirementsException;
+use App\Mail\UserDefinedMailTemplates\SustainedCurationApprovalMailTemplate;
 use App\Modules\ExpertPanel\Notifications\ApplicationStepApprovedNotification;
-use InvalidArgumentException;
 
 class StepApprove
 {
@@ -31,6 +32,7 @@ class StepApprove
         private NotifyContacts $notifyContactsAction,
         private ApplicationComplete $applicationCompleteAction,
         private SubmissionApprove $approveSubmission,
+        private StepManagerFactory $stepManagerFactory
     ) {
     }
 
@@ -47,34 +49,24 @@ class StepApprove
         ?string $body = null,
         $attachments = []
     ) {
-        dump('fuck me 1');
-        $stepManager = app()->make(StepManagerFactory::class)($expertPanel);
-        dump('fuck me 2');
+        $stepManager = ($this->stepManagerFactory)($expertPanel);
         $dateApproved = $dateApproved ? Carbon::parse($dateApproved) : Carbon::now();
-        dump('fuck me 3');
 
         if (! $stepManager->canApprove()) {
             throw new UnmetStepRequirementsException($expertPanel, $stepManager->getUnmetRequirements());
         }
-        dump('fuck me 4');
 
-        $expertPanel->{'step_'.$expertPanel->current_step.'_approval_date'} = $dateApproved;
-        dump('fuck me 5');
+        $this->setStepApprovalDate($expertPanel, $dateApproved);
         $approvedStep = $expertPanel->current_step;
-        dump('fuck me 6');
 
         if (!$stepManager->isLastStep()) {
             $expertPanel->current_step++;
         }
-        dump('fuck me 7');
         $expertPanel->save();
-        dump('fuck me 8');
 
         $submission = $this->getSubmission($expertPanel, $approvedStep);
-        dump('fuck me 9');
         if ($submission) {
             $this->approveSubmission->handle($submission, $dateApproved);
-            dump('fuck me 10');
         }
 
         event(new StepApproved(
@@ -82,17 +74,14 @@ class StepApprove
             step: $approvedStep,
             dateApproved: $dateApproved
         ));
-        dump('fuck me 11');
 
         if ($stepManager->isLastStep()) {
             $this->applicationCompleteAction->handle($expertPanel, $dateApproved);
         }
-        dump('fuck me 12');
 
         if ($notifyContacts) {
             $this->notifyContacts($expertPanel, $approvedStep, $subject, $body, $attachments);
         }
-        dump('fuck me 13');
     }
 
     public function asController(ActionRequest $request, Group $group)
@@ -113,9 +102,7 @@ class StepApprove
                 body: $request->body,
                 attachments: $attachments
             );
-            dump('fuck me 14');
             $ep = $expertPanel->fresh();
-            dump('fuck me 15');
             return $ep;
         } catch (UnmetStepRequirementsException $e) {
             return response([
@@ -158,7 +145,7 @@ class StepApprove
     {
         if ($expertPanel->contacts->count() == 0) {
             if (!app()->environment('testing')) {
-                \Log::error('Tried to send a step approval notifications for group '.$expertPanel->display_name.' ('.$expertPanel->group_id.') that has no contacts.  This is a data entry issue and not a code defect.');
+                Log::error('Tried to send a step approval notifications for group '.$expertPanel->display_name.' ('.$expertPanel->group_id.') that has no contacts.  This is a data entry issue and not a code defect.');
             }
             return;
         }
@@ -194,6 +181,22 @@ class StepApprove
             default:
                 throw new InvalidArgumentException('Unexpected approvedStep recieved: '.$approvedStep.'.  1-4 expected.');
         }
+    }
+
+    private function setStepApprovalDate(ExpertPanel $expertPanel, Carbon $dateApproved)
+    {
+        $expertPanel->{'step_'.$expertPanel->current_step.'_approval_date'} = $dateApproved;
+        return $expertPanel;
+    }
+
+    private function handleSubmission($expertPanel, $approvedStep, $dateApproved)
+    {
+        $submission = $this->getSubmission($expertPanel, $approvedStep);
+        if ($submission) {
+            $this->approveSubmission->handle($submission, $dateApproved);
+            return;
+        }
+
     }
 
 }
