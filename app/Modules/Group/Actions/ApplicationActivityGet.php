@@ -21,6 +21,9 @@ class ApplicationActivityGet
                     ->whereHas('latestSubmission', function ($q) use ($user) {
                         $q->withStatus($this->getSubmissionStatusesForUser($user));
                     })
+                    ->whereHas('expertPanel', function ($q) {
+                        $q->applying();
+                    })
                     ->with([
                         'type',
                         'latestSubmission',
