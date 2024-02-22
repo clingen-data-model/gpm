@@ -16,9 +16,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class MemberPermissionsGranted extends GroupMemberEvent
 {
-    use Dispatchable;
-    use InteractsWithSockets;
-    use SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
