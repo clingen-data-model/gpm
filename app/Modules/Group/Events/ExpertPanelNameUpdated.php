@@ -2,20 +2,14 @@
 
 namespace App\Modules\Group\Events;
 
-use App\Events\PublishableEvent;
 use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
-use Illuminate\Support\Carbon;
 use App\Modules\Group\Models\Group;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class ExpertPanelNameUpdated extends GroupEvent implements PublishableEvent
+class ExpertPanelNameUpdated extends GroupEvent implements PublishableApplicationEvent
 {
     use Dispatchable, 
         InteractsWithSockets, 
