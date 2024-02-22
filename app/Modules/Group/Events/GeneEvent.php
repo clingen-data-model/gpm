@@ -9,6 +9,10 @@ use App\Modules\Group\Models\Group;
 
 abstract class GeneEvent extends GroupEvent implements GeneEventInterface, PublishableApplicationEvent
 {
+    use IsPublishableApplicationEvent {
+        getPublishableMessage as protected getBaseMessage;
+    }
+
     /**
      * For PublishableEvent interface that is applied to many sub-classes
      */
@@ -17,9 +21,4 @@ abstract class GeneEvent extends GroupEvent implements GeneEventInterface, Publi
         return parent::shouldPublish()
             && $this->group->expertPanel->definitionIsApproved;
     }
-
-    use IsPublishableApplicationEvent {
-        getPublishableMessage as protected getBaseMessage;
-    }
-
 }
