@@ -2,21 +2,14 @@
 
 namespace App\Modules\Group\Events;
 
-use GuzzleHttp\Promise\Is;
-use Illuminate\Support\Carbon;
-use App\Events\PublishableEvent;
 use App\Modules\Group\Models\Group;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
 
-class ExpertPanelAffiliationIdUpdated extends GroupEvent implements PublishableEvent
+class ExpertPanelAffiliationIdUpdated extends GroupEvent implements PublishableApplicationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels, IsPublishableApplicationEvent;
 
