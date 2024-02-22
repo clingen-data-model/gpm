@@ -12,12 +12,9 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use App\Modules\Group\Events\PublishableApplicationEvent;
 use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
 
-class GeneRemoved extends GeneEvent implements PublishableApplicationEvent, GeneEventInterface
+class GeneRemoved extends GeneEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    use IsPublishableApplicationEvent {
-        getPublishableMessage as protected getBaseMessage;
-    }
 
     /**
      * Create a new event instance.
