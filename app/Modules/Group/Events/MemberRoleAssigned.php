@@ -2,7 +2,6 @@
 
 namespace App\Modules\Group\Events;
 
-use App\Events\PublishableEvent;
 use Illuminate\Support\Collection;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
@@ -13,7 +12,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class MemberRoleAssigned extends GroupMemberEvent implements PublishableEvent
+class MemberRoleAssigned extends GroupMemberEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

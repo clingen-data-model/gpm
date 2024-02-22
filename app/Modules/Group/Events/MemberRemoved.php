@@ -2,7 +2,6 @@
 
 namespace App\Modules\Group\Events;
 
-use App\Events\PublishableEvent;
 use App\Modules\Group\Models\Group;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
@@ -13,7 +12,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class MemberRemoved extends GroupMemberEvent implements PublishableEvent
+class MemberRemoved extends GroupMemberEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

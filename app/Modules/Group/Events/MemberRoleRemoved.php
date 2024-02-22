@@ -2,7 +2,6 @@
 
 namespace App\Modules\Group\Events;
 
-use App\Events\PublishableEvent;
 use App\Modules\Group\Models\Group;
 use Illuminate\Broadcasting\Channel;
 use Spatie\Permission\Contracts\Role;
@@ -14,7 +13,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class MemberRoleRemoved extends GroupMemberEvent implements PublishableEvent
+class MemberRoleRemoved extends GroupMemberEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
