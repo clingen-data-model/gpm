@@ -1,24 +1,18 @@
 <?php
 namespace App\Modules\Group\Events;
 
-use App\Events\PublishableEvent;
 use Illuminate\Support\Collection;
 use App\Modules\Group\Models\Group;
 use Illuminate\Queue\SerializesModels;
 use App\Modules\Group\Events\GeneEvent;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
-use App\Modules\Group\Events\GeneEventInterface;
 use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
 use Illuminate\Broadcasting\InteractsWithSockets;
 
-class GenesAdded extends GeneEvent implements PublishableApplicationEvent, GeneEventInterface
+class GenesAdded extends GeneEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    use IsPublishableApplicationEvent {
-        getPublishableMessage as protected getBaseMessage;
-    }
-
 
     /**
      * Create a new event instance.
