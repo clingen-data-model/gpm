@@ -13,7 +13,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class MemberAdded extends GroupMemberEvent implements PublishableEvent
+class MemberAdded extends GroupMemberEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

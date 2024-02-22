@@ -14,7 +14,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class MemberPermissionRevoked extends GroupMemberEvent implements PublishableEvent
+class MemberPermissionRevoked extends GroupMemberEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
