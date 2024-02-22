@@ -5,7 +5,7 @@ namespace App\Modules\Group\Events;
 use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
 use App\Modules\Group\Models\GroupMember;
 
-abstract class GroupMemberEvent extends GroupEvent
+abstract class GroupMemberEvent extends GroupEvent implements PublishableApplicationEvent
 {
     use IsPublishableApplicationEvent {
         getPublishableMessage as protected getBaseMessage;
