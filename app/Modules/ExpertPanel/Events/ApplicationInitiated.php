@@ -3,20 +3,18 @@
 namespace App\Modules\ExpertPanel\Events;
 
 use DateTime;
-use App\Models\Activity;
-use Illuminate\Support\Carbon;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Foundation\Events\Dispatchable;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\Group\Models\Group;
+use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Support\Carbon;
 
 class ApplicationInitiated extends ExpertPanelEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public function __construct(
-        public ExpertPanel $application
+        public ExpertPanel  $application
     )
     {}
 
@@ -38,6 +36,6 @@ class ApplicationInitiated extends ExpertPanelEvent
     public function getStep()
     {
         return 1;
-    }    
+    }
     
 }
