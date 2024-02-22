@@ -38,18 +38,6 @@ class ApplicationInitiated extends ExpertPanelEvent
     public function getStep()
     {
         return 1;
-    }
-
-    static public function fromActivity(Activity $activity):self
-    {
-        $subject = $activity->subject;
-        if ($subject instanceof Group) {
-            $subject = $subject->expertPanel;
-        }
-        return new self(
-            application: $subject
-        );
-        
-    }
+    }    
     
 }
