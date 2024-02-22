@@ -7,6 +7,8 @@
 /vendor
 /tests/coverage/*
 /video
+/scratch
+/.docker/mysql/db-init
 .env
 auth.json
 .env.backup
