@@ -11,7 +11,10 @@ class StreamMessageCreate
 
     public function handle(string $topic, $message, string $eventUuid): StreamMessage
     {
-        $event_uuid = $eventUuid;
-        return StreamMessage::create(compact('topic', 'message', 'event_uuid'));
+        return StreamMessage::create([
+            'topic' => $topic,
+            'message' => $message,
+            'event_uuid' => $eventUuid,
+        ]);
     }
 }
