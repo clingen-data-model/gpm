@@ -2,25 +2,19 @@
 
 namespace App\Listeners;
 
+use App\Models\Activity;
 use App\Events\RecordableEvent;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Modules\Group\Events\JudgementEvent;
 use App\Modules\ExpertPanel\Events\ApplicationEvent;
 use App\Modules\ExpertPanel\Events\ExpertPanelEvent;
 use App\Modules\ExpertPanel\Events\ApplicationInitiated;
 
 class RecordEvent
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
+    private $logger;
 
     /**
      * Handle the event.
@@ -30,18 +24,25 @@ class RecordEvent
      */
     public function handle(RecordableEvent $event)
     {
-        $causer = Auth::user();
+        $this->logger = activity($event->getLog());
 
-        $logger = activity($event->getLog());
+        $this->addCauser();
+        $this->addSubject($event);
+        $this->addProperties($event);
+        $this->addEventUuid($event);
+        $this->logger->createdAt($event->getLogDate());
+        $this->logger->log($event->getLogEntry());
+    }
 
-        if ($causer) {
-            $logger->causedBy($causer);
-        }
-
+    private function addSubject($event): void
+    {
         if ($event->hasSubject()) {
-            $logger->performedOn($event->getSubject());
+            $this->logger->performedOn($event->getSubject());
         }
+    }
 
+    private function addProperties($event): void
+    {
         $properties = $event->getProperties();
         $properties['activity_type'] = $event->getActivityType();
             
@@ -50,10 +51,21 @@ class RecordEvent
                 $properties['step'] = $event->getStep();
             }
         }
-        $logger->withProperties($properties);
+        $this->logger->withProperties($properties);
+    }
 
-        $logger->createdAt($event->getLogDate());
+    private function addEventUuid($event): void
+    {
+        $this->logger->tap(function (Activity $activity) use ($event) {
+            $activity->event_uuid = $event->getEventUuid();
+        });
+    }
 
-        $logger->log($event->getLogEntry());
+    private function addCauser()
+    {
+        $causer = Auth::user();
+        if ($causer) {
+            $this->logger->causedBy($causer);
+        }
     }
 }
