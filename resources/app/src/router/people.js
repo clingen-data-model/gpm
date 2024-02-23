@@ -7,7 +7,7 @@ const PersonEdit = () => import (/* person-detail */ '@/views/PersonEdit.vue')
 const PeopleList = () => import (/* people-index */ '@/views/PeopleList.vue')
 const OnboardingWizard = () => import (/* onboarding-wizard */ '@/views/OnboardingWizard.vue')
 const RequiredProfileUpdate = () => import (/* required-profile-update */ '@/views/RequiredProfileUpdate.vue')
-const DemographicsForm = () => import (/* person-detail */ '@/components/people/DemographicsForm.vue')
+const DemographicsForm = () => import (/* person-detail */ '@/components/people/DemographicsFormOptionsFinal.vue')
 
 export default [
     { name: 'people-index',
@@ -78,7 +78,7 @@ export default [
         path: '/demographics',
        // component: DemographicsForm
        component: () =>
-     import ( /* webpackChunkName: "application-summary" */ '@/components/people/DemographicsForm.vue'),
+     import ( /* webpackChunkName: "application-summary" */ '@/components/people/DemographicsFormOptionsFinal.vue'),
        },
 
     { name: 'MandatoryProfileUpdate',
