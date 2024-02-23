@@ -2,15 +2,17 @@
 
 namespace App\Events;
 
-use App\Events\Event;
+// use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str;
+use App\Events\AbstractEvent;
 use Illuminate\Support\Carbon;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 
-abstract class RecordableEvent implements Event
+abstract class RecordableEvent extends AbstractEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
