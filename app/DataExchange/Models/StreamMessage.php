@@ -15,7 +15,8 @@ class StreamMessage extends Model
         'message',
         'topic',
         'sent_at',
-        'error'
+        'error',
+        'event_uuid'
     ];
     
     protected $dispatchesEvents = [

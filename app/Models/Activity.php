@@ -22,10 +22,10 @@ class Activity extends BaseActivity
          * and accessor
          */
         static::saving(function ($activity) {
-
-            if ($activity->properties && $activity->getExtraProperty('activity_type')) {
-                $activity->activity_type = $activity->getExtraProperty('activity_type');
+            if (!$activity->properties) {
+                return;
             }
+            $activity->activity_type = $activity->getExtraProperty('activity_type');
         });
     }
 
@@ -33,7 +33,7 @@ class Activity extends BaseActivity
     {
         parent::__construct($attributes);
 
-        $this->mergeFillable(['activity_type']);
+        $this->mergeFillable(['activity_type', 'event_uuid']);
     }
 
     public function getTypeAttribute()
@@ -53,6 +53,4 @@ class Activity extends BaseActivity
                 ? $this->properties['step']
                 : null;
     }
-    
-    
 }

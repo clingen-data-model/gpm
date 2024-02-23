@@ -28,7 +28,8 @@ class EventPublish
         if ($event->shouldPublish($event) && $message) {
             return $this->streamMessageCreate->handle(
                 topic: $event->getTopic(),
-                message: $message
+                message: $message,
+                eventUuid: $event->getEventUuid()
             );
         }
 
