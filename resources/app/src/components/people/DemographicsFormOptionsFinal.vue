@@ -159,17 +159,17 @@
           <div class="w3-section">
             <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.</legend>
             <label>
-              <input type="checkbox" name="identity1" v-model="identity1" value="Female">Female<br>
+              <input type="checkbox" name="identtities" v-model="identities" value="Female">Female<br>
   
             </label>
             <label>
-              <input type="checkbox" name="identity2" value="Male">Male<br>
+              <input type="checkbox" name="identities" v-model="identities" value="Male">Male<br>
             </label>
             <label>
-              <input type="checkbox" name="identify3" value="Unsure">Unsure<br>
+              <input type="checkbox" name="identities" v-model="identities" value="Unsure">Unsure<br>
             </label>
             <label>
-              <input type="checkbox" name="identity4" value="None">Prefer not to answer<br>
+              <input type="checkbox" name="identities" v-model="identities" value="None">Prefer not to answer<br>
             </label>
           </div>
   
@@ -184,37 +184,37 @@
           <div class="w3-section">
             <legend>What term best describes your gender identity? Select all that apply.</legend>
             <label>
-              <input type="checkbox" name="gender" value="Man">Man<br>
+              <input type="checkbox" name="gender" v-model="gender" value="Man">Man<br>
             </label>
             <label>
-              <input type="checkbox" name="gender" value="Woman">Woman<br>
+              <input type="checkbox" name="gender" v-model="gender" value="Woman">Woman<br>
             </label>
             <label>
-              <input type="checkbox" name="gender" value="Cis">Cisgender<br>
-            </label>
-  
-  
-            <label>
-              <input type="checkbox" name="gender" value="Nonbinary">Nonbinary<br>
-            </label>
-            <label>
-              <input type="checkbox" name="gender" value="Transgender">Transgender<br>
-            </label>
-            <label>
-              <input type="checkbox" name="gender" value="Genderqueer">Genderqueer<br>
-            </label>
-            <label>
-              <input type="checkbox" name="gender" value="Agender">Agender<br>
-            </label>
-            <label>
-              <input type="checkbox" name="gender" value="Intersex">Intersex<br>
+              <input type="checkbox" name="gender" v-model="gender" value="Cis">Cisgender<br>
             </label>
   
+  
             <label>
-              <input type="checkbox" name="gender" value="Unsure">Unsure<br>
+              <input type="checkbox" name="gender" v-model="gender" value="Nonbinary">Nonbinary<br>
             </label>
             <label>
-              <input type="checkbox" name="gender" value="None">Prefer not to answer<br>
+              <input type="checkbox" name="gender" v-model="gender" value="Transgender">Transgender<br>
+            </label>
+            <label>
+              <input type="checkbox" name="gender" v-model="gender" value="Genderqueer">Genderqueer<br>
+            </label>
+            <label>
+              <input type="checkbox" name="gender" v-model="gender" value="Agender">Agender<br>
+            </label>
+            <label>
+              <input type="checkbox" name="gender" v-model="gender" value="Intersex">Intersex<br>
+            </label>
+  
+            <label>
+              <input type="checkbox" name="gender" v-model="gender" value="Unsure">Unsure<br>
+            </label>
+            <label>
+              <input type="checkbox" name="gender" v-model="gender" value="None">Prefer not to answer<br>
             </label>
           </div>
   
@@ -475,7 +475,7 @@
   
   
           <!-- Submission Button -->
-          <button @click="addSurvey">Submit Demographic Survey</button>
+          <button>Submit Demographic Survey</button>
   
   
         </form>
@@ -487,32 +487,20 @@
   
 <script>
 const baseUrl = '/api/people';
-let user = (null);
+
 import axios from 'axios';
 import { mapGetters } from 'vuex';
 import { useStore } from 'vuex';
+let store = useStore();
 import Person from '@/domain/person';
 console.log(Person);
 import isValidationError from '@/http/is_validation_error';
-
-let uuid = null;
-//let uuid = "3716f9f6-8f04-479e-af3e-5e6ce1f2abaa";
-//getUser(uuid);
-
-//console.log(person);
-
-
 
 var items = []
 
 export default {
   name: "DemographicsForm",
-  //props: {
-   // person: {
-   //   type: Object,
-    //  required: true
-   // },
-  //},
+  
   data() {
     return {
       user: null,
@@ -527,6 +515,7 @@ export default {
       birth_country: null,
       reside_state: null,
       reside_state_opt_out: false,
+      identities: [],
      // ethnicities: [],
      gender: [],
       birth_year: null,
@@ -570,33 +559,44 @@ export default {
   props: {
        uuid: {
            required: true,
+           default: null,
+          // return this.$store.getters('people/currentItem', {uuid: this.uuid});
             type: String
-        }
+        },
+    //    person: {
+     //       type: Person,
+     //       required: true,
+     //   }
     },
 
 
-    uuid(){
-     return this.$store.getters('people/currentItem', {uuid: this.uuid});
-   },
+   // uuid(){
+   //  return this.$store.getters('people/currentItem', {uuid: this.uuid});
+  // },
    // },
 
-   // watch: {
-    //   uuid: {
-     //    immediate: true,
-      //    handler: async function () {
-      //      console.log(this.$store);
-     //       console.log(this.$store.getters);
-     //       console.log(this.$store.getters['people/getPerson']);
-      //       await this.$store.getters('people/getPerson', {uuid: this.uuid});
-      //      // await this.$store.getters['people/getPerson']({ uuid: this.uuid });
 
-         //      if (this.coordinatesPerson(this.person)) {
-        //           this.getLogEntries();
-        //           this.getMailLog();
-       //        }
-       //     }
-       // },
-     // },
+   //Option 1: Works sproadically.  Logic is used in PersonDetail.vue file
+
+    watch: {
+     uuid: {
+         immediate: true,
+         handler: async function () {
+            console.log(this.$store);
+            console.log(this.$store.getters);
+            console.log(this.$store.getters['people/getPerson']);
+            await this.$store.getters('people/getPerson', {uuid: this.uuid});
+            // await this.$store.getters['people/getPerson']({ uuid: this.uuid });
+
+   //           if (this.coordinatesPerson(this.person)) {
+   //              this.getLogEntries();
+    //               this.getMailLog();
+    //          }
+           }
+        },
+      },
+
+     //Option2.  THis api ia available in a stand-alone file.  
 
     //  watch: {
     //   uuid: {
@@ -619,6 +619,9 @@ export default {
            person: 'people/currentItem',
            
         }),
+
+       // identities: this.identities,
+
    // countries() {
     //  return this.$store.getters['countries/items'].map(i => ({ value: i.id, label: i.name }));
     //},
@@ -627,13 +630,13 @@ export default {
     //        person: 'people/currentItem'
     //    })
      // }
-    person() {
-      console.log(this.$store);
-      console.log(this.$store.getters);
-      console.log(this.$store.getters['people/currentItem'])
-      return this.$store.getters['people/currentItem'];
+   // person() {
+   //   console.log(this.$store);
+    //  console.log(this.$store.getters);
+    //  console.log(this.$store.getters['people/currentItem'])
+   //   return this.$store.getters['people/currentItem'];
     // console.log(this.person);
-   },
+   //},
 
    countries() {
     return this.$store.getters['countries/items'].map(i => ({ value: i.id, label: i.name }));
@@ -701,10 +704,28 @@ export default {
       }
     },
 
-    async addSurvey() {
+  //  async updateUser3(uuid, items) {
+    // try {
+   //    const response = await axios.put(`${baseUrl}/${uuid}/demographics`, items);
+   //    console.log(response.data);
+    //  } catch (error) {
+    //    console.error("Error updating user:", error);
+     // }
+   // },
+
+   // async handleSave () {
+    //    await store.dispatch('forceGetCurrentUser');
+
+    //    router.replace(props.redirectTo)
+    //},
+
+    async addSurvey(uuid) {
       // ... (Previous implementation )
 
       // Use 'this.user' to access data inside addSurvey. For example:
+      console.log("identities:", this.identities);
+      console.log("gender:", this.gender);
+
       items = {
         birth_country: this.birth_country,
         reside_country: this.reside_country,
@@ -713,6 +734,7 @@ export default {
         birth_year: this.birth_year,
         birth_country_opt_out: this.birth_country_opt_out,
         reside_country_opt_out: this.reside_country_opt_out,
+        identities: this.identities,
       // ethicities: this.demographic.ethnicities,
         id: this.user.id,
         email: this.user.email,
@@ -728,40 +750,40 @@ export default {
       console.log(items);
 
       try {
-        const response = await axios.put(`${baseUrl}/${uuid}/demographics`, items);
-        console.log(response.data);
+       const response = await axios.put(`${baseUrl}/${this.uuid}/demographics`, items);
+       console.log(response.data);
       } catch (error) {
         console.error("Error updating user:", error);
       }
 
-     // updateUser3(uuid, items); // Assuming 'this.uuid' is in scope
+      //updateUser3(this.uuid, items); // Assuming 'this.uuid' is in scope
     },
 
-  // async updateUser3(uuid, items) {
-   //  try {
-    //   const response = await axios.put(`${baseUrl}/${uuid}/demographics`, items);
-    //   console.log(response.data);
-     // } catch (error) {
-     //   console.error("Error updating user:", error);
-     // }
-    //},
+  
 
     
   },
   //new
  
   mounted() {
-   // this.$store.dispatch('countries/getItems');
-   // this.$store.dispatch('states/getItems');
-    this.getUser(uuid);
-    this.fetchCountries(); 
-    console.log('Component Mounted');
-  console.log(this.demographics);
-  console.log(this.demographics.ethnicities);
-  console.log(this.demographics.ethnicities.length > 0);
-  //this.forceUpdate();
-    //this.getUser(this.uuid);
-  }
+
+    Promise.all([this.getUser(this.uuid), this.fetchCountries()])
+    .then(() => {
+      // Now you're guaranteed that both getUser and fetchCountries have finished
+
+      const button = this.$el.querySelector('button');
+      if (button) {
+        button.addEventListener('click', () => this.addSurvey(this.uuid));
+      }
+
+      // ... rest of your mounted code 
+    })
+    .catch(error => {
+       // Handle errors from getUser or fetchCountries
+       console.error("Error in mounted:", error);
+    });
+}
+
 }
 
 
