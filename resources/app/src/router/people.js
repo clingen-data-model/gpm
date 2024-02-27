@@ -75,10 +75,12 @@ export default [
     },
 
     {   name: 'DemographicsForm',
-        path: '/demographics',
+        path: '/demographics/:uuid',
+        props: true,
+        component: DemographicsForm
        // component: DemographicsForm
-       component: () =>
-     import ( /* webpackChunkName: "application-summary" */ '@/components/people/DemographicsFormOptionsFinal.vue'),
+      // component: () =>
+     //import ( /* webpackChunkName: "application-summary" */ '@/components/people/DemographicsFormOptionsFinal.vue'),
        },
 
     { name: 'MandatoryProfileUpdate',

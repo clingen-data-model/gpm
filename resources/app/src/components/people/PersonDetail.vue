@@ -40,7 +40,7 @@
                 <person-profile :person="person"></person-profile>
             </tab-item>
             <tab-item label="Demographics" :visible="hasPermission('people-manage') || userIsPerson(person)">
-                <demographics-form :person="person"></demographics-form>
+                <demographics-form :uuid="personFromStore.uuid"></demographics-form>
             </tab-item>
             <tab-item label="Conflict of Interest">
                 <coi-list :person="person"></coi-list>
