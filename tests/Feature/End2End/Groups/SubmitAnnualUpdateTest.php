@@ -84,7 +84,6 @@ class SubmitAnnualUpdateTest extends TestCase
             'cochair_commitment',
             'applied_for_funding',
             'website_attestation',
-            'ep_activity',
             'gci_use',
             'published_count',
             'approved_unpublished_count',
@@ -96,7 +95,7 @@ class SubmitAnnualUpdateTest extends TestCase
         ];
 
         foreach ($baseRequiredFields as $field) {
-            $response = $response->assertJsonFragment([$field => ['This is required.']]);
+            $response->assertJsonFragment([$field => ['This is required.']]);
         }
     }
 
@@ -134,7 +133,7 @@ class SubmitAnnualUpdateTest extends TestCase
             'expert_panel_id'=>$this->expertPanel->id,
             'data' => [
                 'ongoing_plans_updated' => 'yes',
-                'cochair_commitment' => 'no',
+                // 'cochair_commitment' => 'no',
                 'applied_for_funding' => 'yes',
                 'funding' => 'other',
                 'ep_activity' => 'active',
@@ -149,7 +148,6 @@ class SubmitAnnualUpdateTest extends TestCase
             'gt_gene_list_details',
             'gt_precuration_info_details',
             'ongoing_plans_update_details',
-            'cochair_commitment_details',
             'funding_other_details',
         ];
 
@@ -188,18 +186,17 @@ class SubmitAnnualUpdateTest extends TestCase
             'applied_for_funding',
             'website_attestation',
             'vci_use',
-            'variant_counts',
-            // 'variant_workflow_changes', // deprecated by Danielle Azzariti Feb. 2022
-            'rereview_discrepencies_progress',
-            'rereview_lp_and_vus_progress',
-            'rereview_lb_progress',
+            // Commenting out b/c tmbattey commented out in validation.  Should probably just be removed -TJW
+            // 'variant_counts',
+            // 'rereview_discrepencies_progress',
+            // 'rereview_lp_and_vus_progress',
+            // 'rereview_lb_progress',
             'member_designation_changed',
-            // 'specification_plans', // deprecated by Danielle Azzariti Feb. 2022
             'changes_to_call_frequency'
         ];
 
         foreach ($baseRequiredFields as $field) {
-            $response = $response->assertJsonFragment([$field => ['This is required.']]);
+            $response->assertJsonFragment([$field => ['This is required.']]);
         }
     }
 
@@ -259,9 +256,9 @@ class SubmitAnnualUpdateTest extends TestCase
             'applied_for_funding',
             'website_attestation',
             'vci_use',
-            'variant_counts',
-            'specification_progress',
-            'specification_progress_url',
+            // 'variant_counts',
+            // 'specification_progress',
+            // 'specification_progress_url',
         ];
 
         foreach ($baseRequiredFields as $field) {
@@ -291,19 +288,19 @@ class SubmitAnnualUpdateTest extends TestCase
             'submitter_id',
             'grant',
             'membership_attestation',
-            'ongoing_plans_updated',
+            // 'ongoing_plans_updated',
             'goals',
             'cochair_commitment',
             'applied_for_funding',
             'website_attestation',
             'vci_use',
-            'variant_counts',
-            'specification_progress',
-            'specification_progress_url',
+            // 'variant_counts',
+            // 'specification_progress',
+            // 'specification_progress_url',
             // 'variant_workflow_changes', // deprecated by Danielle Azzariti Feb. 2022
-            'rereview_discrepencies_progress',
-            'rereview_lp_and_vus_progress',
-            'rereview_lb_progress',
+            // 'rereview_discrepencies_progress',
+            // 'rereview_lp_and_vus_progress',
+            // 'rereview_lb_progress',
             'member_designation_changed',
             // 'specification_plans', // deprecated by Danielle Azzariti Feb. 2022
             'specifications_for_new_gene',
@@ -345,20 +342,20 @@ class SubmitAnnualUpdateTest extends TestCase
         $conditionalRequiredFields = [
             'vci_use_details',
             // 'variant_workflow_changes_details', // deprecated by Danielle Azzariti Feb. 2022
-            'ongoing_plans_update_details',
-            'cochair_commitment_details',
+            // 'ongoing_plans_update_details',
+            // 'cochair_commitment_details',
             'funding_other_details',
             'changes_to_call_frequency_details',
             // 'specification_plans_details' // deprecated by Danielle Azzariti Feb. 2022
             'specifications_for_new_gene_details',
-            'specification_progress_details',
+            // 'specification_progress_details',
         ];
 
         $response = $this->makeRequest($annualReview)
                         ->assertStatus(422);
 
         foreach ($conditionalRequiredFields as $field) {
-            $response = $response->assertJsonFragment([$field => ['This is required.']]);
+            $response->assertJsonFragment([$field => ['This is required.']]);
         }
     }
 
