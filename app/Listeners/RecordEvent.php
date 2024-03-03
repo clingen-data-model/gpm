@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Modules\ExpertPanel\Events\ApplicationEvent;
 use App\Modules\ExpertPanel\Events\ExpertPanelEvent;
 use App\Modules\ExpertPanel\Events\ApplicationInitiated;
+use App\Modules\User\Models\User;
 
 class RecordEvent
 {
@@ -30,7 +31,7 @@ class RecordEvent
      */
     public function handle(RecordableEvent $event)
     {
-        $causer = Auth::user();
+        $causer = User::find(Auth::id());
 
         $logger = activity($event->getLog());
 
