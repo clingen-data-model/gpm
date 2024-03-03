@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Modules\ExpertPanel\Events\ExpertPanelEvent;
+use App\Modules\User\Models\User;
 
 class RecordEvent
 {
@@ -42,7 +43,7 @@ class RecordEvent
     {
         $properties = $event->getProperties();
         $properties['activity_type'] = $event->getActivityType();
-            
+
         if ($properties) {
             if ($event instanceof ExpertPanelEvent && !isset($properties['step'])) {
                 $properties['step'] = $event->getStep();
@@ -60,7 +61,7 @@ class RecordEvent
 
     private function addCauser()
     {
-        $causer = Auth::user();
+        $causer = User::find(Auth::id());
         if ($causer) {
             $this->logger->causedBy($causer);
         }
