@@ -66,7 +66,7 @@ class ReorderStreamMessages
         $sql = <<<SQL
             INSERT INTO sm_temp (topic, `message`, sent_at, error, created_at, updated_at, orig_id)
             SELECT topic, `message`, NULL, error, created_at, updated_at, id AS orig_id FROM stream_messages 
-            order by created_at
+            order by created_at, orig_id
         SQL;
 
         $results = DB::statement($sql);
@@ -100,7 +100,12 @@ class ReorderStreamMessages
      */
     private function restoreStreamMessages(): void
     {
-        $sql = 'INSERT INTO stream_messages (id, topic, `message`, sent_at, error, created_at, updated_at) SELECT id, topic, `message`, sent_at, error, created_at, updated_at FROM sm_backup';
+        $sql = <<<SQL
+            INSERT INTO stream_messages (id, topic, `message`, sent_at, error, created_at, updated_at) 
+            SELECT id, topic, `message`, sent_at, error, created_at, updated_at 
+            FROM sm_backup
+            ORDER BY created_at, orig_id
+        SQL;
 
         DB::statement($sql);
     }
