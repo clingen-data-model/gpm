@@ -1,5 +1,6 @@
 <?php
 
+use App\Actions\DataFixes\CleanErrantStreamMessages;
 use App\Actions\DataFixes\ReorderStreamMessages;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -12,8 +13,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $action = app()->make(ReorderStreamMessages::class);
-        $action->handle();
+        $this->cleanErrantMessages();
+        $this->reIndexStreamMessages();
     }
 
     /**
@@ -23,4 +24,16 @@ return new class extends Migration
     {
         
     }
+
+    private function cleanErrantMessages(): void
+    {
+        app()->make(CleanErrantStreamMessages::class)->handle();
+    }
+
+    private function reIndexStreamMessages(): void
+    {
+        app()->make(ReorderStreamMessages::class)->handle();
+    }
+    
+    
 };
