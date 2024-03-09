@@ -7,10 +7,7 @@ use App\Events\RecordableEvent;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Modules\Group\Events\JudgementEvent;
-use App\Modules\ExpertPanel\Events\ApplicationEvent;
 use App\Modules\ExpertPanel\Events\ExpertPanelEvent;
-use App\Modules\ExpertPanel\Events\ApplicationInitiated;
 
 class RecordEvent
 {
