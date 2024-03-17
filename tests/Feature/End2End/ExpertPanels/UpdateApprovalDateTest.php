@@ -68,11 +68,11 @@ class UpdateApprovalDateTest extends TestCase
         ]);
         $response->assertStatus(200);
 
-        $this->assertEquals(Carbon::parse('2021-04-22T04:00:00.000000Z')->toJson(), $response->original['step_1_approval_date']);
+        $this->assertEquals(Carbon::parse('2021-04-22T04:00:00.000000Z')->toJson(), $response->original['step_1_approval_date']->toJson());
 
         $this->assertDatabaseHas('expert_panels', [
             'uuid' => $this->expertPanel->uuid,
-            'step_1_approval_date' => '2021-04-22T04:00:00.000000Z'
+            'step_1_approval_date' => '2021-04-22 04:00:00'
         ]);
 
         $this->assertDatabaseHas('activity_log', [
