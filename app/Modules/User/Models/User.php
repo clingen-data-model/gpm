@@ -161,7 +161,10 @@ class User extends Authenticatable implements CanResetPassword, HasLogEntries
     {
         return app(ImpersonateManager::class)->isImpersonating();
     }
+
     
+    protected function getDefaultGuardName(): string { return 'web'; }
+
 
     // Factory support
     protected static function newFactory()

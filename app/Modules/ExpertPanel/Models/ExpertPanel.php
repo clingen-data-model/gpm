@@ -87,23 +87,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         // 'working_name',
     ];
 
-    protected $dates = [
-        'date_initiated',
-        'step_1_received_date',
-        'step_1_approval_date',
-        'step_2_approval_date',
-        'step_3_approval_date',
-        'step_4_received_date',
-        'step_4_approval_date',
-        'date_completed',
-        'nhgri_attestation_date',
-        'preprint_attestation_date',
-        'reanalysis_attestation_date',
-        'gci_training_date',
-        'gcep_attesation_date',
-
-    ];
-
     protected $casts = [
         'id' => 'integer',
         'group_id' => 'integer',
@@ -122,6 +105,20 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'recuration_process_review' => 'boolean',
         'biocurator_training' => 'boolean',
         'biocurator_mailing_list' => 'boolean',
+        'date_initiated' => 'datetime',
+        'step_1_received_date' => 'datetime',
+        'step_1_approval_date' => 'datetime',
+        'step_2_approval_date' => 'datetime',
+        'step_3_approval_date' => 'datetime',
+        'step_4_received_date' => 'datetime',
+        'step_4_approval_date' => 'datetime',
+        'date_completed' => 'datetime',
+        'nhgri_attestation_date' => 'datetime',
+        'preprint_attestation_date' => 'datetime',
+        'reanalysis_attestation_date' => 'datetime',
+        'gci_training_date' => 'datetime',
+        'gcep_attesation_date' => 'datetime',
+
     ];
 
     protected $with = [

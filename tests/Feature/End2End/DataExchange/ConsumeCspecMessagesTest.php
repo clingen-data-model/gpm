@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use App\DataExchange\DxMessage;
 use Tests\Dummies\FakeMessageStream;
+use App\DataExchange\Actions\DxConsume;
 use Illuminate\Support\Facades\Artisan;
 use Database\Seeders\RulesetStatusSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -21,6 +22,9 @@ class ConsumeCspecMessagesTest extends TestCase
 {
     use RefreshDatabase;
 
+    private $vcep;
+    private $consumer;
+
     public function setup(): void
     {
         parent::setup();
@@ -33,6 +37,8 @@ class ConsumeCspecMessagesTest extends TestCase
                             'affiliation_id' => '59999',
                         ]);
         config(['dx.consume' => true]);
+
+        $this->consumer = new DxConsume();
     }
 
     /**
@@ -78,7 +84,8 @@ class ConsumeCspecMessagesTest extends TestCase
         ]));
 
         Carbon::setTestNow('2022-08-18 00:00:00');
-        Artisan::call('schedule:run');
+        // Artisan::call('schedule:run');
+        $this->consumer->handle(config('dx.topics.incoming'));
 
         $this->assertDatabaseHas('expert_panels', [
             'id' => $this->vcep->id,
@@ -108,7 +115,9 @@ class ConsumeCspecMessagesTest extends TestCase
         ]));
 
         Carbon::setTestNow('2022-08-18 00:00:00');
-        Artisan::call('schedule:run');
+        // Artisan::call('schedule:run');
+        $this->consumer->handle(config('dx.topics.incoming'));
+
 
         $this->assertDatabaseHas('expert_panels', [
             'id' => $this->vcep->id,

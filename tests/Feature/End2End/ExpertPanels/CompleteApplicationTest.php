@@ -14,6 +14,8 @@ class CompleteApplicationTest extends TestCase
 {
     use RefreshDatabase;
 
+    private $user, $expertPanel;
+
     public function setup():void
     {
         parent::setup();
@@ -28,20 +30,14 @@ class CompleteApplicationTest extends TestCase
      */
     public function gcep_application_completed_when_step1_approved()
     {
-        dump('fuck1');
         $dateApproved = Carbon::parse('2021-09-16');
-        dump('fuck2');
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
-        dump('fuck3');
-        $request = $this->makeRequest(['date_approved' => $dateApproved]);
-        dump('fuck4');
-        $request->assertStatus(200);
-        dump('fuck5');
-        $request->assertJsonFragment([
-                'date_completed' => $dateApproved->toJson(),
+        $response = $this->makeRequest(['date_approved' => $dateApproved]);
+        $response->assertStatus(200);
+        $response->assertJsonFragment([
+                'date_completed' => $dateApproved->format('Y-m-d H:i:s'),
         ]);
-        dump('fuck6');
-        $request->assertJsonFragment([
+        $response->assertJsonFragment([
                 'current_step' => 1
             ]);
     }
@@ -74,7 +70,7 @@ class CompleteApplicationTest extends TestCase
         $this->makeRequest(['date_approved' => $dateApproved])
             ->assertStatus(200)
             ->assertJsonFragment([
-                'date_completed' => $dateApproved->toJson()
+                'date_completed' => $dateApproved->format('Y-m-d H:i:s')
             ]);
     }
 

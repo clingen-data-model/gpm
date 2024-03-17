@@ -16,11 +16,14 @@ abstract class CommentTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected $user, $expertPanel;
+
     public function setup():void
     {
         parent::setup();
         $this->user = $this->setupUserWithPerson(null, ['ep-applications-comment']);
         $this->setupForGroupTest();
+        $this->setupSubmissionStatusesAndTypes();
         $this->expertPanel = ExpertPanel::factory()->create();
         (new CommentTypesSeeder)->run();
         Sanctum::actingAs($this->user);
@@ -34,5 +37,14 @@ abstract class CommentTest extends TestCase
             'creator_type' => get_class($this->user)
         ];
         return Comment::factory()->create($data);
+    }
+
+    protected function setupSubmissionStatusesAndTypes():void
+    {
+        $seeders = [
+            SubmissionTypeAndStatusSeeder::class,
+        ];
+
+        $this->runSeeder($seeders);
     }
 }

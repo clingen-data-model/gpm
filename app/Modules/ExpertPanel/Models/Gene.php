@@ -54,10 +54,7 @@ class Gene extends Model
         'id' => 'integer',
         'hgnc_id' => 'integer',
         'expert_panel_id' => 'integer',
-    ];
-
-    protected $dates = [
-        'date_approved',
+        'date_approved' => 'datetime',
     ];
 
     /**

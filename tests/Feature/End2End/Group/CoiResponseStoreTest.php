@@ -14,6 +14,8 @@ class CoiResponseStoreTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
+    private $member, $user;
+
     public function setup():void
     {
         parent::setup();

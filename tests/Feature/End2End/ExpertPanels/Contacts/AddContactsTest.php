@@ -65,7 +65,6 @@ class AddContactsTest extends TestCase
         $response->assertStatus(422);
 
         $response->assertJson([
-            'message' => 'The given data was invalid.',
             'errors' => [
                 'person_uuid' => ['This is required.'],
             ]
@@ -77,7 +76,6 @@ class AddContactsTest extends TestCase
         $response->assertStatus(422);
 
         $response->assertJson([
-            'message' => 'The given data was invalid.',
             'errors' => [
                 'person_uuid' => ['The person uuid must be a valid UUID.'],
             ]
@@ -90,7 +88,6 @@ class AddContactsTest extends TestCase
         $response->assertStatus(422);
 
         $response->assertJson([
-            'message' => 'The given data was invalid.',
             'errors' => [
                 'person_uuid' => ['The person must already exist in the database.'],
             ]
