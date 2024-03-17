@@ -10,7 +10,7 @@ class ActivityTest extends TestCase
     /**
      * @test
      */
-    public function has_fillable_activity_type_attribute()
+    public function has_fillable_activity_type_attribute(): void
     {
         $activity = new Activity();
         $activity->fill(['activity_type'=>'test_type']);
@@ -18,6 +18,16 @@ class ActivityTest extends TestCase
         $this->assertEquals('test_type', $activity->activity_type);
     }
 
+    /**
+     * @test
+     */
+    public function has_fillable_event_uuid_attribute(): void
+    {
+        $activity = new Activity();
+        $activity->fill(['event_uuid'=>'test_uuid']);
+
+        $this->assertEquals('test_uuid', $activity->event_uuid);
+    }
 
     /**
      * @test

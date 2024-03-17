@@ -9,8 +9,12 @@ class StreamMessageCreate
 {
     use AsJob;
 
-    public function handle(string $topic, $message): StreamMessage
+    public function handle(string $topic, $message, string $eventUuid): StreamMessage
     {
-        return StreamMessage::create(compact('topic', 'message'));
+        return StreamMessage::create([
+            'topic' => $topic,
+            'message' => $message,
+            'event_uuid' => $eventUuid,
+        ]);
     }
 }
