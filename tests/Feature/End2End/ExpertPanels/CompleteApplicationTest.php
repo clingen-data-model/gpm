@@ -35,7 +35,7 @@ class CompleteApplicationTest extends TestCase
         $response = $this->makeRequest(['date_approved' => $dateApproved]);
         $response->assertStatus(200);
         $response->assertJsonFragment([
-                'date_completed' => $dateApproved->format('Y-m-d H:i:s'),
+                'date_completed' => $dateApproved->toJson(),
         ]);
         $response->assertJsonFragment([
                 'current_step' => 1
@@ -70,7 +70,7 @@ class CompleteApplicationTest extends TestCase
         $this->makeRequest(['date_approved' => $dateApproved])
             ->assertStatus(200)
             ->assertJsonFragment([
-                'date_completed' => $dateApproved->format('Y-m-d H:i:s')
+                'date_completed' => $dateApproved->toJson()
             ]);
     }
 

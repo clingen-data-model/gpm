@@ -74,7 +74,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
             ->assertStatus(200)
             ->assertJsonFragment([
                 'uuid' => $expertPanel->uuid,
-                'date_initiated' => $expertPanel->date_initiated->format('Y-m-d H:i:s'),
+                'date_initiated' => $expertPanel->date_initiated->toJson(),
                 'date_completed' => null,
                 'current_step' => 1,
                 'step_1_approval_date' => null
