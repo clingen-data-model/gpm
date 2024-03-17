@@ -13,9 +13,8 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use App\Modules\Group\Events\PublishableApplicationEvent;
 
-class MemberPermissionsGranted extends GroupMemberEvent implements PublishableApplicationEvent
+class MemberPermissionsGranted extends GroupMemberEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
