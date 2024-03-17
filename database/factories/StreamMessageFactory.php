@@ -25,9 +25,9 @@ class StreamMessageFactory extends Factory
         $success = (bool)rand(0, 1);
         return [
             'topic' => 'test',
-            'message' => $this->faker->sentence(),
+            'message' => json_encode(['test' => 'test']),
             'sent_at' => $success ? Carbon::now() : null,
-            'error' => $success ? null : $this->faker->sentence
+            'error' => $success ? null : 'error'
         ];
     }
 }
