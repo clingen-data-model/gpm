@@ -38,10 +38,7 @@ class Document extends Model
         'owner_id' => 'integer',
         'document_type_id' => 'integer',
         'metadata' => 'array',
-    ];
-
-    protected $dates = [
-        'date_received'
+        'date_received' => 'datetime',
     ];
 
     protected $appends = [

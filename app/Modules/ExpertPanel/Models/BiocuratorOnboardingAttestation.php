@@ -39,12 +39,8 @@ class BiocuratorOnboardingAttestation extends Model
         'id' => 'integer',
         'expert_panel_id' => 'integer',
         'data' => 'array',
+        'attested_at' => 'datetime',
     ];
-    
-    protected $dates = [
-        'attested_at'
-    ];
-
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

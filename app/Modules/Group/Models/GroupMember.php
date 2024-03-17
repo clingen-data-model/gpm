@@ -70,13 +70,10 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
         'is_contact' => 'boolean',
         'training_level_1' => 'boolean',
         'training_level_2' => 'boolean',
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
     ];
-
-    protected $dates = [
-        'start_date',
-        'end_date',
-    ];
-
+    
     public static function boot():void
     {
         parent::boot();
