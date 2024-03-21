@@ -8,15 +8,29 @@ import groupRoutes from './groups'
 import adminRoutes from './admin'
 import userRoutes from './users'
 import MemberForm from '@/components/groups/MemberForm.vue'
+import DemographicsForm from '@/components/people/DemographicsFormOptionsFinal.vue';
 
 const routes = [
     { name: 'Dashboard',
         path: '/',
-        component: () => import (/* webpackChunkName "dashboard" */ '@/views/Dashboard.vue'),
-        meta: {
-            protected: true
-        }
+       component: () => import (/* webpackChunkName "dashboard" */ '@/views/Dashboard.vue'),
+       meta: {
+          protected: true
+       }
     },
+
+    //to do enhance conditional logic to route to form if incomplete
+   // {   
+    //    name: 'DemographicsForm',
+    //    path: '/demographics/:uuid',
+   //     redirect: '/demographics/:uuid',
+   //     props: true,
+   //     component: DemographicsForm
+       // component: DemographicsForm
+   //  component: () =>
+    // import ('@/components/people/DemographicsFormOptionsFinal.vue'),
+    //   },
+
     {
         name: 'ApplicationSummary',
         path: '/application-summary',
@@ -205,7 +219,9 @@ router.beforeEach(async (to, from, next) => {
         next();
         return;
     }
-    if (to.name == 'MandatoryProfileUpdate'
+    //if (to.name == 'DemographicsForm'
+
+     if   (to.name == 'MandatoryProfileUpdate'
         || to.name == 'RedeemInvite'
         || to.name == 'InviteWithCode'
         || to.name == 'InitialProfileForm'
@@ -215,6 +231,9 @@ router.beforeEach(async (to, from, next) => {
         next();
         return;
     }
+
+    //create if logic to route for incomplete Demographics Form
+    //router.replace({name: 'DemographicsForm', params: {redirectTo: to}});
 
     // Check to see if the user's profile is incomplete
     if (store.getters.currentUser.profileIncomplete) {

@@ -1,17 +1,19 @@
 <template>
     <div class="centered-container">
+      
       <h1>ClinGen Demographic Survey</h1>
       <!-- Background and Purpose section -->
       <section>
         <h2>Background and Purpose</h2>
         <p>
-          <b> Why are we asking for this information?</b>The Clinical Genome Resource values the diversity of our
-          participants and works to maintain a culture of acceptance, accessibility, and diversity (see our Justice, Equity,
-          Diversity, and Inclusion (JEDI) Action Plan):
-          <a href="https://clinicalgenome.org/working-groups/jedi-advisory-board/" target="_blank">Visit site</a> Providing
-          this information will help us to better understand our ClinGen community, focus current efforts to enhance
-          diversity, and identify areas for future outreach. We sincerely appreciate your time, attention, and willingness
-          to help.
+
+          <b>Why are we asking for this information?</b> The Clinical Genome Resource values the diversity of our
+        participants and works to maintain a culture of acceptance, accessibility, and diversity : (see our
+        <a href="https://clinicalgenome.org/working-groups/jedi-advisory-board/" target="_blank">Justice, Equity,
+          Diversity, and Inclusion (JEDI) Action Plan</a> ) Providing
+        this information will help us to better understand our ClinGen community, focus current efforts to enhance
+        diversity, and identify areas for future outreach. We sincerely appreciate your time, attention, and willingness
+        to help.
         </p>
         <p><b>Who can access my data?</b> Only a small number of ClinGen staff members will have access to the demographic
           data. We will not share any individual data. Data may be shared/presented in aggregate.</p>
@@ -28,18 +30,19 @@
       <section>
         <form @submit.prevent="addSurvey">
           <h2>Participant Information on Country</h2>
+
+          <p>The current list of countries comes from (<a href="https://www.iso.org/iso-3166-country-codes.html"
+          target="_blank">the international standard ISO 3166 country codes</a>). We recognize that this
+        list may not be complete or satisfy all, so please feel free to choose “other” and provide a free text response.
+      </p>
   
-          <p>The current list of countries comes from the international standard ISO 3166 country codes (<a
-              href="https://www.iso.org/iso-3166-country-codes.html" target="_blank">Visit site</a>). We recognize that this
-            list may not be complete or satisfy all, so please feel free to choose “other” and provide a free text response.
-          </p>
           <div>
   
           </div>
           <!-- Country of Birth Dropdown -->
           <div>
             <label for="birth_country">Country of Birth: </label>
-            <select id="birth_country" name="birth_country" v-model="birth_country">
+            <select id="birth_country" name="birth_country" v-model="createform.birth_country">
           <option value="">Select country</option>
           <option v-for="country in countries" :key="country.value" :value="country.value">{{ country.label }}</option>
         </select>
@@ -52,7 +55,7 @@
           </div>
   
           <div style="display: flex;">
-            <input type="checkbox" class="checkbox-margin" id="birth_country_opt_out" v-model="birth_country_opt_out">
+            <input type="checkbox" class="checkbox-margin" id="birth_country_opt_out" v-model="createform.birth_country_opt_out">
             <label for="birth_country_opt_out"> Prefer not to answer</label>
   
           </div>
@@ -61,7 +64,7 @@
             <!-- Country of Residence Dropdown -->
             <label for="reside_country">Country of Residence: </label>
 
-            <select id="reside_country" name="reside_country" v-model="reside_country">
+            <select id="reside_country" name="reside_country" v-model="createform.reside_country">
           <option value="">Select country</option>
           <option v-for="country in countries" :key="country.value" :value="country.value">{{ country.label }}</option>
         </select>
@@ -73,7 +76,7 @@
             <input class="w3-input" type="text">
           </div>
           <div style="display: flex;">
-            <input type="checkbox" id="reside_country_opt_out" v-model="reside_country_opt_out">
+            <input type="checkbox" id="reside_country_opt_out" v-model="createform.reside_country_opt_out">
             <label for="reside_country_opt_out">Prefer not to answer </label>
   
           </div>
@@ -82,54 +85,47 @@
           <!-- Additional inputs and sections -->
           <br>
           
-
           <div>
-  <label for="reside_state">If you currently live in the United States, what is your state/territory of residence?</label>
-  <select id="reside_state" name="reside_state" v-model="reside_state">
-    <option value="">Select state</option>
-    <option value="AL">Alabama</option>
-              <option value="AK">Alaska</option>
-              <option value="AS">American Samoa</option>
-              <option value="AZ">Arizona</option>
-              <option value="AR">Arkansas</option>
-    </select>
-</div>
+          <label for="country-state">If you currently live in the United States, what is your state/territory of
+            residence?</label>
+          <select id="country-state" name="country-state" v-model="selected_reside_state">
+            <option value="">Select state</option>
+            <option v-for="state in states" :key="state.value" :value="state.value">{{ state.label }}</option>
+          </select>
+        </div>
 
-          <div style="display: flex;">
-            <input id="reside_state_opt_out" class="w3-check" type="checkbox" v-model="reside_state_opt_out">
-            <label>Prefer not to answer </label>
-  
-          </div>
+        <div style="display: flex;">
+          <input id="reside_state_opt_out" class="w3-check" type="checkbox" v-model="reside_state_opt_out">
+          <label>Prefer not to answer </label>
+        </div>     
+
+          
           <br>
           <h2>Participant Information on Race/Ethnicity</h2>
   
           <p>ClinGen Participant Diversity: We ask the following question for aggregate informational purposes to understand
             ClinGen participant diversity. The free-text response can be used in place or in addition to the listed
             categories. </p>
-  
-          <p> The options below come from updates by the U.S. 2020 Census (<a href="https://www.census.gov/"
-              target="_blank">Visit site</a>), and the All Of Us Basic Survey Questions (<a
-              href="https://www.researchallofus.org/data-tools/survey-explorer/the-basics-survey/" target="_blank">Visit
-              site</a>). We understand that these options do not capture the diversity of racial and ethnic identities in
-            the US, let alone around the world. </p>
+
+            <p> The options below come from updates by the (<a href="https://www.census.gov/" target="_blank">U.S. 2020
+          Census</a>), and (<a href="https://www.researchallofus.org/data-tools/survey-explorer/the-basics-survey/"
+          target="_blank">the All Of Us Basic Survey Questions</a>). We understand that these options do not capture the
+        diversity of racial and ethnic identities in
+        the US, let alone around the world. </p>
+
   
             <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.</legend>
 
     
             <div v-for="ethnicity in ethnicities" :key="ethnicity.value" style="display: flex;">
-        <input type="checkbox" :value="ethnicity.value" v-model="demographics.ethnicities">
+        <input type="checkbox" :value="ethnicity.value" v-model="selected_ethnicities">
         <label>{{ ethnicity.label }}</label>
       </div>
 
-  
-  
-
-
->
            
   
           <div style="display: flex;">
-            <input id="optOutEthnicity" class="w3-check" type="checkbox"><br>
+            <input id="optOutEthnicity" class="w3-check" type="checkbox" v-model="optOutEthnicity"> <br>
             <label>Prefer not to answer</label>
   
           </div>
@@ -138,7 +134,7 @@
           <br>
           <div style="display: flex; align-items: center;">
             <label>What year were you born?</label>
-            <input class="w3-input" type="text" id="birth_year" v-model="birth_year" required>
+            <input class="w3-input" type="text" id="birth_year" v-model="createform.birth_year" required>
           </div>
   
   
@@ -150,12 +146,12 @@
   
           <br>
           <h2>Participant Information on Identity</h2>
-  
+
           <p>We ask the following questions about identity to understand participation across the ClinGen ecosystem. The
-            framing of the questions around sex and gender reflects recommendations made by the National Academies of
-            Sciences, Engineering, and Medicine in 2022. (<a
-              href="https://nap.nationalacademies.org/read/26424/chapter/1#xi" target="_blank">Visit site</a>) </p>
-  
+        framing of the questions around sex and gender reflects recommendations made by (<a
+          href="https://nap.nationalacademies.org/read/26424/chapter/1#xi" target="_blank">the National Academies of
+          Sciences, Engineering, and Medicine in 2022. </a>) </p>
+
           <div class="w3-section">
             <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.</legend>
             <label>
@@ -181,42 +177,18 @@
   
           <br>
           <br>
+
           <div class="w3-section">
-            <legend>What term best describes your gender identity? Select all that apply.</legend>
-            <label>
-              <input type="checkbox" name="gender" v-model="gender" value="Man">Man<br>
-            </label>
-            <label>
-              <input type="checkbox" name="gender" v-model="gender" value="Woman">Woman<br>
-            </label>
-            <label>
-              <input type="checkbox" name="gender" v-model="gender" value="Cis">Cisgender<br>
-            </label>
-  
-  
-            <label>
-              <input type="checkbox" name="gender" v-model="gender" value="Nonbinary">Nonbinary<br>
-            </label>
-            <label>
-              <input type="checkbox" name="gender" v-model="gender" value="Transgender">Transgender<br>
-            </label>
-            <label>
-              <input type="checkbox" name="gender" v-model="gender" value="Genderqueer">Genderqueer<br>
-            </label>
-            <label>
-              <input type="checkbox" name="gender" v-model="gender" value="Agender">Agender<br>
-            </label>
-            <label>
-              <input type="checkbox" name="gender" v-model="gender" value="Intersex">Intersex<br>
-            </label>
-  
-            <label>
-              <input type="checkbox" name="gender" v-model="gender" value="Unsure">Unsure<br>
-            </label>
-            <label>
-              <input type="checkbox" name="gender" v-model="gender" value="None">Prefer not to answer<br>
-            </label>
-          </div>
+        <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.</legend>
+        <div v-for="gender_identity in gender_identities" :key="gender_identity">
+          <label><input type="checkbox" :value="gender_identity" v-model="selected_gender_identities">
+            {{ gender_identity }}
+          </label>
+        </div>
+      
+      </div>
+
+         
   
           <div style="display: flex;">
             <label>My preferred term is </label>
@@ -230,34 +202,27 @@
           <br>
           <div class="w3-section">
             <legend>How is your ClinGen work supported? Select all that apply.</legend>
-            <label>
-              <input type="checkbox" name="support" value="volunteer">Volunteer outside of work environment<br>
-            </label>
-            <label>
-              <input type="checkbox" name="support" value="grant">Grants (e.g. NIH, foundational)
-            </label>
-            <div style="display: flex;">
-              <label>Provide more details on source of funding</label>
-              <input class="w3-input" type="text">
-  
-            </div>
-  
+
+            <div v-for="support_type in support_types" :key="support_type.value" class="flex">
+          <input type="checkbox" :value="support_type.value" v-model="selected_support">
+          <label>{{ support_type.label }}</label>
+          <div v-if="support_type.value == 'grant' && selected_support.indexOf('grant') != -1" style="display: flex;">
             <br>
-            <label>
-              <input type="checkbox" name="support" value="employer">Employer supports/allows participation<br>
-            </label>
-            <label>
-              <input type="checkbox" name="support" value="Unsure">Unsure<br>
-            </label>
-            <label>
-              <input type="checkbox" name="support" value="None">Prefer not to answer<br>
-            </label>
-  
-            <div style="display: flex;">
-              <label>Other: </label>
-              <input class="w3-input" type="text">
-            </div>
-  
+            <label>Provide more details on source of funding</label>
+            <input class="w3-input" type="text" v-model="grant_detail">
+          </div>
+        </div>
+
+        <label>
+          <input type="checkbox" v-model="support_opt_out">Prefer not to answer<br>
+        </label>
+
+        <div style="display: flex;">
+          <label>Other: </label>
+          <input class="w3-input" type="text" v-model="support_other">
+        </div>
+
+            
   
   
           </div>
@@ -274,48 +239,58 @@
           <br>
           <p>An individual is considered to be from a disadvantaged background if meeting two or more of the following
             criteria:<br>
-            Were or currently are homeless, as defined by the McKinney-Vento Homeless Assistance Act (<a
-              href="https://nche.ed.gov/mckinney-vento/" target="_blank">Definition</a>);<br>
-            Were or currently are in the foster care system, as defined by the Administration for Children and Families (<a
-              href="https://www.acf.hhs.gov/cb/focus-areas/foster-care" target="_blank">Definition</a>);<br>
-            Were eligible for the Federal Free and Reduced Lunch Program for two or more years (<a
-              href="https://www.fns.usda.gov/school-meals/income-eligibility-guidelines" target="_blank">Definition</a>);
-            <br>
-            Have/had no parents or legal guardians who completed a bachelor’s degree (<a
-              href="https://nces.ed.gov/pubs2018/2018009.pdf" target="_blank">See</a>);<br>
-            Were or currently are eligible for Federal Pell grants (<a
-              href="https://www2.ed.gov/programs/fpg/eligibility.html" target="_blank">Definition</a>);<br>
-            Received support from the Special Supplemental Nutrition Program for Women, Infants and Children (WIC) as a
-            parent or child (<a href="https://www.fns.usda.gov/wic/wic-eligibility-requirements"
-              target="_blank">Definition</a>);<br>
-            Grew up in one of the following areas: <br>
-            a) a U.S. rural area, as designated by the Health Resources and Services Administration (HRSA) Rural Health
-            Grants Eligibility Analyzer (<a href="https://data.hrsa.gov/tools/rural-health" target="_blank">Definition</a>);
-            or<br>
-            b) a Centers for Medicare and Medicaid Services-designated Low-Income and Health Professional Shortage Areas
-            (qualifying zip codes are included in the file). (<a
-              href="https://www.qhpcertification.cms.gov/s/LowIncomeandHPSAZipCodeListingPY2020.xlsx?v=1"
-              target="_blank">View File</a>) Only one of these two possibilities can be used as a criterion for the
-            disadvantaged background definition.
+
+            <ol type="1">
+        <li>Were or currently are homeless, as defined by the (<a href="https://nche.ed.gov/mckinney-vento/"
+            target="_blank">McKinney-Vento Homeless Assistance Act</a>);</li>
+        <li>Were or currently are in the foster care system, as defined by the (<a
+            href="https://www.acf.hhs.gov/cb/focus-areas/foster-care" target="_blank">Administration for Children and
+            Families</a>);</li>
+        <li>Were eligible for the for two or more years (<a
+            href="https://www.fns.usda.gov/school-meals/income-eligibility-guidelines" target="_blank">Federal Free and
+            Reduced Lunch Program</a>);</li>
+        <li>Have/had no parents or legal guardians who completed a bachelor’s degree (<a
+            href="https://nces.ed.gov/pubs2018/2018009.pdf" target="_blank">See</a>);</li>
+        <li>Were or currently are eligible for (<a href="https://www2.ed.gov/programs/fpg/eligibility.html"
+            target="_blank">Federal Pell grants</a>)</li>
+        <li>Received support from the as a
+          parent or child (<a href="https://www.fns.usda.gov/wic/wic-eligibility-requirements" target="_blank">Special
+            Supplemental Nutrition Program for Women, Infants and Children (WIC)</a>);</li>
+
+      </ol>
+          <br>
+
+Grew up in one of the following areas: <br>
+a) a U.S. rural area, as designated by (<a href="https://data.hrsa.gov/tools/rural-health" target="_blank">the
+  Health Resources and Services Administration (HRSA) Rural Health
+  Grants Eligibility Analyzer </a>);
+or<br>
+
+b) a Centers for Medicare and Medicaid Services-designated (<a
+  href="https://www.qhpcertification.cms.gov/s/LowIncomeandHPSAZipCodeListingPY2020.xlsx?v=1"
+  target="_blank">Low-Income and Health Professional Shortage Areas
+  (qualifying zip codes are included in the file). </a>
+<br>
+<br>
+Only one of these two possibilities can be used as a criterion for the
+disadvantaged background definition.
+
+
   
           </p>
   
+          
   
           Based on the NIH definition above, do you consider yourself currently in or having come from a disadvantaged
           background? Note: If you are not a US-based participant, please answer based on similar criteria in your own
           country.<br>
-          <label>
-            <input type="radio" name="disadvantaged" id="yes" value="yes">Yes<br>
-          </label>
-          <label>
-            <input type="radio" name="disadvantaged" id="no" value="no">No<br>
-          </label>
-          <label>
-            <input type="radio" name="disadvantaged" id="unsure" value="Unsure">Unsure<br>
-          </label>
-          <label>
-            <input type="radio" name="disadvantaged" id="none" value="None">Prefer not to answer<br>
-          </label>
+
+          <div v-for="y_n_unsure_optout in y_n_unsure_optout" :key="y_n_unsure_optout.value" class="flex">
+        <input type="radio" :value="y_n_unsure_optout.value" v-model="disadvantaged">
+        <label>{{ y_n_unsure_optout.label }}</label>
+      </div>
+
+        
   
           <div style="display: flex;">
             <label>Optional: Use this free text box to provide any additional detail.</label>
@@ -329,153 +304,37 @@
           <br>
           <h2>Employment</h2>
   
-  
-  
           Please choose the option that most accurately describes your role or occupation [select all that apply].<br>
-          <div style="display: flex; align-items: center; margin-bottom: 5px;">
-            <input type="checkbox" id="genetics-physician" name="occupation" value="genetics physician">
-            <label for="genetics-physician">Medical genetics physician</label>
+      <div v-for="occupation in occupations" :key="occupation.value" class="flex">
+        <input type="checkbox" :value="occupation.value" v-model="selected_occupations">
+        <label>{{ occupation.label }}</label>
+      </div>
+    
+      <div style="display: flex;">
+        <label>Other: Use this free text box to provide any additional detail. </label>
+        <input id="occupations_other" class="w3-input" type="text">
+      </div>
+  
+  
+      <div>
+            <label for="specialty">If you indicated “Medical non-genetics physician”, please select your
+          specialty.</label><span style="color: red !important; display: inline; float: none;"></span>
+        <!-- TODO: check with invested parties: should this be multi-select/checkbox? -->
+        <select id="specialty" name="specialty"><br> v-model="selected_specialty">
+          <option value="">Select specialty</option>
+          <option v-for="specialty in non_genetics_specialties" :key="specialty" :value="specialty">{{ specialty }}
+          </option>
+        </select>
           </div>
   
-          <div style="display: flex; align-items: center; margin-bottom: 5px;">
-            <input type="checkbox" id="non genetics-physician" name="occupation" value="non genetics physician">
-            <label for="non genetics-physician">Medical non-genetics physician</label>
-          </div>
-  
-  
-          <div style="display: flex; align-items: center; margin-bottom: 5px;">
-            <input type="checkbox" id="pathologist" name="occupation" value="pathologist" class="container checkbox-margin">
-            <label for="pathologist">Molecular pathologist</label>
-          </div>
-  
-          <label>
-            <input type="checkbox" name="occupation" value="clinical geneticist">Clinical laboratory geneticist<br>
-          </label>
-          <label>
-            <input type="checkbox" name="occupation" value="Genetic counselor">Genetic counselor<br>
-          </label>
-          <label>
-            <input type="checkbox" name="occupation" value="resident">Clinical resident or fellow <br>
-          </label>
-          <label>
-            <input type="checkbox" name="occupation" value="Basic researcher">Basic researcher<br>
-          </label>
-          <label>
-            <input type="checkbox" name="occupation" value="Clinical researcher">Clinical researcher<br>
-          </label>
-          <label>
-            <input type="checkbox" name="occupation" value="Variant Analyst">Variant Analyst<br>
-          </label>
-          <label>
-            <input type="checkbox" name="occupation" value="Staff Scientist">Staff Scientist<br>
-          </label>
-          <label>
-            <input type="checkbox" name="occupation" value="Bioinformatician">Bioinformatician<br>
-          </label>
-          <label>
-            <input type="checkbox" name="occupation" value="Biocurator">Biocurator<br>
-          </label>
-          <label>
-            <input type="checkbox" name="occupation" value="Graduate Student">Graduate Student<br>
-          </label>
-          <label>
-            <input type="checkbox" name="occupation" value="Software Engineer/Developer">Software Engineer/Developer<br>
-          </label>
-          <label>
-            <input type="checkbox" name="occupation" value="Educator">Educator<br>
-          </label>
-          <label>
-            <input type="checkbox" name="occupation" value="General Geneticist">General Geneticist<br>
-          </label>
-          <label>
-            <input type="checkbox" name="occupation" value="Science Policy">Health Care Policy or Science Policy<br>
-          </label>
-          <label>
-            <input type="checkbox" name="occupation" value="None">Prefer not to answer<br>
-          </label>
-  
-          <div style="display: flex;">
-            <label>Other: Use this free text box to provide any additional detail. </label>
-            <input id="optOutOccupation" class="w3-input" type="text">
-          </div>
-  
-  
-  
-          <br>
-  
-  
-          <label for="specialty">If you indicated “Medical non-genetics physician”, please select your
-            specialty.</label><span style="color: red !important; display: inline; float: none;"></span>
-          <select id="specialty" name="specialty"><br>
-            <option value="">Select specialty</option>
-  
-            <option value="Allergy & Immunology">Allergy & Immunology</option>
-            <option value="Anesthesiology">Anesthesiology</option>
-            <option value="Cardiology/Cardiovascular Disease">Cardiology/Cardiovascular Disease</option>
-            <option value="Child and Adolescent Psychiatry">Child and Adolescent Psychiatry</option>
-            <option value="Colon & Rectal Surgery">Colon & Rectal Surgery</option>
-            <option value="Critical Care Medicine">Critical Care Medicine</option>
-  
-            <option value="Cytopathology">Cytopathology</option>
-            <option value="Dermatology">Dermatology</option>
-            <option value="Emergency Medicine">Emergency Medicine</option>
-            <option value="Endocrinology, Diabetes and Metabolism">Endocrinology, Diabetes and Metabolism</option>
-            <option value="Family Medicine">Family Medicine</option>
-            <option value="Gastroenterology">Gastroenterology</option>
-  
-            <option value="General Preventive Medicine and Public Health">General Preventive Medicine and Public Health
-            </option>
-            <option value="Geriatric Medicine">Geriatric Medicine</option>
-            <option value="Hematology">Hematology</option>
-            <option value="Hospice and Palliative Medicine">Hospice and Palliative Medicine</option>
-            <option value="Infectious Diseases">Infectious Diseases</option>
-            <option value="Internal Medicine">Internal Medicine</option>
-  
-            <option value="Interventional Cardiology">Interventional Cardiology</option>
-            <option value="Medical Genetics and Genomics">Medical Genetics and Genomics</option>
-            <option value="Nephrology">Nephrology</option>
-            <option value="Ophthalmology">Ophthalmology</option>
-            <option value="Neurological Surgery">Neurological Surgery</option>
-            <option value="Neurology">Neurology</option>
-  
-            <option value="Nuclear Medicine">Nuclear Medicine</option>
-            <option value="Obstetrics & Gynecology">Obstetrics & Gynecology</option>
-            <option value="Occupational Medicine">Occupational Medicine</option>
-            <option value="Oncology">Oncology</option>
-            <option value="Orthopaedic Sports Medicine">Orthopaedic Sports Medicine</option>
-            <option value="Orthopaedic Surgery">Orthopaedic Surgery</option>
-  
-            <option value="Otolaryngology">Otolaryngology</option>
-            <option value="Pain Medicine">Pain Medicine</option>
-            <option value="Pathology">Pathology</option>
-            <option value="Pediatric Surgery">Pediatric Surgery</option>
-            <option value="Pediatrics">Pediatrics</option>
-            <option value="Physical Medicine & Rehabilitation">Physical Medicine & Rehabilitation</option>
-  
-            <option value="Plastic Surgery">Plastic Surgery</option>
-            <option value="Preventive Medicine">Preventive Medicine</option>
-            <option value="Psychiatry">Psychiatry</option>
-            <option value="Pulmonary Disease and Critical Care Medicine">Pulmonary Disease and Critical Care Medicine
-            </option>
-            <option value="Radiation Oncology">Radiation Oncology</option>
-            <option value="Radiology">Radiology</option>
-  
-            <option value="Rheumatology">Rheumatology</option>
-            <option value="Sleep Medicine">Sleep Medicine</option>
-            <option value="Surgery - General">Surgery - General</option>
-            <option value="Thoracic Surgery">Thoracic Surgery</option>
-            <option value="Urology">Urology</option>
-            <option value="Vascular Surgery">Vascular Surgery</option>
-          </select>
-          <br>
-  
-  
+       
   
           <br>
   
   
           <!-- Submission Button -->
-          <button>Submit Demographic Survey</button>
+          <button type="button" @click="addSurvey">Submit Demographic Survey</button>
+          
   
   
         </form>
@@ -503,33 +362,75 @@ export default {
   
   data() {
     return {
+     createform: {
+        birth_country_opt_out: false,
+      reside_country_opt_out: false,
+      reside_country: null,
+      birth_country: null,
+      birth_year: null,
+    },
+      reside_state: null,
+      optOutEthnicity: false,
+      reside_state_opt_out: false,
+      identities: [],
+      selected_specialty: null,
+      selected_support: [],
+      grant_detail: null,
+      support_opt_out: false,
+      support_other: null,
+      specialty: null,
+     // ethnicities: [],
+     gender: [],
+     disadvantaged: null,
+      birth_country_other: null,
+      reside_country_other: null,
+  //    gender_identities: [],
+  gender_identities_other: null,
+  gender_preferred_term: null,
+  //specialty: null,
+ 
+  //occupations: [],
+  occupations_other: null,
+    
+   //   editform: {
+  //      id: null,
+  //      birth_country_opt_out: false,
+ //     reside_country_opt_out: false,
+   //   reside_country: null,
+  //    birth_country: null,
+  //    reside_state: null,
+  //    reside_state_opt_out: false,
+ //     identities: [],
+   //   selected_specialty: null,
+     // specialty: null,
+     // ethnicities: [],
+    // gender: [],
+   //   birth_year: null,
+   //   birth_country_other: null,
+   //   reside_country_other: null,
+  //    gender_identities: [],
+ // gender_identities_other: null,
+  //gender_preferred_term: null,
+  //specialty: null,
+ 
+  //occupations: [],
+//  occupations_other: null,
+ //     },
+      
+     // ],
       user: null,
       error: null,
       errors: {},
       profile: {},
       saving: false,
-      birth_country_opt_out: false,
-      reside_country_opt_out: false,
+     // birth_country_opt_out: false,
+     // reside_country_opt_out: false,
       items : [],
-      reside_country: null,
-      birth_country: null,
-      reside_state: null,
-      reside_state_opt_out: false,
-      identities: [],
-     // ethnicities: [],
-     gender: [],
-      birth_year: null,
-      birth_country_other: null,
-      reside_country_other: null,
-      gender_identities: [],
-  gender_identities_other: null,
-  gender_preferred_term: null,
- 
-  occupations: [],
-  occupations_other: null,
+      
+     
      // ethnicities,
      
-      demographics: {
+    //  demographics: {
        // birth_country: null,
        //ethnicities: [],
        ethnicities : [
@@ -541,6 +442,176 @@ export default {
   { value: 'Pacific', label: 'Native Hawaiian or other Pacific Islander (For example: Chamorro, Fijian, Marshallese, Native Hawaiian, Tongan, etc.)' },
   { value: 'White', label: 'White (For example: English, European, French, German, Irish, Italian, Polish, etc.)' },
 ],
+
+selected_ethnicities : [],
+
+occupations : [
+  { value: 'genetics physician', label: 'Medical genetics physician' },
+  { value: 'non genetics physician', label: 'Medical non-genetics physician' },
+  { value: 'pathologist', label: 'Molecular pathologist' },
+  { value: 'laboratory geneticist', label: 'Clinical laboratory geneticist' },
+  { value: 'genetic counselor', label: 'Genetic counselor' },
+  { value: 'clinical trainee', label: 'Clinical resident or fellow' },
+  { value: 'basic researcher', label: 'Basic researcher' },
+  { value: 'clinical researcher', label: 'Clinical researcher' },
+  { value: 'variant analyst', label: 'Variant Analyst' },
+  { value: 'staff scientist', label: 'Staff Scientist' },
+  { value: 'bioinformatician', label: 'Bioinformatician' },
+  { value: 'biocurator', label: 'Biocurator' },
+  { value: 'graduate student', label: 'Graduate Student' },
+  { value: 'software engineer/developer', label: 'Software Engineer/Developer' },
+  { value: 'educator', label: 'Educator' },
+  { value: 'general geneticist', label: 'General Geneticist' },
+  { value: 'science policy', label: 'Health Care Policy or Science Policy' },
+  { value: 'no answer', label: 'Prefer not to answer' },
+],
+
+selected_occupations: [],
+
+gender_identities : [
+  'Man',
+  'Woman',
+  'Cisgender',
+  'Nonbinary',
+  'Transgender',
+  'Genderqueer',
+  'Agender',
+  'Intersex',
+  'Unsure',
+  'Prefer not to answer',
+],
+
+selected_gender_identities: [],
+
+non_genetics_specialties : [
+  "Allergy & Immunology",
+  "Anesthesiology",
+  "Cardiology/Cardiovascular Disease",
+  "Child and Adolescent Psychiatry",
+  "Colon & Rectal Surgery",
+  "Critical Care Medicine",
+  "Cytopathology",
+  "Dermatology",
+  "Emergency Medicine",
+  "Endocrinology, Diabetes and Metabolism",
+  "Family Medicine",
+  "Gastroenterology",
+  "General Preventive Medicine and Public Health",
+  "Geriatric Medicine",
+  "Hematology",
+  "Hospice and Palliative Medicine",
+  "Infectious Diseases",
+  "Internal Medicine",
+  "Interventional Cardiology",
+  "Medical Genetics and Genomics",
+  "Nephrology",
+  "Ophthalmology",
+  "Neurological Surgery",
+  "Neurology",
+  "Nuclear Medicine",
+  "Obstetrics & Gynecology",
+  "Occupational Medicine",
+  "Oncology",
+  "Orthopaedic Sports Medicine",
+  "Orthopaedic Surgery",
+  "Otolaryngology",
+  "Pain Medicine",
+  "Pathology",
+  "Pediatric Surgery",
+  "Pediatrics",
+  "Physical Medicine & Rehabilitation",
+  "Plastic Surgery",
+  "Preventive Medicine",
+  "Psychiatry",
+  "Pulmonary Disease and Critical Care Medicine",
+  "Radiation Oncology",
+  "Radiology",
+  "Rheumatology",
+  "Sleep Medicine",
+  "Surgery - General",
+  "Thoracic Surgery",
+  "Urology",
+  "Vascular Surgery",
+],
+
+selected_non_genetics_specialties: [],
+
+// TODO: get from database via store
+states : [
+  { label: 'ALABAMA', value: 'AL' },
+  { label: 'ALASKA', value: 'AK' },
+  { label: 'AMERICAN SAMOA', value: 'AS' },
+  { label: 'ARIZONA', value: 'AZ' },
+  { label: 'ARKANSAS', value: 'AR' },
+  { label: 'CALIFORNIA', value: 'CA' },
+  { label: 'COLORADO', value: 'CO' },
+  { label: 'CONNECTICUT', value: 'CT' },
+  { label: 'DELAWARE', value: 'DE' },
+  { label: 'DISTRICT OF COLUMBIA', value: 'DC' },
+  { label: 'FLORIDA', value: 'FL' },
+  { label: 'GEORGIA', value: 'GA' },
+  { label: 'GUAM', value: 'GU' },
+  { label: 'HAWAII', value: 'HI' },
+  { label: 'IDAHO', value: 'ID' },
+  { label: 'ILLINOIS', value: 'IL' },
+  { label: 'INDIANA', value: 'IN' },
+  { label: 'IOWA', value: 'IA' },
+  { label: 'KANSAS', value: 'KS' },
+  { label: 'KENTUCKY', value: 'KY' },
+  { label: 'LOUISIANA', value: 'LA' },
+  { label: 'MAINE', value: 'ME' },
+  { label: 'MARYLAND', value: 'MD' },
+  { label: 'MASSACHUSETTS', value: 'MA' },
+  { label: 'MICHIGAN', value: 'MI' },
+  { label: 'MINNESOTA', value: 'MN' },
+  { label: 'MISSISSIPPI', value: 'MS' },
+  { label: 'MISSOURI', value: 'MO' },
+  { label: 'MONTANA', value: 'MT' },
+  { label: 'NEBRASKA', value: 'NE' },
+  { label: 'NEVADA', value: 'NV' },
+  { label: 'NEW HAMPSHIRE', value: 'NH' },
+  { label: 'NEW JERSEY', value: 'NJ' },
+  { label: 'NEW MEXICO', value: 'NM' },
+  { label: 'NEW YORK', value: 'NY' },
+  { label: 'NORTH CAROLINA', value: 'NC' },
+  { label: 'NORTH DAKOTA', value: 'ND' },
+  { label: 'NORTHERN MARIANA IS', value: 'MP' },
+  { label: 'OHIO', value: 'OH' },
+  { label: 'OKLAHOMA', value: 'OK' },
+  { label: 'OREGON', value: 'OR' },
+  { label: 'PENNSYLVANIA', value: 'PA' },
+  { label: 'PUERTO RICO', value: 'PR' },
+  { label: 'RHODE ISLAND', value: 'RI' },
+  { label: 'SOUTH CAROLINA', value: 'SC' },
+  { label: 'SOUTH DAKOTA', value: 'SD' },
+  { label: 'TENNESSEE', value: 'TN' },
+  { label: 'TEXAS', value: 'TX' },
+  { label: 'UTAH', value: 'UT' },
+  { label: 'VERMONT', value: 'VT' },
+  { label: 'VIRGINIA', value: 'VA' },
+  { label: 'VIRGIN ISLANDS', value: 'VI' },
+  { label: 'WASHINGTON', value: 'WA' },
+  { label: 'WEST VIRGINIA', value: 'WV' },
+  { label: 'WISCONSIN', value: 'WI' },
+  { label: 'WYOMING', value: 'WY' },
+],
+
+selected_reside_state : [],
+
+support_types : [
+  { value: 'volunteer', label: 'Volunteer outside of work environment' },
+  { value: 'grant', label: 'Grants (e.g. NIH, foundational)' },
+  { value: 'employer', label: 'Employer supports/allows participation' },
+  { value: 'unsure', label: 'Unsure' },
+],
+
+
+y_n_unsure_optout : [
+  { value: 'yes', label: 'Yes' },
+  { value: 'no', label: 'No' },
+  { value: 'unsure', label: 'Unsure' },
+  { value: 'optout', label: 'Prefer not to answer' },
+],
        
        //  birth_country_opt_out: false,
        //  reside_country: null,
@@ -551,7 +622,7 @@ export default {
   //ethnicities: [],
   
         // demographics object initialization
-      },
+    //  },
       
     };
   },
@@ -578,23 +649,23 @@ export default {
 
    //Option 1: Works sproadically.  Logic is used in PersonDetail.vue file
 
-    watch: {
-     uuid: {
-         immediate: true,
-         handler: async function () {
-            console.log(this.$store);
-            console.log(this.$store.getters);
-            console.log(this.$store.getters['people/getPerson']);
-            await this.$store.getters('people/getPerson', {uuid: this.uuid});
+   // watch: {
+  //   uuid: {
+    //     immediate: true,
+    //     handler: async function () {
+    //        console.log(this.$store);
+    //        console.log(this.$store.getters);
+     //       console.log(this.$store.getters['people/getPerson']);
+    //        await this.$store.getters('people/getPerson', {uuid: this.uuid});
             // await this.$store.getters['people/getPerson']({ uuid: this.uuid });
 
    //           if (this.coordinatesPerson(this.person)) {
    //              this.getLogEntries();
     //               this.getMailLog();
     //          }
-           }
-        },
-      },
+      //     }
+      //  },
+    //  },
 
      //Option2.  THis api ia available in a stand-alone file.  
 
@@ -644,9 +715,14 @@ export default {
     },
   //},
 
-   selectedEthnicities() { 
-    return this.demographics.ethnicities;
-  },
+  // selectedEthnicities() { 
+  //  return this.demographics.ethnicities;
+  //},
+
+  currentUser() {
+    //console.log(this.store.getters.currentUser);
+      return this.$store.getters.currentUser;
+    }
 //},
 
    // uuid(){
@@ -704,14 +780,14 @@ export default {
       }
     },
 
-  //  async updateUser3(uuid, items) {
-    // try {
-   //    const response = await axios.put(`${baseUrl}/${uuid}/demographics`, items);
-   //    console.log(response.data);
-    //  } catch (error) {
-    //    console.error("Error updating user:", error);
-     // }
-   // },
+    async updateUser3(uuid, items) {
+     try {
+       const response = await axios.put(`${baseUrl}/${uuid}/demographics`, items);
+       console.log(response.data);
+      } catch (error) {
+        console.error("Error updating user:", error);
+      }
+    },
 
    // async handleSave () {
     //    await store.dispatch('forceGetCurrentUser');
@@ -723,40 +799,59 @@ export default {
       // ... (Previous implementation )
 
       // Use 'this.user' to access data inside addSurvey. For example:
-      console.log("identities:", this.identities);
-      console.log("gender:", this.gender);
+     // console.log("identities:", this.identities);
+    //  console.log("gender:", this.gender);
 
       items = {
-        birth_country: this.birth_country,
-        reside_country: this.reside_country,
-        state: this.reside_state,
+        birth_country: this.createform.birth_country,
+        reside_country: this.createform.reside_country,
+        state: this.selected_reside_state,
         state_opt_out: this.reside_state_opt_out,
-        birth_year: this.birth_year,
-        birth_country_opt_out: this.birth_country_opt_out,
-        reside_country_opt_out: this.reside_country_opt_out,
+        birth_year: this.createform.birth_year,
+        birth_country_opt_out: this.createform.birth_country_opt_out,
+        reside_country_opt_out: this.createform.reside_country_opt_out,
+        reside_state_opt_out: this.reside_state_opt_out,
         identities: this.identities,
-      // ethicities: this.demographic.ethnicities,
+       ethicities: this.selected_ethnicities,
+       optOutEthnicity: this.optOutEthnicity,
+       occupations: this.selected_occupations,
+       specialty: this.selected_specialty,
         id: this.user.id,
         email: this.user.email,
-        gender: this.gender,
+        gender: this.selected_gender_identities,
+        support: this.selected_support,
+        grant_detail: this.grant_detail,
+        support_opt_out: this.support_opt_out,
+        support_other: this.support_other,
+       // reside_state: this.reside_state,
         institution_id: this.user.institution_id,
    // primary_occupation_id: user.value.data.primary_occupation_id,
     first_name: this.user.first_name,
     last_name: this.user.last_name,
     country_id: this.user.country_id,
     timezone: this.user.timezone,
+    disadvantaged: this.disadvantaged,
         // ... more fields from this.user
       };
       console.log(items);
 
       try {
        const response = await axios.put(`${baseUrl}/${this.uuid}/demographics`, items);
-       console.log(response.data);
+      //const response = await axios.put(`${baseUrl}/${this.uuid}/demographics`, items);
+     console.log(response.data);
+       
       } catch (error) {
         console.error("Error updating user:", error);
       }
 
       //updateUser3(this.uuid, items); // Assuming 'this.uuid' is in scope
+
+      this.createform.birth_country_opt_out = false;
+      this.createform.reside_country_opt_out = false;
+      this.createform.birth_country = "";
+      this.createform.reside_country = "";
+      this.createform.birth_year = null;
+
     },
 
   
@@ -768,18 +863,23 @@ export default {
   mounted() {
 
     Promise.all([this.getUser(this.uuid), this.fetchCountries()])
-    .then(() => {
-      // Now you're guaranteed that both getUser and fetchCountries have finished
 
-      const button = this.$el.querySelector('button');
-      if (button) {
-        button.addEventListener('click', () => this.addSurvey(this.uuid));
-      }
+   // const button = this.$el.querySelector('button');
+  //if (button) {
+  //  button.addEventListener('click', () => this.addSurvey(this.uuid));
+  //}
+    //.then(() => {
+    //   Now you're guaranteed that both getUser and fetchCountries have finished
 
-      // ... rest of your mounted code 
-    })
+    //  const button = this.$el.querySelector('button');
+     // if (button) {
+     //   button.addEventListener('click', () => this.addSurvey(this.uuid));
+     // }
+
+  //  ... rest of your mounted code 
+   // })
     .catch(error => {
-       // Handle errors from getUser or fetchCountries
+   //     Handle errors from getUser or fetchCountries
        console.error("Error in mounted:", error);
     });
 }

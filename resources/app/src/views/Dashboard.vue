@@ -9,6 +9,7 @@
     import Group from "@/domain/group"
     import configs from '@/configs'
     import ApplicationActivity from '../components/dashboard/ApplicationActivity.vue';
+    import DemographicsForm from '../components/people/DemographicsFormOptionsFinal.vue';
     import DashboardAlerts from '@/components/dashboard/DashboardAlerts.vue'
     import NotificationList from '../components/NotificationList.vue'
     import {featureIsEnabled} from '@/utils.js'
@@ -152,6 +153,12 @@
             <tab-item label="COIs">
                 <coi-list :person="user.person"></coi-list>
             </tab-item>
+
+            <tab-item label="Demographics">
+                <demographics-form :uuid="user.person.uuid" ></demographics-form>
+                
+            </tab-item>
+
 
         </tabs-container>
     </div>
