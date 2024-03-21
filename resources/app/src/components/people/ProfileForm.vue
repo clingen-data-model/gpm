@@ -177,7 +177,6 @@
             <ExpertisesInput v-model="profile.expertises" />
         </input-row>
 
-
         <input-row v-if="canEditAllFields" label="Biography"
             v-model="profile.biography"
             :errors="errors.biography"
