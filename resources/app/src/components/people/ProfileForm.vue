@@ -4,7 +4,7 @@
     import Person from '@/domain/person'
     import isValidationError from '@/http/is_validation_error'
     import ProfilePhotoForm from '@/components/people/ProfilePhotoForm.vue';
-    import PersonDemographics from '@/components/people/PersonDemographics.vue';
+   // import PersonDemographics from '@/components/people/PersonDemographics.vue';
     import { hasPermission, userIsPerson } from '../../auth_utils';
     import InstitutionSearchSelect from '../forms/InstitutionSearchSelect.vue';
     import AddressInput from '../forms/AddressInput.vue';
@@ -205,10 +205,7 @@
             <TimezoneSearchSelect v-model="profile.timezone"></TimezoneSearchSelect>
         </input-row>
 
-        <div v-if="hasPermission('people-manage') || userIsPerson(person)">
-            <hr class="my-4">
-            <person-demographics person="person" />
-        </div>
+       
 
         <hr class="my-4">
 
