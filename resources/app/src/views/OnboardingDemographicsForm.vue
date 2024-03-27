@@ -24,8 +24,9 @@
     <div>
         <card title="Please fill out your Demographics profile">
             <DemographicsForm
-                :uuid="store.getters.currentuser.person.uuid"
-                :person="store.getters.currentUser.person"
+            :person="store.getters.currentUser.person"
+
+              
                 :allowCancel="false"
                 :showTitle="false"
                 @saved="handleSave"

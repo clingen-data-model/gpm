@@ -590,15 +590,15 @@ export default {
 
   props: {
     uuid: {
-      required: true,
+      //required: true,
       default: null,
       // return this.$store.getters('people/currentItem', {uuid: this.uuid});
       type: String
     },
-    //    person: {
-    //       type: Person,
+        person: {
+           type: Person,
     //       required: true,
-    //   }
+       }
   },
 
 
@@ -648,7 +648,7 @@ export default {
 
   computed: {
     ...mapGetters({
-      person: 'people/currentItem',
+     // person: 'people/currentItem',
 
     }),
 
@@ -686,15 +686,15 @@ export default {
     }
     //},
 
-    // uuid(){
-    //   return this.$store.getters('people/currentItem', {uuid: this.uuid});
-    //   if (person) { 
-    // return person.uuid; 
-    // } else {
+   // uuid(){
+   //    return this.$store.getters('people/currentItem', {uuid: this.uuid});
+   //    if (person) { 
+   //  return person.uuid; 
+   //  } else {
 
-    //   return null; // Or a placeholder value while loading
-    //}
-    // },
+    //  return null; // Or a placeholder value while loading
+   // }
+   // },
 
 
     // },

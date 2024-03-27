@@ -8,6 +8,7 @@ const PeopleList = () => import (/* people-index */ '@/views/PeopleList.vue')
 const OnboardingWizard = () => import (/* onboarding-wizard */ '@/views/OnboardingWizard.vue')
 const RequiredProfileUpdate = () => import (/* required-profile-update */ '@/views/RequiredProfileUpdate.vue')
 const DemographicsForm = () => import (/* person-detail */ '@/components/people/DemographicsFormOptionsFinal.vue')
+//const DemographicsForm = () => import (/* person-detail */ '@/views/OnboardingDemographicsForm.vue')
 
 export default [
     { name: 'people-index',
@@ -74,14 +75,33 @@ export default [
         component: () => import (/* onboarding */ '@/views/OnboardingProfileForm.vue')
     },
 
-    {   name: 'DemographicsForm',
+   { name: 'DemograaphicsForm',
         path: '/demographics/:uuid',
-        props: true,
-        component: DemographicsForm
+        component: () => import (/* onboarding */ '@/views/OnboardingDemographicsForm.vue')
+      // component: () => import (/* onboarding */ '@/components/people/DemographicsFormOptionsFinal.vue')
+    },
+
+  //  {   name: 'DemographicsForm',
+   //     path: '/demographics/',
+   //     path: '/demographics/:uuid',
+   //     props: true,
        // component: DemographicsForm
-      // component: () =>
-     //import ( /* webpackChunkName: "application-summary" */ '@/components/people/DemographicsFormOptionsFinal.vue'),
-       },
+       // component: DemographicsForm
+     //  component: () =>
+     // ( /* webpackChunkName: "application-summary" */ '@/views/OnboardingDemographicsForm.vue'),
+     //( /* webpackChunkName: "application-summary" */ '@/components/people/DemographicsFormOptionsFinal.vue'),
+    //  },
+
+   //    {   name: 'DemographicsForm',
+    //    path: '/demographics/:uuid',
+  //      path: '/demographics/:uuid',
+   //     props: true,
+       // component: DemographicsForm
+       // component: DemographicsForm
+   //    component: () =>
+    // ( /* webpackChunkName: "application-summary" */ '@/views/OnboardingDemographicsForm.vue'),
+    //   },
+
 
     { name: 'MandatoryProfileUpdate',
       path: '/required-profile-update',

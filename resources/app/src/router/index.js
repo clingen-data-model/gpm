@@ -21,15 +21,15 @@ const routes = [
 
     //to do enhance conditional logic to route to form if incomplete
    // {   
-    //    name: 'DemographicsForm',
-    //    path: '/demographics/:uuid',
-   //     redirect: '/demographics/:uuid',
-   //     props: true,
-   //     component: DemographicsForm
+   //    name: 'DemographicsForm',
+    //   path: '/demographics/:uuid',
+   //   redirect: '/demographics/:uuid',
+    //   props: true,
+     //  component: DemographicsForm
        // component: DemographicsForm
-   //  component: () =>
+    //component: () =>
     // import ('@/components/people/DemographicsFormOptionsFinal.vue'),
-    //   },
+    //  },
 
     {
         name: 'ApplicationSummary',
@@ -224,6 +224,7 @@ router.beforeEach(async (to, from, next) => {
      if   (to.name == 'MandatoryProfileUpdate'
         || to.name == 'RedeemInvite'
         || to.name == 'InviteWithCode'
+        || to.name == 'DemographicsForm'
         || to.name == 'InitialProfileForm'
         || to.name == 'PendingCoiList'
         || to.name == 'coi'
@@ -248,6 +249,16 @@ router.beforeEach(async (to, from, next) => {
         next();
         return;
     }
+
+    let demorequired = true;
+    console.log(demorequired);
+    if (demorequired)
+        {
+            router.replace({name: 'DemographicsForm', params: {redirectTo: to}});
+            next();
+        return;
+        }
+
 
     // Check if the user needs to update credentials or expertise
     if (store.getters.currentUser.needsCredentials || store.getters.currentUser.needsExpertise) {
