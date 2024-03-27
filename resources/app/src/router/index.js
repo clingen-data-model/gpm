@@ -20,7 +20,7 @@ const routes = [
     },
 
     //to do enhance conditional logic to route to form if incomplete
-   // {   
+   // {
     //    name: 'DemographicsForm',
     //    path: '/demographics/:uuid',
    //     redirect: '/demographics/:uuid',
@@ -222,6 +222,7 @@ router.beforeEach(async (to, from, next) => {
     //if (to.name == 'DemographicsForm'
 
      if   (to.name == 'MandatoryProfileUpdate'
+        || to.name == 'RequiredDemographicsUpdateForm'
         || to.name == 'RedeemInvite'
         || to.name == 'InviteWithCode'
         || to.name == 'InitialProfileForm'
@@ -252,6 +253,14 @@ router.beforeEach(async (to, from, next) => {
     // Check if the user needs to update credentials or expertise
     if (store.getters.currentUser.needsCredentials || store.getters.currentUser.needsExpertise) {
         router.replace({name: 'MandatoryProfileUpdate', params: {redirectTo: to}});
+        next();
+        return;
+    }
+
+    // Check if user needs to update required demographics
+    // TODO: set criteria more clearly, probably check for whether demographics response have ever been stored
+    if (!store.getters.currentUser.hasRequiredDemographics) {
+        router.replace({name: 'RequiredDemographicsUpdateForm', params: {redirectTo: to}});
         next();
         return;
     }
