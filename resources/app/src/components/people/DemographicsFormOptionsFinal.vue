@@ -349,6 +349,7 @@
 
 <script>
 const baseUrl = '/api/people';
+import { useRouter } from 'vue-router';
 
 import axios from 'axios';
 import { mapGetters } from 'vuex';
@@ -362,6 +363,12 @@ var items = []
 
 export default {
   name: "DemographicsForm",
+
+  emits: [
+        'canceled',
+        'saved',
+        'update'
+    ],
 
   data() {
     return {
@@ -803,7 +810,11 @@ export default {
         const response = await axios.put(`${baseUrl}/${this.uuid}/demographics`, items);
         //const response = await axios.put(`${baseUrl}/${this.uuid}/demographics`, items);
         console.log(response.data);
-
+        //router.push({ name: 'Dashboard' }); // Redirect on success
+       // this.$router.push({ name: 'Dashboard' });
+       this.$emit('saved');
+       //this.$router.push({ name: 'Dashboard' }); 
+       // console.log('Redirection attempted'); // Did you reach this line?
       } catch (error) {
         console.error("Error updating user:", error);
       }
