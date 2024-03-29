@@ -14,7 +14,9 @@ const routes = [
     { name: 'Dashboard',
         path: '/',
        component: () => import (/* webpackChunkName "dashboard" */ '@/views/Dashboard.vue'),
-       meta: {
+     
+       //TODO - to enable routing back to the Dashboard from Demographics form, needed to comment out this logic.  Need to analyze what is neede for Demographics. 
+        meta: {
           protected: true
        }
     },
@@ -222,6 +224,7 @@ router.beforeEach(async (to, from, next) => {
     //if (to.name == 'DemographicsForm'
 
      if   (to.name == 'MandatoryProfileUpdate'
+        || to.name == 'RequiredDemographicsUpdateForm'
         || to.name == 'RedeemInvite'
         || to.name == 'InviteWithCode'
         || to.name == 'InitialProfileForm'
@@ -253,6 +256,15 @@ router.beforeEach(async (to, from, next) => {
     if (store.getters.currentUser.needsCredentials || store.getters.currentUser.needsExpertise) {
         router.replace({name: 'MandatoryProfileUpdate', params: {redirectTo: to}});
         next();
+        return;
+    }
+
+    // Check if user needs to update required demographics
+    // TODO: set criteria more clearly, probably check for whether demographics response have ever been stored
+    if (!store.getters.currentUser.hasRequiredDemographics) {
+        router.replace({name: 'RequiredDemographicsUpdateForm', params: {redirectTo: to}});
+        next();
+        //store.getters.currentUser.hasRequiredDemographics
         return;
     }
 
