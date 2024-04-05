@@ -130,7 +130,7 @@
 
 
         <div style="display: flex;">
-          <input id="optOutEthnicity" class="w3-check" type="checkbox" v-model="optOutEthnicity"> <br>
+          <input id="optOutEthnicity" class="w3-check" type="checkbox" v-model="ethnicity_opt_out"> <br>
           <label>Prefer not to answer</label>
 
         </div>
@@ -379,7 +379,7 @@ export default {
       birth_country: null,
       birth_year: null,
       reside_state: null,
-      optOutEthnicity: false,
+      ethnicity_opt_out: false,
       reside_state_opt_out: false,
       selected_specialty: null,
       selected_support: [],
@@ -783,20 +783,18 @@ export default {
         identities: this.selected_identities,
         gender_identities: this.selected_gender_identities,
         ethicities: this.selected_ethnicities,
-        optOutEthnicity: this.optOutEthnicity,
+       ethnicity_opt_out: this.ethnicity_opt_out,
         occupations: this.selected_occupations,
-        specialty: this.selected_specialty,
+       specialty: this.selected_specialty,
         id: this.user.data.id,
         email: this.user.data.email,
         institution_id: this.user.data.institution_id,
-        gender: this.selected_gender_identities,
         support: this.selected_support,
         grant_detail: this.grant_detail,
         support_opt_out: this.support_opt_out,
         support_other: this.support_other,
         // reside_state: this.reside_state,
         // institution_id: this.user.institution_id,
-        // primary_occupation_id: user.value.data.primary_occupation_id,
         first_name: this.user.data.first_name,
         last_name: this.user.data.last_name,
         country_id: this.user.data.country_id,
@@ -805,6 +803,7 @@ export default {
         // ... more fields from this.user
       };
       console.log(items);
+      console.log(this.selected_occupations);
 
       try {
         const response = await axios.put(`${baseUrl}/${this.uuid}/demographics`, items);
