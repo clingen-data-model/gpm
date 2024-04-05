@@ -117,6 +117,13 @@ export default {
       type: String
     },
     },
+
+    emits: [
+        'canceled',
+        'saved',
+        'update'
+    ],
+
     data () {
         return {
             
@@ -231,6 +238,18 @@ export default {
       ],
 
       selected_reside_state: [],
+
+      ethnicities: [
+        { value: 'American Indian', label: 'American Indian or Alaska Native (For example: Aztec, Blackfeet Tribe, Mayan, Navajo Nation, Native Village of Barrow (Utqiagvik) Inupiat Traditional Government, Nome Eskimo Community' },
+        { value: 'Asian', label: 'Asian (For example: Asian Indian, Chinese, Filipino, Japanese, Korean, Vietnamese, etc.)' },
+        { value: 'Black', label: 'Black, African American, or African (For example: African American, Ethiopian, Haitian, Jamaican, Nigerian, Somali, etc.)' },
+        { value: 'Hispanic', label: 'Hispanic, Latino, or Spanish (For example: Colombian, Cuban, Dominican, Mexican or Mexican American, Puerto Rican, Salvadoran, etc.)' },
+        { value: 'Middle Eastern', label: 'Middle Eastern or North African (For example: Algerian, Egyptian, Iranian, Lebanese, Moroccan, Syrian, etc.)' },
+        { value: 'Pacific', label: 'Native Hawaiian or other Pacific Islander (For example: Chamorro, Fijian, Marshallese, Native Hawaiian, Tongan, etc.)' },
+        { value: 'White', label: 'White (For example: English, European, French, German, Irish, Italian, Polish, etc.)' },
+      ],
+
+      selected_ethnicities: [],
 
         }
     },
