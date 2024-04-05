@@ -263,7 +263,7 @@ router.beforeEach(async (to, from, next) => {
    
     // TODO: set criteria more clearly, probably check for whether demographics response have ever been stored
     
-    if (store.getters.currentUser.hasRequiredDemographics) {
+    if (!store.getters.currentUser.hasRequiredDemographics) {
         router.replace({name: 'RequiredDemographicsUpdateForm', params: {redirectTo: to}});
         next();
         //store.getters.currentUser.hasRequiredDemographics
