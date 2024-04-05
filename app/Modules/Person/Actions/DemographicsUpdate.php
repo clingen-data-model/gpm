@@ -56,7 +56,7 @@ class DemographicsUpdate
 
     public function asController(ActionRequest $request, Person $person)
     {
-        $demoData = $request->only(['id','email', 'user_id', 'institution_id', 'primary_occupation_id', 'first_name', 'birth_country', 'reside_country' ]);
+        $demoData = $request->only(['id','email', 'user_id', 'institution_id', 'primary_occupation_id', 'first_name', 'birth_country', 'reside_country', ]);
         if ($request->user()->can('update', $person)) {
             $demoData = $request->all();
         }

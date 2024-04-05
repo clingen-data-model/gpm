@@ -72,8 +72,23 @@ class Person extends Model implements HasLogEntries
         'birth_country',
         'reside_country',
         'birth_year',
+        'disadvantaged',
+        'birth_country_opt_out',
+        'state_opt_out',
+        'reside_country_opt_out',
         'ethnicities',
-        'gender_preferred_term'
+        'gender_preferred_term',
+        'identities',
+        'gender_identities',
+        'ethnicities',
+        'ethnicity_opt_out',
+        'occupations',
+        'specialty',
+        'support',
+        'grant_detail',
+        'support_opt_out',
+        'support_other',
+
     ];
 
     protected $casts = [
