@@ -359,62 +359,19 @@ import Person from '@/domain/person';
 console.log(Person);
 import isValidationError from '@/http/is_validation_error';
 
-var items = []
+var items = [];
 
-export default {
-  name: "DemographicsForm",
-
-  emits: [
-        'canceled',
-        'saved',
-        'update'
-    ],
-
-  data() {
-    return {
-
-      birth_country_opt_out: false,
-      reside_country_opt_out: false,
-      reside_country: null,
-      birth_country: null,
-      birth_year: null,
-      reside_state: null,
-      ethnicity_opt_out: false,
-      reside_state_opt_out: false,
-      selected_specialty: null,
-      selected_support: [],
-      grant_detail: null,
-      support_opt_out: false,
-      support_other: null,
-      specialty: null,
-      institution_id: null,
-      gender: [],
-      disadvantaged: null,
-      birth_country_other: null,
-      reside_country_other: null,
-      gender_identities_other: null,
-      gender_preferred_term: null,
-      occupations_other: null,
-      user: null,
-      error: null,
-      errors: {},
-      profile: {},
-      saving: false,
-      items: [],
-
-      ethnicities: [
-        { value: 'American Indian', label: 'American Indian or Alaska Native (For example: Aztec, Blackfeet Tribe, Mayan, Navajo Nation, Native Village of Barrow (Utqiagvik) Inupiat Traditional Government, Nome Eskimo Community' },
-        { value: 'Asian', label: 'Asian (For example: Asian Indian, Chinese, Filipino, Japanese, Korean, Vietnamese, etc.)' },
-        { value: 'Black', label: 'Black, African American, or African (For example: African American, Ethiopian, Haitian, Jamaican, Nigerian, Somali, etc.)' },
+const ethnicites = [
+{ value: 'American Indian', label: 'American Indian or Alaska Native (For example: Aztec, Blackfeet Tribe, Mayan, Navajo Nation, Native Village of Barrow (Utqiagvik) Inupiat Traditional Government, Nome Eskimo Community' },
+       { value: 'Asian', label: 'Asian (For example: Asian Indian, Chinese, Filipino, Japanese, Korean, Vietnamese, etc.)' },
+     { value: 'Black', label: 'Black, African American, or African (For example: African American, Ethiopian, Haitian, Jamaican, Nigerian, Somali, etc.)' },
         { value: 'Hispanic', label: 'Hispanic, Latino, or Spanish (For example: Colombian, Cuban, Dominican, Mexican or Mexican American, Puerto Rican, Salvadoran, etc.)' },
-        { value: 'Middle Eastern', label: 'Middle Eastern or North African (For example: Algerian, Egyptian, Iranian, Lebanese, Moroccan, Syrian, etc.)' },
-        { value: 'Pacific', label: 'Native Hawaiian or other Pacific Islander (For example: Chamorro, Fijian, Marshallese, Native Hawaiian, Tongan, etc.)' },
+       { value: 'Middle Eastern', label: 'Middle Eastern or North African (For example: Algerian, Egyptian, Iranian, Lebanese, Moroccan, Syrian, etc.)' },
+       { value: 'Pacific', label: 'Native Hawaiian or other Pacific Islander (For example: Chamorro, Fijian, Marshallese, Native Hawaiian, Tongan, etc.)' },
         { value: 'White', label: 'White (For example: English, European, French, German, Irish, Italian, Polish, etc.)' },
-      ],
+]
 
-      selected_ethnicities: [],
-
-      occupations: [
+const occupations  = [
         { value: 'genetics physician', label: 'Medical genetics physician' },
         { value: 'non genetics physician', label: 'Medical non-genetics physician' },
         { value: 'pathologist', label: 'Molecular pathologist' },
@@ -433,20 +390,16 @@ export default {
         { value: 'general geneticist', label: 'General Geneticist' },
         { value: 'science policy', label: 'Health Care Policy or Science Policy' },
         { value: 'no answer', label: 'Prefer not to answer' },
-      ],
+      ]
 
-      selected_occupations: [],
-
-      identities: [
+const identities = [
         'Female',
         'Male',
         'Unsure',
         'None',
-      ],
+      ]
 
-      selected_identities: [],
-
-      gender_identities: [
+const gender_identities = [
         'Man',
         'Woman',
         'Cisgender',
@@ -457,11 +410,9 @@ export default {
         'Intersex',
         'Unsure',
         'Prefer not to answer',
-      ],
+      ]
 
-      selected_gender_identities: [],
-
-      non_genetics_specialties: [
+const non_genetics_specialties = [
         "Allergy & Immunology",
         "Anesthesiology",
         "Cardiology/Cardiovascular Disease",
@@ -510,12 +461,10 @@ export default {
         "Thoracic Surgery",
         "Urology",
         "Vascular Surgery",
-      ],
+      ]
 
-      selected_non_genetics_specialties: [],
-
-      // TODO: get from database via store
-      states: [
+ // TODO: get from database via store
+ const states = [
         { label: 'ALABAMA', value: 'AL' },
         { label: 'ALASKA', value: 'AK' },
         { label: 'AMERICAN SAMOA', value: 'AS' },
@@ -572,26 +521,86 @@ export default {
         { label: 'WEST VIRGINIA', value: 'WV' },
         { label: 'WISCONSIN', value: 'WI' },
         { label: 'WYOMING', value: 'WY' },
-      ],
+      ]
 
-      selected_reside_state: [],
-
-      support_types: [
+const support_types = [
         { value: 'volunteer', label: 'Volunteer outside of work environment' },
         { value: 'grant', label: 'Grants (e.g. NIH, foundational)' },
         { value: 'employer', label: 'Employer supports/allows participation' },
         { value: 'unsure', label: 'Unsure' },
-      ],
+      ]
 
-
-      y_n_unsure_optout: [
+  const  y_n_unsure_optout = [
         { value: 'yes', label: 'Yes' },
         { value: 'no', label: 'No' },
         { value: 'unsure', label: 'Unsure' },
         { value: 'optout', label: 'Prefer not to answer' },
-      ],
+      ]
 
 
+
+export default {
+  name: "DemographicsForm",
+
+  emits: [
+        'canceled',
+        'saved',
+        'update'
+    ],
+
+  data() {
+    return {
+
+      birth_country_opt_out: false,
+      reside_country_opt_out: false,
+      reside_country: null,
+      birth_country: null,
+      birth_year: null,
+      reside_state: null,
+      ethnicity_opt_out: false,
+      reside_state_opt_out: false,
+      selected_specialty: null,
+      selected_support: [],
+      grant_detail: null,
+      support_opt_out: false,
+      support_other: null,
+      specialty: null,
+      institution_id: null,
+      gender: [],
+      disadvantaged: null,
+      birth_country_other: null,
+      reside_country_other: null,
+      gender_identities_other: null,
+      gender_preferred_term: null,
+      occupations_other: null,
+      user: null,
+      error: null,
+      errors: {},
+      profile: {},
+      saving: false,
+      items: [],
+
+   //   ethnicities: [
+    //    { value: 'American Indian', label: 'American Indian or Alaska Native (For example: Aztec, Blackfeet Tribe, Mayan, Navajo Nation, Native Village of Barrow (Utqiagvik) Inupiat Traditional Government, Nome Eskimo Community' },
+   //     { value: 'Asian', label: 'Asian (For example: Asian Indian, Chinese, Filipino, Japanese, Korean, Vietnamese, etc.)' },
+   //     { value: 'Black', label: 'Black, African American, or African (For example: African American, Ethiopian, Haitian, Jamaican, Nigerian, Somali, etc.)' },
+    //    { value: 'Hispanic', label: 'Hispanic, Latino, or Spanish (For example: Colombian, Cuban, Dominican, Mexican or Mexican American, Puerto Rican, Salvadoran, etc.)' },
+    ////    { value: 'Middle Eastern', label: 'Middle Eastern or North African (For example: Algerian, Egyptian, Iranian, Lebanese, Moroccan, Syrian, etc.)' },
+     //   { value: 'Pacific', label: 'Native Hawaiian or other Pacific Islander (For example: Chamorro, Fijian, Marshallese, Native Hawaiian, Tongan, etc.)' },
+    //    { value: 'White', label: 'White (For example: English, European, French, German, Irish, Italian, Polish, etc.)' },
+    //  ],
+
+      selected_ethnicities: [],
+      selected_occupations: [],
+      selected_identities: [],
+      selected_gender_identities: [],
+      selected_non_genetics_specialties: [],
+      selected_reside_state: [],
+
+      
+
+
+     
     };
   },
 
