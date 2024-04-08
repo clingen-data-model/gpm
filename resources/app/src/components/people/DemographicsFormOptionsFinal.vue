@@ -93,7 +93,7 @@
             residence?</label>
           <select id="country-state" name="country-state" v-model="selected_reside_state">
             <option value="">Select state</option>
-            <option v-for="state in states" :key="state.value" :value="state.value">{{ state.label }}</option>
+            <option v-for="state in availableStates" :key="state.value" :value="state.value">{{ state.label }}</option>
           </select>
         </div>
 
@@ -122,7 +122,7 @@
         <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.</legend>
 
 
-        <div v-for="ethnicity in ethnicities" :key="ethnicity.value" style="display: flex;">
+        <div v-for="ethnicity in availableEthnicities" :key="ethnicity.value" style="display: flex;">
           <input type="checkbox" :value="ethnicity.value" v-model="selected_ethnicities">
           <label>{{ ethnicity.label }}</label>
         </div>
@@ -160,7 +160,7 @@
         <div class="w3-section">
           <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.
           </legend>
-          <div v-for="identity in identities" :key="identity">
+          <div v-for="identity in availableIdentities" :key="identity">
             <label><input type="checkbox" :value="identity" v-model="selected_identities">
               {{ identity }}
             </label>
@@ -181,7 +181,7 @@
         <div class="w3-section">
           <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.
           </legend>
-          <div v-for="gender_identity in gender_identities" :key="gender_identity">
+          <div v-for="gender_identity in availableGender_Identities" :key="gender_identity">
             <label><input type="checkbox" :value="gender_identity" v-model="selected_gender_identities">
               {{ gender_identity }}
             </label>
@@ -204,7 +204,8 @@
         <div class="w3-section">
           <legend>How is your ClinGen work supported? Select all that apply.</legend>
 
-          <div v-for="support_type in support_types" :key="support_type.value" class="flex">
+    availableSupporttypes() {
+          <div v-for="support_type in availableSupporttypes" :key="support_type.value" class="flex">
             <input type="checkbox" :value="support_type.value" v-model="selected_support">
             <label>{{ support_type.label }}</label>
             <div v-if="support_type.value == 'grant' && selected_support.indexOf('grant') != -1" style="display: flex;">
@@ -288,7 +289,7 @@
         background? Note: If you are not a US-based participant, please answer based on similar criteria in your own
         country.<br>
 
-        <div v-for="y_n_unsure_optout in y_n_unsure_optout" :key="y_n_unsure_optout.value" class="flex">
+        <div v-for="y_n_unsure_optout in availableY_n_unsure_optout" :key="y_n_unsure_optout.value" class="flex">
           <input type="radio" :value="y_n_unsure_optout.value" v-model="disadvantaged">
           <label>{{ y_n_unsure_optout.label }}</label>
         </div>
@@ -308,7 +309,7 @@
         <h2>Employment</h2>
 
         Please choose the option that most accurately describes your role or occupation [select all that apply].<br>
-        <div v-for="occupation in occupations" :key="occupation.value" class="flex">
+        <div v-for="occupation in availableOccupations" :key="occupation.value" class="flex">
           <input type="checkbox" :value="occupation.value" v-model="selected_occupations">
           <label>{{ occupation.label }}</label>
         </div>
@@ -325,7 +326,7 @@
           <!-- TODO: check with invested parties: should this be multi-select/checkbox? -->
           <select id="specialty" name="specialty"><br> v-model="selected_specialty">
             <option value="">Select specialty</option>
-            <option v-for="specialty in non_genetics_specialties" :key="specialty" :value="specialty">{{ specialty }}
+            <option v-for="specialty in availableNon_genetics_specialties" :key="specialty" :value="specialty">{{ specialty }}
             </option>
           </select>
         </div>
@@ -361,7 +362,7 @@ import isValidationError from '@/http/is_validation_error';
 
 var items = [];
 
-const ethnicites = [
+const ethnicities = [
 { value: 'American Indian', label: 'American Indian or Alaska Native (For example: Aztec, Blackfeet Tribe, Mayan, Navajo Nation, Native Village of Barrow (Utqiagvik) Inupiat Traditional Government, Nome Eskimo Community' },
        { value: 'Asian', label: 'Asian (For example: Asian Indian, Chinese, Filipino, Japanese, Korean, Vietnamese, etc.)' },
      { value: 'Black', label: 'Black, African American, or African (For example: African American, Ethiopian, Haitian, Jamaican, Nigerian, Somali, etc.)' },
@@ -690,6 +691,41 @@ export default {
       return this.$store.getters['countries/items'].map(i => ({ value: i.id, label: i.name }));
       //return this.$store.state.countries.items; // Assuming the countries data is stored in state
     },
+
+    
+    availableEthnicities() {
+      return ethnicities;
+    },
+
+    availableIdentities() {
+      return identities;
+    },
+
+    availableGender_Identities() {
+      return gender_identities;
+    },
+
+    availableOccupations() {
+      return occupations;
+    },
+
+    availableNon_genetics_specialties() {
+      return non_genetics_specialties;
+    },
+
+    availableY_n_unsure_optout() {
+      return y_n_unsure_optout;
+    },
+
+    availableStates() {
+      return states;
+    },
+
+    availableSupporttypes() {
+      return support_types;
+    },
+
+
     //},
 
     // selectedEthnicities() { 
