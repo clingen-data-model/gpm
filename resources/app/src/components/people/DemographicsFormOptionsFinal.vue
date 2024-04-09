@@ -844,7 +844,8 @@ export default {
         last_name: this.user.data.last_name,
         country_id: this.user.data.country_id,
         timezone: this.user.data.timezone,
-        disadvantaged: this.disadvantaged,
+        //TODO revisit disadvanted logic
+       // disadvantaged: this.disadvantaged,
         // ... more fields from this.user
       };
       console.log(items);
