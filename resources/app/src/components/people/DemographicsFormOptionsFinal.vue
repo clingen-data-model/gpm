@@ -581,15 +581,7 @@ export default {
       saving: false,
       items: [],
 
-   //   ethnicities: [
-    //    { value: 'American Indian', label: 'American Indian or Alaska Native (For example: Aztec, Blackfeet Tribe, Mayan, Navajo Nation, Native Village of Barrow (Utqiagvik) Inupiat Traditional Government, Nome Eskimo Community' },
-   //     { value: 'Asian', label: 'Asian (For example: Asian Indian, Chinese, Filipino, Japanese, Korean, Vietnamese, etc.)' },
-   //     { value: 'Black', label: 'Black, African American, or African (For example: African American, Ethiopian, Haitian, Jamaican, Nigerian, Somali, etc.)' },
-    //    { value: 'Hispanic', label: 'Hispanic, Latino, or Spanish (For example: Colombian, Cuban, Dominican, Mexican or Mexican American, Puerto Rican, Salvadoran, etc.)' },
-    ////    { value: 'Middle Eastern', label: 'Middle Eastern or North African (For example: Algerian, Egyptian, Iranian, Lebanese, Moroccan, Syrian, etc.)' },
-     //   { value: 'Pacific', label: 'Native Hawaiian or other Pacific Islander (For example: Chamorro, Fijian, Marshallese, Native Hawaiian, Tongan, etc.)' },
-    //    { value: 'White', label: 'White (For example: English, European, French, German, Irish, Italian, Polish, etc.)' },
-    //  ],
+  
 
       selected_ethnicities: [],
       selected_occupations: [],
@@ -612,80 +604,19 @@ export default {
       // return this.$store.getters('people/currentItem', {uuid: this.uuid});
       type: String
     },
-    //    person: {
-    //       type: Person,
-    //       required: true,
-    //   }
+    
   },
 
 
-  // uuid(){
-  //  return this.$store.getters('people/currentItem', {uuid: this.uuid});
-  // },
-  // },
 
-
-  //Option 1: Works sproadically.  Logic is used in PersonDetail.vue file
-
-  // watch: {
-  //   uuid: {
-  //     immediate: true,
-  //     handler: async function () {
-  //        console.log(this.$store);
-  //        console.log(this.$store.getters);
-  //       console.log(this.$store.getters['people/getPerson']);
-  //        await this.$store.getters('people/getPerson', {uuid: this.uuid});
-  // await this.$store.getters['people/getPerson']({ uuid: this.uuid });
-
-  //           if (this.coordinatesPerson(this.person)) {
-  //              this.getLogEntries();
-  //               this.getMailLog();
-  //          }
-  //     }
-  //  },
-  //  },
-
-  //Option2.  THis api ia available in a stand-alone file.  
-
-  //  watch: {
-  //   uuid: {
-  //    immediate: true,
-  //     handler: async function () {
-  //       console.log(this.$store);
-  //      console.log(this.$store.getters);
-  // await this.$store.getters('people/currentItem', {uuid: this.uuid});
-  //       console.log(this.$store.getters['people/getPerson']);
-  //       await this.$store.getters('people/getPerson', {uuid: this.uuid});
-  //      await this.$store.getters['people/currentItem']({ uuid: this.uuid });
-
-
-  //     }
-  // },
-  //},
-
+  
   computed: {
     ...mapGetters({
       person: 'people/currentItem',
 
     }),
 
-    // identities: this.identities,
-
-    // countries() {
-    //  return this.$store.getters['countries/items'].map(i => ({ value: i.id, label: i.name }));
-    //},
-    // {
-    //    ...mapGetters({
-    //        person: 'people/currentItem'
-    //    })
-    // }
-    // person() {
-    //   console.log(this.$store);
-    //  console.log(this.$store.getters);
-    //  console.log(this.$store.getters['people/currentItem'])
-    //   return this.$store.getters['people/currentItem'];
-    // console.log(this.person);
-    //},
+  
 
     countries() {
       return this.$store.getters['countries/items'].map(i => ({ value: i.id, label: i.name }));
@@ -726,32 +657,12 @@ export default {
     },
 
 
-    //},
-
-    // selectedEthnicities() { 
-    //  return this.demographics.ethnicities;
-    //},
-
+    
     currentUser() {
       //console.log(this.store.getters.currentUser);
       return this.$store.getters.currentUser;
     }
-    //},
-
-    // uuid(){
-    //   return this.$store.getters('people/currentItem', {uuid: this.uuid});
-    //   if (person) { 
-    // return person.uuid; 
-    // } else {
-
-    //   return null; // Or a placeholder value while loading
-    //}
-    // },
-
-
-    // },
-
-
+    
 
 
     // Other computed properties
