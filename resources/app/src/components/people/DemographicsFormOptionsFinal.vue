@@ -43,7 +43,7 @@
         <!-- Country of Birth Dropdown -->
         <div>
           <label for="birth_country">Country of Birth: </label>
-          <select id="birth_country" name="birth_country" v-model="birth_country">
+          <select id="birth_country" name="birth_country" v-model="formdata.data.birth_country">
             <option value="">Select country</option>
             <option v-for="country in countries" :key="country.value" :value="country.value">{{ country.label }}
             </option>
@@ -57,7 +57,7 @@
         </div>
 
         <div style="display: flex;">
-          <input type="checkbox" class="checkbox-margin" id="birth_country_opt_out" v-model="birth_country_opt_out">
+          <input type="checkbox" class="checkbox-margin" id="birth_country_opt_out" v-model="formdata.data.birth_country_opt_out">
           <label for="birth_country_opt_out"> Prefer not to answer</label>
 
         </div>
@@ -66,7 +66,7 @@
           <!-- Country of Residence Dropdown -->
           <label for="reside_country">Country of Residence: </label>
 
-          <select id="reside_country" name="reside_country" v-model="reside_country">
+          <select id="reside_country" name="reside_country" v-model="formdata.data.reside_country">
             <option value="">Select country</option>
             <option v-for="country in countries" :key="country.value" :value="country.value">{{ country.label }}
             </option>
@@ -79,7 +79,7 @@
           <input class="w3-input" type="text">
         </div>
         <div style="display: flex;">
-          <input type="checkbox" id="reside_country_opt_out" v-model="reside_country_opt_out">
+          <input type="checkbox" id="reside_country_opt_out" v-model="formdata.data.reside_country_opt_out">
           <label for="reside_country_opt_out">Prefer not to answer </label>
 
         </div>
@@ -139,7 +139,7 @@
         <br>
         <div style="display: flex; align-items: center;">
           <label>What year were you born?</label>
-          <input class="w3-input" type="text" id="birth_year" v-model="birth_year" required>
+          <input class="w3-input" type="text" id="birth_year" v-model="formdata.data.birth_year" required>
         </div>
 
 
@@ -552,10 +552,25 @@ export default {
   data() {
     return {
 
-      birth_country_opt_out: false,
-      reside_country_opt_out: false,
-      reside_country: null,
-      birth_country: null,
+      formdata:  {
+                    data: {
+          birth_country: null, 
+          reside_country: null,
+          birth_year: null,
+          birth_country_opt_out: false,
+     reside_country_opt_out: false,
+      state: null,
+      id: null,
+     // ethicities: [],
+     // support: [],
+      occupations: [],
+        }
+                    },
+
+     // birth_country_opt_out: false,
+      //reside_country_opt_out: false,
+      //reside_country: null,
+      //birth_country: null,
       birth_year: null,
       reside_state: null,
       ethnicity_opt_out: false,
@@ -623,6 +638,28 @@ export default {
       //return this.$store.state.countries.items; // Assuming the countries data is stored in state
     },
 
+   // async created()
+   // {
+
+   //   try {
+    //    const response = await axios.get(`${baseUrl}/${uuid}`); // Assuming 'baseUrl' is defined
+     //  this.formdata = response.data;
+
+       // console.log(this.user); // Access user data within the component
+     //   console.log(this.formdata.data.email);
+      //  console.log(this.formdata.data.birth_country_opt_out);
+      //  console.log(this.formdata.data.reside_country_opt_out);
+     // } catch (error) {
+      //  this.error = error; // You might want an 'error' data property
+      //}
+       // comsole.log((${baseUrl}/${uuid}) )
+      //  console.log(this.uuid);
+       // this.getUser(this.uuid); // Replace 'user-uuid' with the actual UUID
+        //return this.formdata
+    // birth_country: this.user.data.birth_country;
+    // Optionally, load countries data here or elsewhere in your component
+ // },
+
     
     availableEthnicities() {
       return ethnicities;
@@ -656,12 +693,22 @@ export default {
       return support_types;
     },
 
-
+  //  async created()
+  //  {
+       // comsole.log((${baseUrl}/${uuid}) )
+      //  console.log(this.uuid);
+      //  await this.getUser(this.uuid); // Replace 'user-uuid' with the actual UUID
+    //    this.formdata = response.data;
+     //   console.log(this.formdata);
+     //   console.log(this.formdata.data.email);
+    // birth_country: this.user.data.birth_country;
+    // Optionally, load countries data here or elsewhere in your component
+  //},
     
-    currentUser() {
+   // currentUser() {
       //console.log(this.store.getters.currentUser);
-      return this.$store.getters.currentUser;
-    }
+    //  return this.$store.getters.currentUser;
+    //}
     
 
 
@@ -696,10 +743,18 @@ export default {
     async getUser(uuid) {
       try {
         const response = await axios.get(`${baseUrl}/${uuid}`); // Assuming 'baseUrl' is defined
-        this.user = response.data;
+       this.formdata = response.data;
 
-        console.log(this.user); // Access user data within the component
-        console.log(this.user.data.email);
+        console.log(this.formdata); // Access user data within the component
+        console.log(this.formdata.data.email);
+        console.log(this.formdata.data.gender_identities);
+        this.selected_gender_identities= this.formdata.data.gender_identities;
+      //  console.log(this.formdata.data.ethnicities);
+        console.log(this.formdata.data.birth_country_opt_out);
+       // this.formdata.data.birth_country_opt_out = !!response.data.birth_country_opt_out;
+        this.formdata.data.birth_country_opt_out = response.data.birth_country_opt_out === 1 ? true : false;
+        console.log(this.formdata.data.reside_country_opt_out);
+
       } catch (error) {
         this.error = error; // You might want an 'error' data property
       }
@@ -728,13 +783,13 @@ export default {
       //  console.log("gender:", this.gender);
 
       items = {
-        birth_country: this.birth_country,
-        reside_country: this.reside_country,
-        state: this.selected_reside_state,
+        birth_country: this.formdata.data.birth_country,
+        reside_country: this.formdata.data.reside_country,
+        state: this.formdata.data.state,
         state_opt_out: this.reside_state_opt_out,
-        birth_year: this.birth_year,
-        birth_country_opt_out: this.birth_country_opt_out,
-        reside_country_opt_out: this.reside_country_opt_out,
+        birth_year: this.formdata.data.birth_year,
+        birth_country_opt_out: this.formdata.data.birth_country_opt_out,
+        reside_country_opt_out: this.formdata.data.reside_country_opt_out,
         reside_state_opt_out: this.reside_state_opt_out,
         identities: this.selected_identities,
         gender_identities: this.selected_gender_identities,
@@ -742,25 +797,25 @@ export default {
        ethnicity_opt_out: this.ethnicity_opt_out,
         occupations: this.selected_occupations,
        specialty: this.selected_specialty,
-        id: this.user.data.id,
-        email: this.user.data.email,
-        institution_id: this.user.data.institution_id,
-        support: this.selected_support,
+        id: this.formdata.data.id,
+        email: this.formdata.data.email,
+        institution_id: this.formdata.data.institution_id,
+        support: this.formdata.data.support,
         grant_detail: this.grant_detail,
         support_opt_out: this.support_opt_out,
         support_other: this.support_other,
         // reside_state: this.reside_state,
         // institution_id: this.user.institution_id,
-        first_name: this.user.data.first_name,
-        last_name: this.user.data.last_name,
-        country_id: this.user.data.country_id,
-        timezone: this.user.data.timezone,
+        first_name: this.formdata.data.first_name,
+        last_name: this.formdata.data.last_name,
+        country_id: this.formdata.data.country_id,
+        timezone: this.formdata.data.timezone,
         //TODO revisit disadvanted logic
        // disadvantaged: this.disadvantaged,
         // ... more fields from this.user
       };
       console.log(items);
-      console.log(this.selected_occupations);
+      console.log(this.formdata.data.occupations);
 
       try {
         const response = await axios.put(`${baseUrl}/${this.uuid}/demographics`, items);
@@ -783,9 +838,19 @@ export default {
   },
   //new
 
-  mounted() {
+  created() {
+    // Use Promise.all to fetch all necessary data when component is created
+    Promise.all([this.getUser(this.uuid), this.fetchCountries()]).then(() => {
+      console.log('Data fetched successfully');
+    }).catch(error => {
+      console.error('Error fetching data', error);
+    });
+  },
 
-    Promise.all([this.getUser(this.uuid), this.fetchCountries()])
+  mounted() {
+  //  Promise.all([this.fetchCountries()])
+
+    //Promise.all([this.getUser(this.uuid), this.fetchCountries()])
 
       // const button = this.$el.querySelector('button');
       //if (button) {
@@ -801,11 +866,13 @@ export default {
 
       //  ... rest of your mounted code 
       // })
-      .catch(error => {
+     // .catch(error => {
         //     Handle errors from getUser or fetchCountries
-        console.error("Error in mounted:", error);
-      });
+      //  console.error("Error in mounted:", error);
+      //});
   }
+
+  
 
 }
 
