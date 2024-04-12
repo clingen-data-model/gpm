@@ -182,11 +182,11 @@
           <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.
           </legend>
           <div v-for="gender_identity in availableGender_Identities" :key="gender_identity">
-            <label><input type="checkbox" :value="gender_identity" v-model="selected_gender_identities">
+            <label><input type="checkbox" :value="gender_identity" v-model="formdata.data.gender_identities">
               {{ gender_identity }}
             </label>
           </div>
-
+          {{ formdata.data.gender_identities }}
         </div>
 
 
@@ -561,6 +561,7 @@ export default {
      reside_country_opt_out: false,
       state: null,
       id: null,
+      gender_identities: [],
      // ethicities: [],
      // support: [],
       occupations: [],
@@ -748,7 +749,7 @@ export default {
         console.log(this.formdata); // Access user data within the component
         console.log(this.formdata.data.email);
         console.log(this.formdata.data.gender_identities);
-        this.selected_gender_identities= this.formdata.data.gender_identities;
+       // this.selected_gender_identities= this.formdata.data.gender_identities;
       //  console.log(this.formdata.data.ethnicities);
         console.log(this.formdata.data.birth_country_opt_out);
        // this.formdata.data.birth_country_opt_out = !!response.data.birth_country_opt_out;
@@ -842,12 +843,15 @@ export default {
     // Use Promise.all to fetch all necessary data when component is created
     Promise.all([this.getUser(this.uuid), this.fetchCountries()]).then(() => {
       console.log('Data fetched successfully');
+     // this.selected_gender_identities= this.formdata.data.gender_identities;
     }).catch(error => {
       console.error('Error fetching data', error);
     });
   },
 
   mounted() {
+   // this.selected_gender_identities= this.formdata.data.gender_identities;
+   // this.availableGender_Identities.push('New Identity');
   //  Promise.all([this.fetchCountries()])
 
     //Promise.all([this.getUser(this.uuid), this.fetchCountries()])
