@@ -56,8 +56,8 @@
           <input class="w3-input" type="text">
         </div>
 
-        <div style="display: flex;">
-          <input type="checkbox" class="checkbox-margin" id="birth_country_opt_out" v-model="formdata.data.birth_country_opt_out">
+        <div style="display: flex;" v-if="formDataLoaded">
+          <input type="checkbox" class="checkbox-margin" id="birth_country_opt_out" v-model="selected_birth_country_opt_out">
           <label for="birth_country_opt_out"> Prefer not to answer</label>
 
         </div>
@@ -79,7 +79,7 @@
           <input class="w3-input" type="text">
         </div>
         <div style="display: flex;">
-          <input type="checkbox" id="reside_country_opt_out" v-model="formdata.data.reside_country_opt_out">
+          <input type="checkbox" id="reside_country_opt_out" v-model="selected_reside_country_opt_out">
           <label for="reside_country_opt_out">Prefer not to answer </label>
 
         </div>
@@ -91,14 +91,14 @@
         <div>
           <label for="country-state">If you currently live in the United States, what is your state/territory of
             residence?</label>
-          <select id="country-state" name="country-state" v-model="selected_reside_state">
+          <select id="country-state" name="country-state" v-model="formdata.data.state">
             <option value="">Select state</option>
             <option v-for="state in availableStates" :key="state.value" :value="state.value">{{ state.label }}</option>
           </select>
         </div>
 
         <div style="display: flex;">
-          <input id="reside_state_opt_out" class="w3-check" type="checkbox" v-model="reside_state_opt_out">
+          <input id="reside_state_opt_out" class="w3-check" type="checkbox" v-model="selected_reside_state_opt_out">
           <label>Prefer not to answer </label>
         </div>
 
@@ -157,6 +157,8 @@
             href="https://nap.nationalacademies.org/read/26424/chapter/1#xi" target="_blank">the National Academies of
             Sciences, Engineering, and Medicine in 2022. </a>) </p>
 
+       
+
         <div class="w3-section">
           <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.
           </legend>
@@ -182,7 +184,7 @@
           <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.
           </legend>
           <div v-for="gender_identity in availableGender_Identities" :key="gender_identity">
-            <label><input type="checkbox" :value="gender_identity" v-model="formdata.data.gender_identities">
+            <label><input type="checkbox" :value="gender_identity" v-model="selected_gender_identities">
               {{ gender_identity }}
             </label>
           </div>
@@ -201,15 +203,18 @@
         <h2>ClinGen Background and Experience</h2>
 
         <br>
+
+        
+
         <div class="w3-section">
           <legend>How is your ClinGen work supported? Select all that apply.</legend>
 
-    availableSupporttypes() {
+         availableSupporttypes() {
           <div v-for="support_type in availableSupporttypes" :key="support_type.value" class="flex">
             <input type="checkbox" :value="support_type.value" v-model="selected_support">
-            <label>{{ support_type.label }}</label>
+           <label>{{ support_type.label }}</label>
             <div v-if="support_type.value == 'grant' && selected_support.indexOf('grant') != -1" style="display: flex;">
-              <br>
+             <br>
               <label>Provide more details on source of funding</label>
               <input class="w3-input" type="text" v-model="grant_detail">
             </div>
@@ -324,7 +329,7 @@
           <label for="specialty">If you indicated “Medical non-genetics physician”, please select your
             specialty.</label><span style="color: red !important; display: inline; float: none;"></span>
           <!-- TODO: check with invested parties: should this be multi-select/checkbox? -->
-          <select id="specialty" name="specialty"><br> v-model="selected_specialty">
+          <select id="specialty" name="specialty"><br> v-model="formdata.data.specialty">
             <option value="">Select specialty</option>
             <option v-for="specialty in availableNon_genetics_specialties" :key="specialty" :value="specialty">{{ specialty }}
             </option>
@@ -551,37 +556,41 @@ export default {
 
   data() {
     return {
-
+      formDataLoaded: false,
       formdata:  {
                     data: {
           birth_country: null, 
           reside_country: null,
           birth_year: null,
-          birth_country_opt_out: false,
-     reside_country_opt_out: false,
+         birth_country_opt_out: true,
+     reside_country_opt_out: null,
+     reside_state_opt_out: false,
       state: null,
       id: null,
+      identities: [],
       gender_identities: [],
-     // ethicities: [],
-     // support: [],
       occupations: [],
+     ethnicities: [],
+      support: [],
+      specialty: [],
         }
                     },
 
-     // birth_country_opt_out: false,
-      //reside_country_opt_out: false,
+     selected_birth_country_opt_out: false,
+    selected_reside_country_opt_out: false,
+    selected_reside_state_opt_out: false,
       //reside_country: null,
       //birth_country: null,
       birth_year: null,
       reside_state: null,
       ethnicity_opt_out: false,
-      reside_state_opt_out: false,
-      selected_specialty: null,
+      
+     // selected_specialty: null,
       selected_support: [],
       grant_detail: null,
       support_opt_out: false,
       support_other: null,
-      specialty: null,
+      //specialty: null,
       institution_id: null,
       gender: [],
       disadvantaged: null,
@@ -603,7 +612,7 @@ export default {
       selected_occupations: [],
       selected_identities: [],
       selected_gender_identities: [],
-      selected_non_genetics_specialties: [],
+      //selected_non_genetics_specialties: [],
       selected_reside_state: [],
 
       
@@ -747,14 +756,38 @@ export default {
        this.formdata = response.data;
 
         console.log(this.formdata); // Access user data within the component
-        console.log(this.formdata.data.email);
+        //console.log(this.formdata.data.email);
+        this.selected_birth_country_opt_out = !!this.formdata.data.birth_country_opt_out;
+        this.selected_reside_country_opt_out = !!this.formdata.data.reside_country_opt_out;
+        this.selected_reside_state_opt_out = !!this.formdata.data.state_opt_out;
+       // selected_reside_state_opt_out: false,
+        //this.formdata.data.birth_country_opt_out = (this.formdata.data.birth_country_opt_out === 1); 
+        
+        console.log(this.formdata.data.support);
+        this.selected_support = JSON.parse(this.formdata.data.support);
         console.log(this.formdata.data.gender_identities);
+        this.selected_gender_identities = JSON.parse(this.formdata.data.gender_identities);
+        this.selected_identities = JSON.parse(this.formdata.data.identities);
+        this.selected_ethnicities = JSON.parse(this.formdata.data.ethnicities);
+        this.selected_occupations = JSON.parse(this.formdata.data.occupations);
+        //this.selected_specialty = JSON.parse(this.formdata.data.specialty);
+        //this.selected_birth_country_opt_out = this.formdata.birth_country_opt_out;
+       // this.selected_birth_country_opt_out = this.formdata.data.birth_country_opt_out === 1 ? true : false;
+        //this.selected_reside_country_opt_out = this.formdata.reside_country_opt_out;
+
+        this.formDataLoaded = true;
+       // this.formdata.data.gender_identites = '["Agender", "Unsure"]';
+       // const parsedArray = JSON.parse(this.formdata.data.gender_identities);
+        //this.formdata.data.gender_identities = parsedArray;
+       // console.log(parsedArray);
+        //this.formdata.data.birth_country_opt_out = response.data.birth_country_opt_out === "true";
        // this.selected_gender_identities= this.formdata.data.gender_identities;
       //  console.log(this.formdata.data.ethnicities);
-        console.log(this.formdata.data.birth_country_opt_out);
+       // console.log(this.formdata.data.birth_country_opt_out);
        // this.formdata.data.birth_country_opt_out = !!response.data.birth_country_opt_out;
-        this.formdata.data.birth_country_opt_out = response.data.birth_country_opt_out === 1 ? true : false;
-        console.log(this.formdata.data.reside_country_opt_out);
+        //this.formdata.data.birth_country_opt_out = response.data.birth_country_opt_out === 1 ? true : false;
+        //console.log(this.formdata.data.birth_country_opt_out);
+        //console.log(this.formdata.data.reside_country_opt_out);
 
       } catch (error) {
         this.error = error; // You might want an 'error' data property
@@ -787,17 +820,17 @@ export default {
         birth_country: this.formdata.data.birth_country,
         reside_country: this.formdata.data.reside_country,
         state: this.formdata.data.state,
-        state_opt_out: this.reside_state_opt_out,
+        state_opt_out: this.selected_reside_state_opt_out,
         birth_year: this.formdata.data.birth_year,
-        birth_country_opt_out: this.formdata.data.birth_country_opt_out,
-        reside_country_opt_out: this.formdata.data.reside_country_opt_out,
-        reside_state_opt_out: this.reside_state_opt_out,
+        birth_country_opt_out: this.selected_birth_country_opt_out,
+        reside_country_opt_out: this.selected_reside_country_opt_out,
+        //state_opt_out: this.reside_state_opt_out,
         identities: this.selected_identities,
         gender_identities: this.selected_gender_identities,
-        ethicities: this.selected_ethnicities,
+        ethnicities: this.selected_ethnicities,
        ethnicity_opt_out: this.ethnicity_opt_out,
         occupations: this.selected_occupations,
-       specialty: this.selected_specialty,
+       specialty: this.formdata.data.specialty,
         id: this.formdata.data.id,
         email: this.formdata.data.email,
         institution_id: this.formdata.data.institution_id,
@@ -841,15 +874,28 @@ export default {
 
   created() {
     // Use Promise.all to fetch all necessary data when component is created
+   // Promise.all([this.getUser(this.uuid), this.fetchCountries()]).then(() => {
+    //  console.log('Data fetched successfully');
+     // this.selected_gender_identities= this.formdata.data.gender_identities;
+   // }).catch(error => {
+    //  console.error('Error fetching data', error);
+    //});
+  },
+
+  mounted() {
+
     Promise.all([this.getUser(this.uuid), this.fetchCountries()]).then(() => {
       console.log('Data fetched successfully');
      // this.selected_gender_identities= this.formdata.data.gender_identities;
     }).catch(error => {
       console.error('Error fetching data', error);
     });
-  },
+    this.formdata.data.birth_country_opt_out = this.formdata.data.birth_country_opt_out === 1 ? true : false;
+        console.log(this.formdata.data.birth_country_opt_out);
+        console.log(this.formdata.data.reside_country_opt_out);
+       // Vue.set(this.formdata.data, 'birth_country_opt_out', true); 
 
-  mounted() {
+    //this.getUser(this.uuid);
    // this.selected_gender_identities= this.formdata.data.gender_identities;
    // this.availableGender_Identities.push('New Identity');
   //  Promise.all([this.fetchCountries()])
