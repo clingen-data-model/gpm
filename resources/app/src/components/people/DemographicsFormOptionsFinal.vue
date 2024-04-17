@@ -53,7 +53,7 @@
 
         <div style="display: flex;">
           <label>Other: </label>
-          <input class="w3-input" type="text">
+          <input class="w3-input" type="text" id = "birth_country_other" vmodel="formdata.data.birth_country_other">
         </div>
 
         <div style="display: flex;" v-if="formDataLoaded">
@@ -76,8 +76,9 @@
         <div style="display: flex;">
 
           <label>Other: </label>
-          <input class="w3-input" type="text">
+          <input class="w3-input" type="text" id = "reside_country_other" vmodel="formdata.data.reside_country_other">
         </div>
+
         <div style="display: flex;">
           <input type="checkbox" id="reside_country_opt_out" v-model="selected_reside_country_opt_out">
           <label for="reside_country_opt_out">Prefer not to answer </label>
@@ -122,8 +123,9 @@
         <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.</legend>
 
 
-        <div v-for="ethnicity in availableEthnicities" :key="ethnicity.value" style="display: flex;">
-          <input type="checkbox" :value="ethnicity.value" v-model="selected_ethnicities">
+        <div v-for="ethnicity in availableEthnicities" :value="ethnicity.value" :key="ethnicity.value" :checked="isSelected(ethnicity.value)"
+      @change="handleCheckboxChange(ethnicity.value, $event.target.checked)" style="display: flex;">
+          <input type="checkbox"  v-model="selected_ethnicities">
           <label>{{ ethnicity.label }}</label>
         </div>
 
@@ -173,7 +175,7 @@
 
         <div style="display: flex;">
           <label>Other: </label>
-          <input class="w3-input" type="text">
+          <input class="w3-input" type="text" id="identity_other" v-model="formdata.data.identity_other">
         </div>
 
 
@@ -188,14 +190,14 @@
               {{ gender_identity }}
             </label>
           </div>
-          {{ formdata.data.gender_identities }}
+         
         </div>
 
 
 
         <div style="display: flex;">
           <label>My preferred term is </label>
-          <input class="w3-input" type="text">
+          <input class="w3-input" type="text" id="gender_identities_other" v-model="formdata.data.gender_identities_other" disabled>
         </div>
 
 
@@ -209,7 +211,7 @@
         <div class="w3-section">
           <legend>How is your ClinGen work supported? Select all that apply.</legend>
 
-         availableSupporttypes() {
+        
           <div v-for="support_type in availableSupporttypes" :key="support_type.value" class="flex">
             <input type="checkbox" :value="support_type.value" v-model="selected_support">
            <label>{{ support_type.label }}</label>
@@ -226,7 +228,7 @@
 
           <div style="display: flex;">
             <label>Other: </label>
-            <input class="w3-input" type="text" v-model="support_other">
+            <input class="w3-input" type="text" v-model="formdata.data.support_other">
           </div>
 
 
@@ -295,15 +297,16 @@
         country.<br>
 
         <div v-for="y_n_unsure_optout in availableY_n_unsure_optout" :key="y_n_unsure_optout.value" class="flex">
-          <input type="radio" :value="y_n_unsure_optout.value" v-model="disadvantaged">
+          <input type="radio" :value="y_n_unsure_optout.value" v-model="formdata.data.disadvantaged">
           <label>{{ y_n_unsure_optout.label }}</label>
         </div>
 
 
+      
 
         <div style="display: flex;">
           <label>Optional: Use this free text box to provide any additional detail.</label>
-          <input id="optOutDisadvantaged" class="w3-input" type="text">
+          <input class="w3-input" id="disadvantaged_other"  type="text" v-model="formdata.data.disadvantaged_other">
         </div>
 
 
@@ -321,9 +324,8 @@
 
         <div style="display: flex;">
           <label>Other: Use this free text box to provide any additional detail. </label>
-          <input id="occupations_other" class="w3-input" type="text">
+          <input id="occupations_other" class="w3-input" type="text" v-model="formdata.data.occupations_other">
         </div>
-
 
         <div>
           <label for="specialty">If you indicated “Medical non-genetics physician”, please select your
@@ -335,6 +337,13 @@
             </option>
           </select>
         </div>
+        
+        
+
+
+
+
+        
 
 
 
@@ -532,7 +541,7 @@ const non_genetics_specialties = [
 const support_types = [
         { value: 'volunteer', label: 'Volunteer outside of work environment' },
         { value: 'grant', label: 'Grants (e.g. NIH, foundational)' },
-        { value: 'employer', label: 'Employer supports/allows participation' },
+        { value: 'employer', label: 'Employer supports and allows participation' },
         { value: 'unsure', label: 'Unsure' },
       ]
 
@@ -560,7 +569,9 @@ export default {
       formdata:  {
                     data: {
           birth_country: null, 
+          birth_country_other: null,
           reside_country: null,
+          reside_country_other: null,
           birth_year: null,
          birth_country_opt_out: true,
      reside_country_opt_out: null,
@@ -569,45 +580,47 @@ export default {
       id: null,
       identities: [],
       gender_identities: [],
+      gender_identities_other: null,
+      support_other: null,
       occupations: [],
-     ethnicities: [],
+      ethnicities: [],
       support: [],
+      occupations_other: null,
+      identity_other: null,
+      disadvantaged: null,
+      disadvantaged_other: null,
       specialty: [],
+      demo_form_complete: false,
         }
                     },
 
      selected_birth_country_opt_out: false,
     selected_reside_country_opt_out: false,
     selected_reside_state_opt_out: false,
-      //reside_country: null,
-      //birth_country: null,
-      birth_year: null,
+      
       reside_state: null,
       ethnicity_opt_out: false,
       
-     // selected_specialty: null,
+     selected_specialty: null,
       selected_support: [],
       grant_detail: null,
       support_opt_out: false,
-      support_other: null,
+      
       //specialty: null,
       institution_id: null,
       gender: [],
       disadvantaged: null,
-      birth_country_other: null,
-      reside_country_other: null,
-      gender_identities_other: null,
-      gender_preferred_term: null,
-      occupations_other: null,
+      //birth_country_other: null,
+      //reside_country_other: null,
+     // gender_identities_other: null,
+      //gender_preferred_term: null,
+      
       user: null,
       error: null,
       errors: {},
       profile: {},
       saving: false,
       items: [],
-
-  
-
       selected_ethnicities: [],
       selected_occupations: [],
       selected_identities: [],
@@ -648,27 +661,7 @@ export default {
       //return this.$store.state.countries.items; // Assuming the countries data is stored in state
     },
 
-   // async created()
-   // {
-
-   //   try {
-    //    const response = await axios.get(`${baseUrl}/${uuid}`); // Assuming 'baseUrl' is defined
-     //  this.formdata = response.data;
-
-       // console.log(this.user); // Access user data within the component
-     //   console.log(this.formdata.data.email);
-      //  console.log(this.formdata.data.birth_country_opt_out);
-      //  console.log(this.formdata.data.reside_country_opt_out);
-     // } catch (error) {
-      //  this.error = error; // You might want an 'error' data property
-      //}
-       // comsole.log((${baseUrl}/${uuid}) )
-      //  console.log(this.uuid);
-       // this.getUser(this.uuid); // Replace 'user-uuid' with the actual UUID
-        //return this.formdata
-    // birth_country: this.user.data.birth_country;
-    // Optionally, load countries data here or elsewhere in your component
- // },
+  
 
     
     availableEthnicities() {
@@ -727,19 +720,6 @@ export default {
 
   methods: {
 
-    toggleEthnicity(value) {
-      const index = this.demographics.ethnicities.indexOf(value);
-      if (index > -1) { // Check if the ethnicity exists
-        this.demographics.ethnicities.splice(index, 1); // Remove
-      } else {
-        this.demographics.ethnicities.push(value); // Add
-      }
-    },
-    // Additional methods like `updateUser3`, `addSurvey`
-
-    //forceUpdate() {
-    //  this.$forceUpdate(); 
-    //},
 
     async fetchCountries() {
       try {
@@ -749,6 +729,18 @@ export default {
       }
     },
 
+    isSelected(value) {
+      return this.selected_ethnicities.includes(value);
+    },
+
+    handleCheckboxChange(value, isChecked) {
+      const index = this.selected_ethnicities.indexOf(value);
+      if (isChecked && index === -1) {
+        this.selected_ethnicities.push(value);
+      } else if (!isChecked && index !== -1) {
+        this.selected_ethnicities.splice(index, 1);
+      }
+    },
 
     async getUser(uuid) {
       try {
@@ -766,9 +758,13 @@ export default {
         console.log(this.formdata.data.support);
         this.selected_support = JSON.parse(this.formdata.data.support);
         console.log(this.formdata.data.gender_identities);
+        console.log(this.formdata.data.ethnicities);
         this.selected_gender_identities = JSON.parse(this.formdata.data.gender_identities);
+
         this.selected_identities = JSON.parse(this.formdata.data.identities);
+        
         this.selected_ethnicities = JSON.parse(this.formdata.data.ethnicities);
+        console.log(this.selected_ethnicities);
         this.selected_occupations = JSON.parse(this.formdata.data.occupations);
         //this.selected_specialty = JSON.parse(this.formdata.data.specialty);
         //this.selected_birth_country_opt_out = this.formdata.birth_country_opt_out;
@@ -814,11 +810,14 @@ export default {
 
       // Use 'this.user' to access data inside addSurvey. For example:
       // console.log("identities:", this.identities);
-      //  console.log("gender:", this.gender);
+        console.log("other occupation:", this.formdata.data.occupations_other);
 
       items = {
+        demo_form_complete: 1,
         birth_country: this.formdata.data.birth_country,
+        birth_country_other: this.formdata.data.birth_country_other,
         reside_country: this.formdata.data.reside_country,
+        reside_country_other: this.formdata.data.reside_country_other,
         state: this.formdata.data.state,
         state_opt_out: this.selected_reside_state_opt_out,
         birth_year: this.formdata.data.birth_year,
@@ -826,18 +825,23 @@ export default {
         reside_country_opt_out: this.selected_reside_country_opt_out,
         //state_opt_out: this.reside_state_opt_out,
         identities: this.selected_identities,
+        identity_other: this.formdata.data.identity_other,
         gender_identities: this.selected_gender_identities,
-        ethnicities: this.selected_ethnicities,
+        gender_identities_other: this.formdata.data.gender_identities_other,
+       ethnicities: this.selected_ethnicities.filter(e => e !== 'on'),
        ethnicity_opt_out: this.ethnicity_opt_out,
         occupations: this.selected_occupations,
+        
+      //  this.items.occupations.push(this.formdata.data.occupations_other); 
+        occupations_other: this.formdata.data.occupations_other,
        specialty: this.formdata.data.specialty,
         id: this.formdata.data.id,
         email: this.formdata.data.email,
         institution_id: this.formdata.data.institution_id,
         support: this.formdata.data.support,
-        grant_detail: this.grant_detail,
+        grant_detail: this.formdata.data.grant_detail,
         support_opt_out: this.support_opt_out,
-        support_other: this.support_other,
+        support_other: this.formdata.data.support_other,
         // reside_state: this.reside_state,
         // institution_id: this.user.institution_id,
         first_name: this.formdata.data.first_name,
@@ -845,7 +849,8 @@ export default {
         country_id: this.formdata.data.country_id,
         timezone: this.formdata.data.timezone,
         //TODO revisit disadvanted logic
-       // disadvantaged: this.disadvantaged,
+       disadvantaged: this.formdata.data.disadvantaged,
+       disadvantaged_other: this.formdata.data.disadvantaged_other,
         // ... more fields from this.user
       };
       console.log(items);
@@ -870,17 +875,8 @@ export default {
 
 
   },
-  //new
-
-  created() {
-    // Use Promise.all to fetch all necessary data when component is created
-   // Promise.all([this.getUser(this.uuid), this.fetchCountries()]).then(() => {
-    //  console.log('Data fetched successfully');
-     // this.selected_gender_identities= this.formdata.data.gender_identities;
-   // }).catch(error => {
-    //  console.error('Error fetching data', error);
-    //});
-  },
+  
+  
 
   mounted() {
 
@@ -895,31 +891,7 @@ export default {
         console.log(this.formdata.data.reside_country_opt_out);
        // Vue.set(this.formdata.data, 'birth_country_opt_out', true); 
 
-    //this.getUser(this.uuid);
-   // this.selected_gender_identities= this.formdata.data.gender_identities;
-   // this.availableGender_Identities.push('New Identity');
-  //  Promise.all([this.fetchCountries()])
-
-    //Promise.all([this.getUser(this.uuid), this.fetchCountries()])
-
-      // const button = this.$el.querySelector('button');
-      //if (button) {
-      //  button.addEventListener('click', () => this.addSurvey(this.uuid));
-      //}
-      //.then(() => {
-      //   Now you're guaranteed that both getUser and fetchCountries have finished
-
-      //  const button = this.$el.querySelector('button');
-      // if (button) {
-      //   button.addEventListener('click', () => this.addSurvey(this.uuid));
-      // }
-
-      //  ... rest of your mounted code 
-      // })
-     // .catch(error => {
-        //     Handle errors from getUser or fetchCountries
-      //  console.error("Error in mounted:", error);
-      //});
+  
   }
 
   

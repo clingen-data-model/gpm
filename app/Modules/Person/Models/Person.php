@@ -70,25 +70,31 @@ class Person extends Model implements HasLogEntries
         'gender_id',
         'gender_other',
         'birth_country',
+        'birth_country_other',
         'reside_country',
+        'reside_country_other',
         'birth_year',
         //TO DO Revisit disadvantaged
-        //'disadvantaged',
+        'disadvantaged',
+        'disadvantaged_other',
         'birth_country_opt_out',
         'state_opt_out',
         'reside_country_opt_out',
         'ethnicities',
-        'gender_preferred_term',
+        'gender_identities_other',
         'identities',
+        'identity_other',
         'gender_identities',
         'ethnicities',
         'ethnicity_opt_out',
         'occupations',
+        'occupations_other',
         'specialty',
         'support',
         'grant_detail',
         'support_opt_out',
         'support_other',
+        'demo_form_complete'
 
     ];
 
