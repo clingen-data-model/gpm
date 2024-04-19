@@ -94,6 +94,7 @@ class Person extends Model implements HasLogEntries
         'grant_detail',
         'support_opt_out',
         'support_other',
+        'demo_form_complete'
 
     ];
 

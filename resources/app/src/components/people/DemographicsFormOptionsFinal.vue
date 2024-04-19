@@ -197,7 +197,7 @@
 
         <div style="display: flex;">
           <label>My preferred term is </label>
-          <input class="w3-input" type="text" id="gender_identities_other" v-model="formdata.data.gender_identities_other">
+          <input class="w3-input" type="text" id="gender_identities_other" v-model="formdata.data.gender_identities_other" disabled>
         </div>
 
 
@@ -211,7 +211,7 @@
         <div class="w3-section">
           <legend>How is your ClinGen work supported? Select all that apply.</legend>
 
-         availableSupporttypes() {
+        
           <div v-for="support_type in availableSupporttypes" :key="support_type.value" class="flex">
             <input type="checkbox" :value="support_type.value" v-model="selected_support">
            <label>{{ support_type.label }}</label>
@@ -590,6 +590,7 @@ export default {
       disadvantaged: null,
       disadvantaged_other: null,
       specialty: [],
+      demo_form_complete: false,
         }
                     },
 
@@ -812,6 +813,7 @@ export default {
         console.log("other occupation:", this.formdata.data.occupations_other);
 
       items = {
+        demo_form_complete: 1,
         birth_country: this.formdata.data.birth_country,
         birth_country_other: this.formdata.data.birth_country_other,
         reside_country: this.formdata.data.reside_country,
