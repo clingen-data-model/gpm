@@ -9,6 +9,53 @@ import adminRoutes from './admin'
 import userRoutes from './users'
 import MemberForm from '@/components/groups/MemberForm.vue'
 import DemographicsForm from '@/components/people/DemographicsFormOptionsFinal.vue';
+import axios from 'axios';
+const baseUrl = '/api/people';
+let uuid = "3716f9f6-8f04-479e-af3e-5e6ce1f2abaa";
+//mport Vue from 'vue';
+
+//Vue.prototype.$isDemoFormComplete = false;
+
+let isDemoFormComplete = false;
+let routeDashboard = true;
+
+async function getUser(uuid) {
+    let formData = null;
+    let error = null;
+  
+    try {
+      const response = await axios.get(`${baseUrl}/${uuid}`);
+      formData = response.data;
+      console.log(formData);
+    //  console.log(formData?.demo_form_complete); // Check the actual value
+//console.log(typeof formData?.demo_form_complete); // Check the data type
+
+      return { formData }; // Return formData as part of an object
+    } catch (err) {
+      console.error("Failed to fetch user:", err);
+      error = err;
+      return { error }; // Return error as part of an object
+    }
+  }
+  
+
+getUser(uuid)
+.then(result => {
+    
+    const isDemoFormComplete = Boolean(result.formData?.data.demo_form_complete);
+    if (!isDemoFormComplete) {
+        routeDashboard = false;
+        console.log("Demo form is not complete.");
+      }
+    else{
+        routeDashboard = true;
+        console.log("Dashboard before routing check:", routeDashboard);
+    }
+      
+   // if (!result.formData?.demo_form_complete !== 1) {
+    //  console.log("Demo form is not complete.");
+    //}
+  });
 
 const routes = [
     { name: 'Dashboard',
@@ -262,8 +309,11 @@ router.beforeEach(async (to, from, next) => {
     // Check if user needs to update required demographics
    
     // TODO: set criteria more clearly, probably check for whether demographics response have ever been stored
-    
-    if (!store.getters.currentUser.hasRequiredDemographics) {
+    //console.log(isDemoFormComplete)
+
+   // console.log("Dashboard before routing check:", Dashboard);
+    if (!routeDashboard) {
+   // if (!store.getters.currentUser.hasRequiredDemographics) {
         router.replace({name: 'RequiredDemographicsUpdateForm', params: {redirectTo: to}});
         next();
         //store.getters.currentUser.hasRequiredDemographics
@@ -273,5 +323,12 @@ router.beforeEach(async (to, from, next) => {
     next();
 
 })
+
+//import axios from 'axios';
+
+//const baseUrl = 'https://example.com/api/users'; // Ensure baseUrl is defined
+
+
+
 
 export default router

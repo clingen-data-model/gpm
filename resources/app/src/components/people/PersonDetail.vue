@@ -35,12 +35,17 @@
                 <h2>Groups</h2>
                 <membership-list :person="person"></membership-list>
             </tab-item>
+
             <tab-item label="Info">
                 <h2>Profile</h2>
                 <person-profile :person="person"></person-profile>
             </tab-item>
             
-            
+            <tab-item label="Demographics">
+                <demographics-form :person="person" ></demographics-form>
+                
+            </tab-item>
+
             <tab-item label="Conflict of Interest">
                 <coi-list :person="person"></coi-list>
             </tab-item>
@@ -123,6 +128,7 @@ import CoiList from '@/components/people/CoiList.vue'
 import ActivityLog from "@/components/log_entries/ActivityLog";
 import PersonMailLog from "@/components/people/PersonMailLog";
 import ProfilePicture from "@/components/people/ProfilePicture";
+//import DemographicsForm from '../components/people/DemographicsFormOptionsFinal.vue';
 
 
 export default {
