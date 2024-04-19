@@ -123,12 +123,11 @@
         <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.</legend>
 
 
-        <div v-for="ethnicity in availableEthnicities" :value="ethnicity.value" :key="ethnicity.value" :checked="isSelected(ethnicity.value)"
-      @change="handleCheckboxChange(ethnicity.value, $event.target.checked)" style="display: flex;">
-          <input type="checkbox"  v-model="selected_ethnicities">
+        
+        <div v-for="ethnicity in availableEthnicities" :key="ethnicity.value" class="flex">
+          <input type="checkbox" :value="ethnicity.value" v-model="selected_ethnicities">
           <label>{{ ethnicity.label }}</label>
         </div>
-
 
 
         <div style="display: flex;">
@@ -729,9 +728,9 @@ export default {
       }
     },
 
-    isSelected(value) {
-      return this.selected_ethnicities.includes(value);
-    },
+   // isSelected(value) {
+   //   return this.selected_ethnicities.includes(value);
+   // },
 
     handleCheckboxChange(value, isChecked) {
       const index = this.selected_ethnicities.indexOf(value);
@@ -828,7 +827,7 @@ export default {
         identity_other: this.formdata.data.identity_other,
         gender_identities: this.selected_gender_identities,
         gender_identities_other: this.formdata.data.gender_identities_other,
-       ethnicities: this.selected_ethnicities.filter(e => e !== 'on'),
+       ethnicities: this.selected_ethnicities,
        ethnicity_opt_out: this.ethnicity_opt_out,
         occupations: this.selected_occupations,
         
