@@ -327,15 +327,17 @@
         </div>
 
         <div>
-          <label for="specialty">If you indicated “Medical non-genetics physician”, please select your
-            specialty.</label><span style="color: red !important; display: inline; float: none;"></span>
-          <!-- TODO: check with invested parties: should this be multi-select/checkbox? -->
-          <select id="specialty" name="specialty"><br> v-model="formdata.data.specialty">
-            <option value="">Select specialty</option>
-            <option v-for="specialty in availableNon_genetics_specialties" :key="specialty" :value="specialty">{{ specialty }}
-            </option>
-          </select>
-        </div>
+    <label for="specialty">If you indicated “Medical non-genetics physician”, please select your specialty.</label>
+    <span style="color: red !important; display: inline; float: none;"></span>
+    <!-- TODO: check with invested parties: should this be multi-select/checkbox? -->
+    <select id="specialty" name="specialty" v-model="formdata.data.specialty">
+        <option value="">Select specialty</option>
+        <option v-for="specialty in availableNon_genetics_specialties" :key="specialty" :value="specialty">
+            {{ specialty }}
+        </option>
+    </select>
+</div>
+
         
         
 
@@ -694,27 +696,6 @@ export default {
     availableSupporttypes() {
       return support_types;
     },
-
-  //  async created()
-  //  {
-       // comsole.log((${baseUrl}/${uuid}) )
-      //  console.log(this.uuid);
-      //  await this.getUser(this.uuid); // Replace 'user-uuid' with the actual UUID
-    //    this.formdata = response.data;
-     //   console.log(this.formdata);
-     //   console.log(this.formdata.data.email);
-    // birth_country: this.user.data.birth_country;
-    // Optionally, load countries data here or elsewhere in your component
-  //},
-    
-   // currentUser() {
-      //console.log(this.store.getters.currentUser);
-    //  return this.$store.getters.currentUser;
-    //}
-    
-
-
-    // Other computed properties
   },
 
   methods: {
@@ -725,19 +706,6 @@ export default {
         await this.$store.dispatch('countries/getItems');
       } catch (error) {
         console.error('Error fetching countries:', error);
-      }
-    },
-
-   // isSelected(value) {
-   //   return this.selected_ethnicities.includes(value);
-   // },
-
-    handleCheckboxChange(value, isChecked) {
-      const index = this.selected_ethnicities.indexOf(value);
-      if (isChecked && index === -1) {
-        this.selected_ethnicities.push(value);
-      } else if (!isChecked && index !== -1) {
-        this.selected_ethnicities.splice(index, 1);
       }
     },
 
