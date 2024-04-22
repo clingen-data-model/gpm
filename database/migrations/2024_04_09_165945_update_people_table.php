@@ -14,24 +14,24 @@ return new class extends Migration
         Schema::table('people', function (Blueprint $table) {
            $table->integer('birth_country')->nullable();
            $table->integer('reside_country')->nullable();
-
             $table->char('birth_year', 4);
-            
             $table->char('grant_detail', 30)->nullable();
-            $table->char('support_other', 30)->nullable();
-            //TO DO revisit disadvantaged
-           // $table->char('disadvantaged', 15);
+            $table->char('support_other', 30)->nullable();  
+            $table->char('disadvantaged', 15);
             $table->boolean('state_opt_out')->nullable();
             $table->boolean('birth_country_opt_out')->nullable();
             $table->boolean('reside_country_opt_out')->nullable();
             $table->boolean('support_opt_out')->nullable();
             $table->boolean('ethnicity_opt_out')->nullable();
             $table->json('ethnicities')->nullable();
+            $table->json('support')->nullable();
             $table->json('occupations')->nullable();
            $table->json('identities')->nullable();
             $table->json('gender_identities')->nullable();
-            $table->json('specialty')->nullable();
-            $table->json('support')->nullable();
+           // $table->json('specialty')->nullable();
+            $table->char('specialty', 50)->nullable();
+
+           
 
 
 

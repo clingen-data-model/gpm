@@ -19,6 +19,8 @@ let uuid = "3716f9f6-8f04-479e-af3e-5e6ce1f2abaa";
 let isDemoFormComplete = false;
 let routeDashboard = true;
 
+
+
 async function getUser(uuid) {
     let formData = null;
     let error = null;
@@ -39,23 +41,23 @@ async function getUser(uuid) {
   }
   
 
-getUser(uuid)
-.then(result => {
+//getUser(uuid)
+//.then(result => {
     
-    const isDemoFormComplete = Boolean(result.formData?.data.demo_form_complete);
-    if (!isDemoFormComplete) {
-        routeDashboard = false;
-        console.log("Demo form is not complete.");
-      }
-    else{
-        routeDashboard = true;
-        console.log("Dashboard before routing check:", routeDashboard);
-    }
+ //   const isDemoFormComplete = Boolean(result.formData?.data.demo_form_complete);
+  //  if (!isDemoFormComplete) {
+  //      routeDashboard = false;
+  //      console.log("Demo form is not complete.");
+  //    }
+   // else{
+   //     routeDashboard = true;
+   //     console.log("Dashboard before routing check:", routeDashboard);
+   // }
       
    // if (!result.formData?.demo_form_complete !== 1) {
     //  console.log("Demo form is not complete.");
     //}
-  });
+ // });
 
 const routes = [
     { name: 'Dashboard',
@@ -306,6 +308,24 @@ router.beforeEach(async (to, from, next) => {
         return;
     }
 
+    getUser(uuid)
+.then(result => {
+    
+    const isDemoFormComplete = Boolean(result.formData?.data.demo_form_complete);
+    if (!isDemoFormComplete) {
+        routeDashboard = false;
+        console.log("Demo form is not complete.");
+      }
+    else{
+        routeDashboard = true;
+        console.log("Dashboard before routing check:", routeDashboard);
+    }
+      
+   // if (!result.formData?.demo_form_complete !== 1) {
+    //  console.log("Demo form is not complete.");
+    //}
+  });
+
     // Check if user needs to update required demographics
    
     // TODO: set criteria more clearly, probably check for whether demographics response have ever been stored
@@ -332,3 +352,5 @@ router.beforeEach(async (to, from, next) => {
 
 
 export default router
+
+

@@ -319,6 +319,15 @@
                 "guard_name": "web",
                 "scope": "system"
             },
+            "view-demographics": {
+                "id": 1008,
+                "name": "view-demographics",
+                "display_name": "View Demographic Surveys",
+                "description": "View Demographic Surveys",
+                "guard_name": "web",
+                "scope": "system"
+            },
+
             "group-manage": {
                 "id": 10,
                 "name": "groups-manage",
@@ -397,7 +406,8 @@
                 30,
                 31,
                 40,
-                50
+                50,
+                1009
             ],
             "super-admin": [
                 1,
@@ -409,7 +419,8 @@
                 20,
                 30,
                 40,
-                50
+                50,
+                1009
             ],
             "admin": [
                 3,
