@@ -214,15 +214,15 @@
           <div v-for="support_type in availableSupporttypes" :key="support_type.value" class="flex">
             <input type="checkbox" :value="support_type.value" v-model="selected_support">
            <label>{{ support_type.label }}</label>
-            <div v-if="support_type.value == 'grant' && selected_support.indexOf('grant') != -1" style="display: flex;">
-             <br>
+            </div>
+
+            <div>
               <label>Provide more details on source of funding</label>
               <input class="w3-input" type="text" v-model="grant_detail">
             </div>
-          </div>
-
+          
           <label>
-            <input type="checkbox" v-model="support_opt_out">Prefer not to answer<br>
+            <input type="checkbox" v-model="selected_support_opt_out">Prefer not to answer<br>
           </label>
 
           <div style="display: flex;">
@@ -539,10 +539,10 @@ const non_genetics_specialties = [
         { label: 'WYOMING', value: 'WY' },
       ]
 
-const support_types = [
+      const support_types = [
         { value: 'volunteer', label: 'Volunteer outside of work environment' },
         { value: 'grant', label: 'Grants (e.g. NIH, foundational)' },
-        { value: 'employer', label: 'Employer supports and allows participation' },
+        { value: 'employer', label: 'Employer supports/allows participation' },
         { value: 'unsure', label: 'Unsure' },
       ]
 
@@ -592,20 +592,20 @@ export default {
       disadvantaged_other: null,
       specialty: [],
       demo_form_complete: false,
+      support_opt_out: false,
         }
                     },
 
      selected_birth_country_opt_out: false,
     selected_reside_country_opt_out: false,
-    selected_reside_state_opt_out: false,
-      
+    selected_reside_state_opt_out: false, 
+    selected_support_opt_out:false,
       reside_state: null,
       ethnicity_opt_out: false,
-      
      selected_specialty: null,
       selected_support: [],
       grant_detail: null,
-      support_opt_out: false,
+      
       
       //specialty: null,
       institution_id: null,
@@ -630,7 +630,7 @@ export default {
       selected_reside_state: [],
 
       
-
+     
 
      
     };
@@ -693,7 +693,7 @@ export default {
       return states;
     },
 
-    availableSupporttypes() {
+   availableSupporttypes() {
       return support_types;
     },
   },
@@ -719,6 +719,7 @@ export default {
         this.selected_birth_country_opt_out = !!this.formdata.data.birth_country_opt_out;
         this.selected_reside_country_opt_out = !!this.formdata.data.reside_country_opt_out;
         this.selected_reside_state_opt_out = !!this.formdata.data.state_opt_out;
+        this.selected_support_opt_out = !!this.formdata.data.state_opt_out;
        // selected_reside_state_opt_out: false,
         //this.formdata.data.birth_country_opt_out = (this.formdata.data.birth_country_opt_out === 1); 
         
@@ -807,7 +808,7 @@ export default {
         institution_id: this.formdata.data.institution_id,
         support: this.formdata.data.support,
         grant_detail: this.formdata.data.grant_detail,
-        support_opt_out: this.support_opt_out,
+        support_opt_out: this.formdata.data.support_opt_out,
         support_other: this.formdata.data.support_other,
         // reside_state: this.reside_state,
         // institution_id: this.user.institution_id,
