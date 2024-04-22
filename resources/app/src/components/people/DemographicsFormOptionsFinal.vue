@@ -806,7 +806,7 @@ export default {
         id: this.formdata.data.id,
         email: this.formdata.data.email,
         institution_id: this.formdata.data.institution_id,
-        support: this.formdata.data.support,
+        support: this.selected_support,
         grant_detail: this.formdata.data.grant_detail,
         support_opt_out: this.formdata.data.support_opt_out,
         support_other: this.formdata.data.support_other,
