@@ -60,6 +60,8 @@ return [
         App\Providers\FortifyServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        \SocialiteProviders\Manager\ServiceProvider::class,
+
         /**
          *  Module Providers
          */
