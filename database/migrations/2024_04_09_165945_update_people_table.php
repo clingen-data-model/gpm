@@ -19,8 +19,8 @@ return new class extends Migration
             
             $table->char('grant_detail', 30)->nullable();
             $table->char('support_other', 30)->nullable();
-            //TO DO revisit disadvantaged
-           // $table->char('disadvantaged', 15);
+            
+            $table->char('disadvantaged', 15);
             $table->boolean('state_opt_out')->nullable();
             $table->boolean('birth_country_opt_out')->nullable();
             $table->boolean('reside_country_opt_out')->nullable();
@@ -31,7 +31,9 @@ return new class extends Migration
            $table->json('identities')->nullable();
             $table->json('gender_identities')->nullable();
             $table->json('specialty')->nullable();
-            $table->json('support')->nullable();
+            $table->char('specialty', 50)->nullable();
+
+           
 
 
 

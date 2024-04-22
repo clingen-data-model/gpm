@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {Schema::table('people', function (Blueprint $table) {
-        $table->char('disadvantaged', 25)->nullable();
+      
 $table->char('disadvantaged_other', 25)->nullable();
 $table->char('identity_other', 25)->nullable();
 $table->char('occupations_other', 25)->nullable();
@@ -20,7 +20,7 @@ $table->char('reside_country_other', 25)->nullable();
 $table->char('gender_identities_other', 25)->nullable();
 $table->boolean('demo_form_complete')->nullable();
 $table->char('gender_preferred_term', 30)->nullable();
-$table->char('specialty', 30)->nullable();
+
 
     });
     //
