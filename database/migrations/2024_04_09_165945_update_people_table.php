@@ -12,15 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('people', function (Blueprint $table) {
-           $table->integer('birth_country')->nullable();
-           $table->integer('reside_country')->nullable();
+            $table->biginteger('birth_country')->unsigned()->nullable();
+            $table->foreign('birth_country')->references('id')->on('countries');
+            $table->biginteger('reside_country')->unsigned()->nullable();
+            $table->foreign('reside_country')->references('id')->on('countries');
 
             $table->char('birth_year', 4);
-            
-            $table->char('grant_detail', 30)->nullable();
-            $table->char('support_other', 30)->nullable();
-            
-            $table->char('disadvantaged', 15);
+
+            $table->string('grant_detail')->nullable();
+            $table->string('support_other')->nullable();
+
+            $table->string('disadvantaged');
             $table->boolean('state_opt_out')->nullable();
             $table->boolean('birth_country_opt_out')->nullable();
             $table->boolean('reside_country_opt_out')->nullable();
@@ -28,19 +30,10 @@ return new class extends Migration
             $table->boolean('ethnicity_opt_out')->nullable();
             $table->json('ethnicities')->nullable();
             $table->json('occupations')->nullable();
-           $table->json('identities')->nullable();
+            $table->json('identities')->nullable();
             $table->json('gender_identities')->nullable();
             $table->json('specialty')->nullable();
-            $table->char('specialty', 50)->nullable();
-
-           
-
-
-
-
-
         });
-        //
     }
 
     /**
@@ -48,6 +41,24 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('submissions', function (Blueprint $table) {
+            $table->dropColumn('birth_country')
+                ->dropColumn('reside_country')
+                ->dropColumn('birth_year')
+                ->dropColumn('grant_detail')
+                ->dropColumn('support_other')
+                ->dropColumn('disadvantaged')
+                ->dropColumn('state_opt_out')
+                ->dropColumn('birth_country_opt_out')
+                ->dropColumn('reside_country_opt_out')
+                ->dropColumn('support_opt_out')
+                ->dropColumn('ethnicity_opt_out')
+                ->dropColumn('ethnicities')
+                ->dropColumn('occupations')
+                ->dropColumn('identities')
+                ->dropColumn('gender_identities')
+                ->dropColumn('specialty');
+        });
         //
     }
 };
