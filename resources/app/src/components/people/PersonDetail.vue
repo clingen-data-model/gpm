@@ -41,9 +41,9 @@
                 <person-profile :person="person"></person-profile>
             </tab-item>
             
-            <tab-item label="Demographics">
-                <demographics-form :person="person" ></demographics-form>
-                
+            <tab-item label="Demographics" :visible="hasPermission('view-demographics')" >
+                <demographics-form :person="person" :uuid="this.person.uuid"></demographics-form>
+               
             </tab-item>
 
             <tab-item label="Conflict of Interest">
