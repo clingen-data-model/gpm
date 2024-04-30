@@ -8,80 +8,18 @@ import groupRoutes from './groups'
 import adminRoutes from './admin'
 import userRoutes from './users'
 import MemberForm from '@/components/groups/MemberForm.vue'
-import DemographicsForm from '@/components/people/DemographicsFormOptionsFinal.vue';
-import axios from 'axios';
 const baseUrl = '/api/people';
-let uuid = "3716f9f6-8f04-479e-af3e-5e6ce1f2abaa";
-//mport Vue from 'vue';
 
-//Vue.prototype.$isDemoFormComplete = false;
-
-let isDemoFormComplete = false;
-let routeDashboard = true;
-
-
-
-async function getUser(uuid) {
-    let formData = null;
-    let error = null;
-  
-    try {
-      const response = await axios.get(`${baseUrl}/${uuid}`);
-      formData = response.data;
-      console.log(formData);
-    //  console.log(formData?.demo_form_complete); // Check the actual value
-//console.log(typeof formData?.demo_form_complete); // Check the data type
-
-      return { formData }; // Return formData as part of an object
-    } catch (err) {
-      console.error("Failed to fetch user:", err);
-      error = err;
-      return { error }; // Return error as part of an object
-    }
-  }
-  
-
-//getUser(uuid)
-//.then(result => {
-    
- //   const isDemoFormComplete = Boolean(result.formData?.data.demo_form_complete);
-  //  if (!isDemoFormComplete) {
-  //      routeDashboard = false;
-  //      console.log("Demo form is not complete.");
-  //    }
-   // else{
-   //     routeDashboard = true;
-   //     console.log("Dashboard before routing check:", routeDashboard);
-   // }
-      
-   // if (!result.formData?.demo_form_complete !== 1) {
-    //  console.log("Demo form is not complete.");
-    //}
- // });
 
 const routes = [
     { name: 'Dashboard',
         path: '/',
        component: () => import (/* webpackChunkName "dashboard" */ '@/views/Dashboard.vue'),
-     
-       //TODO - to enable routing back to the Dashboard from Demographics form, needed to comment out this logic.  Need to analyze what is neede for Demographics. 
+
         meta: {
           protected: true
        }
     },
-
-    //to do enhance conditional logic to route to form if incomplete
-   // {   
-    //    name: 'DemographicsForm',
-    //    path: '/demographics/:uuid',
-   //     redirect: '/demographics/:uuid',
-   //     props: true,
-   //     component: DemographicsForm
-       // component: DemographicsForm
-   //  component: () =>
-    // import ('@/components/people/DemographicsFormOptionsFinal.vue'),
-    //   },
-
     {
         name: 'ApplicationSummary',
         path: '/application-summary',
@@ -270,9 +208,8 @@ router.beforeEach(async (to, from, next) => {
         next();
         return;
     }
-    //if (to.name == 'DemographicsForm'
 
-     if   (to.name == 'MandatoryProfileUpdate'
+    if   (to.name == 'MandatoryProfileUpdate'
         || to.name == 'RequiredDemographicsUpdateForm'
         || to.name == 'RedeemInvite'
         || to.name == 'InviteWithCode'
@@ -283,9 +220,6 @@ router.beforeEach(async (to, from, next) => {
         next();
         return;
     }
-
-    //create if logic to route for incomplete Demographics Form
-    //router.replace({name: 'DemographicsForm', params: {redirectTo: to}});
 
     // Check to see if the user's profile is incomplete
     if (store.getters.currentUser.profileIncomplete) {
@@ -308,46 +242,19 @@ router.beforeEach(async (to, from, next) => {
         return;
     }
 
-    getUser(uuid)
-.then(result => {
-    
-    const isDemoFormComplete = Boolean(result.formData?.data.demo_form_complete);
-    if (!isDemoFormComplete) {
-        routeDashboard = false;
-        console.log("Demo form is not complete.");
-      }
-    else{
-        routeDashboard = true;
-        console.log("Dashboard before routing check:", routeDashboard);
-    }
-      
-   // if (!result.formData?.demo_form_complete !== 1) {
-    //  console.log("Demo form is not complete.");
-    //}
-  });
-
-    // Check if user needs to update required demographics
-   
-    // TODO: set criteria more clearly, probably check for whether demographics response have ever been stored
-    //console.log(isDemoFormComplete)
-
-   // console.log("Dashboard before routing check:", Dashboard);
-    if (!routeDashboard) {
-   // if (!store.getters.currentUser.hasRequiredDemographics) {
+    // Check if the user needs to update profile demographics
+    // TODO: change demo_form_complete to a timestamped field
+    // TODO: do not use demo as an abbreviation for demographics
+    if (!store.getters.currentUser.person.demo_form_complete) {
+        console.log('redirecting to demographics form');
         router.replace({name: 'RequiredDemographicsUpdateForm', params: {redirectTo: to}});
         next();
-        //store.getters.currentUser.hasRequiredDemographics
         return;
     }
 
     next();
 
 })
-
-//import axios from 'axios';
-
-//const baseUrl = 'https://example.com/api/users'; // Ensure baseUrl is defined
-
 
 
 
