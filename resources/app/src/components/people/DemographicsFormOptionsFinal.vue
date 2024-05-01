@@ -784,19 +784,27 @@ export default {
         //access retrieved user data to populate form
         //checkboxes copy data from retrieved user to prevent one checkbox from populating all
         console.log(this.formdata); // Access user data within the component
-        this.selected_birth_country_opt_out = !!this.formdata.data.birth_country_opt_out;
-        this.selected_reside_country_opt_out = !!this.formdata.data.reside_country_opt_out;
-        this.selected_reside_state_opt_out = !!this.formdata.data.state_opt_out;
-        this.selected_support_opt_out = !!this.formdata.data.state_opt_out;
+
+        //need logic to determine if initial form.  If so, don't map data from database.  Mapping is needed to prevent the issue in which selecting one checkbox results in all selected.
+
+        // this.selected_birth_country_opt_out = !!this.formdata.data.birth_country_opt_out;
+        // this.selected_reside_country_opt_out = !!this.formdata.data.reside_country_opt_out;
+        // this.selected_reside_state_opt_out = !!this.formdata.data.state_opt_out;
+        // this.selected_support_opt_out = !!this.formdata.data.state_opt_out;
+        //this.selected_support = JSON.parse(this.formdata.data.support);
+        //this.selected_gender_identities = JSON.parse(this.formdata.data.gender_identities);
+        // this.selected_identities = JSON.parse(this.formdata.data.identities);
+        // this.selected_ethnicities = JSON.parse(this.formdata.data.ethnicities);
+        // this.selected_occupations = JSON.parse(this.formdata.data.occupations);
+
+
         console.log(this.formdata.data.support);
-        this.selected_support = JSON.parse(this.formdata.data.support);
+
         console.log(this.formdata.data.gender_identities);
         console.log(this.formdata.data.ethnicities);
-        this.selected_gender_identities = JSON.parse(this.formdata.data.gender_identities);
-        this.selected_identities = JSON.parse(this.formdata.data.identities);
-        this.selected_ethnicities = JSON.parse(this.formdata.data.ethnicities);
+
         console.log(this.selected_ethnicities);
-        this.selected_occupations = JSON.parse(this.formdata.data.occupations);
+
         //this.selected_specialty = JSON.parse(this.formdata.data.specialty);
         //this.selected_birth_country_opt_out = this.formdata.birth_country_opt_out;
         // this.selected_birth_country_opt_out = this.formdata.data.birth_country_opt_out === 1 ? true : false;

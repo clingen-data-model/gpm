@@ -37,6 +37,16 @@ return [
             'guard_name' => 'web',
             'scope' => 'system'
         ],
+
+        'view-demographics' => [
+            'id' => 1009,
+            'name' => 'view-demographics',
+            'display_name' => 'View Demographic Surveys',
+            'description' => 'Super admin access to demographic surveys',
+            'guard_name' => 'web',
+            'scope' => 'system'
+        ],
+
         'logs-view' => [
             'id' => 2,
             'name' => 'logs-view',
@@ -136,8 +146,8 @@ return [
     ],
 
     'role_permissions' => [
-        'super-user' => [1,2,3,4,5,6,10,20,30,31,40,50],
-        'super-admin' => [1,3,4,5,6,10,20,30,40,50],
+        'super-user' => [1,2,3,4,5,6,10,20,30,31,40,50, 1009],
+        'super-admin' => [1,3,4,5,6,10,20,30,40,50, 1009],
         'admin' => [3,4,6,10,20]
     ]
 ];
