@@ -38,7 +38,7 @@
                 <person-profile :person="person"></person-profile>
             </tab-item>
 
-            <tab-item label="Demographics" :visible="hasPermission('people-manage') || userIsPerson(person)">
+            <tab-item label="Demographics" :visible="(hasRole('super-admin') || userIsPerson(person))">
                 <demographics-form :person="person"></demographics-form>
 
             </tab-item>
