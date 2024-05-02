@@ -14,7 +14,14 @@ class ReorderStreamMessages
 
     public function handle()
     {
-        $this->backupStreamMessages();
+        try {
+            $this->backupStreamMessages();
+            $this->testBackupTable();
+        } catch (\Exception $e) {
+            Log::error('Error backing up stream messages. Error: ' . $e->getMessage());
+            return;
+        }
+
         $this->createTempTable();
         $this->loadTempTable();
         $this->truncateStreamMessages();
@@ -39,6 +46,20 @@ class ReorderStreamMessages
 
         DB::statement($sql);
     }
+
+    private function testBackupTable(): void
+    {
+        $backup_count_sql = 'SELECT count(*) as count from `sm_backup`';
+        $original_count_sql = 'SELECT count(*) as count from `stream_messages`';
+
+        $backup_count = DB::select($backup_count_sql)[0]->count;
+        $original_count = DB::select($original_count_sql)[0]->count;
+
+        if ($backup_count != $original_count) {
+            throw new \Exception('Backup count does not match original count');
+        }
+    }
+    
     
     /**
      * Create a temp table to hold the ordered stream messages
