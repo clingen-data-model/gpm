@@ -20,6 +20,13 @@
             <br>
             You can approve this application but be aware that it is not part of the "normal" application workflow.
         </static-alert>
+        <static-alert
+            v-if="application.affiliation_id === null"
+            variant="error"
+        >
+            No affiliation id has been set for this group. If you approve this now, it is likely to cause
+            problems with systems that use the data exchange for group information (e.g., the CSPEC registry).
+        </static-alert>
         
         <transition name="slide-fade-down">
             <user-defined-mail-form v-model="email" v-show="notifyContacts"/>
