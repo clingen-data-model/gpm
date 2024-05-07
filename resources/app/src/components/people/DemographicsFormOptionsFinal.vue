@@ -48,7 +48,7 @@
           <div>
             <label for="birth_country">Country of Birth: </label>
             <select id="birth_country" name="birth_country" v-model="formdata.data.birth_country"
-              v-bind:disabled="disableField">
+              v-bind:disabled=disableField2()>
               <option value="">Select country</option>
               <option v-for="country in countries" :key="country.value" :value="country.value">{{ country.label }}
               </option>
@@ -64,8 +64,8 @@
           </div>
 
           <div style="display: flex;" v-if="formDataLoaded">
-            <input type="checkbox" class="checkbox-margin" id="birth_country_opt_out"
-              v-model="selected_birth_country_opt_out" v-bind:disabled="!isNew">
+            <input type="checkbox" id="birth_country_opt_out" v-model="selected_birth_country_opt_out"
+              v-bind:disabled="!isNew">
 
             <label for="birth_country_opt_out"> Prefer not to answer</label>
 
@@ -159,12 +159,13 @@
           <div style="display: flex; align-items: center;">
             <label>What year were you born?</label>
             <input class="w3-input" type="text" id="birth_year" v-model="formdata.data.birth_year"
-              v-bind:disabled="!isNew" required>
+              v-bind:disabled="!isNew">
           </div>
 
 
           <div style="display: flex;">
-            <input id="optOutBirth" class="w3-check" type="checkbox" v-bind:disabled="!isNew">
+            <input id="optOutBirth" class="w3-check" type="checkbox" v-bind:disabled="!isNew"
+              v-model="selected_birth_year_opt_out">
             <label> Prefer not to answer</label>
 
           </div>
@@ -182,9 +183,9 @@
           <div class="w3-section">
             <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.
             </legend>
-            <div v-for="identity in availableIdentities" :key="identity">
-              <label><input type="checkbox" :value="identity" v-model="selected_identities" v-bind:disabled="!isNew">
-                {{ identity }}
+            <div v-for="identity in availableIdentities" :key="identity" style="display: flex;">
+              <input type="checkbox" :value="identity" v-model="selected_identities" v-bind:disabled="!isNew">
+              <label> {{ identity }}
               </label>
             </div>
           </div>
@@ -204,11 +205,11 @@
           <div class="w3-section">
             <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.
             </legend>
-            <div v-for="gender_identity in availableGender_Identities" :key="gender_identity">
-              <label><input type="checkbox" :value="gender_identity" v-model="selected_gender_identities"
-                  v-bind:disabled="!isNew">
-                {{ gender_identity }}
-              </label>
+            <div v-for="gender_identity in availableGender_Identities" :key="gender_identity" style="display: flex;">
+              <input type="checkbox" :value="gender_identity" v-model="selected_gender_identities"
+                v-bind:disabled="!isNew">
+              <label>{{ gender_identity }}</label>
+
             </div>
 
           </div>
@@ -610,8 +611,9 @@ export default {
           reside_country: null,
           reside_country_other: null,
           birth_year: null,
-          birth_country_opt_out: true,
-          reside_country_opt_out: null,
+          birth_year_opt_out: false,
+          birth_country_opt_out: false,
+          reside_country_opt_out: false,
           reside_state_opt_out: false,
           state: null,
           id: null,
@@ -636,6 +638,7 @@ export default {
       selected_reside_country_opt_out: false,
       selected_reside_state_opt_out: false,
       selected_support_opt_out: false,
+      selected_birth_year_opt_out: false,
       reside_state: null,
       ethnicity_opt_out: false,
       selected_specialty: null,
@@ -806,7 +809,8 @@ export default {
           this.selected_birth_country_opt_out = !!this.formdata.data.birth_country_opt_out;
           this.selected_reside_country_opt_out = !!this.formdata.data.reside_country_opt_out;
           this.selected_reside_state_opt_out = !!this.formdata.data.state_opt_out;
-          this.selected_support_opt_out = !!this.formdata.data.state_opt_out;
+          this.selected_birth_year_opt_out = !!this.formdata.data.birth_year_opt_out;
+          this.selected_support_opt_out = !!this.formdata.data.support_opt_out;
           this.selected_support = JSON.parse(this.formdata.data.support);
           this.selected_gender_identities = JSON.parse(this.formdata.data.gender_identities);
           this.selected_identities = JSON.parse(this.formdata.data.identities);
@@ -878,6 +882,7 @@ export default {
         state: this.formdata.data.state,
         state_opt_out: this.selected_reside_state_opt_out,
         birth_year: this.formdata.data.birth_year,
+        birth_year_opt_out: this.selected_birth_year_opt_out,
         birth_country_opt_out: this.selected_birth_country_opt_out,
         reside_country_opt_out: this.selected_reside_country_opt_out,
         //state_opt_out: this.reside_state_opt_out,
@@ -916,7 +921,7 @@ export default {
       try {
         const response = await axios.put(`${baseUrl}/${this.uuid}/demographics`, items);
 
-        //console.log(response.data);
+        console.log(response.data);
         //router.push({ name: 'Dashboard' }); // Redirect on success
         // this.$router.push({ name: 'Dashboard' });
         this.$emit('saved');
@@ -934,6 +939,10 @@ export default {
       this.editform = true;
       console.log("After setting editform:", this.editform);
     },
+
+    disableField2() {
+      return !this.isNew && !this.editForm;
+    }
 
 
   },
@@ -1053,6 +1062,7 @@ span {
   display: table;
 }
 
+
 .checkbox-margin {
   margin-right: 200px;
   /* Adjust the space as needed */
@@ -1104,5 +1114,17 @@ button {
 #birth_country option {
   background-color: #fff;
   /* Ensure options are also visible */
+}
+
+input[type="checkbox"]+label:before {
+  content: "";
+  display: inline-block;
+  padding-right: .3cm;
+}
+
+input[type="radio"] {
+  margin: 0.4rem;
+  padding-right: 0.5rem;
+  /* Adjust the padding as needed */
 }
 </style>
