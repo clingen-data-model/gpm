@@ -47,7 +47,8 @@
           <!-- Country of Birth Dropdown -->
           <div>
             <label for="birth_country">Country of Birth: </label>
-            <select id="birth_country" name="birth_country" v-model="formdata.data.birth_country" :disabled="!editform">
+            <select id="birth_country" name="birth_country" v-model="formdata.data.birth_country"
+              v-bind:disabled="disableField">
               <option value="">Select country</option>
               <option v-for="country in countries" :key="country.value" :value="country.value">{{ country.label }}
               </option>
@@ -58,12 +59,14 @@
           <div style="display: flex;">
             <label>Other: </label>
             <input class="w3-input" type="text" id="birth_country_other" vmodel="formdata.data.birth_country_other"
-              :disabled="!editform">
+              v-bind:disabled="!isNew">
+
           </div>
 
           <div style="display: flex;" v-if="formDataLoaded">
             <input type="checkbox" class="checkbox-margin" id="birth_country_opt_out"
-              v-model="selected_birth_country_opt_out" :disabled="!editform">
+              v-model="selected_birth_country_opt_out" v-bind:disabled="!isNew">
+
             <label for="birth_country_opt_out"> Prefer not to answer</label>
 
           </div>
@@ -73,7 +76,7 @@
             <label for="reside_country">Country of Residence: </label>
 
             <select id="reside_country" name="reside_country" v-model="formdata.data.reside_country"
-              :disabled="!editform">
+              v-bind:disabled="!isNew">
               <option value="">Select country</option>
               <option v-for="country in countries" :key="country.value" :value="country.value">{{ country.label }}
               </option>
@@ -89,7 +92,8 @@
 
           <div style="display: flex;">
             <input type="checkbox" id="reside_country_opt_out" v-model="selected_reside_country_opt_out"
-              :disabled="!editform">
+              v-bind:disabled="!isNew">
+
             <label for="reside_country_opt_out">Prefer not to answer </label>
 
           </div>
@@ -101,7 +105,7 @@
           <div>
             <label for="country-state">If you currently live in the United States, what is your state/territory of
               residence?</label>
-            <select id="country-state" name="country-state" v-model="formdata.data.state" :disabled="!editform">
+            <select id="country-state" name="country-state" v-model="formdata.data.state" v-bind:disabled="!isNew">
               <option value="">Select state</option>
               <option v-for="state in availableStates" :key="state.value" :value="state.value">{{ state.label }}
               </option>
@@ -110,7 +114,7 @@
 
           <div style="display: flex;">
             <input id="reside_state_opt_out" class="w3-check" type="checkbox" v-model="selected_reside_state_opt_out"
-              :disabled="!editform">
+              v-bind:disabled="!isNew">
             <label>Prefer not to answer </label>
           </div>
 
@@ -137,14 +141,15 @@
 
 
           <div v-for="ethnicity in availableEthnicities" :key="ethnicity.value" class="flex">
-            <input type="checkbox" :value="ethnicity.value" v-model="selected_ethnicities" :disabled="!editform">
+            <input type="checkbox" :value="ethnicity.value" v-model="selected_ethnicities" v-bind:disabled="!isNew">
             <label>{{ ethnicity.label }}</label>
           </div>
 
 
           <div style="display: flex;">
             <input id="optOutEthnicity" class="w3-check" type="checkbox" v-model="ethnicity_opt_out"
-              :disabled="!editform"> <br>
+              v-bind:disabled="!isNew">
+            <br>
             <label>Prefer not to answer</label>
 
           </div>
@@ -153,13 +158,13 @@
           <br>
           <div style="display: flex; align-items: center;">
             <label>What year were you born?</label>
-            <input class="w3-input" type="text" id="birth_year" v-model="formdata.data.birth_year" :disabled="!editform"
-              required>
+            <input class="w3-input" type="text" id="birth_year" v-model="formdata.data.birth_year"
+              v-bind:disabled="!isNew" required>
           </div>
 
 
           <div style="display: flex;">
-            <input id="optOutBirth" class="w3-check" type="checkbox">
+            <input id="optOutBirth" class="w3-check" type="checkbox" v-bind:disabled="!isNew">
             <label> Prefer not to answer</label>
 
           </div>
@@ -178,7 +183,7 @@
             <legend>Which categories describe you? Select all that apply. Note, you may select more than one group.
             </legend>
             <div v-for="identity in availableIdentities" :key="identity">
-              <label><input type="checkbox" :value="identity" v-model="selected_identities" :disabled="!editform">
+              <label><input type="checkbox" :value="identity" v-model="selected_identities" v-bind:disabled="!isNew">
                 {{ identity }}
               </label>
             </div>
@@ -189,7 +194,7 @@
           <div style="display: flex;">
             <label>Other: </label>
             <input class="w3-input" type="text" id="identity_other" v-model="formdata.data.identity_other"
-              :disabled="!editform">
+              v-bind:disabled="!isNew">
           </div>
 
 
@@ -201,7 +206,7 @@
             </legend>
             <div v-for="gender_identity in availableGender_Identities" :key="gender_identity">
               <label><input type="checkbox" :value="gender_identity" v-model="selected_gender_identities"
-                  :disabled="!editform">
+                  v-bind:disabled="!isNew">
                 {{ gender_identity }}
               </label>
             </div>
@@ -213,9 +218,7 @@
           <div style="display: flex;">
             <label>My preferred term is </label>
             <input class="w3-input" type="text" id="gender_identities_other"
-              v-model="formdata.data.gender_identities_other" :disabled="!editform">
-
-
+              v-model="formdata.data.gender_identities_other" v-bind:disabled="!isNew">
           </div>
 
 
@@ -231,22 +234,23 @@
 
 
             <div v-for="support_type in availableSupporttypes" :key="support_type.value" class="flex">
-              <input type="checkbox" :value="support_type.value" v-model="selected_support" :disabled="!editform">
+              <input type="checkbox" :value="support_type.value" v-model="selected_support" v-bind:disabled="!isNew">
               <label>{{ support_type.label }}</label>
             </div>
 
             <div>
               <label>Provide more details on source of funding</label>
-              <input class="w3-input" type="text" v-model="formdata.data.grant_detail" :disabled="!editform">
+              <input class="w3-input" type="text" v-model="formdata.data.grant_detail" v-bind:disabled="!isNew">
             </div>
 
             <label>
-              <input type="checkbox" v-model="selected_support_opt_out" :disabled="!editform">Prefer not to answer<br>
+              <input type="checkbox" v-model="selected_support_opt_out" v-bind:disabled="!isNew">
+              Prefer not to answer<br>
             </label>
 
             <div style="display: flex;">
               <label>Other: </label>
-              <input class="w3-input" type="text" v-model="formdata.data.support_other" :disabled="!editform">
+              <input class="w3-input" type="text" v-model="formdata.data.support_other" v-bind:disabled="!isNew">
             </div>
 
 
@@ -319,7 +323,7 @@
 
           <div v-for="y_n_unsure_optout in availableY_n_unsure_optout" :key="y_n_unsure_optout.value" class="flex">
             <input type="radio" :value="y_n_unsure_optout.value" v-model="formdata.data.disadvantaged"
-              :disabled="!editform">
+              v-bind:disabled="!isNew">
             <label>{{ y_n_unsure_optout.label }}</label>
           </div>
 
@@ -329,7 +333,7 @@
           <div style="display: flex;">
             <label>Optional: Use this free text box to provide any additional detail.</label>
             <input class="w3-input" id="disadvantaged_other" type="text" v-model="formdata.data.disadvantaged_other"
-              :disabled="!editform">
+              v-bind:disabled="!isNew">
           </div>
 
 
@@ -341,14 +345,14 @@
 
           Please choose the option that most accurately describes your role or occupation [select all that apply].<br>
           <div v-for="occupation in availableOccupations" :key="occupation.value" class="flex">
-            <input type="checkbox" :value="occupation.value" v-model="selected_occupations" :disabled="!editform">
+            <input type="checkbox" :value="occupation.value" v-model="selected_occupations" v-bind:disabled="!isNew">
             <label>{{ occupation.label }}</label>
           </div>
 
           <div style="display: flex;">
             <label>Other: Use this free text box to provide any additional detail. </label>
             <input id="occupations_other" class="w3-input" type="text" v-model="formdata.data.occupations_other"
-              :disabled="!editform">
+              v-bind:disabled="!isNew">
           </div>
 
           <div>
@@ -356,7 +360,7 @@
               specialty.</label>
             <span style="color: red !important; display: inline; float: none;"></span>
             <!-- TODO: check with invested parties: should this be multi-select/checkbox? -->
-            <select id="specialty" name="specialty" v-model="formdata.data.specialty" :disabled="!editform">
+            <select id="specialty" name="specialty" v-model="formdata.data.specialty" v-bind:disabled="!isNew">
               <option value="">Select specialty</option>
               <option v-for="specialty in availableNon_genetics_specialties" :key="specialty" :value="specialty">
                 {{ specialty }}
@@ -368,7 +372,7 @@
 
 
 
-          <div v-if="hasPermission('people-manage') || userIsPerson(person)" class="pt-4 border-t mt-4">
+          <div v-show="!isNew" type="button" class="pt-4 border-t mt-4">
             <button class="btn btn-sm" @click="editPerson">
               Edit Info
             </button>
@@ -401,6 +405,7 @@ import axios from 'axios';
 import { mapGetters } from 'vuex';
 import { useStore } from 'vuex';
 let store = useStore();
+//let editForm = "false";
 import Person from '@/domain/person';
 console.log(Person);
 import isValidationError from '@/http/is_validation_error';
@@ -652,6 +657,7 @@ export default {
       errors: {},
       profile: {},
       saving: false,
+
       items: [],
       selected_ethnicities: [],
       selected_occupations: [],
@@ -770,6 +776,10 @@ export default {
     availableSupporttypes() {
       return support_types;
     },
+
+    disableField() {
+      return !this.isNew || !this.editform;
+    }
   },
 
   methods: {
@@ -854,7 +864,7 @@ export default {
 
     async addSurvey(uuid) {
       // ... (Previous implementation )
-
+      event.preventDefault();
       // Use 'this.user' to access data inside addSurvey. For example:
       // console.log("identities:", this.identities);
       console.log("other occupation:", this.formdata.data.occupations_other);
@@ -905,8 +915,8 @@ export default {
 
       try {
         const response = await axios.put(`${baseUrl}/${this.uuid}/demographics`, items);
-        //const response = await axios.put(`${baseUrl}/${this.uuid}/demographics`, items);
-        console.log(response.data);
+
+        //console.log(response.data);
         //router.push({ name: 'Dashboard' }); // Redirect on success
         // this.$router.push({ name: 'Dashboard' });
         this.$emit('saved');
