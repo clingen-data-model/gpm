@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('people', function (Blueprint $table) {
            $table->integer('birth_country')->nullable();
            $table->integer('reside_country')->nullable();
-            $table->char('birth_year', 4);
+            $table->char('birth_year', 4)->nullable();
             $table->char('grant_detail', 30)->nullable();
             $table->char('support_other', 30)->nullable();  
             $table->char('disadvantaged', 15);
@@ -22,6 +22,7 @@ return new class extends Migration
             $table->boolean('birth_country_opt_out')->nullable();
             $table->boolean('reside_country_opt_out')->nullable();
             $table->boolean('support_opt_out')->nullable();
+            $table->boolean('birth_year_opt_out')->nullable();
             $table->boolean('ethnicity_opt_out')->nullable();
             $table->json('ethnicities')->nullable();
             $table->json('support')->nullable();
