@@ -15,6 +15,7 @@ return new class extends Migration
            $table->integer('birth_country')->nullable();
            $table->integer('reside_country')->nullable();
             $table->char('birth_year', 4)->nullable();
+            $table->char('reside_state', 2)->nullable();
             $table->char('grant_detail', 30)->nullable();
             $table->char('support_other', 30)->nullable();  
             $table->char('disadvantaged', 15);

@@ -105,7 +105,8 @@
           <div>
             <label for="country-state">If you currently live in the United States, what is your state/territory of
               residence?</label>
-            <select id="country-state" name="country-state" v-model="formdata.data.state" v-bind:disabled="!isNew">
+            <select id="country-state" name="country-state" v-model="formdata.data.reside_state"
+              v-bind:disabled="!isNew">
               <option value="">Select state</option>
               <option v-for="state in availableStates" :key="state.value" :value="state.value">{{ state.label }}
               </option>
@@ -615,7 +616,7 @@ export default {
           birth_country_opt_out: false,
           reside_country_opt_out: false,
           reside_state_opt_out: false,
-          state: null,
+          reside_state: null,
           id: null,
           identities: [],
           gender_identities: [],
@@ -879,7 +880,7 @@ export default {
         birth_country_other: this.formdata.data.birth_country_other,
         reside_country: this.formdata.data.reside_country,
         reside_country_other: this.formdata.data.reside_country_other,
-        state: this.formdata.data.state,
+        reside_state: this.formdata.data.reside_state,
         state_opt_out: this.selected_reside_state_opt_out,
         birth_year: this.formdata.data.birth_year,
         birth_year_opt_out: this.selected_birth_year_opt_out,
