@@ -73,7 +73,9 @@ class Person extends Model implements HasLogEntries
         'birth_country_other',
         'reside_country',
         'reside_country_other',
+        'reside_state',
         'birth_year',
+        'birth_year_opt_out'
         //TO DO Revisit disadvantaged
         'disadvantaged',
         'disadvantaged_other',
