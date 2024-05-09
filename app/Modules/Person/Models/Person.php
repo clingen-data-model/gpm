@@ -100,6 +100,13 @@ class Person extends Model implements HasLogEntries
 
     ];
 
+   // protected $hidden = [
+    //    'birth_country',
+    //    'birth_country_other',
+    //    'ethnicities'
+
+   // ];
+
     protected $casts = [
         'user_id' => 'integer',
         'institution_id' => 'integer',
