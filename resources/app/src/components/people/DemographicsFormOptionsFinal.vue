@@ -5,6 +5,13 @@
 
       <h1>ClinGen Demographic Survey</h1>
       <!-- Background and Purpose section -->
+
+      <div v-show="!isNew" type="button" class="pt-4 border-t mt-4" style="text-align: center;">
+        <button class="btn btn-sm" @click="editPerson($event)">
+          Edit Info
+        </button>
+      </div>
+
       <section>
         <h2>Background and Purpose</h2>
         <p>
@@ -58,7 +65,7 @@
 
           <div style="display: flex;">
             <label>Other: </label>
-            <input class="w3-input" type="text" id="birth_country_other" vmodel="formdata.data.birth_country_other"
+            <input class="w3-input" type="text" id="birth_country_other" v-model="formdata.data.birth_country_other"
               v-bind:disabled="disableField">
 
           </div>
@@ -86,7 +93,7 @@
           <div style="display: flex;">
 
             <label>Other: </label>
-            <input class="w3-input" type="text" id="reside_country_other" vmodel="formdata.data.reside_country_other"
+            <input class="w3-input" type="text" id="reside_country_other" v-model="formdata.data.reside_country_other"
               :disabled="disableField">
           </div>
 
@@ -372,20 +379,6 @@
               </option>
             </select>
           </div>
-
-
-
-
-
-          <div v-show="!isNew" type="button" class="pt-4 border-t mt-4">
-            <button class="btn btn-sm" @click="editPerson">
-              Edit Info
-            </button>
-          </div>
-
-
-
-
 
           <br>
 
@@ -804,6 +797,9 @@ export default {
       try {
         const response = await axios.get(`${baseUrl}/${uuid}`); // Assuming 'baseUrl' is defined
         this.formdata = response.data;
+        //   this.birthCountry = $person->birth_country;
+        //   this.birthCountryOther = $person->birth_country_other;
+        //    this.ethnicities = $person->ethnicities;
         //access retrieved user data to populate form
         //checkboxes copy data from retrieved user to prevent one checkbox from populating all
         console.log(this.formdata); // Access user data within the component
@@ -872,11 +868,11 @@ export default {
 
     async addSurvey(uuid) {
       // ... (Previous implementation )
-      event.preventDefault();
+      //event.preventDefault();
       // Use 'this.user' to access data inside addSurvey. For example:
       // console.log("identities:", this.identities);
       console.log("other occupation:", this.formdata.data.occupations_other);
-
+      console.log("birth country other:", this.formdata.data.birth_country_other);
       items = {
         demo_form_complete: 1,
         birth_country: this.formdata.data.birth_country,
@@ -889,7 +885,6 @@ export default {
         birth_year_opt_out: this.selected_birth_year_opt_out,
         birth_country_opt_out: this.selected_birth_country_opt_out,
         reside_country_opt_out: this.selected_reside_country_opt_out,
-        //state_opt_out: this.reside_state_opt_out,
         identities: this.selected_identities,
         identity_other: this.formdata.data.identity_other,
         gender_identities: this.selected_gender_identities,
@@ -897,8 +892,6 @@ export default {
         ethnicities: this.selected_ethnicities,
         ethnicity_opt_out: this.ethnicity_opt_out,
         occupations: this.selected_occupations,
-
-        //  this.items.occupations.push(this.formdata.data.occupations_other); 
         occupations_other: this.formdata.data.occupations_other,
         specialty: this.formdata.data.specialty,
         id: this.formdata.data.id,
@@ -937,16 +930,13 @@ export default {
 
     },
 
-    editPerson() {
-
+    editPerson(event) {
+      event.preventDefault();
       console.log("Before setting editform:", this.editform);
       this.editform = true;
       console.log("After setting editform:", this.editform);
     },
 
-    disableField2() {
-      return !this.isNew && !this.editform;
-    }
 
 
   },
