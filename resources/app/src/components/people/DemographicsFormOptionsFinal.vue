@@ -601,6 +601,8 @@ export default {
     return {
       formDataLoaded: false,
       editform: false,
+      localUuid: this.uuid, // Initialize localUuid either with the prop or as null
+      //localUuid: '',
       formdata: {
         data: {
           birth_country: null,
@@ -688,10 +690,10 @@ export default {
     }
 
     //   person: {
-    //          type: Object,
-    //         required: false,
-    //        // type: String
-    //     }
+    //    type: Object,
+    //    required: false,
+    // type: String
+    //  }
 
   },
 
@@ -793,9 +795,9 @@ export default {
       }
     },
 
-    async getUser(uuid) {
+    async getUser(localuuid) {
       try {
-        const response = await axios.get(`${baseUrl}/${uuid}`); // Assuming 'baseUrl' is defined
+        const response = await axios.get(`${baseUrl}/${this.localUuid}`); // Assuming 'baseUrl' is defined
         this.formdata = response.data;
         //   this.birthCountry = $person->birth_country;
         //   this.birthCountryOther = $person->birth_country_other;
@@ -853,7 +855,7 @@ export default {
 
     async updateUser3(uuid, items) {
       try {
-        const response = await axios.put(`${baseUrl}/${uuid}/demographics`, items);
+        const response = await axios.put(`${baseUrl}/${this.localUuid}/demographics`, items);
         console.log(response.data);
       } catch (error) {
         console.error("Error updating user:", error);
@@ -945,16 +947,30 @@ export default {
 
   mounted() {
 
-    Promise.all([this.getUser(this.uuid), this.fetchCountries()]).then(() => {
-      console.log('Data fetched successfully');
-      // this.selected_gender_identities= this.formdata.data.gender_identities;
-    }).catch(error => {
-      console.error('Error fetching data', error);
-    });
-    this.formdata.data.birth_country_opt_out = this.formdata.data.birth_country_opt_out === 1 ? true : false;
-    console.log(this.formdata.data.birth_country_opt_out);
-    console.log(this.formdata.data.reside_country_opt_out);
-    // Vue.set(this.formdata.data, 'birth_country_opt_out', true); 
+    {
+      if (!this.uuid) { // Check if uuid prop is not passed
+        // Assuming UUID is in the URL path as previously described
+        const pathSegments = window.location.pathname.split('/');
+        const uuidIndex = pathSegments.findIndex(segment => segment === 'people') + 1;
+        this.localUuid = pathSegments[uuidIndex];  // Extract from the URL and assign to local data property
+        console.log(this.localUuid);
+      }
+
+      Promise.all([this.getUser(this.localUuid), this.fetchCountries()]).then(() => {
+        console.log('Data fetched successfully');
+        // this.selected_gender_identities= this.formdata.data.gender_identities;
+      }).catch(error => {
+        console.error('Error fetching data', error);
+      });
+      this.formdata.data.birth_country_opt_out = this.formdata.data.birth_country_opt_out === 1 ? true : false;
+      console.log(this.formdata.data.birth_country_opt_out);
+      console.log(this.formdata.data.reside_country_opt_out);
+
+      // this.localuuid = this.$route.params.uuid;  // Assign the UUID from the route
+      // Vue.set(this.formdata.data, 'birth_country_opt_out', true); 
+
+      // Otherwise, localUuid is already initialized with the prop value
+    }
 
 
   }
