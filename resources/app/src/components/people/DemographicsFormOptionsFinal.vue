@@ -156,7 +156,7 @@
 
 
           <div style="display: flex;">
-            <input id="optOutEthnicity" class="w3-check" type="checkbox" v-model="ethnicity_opt_out"
+            <input id="optOutEthnicity" class="w3-check" type="checkbox" v-model="selected_ethnicity_opt_out"
               v-bind:disabled="disableField">
             <br>
             <label>Prefer not to answer</label>
@@ -403,7 +403,7 @@ import axios from 'axios';
 import { mapGetters } from 'vuex';
 import { useStore } from 'vuex';
 let store = useStore();
-//let editForm = "false";
+
 import Person from '@/domain/person';
 console.log(Person);
 import isValidationError from '@/http/is_validation_error';
@@ -602,7 +602,6 @@ export default {
       formDataLoaded: false,
       editform: false,
       localUuid: this.uuid, // Initialize localUuid either with the prop or as null
-      //localUuid: '',
       formdata: {
         data: {
           birth_country: null,
@@ -614,6 +613,7 @@ export default {
           birth_country_opt_out: false,
           reside_country_opt_out: false,
           reside_state_opt_out: false,
+          ethnicity_opt_out: false,
           reside_state: null,
           id: null,
           identities: [],
@@ -633,40 +633,33 @@ export default {
         }
       },
 
+
+      //Selected varaiables are checkboxes.  When editing data these values are mapped from formdata variables.
       selected_birth_country_opt_out: false,
       selected_reside_country_opt_out: false,
       selected_reside_state_opt_out: false,
       selected_support_opt_out: false,
       selected_birth_year_opt_out: false,
-      reside_state: null,
-      ethnicity_opt_out: false,
+      selected_ethnicity_opt_out: false,
       selected_specialty: null,
       selected_support: [],
+      selected_ethnicities: [],
+      selected_occupations: [],
+      selected_identities: [],
+      selected_gender_identities: [],
+      // selected_reside_state: [],
+
+
       grant_detail: null,
-
-
-      //specialty: null,
       institution_id: null,
       gender: [],
-      disadvantaged: null,
-      //birth_country_other: null,
-      //reside_country_other: null,
-      // gender_identities_other: null,
-      //gender_preferred_term: null,
-
       user: null,
       error: null,
       errors: {},
       profile: {},
       saving: false,
-
       items: [],
-      selected_ethnicities: [],
-      selected_occupations: [],
-      selected_identities: [],
-      selected_gender_identities: [],
-      //selected_non_genetics_specialties: [],
-      selected_reside_state: [],
+
 
 
 
@@ -696,30 +689,6 @@ export default {
     //  }
 
   },
-
-  // watch: {
-  // Watch for changes in the person object
-  //   person(newPerson, oldPerson) {
-  //    if (newPerson) {
-  //     // Assuming the person object has a 'uuid' field you want to use
-  //     this.uuid = newPerson.uuid;
-  //  } else {
-  //     this.uuid = null;
-  //   }
-  // }
-  //},
-
-  //watch: {
-  // uuid(newVal, oldVal) {
-  // Re-fetch data when the UUID changes
-  //    if (newVal !== oldVal) {
-  //    console.log(`UUID changed from ${oldVal} to ${newVal}`);
-  //    this.getUser(newVal); // Reload with the new UUID
-  //  }
-  // this.getUser(newVal);
-
-  // }
-  //},
 
 
   computed: {
@@ -812,6 +781,7 @@ export default {
           this.selected_reside_country_opt_out = !!this.formdata.data.reside_country_opt_out;
           this.selected_reside_state_opt_out = !!this.formdata.data.state_opt_out;
           this.selected_birth_year_opt_out = !!this.formdata.data.birth_year_opt_out;
+          this.selected_ethnicity_opt_out = !!this.formdata.data.ethnicity_opt_out;
           this.selected_support_opt_out = !!this.formdata.data.support_opt_out;
           this.selected_support = JSON.parse(this.formdata.data.support);
           this.selected_gender_identities = JSON.parse(this.formdata.data.gender_identities);
@@ -892,7 +862,7 @@ export default {
         gender_identities: this.selected_gender_identities,
         gender_identities_other: this.formdata.data.gender_identities_other,
         ethnicities: this.selected_ethnicities,
-        ethnicity_opt_out: this.ethnicity_opt_out,
+        ethnicity_opt_out: this.selected_ethnicity_opt_out,
         occupations: this.selected_occupations,
         occupations_other: this.formdata.data.occupations_other,
         specialty: this.formdata.data.specialty,
@@ -901,7 +871,7 @@ export default {
         institution_id: this.formdata.data.institution_id,
         support: this.selected_support,
         grant_detail: this.formdata.data.grant_detail,
-        support_opt_out: this.formdata.data.support_opt_out,
+        support_opt_out: this.selected_support_opt_out,
         support_other: this.formdata.data.support_other,
         // reside_state: this.reside_state,
         // institution_id: this.user.institution_id,
