@@ -76,7 +76,6 @@ class Person extends Model implements HasLogEntries
         'reside_state',
         'birth_year',
         'birth_year_opt_out',
-        //TO DO Revisit disadvantaged
         'disadvantaged',
         'disadvantaged_other',
         'birth_country_opt_out',
@@ -96,7 +95,13 @@ class Person extends Model implements HasLogEntries
         'grant_detail',
         'support_opt_out',
         'support_other',
-        'demo_form_complete'
+        'demo_form_complete',
+        'identity_opt_out',       
+        'gender_identities_opt_out',
+        'disadvantaged_opt_out',
+        'occupations_opt_out',
+        'demographics_completed_date',
+        'demographics_version'
 
     ];
 

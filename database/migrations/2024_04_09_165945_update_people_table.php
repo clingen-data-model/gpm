@@ -30,9 +30,14 @@ return new class extends Migration
             $table->json('occupations')->nullable();
            $table->json('identities')->nullable();
             $table->json('gender_identities')->nullable();
-           // $table->json('specialty')->nullable();
             $table->char('specialty', 50)->nullable();
-
+            
+            $table->boolean('identity_opt_out')->nullable();
+            $table->boolean('gender_identities_opt_out')->nullable();
+            $table->boolean('disadvantaged_opt_out')->nullable();
+            $table->boolean('occupations_opt_out')->nullable();
+            $table->integer('demographics_version')->nullable();
+            $table->date('demographics_completed_date')->nullable();
            
 
 

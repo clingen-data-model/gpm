@@ -208,6 +208,15 @@
           </div>
 
 
+          <div style="display: flex;">
+            <input id="optOutIdentity" class="w3-check" type="checkbox" v-bind:disabled="disableField"
+              v-model="selected_identity_opt_out">
+            <label> Prefer not to answer</label>
+
+          </div>
+
+
+
           <br>
           <br>
 
@@ -221,15 +230,24 @@
 
             </div>
 
+            <div style="display: flex;">
+              <label>My preferred term is </label>
+              <input class="w3-input" type="text" id="gender_identities_other"
+                v-model="formdata.data.gender_identities_other" v-bind:disabled="disableField">
+            </div>
+
+
+            <div style="display: flex;">
+              <input id="optOutGenderIdentities" class="w3-check" type="checkbox" v-bind:disabled="disableField"
+                v-model="selected_gender_identities_opt_out">
+              <label> Prefer not to answer</label>
+
+            </div>
+
           </div>
 
 
 
-          <div style="display: flex;">
-            <label>My preferred term is </label>
-            <input class="w3-input" type="text" id="gender_identities_other"
-              v-model="formdata.data.gender_identities_other" v-bind:disabled="disableField">
-          </div>
 
 
           <br>
@@ -347,7 +365,10 @@
               v-bind:disabled="disableField">
           </div>
 
-
+          <label>
+            <input type="checkbox" v-model="selected_disadvantaged_opt_out" v-bind:disabled="disableField">
+            Prefer not to answer<br>
+          </label>
 
 
 
@@ -366,6 +387,12 @@
             <input id="occupations_other" class="w3-input" type="text" v-model="formdata.data.occupations_other"
               v-bind:disabled="disableField">
           </div>
+
+          <label>
+            <input type="checkbox" v-model="selected_occupations_opt_out" v-bind:disabled="disableField">
+            Prefer not to answer<br>
+          </label>
+
 
           <div>
             <label for="specialty">If you indicated “Medical non-genetics physician”, please select your
@@ -438,7 +465,7 @@ const occupations = [
   { value: 'educator', label: 'Educator' },
   { value: 'general geneticist', label: 'General Geneticist' },
   { value: 'science policy', label: 'Health Care Policy or Science Policy' },
-  { value: 'no answer', label: 'Prefer not to answer' },
+
 ]
 
 const identities = [
@@ -457,8 +484,8 @@ const gender_identities = [
   'Genderqueer',
   'Agender',
   'Intersex',
-  'Unsure',
-  'Prefer not to answer',
+  'Unsure'
+
 ]
 
 const non_genetics_specialties = [
@@ -583,9 +610,8 @@ const y_n_unsure_optout = [
   { value: 'yes', label: 'Yes' },
   { value: 'no', label: 'No' },
   { value: 'unsure', label: 'Unsure' },
-  { value: 'optout', label: 'Prefer not to answer' },
-]
 
+]
 
 
 export default {
@@ -614,6 +640,9 @@ export default {
           reside_country_opt_out: false,
           reside_state_opt_out: false,
           ethnicity_opt_out: false,
+          identity_opt_out: false,
+          gender_identities_opt_out: false,
+          disadvantaged_opt_out: false,
           reside_state: null,
           id: null,
           identities: [],
@@ -630,6 +659,7 @@ export default {
           specialty: [],
           demo_form_complete: false,
           support_opt_out: false,
+          occupations_opt_out: false,
         }
       },
 
@@ -641,6 +671,10 @@ export default {
       selected_support_opt_out: false,
       selected_birth_year_opt_out: false,
       selected_ethnicity_opt_out: false,
+      selected_identity_opt_out: false,
+      selected_gender_identities_opt_out: false,
+      selected_disadvantaged_opt_out: false,
+      selected_occupations_opt_out: false,
       selected_specialty: null,
       selected_support: [],
       selected_ethnicities: [],
@@ -750,7 +784,25 @@ export default {
 
     disableField() {
       return !this.isNew && !this.editform;
+    },
+
+
+    formattedDate() {
+      const originalDate = new Date().toLocaleDateString();
+      //const formattedDate = convertDateToISO(originalDate);
+
+
+      const [month, day, year] = originalDate.split('/');
+
+      // Construct a new date object from the components
+      const date = new Date(year, month - 1, day); // Month is 0-indexed in Date
+
+      // Format the date to 'YYYY-MM-DD'
+      return date.toISOString().split('T')[0];
+
+      //  return formattedDate;
     }
+
   },
 
   methods: {
@@ -763,6 +815,7 @@ export default {
         console.error('Error fetching countries:', error);
       }
     },
+
 
     async getUser(localuuid) {
       try {
@@ -782,13 +835,16 @@ export default {
           this.selected_reside_state_opt_out = !!this.formdata.data.state_opt_out;
           this.selected_birth_year_opt_out = !!this.formdata.data.birth_year_opt_out;
           this.selected_ethnicity_opt_out = !!this.formdata.data.ethnicity_opt_out;
+          this.selected_identity_opt_out = !!this.formdata.data.identity_opt_out;
+          this.selected_gender_identities_opt_out = !!this.formdata.data.gender_identities_opt_out;
           this.selected_support_opt_out = !!this.formdata.data.support_opt_out;
           this.selected_support = JSON.parse(this.formdata.data.support);
+          this.selected_disadvantaged_opt_out = !!this.formdata.data.disadvantaged_opt_out;
+          this.selected_occupations_opt_out = !!this.formdata.data.occupations_opt_out;
           this.selected_gender_identities = JSON.parse(this.formdata.data.gender_identities);
           this.selected_identities = JSON.parse(this.formdata.data.identities);
           this.selected_ethnicities = JSON.parse(this.formdata.data.ethnicities);
           this.selected_occupations = JSON.parse(this.formdata.data.occupations);
-
 
         }
 
@@ -859,12 +915,15 @@ export default {
         reside_country_opt_out: this.selected_reside_country_opt_out,
         identities: this.selected_identities,
         identity_other: this.formdata.data.identity_other,
+        identity_opt_out: this.selected_identity_opt_out,
         gender_identities: this.selected_gender_identities,
         gender_identities_other: this.formdata.data.gender_identities_other,
+        gender_identities_opt_out: this.selected_gender_identities_opt_out,
         ethnicities: this.selected_ethnicities,
         ethnicity_opt_out: this.selected_ethnicity_opt_out,
         occupations: this.selected_occupations,
         occupations_other: this.formdata.data.occupations_other,
+        occupations_opt_out: this.selected_occupations_opt_out,
         specialty: this.formdata.data.specialty,
         id: this.formdata.data.id,
         email: this.formdata.data.email,
@@ -882,6 +941,9 @@ export default {
         //TODO revisit disadvanted logic
         disadvantaged: this.formdata.data.disadvantaged,
         disadvantaged_other: this.formdata.data.disadvantaged_other,
+        disadvantaged_opt_out: this.selected_disadvantaged_opt_out,
+        demographics_completed_date: this.formattedDate,
+        demographics_version: 1,
         // ... more fields from this.user
       };
       console.log(items);
@@ -897,6 +959,26 @@ export default {
         //this.$router.push({ name: 'Dashboard' }); 
         // console.log('Redirection attempted'); // Did you reach this line?
       } catch (error) {
+        if (error.response) {
+          // Request made and server responded
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+          if (error.response.status === 404) {
+            this.error = 'Resource not found';
+          } else if (error.response.status === 500) {
+            this.error = 'Server error';
+          }
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.log(error.request);
+          this.error = 'Network error';
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+          this.error = 'Error in request setup';
+        }
+
         console.error("Error updating user:", error);
       }
 
@@ -930,6 +1012,25 @@ export default {
         console.log('Data fetched successfully');
         // this.selected_gender_identities= this.formdata.data.gender_identities;
       }).catch(error => {
+        if (error.response) {
+          // Request made and server responded
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+          if (error.response.status === 404) {
+            this.error = 'Resource not found';
+          } else if (error.response.status === 500) {
+            this.error = 'Server error';
+          }
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.log(error.request);
+          this.error = 'Network error';
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+          this.error = 'Error in request setup';
+        }
         console.error('Error fetching data', error);
       });
       this.formdata.data.birth_country_opt_out = this.formdata.data.birth_country_opt_out === 1 ? true : false;
