@@ -206,6 +206,7 @@ router.beforeEach(async (to, from, next) => {
         return;
     }
     if (to.name == 'MandatoryProfileUpdate'
+        || to.name == 'RequiredDemographicsUpdateForm'
         || to.name == 'RedeemInvite'
         || to.name == 'InviteWithCode'
         || to.name == 'InitialProfileForm'
@@ -233,6 +234,16 @@ router.beforeEach(async (to, from, next) => {
     // Check if the user needs to update credentials or expertise
     if (store.getters.currentUser.needsCredentials || store.getters.currentUser.needsExpertise) {
         router.replace({name: 'MandatoryProfileUpdate', params: {redirectTo: to}});
+        next();
+        return;
+    }
+
+    // Check if the user needs to update profile demographics
+    // TODO: change demo_form_complete to a timestamped field
+    // TODO: do not use demo as an abbreviation for demographics
+    if (!store.getters.currentUser.person.demo_form_complete) {
+        console.log('redirecting to demographics form');
+        router.replace({name: 'RequiredDemographicsUpdateForm', params: {redirectTo: to}});
         next();
         return;
     }
