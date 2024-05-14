@@ -86,8 +86,6 @@ export default [
     {   name: 'DemographicsForm',
         path: '/demographics/:uuid',
         props: true,
-        //component: DemographicsForm
-       // component: DemographicsForm
        component: () =>
      import ( /* webpackChunkName: "application-summary" */ '@/components/people/DemographicsForm.vue'),
        },
