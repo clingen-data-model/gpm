@@ -968,19 +968,25 @@ export default {
     mounted() {
 
         {
-            if (!this.uuid) { // Check if uuid prop is not passed
-
+            if (!this.uuid) {
+                // Check if uuid prop is not passed
                 const pathSegments = window.location.pathname.split('/');
                 const uuidIndex = pathSegments.findIndex(segment => segment === 'people') + 1;
-                this.localUuid = pathSegments[uuidIndex];  // Extract from the URL and assign to local data property
+
+                // Ensure uuidIndex is within the array bounds
+                if (uuidIndex > 0 && uuidIndex < pathSegments.length) {
+                    this.localUuid = pathSegments[uuidIndex];  // Extract from the URL and assign to local data property
+                } else {
+                    console.error('UUID segment not found after "people" in the URL.');
+                    this.localUuid = null; // or handle as appropriate
+                }
+
                 console.log(this.localUuid);
+            } else {
+                this.localUuid = this.uuid; // Corrected to match case sensitivity
             }
 
-            else {
-                this.localuuid = this.uuid;
-                // Optional: Code to execute if neither the if nor the else if conditions are met
-                // This else block can be omitted if not needed
-            }
+
 
             Promise.all([this.getUser(this.localUuid), this.fetchCountries()]).then(() => {
                 console.log('Data fetched successfully');
