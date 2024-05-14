@@ -722,9 +722,8 @@ export default {
             selected_occupations: [],
             selected_identities: [],
             selected_gender_identities: [],
-            // selected_reside_state: [],
 
-
+            //data variables other than those selected(checkbox) or retrieved from database
             grant_detail: null,
             institution_id: null,
             gender: [],
@@ -747,7 +746,6 @@ export default {
         uuid: {
             required: false,
             default: null,
-            // return this.$store.getters('people/currentItem', {uuid: this.uuid});
             type: String
         },
 
@@ -757,11 +755,6 @@ export default {
             default: false
         }
 
-        //   person: {
-        //    type: Object,
-        //    required: false,
-        // type: String
-        //  }
 
     },
 
@@ -769,7 +762,6 @@ export default {
     computed: {
         ...mapGetters({
             person: 'people/currentItem',
-            // uuid: 'person.uuid'
 
         }),
 
@@ -777,19 +769,14 @@ export default {
 
         countries() {
             return this.$store.getters['countries/items'].map(i => ({ value: i.id, label: i.name }));
-            //return this.$store.state.countries.items; // Assuming the countries data is stored in state
-        },
 
-        // currentUUID() {
-        //   const route = useRoute();
-        //   return route.params.uuid; // Assuming UUID is passed as a route parameter
-        // },
+        },
 
         formKey() {
             // Change key when UUID changes to force re-render
             return `form-${this.uuid}`;
         },
-        //},
+
 
         availableEthnicities() {
             return ethnicities;
@@ -827,12 +814,9 @@ export default {
             return !this.isNew && !this.editform;
         },
 
-
+        //calculate the current date and format it 
         formattedDate() {
             const originalDate = new Date().toLocaleDateString();
-            //const formattedDate = convertDateToISO(originalDate);
-
-
             const [month, day, year] = originalDate.split('/');
 
             // Construct a new date object from the components
@@ -841,7 +825,6 @@ export default {
             // Format the date to 'YYYY-MM-DD'
             return date.toISOString().split('T')[0];
 
-            //  return formattedDate;
         }
 
     },
@@ -862,12 +845,6 @@ export default {
             try {
                 const response = await axios.get(`${baseUrl}/${this.localUuid}`); // Assuming 'baseUrl' is defined
                 this.formdata = response.data;
-                //   this.birthCountry = $person->birth_country;
-                //   this.birthCountryOther = $person->birth_country_other;
-                //    this.ethnicities = $person->ethnicities;
-                //access retrieved user data to populate form
-                //checkboxes copy data from retrieved user to prevent one checkbox from populating all
-                console.log(this.formdata); // Access user data within the component
 
                 //need logic to determine if initial form.  If so, don't map data from database.  Mapping is needed to prevent the issue in which selecting one checkbox results in all selected.
                 if (this.isNew === false) {
@@ -889,31 +866,7 @@ export default {
 
                 }
 
-                console.log(this.formdata.data.support);
-
-                console.log(this.formdata.data.gender_identities);
-                console.log(this.formdata.data.ethnicities);
-
-                console.log(this.selected_ethnicities);
-
-                //this.selected_specialty = JSON.parse(this.formdata.data.specialty);
-                //this.selected_birth_country_opt_out = this.formdata.birth_country_opt_out;
-                // this.selected_birth_country_opt_out = this.formdata.data.birth_country_opt_out === 1 ? true : false;
-                //this.selected_reside_country_opt_out = this.formdata.reside_country_opt_out;
-
                 this.formDataLoaded = true;
-                // this.formdata.data.gender_identites = '["Agender", "Unsure"]';
-                // const parsedArray = JSON.parse(this.formdata.data.gender_identities);
-                //this.formdata.data.gender_identities = parsedArray;
-                // console.log(parsedArray);
-                //this.formdata.data.birth_country_opt_out = response.data.birth_country_opt_out === "true";
-                // this.selected_gender_identities= this.formdata.data.gender_identities;
-                //  console.log(this.formdata.data.ethnicities);
-                // console.log(this.formdata.data.birth_country_opt_out);
-                // this.formdata.data.birth_country_opt_out = !!response.data.birth_country_opt_out;
-                //this.formdata.data.birth_country_opt_out = response.data.birth_country_opt_out === 1 ? true : false;
-                //console.log(this.formdata.data.birth_country_opt_out);
-                //console.log(this.formdata.data.reside_country_opt_out);
 
             } catch (error) {
                 this.error = error; // You might want an 'error' data property
@@ -929,21 +882,15 @@ export default {
             }
         },
 
-        // async handleSave () {
-        //    await store.dispatch('forceGetCurrentUser');
+        //  async handleSave() {
+        //     await store.dispatch('forceGetCurrentUser');
 
-        //    router.replace(props.redirectTo)
-        //},
+        //     router.replace(props.redirectTo)
+        // },
 
         async addSurvey(uuid) {
-            // ... (Previous implementation )
-            //event.preventDefault();
-            // Use 'this.user' to access data inside addSurvey. For example:
-            // console.log("identities:", this.identities);
-            console.log("other occupation:", this.formdata.data.occupations_other);
-            console.log("birth country other:", this.formdata.data.birth_country_other);
             items = {
-                demo_form_complete: 1,
+                // demo_form_complete: 1,
                 birth_country: this.formdata.data.birth_country,
                 birth_country_other: this.formdata.data.birth_country_other,
                 reside_country: this.formdata.data.reside_country,
@@ -973,38 +920,27 @@ export default {
                 grant_detail: this.formdata.data.grant_detail,
                 support_opt_out: this.selected_support_opt_out,
                 support_other: this.formdata.data.support_other,
-                // reside_state: this.reside_state,
-                // institution_id: this.user.institution_id,
                 first_name: this.formdata.data.first_name,
                 last_name: this.formdata.data.last_name,
                 country_id: this.formdata.data.country_id,
                 timezone: this.formdata.data.timezone,
-                //TODO revisit disadvanted logic
                 disadvantaged: this.formdata.data.disadvantaged,
                 disadvantaged_other: this.formdata.data.disadvantaged_other,
                 disadvantaged_opt_out: this.selected_disadvantaged_opt_out,
                 demographics_completed_date: this.formattedDate,
                 demographics_version: 1,
-                // ... more fields from this.user
             };
             console.log(items);
-            console.log(this.formdata.data.occupations);
 
             try {
-                const response = await axios.put(`${baseUrl}/${this.uuid}/demographics`, items);
-
+                const response = await axios.put(`${baseUrl}/${this.localUuid}/demographics`, items);
                 console.log(response.data);
-                //router.push({ name: 'Dashboard' }); // Redirect on success
-                // this.$router.push({ name: 'Dashboard' });
                 this.$emit('saved');
-                //this.$router.push({ name: 'Dashboard' }); 
-                // console.log('Redirection attempted'); // Did you reach this line?
+
             } catch (error) {
                 if (error.response) {
                     // Request made and server responded
-                    console.log(error.response.data);
-                    console.log(error.response.status);
-                    console.log(error.response.headers);
+
                     if (error.response.status === 404) {
                         this.error = 'Resource not found';
                     } else if (error.response.status === 500) {
@@ -1027,9 +963,8 @@ export default {
 
         editPerson(event) {
             event.preventDefault();
-            console.log("Before setting editform:", this.editform);
             this.editform = true;
-            console.log("After setting editform:", this.editform);
+
         },
 
 
@@ -1042,22 +977,25 @@ export default {
 
         {
             if (!this.uuid) { // Check if uuid prop is not passed
-                // Assuming UUID is in the URL path as previously described
+
                 const pathSegments = window.location.pathname.split('/');
                 const uuidIndex = pathSegments.findIndex(segment => segment === 'people') + 1;
                 this.localUuid = pathSegments[uuidIndex];  // Extract from the URL and assign to local data property
                 console.log(this.localUuid);
             }
 
+            else {
+                this.localuuid = this.uuid;
+                // Optional: Code to execute if neither the if nor the else if conditions are met
+                // This else block can be omitted if not needed
+            }
+
             Promise.all([this.getUser(this.localUuid), this.fetchCountries()]).then(() => {
                 console.log('Data fetched successfully');
-                // this.selected_gender_identities= this.formdata.data.gender_identities;
+
             }).catch(error => {
                 if (error.response) {
-                    // Request made and server responded
-                    console.log(error.response.data);
-                    console.log(error.response.status);
-                    console.log(error.response.headers);
+
                     if (error.response.status === 404) {
                         this.error = 'Resource not found';
                     } else if (error.response.status === 500) {
@@ -1074,14 +1012,8 @@ export default {
                 }
                 console.error('Error fetching data', error);
             });
-            this.formdata.data.birth_country_opt_out = this.formdata.data.birth_country_opt_out === 1 ? true : false;
-            console.log(this.formdata.data.birth_country_opt_out);
-            console.log(this.formdata.data.reside_country_opt_out);
 
-            // this.localuuid = this.$route.params.uuid;  // Assign the UUID from the route
-            // Vue.set(this.formdata.data, 'birth_country_opt_out', true); 
 
-            // Otherwise, localUuid is already initialized with the prop value
         }
 
 

@@ -15,12 +15,10 @@ const props = defineProps({
 
 const handleSave = async () => {
     try {
-        console.log('forceGetCurrentUser action initiated');
+
         await store.dispatch('forceGetCurrentUser');
-        console.log('forceGetCurrentUser action completed');
-        console.log('Redirection target:', props.redirectTo);
         router.replace(props.redirectTo);
-        console.log('Redirection successful');
+
     } catch (error) {
         console.error('Error updating user:', error);
         // Handle the error appropriately (e.g., display an error message)
