@@ -1,7 +1,7 @@
 <script setup>
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import DemographicsForm from '../components/people/DemographicsFormOptionsFinal.vue';
+import DemographicsForm from '../components/people/DemographicsForm.vue';
 
 const store = useStore();
 const router = useRouter();

@@ -7,6 +7,7 @@ const PersonEdit = () => import (/* person-detail */ '@/views/PersonEdit.vue')
 const PeopleList = () => import (/* people-index */ '@/views/PeopleList.vue')
 const OnboardingWizard = () => import (/* onboarding-wizard */ '@/views/OnboardingWizard.vue')
 const RequiredProfileUpdate = () => import (/* required-profile-update */ '@/views/RequiredProfileUpdate.vue')
+const DemographicsForm = () => import (/* person-detail */ '@/components/people/DemographicsForm.vue')
 
 export default [
     { name: 'people-index',
@@ -72,6 +73,27 @@ export default [
         path: '/onboarding/profile',
         component: () => import (/* onboarding */ '@/views/OnboardingProfileForm.vue')
     },
+
+    {
+        name: 'RequiredDemographicsUpdateForm',
+        path: '/required-demographics-update',
+        component: () => import (/* required-demographics-update */ '@/views/RequiredDemographicsUpdateForm'),
+        meta: {
+            protected: true
+        },
+    },
+
+    {   name: 'DemographicsForm',
+        path: '/demographics/:uuid',
+        props: true,
+        //component: DemographicsForm
+       // component: DemographicsForm
+       component: () =>
+     import ( /* webpackChunkName: "application-summary" */ '@/components/people/DemographicsForm.vue'),
+       },
+
+    
+
     { name: 'MandatoryProfileUpdate',
       path: '/required-profile-update',
       component: RequiredProfileUpdate,
