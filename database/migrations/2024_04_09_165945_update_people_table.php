@@ -18,7 +18,7 @@ return new class extends Migration
             $table->char('reside_state', 2)->nullable();
             $table->char('grant_detail', 30)->nullable();
             $table->char('support_other', 30)->nullable();  
-            $table->char('disadvantaged', 15);
+            $table->char('disadvantaged', 15)->nullable();
             $table->boolean('state_opt_out')->nullable();
             $table->boolean('birth_country_opt_out')->nullable();
             $table->boolean('reside_country_opt_out')->nullable();
