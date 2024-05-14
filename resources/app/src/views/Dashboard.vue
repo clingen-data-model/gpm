@@ -126,8 +126,8 @@ const navigateToGroup = (item) => {
         <tabs-container class="mt-8">
             <tab-item label="Your Groups">
                 <div class="well" v-if="!groups.length">You are not assigned to any groups.</div>
-                <data-table v-else :data="groups" :fields="groupFields" @rowClick="navigateToGroup"
-                    row-class="cursor-pointer">
+                <data-table v-else :data="groups" :fields="groupFields" v-model:sort="groupSort"
+                    @rowClick="navigateToGroup" row-class="cursor-pointer">
                     <template v-slot:cell-status_name="{ value }">
                         <badge :color="groupBadgeColor(value)">{{ value }}</badge>
                     </template>
