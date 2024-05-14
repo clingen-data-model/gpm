@@ -873,14 +873,6 @@ export default {
             }
         },
 
-        async updateUser3(uuid, items) {
-            try {
-                const response = await axios.put(`${baseUrl}/${this.localUuid}/demographics`, items);
-                console.log(response.data);
-            } catch (error) {
-                console.error("Error updating user:", error);
-            }
-        },
 
         //  async handleSave() {
         //     await store.dispatch('forceGetCurrentUser');

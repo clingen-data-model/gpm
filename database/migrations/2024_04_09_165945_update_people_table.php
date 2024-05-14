@@ -38,6 +38,15 @@ return new class extends Migration
             $table->boolean('occupations_opt_out')->nullable();
             $table->integer('demographics_version')->nullable();
             $table->date('demographics_completed_date')->nullable();
+
+            $table->char('disadvantaged_other', 25)->nullable();
+            $table->char('identity_other', 25)->nullable();
+            $table->char('occupations_other', 25)->nullable();
+            $table->char('birth_country_other', 25)->nullable();
+            $table->char('reside_country_other', 25)->nullable();
+            $table->char('gender_identities_other', 25)->nullable();
+            $table->char('gender_preferred_term', 30)->nullable();
+
            
 
 
