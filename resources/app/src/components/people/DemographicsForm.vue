@@ -6,7 +6,7 @@
             <h1>ClinGen Demographic Survey</h1>
             <!-- Background and Purpose section -->
 
-            <div v-show="!isNew" type="button" class="pt-4 border-t mt-4" style="text-align: center;">
+            <div v-show="!editModeActive" type="button" class="pt-4 border-t mt-4" style="text-align: center;">
                 <button class="btn btn-sm" @click="editPerson($event)">
                     Edit Info
                 </button>
@@ -63,7 +63,7 @@
                     <div>
                         <label for="birth_country">Country of Birth: </label>
                         <select id="birth_country" name="birth_country" v-model="formdata.data.birth_country"
-                            v-bind:disabled="disableField">
+                            v-bind:disabled="!editModeActive">
                             <option value="">Select country</option>
                             <option v-for="country in countries" :key="country.value" :value="country.value">{{
         country.label }}
@@ -75,13 +75,13 @@
                     <div style="display: flex;">
                         <label>Other: </label>
                         <input class="w3-input" type="text" id="birth_country_other"
-                            v-model="formdata.data.birth_country_other" v-bind:disabled="disableField">
+                            v-model="formdata.data.birth_country_other" v-bind:disabled="!editModeActive">
 
                     </div>
 
                     <div style="display: flex;" v-if="formDataLoaded">
                         <input type="checkbox" id="birth_country_opt_out" v-model="selected_birth_country_opt_out"
-                            v-bind:disabled="disableField">
+                            v-bind:disabled="!editModeActive">
 
                         <label for="birth_country_opt_out"> Prefer not to answer</label>
 
@@ -92,7 +92,7 @@
                         <label for="reside_country">Country of Residence: </label>
 
                         <select id="reside_country" name="reside_country" v-model="formdata.data.reside_country"
-                            v-bind:disabled="disableField">
+                            v-bind:disabled="!editModeActive">
                             <option value="">Select country</option>
                             <option v-for="country in countries" :key="country.value" :value="country.value">{{
         country.label }}
@@ -104,12 +104,12 @@
 
                         <label>Other: </label>
                         <input class="w3-input" type="text" id="reside_country_other"
-                            v-model="formdata.data.reside_country_other" :disabled="disableField">
+                            v-model="formdata.data.reside_country_other" :disabled="!editModeActive">
                     </div>
 
                     <div style="display: flex;">
                         <input type="checkbox" id="reside_country_opt_out" v-model="selected_reside_country_opt_out"
-                            v-bind:disabled="disableField">
+                            v-bind:disabled="!editModeActive">
 
                         <label for="reside_country_opt_out">Prefer not to answer </label>
 
@@ -124,7 +124,7 @@
                             state/territory of
                             residence?</label>
                         <select id="country-state" name="country-state" v-model="formdata.data.reside_state"
-                            v-bind:disabled="disableField">
+                            v-bind:disabled="!editModeActive">
                             <option value="">Select state</option>
                             <option v-for="state in availableStates" :key="state.value" :value="state.value">{{
         state.label }}
@@ -134,7 +134,7 @@
 
                     <div style="display: flex;">
                         <input id="reside_state_opt_out" class="w3-check" type="checkbox"
-                            v-model="selected_reside_state_opt_out" v-bind:disabled="disableField">
+                            v-model="selected_reside_state_opt_out" v-bind:disabled="!editModeActive">
                         <label>Prefer not to answer </label>
                     </div>
 
@@ -168,14 +168,14 @@
 
                     <div v-for="ethnicity in availableEthnicities" :key="ethnicity.value" class="flex">
                         <input type="checkbox" :value="ethnicity.value" v-model="selected_ethnicities"
-                            v-bind:disabled="disableField">
+                            v-bind:disabled="!editModeActive">
                         <label>{{ ethnicity.label }}</label>
                     </div>
 
 
                     <div style="display: flex;">
                         <input id="optOutEthnicity" class="w3-check" type="checkbox"
-                            v-model="selected_ethnicity_opt_out" v-bind:disabled="disableField">
+                            v-model="selected_ethnicity_opt_out" v-bind:disabled="!editModeActive">
                         <br>
                         <label>Prefer not to answer</label>
 
@@ -186,12 +186,12 @@
                     <div style="display: flex; align-items: center;">
                         <label>What year were you born?</label>
                         <input class="w3-input" type="text" id="birth_year" v-model="formdata.data.birth_year"
-                            v-bind:disabled="disableField">
+                            v-bind:disabled="!editModeActive">
                     </div>
 
 
                     <div style="display: flex;">
-                        <input id="optOutBirth" class="w3-check" type="checkbox" v-bind:disabled="disableField"
+                        <input id="optOutBirth" class="w3-check" type="checkbox" v-bind:disabled="!editModeActive"
                             v-model="selected_birth_year_opt_out">
                         <label> Prefer not to answer</label>
 
@@ -215,7 +215,7 @@
                         </legend>
                         <div v-for="identity in availableIdentities" :key="identity" style="display: flex;">
                             <input type="checkbox" :value="identity" v-model="selected_identities"
-                                v-bind:disabled="disableField">
+                                v-bind:disabled="!editModeActive">
                             <label> {{ identity }}
                             </label>
                         </div>
@@ -226,12 +226,12 @@
                     <div style="display: flex;">
                         <label>Other: </label>
                         <input class="w3-input" type="text" id="identity_other" v-model="formdata.data.identity_other"
-                            v-bind:disabled="disableField">
+                            v-bind:disabled="!editModeActive">
                     </div>
 
 
                     <div style="display: flex;">
-                        <input id="optOutIdentity" class="w3-check" type="checkbox" v-bind:disabled="disableField"
+                        <input id="optOutIdentity" class="w3-check" type="checkbox" v-bind:disabled="!editModeActive"
                             v-model="selected_identity_opt_out">
                         <label> Prefer not to answer</label>
 
@@ -249,7 +249,7 @@
                         <div v-for="gender_identity in availableGender_Identities" :key="gender_identity"
                             style="display: flex;">
                             <input type="checkbox" :value="gender_identity" v-model="selected_gender_identities"
-                                v-bind:disabled="disableField">
+                                v-bind:disabled="!editModeActive">
                             <label>{{ gender_identity }}</label>
 
                         </div>
@@ -257,13 +257,13 @@
                         <div style="display: flex;">
                             <label>My preferred term is </label>
                             <input class="w3-input" type="text" id="gender_identities_other"
-                                v-model="formdata.data.gender_identities_other" v-bind:disabled="disableField">
+                                v-model="formdata.data.gender_identities_other" v-bind:disabled="!editModeActive">
                         </div>
 
 
                         <div style="display: flex;">
                             <input id="optOutGenderIdentities" class="w3-check" type="checkbox"
-                                v-bind:disabled="disableField" v-model="selected_gender_identities_opt_out">
+                                v-bind:disabled="!editModeActive" v-model="selected_gender_identities_opt_out">
                             <label> Prefer not to answer</label>
 
                         </div>
@@ -287,25 +287,25 @@
 
                         <div v-for="support_type in availableSupporttypes" :key="support_type.value" class="flex">
                             <input type="checkbox" :value="support_type.value" v-model="selected_support"
-                                v-bind:disabled="disableField">
+                                v-bind:disabled="!editModeActive">
                             <label>{{ support_type.label }}</label>
                         </div>
 
                         <div>
                             <label>Provide more details on source of funding</label>
                             <input class="w3-input" type="text" v-model="formdata.data.grant_detail"
-                                v-bind:disabled="disableField">
+                                v-bind:disabled="!editModeActive">
                         </div>
 
                         <label>
-                            <input type="checkbox" v-model="selected_support_opt_out" v-bind:disabled="disableField">
+                            <input type="checkbox" v-model="selected_support_opt_out" v-bind:disabled="!editModeActive">
                             Prefer not to answer<br>
                         </label>
 
                         <div style="display: flex;">
                             <label>Other: </label>
                             <input class="w3-input" type="text" v-model="formdata.data.support_other"
-                                v-bind:disabled="disableField">
+                                v-bind:disabled="!editModeActive">
                         </div>
 
 
@@ -390,7 +390,7 @@
                     <div v-for="y_n_unsure_optout in availableY_n_unsure_optout" :key="y_n_unsure_optout.value"
                         class="flex">
                         <input type="radio" :value="y_n_unsure_optout.value" v-model="formdata.data.disadvantaged"
-                            v-bind:disabled="disableField">
+                            v-bind:disabled="!editModeActive">
                         <label>{{ y_n_unsure_optout.label }}</label>
                     </div>
 
@@ -400,11 +400,11 @@
                     <div style="display: flex;">
                         <label>Optional: Use this free text box to provide any additional detail.</label>
                         <input class="w3-input" id="disadvantaged_other" type="text"
-                            v-model="formdata.data.disadvantaged_other" v-bind:disabled="disableField">
+                            v-model="formdata.data.disadvantaged_other" v-bind:disabled="!editModeActive">
                     </div>
 
                     <label>
-                        <input type="checkbox" v-model="selected_disadvantaged_opt_out" v-bind:disabled="disableField">
+                        <input type="checkbox" v-model="selected_disadvantaged_opt_out" v-bind:disabled="!editModeActive">
                         Prefer not to answer<br>
                     </label>
 
@@ -417,18 +417,18 @@
                     apply].<br>
                     <div v-for="occupation in availableOccupations" :key="occupation.value" class="flex">
                         <input type="checkbox" :value="occupation.value" v-model="selected_occupations"
-                            v-bind:disabled="disableField">
+                            v-bind:disabled="!editModeActive">
                         <label>{{ occupation.label }}</label>
                     </div>
 
                     <div style="display: flex;">
                         <label>Other: Use this free text box to provide any additional detail. </label>
                         <input id="occupations_other" class="w3-input" type="text"
-                            v-model="formdata.data.occupations_other" v-bind:disabled="disableField">
+                            v-model="formdata.data.occupations_other" v-bind:disabled="!editModeActive">
                     </div>
 
                     <label>
-                        <input type="checkbox" v-model="selected_occupations_opt_out" v-bind:disabled="disableField">
+                        <input type="checkbox" v-model="selected_occupations_opt_out" v-bind:disabled="!editModeActive">
                         Prefer not to answer<br>
                     </label>
 
@@ -439,7 +439,7 @@
                         <span style="color: red !important; display: inline; float: none;"></span>
                         <!-- TODO: check with invested parties: should this be multi-select/checkbox? -->
                         <select id="specialty" name="specialty" v-model="formdata.data.specialty"
-                            v-bind:disabled="disableField">
+                            v-bind:disabled="!editModeActive">
                             <option value="">Select specialty</option>
                             <option v-for="specialty in availableNon_genetics_specialties" :key="specialty"
                                 :value="specialty">
@@ -667,8 +667,8 @@ export default {
     data() {
         return {
             formDataLoaded: false,
-            editform: false,
             localUuid: this.uuid, // Initialize localUuid either with the prop or as null
+            editModeActive: false,
             formdata: {
                 data: {
                     birth_country: null,
@@ -749,7 +749,7 @@ export default {
             type: String
         },
 
-        isNew: {
+        startInEditMode: {
             type: Boolean,
             required: false,
             default: false
@@ -810,11 +810,7 @@ export default {
             return support_types;
         },
 
-        disableField() {
-            return !this.isNew && !this.editform;
-        },
-
-        //calculate the current date and format it 
+        //calculate the current date and format it
         formattedDate() {
             const originalDate = new Date().toLocaleDateString();
             const [month, day, year] = originalDate.split('/');
@@ -846,25 +842,21 @@ export default {
                 const response = await axios.get(`${baseUrl}/${this.localUuid}`); // Assuming 'baseUrl' is defined
                 this.formdata = response.data;
 
-                //need logic to determine if initial form.  If so, don't map data from database.  Mapping is needed to prevent the issue in which selecting one checkbox results in all selected.
-                if (this.isNew === false) {
-                    this.selected_birth_country_opt_out = !!this.formdata.data.birth_country_opt_out;
-                    this.selected_reside_country_opt_out = !!this.formdata.data.reside_country_opt_out;
-                    this.selected_reside_state_opt_out = !!this.formdata.data.state_opt_out;
-                    this.selected_birth_year_opt_out = !!this.formdata.data.birth_year_opt_out;
-                    this.selected_ethnicity_opt_out = !!this.formdata.data.ethnicity_opt_out;
-                    this.selected_identity_opt_out = !!this.formdata.data.identity_opt_out;
-                    this.selected_gender_identities_opt_out = !!this.formdata.data.gender_identities_opt_out;
-                    this.selected_support_opt_out = !!this.formdata.data.support_opt_out;
-                    this.selected_support = JSON.parse(this.formdata.data.support);
-                    this.selected_disadvantaged_opt_out = !!this.formdata.data.disadvantaged_opt_out;
-                    this.selected_occupations_opt_out = !!this.formdata.data.occupations_opt_out;
-                    this.selected_gender_identities = JSON.parse(this.formdata.data.gender_identities);
-                    this.selected_identities = JSON.parse(this.formdata.data.identities);
-                    this.selected_ethnicities = JSON.parse(this.formdata.data.ethnicities);
-                    this.selected_occupations = JSON.parse(this.formdata.data.occupations);
-
-                }
+                this.selected_birth_country_opt_out = !!this.formdata.data.birth_country_opt_out;
+                this.selected_reside_country_opt_out = !!this.formdata.data.reside_country_opt_out;
+                this.selected_reside_state_opt_out = !!this.formdata.data.state_opt_out;
+                this.selected_birth_year_opt_out = !!this.formdata.data.birth_year_opt_out;
+                this.selected_ethnicity_opt_out = !!this.formdata.data.ethnicity_opt_out;
+                this.selected_identity_opt_out = !!this.formdata.data.identity_opt_out;
+                this.selected_gender_identities_opt_out = !!this.formdata.data.gender_identities_opt_out;
+                this.selected_support_opt_out = !!this.formdata.data.support_opt_out;
+                this.selected_support = JSON.parse(this.formdata.data.support);
+                this.selected_disadvantaged_opt_out = !!this.formdata.data.disadvantaged_opt_out;
+                this.selected_occupations_opt_out = !!this.formdata.data.occupations_opt_out;
+                this.selected_gender_identities = JSON.parse(this.formdata.data.gender_identities);
+                this.selected_identities = JSON.parse(this.formdata.data.identities);
+                this.selected_ethnicities = JSON.parse(this.formdata.data.ethnicities);
+                this.selected_occupations = JSON.parse(this.formdata.data.occupations);
 
                 this.formDataLoaded = true;
 
@@ -880,6 +872,7 @@ export default {
         //     router.replace(props.redirectTo)
         // },
 
+        // TODO uuid is never sent to this function as a parameter...
         async addSurvey(uuid) {
             items = {
                 // demo_form_complete: 1,
@@ -950,13 +943,13 @@ export default {
 
                 console.error("Error updating user:", error);
             }
+            this.editModeActive = false;
 
         },
 
         editPerson(event) {
             event.preventDefault();
-            this.editform = true;
-
+            this.editModeActive = true;
         },
 
 
@@ -966,7 +959,8 @@ export default {
 
 
     mounted() {
-
+        this.editModeActive = this.startInEditMode;
+        // TODO: not sure why there is an extra level here...
         {
             if (!this.uuid) {
                 // Check if uuid prop is not passed
