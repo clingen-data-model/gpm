@@ -452,7 +452,7 @@
 
 
                     <!-- Submission Button -->
-                    <button type="button" @click="addSurvey">Submit Demographic Survey</button>
+                    <button v-show="editModeActive" type="button" @click="addSurvey">Submit Demographic Survey</button>
 
 
                 </form>
