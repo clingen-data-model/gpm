@@ -80,7 +80,7 @@
                     </div>
 
                     <div style="display: flex;" v-if="formDataLoaded">
-                        <input type="checkbox" id="birth_country_opt_out" v-model="selected_birth_country_opt_out"
+                        <input type="checkbox" id="birth_country_opt_out" v-model="formdata.data.birth_country_opt_out"
                             v-bind:disabled="!editModeActive">
 
                         <label for="birth_country_opt_out"> Prefer not to answer</label>
@@ -108,7 +108,7 @@
                     </div>
 
                     <div style="display: flex;">
-                        <input type="checkbox" id="reside_country_opt_out" v-model="selected_reside_country_opt_out"
+                        <input type="checkbox" id="reside_country_opt_out" v-model="formdata.data.reside_country_opt_out"
                             v-bind:disabled="!editModeActive">
 
                         <label for="reside_country_opt_out">Prefer not to answer </label>
@@ -134,7 +134,7 @@
 
                     <div style="display: flex;">
                         <input id="reside_state_opt_out" class="w3-check" type="checkbox"
-                            v-model="selected_reside_state_opt_out" v-bind:disabled="!editModeActive">
+                            v-model="formdata.data.reside_state_opt_out" v-bind:disabled="!editModeActive">
                         <label>Prefer not to answer </label>
                     </div>
 
@@ -167,7 +167,7 @@
 
 
                     <div v-for="ethnicity in availableEthnicities" :key="ethnicity.value" class="flex">
-                        <input type="checkbox" :value="ethnicity.value" v-model="selected_ethnicities"
+                        <input type="checkbox" :value="ethnicity.value" v-model="formdata.data.ethnicities"
                             v-bind:disabled="!editModeActive">
                         <label>{{ ethnicity.label }}</label>
                     </div>
@@ -175,7 +175,7 @@
 
                     <div style="display: flex;">
                         <input id="optOutEthnicity" class="w3-check" type="checkbox"
-                            v-model="selected_ethnicity_opt_out" v-bind:disabled="!editModeActive">
+                            v-model="formdata.data.ethnicity_opt_out" v-bind:disabled="!editModeActive">
                         <br>
                         <label>Prefer not to answer</label>
 
@@ -192,7 +192,7 @@
 
                     <div style="display: flex;">
                         <input id="optOutBirth" class="w3-check" type="checkbox" v-bind:disabled="!editModeActive"
-                            v-model="selected_birth_year_opt_out">
+                            v-model="formdata.data.birth_year_opt_out">
                         <label> Prefer not to answer</label>
 
                     </div>
@@ -214,7 +214,7 @@
                             group.
                         </legend>
                         <div v-for="identity in availableIdentities" :key="identity" style="display: flex;">
-                            <input type="checkbox" :value="identity" v-model="selected_identities"
+                            <input type="checkbox" :value="identity" v-model="formdata.data.identities"
                                 v-bind:disabled="!editModeActive">
                             <label> {{ identity }}
                             </label>
@@ -232,7 +232,7 @@
 
                     <div style="display: flex;">
                         <input id="optOutIdentity" class="w3-check" type="checkbox" v-bind:disabled="!editModeActive"
-                            v-model="selected_identity_opt_out">
+                            v-model="formdata.data.identity_opt_out">
                         <label> Prefer not to answer</label>
 
                     </div>
@@ -248,7 +248,7 @@
                         </legend>
                         <div v-for="gender_identity in availableGender_Identities" :key="gender_identity"
                             style="display: flex;">
-                            <input type="checkbox" :value="gender_identity" v-model="selected_gender_identities"
+                            <input type="checkbox" :value="gender_identity" v-model="formdata.data.gender_identities"
                                 v-bind:disabled="!editModeActive">
                             <label>{{ gender_identity }}</label>
 
@@ -263,7 +263,7 @@
 
                         <div style="display: flex;">
                             <input id="optOutGenderIdentities" class="w3-check" type="checkbox"
-                                v-bind:disabled="!editModeActive" v-model="selected_gender_identities_opt_out">
+                                v-bind:disabled="!editModeActive" v-model="formdata.data.gender_identities_opt_out">
                             <label> Prefer not to answer</label>
 
                         </div>
@@ -286,7 +286,7 @@
 
 
                         <div v-for="support_type in availableSupporttypes" :key="support_type.value" class="flex">
-                            <input type="checkbox" :value="support_type.value" v-model="selected_support"
+                            <input type="checkbox" :value="support_type.value" v-model="formdata.data.support"
                                 v-bind:disabled="!editModeActive">
                             <label>{{ support_type.label }}</label>
                         </div>
@@ -298,7 +298,7 @@
                         </div>
 
                         <label>
-                            <input type="checkbox" v-model="selected_support_opt_out" v-bind:disabled="!editModeActive">
+                            <input type="checkbox" v-model="formdata.data.support_opt_out" v-bind:disabled="!editModeActive">
                             Prefer not to answer<br>
                         </label>
 
@@ -404,7 +404,7 @@
                     </div>
 
                     <label>
-                        <input type="checkbox" v-model="selected_disadvantaged_opt_out" v-bind:disabled="!editModeActive">
+                        <input type="checkbox" v-model="formdata.data.disadvantaged_opt_out" v-bind:disabled="!editModeActive">
                         Prefer not to answer<br>
                     </label>
 
@@ -416,7 +416,7 @@
                     Please choose the option that most accurately describes your role or occupation [select all that
                     apply].<br>
                     <div v-for="occupation in availableOccupations" :key="occupation.value" class="flex">
-                        <input type="checkbox" :value="occupation.value" v-model="selected_occupations"
+                        <input type="checkbox" :value="occupation.value" v-model="formdata.data.occupations"
                             v-bind:disabled="!editModeActive">
                         <label>{{ occupation.label }}</label>
                     </div>
@@ -428,7 +428,7 @@
                     </div>
 
                     <label>
-                        <input type="checkbox" v-model="selected_occupations_opt_out" v-bind:disabled="!editModeActive">
+                        <input type="checkbox" v-model="formdata.data.occupations_opt_out" v-bind:disabled="!editModeActive">
                         Prefer not to answer<br>
                     </label>
 
@@ -673,72 +673,39 @@ export default {
                 data: {
                     birth_country: null,
                     birth_country_other: null,
+                    birth_country_opt_out: false,
                     reside_country: null,
                     reside_country_other: null,
+                    reside_country_opt_out: false,
+                    reside_state: null,
+                    reside_state_opt_out: false,
+                    ethnicities: [],
+                    ethnicity_opt_out: false,
                     birth_year: null,
                     birth_year_opt_out: false,
-                    birth_country_opt_out: false,
-                    reside_country_opt_out: false,
-                    reside_state_opt_out: false,
-                    ethnicity_opt_out: false,
-                    identity_opt_out: false,
-                    gender_identities_opt_out: false,
-                    disadvantaged_opt_out: false,
-                    reside_state: null,
-                    id: null,
                     identities: [],
+                    identity_other: null,
+                    identity_opt_out: false,
                     gender_identities: [],
                     gender_identities_other: null,
-                    support_other: null,
-                    occupations: [],
-                    ethnicities: [],
+                    gender_identities_opt_out: false,
                     support: [],
-                    occupations_other: null,
-                    identity_other: null,
+                    grant_detail: null,
+                    support_opt_out: false,
+                    support_other: null,
                     disadvantaged: null,
                     disadvantaged_other: null,
-                    specialty: [],
-                    demo_form_complete: false,
-                    support_opt_out: false,
+                    disadvantaged_opt_out: false,
+                    occupations: [],
+                    occupations_other: null,
                     occupations_opt_out: false,
+                    specialty: [],
                 }
             },
 
-
-            //Selected varaiables are checkboxes.  When editing data these values are mapped from formdata variables.
-            selected_birth_country_opt_out: false,
-            selected_reside_country_opt_out: false,
-            selected_reside_state_opt_out: false,
-            selected_support_opt_out: false,
-            selected_birth_year_opt_out: false,
-            selected_ethnicity_opt_out: false,
-            selected_identity_opt_out: false,
-            selected_gender_identities_opt_out: false,
-            selected_disadvantaged_opt_out: false,
-            selected_occupations_opt_out: false,
-            selected_specialty: null,
-            selected_support: [],
-            selected_ethnicities: [],
-            selected_occupations: [],
-            selected_identities: [],
-            selected_gender_identities: [],
-
             //data variables other than those selected(checkbox) or retrieved from database
-            grant_detail: null,
-            institution_id: null,
-            gender: [],
-            user: null,
             error: null,
             errors: {},
-            profile: {},
-            saving: false,
-            items: [],
-
-
-
-
-
-
         };
     },
 
@@ -840,24 +807,8 @@ export default {
         async getUser(localuuid) {
             try {
                 const response = await axios.get(`${baseUrl}/${this.localUuid}`); // Assuming 'baseUrl' is defined
+                // TODO: might be better off picking just the data property (and maybe just its demographics-related values)
                 this.formdata = response.data;
-
-                this.selected_birth_country_opt_out = !!this.formdata.data.birth_country_opt_out;
-                this.selected_reside_country_opt_out = !!this.formdata.data.reside_country_opt_out;
-                this.selected_reside_state_opt_out = !!this.formdata.data.state_opt_out;
-                this.selected_birth_year_opt_out = !!this.formdata.data.birth_year_opt_out;
-                this.selected_ethnicity_opt_out = !!this.formdata.data.ethnicity_opt_out;
-                this.selected_identity_opt_out = !!this.formdata.data.identity_opt_out;
-                this.selected_gender_identities_opt_out = !!this.formdata.data.gender_identities_opt_out;
-                this.selected_support_opt_out = !!this.formdata.data.support_opt_out;
-                this.selected_support = JSON.parse(this.formdata.data.support);
-                this.selected_disadvantaged_opt_out = !!this.formdata.data.disadvantaged_opt_out;
-                this.selected_occupations_opt_out = !!this.formdata.data.occupations_opt_out;
-                this.selected_gender_identities = JSON.parse(this.formdata.data.gender_identities);
-                this.selected_identities = JSON.parse(this.formdata.data.identities);
-                this.selected_ethnicities = JSON.parse(this.formdata.data.ethnicities);
-                this.selected_occupations = JSON.parse(this.formdata.data.occupations);
-
                 this.formDataLoaded = true;
 
             } catch (error) {
@@ -875,43 +826,8 @@ export default {
         // TODO uuid is never sent to this function as a parameter...
         async addSurvey(uuid) {
             items = {
-                // demo_form_complete: 1,
-                birth_country: this.formdata.data.birth_country,
-                birth_country_other: this.formdata.data.birth_country_other,
-                reside_country: this.formdata.data.reside_country,
-                reside_country_other: this.formdata.data.reside_country_other,
-                reside_state: this.formdata.data.reside_state,
-                state_opt_out: this.selected_reside_state_opt_out,
-                birth_year: this.formdata.data.birth_year,
-                birth_year_opt_out: this.selected_birth_year_opt_out,
-                birth_country_opt_out: this.selected_birth_country_opt_out,
-                reside_country_opt_out: this.selected_reside_country_opt_out,
-                identities: this.selected_identities,
-                identity_other: this.formdata.data.identity_other,
-                identity_opt_out: this.selected_identity_opt_out,
-                gender_identities: this.selected_gender_identities,
-                gender_identities_other: this.formdata.data.gender_identities_other,
-                gender_identities_opt_out: this.selected_gender_identities_opt_out,
-                ethnicities: this.selected_ethnicities,
-                ethnicity_opt_out: this.selected_ethnicity_opt_out,
-                occupations: this.selected_occupations,
-                occupations_other: this.formdata.data.occupations_other,
-                occupations_opt_out: this.selected_occupations_opt_out,
-                specialty: this.formdata.data.specialty,
-                id: this.formdata.data.id,
-                email: this.formdata.data.email,
-                institution_id: this.formdata.data.institution_id,
-                support: this.selected_support,
-                grant_detail: this.formdata.data.grant_detail,
-                support_opt_out: this.selected_support_opt_out,
-                support_other: this.formdata.data.support_other,
-                first_name: this.formdata.data.first_name,
-                last_name: this.formdata.data.last_name,
-                country_id: this.formdata.data.country_id,
-                timezone: this.formdata.data.timezone,
-                disadvantaged: this.formdata.data.disadvantaged,
-                disadvantaged_other: this.formdata.data.disadvantaged_other,
-                disadvantaged_opt_out: this.selected_disadvantaged_opt_out,
+                ...this.formdata.data,
+                // TODO: should this be dateTime instead?
                 demographics_completed_date: this.formattedDate,
                 demographics_version: 1,
             };
