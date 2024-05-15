@@ -30,7 +30,7 @@ const handleSave = async () => {
 <template>
     <div>
         <card title="Please fill out your demographic profile information">
-            <DemographicsForm :uuid="store.getters.currentUser.person.uuid" @saved="handleSave" v-bind:is-new="true" />
+            <DemographicsForm :uuid="store.getters.currentUser.person.uuid" :startInEditMode="true" @saved="handleSave" />
         </card>
     </div>
 </template>
