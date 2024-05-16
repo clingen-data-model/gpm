@@ -192,7 +192,7 @@
                     <br>
                     <h2>Participant Information on Age</h2>
                     <br>
-                    <div style="display: flex; align-items: center;">
+                    <div class="flex-container">
                         <label>What year were you born?</label>
                         <input class="w3-input" type="text" id="birth_year" v-model="formdata.birth_year"
                             v-bind:disabled="!editModeActive">
@@ -263,11 +263,13 @@
 
                         </div>
 
-                        <div style="display: flex;">
+                        <div class="flex-container">
                             <label>My preferred term is </label>
                             <input class="w3-input" type="text" id="gender_identities_other"
                                 v-model="formdata.gender_identities_other" v-bind:disabled="!editModeActive">
                         </div>
+
+
 
 
                         <div style="display: flex;">
@@ -679,7 +681,6 @@ export default {
             localUuid: this.uuid, // Initialize localUuid either with the prop or as null
             editModeActive: false,
             formdata: {
-<<<<<<< HEAD
                 birth_country: null,
                 birth_country_other: null,
                 birth_country_opt_out: false,
@@ -689,6 +690,7 @@ export default {
                 reside_state: null,
                 reside_state_opt_out: false,
                 ethnicities: [],
+                ethnicity_other: null,
                 ethnicity_opt_out: false,
                 birth_year: null,
                 birth_year_opt_out: false,
@@ -709,41 +711,6 @@ export default {
                 occupations_other: null,
                 occupations_opt_out: false,
                 specialty: [],
-=======
-                data: {
-                    birth_country: null,
-                    birth_country_other: null,
-                    reside_country: null,
-                    reside_country_other: null,
-                    birth_year: null,
-                    birth_year_opt_out: false,
-                    birth_country_opt_out: false,
-                    reside_country_opt_out: false,
-                    reside_state_opt_out: false,
-                    ethnicity_opt_out: false,
-                    identity_opt_out: false,
-                    gender_identities_opt_out: false,
-                    disadvantaged_opt_out: false,
-                    reside_state: null,
-                    id: null,
-                    identities: [],
-                    gender_identities: [],
-                    gender_identities_other: null,
-                    support_other: null,
-                    occupations: [],
-                    ethnicities: [],
-                    support: [],
-                    occupations_other: null,
-                    identity_other: null,
-                    disadvantaged: null,
-                    disadvantaged_other: null,
-                    specialty: [],
-                    demo_form_complete: false,
-                    support_opt_out: false,
-                    occupations_opt_out: false,
-                    ethnicity_other: null,
-                }
->>>>>>> d6f1b2ba (fixed cosmetic issues identified by Courtney.  added ethnicity other field)
             },
 
             //data variables other than those selected(checkbox) or retrieved from database
@@ -820,6 +787,20 @@ export default {
             return support_types;
         },
 
+        disableField() {
+            return !this.isNew && !this.editform;
+        },
+
+        disableCountryDropdown() {
+            return this.formdata.data.birth_country_other !== '' || this.selected_birth_country_opt_out;
+        },
+        disableOtherInput() {
+            return this.formdata.data.birth_country !== '' || this.selected_birth_country_opt_out;
+        },
+        disableOptOutCheckbox() {
+            return this.formdata.data.birth_country !== '' || this.formdata.data.birth_country_other !== '';
+        },
+
         //calculate the current date and format it
         formattedDate() {
             const originalDate = new Date().toLocaleDateString();
@@ -831,6 +812,16 @@ export default {
             // Format the date to 'YYYY-MM-DD'
             return date.toISOString().split('T')[0];
 
+        },
+
+        isSection1Valid() {
+            // Section 1 is valid if there's text input or any checkbox is selected
+            return this.formdata.data.birth_country_other !== '' || this.formdata.data.birth_country.length > 0 || this.selected_birth_country_opt_out;
+        },
+
+        isFormValid() {
+            // The entire form is valid if all sections are valid
+            return this.isSection1Valid;
         }
 
     },
@@ -868,42 +859,53 @@ export default {
 
         // TODO uuid is never sent to this function as a parameter...
         async addSurvey(uuid) {
-            items = {
-                ...this.formdata,
-                // TODO: should this be dateTime instead?
-                demographics_completed_date: this.formattedDate,
-                demographics_version: 1,
-                ethnicity_other: this.formdata.data.ethnicity_other,
-            };
             console.log(items);
+            if (this.isFormValid) {
+                alert('Form is valid and ready to be submitted!');
+                items = {
+                    ...this.formdata,
+                    // TODO: should this be dateTime instead?
+                    demographics_completed_date: this.formattedDate,
+                    demographics_version: 1,
+                    ethnicity_other: this.formdata.data.ethnicity_other,
+                };
+                console.log(items);
 
-            try {
-                const response = await axios.put(`${baseUrl}/${this.localUuid}/demographics`, items);
-                console.log(response.data);
-                this.$emit('saved');
+                try {
+                    const response = await axios.put(`${baseUrl}/${this.localUuid}/demographics`, items);
+                    console.log(response.data);
+                    this.$emit('saved');
 
-            } catch (error) {
-                if (error.response) {
-                    // Request made and server responded
+                } catch (error) {
+                    if (error.response) {
+                        // Request made and server responded
 
-                    if (error.response.status === 404) {
-                        this.error = 'Resource not found';
-                    } else if (error.response.status === 500) {
-                        this.error = 'Server error';
+                        if (error.response.status === 404) {
+                            this.error = 'Resource not found';
+                        } else if (error.response.status === 500) {
+                            this.error = 'Server error';
+                        }
+                    } else if (error.request) {
+                        // The request was made but no response was received
+                        console.log(error.request);
+                        this.error = 'Network error';
+                    } else {
+                        // Something happened in setting up the request that triggered an Error
+                        console.log('Error', error.message);
+                        this.error = 'Error in request setup';
                     }
-                } else if (error.request) {
-                    // The request was made but no response was received
-                    console.log(error.request);
-                    this.error = 'Network error';
-                } else {
-                    // Something happened in setting up the request that triggered an Error
-                    console.log('Error', error.message);
-                    this.error = 'Error in request setup';
+
+                    console.error("Error updating user:", error);
                 }
 
-                console.error("Error updating user:", error);
+                this.editModeActive = false;
+
+            } else {
+                // Notify user to fill all required sections
+                alert('Please fill in all required sections.');
             }
-            this.editModeActive = false;
+            // }
+
 
         },
 
@@ -1125,7 +1127,7 @@ button {
 input[type="checkbox"]+label:before {
     content: "";
     display: inline-block;
-    padding-right: .3cm;
+    padding-right: .2cm;
 }
 
 input[type="radio"] {
@@ -1146,5 +1148,25 @@ input[type="radio"] {
 
 input[type="radio"]:checked {
     background-color: #0044cc;
+}
+
+.flex-container {
+    display: flex;
+    align-items: center;
+    /* Aligns items vertically in the center */
+}
+
+.flex-container label {
+    flex: 0 1 auto;
+    /* Do not grow, allow shrink, and base width on content */
+    white-space: nowrap;
+    /* Prevents the label from wrapping */
+    margin-right: 10px;
+    /* Adds some space between the label and the input */
+}
+
+.flex-container input {
+    flex: 1 1 auto;
+    /* Allow grow and shrink, and base width on remaining space */
 }
 </style>
