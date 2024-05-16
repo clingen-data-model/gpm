@@ -79,6 +79,7 @@ class Person extends Model implements HasLogEntries
         'reside_state',
         'reside_state_opt_out',
         'ethnicities',
+        'ethnicity_other',
         'ethnicity_opt_out',
         'birth_year',
         'birth_year_opt_out',
@@ -101,7 +102,6 @@ class Person extends Model implements HasLogEntries
         'specialty',
         'demographics_completed_date',
         'demographics_version'
-
     ];
 
     protected $casts = [
