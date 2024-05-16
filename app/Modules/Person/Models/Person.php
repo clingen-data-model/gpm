@@ -100,7 +100,8 @@ class Person extends Model implements HasLogEntries
         'occupations_opt_out',
         'specialty',
         'demographics_completed_date',
-        'demographics_version'
+        'demographics_version',
+        'ethnicity_other'
 
     ];
 

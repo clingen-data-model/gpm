@@ -46,6 +46,7 @@ return new class extends Migration
             $table->char('reside_country_other', 25)->nullable();
             $table->char('gender_identities_other', 25)->nullable();
             $table->char('gender_preferred_term', 30)->nullable();
+            $table->char('ethnicity_other', 25)->nullable();
 
            
 
