@@ -9,6 +9,7 @@ use App\Models\Credential;
 use App\Models\Traits\HasUuid;
 use App\Models\Traits\HasEmail;
 use App\Modules\User\Models\User;
+use Illuminate\Support\Collection;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Race;
 use App\Modules\Person\Models\Gender;
@@ -68,37 +69,37 @@ class Person extends Model implements HasLogEntries
         'ethnicity_id',
         'gender_id',
         'gender_other',
-
-        // Fields from demographics module
         'birth_country',
         'birth_country_other',
-        'birth_country_opt_out',
         'reside_country',
         'reside_country_other',
-        'reside_country_opt_out',
         'reside_state',
-        'reside_state_opt_out',
-        'ethnicities',
-        'ethnicity_opt_out',
         'birth_year',
         'birth_year_opt_out',
+        'disadvantaged',
+        'disadvantaged_other',
+        'birth_country_opt_out',
+        'state_opt_out',
+        'reside_country_opt_out',
+        'ethnicities',
+        'gender_identities_other',
         'identities',
         'identity_other',
-        'identity_opt_out',
         'gender_identities',
-        'gender_identities_other',
-        'gender_identities_opt_out',
+        'ethnicities',
+        'ethnicity_opt_out',
+        'occupations',
+        'occupations_other',
+        'specialty',
         'support',
         'grant_detail',
         'support_opt_out',
         'support_other',
-        'disadvantaged',
-        'disadvantaged_other',
+        'demo_form_complete',
+        'identity_opt_out',       
+        'gender_identities_opt_out',
         'disadvantaged_opt_out',
-        'occupations',
-        'occupations_other',
         'occupations_opt_out',
-        'specialty',
         'demographics_completed_date',
         'demographics_version'
 
@@ -114,18 +115,6 @@ class Person extends Model implements HasLogEntries
         'race_id' => 'integer',
         'ethnicity_id' => 'integer',
         'gender_id' => 'integer',
-        'birth_year' => 'integer',
-        'ethnicities' => 'array',
-        'ethnicity_opt_out' => 'boolean',
-        'identities' => 'array',
-        'identity_opt_out' => 'boolean',
-        'gender_identities' => 'array',
-        'gender_identities_opt_out' => 'boolean',
-        'support' => 'array',
-        'support_opt_out' => 'boolean',
-        'occupations' => 'array',
-        'occupations_opt_out' => 'boolean',
-        'specialty' => 'array',
     ];
 
     protected $appends = [

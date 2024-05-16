@@ -239,7 +239,9 @@ router.beforeEach(async (to, from, next) => {
     }
 
     // Check if the user needs to update profile demographics
-    if (store.getters.currentUser.person.demographics_completed_date === null && !store.getters.currentUser.is_impersonating) {
+    // TODO: change demo_form_complete to a timestamped field
+    // TODO: do not use demo as an abbreviation for demographics
+    if (store.getters.currentUser.person.demographics_completed_date === null) {
         console.log('redirecting to demographics form');
         router.replace({name: 'RequiredDemographicsUpdateForm', params: {redirectTo: to}});
         next();
