@@ -3,7 +3,7 @@
 
         <div class="centered-container">
 
-            <h1>ClinGen Demographic Survey</h1>
+            <h1>ClinGen Demographic Information</h1>
             <!-- Background and Purpose section -->
 
             <div v-show="!editModeActive" type="button" class="pt-4 border-t mt-4" style="text-align: center;">
@@ -18,7 +18,7 @@
 
                     <b>Why are we asking for this information?</b> The Clinical Genome Resource values the diversity of
                     our
-                    participants and works to maintain a culture of acceptance, accessibility, and diversity : (see our
+                    participants and works to maintain a culture of acceptance, accessibility, and diversity: (see our
                     <a href="https://clinicalgenome.org/working-groups/jedi-advisory-board/" target="_blank">Justice,
                         Equity,
                         Diversity, and Inclusion (JEDI) Action Plan</a> ) Providing
@@ -32,7 +32,8 @@
                     demographic
                     data. We will not share any individual data. Data may be shared/presented in aggregate.</p>
 
-                <p><b>What do we do with this data?</b>This is entirely for internal and informational use to understand
+                <p><b>What do we do with this data?</b> This is entirely for internal and informational use to
+                    understand
                     our
                     participants. For example, we might use this information to focus efforts on engaging early or
                     mid-career
@@ -48,12 +49,13 @@
                 <form @submit.prevent="addSurvey">
                     <h2>Participant Information on Country</h2>
 
-                    <p>The current list of countries comes from (<a
-                            href="https://www.iso.org/iso-3166-country-codes.html" target="_blank">the international
-                            standard ISO 3166 country codes</a>). We recognize that this
+                    <p>The current list of countries comes from <a
+                            href="https://www.iso.org/iso-3166-country-codes.html" target="_blank"> the international
+                            standard ISO 3166 country codes</a>. We recognize that this
                         list may not be complete or satisfy all, so please feel free to choose “other” and provide a
                         free text
-                        response.
+                        response. Please choose only one option from the dropdown list, other text, or prefer not to
+                        answer.
                     </p>
 
                     <div>
@@ -149,11 +151,11 @@
                         listed
                         categories. </p>
 
-                    <p> The options below come from updates by the (<a href="https://www.census.gov/"
+                    <p> The options below come from updates by the <a href="https://www.census.gov/"
                             target="_blank">U.S. 2020
-                            Census</a>), and (<a
+                            Census</a>, and <a
                             href="https://www.researchallofus.org/data-tools/survey-explorer/the-basics-survey/"
-                            target="_blank">the All Of Us Basic Survey Questions</a>). We understand that these options
+                            target="_blank">the All Of Us Basic Survey Questions</a>. We understand that these options
                         do not capture
                         the
                         diversity of racial and ethnic identities in
@@ -171,6 +173,13 @@
                             v-bind:disabled="!editModeActive">
                         <label>{{ ethnicity.label }}</label>
                     </div>
+
+                    <div style="display: flex;">
+                        <label>Other: </label>
+                        <input class="w3-input" type="text" id="ethnicity_other" v-model="formdata.data.ethnicity_other"
+                            v-bind:disabled="disableField">
+                    </div>
+
 
 
                     <div style="display: flex;">
@@ -202,10 +211,10 @@
 
                     <p>We ask the following questions about identity to understand participation across the ClinGen
                         ecosystem. The
-                        framing of the questions around sex and gender reflects recommendations made by (<a
+                        framing of the questions around sex and gender reflects recommendations made by <a
                             href="https://nap.nationalacademies.org/read/26424/chapter/1#xi" target="_blank">the
                             National Academies of
-                            Sciences, Engineering, and Medicine in 2022. </a>) </p>
+                            Sciences, Engineering, and Medicine in 2022. </a> </p>
 
 
 
@@ -333,40 +342,40 @@
                         criteria:<br>
 
                     <ol type="1">
-                        <li>Were or currently are homeless, as defined by the (<a
+                        <li>Were or currently are homeless, as defined by the <a
                                 href="https://nche.ed.gov/mckinney-vento/" target="_blank">McKinney-Vento Homeless
-                                Assistance Act</a>);</li>
-                        <li>Were or currently are in the foster care system, as defined by the (<a
+                                Assistance Act</a>;</li>
+                        <li>Were or currently are in the foster care system, as defined by the <a
                                 href="https://www.acf.hhs.gov/cb/focus-areas/foster-care" target="_blank">Administration
                                 for Children
                                 and
-                                Families</a>);</li>
-                        <li>Were eligible for the for two or more years (<a
+                                Families</a>;</li>
+                        <li>Were eligible for two or more years in the <a
                                 href="https://www.fns.usda.gov/school-meals/income-eligibility-guidelines"
                                 target="_blank">Federal Free
                                 and
-                                Reduced Lunch Program</a>);</li>
-                        <li>Have/had no parents or legal guardians who completed a bachelor’s degree (<a
-                                href="https://nces.ed.gov/pubs2018/2018009.pdf" target="_blank">See</a>);</li>
-                        <li>Were or currently are eligible for (<a
+                                Reduced Lunch Program</a>;</li>
+                        <li>Have/had no parents or legal guardians who completed a bachelor’s degree <a
+                                href="https://nces.ed.gov/pubs2018/2018009.pdf" target="_blank">See</a>;</li>
+                        <li>Were or currently are eligible for <a
                                 href="https://www2.ed.gov/programs/fpg/eligibility.html" target="_blank">Federal Pell
-                                grants</a>)</li>
+                                grants</a>;</li>
                         <li>Received support from the as a
-                            parent or child (<a href="https://www.fns.usda.gov/wic/wic-eligibility-requirements"
+                            parent or child <a href="https://www.fns.usda.gov/wic/wic-eligibility-requirements"
                                 target="_blank">Special
-                                Supplemental Nutrition Program for Women, Infants and Children (WIC)</a>);</li>
+                                Supplemental Nutrition Program for Women, Infants and Children (WIC)</a></li>
 
                     </ol>
                     <br>
 
                     Grew up in one of the following areas: <br>
-                    a) a U.S. rural area, as designated by (<a href="https://data.hrsa.gov/tools/rural-health"
+                    a) a U.S. rural area, as designated by <a href="https://data.hrsa.gov/tools/rural-health"
                         target="_blank">the
                         Health Resources and Services Administration (HRSA) Rural Health
-                        Grants Eligibility Analyzer </a>);
+                        Grants Eligibility Analyzer </a>;
                     or<br>
 
-                    b) a Centers for Medicare and Medicaid Services-designated (<a
+                    b) a Centers for Medicare and Medicaid Services-designated <a
                         href="https://www.qhpcertification.cms.gov/s/LowIncomeandHPSAZipCodeListingPY2020.xlsx?v=1"
                         target="_blank">Low-Income and Health Professional Shortage Areas
                         (qualifying zip codes are included in the file). </a>
@@ -413,7 +422,7 @@
                     <br>
                     <h2>Employment</h2>
 
-                    Please choose the option that most accurately describes your role or occupation [select all that
+                    Please choose the option(s) that most accurately describes your role or occupation [select all that
                     apply].<br>
                     <div v-for="occupation in availableOccupations" :key="occupation.value" class="flex">
                         <input type="checkbox" :value="occupation.value" v-model="formdata.occupations"
@@ -497,15 +506,15 @@ const occupations = [
     { value: 'clinical trainee', label: 'Clinical resident or fellow' },
     { value: 'basic researcher', label: 'Basic researcher' },
     { value: 'clinical researcher', label: 'Clinical researcher' },
-    { value: 'variant analyst', label: 'Variant Analyst' },
-    { value: 'staff scientist', label: 'Staff Scientist' },
+    { value: 'variant analyst', label: 'Variant analyst' },
+    { value: 'staff scientist', label: 'Staff scientist' },
     { value: 'bioinformatician', label: 'Bioinformatician' },
     { value: 'biocurator', label: 'Biocurator' },
-    { value: 'graduate student', label: 'Graduate Student' },
-    { value: 'software engineer/developer', label: 'Software Engineer/Developer' },
+    { value: 'graduate student', label: 'Graduate student' },
+    { value: 'software engineer/developer', label: 'Software engineer/Developer' },
     { value: 'educator', label: 'Educator' },
-    { value: 'general geneticist', label: 'General Geneticist' },
-    { value: 'science policy', label: 'Health Care Policy or Science Policy' },
+    { value: 'general geneticist', label: 'General geneticist' },
+    { value: 'science policy', label: 'Health care policy or Science policy' },
 
 ]
 
@@ -670,6 +679,7 @@ export default {
             localUuid: this.uuid, // Initialize localUuid either with the prop or as null
             editModeActive: false,
             formdata: {
+<<<<<<< HEAD
                 birth_country: null,
                 birth_country_other: null,
                 birth_country_opt_out: false,
@@ -699,6 +709,41 @@ export default {
                 occupations_other: null,
                 occupations_opt_out: false,
                 specialty: [],
+=======
+                data: {
+                    birth_country: null,
+                    birth_country_other: null,
+                    reside_country: null,
+                    reside_country_other: null,
+                    birth_year: null,
+                    birth_year_opt_out: false,
+                    birth_country_opt_out: false,
+                    reside_country_opt_out: false,
+                    reside_state_opt_out: false,
+                    ethnicity_opt_out: false,
+                    identity_opt_out: false,
+                    gender_identities_opt_out: false,
+                    disadvantaged_opt_out: false,
+                    reside_state: null,
+                    id: null,
+                    identities: [],
+                    gender_identities: [],
+                    gender_identities_other: null,
+                    support_other: null,
+                    occupations: [],
+                    ethnicities: [],
+                    support: [],
+                    occupations_other: null,
+                    identity_other: null,
+                    disadvantaged: null,
+                    disadvantaged_other: null,
+                    specialty: [],
+                    demo_form_complete: false,
+                    support_opt_out: false,
+                    occupations_opt_out: false,
+                    ethnicity_other: null,
+                }
+>>>>>>> d6f1b2ba (fixed cosmetic issues identified by Courtney.  added ethnicity other field)
             },
 
             //data variables other than those selected(checkbox) or retrieved from database
@@ -828,6 +873,7 @@ export default {
                 // TODO: should this be dateTime instead?
                 demographics_completed_date: this.formattedDate,
                 demographics_version: 1,
+                ethnicity_other: this.formdata.data.ethnicity_other,
             };
             console.log(items);
 
@@ -1083,8 +1129,22 @@ input[type="checkbox"]+label:before {
 }
 
 input[type="radio"] {
-    margin: 0.4rem;
-    padding-right: 0.5rem;
-    /* Adjust the padding as needed */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+
+input[type="radio"] {
+    appearance: none;
+    background-color: #fff;
+    border: 2px solid #000;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+}
+
+input[type="radio"]:checked {
+    background-color: #0044cc;
 }
 </style>
