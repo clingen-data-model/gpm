@@ -176,8 +176,8 @@
 
                     <div style="display: flex;">
                         <label>Other: </label>
-                        <input class="w3-input" type="text" id="ethnicity_other" v-model="formdata.data.ethnicity_other"
-                            v-bind:disabled="disableField">
+                        <input class="w3-input" type="text" id="ethnicity_other" v-model="formdata.ethnicity_other"
+                            v-bind:disabled="!editModeActive">
                     </div>
 
 
@@ -266,7 +266,7 @@
                         <div class="flex-container">
                             <label>My preferred term is </label>
                             <input class="w3-input" type="text" id="gender_identities_other"
-                                v-model="formdata.gender_identities_other" v-bind:disabled="!editModeActive">
+                                v-model="formdata.gender_identities_other" :disabled="!editModeActive">
                         </div>
 
 
@@ -415,7 +415,8 @@
                     </div>
 
                     <label>
-                        <input type="checkbox" v-model="formdata.disadvantaged_opt_out" v-bind:disabled="!editModeActive">
+                        <input type="checkbox" v-model="formdata.disadvantaged_opt_out"
+                            v-bind:disabled="!editModeActive">
                         Prefer not to answer<br>
                     </label>
 
@@ -434,8 +435,13 @@
 
                     <div style="display: flex;">
                         <label>Other: Use this free text box to provide any additional detail. </label>
+<<<<<<< HEAD
                         <input id="occupations_other" class="w3-input" type="text"
                             v-model="formdata.occupations_other" v-bind:disabled="!editModeActive">
+=======
+                        <input id="occupations_other" class="w3-input" type="text" v-model="formdata.occupations_other"
+                            v-bind:disabled="!editModeActive">
+>>>>>>> cdfdc1fc (fixed disable field functionality)
                     </div>
 
                     <label>
@@ -867,7 +873,6 @@ export default {
                     // TODO: should this be dateTime instead?
                     demographics_completed_date: this.formattedDate,
                     demographics_version: 1,
-                    ethnicity_other: this.formdata.data.ethnicity_other,
                 };
                 console.log(items);
 
