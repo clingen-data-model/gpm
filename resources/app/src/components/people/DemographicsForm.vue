@@ -435,13 +435,8 @@
 
                     <div style="display: flex;">
                         <label>Other: Use this free text box to provide any additional detail. </label>
-<<<<<<< HEAD
                         <input id="occupations_other" class="w3-input" type="text"
                             v-model="formdata.occupations_other" v-bind:disabled="!editModeActive">
-=======
-                        <input id="occupations_other" class="w3-input" type="text" v-model="formdata.occupations_other"
-                            v-bind:disabled="!editModeActive">
->>>>>>> cdfdc1fc (fixed disable field functionality)
                     </div>
 
                     <label>
