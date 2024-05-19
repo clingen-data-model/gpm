@@ -192,10 +192,21 @@
                     <br>
                     <h2>Participant Information on Age</h2>
                     <br>
-                    <div class="flex-container">
-                        <label>What year were you born?</label>
-                        <input class="w3-input" type="text" id="birth_year" v-model="formdata.birth_year"
+
+
+                    
+                    <div>
+                        <label for="specialty">Please select the year that you were born.</label>
+                        <span style="color: red !important; display: inline; float: none;"></span>
+                        <!-- TODO: check with invested parties: should this be multi-select/checkbox? -->
+                        <select id="age" name="age" v-model="formdata.birth_year"
                             v-bind:disabled="!editModeActive">
+                            <option value="">Select birth year</option>
+                            <option v-for="age in availableAges" :key="age"
+                                :value="age">
+                                {{ age }}
+                            </option>
+                        </select>
                     </div>
 
 
@@ -541,6 +552,22 @@ const gender_identities = [
 
 ]
 
+const ages = [
+    '2006',
+    '2005',
+    '2004',
+    '2003',
+    '2002',
+    '2001',
+    '2000',
+    '1999',
+    '1998',
+    '1997',
+    '1996',
+    '1995',
+    '1994', '1993', '1992', '1991',
+]
+
 const non_genetics_specialties = [
     "Allergy & Immunology",
     "Anesthesiology",
@@ -760,6 +787,10 @@ export default {
             return ethnicities;
         },
 
+        availableAges() {
+            return ages;
+        },
+
         availableIdentities() {
             return identities;
         },
@@ -824,24 +855,43 @@ export default {
            // return this.formdata.birth_country_other !== '' || this.formdata.birth_country.length > 0 || this.formdata.birth_country_opt_out;
        // },
 
-        isSection1Valid() {
+      //  isSection1Valid() {
             // Ensure formdata and its properties are defined
-            if (!this.formdata) return false;
+       //     if (!this.formdata) return false;
+        //    console.log(this.formdata.birth_country);
+        //    console.log(this.formdata.birth_country_other);
+       //     console.log(typeof this.formdata.birth_country);
 
-            const { birth_country_other, birth_country, birth_country_opt_out } = this.formdata;
+           // const { birth_country_other, birth_country, birth_country_opt_out } = this.formdata;
 
             // Ensure birth_country_other is a string and trimmed, birth_country has content, or opt-out is true
+      //      return (
+        //       (typeof this.formdata.birth_country_other === 'string' && this.formdata.birth_country_other.trim() !== '') ||
+              //  (this.formdata.birth_country !== null) ||
+         //     (this.formdata.birth_country !== null && this.formdata.birth_country !== 0) ||
+         //       this.formdata.birth_country_opt_out === true
+          //  );
+       // },
+
+        isAgeSectionValid() {
+
+           //  const { birth_year1, birth_year_opt_out } = this.formdata;
+
             return (
-                (typeof birth_country_other === 'string' && birth_country_other.trim() !== '') ||
-                (typeof birth_country === 'string' && birth_country.trim() !== '') ||
-                birth_country_opt_out === true
+               // (typeof this.formdata.birth_year === 'string' && this.formdata.birth_year.trim() !== '') ||
+              //(this.formdata.birth_year.trim() !== '') ||
+               //  (this.formdata.birth_country !== null) ||
+              //(this.formdata.birth_country !== null && this.formdata.birth_country !== 0) ||
+                this.birth_year_opt_out === true
             );
         },
 
-        isFormValid() {
+       // isFormValid() {
             // The entire form is valid if all sections are valid
-            return this.isSection1Valid;
-        }
+            //return this.isSection1Valid;
+       //     return this.isAgeSectionValid;
+
+       // }
 
     },
 
@@ -878,7 +928,8 @@ export default {
 
         // TODO uuid is never sent to this function as a parameter...
         async addSurvey(uuid) {
-            console.log(items);
+            this.checkValidity();
+          //  console.log(items);
             if (this.isFormValid) {
                 alert('Form is valid and ready to be submitted!');
                 items = {
@@ -892,6 +943,12 @@ export default {
                 try {
                     const response = await axios.put(`${baseUrl}/${this.localUuid}/demographics`, items);
                     console.log(response.data);
+                    if (response.status === 200)
+                    {
+                        alert('Form was submitted succesfully!');
+                    }
+                        
+                    
                     this.$emit('saved');
 
                 } catch (error) {
@@ -926,6 +983,35 @@ export default {
 
 
         },
+
+        isSection1Valid() {
+            // Ensure formdata and its properties are defined
+            if (!this.formdata) return false;
+
+            const { birth_country_other, birth_country, birth_country_opt_out } = this.formdata;
+
+            // Ensure birth_country_other is a string and trimmed, birth_country has a valid index, or opt-out is true
+            return (
+                (typeof birth_country_other === 'string' && birth_country_other.trim() !== '') ||
+                (typeof birth_country === 'string' && birth_country.trim() !== '' && birth_country !== '0') ||
+                birth_country_opt_out === true
+            );
+        },
+
+        checkValidity() {
+        if (this.isSection1Valid()) {
+            console.log("Section 1 is valid");
+            this.isFormValid = true;
+        } else {
+            console.log("Section 1 is not valid");
+        }
+
+      //  if (this.isAgeSectionValid()) {
+       //     console.log("Age section is valid");
+       // } else {
+       //     console.log("Age section is not valid");
+        //}
+    },
 
         editPerson(event) {
             event.preventDefault();
