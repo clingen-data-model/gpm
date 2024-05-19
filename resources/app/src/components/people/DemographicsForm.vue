@@ -815,9 +815,27 @@ export default {
 
         },
 
-        isSection1Valid() {
+       // isSection1Valid() {
+        //    return
+        //    (typeof birth_country_other === 'string' && birth_country_other.trim() !== '') ||
+         //       (typeof birth_country === 'string' && birth_country.trim() !== '') ||
+         //       birth_country_opt_out === true
             // Section 1 is valid if there's text input or any checkbox is selected
-            return this.formdata.data.birth_country_other !== '' || this.formdata.data.birth_country.length > 0 || this.selected_birth_country_opt_out;
+           // return this.formdata.birth_country_other !== '' || this.formdata.birth_country.length > 0 || this.formdata.birth_country_opt_out;
+       // },
+
+        isSection1Valid() {
+            // Ensure formdata and its properties are defined
+            if (!this.formdata) return false;
+
+            const { birth_country_other, birth_country, birth_country_opt_out } = this.formdata;
+
+            // Ensure birth_country_other is a string and trimmed, birth_country has content, or opt-out is true
+            return (
+                (typeof birth_country_other === 'string' && birth_country_other.trim() !== '') ||
+                (typeof birth_country === 'string' && birth_country.trim() !== '') ||
+                birth_country_opt_out === true
+            );
         },
 
         isFormValid() {
