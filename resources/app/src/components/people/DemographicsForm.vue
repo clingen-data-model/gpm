@@ -983,6 +983,9 @@ export default {
         //TODO revisit disadvanted logic
         disadvantaged: this.formdata.disadvantaged,
         disadvantaged_other: this.formdata.disadvantaged_other,
+        disadvantaged_opt_out: this.formdata.disadvantaged_opt_out,
+        identity_opt_out: this.formdata.identity_opt_out,
+        occupations_opt_out: this.formdata.occupations_opt_out,
                     // TODO: should this be dateTime instead?
                     demographics_completed_date: this.formattedDate,
                     demographics_version: 1,
