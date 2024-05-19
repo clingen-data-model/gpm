@@ -135,8 +135,8 @@
                     </div>
 
                     <div style="display: flex;">
-                        <input id="reside_state_opt_out" class="w3-check" type="checkbox"
-                            v-model="formdata.reside_state_opt_out" v-bind:disabled="!editModeActive">
+                        <input id="state_opt_out" class="w3-check" type="checkbox"
+                            v-model="formdata.state_opt_out" v-bind:disabled="!editModeActive">
                         <label>Prefer not to answer </label>
                     </div>
 
@@ -716,7 +716,7 @@ export default {
                 reside_country_other: null,
                 reside_country_opt_out: false,
                 reside_state: null,
-                reside_state_opt_out: false,
+                state_opt_out: false,
                 ethnicities: [],
                 ethnicity_other: null,
                 ethnicity_opt_out: false,
@@ -912,7 +912,19 @@ export default {
                 const response = await axios.get(`${baseUrl}/${this.localUuid}`); // Assuming 'baseUrl' is defined
                 // TODO: might be better off picking just the data property (and maybe just its demographics-related values)
                 this.formdata = response.data.data;
+                console.log(this.formdata);
                 this.formDataLoaded = true;
+                //need to convert opt out fields from database boolean to display correctly for editing
+                this.formdata.birth_country_opt_out = this.formdata.birth_country_opt_out === 1 ? true : false;
+                this.formdata.reside_country_opt_out = this.formdata.reside_country_opt_out === 1 ? true : false; 
+                this.formdata.ethnicity_opt_out = this.formdata.ethnicity_opt_out === 1 ? true : false;
+                this.formdata.birth_year_opt_out = this.formdata.birth_year_opt_out === 1 ? true : false;
+                this.formdata.state_opt_out = this.formdata.state_opt_out === 1 ? true : false;
+                this.formdata.identity_opt_out = this.formdata.identity_opt_out === 1 ? true : false;
+                this.formdata.gender_identities_opt_out = this.formdata.gender_identities_opt_out === 1 ? true : false;
+                this.formdata.ethnicity_opt_out = this.formdata.ethnicity_opt_out === 1 ? true : false;
+                this.formdata.disadvantaged_opt_out = this.formdata.disadvantaged_opt_out === 1 ? true : false;
+                this.formdata.occupations_opt_out = this.formdata.occupations_opt_out === 1 ? true : false;
 
             } catch (error) {
                 this.error = error; // You might want an 'error' data property
@@ -933,7 +945,44 @@ export default {
             if (this.isFormValid) {
                 alert('Form is valid and ready to be submitted!');
                 items = {
-                    ...this.formdata,
+                  //  ...this.formdata,
+                  birth_country: this.formdata.birth_country,
+                    birth_country_other: this.formdata.birth_country_other,
+                    reside_country: this.formdata.reside_country,
+                 reside_country_other: this.formdata.reside_country_other,
+        state: this.formdata.state,
+        state_opt_out: this.formdata.state_opt_out,
+        birth_year: this.formdata.birth_year,
+        birth_country_opt_out: this.formdata.birth_country_opt_out,
+        reside_country_opt_out: this.formdata.reside_country_opt_out,
+        //state_opt_out: this.reside_state_opt_out,
+        identities: this.formdata.identities,
+        identity_other: this.formdata.identity_other,
+        gender_identities: this.formdata.gender_identities,
+        gender_identities_other: this.formdata.gender_identities_other,
+        ethnicities: this.formdata.ethnicities,
+        ethnicity_opt_out: this.formdata.ethnicity_opt_out,
+        occupations: this.formdata.occupations,
+
+        //  this.items.occupations.push(this.formdata.data.occupations_other); 
+        occupations_other: this.formdata.occupations_other,
+        specialty: this.formdata.specialty,
+        id: this.formdata.id,
+        email: this.formdata.email,
+        institution_id: this.formdata.institution_id,
+        support: this.formdata.support,
+        grant_detail: this.formdata.grant_detail,
+        support_opt_out: this.formdata.support_opt_out,
+        support_other: this.formdata.support_other,
+        // reside_state: this.reside_state,
+        // institution_id: this.user.institution_id,
+        first_name: this.formdata.first_name,
+        last_name: this.formdata.last_name,
+        country_id: this.formdata.country_id,
+        timezone: this.formdata.timezone,
+        //TODO revisit disadvanted logic
+        disadvantaged: this.formdata.disadvantaged,
+        disadvantaged_other: this.formdata.disadvantaged_other,
                     // TODO: should this be dateTime instead?
                     demographics_completed_date: this.formattedDate,
                     demographics_version: 1,
@@ -959,6 +1008,7 @@ export default {
                             this.error = 'Resource not found';
                         } else if (error.response.status === 500) {
                             this.error = 'Server error';
+                            alert('There was an internal server error.');
                         }
                     } else if (error.request) {
                         // The request was made but no response was received
