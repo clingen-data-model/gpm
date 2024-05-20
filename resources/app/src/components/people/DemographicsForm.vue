@@ -960,6 +960,7 @@ export default {
         identity_other: this.formdata.identity_other,
         gender_identities: this.formdata.gender_identities,
         gender_identities_other: this.formdata.gender_identities_other,
+        gender_identities_opt_out: this.formdata.gender_identities_opt_out,
         ethnicities: this.formdata.ethnicities,
         ethnicity_opt_out: this.formdata.ethnicity_opt_out,
         occupations: this.formdata.occupations,
