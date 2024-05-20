@@ -454,7 +454,7 @@
                     </label>
 
 
-                    <div>
+                    <div v-if="formdata.occupations.includes('non genetics physician')">
                         <label for="specialty">If you indicated “Medical non-genetics physician”, please select your
                             specialty.</label>
                         <span style="color: red !important; display: inline; float: none;"></span>
