@@ -121,7 +121,7 @@
                     <!-- Additional inputs and sections -->
                     <br>
 
-                    <div>
+                    <div v-if="formdata.reside_country === 226">
                         <label for="country-state">If you currently live in the United States, what is your
                             state/territory of
                             residence?</label>
@@ -134,9 +134,9 @@
                         </select>
                     </div>
 
-                    <div style="display: flex;">
-                        <input id="state_opt_out" class="w3-check" type="checkbox"
-                            v-model="formdata.state_opt_out" v-bind:disabled="!editModeActive">
+                    <div v-if="formdata.reside_country === 226" style="display: flex;">
+                        <input id="state_opt_out" class="w3-check" type="checkbox" v-model="formdata.state_opt_out"
+                            v-bind:disabled="!editModeActive">
                         <label>Prefer not to answer </label>
                     </div>
 
@@ -194,16 +194,14 @@
                     <br>
 
 
-                    
+
                     <div>
                         <label for="specialty">Please select the year that you were born.</label>
                         <span style="color: red !important; display: inline; float: none;"></span>
                         <!-- TODO: check with invested parties: should this be multi-select/checkbox? -->
-                        <select id="age" name="age" v-model="formdata.birth_year"
-                            v-bind:disabled="!editModeActive">
+                        <select id="age" name="age" v-model="formdata.birth_year" v-bind:disabled="!editModeActive">
                             <option value="">Select birth year</option>
-                            <option v-for="age in availableAges" :key="age"
-                                :value="age">
+                            <option v-for="age in availableAges" :key="age" :value="age">
                                 {{ age }}
                             </option>
                         </select>
@@ -446,8 +444,8 @@
 
                     <div style="display: flex;">
                         <label>Other: Use this free text box to provide any additional detail. </label>
-                        <input id="occupations_other" class="w3-input" type="text"
-                            v-model="formdata.occupations_other" v-bind:disabled="!editModeActive">
+                        <input id="occupations_other" class="w3-input" type="text" v-model="formdata.occupations_other"
+                            v-bind:disabled="!editModeActive">
                     </div>
 
                     <label>
@@ -846,52 +844,52 @@ export default {
 
         },
 
-       // isSection1Valid() {
+        // isSection1Valid() {
         //    return
         //    (typeof birth_country_other === 'string' && birth_country_other.trim() !== '') ||
-         //       (typeof birth_country === 'string' && birth_country.trim() !== '') ||
-         //       birth_country_opt_out === true
-            // Section 1 is valid if there's text input or any checkbox is selected
-           // return this.formdata.birth_country_other !== '' || this.formdata.birth_country.length > 0 || this.formdata.birth_country_opt_out;
-       // },
+        //       (typeof birth_country === 'string' && birth_country.trim() !== '') ||
+        //       birth_country_opt_out === true
+        // Section 1 is valid if there's text input or any checkbox is selected
+        // return this.formdata.birth_country_other !== '' || this.formdata.birth_country.length > 0 || this.formdata.birth_country_opt_out;
+        // },
 
-      //  isSection1Valid() {
-            // Ensure formdata and its properties are defined
-       //     if (!this.formdata) return false;
+        //  isSection1Valid() {
+        // Ensure formdata and its properties are defined
+        //     if (!this.formdata) return false;
         //    console.log(this.formdata.birth_country);
         //    console.log(this.formdata.birth_country_other);
-       //     console.log(typeof this.formdata.birth_country);
+        //     console.log(typeof this.formdata.birth_country);
 
-           // const { birth_country_other, birth_country, birth_country_opt_out } = this.formdata;
+        // const { birth_country_other, birth_country, birth_country_opt_out } = this.formdata;
 
-            // Ensure birth_country_other is a string and trimmed, birth_country has content, or opt-out is true
-      //      return (
+        // Ensure birth_country_other is a string and trimmed, birth_country has content, or opt-out is true
+        //      return (
         //       (typeof this.formdata.birth_country_other === 'string' && this.formdata.birth_country_other.trim() !== '') ||
-              //  (this.formdata.birth_country !== null) ||
-         //     (this.formdata.birth_country !== null && this.formdata.birth_country !== 0) ||
-         //       this.formdata.birth_country_opt_out === true
-          //  );
-       // },
+        //  (this.formdata.birth_country !== null) ||
+        //     (this.formdata.birth_country !== null && this.formdata.birth_country !== 0) ||
+        //       this.formdata.birth_country_opt_out === true
+        //  );
+        // },
 
         isAgeSectionValid() {
 
-           //  const { birth_year1, birth_year_opt_out } = this.formdata;
+            //  const { birth_year1, birth_year_opt_out } = this.formdata;
 
             return (
-               // (typeof this.formdata.birth_year === 'string' && this.formdata.birth_year.trim() !== '') ||
-              //(this.formdata.birth_year.trim() !== '') ||
-               //  (this.formdata.birth_country !== null) ||
-              //(this.formdata.birth_country !== null && this.formdata.birth_country !== 0) ||
+                // (typeof this.formdata.birth_year === 'string' && this.formdata.birth_year.trim() !== '') ||
+                //(this.formdata.birth_year.trim() !== '') ||
+                //  (this.formdata.birth_country !== null) ||
+                //(this.formdata.birth_country !== null && this.formdata.birth_country !== 0) ||
                 this.birth_year_opt_out === true
             );
         },
 
-       // isFormValid() {
-            // The entire form is valid if all sections are valid
-            //return this.isSection1Valid;
-       //     return this.isAgeSectionValid;
+        // isFormValid() {
+        // The entire form is valid if all sections are valid
+        //return this.isSection1Valid;
+        //     return this.isAgeSectionValid;
 
-       // }
+        // }
 
     },
 
@@ -916,7 +914,7 @@ export default {
                 this.formDataLoaded = true;
                 //need to convert opt out fields from database boolean to display correctly for editing
                 this.formdata.birth_country_opt_out = this.formdata.birth_country_opt_out === 1 ? true : false;
-                this.formdata.reside_country_opt_out = this.formdata.reside_country_opt_out === 1 ? true : false; 
+                this.formdata.reside_country_opt_out = this.formdata.reside_country_opt_out === 1 ? true : false;
                 this.formdata.ethnicity_opt_out = this.formdata.ethnicity_opt_out === 1 ? true : false;
                 this.formdata.birth_year_opt_out = this.formdata.birth_year_opt_out === 1 ? true : false;
                 this.formdata.state_opt_out = this.formdata.state_opt_out === 1 ? true : false;
@@ -941,52 +939,52 @@ export default {
         // TODO uuid is never sent to this function as a parameter...
         async addSurvey(uuid) {
             this.checkValidity();
-          //  console.log(items);
+            //  console.log(items);
             if (this.isFormValid) {
                 alert('Form is valid and ready to be submitted!');
                 items = {
-                  //  ...this.formdata,
-                  birth_country: this.formdata.birth_country,
+                    //  ...this.formdata,
+                    birth_country: this.formdata.birth_country,
                     birth_country_other: this.formdata.birth_country_other,
                     reside_country: this.formdata.reside_country,
-                 reside_country_other: this.formdata.reside_country_other,
-        state: this.formdata.state,
-        state_opt_out: this.formdata.state_opt_out,
-        birth_year: this.formdata.birth_year,
-        birth_country_opt_out: this.formdata.birth_country_opt_out,
-        reside_country_opt_out: this.formdata.reside_country_opt_out,
-        //state_opt_out: this.reside_state_opt_out,
-        identities: this.formdata.identities,
-        identity_other: this.formdata.identity_other,
-        gender_identities: this.formdata.gender_identities,
-        gender_identities_other: this.formdata.gender_identities_other,
-        gender_identities_opt_out: this.formdata.gender_identities_opt_out,
-        ethnicities: this.formdata.ethnicities,
-        ethnicity_opt_out: this.formdata.ethnicity_opt_out,
-        occupations: this.formdata.occupations,
+                    reside_country_other: this.formdata.reside_country_other,
+                    // state: this.formdata.state,
+                    state_opt_out: this.formdata.state_opt_out,
+                    birth_year: this.formdata.birth_year,
+                    birth_country_opt_out: this.formdata.birth_country_opt_out,
+                    reside_country_opt_out: this.formdata.reside_country_opt_out,
+                    //state_opt_out: this.reside_state_opt_out,
+                    identities: this.formdata.identities,
+                    identity_other: this.formdata.identity_other,
+                    gender_identities: this.formdata.gender_identities,
+                    gender_identities_other: this.formdata.gender_identities_other,
+                    gender_identities_opt_out: this.formdata.gender_identities_opt_out,
+                    ethnicities: this.formdata.ethnicities,
+                    ethnicity_opt_out: this.formdata.ethnicity_opt_out,
+                    occupations: this.formdata.occupations,
 
-        //  this.items.occupations.push(this.formdata.data.occupations_other); 
-        occupations_other: this.formdata.occupations_other,
-        specialty: this.formdata.specialty,
-        id: this.formdata.id,
-        email: this.formdata.email,
-        institution_id: this.formdata.institution_id,
-        support: this.formdata.support,
-        grant_detail: this.formdata.grant_detail,
-        support_opt_out: this.formdata.support_opt_out,
-        support_other: this.formdata.support_other,
-        // reside_state: this.reside_state,
-        // institution_id: this.user.institution_id,
-        first_name: this.formdata.first_name,
-        last_name: this.formdata.last_name,
-        country_id: this.formdata.country_id,
-        timezone: this.formdata.timezone,
-        //TODO revisit disadvanted logic
-        disadvantaged: this.formdata.disadvantaged,
-        disadvantaged_other: this.formdata.disadvantaged_other,
-        disadvantaged_opt_out: this.formdata.disadvantaged_opt_out,
-        identity_opt_out: this.formdata.identity_opt_out,
-        occupations_opt_out: this.formdata.occupations_opt_out,
+                    //  this.items.occupations.push(this.formdata.data.occupations_other); 
+                    occupations_other: this.formdata.occupations_other,
+                    specialty: this.formdata.specialty,
+                    id: this.formdata.id,
+                    email: this.formdata.email,
+                    institution_id: this.formdata.institution_id,
+                    support: this.formdata.support,
+                    grant_detail: this.formdata.grant_detail,
+                    support_opt_out: this.formdata.support_opt_out,
+                    support_other: this.formdata.support_other,
+                    reside_state: this.formdata.reside_state,
+                    // institution_id: this.user.institution_id,
+                    first_name: this.formdata.first_name,
+                    last_name: this.formdata.last_name,
+                    country_id: this.formdata.country_id,
+                    timezone: this.formdata.timezone,
+                    //TODO revisit disadvanted logic
+                    disadvantaged: this.formdata.disadvantaged,
+                    disadvantaged_other: this.formdata.disadvantaged_other,
+                    disadvantaged_opt_out: this.formdata.disadvantaged_opt_out,
+                    identity_opt_out: this.formdata.identity_opt_out,
+                    occupations_opt_out: this.formdata.occupations_opt_out,
                     // TODO: should this be dateTime instead?
                     demographics_completed_date: this.formattedDate,
                     demographics_version: 1,
@@ -996,12 +994,11 @@ export default {
                 try {
                     const response = await axios.put(`${baseUrl}/${this.localUuid}/demographics`, items);
                     console.log(response.data);
-                    if (response.status === 200)
-                    {
+                    if (response.status === 200) {
                         alert('Form was submitted succesfully!');
                     }
-                        
-                    
+
+
                     this.$emit('saved');
 
                 } catch (error) {
@@ -1053,19 +1050,19 @@ export default {
         },
 
         checkValidity() {
-        if (this.isSection1Valid()) {
-            console.log("Section 1 is valid");
-            this.isFormValid = true;
-        } else {
-            console.log("Section 1 is not valid");
-        }
+            if (this.isSection1Valid()) {
+                console.log("Section 1 is valid");
+                this.isFormValid = true;
+            } else {
+                console.log("Section 1 is not valid");
+            }
 
-      //  if (this.isAgeSectionValid()) {
-       //     console.log("Age section is valid");
-       // } else {
-       //     console.log("Age section is not valid");
-        //}
-    },
+            //  if (this.isAgeSectionValid()) {
+            //     console.log("Age section is valid");
+            // } else {
+            //     console.log("Age section is not valid");
+            //}
+        },
 
         editPerson(event) {
             event.preventDefault();
