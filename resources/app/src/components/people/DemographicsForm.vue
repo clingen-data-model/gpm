@@ -183,7 +183,7 @@
 
 
                     <div style="display: flex;">
-                        <input id="optOutEthnicity" class="w3-check" type="checkbox"
+                        <input id="ethnicity_opt_out" class="w3-check" type="checkbox"
                             v-model="formdata.ethnicity_opt_out" v-bind:disabled="!editModeActive">
                         <br>
                         <label>Prefer not to answer</label>
@@ -923,6 +923,7 @@ export default {
                 this.formdata.ethnicity_opt_out = this.formdata.ethnicity_opt_out === 1 ? true : false;
                 this.formdata.disadvantaged_opt_out = this.formdata.disadvantaged_opt_out === 1 ? true : false;
                 this.formdata.occupations_opt_out = this.formdata.occupations_opt_out === 1 ? true : false;
+                this.formdata.support_opt_out = this.formdata.support_opt_out === 1 ? true : false;
 
             } catch (error) {
                 this.error = error; // You might want an 'error' data property
@@ -960,6 +961,7 @@ export default {
                     gender_identities_other: this.formdata.gender_identities_other,
                     gender_identities_opt_out: this.formdata.gender_identities_opt_out,
                     ethnicities: this.formdata.ethnicities,
+                    ethnicity_other: this.formdata.ethnicity_other,
                     ethnicity_opt_out: this.formdata.ethnicity_opt_out,
                     occupations: this.formdata.occupations,
 
