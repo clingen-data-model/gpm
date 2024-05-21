@@ -311,7 +311,7 @@
                             <label>{{ support_type.label }}</label>
                         </div>
 
-                        <div>
+                        <div v-if="formdata.support.includes('grant')">
                             <label>Provide more details on source of funding</label>
                             <input class="w3-input" type="text" v-model="formdata.grant_detail"
                                 v-bind:disabled="!editModeActive">
