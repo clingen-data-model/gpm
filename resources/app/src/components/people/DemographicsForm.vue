@@ -156,10 +156,8 @@
                             Census</a>, and <a
                             href="https://www.researchallofus.org/data-tools/survey-explorer/the-basics-survey/"
                             target="_blank">the All Of Us Basic Survey Questions</a>. We understand that these options
-                        do not capture
-                        the
-                        diversity of racial and ethnic identities in
-                        the US, let alone around the world. </p>
+                        do not capture the diversity of racial and ethnic identities in the US, let alone around the
+                        world. </p>
 
 
                     <legend>Which categories describe you? Select all that apply. Note, you may select more than one
@@ -198,7 +196,7 @@
                     <div>
                         <label for="specialty">Please select the year that you were born.</label>
                         <span style="color: red !important; display: inline; float: none;"></span>
-                        <!-- TODO: check with invested parties: should this be multi-select/checkbox? -->
+
                         <select id="birth_year" name="birth_year" v-model="formdata.birth_year"
                             v-bind:disabled="!editModeActive">
                             <option value="">Select birth year</option>
@@ -220,11 +218,9 @@
                     <h2>Participant Information on Identity</h2>
 
                     <p>We ask the following questions about identity to understand participation across the ClinGen
-                        ecosystem. The
-                        framing of the questions around sex and gender reflects recommendations made by <a
-                            href="https://nap.nationalacademies.org/read/26424/chapter/1#xi" target="_blank">the
-                            National Academies of
-                            Sciences, Engineering, and Medicine in 2022. </a> </p>
+                        ecosystem. The framing of the questions around sex and gender reflects recommendations made by
+                        <a href="https://nap.nationalacademies.org/read/26424/chapter/1#xi" target="_blank">the
+                            National Academies of Sciences, Engineering, and Medicine in 2022. </a> </p>
 
 
 
@@ -340,12 +336,10 @@
                     <h2>Under-Represented Groups and Disadvantaged Backgrounds</h2>
 
                     <p>ClinGen is invested in expanding access to curated data and participation in Expert
-                        Panels/working groups
-                        to
-                        individuals who may be under-represented or experience disadvantage due to location or life
-                        events. We ask
-                        these
-                        questions to help understand the backgrounds of our participating members.</p>
+                        Panels/working groups to individuals who may be under-represented or experience disadvantage due
+                        to location or life
+                        events. We ask these questions to help understand the backgrounds of our participating members.
+                    </p>
 
                     <p>The following text pertains to the disadvantaged background question below. If you are not a
                         US-based
@@ -361,9 +355,7 @@
                                 Assistance Act</a>;</li>
                         <li>Were or currently are in the foster care system, as defined by the <a
                                 href="https://www.acf.hhs.gov/cb/focus-areas/foster-care" target="_blank">Administration
-                                for Children
-                                and
-                                Families</a>;</li>
+                                for Children and Families</a>;</li>
                         <li>Were eligible for two or more years in the <a
                                 href="https://www.fns.usda.gov/school-meals/income-eligibility-guidelines"
                                 target="_blank">Federal Free
