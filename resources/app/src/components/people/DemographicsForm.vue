@@ -21,7 +21,7 @@
                     participants and works to maintain a culture of acceptance, accessibility, and diversity: (see our
                     <a href="https://clinicalgenome.org/working-groups/jedi-advisory-board/" target="_blank">Justice,
                         Equity,
-                        Diversity, and Inclusion (JEDI) Action Plan</a> ) Providing
+                        Diversity, and Inclusion (JEDI) Action Plan</a>). Providing
                     this information will help us to better understand our ClinGen community, focus current efforts to
                     enhance
                     diversity, and identify areas for future outreach. We sincerely appreciate your time, attention, and
@@ -220,7 +220,8 @@
                     <p>We ask the following questions about identity to understand participation across the ClinGen
                         ecosystem. The framing of the questions around sex and gender reflects recommendations made by
                         <a href="https://nap.nationalacademies.org/read/26424/chapter/1#xi" target="_blank">the
-                            National Academies of Sciences, Engineering, and Medicine in 2022. </a> </p>
+                            National Academies of Sciences, Engineering, and Medicine in 2022. </a>
+                    </p>
 
 
 
@@ -468,7 +469,7 @@
 
 
                     <!-- Submission Button -->
-                    <button v-show="editModeActive" type="button" @click="addSurvey">Submit Demographic Survey</button>
+                    <button v-show="editModeActive" type="button" @click="addSurvey">Save</button>
 
 
                 </form>
