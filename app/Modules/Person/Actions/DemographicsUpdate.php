@@ -56,7 +56,7 @@ class DemographicsUpdate
 
     public function asController(ActionRequest $request, Person $person)
     {
-        $demoData = $request->only(['id','email', 'user_id', 'institution_id', 'primary_occupation_id', 'first_name', 'birth_country', 'reside_country', ]);
+        $demoData = $request->only(['id']);
         if ($request->user()->can('update', $person)) {
             $demoData = $request->all();
         }
@@ -84,17 +84,17 @@ class DemographicsUpdate
     public function rules(ActionRequest $request)
     {
         $rules = [
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('people', 'email')
-                    ->ignore($request->person->id),
-                Rule::unique('users', 'email')
-                    ->ignore($request->person->user_id),
-            ],
-            'first_name' => ['required','max:255'],
-            'last_name' => ['required','max:255'],
-            'institution_id' => ['exists:institutions,id'],
+           // 'email' => [
+           //     'required',
+           //     'email',
+           //     Rule::unique('people', 'email')
+           //         ->ignore($request->person->id),
+            //    Rule::unique('users', 'email')
+           //         ->ignore($request->person->user_id),
+          //  ],
+          //  'first_name' => ['required','max:255'],
+          //  'last_name' => ['required','max:255'],
+           // 'institution_id' => ['exists:institutions,id'],
            // 'credential_ids' => ['array'],
            // 'credential_ids.*' => ['exists:credentials,id'],
            // 'expertise_ids' => ['array'],
@@ -102,8 +102,8 @@ class DemographicsUpdate
             // 'race_id' => ['exists:races,id'],;
             // 'primary_occupation_id' => ['exists:primary_occupations,id'],
             // 'gender_id' => ['exists:genders,id'],
-            'country_id' => ['exists:countries,id'],
-            'timezone' => [Rule::in(DateTimeZone::listIdentifiers())],
+           // 'country_id' => ['exists:countries,id'],
+            //'timezone' => [Rule::in(DateTimeZone::listIdentifiers())],
             'street1' => ['nullable','max:255'],
             'street2' => ['nullable','max:255'],
             'city' => ['nullable','max:255'],

@@ -726,6 +726,8 @@ export default {
                 occupations_other: null,
                 occupations_opt_out: false,
                 specialty: [],
+                demographics_completed_date: null,
+                demographics_version: null,
             },
 
             //data variables other than those selected(checkbox) or retrieved from database
@@ -866,7 +868,16 @@ export default {
             try {
                 const response = await axios.get(`${baseUrl}/${this.localUuid}`); // Assuming 'baseUrl' is defined
                 // TODO: might be better off picking just the data property (and maybe just its demographics-related values)
-                this.formdata = response.data.data;
+                //  this.formdata = response.data.data;
+                const responsedata = response.data.data;
+                //console.log(this.formdata[attr]);
+                for (const attr in this.formdata) {
+                    if (responsedata[attr] !== undefined) {
+                        this.formdata[attr] = responsedata[attr];
+                    }
+                }
+
+
                 console.log(this.formdata);
                 this.formDataLoaded = true;
 
@@ -942,13 +953,13 @@ export default {
                     demographics_version: 1,
 
                     //index information on people database
-                    country_id: this.formdata.country_id,
-                    first_name: this.formdata.first_name,
-                    email: this.formdata.email,
+                    //country_id: this.formdata.country_id,
+                    // first_name: this.formdata.first_name,
+                    // email: this.formdata.email,
                     id: this.formdata.id,
-                    institution_id: this.formdata.institution_id,
-                    last_name: this.formdata.last_name,
-                    timezone: this.formdata.timezone,
+                    //institution_id: this.formdata.institution_id,
+                    // last_name: this.formdata.last_name,
+                    // timezone: this.formdata.timezone,
 
 
 
