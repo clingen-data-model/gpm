@@ -309,7 +309,7 @@
                             <label>{{ support_type.label }}</label>
                         </div>
 
-                        <div v-if="formdata.support.includes('grant')">
+                        <div v-if="formdata.support?.includes('grant')">
                             <label>Provide more details on source of funding</label>
                             <input class="w3-input" type="text" v-model="formdata.grant_detail"
                                 v-bind:disabled="!editModeActive">
@@ -450,7 +450,7 @@
                     </label>
 
 
-                    <div v-if="formdata.occupations.includes('non genetics physician')">
+                    <div v-if="formdata.occupations?.includes('non genetics physician')">
                         <label for="specialty">If you indicated “Medical non-genetics physician”, please select your
                             specialty.</label>
                         <span style="color: red !important; display: inline; float: none;"></span>
@@ -872,7 +872,7 @@ export default {
                 const responsedata = response.data.data;
                 //console.log(this.formdata[attr]);
                 for (const attr in this.formdata) {
-                    if (responsedata[attr] !== undefined) {
+                    if (responsedata[attr] !== null) {
                         this.formdata[attr] = responsedata[attr];
                     }
                 }
