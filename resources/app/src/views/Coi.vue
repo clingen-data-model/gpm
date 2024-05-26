@@ -59,6 +59,7 @@
                 </div>
                 <button-row :show-cancel="false" @submitClicked="storeResponse()">
                     <slot v-if="saving">
+                         Saving...
                     </slot>
                 </button-row>
             </div>
