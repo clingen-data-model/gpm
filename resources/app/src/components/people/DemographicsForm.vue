@@ -54,8 +54,10 @@
                             standard ISO 3166 country codes</a>. We recognize that this
                         list may not be complete or satisfy all, so please feel free to choose “other” and provide a
                         free text
-                        response. Please choose only one option from the dropdown list, other text, or prefer not to
-                        answer.
+                        response.<br><br>
+                        <em>Please choose only one option from the dropdown list, other text, or prefer not to
+                            answer.
+                        </em>
                     </p>
 
                     <div>
@@ -68,7 +70,7 @@
                             v-bind:disabled="!editModeActive">
                             <option value="">Select country</option>
                             <option v-for="country in countries" :key="country.value" :value="country.value">{{
-        country.label }}
+                                country.label }}
                             </option>
                         </select>
 
@@ -97,7 +99,7 @@
                             v-bind:disabled="!editModeActive">
                             <option value="">Select country</option>
                             <option v-for="country in countries" :key="country.value" :value="country.value">{{
-        country.label }}
+                                country.label }}
                             </option>
                         </select>
                     </div>
@@ -129,7 +131,7 @@
                             v-bind:disabled="!editModeActive">
                             <option value="">Select state</option>
                             <option v-for="state in availableStates" :key="state.value" :value="state.value">{{
-        state.label }}
+                                state.label }}
                             </option>
                         </select>
                     </div>
@@ -160,8 +162,10 @@
                         world. </p>
 
 
-                    <legend>Which categories describe you? Select all that apply. Note, you may select more than one
-                        group.
+                    <legend>Which categories describe you? Select all that apply.
+                        <em>
+                            Note, you may select more than one group.
+                        </em>
                     </legend>
 
 
@@ -226,8 +230,9 @@
 
 
                     <div class="w3-section">
-                        <legend>Which categories describe you? Select all that apply. Note, you may select more than one
-                            group.
+                        <legend>Which categories describe you? Select all that apply. <em>Note, you may select more than
+                                one
+                                group.</em>
                         </legend>
                         <div v-for="identity in availableIdentities" :key="identity" style="display: flex;">
                             <input type="checkbox" :value="identity" v-model="formdata.identities"
@@ -259,8 +264,9 @@
                     <br>
 
                     <div class="w3-section">
-                        <legend>Which categories describe you? Select all that apply. Note, you may select more than one
-                            group.
+                        <legend>Which categories describe you? Select all that apply. <em>Note, you may select more than
+                                one
+                                group.</em>
                         </legend>
                         <div v-for="gender_identity in availableGender_Identities" :key="gender_identity"
                             style="display: flex;">
