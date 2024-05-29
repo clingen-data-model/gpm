@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::table('people', function (Blueprint $table) {
            $table->integer('birth_country')->nullable();
            $table->integer('reside_country')->nullable();
-            $table->char('birth_year', 4)->nullable();
+            $table->year('birth_year')->nullable();
             $table->char('reside_state', 2)->nullable();
-            $table->char('grant_detail', 30)->nullable();
-            $table->char('support_other', 30)->nullable();  
-            $table->char('disadvantaged', 15)->nullable();
+            $table->string('grant_detail', 255)->nullable();
+            $table->string('support_other', 255)->nullable();  
+            $table->string('disadvantaged', 255)->nullable();
             $table->boolean('reside_state_opt_out')->nullable();
             $table->boolean('birth_country_opt_out')->nullable();
             $table->boolean('reside_country_opt_out')->nullable();
@@ -30,8 +30,7 @@ return new class extends Migration
             $table->json('occupations')->nullable();
            $table->json('identities')->nullable();
             $table->json('gender_identities')->nullable();
-            $table->char('specialty', 50)->nullable();
-            
+            $table->string('specialty', 255)->nullable();
             $table->boolean('identity_opt_out')->nullable();
             $table->boolean('gender_identities_opt_out')->nullable();
             $table->boolean('disadvantaged_opt_out')->nullable();
@@ -39,14 +38,14 @@ return new class extends Migration
             $table->integer('demographics_version')->nullable();
             $table->date('demographics_completed_date')->nullable();
 
-            $table->char('disadvantaged_other', 25)->nullable();
-            $table->char('identity_other', 25)->nullable();
-            $table->char('occupations_other', 25)->nullable();
-            $table->char('birth_country_other', 25)->nullable();
-            $table->char('reside_country_other', 25)->nullable();
-            $table->char('gender_identities_other', 25)->nullable();
-            $table->char('gender_preferred_term', 30)->nullable();
-            $table->char('ethnicity_other', 25)->nullable();
+            $table->string('disadvantaged_other', 255)->nullable();
+            $table->string('identity_other', 255)->nullable();
+            $table->string('occupations_other', 255)->nullable();
+            $table->string('birth_country_other', 255)->nullable();
+            $table->string('reside_country_other', 255)->nullable();
+            $table->string('gender_identities_other', 255)->nullable();
+          //  $table->char('gender_preferred_term', 30)->nullable();
+            $table->string('ethnicity_other', 255)->nullable();
 
            
 
