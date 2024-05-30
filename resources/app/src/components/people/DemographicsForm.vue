@@ -6,7 +6,7 @@
             <h1>ClinGen Demographic Information</h1>
             <!-- Background and Purpose section -->
 
-            <div v-show="!editModeActive" type="button" class="pt-4 border-t mt-4" style="text-align: center;">
+            <div v-show="!editModeActive" type="button" class="pt-4 border-t mt-4" style="text-align: right;">
                 <button class="btn btn-sm" @click="editPerson($event)">
                     Edit Info
                 </button>
@@ -70,7 +70,7 @@
                             v-bind:disabled="!editModeActive">
                             <option value="">Select country</option>
                             <option v-for="country in countries" :key="country.value" :value="country.value">{{
-                                country.label }}
+        country.label }}
                             </option>
                         </select>
 
@@ -99,7 +99,7 @@
                             v-bind:disabled="!editModeActive">
                             <option value="">Select country</option>
                             <option v-for="country in countries" :key="country.value" :value="country.value">{{
-                                country.label }}
+        country.label }}
                             </option>
                         </select>
                     </div>
@@ -131,7 +131,7 @@
                             v-bind:disabled="!editModeActive">
                             <option value="">Select state</option>
                             <option v-for="state in availableStates" :key="state.value" :value="state.value">{{
-                                state.label }}
+        state.label }}
                             </option>
                         </select>
                     </div>
@@ -230,9 +230,8 @@
 
 
                     <div class="w3-section">
-                        <legend>Which categories describe you? Select all that apply. <em>Note, you may select more than
-                                one
-                                group.</em>
+                        <legend>Which categories describe you? Select all that apply.
+                            <em>Note, you may select more than one group.</em>
                         </legend>
                         <div v-for="identity in availableIdentities" :key="identity" style="display: flex;">
                             <input type="checkbox" :value="identity" v-model="formdata.identities"
@@ -264,9 +263,8 @@
                     <br>
 
                     <div class="w3-section">
-                        <legend>Which categories describe you? Select all that apply. <em>Note, you may select more than
-                                one
-                                group.</em>
+                        <legend>Which categories describe you? Select all that apply.
+                            <em>Note, you may select more than one group.</em>
                         </legend>
                         <div v-for="gender_identity in availableGender_Identities" :key="gender_identity"
                             style="display: flex;">
@@ -391,7 +389,7 @@
                     b) a Centers for Medicare and Medicaid Services-designated <a
                         href="https://www.qhpcertification.cms.gov/s/LowIncomeandHPSAZipCodeListingPY2020.xlsx?v=1"
                         target="_blank">Low-Income and Health Professional Shortage Areas
-                        (qualifying zip codes are included in the file). </a>
+                        (qualifying zip codes are included in the file. </a>
                     <br>
                     <br>
                     Only one of these two possibilities can be used as a criterion for the
@@ -475,7 +473,8 @@
 
 
                     <!-- Submission Button -->
-                    <button v-show="editModeActive" type="button" @click="addSurvey">Save</button>
+                    <button v-show="editModeActive" type="button" style="text-align: right;"
+                        @click="addSurvey">Save</button>
 
 
                 </form>
@@ -842,18 +841,7 @@ export default {
         },
 
 
-        isAgeSectionValid() {
 
-            //  const { birth_year1, birth_year_opt_out } = this.formdata;
-
-            return (
-                // (typeof this.formdata.birth_year === 'string' && this.formdata.birth_year.trim() !== '') ||
-                //(this.formdata.birth_year.trim() !== '') ||
-                //  (this.formdata.birth_country !== null) ||
-                //(this.formdata.birth_country !== null && this.formdata.birth_country !== 0) ||
-                this.birth_year_opt_out === true
-            );
-        },
 
 
     },
@@ -1058,9 +1046,39 @@ export default {
 
         },
 
+        isOccupationValid() {
+            const { occupations, occupations_other, occupations_opt_out } = this.formdata;
+
+            return this.isSectionValid(occupations, occupations_other, occupations_opt_out);
+
+            // const isOccupationValid = this.isSectionValid(this.formdata.occupations, this.formdata.occupation_other, this.formdata.occupation_opt_out);
+
+        },
+
+
+        isBirthYearValid() {
+            return this.formdata.birth_year !== '' || this.formdata.birth_year_opt_out;
+        },
+
+        isEthnicityValid() {
+            console.log('Ethnicities:', this.formdata.ethnicities);
+            console.log('Other:', this.formdata.ethnicity_other);
+            console.log('Opt out:', this.formdata.ethnicity_opt_out);
+            return this.formdata.ethnicities.length !== 0 || (this.formdata.ethnicity_other !== '' && this.formdata.ethnicity_other !== null) || this.formdata.ethnicity_opt_out
+        },
+
+
+        isSectionValid(selection, other, optOut) {
+            console.log('Selection:', selection);
+            console.log('Other:', other);
+            console.log('Opt out:', optOut);
+            return selection.length !== 0 || (other !== '' && other !== null) || optOut;
+        },
+
+
 
         checkValidity() {
-            if (this.isSectionBirthCountryValid() && this.isSectionResideCountryValid()) {
+            if (this.isSectionBirthCountryValid() && this.isSectionResideCountryValid() && this.isBirthYearValid() && this.isEthnicityValid() && this.isOccupationValid()) {
                 console.log("Form is valid");
                 this.isFormValid = true;
             } else {
@@ -1068,11 +1086,6 @@ export default {
                 console.log("Form is not valid");
             }
 
-            //  if (this.isAgeSectionValid()) {
-            //     console.log("Age section is valid");
-            // } else {
-            //     console.log("Age section is not valid");
-            //}
         },
 
         editPerson(event) {
