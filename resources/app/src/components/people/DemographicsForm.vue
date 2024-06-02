@@ -125,8 +125,7 @@
 
                     <div v-if="formdata.reside_country === 226">
                         <label for="country-state">If you currently live in the United States, what is your
-                            state/territory of
-                            residence?</label>
+                            state/territory of residence?</label>
                         <select id="country-state" name="country-state" v-model="formdata.reside_state"
                             v-bind:disabled="!editModeActive">
                             <option value="">Select state</option>
@@ -147,11 +146,9 @@
                     <h2>Participant Information on Race/Ethnicity</h2>
 
                     <p>ClinGen Participant Diversity: We ask the following question for aggregate informational purposes
-                        to
-                        understand
-                        ClinGen participant diversity. The free-text response can be used in place or in addition to the
-                        listed
-                        categories. </p>
+                        to understand ClinGen participant diversity. The free-text response can be used in place or in
+                        addition to the
+                        listed categories. </p>
 
                     <p> The options below come from updates by the <a href="https://www.census.gov/"
                             target="_blank">U.S. 2020
@@ -1055,6 +1052,30 @@ export default {
 
         },
 
+        isIdentityValid() {
+            const { identities, identity_other, identity_opt_out } = this.formdata;
+            console.log('Identities:', this.formdata.identities);
+            console.log('Identity Other:', this.formdata.identity_other);
+            console.log('Idnetity Opt out:', this.formdata.identity_opt_out);
+
+            return this.isSectionValid(identities, identity_other, identity_opt_out);
+
+            // const isOccupationValid = this.isSectionValid(this.formdata.occupations, this.formdata.occupation_other, this.formdata.occupation_opt_out);
+
+        },
+
+        isGenderIdentityValid() {
+            const { gender_identities, gender_identities_other, gender_identities_opt_out } = this.formdata;
+            console.log('Gender Identities:', this.formdata.gender_identities);
+            console.log('Gender Identity Other:', this.formdata.gender_identities_other);
+            console.log('Gender Idnetity Opt out:', this.formdata.gender_identities_opt_out);
+
+            return this.isSectionValid(gender_identities, gender_identities_other, gender_identities_opt_out);
+
+            // const isOccupationValid = this.isSectionValid(this.formdata.occupations, this.formdata.occupation_other, this.formdata.occupation_opt_out);
+
+        },
+
 
         isBirthYearValid() {
             return this.formdata.birth_year !== '' || this.formdata.birth_year_opt_out;
@@ -1078,11 +1099,11 @@ export default {
 
 
         checkValidity() {
-            if (this.isSectionBirthCountryValid() && this.isSectionResideCountryValid() && this.isBirthYearValid() && this.isEthnicityValid() && this.isOccupationValid()) {
+            if (this.isSectionBirthCountryValid() && this.isSectionResideCountryValid() && this.isBirthYearValid() && this.isEthnicityValid() && this.isOccupationValid() && this.isGenderIdentityValid()) {
                 console.log("Form is valid");
                 this.isFormValid = true;
             } else {
-                // alert('Please fill in the Birth Country Section');
+                this.isFormValid = false;
                 console.log("Form is not valid");
             }
 
