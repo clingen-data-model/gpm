@@ -413,6 +413,7 @@
 
 
 
+                    <button @click="clearSelection($event)" v-show="editModeActive">Clear Selection</button>
 
                     <div style="display: flex;">
                         <label>Optional: Use this free text box to provide any additional detail.</label>
@@ -1066,11 +1067,18 @@ export default {
 
         isGenderIdentityValid() {
             const { gender_identities, gender_identities_other, gender_identities_opt_out } = this.formdata;
-            console.log('Gender Identities:', this.formdata.gender_identities);
-            console.log('Gender Identity Other:', this.formdata.gender_identities_other);
-            console.log('Gender Idnetity Opt out:', this.formdata.gender_identities_opt_out);
+
 
             return this.isSectionValid(gender_identities, gender_identities_other, gender_identities_opt_out);
+
+            // const isOccupationValid = this.isSectionValid(this.formdata.occupations, this.formdata.occupation_other, this.formdata.occupation_opt_out);
+
+        },
+
+        isSupportValid() {
+            const { support, support_other, support_opt_out } = this.formdata;
+
+            return this.isSectionValid(support, support_other, support_opt_out);
 
             // const isOccupationValid = this.isSectionValid(this.formdata.occupations, this.formdata.occupation_other, this.formdata.occupation_opt_out);
 
@@ -1082,24 +1090,31 @@ export default {
         },
 
         isEthnicityValid() {
-            console.log('Ethnicities:', this.formdata.ethnicities);
-            console.log('Other:', this.formdata.ethnicity_other);
-            console.log('Opt out:', this.formdata.ethnicity_opt_out);
+
             return this.formdata.ethnicities.length !== 0 || (this.formdata.ethnicity_other !== '' && this.formdata.ethnicity_other !== null) || this.formdata.ethnicity_opt_out
         },
 
 
         isSectionValid(selection, other, optOut) {
-            console.log('Selection:', selection);
-            console.log('Other:', other);
-            console.log('Opt out:', optOut);
+
             return selection.length !== 0 || (other !== '' && other !== null) || optOut;
         },
 
+        isDisadvantagedValid() {
 
+            const { disadvantaged, disadvantaged_other, disadvantaged_opt_out } = this.formdata;
+            return disadvantaged !== null && disadvantaged !== '' || (disadvantaged_other !== '' && disadvantaged_other !== null) || disadvantaged_opt_out;
+        },
+
+        clearSelection() {
+            event.preventDefault();
+            this.formdata.disadvantaged = null;
+        },
+
+        // selection !== null && selection !== ''
 
         checkValidity() {
-            if (this.isSectionBirthCountryValid() && this.isSectionResideCountryValid() && this.isBirthYearValid() && this.isEthnicityValid() && this.isOccupationValid() && this.isGenderIdentityValid()) {
+            if (this.isSectionBirthCountryValid() && this.isSectionResideCountryValid() && this.isBirthYearValid() && this.isEthnicityValid() && this.isOccupationValid() && this.isGenderIdentityValid() && this.isSupportValid() && this.isDisadvantagedValid()) {
                 console.log("Form is valid");
                 this.isFormValid = true;
             } else {
