@@ -3,7 +3,7 @@
 
         <div class="centered-container">
 
-            <h1>ClinGen Demographic Information</h1>
+            <h1 style="text-align: center;">ClinGen Demographic Information</h1>
             <!-- Background and Purpose section -->
 
             <div v-show="!editModeActive" type="button" class="pt-4 border-t mt-4" style="text-align: right;">
@@ -14,31 +14,28 @@
 
             <section>
                 <h2>Background and Purpose</h2>
+
                 <p>
-
                     <b>Why are we asking for this information?</b> The Clinical Genome Resource values the diversity of
-                    our
-                    participants and works to maintain a culture of acceptance, accessibility, and diversity: (see our
-                    <a href="https://clinicalgenome.org/working-groups/jedi-advisory-board/" target="_blank">Justice,
-                        Equity,
-                        Diversity, and Inclusion (JEDI) Action Plan</a>). Providing
+                    our participants and works to maintain a culture of acceptance, accessibility, and diversity: (see
+                    our <a href="https://clinicalgenome.org/working-groups/jedi-advisory-board/"
+                        target="_blank">Justice, Equity, Diversity, and Inclusion (JEDI) Action Plan</a>). Providing
                     this information will help us to better understand our ClinGen community, focus current efforts to
-                    enhance
-                    diversity, and identify areas for future outreach. We sincerely appreciate your time, attention, and
-                    willingness
-                    to help.
+                    enhance diversity, and identify areas for future outreach. We sincerely appreciate your time,
+                    attention, and willingness to help.
                 </p>
-                <p><b>Who can access my data?</b> Only a small number of ClinGen staff members will have access to the
-                    demographic
-                    data. We will not share any individual data. Data may be shared/presented in aggregate.</p>
 
-                <p><b>What do we do with this data?</b> This is entirely for internal and informational use to
-                    understand
-                    our
-                    participants. For example, we might use this information to focus efforts on engaging early or
-                    mid-career
-                    scientists, or to develop materials for enhanced learning accessibility based on participant
-                    feedback.</p>
+                <p>
+                    <b>Who can access my data?</b> Only a small number of ClinGen staff members will have access to the
+                    demographic data. We will not share any individual data. Data may be shared/presented in aggregate.
+                </p>
+
+                <p>
+                    <b>What do we do with this data?</b> This is entirely for internal and informational use to
+                    understand our participants. For example, we might use this information to focus efforts on engaging
+                    early or mid-career scientists, or to develop materials for enhanced learning accessibility based on
+                    participant feedback.
+                </p>
 
                 <p> Please note: Select 'Prefer not to answer' for any questions you do not wish to answer</p>
 
@@ -51,12 +48,10 @@
 
                     <p>The current list of countries comes from <a
                             href="https://www.iso.org/iso-3166-country-codes.html" target="_blank"> the international
-                            standard ISO 3166 country codes</a>. We recognize that this
-                        list may not be complete or satisfy all, so please feel free to choose “other” and provide a
-                        free text
-                        response.<br><br>
-                        <em>Please choose only one option from the dropdown list, other text, or prefer not to
-                            answer.
+                            standard ISO 3166 country codes</a>. We recognize that this list may not be complete or
+                        satisfy all, so please feel free to choose “other” and provide a free text response. <br>
+                        <br>
+                        <em>Please choose only one option from the dropdown list, other text, or prefer not to answer.
                         </em>
                     </p>
 
@@ -69,8 +64,8 @@
                         <select id="birth_country" name="birth_country" v-model="formdata.birth_country"
                             v-bind:disabled="!editModeActive">
                             <option value="">Select country</option>
-                            <option v-for="country in countries" :key="country.value" :value="country.value">{{
-        country.label }}
+                            <option v-for="country in countries" :key="country.value" :value="country.value">
+                                {{ country.label }}
                             </option>
                         </select>
 
@@ -98,8 +93,8 @@
                         <select id="reside_country" name="reside_country" v-model="formdata.reside_country"
                             v-bind:disabled="!editModeActive">
                             <option value="">Select country</option>
-                            <option v-for="country in countries" :key="country.value" :value="country.value">{{
-        country.label }}
+                            <option v-for="country in countries" :key="country.value" :value="country.value">
+                                {{ country.label }}
                             </option>
                         </select>
                     </div>
@@ -129,8 +124,8 @@
                         <select id="country-state" name="country-state" v-model="formdata.reside_state"
                             v-bind:disabled="!editModeActive">
                             <option value="">Select state</option>
-                            <option v-for="state in availableStates" :key="state.value" :value="state.value">{{
-        state.label }}
+                            <option v-for="state in availableStates" :key="state.value" :value="state.value">
+                                {{ state.label }}
                             </option>
                         </select>
                     </div>
@@ -147,17 +142,14 @@
 
                     <p>ClinGen Participant Diversity: We ask the following question for aggregate informational purposes
                         to understand ClinGen participant diversity. The free-text response can be used in place or in
-                        addition to the
-                        listed categories. </p>
+                        addition to the listed categories. </p>
 
                     <p> The options below come from updates by the <a href="https://www.census.gov/"
-                            target="_blank">U.S. 2020
-                            Census</a>, and <a
+                            target="_blank">U.S. 2020 Census</a>, and <a
                             href="https://www.researchallofus.org/data-tools/survey-explorer/the-basics-survey/"
                             target="_blank">the All Of Us Basic Survey Questions</a>. We understand that these options
                         do not capture the diversity of racial and ethnic identities in the US, let alone around the
                         world. </p>
-
 
                     <legend>Which categories describe you? Select all that apply.
                         <em>
@@ -339,17 +331,18 @@
 
                     <p>ClinGen is invested in expanding access to curated data and participation in Expert
                         Panels/working groups to individuals who may be under-represented or experience disadvantage due
-                        to location or life
-                        events. We ask these questions to help understand the backgrounds of our participating members.
-                    </p>
+                        to location or life events. We ask these questions to help understand the backgrounds of our
+                        participating members. </p>
 
                     <p>The following text pertains to the disadvantaged background question below. If you are not a
-                        US-based
-                        participant, please answer the question based on similar criteria in your own country:</p>
+                        US-based participant, please answer the question based on similar criteria in your own country:
+                    </p>
                     <br>
+
                     <p>An individual is considered to be from a disadvantaged background if meeting two or more of the
-                        following
-                        criteria:<br>
+                        following criteria:
+
+                        <br>
 
                     <ol type="1">
                         <li>Were or currently are homeless, as defined by the <a
@@ -380,7 +373,7 @@
                     a) a U.S. rural area, as designated by <a href="https://data.hrsa.gov/tools/rural-health"
                         target="_blank">the
                         Health Resources and Services Administration (HRSA) Rural Health
-                        Grants Eligibility Analyzer </a>;
+                        Grants Eligibility Analyzer</a>;
                     or<br>
 
                     b) a Centers for Medicare and Medicaid Services-designated <a
@@ -392,17 +385,11 @@
                     Only one of these two possibilities can be used as a criterion for the
                     disadvantaged background definition.
 
-
-
                     </p>
 
-
-
                     Based on the NIH definition above, do you consider yourself currently in or having come from a
-                    disadvantaged
-                    background? Note: If you are not a US-based participant, please answer based on similar criteria in
-                    your own
-                    country.<br>
+                    disadvantaged background? Note: If you are not a US-based participant, please answer based on
+                    similar criteria in your own country. <br>
 
                     <div v-for="y_n_unsure_optout in availableY_n_unsure_optout" :key="y_n_unsure_optout.value"
                         class="flex">
@@ -413,7 +400,7 @@
 
 
 
-                    <button @click="clearSelection($event)" v-show="editModeActive">Clear Selection</button>
+                    <button @click="clearSelection($event)" v-show="editModeActive">Clear Selection Above</button>
 
                     <div style="display: flex;">
                         <label>Optional: Use this free text box to provide any additional detail.</label>
@@ -469,11 +456,10 @@
 
                     <br>
 
-
-                    <!-- Submission Button -->
-                    <button v-show="editModeActive" type="button" style="text-align: right;"
-                        @click="addSurvey">Save</button>
-
+                    <div style="display: flex; justify-content: center;">
+                        <!-- Submission Button -->
+                        <button v-show="editModeActive" type="button" @click="addSurvey">Save</button>
+                    </div>
 
                 </form>
 
@@ -484,79 +470,157 @@
 </template>
 
 <script>
-const baseUrl = '/api/people';
-import { useRouter } from 'vue-router';
+const baseUrl = "/api/people";
+import { useRouter } from "vue-router";
 
-import axios from 'axios';
-import { mapGetters } from 'vuex';
-import { useStore } from 'vuex';
+import axios from "axios";
+import { mapGetters } from "vuex";
+import { useStore } from "vuex";
 let store = useStore();
 
-import Person from '@/domain/person';
+import Person from "@/domain/person";
 console.log(Person);
-import isValidationError from '@/http/is_validation_error';
+import isValidationError from "@/http/is_validation_error";
 
 var items = [];
 
 const ethnicities = [
-    { value: 'American Indian', label: 'American Indian or Alaska Native (For example: Aztec, Blackfeet Tribe, Mayan, Navajo Nation, Native Village of Barrow (Utqiagvik) Inupiat Traditional Government, Nome Eskimo Community' },
-    { value: 'Asian', label: 'Asian (For example: Asian Indian, Chinese, Filipino, Japanese, Korean, Vietnamese, etc.)' },
-    { value: 'Black', label: 'Black, African American, or African (For example: African American, Ethiopian, Haitian, Jamaican, Nigerian, Somali, etc.)' },
-    { value: 'Hispanic', label: 'Hispanic, Latino, or Spanish (For example: Colombian, Cuban, Dominican, Mexican or Mexican American, Puerto Rican, Salvadoran, etc.)' },
-    { value: 'Middle Eastern', label: 'Middle Eastern or North African (For example: Algerian, Egyptian, Iranian, Lebanese, Moroccan, Syrian, etc.)' },
-    { value: 'Pacific', label: 'Native Hawaiian or other Pacific Islander (For example: Chamorro, Fijian, Marshallese, Native Hawaiian, Tongan, etc.)' },
-    { value: 'White', label: 'White (For example: English, European, French, German, Irish, Italian, Polish, etc.)' },
-]
+    {
+        value: "American Indian",
+        label:
+            "American Indian or Alaska Native (For example: Aztec, Blackfeet Tribe, Mayan, Navajo Nation, Native Village of Barrow (Utqiagvik) Inupiat Traditional Government, Nome Eskimo Community",
+    },
+    {
+        value: "Asian",
+        label:
+            "Asian (For example: Asian Indian, Chinese, Filipino, Japanese, Korean, Vietnamese, etc.)",
+    },
+    {
+        value: "Black",
+        label:
+            "Black, African American, or African (For example: African American, Ethiopian, Haitian, Jamaican, Nigerian, Somali, etc.)",
+    },
+    {
+        value: "Hispanic",
+        label:
+            "Hispanic, Latino, or Spanish (For example: Colombian, Cuban, Dominican, Mexican or Mexican American, Puerto Rican, Salvadoran, etc.)",
+    },
+    {
+        value: "Middle Eastern",
+        label:
+            "Middle Eastern or North African (For example: Algerian, Egyptian, Iranian, Lebanese, Moroccan, Syrian, etc.)",
+    },
+    {
+        value: "Pacific",
+        label:
+            "Native Hawaiian or other Pacific Islander (For example: Chamorro, Fijian, Marshallese, Native Hawaiian, Tongan, etc.)",
+    },
+    {
+        value: "White",
+        label:
+            "White (For example: English, European, French, German, Irish, Italian, Polish, etc.)",
+    },
+];
 
 const occupations = [
-    { value: 'genetics physician', label: 'Medical genetics physician' },
-    { value: 'non genetics physician', label: 'Medical non-genetics physician' },
-    { value: 'pathologist', label: 'Molecular pathologist' },
-    { value: 'laboratory geneticist', label: 'Clinical laboratory geneticist' },
-    { value: 'genetic counselor', label: 'Genetic counselor' },
-    { value: 'clinical trainee', label: 'Clinical resident or fellow' },
-    { value: 'basic researcher', label: 'Basic researcher' },
-    { value: 'clinical researcher', label: 'Clinical researcher' },
-    { value: 'variant analyst', label: 'Variant analyst' },
-    { value: 'staff scientist', label: 'Staff scientist' },
-    { value: 'bioinformatician', label: 'Bioinformatician' },
-    { value: 'biocurator', label: 'Biocurator' },
-    { value: 'graduate student', label: 'Graduate student' },
-    { value: 'software engineer/developer', label: 'Software engineer/Developer' },
-    { value: 'educator', label: 'Educator' },
-    { value: 'general geneticist', label: 'General geneticist' },
-    { value: 'science policy', label: 'Health care policy or Science policy' },
+    { value: "genetics physician", label: "Medical genetics physician" },
+    { value: "non genetics physician", label: "Medical non-genetics physician" },
+    { value: "pathologist", label: "Molecular pathologist" },
+    { value: "laboratory geneticist", label: "Clinical laboratory geneticist" },
+    { value: "genetic counselor", label: "Genetic counselor" },
+    { value: "clinical trainee", label: "Clinical resident or fellow" },
+    { value: "basic researcher", label: "Basic researcher" },
+    { value: "clinical researcher", label: "Clinical researcher" },
+    { value: "variant analyst", label: "Variant analyst" },
+    { value: "staff scientist", label: "Staff scientist" },
+    { value: "bioinformatician", label: "Bioinformatician" },
+    { value: "biocurator", label: "Biocurator" },
+    { value: "graduate student", label: "Graduate student" },
+    {
+        value: "software engineer/developer",
+        label: "Software engineer/Developer",
+    },
+    { value: "educator", label: "Educator" },
+    { value: "general geneticist", label: "General geneticist" },
+    { value: "science policy", label: "Health care policy or Science policy" },
+];
 
-]
-
-const identities = [
-    'Female',
-    'Male',
-    'Unsure',
-    'None',
-]
+const identities = ["Female", "Male", "Unsure", "None"];
 
 const gender_identities = [
-    'Man',
-    'Woman',
-    'Cisgender',
-    'Nonbinary',
-    'Transgender',
-    'Genderqueer',
-    'Agender',
-    'Intersex',
-    'Unsure'
-
-]
+    "Man",
+    "Woman",
+    "Cisgender",
+    "Nonbinary",
+    "Transgender",
+    "Genderqueer",
+    "Agender",
+    "Intersex",
+    "Unsure",
+];
 
 const birth_years = [
-    '2006', '2005', '2004', '2003', '2002', '2001', '2000', '1999', '1998', '1997', '1996', '1995',
-    '1994', '1993', '1992', '1991', '1990', '1989', '1988', '1987', '1986', '1985', '1984', '1983',
-    '1982', '1981', '1980', '1979', '1978', '1976', '1975', '1974', '1973', '1972', '1971', '1970',
-    '1969', '1968', '1967', '1966', '1965', '1964', '1963', '1962', '1961', '1960', '1959', '1958',
-    '1957', '1956', '1955', '1954', '1953', '1952', '1951', '1950', '1949', '1948', '1947', '1946',
-
-]
+    "2006",
+    "2005",
+    "2004",
+    "2003",
+    "2002",
+    "2001",
+    "2000",
+    "1999",
+    "1998",
+    "1997",
+    "1996",
+    "1995",
+    "1994",
+    "1993",
+    "1992",
+    "1991",
+    "1990",
+    "1989",
+    "1988",
+    "1987",
+    "1986",
+    "1985",
+    "1984",
+    "1983",
+    "1982",
+    "1981",
+    "1980",
+    "1979",
+    "1978",
+    "1976",
+    "1975",
+    "1974",
+    "1973",
+    "1972",
+    "1971",
+    "1970",
+    "1969",
+    "1968",
+    "1967",
+    "1966",
+    "1965",
+    "1964",
+    "1963",
+    "1962",
+    "1961",
+    "1960",
+    "1959",
+    "1958",
+    "1957",
+    "1956",
+    "1955",
+    "1954",
+    "1953",
+    "1952",
+    "1951",
+    "1950",
+    "1949",
+    "1948",
+    "1947",
+    "1946",
+];
 
 const non_genetics_specialties = [
     "Allergy & Immunology",
@@ -607,91 +671,85 @@ const non_genetics_specialties = [
     "Thoracic Surgery",
     "Urology",
     "Vascular Surgery",
-]
+];
 
 // TODO: get from database via store
 const states = [
-    { label: 'ALABAMA', value: 'AL' },
-    { label: 'ALASKA', value: 'AK' },
-    { label: 'AMERICAN SAMOA', value: 'AS' },
-    { label: 'ARIZONA', value: 'AZ' },
-    { label: 'ARKANSAS', value: 'AR' },
-    { label: 'CALIFORNIA', value: 'CA' },
-    { label: 'COLORADO', value: 'CO' },
-    { label: 'CONNECTICUT', value: 'CT' },
-    { label: 'DELAWARE', value: 'DE' },
-    { label: 'DISTRICT OF COLUMBIA', value: 'DC' },
-    { label: 'FLORIDA', value: 'FL' },
-    { label: 'GEORGIA', value: 'GA' },
-    { label: 'GUAM', value: 'GU' },
-    { label: 'HAWAII', value: 'HI' },
-    { label: 'IDAHO', value: 'ID' },
-    { label: 'ILLINOIS', value: 'IL' },
-    { label: 'INDIANA', value: 'IN' },
-    { label: 'IOWA', value: 'IA' },
-    { label: 'KANSAS', value: 'KS' },
-    { label: 'KENTUCKY', value: 'KY' },
-    { label: 'LOUISIANA', value: 'LA' },
-    { label: 'MAINE', value: 'ME' },
-    { label: 'MARYLAND', value: 'MD' },
-    { label: 'MASSACHUSETTS', value: 'MA' },
-    { label: 'MICHIGAN', value: 'MI' },
-    { label: 'MINNESOTA', value: 'MN' },
-    { label: 'MISSISSIPPI', value: 'MS' },
-    { label: 'MISSOURI', value: 'MO' },
-    { label: 'MONTANA', value: 'MT' },
-    { label: 'NEBRASKA', value: 'NE' },
-    { label: 'NEVADA', value: 'NV' },
-    { label: 'NEW HAMPSHIRE', value: 'NH' },
-    { label: 'NEW JERSEY', value: 'NJ' },
-    { label: 'NEW MEXICO', value: 'NM' },
-    { label: 'NEW YORK', value: 'NY' },
-    { label: 'NORTH CAROLINA', value: 'NC' },
-    { label: 'NORTH DAKOTA', value: 'ND' },
-    { label: 'NORTHERN MARIANA IS', value: 'MP' },
-    { label: 'OHIO', value: 'OH' },
-    { label: 'OKLAHOMA', value: 'OK' },
-    { label: 'OREGON', value: 'OR' },
-    { label: 'PENNSYLVANIA', value: 'PA' },
-    { label: 'PUERTO RICO', value: 'PR' },
-    { label: 'RHODE ISLAND', value: 'RI' },
-    { label: 'SOUTH CAROLINA', value: 'SC' },
-    { label: 'SOUTH DAKOTA', value: 'SD' },
-    { label: 'TENNESSEE', value: 'TN' },
-    { label: 'TEXAS', value: 'TX' },
-    { label: 'UTAH', value: 'UT' },
-    { label: 'VERMONT', value: 'VT' },
-    { label: 'VIRGINIA', value: 'VA' },
-    { label: 'VIRGIN ISLANDS', value: 'VI' },
-    { label: 'WASHINGTON', value: 'WA' },
-    { label: 'WEST VIRGINIA', value: 'WV' },
-    { label: 'WISCONSIN', value: 'WI' },
-    { label: 'WYOMING', value: 'WY' },
-]
+    { label: "ALABAMA", value: "AL" },
+    { label: "ALASKA", value: "AK" },
+    { label: "AMERICAN SAMOA", value: "AS" },
+    { label: "ARIZONA", value: "AZ" },
+    { label: "ARKANSAS", value: "AR" },
+    { label: "CALIFORNIA", value: "CA" },
+    { label: "COLORADO", value: "CO" },
+    { label: "CONNECTICUT", value: "CT" },
+    { label: "DELAWARE", value: "DE" },
+    { label: "DISTRICT OF COLUMBIA", value: "DC" },
+    { label: "FLORIDA", value: "FL" },
+    { label: "GEORGIA", value: "GA" },
+    { label: "GUAM", value: "GU" },
+    { label: "HAWAII", value: "HI" },
+    { label: "IDAHO", value: "ID" },
+    { label: "ILLINOIS", value: "IL" },
+    { label: "INDIANA", value: "IN" },
+    { label: "IOWA", value: "IA" },
+    { label: "KANSAS", value: "KS" },
+    { label: "KENTUCKY", value: "KY" },
+    { label: "LOUISIANA", value: "LA" },
+    { label: "MAINE", value: "ME" },
+    { label: "MARYLAND", value: "MD" },
+    { label: "MASSACHUSETTS", value: "MA" },
+    { label: "MICHIGAN", value: "MI" },
+    { label: "MINNESOTA", value: "MN" },
+    { label: "MISSISSIPPI", value: "MS" },
+    { label: "MISSOURI", value: "MO" },
+    { label: "MONTANA", value: "MT" },
+    { label: "NEBRASKA", value: "NE" },
+    { label: "NEVADA", value: "NV" },
+    { label: "NEW HAMPSHIRE", value: "NH" },
+    { label: "NEW JERSEY", value: "NJ" },
+    { label: "NEW MEXICO", value: "NM" },
+    { label: "NEW YORK", value: "NY" },
+    { label: "NORTH CAROLINA", value: "NC" },
+    { label: "NORTH DAKOTA", value: "ND" },
+    { label: "NORTHERN MARIANA IS", value: "MP" },
+    { label: "OHIO", value: "OH" },
+    { label: "OKLAHOMA", value: "OK" },
+    { label: "OREGON", value: "OR" },
+    { label: "PENNSYLVANIA", value: "PA" },
+    { label: "PUERTO RICO", value: "PR" },
+    { label: "RHODE ISLAND", value: "RI" },
+    { label: "SOUTH CAROLINA", value: "SC" },
+    { label: "SOUTH DAKOTA", value: "SD" },
+    { label: "TENNESSEE", value: "TN" },
+    { label: "TEXAS", value: "TX" },
+    { label: "UTAH", value: "UT" },
+    { label: "VERMONT", value: "VT" },
+    { label: "VIRGINIA", value: "VA" },
+    { label: "VIRGIN ISLANDS", value: "VI" },
+    { label: "WASHINGTON", value: "WA" },
+    { label: "WEST VIRGINIA", value: "WV" },
+    { label: "WISCONSIN", value: "WI" },
+    { label: "WYOMING", value: "WY" },
+];
 
 const support_types = [
-    { value: 'volunteer', label: 'Volunteer outside of work environment' },
-    { value: 'grant', label: 'Grants (e.g. NIH, foundational)' },
-    { value: 'employer', label: 'Employer supports/allows participation' },
-    { value: 'unsure', label: 'Unsure' },
-]
+    { value: "volunteer", label: "Volunteer outside of work environment" },
+    { value: "grant", label: "Grants (e.g. NIH, foundational)" },
+    { value: "employer", label: "Employer supports/allows participation" },
+    { value: "unsure", label: "Unsure" },
+];
 
 const y_n_unsure_optout = [
-    { value: 'yes', label: 'Yes' },
-    { value: 'no', label: 'No' },
-    { value: 'unsure', label: 'Unsure' },
-
-]
-
+    { value: "yes", label: "Yes" },
+    { value: "no", label: "No" },
+    { value: "unsure", label: "Unsure" },
+];
 
 export default {
     name: "DemographicsForm",
 
-    emits: [
-        'canceled',
-        'saved',
-        'update'
-    ],
+    emits: ["canceled", "saved", "update"],
 
     data() {
         return {
@@ -743,37 +801,32 @@ export default {
         uuid: {
             required: false,
             default: null,
-            type: String
+            type: String,
         },
 
         startInEditMode: {
             type: Boolean,
             required: false,
-            default: false
-        }
-
-
+            default: false,
+        },
     },
-
 
     computed: {
         ...mapGetters({
-            person: 'people/currentItem',
-
+            person: "people/currentItem",
         }),
 
-
-
         countries() {
-            return this.$store.getters['countries/items'].map(i => ({ value: i.id, label: i.name }));
-
+            return this.$store.getters["countries/items"].map((i) => ({
+                value: i.id,
+                label: i.name,
+            }));
         },
 
         formKey() {
             // Change key when UUID changes to force re-render
             return `form-${this.uuid}`;
         },
-
 
         availableEthnicities() {
             return ethnicities;
@@ -816,45 +869,45 @@ export default {
         },
 
         disableCountryDropdown() {
-            return this.formdata.data.birth_country_other !== '' || this.selected_birth_country_opt_out;
+            return (
+                this.formdata.data.birth_country_other !== "" ||
+                this.selected_birth_country_opt_out
+            );
         },
         disableOtherInput() {
-            return this.formdata.data.birth_country !== '' || this.selected_birth_country_opt_out;
+            return (
+                this.formdata.data.birth_country !== "" ||
+                this.selected_birth_country_opt_out
+            );
         },
         disableOptOutCheckbox() {
-            return this.formdata.data.birth_country !== '' || this.formdata.data.birth_country_other !== '';
+            return (
+                this.formdata.data.birth_country !== "" ||
+                this.formdata.data.birth_country_other !== ""
+            );
         },
 
         //calculate the current date and format it
         formattedDate() {
             const originalDate = new Date().toLocaleDateString();
-            const [month, day, year] = originalDate.split('/');
+            const [month, day, year] = originalDate.split("/");
 
             // Construct a new date object from the components
             const date = new Date(year, month - 1, day); // Month is 0-indexed in Date
 
             // Format the date to 'YYYY-MM-DD'
-            return date.toISOString().split('T')[0];
-
+            return date.toISOString().split("T")[0];
         },
-
-
-
-
-
     },
 
     methods: {
-
-
         async fetchCountries() {
             try {
-                await this.$store.dispatch('countries/getItems');
+                await this.$store.dispatch("countries/getItems");
             } catch (error) {
-                console.error('Error fetching countries:', error);
+                console.error("Error fetching countries:", error);
             }
         },
-
 
         async getUser(localuuid) {
             try {
@@ -869,30 +922,36 @@ export default {
                     }
                 }
 
-
                 console.log(this.formdata);
                 this.formDataLoaded = true;
 
                 //need to convert opt out fields from database boolean to display correctly for editing
 
-                this.formdata.birth_country_opt_out = this.formdata.birth_country_opt_out === 1 ? true : false;
-                this.formdata.reside_country_opt_out = this.formdata.reside_country_opt_out === 1 ? true : false;
-                this.formdata.reside_state_opt_out = this.formdata.reside_state_opt_out === 1 ? true : false;
-                this.formdata.ethnicity_opt_out = this.formdata.ethnicity_opt_out === 1 ? true : false;
-                this.formdata.birth_year_opt_out = this.formdata.birth_year_opt_out === 1 ? true : false;
-                this.formdata.identity_opt_out = this.formdata.identity_opt_out === 1 ? true : false;
-                this.formdata.gender_identities_opt_out = this.formdata.gender_identities_opt_out === 1 ? true : false;
-                this.formdata.support_opt_out = this.formdata.support_opt_out === 1 ? true : false;
-                this.formdata.disadvantaged_opt_out = this.formdata.disadvantaged_opt_out === 1 ? true : false;
-                this.formdata.occupations_opt_out = this.formdata.occupations_opt_out === 1 ? true : false;
+                this.formdata.birth_country_opt_out =
+                    this.formdata.birth_country_opt_out === 1 ? true : false;
+                this.formdata.reside_country_opt_out =
+                    this.formdata.reside_country_opt_out === 1 ? true : false;
+                this.formdata.reside_state_opt_out =
+                    this.formdata.reside_state_opt_out === 1 ? true : false;
+                this.formdata.ethnicity_opt_out =
+                    this.formdata.ethnicity_opt_out === 1 ? true : false;
+                this.formdata.birth_year_opt_out =
+                    this.formdata.birth_year_opt_out === 1 ? true : false;
+                this.formdata.identity_opt_out =
+                    this.formdata.identity_opt_out === 1 ? true : false;
+                this.formdata.gender_identities_opt_out =
+                    this.formdata.gender_identities_opt_out === 1 ? true : false;
+                this.formdata.support_opt_out =
+                    this.formdata.support_opt_out === 1 ? true : false;
+                this.formdata.disadvantaged_opt_out =
+                    this.formdata.disadvantaged_opt_out === 1 ? true : false;
+                this.formdata.occupations_opt_out =
+                    this.formdata.occupations_opt_out === 1 ? true : false;
                 // this.ethnicity_opt_out = !!this.formdata.ethnicity_opt_out;
-
-
             } catch (error) {
                 this.error = error; // You might want an 'error' data property
             }
         },
-
 
         //  async handleSave() {
         //     await store.dispatch('forceGetCurrentUser');
@@ -905,7 +964,7 @@ export default {
             this.checkValidity();
             //  console.log(items);
             if (this.isFormValid) {
-                alert('Form is valid and ready to be submitted!');
+                alert("Form is valid and ready to be submitted!");
                 items = {
                     //  ...this.formdata,
                     birth_country: this.formdata.birth_country,
@@ -943,167 +1002,165 @@ export default {
                     // TODO: should this be dateTime instead?
                     demographics_completed_date: this.formattedDate,
                     demographics_version: 1,
-
-                    //index information on people database
-                    //country_id: this.formdata.country_id,
-                    // first_name: this.formdata.first_name,
-                    // email: this.formdata.email,
                     id: this.formdata.id,
-                    //institution_id: this.formdata.institution_id,
-                    // last_name: this.formdata.last_name,
-                    // timezone: this.formdata.timezone,
-
-
-
-
                 };
-                console.log(items);
+                // console.log(items);
 
                 try {
-                    const response = await axios.put(`${baseUrl}/${this.localUuid}/demographics`, items);
-                    console.log(response.data);
+                    const response = await axios.put(
+                        `${baseUrl}/${this.localUuid}/demographics`,
+                        items
+                    );
+                    //console.log(response.data);
                     if (response.status === 200) {
-                        alert('Form was submitted succesfully!');
+                        alert("Form was submitted succesfully!");
                     }
 
-
-                    this.$emit('saved');
-
+                    this.$emit("saved");
                 } catch (error) {
                     if (error.response) {
                         // Request made and server responded
 
                         if (error.response.status === 404) {
-                            this.error = 'Resource not found';
+                            this.error = "Resource not found";
+                            alert("The resource wasn't found.");
                         } else if (error.response.status === 500) {
-                            this.error = 'Server error';
-                            alert('There was an internal server error.');
+                            this.error = "Server error";
+                            alert("There was an internal server error.");
                         }
                     } else if (error.request) {
                         // The request was made but no response was received
-                        console.log(error.request);
-                        this.error = 'Network error';
+                        this.error = "Network error";
+                        alert("There was a network error.");
                     } else {
                         // Something happened in setting up the request that triggered an Error
-                        console.log('Error', error.message);
-                        this.error = 'Error in request setup';
+
+                        this.error = "Error in request setup";
+                        alert("There was an error in the request configuration.");
                     }
 
-                    console.error("Error updating user:", error);
+                    //console.error("Error updating user:", error);
                 }
 
                 this.editModeActive = false;
-
             } else {
                 // Notify user to fill all required sections
-                alert('Please fill in all required sections.');
+                alert("Please fill in all required sections.");
             }
             // }
-
-
         },
 
         isValidIndex(value) {
-            return typeof value === 'number' && !isNaN(value);
+            return typeof value === "number" && !isNaN(value);
         },
 
         isCountryValid(countryOther, country, countryOptOut) {
             return (
-                (typeof countryOther === 'string' && countryOther.trim() !== '') ||
-                (typeof country === 'string' && country.trim() !== '' && this.isValidIndex(Number(country))) ||
+                (typeof countryOther === "string" && countryOther.trim() !== "") ||
+                (typeof country === "string" &&
+                    country.trim() !== "" &&
+                    this.isValidIndex(Number(country))) ||
                 this.isValidIndex(country) ||
                 countryOptOut === true
             );
         },
 
         isSectionBirthCountryValid() {
-
             // Ensure formdata and its properties are defined
             if (!this.formdata) return false;
 
-            const { birth_country_other, birth_country, birth_country_opt_out } = this.formdata;
+            const { birth_country_other, birth_country, birth_country_opt_out } =
+                this.formdata;
 
-
-            return this.isCountryValid(birth_country_other, birth_country, birth_country_opt_out);
-
-
+            return this.isCountryValid(
+                birth_country_other,
+                birth_country,
+                birth_country_opt_out
+            );
         },
 
         isSectionResideCountryValid() {
-
             function isValidIndex(value) {
-                return typeof value === 'number' && !isNaN(value);
+                return typeof value === "number" && !isNaN(value);
             }
             // Ensure formdata and its properties are defined
             if (!this.formdata) return false;
 
-            const { reside_country_other, reside_country, reside_country_opt_out } = this.formdata;
+            const { reside_country_other, reside_country, reside_country_opt_out } =
+                this.formdata;
 
-
-            return this.isCountryValid(reside_country_other, reside_country, reside_country_opt_out);
-
+            return this.isCountryValid(
+                reside_country_other,
+                reside_country,
+                reside_country_opt_out
+            );
         },
 
         isOccupationValid() {
-            const { occupations, occupations_other, occupations_opt_out } = this.formdata;
+            const { occupations, occupations_other, occupations_opt_out } =
+                this.formdata;
 
-            return this.isSectionValid(occupations, occupations_other, occupations_opt_out);
+            return this.isSectionValid(
+                occupations,
+                occupations_other,
+                occupations_opt_out
+            );
 
             // const isOccupationValid = this.isSectionValid(this.formdata.occupations, this.formdata.occupation_other, this.formdata.occupation_opt_out);
-
         },
 
         isIdentityValid() {
             const { identities, identity_other, identity_opt_out } = this.formdata;
-            console.log('Identities:', this.formdata.identities);
-            console.log('Identity Other:', this.formdata.identity_other);
-            console.log('Idnetity Opt out:', this.formdata.identity_opt_out);
-
             return this.isSectionValid(identities, identity_other, identity_opt_out);
-
-            // const isOccupationValid = this.isSectionValid(this.formdata.occupations, this.formdata.occupation_other, this.formdata.occupation_opt_out);
-
         },
 
         isGenderIdentityValid() {
-            const { gender_identities, gender_identities_other, gender_identities_opt_out } = this.formdata;
-
-
-            return this.isSectionValid(gender_identities, gender_identities_other, gender_identities_opt_out);
-
-            // const isOccupationValid = this.isSectionValid(this.formdata.occupations, this.formdata.occupation_other, this.formdata.occupation_opt_out);
-
+            const {
+                gender_identities,
+                gender_identities_other,
+                gender_identities_opt_out,
+            } = this.formdata;
+            return this.isSectionValid(
+                gender_identities,
+                gender_identities_other,
+                gender_identities_opt_out
+            );
         },
 
         isSupportValid() {
             const { support, support_other, support_opt_out } = this.formdata;
-
             return this.isSectionValid(support, support_other, support_opt_out);
-
-            // const isOccupationValid = this.isSectionValid(this.formdata.occupations, this.formdata.occupation_other, this.formdata.occupation_opt_out);
-
         },
 
-
         isBirthYearValid() {
-            return this.formdata.birth_year !== '' || this.formdata.birth_year_opt_out;
+            return (
+                this.formdata.birth_year !== "" || this.formdata.birth_year_opt_out
+            );
         },
 
         isEthnicityValid() {
-
-            return this.formdata.ethnicities.length !== 0 || (this.formdata.ethnicity_other !== '' && this.formdata.ethnicity_other !== null) || this.formdata.ethnicity_opt_out
+            return (
+                this.formdata.ethnicities.length !== 0 ||
+                (this.formdata.ethnicity_other !== "" &&
+                    this.formdata.ethnicity_other !== null) ||
+                this.formdata.ethnicity_opt_out
+            );
         },
 
-
         isSectionValid(selection, other, optOut) {
-
-            return selection.length !== 0 || (other !== '' && other !== null) || optOut;
+            return (
+                selection.length !== 0 || (other !== "" && other !== null) || optOut
+            );
         },
 
         isDisadvantagedValid() {
-
-            const { disadvantaged, disadvantaged_other, disadvantaged_opt_out } = this.formdata;
-            return disadvantaged !== null && disadvantaged !== '' || (disadvantaged_other !== '' && disadvantaged_other !== null) || disadvantaged_opt_out;
+            const { disadvantaged, disadvantaged_other, disadvantaged_opt_out } =
+                this.formdata;
+            return (
+                (disadvantaged !== null && disadvantaged !== "") ||
+                (disadvantaged_other !== "" && disadvantaged_other !== null) ||
+                disadvantaged_opt_out
+            );
         },
 
         clearSelection() {
@@ -1111,29 +1168,31 @@ export default {
             this.formdata.disadvantaged = null;
         },
 
-        // selection !== null && selection !== ''
-
         checkValidity() {
-            if (this.isSectionBirthCountryValid() && this.isSectionResideCountryValid() && this.isBirthYearValid() && this.isEthnicityValid() && this.isOccupationValid() && this.isGenderIdentityValid() && this.isSupportValid() && this.isDisadvantagedValid()) {
+            if (
+                this.isSectionBirthCountryValid() &&
+                this.isSectionResideCountryValid() &&
+                this.isBirthYearValid() &&
+                this.isEthnicityValid() &&
+                this.isOccupationValid() &&
+                this.isIdentityValid() &&
+                this.isGenderIdentityValid() &&
+                this.isSupportValid() &&
+                this.isDisadvantagedValid()
+            ) {
                 console.log("Form is valid");
                 this.isFormValid = true;
             } else {
                 this.isFormValid = false;
                 console.log("Form is not valid");
             }
-
         },
 
         editPerson(event) {
             event.preventDefault();
             this.editModeActive = true;
         },
-
-
-
     },
-
-
 
     mounted() {
         this.editModeActive = this.startInEditMode;
@@ -1141,12 +1200,13 @@ export default {
         {
             if (!this.uuid) {
                 // Check if uuid prop is not passed
-                const pathSegments = window.location.pathname.split('/');
-                const uuidIndex = pathSegments.findIndex(segment => segment === 'people') + 1;
+                const pathSegments = window.location.pathname.split("/");
+                const uuidIndex =
+                    pathSegments.findIndex((segment) => segment === "people") + 1;
 
                 // Ensure uuidIndex is within the array bounds
                 if (uuidIndex > 0 && uuidIndex < pathSegments.length) {
-                    this.localUuid = pathSegments[uuidIndex];  // Extract from the URL and assign to local data property
+                    this.localUuid = pathSegments[uuidIndex]; // Extract from the URL and assign to local data property
                 } else {
                     console.error('UUID segment not found after "people" in the URL.');
                     this.localUuid = null; // or handle as appropriate
@@ -1157,48 +1217,33 @@ export default {
                 this.localUuid = this.uuid; // Corrected to match case sensitivity
             }
 
-
-
-            Promise.all([this.getUser(this.localUuid), this.fetchCountries()]).then(() => {
-                console.log('Data fetched successfully');
-
-            }).catch(error => {
-                if (error.response) {
-
-                    if (error.response.status === 404) {
-                        this.error = 'Resource not found';
-                    } else if (error.response.status === 500) {
-                        this.error = 'Server error';
+            Promise.all([this.getUser(this.localUuid), this.fetchCountries()])
+                .then(() => {
+                    console.log("Data fetched successfully");
+                })
+                .catch((error) => {
+                    if (error.response) {
+                        if (error.response.status === 404) {
+                            this.error = "Resource not found";
+                            alert("The resource wasn't found.");
+                        } else if (error.response.status === 500) {
+                            this.error = "Server error";
+                            alert("There was an internal server error.");
+                        }
+                    } else if (error.request) {
+                        // The request was made but no response was received
+                        this.error = "Network error";
+                        alert("There was a network error.");
+                    } else {
+                        // Something happened in setting up the request that triggered an Error
+                        alert("There was an error in the request configuration.");
+                        this.error = "Error in request setup";
                     }
-                } else if (error.request) {
-                    // The request was made but no response was received
-                    console.log(error.request);
-                    this.error = 'Network error';
-                } else {
-                    // Something happened in setting up the request that triggered an Error
-                    console.log('Error', error.message);
-                    this.error = 'Error in request setup';
-                }
-                console.error('Error fetching data', error);
-            });
-
-
+                    console.error("Error fetching data", error);
+                });
         }
-
-
-    }
-
-
-
-}
-
-
-
-
-
-
-
-
+    },
+};
 </script>
 
 <style scoped>
@@ -1212,7 +1257,7 @@ body {
 }
 
 a {
-    color: #007BFF;
+    color: #007bff;
     text-decoration: none;
 }
 
@@ -1250,7 +1295,6 @@ form {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
-
 input {
     margin: 0.4rem;
 }
@@ -1285,15 +1329,12 @@ span {
     display: table;
 }
 
-
 .checkbox-margin {
     margin-right: 200px;
     /* Adjust the space as needed */
 }
 
-
 button {
-
     padding: 15px 32px;
     /* Padding around the text */
     text-align: center;
@@ -1342,7 +1383,7 @@ button {
 input[type="checkbox"]+label:before {
     content: "";
     display: inline-block;
-    padding-right: .2cm;
+    padding-right: 0.2cm;
 }
 
 input[type="radio"] {
@@ -1350,7 +1391,6 @@ input[type="radio"] {
     -webkit-appearance: none;
     -moz-appearance: none;
 }
-
 
 input[type="radio"] {
     appearance: none;
