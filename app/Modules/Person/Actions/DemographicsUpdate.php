@@ -62,6 +62,9 @@ class DemographicsUpdate
         }
         $person = $this->handle($person, $demoData);
 
+        $person->setDemographicHiddenFields($request->user());
+
+
         //$person->load(
          //   'institution',
         //    'credentials',
