@@ -128,10 +128,51 @@ class Person extends Model implements HasLogEntries
         'specialty' => 'array',
     ];
 
+    protected $hidden = [];
+
     protected $appends = [
         'name',
     ];
 
+    public function setDemographicHiddenFields(User $user)
+    {
+        if ($user->id !== $this->user_id && !$user->hasRole('super-admin')) {
+            $this->hidden = [
+                'birth_country',
+        'birth_country_other',
+        'birth_country_opt_out',
+        'reside_country',
+        'reside_country_other',
+        'reside_country_opt_out',
+        'reside_state',
+        'reside_state_opt_out',
+        'ethnicities',
+        'ethnicity_other',
+        'ethnicity_opt_out',
+        'birth_year',
+        'birth_year_opt_out',
+        'identities',
+        'identity_other',
+        'identity_opt_out',
+        'gender_identities',
+        'gender_identities_other',
+        'gender_identities_opt_out',
+        'support',
+        'grant_detail',
+        'support_opt_out',
+        'support_other',
+        'disadvantaged',
+        'disadvantaged_other',
+        'disadvantaged_opt_out',
+        'occupations',
+        'occupations_other',
+        'occupations_opt_out',
+        'specialty',
+        'demographics_completed_date',
+        'demographics_version'
+            ];
+        }
+    }
     /**
      * RELATIONS
      */
