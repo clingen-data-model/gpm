@@ -136,7 +136,7 @@ class Person extends Model implements HasLogEntries
 
     public function setDemographicHiddenFields(User $user)
     {
-        if ($user->id !== $this->user_id && !$user->hasRole('super-admin')) {
+        if ($user->id !== $this->user_id && !$user->hasRole('super-user')) {
             $this->hidden = [
                 'birth_country',
         'birth_country_other',
@@ -171,6 +171,8 @@ class Person extends Model implements HasLogEntries
         'demographics_completed_date',
         'demographics_version'
             ];
+
+          //  Log::info('Hidden fields set:', $this->hidden);
         }
     }
     /**

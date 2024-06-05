@@ -922,7 +922,7 @@ export default {
                     }
                 }
 
-                console.log(this.formdata);
+                //console.log(this.formdata);
                 this.formDataLoaded = true;
 
                 //need to convert opt out fields from database boolean to display correctly for editing
@@ -1180,11 +1180,11 @@ export default {
                 this.isSupportValid() &&
                 this.isDisadvantagedValid()
             ) {
-                console.log("Form is valid");
+                // console.log("Form is valid");
                 this.isFormValid = true;
             } else {
                 this.isFormValid = false;
-                console.log("Form is not valid");
+                //  console.log("Form is not valid");
             }
         },
 
@@ -1212,14 +1212,14 @@ export default {
                     this.localUuid = null; // or handle as appropriate
                 }
 
-                console.log(this.localUuid);
+                // console.log(this.localUuid);
             } else {
                 this.localUuid = this.uuid; // Corrected to match case sensitivity
             }
 
             Promise.all([this.getUser(this.localUuid), this.fetchCountries()])
                 .then(() => {
-                    console.log("Data fetched successfully");
+                    //console.log("Data fetched successfully");
                 })
                 .catch((error) => {
                     if (error.response) {
@@ -1239,7 +1239,7 @@ export default {
                         alert("There was an error in the request configuration.");
                         this.error = "Error in request setup";
                     }
-                    console.error("Error fetching data", error);
+                    //  console.error("Error fetching data", error);
                 });
         }
     },
