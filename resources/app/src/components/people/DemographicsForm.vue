@@ -1035,8 +1035,8 @@ export default {
                     demographics_version: 1,
                     id: this.formdata.id,
                 };
-                console.log(items);
-                console.log(this.birth_country_computed);
+                //console.log(items);
+                // console.log(this.birth_country_computed);
 
                 try {
                     const response = await axios.put(
@@ -1195,10 +1195,6 @@ export default {
             );
         },
 
-        clearSelection() {
-            event.preventDefault();
-            this.formdata.disadvantaged = null;
-        },
 
         checkValidity() {
             if (
