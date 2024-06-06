@@ -174,7 +174,7 @@ class Person extends Model implements HasLogEntries
 
           //  Log::info('Hidden fields set:', $this->hidden);
        // }
-    }
+    //}
     /**
      * RELATIONS
      */
