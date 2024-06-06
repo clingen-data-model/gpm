@@ -59,8 +59,9 @@
 
                     </div>
                     <!-- Country of Birth Dropdown -->
-                    <div>
-                        <label for="birth_country">Country of Birth: </label>
+
+                    <label for="birth_country">Country of Birth: </label>
+                    <div v-if="formdata.birth_country_opt_out === false">
                         <select id="birth_country" name="birth_country" v-model="formdata.birth_country"
                             v-bind:disabled="!editModeActive">
                             <option value="">Select country</option>
@@ -71,7 +72,7 @@
 
                     </div>
 
-                    <div style="display: flex;">
+                    <div v-if="formdata.birth_country_opt_out === false" style="display: flex;">
                         <label>Other: </label>
                         <input class="w3-input" type="text" id="birth_country_other"
                             v-model="formdata.birth_country_other" v-bind:disabled="!editModeActive">
@@ -86,10 +87,10 @@
 
                     </div>
                     <br>
-                    <div>
-                        <!-- Country of Residence Dropdown -->
-                        <label for="reside_country">Country of Residence: </label>
 
+                    <!-- Country of Residence Dropdown -->
+                    <label for="reside_country">Country of Residence: </label>
+                    <div v-if="formdata.reside_country_opt_out === false">
                         <select id="reside_country" name="reside_country" v-model="formdata.reside_country"
                             v-bind:disabled="!editModeActive">
                             <option value="">Select country</option>
@@ -99,7 +100,7 @@
                         </select>
                     </div>
 
-                    <div style="display: flex;">
+                    <div v-if="formdata.reside_country_opt_out === false" style="display: flex;">
 
                         <label>Other: </label>
                         <input class="w3-input" type="text" id="reside_country_other"
@@ -118,9 +119,10 @@
                     <!-- Additional inputs and sections -->
                     <br>
 
-                    <div v-if="formdata.reside_country === 226">
-                        <label for="country-state">If you currently live in the United States, what is your
-                            state/territory of residence?</label>
+                    <label for="country-state">If you currently live in the United States, what is your
+                        state/territory of residence?</label>
+                    <div v-if="formdata.reside_country === 226 && formdata.reside_state_opt_out === false">
+
                         <select id="country-state" name="country-state" v-model="formdata.reside_state"
                             v-bind:disabled="!editModeActive">
                             <option value="">Select state</option>
@@ -898,6 +900,15 @@ export default {
             // Format the date to 'YYYY-MM-DD'
             return date.toISOString().split("T")[0];
         },
+
+        birth_country_computed() {
+            if (this.birth_country_opt_out === true) {
+                return "null";
+            } else {
+                return this.formdata.birth_country;
+            }
+        }
+        //},
     },
 
     methods: {
@@ -967,7 +978,8 @@ export default {
                 alert("Form is valid and ready to be submitted!");
                 items = {
                     //  ...this.formdata,
-                    birth_country: this.formdata.birth_country,
+
+                    birth_country: this.birth_country_computed,
                     birth_country_other: this.formdata.birth_country_other,
                     birth_country_opt_out: this.formdata.birth_country_opt_out,
                     reside_country: this.formdata.reside_country,
@@ -1004,7 +1016,8 @@ export default {
                     demographics_version: 1,
                     id: this.formdata.id,
                 };
-                // console.log(items);
+                console.log(items);
+                console.log(this.birth_country_computed);
 
                 try {
                     const response = await axios.put(
