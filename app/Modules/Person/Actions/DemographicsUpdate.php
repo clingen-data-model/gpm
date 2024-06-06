@@ -51,7 +51,7 @@ class DemographicsUpdate
 
         Event::dispatch(new ProfileUpdated($person, $data));
 
-        return $person;
+        return $person->last_name;
     }
 
     public function asController(ActionRequest $request, Person $person)
@@ -62,7 +62,7 @@ class DemographicsUpdate
         }
         $person = $this->handle($person, $demoData);
 
-        $person->setDemographicHiddenFields($request->user());
+     //   $person->setDemographicHiddenFields($request->user());
 
 
         //$person->load(
