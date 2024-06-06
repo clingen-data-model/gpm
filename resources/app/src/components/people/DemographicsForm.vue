@@ -160,19 +160,22 @@
                     </legend>
 
 
+                    <div v-if="formdata.ethnicity_opt_out === false">
+                        <div v-for="ethnicity in availableEthnicities" :key="ethnicity.value" class="flex">
+                            <input type="checkbox" :value="ethnicity.value" v-model="formdata.ethnicities"
+                                v-bind:disabled="!editModeActive">
+                            <label>{{ ethnicity.label }}</label>
+                        </div>
 
-                    <div v-for="ethnicity in availableEthnicities" :key="ethnicity.value" class="flex">
-                        <input type="checkbox" :value="ethnicity.value" v-model="formdata.ethnicities"
-                            v-bind:disabled="!editModeActive">
-                        <label>{{ ethnicity.label }}</label>
+                        <div style="display: flex;">
+                            <label>Other: </label>
+                            <input class="w3-input" type="text" id="ethnicity_other" v-model="formdata.ethnicity_other"
+                                v-bind:disabled="!editModeActive">
+                        </div>
+
+
+
                     </div>
-
-                    <div style="display: flex;">
-                        <label>Other: </label>
-                        <input class="w3-input" type="text" id="ethnicity_other" v-model="formdata.ethnicity_other"
-                            v-bind:disabled="!editModeActive">
-                    </div>
-
 
 
                     <div style="display: flex;">
@@ -219,11 +222,11 @@
                     </p>
 
 
+                    <legend>Which categories describe you? Select all that apply.
+                        <em>Note, you may select more than one group.</em>
+                    </legend>
+                    <div v-if="formdata.identity_opt_out === false" class="w3-section">
 
-                    <div class="w3-section">
-                        <legend>Which categories describe you? Select all that apply.
-                            <em>Note, you may select more than one group.</em>
-                        </legend>
                         <div v-for="identity in availableIdentities" :key="identity" style="display: flex;">
                             <input type="checkbox" :value="identity" v-model="formdata.identities"
                                 v-bind:disabled="!editModeActive">
@@ -234,7 +237,7 @@
 
 
 
-                    <div style="display: flex;">
+                    <div v-if="formdata.identity_opt_out === false" style="display: flex;">
                         <label>Other: </label>
                         <input class="w3-input" type="text" id="identity_other" v-model="formdata.identity_other"
                             v-bind:disabled="!editModeActive">
@@ -252,11 +255,11 @@
 
                     <br>
                     <br>
+                    <legend>Which categories describe you? Select all that apply.
+                        <em>Note, you may select more than one group.</em>
+                    </legend>
+                    <div v-if="formdata.gender_identities_opt_out === false" class="w3-section">
 
-                    <div class="w3-section">
-                        <legend>Which categories describe you? Select all that apply.
-                            <em>Note, you may select more than one group.</em>
-                        </legend>
                         <div v-for="gender_identity in availableGender_Identities" :key="gender_identity"
                             style="display: flex;">
                             <input type="checkbox" :value="gender_identity" v-model="formdata.gender_identities"
@@ -271,17 +274,17 @@
                                 v-model="formdata.gender_identities_other" :disabled="!editModeActive">
                         </div>
 
+                    </div>
 
 
-
-                        <div style="display: flex;">
-                            <input id="optOutGenderIdentities" class="w3-check" type="checkbox"
-                                v-bind:disabled="!editModeActive" v-model="formdata.gender_identities_opt_out">
-                            <label> Prefer not to answer</label>
-
-                        </div>
+                    <div style="display: flex;">
+                        <input id="optOutGenderIdentities" class="w3-check" type="checkbox"
+                            v-bind:disabled="!editModeActive" v-model="formdata.gender_identities_opt_out">
+                        <label> Prefer not to answer</label>
 
                     </div>
+
+
 
 
 
@@ -293,10 +296,8 @@
                     <br>
 
 
-
-                    <div class="w3-section">
-                        <legend>How is your ClinGen work supported? Select all that apply.</legend>
-
+                    <legend>How is your ClinGen work supported? Select all that apply.</legend>
+                    <div v-if="formdata.support_opt_out === false" class="w3-section">
 
                         <div v-for="support_type in availableSupporttypes" :key="support_type.value" class="flex">
                             <input type="checkbox" :value="support_type.value" v-model="formdata.support"
@@ -317,16 +318,13 @@
                                 v-bind:disabled="!editModeActive">
                         </div>
 
-                        <label>
-                            <input type="checkbox" v-model="formdata.support_opt_out" v-bind:disabled="!editModeActive">
-                            Prefer not to answer<br>
-                        </label>
-
-
-
-
-
                     </div>
+
+                    <label>
+                        <input type="checkbox" v-model="formdata.support_opt_out" v-bind:disabled="!editModeActive">
+                        Prefer not to answer<br>
+                    </label>
+
                     <br>
 
                     <h2>Under-Represented Groups and Disadvantaged Backgrounds</h2>
@@ -393,22 +391,23 @@
                     disadvantaged background? Note: If you are not a US-based participant, please answer based on
                     similar criteria in your own country. <br>
 
-                    <div v-for="y_n_unsure_optout in availableY_n_unsure_optout" :key="y_n_unsure_optout.value"
-                        class="flex">
-                        <input type="radio" :value="y_n_unsure_optout.value" v-model="formdata.disadvantaged"
-                            v-bind:disabled="!editModeActive">
-                        <label>{{ y_n_unsure_optout.label }}</label>
+                    <div v-if="formdata.disadvantaged_opt_out === false">
+                        <div v-for="y_n_unsure_optout in availableY_n_unsure_optout" :key="y_n_unsure_optout.value"
+                            class="flex">
+                            <input type="radio" :value="y_n_unsure_optout.value" v-model="formdata.disadvantaged"
+                                v-bind:disabled="!editModeActive">
+                            <label>{{ y_n_unsure_optout.label }}</label>
+                        </div>
+
+
+
+                        <div style="display: flex;">
+                            <label>Optional: Use this free text box to provide any additional detail.</label>
+                            <input class="w3-input" id="disadvantaged_other" type="text"
+                                v-model="formdata.disadvantaged_other" v-bind:disabled="!editModeActive">
+                        </div>
                     </div>
 
-
-
-                    <button @click="clearSelection($event)" v-show="editModeActive">Clear Selection Above</button>
-
-                    <div style="display: flex;">
-                        <label>Optional: Use this free text box to provide any additional detail.</label>
-                        <input class="w3-input" id="disadvantaged_other" type="text"
-                            v-model="formdata.disadvantaged_other" v-bind:disabled="!editModeActive">
-                    </div>
 
                     <label>
                         <input type="checkbox" v-model="formdata.disadvantaged_opt_out"
@@ -423,38 +422,47 @@
                     <br>
                     Please choose the option(s) that most accurately describes your role or occupation [select all that
                     apply].<br>
-                    <div v-for="occupation in availableOccupations" :key="occupation.value" class="flex">
-                        <input type="checkbox" :value="occupation.value" v-model="formdata.occupations"
-                            v-bind:disabled="!editModeActive">
-                        <label>{{ occupation.label }}</label>
-                    </div>
 
-                    <div style="display: flex;">
-                        <label>Other: Use this free text box to provide any additional detail. </label>
-                        <input id="occupations_other" class="w3-input" type="text" v-model="formdata.occupations_other"
-                            v-bind:disabled="!editModeActive">
+                    <div v-if="formdata.occupations_opt_out === false">
+
+                        <div v-for="occupation in availableOccupations" :key="occupation.value" class="flex">
+                            <input type="checkbox" :value="occupation.value" v-model="formdata.occupations"
+                                v-bind:disabled="!editModeActive">
+                            <label>{{ occupation.label }}</label>
+                        </div>
+
+                        <div style="display: flex;">
+                            <label>Other: Use this free text box to provide any additional detail. </label>
+                            <input id="occupations_other" class="w3-input" type="text"
+                                v-model="formdata.occupations_other" v-bind:disabled="!editModeActive">
+                        </div>
+
+
+
+
+
+
+                        <div v-if="formdata.occupations?.includes('non genetics physician')">
+                            <label for="specialty">If you indicated “Medical non-genetics physician”, please select your
+                                specialty.</label>
+                            <span style="color: red !important; display: inline; float: none;"></span>
+                            <!-- TODO: check with invested parties: should this be multi-select/checkbox? -->
+                            <select id="specialty" name="specialty" v-model="formdata.specialty"
+                                v-bind:disabled="!editModeActive">
+                                <option value="">Select specialty</option>
+                                <option v-for="specialty in availableNon_genetics_specialties" :key="specialty"
+                                    :value="specialty">
+                                    {{ specialty }}
+                                </option>
+                            </select>
+                        </div>
+
                     </div>
 
                     <label>
                         <input type="checkbox" v-model="formdata.occupations_opt_out" v-bind:disabled="!editModeActive">
                         Prefer not to answer<br>
                     </label>
-
-
-                    <div v-if="formdata.occupations?.includes('non genetics physician')">
-                        <label for="specialty">If you indicated “Medical non-genetics physician”, please select your
-                            specialty.</label>
-                        <span style="color: red !important; display: inline; float: none;"></span>
-                        <!-- TODO: check with invested parties: should this be multi-select/checkbox? -->
-                        <select id="specialty" name="specialty" v-model="formdata.specialty"
-                            v-bind:disabled="!editModeActive">
-                            <option value="">Select specialty</option>
-                            <option v-for="specialty in availableNon_genetics_specialties" :key="specialty"
-                                :value="specialty">
-                                {{ specialty }}
-                            </option>
-                        </select>
-                    </div>
 
                     <br>
 
