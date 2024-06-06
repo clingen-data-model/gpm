@@ -45,7 +45,7 @@
             <section>
                 <form @submit.prevent="addSurvey">
                     <h2>Participant Information on Country</h2>
-
+                    <br>
                     <p>The current list of countries comes from <a
                             href="https://www.iso.org/iso-3166-country-codes.html" target="_blank"> the international
                             standard ISO 3166 country codes</a>. We recognize that this list may not be complete or
@@ -61,7 +61,7 @@
                     <!-- Country of Birth Dropdown -->
 
                     <label for="birth_country">Country of Birth: </label>
-                    <div v-if="formdata.birth_country_opt_out === false">
+                    <div v-if="this.formdata.birth_country_opt_out === false">
                         <select id="birth_country" name="birth_country" v-model="formdata.birth_country"
                             v-bind:disabled="!editModeActive">
                             <option value="">Select country</option>
@@ -72,7 +72,7 @@
 
                     </div>
 
-                    <div v-if="formdata.birth_country_opt_out === false" style="display: flex;">
+                    <div v-if="this.formdata.birth_country_opt_out === false" style="display: flex;">
                         <label>Other: </label>
                         <input class="w3-input" type="text" id="birth_country_other"
                             v-model="formdata.birth_country_other" v-bind:disabled="!editModeActive">
@@ -141,7 +141,7 @@
 
                     <br>
                     <h2>Participant Information on Race/Ethnicity</h2>
-
+                    <br>
                     <p>ClinGen Participant Diversity: We ask the following question for aggregate informational purposes
                         to understand ClinGen participant diversity. The free-text response can be used in place or in
                         addition to the listed categories. </p>
@@ -187,9 +187,9 @@
                     <br>
 
 
+                    <label for="specialty">Please select the year that you were born.</label>
+                    <div v-if="this.formdata.birth_year_opt_out === false">
 
-                    <div>
-                        <label for="specialty">Please select the year that you were born.</label>
                         <span style="color: red !important; display: inline; float: none;"></span>
 
                         <select id="birth_year" name="birth_year" v-model="formdata.birth_year"
@@ -211,7 +211,7 @@
 
                     <br>
                     <h2>Participant Information on Identity</h2>
-
+                    <br>
                     <p>We ask the following questions about identity to understand participation across the ClinGen
                         ecosystem. The framing of the questions around sex and gender reflects recommendations made by
                         <a href="https://nap.nationalacademies.org/read/26424/chapter/1#xi" target="_blank">the
@@ -330,7 +330,7 @@
                     <br>
 
                     <h2>Under-Represented Groups and Disadvantaged Backgrounds</h2>
-
+                    <br>
                     <p>ClinGen is invested in expanding access to curated data and participation in Expert
                         Panels/working groups to individuals who may be under-represented or experience disadvantage due
                         to location or life events. We ask these questions to help understand the backgrounds of our
@@ -420,7 +420,7 @@
 
                     <br>
                     <h2>Employment</h2>
-
+                    <br>
                     Please choose the option(s) that most accurately describes your role or occupation [select all that
                     apply].<br>
                     <div v-for="occupation in availableOccupations" :key="occupation.value" class="flex">
@@ -907,7 +907,18 @@ export default {
             } else {
                 return this.formdata.birth_country;
             }
+        },
+        birth_year_computed() {
+            if (this.birth_year_opt_out === true) {
+                return "null";
+            } else {
+                return this.formdata.birth_year;
+            }
         }
+        //},
+        // },
+
+
         //},
     },
 
@@ -990,7 +1001,7 @@ export default {
                     ethnicities: this.formdata.ethnicities,
                     ethnicity_other: this.formdata.ethnicity_other,
                     ethnicity_opt_out: this.formdata.ethnicity_opt_out,
-                    birth_year: this.formdata.birth_year,
+                    birth_year: this.birth_year_computed,
                     birth_year_opt_out: this.formdata.birth_year_opt_out,
                     identities: this.formdata.identities,
                     identity_other: this.formdata.identity_other,
