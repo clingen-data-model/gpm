@@ -469,6 +469,7 @@
                     <div style="display: flex; justify-content: center;">
                         <!-- Submission Button -->
                         <button v-show="editModeActive" type="button" @click="addSurvey">Save</button>
+                        <button @click="cancel">Cancel</button>
                     </div>
 
                 </form>
@@ -1214,6 +1215,11 @@ export default {
                 this.isFormValid = false;
                 //  console.log("Form is not valid");
             }
+        },
+
+        cancel() {
+            event.preventDefault();
+            this.$router.go(-1); // Navigates back to the previous page
         },
 
         editPerson(event) {
