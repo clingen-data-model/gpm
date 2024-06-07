@@ -51,7 +51,9 @@ class DemographicsUpdate
 
         Event::dispatch(new ProfileUpdated($person, $data));
 
-        return $person->last_name;
+
+       return response('The demographics update was successful.', 200)
+              ->header('Content-Type', 'text/plain');
     }
 
     public function asController(ActionRequest $request, Person $person)
