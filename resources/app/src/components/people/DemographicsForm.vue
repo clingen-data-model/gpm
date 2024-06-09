@@ -768,29 +768,6 @@ export default {
             return `form-${this.uuid}`;
         },
 
-        disableField() {
-            return !this.isNew && !this.editform;
-        },
-
-        disableCountryDropdown() {
-            return (
-                this.formdata.data.birth_country_other !== "" ||
-                this.selected_birth_country_opt_out
-            );
-        },
-        disableOtherInput() {
-            return (
-                this.formdata.data.birth_country !== "" ||
-                this.selected_birth_country_opt_out
-            );
-        },
-        disableOptOutCheckbox() {
-            return (
-                this.formdata.data.birth_country !== "" ||
-                this.formdata.data.birth_country_other !== ""
-            );
-        },
-
         //calculate the current date and format it
         formattedDate() {
             const originalDate = new Date().toLocaleDateString();
@@ -803,13 +780,7 @@ export default {
             return date.toISOString().split("T")[0];
         },
 
-        birth_country_computed() {
-            if (this.birth_country_opt_out === true) {
-                return "null";
-            } else {
-                return this.formdata.birth_country;
-            }
-        },
+        // FIXME: is this really used anymore?
         birth_year_computed() {
             if (this.birth_year_opt_out === true) {
                 return "null";
