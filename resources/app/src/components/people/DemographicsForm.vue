@@ -1221,23 +1221,6 @@ button {
     /* Add a solid black border */
 }
 
-#birth_country {
-    /* Target the select element */
-    font-size: 16px;
-    /*  Adjust as needed */
-    padding: 8px;
-    /* Add padding for visual space */
-    background-color: #fff;
-    /* White background for contrast */
-    border: 1px solid #ccc;
-    /* Subtle border */
-}
-
-#birth_country option {
-    background-color: #fff;
-    /* Ensure options are also visible */
-}
-
 input[type="checkbox"]+label:before {
     content: "";
     display: inline-block;
