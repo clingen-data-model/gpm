@@ -61,7 +61,7 @@
                     <!-- Country of Birth Dropdown -->
 
                     <label for="birth_country">Country of Birth: </label>
-                    <div v-if="this.formdata.birth_country_opt_out === false">
+                    <div v-if="!this.formdata.birth_country_opt_out">
                         <select id="birth_country" name="birth_country" v-model="formdata.birth_country"
                             v-bind:disabled="!editModeActive">
                             <option value="">Select country</option>
@@ -72,7 +72,7 @@
 
                     </div>
 
-                    <div v-if="this.formdata.birth_country_opt_out === false" style="display: flex;">
+                    <div v-if="!this.formdata.birth_country_opt_out" style="display: flex;">
                         <label>Other: </label>
                         <input class="w3-input" type="text" id="birth_country_other"
                             v-model="formdata.birth_country_other" v-bind:disabled="!editModeActive">
@@ -90,7 +90,7 @@
 
                     <!-- Country of Residence Dropdown -->
                     <label for="reside_country">Country of Residence: </label>
-                    <div v-if="formdata.reside_country_opt_out === false">
+                    <div v-if="!formdata.reside_country_opt_out">
                         <select id="reside_country" name="reside_country" v-model="formdata.reside_country"
                             v-bind:disabled="!editModeActive">
                             <option value="">Select country</option>
@@ -100,7 +100,7 @@
                         </select>
                     </div>
 
-                    <div v-if="formdata.reside_country_opt_out === false" style="display: flex;">
+                    <div v-if="!formdata.reside_country_opt_out" style="display: flex;">
 
                         <label>Other: </label>
                         <input class="w3-input" type="text" id="reside_country_other"
@@ -121,7 +121,7 @@
 
                     <label for="country-state">If you currently live in the United States, what is your
                         state/territory of residence?</label>
-                    <div v-if="formdata.reside_country === 226 && formdata.reside_state_opt_out === false">
+                    <div v-if="formdata.reside_country === 226 && !formdata.reside_state_opt_out">
 
                         <select id="country-state" name="country-state" v-model="formdata.reside_state"
                             v-bind:disabled="!editModeActive">
@@ -160,7 +160,7 @@
                     </legend>
 
 
-                    <div v-if="formdata.ethnicity_opt_out === false">
+                    <div v-if="!formdata.ethnicity_opt_out">
                         <div v-for="ethnicity in available_options.ethnicities" :key="ethnicity.value" class="flex">
                             <input type="checkbox" :value="ethnicity.value" v-model="formdata.ethnicities"
                                 v-bind:disabled="!editModeActive">
@@ -191,7 +191,7 @@
 
 
                     <label for="specialty">Please select the year that you were born.</label>
-                    <div v-if="this.formdata.birth_year_opt_out === false">
+                    <div v-if="!this.formdata.birth_year_opt_out">
 
                         <span style="color: red !important; display: inline; float: none;"></span>
 
@@ -225,7 +225,7 @@
                     <legend>Which categories describe you? Select all that apply.
                         <em>Note, you may select more than one group.</em>
                     </legend>
-                    <div v-if="formdata.identity_opt_out === false" class="w3-section">
+                    <div v-if="!formdata.identity_opt_out" class="w3-section">
 
                         <div v-for="identity in available_options.identities" :key="identity" style="display: flex;">
                             <input type="checkbox" :value="identity" v-model="formdata.identities"
@@ -237,7 +237,7 @@
 
 
 
-                    <div v-if="formdata.identity_opt_out === false" style="display: flex;">
+                    <div v-if="!formdata.identity_opt_out" style="display: flex;">
                         <label>Other: </label>
                         <input class="w3-input" type="text" id="identity_other" v-model="formdata.identity_other"
                             v-bind:disabled="!editModeActive">
@@ -258,7 +258,7 @@
                     <legend>Which categories describe you? Select all that apply.
                         <em>Note, you may select more than one group.</em>
                     </legend>
-                    <div v-if="formdata.gender_identities_opt_out === false" class="w3-section">
+                    <div v-if="!formdata.gender_identities_opt_out" class="w3-section">
 
                         <div v-for="gender_identity in available_options.gender_identities" :key="gender_identity"
                             style="display: flex;">
@@ -297,7 +297,7 @@
 
 
                     <legend>How is your ClinGen work supported? Select all that apply.</legend>
-                    <div v-if="formdata.support_opt_out === false" class="w3-section">
+                    <div v-if="!formdata.support_opt_out" class="w3-section">
 
                         <div v-for="support_type in available_options.support_types" :key="support_type.value" class="flex">
                             <input type="checkbox" :value="support_type.value" v-model="formdata.support"
@@ -391,7 +391,7 @@
                     disadvantaged background? Note: If you are not a US-based participant, please answer based on
                     similar criteria in your own country. <br>
 
-                    <div v-if="formdata.disadvantaged_opt_out === false">
+                    <div v-if="!formdata.disadvantaged_opt_out">
                         <div v-for="y_n_unsure_optout in available_options.y_n_unsure_optout" :key="y_n_unsure_optout.value"
                             class="flex">
                             <input type="radio" :value="y_n_unsure_optout.value" v-model="formdata.disadvantaged"
@@ -423,7 +423,7 @@
                     Please choose the option(s) that most accurately describes your role or occupation [select all that
                     apply].<br>
 
-                    <div v-if="formdata.occupations_opt_out === false">
+                    <div v-if="!formdata.occupations_opt_out">
 
                         <div v-for="occupation in available_options.occupations" :key="occupation.value" class="flex">
                             <input type="checkbox" :value="occupation.value" v-model="formdata.occupations"
