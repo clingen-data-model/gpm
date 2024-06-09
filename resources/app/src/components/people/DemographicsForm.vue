@@ -154,11 +154,8 @@
                         world. </p>
 
                     <legend>Which categories describe you? Select all that apply.
-                        <em>
-                            Note, you may select more than one group.
-                        </em>
+                        <em>Note, you may select more than one group.</em>
                     </legend>
-
 
                     <div v-if="!formdata.ethnicity_opt_out">
                         <div v-for="ethnicity in available_options.ethnicities" :key="ethnicity.value" class="flex">
@@ -296,7 +293,9 @@
                     <br>
 
 
-                    <legend>How is your ClinGen work supported? Select all that apply.</legend>
+                    <legend>How is your ClinGen work supported? Select all that apply.
+                        <em>Note, you may select more than one group.</em>
+                    </legend>
                     <div v-if="!formdata.support_opt_out" class="w3-section">
 
                         <div v-for="support_type in available_options.support_types" :key="support_type.value">
@@ -379,8 +378,8 @@
                                     (qualifying zip codes are included in the file. </a>
                                 </li>
                             </ul>
-                            Only one of these two possibilities can be used as a criterion for the
-                            disadvantaged background definition.
+                            <em>Only one of these two possibilities can be used as a criterion for the
+                            disadvantaged background definition.</em>
                         </li>
 
                     </ol>
@@ -422,8 +421,9 @@
                     <br>
                     <h2>Employment</h2>
                     <br>
-                    Please choose the option(s) that most accurately describes your role or occupation [select all that
-                    apply].<br>
+                    <legend>Please choose the option(s) that most accurately describes your role or occupation.
+                        <em>Select all that apply.</em>
+                    </legend>
 
                     <div v-if="!formdata.occupations_opt_out">
 
