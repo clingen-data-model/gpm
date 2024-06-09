@@ -12,6 +12,7 @@ use App\Modules\Person\Models\Person;
 use App\Modules\Person\Http\Resources\PersonResource;
 use App\Modules\Person\Http\Resources\PersonDetailResource;
 
+// FIXME: need to make sure `index` does not return demographic information
 class PeopleController extends Controller
 {
     public function index(Request $request)
@@ -73,6 +74,7 @@ class PeopleController extends Controller
         if ($request->page_size || $request->page) {
             return PersonResource::collection($searchQuery->paginate($request->get('page_size', 20)));
         }
+        // FIXME: tmbattey, take a look at this: did you commit in error? `$user` and `$person` are not defined
         $person->setDemographicHiddenFields($user);
         return PersonResource::collection($searchQuery->get($request->all()));
     }
@@ -101,5 +103,5 @@ class PeopleController extends Controller
         return new PersonDetailResource($person);
     }
 
-    
+
 }
