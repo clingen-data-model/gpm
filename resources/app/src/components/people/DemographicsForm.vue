@@ -482,16 +482,12 @@
 
 <script>
 const baseUrl = "/api/people";
-import { useRouter } from "vue-router";
 
 import axios from "axios";
 import { mapGetters } from "vuex";
-import { useStore } from "vuex";
-let store = useStore();
 
 import Person from "@/domain/person";
 console.log(Person);
-import isValidationError from "@/http/is_validation_error";
 
 var items = [];
 
@@ -865,11 +861,6 @@ export default {
                 return this.formdata.birth_year;
             }
         }
-        //},
-        // },
-
-
-        //},
     },
 
     methods: {
@@ -925,14 +916,8 @@ export default {
             }
         },
 
-        //  async handleSave() {
-        //     await store.dispatch('forceGetCurrentUser');
 
-        //     router.replace(props.redirectTo)
-        // },
-
-        // TODO uuid is never sent to this function as a parameter...
-        async addSurvey(uuid) {
+        async addSurvey() {
             this.checkValidity();
             //  console.log(items);
             if (this.isFormValid) {
@@ -1041,7 +1026,6 @@ export default {
                 items = {
                     //  ...this.formdata,
                     birth_country: birth_country,
-                    //  birth_country: this.birth_country_computed,
                     birth_country_other: birth_country_other,
                     birth_country_opt_out: this.formdata.birth_country_opt_out,
                     reside_country: reside_country,
@@ -1179,8 +1163,6 @@ export default {
                 occupations_other,
                 occupations_opt_out
             );
-
-            // const isOccupationValid = this.isSectionValid(this.formdata.occupations, this.formdata.occupation_other, this.formdata.occupation_opt_out);
         },
 
         isIdentityValid() {
@@ -1271,52 +1253,49 @@ export default {
 
     mounted() {
         this.editModeActive = this.startInEditMode;
-        // TODO: not sure why there is an extra level here...
-        {
-            if (!this.uuid) {
-                // Check if uuid prop is not passed
-                const pathSegments = window.location.pathname.split("/");
-                const uuidIndex =
-                    pathSegments.findIndex((segment) => segment === "people") + 1;
+        if (!this.uuid) {
+            // Check if uuid prop is not passed
+            const pathSegments = window.location.pathname.split("/");
+            const uuidIndex =
+                pathSegments.findIndex((segment) => segment === "people") + 1;
 
-                // Ensure uuidIndex is within the array bounds
-                if (uuidIndex > 0 && uuidIndex < pathSegments.length) {
-                    this.localUuid = pathSegments[uuidIndex]; // Extract from the URL and assign to local data property
-                } else {
-                    console.error('UUID segment not found after "people" in the URL.');
-                    this.localUuid = null; // or handle as appropriate
-                }
-
-                // console.log(this.localUuid);
+            // Ensure uuidIndex is within the array bounds
+            if (uuidIndex > 0 && uuidIndex < pathSegments.length) {
+                this.localUuid = pathSegments[uuidIndex]; // Extract from the URL and assign to local data property
             } else {
-                this.localUuid = this.uuid; // Corrected to match case sensitivity
+                console.error('UUID segment not found after "people" in the URL.');
+                this.localUuid = null; // or handle as appropriate
             }
 
-            Promise.all([this.getUser(this.localUuid), this.fetchCountries()])
-                .then(() => {
-                    //console.log("Data fetched successfully");
-                })
-                .catch((error) => {
-                    if (error.response) {
-                        if (error.response.status === 404) {
-                            this.error = "Resource not found";
-                            alert("The resource wasn't found.");
-                        } else if (error.response.status === 500) {
-                            this.error = "Server error";
-                            alert("There was an internal server error.");
-                        }
-                    } else if (error.request) {
-                        // The request was made but no response was received
-                        this.error = "Network error";
-                        alert("There was a network error.");
-                    } else {
-                        // Something happened in setting up the request that triggered an Error
-                        alert("There was an error in the request configuration.");
-                        this.error = "Error in request setup";
-                    }
-                    //  console.error("Error fetching data", error);
-                });
+            // console.log(this.localUuid);
+        } else {
+            this.localUuid = this.uuid; // Corrected to match case sensitivity
         }
+
+        Promise.all([this.getUser(this.localUuid), this.fetchCountries()])
+            .then(() => {
+                //console.log("Data fetched successfully");
+            })
+            .catch((error) => {
+                if (error.response) {
+                    if (error.response.status === 404) {
+                        this.error = "Resource not found";
+                        alert("The resource wasn't found.");
+                    } else if (error.response.status === 500) {
+                        this.error = "Server error";
+                        alert("There was an internal server error.");
+                    }
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    this.error = "Network error";
+                    alert("There was a network error.");
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    alert("There was an error in the request configuration.");
+                    this.error = "Error in request setup";
+                }
+                //  console.error("Error fetching data", error);
+            });
     },
 };
 </script>
