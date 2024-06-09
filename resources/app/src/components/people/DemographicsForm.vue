@@ -119,9 +119,9 @@
                     <!-- Additional inputs and sections -->
                     <br>
 
-                    <label for="country-state">If you currently live in the United States, what is your
-                        state/territory of residence?</label>
                     <div v-if="formdata.reside_country === 226 && !formdata.reside_state_opt_out">
+                        <label for="country-state">If you currently live in the United States, what is your
+                            state/territory of residence?</label>
 
                         <select id="country-state" name="country-state" v-model="formdata.reside_state"
                             v-bind:disabled="!editModeActive">
