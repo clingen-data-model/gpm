@@ -344,7 +344,7 @@
 
                         <br>
 
-                    <ol type="1">
+                    <ol class="list-decimal list-outside pl-10">
                         <li>Were or currently are homeless, as defined by the <a
                                 href="https://nche.ed.gov/mckinney-vento/" target="_blank">McKinney-Vento Homeless
                                 Assistance Act</a>;</li>
@@ -365,25 +365,26 @@
                             parent or child <a href="https://www.fns.usda.gov/wic/wic-eligibility-requirements"
                                 target="_blank">Special
                                 Supplemental Nutrition Program for Women, Infants and Children (WIC)</a></li>
+                        <li> Grew up in one of the following areas:
+                            <ul class="list-none">
+                                <li>a) a U.S. rural area, as designated by <a href="https://data.hrsa.gov/tools/rural-health"
+                                        target="_blank">the
+                                        Health Resources and Services Administration (HRSA) Rural Health
+                                        Grants Eligibility Analyzer</a>; or
+                                </li>
+                                <li>b) a Centers for Medicare and Medicaid Services-designated <a
+                                    href="https://www.qhpcertification.cms.gov/s/LowIncomeandHPSAZipCodeListingPY2020.xlsx?v=1"
+                                    target="_blank">Low-Income and Health Professional Shortage Areas
+                                    (qualifying zip codes are included in the file. </a>
+                                </li>
+                            </ul>
+                            Only one of these two possibilities can be used as a criterion for the
+                            disadvantaged background definition.
+                        </li>
 
                     </ol>
                     <br>
 
-                    Grew up in one of the following areas: <br>
-                    a) a U.S. rural area, as designated by <a href="https://data.hrsa.gov/tools/rural-health"
-                        target="_blank">the
-                        Health Resources and Services Administration (HRSA) Rural Health
-                        Grants Eligibility Analyzer</a>;
-                    or<br>
-
-                    b) a Centers for Medicare and Medicaid Services-designated <a
-                        href="https://www.qhpcertification.cms.gov/s/LowIncomeandHPSAZipCodeListingPY2020.xlsx?v=1"
-                        target="_blank">Low-Income and Health Professional Shortage Areas
-                        (qualifying zip codes are included in the file. </a>
-                    <br>
-                    <br>
-                    Only one of these two possibilities can be used as a criterion for the
-                    disadvantaged background definition.
 
                     </p>
 
