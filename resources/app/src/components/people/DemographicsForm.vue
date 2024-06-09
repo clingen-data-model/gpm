@@ -815,29 +815,6 @@ export default {
                 //console.log(this.formdata);
                 this.formDataLoaded = true;
 
-                //need to convert opt out fields from database boolean to display correctly for editing
-
-                this.formdata.birth_country_opt_out =
-                    this.formdata.birth_country_opt_out === 1 ? true : false;
-                this.formdata.reside_country_opt_out =
-                    this.formdata.reside_country_opt_out === 1 ? true : false;
-                this.formdata.reside_state_opt_out =
-                    this.formdata.reside_state_opt_out === 1 ? true : false;
-                this.formdata.ethnicity_opt_out =
-                    this.formdata.ethnicity_opt_out === 1 ? true : false;
-                this.formdata.birth_year_opt_out =
-                    this.formdata.birth_year_opt_out === 1 ? true : false;
-                this.formdata.identity_opt_out =
-                    this.formdata.identity_opt_out === 1 ? true : false;
-                this.formdata.gender_identities_opt_out =
-                    this.formdata.gender_identities_opt_out === 1 ? true : false;
-                this.formdata.support_opt_out =
-                    this.formdata.support_opt_out === 1 ? true : false;
-                this.formdata.disadvantaged_opt_out =
-                    this.formdata.disadvantaged_opt_out === 1 ? true : false;
-                this.formdata.occupations_opt_out =
-                    this.formdata.occupations_opt_out === 1 ? true : false;
-                // this.ethnicity_opt_out = !!this.formdata.ethnicity_opt_out;
             } catch (error) {
                 this.error = error; // You might want an 'error' data property
             }
