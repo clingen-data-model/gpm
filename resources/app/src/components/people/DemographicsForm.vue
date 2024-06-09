@@ -126,7 +126,7 @@
                         <select id="country-state" name="country-state" v-model="formdata.reside_state"
                             v-bind:disabled="!editModeActive">
                             <option value="">Select state</option>
-                            <option v-for="state in availableStates" :key="state.value" :value="state.value">
+                            <option v-for="state in available_options.states" :key="state.value" :value="state.value">
                                 {{ state.label }}
                             </option>
                         </select>
@@ -161,7 +161,7 @@
 
 
                     <div v-if="formdata.ethnicity_opt_out === false">
-                        <div v-for="ethnicity in availableEthnicities" :key="ethnicity.value" class="flex">
+                        <div v-for="ethnicity in available_options.ethnicities" :key="ethnicity.value" class="flex">
                             <input type="checkbox" :value="ethnicity.value" v-model="formdata.ethnicities"
                                 v-bind:disabled="!editModeActive">
                             <label>{{ ethnicity.label }}</label>
@@ -198,7 +198,7 @@
                         <select id="birth_year" name="birth_year" v-model="formdata.birth_year"
                             v-bind:disabled="!editModeActive">
                             <option value="">Select birth year</option>
-                            <option v-for="birth_year in availableBirth_years" :key="birth_year" :value="birth_year">
+                            <option v-for="birth_year in available_options.birth_years" :key="birth_year" :value="birth_year">
                                 {{ birth_year }}
                             </option>
                         </select>
@@ -227,7 +227,7 @@
                     </legend>
                     <div v-if="formdata.identity_opt_out === false" class="w3-section">
 
-                        <div v-for="identity in availableIdentities" :key="identity" style="display: flex;">
+                        <div v-for="identity in available_options.identities" :key="identity" style="display: flex;">
                             <input type="checkbox" :value="identity" v-model="formdata.identities"
                                 v-bind:disabled="!editModeActive">
                             <label> {{ identity }}
@@ -260,7 +260,7 @@
                     </legend>
                     <div v-if="formdata.gender_identities_opt_out === false" class="w3-section">
 
-                        <div v-for="gender_identity in availableGender_Identities" :key="gender_identity"
+                        <div v-for="gender_identity in available_options.gender_identities" :key="gender_identity"
                             style="display: flex;">
                             <input type="checkbox" :value="gender_identity" v-model="formdata.gender_identities"
                                 v-bind:disabled="!editModeActive">
@@ -299,7 +299,7 @@
                     <legend>How is your ClinGen work supported? Select all that apply.</legend>
                     <div v-if="formdata.support_opt_out === false" class="w3-section">
 
-                        <div v-for="support_type in availableSupporttypes" :key="support_type.value" class="flex">
+                        <div v-for="support_type in available_options.support_types" :key="support_type.value" class="flex">
                             <input type="checkbox" :value="support_type.value" v-model="formdata.support"
                                 v-bind:disabled="!editModeActive">
                             <label>{{ support_type.label }}</label>
@@ -392,7 +392,7 @@
                     similar criteria in your own country. <br>
 
                     <div v-if="formdata.disadvantaged_opt_out === false">
-                        <div v-for="y_n_unsure_optout in availableY_n_unsure_optout" :key="y_n_unsure_optout.value"
+                        <div v-for="y_n_unsure_optout in available_options.y_n_unsure_optout" :key="y_n_unsure_optout.value"
                             class="flex">
                             <input type="radio" :value="y_n_unsure_optout.value" v-model="formdata.disadvantaged"
                                 v-bind:disabled="!editModeActive">
@@ -425,7 +425,7 @@
 
                     <div v-if="formdata.occupations_opt_out === false">
 
-                        <div v-for="occupation in availableOccupations" :key="occupation.value" class="flex">
+                        <div v-for="occupation in available_options.occupations" :key="occupation.value" class="flex">
                             <input type="checkbox" :value="occupation.value" v-model="formdata.occupations"
                                 v-bind:disabled="!editModeActive">
                             <label>{{ occupation.label }}</label>
@@ -450,7 +450,7 @@
                             <select id="specialty" name="specialty" v-model="formdata.specialty"
                                 v-bind:disabled="!editModeActive">
                                 <option value="">Select specialty</option>
-                                <option v-for="specialty in availableNon_genetics_specialties" :key="specialty"
+                                <option v-for="specialty in available_options.non_genetics_specialties" :key="specialty"
                                     :value="specialty">
                                     {{ specialty }}
                                 </option>
@@ -491,208 +491,200 @@ console.log(Person);
 
 var items = [];
 
-const ethnicities = [
-    {
-        value: "American Indian",
-        label:
-            "American Indian or Alaska Native (For example: Aztec, Blackfeet Tribe, Mayan, Navajo Nation, Native Village of Barrow (Utqiagvik) Inupiat Traditional Government, Nome Eskimo Community",
-    },
-    {
-        value: "Asian",
-        label:
-            "Asian (For example: Asian Indian, Chinese, Filipino, Japanese, Korean, Vietnamese, etc.)",
-    },
-    {
-        value: "Black",
-        label:
-            "Black, African American, or African (For example: African American, Ethiopian, Haitian, Jamaican, Nigerian, Somali, etc.)",
-    },
-    {
-        value: "Hispanic",
-        label:
-            "Hispanic, Latino, or Spanish (For example: Colombian, Cuban, Dominican, Mexican or Mexican American, Puerto Rican, Salvadoran, etc.)",
-    },
-    {
-        value: "Middle Eastern",
-        label:
-            "Middle Eastern or North African (For example: Algerian, Egyptian, Iranian, Lebanese, Moroccan, Syrian, etc.)",
-    },
-    {
-        value: "Pacific",
-        label:
-            "Native Hawaiian or other Pacific Islander (For example: Chamorro, Fijian, Marshallese, Native Hawaiian, Tongan, etc.)",
-    },
-    {
-        value: "White",
-        label:
-            "White (For example: English, European, French, German, Irish, Italian, Polish, etc.)",
-    },
-];
-
-const occupations = [
-    { value: "genetics physician", label: "Medical genetics physician" },
-    { value: "non genetics physician", label: "Medical non-genetics physician" },
-    { value: "pathologist", label: "Molecular pathologist" },
-    { value: "laboratory geneticist", label: "Clinical laboratory geneticist" },
-    { value: "genetic counselor", label: "Genetic counselor" },
-    { value: "clinical trainee", label: "Clinical resident or fellow" },
-    { value: "basic researcher", label: "Basic researcher" },
-    { value: "clinical researcher", label: "Clinical researcher" },
-    { value: "variant analyst", label: "Variant analyst" },
-    { value: "staff scientist", label: "Staff scientist" },
-    { value: "bioinformatician", label: "Bioinformatician" },
-    { value: "biocurator", label: "Biocurator" },
-    { value: "graduate student", label: "Graduate student" },
-    {
-        value: "software engineer/developer",
-        label: "Software engineer/Developer",
-    },
-    { value: "educator", label: "Educator" },
-    { value: "general geneticist", label: "General geneticist" },
-    { value: "science policy", label: "Health care policy or Science policy" },
-];
-
-const identities = ["Female", "Male", "Unsure", "None"];
-
-const gender_identities = [
-    "Man",
-    "Woman",
-    "Cisgender",
-    "Nonbinary",
-    "Transgender",
-    "Genderqueer",
-    "Agender",
-    "Intersex",
-    "Unsure",
-];
-
-const birth_years = [];
-for (let y = 2006; y >= 1946; y--) {
-    birth_years.push(y.toString());
+const available_options = {
+    // TODO: get from database...
+    states: [
+        { label: "ALABAMA", value: "AL" },
+        { label: "ALASKA", value: "AK" },
+        { label: "AMERICAN SAMOA", value: "AS" },
+        { label: "ARIZONA", value: "AZ" },
+        { label: "ARKANSAS", value: "AR" },
+        { label: "CALIFORNIA", value: "CA" },
+        { label: "COLORADO", value: "CO" },
+        { label: "CONNECTICUT", value: "CT" },
+        { label: "DELAWARE", value: "DE" },
+        { label: "DISTRICT OF COLUMBIA", value: "DC" },
+        { label: "FLORIDA", value: "FL" },
+        { label: "GEORGIA", value: "GA" },
+        { label: "GUAM", value: "GU" },
+        { label: "HAWAII", value: "HI" },
+        { label: "IDAHO", value: "ID" },
+        { label: "ILLINOIS", value: "IL" },
+        { label: "INDIANA", value: "IN" },
+        { label: "IOWA", value: "IA" },
+        { label: "KANSAS", value: "KS" },
+        { label: "KENTUCKY", value: "KY" },
+        { label: "LOUISIANA", value: "LA" },
+        { label: "MAINE", value: "ME" },
+        { label: "MARYLAND", value: "MD" },
+        { label: "MASSACHUSETTS", value: "MA" },
+        { label: "MICHIGAN", value: "MI" },
+        { label: "MINNESOTA", value: "MN" },
+        { label: "MISSISSIPPI", value: "MS" },
+        { label: "MISSOURI", value: "MO" },
+        { label: "MONTANA", value: "MT" },
+        { label: "NEBRASKA", value: "NE" },
+        { label: "NEVADA", value: "NV" },
+        { label: "NEW HAMPSHIRE", value: "NH" },
+        { label: "NEW JERSEY", value: "NJ" },
+        { label: "NEW MEXICO", value: "NM" },
+        { label: "NEW YORK", value: "NY" },
+        { label: "NORTH CAROLINA", value: "NC" },
+        { label: "NORTH DAKOTA", value: "ND" },
+        { label: "NORTHERN MARIANA IS", value: "MP" },
+        { label: "OHIO", value: "OH" },
+        { label: "OKLAHOMA", value: "OK" },
+        { label: "OREGON", value: "OR" },
+        { label: "PENNSYLVANIA", value: "PA" },
+        { label: "PUERTO RICO", value: "PR" },
+        { label: "RHODE ISLAND", value: "RI" },
+        { label: "SOUTH CAROLINA", value: "SC" },
+        { label: "SOUTH DAKOTA", value: "SD" },
+        { label: "TENNESSEE", value: "TN" },
+        { label: "TEXAS", value: "TX" },
+        { label: "UTAH", value: "UT" },
+        { label: "VERMONT", value: "VT" },
+        { label: "VIRGINIA", value: "VA" },
+        { label: "VIRGIN ISLANDS", value: "VI" },
+        { label: "WASHINGTON", value: "WA" },
+        { label: "WEST VIRGINIA", value: "WV" },
+        { label: "WISCONSIN", value: "WI" },
+        { label: "WYOMING", value: "WY" },
+    ],
+    ethnicities: [
+        {
+            value: "American Indian",
+            label:
+                "American Indian or Alaska Native (For example: Aztec, Blackfeet Tribe, Mayan, Navajo Nation, Native Village of Barrow (Utqiagvik) Inupiat Traditional Government, Nome Eskimo Community",
+        },
+        {
+            value: "Asian",
+            label:
+                "Asian (For example: Asian Indian, Chinese, Filipino, Japanese, Korean, Vietnamese, etc.)",
+        },
+        {
+            value: "Black",
+            label:
+                "Black, African American, or African (For example: African American, Ethiopian, Haitian, Jamaican, Nigerian, Somali, etc.)",
+        },
+        {
+            value: "Hispanic",
+            label:
+                "Hispanic, Latino, or Spanish (For example: Colombian, Cuban, Dominican, Mexican or Mexican American, Puerto Rican, Salvadoran, etc.)",
+        },
+        {
+            value: "Middle Eastern",
+            label:
+                "Middle Eastern or North African (For example: Algerian, Egyptian, Iranian, Lebanese, Moroccan, Syrian, etc.)",
+        },
+        {
+            value: "Pacific",
+            label:
+                "Native Hawaiian or other Pacific Islander (For example: Chamorro, Fijian, Marshallese, Native Hawaiian, Tongan, etc.)",
+        },
+        {
+            value: "White",
+            label:
+                "White (For example: English, European, French, German, Irish, Italian, Polish, etc.)",
+        },
+    ],
+    birth_years: Array.from({ length: 61 }, (_, i) => String(2006 - i)),
+    identities: ["Female", "Male", "Unsure", "None"],
+    gender_identities: [
+        "Man",
+        "Woman",
+        "Cisgender",
+        "Nonbinary",
+        "Transgender",
+        "Genderqueer",
+        "Agender",
+        "Intersex",
+        "Unsure",
+    ],
+    support_types: [
+        { value: "volunteer", label: "Volunteer outside of work environment" },
+        { value: "grant", label: "Grants (e.g. NIH, foundational)" },
+        { value: "employer", label: "Employer supports/allows participation" },
+        { value: "unsure", label: "Unsure" },
+    ],
+    y_n_unsure_optout: [
+        { value: "yes", label: "Yes" },
+        { value: "no", label: "No" },
+        { value: "unsure", label: "Unsure" },
+    ],
+    occupations: [
+        { value: "genetics physician", label: "Medical genetics physician" },
+        { value: "non genetics physician", label: "Medical non-genetics physician" },
+        { value: "pathologist", label: "Molecular pathologist" },
+        { value: "laboratory geneticist", label: "Clinical laboratory geneticist" },
+        { value: "genetic counselor", label: "Genetic counselor" },
+        { value: "clinical trainee", label: "Clinical resident or fellow" },
+        { value: "basic researcher", label: "Basic researcher" },
+        { value: "clinical researcher", label: "Clinical researcher" },
+        { value: "variant analyst", label: "Variant analyst" },
+        { value: "staff scientist", label: "Staff scientist" },
+        { value: "bioinformatician", label: "Bioinformatician" },
+        { value: "biocurator", label: "Biocurator" },
+        { value: "graduate student", label: "Graduate student" },
+        {
+            value: "software engineer/developer",
+            label: "Software engineer/Developer",
+        },
+        { value: "educator", label: "Educator" },
+        { value: "general geneticist", label: "General geneticist" },
+        { value: "science policy", label: "Health care policy or Science policy" },
+    ],
+    non_genetics_specialties: [
+        "Allergy & Immunology",
+        "Anesthesiology",
+        "Cardiology/Cardiovascular Disease",
+        "Child and Adolescent Psychiatry",
+        "Colon & Rectal Surgery",
+        "Critical Care Medicine",
+        "Cytopathology",
+        "Dermatology",
+        "Emergency Medicine",
+        "Endocrinology, Diabetes and Metabolism",
+        "Family Medicine",
+        "Gastroenterology",
+        "General Preventive Medicine and Public Health",
+        "Geriatric Medicine",
+        "Hematology",
+        "Hospice and Palliative Medicine",
+        "Infectious Diseases",
+        "Internal Medicine",
+        "Interventional Cardiology",
+        "Medical Genetics and Genomics",
+        "Nephrology",
+        "Ophthalmology",
+        "Neurological Surgery",
+        "Neurology",
+        "Nuclear Medicine",
+        "Obstetrics & Gynecology",
+        "Occupational Medicine",
+        "Oncology",
+        "Orthopaedic Sports Medicine",
+        "Orthopaedic Surgery",
+        "Otolaryngology",
+        "Pain Medicine",
+        "Pathology",
+        "Pediatric Surgery",
+        "Pediatrics",
+        "Physical Medicine & Rehabilitation",
+        "Plastic Surgery",
+        "Preventive Medicine",
+        "Psychiatry",
+        "Pulmonary Disease and Critical Care Medicine",
+        "Radiation Oncology",
+        "Radiology",
+        "Rheumatology",
+        "Sleep Medicine",
+        "Surgery - General",
+        "Thoracic Surgery",
+        "Urology",
+        "Vascular Surgery",
+    ],
 }
-const non_genetics_specialties = [
-    "Allergy & Immunology",
-    "Anesthesiology",
-    "Cardiology/Cardiovascular Disease",
-    "Child and Adolescent Psychiatry",
-    "Colon & Rectal Surgery",
-    "Critical Care Medicine",
-    "Cytopathology",
-    "Dermatology",
-    "Emergency Medicine",
-    "Endocrinology, Diabetes and Metabolism",
-    "Family Medicine",
-    "Gastroenterology",
-    "General Preventive Medicine and Public Health",
-    "Geriatric Medicine",
-    "Hematology",
-    "Hospice and Palliative Medicine",
-    "Infectious Diseases",
-    "Internal Medicine",
-    "Interventional Cardiology",
-    "Medical Genetics and Genomics",
-    "Nephrology",
-    "Ophthalmology",
-    "Neurological Surgery",
-    "Neurology",
-    "Nuclear Medicine",
-    "Obstetrics & Gynecology",
-    "Occupational Medicine",
-    "Oncology",
-    "Orthopaedic Sports Medicine",
-    "Orthopaedic Surgery",
-    "Otolaryngology",
-    "Pain Medicine",
-    "Pathology",
-    "Pediatric Surgery",
-    "Pediatrics",
-    "Physical Medicine & Rehabilitation",
-    "Plastic Surgery",
-    "Preventive Medicine",
-    "Psychiatry",
-    "Pulmonary Disease and Critical Care Medicine",
-    "Radiation Oncology",
-    "Radiology",
-    "Rheumatology",
-    "Sleep Medicine",
-    "Surgery - General",
-    "Thoracic Surgery",
-    "Urology",
-    "Vascular Surgery",
-];
-
-// TODO: get from database via store
-const states = [
-    { label: "ALABAMA", value: "AL" },
-    { label: "ALASKA", value: "AK" },
-    { label: "AMERICAN SAMOA", value: "AS" },
-    { label: "ARIZONA", value: "AZ" },
-    { label: "ARKANSAS", value: "AR" },
-    { label: "CALIFORNIA", value: "CA" },
-    { label: "COLORADO", value: "CO" },
-    { label: "CONNECTICUT", value: "CT" },
-    { label: "DELAWARE", value: "DE" },
-    { label: "DISTRICT OF COLUMBIA", value: "DC" },
-    { label: "FLORIDA", value: "FL" },
-    { label: "GEORGIA", value: "GA" },
-    { label: "GUAM", value: "GU" },
-    { label: "HAWAII", value: "HI" },
-    { label: "IDAHO", value: "ID" },
-    { label: "ILLINOIS", value: "IL" },
-    { label: "INDIANA", value: "IN" },
-    { label: "IOWA", value: "IA" },
-    { label: "KANSAS", value: "KS" },
-    { label: "KENTUCKY", value: "KY" },
-    { label: "LOUISIANA", value: "LA" },
-    { label: "MAINE", value: "ME" },
-    { label: "MARYLAND", value: "MD" },
-    { label: "MASSACHUSETTS", value: "MA" },
-    { label: "MICHIGAN", value: "MI" },
-    { label: "MINNESOTA", value: "MN" },
-    { label: "MISSISSIPPI", value: "MS" },
-    { label: "MISSOURI", value: "MO" },
-    { label: "MONTANA", value: "MT" },
-    { label: "NEBRASKA", value: "NE" },
-    { label: "NEVADA", value: "NV" },
-    { label: "NEW HAMPSHIRE", value: "NH" },
-    { label: "NEW JERSEY", value: "NJ" },
-    { label: "NEW MEXICO", value: "NM" },
-    { label: "NEW YORK", value: "NY" },
-    { label: "NORTH CAROLINA", value: "NC" },
-    { label: "NORTH DAKOTA", value: "ND" },
-    { label: "NORTHERN MARIANA IS", value: "MP" },
-    { label: "OHIO", value: "OH" },
-    { label: "OKLAHOMA", value: "OK" },
-    { label: "OREGON", value: "OR" },
-    { label: "PENNSYLVANIA", value: "PA" },
-    { label: "PUERTO RICO", value: "PR" },
-    { label: "RHODE ISLAND", value: "RI" },
-    { label: "SOUTH CAROLINA", value: "SC" },
-    { label: "SOUTH DAKOTA", value: "SD" },
-    { label: "TENNESSEE", value: "TN" },
-    { label: "TEXAS", value: "TX" },
-    { label: "UTAH", value: "UT" },
-    { label: "VERMONT", value: "VT" },
-    { label: "VIRGINIA", value: "VA" },
-    { label: "VIRGIN ISLANDS", value: "VI" },
-    { label: "WASHINGTON", value: "WA" },
-    { label: "WEST VIRGINIA", value: "WV" },
-    { label: "WISCONSIN", value: "WI" },
-    { label: "WYOMING", value: "WY" },
-];
-
-const support_types = [
-    { value: "volunteer", label: "Volunteer outside of work environment" },
-    { value: "grant", label: "Grants (e.g. NIH, foundational)" },
-    { value: "employer", label: "Employer supports/allows participation" },
-    { value: "unsure", label: "Unsure" },
-];
-
-const y_n_unsure_optout = [
-    { value: "yes", label: "Yes" },
-    { value: "no", label: "No" },
-    { value: "unsure", label: "Unsure" },
-];
 
 export default {
     name: "DemographicsForm",
@@ -774,42 +766,6 @@ export default {
         formKey() {
             // Change key when UUID changes to force re-render
             return `form-${this.uuid}`;
-        },
-
-        availableEthnicities() {
-            return ethnicities;
-        },
-
-        availableBirth_years() {
-            return birth_years;
-        },
-
-        availableIdentities() {
-            return identities;
-        },
-
-        availableGender_Identities() {
-            return gender_identities;
-        },
-
-        availableOccupations() {
-            return occupations;
-        },
-
-        availableNon_genetics_specialties() {
-            return non_genetics_specialties;
-        },
-
-        availableY_n_unsure_optout() {
-            return y_n_unsure_optout;
-        },
-
-        availableStates() {
-            return states;
-        },
-
-        availableSupporttypes() {
-            return support_types;
         },
 
         disableField() {
@@ -1249,6 +1205,10 @@ export default {
             event.preventDefault();
             this.editModeActive = true;
         },
+    },
+
+    created() {
+        this.available_options = available_options;
     },
 
     mounted() {
