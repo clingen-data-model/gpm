@@ -41,35 +41,8 @@ class Person extends Model implements HasLogEntries
     use IsGroupMember;
     use HasLogEntriesTrait;
 
-
-    protected $fillable = [
-        'uuid',
-        'first_name',
-        'last_name',
-        'email',
-        'phone',
-        'user_id',
-        'institution_id',
-        'biography',
-        'profile_photo',
-        'orcid_id',
-        'hypothesis_id',
-        'street1',
-        'street2',
-        'city',
-        'state',
-        'zip',
-        'country_id',
-        'timezone',
-        'primary_occupation_id',
-        'primary_occupation_other',
-        'race_id',
-        'race_other',
-        'ethnicity_id',
-        'gender_id',
-        'gender_other',
-
-        // Fields from demographics module
+    // keep these fields separate from the fillable array so we can reference them later (e.g., to hide in certain calls)
+    static $demographics_fields = [
         'birth_country',
         'birth_country_other',
         'birth_country_opt_out',
@@ -104,6 +77,34 @@ class Person extends Model implements HasLogEntries
         'demographics_version'
     ];
 
+    protected $fillable = [
+        'uuid',
+        'first_name',
+        'last_name',
+        'email',
+        'phone',
+        'user_id',
+        'institution_id',
+        'biography',
+        'profile_photo',
+        'orcid_id',
+        'hypothesis_id',
+        'street1',
+        'street2',
+        'city',
+        'state',
+        'zip',
+        'country_id',
+        'timezone',
+        'primary_occupation_id',
+        'primary_occupation_other',
+        'race_id',
+        'race_other',
+        'ethnicity_id',
+        'gender_id',
+        'gender_other',
+    ];
+
     protected $casts = [
         'user_id' => 'integer',
         'institution_id' => 'integer',
@@ -114,17 +115,22 @@ class Person extends Model implements HasLogEntries
         'race_id' => 'integer',
         'ethnicity_id' => 'integer',
         'gender_id' => 'integer',
-        'birth_year' => 'integer',
+        'birth_country_opt_out' => 'boolean',
+        'reside_country_opt_out' => 'boolean',
+        'reside_state_opt_out' => 'boolean',
         'ethnicities' => 'array',
-      //  'ethnicity_opt_out' => 'boolean',
+        'ethnicity_opt_out' => 'boolean',
+        'birth_year' => 'integer',
+        'birth_year_opt_out' => 'boolean',
         'identities' => 'array',
-       // 'identity_opt_out' => 'boolean',
+        'identity_opt_out' => 'boolean',
         'gender_identities' => 'array',
-       // 'gender_identities_opt_out' => 'boolean',
+        'gender_identities_opt_out' => 'boolean',
         'support' => 'array',
-       // 'support_opt_out' => 'boolean',
+        'support_opt_out' => 'boolean',
+        'disadvantaged_opt_out' => 'boolean',
         'occupations' => 'array',
-       // 'occupations_opt_out' => 'boolean',
+        'occupations_opt_out' => 'boolean',
         'specialty' => 'array',
     ];
 
@@ -134,47 +140,13 @@ class Person extends Model implements HasLogEntries
         'name',
     ];
 
-  //  public function setDemographicHiddenFields(User $user)
-  //  {
-  //      if ($user->id !== $this->user_id && !$user->hasRole('super-user')) {
-  //          $this->hidden = [
-  //              'birth_country',
-  //      'birth_country_other',
-  //      'birth_country_opt_out',
- //       'reside_country',
-   //     'reside_country_other',
-   //     'reside_country_opt_out',
-  //      'reside_state',
-   //     'reside_state_opt_out',
-  //      'ethnicities',
-   //     'ethnicity_other',
-     //   'ethnicity_opt_out',
-     //   'birth_year',
-      //  'birth_year_opt_out',
-     //   'identities',
-      //  'identity_other',
-     //   'identity_opt_out',
-     //   'gender_identities',
-     //   'gender_identities_other',
-     //   'gender_identities_opt_out',
-     //   'support',
-     //   'grant_detail',
-     //   'support_opt_out',
-     //   'support_other',
-     //   'disadvantaged',
-      //  'disadvantaged_other',
-      //  'disadvantaged_opt_out',
-     //   'occupations',
-      //  'occupations_other',
-     //   'occupations_opt_out',
-      //  'specialty',
-      //  'demographics_completed_date',
-      //  'demographics_version'
-      //      ];
+    public function __construct(array $attributes = [])
+    {
+        // these have to be added here because the fillable array is otherwise made at compile time (so no array_merge)
+        $this->fillable = array_merge($this->fillable, self::$demographics_fields);
+        parent::__construct($attributes);
+    }
 
-          //  Log::info('Hidden fields set:', $this->hidden);
-       // }
-    //}
     /**
      * RELATIONS
      */
