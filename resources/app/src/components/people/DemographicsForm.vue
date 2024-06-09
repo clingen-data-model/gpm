@@ -299,18 +299,19 @@
                     <legend>How is your ClinGen work supported? Select all that apply.</legend>
                     <div v-if="!formdata.support_opt_out" class="w3-section">
 
-                        <div v-for="support_type in available_options.support_types" :key="support_type.value" class="flex">
-                            <input type="checkbox" :value="support_type.value" v-model="formdata.support"
-                                v-bind:disabled="!editModeActive">
-                            <label>{{ support_type.label }}</label>
-                        </div>
+                        <div v-for="support_type in available_options.support_types" :key="support_type.value">
+                            <div class="flex">
+                                <input type="checkbox" :value="support_type.value" v-model="formdata.support"
+                                    v-bind:disabled="!editModeActive">
+                                <label>{{ support_type.label }}</label>
+                            </div>
 
-                        <div v-if="formdata.support?.includes('grant')">
-                            <label>Provide more details on source of funding</label>
-                            <input class="w3-input" type="text" v-model="formdata.grant_detail"
-                                v-bind:disabled="!editModeActive">
+                            <div class="flex pl-12" v-if="support_type.value === 'grant' && formdata.support?.includes('grant')">
+                                <label>Provide more details on source of funding</label>
+                                <input class="w3-input" type="text" v-model="formdata.grant_detail"
+                                    v-bind:disabled="!editModeActive">
+                            </div>
                         </div>
-
 
                         <div style="display: flex;">
                             <label>Other: </label>
