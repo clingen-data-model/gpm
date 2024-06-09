@@ -779,15 +779,6 @@ export default {
             // Format the date to 'YYYY-MM-DD'
             return date.toISOString().split("T")[0];
         },
-
-        // FIXME: is this really used anymore?
-        birth_year_computed() {
-            if (this.birth_year_opt_out === true) {
-                return "null";
-            } else {
-                return this.formdata.birth_year;
-            }
-        }
     },
 
     methods: {
@@ -826,146 +817,50 @@ export default {
             //  console.log(items);
             if (this.isFormValid) {
                 alert("Form is valid and ready to be submitted!");
-                let birth_country;
-                let birth_country_other;
-                if (this.formdata.birth_country_opt_out) {
-                    birth_country = null;
-                    birth_country_other = null;
-                } else {
-                    birth_country = this.formdata.birth_country;
-                    birth_country_other = this.formdata.birth_country_other;
+
+                items = { ...this.formdata, demographics_completed_date: this.formattedDate, demographics_version: 1 };
+
+                // do not submit values for fields that are opted out
+                if (items.birth_country_opt_out === true) {
+                    items.birth_country = null;
+                    items.birth_country_other = null;
                 }
-
-                let reside_country;
-                let reside_country_other;
-                if (this.formdata.reside_country_opt_out) {
-                    reside_country = null;
-                    reside_country_other = null;
-                } else {
-                    reside_country = this.formdata.reside_country;
-                    reside_country_other = this.formdata.reside_country_other;
+                if (items.reside_country_opt_out === true) {
+                    items.reside_country = null;
+                    items.reside_country_other = null;
                 }
-
-                let reside_state;
-                if (this.formdata.reside_state_opt_out) {
-                    reside_state = null;
-                } else {
-                    reside_state = this.formdata.reside_state;
+                if (items.state_opt_out === true) {
+                    items.reside_state = null;
                 }
-
-                let ethnicities;
-                let ethnicity_other;
-                if (this.formdata.ethnicity_opt_out) {
-                    ethnicities = null;
-                    ethnicity_other = null;
-                } else {
-                    ethnicities = this.formdata.ethnicities;
-                    ethnicity_other = this.formdata.ethnicity_other;
+                if (items.ethnicity_opt_out === true) {
+                    items.ethnicities = null;
+                    items.ethnicity_other = null;
                 }
-
-                let birth_year;
-                if (this.formdata.birth_year_opt_out) {
-                    birth_year = null;
-                } else {
-                    birth_year = this.birth_year_computed;
+                if (items.birth_year_opt_out === true) {
+                    items.birth_year = null;
                 }
-
-                let identities;
-                let identity_other;
-                if (this.formdata.identity_opt_out) {
-                    identities = null;
-                    identity_other = null;
-                } else {
-                    identities = this.formdata.identities;
-                    identity_other = this.formdata.identity_other;
+                if (items.identity_opt_out === true) {
+                    items.identities = null;
+                    items.identity_other = null;
                 }
-
-                let gender_identities;
-                let gender_identities_other;
-                if (this.formdata.gender_identities_opt_out) {
-                    gender_identities = null;
-                    gender_identities_other = null;
-                } else {
-                    gender_identities = this.formdata.gender_identities;
-                    gender_identities_other = this.formdata.gender_identities_other;
+                if (items.gender_identities_opt_out === true) {
+                    items.gender_identities = null;
+                    items.gender_identities_other = null;
                 }
-
-                let support;
-                let support_other;
-                let grant_detail;
-                if (this.formdata.support_opt_out) {
-                    support = null;
-                    support_other = null;
-                    grant_detail = null;
-                } else {
-                    support = this.formdata.support;
-                    support_other = this.formdata.support_other;
-                    grant_detail = this.formdata.grant_detail;
+                if (items.support_opt_out === true) {
+                    items.support = null;
+                    items.support_other = null;
+                    items.grant_detail = null;
                 }
-
-                let disadvantaged;
-                let disadvantaged_other;
-                if (this.formdata.disadvantaged_opt_out) {
-                    disadvantaged = null;
-                    disadvantaged_other = null;
-                } else {
-                    disadvantaged = this.formdata.disadvantaged;
-                    disadvantaged_other = this.formdata.disadvantaged_other;
+                if (items.disadvantaged_opt_out === true) {
+                    items.disadvantaged = null;
+                    items.disadvantaged_other = null;
                 }
-
-                let occupations;
-                let occupations_other;
-                let specialty;
-                if (this.formdata.occupations_opt_out) {
-                    occupations = null;
-                    occupations_other = null;
-                    specialty = null;
-                } else {
-                    occupations = this.formdata.occupations;
-                    occupations_other = this.formdata.occupations_other;
-                    specialty = this.formdata.specialty;
+                if (items.occupations_opt_out === true) {
+                    items.occupations = null;
+                    items.occupations_other = null;
+                    items.specialty = null;
                 }
-
-
-                items = {
-                    //  ...this.formdata,
-                    birth_country: birth_country,
-                    birth_country_other: birth_country_other,
-                    birth_country_opt_out: this.formdata.birth_country_opt_out,
-                    reside_country: reside_country,
-                    reside_country_other: reside_country_other,
-                    reside_country_opt_out: this.formdata.reside_country_opt_out,
-                    reside_state: reside_state,
-                    reside_state_opt_out: this.formdata.state_opt_out,
-                    ethnicities: ethnicities,
-                    ethnicity_other: ethnicity_other,
-                    ethnicity_opt_out: this.formdata.ethnicity_opt_out,
-                    birth_year: birth_year,
-                    birth_year_opt_out: this.formdata.birth_year_opt_out,
-                    identities: identities,
-                    identity_other: identity_other,
-                    identity_opt_out: this.formdata.identity_opt_out,
-                    gender_identities: gender_identities,
-                    gender_identities_other: gender_identities_other,
-                    gender_identities_opt_out: this.formdata.gender_identities_opt_out,
-                    support: support,
-                    grant_detail: grant_detail,
-                    support_other: support_other,
-                    support_opt_out: this.formdata.support_opt_out,
-                    disadvantaged: disadvantaged,
-                    disadvantaged_other: disadvantaged_other,
-                    disadvantaged_opt_out: this.formdata.disadvantaged_opt_out,
-                    occupations: occupations,
-                    occupations_other: occupations_other,
-                    specialty: specialty,
-                    occupations_opt_out: this.formdata.occupations_opt_out,
-
-                    //demographic data not displayed on form
-                    // TODO: should this be dateTime instead?
-                    demographics_completed_date: this.formattedDate,
-                    demographics_version: 1,
-                    id: this.formdata.id,
-                };
                 // console.log(items);
 
                 try {
