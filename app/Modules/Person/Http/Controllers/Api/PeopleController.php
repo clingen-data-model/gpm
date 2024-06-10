@@ -74,8 +74,7 @@ class PeopleController extends Controller
         if ($request->page_size || $request->page) {
             return PersonResource::collection($searchQuery->paginate($request->get('page_size', 20)));
         }
-        // FIXME: tmbattey, take a look at this: did you commit in error? `$user` and `$person` are not defined
-        $person->setDemographicHiddenFields($user);
+        
         return PersonResource::collection($searchQuery->get($request->all()));
     }
 
