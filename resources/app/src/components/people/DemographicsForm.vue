@@ -813,7 +813,7 @@ export default {
         async addSurvey() {
             const sections_with_errors = this.checkValidity();
             //  console.log(items);
-            if (this.isFormValid) {
+            if (sections_with_errors.length === 0) {
                 alert("Form is valid and ready to be submitted!");
 
                 items = { ...this.formdata, demographics_completed_date: this.formattedDate, demographics_version: 1 };
@@ -900,141 +900,66 @@ export default {
                 this.editModeActive = false;
             } else {
                 // Notify user to fill all required sections
-                alert("Please fill in all required sections.");
+                alert("Please fill these required sections: " + sections_with_errors.join(", ") + ".");
             }
             // }
         },
 
-        isValidIndex(value) {
-            return typeof value === "number" && !isNaN(value);
-        },
-
-        isCountryValid(countryOther, country, countryOptOut) {
-            return (
-                (typeof countryOther === "string" && countryOther.trim() !== "") ||
-                (typeof country === "string" &&
-                    country.trim() !== "" &&
-                    this.isValidIndex(Number(country))) ||
-                this.isValidIndex(country) ||
-                countryOptOut === true
-            );
-        },
-
-        isSectionBirthCountryValid() {
-            // Ensure formdata and its properties are defined
-            if (!this.formdata) return false;
-
-            const { birth_country_other, birth_country, birth_country_opt_out } =
-                this.formdata;
-
-            return this.isCountryValid(
-                birth_country_other,
-                birth_country,
-                birth_country_opt_out
-            );
-        },
-
-        isSectionResideCountryValid() {
-            function isValidIndex(value) {
-                return typeof value === "number" && !isNaN(value);
-            }
-            // Ensure formdata and its properties are defined
-            if (!this.formdata) return false;
-
-            const { reside_country_other, reside_country, reside_country_opt_out } =
-                this.formdata;
-
-            return this.isCountryValid(
-                reside_country_other,
-                reside_country,
-                reside_country_opt_out
-            );
-        },
-
-        isOccupationValid() {
-            const { occupations, occupations_other, occupations_opt_out } =
-                this.formdata;
-
-            return this.isSectionValid(
-                occupations,
-                occupations_other,
-                occupations_opt_out
-            );
-        },
-
-        isIdentityValid() {
-            const { identities, identity_other, identity_opt_out } = this.formdata;
-            return this.isSectionValid(identities, identity_other, identity_opt_out);
-        },
-
-        isGenderIdentityValid() {
-            const {
-                gender_identities,
-                gender_identities_other,
-                gender_identities_opt_out,
-            } = this.formdata;
-            return this.isSectionValid(
-                gender_identities,
-                gender_identities_other,
-                gender_identities_opt_out
-            );
-        },
-
-        isSupportValid() {
-            const { support, support_other, support_opt_out } = this.formdata;
-            return this.isSectionValid(support, support_other, support_opt_out);
-        },
-
-        isBirthYearValid() {
-            return (
-                this.formdata.birth_year !== "" || this.formdata.birth_year_opt_out
-            );
-        },
-
-        isEthnicityValid() {
-            return (
-                this.formdata.ethnicities.length !== 0 ||
-                (this.formdata.ethnicity_other !== "" &&
-                    this.formdata.ethnicity_other !== null) ||
-                this.formdata.ethnicity_opt_out
-            );
-        },
-
-        isSectionValid(selection, other, optOut) {
-            return (
-                selection.length !== 0 || (other !== "" && other !== null) || optOut
-            );
-        },
-
-        isDisadvantagedValid() {
-            const { disadvantaged, disadvantaged_other, disadvantaged_opt_out } =
-                this.formdata;
-            return (
-                (disadvantaged !== null && disadvantaged !== "") ||
-                (disadvantaged_other !== "" && disadvantaged_other !== null) ||
-                disadvantaged_opt_out
-            );
-        },
-
-
         checkValidity() {
-            if (
-                this.isSectionBirthCountryValid() &&
-                this.isSectionResideCountryValid() &&
-                this.isBirthYearValid() &&
-                this.isEthnicityValid() &&
-                this.isOccupationValid() &&
-                this.isIdentityValid() &&
-                this.isGenderIdentityValid() &&
-                this.isSupportValid() &&
-                this.isDisadvantagedValid()
-            ) {
-                // console.log("Form is valid");
-                this.isFormValid = true;
-            } else {
-                this.isFormValid = false;
-                //  console.log("Form is not valid");
-            }
+            const items = {...this.formdata};
+            const isValidIndex = (value) => typeof value === "number" && !isNaN(value);
+            const isCountryValid = (country, countryOther, countryOptOut) =>
+                (
+                    (typeof countryOther === "string" && countryOther.trim() !== "") ||
+                    (typeof country === "string" &&
+                        country.trim() !== "" &&
+                        isValidIndex(Number(country))) ||
+                    isValidIndex(country) ||
+                    countryOptOut === true
+                );
+
+            const isSectionValid = (selection, other, optOut) =>
+                (
+                    selection?.length !== 0 ||
+                    (typeof other === "string" && other.trim() !== "") ||
+                    optOut
+                );
+
+            const validators = {
+                'Country of Birth': () =>
+                    isCountryValid(
+                        items.birth_country,
+                        items.birth_country_other,
+                        items.birth_country_opt_out
+                    ),
+                'Country of Residence': () =>
+                    isCountryValid(
+                        items.reside_country,
+                        items.reside_country_other,
+                        items.reside_country_opt_out
+                    ),
+                'Race/Ethnicity': () =>
+                    isSectionValid(items.ethnicities, items.ethnicity_other, items.ethnicity_opt_out),
+                'Age': () =>
+                    items.birth_year !== "" || items.birth_year_opt_out,
+                'Identity': () =>
+                    isSectionValid(items.identities, items.identity_other, items.identity_opt_out) &&
+                    isSectionValid(items.gender_identities, items.gender_identities_other, items.gender_identities_opt_out),
+                'ClinGen Background and Experience': () =>
+                    isSectionValid(items.support, items.support_other, items.support_opt_out),
+                'Under-Represented Groups and Disadvantaged Backgrounds': () =>
+                    isSectionValid(items.disadvantaged, items.disadvantaged_other, items.disadvantaged_opt_out),
+                'Employment': () =>
+                    isSectionValid(items.occupations, items.occupations_other, items.occupations_opt_out),
+            };
+
+            // return list of sections with errors
+            return Object.entries(validators).reduce((acc, [section, validator]) => {
+                if (!validator()) {
+                    acc.push(section);
+                }
+                return acc;
+            }, []);
         },
 
         cancel() {
