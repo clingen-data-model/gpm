@@ -134,7 +134,7 @@
                     <div v-if="formdata.reside_country === 226" style="display: flex;">
                         <input id="state_opt_out" class="w3-check" type="checkbox"
                             v-model="formdata.reside_state_opt_out" v-bind:disabled="!editModeActive">
-                        <label>Prefer not to answer </label>
+                        <label for="state_opt_out">Prefer not to answer </label>
                     </div>
                 </section>
 
@@ -158,9 +158,11 @@
 
                     <div v-if="!formdata.ethnicity_opt_out">
                         <div v-for="ethnicity in available_options.ethnicities" :key="ethnicity.value" class="flex">
-                            <input type="checkbox" :value="ethnicity.value" v-model="formdata.ethnicities"
+                            <label>
+                                <input type="checkbox" :value="ethnicity.value" v-model="formdata.ethnicities"
                                 v-bind:disabled="!editModeActive">
-                            <label>{{ ethnicity.label }}</label>
+                                {{ ethnicity.label }}
+                            </label>
                         </div>
 
                         <div style="display: flex;">
@@ -178,7 +180,7 @@
                         <input id="ethnicity_opt_out" class="w3-check" type="checkbox"
                             v-model="formdata.ethnicity_opt_out" v-bind:disabled="!editModeActive">
                         <br>
-                        <label>Prefer not to answer</label>
+                        <label for="ethnicity_opt_out">Prefer not to answer</label>
 
                     </div>
                 </section>
@@ -206,7 +208,7 @@
                     <div style="display: flex;">
                         <input id="optOutBirth" class="w3-check" type="checkbox" v-bind:disabled="!editModeActive"
                             v-model="formdata.birth_year_opt_out">
-                        <label> Prefer not to answer</label>
+                        <label for="optOutBirth"> Prefer not to answer</label>
 
                     </div>
 
@@ -228,9 +230,10 @@
                     <div v-if="!formdata.identity_opt_out" class="w3-section">
 
                         <div v-for="identity in available_options.identities" :key="identity" style="display: flex;">
-                            <input type="checkbox" :value="identity" v-model="formdata.identities"
-                                v-bind:disabled="!editModeActive">
-                            <label> {{ identity }}
+                            <label>
+                                <input type="checkbox" :value="identity" v-model="formdata.identities"
+                                    v-bind:disabled="!editModeActive">
+                                {{ identity }}
                             </label>
                         </div>
                     </div>
@@ -247,7 +250,7 @@
                     <div style="display: flex;">
                         <input id="optOutIdentity" class="w3-check" type="checkbox" v-bind:disabled="!editModeActive"
                             v-model="formdata.identity_opt_out">
-                        <label> Prefer not to answer</label>
+                        <label for="optOutIdentity"> Prefer not to answer</label>
 
                     </div>
 
@@ -262,9 +265,11 @@
 
                         <div v-for="gender_identity in available_options.gender_identities" :key="gender_identity"
                             style="display: flex;">
-                            <input type="checkbox" :value="gender_identity" v-model="formdata.gender_identities"
-                                v-bind:disabled="!editModeActive">
-                            <label>{{ gender_identity }}</label>
+                            <label>
+                                <input type="checkbox" :value="gender_identity" v-model="formdata.gender_identities"
+                                    v-bind:disabled="!editModeActive">
+                                {{ gender_identity }}
+                            </label>
 
                         </div>
 
@@ -280,7 +285,7 @@
                     <div style="display: flex;">
                         <input id="optOutGenderIdentities" class="w3-check" type="checkbox"
                             v-bind:disabled="!editModeActive" v-model="formdata.gender_identities_opt_out">
-                        <label> Prefer not to answer</label>
+                        <label for="optOutGenderIdentities"> Prefer not to answer</label>
                     </div>
 
                 </section>
@@ -298,9 +303,11 @@
 
                         <div v-for="support_type in available_options.support_types" :key="support_type.value">
                             <div class="flex">
-                                <input type="checkbox" :value="support_type.value" v-model="formdata.support"
-                                    v-bind:disabled="!editModeActive">
-                                <label>{{ support_type.label }}</label>
+                                <label>
+                                    <input type="checkbox" :value="support_type.value" v-model="formdata.support"
+                                        v-bind:disabled="!editModeActive">
+                                    {{ support_type.label }}
+                                </label>
                             </div>
 
                             <div class="flex pl-12" v-if="support_type.value === 'grant' && formdata.support?.includes('grant')">
@@ -393,9 +400,11 @@
                     <div v-if="!formdata.disadvantaged_opt_out">
                         <div v-for="y_n_unsure_optout in available_options.y_n_unsure_optout" :key="y_n_unsure_optout.value"
                             class="flex">
-                            <input type="radio" :value="y_n_unsure_optout.value" v-model="formdata.disadvantaged"
-                                v-bind:disabled="!editModeActive">
-                            <label>{{ y_n_unsure_optout.label }}</label>
+                            <label>
+                                <input type="radio" :value="y_n_unsure_optout.value" v-model="formdata.disadvantaged"
+                                    v-bind:disabled="!editModeActive">
+                                {{ y_n_unsure_optout.label }}
+                            </label>
                         </div>
 
 
@@ -425,9 +434,11 @@
                     <div v-if="!formdata.occupations_opt_out">
 
                         <div v-for="occupation in available_options.occupations" :key="occupation.value" class="flex">
-                            <input type="checkbox" :value="occupation.value" v-model="formdata.occupations"
-                                v-bind:disabled="!editModeActive">
-                            <label>{{ occupation.label }}</label>
+                            <label>
+                                <input type="checkbox" :value="occupation.value" v-model="formdata.occupations"
+                                    v-bind:disabled="!editModeActive">
+                                {{ occupation.label }}
+                            </label>
                         </div>
 
                         <div style="display: flex;">
