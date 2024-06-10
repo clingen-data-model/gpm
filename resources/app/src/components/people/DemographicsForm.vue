@@ -1,5 +1,5 @@
 <template>
-    <form :key="formKey" :uuid="person.uuid">
+    <form :key="formKey" :uuid="person.uuid" @submit.prevent="addSurvey">
 
         <div class="centered-container">
 
@@ -42,8 +42,7 @@
                 <!-- Additional paragraphs and sections -->
             </section>
             <!-- Participant Information section -->
-            <section>
-                <form @submit.prevent="addSurvey">
+                <section>
                     <h2>Participant Information on Country</h2>
                     <br>
                     <p>The current list of countries comes from <a
@@ -137,9 +136,9 @@
                             v-model="formdata.reside_state_opt_out" v-bind:disabled="!editModeActive">
                         <label>Prefer not to answer </label>
                     </div>
+                </section>
 
-
-                    <br>
+                <section>
                     <h2>Participant Information on Race/Ethnicity</h2>
                     <br>
                     <p>ClinGen Participant Diversity: We ask the following question for aggregate informational purposes
@@ -182,7 +181,9 @@
                         <label>Prefer not to answer</label>
 
                     </div>
-                    <br>
+                </section>
+
+                <section>
                     <h2>Participant Information on Age</h2>
                     <br>
 
@@ -209,7 +210,9 @@
 
                     </div>
 
-                    <br>
+                </section>
+
+                <section>
                     <h2>Participant Information on Identity</h2>
                     <br>
                     <p>We ask the following questions about identity to understand participation across the ClinGen
@@ -278,16 +281,11 @@
                         <input id="optOutGenderIdentities" class="w3-check" type="checkbox"
                             v-bind:disabled="!editModeActive" v-model="formdata.gender_identities_opt_out">
                         <label> Prefer not to answer</label>
-
                     </div>
 
+                </section>
 
-
-
-
-
-
-                    <br>
+                <section>
                     <h2>ClinGen Background and Experience</h2>
 
                     <br>
@@ -324,9 +322,9 @@
                         <input type="checkbox" v-model="formdata.support_opt_out" v-bind:disabled="!editModeActive">
                         Prefer not to answer<br>
                     </label>
+                </section>
 
-                    <br>
-
+                <section>
                     <h2>Under-Represented Groups and Disadvantaged Backgrounds</h2>
                     <br>
                     <p>ClinGen is invested in expanding access to curated data and participation in Expert
@@ -415,10 +413,9 @@
                             v-bind:disabled="!editModeActive">
                         Prefer not to answer<br>
                     </label>
+                </section>
 
-
-
-                    <br>
+                <section>
                     <h2>Employment</h2>
                     <br>
                     <legend>Please choose the option(s) that most accurately describes your role or occupation.
@@ -474,9 +471,8 @@
                         <button @click="cancel">Cancel</button>
                     </div>
 
-                </form>
+                </section>
 
-            </section>
         </div>
 
     </form>
@@ -496,62 +492,62 @@ var items = [];
 const available_options = {
     // TODO: get from database...
     states: [
-        { label: "ALABAMA", value: "AL" },
-        { label: "ALASKA", value: "AK" },
-        { label: "AMERICAN SAMOA", value: "AS" },
-        { label: "ARIZONA", value: "AZ" },
-        { label: "ARKANSAS", value: "AR" },
-        { label: "CALIFORNIA", value: "CA" },
-        { label: "COLORADO", value: "CO" },
-        { label: "CONNECTICUT", value: "CT" },
-        { label: "DELAWARE", value: "DE" },
-        { label: "DISTRICT OF COLUMBIA", value: "DC" },
-        { label: "FLORIDA", value: "FL" },
-        { label: "GEORGIA", value: "GA" },
-        { label: "GUAM", value: "GU" },
-        { label: "HAWAII", value: "HI" },
-        { label: "IDAHO", value: "ID" },
-        { label: "ILLINOIS", value: "IL" },
-        { label: "INDIANA", value: "IN" },
-        { label: "IOWA", value: "IA" },
-        { label: "KANSAS", value: "KS" },
-        { label: "KENTUCKY", value: "KY" },
-        { label: "LOUISIANA", value: "LA" },
-        { label: "MAINE", value: "ME" },
-        { label: "MARYLAND", value: "MD" },
-        { label: "MASSACHUSETTS", value: "MA" },
-        { label: "MICHIGAN", value: "MI" },
-        { label: "MINNESOTA", value: "MN" },
-        { label: "MISSISSIPPI", value: "MS" },
-        { label: "MISSOURI", value: "MO" },
-        { label: "MONTANA", value: "MT" },
-        { label: "NEBRASKA", value: "NE" },
-        { label: "NEVADA", value: "NV" },
-        { label: "NEW HAMPSHIRE", value: "NH" },
-        { label: "NEW JERSEY", value: "NJ" },
-        { label: "NEW MEXICO", value: "NM" },
-        { label: "NEW YORK", value: "NY" },
-        { label: "NORTH CAROLINA", value: "NC" },
-        { label: "NORTH DAKOTA", value: "ND" },
-        { label: "NORTHERN MARIANA IS", value: "MP" },
-        { label: "OHIO", value: "OH" },
-        { label: "OKLAHOMA", value: "OK" },
-        { label: "OREGON", value: "OR" },
-        { label: "PENNSYLVANIA", value: "PA" },
-        { label: "PUERTO RICO", value: "PR" },
-        { label: "RHODE ISLAND", value: "RI" },
-        { label: "SOUTH CAROLINA", value: "SC" },
-        { label: "SOUTH DAKOTA", value: "SD" },
-        { label: "TENNESSEE", value: "TN" },
-        { label: "TEXAS", value: "TX" },
-        { label: "UTAH", value: "UT" },
-        { label: "VERMONT", value: "VT" },
-        { label: "VIRGINIA", value: "VA" },
-        { label: "VIRGIN ISLANDS", value: "VI" },
-        { label: "WASHINGTON", value: "WA" },
-        { label: "WEST VIRGINIA", value: "WV" },
-        { label: "WISCONSIN", value: "WI" },
-        { label: "WYOMING", value: "WY" },
+        { label: "Alabama", value: "AL" },
+        { label: "Alaska", value: "AK" },
+        { label: "American Samoa", value: "AS" },
+        { label: "Arizona", value: "AZ" },
+        { label: "Arkansas", value: "AR" },
+        { label: "California", value: "CA" },
+        { label: "Colorado", value: "CO" },
+        { label: "Connecticut", value: "CT" },
+        { label: "Delaware", value: "DE" },
+        { label: "District of Columbia", value: "DC" },
+        { label: "Florida", value: "FL" },
+        { label: "Georgia", value: "GA" },
+        { label: "Guam", value: "GU" },
+        { label: "Hawaii", value: "HI" },
+        { label: "Idaho", value: "ID" },
+        { label: "Illinois", value: "IL" },
+        { label: "Indiana", value: "IN" },
+        { label: "Iowa", value: "IA" },
+        { label: "Kansas", value: "KS" },
+        { label: "Kentucky", value: "KY" },
+        { label: "Louisiana", value: "LA" },
+        { label: "Maine", value: "ME" },
+        { label: "Maryland", value: "MD" },
+        { label: "Massachusetts", value: "MA" },
+        { label: "Michigan", value: "MI" },
+        { label: "Minnesota", value: "MN" },
+        { label: "Mississippi", value: "MS" },
+        { label: "Missouri", value: "MO" },
+        { label: "Montana", value: "MT" },
+        { label: "Nebraska", value: "NE" },
+        { label: "Nevada", value: "NV" },
+        { label: "New Hampshire", value: "NH" },
+        { label: "New Jersey", value: "NJ" },
+        { label: "New Mexico", value: "NM" },
+        { label: "New York", value: "NY" },
+        { label: "North Carolina", value: "NC" },
+        { label: "North Dakota", value: "ND" },
+        { label: "Northern Mariana Is", value: "MP" },
+        { label: "Ohio", value: "OH" },
+        { label: "Oklahoma", value: "OK" },
+        { label: "Oregon", value: "OR" },
+        { label: "Pennsylvania", value: "PA" },
+        { label: "Puerto Rico", value: "PR" },
+        { label: "Rhode Island", value: "RI" },
+        { label: "South Carolina", value: "SC" },
+        { label: "South Dakota", value: "SD" },
+        { label: "Tennessee", value: "TN" },
+        { label: "Texas", value: "TX" },
+        { label: "Utah", value: "UT" },
+        { label: "Vermont", value: "VT" },
+        { label: "Virginia", value: "VA" },
+        { label: "Virgin Islands", value: "VI" },
+        { label: "Washington", value: "WA" },
+        { label: "West Virginia", value: "WV" },
+        { label: "Wisconsin", value: "WI" },
+        { label: "Wyoming", value: "WY" },
     ],
     ethnicities: [
         {
@@ -815,7 +811,7 @@ export default {
 
 
         async addSurvey() {
-            this.checkValidity();
+            const sections_with_errors = this.checkValidity();
             //  console.log(items);
             if (this.isFormValid) {
                 alert("Form is valid and ready to be submitted!");
