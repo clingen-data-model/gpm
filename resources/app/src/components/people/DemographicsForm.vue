@@ -760,10 +760,7 @@ export default {
             default: false,
         },
 
-        redirectTo: {
-            type: Object,
-            default: () => ({ name: 'Dashboard' })
-        }
+
     },
 
     computed: {
@@ -844,7 +841,7 @@ export default {
                     items.reside_country = null;
                     items.reside_country_other = null;
                 }
-                if (items.state_opt_out === true) {
+                if (items.state_opt_out === true || items.reside_country !== 226) {
                     items.reside_state = null;
                 }
                 if (items.ethnicity_opt_out === true) {
@@ -867,6 +864,10 @@ export default {
                     items.support_other = null;
                     items.grant_detail = null;
                 }
+                console.log(items.support); // Debugging: Log the value of items.support
+                if (!items.support?.includes('grant')) {
+                    items.grant_detail = null;
+                }
                 if (items.disadvantaged_opt_out === true) {
                     items.disadvantaged = null;
                     items.disadvantaged_other = null;
@@ -876,6 +877,10 @@ export default {
                     items.occupations_other = null;
                     items.specialty = null;
                 }
+                if (!items.occupations?.includes('non genetics physician')) {
+                    items.specialty = null;
+                }
+
                 console.log(items);
 
                 try {
