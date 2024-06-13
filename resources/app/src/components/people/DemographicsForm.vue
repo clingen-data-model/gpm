@@ -118,9 +118,14 @@
                 <!-- Additional inputs and sections -->
                 <br>
 
-                <div v-if="formdata.reside_country === 226 && !formdata.reside_state_opt_out">
+                <div v-if="formdata.reside_country === 226 && !formdata.reside_country_opt_out">
                     <label for="country-state">If you currently live in the United States, what is your
                         state/territory of residence?</label>
+
+                </div>
+
+                <div
+                    v-if="formdata.reside_country === 226 && !formdata.reside_country_opt_out && !formdata.reside_state_opt_out">
 
                     <select id="country-state" name="country-state" v-model="formdata.reside_state"
                         v-bind:disabled="!editModeActive">
@@ -129,13 +134,17 @@
                             {{ state.label }}
                         </option>
                     </select>
+
+
                 </div>
 
-                <div v-if="formdata.reside_country === 226" style="display: flex;">
+                <div v-if="formdata.reside_country === 226 && !formdata.reside_country_opt_out" style="display: flex;">
                     <input id="state_opt_out" class="w3-check" type="checkbox" v-model="formdata.reside_state_opt_out"
                         v-bind:disabled="!editModeActive">
                     <label for="state_opt_out">Prefer not to answer </label>
                 </div>
+
+
             </section>
 
             <section>
@@ -360,18 +369,17 @@
                             for Children and Families</a>;</li>
                     <li>Were eligible for two or more years in the <a
                             href="https://www.fns.usda.gov/school-meals/income-eligibility-guidelines"
-                            target="_blank">Federal Free
-                            and
-                            Reduced Lunch Program</a>;</li>
-                    <li>Have/had no parents or legal guardians who completed a bachelor’s degree <a
-                            href="https://nces.ed.gov/pubs2018/2018009.pdf" target="_blank">See</a>;</li>
+                            target="_blank">Federal Free and Reduced Lunch Program</a>;</li>
+
+                    <li><a href="https://nces.ed.gov/pubs2018/2018009.pdf" target="_blank">Have/had no parents or legal
+                            guardians who completed a bachelor’s degree</a>;</li>
+
                     <li>Were or currently are eligible for <a href="https://www2.ed.gov/programs/fpg/eligibility.html"
-                            target="_blank">Federal Pell
-                            grants</a>;</li>
+                            target="_blank">Federal Pell grants</a>;</li>
                     <li>Received support from the as a
                         parent or child <a href="https://www.fns.usda.gov/wic/wic-eligibility-requirements"
                             target="_blank">Special
-                            Supplemental Nutrition Program for Women, Infants and Children (WIC)</a></li>
+                            Supplemental Nutrition Program for Women, Infants and Children (WIC)</a>;</li>
                     <li> Grew up in one of the following areas:
                         <ul class="list-none">
                             <li>a) a U.S. rural area, as designated by <a
@@ -381,8 +389,8 @@
                             </li>
                             <li>b) a Centers for Medicare and Medicaid Services-designated <a
                                     href="https://www.qhpcertification.cms.gov/s/LowIncomeandHPSAZipCodeListingPY2020.xlsx?v=1"
-                                    target="_blank">Low-Income and Health Professional Shortage Areas
-                                    (qualifying zip codes are included in the file. </a>
+                                    target="_blank">Low-Income and Health Professional Shortage Areas.
+                                    Qualifying zip codes are included in the file. </a>
                             </li>
                         </ul>
                         <em>Only one of these two possibilities can be used as a criterion for the
@@ -864,7 +872,7 @@ export default {
                     items.support_other = null;
                     items.grant_detail = null;
                 }
-                console.log(items.support); // Debugging: Log the value of items.support
+
                 if (!items.support?.includes('grant')) {
                     items.grant_detail = null;
                 }
@@ -881,7 +889,7 @@ export default {
                     items.specialty = null;
                 }
 
-                console.log(items);
+                // console.log(items);
 
                 try {
                     const response = await axios.put(
