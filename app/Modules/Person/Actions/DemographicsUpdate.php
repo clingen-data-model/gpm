@@ -35,9 +35,11 @@ class DemographicsUpdate
         if ($request->user()->can('update', $person)) {
             $demoData = $request->all();
         }
+    
         $person = $this->handle($person, $demoData);
 
-        return $person;
+
+       return $person;
     }
 
     public function authorize(ActionRequest $request): bool
@@ -81,5 +83,20 @@ class DemographicsUpdate
             'exists' => 'The selection is invalid.',
             'email.unique' => 'Somebody is already using that email address.'
         ];
+    }
+
+    private function filterSensitiveData($user, Person $person)
+    {
+        $filteredData = $person->toArray();
+
+        $filteredData = $filteredData->makeHidden(['birth_country', 'birth_country_opt_out']);
+        
+       // if (!$user->can('viewConfidentialData', $person)) {
+        //    unset($filteredData['birth_country']); // Example of confidential data
+        //    unset($filteredData['birth__country_other']); // Another example
+            // Add more fields as needed
+       // }
+
+        return $filteredData;
     }
 }

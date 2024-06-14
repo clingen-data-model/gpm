@@ -130,4 +130,10 @@ class PersonPolicy
     {
         return $person->user_id === $user->id;
     }
+
+    public function viewDemographics(User $user, Person $person)
+    {
+        return $user->hasRole('super-admin') || $user->id === $person->user_id;
+    }
+
 }
