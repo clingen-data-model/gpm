@@ -61,6 +61,7 @@ Route::group([
         Route::delete('/{person:uuid}', PersonDelete::class);
         Route::put('/{person:uuid}/profile', ProfileUpdate::class);
         Route::put('/{person:uuid}/demographics', DemographicsUpdate::class);
+        Route::get('/{person:uuid}/demographics', [PeopleController::class, 'showDemographics']);
         // No post route b/c person creation currently happens when adding members to groups.
 
         Route::get('/{person:uuid}/activity-logs', [ActivityLogsController::class, 'index']);

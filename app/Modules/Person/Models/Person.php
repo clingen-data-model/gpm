@@ -134,7 +134,29 @@ class Person extends Model implements HasLogEntries
         'specialty' => 'array',
     ];
 
-   // protected $hidden = [];
+   protected $hidden = [
+   'birth_country',
+   'birth_country_opt_out',
+   'birth_country_opt_out',
+        'reside_country',
+        'reside_country_other',
+        'reside_country_opt_out',
+        'reside_state',
+        'reside_state_opt_out',
+        'ethnicities',
+        'ethnicity_other',
+        'ethnicity_opt_out',
+        'birth_year',
+        'birth_year_opt_out',
+        'identities',
+        'identity_other',
+        'identity_opt_out',
+        'gender_identities',
+        'gender_identities_other',
+        'gender_identities_opt_out',
+
+];
+//];
 
     protected $appends = [
         'name',
@@ -443,6 +465,13 @@ class Person extends Model implements HasLogEntries
         {
             return $this->getExpertisesAsStringAttribute();
         }
+
+        // In Person.php model
+
+public function makeBirthCountryVisible()
+{
+    $this->makeVisible('birth_country');
+}
 
 
     // Factory

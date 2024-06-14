@@ -8,9 +8,12 @@ use Illuminate\Http\Request;
 use Illuminate\Bus\Dispatcher;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use App\Modules\Person\Models\Person;
 use App\Modules\Person\Http\Resources\PersonResource;
 use App\Modules\Person\Http\Resources\PersonDetailResource;
+use App\Modules\Person\Http\Resources\PersonDemographicsResource;
+use Illuminate\Support\Facades\Gate;
 
 // FIXME: need to make sure `index` does not return demographic information
 class PeopleController extends Controller
@@ -71,12 +74,25 @@ class PeopleController extends Controller
         );
 
         $searchQuery = $search->buildQuery($request->only(['where', 'sort', 'with']));
+    $result = $searchQuery->get();
+
+    // Make hidden fields visible
+   // $result->each->makeVisible(['birth_country', 'birth_country_other']); // Add your hidden fields here
+
+
+        $searchQuery = $search->buildQuery($request->only(['where', 'sort', 'with']));
         if ($request->page_size || $request->page) {
             return PersonResource::collection($searchQuery->paginate($request->get('page_size', 20)));
         }
         
         return PersonResource::collection($searchQuery->get($request->all()));
     }
+
+  //  public function showDemographics(Request $request, Person $person)
+//{
+   // return new PersonDemographicsResource($person);
+//}
+
 
     public function show(Person $person)
     {
@@ -102,5 +118,13 @@ class PeopleController extends Controller
         return new PersonDetailResource($person);
     }
 
+    public function showDemographics(Person $person)
+    {
+        if (Gate::denies('viewDemographics', $person)) {
+           return response()->json(['message' => 'Access denied'], 403);
+        }
+
+        return new PersonDemographicsResource($person);
+    }
 
 }
