@@ -502,7 +502,7 @@
 const baseUrl = "/api/people";
 
 import axios from "axios";
-import CryptoJS from 'crypto-js';
+//import CryptoJS from 'crypto-js';
 import { mapGetters } from "vuex";
 
 import Person from "@/domain/person";
