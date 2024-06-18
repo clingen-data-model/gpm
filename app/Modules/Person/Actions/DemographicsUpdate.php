@@ -35,11 +35,10 @@ class DemographicsUpdate
         if ($request->user()->can('update', $person)) {
             $demoData = $request->all();
         }
-    
+
         $person = $this->handle($person, $demoData);
 
-
-       return $person;
+        return $person;
     }
 
     public function authorize(ActionRequest $request): bool
@@ -76,6 +75,7 @@ class DemographicsUpdate
         return $rules;
     }
 
+    // FIXME: this is a copy of the validation messages from PersonUpdate, and does not have relevant messages for DemographicsUpdate
     public function getValidationMessages(): array
     {
         return [
@@ -85,12 +85,13 @@ class DemographicsUpdate
         ];
     }
 
+    // FIXME: is this used? If not it should be removed to avoid confusion
     private function filterSensitiveData($user, Person $person)
     {
         $filteredData = $person->toArray();
 
         $filteredData = $filteredData->makeHidden(['birth_country', 'birth_country_opt_out']);
-        
+
        // if (!$user->can('viewConfidentialData', $person)) {
         //    unset($filteredData['birth_country']); // Example of confidential data
         //    unset($filteredData['birth__country_other']); // Another example

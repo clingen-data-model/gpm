@@ -502,7 +502,6 @@
 const baseUrl = "/api/people";
 
 import axios from "axios";
-//import CryptoJS from 'crypto-js';
 import { mapGetters } from "vuex";
 
 import Person from "@/domain/person";
@@ -805,17 +804,6 @@ export default {
         },
     },
 
-    // watch: {
-    //     person(newVal) {
-    //         if (newVal) {
-    //             this.checkPermissions();
-    //            if (this.canViewDemographics) {
-    //                this.getUser(this.localUuid);
-    //           }
-    //        }
-    //    },
-    //  },
-
     methods: {
         async fetchCountries() {
             try {
@@ -848,20 +836,6 @@ export default {
                 //this.error = error; // You might want an 'error' data property
             }
         },
-
-        checkPermissions() {
-            // const person = this.getPersonById(this.localUuid); // Function to get the person
-            // this.canViewDemographics = this.hasRole('super-admin') || this.userIsPerson(this.user, person);
-
-
-        },
-
-        //fetchPersonData() {
-        // Dispatch an action to fetch person data
-        //    this.$store.dispatch('people/getPerson');
-        // },
-
-
 
         async addSurvey() {
             const sections_with_errors = this.checkValidity();
@@ -1034,13 +1008,9 @@ export default {
 
     created() {
         this.available_options = available_options;
-        // this.fetchPersonData();
-
     },
 
     mounted() {
-
-
         this.editModeActive = this.startInEditMode;
         if (!this.uuid) {
             // Check if uuid prop is not passed
@@ -1061,19 +1031,6 @@ export default {
             this.localUuid = this.uuid; // Corrected to match case sensitivity
         }
 
-        // this.checkPermissions();
-        //if (this.canViewDemographics) {
-        //   this.getUser(this.localUuid);
-        // }
-
-        // if (userIsPerson(Person)) {
-        //     this.getUser(this.localUuid);
-        // }
-
-
-
-
-        //Promise.all([this.fetchCountries()])
         Promise.all([this.getUser(this.localUuid), this.fetchCountries()])
             .then(() => {
                 //console.log("Data fetched successfully");

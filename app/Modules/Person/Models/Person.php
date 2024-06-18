@@ -134,10 +134,10 @@ class Person extends Model implements HasLogEntries
         'specialty' => 'array',
     ];
 
-   protected $hidden = [
-   'birth_country',
-   'birth_country_opt_out',
-   'birth_country_opt_out',
+    protected $hidden = [
+        'birth_country',
+        'birth_country_opt_out',
+        'birth_country_opt_out',
         'reside_country',
         'reside_country_other',
         'reside_country_opt_out',
@@ -154,9 +154,7 @@ class Person extends Model implements HasLogEntries
         'gender_identities',
         'gender_identities_other',
         'gender_identities_opt_out',
-
-];
-//];
+    ];
 
     protected $appends = [
         'name',

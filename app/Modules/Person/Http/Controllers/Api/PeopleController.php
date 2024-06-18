@@ -2,13 +2,9 @@
 
 namespace App\Modules\Person\Http\Controllers\Api;
 
-use Exception;
 use App\ModelSearchService;
 use Illuminate\Http\Request;
-use Illuminate\Bus\Dispatcher;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
 use App\Modules\Person\Models\Person;
 use App\Modules\Person\Http\Resources\PersonResource;
 use App\Modules\Person\Http\Resources\PersonDetailResource;
@@ -37,15 +33,15 @@ class PeopleController extends Controller
                         case 'filterString':
                             $words = explode(' ', $value);
                             foreach ($words as $word) {
-                                $query->Where('first_name', 'like', '%'.$word.'%', 'or')
-                                    ->orWhere('last_name', 'like', '%'.$word.'%', 'or')
-                                    ->orWhere('email', 'like', '%'.$word.'%', 'or');
+                                $query->Where('first_name', 'like', '%' . $word . '%', 'or')
+                                    ->orWhere('last_name', 'like', '%' . $word . '%', 'or')
+                                    ->orWhere('email', 'like', '%' . $word . '%', 'or');
                             }
                             break;
                         case 'first_name':
                         case 'last_name':
                         case 'email_name':
-                            $query->where($key, 'like', '%'.$value.'%');
+                            $query->where($key, 'like', '%' . $value . '%');
                             break;
                         default:
                             if (is_array($value)) {
@@ -74,24 +70,16 @@ class PeopleController extends Controller
         );
 
         $searchQuery = $search->buildQuery($request->only(['where', 'sort', 'with']));
-    $result = $searchQuery->get();
-
-    // Make hidden fields visible
-   // $result->each->makeVisible(['birth_country', 'birth_country_other']); // Add your hidden fields here
+        $result = $searchQuery->get();
 
 
         $searchQuery = $search->buildQuery($request->only(['where', 'sort', 'with']));
         if ($request->page_size || $request->page) {
             return PersonResource::collection($searchQuery->paginate($request->get('page_size', 20)));
         }
-        
+
         return PersonResource::collection($searchQuery->get($request->all()));
     }
-
-  //  public function showDemographics(Request $request, Person $person)
-//{
-   // return new PersonDemographicsResource($person);
-//}
 
 
     public function show(Person $person)
@@ -121,10 +109,9 @@ class PeopleController extends Controller
     public function showDemographics(Person $person)
     {
         if (Gate::denies('viewDemographics', $person)) {
-           return response()->json(['message' => 'Access denied'], 403);
+            return response()->json(['message' => 'Access denied'], 403);
         }
 
         return new PersonDemographicsResource($person);
     }
-
 }
