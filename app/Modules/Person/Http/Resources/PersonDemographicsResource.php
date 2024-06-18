@@ -3,16 +3,15 @@
 namespace App\Modules\Person\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-//use App\Traits\EncryptsData;
+
 
 class PersonDemographicsResource extends JsonResource
 {
-   // use EncryptsData;
+   
 
     public function toArray($request)
     {
-        // Manually include fields based on user role
-   //     return [
+        
     
         $data = [
             'birth_country' => $this->birth_country,

@@ -134,30 +134,9 @@ class Person extends Model implements HasLogEntries
         'specialty' => 'array',
     ];
 
-   protected $hidden = [
-   'birth_country',
-   'birth_country_opt_out',
-   'birth_country_opt_out',
-        'reside_country',
-        'reside_country_other',
-        'reside_country_opt_out',
-        'reside_state',
-        'reside_state_opt_out',
-        'ethnicities',
-        'ethnicity_other',
-        'ethnicity_opt_out',
-        'birth_year',
-        'birth_year_opt_out',
-        'identities',
-        'identity_other',
-        'identity_opt_out',
-        'gender_identities',
-        'gender_identities_other',
-        'gender_identities_opt_out',
+    protected $hidden = [];
 
-];
-//];
-
+  
     protected $appends = [
         'name',
     ];
@@ -166,6 +145,7 @@ class Person extends Model implements HasLogEntries
     {
         // these have to be added here because the fillable array is otherwise made at compile time (so no array_merge)
         $this->fillable = array_merge($this->fillable, self::$demographics_fields);
+        $this->hidden = array_merge($this->hidden, self::$demographics_fields);
         parent::__construct($attributes);
     }
 
@@ -466,12 +446,7 @@ class Person extends Model implements HasLogEntries
             return $this->getExpertisesAsStringAttribute();
         }
 
-        // In Person.php model
-
-public function makeBirthCountryVisible()
-{
-    $this->makeVisible('birth_country');
-}
+        
 
 
     // Factory
