@@ -240,7 +240,7 @@ router.beforeEach(async (to, from, next) => {
 
     // Check if the user needs to update profile demographics
     if (store.getters.currentUser.person.demographics_completed_date === null && !store.getters.currentUser.is_impersonating) {
-        console.log('redirecting to demographics form');
+      //  console.log('redirecting to demographics form');
         router.replace({name: 'RequiredDemographicsUpdateForm', params: {redirectTo: to}});
         next();
         return;

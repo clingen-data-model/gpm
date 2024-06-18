@@ -134,7 +134,42 @@ class Person extends Model implements HasLogEntries
         'specialty' => 'array',
     ];
 
-    protected $hidden = [];
+    protected $hidden = [
+        'birth_country',
+        'birth_country_opt_out',
+        'birth_country_opt_out',
+        'reside_country',
+        'reside_country_other',
+        'reside_country_opt_out',
+        'reside_state',
+        'reside_state_opt_out',
+        'ethnicities',
+        'ethnicity_other',
+        'ethnicity_opt_out',
+        'birth_year',
+        'birth_year_opt_out',
+        'identities',
+        'identity_other',
+        'identity_opt_out',
+        'gender_identities',
+        'gender_identities_other',
+        'gender_identities_opt_out',
+        'support',
+        'grant_detail',
+        'support_opt_out',
+        'support_other',
+        'disadvantaged',
+        'disadvantaged_other',
+        'disadvantaged_opt_out',
+        'occupations',
+        'occupations_other',
+        'occupations_opt_out',
+        'specialty',
+             
+     
+     ];
+
+   // protected $hidden = [];
 
   
     protected $appends = [
@@ -145,7 +180,7 @@ class Person extends Model implements HasLogEntries
     {
         // these have to be added here because the fillable array is otherwise made at compile time (so no array_merge)
         $this->fillable = array_merge($this->fillable, self::$demographics_fields);
-        $this->hidden = array_merge($this->hidden, self::$demographics_fields);
+       // $this->hidden = array_merge($this->hidden, self::$demographics_fields);
         parent::__construct($attributes);
     }
 

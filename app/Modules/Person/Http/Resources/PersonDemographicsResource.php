@@ -44,6 +44,7 @@ class PersonDemographicsResource extends JsonResource
             'occupations_other' => $this->occupations_other,
             'occupations_opt_out' => $this->occupations_opt_out,
             'specialty' => $this->specialty,
+            'demographics_completed_date' => $this->demographics_completed_date,
                          
         ];
 
