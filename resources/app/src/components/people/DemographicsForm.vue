@@ -502,11 +502,10 @@
 const baseUrl = "/api/people";
 
 import axios from "axios";
-//import CryptoJS from 'crypto-js';
+
 import { mapGetters } from "vuex";
 
 import Person from "@/domain/person";
-import { userIsPerson } from '../../auth_utils';
 console.log(Person);
 
 var items = [];
@@ -805,16 +804,6 @@ export default {
         },
     },
 
-    // watch: {
-    //     person(newVal) {
-    //         if (newVal) {
-    //             this.checkPermissions();
-    //            if (this.canViewDemographics) {
-    //                this.getUser(this.localUuid);
-    //           }
-    //        }
-    //    },
-    //  },
 
     methods: {
         async fetchCountries() {
@@ -830,7 +819,7 @@ export default {
                 //const response = await axios.get(`${baseUrl}/${this.localUuid}`); // Assuming 'baseUrl' is defined
                 const response = await axios.get(`${baseUrl}/${this.localUuid}/demographics`); // Assuming 'baseUrl' is defined
                 // TODO: might be better off picking just the data property (and maybe just its demographics-related values)
-                this.formdata = response.data.data;
+
                 const responsedata = response.data.data;
 
                 //console.log(this.formdata[attr]);
@@ -848,19 +837,6 @@ export default {
                 //this.error = error; // You might want an 'error' data property
             }
         },
-
-        checkPermissions() {
-            // const person = this.getPersonById(this.localUuid); // Function to get the person
-            // this.canViewDemographics = this.hasRole('super-admin') || this.userIsPerson(this.user, person);
-
-
-        },
-
-        //fetchPersonData() {
-        // Dispatch an action to fetch person data
-        //    this.$store.dispatch('people/getPerson');
-        // },
-
 
 
         async addSurvey() {
@@ -1060,17 +1036,6 @@ export default {
         } else {
             this.localUuid = this.uuid; // Corrected to match case sensitivity
         }
-
-        // this.checkPermissions();
-        //if (this.canViewDemographics) {
-        //   this.getUser(this.localUuid);
-        // }
-
-        // if (userIsPerson(Person)) {
-        //     this.getUser(this.localUuid);
-        // }
-
-
 
 
         //Promise.all([this.fetchCountries()])
