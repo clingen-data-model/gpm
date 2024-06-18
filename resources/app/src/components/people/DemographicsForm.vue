@@ -819,21 +819,19 @@ export default {
                 //const response = await axios.get(`${baseUrl}/${this.localUuid}`); // Assuming 'baseUrl' is defined
                 const response = await axios.get(`${baseUrl}/${this.localUuid}/demographics`); // Assuming 'baseUrl' is defined
                 // TODO: might be better off picking just the data property (and maybe just its demographics-related values)
-
                 const responsedata = response.data.data;
 
-                //console.log(this.formdata[attr]);
                 for (const attr in this.formdata) {
                     if (responsedata[attr] !== null) {
                         this.formdata[attr] = responsedata[attr];
                     }
                 }
 
-                //console.log(this.formdata);
                 this.formDataLoaded = true;
 
             } catch (error) {
-                console.error('Error fetching and decrypting data', error);
+                console.error('Error fetching user data', error);
+                alert("There was an error retrieving the user data.");
                 //this.error = error; // You might want an 'error' data property
             }
         },
