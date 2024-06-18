@@ -815,10 +815,10 @@ export default {
 
         async getUser(localuuid) {
             try {
-                //const response = await axios.get(`${baseUrl}/${this.localUuid}`); // Assuming 'baseUrl' is defined
-                const response = await axios.get(`${baseUrl}/${this.localUuid}/demographics`); // Assuming 'baseUrl' is defined
+                const response = await axios.get(`${baseUrl}/${this.localUuid}`); // Assuming 'baseUrl' is defined
+                //const response = await axios.get(`${baseUrl}/${this.localUuid}/demographics`); // Assuming 'baseUrl' is defined
                 // TODO: might be better off picking just the data property (and maybe just its demographics-related values)
-                this.formdata = response.data.data;
+                // this.formdata = response.data.data; // This would break reactivity!
                 const responsedata = response.data.data;
 
                 //console.log(this.formdata[attr]);
