@@ -42,7 +42,7 @@ class Person extends Model implements HasLogEntries
     use HasLogEntriesTrait;
 
     // keep these fields separate from the fillable array so we can reference them later (e.g., to hide in certain calls)
-    static $demographics_fields = [
+    static $demographics_private_fields = [
         'birth_country',
         'birth_country_other',
         'birth_country_opt_out',
@@ -73,8 +73,8 @@ class Person extends Model implements HasLogEntries
         'occupations_other',
         'occupations_opt_out',
         'specialty',
-        'demographics_completed_date',
         'demographics_version'
+        // see comment about demographics_completed_date below
     ];
 
     protected $fillable = [
@@ -103,6 +103,12 @@ class Person extends Model implements HasLogEntries
         'ethnicity_id',
         'gender_id',
         'gender_other',
+        /* demographics_completed_date is not a "demographics_private_field" because:
+            - it is not sensitive data
+            - coordinators may want to see it to know who needs to complete/update their info
+            - the initial routing needs to see it to identify if an update is due
+        */
+        'demographics_completed_date',
     ];
 
     protected $casts = [
@@ -134,53 +140,17 @@ class Person extends Model implements HasLogEntries
         'specialty' => 'array',
     ];
 
-    protected $hidden = [
-        'birth_country',
-        'birth_country_opt_out',
-        'birth_country_opt_out',
-        'reside_country',
-        'reside_country_other',
-        'reside_country_opt_out',
-        'reside_state',
-        'reside_state_opt_out',
-        'ethnicities',
-        'ethnicity_other',
-        'ethnicity_opt_out',
-        'birth_year',
-        'birth_year_opt_out',
-        'identities',
-        'identity_other',
-        'identity_opt_out',
-        'gender_identities',
-        'gender_identities_other',
-        'gender_identities_opt_out',
-        'support',
-        'grant_detail',
-        'support_opt_out',
-        'support_other',
-        'disadvantaged',
-        'disadvantaged_other',
-        'disadvantaged_opt_out',
-        'occupations',
-        'occupations_other',
-        'occupations_opt_out',
-        'specialty',
-             
-     
-     ];
+    protected $hidden = [];
 
-   // protected $hidden = [];
-
-  
     protected $appends = [
         'name',
     ];
 
     public function __construct(array $attributes = [])
     {
-        // these have to be added here because the fillable array is otherwise made at compile time (so no array_merge)
-        $this->fillable = array_merge($this->fillable, self::$demographics_fields);
-       // $this->hidden = array_merge($this->hidden, self::$demographics_fields);
+        // these have to be added here because the fillable and hidden arrays are otherwise made at compile time (so no array_merge)
+        $this->fillable = array_merge($this->fillable, self::$demographics_private_fields);
+        $this->hidden = array_merge($this->hidden, self::$demographics_private_fields);
         parent::__construct($attributes);
     }
 
@@ -481,7 +451,7 @@ class Person extends Model implements HasLogEntries
             return $this->getExpertisesAsStringAttribute();
         }
 
-        
+
 
 
     // Factory
