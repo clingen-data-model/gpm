@@ -442,12 +442,27 @@
 
                 <div v-if="!formdata.occupations_opt_out">
 
-                    <div v-for="occupation in available_options.occupations" :key="occupation.value" class="flex">
-                        <label>
-                            <input type="checkbox" :value="occupation.value" v-model="formdata.occupations"
+                    <div v-for="occupation in available_options.occupations" :key="occupation.value">
+                        <div class="flex">
+                            <label>
+                                <input type="checkbox" :value="occupation.value" v-model="formdata.occupations"
+                                    v-bind:disabled="!editModeActive">
+                                {{ occupation.label }}
+                            </label>
+                        </div>
+                        <div class="flex pl-12" v-if="occupation.value=='non genetics physician' && formdata.occupations?.includes('non genetics physician')">
+                            <label for="specialty">If you indicated “Medical non-genetics physician”, please select your
+                                specialty.</label>
+                            <!-- TODO: check with invested parties: should this be multi-select/checkbox? -->
+                            <select id="specialty" name="specialty" v-model="formdata.specialty"
                                 v-bind:disabled="!editModeActive">
-                            {{ occupation.label }}
-                        </label>
+                                <option value="">Select specialty</option>
+                                <option v-for="specialty in available_options.non_genetics_specialties" :key="specialty"
+                                    :value="specialty">
+                                    {{ specialty }}
+                                </option>
+                            </select>
+                        </div>
                     </div>
 
                     <div style="display: flex;">
@@ -461,20 +476,6 @@
 
 
 
-                    <div v-if="formdata.occupations?.includes('non genetics physician')">
-                        <label for="specialty">If you indicated “Medical non-genetics physician”, please select your
-                            specialty.</label>
-                        <span style="color: red !important; display: inline; float: none;"></span>
-                        <!-- TODO: check with invested parties: should this be multi-select/checkbox? -->
-                        <select id="specialty" name="specialty" v-model="formdata.specialty"
-                            v-bind:disabled="!editModeActive">
-                            <option value="">Select specialty</option>
-                            <option v-for="specialty in available_options.non_genetics_specialties" :key="specialty"
-                                :value="specialty">
-                                {{ specialty }}
-                            </option>
-                        </select>
-                    </div>
 
                 </div>
 
