@@ -893,8 +893,6 @@ export default {
                     items.specialty = null;
                 }
 
-                // console.log(items);
-
                 try {
                     const response = await axios.put(
                         `${baseUrl}/${this.localUuid}/demographics`,
@@ -904,8 +902,8 @@ export default {
                     if (response.status === 200) {
                         alert("Form was submitted succesfully!");
                     }
-
                     this.$emit("saved");
+                    this.editModeActive = false;
                 } catch (error) {
                     if (error.response) {
                         // Request made and server responded
@@ -916,6 +914,9 @@ export default {
                         } else if (error.response.status === 500) {
                             this.error = "Server error";
                             alert("There was an internal server error.");
+                        } else {
+                            this.error = error.message;
+                            alert("There was a error trying to submit the form: " + error.message);
                         }
                     } else if (error.request) {
                         // The request was made but no response was received
@@ -923,15 +924,10 @@ export default {
                         alert("There was a network error.");
                     } else {
                         // Something happened in setting up the request that triggered an Error
-
                         this.error = "Error in request setup";
                         alert("There was an error in the request configuration.");
                     }
-
-                    //console.error("Error updating user:", error);
                 }
-
-                this.editModeActive = false;
             } else {
                 // Notify user to fill all required sections
                 alert("Please fill these required sections: " + sections_with_errors.join(", ") + ".");
