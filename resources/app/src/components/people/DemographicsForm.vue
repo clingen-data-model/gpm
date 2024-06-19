@@ -842,8 +842,6 @@ export default {
             const sections_with_errors = this.checkValidity();
             //  console.log(items);
             if (sections_with_errors.length === 0) {
-                alert("Form is valid and ready to be submitted!");
-
                 items = { ...this.formdata, demographics_completed_date: this.formattedDate, demographics_version: 1 };
 
                 // do not submit values for fields that are opted out
