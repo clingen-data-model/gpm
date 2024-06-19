@@ -450,7 +450,8 @@
                                 {{ occupation.label }}
                             </label>
                         </div>
-                        <div class="flex pl-12" v-if="occupation.value=='non genetics physician' && formdata.occupations?.includes('non genetics physician')">
+                        <div class="dropdown-container"
+                            v-if="occupation.value == 'non genetics physician' && formdata.occupations?.includes('non genetics physician')">
                             <label for="specialty">If you indicated “Medical non-genetics physician”, please select your
                                 specialty.</label>
                             <!-- TODO: check with invested parties: should this be multi-select/checkbox? -->
@@ -1220,5 +1221,30 @@ input[type="radio"]:checked {
 .flex-container input {
     flex: 1 1 auto;
     /* Allow grow and shrink, and base width on remaining space */
+}
+
+.dropdown-container {
+    margin-right: auto;
+    padding: 10px;
+    /* Add some padding for better appearance */
+    width: 100%;
+    /* Ensure the container takes full width */
+}
+
+/* Media Queries */
+@media (min-width: 768px) {
+    .dropdown-container {
+        max-width: 500px;
+        /* Adjust the max-width for larger screens */
+    }
+}
+
+@media (max-width: 767px) {
+    .dropdown-container {
+        max-width: 100%;
+        /* Full width on smaller screens */
+        margin: 0 10px;
+        /* Add some margin for better appearance on smaller screens */
+    }
 }
 </style>

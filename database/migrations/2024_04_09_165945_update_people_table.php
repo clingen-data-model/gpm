@@ -85,5 +85,7 @@ return new class extends Migration
             $table->dropColumn('specialty');
             $table->dropColumn('demographics_completed_date');
             $table->dropColumn('demographics_version');
+        });
     }
+   
 };
