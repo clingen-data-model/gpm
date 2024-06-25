@@ -1,2 +1,0 @@
-"use strict";(self["webpackChunkepam"]=self["webpackChunkepam"]||[]).push([[889],{9889:function(e,r,t){t.r(r),t.d(r,{default:function(){return o}});var n=t(6252);const a={class:"w-full h-48 mx-auto align-middle py-48 text-center border bg-gray-100"};function u(e,r,t,u,c,s){return(0,n.wg)(),(0,n.iD)("div",a," PLACEHOLDER FOR CDWGS INDEX ")}var c={props:{},data(){return{}},computed:{},methods:{}},s=t(3744);const d=(0,s.Z)(c,[["render",u]]);var o=d}}]);
-//# sourceMappingURL=889.4bba3927.js.map
