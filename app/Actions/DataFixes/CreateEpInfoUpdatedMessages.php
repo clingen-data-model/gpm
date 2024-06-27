@@ -19,23 +19,24 @@ class CreateEpInfoUpdatedMessages
     use AsCommand;
 
     public string $commandSignature = 'data-fix:ep-info-messages';
-        
+
     public function __construct(
         private DxMessageFactory $messageFactory
     ){}
 
     public function handle():void
     {
-        config('dx.push-enable', false);
+        $orig_dx_push_enable = config('dx.push-enable');
+        config(['dx.push-enable' => false]);
 
         $activities = $this->getActivities();
-        
+
         $activities->each(function($activity) {
             $message = $this->makeStreamMessage($activity);
             $message->save();
         });
 
-        config('dx.push-enable', true);
+        config(['dx.push-enable' => $orig_dx_push_enable]);
     }
 
     /**
@@ -45,7 +46,7 @@ class CreateEpInfoUpdatedMessages
     {
         $this->handle();
     }
-    
+
     /**
      * Make a stream message for the given activity
      * Set the created_at and updated_at to the activity's created_at and updated_at
@@ -72,7 +73,7 @@ class CreateEpInfoUpdatedMessages
         ]);
         $streamMessage->created_at = $activity->created_at;
         $streamMessage->updated_at = $activity->created_at;
-        
+
         return $streamMessage;
     }
 
@@ -84,14 +85,14 @@ class CreateEpInfoUpdatedMessages
     {
         if ($activity->properties->has('new_long_base_name')) {
             return $this->buildName(
-                $activity->properties['new_long_base_name'], 
+                $activity->properties['new_long_base_name'],
                 $activity->subject->type
             );
         }
 
         if ($activity->properties->has('long_base_name')) {
             return $this->buildName(
-                $activity->properties['long_base_name'], 
+                $activity->properties['long_base_name'],
                 $activity->subject->type
             );
         }
@@ -102,7 +103,7 @@ class CreateEpInfoUpdatedMessages
     /**
      * Get the affiliation id from the activity properties if it exists
      * Otherwise, get it from the expert panel
-     * 
+     *
      * @param Activity $activity
      * @return string
      */
@@ -114,14 +115,14 @@ class CreateEpInfoUpdatedMessages
 
         return $activity->subject->expertPanel->affiliation_id;
     }
-    
+
     /**
      * Get all activities that are of the type:
      *  - expert-panel-affiliation-id-updated
      *  - expert-panel-attributes-updated AND have a long_base_name property
      *  - expert-panel-attributes-updated AND have a new_long_base_name property
      * AND were created after the expert panel's defintion was approved
-     * 
+     *
      * @return Collection
      */
     private function getActivities():Collection
@@ -131,7 +132,7 @@ class CreateEpInfoUpdatedMessages
                     ->where('activity_log.subject_type', '=', Group::class);
             })
             ->join('expert_panels', function(JoinClause $join) {
-                $join->on('groups.id', '=', 'expert_panels.group_id');        
+                $join->on('groups.id', '=', 'expert_panels.group_id');
             })
             ->whereRaw('`activity_log`.`created_at` > `expert_panels`.`step_1_approval_date`')
             ->where(function ($q) {
@@ -159,5 +160,5 @@ class CreateEpInfoUpdatedMessages
         $typeName = $type ? $type->name : '';
         return $name.' '.strtoupper($typeName);
     }
-    
+
 }
