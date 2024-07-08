@@ -97,6 +97,27 @@ return [
             'display_name' => 'Biocurator trainer',
             'description' => 'Biocurator trainer designation.  No default permissions.',
         ],
+        'grant-liaison' => [
+            'id' => 107,
+            'name' => 'grant-liaison',
+            'display_name' => 'ClinGen Grant Liaison',
+            'description' => 'grant-liaison',
+        ],
+        'member' => [
+            'id' => 108,
+            'name' => 'member',
+            'display_name' => 'Member',
+            'description' => 'Member to address CDWGs',
+        ],
+        'annotator' => [
+            'id' => 109,
+            'name' => 'annotator',
+            'display_name' => 'Annotator',
+            'description' => 'Annotator.  Should be restricted to Baseline Annotator',
+        ],
+
+
+
     ],
     'permissions' => [
         'info-edit' => [
@@ -151,4 +172,5 @@ return [
     'role_permissions' => [
         'coordinator' => [1001,1002,1003,1004,1005,1006, 1007, 1008]
     ],
+    
 ];

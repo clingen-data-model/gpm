@@ -87,8 +87,8 @@
         }
     },
     "mailFrom": {
-        "address": "cdwg_oversightcommittee@clinicalgenome.org",
-        "name": "ClinGen CDWG Oversight Committee"
+        "address": null,
+        "name": "GPM"
     },
     "groups": {
         "types": {
@@ -186,6 +186,24 @@
                 "name": "biocurator-trainer",
                 "display_name": "Biocurator trainer",
                 "description": "Biocurator trainer designation.  No default permissions."
+            },
+            "grant-liaison": {
+                "id": 107,
+                "name": "grant-liaison",
+                "display_name": "ClinGen Grant Liaison",
+                "description": "grant-liaison"
+            },
+            "member": {
+                "id": 108,
+                "name": "member",
+                "display_name": "Member",
+                "description": "Member to address CDWGs"
+            },
+            "annotator": {
+                "id": 109,
+                "name": "annotator",
+                "display_name": "Annotator",
+                "description": "Annotator.  Should be restricted to Baseline Annotator"
             }
         },
         "permissions": {
