@@ -28,10 +28,10 @@ class FollowAction extends Model
     static public function boot () {
         parent::boot();
         static::saving(function ($model) {
-            $model->hash = md5($model->event_class.'-'.$model->follower.'-'.json_encode($model->args).'-'.$model->completed_at);
-
+            $hash_source = $model->event_class.'-'.$model->follower.'-'.json_encode($model->args).'-'.$model->completed_at;
+            $model->hash = md5($hash_source);
             if (self::query()->otherWithHash($model->hash, $model)->count() > 0) {
-                throw new FollowActionDuplicateException('A follow action with the same event, follower, and arguments already exists.');
+                throw new FollowActionDuplicateException('A follow action with the same event, follower, and arguments already exists.\n  ' . $hash_source);
             }
         });
     }
@@ -46,12 +46,12 @@ class FollowAction extends Model
     {
         return $query->whereNull('completed_at');
     }
-    
+
     public function scopeOtherWithHash($query, $hash, $current)
     {
         return $query->where('hash', $hash)
             ->where('id', '!=', $current->id);
     }
-    
+
 
 }
