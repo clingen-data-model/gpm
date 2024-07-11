@@ -8,16 +8,13 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Actions\StepApprove;
 use App\DataExchange\Models\IncomingStreamMessage;
 use App\DataExchange\Exceptions\DataSynchronizationException;
-use App\Modules\ExpertPanel\Actions\SpecificationAndRulsetsSync;
-use App\Modules\ExpertPanel\Actions\SpecificationCreate;
-use App\Modules\ExpertPanel\Actions\SpecificationRulesetCreate;
-use App\Modules\ExpertPanel\Actions\SpecificationRulesetSync;
+use App\Modules\ExpertPanel\Actions\SpecificationAndRulesetsSync;
 
 class ClassifiedRulesApprovedProcessor
 {
     public function __construct(
         private StepApprove $approveStepAction,
-        private SpecificationAndRulsetsSync $syncSpecification
+        private SpecificationAndRulesetsSync $syncSpecification
     ) {
     }
 
