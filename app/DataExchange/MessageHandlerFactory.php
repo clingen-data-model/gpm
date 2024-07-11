@@ -39,7 +39,11 @@ class MessageHandlerFactory
     private function buildHandlerClassName($message)
     {
         $namespace = '\\App\\DataExchange\\Actions';
-        $event = $message->payload->cspecDoc->status->event;
+        try {
+            $event = $message->payload->cspecDoc->status->event;
+        } catch (\ErrorException $ex) {
+            throw new UnsupportedIncomingMessage($message);
+        }
         $className = Str::studly($event.'Processor');
 
         return $namespace.'\\'.$className;
