@@ -51,7 +51,7 @@ class PilotRulesApprovedProcessor
 
         $this->approveStep->handle(
             expertPanel: $expertPanel,
-            dateApproved: Carbon::createFromTimestamp($message->timestamp),
+            dateApproved: new Carbon($cspecDoc->status->modifiedAt ?? $cspecDoc->eventTime ?? 0),
             notifyContacts: true
         );
     }
