@@ -128,7 +128,7 @@ class KafkaMessageStream implements MessageStream
      */
     public function listTopics(): array
     {
-        $availableTopics = $this->kafkaConsumer->getMetadata(true, null, 60e3)->getTopics();
+        $availableTopics = $this->kafkaConsumer->getMetadata(true, null, 60000)->getTopics();
 
         return array_map(
             function ($topic) {
