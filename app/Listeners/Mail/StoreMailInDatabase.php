@@ -38,7 +38,7 @@ class StoreMailInDatabase
             'cc' => $this->structureAddressData($event->message->getCc()),
             'bcc' => $this->structureAddressData($event->message->getBcc()),
             'subject' => $event->message->getSubject(),
-            'body' => $event->message->getHtmlBody(),
+            'body' => $event->message->getHtmlBody() ?? $event->message->getTextBody(),
         ]);
 
         foreach ($event->message->getTo() as $address) {
