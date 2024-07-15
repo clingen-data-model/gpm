@@ -26,6 +26,7 @@ class UserDefinedMailNotification extends Notification
         public ?array $bccAddresses = [],
         public ?string $replyToEmail = null,
         public ?string $replyToName = null,
+        public ?string $template = 'email.user_defined_email'
     ) {
     }
 
@@ -50,7 +51,7 @@ class UserDefinedMailNotification extends Notification
     {
         $mail = (new MailMessage)
                     ->subject($this->subject)
-                    ->view('email.user_defined_email', [
+                    ->view($this->template, [
                         'body' => $this->body
                     ]);
 
