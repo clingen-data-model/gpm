@@ -27,12 +27,13 @@ class RecordsOutgoingMailTest extends TestCase
      */
     public function stores_email_in_emails_table()
     {
-        $inviteNotification = new UserDefinedMailNotification('test subject', 'body body body');
+        $inviteNotification = new UserDefinedMailNotification('test subject', 'body body body', template: 'email.empty_template');
         Notification::send($this->person, $inviteNotification);
 
         $this->assertDatabaseHas('emails', [
             'subject' => 'test subject',
-            'to' => json_encode([['name' => null, 'address' => $this->person->email]])
+            'to' => json_encode([['name' => null, 'address' => $this->person->email]]),
+            'body' => 'body body body',
         ]);
     }
 
@@ -49,7 +50,7 @@ class RecordsOutgoingMailTest extends TestCase
         
         $this->assertDatabaseHas('email_person', [
             'person_id' => $this->person->id,
-            'email_id' => $mail->id
+            'email_id' => $mail->id,
         ]);
 
         $this->assertEquals($this->person->emails->count(), 1);
