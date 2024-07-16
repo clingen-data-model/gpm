@@ -163,7 +163,7 @@ export default {
         cleanupResend () {
             this.currentEmail = {},
             this.showResendDialog = false;
-            this.getMailLog();
+            this.$refs.dataTable.getItems()
         }
     },
     created() {

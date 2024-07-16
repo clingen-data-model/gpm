@@ -42,13 +42,13 @@ class MailResend
                             return MailAttachment::createFromUploadedFile($file);
                         })
                         ->toArray();
-        
+
         $mailData = [
             'subject' => $request->subject,
             'body' => $request->body,
             'to' => $this->structureAddressArray($request->to),
-            'ccAddresses' => $this->structureAddressArray($request->cc),
-            'bccAddresses' => $this->structureAddressArray($request->bcc),
+            'ccAddresses' => $this->structureAddressArray($request->cc ?? []),
+            'bccAddresses' => $this->structureAddressArray($request->bcc ?? []),
             'attachments' => $attachments,
         ];
 
@@ -78,13 +78,13 @@ class MailResend
     private function structureAddressArray(array $addressArray): array
     {
         return array_map(
-            function ($address, $name) { 
+            function ($address, $name) {
                 if (is_array($name)) {
                     return $name;
                 }
                 return ['address' => $address, 'name' => $name];
             },
-            array_keys($addressArray), 
+            array_keys($addressArray),
             array_values($addressArray)
         );
     }
