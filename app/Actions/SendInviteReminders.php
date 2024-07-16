@@ -4,11 +4,14 @@ namespace App\Actions;
 
 use App\Modules\Person\Models\Person;
 use App\Notifications\InviteReminderNotification;
+use Lorisleiva\Actions\Concerns\AsCommand;
 use Lorisleiva\Actions\Concerns\AsJob;
 
 class SendInviteReminders
 {
-    use AsJob;
+    use AsJob, AsCommand;
+
+    public $commandSignature = "invite:send-reminders";
 
     public function handle()
     {
