@@ -3,13 +3,11 @@
 namespace App\Modules\ExpertPanel\Actions;
 
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Models\RulesetStatus;
 use App\Modules\ExpertPanel\Models\Specification;
-use App\Modules\ExpertPanel\Models\SpecificationStatus;
 use App\Modules\ExpertPanel\Actions\SpecificationRulesetSync;
 use App\Modules\ExpertPanel\Events\SpecificationStatusUpdated;
 
-class SpecificationAndRulsetsSync
+class SpecificationAndRulesetsSync
 {
     public function __construct(
         private SpecificationSync $syncSpecification,

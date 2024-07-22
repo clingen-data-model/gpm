@@ -9,16 +9,14 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Actions\StepApprove;
 use App\DataExchange\Models\IncomingStreamMessage;
 use App\DataExchange\Exceptions\DataSynchronizationException;
-use App\Modules\ExpertPanel\Actions\SpecificationAndRulsetsSync;
-use App\Modules\ExpertPanel\Actions\SpecificationRulesetSync;
-use App\Modules\ExpertPanel\Actions\TaskCreateSustainedCurationReview;
+use App\Modules\ExpertPanel\Actions\SpecificationAndRulesetsSync;
 
 class PilotRulesApprovedProcessor
 {
     public function __construct(
         private StepApprove $approveStep,
         private TaskCreate $createTask,
-        private SpecificationAndRulsetsSync $syncSpecificationAndRulesets
+        private SpecificationAndRulesetsSync $syncSpecificationAndRulesets
     ) {
     }
 
@@ -53,7 +51,7 @@ class PilotRulesApprovedProcessor
 
         $this->approveStep->handle(
             expertPanel: $expertPanel,
-            dateApproved: Carbon::createFromTimestamp($message->timestamp),
+            dateApproved: new Carbon($cspecDoc->status->modifiedAt ?? $cspecDoc->eventTime ?? 0),
             notifyContacts: true
         );
     }
