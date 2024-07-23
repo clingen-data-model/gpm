@@ -36,7 +36,8 @@
                     </div>
                 </section>
 
-                <section class="mt-4 border-t pt-4">
+                <section class="mt-4 border-t pt-4"
+                    v-if="userIsPerson(person) || hasRole('super-admin') || hasRole('admin')">
                     <dictionary-row class="pb-2" label="Timezone">
                         {{person.timezone}}
                     </dictionary-row>
