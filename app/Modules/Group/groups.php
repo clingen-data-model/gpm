@@ -97,6 +97,31 @@ return [
             'display_name' => 'Biocurator trainer',
             'description' => 'Biocurator trainer designation.  No default permissions.',
         ],
+        'grant-liaison' => [
+            'id' => 107,
+            'name' => 'grant-liaison',
+            'display_name' => 'Grant Liaison',
+            'description' => 'Group Grant Liaison.',
+        ],
+        'annotator' => [
+            'id' => 108,
+            'name' => 'annotator',
+            'display_name' => 'Annotator',
+            'description' => 'Annotator',
+        ],
+        'private-group' => [
+            'id' => 109,
+            'name' => 'private-group',
+            'display_name' => 'Private Group',
+            'description' => 'Private Affinity Group',
+        ],
+        'private-member' => [
+            'id' => 110,
+            'name' => 'private-member',
+            'display_name' => 'Private Member',
+            'description' => 'Private Member of Affinity Group',
+        ],
+        
     ],
     'permissions' => [
         'info-edit' => [
@@ -150,5 +175,8 @@ return [
     ],
     'role_permissions' => [
         'coordinator' => [1001,1002,1003,1004,1005,1006, 1007, 1008]
+    ],
+    'role_permissions' => [
+        'grant-liaison' => [1008]
     ],
 ];
