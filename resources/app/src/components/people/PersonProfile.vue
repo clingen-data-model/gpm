@@ -37,9 +37,12 @@
                 </section>
 
                 <section class="mt-4 border-t pt-4">
-                    <dictionary-row class="pb-2" label="Timezone">
-                        {{person.timezone}}
+                    <dictionary-row class="pb-2 w-40 timezone-label" label="Timezone">
+                        <span class="timezone-value">{{ person.timezone }}</span>
+                        
                     </dictionary-row>
+                </section>
+                <section v-if="userIsPerson(person) || hasRole('super-admin') || hasRole('admin')">
                     <dictionary-row class="pb-2" label-class="w-40" label="Address">
                         <div>
                             <div v-if="person.street1">{{person.street1}}</div>
@@ -49,9 +52,14 @@
                             </div>
                         </div>
                     </dictionary-row>
+
+                </section>
+                   <section>
                     <dictionary-row class="pb-2" label-class="w-40" label="Country">
                         {{person.country ? person.country.name : ''}}
                     </dictionary-row>
+                    </section>
+                    <section v-if="userIsPerson(person) || hasRole('super-admin') || hasRole('admin')">         
                     <dictionary-row class="pb-2" label-class="w-40" label="Phone">{{person.phone}}</dictionary-row>
                 </section>
 
@@ -168,3 +176,14 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.w-40 {
+  width: 10em; /* Adjust the value as necessary to match your layout */
+}
+
+.timezone-value {
+  margin-left: +1em; /* Move the value 2 spaces to the left */
+}
+</style>
+
