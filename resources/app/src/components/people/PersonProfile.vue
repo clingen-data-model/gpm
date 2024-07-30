@@ -36,43 +36,26 @@
                     </div>
                 </section>
 
-                <section class="mt-4 border-t pt-4"
-                    v-if="userIsPerson(person) || hasRole('super-admin') || hasRole('admin')">
-                    <dictionary-row class="pb-2" label="Timezone">
-                        {{person.timezone}}
-                    </dictionary-row>
-                    <dictionary-row class="pb-2" label-class="w-40" label="Address">
-                        <div>
-                            <div v-if="person.street1">{{person.street1}}</div>
-                            <div v-if="person.street2">{{person.street2}}</div>
+                <section class="mt-4 border-t pt-4">
+                    <div v-if="userIsPerson(person) || hasRole('super-admin') || hasRole('admin')">
+                        <dictionary-row class="pb-2" label-class="w-40" label="Phone">{{person.phone}}</dictionary-row>
+                        <dictionary-row class="pb-2" label-class="w-40" label="Address">
                             <div>
-                                <span v-if="person.city">{{person.city}},</span> <span v-if="person.state">{{person.state}}</span> <span v-if="person.zip">{{person.zip}}</span>
+                                <div v-if="person.street1">{{person.street1}}</div>
+                                <div v-if="person.street2">{{person.street2}}</div>
+                                <div>
+                                    <span v-if="person.city">{{person.city}},</span> <span v-if="person.state">{{person.state}}</span> <span v-if="person.zip">{{person.zip}}</span>
+                                </div>
                             </div>
-                        </div>
-                    </dictionary-row>
+                        </dictionary-row>
+                    </div>
                     <dictionary-row class="pb-2" label-class="w-40" label="Country">
                         {{person.country ? person.country.name : ''}}
                     </dictionary-row>
-                    <dictionary-row class="pb-2" label-class="w-40" label="Phone">{{person.phone}}</dictionary-row>
+                    <dictionary-row class="pb-2" label-class="w-40" label="Timezone">
+                        {{person.timezone}}
+                    </dictionary-row>
                 </section>
-
-                <!-- <section class="mt-4 border-t pt-4" v-if="userIsPerson(person) || hasPermission('people-manage')">
-                    <header class="flex items-center space-x-2">
-                        <h3>
-                            Demographics
-                        </h3>
-                        <div>
-                            <popover hover arrow>
-                                <template v-slot:content>Only you and administrators can see this information.</template>
-                                <icon-info class="text-gray-500" width="12" height="12"></icon-info>
-                            </popover>
-                        </div>
-                    </header>
-                    <dictionary-row class="pb-2" label-class="w-40" label="Primary Occupation">{{person.primaryOccupationName}}</dictionary-row>
-                    <dictionary-row class="pb-2" label-class="w-40" label="Race">{{person.raceName}}</dictionary-row>
-                    <dictionary-row class="pb-2" label-class="w-40" label="Ethnicity">{{person.ethnicityName}}</dictionary-row>
-                    <dictionary-row class="pb-2" label-class="w-40" label="Gender">{{person.genderName}}</dictionary-row>
-                </section> -->
 
                 <section class="mt-4 border-t pt-4" v-if="hasPermission('people-manage')">
                     <h3>Metadata</h3>
