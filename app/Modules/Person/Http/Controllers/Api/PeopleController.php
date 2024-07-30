@@ -107,9 +107,7 @@ class PeopleController extends Controller
 
     public function showDemographics(Person $person)
     {
-        if (Gate::denies('viewDemographics', $person)) {
-           return response()->json(['message' => 'Access denied'], 403);
-        }
+        Gate::authorize('viewDemographics', $person);
 
         return new PersonDemographicsResource($person);
     }
