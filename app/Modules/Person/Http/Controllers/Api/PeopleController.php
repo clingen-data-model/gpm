@@ -68,31 +68,17 @@ class PeopleController extends Controller
                         ->orderBy('last_name', $dir);
                 }
 
-
                 return $query->orderBy($field, $dir);
             }
         );
 
         $searchQuery = $search->buildQuery($request->only(['where', 'sort', 'with']));
-    $result = $searchQuery->get();
-
-    // Make hidden fields visible
-   // $result->each->makeVisible(['birth_country', 'birth_country_other']); // Add your hidden fields here
-
-
-        $searchQuery = $search->buildQuery($request->only(['where', 'sort', 'with']));
         if ($request->page_size || $request->page) {
             return PersonResource::collection($searchQuery->paginate($request->get('page_size', 20)));
         }
-        
+
         return PersonResource::collection($searchQuery->get($request->all()));
     }
-
-  //  public function showDemographics(Request $request, Person $person)
-//{
-   // return new PersonDemographicsResource($person);
-//}
-
 
     public function show(Person $person)
     {
@@ -115,6 +101,7 @@ class PeopleController extends Controller
             'credentials',
             'expertises',
         ]);
+
         return new PersonDetailResource($person);
     }
 
