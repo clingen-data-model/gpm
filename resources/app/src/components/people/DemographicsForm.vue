@@ -794,16 +794,27 @@ export default {
         },
 
         //calculate the current date and format it
-        formattedDate() {
-            const originalDate = new Date().toLocaleDateString();
-            const [month, day, year] = originalDate.split("/");
+        //formattedDate() {
+        //    const originalDate = new Date().toLocaleDateString();
+        //    const [month, day, year] = originalDate.split("/");
 
             // Construct a new date object from the components
-            const date = new Date(year, month - 1, day); // Month is 0-indexed in Date
+         //   const date = new Date(year, month - 1, day); // Month is 0-indexed in Date
 
             // Format the date to 'YYYY-MM-DD'
-            return date.toISOString().split("T")[0];
-        },
+         //   return date.toISOString().split("T")[0];
+        //},
+
+        // Calculate the current date and format it
+        formattedDate() {
+        const now = new Date();
+           const year = now.getFullYear();
+           const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+           const day = String(now.getDate()).padStart(2, '0');
+
+      // Format the date to 'YYYY-MM-DD'
+        return `${year}-${month}-${day}`;
+    }
     },
 
 
