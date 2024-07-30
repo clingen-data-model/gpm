@@ -77,23 +77,26 @@ class Person extends Model implements HasLogEntries
         // see comment about demographics_completed_date below
     ];
 
+    static $contact_details_private_fields = [
+        'phone',
+        'street1',
+        'street2',
+        'city',
+        'state',
+        'zip',
+    ];
+
     protected $fillable = [
         'uuid',
         'first_name',
         'last_name',
         'email',
-        'phone',
         'user_id',
         'institution_id',
         'biography',
         'profile_photo',
         'orcid_id',
         'hypothesis_id',
-        'street1',
-        'street2',
-        'city',
-        'state',
-        'zip',
         'country_id',
         'timezone',
         'primary_occupation_id',
@@ -149,8 +152,8 @@ class Person extends Model implements HasLogEntries
     public function __construct(array $attributes = [])
     {
         // these have to be added here because the fillable and hidden arrays are otherwise made at compile time (so no array_merge)
-        $this->fillable = array_merge($this->fillable, self::$demographics_private_fields);
-        $this->hidden = array_merge($this->hidden, self::$demographics_private_fields);
+        $this->fillable = array_merge($this->fillable, self::$demographics_private_fields, self::$contact_details_private_fields);
+        $this->hidden = array_merge($this->hidden, self::$demographics_private_fields, self::$contact_details_private_fields);
         parent::__construct($attributes);
     }
 
