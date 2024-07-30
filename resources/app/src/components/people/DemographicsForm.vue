@@ -793,17 +793,6 @@ export default {
             return `form-${this.uuid}`;
         },
 
-        //calculate the current date and format it
-        formattedDate() {
-            const originalDate = new Date().toLocaleDateString();
-            const [month, day, year] = originalDate.split("/");
-
-            // Construct a new date object from the components
-            const date = new Date(year, month - 1, day); // Month is 0-indexed in Date
-
-            // Format the date to 'YYYY-MM-DD'
-            return date.toISOString().split("T")[0];
-        },
     },
 
 
@@ -843,7 +832,7 @@ export default {
             const sections_with_errors = this.checkValidity();
             //  console.log(items);
             if (sections_with_errors.length === 0) {
-                items = { ...this.formdata, demographics_completed_date: this.formattedDate, demographics_version: 1 };
+                items = { ...this.formdata, demographics_version: 1 };
 
                 // do not submit values for fields that are opted out
                 if (items.birth_country_opt_out === true) {

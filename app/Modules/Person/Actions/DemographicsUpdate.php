@@ -19,6 +19,7 @@ class DemographicsUpdate
 
     public function handle(Person $person, array $data)
     {
+        $data['demographics_completed_date'] = now();
         $person->update($data);
 
         Event::dispatch(new ProfileUpdated($person, $data));
@@ -35,7 +36,7 @@ class DemographicsUpdate
         if ($request->user()->can('update', $person)) {
             $demoData = $request->all();
         }
-    
+
         $person = $this->handle($person, $demoData);
 
 
