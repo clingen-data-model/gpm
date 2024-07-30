@@ -1,2 +1,0 @@
-"use strict";(self["webpackChunkepam"]=self["webpackChunkepam"]||[]).push([[518],{7518:function(e,n,r){r.r(n),r.d(n,{default:function(){return d}});var t=r(6252);function u(e,n,r,u,a,s){return(0,t.wg)(),(0,t.iD)("div",null,"User ADMIN")}var a={name:"UserAdmin",props:{},data(){return{}},computed:{},methods:{}},s=r(3744);const c=(0,s.Z)(a,[["render",u]]);var d=c}}]);
-//# sourceMappingURL=518.8080afde.js.map
