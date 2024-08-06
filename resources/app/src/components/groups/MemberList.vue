@@ -30,7 +30,8 @@ export default {
                 roleId: null,
                 needsCoi: null,
                 needsTraining: null,
-                hideAlumns: true
+                hideAlumns: true,
+                hidePrivate: true
             },
             tableFields: [
                 {
@@ -115,11 +116,15 @@ export default {
             return this.group.members
                     .filter(m => this.matchesFilters(m))
                     .filter(m => {
-                        if (this.filters.hideAlumns) {
-                            return m.end_date === null;
-                        }
-                        return m;
-                    });
+        if (this.filters.hideAlumns && m.end_date !== null) {
+          return false;
+        }
+        if (this.filters.hidePrivate && m.roles.some(role => role.name === 'private-member')) {
+          return false;
+        }
+        return true;
+      });
+                    
         },
         filteredEmails () {
             return this.filteredMembers.map(m => `${m.person.name} <${m.person.email}>`)
@@ -423,6 +428,12 @@ export default {
             <div class="flex-1 py-2">
                 <checkbox class="block" label="Hide Retired/Alumni" v-model="filters.hideAlumns" />
             </div>
+
+            <div class="flex-1 py-2">
+        <checkbox class="block" label="Hide Private Members" v-model="filters.hidePrivate" />
+      </div>
+            
+
         </div>
         </transition>
         <div class="mt-3 py-2 w-full overflow-x-auto">
