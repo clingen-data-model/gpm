@@ -16,11 +16,18 @@ class SendCoiReminders
 
     public function handle()
     {
+
         $people = Person::query()
             ->isActivatedUser()
             ->hasPendingCois()
-            ->with('membershipsWithPendingCoi', 'membershipsWithPendingCoi.group')
+            ->with(['membershipsWithPendingCoi', 'membershipsWithPendingCoi.group' => function ($query) {
+            $query->whereIn('group_status_id', [1, 2]);
+         }])
+            ->whereHas('membershipsWithPendingCoi.group', function ($query) {
+            $query->whereIn('group_status_id', [1, 2]);
+         })
             ->get();
+
 
         $people->each(function ($person) {
             $person->notify(new CoiReminderNotification);
