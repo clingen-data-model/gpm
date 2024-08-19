@@ -20,152 +20,190 @@
         fields.value.push('coi_completed');
     }
 
-    const members = ref([]);
-    const chairs = computed(() => tableRows.value.filter(m => m.roles.includes('chair')));
-    const experts = computed(() => tableRows.value.filter(m => m.roles.includes('expert')));
+   // const members = ref([]);
 
-    const memberGroups = computed(() => [
-        {
-            title: 'Leadership',
-            members: chairs.value
-        },
-        {
-            title: 'Coordination',
-            members: tableRows.value.filter(m => m.roles.includes('coordinator'))
-        },
-        {
-            title: 'Biocuration',
-            members: tableRows.value.filter(m => m.roles.includes('biocurator'))
-        },
-        {
-            title: 'Expertise',
-            members: experts.value
-        }
-    ])
 
-    const delay = (ms = 1000) => new Promise((r) => setTimeout(r, ms));
-    const getPublications = async member => {
-        const baseUri = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils';
-        const searchUrl = `${baseUri}/esearch.fcgi?db=pubmed&term=${member.last_name},+${member.first_name}[author]&retmode=json&retmax=0`;
+   const members = ref([]);
 
-        return axios.get(searchUrl)
-            .then(rsp => {
-                member.pubCount = rsp.data.esearchresult.count
-            })
-            .catch(async error => {
-                if (error.response.status == 429) {
-                    await delay();
-                    getPublications(member);
-                }
-            });
+// Watch for changes in props.members and apply sorting and aggregation
+watch(() => props.members, async (to) => {
+    if (!to) {
+        return;
     }
 
-    watch(() => props.members, async to => {
-        if (!to) {
-            return;
+    // Copy the incoming members array
+    members.value = [...to];
+
+    // Sort members based on roles
+    members.value.sort((a, b) => {
+        if (a.roles.includes('chair') && !b.roles.includes('chair')) {
+            return -1;
+        }
+        if (!a.roles.includes('chair') && b.roles.includes('chair')) {
+            return 1;
         }
 
-        members.value = [...to];
-
-        members.value.sort((a, b) => {
-            if (a.roles.includes('chair') && !b.roles.includes('chair')) {
-                return -1;
-            }
-            if (!a.roles.includes('chair') && b.roles.includes('chair')) {
-                return 1;
-            }
-
-            if (a.roles.includes('expert') && !b.roles.includes('expert')) {
-                return -1;
-            }
-            if (!a.roles.includes('expert') && b.roles.includes('expert')) {
-                return 1;
-            }
-
-            return 0;
-        })
-
-        for(let idx in members.value.filter(m => m.roles.includes('chair') || m.roles.includes('expert'))) {
-            if (loadPubmed.value) {
-                getPublications(members.value[idx])
-                await delay(500);
-            }
+        if (a.roles.includes('expert') && !b.roles.includes('expert')) {
+            return -1;
         }
-    }, {immediate: true})
+        if (!a.roles.includes('expert') && b.roles.includes('expert')) {
+            return 1;
+        }
 
-    const tableRows = computed( () => {
-        return props.members.map(m => {
-            const retVal = {
-                id: m.id,
-                first_name: m.person.first_name,
-                last_name: m.person.last_name,
-                name: m.person.name,
-                institution: m.person.institution ? m.person.institution.name : null,
-                // credentials: m.person.credentials,
-                legacy_credentials: m.person.legacy_credentials,
-                legacy_expertise: m.legacy_expertise,
-                roles: m.roles.map(r => r.name).join(', '),
-                person: m.person
-            }
-            if (hasPermission('ep-applications-manage')) {
-                retVal.coi_completed = formatDate(m.coi_last_completed);
-            }
+        return 0;
+    });
 
-            return retVal;
-        });
-    })
+    
+}, { immediate: true });
+
+// Aggregate roles for each member
+const aggregateRoles = (membersList) => {
+    const aggregatedMembers = {};
+
+    membersList.forEach(member => {
+        if (!aggregatedMembers[member.id]) {
+            aggregatedMembers[member.id] = {
+                ...member,
+                roles: [...member.roles],
+            };
+        } else {
+            aggregatedMembers[member.id].roles = [
+                ...new Set([...aggregatedMembers[member.id].roles, ...member.roles]),
+            ];
+        }
+    });
+
+    return Object.values(aggregatedMembers);
+};
+
+// Computed property to create table rows with aggregated roles
+const rolePriority = {
+    chair: 1,
+    coordinator: 2,
+    biocurator: 3,
+    expert: 4,
+};
+
+// Function to get the highest-priority role for sorting
+const getPrimaryRolePriority = (roles) => {
+    for (const role of roles) {
+        if (rolePriority[role.name.toLowerCase()] !== undefined) {
+            return rolePriority[role.name.toLowerCase()];
+        }
+    }
+    return Infinity; // Return a large number for roles that don't match any in the hierarchy
+};
+
+const totalMembers = computed(() => {
+    return tableRows.value.length;
+});
+
+
+const tableRows = computed(() => {
+    const allMembers = aggregateRoles(members.value);
+
+    // Sort members based on the priority of their roles
+    allMembers.sort((a, b) => {
+        const priorityA = getPrimaryRolePriority(a.roles);
+        const priorityB = getPrimaryRolePriority(b.roles);
+
+        return priorityA - priorityB;
+    });
+
+    return allMembers.map(m => {
+        const retVal = {
+            id: m.id,
+            first_name: m.person.first_name,
+            last_name: m.person.last_name,
+            name: m.person.name,
+            institution: m.person.institution ? m.person.institution.name : null,
+            legacy_credentials: m.person.legacy_credentials,
+            legacy_expertise: m.legacy_expertise,
+            roles: m.roles.map(role => role.name).join(', '),  // Extract role names and join them
+            person: m.person
+        };
+
+        if (hasPermission('ep-applications-manage')) {
+            retVal.coi_completed = formatDate(m.coi_last_completed);
+        }
+
+        return retVal;
+    });
+});
+
+
+
+
+
+  
 
 </script>
+
 <template>
     <div>
-        <table>
-            <template v-for="g in memberGroups" :key="g.title">
+        <!-- Membership Total Display -->
+        <div class="membership-total">
+            <p>Membership Total = {{ totalMembers }}</p>
+        </div>
+
+        <!-- Table Display with Flexbox -->
+        <div class="table-container">
+            <table class="flex-table">
                 <thead>
-                    <tr>
-                        <th colspan="6" class="bg-white border-0 pl-0 pb-1 pt-3">
-                            <span class="text-lg">{{g.title}}</span>
-                            &nbsp;
-                            <badge size="xxs">{{g.members.length}}</badge>
-                        </th>
+                    <tr class="text-sm">
+                        <th class="flex-column">Name</th>
+                        <th class="flex-column">Roles</th>
+                        <th class="flex-column">Credentials</th>
+                        <th class="flex-column">Expertise</th>
+                        <th class="flex-column">Institution</th>
                     </tr>
                 </thead>
-                <template v-if="g.members.length > 0">
-                    <thead>
-                        <tr class="text-sm">
-                            <th>Name</th>
-                            <th>Credentials</th>
-                            <th>Expertise</th>
-                            <th>Institution</th>
-                            <th>Publications</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-sm">
-                        <tr v-for="m in g.members" :key="m.id">
-                            <td>{{m.person.name}}</td>
-                            <td>
-                                <CredentialsView :person="m.person" />
-                            </td>
-                            <td>
-                                <ExpertisesView :person="m.person" :legacyExpertise="m.legacy_expertise" />
-                            </td>
-                            <td>{{m.institution}}</td>
-                            <td>
-                                <div v-if="m.pubCount">
-                                    <popper v-if="m.pubCount > 0" content="Go to PubMed results." hover arrow placement="left">
-                                        <a :href="`https://pubmed.ncbi.nlm.nih.gov/?term=${m.last_name},+${m.first_name}%5BAuthor%5D`"
-                                            target="pubmed"
-                                            >
-                                            <badge size="xxs">{{m.pubCount}}</badge>
-                                        </a>
-                                    </popper>
-                                    <badge v-else size="xxs">{{m.pubCount}}</badge>
-                                </div>
-                                <button v-else class="btn btn-xs" @click="getPublications(m)">Get</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </template>
-            </template>
-        </table>
+                <tbody class="text-sm">
+                    <tr v-for="m in tableRows" :key="m.id">
+                        <td class="flex-column">{{ m.name }}</td>
+                        <td class="flex-column">{{ m.roles }}</td> <!-- Display aggregated roles here -->
+                        <td class="flex-column">
+                            <CredentialsView :person="m.person" />
+                        </td>
+                        <td class="flex-column">
+                            <ExpertisesView :person="m.person" :legacyExpertise="m.legacy_expertise" />
+                        </td>
+                        <td class="flex-column">{{ m.institution }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
+
+<style>
+/* Flexbox table layout */
+.table-container {
+    display: flex;
+    width: 100%;
+}
+
+.flex-table {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-column {
+    flex: 1;
+    padding: 8px;
+}
+
+.flex-table thead tr {
+    display: flex;
+    justify-content: space-between;
+}
+
+.flex-table tbody tr {
+    display: flex;
+    justify-content: space-between;
+}
+</style>
+
+
+
