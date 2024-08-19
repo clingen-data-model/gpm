@@ -10,8 +10,7 @@ use Lorisleiva\Actions\Concerns\AsController;
 
 abstract class ReportMakeAbstract
 {
-    use AsController;
-    use AsCommand;
+    use AsController, AsCommand;
 
     public $commandSignature = null;
 
@@ -19,22 +18,33 @@ abstract class ReportMakeAbstract
     {
     }
 
-    abstract public function handle();
+    abstract public function handle(): array;
 
     public function asController(ActionRequest $request)
     {
         $data = $this->handle();
 
-        if ($request->header('accept') == 'application/json') {
-            return $data;
+        if (!is_array($data)) {
+            throw new \Exception('Expected data to be an array, got: ' . gettype($data));
         }
 
-        $data = $this->csvTransformer->handle($this->handle());
-        return response($data, 200, ['Content-type' => 'text/csv']);
+        if ($request->header('accept') == 'application/json') {
+            return response()->json($data);
+        }
+
+        $csvData = $this->csvTransformer->handle($data);
+        return response($csvData, 200, ['Content-Type' => 'text/csv']);
     }
 
     public function asCommand(Command $command)
     {
-        $command->info($this->csvTransformer->handle($this->handle()));
+        $data = $this->handle();
+
+        if (!is_array($data)) {
+            throw new \Exception('Expected data to be an array, got: ' . gettype($data));
+        }
+
+        $csvData = $this->csvTransformer->handle($data);
+        $command->info($csvData);
     }
 }

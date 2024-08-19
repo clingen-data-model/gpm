@@ -1,70 +1,69 @@
 <?php
 
 namespace App\Actions;
-use Illuminate\Console\Command;
-use App\Modules\Person\Models\Person;
+
+use App\Models\Person;
+use Illuminate\Support\Facades\DB;
 
 class ReportPeopleMake extends ReportMakeAbstract
 {
     public $commandSignature = 'report:people';
 
-    public function handle()
+    public function handle(): array
     {
-        $people = Person::with([
-                    'memberships' => function ($q) {
-                        $q->isActive();
-                    },
-                    'memberships.group',
-                    'memberships.group.type',
-                    'memberships.roles',
-                    'country',
-                    'credentials',
-                    'expertises',
-                ])
-                ->get();
+        $peopleData = [];
 
-            $people = $people->map(function ($person) {
-                    $data = [];
-                    $data['id'] = $person->id;
-                    $data['name'] = $person->first_name.' '.$person->last_name;
-                    $data['email'] = $person->email;
-                    $data['institution'] = $person->institution ? $person->institution->name : null;
-                    // $data['address'] = implode(', ', collect([$person->street1, $person->street2, $person->city, $person->state, $person->zip])->filter()->toArray());
-                    $data['state'] = $person->state ? $person->state : null;
-                    $data['country'] = $person->country ? $person->country->name : null;
-                    $data['timezone'] = $person->timezone;
-                    $data['phone'] = $person->phone;
-                    $data['credentials'] = $person->credentialsAsString;
-                    $data['expertises'] = preg_replace('/\n/', '; ', $person->expertisesAsString);
-                    $data['active_groups'] = $person->memberships->map(function ($i) {
-                                                return $i->group->displayName
-                                                    .(
-                                                        $i->rolesAsString
-                                                        ? ' ('.$i->rolesAsString.')'
-                                                        : ''
-                                                    );
-                                            })->filter()->join("; ");
-                    $data['biography'] = $person->biograghy;
-                    $data['orcid_id'] = $person->orcid_id;
-                    $data['hypothesis_id'] = $person->hypothesis_id;
-                    $data['has_registered'] = $person->user_id ? 'yes' : 'no';
-                    $data['date created'] = $person->created_at->format('Y-m-d');
-                    $data['last_updated'] = $person->updated_at->format('Y-m-d');
+        // Fetch groups and group types
+        $groupDetails = DB::table('groups')
+            ->leftJoin('group_types', 'groups.group_type_id', '=', 'group_types.id')
+            ->select('groups.id', 'groups.name', 'group_types.name as group_type')
+            ->get()
+            ->keyBy('id');
 
-                    foreach ($data as $key => $val) {
-                        $data[$key] = preg_replace('/\n/', '; ', $val);
-                    }
+        // Ensure the result is processed as an array
+        Person::with([
+            'memberships' => function ($q) {
+                $q->isActive();
+            },
+            'memberships.group',
+            'memberships.group.type',
+            'memberships.roles',
+            'country',
+            'credentials',
+            'expertises',
+        ])->chunk(100, function ($people) use (&$peopleData, $groupDetails) {
+            foreach ($people as $person) {
+                $data = [
+                    'id' => $person->id,
+                    'name' => $person->first_name . ' ' . $person->last_name,
+                    'email' => $person->email,
+                    'institution' => $person->institution ? $person->institution->name : null,
+                    'state' => $person->state ? $person->state : null,
+                    'country' => $person->country ? $person->country->name : null,
+                    'timezone' => $person->timezone,
+                    'phone' => $person->phone,
+                    'credentials' => $person->credentialsAsString,
+                    'expertises' => preg_replace('/\n/', '; ', $person->expertisesAsString),
+                    'active_groups' => $person->memberships->map(function ($membership) use ($groupDetails) {
+                        $group = $groupDetails->get($membership->group_id);
+                        $roles = $membership->roles->pluck('name')->join(', ');
+                        if ($group) {
+                            return $group->name . ' (' . ($roles ?: 'No Roles') . ') - ' . ($group->group_type ?? 'No Type');
+                        }
+                        return null;
+                    })->filter()->join("; "),
+                    'biography' => $person->biography,
+                    'orcid_id' => $person->orcid_id,
+                    'hypothesis_id' => $person->hypothesis_id,
+                    'has_registered' => $person->user_id ? 'yes' : 'no',
+                    'date_created' => $person->created_at->format('Y-m-d'),
+                    'last_updated' => $person->updated_at->format('Y-m-d'),
+                ];
 
-                    return $data;
-                });
+                $peopleData[] = $data;
+            }
+        });
 
-        return $people->toArray();
+        return $peopleData;
     }
-
-
-    public function asCommand(Command $command)
-    {
-        dd($this->handle());
-    }
-
 }
