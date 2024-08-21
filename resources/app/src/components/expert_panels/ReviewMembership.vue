@@ -1,29 +1,29 @@
 <script setup>
-    import { computed, ref, watch } from 'vue'
-    import axios from 'axios'
-    import {hasPermission} from '../../auth_utils';
-    import CredentialsView from '../people/CredentialsView.vue';
-    import ExpertisesView from '../people/ExpertisesView.vue';
-    import { formatDate } from '@/date_utils'
+import { computed, ref, watch } from 'vue'
+import axios from 'axios'
+import { hasPermission } from '../../auth_utils';
+import CredentialsView from '../people/CredentialsView.vue';
+import ExpertisesView from '../people/ExpertisesView.vue';
+import { formatDate } from '@/date_utils'
 
-    const props = defineProps({
-        members: {
-            required: true,
-            type: Array
-        },
-    });
+const props = defineProps({
+    members: {
+        required: true,
+        type: Array
+    },
+});
 
-    const loadPubmed = computed(() => hasPermission('ep-applications-approve'))
+const loadPubmed = computed(() => hasPermission('ep-applications-approve'))
 
-    const fields = ref(['name', 'credentials', 'expertise', 'institution']);
-    if (hasPermission('ep-applications-manage')) {
-        fields.value.push('coi_completed');
-    }
+const fields = ref(['name', 'credentials', 'expertise', 'institution']);
+if (hasPermission('ep-applications-manage')) {
+    fields.value.push('coi_completed');
+}
 
-   // const members = ref([]);
+// const members = ref([]);
 
 
-   const members = ref([]);
+const members = ref([]);
 
 // Watch for changes in props.members and apply sorting and aggregation
 watch(() => props.members, async (to) => {
@@ -34,26 +34,9 @@ watch(() => props.members, async (to) => {
     // Copy the incoming members array
     members.value = [...to];
 
-    // Sort members based on roles
-    members.value.sort((a, b) => {
-        if (a.roles.includes('chair') && !b.roles.includes('chair')) {
-            return -1;
-        }
-        if (!a.roles.includes('chair') && b.roles.includes('chair')) {
-            return 1;
-        }
 
-        if (a.roles.includes('expert') && !b.roles.includes('expert')) {
-            return -1;
-        }
-        if (!a.roles.includes('expert') && b.roles.includes('expert')) {
-            return 1;
-        }
 
-        return 0;
-    });
 
-    
 }, { immediate: true });
 
 // Aggregate roles for each member
@@ -135,7 +118,7 @@ const tableRows = computed(() => {
 
 
 
-  
+
 
 </script>
 
@@ -204,6 +187,3 @@ const tableRows = computed(() => {
     justify-content: space-between;
 }
 </style>
-
-
-
