@@ -13,14 +13,13 @@ const props = defineProps({
     },
 });
 
-const loadPubmed = computed(() => hasPermission('ep-applications-approve'))
 
 const fields = ref(['name', 'credentials', 'expertise', 'institution']);
 if (hasPermission('ep-applications-manage')) {
     fields.value.push('coi_completed');
 }
 
-// const members = ref([]);
+
 
 
 const members = ref([]);
