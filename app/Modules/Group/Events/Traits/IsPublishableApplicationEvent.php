@@ -24,7 +24,9 @@ trait IsPublishableApplicationEvent
                 'id' => $this->group->uuid,
                 'name' => $this->group->displayName,
                 'short_name' => $this->group->expertPanel->short_base_name,
-                
+                'status' => $this->group->group_status_id,
+                'parent_group' => optional($this->group->parentGroup)->displayName,
+              //  'parent_group' => $this->group->parent_id,
                 'type' => $this->group->fullType->name,
                 'affiliation_id' => $this->group->expertPanel->affiliation_id
             ],
