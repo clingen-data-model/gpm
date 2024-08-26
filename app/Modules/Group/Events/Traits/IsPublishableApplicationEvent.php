@@ -23,6 +23,8 @@ trait IsPublishableApplicationEvent
             'expert_panel' => [
                 'id' => $this->group->uuid,
                 'name' => $this->group->displayName,
+                'short_name' => $this->group->expertPanel->short_base_name,
+                
                 'type' => $this->group->fullType->name,
                 'affiliation_id' => $this->group->expertPanel->affiliation_id
             ],
