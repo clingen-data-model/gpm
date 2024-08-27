@@ -163,6 +163,11 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         return $this->hasMany(Group::class, 'parent_id', 'id');
     }
 
+    public function parentGroup()
+    {
+        return $this->belongsTo(Group::class, 'parent_id');
+    }
+
     public function cois()
     {
         return $this->hasMany(Coi::class, 'group_id');
