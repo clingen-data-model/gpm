@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use App\Modules\Group\Models\Group;
@@ -48,6 +49,8 @@ class ReportSummaryMake extends ReportMakeAbstract
             ['Countries represented', $this->getCountriesRepresentedCount()],
             ['Institutions represented', $this->getInstitutionsRepresentedCount()],
             ['People in 2+ EPs', $this->getPeopleInManyEpsCount()],
+            ['Individuals with demographics info', $this->getEverFilledDemographics()],
+            ['Individuals with current demographics info (within last year)', $this->getFilledDemographicsInLastYear()],
         ];
     }
 
@@ -171,7 +174,16 @@ class ReportSummaryMake extends ReportMakeAbstract
             ->count();
     }
 
+    private function getEverFilledDemographics(): int
+    {
+        return Person::whereNotNull('demographics_completed_date')
+            ->count();
+    }
 
-
+    private function getFilledDemographicsInLastYear(): int
+    {
+        return Person::whereDate('demographics_completed_date', '>=', Carbon::now()->subYear())
+            ->count();
+    }
 
 }
