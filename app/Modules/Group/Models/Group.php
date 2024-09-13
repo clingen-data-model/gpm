@@ -268,4 +268,11 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     {
         return new GroupFactory();
     }
+
+    public function parentGroup(): BelongsTo
+    {
+        return $this->belongsTo(Group::class, 'parent_id', 'id');
+    }
+
+
 }

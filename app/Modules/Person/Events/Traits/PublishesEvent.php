@@ -27,6 +27,7 @@ trait PublishesEvent
         return true;
     }
 
+
     public function getPublishableMessage(): array
     {
         return [
@@ -45,9 +46,6 @@ trait PublishesEvent
             ]
         ];
     }
-
-
-
 
     private function getInstitutionMessage(): ?array
     {
