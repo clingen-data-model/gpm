@@ -5,11 +5,16 @@ namespace App\Modules\ExpertPanel\Events;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Events\PublishableApplicationEvent;
+use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
 use Illuminate\Broadcasting\InteractsWithSockets;
 
-class StepDateApprovedUpdated extends ExpertPanelEvent
+class StepDateApprovedUpdated extends ExpertPanelEvent implements PublishableApplicationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+    use IsPublishableApplicationEvent {
+        getPublishableMessage as protected getBaseMessage;
+    }
 
     /**
      * Create a new event instance.
@@ -33,6 +38,11 @@ class StepDateApprovedUpdated extends ExpertPanelEvent
             'new_date_approved' => $this->dateApproved,
             'old_approval_date' => $this->application->getOriginal('step_'.$this->step.'_approval_date')
         ];
+    }
+
+    public function getEventType(): string
+    {
+        return 'step_date_approved_updated';
     }
 
 }
