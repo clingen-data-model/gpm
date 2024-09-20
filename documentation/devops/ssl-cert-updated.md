@@ -27,3 +27,30 @@ Password protected keys are **not** supported by OpenShift. If you are given a p
 ```
 openssl rsa -in pw-protected-private.key -out tls.key
 ```
+
+Assuming things do not change too much between one year and another, something like the following might work:
+
+```bash
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+backup_and_patch () {
+    kubectl get -o yaml -n $1 route/${2}-prod > ${2}.route.$(date -I).yaml
+    kubectl patch -n $1 route/${2}-prod --patch-file=/dev/stdin <<EOF
+spec:
+  tls:
+    caCertificate: |
+$(sed -e 's/^/      /' < chain.crt)
+    key: |
+$(sed -e 's/^/      /' < private.key )
+    certificate: |
+$(sed -e 's/^/      /' < public.crt )
+EOF
+
+}
+
+backup_and_patch dept-gpm gpm
+backup_and_patch dept-communitycuration ccdb
+backup_and_patch dept-genetracker genetracker
+```
