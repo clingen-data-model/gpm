@@ -21,7 +21,7 @@ class ReportCOIDueMake extends ReportMakeAbstract
                     'first_name' => $p->first_name,
                     'last_name' => $p->last_name,
                     'email' => $p->email,
-                    'membership' => $p->membershipsWithPendingCoi->map(function ($m) { return $m->group->name; })
+                    'membership' => $p->membershipsWithPendingCoi->map(function ($m) { return $m->group->name; })->sort()->values()
                 ];
         })
         ->toArray();
