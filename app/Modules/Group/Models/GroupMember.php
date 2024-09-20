@@ -73,7 +73,7 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
         'start_date' => 'datetime',
         'end_date' => 'datetime',
     ];
-    
+
     public static function boot():void
     {
         parent::boot();
@@ -159,6 +159,9 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
     public function scopeHasPendingCoi($query)
     {
         return $query->isActive()
+            ->whereHas('group', function ($q) {
+                $q->whereIn('group_status_id', [config('groups.statuses.active.id'), config('groups.statuses.applying.id')]);
+            })
             ->whereDoesntHave('cois', function ($q) {
                 $q->where('completed_at', '>', Carbon::today()->subDays(365));
             });
@@ -180,6 +183,10 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
 
     public function getCoiNeededAttribute()
     {
+        if (!$this->group->has_coi_requirement) {
+            return false;
+        }
+
         if ($this->cois->count() == 0) {
             return true;
         }
@@ -193,7 +200,7 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
 
     public function getHasCoiRequirementAttribute()
     {
-        return true;
+        return $this->group->has_coi_requirement;
     }
 
      public function getExpertiseAttribute(): ?string

@@ -250,7 +250,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
     public function getHasCoiRequirementAttribute()
     {
-        return true;
+        return $this->group_status_id == config('groups.statuses.active.id') || $this->group_status_id == config('groups.statuses.applying.id');
     }
 
     // DOMAIN
