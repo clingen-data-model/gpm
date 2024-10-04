@@ -1,0 +1,1 @@
+.flex-table,.table-container{display:flex;width:100%}.flex-table{flex-direction:column}.flex-column{flex:1;padding:8px}.flex-table tbody tr,.flex-table thead tr{display:flex;justify-content:space-between}.application-review{max-width:800px}
