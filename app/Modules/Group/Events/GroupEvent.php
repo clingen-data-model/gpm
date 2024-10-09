@@ -66,7 +66,10 @@ abstract class GroupEvent extends RecordableEvent
      */
     public function shouldPublish(): bool
     {
-        return $this->group->isEp;
+
+       return $this->group->isEp || $this->group->isWg || $this->group->isCdwg;
+
+       
     }
 
     abstract public function getLogEntry() :string;
