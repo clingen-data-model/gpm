@@ -13,14 +13,21 @@
             label="Password" 
             type="password" 
             :errors="errors.password" 
-            name="password" required 
+            name="password" 
+            required 
         />
         
         <p><router-link class="text-blue-500 underline" :to="{name: 'reset-password'}">Forget your password?</router-link></p>
 
-        <button-row><button class="btn blue" @click="authenticate" name="login-button">Log in</button></button-row>
+        <!-- Updated button with wider styling -->
+        <button-row>
+            <button class="btn blue w-full max-w-md" @click="authenticate" name="login-button">Log in</button>
+        </button-row>
     </form-container>
 </template>
+
+
+
 <script>
 import is_validation_error from '@/http/is_validation_error'
 import isAuthError from '@/http/is_auth_error'

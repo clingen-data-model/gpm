@@ -2,14 +2,17 @@
     <div>
         <card title="Login" class="md:w-1/2 mx-auto">
             <login-form @authenticated="redirect"></login-form>
+            <div class="mt-4 text-left">
+                <router-link class="text-blue-500 underline" :to="{name: 'RedeemInvite'}">
+                    Redeem your invite
+                </router-link>
+            </div>
         </card>
-        <div class="mx-auto md:w-1/2 mt-8 p-4 bg-white border border-gray-300 rounded">
-            <router-link class="block text-center btn blue btn-lg w-full" :to="{name: 'RedeemInvite'}">
-                Redeem your invite
-            </router-link>
-        </div>
     </div>
 </template>
+
+
+
 <script>
 import LoginForm from '@/components/LoginForm.vue';
 import { mapGetters } from 'vuex'
@@ -49,3 +52,15 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.router-link {
+    color: #888; /* Even lighter gray color */
+    font-size: 0.85em; /* Slightly smaller font size */
+    text-decoration: none; /* No underline by default */
+}
+
+.router-link:hover {
+    text-decoration: underline; /* Underline on hover */
+}
+</style>
