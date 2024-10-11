@@ -16,17 +16,34 @@
             name="password" 
             required 
         />
-        
-        <p><router-link class="text-blue-500 underline" :to="{name: 'reset-password'}">Forget your password?</router-link></p>
 
-        <!-- Updated button with wider styling -->
-        <button-row>
-            <button class="btn blue w-full max-w-md" @click="authenticate" name="login-button">Log in</button>
+        <!-- Links Section aligned to the left under the input fields -->
+        <div class="mt-2 max-w-xs">
+            <p>
+                <router-link class="text-blue-500 underline" :to="{name: 'reset-password'}">Forgot your password?</router-link>
+            </p>
+            <p>
+                <router-link class="text-blue-500 underline" :to="{name: 'RedeemInvite'}">Redeem your invite</router-link>
+            </p>
+        </div>
+
+        <!-- Left-align the Log In button -->
+        <button-row class="mt-4 max-w-xs">
+            <button class="btn blue w-auto px-4" @click="authenticate" name="login-button">Log in</button>
         </button-row>
     </form-container>
 </template>
 
+<style scoped>
+/* Ensure that the links and button align properly */
+.max-w-xs {
+    max-width: 300px; /* Match the width of your input fields */
+}
 
+button-row {
+    width: 100%; /* Ensures full width of container for alignment */
+}
+</style>
 
 <script>
 import is_validation_error from '@/http/is_validation_error'
