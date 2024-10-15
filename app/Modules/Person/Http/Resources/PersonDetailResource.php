@@ -18,7 +18,7 @@ class PersonDetailResource extends JsonResource
     {
         $data = parent::toArray($request);
         $user = $request->user();
-        if ($user->id === $this->user->id || $user->hasAnyRole(['admin', 'super-admin'])) {
+        if ($user->id === $this?->user?->id || $user->hasAnyRole(['admin', 'super-admin'])) {
             foreach (Person::$contact_details_private_fields as $field) {
                 $data[$field] = $this->$field;
             }
