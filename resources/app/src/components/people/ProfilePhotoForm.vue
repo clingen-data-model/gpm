@@ -1,32 +1,21 @@
 <template>
-    <div :class="{'cursor-wait': saving}">
+    <div :class="{ 'cursor-wait': saving }">
         <div class="border border-gray-200 rounded-lg">
-            <img
-                :src="srcPath"
-                :alt="altText"
-                class="rounded-t-lg w-full"
-                @click="initUpload"
-            >
-            <button
-                @click="initUpload"
-                class="border border-t-0 bg-gray-200 block w-full"
-            >
+            <img :src="srcPath" :alt="altText" class="rounded-t-lg w-full" @click="initUpload">
+            <button @click="initUpload" class="border border-t-0 bg-gray-200 block w-full">
                 Edit
             </button>
         </div>
 
         <teleport to='body'>
             <modal-dialog v-model="showForm" title="Upload a new profile photo">
-                <ImageCropper
-                    :image-src="srcPath"
-                    @cropped="setCroppedImageBlob"
-                />
+                <ImageCropper :image-src="srcPath" @cropped="setCroppedImageBlob" />
 
                 <input-row hideLabel :errors="errors.profile_photo">
                     <input type="file" @change="setFile" ref="fileInput">
                 </input-row>
 
-                <button-row submit-text="Save" @submitted="saveCropped" @canceled="cancelCropped" v-if="!saving"/>
+                <button-row submit-text="Save" @submitted="saveCropped" @canceled="cancelCropped" v-if="!saving" />
                 <div v-else>Saving...</div>
             </modal-dialog>
         </teleport>
@@ -34,7 +23,7 @@
 </template>
 <script>
 import ImageCropper from '@/components/ImageCropper.vue'
-import {api, isValidationError} from '@/http'
+import { api, isValidationError } from '@/http'
 
 export default {
     name: 'ProfilePhotoForm',
@@ -60,7 +49,7 @@ export default {
         person: {
             immediate: true,
             deep: true,
-            handler (to) {
+            handler(to) {
                 if (to.profile_photo) {
                     this.fetchProfileImage();
                 }
@@ -68,7 +57,7 @@ export default {
         }
     },
     computed: {
-        srcPath () {
+        srcPath() {
             if (this.file) {
                 return URL.createObjectURL(this.file);
             }
@@ -77,32 +66,32 @@ export default {
             }
             return '/images/default_profile.jpg';
         },
-        profilePhoto () {
+        profilePhoto() {
             if (this.person.profile_photo) {
                 return `/profile-photos/${this.person.profile_photo}`
             }
             return '/images/default_profile.jpg';
         },
-        altText () {
+        altText() {
             return this.person.profile_photo_path
                 ? `${this.person.name} profile photo.`
                 : 'Default profile image';
         },
     },
     methods: {
-        initUpload () {
+        initUpload() {
             this.showForm = true;
             this.$nextTick(() => {
                 window.dispatchEvent(new Event('resize'));
             });
         },
-        setFile () {
+        setFile() {
             this.file = this.$refs.fileInput.files[0]
         },
-        setCroppedImageBlob (blob) {
+        setCroppedImageBlob(blob) {
             this.croppedImageBlob = blob;
         },
-        async fetchProfileImage () {
+        async fetchProfileImage() {
             const url = `/api/people/${this.person.uuid}/profile-photo`;
             const options = {
                 Accept: 'application/octet-stream',
@@ -110,57 +99,40 @@ export default {
                 responseType: 'blob'
             };
             this.file = await api.get(url, options)
-                            .then(rsp => {
-                                if( !(rsp.data instanceof Blob)) return;
+                .then(rsp => {
+                    if (!(rsp.data instanceof Blob)) return;
 
-                                return new Blob([rsp.data]);
-                            });
-        },
-        saveCropped () {
-            if (this.croppedImageBlob.size > 2000000) {
-                const width = 400;
-                const img = new Image();
-                img.src = URL.createObjectURL(this.croppedImageBlob);
-
-                img.addEventListener('load', () => {
-                    var canvas = document.createElement('canvas'),
-                    ctx = canvas.getContext("2d"),
-
-                    oc = document.createElement('canvas'),
-                    octx = oc.getContext('2d');
-
-                    canvas.width = width; // destination canvas size
-                    canvas.height = canvas.width * img.height / img.width;
-
-                    var cur = {
-                        width: Math.floor(img.width * 0.5),
-                        height: Math.floor(img.height * 0.5)
-                    }
-
-                    oc.width = cur.width;
-                    oc.height = cur.height;
-
-                    octx.drawImage(img, 0, 0, cur.width, cur.height);
-
-                    while (cur.width * 0.5 > width) {
-                        cur = {
-                            width: Math.floor(cur.width * 0.5),
-                            height: Math.floor(cur.height * 0.5)
-                        };
-                        octx.drawImage(oc, 0, 0, cur.width * 2, cur.height * 2, 0, 0, cur.width, cur.height);
-                    }
-                    ctx.drawImage(oc, 0, 0, cur.width, cur.height, 0, 0, canvas.width, canvas.height);
-                    canvas.toBlob(blob => {
-                        this.storeImage(blob);
-                    }, null, .5)
+                    return new Blob([rsp.data]);
                 });
-
-                return;
-            }
-
-            this.storeImage(this.croppedImageBlob)
         },
-        storeImage (blob) {
+        saveCropped() {
+            if (this.croppedImageBlob.size > 1000000) {
+                const width = 400;
+                createImageBitmap(this.croppedImageBlob).then(
+                    (imageBitmap) => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+
+                        canvas.width = width;
+                        canvas.height = width * imageBitmap.height / imageBitmap.width;
+
+                        ctx.drawImage(imageBitmap, 0, 0, canvas.width, canvas.height);
+                        canvas.toBlob(blob => {
+                            if (blob.size > 1000000) {
+                                this.errors.profile_photo = ['The image is too large, even after resizing.'];
+                            } else {
+                                delete this.errors.profile_photo;
+                                this.storeImage(blob);
+                            }
+                        }, 'image/jpeg', .5);
+                    }
+                )
+            } else {
+                delete this.errors.profile_photo;
+                this.storeImage(this.croppedImageBlob)
+            }
+        },
+        storeImage(blob) {
             this.saving = true;
             const formData = new FormData();
 
@@ -168,22 +140,24 @@ export default {
 
             api.post(`/api/people/${this.person.uuid}/profile-photo`, formData)
                 .then(() => {
-                    this.$store.dispatch('people/getPerson', {uuid: this.person.uuid});
+                    this.$store.dispatch('people/getPerson', { uuid: this.person.uuid });
                     this.showForm = false;
                     this.file = null;
                     this.saving = false;
                 })
                 .catch(error => {
+                    this.saving = false;
                     if (isValidationError(error)) {
                         this.errors = error.response.data.errors;
-                        this.saving = false;
+                        return;
+                    } else if (error.response.status === 413) {
+                        this.errors.profile_photo = ['The image is too large.'];
                         return;
                     }
-                    this.saving = false;
                     throw (error);
                 })
         },
-        cancelCropped () {
+        cancelCropped() {
             this.showForm = false;
             this.file = null;
         }
