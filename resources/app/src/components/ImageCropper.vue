@@ -31,7 +31,7 @@
                     <note class="pl-6 mt-3">The cropper must be entirely on the image so you may need to reduce the
                         cropped are or zoom out to move the image.</note>
                 </template>
-                <icon-question height="14" widht="14" />
+                <icon-question height="14" width="14" />
             </popper>
         </div>
         <div class="flex space-x-4">
@@ -61,20 +61,15 @@ const imageEl = ref(null);
 const previewUrl = ref(null);
 const cropperInst = ref(null);
 
-const emitCropped = debounce(() => {
+const updateCropped = debounce(() => {
     if (cropperInst.value && cropperInst.value.getCroppedCanvas()) {
         cropperInst.value.getCroppedCanvas().toBlob(blob => {
-            emit('cropped', blob);
-        });
+            if (blob) {
+                previewUrl.value = URL.createObjectURL(blob)
+                emit('cropped', blob);
+            }
+        }, 'image/jpeg', 0.8);
     }
-}, 200)
-
-const updatePreview = debounce(() => {
-    cropperInst.value.getCroppedCanvas().toBlob(blob => {
-        if (blob) {
-            previewUrl.value = URL.createObjectURL(blob)
-        }
-    })
 }, 500)
 
 const sizeCropper = () => {
@@ -96,8 +91,7 @@ const setupCropper = () => {
             sizeCropper();
         },
         crop() {
-            updatePreview();
-            emitCropped();
+            updateCropped();
         }
     })
 }

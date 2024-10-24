@@ -106,48 +106,31 @@ export default {
                 });
         },
         saveCropped() {
-            if (this.croppedImageBlob.size > 2000000) {
+            if (this.croppedImageBlob.size > 1000000) {
                 const width = 400;
-                const img = new Image();
-                img.src = URL.createObjectURL(this.croppedImageBlob);
+                createImageBitmap(this.croppedImageBlob).then(
+                    (imageBitmap) => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
 
-                img.addEventListener('load', () => {
-                    var canvas = document.createElement('canvas'),
-                        ctx = canvas.getContext("2d"),
+                        canvas.width = width;
+                        canvas.height = width * imageBitmap.height / imageBitmap.width;
 
-                        oc = document.createElement('canvas'),
-                        octx = oc.getContext('2d');
-
-                    canvas.width = width; // destination canvas size
-                    canvas.height = canvas.width * img.height / img.width;
-
-                    var cur = {
-                        width: Math.floor(img.width * 0.5),
-                        height: Math.floor(img.height * 0.5)
+                        ctx.drawImage(imageBitmap, 0, 0, canvas.width, canvas.height);
+                        canvas.toBlob(blob => {
+                            if (blob.size > 1000000) {
+                                this.errors.profile_photo = ['The image is too large, even after resizing.'];
+                            } else {
+                                delete this.errors.profile_photo;
+                                this.storeImage(blob);
+                            }
+                        }, 'image/jpeg', .5);
                     }
-
-                    oc.width = cur.width;
-                    oc.height = cur.height;
-
-                    octx.drawImage(img, 0, 0, cur.width, cur.height);
-
-                    while (cur.width * 0.5 > width) {
-                        cur = {
-                            width: Math.floor(cur.width * 0.5),
-                            height: Math.floor(cur.height * 0.5)
-                        };
-                        octx.drawImage(oc, 0, 0, cur.width * 2, cur.height * 2, 0, 0, cur.width, cur.height);
-                    }
-                    ctx.drawImage(oc, 0, 0, cur.width, cur.height, 0, 0, canvas.width, canvas.height);
-                    canvas.toBlob(blob => {
-                        this.storeImage(blob);
-                    }, null, .5)
-                });
-
-                return;
+                )
+            } else {
+                delete this.errors.profile_photo;
+                this.storeImage(this.croppedImageBlob)
             }
-
-            this.storeImage(this.croppedImageBlob)
         },
         storeImage(blob) {
             this.saving = true;
@@ -163,12 +146,14 @@ export default {
                     this.saving = false;
                 })
                 .catch(error => {
+                    this.saving = false;
                     if (isValidationError(error)) {
                         this.errors = error.response.data.errors;
-                        this.saving = false;
+                        return;
+                    } else if (error.response.status === 413) {
+                        this.errors.profile_photo = ['The image is too large.'];
                         return;
                     }
-                    this.saving = false;
                     throw (error);
                 })
         },
