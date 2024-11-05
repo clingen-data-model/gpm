@@ -23,6 +23,11 @@ class GroupStatusUpdated extends GroupEvent
      */
     public function __construct(public Group $group, public GroupStatus $newStatus, public GroupStatus $oldStatus)
     {
+
+        // Only process the event if the status is 2 or 5
+    if (!in_array($this->group->group_status_id, [2, 3, 4, 5])) {
+        return;
+    }
     }
 
     public function getLogEntry(): string
