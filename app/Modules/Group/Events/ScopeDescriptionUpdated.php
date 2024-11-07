@@ -6,7 +6,6 @@ use App\Events\PublishableEvent;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
-use App\Modules\Group\Events\GroupEvent;
 use Illuminate\Broadcasting\PresenceChannel;
 use App\Modules\Group\Models\Group;
 use Illuminate\Foundation\Events\Dispatchable;
