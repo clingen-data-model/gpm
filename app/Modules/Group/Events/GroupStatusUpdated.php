@@ -16,18 +16,14 @@ class GroupStatusUpdated extends GroupEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
+    
     public function __construct(public Group $group, public GroupStatus $newStatus, public GroupStatus $oldStatus)
     {
 
-        // Only process the event if the status is 2 or 5
-    if (!in_array($this->group->group_status_id, [2, 3, 4, 5])) {
-        return;
-    }
+        if ($this->group->group_status_id != config('groups.statuses.applying.id')) {
+            return;
+        }
+   
     }
 
     public function getLogEntry(): string
