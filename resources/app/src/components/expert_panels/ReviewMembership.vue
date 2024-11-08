@@ -13,7 +13,7 @@
     });
 
     const tableSort = ref({
-        field: 'name',
+        field: 'roles',
         desc: false
     });
 
@@ -36,6 +36,14 @@
             label: 'Credentials',
         },
         {
+            name: 'roles',
+            sortable: true,
+            label: 'Roles',
+            sortFunction: (a, b) => {
+                return a.role_priority - b.role_priority;
+            },
+        },
+        {
             name: 'legacy_expertise',
             sortable: false,
             label: 'Expertise',
@@ -44,11 +52,6 @@
             name: 'institution',
             sortable: false,
             label: 'Institution',
-        },
-        {
-            name: 'roles',
-            sortable: false,
-            label: 'Roles',
         },
     ]);
 
@@ -63,6 +66,7 @@
 
     const tableRows = computed( () => {
         return props.members.map(m => {
+            const roles = m.roles.toSorted((a, b) => a.id - b.id);
             const retVal = {
                 id: m.id,
                 first_name: m.person.first_name,
@@ -71,7 +75,8 @@
                 institution: m.person.institution?.name,
                 legacy_credentials: m.person.legacy_credentials,
                 legacy_expertise: m.legacy_expertise,
-                roles: m.roles,
+                roles: roles,
+                role_priority: Math.min(...roles.map(r => r.id)),
                 person: m.person
             }
             if (hasPermission('ep-applications-manage')) {
