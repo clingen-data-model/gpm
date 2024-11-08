@@ -31,6 +31,12 @@
             label: 'Credentials',
         },
         {
+            name: 'roles',
+            sortable: true,
+            label: 'Group Roles',
+            sortName: 'role_priority',
+        },
+        {
             name: 'legacy_expertise',
             sortable: false,
             label: 'Expertise',
@@ -40,15 +46,10 @@
             sortable: false,
             label: 'Institution',
         },
-        {
-            name: 'roles',
-            sortable: true,
-            label: 'Group Roles',
-        },
     ]);
 
     const sort = ref({
-        field: 'name',
+        field: 'roles',
         desc: false
     });
 
@@ -62,6 +63,8 @@
 
     const tableRows = computed( () => {
         return props.members.map(m => {
+            const sorted_roles = m.roles.toSorted((a, b) =>
+                (rolePriorities[a['name']] || Infinity) - (rolePriorities[b['name']] || Infinity))
             const retVal = {
                 id: m.id,
                 first_name: m.person.first_name,
@@ -70,7 +73,8 @@
                 institution: m.person.institution?.name,
                 credentials: m.person.legacy_credentials,
                 legacy_expertise: m.legacy_expertise,
-                roles: m.roles.map(r => r.name).join(', '),
+                role_priority: sorted_roles.length > 0 ? (rolePriorities[sorted_roles[0]?.name] || Infinity) : Infinity,
+                roles: sorted_roles.map(r => r.name).join(', '),
                 person: m.person
             }
             if (hasPermission('ep-applications-manage')) {
