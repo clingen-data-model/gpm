@@ -1,6 +1,6 @@
 <script setup>
-    import { computed, ref, watch } from 'vue'
-    import {hasPermission} from '../../auth_utils';
+    import { computed, ref } from 'vue'
+    import { hasPermission } from '../../auth_utils';
     import CredentialsView from '../people/CredentialsView.vue';
     import ExpertisesView from '../people/ExpertisesView.vue';
     import { formatDate } from '@/date_utils'
@@ -68,8 +68,7 @@
                 first_name: m.person.first_name,
                 last_name: m.person.last_name,
                 name: m.person.name,
-                institution: m.person.institution ? m.person.institution.name : null,
-                // credentials: m.person.credentials,
+                institution: m.person.institution?.name,
                 legacy_credentials: m.person.legacy_credentials,
                 legacy_expertise: m.legacy_expertise,
                 roles: m.roles,
