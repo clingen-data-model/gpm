@@ -1,178 +1,172 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
-import axios from 'axios'
-import { hasPermission } from '../../auth_utils';
+import { computed, ref, watch, onMounted } from 'vue';
 import CredentialsView from '../people/CredentialsView.vue';
 import ExpertisesView from '../people/ExpertisesView.vue';
-import { formatDate } from '@/date_utils'
 
 const props = defineProps({
-    members: {
-        required: true,
-        type: Array
-    },
+    members: { required: true, type: Array },
+    type: { required: true, type: String }
 });
 
+// Initial debug log to verify if props.members is populated and the group type
+console.log('Initial props.members:', props.members);
+console.log('Initial group type:', props.type);
 
-const fields = ref(['name', 'credentials', 'expertise', 'institution']);
-if (hasPermission('ep-applications-manage')) {
-    fields.value.push('coi_completed');
-}
-
-
-const sortDescending = ref(false); // false for ascending, true for descending
-
-
+const fields = ref(['name', 'roles', 'credentials', 'expertise', 'institution']);
+const sortDescending = ref(false);
 const members = ref([]);
 
-// Watch for changes in props.members and apply sorting and aggregation
-watch(() => props.members, async (to) => {
-    if (!to) {
-        return;
-    }
+// Lifecycle hook to check props.members when the component mounts
+onMounted(() => {
+    console.log(`On mounted: Group type is ${props.type} and initial members:`, props.members);
+});
 
-    // Copy the incoming members array
-    members.value = [...to];
+// Watch for changes in props.members and update local members array
+watch(
+    () => props.members,
+    (newMembers) => {
+        console.log('Group type:', props.type); // Log the group type to check if non-VCEP groups are handled differently
+        console.log('Received members in watch:', newMembers); // Debug log to check if members are received
 
-
-
-
-}, { immediate: true });
-
-// Aggregate roles for each member
-const aggregateRoles = (membersList) => {
-    const aggregatedMembers = {};
-
-    membersList.forEach(member => {
-        if (!aggregatedMembers[member.id]) {
-            aggregatedMembers[member.id] = {
-                ...member,
-                roles: [...member.roles],
-            };
+        if (newMembers && newMembers.length > 0) {
+            members.value = [...newMembers];
+            console.log('Updated members ref for group type:', props.type, members.value); // Confirm members ref is updated
         } else {
-            aggregatedMembers[member.id].roles = [
-                ...new Set([...aggregatedMembers[member.id].roles, ...member.roles]),
-            ];
+            members.value = [];
+            console.log(`No members found for group type: ${props.type}`);
         }
-    });
+    },
+    { immediate: true }
+);
 
-    return Object.values(aggregatedMembers);
-};
-
-// Computed property to create table rows with aggregated roles
+// Role priority mapping
 const rolePriority = {
     chair: 1,
     coordinator: 2,
     biocurator: 3,
-    expert: 4,
+    expert: 4
 };
 
-// Function to get the highest-priority role for sorting
+// Function to get the primary role priority
 const getPrimaryRolePriority = (roles) => {
     for (const role of roles) {
-        if (rolePriority[role.name.toLowerCase()] !== undefined) {
-            return rolePriority[role.name.toLowerCase()];
+        const roleName = role.name.toLowerCase();
+        if (rolePriority[roleName] !== undefined) {
+            return rolePriority[roleName];
         }
     }
-    return Infinity; // Return a large number for roles that don't match any in the hierarchy
+    return Infinity;
 };
 
+// Aggregate roles for unique members
+const aggregateRoles = (membersList) => {
+    const aggregatedMembers = {};
+
+    membersList.forEach((member) => {
+        if (!aggregatedMembers[member.id]) {
+            aggregatedMembers[member.id] = { ...member, roles: [...member.roles] };
+        } else {
+            aggregatedMembers[member.id].roles = [
+                ...new Set([...aggregatedMembers[member.id].roles, ...member.roles])
+            ];
+        }
+    });
+
+    const result = Object.values(aggregatedMembers);
+    console.log('Aggregated members for group type:', props.type, result); // Debug log to ensure aggregation is correct
+    return result;
+};
+
+// Computed total members count based on processed table rows
 const totalMembers = computed(() => {
+    console.log('Total members in tableRows for group type:', props.type, tableRows.value.length); // Debug log
     return tableRows.value.length;
 });
 
+// Computed table rows with sorting and aggregation
 const tableRows = computed(() => {
     const allMembers = aggregateRoles(members.value);
 
-    // Sort members by role priority, then by last name according to sortDescending
+    console.log('All aggregated members in tableRows for group type:', props.type, allMembers); // Log to ensure allMembers contains data
+
     allMembers.sort((a, b) => {
         const priorityA = getPrimaryRolePriority(a.roles);
         const priorityB = getPrimaryRolePriority(b.roles);
 
-        // Sort by role priority first
-        if (priorityA !== priorityB) {
-            return priorityA - priorityB;
-        }
+        if (priorityA !== priorityB) return priorityA - priorityB;
 
-        // If priorities are equal, sort by last name based on sortDescending
-        const nameComparison = a.person.last_name.localeCompare(b.person.last_name);
+        const nameComparison = (a.person?.last_name || '').localeCompare(b.person?.last_name || '');
         return sortDescending.value ? -nameComparison : nameComparison;
     });
 
-    return allMembers.map(m => {
-        const retVal = {
-            id: m.id,
-            first_name: m.person.first_name,
-            last_name: m.person.last_name,
-            name: m.person.name,
-            institution: m.person.institution ? m.person.institution.name : null,
-            legacy_credentials: m.person.legacy_credentials,
-            legacy_expertise: m.legacy_expertise,
-            roles: m.roles.map(role => role.name).join(', '),  // Extract role names and join them
-            person: m.person
-        };
-
-        if (hasPermission('ep-applications-manage')) {
-            retVal.coi_completed = formatDate(m.coi_last_completed);
-        }
-
-        return retVal;
-    });
+    return allMembers.map((m) => ({
+        id: m.id,
+        name: m.person?.name,
+        roles: m.roles.map((role) => role.name).join(', '),
+        credentials: m.person?.legacy_credentials,
+        expertise: m.legacy_expertise,
+        institution: m.person?.institution?.name || null,
+        person: m.person
+    }));
 });
-
-
-
-
-
 </script>
 
 <template>
+    <div>
+        <!-- Membership Total Display -->
+        <div class="membership-total">
+            <p>Membership Total = {{ totalMembers }}</p>
+        </div>
 
+        <!-- Table Display -->
+        <div class="table-container">
+            <table class="flex-table">
+                <thead>
+                    <tr class="text-sm">
+                        <th class="flex-column" @click="sortDescending = !sortDescending" style="cursor: pointer; display: flex; align-items: center;">
+                            Name
+                            <span v-if="sortDescending">▼</span>
+                            <span v-else>▲</span>
+                        </th>
+                        <th class="flex-column">Roles</th>
+                        <th class="flex-column">Credentials</th>
+                        <th class="flex-column">Expertise</th>
+                        <th class="flex-column">Institution</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm">
+                    <tr v-if="tableRows.length === 0">
+                        <td colspan="5" class="flex-column">No members found.</td>
+                    </tr>
+                    <tr v-for="m in tableRows" :key="m.id">
+                        <td class="flex-column">{{ m.name }}</td>
+                        <td class="flex-column">{{ m.roles }}</td>
+                        <td class="flex-column">
+                            <CredentialsView :person="m.person" />
+                        </td>
+                        <td class="flex-column">
+                            <ExpertisesView :person="m.person" :legacyExpertise="m.expertise" />
+                        </td>
+                        <td class="flex-column">{{ m.institution }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
+        <!-- VCEP-specific content: Scope and Draft Specifications -->
+        <div v-if="type === 'VCEP'">
+            <p>Scope content specific to VCEP displayed here...</p>
+            <p>Draft Specifications content for VCEP displayed here...</p>
+        </div>
 
-<div>
-    <!-- Membership Total Display -->
-    <div class="membership-total">
-        <p>Membership Total = {{ totalMembers }}</p>
+        <!-- Message for non-VCEP -->
+        <div v-else>
+            <p>Scope available, but Draft Specifications are only for VCEPs.</p>
+        </div>
     </div>
-
-    <!-- Table Display with Flexbox -->
-    <div class="table-container">
-        <table class="flex-table">
-            <thead>
-                <tr class="text-sm">
-                    <th class="flex-column" @click="sortDescending = !sortDescending" style="cursor: pointer; display: flex; align-items: center;">
-                        Name
-                        <span v-if="sortDescending">▼</span>
-                        <span v-else>▲</span>
-                    </th>
-                    <th class="flex-column">Roles</th>
-                    <th class="flex-column">Credentials</th>
-                    <th class="flex-column">Expertise</th>
-                    <th class="flex-column">Institution</th>
-                </tr>
-            </thead>
-            <tbody class="text-sm">
-                <tr v-for="m in tableRows" :key="m.id">
-                    <td class="flex-column">{{ m.name }}</td>
-                    <td class="flex-column">{{ m.roles }}</td>
-                    <td class="flex-column">
-                        <CredentialsView :person="m.person" />
-                    </td>
-                    <td class="flex-column">
-                        <ExpertisesView :person="m.person" :legacyExpertise="m.legacy_expertise" />
-                    </td>
-                    <td class="flex-column">{{ m.institution }}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
 </template>
 
 <style>
-/* Flexbox table layout */
 .table-container {
     display: flex;
     width: 100%;
