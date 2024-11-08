@@ -12,59 +12,54 @@
         },
     });
 
-    const fields = ref(['name', 'credentials', 'expertise', 'institution']);
+    const tableSort = ref({
+        field: 'name',
+        desc: false
+    });
+
+    const fields = ref([
+        {
+            name: 'name',
+            sortable: true,
+            label: 'Name',
+            sortFunction: (a, b) => {
+                let cmp = a.last_name.localeCompare(b.last_name);
+                if (cmp === 0) {
+                    cmp = a.first_name.localeCompare(b.first_name);
+                }
+                return cmp;
+            }
+        },
+        {
+            name: 'legacy_credentials',
+            sortable: false,
+            label: 'Credentials',
+        },
+        {
+            name: 'legacy_expertise',
+            sortable: false,
+            label: 'Expertise',
+        },
+        {
+            name: 'institution',
+            sortable: false,
+            label: 'Institution',
+        },
+        {
+            name: 'roles',
+            sortable: false,
+            label: 'Roles',
+        },
+    ]);
+
     if (hasPermission('ep-applications-manage')) {
-        fields.value.push('coi_completed');
+        fields.value.push({
+            name: 'coi_completed',
+            type: String,
+            sortable: true,
+            label: 'COI Completed',
+        });
     }
-
-    const members = ref([]);
-    const chairs = computed(() => tableRows.value.filter(m => m.roles.includes('chair')));
-    const experts = computed(() => tableRows.value.filter(m => m.roles.includes('expert')));
-
-    const memberGroups = computed(() => [
-        {
-            title: 'Leadership',
-            members: chairs.value
-        },
-        {
-            title: 'Coordination',
-            members: tableRows.value.filter(m => m.roles.includes('coordinator'))
-        },
-        {
-            title: 'Biocuration',
-            members: tableRows.value.filter(m => m.roles.includes('biocurator'))
-        },
-        {
-            title: 'Expertise',
-            members: experts.value
-        }
-    ])
-
-    watch(() => props.members, async to => {
-        if (!to) {
-            return;
-        }
-
-        members.value = [...to];
-
-        members.value.sort((a, b) => {
-            if (a.roles.includes('chair') && !b.roles.includes('chair')) {
-                return -1;
-            }
-            if (!a.roles.includes('chair') && b.roles.includes('chair')) {
-                return 1;
-            }
-
-            if (a.roles.includes('expert') && !b.roles.includes('expert')) {
-                return -1;
-            }
-            if (!a.roles.includes('expert') && b.roles.includes('expert')) {
-                return 1;
-            }
-
-            return 0;
-        })
-    }, {immediate: true})
 
     const tableRows = computed( () => {
         return props.members.map(m => {
@@ -77,54 +72,33 @@
                 // credentials: m.person.credentials,
                 legacy_credentials: m.person.legacy_credentials,
                 legacy_expertise: m.legacy_expertise,
-                roles: m.roles.map(r => r.name).join(', '),
+                roles: m.roles,
                 person: m.person
             }
             if (hasPermission('ep-applications-manage')) {
                 retVal.coi_completed = formatDate(m.coi_last_completed);
             }
-
             return retVal;
         });
-    })
+    });
 
 </script>
 <template>
     <div>
-        <table>
-            <template v-for="g in memberGroups" :key="g.title">
-                <thead>
-                    <tr>
-                        <th colspan="6" class="bg-white border-0 pl-0 pb-1 pt-3">
-                            <span class="text-lg">{{g.title}}</span>
-                            &nbsp;
-                            <badge size="xxs">{{g.members.length}}</badge>
-                        </th>
-                    </tr>
-                </thead>
-                <template v-if="g.members.length > 0">
-                    <thead>
-                        <tr class="text-sm">
-                            <th>Name</th>
-                            <th>Credentials</th>
-                            <th>Expertise</th>
-                            <th>Institution</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-sm">
-                        <tr v-for="m in g.members" :key="m.id">
-                            <td>{{m.person.name}}</td>
-                            <td>
-                                <CredentialsView :person="m.person" />
-                            </td>
-                            <td>
-                                <ExpertisesView :person="m.person" :legacyExpertise="m.legacy_expertise" />
-                            </td>
-                            <td>{{m.institution}}</td>
-                        </tr>
-                    </tbody>
-                </template>
+        <data-table
+            :fields="fields"
+            :data="tableRows"
+            v-model:sort="tableSort"
+        >
+            <template v-slot:cell-roles="{item}">
+                <span>{{ item.roles.map(r => r.display_name).join(', ') }}</span>
             </template>
-        </table>
+            <template v-slot:cell-legacy_credentials="{item}">
+                <CredentialsView :person="item.person" />
+            </template>
+            <template v-slot:cell-legacy_expertise="{item}">
+                <ExpertisesView :person="item.person" :legacyExpertise="item.legacy_expertise" />
+            </template>
+        </data-table>
     </div>
 </template>
