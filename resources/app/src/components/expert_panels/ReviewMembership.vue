@@ -1,6 +1,5 @@
 <script setup>
     import { computed, ref, watch } from 'vue'
-    import axios from 'axios'
     import {hasPermission} from '../../auth_utils';
     import CredentialsView from '../people/CredentialsView.vue';
     import ExpertisesView from '../people/ExpertisesView.vue';
@@ -12,8 +11,6 @@
             type: Array
         },
     });
-
-    const loadPubmed = computed(() => hasPermission('ep-applications-approve'))
 
     const fields = ref(['name', 'credentials', 'expertise', 'institution']);
     if (hasPermission('ep-applications-manage')) {
@@ -43,23 +40,6 @@
         }
     ])
 
-    const delay = (ms = 1000) => new Promise((r) => setTimeout(r, ms));
-    const getPublications = async member => {
-        const baseUri = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils';
-        const searchUrl = `${baseUri}/esearch.fcgi?db=pubmed&term=${member.last_name},+${member.first_name}[author]&retmode=json&retmax=0`;
-
-        return axios.get(searchUrl)
-            .then(rsp => {
-                member.pubCount = rsp.data.esearchresult.count
-            })
-            .catch(async error => {
-                if (error.response.status == 429) {
-                    await delay();
-                    getPublications(member);
-                }
-            });
-    }
-
     watch(() => props.members, async to => {
         if (!to) {
             return;
@@ -84,13 +64,6 @@
 
             return 0;
         })
-
-        for(let idx in members.value.filter(m => m.roles.includes('chair') || m.roles.includes('expert'))) {
-            if (loadPubmed.value) {
-                getPublications(members.value[idx])
-                await delay(500);
-            }
-        }
     }, {immediate: true})
 
     const tableRows = computed( () => {
@@ -136,7 +109,6 @@
                             <th>Credentials</th>
                             <th>Expertise</th>
                             <th>Institution</th>
-                            <th>Publications</th>
                         </tr>
                     </thead>
                     <tbody class="text-sm">
@@ -149,19 +121,6 @@
                                 <ExpertisesView :person="m.person" :legacyExpertise="m.legacy_expertise" />
                             </td>
                             <td>{{m.institution}}</td>
-                            <td>
-                                <div v-if="m.pubCount">
-                                    <popper v-if="m.pubCount > 0" content="Go to PubMed results." hover arrow placement="left">
-                                        <a :href="`https://pubmed.ncbi.nlm.nih.gov/?term=${m.last_name},+${m.first_name}%5BAuthor%5D`"
-                                            target="pubmed"
-                                            >
-                                            <badge size="xxs">{{m.pubCount}}</badge>
-                                        </a>
-                                    </popper>
-                                    <badge v-else size="xxs">{{m.pubCount}}</badge>
-                                </div>
-                                <button v-else class="btn btn-xs" @click="getPublications(m)">Get</button>
-                            </td>
                         </tr>
                     </tbody>
                 </template>
