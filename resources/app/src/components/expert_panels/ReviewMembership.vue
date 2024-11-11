@@ -99,9 +99,35 @@
         });
     });
 
+    const defaultAdd = (obj, key) => {
+        // like a python defaultdict...
+        if (!obj[key]) {
+            obj[key] = 0;
+        }
+        obj[key]++;
+    }
+
+    const counts = computed(() => {
+        const counts = {};
+        counts['Total'] = props.members.length;
+        Object.keys(role_priorities).forEach(r => counts[r] = 0);
+        props.members.forEach(m => {
+            m.roles.forEach(r => defaultAdd(counts, r.display_name));
+            if (m.roles.length === 0) {
+                defaultAdd(counts, 'None');
+            }
+        });
+        counts['Total'] = props.members.length;
+        console.log(counts);
+        return counts;
+    });
+
 </script>
 <template>
     <div>
+        <div v-for="(count, role) in counts" :key="role">
+            <span>{{ role }}: {{ count }}</span>
+        </div>
         <data-table
             :fields="fields"
             :data="tableRows"
