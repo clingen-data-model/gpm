@@ -128,7 +128,7 @@
             </section>
           </tab-item>
 
-          <tab-item label="Specifications" :visible="group.isVcep()">
+          <tab-item label="Specifications" v-if="group.isVcep()">
             <div class="relative">
               <div
                 class="bg-white bg-opacity-50 absolute top-0 left-0 right-0 bottom-0"
