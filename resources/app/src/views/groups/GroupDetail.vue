@@ -296,7 +296,7 @@
   </div>
 </template>
 <script>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted, watch, provide } from "vue";
 import { useStore } from "vuex";
 
 import { logEntries, fetchEntries } from "@/adapters/log_entry_repository";
@@ -561,6 +561,7 @@ export default {
   mounted() {
     this.showModal = Boolean(this.$route.meta.showModal);
     this.showConfirmDelete = false;
+    provide("group", this.group);
   },
   beforeUnmount() {
     this.$store.commit("groups/clearCurrentItem");

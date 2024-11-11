@@ -19,6 +19,7 @@ const commentManager = ref(commentManagerFactory('App\\Modules\\Group\\Models\\G
 provide('commentManager', null)
 
 const group = computed(() => store.getters['groups/currentItemOrNew'])
+provide('group', group);
 
 const loadGroup = async (uuid) => {
     await store.dispatch('groups/findAndSetCurrent', uuid);

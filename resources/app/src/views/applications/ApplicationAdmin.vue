@@ -1,5 +1,6 @@
 <script>
 import { mapGetters } from 'vuex'
+import { provide } from 'vue'
 import ApplicationLog from '@/components/applications/ApplicationLog.vue'
 import NextActions from '@/components/next_actions/NextActions.vue'
 import ProgressChart from '@/components/applications/ProgressChart.vue'
@@ -70,6 +71,7 @@ export default {
         },
     },
     mounted() {
+        provide('group', this.group);
         this.showModal = Boolean(this.$route.meta.showModal)
     }
 }

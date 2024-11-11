@@ -1,18 +1,9 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
-import axios from 'axios'
+import { computed, ref, inject } from 'vue'
 import { hasPermission } from '../../auth_utils';
 import CredentialsView from '../people/CredentialsView.vue';
 import ExpertisesView from '../people/ExpertisesView.vue';
 import { formatDate } from '@/date_utils'
-
-const props = defineProps({
-    members: {
-        required: true,
-        type: Array
-    },
-});
-
 
 const fields = ref(['name', 'credentials', 'expertise', 'institution']);
 if (hasPermission('ep-applications-manage')) {
@@ -22,22 +13,8 @@ if (hasPermission('ep-applications-manage')) {
 
 const sortDescending = ref(false); // false for ascending, true for descending
 
-
-const members = ref([]);
-
-// Watch for changes in props.members and apply sorting and aggregation
-watch(() => props.members, async (to) => {
-    if (!to) {
-        return;
-    }
-
-    // Copy the incoming members array
-    members.value = [...to];
-
-
-
-
-}, { immediate: true });
+const group = inject('group');
+const members = computed(() => group.value.members);
 
 // Aggregate roles for each member
 const aggregateRoles = (membersList) => {
@@ -119,17 +96,9 @@ const tableRows = computed(() => {
         return retVal;
     });
 });
-
-
-
-
-
 </script>
 
 <template>
-
-
-
 <div>
     <!-- Membership Total Display -->
     <div class="membership-total">
@@ -168,7 +137,6 @@ const tableRows = computed(() => {
         </table>
     </div>
 </div>
-
 </template>
 
 <style>

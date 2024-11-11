@@ -1,12 +1,10 @@
 <script setup>
-    import {useStore} from 'vuex';
-    import { computed} from 'vue'
+    import { computed, inject } from 'vue'
     import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
     import ReviewMembership from '@/components/expert_panels/ReviewMembership.vue'
     import { formatDate } from '@/date_utils'
 
-    const store = useStore();
-    const group = computed(() => store.getters['groups/currentItemOrNew'])
+    const group = inject('group');
     const expertPanel = computed(() => group.value.expert_panel);
     const members = computed( () => {
         if (!group.value) {
@@ -34,7 +32,7 @@
         </ReviewSection>
 
         <ReviewSection title="Membership" name="membership">
-            <ReviewMembership :members="members" />
+            <ReviewMembership />
 
             <div v-if="group.isVcep()" class="mt-6">
                 <h4>Expertise of VCEP members</h4>
