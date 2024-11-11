@@ -132,6 +132,7 @@
             :fields="fields"
             :data="tableRows"
             v-model:sort="tableSort"
+            class="text-xs"
         >
             <template v-slot:cell-roles="{item}">
                 <span>{{ item.roles.map(r => r.display_name).join(', ') }}</span>
