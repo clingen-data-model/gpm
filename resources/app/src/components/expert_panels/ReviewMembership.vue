@@ -12,23 +12,36 @@
         },
     });
 
+    const role_priorities = {
+        'Chair': 1,
+        'Coordinator': 2,
+        'Biocurator': 3,
+        'Expert': 4,
+    };
+
+    const rolePriority = (role) => {
+        return role_priorities[role.display_name] ?? Infinity;
+    }
+
     const tableSort = ref({
         field: 'roles',
         desc: false
     });
+
+    const nameSort = (a, b) => {
+        let cmp = a.last_name.localeCompare(b.last_name);
+        if (cmp === 0) {
+            cmp = a.first_name.localeCompare(b.first_name);
+        }
+        return cmp;
+    }
 
     const fields = ref([
         {
             name: 'name',
             sortable: true,
             label: 'Name',
-            sortFunction: (a, b) => {
-                let cmp = a.last_name.localeCompare(b.last_name);
-                if (cmp === 0) {
-                    cmp = a.first_name.localeCompare(b.first_name);
-                }
-                return cmp;
-            }
+            sortFunction: nameSort,
         },
         {
             name: 'legacy_credentials',
@@ -76,7 +89,7 @@
                 legacy_credentials: m.person.legacy_credentials,
                 legacy_expertise: m.legacy_expertise,
                 roles: roles,
-                role_priority: Math.min(...roles.map(r => r.id)),
+                role_priority: Math.min(...roles.map(rolePriority)),
                 person: m.person
             }
             if (hasPermission('ep-applications-manage')) {
