@@ -59,6 +59,13 @@ class ExpertiseSeeder extends Seeder
             ],
             [
                 'id' => 8,
+                'name' => 'Pharmacist/Pharmacogenomics',
+                'approved' => 1,
+                'synonyms' => ['pharma', 'pharmacologic']
+            ],
+
+            [
+                'id' => 9,
                 'name' => 'None',
                 'approved' => 1,
                 'synonyms' => ['na']
