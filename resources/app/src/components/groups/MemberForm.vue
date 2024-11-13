@@ -3,39 +3,24 @@
         <div class="flex">
             <div class="flex-1">
                 <div v-if="!newMember.id && !newMember.person_id">
-                    <input-row label="Name"
-                        :errors="nameErrors"
-                    >
+                    <input-row label="Name" :errors="nameErrors">
                         <div class="flex space-x-2">
-                            <input type="text"
-                                v-model="newMember.person.first_name"
-                                placeholder="First"
-                                class="block w-1/2"
-                                @input="debounceSuggestions"
-                            >
-                            <input type="text"
-                                v-model="newMember.person.last_name"
-                                placeholder="Last"
-                                class="block w-1/2"
-                                @input="debounceSuggestions"
-                                :errors="errors.last_name"
-                            >
+                            <input type="text" v-model="newMember.person.first_name" placeholder="First"
+                                class="block w-1/2" @input="debounceSuggestions">
+                            <input type="text" v-model="newMember.person.last_name" placeholder="Last"
+                                class="block w-1/2" @input="debounceSuggestions" :errors="errors.last_name">
                         </div>
                     </input-row>
-                    <input-row label="Email"
-                        v-model="newMember.person.email"
-                        placeholder="example@example.com"
-                        input-class="w-full"
-                        @input="debounceSuggestions"
-                        :errors="errors.email"
-                    ></input-row>
+                    <input-row label="Email" v-model="newMember.person.email" placeholder="example@example.com"
+                        input-class="w-full" @input="debounceSuggestions" :errors="errors.email"></input-row>
                 </div>
                 <div v-if="newMember.id || newMember.person_id">
                     <dictionary-row label="Name">
-                        {{newMember.person.name}}
+                        {{ newMember.person.name }}
                     </dictionary-row>
-                    <dictionary-row label="Email">{{newMember.person.email}}</dictionary-row>
-                    <dictionary-row label="Institution">{{newMember.person.institution ? newMember.person.institution.name : '--'}}</dictionary-row>
+                    <dictionary-row label="Email">{{ newMember.person.email }}</dictionary-row>
+                    <dictionary-row label="Institution">{{ newMember.person.institution ?
+                        newMember.person.institution.name : '--' }}</dictionary-row>
                     <dictionary-row label="Credentials">
                         <credentials-view :person="newMember.person" />
                     </dictionary-row>
@@ -43,11 +28,13 @@
                         <ExpertisesView :person="newMember.person" :legacy-expertise="newMember.legacy_expertise" />
                     </dictionary-row>
                     <static-alert v-if="!newMember.id">
-                        Adding existing person, {{newMember.person.name}}, as a group member.
+                        Adding existing person, {{ newMember.person.name }}, as a group member.
                     </static-alert>
-                    <dictionary-row label="" class="text-sm"  v-if="newMember.id">
-                        <popover content="As a coordinator you can edit some attributes of a group member's profile including name, email, institution, and credentials." hover arrow>
-                            <button @click="showProfileForm=true" class="link text-sm">
+                    <dictionary-row label="" class="text-sm" v-if="newMember.id">
+                        <popover
+                            content="As a coordinator you can edit some attributes of a group member's profile including name, email, institution, and credentials."
+                            hover arrow>
+                            <button @click="showProfileForm = true" class="link text-sm">
                                 Edit profile attributes
                             </button>
                         </popover>
@@ -71,20 +58,14 @@
                 <div class="border-t mt-4 pt-2">
                     <h3>Group Roles</h3>
                     <div class="flex flex-col h-24 flex-wrap">
-                        <checkbox v-for="role in roles" :key="role.id" v-model="newMember.roles" :value="role" :label="titleCase(role.name)" @input="handleRoleChange" />
+                        <checkbox v-for="role in roles" :key="role.id" v-model="newMember.roles" :value="role"
+                            :label="titleCase(role.name)" @input="handleRoleChange" />
                     </div>
                     <transition name="fade-down">
-                        <div
-                            v-if="newMember.hasRole('biocurator') && group.isVcep()"
-                            class="border-t mt-2 pt-2 pl-2"
-                        >
+                        <div v-if="newMember.hasRole('biocurator') && group.isVcep()" class="border-t mt-2 pt-2 pl-2">
                             <h4>Training</h4>
-                            <checkbox
-                                v-for="num in [1, 2]" :key="num"
-                                v-model="newMember[`training_level_${num}`]"
-                                :value="1"
-                                :label="`Level ${num}`"
-                            />
+                            <checkbox v-for="num in [1, 2]" :key="num" v-model="newMember[`training_level_${num}`]"
+                                :value="1" :label="`Level ${num}`" />
                         </div>
                     </transition>
                 </div>
@@ -92,28 +73,22 @@
                     <template v-slot:title>
                         <h3 class="flex justify-between w-full items-center">
                             Group Permissions
-                            <badge
-                                v-if="newMember.permissions.length > 0"
-                                color="gray"
-                            >{{newMember.permissions.length}}</badge>
+                            <badge v-if="newMember.permissions.length > 0" color="gray">{{ newMember.permissions.length
+                                }}
+                            </badge>
                         </h3>
                     </template>
                     <div class="flex flex-col h-24 flex-wrap">
-                        <checkbox
-                            v-for="permission in permissions"
-                            :key="permission.id"
-                            v-model="newMember.permissions"
-                            :value="permission"
-                            :disabled="newMember.hasPermissionThroughRole(permission)"
+                        <checkbox v-for="permission in permissions" :key="permission.id" v-model="newMember.permissions"
+                            :value="permission" :disabled="newMember.hasPermissionThroughRole(permission)"
                             :checked="newMember.hasPermissionThroughRole(permission)"
                             :id="`permission-${permission.id}`"
                             :title="newMember.hasPermissionThroughRole(permission) ? `granted with role` : `grant permission`"
-                            :label="permission.display_name"
-                        />
+                            :label="permission.display_name" />
                     </div>
                     <div class="px-2 py-1 bg-gray-100 border relative text-xs">
                         <div class="flex space-x-2">
-                        <strong>Legend: </strong>
+                            <strong>Legend: </strong>
                             <checkbox label="Not granted" />
                             <checkbox :value="1" v-model="legendValues" label="Granted" />
                             <checkbox :value="2" v-model="legendValues" disabled label="Granted w/ role" />
@@ -125,13 +100,10 @@
             </div>
             <transition name="slide-fade">
                 <div v-if="suggestedPeople.length > 0 && newMember.person_id === null"
-                    class="pt-2 border-l pl-2  ml-2 flex-1"
-                >
+                    class="pt-2 border-l pl-2  ml-2 flex-1">
                     <h5 class="font-bold border-b mb-1 pb-1">Matching people</h5>
-                    <member-suggestions
-                        :suggestions="suggestedPeople"
-                        @selected="useExistingPerson"
-                    ></member-suggestions>
+                    <member-suggestions :suggestions="suggestedPeople"
+                        @selected="useExistingPerson"></member-suggestions>
                 </div>
             </transition>
 
@@ -145,14 +117,10 @@
                     <label><input type="radio" v-model="addAnother" :value="false">&nbsp;No</label>
                 </label>
             </div> -->
-            <button-row
-                @submit="saveAndExit"
-                @cancel="cancel"
-                submit-text="Save"
-                style="margin-top: 0"
-            >
+            <button-row @submit="saveAndExit" @cancel="cancel" submit-text="Save" style="margin-top: 0">
                 <template v-slot:extra-buttons>
-                    <button class="btn blue" @click="saveAndEditProfile" v-if="!newMember.id">Save and edit profle</button>
+                    <button class="btn blue" @click="saveAndEditProfile" v-if="!newMember.id">Save and edit
+                        profle</button>
                 </template>
             </button-row>
         </div>
@@ -165,25 +133,23 @@
                 <span v-if="needsExpertise && needsCredentials">and</span>
                 <strong v-if="needsExpertise">expertise</strong> information for this member.
                 <div v-if="needsCredentials && newMember.person.legacy_credentials">
-                    <strong>Legacy Credentials Data:</strong> {{newMember.person.legacy_credentials}}
+                    <strong>Legacy Credentials Data:</strong> {{ newMember.person.legacy_credentials }}
                 </div>
                 <div v-if="needsExpertise && newMember.legacy_expertise">
-                    <strong>Legacy Expertise Data:</strong> {{newMember.legacy_expertise}}
+                    <strong>Legacy Expertise Data:</strong> {{ newMember.legacy_expertise }}
                 </div>
             </div>
-            <ProfileForm v-if="newMember.person" :person="newMember.person"
-                @saved="handleProfileUpdate"
-                @canceled="showProfileForm = false"
-            />
+            <ProfileForm v-if="newMember.person" :person="newMember.person" @saved="handleProfileUpdate"
+                @canceled="showProfileForm = false" />
         </modal-dialog>
     </teleport>
 </template>
 <script>
-import {debounce} from 'lodash-es'
-import {computed} from 'vue'
-import {useStore} from 'vuex'
-import {api, isValidationError} from '@/http'
-import {Person} from '@/domain'
+import { debounce } from 'lodash-es'
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import { api, isValidationError } from '@/http'
+import { Person } from '@/domain'
 import GroupMember from '@/domain/group_member'
 import MemberSuggestions from '@/components/groups/MemberSuggestions.vue'
 import config from '@/configs'
@@ -216,33 +182,33 @@ export default {
         'canceled',
         'closed'
     ],
-    data () {
+    data() {
         return {
             newMember: new GroupMember(),
             errors: {},
             suggestedPeople: [],
-            legendValues: [1,2],
+            legendValues: [1, 2],
             showProfileForm: false,
             addAnother: false
         }
     },
     computed: {
-        originalMember () {
+        originalMember() {
             return this.group.findMember(this.memberId);
         },
-        nameErrors () {
+        nameErrors() {
             return [this.errors.first_name, this.errors.last_name]
-                    .flat()
-                    .filter(i => i);
+                .flat()
+                .filter(i => i);
         },
-        needsCredentials () {
+        needsCredentials() {
             return !this.newMember.person.credentials || this.newMember.person.credentials.length == 0;
         },
-        needsExpertise () {
+        needsExpertise() {
             return !this.newMember.person.expertises || this.newMember.person.expertises.length == 0
         }
     },
-    setup () {
+    setup() {
         const store = useStore();
         let group = computed(() => store.getters['groups/currentItemOrNew'] || {});
         let people = computed(() => store.getters['people/all'] || {});
@@ -257,13 +223,15 @@ export default {
         }
     },
     watch: {
-        group () {
+        group() {
             this.syncMember();
         },
         'newMember.roles': {
             deep: true,
-            handler (to, from) {
-                if (to.map(r => r.name).includes('coordinator') && !from.map(r => r.name).includes('coordinator')) {
+            handler(to, from) {
+                const hasCoordinator = to.map(r => r.name).includes('coordinator');
+                const hasGrantLiaison = to.map(r => r.name).includes('grant-liaison');
+                if ((hasCoordinator || hasGrantLiaison) && !from.some(r => r.name === 'coordinator' || r.name === 'grant-liaison')) {
                     this.newMember.is_contact = true;
                 }
             }
@@ -284,7 +252,7 @@ export default {
                 'where[email]': this.newMember.email,
                 with: ['memberships']
             }
-            this.suggestedPeople = await api.get(`/api/people`, {params: params})
+            this.suggestedPeople = await api.get(`/api/people`, { params: params })
                 .then(rsp => rsp.data.data.map(p => {
                     p.alreadyMember = this.isAlreadyMember(p);
                     return new Person(p);
@@ -293,7 +261,7 @@ export default {
         initNewMember() {
             this.newMember = new GroupMember();
         },
-        syncMember () {
+        syncMember() {
             try {
                 if (this.memberId) {
                     this.newMember = this.originalMember.clone();
@@ -304,14 +272,14 @@ export default {
                 }
             }
         },
-        clearForm () {
+        clearForm() {
             this.initNewMember();
         },
-        cancel () {
+        cancel() {
             this.clearForm();
             this.$emit('canceled');
         },
-        async saveAndExit () {
+        async saveAndExit() {
             await this.save();
             this.clearForm();
             this.suggestedPeople = [];
@@ -319,15 +287,15 @@ export default {
                 this.$emit('saved');
             }
             if (this.newMember.id) {
-                this.$router.replace({name: 'AddMember'})
+                this.$router.replace({ name: 'AddMember' })
             }
         },
-        async saveAndEditProfile () {
+        async saveAndEditProfile() {
             const groupMember = await this.save();
             this.newMember = new GroupMember(groupMember);
             this.showProfileForm = true;
         },
-        async save () {
+        async save() {
             try {
                 if (!this.newMember.isPersisted()) {
                     if (!this.newMember.person.isPersisted()) {
@@ -355,7 +323,7 @@ export default {
                 throw error;
             }
         },
-        async inviteNewMember (group, member) {
+        async inviteNewMember(group, member) {
             const response = await this.$store.dispatch('groups/memberInvite', {
                 uuid: group.uuid,
                 data: {
@@ -423,7 +391,7 @@ export default {
                 }
             ).then(rsp => rsp.data);
 
-            await this.$store.dispatch('groups/memberSyncRoles', {group, member});
+            await this.$store.dispatch('groups/memberSyncRoles', { group, member });
             await this.syncPermissions(group, member);
 
             return groupMember;
@@ -440,27 +408,27 @@ export default {
 
             if (newPermIds.length > 0) {
                 // promises.push(
-                    this.$store.dispatch(
-                        'groups/memberGrantPermission',
-                        {
-                            uuid: group.uuid,
-                            memberId: member.id,
-                            permissionIds: newPermIds
-                        }
-                    )
+                this.$store.dispatch(
+                    'groups/memberGrantPermission',
+                    {
+                        uuid: group.uuid,
+                        memberId: member.id,
+                        permissionIds: newPermIds
+                    }
+                )
                 // );
             }
 
             removedPermIds.forEach(permId => {
                 // promises.push(
-                    this.$store.dispatch(
-                        'groups/memberRevokePermission',
-                        {
-                            uuid: group.uuid,
-                            memberId: member.id,
-                            permissionId: permId
-                        }
-                    )
+                this.$store.dispatch(
+                    'groups/memberRevokePermission',
+                    {
+                        uuid: group.uuid,
+                        memberId: member.id,
+                        permissionId: permId
+                    }
+                )
                 // );
             });
 
@@ -468,6 +436,8 @@ export default {
         },
 
         useExistingPerson(person) {
+
+
             this.newMember.person_id = person.id;
             this.newMember.person = person.clone()
         },
@@ -475,34 +445,36 @@ export default {
             return this.group.members.map(m => m.person.id).includes(person.id)
         },
 
-        handleRoleChange () {
+        handleRoleChange() {
+
             // setTimeout(() => {
-            //     if (this.newMember.hasRole('coordinator')) {
-            //         this.newMember.is_contact = true;
+            //     if (this.newMember.hasRole('grant-liaison')) {
+            //          this.newMember.is_contact = true;
             //     }
-            // }, 1)
+            //  }, 1)
         },
 
-        handleProfileUpdate (updatedPerson) {
+        handleProfileUpdate(updatedPerson) {
             this.newMember.person = updatedPerson;
             this.showProfileForm = false;
             this.$store.dispatch('groups/getMembers', this.group)
         }
     },
-    mounted () {
+    mounted() {
         this.initNewMember();
         this.syncMember();
     },
-    created () {
+    created() {
         this.debounceSuggestions = debounce(this.getSuggestedPeople, 500)
     }
 }
 </script>
 <style lang="postcss" scoped>
-    input:disabled {
-        opacity: 1
-    }
-    input:disabled + label {
-        @apply text-gray-700;
-    }
+input:disabled {
+    opacity: 1
+}
+
+input:disabled+label {
+    @apply text-gray-700;
+}
 </style>
