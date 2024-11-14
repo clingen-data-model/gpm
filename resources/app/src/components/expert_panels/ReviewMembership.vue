@@ -1,9 +1,7 @@
 <script setup>
     import { computed, ref } from 'vue'
-    import { hasPermission } from '../../auth_utils';
     import CredentialsView from '../people/CredentialsView.vue';
     import ExpertisesView from '../people/ExpertisesView.vue';
-    import { formatDate } from '@/date_utils'
 
     const props = defineProps({
         members: {
@@ -68,19 +66,10 @@
         },
     ]);
 
-    if (hasPermission('ep-applications-manage')) {
-        fields.value.push({
-            name: 'coi_completed',
-            type: String,
-            sortable: true,
-            label: 'COI Completed',
-        });
-    }
-
     const tableRows = computed( () => {
         return props.members.map(m => {
             const roles = m.roles.toSorted((a, b) => a.id - b.id);
-            const retVal = {
+            return {
                 id: m.id,
                 first_name: m.person.first_name,
                 last_name: m.person.last_name,
@@ -92,10 +81,6 @@
                 role_priority: Math.min(...roles.map(rolePriority)),
                 person: m.person
             }
-            if (hasPermission('ep-applications-manage')) {
-                retVal.coi_completed = formatDate(m.coi_last_completed);
-            }
-            return retVal;
         });
     });
 
