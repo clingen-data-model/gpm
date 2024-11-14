@@ -1,6 +1,0 @@
-Each of these tasks must be run within the app container, except the last.
-Add group information to app/Modules/Group/groups.php​ (following examples that are there)
-run php artisan config:cache​ (without this, the seeder doesn't work)
-run php artisan db:seed GroupRoleAndPermissionsSeeder​ to get things in the database (this would also have to be run in production once changes are committed)
-run php artisan config:export​ so relevant json files are updated (generally run as part of npm run build​, but have to do this in the php container which doesn't have npm installed)
-run npm run build​ from within the resources directory to incorporate into webpack-ed js files
