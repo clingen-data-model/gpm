@@ -16,9 +16,9 @@
         "itsgoingd/clockwork": "^5.1",
         "lab404/laravel-impersonate": "^1.7",
         "laravel/fortify": "^1.7",
-        "laravel/framework": "^10.0",
-        "laravel/sanctum": "^3.2",
-        "laravel/slack-notification-channel": "^2.3",
+        "laravel/framework": "^11.0",
+        "laravel/sanctum": "^4.0",
+        "laravel/slack-notification-channel": "^3.4",
         "laravel/tinker": "^2.5",
         "lorisleiva/laravel-actions": "^2.1",
         "rap2hpoutre/laravel-log-viewer": "^2.0",
@@ -26,14 +26,14 @@
         "spatie/laravel-permission": "^6.0"
     },
     "require-dev": {
-        "brianium/paratest": "^6.4",
+        "brianium/paratest": "^7.6",
         "spatie/laravel-ignition": "^2.0",
         "fakerphp/faker": "^1.9.1",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.2",
-        "nunomaduro/collision": "^6.1",
+        "nunomaduro/collision": "^8.1",
         "phpmd/phpmd": "^2.13",
-        "phpunit/phpunit": "^9.3.3"
+        "phpunit/phpunit": "^11.4"
     },
     "config": {
         "optimize-autoloader": true,
