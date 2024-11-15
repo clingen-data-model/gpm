@@ -46,7 +46,6 @@ RUN composer install \
         --no-plugins \
         --no-scripts \
         --no-dev \
-        --no-suggest \
         --prefer-dist
 
 # Copy the source code.
