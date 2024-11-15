@@ -79,9 +79,10 @@
                 legacy_expertise: m.legacy_expertise,
                 roles: roles,
                 role_priority: Math.min(...roles.map(rolePriority)),
+                active: m.isActive,
                 person: m.person
             }
-        });
+        }).filter(m => m.active);
     });
 
     const defaultAdd = (obj, key) => {
@@ -94,16 +95,15 @@
 
     const counts = computed(() => {
         const counts = {};
-        counts['Total'] = props.members.length;
+        counts['Total'] = tableRows.value.length;
+        console.log(tableRows.value);
         Object.keys(role_priorities).forEach(r => counts[r] = 0);
-        props.members.forEach(m => {
+        tableRows.value.forEach(m => {
             m.roles.forEach(r => defaultAdd(counts, r.display_name));
             if (m.roles.length === 0) {
                 defaultAdd(counts, 'None');
             }
         });
-        counts['Total'] = props.members.length;
-        console.log(counts);
         return counts;
     });
 
