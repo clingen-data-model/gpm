@@ -69,7 +69,7 @@ dependencies get updated. This is the set of commands to run if you get errors a
 dependencies in the PHP code.
 
 ```bash
-docker compose run --no-deps --rm -it --entrypoint composer app install --no-interaction --no-plugins --no-scripts --prefer-dist --no-dev --no-suggest
+docker compose run --no-deps --rm -it --entrypoint composer app install --no-interaction --no-plugins --no-scripts --prefer-dist --no-dev 
 docker compose run --no-deps --rm -it --entrypoint composer app dump-autoload
 ```
 

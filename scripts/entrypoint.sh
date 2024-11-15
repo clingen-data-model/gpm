@@ -9,7 +9,7 @@ cd /srv/app
 
 if [[ -n ${APP_DO_INIT-} || ! -d vendor ]]; then
     echo "Running composer install..."
-    composer install --no-interaction --no-plugins --no-scripts --prefer-dist --no-dev --no-suggest
+    composer install --no-interaction --no-plugins --no-scripts --prefer-dist --no-dev 
     composer dump-autoload
 fi
 
