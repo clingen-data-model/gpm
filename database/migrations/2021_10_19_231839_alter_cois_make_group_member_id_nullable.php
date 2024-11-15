@@ -17,7 +17,7 @@ class AlterCoisMakeGroupMemberIdNullable extends Migration
             $table->foreignId('group_member_id')
                 ->nullable()
                 ->cascadeOnDelete()
-                ->cascadOnUpdate()
+                ->cascadeOnUpdate()
                 ->change();
         });
     }
@@ -32,7 +32,7 @@ class AlterCoisMakeGroupMemberIdNullable extends Migration
         Schema::table('cois', function (Blueprint $table) {
             $table->foreignId('group_member_id')
                 ->cascadeOnDelete()
-                ->cascadOnUpdate()
+                ->cascadeOnUpdate()
                 ->change();
         });
     }
