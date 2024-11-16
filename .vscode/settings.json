@@ -5,5 +5,15 @@
         "orcid",
         "Pubmed",
         "rulesets"
-    ]
+    ],
+    "phpunit.command": "docker exec -t gpm-app /bin/sh -c",
+    "phpunit.php": "php",
+    "phpunit.phpunit": "vendor/bin/phpunit",
+    "phpunit.args": [
+      "-c",
+      "phpunit.xml"
+    ],
+    "phpunit.paths": {
+      "${workspaceFolder}": "/srv/app",
+    },
 }
