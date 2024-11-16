@@ -6,10 +6,8 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use App\Modules\Group\Models\Group;
 use Database\Seeders\TaskTypeSeeder;
-use Database\Seeders\RulesetStatusSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Database\Seeders\SpecificationStatusSeeder;
 use App\DataExchange\Models\IncomingStreamMessage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\DataExchange\Actions\PilotRulesApprovedProcessor;
@@ -20,6 +18,10 @@ class PilotRulesApprovedProcessorTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
+    private $expertPanel;
+    private $message;
+    private $action;
+
     public function setup(): void
     {
         parent::setup();
@@ -27,6 +29,7 @@ class PilotRulesApprovedProcessorTest extends TestCase
         $this->runSeeder(TaskTypeSeeder::class);
 
         $this->expertPanel = ExpertPanel::factory()->vcep()->create(['affiliation_id' => '50666']);
+        Carbon::setTestNow('2022-01-01');
         $this->message = IncomingStreamMessage::factory()->pilotApproved()->make();
 
         $this->action = app()->make(PilotRulesApprovedProcessor::class);
@@ -85,9 +88,6 @@ class PilotRulesApprovedProcessorTest extends TestCase
         $this->expertPanel->current_step = 3;
         $this->expertPanel->save();
 
-        Carbon::setTestNow('2022-01-01');
-
-        $this->message->timestamp = Carbon::now()->timestamp;
         $this->action->handle($this->message);
 
         $this->assertDatabaseHas('expert_panels', [

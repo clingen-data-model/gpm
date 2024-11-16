@@ -74,6 +74,7 @@ class ConsumeCspecMessagesTest extends TestCase
     {
         $topic = 'cspec_general_events_test';
         $timestamp = time();
+        $message_contents = file_get_contents(test_path('files/cspec/cspec-classified-rules-approved.json'));
         app()->bind(MessageStream::class, fn () => new FakeMessageStream([
             new DxMessage(
                 $topic,
@@ -89,7 +90,7 @@ class ConsumeCspecMessagesTest extends TestCase
 
         $this->assertDatabaseHas('expert_panels', [
             'id' => $this->vcep->id,
-            'step_2_approval_date' =>  Carbon::createFromTimestamp($timestamp),
+            'step_2_approval_date' =>  new Carbon(json_decode($message_contents)->cspecDoc->status->modifiedAt),
             'current_step' => 3
         ]);
     }
@@ -105,11 +106,12 @@ class ConsumeCspecMessagesTest extends TestCase
         $this->vcep->save();
 
         $timestamp = time();
+        $message_contents = file_get_contents(test_path('files/cspec/cspec-pilot-rules-approved.json'));
         app()->bind(MessageStream::class, fn () => new FakeMessageStream([
             new DxMessage(
                 $topic,
                 $timestamp,
-                file_get_contents(test_path('files/cspec/cspec-pilot-rules-approved.json')),
+                $message_contents,
                 2
             ),
         ]));
@@ -121,7 +123,7 @@ class ConsumeCspecMessagesTest extends TestCase
 
         $this->assertDatabaseHas('expert_panels', [
             'id' => $this->vcep->id,
-            'step_3_approval_date' => Carbon::createFromTimestamp($timestamp),
+            'step_3_approval_date' => new Carbon(json_decode($message_contents)->cspecDoc->status->modifiedAt),
             'current_step' => 4
         ]);
     }

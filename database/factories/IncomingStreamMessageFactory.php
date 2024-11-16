@@ -45,7 +45,8 @@ class IncomingStreamMessageFactory extends Factory
                         'uuid' => $this->faker->uuid,
                         'status' => [
                             'event' => 'classified-rules-approved',
-                            'current' => 'Classified Rules Approved'
+                            'current' => 'Classified Rules Approved',
+                            'modifiedAt' => Carbon::now(),
                         ],
                         'affiliationId' => '50666',
                         'name' => $this->faker->sentence,
@@ -67,7 +68,8 @@ class IncomingStreamMessageFactory extends Factory
                         'uuid' => $this->faker->uuid,
                         'status' => [
                             'event' => 'pilot-rules-approved',
-                            'current' => 'Pilot Rules Approved'
+                            'current' => 'Pilot Rules Approved',
+                            'modifiedAt' => Carbon::now(),
                         ],
                         'affiliationId' => '50666',
                         'name' => $this->faker->sentence,

@@ -4,12 +4,8 @@ namespace Tests\Feature\Integration\DX\Actions;
 
 use Carbon\Carbon;
 use Tests\TestCase;
-use Faker\Provider\el_CY\Person;
-use App\Modules\Group\Models\GroupMember;
-use Database\Seeders\RulesetStatusSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Database\Seeders\SpecificationStatusSeeder;
 use App\DataExchange\Models\IncomingStreamMessage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\DataExchange\Exceptions\DataSynchronizationException;
@@ -20,12 +16,18 @@ class ClassifiedRulesApprovedProcessorTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
+    private $expertPanel;
+    private $message;
+    private $action;
+
     public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
 
         $this->expertPanel = ExpertPanel::factory()->vcep()->create(['affiliation_id' => '50666']);
+
+        Carbon::setTestNow('2022-01-01');
         $this->message = IncomingStreamMessage::factory()->draftApproved()->make();
 
         $this->action = app()->make(ClassifiedRulesApprovedProcessor::class);
@@ -91,9 +93,6 @@ class ClassifiedRulesApprovedProcessorTest extends TestCase
         $this->expertPanel->current_step = 2;
         $this->expertPanel->save();
 
-        Carbon::setTestNow('2022-01-01');
-
-        $this->message->timestamp = Carbon::now()->timestamp;
         $this->action->handle($this->message);
 
         $this->assertDatabaseHas('expert_panels', [
