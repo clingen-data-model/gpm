@@ -16,7 +16,6 @@ trait TestEventPublished
             'message->data->person->email' => $person->email,
             'message->data->person->credentials' => $person->credentials->toJson(),
             'message->data->person->biography' => $person->biography,
-            'message->data->person->phone' => $person->phone,
             'message->data->person->profile_photo' => $person->ProfilePhotoUrl,
         ]);
     }
