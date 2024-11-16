@@ -10,14 +10,15 @@ use App\Modules\ExpertPanel\Models\Coi;
 use App\Modules\Group\Actions\MemberAdd;
 use App\Modules\Group\Models\GroupMember;
 use App\Modules\Group\Actions\MemberRetire;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\CoiReminderNotification;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CoiReminderTest extends TestCase
 {
+    private $group;
+    private $user1;
+    private $membership1;
     use RefreshDatabase;
 
     public function setup():void
@@ -25,7 +26,7 @@ class CoiReminderTest extends TestCase
         parent::setup();
         $this->setupForGroupTest();
 
-        $this->group = Group::factory()->create();
+        $this->group = Group::factory()->create(['group_status_id' => config('groups.statuses.active.id')]);
         $this->user1 = $this->setupUserWithPerson();
         $this->membership1 = app()->make(MemberAdd::class)->handle($this->group, $this->user1->person);
     }
