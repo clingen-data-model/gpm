@@ -25,6 +25,8 @@ class AlterCoisReplaceExpertPanelIdWithGroupId extends Migration
         Schema::table('cois', function (Blueprint $table) {
             if(\DB::connection()->getDriverName() != 'sqlite') {
                 $table->dropForeign('cois_v2_expert_panel_id_foreign');
+            } else {
+                $table->dropForeign(['expert_panel_id']);
             }
             $table->dropColumn('expert_panel_id');
             $table->foreign('group_id')->references('id')->on('groups');
