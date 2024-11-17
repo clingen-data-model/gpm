@@ -3,15 +3,10 @@
 namespace Tests\Feature\End2End\Comments;
 
 use Carbon\Carbon;
-use Tests\TestCase;
-use App\Models\Comment;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Submission;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Notifications\CommentActivityNotification;
-use Tests\Feature\End2End\Comments\TestsCommentActivityNotificationSent;
 
 class CommentDeleteTest extends CommentTest
 {
@@ -20,14 +15,8 @@ class CommentDeleteTest extends CommentTest
     public function setup():void
     {
         parent::setup();
-        Carbon::setTestNow('8:00');
         $this->setupPermission('ep-applications-comments-manage');
         $this->comment = $this->createComment();
-    }
-
-    public function teardown():void
-    {
-        Carbon::setTestNow();
     }
 
     /**
