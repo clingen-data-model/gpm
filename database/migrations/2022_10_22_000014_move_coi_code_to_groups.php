@@ -23,6 +23,7 @@ class MoveCoiCodeToGroups extends Migration
         $this->migrateCoiCodeToGroup();
 
         Schema::table('expert_panels', function(Blueprint $table) {
+            $table->dropUnique('expert_panels_coi_code_unique');
             $table->dropColumn('coi_code');
         });
 
