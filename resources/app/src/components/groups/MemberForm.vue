@@ -229,9 +229,13 @@ export default {
         'newMember.roles': {
             deep: true,
             handler(to, from) {
-                const hasCoordinator = to.map(r => r.name).includes('coordinator');
-                const hasGrantLiaison = to.map(r => r.name).includes('grant-liaison');
-                if ((hasCoordinator || hasGrantLiaison) && !from.some(r => r.name === 'coordinator' || r.name === 'grant-liaison')) {
+
+                if (to.some(r => r.name === 'coordinator' || r.name === 'grant-liaison') &&
+                    !from.some(r => r.name === 'coordinator' || r.name === 'grant-liaison')) {
+
+                    //const hasCoordinator = to.map(r => r.name).includes('coordinator');
+                    // const hasGrantLiaison = to.map(r => r.name).includes('grant-liaison');
+                    //  if ((hasCoordinator || hasGrantLiaison) && !from.some(r => r.name === 'coordinator' || r.name === 'grant-liaison')) {
                     this.newMember.is_contact = true;
                 }
             }

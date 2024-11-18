@@ -163,9 +163,8 @@ return [
         ],
     ],
     'role_permissions' => [
-        'coordinator' => [1001,1002,1003,1004,1005,1006, 1007, 1008]
-    ],
-    'role_permissions' => [
+        'coordinator' => [1001,1002,1003,1004,1005,1006, 1007, 1008],
         'grant-liaison' => [1008]
     ],
+    
 ];
