@@ -19,4 +19,10 @@ Needed enhancements to this process are to make people deletion more visible:
 1. Update the People list view to allow the user to include/exclude/only-show deleted people
 2. Update the Person detail screen to show soft-deleted people and allow admins to hard-delete people
 
+Questions raised about the distinction are:
+1. Are retired persons still users?
+2. For inactive groups, are the members persons but not users?
+3. Which roles can perform hard deletes and soft deletes
+4. We need the ability to add a person but not send an invite.  The current process automatically sends an invite for new people.
+
 
