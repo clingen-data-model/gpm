@@ -20,9 +20,9 @@ Needed enhancements to this process are to make people deletion more visible:
 2. Update the Person detail screen to show soft-deleted people and allow admins to hard-delete people
 
 Issues raised about the distinction are:
-1. Are retired persons still users?
-2. For inactive groups, are the members persons but not users?
-3. Which roles can perform hard deletes and soft deletes?
+1. Are retired persons still users?  Yes, retired persons are users.  I retired a person who belonged to only one group.  She was removed immediately from the group, but she remains a user.
+2. For inactive groups, are the members persons but not users?  For our inactive groups, typically only the Coordinator remains a member of the group.  For example, for the Long QT syndrome GCEP group, Emma is the only member.
+3. Which roles can perform hard deletes and soft deletes?  For the hard delete process described above, only Bradford and Mell (super-users) can perform this procedure.  Coordinators can perform soft deletes as well as super admins.
 4. We need the ability to add a person but not send an invite.  The current process automatically sends an invite for new people.
 
 
