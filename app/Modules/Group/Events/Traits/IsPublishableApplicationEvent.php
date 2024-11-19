@@ -31,11 +31,10 @@ trait IsPublishableApplicationEvent
                     'affiliation_id' => $this->group->expertPanel->affiliation_id,
                     'scope_description' => $this->group->expertPanel->scope_description,
                 ],
-                // Conditionally add vcep fields below if type is 'vcep'
-                $this->group->fullType->name === 'vcep' ? ['clinvar_id' => null] : [],
-                $this->group->fullType->name === 'vcep' ? ['clinvar_url' => null] : [],
+                // Conditionally add vcep field below if type is 'vcep'
+               
                 $this->group->fullType->name === 'vcep' ? ['cspec_url' => $this->group->expertPanel->affiliation_id] : [],
-                $this->group->fullType->name === 'vcep' ? ['cspec_web_address' => null] : [],
+                
             )
         ];
     }
