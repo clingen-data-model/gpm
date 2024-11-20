@@ -25,8 +25,8 @@ trait IsPublishableApplicationEvent
                     'id' => $this->group->uuid,
                     'name' => $this->group->name,
                     'short_name' => $this->group->expertPanel->short_base_name,
-                    'status' => optional($this->group->groupStatus)->name, // Retrieve the status name
-                    'parent_group' => optional($this->group->parentGroup)->name,
+                    'status' => $this->group->groupStatus->name,
+                    'parent_group' => $this->group->parentGroup?->name, // TODO: check representation when no parent: null or empty string?
                     'type' => $this->group->fullType->name,
                     'affiliation_id' => $this->group->expertPanel->affiliation_id,
                     'scope_description' => $this->group->expertPanel->scope_description,
