@@ -20,14 +20,23 @@ trait IsPublishableApplicationEvent
     public function getPublishableMessage(): array
     {
         return [
-            'expert_panel' => [
-                'id' => $this->group->uuid,
-                'name' => $this->group->displayName,
-                'type' => $this->group->fullType->name,
-                'affiliation_id' => $this->group->expertPanel->affiliation_id
-            ],
+            'expert_panel' => array_merge(
+                [
+                    'id' => $this->group->uuid,
+                    'name' => $this->group->name,
+                    'short_name' => $this->group->expertPanel->short_base_name,
+                    'status' => $this->group->groupStatus->name,
+                    'parent_group' => $this->group->parentGroup?->name, // TODO: check representation when no parent: null or empty string?
+                    'type' => $this->group->fullType->name,
+                    'affiliation_id' => $this->group->expertPanel->affiliation_id,
+                    'scope_description' => $this->group->expertPanel->scope_description,
+                ],
+                // Conditionally add vcep field below if type is 'vcep'
+                $this->group->fullType->name === 'vcep' ? ['cspec_url' => $this->group->expertPanel->affiliation_id] : [],
+            )
         ];
     }
+
 
     public function mapGeneForMessage($gene): array
     {
