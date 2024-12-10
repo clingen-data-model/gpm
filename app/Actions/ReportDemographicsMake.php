@@ -78,7 +78,7 @@ class ReportDemographicsMake extends ReportMakeAbstract
 
     private function countsForGroupType(String $groupType)
     {
-        $subset = DB::table('v_group_profile_demographics')
+        $group_subset = DB::table('v_group_profile_demographics')
             ->whereNull('deleted_at')
             ->whereNotNull('demographics_completed_date')
             ->where('group_type', '=', $groupType)
@@ -89,20 +89,37 @@ class ReportDemographicsMake extends ReportMakeAbstract
                 }
                 return $d;
             });
-        $counts = self::countSingleValuedFields($groupType, $subset);
-        $counts = array_merge($counts, self::countMultiValuedFields($groupType, $subset));
+        $counts = self::countSingleValuedFields($groupType, $group_subset);
+        $counts = array_merge($counts, self::countMultiValuedFields($groupType, $group_subset));
 
-        $by_person = $subset->unique('person_id');
-        $counts = array_merge($counts, self::countSingleValuedFields($groupType . '_person', $by_person));
-        $counts = array_merge($counts, self::countMultiValuedFields($groupType . '_person', $by_person));
+        $subset = $group_subset->unique('person_id');
+        $counts = array_merge($counts, self::countSingleValuedFields($groupType . '_person', $subset));
+        $counts = array_merge($counts, self::countMultiValuedFields($groupType . '_person', $subset));
 
-        $coordinators = $subset->where('role', 'coordinator');
-        $counts = array_merge($counts, self::countSingleValuedFields($groupType . '_coordinator', $coordinators));
-        $counts = array_merge($counts, self::countMultiValuedFields($groupType . '_coordinator', $coordinators));
+        $subset = $group_subset->where('role', 'biocurator');
+        $counts = array_merge($counts, self::countSingleValuedFields($groupType . '_biocurator', $subset));
+        $counts = array_merge($counts, self::countMultiValuedFields($groupType . '_biocurator', $subset));
 
-        $chairs = $subset->where('role', 'chair');
-        $counts = array_merge($counts, self::countSingleValuedFields($groupType . '_chair', $chairs));
-        $counts = array_merge($counts, self::countMultiValuedFields($groupType . '_chair', $chairs));
+        $subset = $subset->unique('person_id');
+        $counts = array_merge($counts, self::countSingleValuedFields($groupType . '_biocurator_person', $subset));
+        $counts = array_merge($counts, self::countMultiValuedFields($groupType . '_biocurator_person', $subset));
+
+        $subset = $group_subset->where('role', 'coordinator');
+        $counts = array_merge($counts, self::countSingleValuedFields($groupType . '_coordinator', $subset));
+        $counts = array_merge($counts, self::countMultiValuedFields($groupType . '_coordinator', $subset));
+
+        $subset = $subset->unique('person_id');
+        $counts = array_merge($counts, self::countSingleValuedFields($groupType . '_coordinator_person', $subset));
+        $counts = array_merge($counts, self::countMultiValuedFields($groupType . '_coordinator_person', $subset));
+
+        $subset = $group_subset->where('role', 'chair');
+        $counts = array_merge($counts, self::countSingleValuedFields($groupType . '_chair', $subset));
+        $counts = array_merge($counts, self::countMultiValuedFields($groupType . '_chair', $subset));
+
+        $subset = $subset->unique('person_id');
+        $counts = array_merge($counts, self::countSingleValuedFields($groupType . '_chair_person', $subset));
+        $counts = array_merge($counts, self::countMultiValuedFields($groupType . '_chair_person', $subset));
+
         return $counts;
     }
 
