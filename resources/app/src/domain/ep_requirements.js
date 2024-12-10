@@ -34,7 +34,7 @@ export const shortName = new Requirement('Short Base Name', group => !isEmpty(gr
 export const chairs = new Requirement('1+ Co-chairs', group => !isEmpty(group.chairs));
 export const coordinators = new Requirement('1+ Coordinator', group => !isEmpty(group.coordinators));
 
-export const coisComplete = new Requirement('All members completed COI', group => isEmpty(group.members.filter(member => member.needsCoi)));
+export const coisComplete = new Requirement('All members completed COI', group => isEmpty(group.members.filter(member => member.isActive && member.needsCoi)));
 // export const diversityOfExpertise = new Requirement('Diveristy of Expertise (need def)', group => (true));
 export const institutions = new Requirement(
     '3+ institutions represented',
