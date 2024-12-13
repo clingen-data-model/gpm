@@ -226,17 +226,21 @@ export default {
         group() {
             this.syncMember();
         },
+
         'newMember.roles': {
             deep: true,
-            handler(to, from) {
+            handler(to) {
+                const toRoles = to.map(r => r.name);
 
-                if (to.some(r => r.name === 'coordinator' || r.name === 'grant-liaison') &&
-                    !from.some(r => r.name === 'coordinator' || r.name === 'grant-liaison')) {
+                // Check if roles include 'coordinator' or 'grant-liaison'
+                if (toRoles.includes('coordinator') || toRoles.includes('grant-liaison')) {
                     this.newMember.is_contact = true;
+                } else {
+                    this.newMember.is_contact = false;
                 }
             }
-        }
-    },
+        },
+        
     methods: {
         async getSuggestedPeople() {
             if (!this.newMember.first_name && !this.newMember.last_name && !this.newMember.email) {
