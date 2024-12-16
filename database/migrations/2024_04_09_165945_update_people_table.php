@@ -54,7 +54,7 @@ return new class extends Migration
     {
         Schema::table('people', function (Blueprint $table) {
             $table->dropColumn('birth_country');
-            $table->dropColumn('birth_country_other', 255);
+            $table->dropColumn('birth_country_other');
             $table->dropColumn('birth_country_opt_out');
             $table->dropColumn('reside_country');
             $table->dropColumn('reside_country_other');
@@ -87,5 +87,5 @@ return new class extends Migration
             $table->dropColumn('demographics_version');
         });
     }
-   
+
 };
