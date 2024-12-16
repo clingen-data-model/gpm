@@ -434,8 +434,33 @@
             </section>
 
             <section>
-                <h2>Employment</h2>
+                <h2>Career Stage</h2>
+                <legend>Please choose the career stage description that most closely matches your current status.
+                    If listed categories do not apply, please use "Other" box to describe.
+                </legend>
                 <br>
+                <div v-if="!formdata.career_stage_opt_out">
+                    <div v-for="career_stage in available_options.career_stages" :key="career_stage.value" class="flex">
+                        <label>
+                            <input type="radio" :value="career_stage.value" v-model="formdata.career_stage"
+                                v-bind:disabled="!editModeActive">
+                            {{ career_stage.label }}
+                        </label>
+                    </div>
+                    <div style="display: flex;">
+                        <label>Other (optional):</label>
+                        <input class="w3-input" id="career_stage_other" type="text"
+                            v-model="formdata.career_stage_other" v-bind:disabled="!editModeActive">
+                    </div>
+                </div>
+                <label>
+                    <input type="checkbox" v-model="formdata.career_stage_opt_out" v-bind:disabled="!editModeActive">
+                    Prefer not to answer<br>
+                </label>
+            </section>
+
+            <section>
+                <h2>Employment</h2>
                 <legend>Please choose the option(s) that most accurately describes your role or occupation.
                     <em>Select all that apply.</em>
                 </legend>
@@ -633,6 +658,14 @@ const available_options = {
         { value: "no", label: "No" },
         { value: "unsure", label: "Unsure" },
     ],
+    career_stages: [
+        { value: "early", label: "Early career investigator or professional - worked professionally for 10 years or less in current field/industry" },
+        { value: "mid" , label: "Mid career investigator or professional - worked professionally for 11-20 years in current field/industry" },
+        { value: "late" , label: "Late career investigator or professional - worked professionally for 21+ years in current field/industry " },
+        { value: "retired" , label: "Retired or Emeritus" },
+        { value: "trainee" , label: "I am currently a trainee or in schooling" },
+        { value: "does_not_apply" , label: "Does not apply " },
+    ],
     occupations: [
         { value: "genetics physician", label: "Medical genetics physician" },
         { value: "non genetics physician", label: "Medical non-genetics physician" },
@@ -744,6 +777,9 @@ export default {
                 disadvantaged: null,
                 disadvantaged_other: null,
                 disadvantaged_opt_out: false,
+                career_stage: null,
+                career_stage_opt_out: false,
+                career_stage_other: null,
                 occupations: [],
                 occupations_other: null,
                 occupations_opt_out: false,
@@ -832,7 +868,7 @@ export default {
             const sections_with_errors = this.checkValidity();
             //  console.log(items);
             if (sections_with_errors.length === 0) {
-                items = { ...this.formdata, demographics_version: 1 };
+                items = { ...this.formdata, demographics_version: 2 };
 
                 // do not submit values for fields that are opted out
                 if (items.birth_country_opt_out === true) {
@@ -873,6 +909,10 @@ export default {
                 if (items.disadvantaged_opt_out === true) {
                     items.disadvantaged = null;
                     items.disadvantaged_other = null;
+                }
+                if (items.career_stage_opt_out === true) {
+                    items.career_stage = null;
+                    items.career_stage_other = null;
                 }
                 if (items.occupations_opt_out === true) {
                     items.occupations = null;
@@ -940,7 +980,7 @@ export default {
 
             const isSectionValid = (selection, other, optOut) =>
             (
-                selection?.length !== 0 ||
+                (selection !== null && selection.length !== 0) ||
                 (typeof other === "string" && other.trim() !== "") ||
                 optOut
             );
@@ -970,6 +1010,8 @@ export default {
                     isSectionValid(items.support, items.support_other, items.support_opt_out),
                 'Under-Represented Groups and Disadvantaged Backgrounds': () =>
                     isSectionValid(items.disadvantaged, items.disadvantaged_other, items.disadvantaged_opt_out),
+                'Career Stage': () =>
+                    isSectionValid(items.career_stage, items.career_stage_other, items.career_stage_opt_out),
                 'Employment': () =>
                     isSectionValid(items.occupations, items.occupations_other, items.occupations_opt_out),
             };
