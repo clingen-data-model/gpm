@@ -7,7 +7,6 @@ use Illuminate\Queue\SerializesModels;
 use App\Modules\Group\Events\GeneEvent;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
-use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
 use Illuminate\Broadcasting\InteractsWithSockets;
 
 class GenesAdded extends GeneEvent

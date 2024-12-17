@@ -2,20 +2,18 @@
 
 namespace App\Modules\ExpertPanel\Events;
 
-use App\Modules\Group\Events\PublishableApplicationEvent;
-use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
+use App\Modules\Group\Events\PublishableExpertPanelEvent;
+use App\Modules\Group\Events\Traits\IsPublishableExpertPanelEvent;
+use App\Modules\Group\Events\GroupEvent;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 
-class ExpertPanelAttributesUpdated extends ExpertPanelEvent implements PublishableApplicationEvent
+class ExpertPanelAttributesUpdated extends GroupEvent implements PublishableExpertPanelEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
-    use IsPublishableApplicationEvent {
-        getPublishableMessage as protected getBaseMessage;
-    }
+    use Dispatchable, InteractsWithSockets, SerializesModels, IsPublishableExpertPanelEvent;
 
     /**
      * Create a new event instance.
@@ -27,49 +25,24 @@ class ExpertPanelAttributesUpdated extends ExpertPanelEvent implements Publishab
         //
     }
 
-    public function getLogEntry():string
+    public function getLogEntry(): string
     {
         $parts = [];
-        foreach ($this->attributes as $key=>$value) {
-            $parts[] = $key.' = '.$value;
+        foreach ($this->attributes as $key => $value) {
+            $parts[] = $key . ' = ' . $value;
         }
 
-        return 'Attributes updated: '.implode('; ', $parts);
+        return 'Attributes updated: ' . implode('; ', $parts);
     }
 
-    public function getProperties():array
+    public function getProperties(): array
     {
         return $this->attributes;
     }
 
-    public function getEventType():string
+    public function getEventType(): string
     {
         return 'ep_info_updated';
-    }
-
-    public function getPublishableMessage(): array
-    {
-        // TODO: double-check that the "Name" is what the website team wants
-        $message = $this->getBaseMessage();
-        // TODO: check if these fields are still used/needed, since they don't necessarily show up elsewhere, or maybe should be in trait?
-        $message['membership_description'] = $this->expertPanel->membership_description;
-        // $message['hypothesis_group'] = $this->expertPanel->hypothesis_group; // currently unused?
-        return $message;
-        /*
-        return [
-            "expert_panel" => [
-                'id' => $this->expertPanel->group->uuid,
-                'name' => $this->expertPanel->display_name,
-                'type' => $this->expertPanel->group->type->name,
-                'affiliation_id' => $this->expertPanel->affiliation_id,
-                'long_base_name' => $this->expertPanel->long_base_name,
-                'short_base_name' => $this->expertPanel->short_base_name,
-                'hypothesis_group' => $this->expertPanel->hypothesis_group,
-                'membership_description' => $this->expertPanel->membership_description,
-                'scope_description' => $this->expertPanel->scope_description
-            ]
-        ];
-        */
     }
 
     /**
@@ -77,6 +50,7 @@ class ExpertPanelAttributesUpdated extends ExpertPanelEvent implements Publishab
      */
     public function shouldPublish(): bool
     {
+        // FIXME: allow WG events to be published
         return parent::shouldPublish()
             && $this->expertPanel->definitionIsApproved;
     }
