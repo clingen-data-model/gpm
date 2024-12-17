@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkepam"]=self["webpackChunkepam"]||[]).push([[443],{6934:function(e,n,r){r.r(n),r.d(n,{default:function(){return l}});var t=r(6252);const a={class:"w-full h-48 mx-auto align-middle py-48 text-center border bg-gray-100"};function u(e,n){return(0,t.wg)(),(0,t.iD)("div",a," PLACEHOLDER FOR ABOUT PAGE ")}var c=r(3744);const s={},i=(0,c.Z)(s,[["render",u]]);var l=i}}]);
+//# sourceMappingURL=about.2824834f.js.map
