@@ -28,7 +28,7 @@ trait IsPublishableGroupEvent
                     'type' => $this->group->fullType->name,
             ],
         ];
-        if ($this->group->isEp()) { // TODO: consider moving this to IsPublisableExpertPanelEvent
+        if ($this->group->isEp) { // TODO: consider moving this to IsPublishableExpertPanelEvent
             $message['group']['affiliation_id'] = $this->group->expertPanel->affiliation_id;
             $message['group']['scope_description'] = $this->group->expertPanel->scope_description;
             $message['group']['short_name'] = $this->group->expertPanel->short_base_name;
