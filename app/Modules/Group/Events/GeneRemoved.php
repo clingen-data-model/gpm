@@ -7,10 +7,7 @@ use App\Modules\Group\Events\GeneEvent;
 use App\Modules\ExpertPanel\Models\Gene;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
-use App\Modules\Group\Events\GeneEventInterface;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use App\Modules\Group\Events\PublishableApplicationEvent;
-use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
 
 class GeneRemoved extends GeneEvent
 {
