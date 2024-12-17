@@ -62,7 +62,13 @@ class ExpertiseSeeder extends Seeder
                 'name' => 'None',
                 'approved' => 1,
                 'synonyms' => ['na']
-            ]
+            ],
+            [
+                'id' => 9,
+                'name' => 'Pharmacist or Pharmacogenomicist',
+                'approved' => 1,
+                'synonyms' => ['pharm', 'pharmacogenomics'],
+            ],
         ];
 
         foreach ($exps as $exp) {
