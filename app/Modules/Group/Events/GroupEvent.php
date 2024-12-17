@@ -5,15 +5,11 @@ namespace App\Modules\Group\Events;
 use Illuminate\Support\Carbon;
 use App\Events\RecordableEvent;
 use App\Modules\Group\Models\Group;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Broadcasting\PrivateChannel;
-use phpDocumentor\Reflection\Types\Boolean;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 abstract class GroupEvent extends RecordableEvent
 {

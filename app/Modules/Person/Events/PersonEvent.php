@@ -5,14 +5,10 @@ namespace App\Modules\Person\Events;
 use Illuminate\Support\Carbon;
 use App\Events\RecordableEvent;
 use App\Modules\Person\Models\Person;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 abstract class PersonEvent extends RecordableEvent
 {

@@ -5,14 +5,14 @@ namespace App\Modules\ExpertPanel\Events;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\Group\Events\PublishableApplicationEvent;
-use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
+use App\Modules\Group\Events\PublishableExpertPanelEvent;
+use App\Modules\Group\Events\Traits\IsPublishableExpertPanelEvent;
 use Illuminate\Broadcasting\InteractsWithSockets;
 
-class StepDateApprovedUpdated extends ExpertPanelEvent implements PublishableApplicationEvent
+class StepDateApprovedUpdated extends ExpertPanelEvent implements PublishableExpertPanelEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    use IsPublishableApplicationEvent {
+    use IsPublishableExpertPanelEvent {
         getPublishableMessage as protected getBaseMessage;
     }
 
@@ -21,7 +21,7 @@ class StepDateApprovedUpdated extends ExpertPanelEvent implements PublishableApp
      *
      * @return void
      */
-    public function __construct(public ExpertPanel  $application, public int $step, public string $dateApproved)
+    public function __construct(public ExpertPanel  $expertPanel, public int $step, public string $dateApproved)
     {
     }
 
@@ -33,10 +33,10 @@ class StepDateApprovedUpdated extends ExpertPanelEvent implements PublishableApp
     public function getProperties():array
     {
         return [
-            'application_uuid' => $this->application->uuid,
+            'application_uuid' => $this->expertPanel->uuid,
             'step' => $this->step,
             'new_date_approved' => $this->dateApproved,
-            'old_approval_date' => $this->application->getOriginal('step_'.$this->step.'_approval_date')
+            'old_approval_date' => $this->expertPanel->getOriginal('step_'.$this->step.'_approval_date')
         ];
     }
 

@@ -7,11 +7,12 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
+use App\Modules\Group\Events\Traits\IsPublishableGroupEvent;
+use App\Events\PublishableEvent;
 
-class ExpertPanelAffiliationIdUpdated extends GroupEvent implements PublishableApplicationEvent
+class ExpertPanelAffiliationIdUpdated extends GroupEvent implements PublishableEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels, IsPublishableApplicationEvent;
+    use Dispatchable, InteractsWithSockets, SerializesModels, IsPublishableGroupEvent;
 
     /**
      * Create a new event instance.
