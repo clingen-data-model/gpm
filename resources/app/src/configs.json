@@ -186,6 +186,18 @@
                 "name": "biocurator-trainer",
                 "display_name": "Biocurator trainer",
                 "description": "Biocurator trainer designation.  No default permissions."
+            },
+            "grant-liaison": {
+                "id": 107,
+                "name": "grant-liaison",
+                "display_name": "Grant Liaison",
+                "description": "Grant liaison designation.  No default permissions."
+            },
+            "annotator": {
+                "id": 108,
+                "name": "annotator",
+                "display_name": "Annotator",
+                "description": "Annotator designation.  No default permissions."
             }
         },
         "permissions": {
@@ -247,6 +259,9 @@
                 1005,
                 1006,
                 1007,
+                1008
+            ],
+            "grant-liaison": [
                 1008
             ]
         }
