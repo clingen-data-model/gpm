@@ -19,18 +19,28 @@ trait IsPublishableApplicationEvent
 
     public function getPublishableMessage(): array
     {
-        return [
-            'expert_panel' => array_merge(
-                [
+        $message = [
+            'group' => [
                     'id' => $this->group->uuid,
                     'name' => $this->group->name,
-                    'short_name' => $this->group->expertPanel->short_base_name,
                     'status' => $this->group->groupStatus->name,
                     'parent_group' => $this->group->parentGroup?->name, // TODO: check representation when no parent: null or empty string?
                     'type' => $this->group->fullType->name,
-                    'affiliation_id' => $this->group->expertPanel->affiliation_id,
-                    'scope_description' => $this->group->expertPanel->scope_description,
-                    // TODO: consider adding membership_description
+            ],
+        ];
+        if ($this->group->isEp()) {
+            $message['group']['affiliation_id'] = $this->group->expertPanel->affiliation_id;
+            $message['group']['scope_description'] = $this->group->expertPanel->scope_description;
+            $message['group']['short_name'] = $this->group->expertPanel->short_base_name;
+            // TODO: not sure about these fields
+            // $message['group']['long_base_name'] = $this->group->expertPanel->long_base_name;
+            // $message['group']['hypothesis_group'] = $this->group->expertPanel->hypothesis_group;
+            // $message['group']['membership_description'] = $this->group->expertPanel->membership_description;
+
+        }
+        return [
+            'group' => array_merge(
+                [
                 ],
                 // Conditionally add vcep field below if type is 'vcep'
                 $this->group->fullType->name === 'vcep' ? ['cspec_url' => $this->group->expertPanel->affiliation_id] : [],
