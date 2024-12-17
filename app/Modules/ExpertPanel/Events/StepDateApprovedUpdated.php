@@ -21,7 +21,7 @@ class StepDateApprovedUpdated extends ExpertPanelEvent implements PublishableExp
      *
      * @return void
      */
-    public function __construct(public ExpertPanel  $application, public int $step, public string $dateApproved)
+    public function __construct(public ExpertPanel  $expertPanel, public int $step, public string $dateApproved)
     {
     }
 
@@ -33,10 +33,10 @@ class StepDateApprovedUpdated extends ExpertPanelEvent implements PublishableExp
     public function getProperties():array
     {
         return [
-            'application_uuid' => $this->application->uuid,
+            'application_uuid' => $this->expertPanel->uuid,
             'step' => $this->step,
             'new_date_approved' => $this->dateApproved,
-            'old_approval_date' => $this->application->getOriginal('step_'.$this->step.'_approval_date')
+            'old_approval_date' => $this->expertPanel->getOriginal('step_'.$this->step.'_approval_date')
         ];
     }
 

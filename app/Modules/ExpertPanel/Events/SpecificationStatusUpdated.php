@@ -22,7 +22,7 @@ class SpecificationStatusUpdated extends ExpertPanelEvent
      *
      * @return void
      */
-    public function __construct(public ExpertPanel $application, public Specification $specification )
+    public function __construct(public ExpertPanel $expertPanel, public Specification $specification )
     {
     }
 
