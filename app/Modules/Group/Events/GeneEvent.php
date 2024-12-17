@@ -3,11 +3,11 @@ namespace App\Modules\Group\Events;
 
 use App\Modules\Group\Events\GroupEvent;
 use App\Modules\Group\Events\GeneEventInterface;
-use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
+use App\Modules\Group\Events\Traits\IsPublishableExpertPanelEvent;
 
-abstract class GeneEvent extends GroupEvent implements GeneEventInterface, PublishableApplicationEvent
+abstract class GeneEvent extends GroupEvent implements GeneEventInterface, PublishableExpertPanelEvent
 {
-    use IsPublishableApplicationEvent {
+    use IsPublishableExpertPanelEvent {
         getPublishableMessage as protected getBaseMessage;
     }
 

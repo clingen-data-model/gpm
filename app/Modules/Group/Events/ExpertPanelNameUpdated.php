@@ -2,19 +2,19 @@
 
 namespace App\Modules\Group\Events;
 
-use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
+use App\Modules\Group\Events\Traits\IsPublishableExpertPanelEvent;
 use App\Modules\Group\Models\Group;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 
-class ExpertPanelNameUpdated extends GroupEvent implements PublishableApplicationEvent
+class ExpertPanelNameUpdated extends GroupEvent implements PublishableExpertPanelEvent
 {
     use Dispatchable, 
         InteractsWithSockets, 
         SerializesModels, 
-        IsPublishableApplicationEvent;
+        IsPublishableExpertPanelEvent;
 
     /**
      * Create a new event instance.
