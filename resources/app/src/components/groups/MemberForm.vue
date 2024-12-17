@@ -65,7 +65,8 @@
                 </input-row>
 
                 <dictionary-row label="">
-                    <checkbox v-model="newMember.is_contact" label="Receives notifications about this group" />
+                    <checkbox @update:modelValue="$event => newMember.is_contact = $event" :modelValue="roleRequiresNotification || newMember.is_contact" :disabled="roleRequiresNotification" label="Receives notifications about this group" />
+
                 </dictionary-row>
 
                 <div class="border-t mt-4 pt-2">
@@ -240,6 +241,9 @@ export default {
         },
         needsExpertise () {
             return !this.newMember.person.expertises || this.newMember.person.expertises.length == 0
+        },
+        roleRequiresNotification () {
+            return this.newMember.hasRole('coordinator') || this.newMember.hasRole('grant-liaison');
         }
     },
     setup () {
@@ -260,14 +264,6 @@ export default {
         group () {
             this.syncMember();
         },
-        'newMember.roles': {
-            deep: true,
-            handler (to, from) {
-                if (to.map(r => r.name).includes('coordinator') && !from.map(r => r.name).includes('coordinator')) {
-                    this.newMember.is_contact = true;
-                }
-            }
-        }
     },
     methods: {
         async getSuggestedPeople() {
@@ -312,6 +308,9 @@ export default {
             this.$emit('canceled');
         },
         async saveAndExit () {
+            if (this.roleRequiresNotification) {
+                this.newMember.is_contact = true;
+            }
             await this.save();
             this.clearForm();
             this.suggestedPeople = [];
