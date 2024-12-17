@@ -21,7 +21,7 @@ class DocumentDeleted extends ExpertPanelEvent
      *
      * @return void
      */
-    public function __construct(public ExpertPanel  $application, public Document $document)
+    public function __construct(public ExpertPanel  $expertPanel, public Document $document)
     {
         //
     }

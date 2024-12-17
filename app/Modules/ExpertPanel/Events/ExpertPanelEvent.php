@@ -17,7 +17,7 @@ abstract class ExpertPanelEvent extends RecordableEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public function __construct(public ExpertPanel  $application)
+    public function __construct(public ExpertPanel  $expertPanel)
     {
     }
 
@@ -33,7 +33,7 @@ abstract class ExpertPanelEvent extends RecordableEvent
 
     public function getSubject():Model
     {
-        return $this->application->group;
+        return $this->expertPanel->group;
     }
 
     public function getLogDate():Carbon
@@ -43,7 +43,7 @@ abstract class ExpertPanelEvent extends RecordableEvent
 
     public function getStep()
     {
-        return $this->application->current_step;
+        return $this->expertPanel->current_step;
     }
 
     /**
@@ -64,6 +64,6 @@ abstract class ExpertPanelEvent extends RecordableEvent
 
     public function __get($key)
     {
-        return $key == 'group' ? $this->application->group : null;
+        return $key == 'group' ? $this->expertPanel->group : null;
     }
 }

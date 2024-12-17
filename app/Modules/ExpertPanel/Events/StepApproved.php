@@ -23,7 +23,7 @@ class StepApproved extends ExpertPanelEvent implements PublishableExpertPanelEve
      *
      * @return void
      */
-    public function __construct(public ExpertPanel  $application, public int $step, public Carbon $dateApproved)
+    public function __construct(public ExpertPanel  $expertPanel, public int $step, public Carbon $dateApproved)
     {
         //
     }
@@ -47,7 +47,7 @@ class StepApproved extends ExpertPanelEvent implements PublishableExpertPanelEve
 
     public function getStep()
     {
-        return max(($this->application->current_step - 1), 1);
+        return max(($this->expertPanel->current_step - 1), 1);
     }
 
     public function getEventType(): string

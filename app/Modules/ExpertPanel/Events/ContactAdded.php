@@ -21,7 +21,7 @@ class ContactAdded extends ExpertPanelEvent
      *
      * @return void
      */
-    public function __construct(public ExpertPanel  $application, public Person $person)
+    public function __construct(public ExpertPanel  $expertPanel, public Person $person)
     {}
 
     public function getLogEntry():string
