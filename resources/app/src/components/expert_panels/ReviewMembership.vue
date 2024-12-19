@@ -13,8 +13,9 @@
     const role_priorities = {
         'Chair': 1,
         'Coordinator': 2,
-        'Biocurator': 3,
-        'Expert': 4,
+        'Grant Liaison': 3,
+        'Biocurator': 4,
+        'Expert': 5,
     };
 
     const rolePriority = (role) => {
