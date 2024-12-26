@@ -17,17 +17,20 @@ use Database\Seeders\EpTypesTableSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
     use WithFaker;
+    use RefreshDatabase;
     // Helper methods
 
     public function setup():void
     {
         parent::setup();
+        $this->seed(GroupTypeSeeder::class);
         TestResponse::macro('assertValidationErrors', function($validationErrrors) {
             $this->assertStatus(422)
                 ->assertInvalid($validationErrrors);
