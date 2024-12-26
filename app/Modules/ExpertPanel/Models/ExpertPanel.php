@@ -196,7 +196,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $this->hasMany(EvidenceSummary::class);
     }
 
-
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -280,14 +279,28 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $query->whereNotNull('step_4_approval_date');
     }
 
+    public function scopeGroupType($query, $type)
+    {
+        $typeId = is_object($type) ? $type->id : $type;
+
+        return $query->whereHas('group', function ($query) use ($typeId) {
+            $query->where('group_type_id', $typeId);
+        });
+    }
+
     public function scopeTypeGcep($query)
     {
-        return $query->where('expert_panel_type_id', config('expert_panels.types.gcep.id'));
+        return $query->groupType(config('groups.types.gcep.id'));
     }
 
     public function scopeTypeVcep($query)
     {
-        return $query->where('expert_panel_type_id', config('expert_panels.types.vcep.id'));
+        return $query->groupType(config('groups.types.vcep.id'));
+    }
+
+    public function scopeTypeScvcep($query)
+    {
+        return $query->groupType(config('groups.types.scvcep.id'));
     }
 
 
@@ -338,16 +351,29 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
             ->first();
     }
 
+    /**
+     * @deprecated Use group's isVcep accessor
+     */
     public function getIsVcepAttribute(): bool
     {
-        return $this->expert_panel_type_id == 2;
+        return $this->group->group_type_id == config('groups.types.vcep.id');
     }
 
+    /**
+     * @deprecated Use group's isGcep accessor
+     */
     public function getIsGcepAttribute(): bool
     {
-        return $this->expert_panel_type_id == 1;
+        return $this->group->group_type_id == config('groups.types.gcep.id');
     }
 
+    /**
+     * @deprecated Use group's isScvcep accessor
+     */
+    public function getIsScvcepAttribute(): bool
+    {
+        return $this->group->group_type_id == config('groups.types.scvcep.id');
+    }
 
     public function getNameAttribute()
     {
