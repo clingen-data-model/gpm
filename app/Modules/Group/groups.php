@@ -109,6 +109,12 @@ return [
             'display_name' => 'Biocurator trainer',
             'description' => 'Biocurator trainer designation.  No default permissions.',
         ],
+        'civic-editor' => [
+            'id' => 106,
+            'name' => 'civic-editor',
+            'display_name' => 'CIVic Editor',
+            'description' => 'Individuals approves the submission of edits to CIViC. Indicates a higher level of training.  No default permissions.',
+        ],
     ],
     'permissions' => [
         'info-edit' => [
