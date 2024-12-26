@@ -17,7 +17,7 @@ class SpecificationsGet
 
     public function asController(Group $group)
     {
-        if (!$group->isVcep) {
+        if (!$group->isVcepOrScvcep) {
             return response(['message' => 'Only VCEPs have specifications.'], 404);
         }
 

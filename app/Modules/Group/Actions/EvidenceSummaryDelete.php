@@ -26,7 +26,7 @@ class EvidenceSummaryDelete
     public function asController(ActionRequest $request, $groupUuid, $summaryId)
     {
         $group = Group::findByUuidOrFail($groupUuid);
-        if (!$group->isVcep) {
+        if (!$group->isVcepOrScvcep) {
             return;
         }
         $evidenceSummary = $group->expertPanel->evidenceSummaries()->findOrFail($summaryId);

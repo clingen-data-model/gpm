@@ -30,7 +30,7 @@ class EvidenceSummaryUpdate
     public function asController(ActionRequest $request, $groupUuid, $summaryId)
     {
         $group = Group::findByUuidOrFail($groupUuid);
-        if (!$group->isVcep) {
+        if (!$group->isVcepOrScvcep) {
             throw ValidationException::withMessages(['group' => ['You can not add an evidence summary to this group. Only VCEPs have evidence summaries.']]);
         }
         $evidenceSummary = $group->expertPanel->evidenceSummaries()->findOrFail($summaryId);
