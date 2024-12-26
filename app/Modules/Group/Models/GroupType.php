@@ -24,6 +24,7 @@ class GroupType extends Model
     protected $fillable = [
         'name',
         'fullname',
+        'display_name',
         'can_be_parent'
     ];
 
