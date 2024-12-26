@@ -8,7 +8,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use App\Modules\Group\Http\Resources\MemberResource;
 use App\Modules\Group\Http\Resources\GroupStatusResource;
 
-class GroupResource extends JsonResource
+class GroupSummaryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -23,15 +23,12 @@ class GroupResource extends JsonResource
         $data['expert_panel'] = $this->whenLoaded('expertPanel', new ExpertPanelResource($this->expertPanel));
         $data['type'] = $this->whenLoaded('type', new GroupTypeResource($this->type));
         $data['status'] = $this->whenLoaded('status', new GroupStatusResource($this->status));
-        $data['members'] = $this->whenLoaded('members', MemberResource::collection($this->members));
-        $data['coordinators'] = $this->whenLoaded('coordinators', MemberResource::collection($this->members));
-        $data['is_vcep'] = $this->group->isVcep;
-        $data['is_gcep'] = $this->group->isGcep;
-        $data['is_scvcep'] = $this->group->isScvcep;
-        // $data['parent'] = $this->whenLoaded('parent', GroupResource::collection($this->parent));
+        $data['is_vcep'] = $this->isVcep;
+        $data['is_gcep'] = $this->isGcep;
+        $data['is_scvcep'] = $this->isScvcep;
 
 
-        unset($data['members'], $data['created_at'], $data['deleted_at']);
+        unset($data['created_at'], $data['deleted_at']);
         return $data;
     }
 }
