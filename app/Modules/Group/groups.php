@@ -121,6 +121,12 @@ return [
             'display_name' => 'Annotator',
             'description' => 'Annotator designation.  No default permissions.',
         ],
+        'civic-editor' => [
+            'id' => 109,
+            'name' => 'civic-editor',
+            'display_name' => 'CIViC Editor',
+            'description' => 'Individual who approves the submission of edits to CIViC. Indicates a higher level of training.  No default permissions.',
+        ],
     ],
     'permissions' => [
         'info-edit' => [
