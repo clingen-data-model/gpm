@@ -26,8 +26,6 @@ class CreateGroupTypesTable extends Migration
         });
 
         Schema::enableForeignKeyConstraints();
-
-        (new GroupTypeSeeder)->run();
     }
 
     /**
