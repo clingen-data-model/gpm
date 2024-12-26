@@ -8,7 +8,6 @@ use Illuminate\Support\Carbon;
 use App\Models\Contracts\HasNotes;
 use App\Modules\Group\Models\Group;
 use App\Models\Contracts\HasMembers;
-use App\Modules\Person\Models\Person;
 use App\Models\Contracts\RecordsEvents;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\ExpertPanel\Models\Gene;
@@ -25,10 +24,8 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Modules\Group\Models\Contracts\BelongsToGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Modules\ExpertPanel\Models\SpecificationRuleSet;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use App\Modules\ExpertPanel\Models\CurationReviewProtocol;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use App\Models\Traits\RecordsEvents as TraitsRecordsEvents;
 use App\Modules\Group\Models\Traits\HasMembers as TraitsHasMembers;
 use App\Modules\Group\Models\Traits\BelongsToGroup as TraitsBelongsToGroup;
@@ -199,37 +196,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $this->hasMany(EvidenceSummary::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function leadershipAttestation()
-    {
-        return $this->hasOne(\App\Modules\ExpertPanels\Models\LeadershipAttestation::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function biocuratorOnboardingAttestation()
-    {
-        return $this->hasOne(\App\Modules\ExpertPanels\Models\BiocuratorOnboardingAttestation::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function curtionReviewProtocol()
-    {
-        return $this->belongsTo(\App\Modules\ExpertPanels\Models\CurtionReviewProtocol::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function groupType(): BelongsTo
-    {
-        return $this->belongsTo(GroupType::class);
-    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -247,16 +213,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     public function specifications(): HasMany
     {
         return $this->hasMany(Specification::class);
-    }
-
-    /**
-     * Get all of the specifications for the ExpertPanel
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
-     */
-    public function specificationRuleSets(): HasManyThrough
-    {
-        return $this->hasManyThrough(SpecificationRuleSet::class, Specification::class);
     }
 
     /**
