@@ -16,7 +16,7 @@ class MembershipDescriptionUpdate
 
     public function handle(Group $group, ?string $description): Group
     {
-        if (!$group->isVcep) {
+        if (!$group->isVcepOrScvcep) {
             throw ValidationException::withMessages(['membership_description' => ['A membership description can only be set for VCEPs.']]);
         }
 

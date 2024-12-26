@@ -66,7 +66,7 @@ class GeneUpdate
         ];
 
         $group = $request->group;
-        if ($group->isVcep) {
+        if ($group->isVcepOrScvcep) {
             $rules['mondo_id'] = 'required|regex:/MONDO:\d\d\d\d\d\d\d/i|exists:'.$connectionName.'.diseases,mondo_id';
         }
 
