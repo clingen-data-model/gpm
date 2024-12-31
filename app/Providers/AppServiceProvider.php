@@ -4,11 +4,11 @@ namespace App\Providers;
 
 use GuzzleHttp\Client;
 use App\Services\HgncLookup;
-use App\Services\MondoLookup;
+use App\Services\DiseaseLookup;
 use GuzzleHttp\ClientInterface;
 use Illuminate\Support\Facades\URL;
 use App\Services\HgncLookupInterface;
-use App\Services\MondoLookupInterface;
+use App\Services\DiseaseLookupInterface;
 use Infrastructure\Service\MessageBus;
 use Illuminate\Support\ServiceProvider;
 use Lorisleiva\Actions\Facades\Actions;
@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->bind(MondoLookupInterface::class, MondoLookup::class);
+        $this->app->bind(DiseaseLookupInterface::class, DiseaseLookup::class);
         $this->app->bind(HgncLookupInterface::class, HgncLookup::class);
 
         if (config('app.url_scheme')) {
