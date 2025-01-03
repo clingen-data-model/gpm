@@ -40,7 +40,7 @@ class ApplicationSaveChanges
                                     : null;
         $group = $this->nhgriAttestation->handle($group, $nhgriAttestationDate);
 
-        if ($group->isVcep) {
+        if ($group->isVcepOrScvcep) {
             $group = $this->memberDescription->handle($group, $data->get('membership_description'));
             $group = $this->reanalysisAttestation
                         ->handle(

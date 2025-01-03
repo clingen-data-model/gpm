@@ -19,7 +19,7 @@ class EvidenceSummaryAdd
 
     public function handle(Group $group, array $data): EvidenceSummary
     {
-        if (!$group->isVcep) {
+        if (!$group->isVcepOrScvcep) {
             throw ValidationException::withMessages(['group' => ['You can not add an evidence summary to this group. Only VCEPs have evidence summaries.']]);
         }
 

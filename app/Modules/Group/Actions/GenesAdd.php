@@ -26,7 +26,7 @@ class GenesAdd
             throw ValidationException::withMessages(['group' => 'Genes can only be added to an Expert Panel.']);
         }
 
-        if ($group->isVcep) {
+        if ($group->isVcepOrScvcep) {
             return $this->addGenesToVcep->handle($group, $genes);
         }
         if ($group->isGcep) {
@@ -50,7 +50,7 @@ class GenesAdd
     {
         $gtConn = config('database.gt_db_connection');
         $group = $request->group;
-        if ($group->isVcep) {
+        if ($group->isVcepOrScvcep) {
             return [
                 'genes' => 'required|array|min:1',
                 'genes.*' => 'required|array:hgnc_id,mondo_id',

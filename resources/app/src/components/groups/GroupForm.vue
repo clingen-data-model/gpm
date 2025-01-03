@@ -108,12 +108,7 @@ export default {
     ],
     data() {
         return {
-            groupTypes: [
-                {id: 1, fullname: 'Working Group'},
-                {id: 2, fullname: 'Clinical Domain Working Group'},
-                {id: 3, fullname: 'GCEP'},
-                {id: 4, fullname: 'VCEP'},
-            ],
+            groupTypes: configs.groups.types,
             groupStatuses: configs.groups.statuses,
             newGroup: new Group(),
             parents: []
@@ -140,7 +135,7 @@ export default {
             return Object.values(this.groupStatuses).map(status => ({value: status.id, label: this.titleCase(status.name)}))
         },
         typeOptions () {
-            return this.groupTypes.map(type => ({value: type.id, label: type.fullname}));
+            return Object.values(this.groupTypes).map(type => ({value: type.id, label: type.display_name}));
         },
         canSetType() {
             return this.hasPermission('groups-manage') && !this.group.id

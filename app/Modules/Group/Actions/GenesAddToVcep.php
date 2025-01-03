@@ -26,7 +26,7 @@ class GenesAddToVcep
 
     public function handle(Group $group, array $genes): Group
     {
-        if (!$group->isVcep) {
+        if (!$group->isVcepOrScvcep) {
             throw ValidationException::withMessages(['group' => 'The group is not a VCEP.']);
         }
 

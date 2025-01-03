@@ -237,6 +237,17 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         return $this->group_type_id == config('groups.types.gcep.id');
     }
 
+    public function getIsScvcepAttribute(): bool
+    {
+        return $this->group_type_id == config('groups.types.scvcep.id');
+    }
+
+    public function getIsVcepOrScvcepAttribute(): bool
+    {
+        return $this->isVcep || $this->isScvcep;
+    }
+
+
     public function getFullTypeAttribute()
     {
         return $this->type;

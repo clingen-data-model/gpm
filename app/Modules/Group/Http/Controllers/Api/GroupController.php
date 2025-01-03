@@ -2,12 +2,14 @@
 
 namespace App\Modules\Group\Http\Controllers\Api;
 
+use App\ModelSearchService;
 use Illuminate\Http\Request;
 use App\Modules\Group\Models\Group;
 use App\Http\Controllers\Controller;
-use App\ModelSearchService;
+use Illuminate\Http\Resources\Json\JsonResource;
 use App\Modules\Group\Http\Resources\GroupResource;
 use App\Modules\Group\Http\Resources\MemberResource;
+use App\Modules\Group\Http\Resources\GroupSummaryResource;
 
 class GroupController extends Controller
 {
@@ -42,6 +44,8 @@ class GroupController extends Controller
                         'current_step'
                     ]);
                 },
+                'expertPanel.group',
+                'expertPanel.group.type',
                 'coordinators' => function ($query) {
                     $query->select(['person_id', 'group_id', 'id']);
                 },
@@ -67,7 +71,9 @@ class GroupController extends Controller
             }
         );
 
-        return $searchService->search($request->all());
+        $results = $searchService->search($request->all());
+        JsonResource::withoutWrapping();
+        return GroupSummaryResource::collection($results);
     }
 
     public function show($uuid, Request $request)

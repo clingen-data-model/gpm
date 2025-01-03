@@ -36,6 +36,8 @@ consumed_messages/*
 
 .docker/mysql/db-init/*.sql.gz
 
+.DS_Store
+
 # built css & js
 # /public/css/*
 # /public/js/*
