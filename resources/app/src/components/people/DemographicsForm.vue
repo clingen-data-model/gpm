@@ -376,10 +376,9 @@
 
                     <li>Were or currently are eligible for <a href="https://www2.ed.gov/programs/fpg/eligibility.html"
                             target="_blank">Federal Pell grants</a>;</li>
-                    <li>Received support from the as a
-                        parent or child <a href="https://www.fns.usda.gov/wic/wic-eligibility-requirements"
+                    <li>Received support from the <a href="https://www.fns.usda.gov/wic/wic-eligibility-requirements"
                             target="_blank">Special
-                            Supplemental Nutrition Program for Women, Infants and Children (WIC)</a>;</li>
+                            Supplemental Nutrition Program for Women, Infants and Children (WIC)</a> as a parent or child;</li>
                     <li> Grew up in one of the following areas:
                         <ul class="list-none">
                             <li>a) a U.S. rural area, as designated by <a
