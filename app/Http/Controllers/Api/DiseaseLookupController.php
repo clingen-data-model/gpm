@@ -28,9 +28,12 @@ class DiseaseLookupController extends Controller
         if (strlen($queryString) < 3) {
             return [];
         }
+        
         $results = DB::connection(config('database.gt_db_connection'))->table('diseases')
+                    ->select('id', 'mondo_id', 'doid_id', 'name',)
                     ->where('name', 'like', '%'.$queryString.'%')
                     ->orWhere('mondo_id', 'like', '%'.$queryString.'%')
+                    ->orWhere('doid_id', 'like', '%'.$queryString.'%')
                     ->limit(50)
                     ->get();
 
