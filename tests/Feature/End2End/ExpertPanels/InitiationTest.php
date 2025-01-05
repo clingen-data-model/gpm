@@ -119,7 +119,7 @@ class InitiationTest extends TestCase
      */
     public function validates_expert_panel_types_id_exists()
     {
-        $data = ['expert_panel_type_id'=>3];
+        $data = ['expert_panel_type_id'=>999];
         $response = $this->json('Post', '/api/applications', $data);
 
         $response->assertStatus(422);
