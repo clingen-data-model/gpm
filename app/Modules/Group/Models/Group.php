@@ -181,6 +181,20 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         return $query->where('group_type_id', $typeId);
     }
 
+    public function scopeWithTypeThat($query, $key)
+    {
+        return $query->whereHas('type', function ($q) use ($key) {
+            return $q->where($key, 1);
+        });
+    }
+
+    public function scopeWithTypeThatDoesNot($query, $key)
+    {
+        return $query->whereHas('type', function ($q) use ($key) {
+            return $q->where($key, 0);
+        });
+    }
+
     public function scopeCdwg($query)
     {
         return $query->ofType(config('groups.types.cdwg.id'));
@@ -211,6 +225,11 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         return $query->ofType(config('groups.types.gcep.id'));
     }
 
+    public function scopeCuratesVariants($query)
+    {
+        return $query->withTypeThat('curates_variants');
+    }
+
     public function getCoiUrlAttribute()
     {
         return url('/coi/'.$this->coi_code);
@@ -218,7 +237,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
     public function getIsExpertPanelAttribute(): bool
     {
-        return in_array($this->group_type_id, [config('groups.types.gcep.id'),config('groups.types.vcep.id')]);
+        return $this->type->is_expert_panel;
     }
 
     public function getIsEpAttribute(): bool
@@ -226,15 +245,25 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         return $this->getIsExpertPanelAttribute();
     }
 
+    public function getCuratesVariantsAttribute(): bool
+    {
+        return $this->type->curates_variants;
+    }
+
+    public function getIsSomaticCancerAttribute(): bool
+    {
+        return $this->type->is_somatic_cancer;
+    }
+
 
     public function getIsVcepAttribute(): bool
     {
-        return $this->group_type_id == config('groups.types.vcep.id');
+        return $this->isEp && $this->curatesVariants && !$this->isSomaticCancer;
     }
 
     public function getIsGcepAttribute(): bool
     {
-        return $this->group_type_id == config('groups.types.gcep.id');
+        return $this->isEp && !$this->curatesVariants && !$this->isSomaticCancer;
     }
 
     public function getFullTypeAttribute()
