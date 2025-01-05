@@ -9,7 +9,7 @@ use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Services\HgncLookupInterface;
-use App\Services\MondoLookupInterface;
+use App\Services\DiseaseLookupInterface;
 use App\Modules\Group\Mail\GeneAddedMail;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -28,6 +28,8 @@ class AddGenesToVcepTest extends TestCase
 {
     use RefreshDatabase;
     use SeedsHgncGenesAndDiseases;
+
+    private $user, $expertPanel, $url;
 
     public function setup():void
     {
@@ -54,9 +56,9 @@ class AddGenesToVcepTest extends TestCase
             };
         });
 
-        app()->bind(MondoLookupInterface::class, function ($app) {
-            return new class implements MondoLookupInterface {
-                public function findNameByMondoId($hgncId): string
+        app()->bind(DiseaseLookupInterface::class, function ($app) {
+            return new class implements DiseaseLookupInterface {
+                public function findNameByOntologyId(string $ontologyId): string
                 {
                     return 'gladiola syndrome';
                 }

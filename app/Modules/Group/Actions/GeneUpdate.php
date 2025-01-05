@@ -6,7 +6,7 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Auth;
 use App\Services\HgncLookupInterface;
 use Lorisleiva\Actions\ActionRequest;
-use App\Services\MondoLookupInterface;
+use App\Services\DiseaseLookupInterface;
 use App\Modules\ExpertPanel\Models\Gene;
 use Lorisleiva\Actions\Concerns\AsObject;
 use Lorisleiva\Actions\Concerns\AsController;
@@ -14,12 +14,14 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Modules\Group\Http\Resources\GroupResource;
 
+use function Psy\debug;
+
 class GeneUpdate
 {
     use AsObject;
     use AsController;
 
-    public function __construct(private HgncLookupInterface $hgncLookup, private MondoLookupInterface $mondoLookup)
+    public function __construct(private HgncLookupInterface $hgncLookup, private DiseaseLookupInterface $mondoLookup)
     {
     }
     
@@ -27,7 +29,7 @@ class GeneUpdate
     public function handle(Group $group, Gene $gene, array $data): Group
     {
         $data['gene_symbol'] = $this->hgncLookup->findSymbolById($data['hgnc_id']);
-        $data['disease_name'] = $this->mondoLookup->findNameByMondoId($data['mondo_id']);
+        $data['disease_name'] = $this->mondoLookup->findNameByOntologyId($data['mondo_id']);
         $gene->update($data);
 
         return $group;
