@@ -8,6 +8,9 @@ return [
             'fullname' => 'Working Group',
             'description' => 'A working group that is not a Clinical Domain Working Group',
             'can_be_parent' => true,
+            'is_expert_panel' => false,
+            'curates_variants' => false,
+            'is_somatic_cancer' => false,
         ],
         'cdwg' => [
             'id' => 2,
@@ -15,6 +18,9 @@ return [
             'fullname' => 'Clinical Domain Working Group',
             'description' => 'A Clinical Domain Working Group that oversees Expert Panels.',
             'can_be_parent' => true,
+            'is_expert_panel' => false,
+            'curates_variants' => false,
+            'is_somatic_cancer' => false,
         ],
         'gcep' => [
             'id' => 3,
@@ -22,6 +28,9 @@ return [
             'fullname' => 'Gene Curation Expert Panel',
             'description' => 'A Gene curation expert panel',
             'can_be_parent' => false,
+            'is_expert_panel' => true,
+            'curates_variants' => false,
+            'is_somatic_cancer' => false,
         ],
         'vcep' => [
             'id' => 4,
@@ -29,6 +38,9 @@ return [
             'fullname' => 'Variant Curation Expert Panel',
             'description' => 'A Variant curation expert panel',
             'can_be_parent' => false,
+            'is_expert_panel' => true,
+            'curates_variants' => true,
+            'is_somatic_cancer' => false,
         ]
     ],
     'statuses' => [

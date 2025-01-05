@@ -24,7 +24,10 @@ class GroupType extends Model
     protected $fillable = [
         'name',
         'fullname',
-        'can_be_parent'
+        'can_be_parent',
+        'is_expert_panel',
+        'curates_variants',
+        'is_somatic_cancer',
     ];
 
     /**
@@ -35,6 +38,9 @@ class GroupType extends Model
     protected $casts = [
         'id' => 'integer',
         'can_be_parent' => 'boolean',
+        'is_expert_panel' => 'boolean',
+        'curates_variants' => 'boolean',
+        'is_somatic_cancer' => 'boolean',
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

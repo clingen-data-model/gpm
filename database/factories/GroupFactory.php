@@ -33,7 +33,7 @@ class GroupFactory extends Factory
         return [
             'uuid' => $this->faker->uuid(),
             'name' => $this->faker->name(),
-            'group_type_id' => 1,
+            'group_type_id' => config('groups.types.wg.id'),
             'group_status_id' => $this->getRandomConfigValue('groups.statuses')['id'],
             'coi_code' => $code
         ];

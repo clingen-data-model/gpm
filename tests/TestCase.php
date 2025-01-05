@@ -28,6 +28,7 @@ abstract class TestCase extends BaseTestCase
     public function setup():void
     {
         parent::setup();
+        $this->seed(GroupTypeSeeder::class);
         TestResponse::macro('assertValidationErrors', function($validationErrrors) {
             $this->assertStatus(422)
                 ->assertInvalid($validationErrrors);

@@ -22,8 +22,11 @@ class GroupTypeFactory extends Factory
      */
     public function definition()
     {
+        $name = $this->faker->name;
         return [
-            'name' => $this->faker->name,
+            'name' => $name,
+            'fullName' => $name,
+            'description' => 'this is a test',
         ];
     }
 }
