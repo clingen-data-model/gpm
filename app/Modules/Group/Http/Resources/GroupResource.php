@@ -24,9 +24,11 @@ class GroupResource extends JsonResource
         $data['status'] = $this->whenLoaded('status', new GroupStatusResource($this->status));
         $data['members'] = $this->whenLoaded('members', MemberResource::collection($this->members));
         $data['coordinators'] = $this->whenLoaded('coordinators', MemberResource::collection($this->members));
+        $data['is_ep'] = $this->isEp;
         $data['is_vcep'] = $this->isVcep;
         $data['is_gcep'] = $this->isGcep;
         $data['is_scvcep'] = $this->isScvcep;
+        $data['is_vcep_or_scvcep'] = $this->isVcepOrScvcep;
         // $data['parent'] = $this->whenLoaded('parent', GroupResource::collection($this->parent));
 
 

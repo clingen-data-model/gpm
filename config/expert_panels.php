@@ -14,6 +14,12 @@ return [
             'display_name' => 'VCEP',
             'full_name' => 'Variant Curation Expert Panel',
         ],
+        'scvcep' => [
+            'id' => 3,
+            'name' => 'scvcep',
+            'display_name' => 'SCVCEP',
+            'full_name' => 'Somatic Cancer Variant Curation Expert Panel',
+        ]
     ],
     'curation_protocols' => [
         'single-biocurator' => [

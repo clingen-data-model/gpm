@@ -19,6 +19,7 @@ class GroupTypeResource extends JsonResource
             'id' => $data['id'],
             'name' => $data['name'],
             'fullname' => $data['fullname'],
+            'display_name' => $data['display_name'],
         ];
     }
 }
