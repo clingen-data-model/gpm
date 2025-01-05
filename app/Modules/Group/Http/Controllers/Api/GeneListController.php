@@ -12,8 +12,6 @@ class GeneListController extends Controller
 {
     public function index(Request $request, Group $group)
     {
-        // $group = Group::findByUuidOrFail($groupUuid);
-        
         if (!$group->isEp) {
             throw new ModelNotFoundException('Only expert panels have gene lists.');
         }
