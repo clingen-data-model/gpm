@@ -218,7 +218,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
     public function getIsExpertPanelAttribute(): bool
     {
-        return in_array($this->group_type_id, [config('groups.types.gcep.id'),config('groups.types.vcep.id')]);
+        return in_array($this->group_type_id, [config('groups.types.gcep.id'),config('groups.types.vcep.id'), config('groups.types.scvcep.id')]);
     }
 
     public function getIsEpAttribute(): bool

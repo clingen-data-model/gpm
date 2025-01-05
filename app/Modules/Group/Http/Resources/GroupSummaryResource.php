@@ -23,9 +23,11 @@ class GroupSummaryResource extends JsonResource
         $data['expert_panel'] = $this->whenLoaded('expertPanel', new ExpertPanelResource($this->expertPanel));
         $data['type'] = $this->whenLoaded('type', new GroupTypeResource($this->type));
         $data['status'] = $this->whenLoaded('status', new GroupStatusResource($this->status));
+        $data['is_ep'] = $this->isEp;
         $data['is_vcep'] = $this->isVcep;
         $data['is_gcep'] = $this->isGcep;
         $data['is_scvcep'] = $this->isScvcep;
+        $data['is_vcep_or_scvcep'] = $this->isVcepOrScvcep;
 
 
         unset($data['created_at'], $data['deleted_at']);

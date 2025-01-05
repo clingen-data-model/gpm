@@ -62,6 +62,19 @@ class GroupFactory extends Factory
             ];
         });
     }
+    
+    public function scvcep()
+    {
+        return $this->state(function ($attributes) {
+            return [
+                'uuid' => $this->faker->uuid,
+                'name' => uniqid().' scvcep',
+                'group_type_id' => config('groups.types.scvcep.id'),
+                'group_status_id' => config('groups.statuses.applying.id')
+            ];
+        });
+    }
+
 
     public function cdwg()
     {
