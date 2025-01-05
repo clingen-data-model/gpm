@@ -36,7 +36,7 @@
         <ReviewSection title="Membership" name="membership">
             <ReviewMembership :members="members" />
 
-            <div v-if="group.isVcep()" class="mt-6">
+            <div v-if="group.is_vcep_or_scvcep" class="mt-6">
                 <h4>Expertise of VCEP members</h4>
                 <blockquote>
                     <markdown-block :markdown="expertPanel.membership_description" />
@@ -47,10 +47,17 @@
         <ReviewSection title="Scope" name="scope">
             <h3>Genes</h3>
             <div class="mb-6">
-                <p v-if="group.isGcep()">{{expertPanel.genes.map(g => g.gene_symbol).join(', ')}}</p>
+                <p v-if="group.is_gcep">{{expertPanel.genes.map(g => g.gene_symbol).join(', ')}}</p>
                 <simple-table
-                    v-if="group.isVcep()"
-                    :data="expertPanel.genes.map(g => ({id: g.id,gene: g.gene_symbol, disease: g.disease_name}))" :key-by="'id'"
+                    v-if="group.is_vcep_or_scvcep"
+                    :data="
+                        expertPanel.genes.map((g) => ({
+                            id: g.id,
+                            gene: g.gene_symbol,
+                            disease: g.disease_name,
+                        }))
+                    "
+                    :key-by="'id'"
                     :hide-columns="['id']"
                 />
             </div>
@@ -59,7 +66,7 @@
             <blockquote><markdown-block :markdown="expertPanel.scope_description" /></blockquote>
         </ReviewSection>
 
-        <ReviewSection v-if="group.isGcep()" title="Plans" name="plans">
+        <ReviewSection v-if="group.is_gcep" title="Plans" name="plans">
             <dictionary-row label="Selected protocol" label-class="w-48 font-bold">
                 <div class="flex-none">
                     {{expertPanel.curation_review_protocol ? titleCase(expertPanel.curation_review_protocol.full_name) : null}}
@@ -70,7 +77,7 @@
             </dictionary-row>
         </ReviewSection>
 
-        <ReviewSection v-if="group.isGcep()" title="Attestations" name="attestations">
+        <ReviewSection v-if="group.is_gcep" title="Attestations" name="attestations">
             <dictionary-row label="GCEP Attestation Signed" label-class="w-52 font-bold">
                 {{formatDate(expertPanel.gcep_attestation_date)}}
             </dictionary-row>
@@ -82,7 +89,11 @@
             </dictionary-row>
         </ReviewSection>
 
-        <ReviewSection v-if="group.isVcep()" title="Attestations" name="attestations">
+        <ReviewSection
+            v-if="group.is_vcep_or_scvcep"
+            title="Attestations"
+            name="attestations"
+        >
             <dictionary-row
                 label="Reanalysis and Discrepancy Resolution Attestation Signed"
                 label-class="w-52 font-bold"

@@ -1,8 +1,8 @@
 <template>
-    <div class="p-4 my-4 mb-8 border rounded-xl bg-white" v-if="group.isEp()">
+    <div class="p-4 my-4 mb-8 border rounded-xl bg-white" v-if="group.is_ep">
         <h2 class="mb-2">
             Application Summary
-            <span v-if="applicationStarted && group.isVcep()">
+            <span v-if="applicationStarted && group.is_vcep_or_scvcep">
                 - {{this.currentMenuItem.title}}
             </span>
         </h2>
@@ -21,7 +21,6 @@
                             <badge color="green">Approved</badge>
                         </div>
                     </div>
-
                 </div>
                 <div v-if="isCurrentStep(item)" class="flex-1">
                     <ul>
@@ -41,13 +40,13 @@
     </div>
 </template>
 <script>
-import RequirementsBadge from '@/components/expert_panels/RequirementsBadge.vue';
-import {GcepApplication, VcepApplication} from '@/domain'
+import RequirementsBadge from "@/components/expert_panels/RequirementsBadge.vue";
+import { getApplicationForGroup } from "@/composables/use_application.js";
 
 export default {
     name: 'ApplicationSummary',
     components: {
-        RequirementsBadge
+        RequirementsBadge,
     },
     props: {
         group: {
@@ -64,8 +63,8 @@ export default {
         applicationStarted () {
             return true;
         },
-        application () {
-            return this.group.isVcep() ? VcepApplication : GcepApplication;
+        application() {
+            return getApplicationForGroup(this.group);
         },
         currentStep () {
             return this.group.expert_panel.current_step;

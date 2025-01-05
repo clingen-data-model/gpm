@@ -36,8 +36,8 @@
           <tab-item label="Members">
             <member-list :group="group"></member-list>
             <submission-wrapper
-              v-if="group.isVcep()"
-              @submitted="submitForm('saveMembershipDescription', 'editingExpertise')"
+                            v-if="group.is_vcep_or_scvcep"
+                            @submitted="submitForm('saveMembershipDescription', 'editingExpertise')"
               @canceled="cancelForm('editingExpertise')"
               :show-controls="editingExpertise"
             >
@@ -50,13 +50,13 @@
             </submission-wrapper>
           </tab-item>
 
-          <tab-item label="Scope" :visible="group.isEp()">
+          <tab-item label="Scope" :visible="group.is_ep">
             <h3>
               Plans for Ongoing Gene Review and Reanalysis and Discrepancy
               Resolution
             </h3>
             <submission-wrapper
-              v-if="group.isEp()"
+              v-if="group.is_ep"
               @submitted="$refs.groupGeneListRef.save()"
               @canceled="$refs.groupGeneListRef.cancel()"
               :show-controls="editingGenes"
@@ -69,7 +69,7 @@
             </submission-wrapper>
             <br />
             <submission-wrapper
-              :visible="group.isEp()"
+              :visible="group.is_ep"
               @submitted="
                 submitForm('saveScopeDescription', 'editingScopeDescription')
               "
@@ -84,16 +84,16 @@
             </submission-wrapper>
           </tab-item>
 
-          <tab-item label="Sustained Curation" :visible="group.isEp()"
+          <tab-item label="Sustained Curation" :visible="group.is_ep"
             class="relative"
           >
             <div
               class="bg-white bg-opacity-50 absolute top-0 left-0 right-0 bottom-0"
-              v-if="!group.expert_panel.pilotSpecificationsIsApproved && group.isVcep()"
+              v-if="!group.expert_panel.pilotSpecificationsIsApproved && group.is_vcep_or_scvcep"
             ></div>
             <static-alert
               variant="info"
-              v-if="!group.expert_panel.pilotSpecificationsIsApproved && group.isVcep()"
+              v-if="!group.expert_panel.pilotSpecificationsIsApproved && group.is_vcep_or_scvcep"
             >
               You can complete these sections after your first Specifications Pilot
               has been approved.
@@ -116,7 +116,7 @@
                 :readonly="!group.expert_panel.pilotSpecificationsIsApproved"
               />
             </submission-wrapper>
-            <section v-if="group.isVcep()">
+            <section v-if="group.is_vcep_or_scvcep">
               <header>
                 <h3>Example Evidence Summaries</h3>
               </header>
@@ -128,15 +128,15 @@
             </section>
           </tab-item>
 
-          <tab-item label="Specifications" :visible="group.isVcep()">
+          <tab-item label="Specifications" :visible="group.is_vcep_or_scvcep">
             <div class="relative">
               <div
                 class="bg-white bg-opacity-50 absolute top-0 left-0 right-0 bottom-0"
-                v-if="!group.expert_panel.defIsApproved && group.isVcep()"
+                v-if="!group.expert_panel.defIsApproved && group.is_vcep_or_scvcep"
               ></div>
               <static-alert
                 variant="info"
-                v-if="!group.expert_panel.defIsApproved && group.isVcep()"
+                v-if="!group.expert_panel.defIsApproved && group.is_vcep_or_scvcep"
               >
                 You can complete these sections after your Group Definition
                 has been approved.
@@ -156,21 +156,21 @@
             <note>Documents are only available to members of this group.</note>
           </tab-item>
 
-          <tab-item label="Attestations" :visible="group.isEp()">
+          <tab-item label="Attestations" :visible="group.is_ep">
             <note
               >The attestations below are read only. Attestations can only be
               completed during the application process.</note
             >
             <attestation-gcep
               class="pb-2 mb-4 border-b"
-              v-if="group.isGcep()"
+              v-if="group.is_gcep"
               :disabled="true"
             />
 
             <h3>Reanalysis &amp; Discrepancy Resolution</h3>
             <attestation-reanalysis
               class="pb-2 mb-4 border-b"
-              v-if="group.isVcep()"
+              v-if="group.is_vcep_or_scvcep"
               :disabled="true"
             />
             <h3>NHGRI Data Availability</h3>
@@ -187,7 +187,7 @@
           </tab-item>
 
           <tab-item label="Admin" :visible="hasPermission('groups-manage')">
-            <div v-if="group.isApplying && group.isEp()">
+            <div v-if="group.isApplying && group.is_ep">
               <h2 class="pb-2 border-b mb-4">Application</h2>
               <progress-chart
                 :application="group.expert_panel"
@@ -196,13 +196,13 @@
               <step-tabs
                 :application="group.expert_panel"
                 @stepApproved="getGroup"
-                v-if="group.isEp()"
+                v-if="group.is_ep"
               />
               <hr />
             </div>
             <section
               class="border my-4 p-4 rounded"
-              v-if="group.isEp()"
+              v-if="group.is_ep"
             >
               <h2 class="mb-4">Annual Update</h2>
                 <button v-if="showCreateAnnualUpdateButton"
@@ -234,7 +234,7 @@
               </h2>
               <button
                 class="btn"
-                v-if="group.isVcep() && group.expert_panel.has_approved_pilot"
+                v-if="group.is_vcep_or_scvcep && group.expert_panel.has_approved_pilot"
                 @click="fakeCspecPilotApproved"
               >
                 Fake a Pilot Approved Message
@@ -392,14 +392,14 @@ export default {
     });
 
     const groupGeneList = computed(() => {
-      if (!group.value.isEp()) {
+      if (!group.value.is_ep) {
         return null;
       }
-      return group.value.isVcep() ? VcepGeneList : GcepGeneList;
+      return group.value.is_vcep_or_scvcep ? VcepGeneList : GcepGeneList;
     });
 
     const ongoingPlansFormComponent = computed(() => {
-      return group.value.isVcep() ? VcepOngoingPlansForm : GcepOngoingPlansForm;
+      return group.value.is_vcep_or_scvcep ? VcepOngoingPlansForm : GcepOngoingPlansForm;
     });
 
     const getLogEntries = async () => {
@@ -410,10 +410,10 @@ export default {
       store.dispatch("groups/find", props.uuid).then(() => {
         store.commit("groups/setCurrentItemIndexByUuid", props.uuid);
         store.dispatch('groups/getChildren', group.value);
-        if (group.value.isEp()) {
+        if (group.value.is_ep) {
           store.dispatch("groups/getGenes", group.value);
           store.dispatch("groups/getDocuments", group.value);
-          if (group.value.isVcep()) {
+          if (group.value.is_vcep_or_scvcep) {
             store.dispatch("groups/getEvidenceSummaries", group.value);
           }
           store.dispatch("groups/getPendingTasks", group.value);

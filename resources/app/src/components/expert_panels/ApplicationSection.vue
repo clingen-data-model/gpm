@@ -1,6 +1,6 @@
 <script>
-import RequirementsBadge from '@/components/expert_panels/RequirementsBadge.vue'
-import {GcepApplication, VcepApplication} from '@/domain'
+import RequirementsBadge from "@/components/expert_panels/RequirementsBadge.vue";
+import { getApplicationForGroup } from "@/composables/use_application.js";
 
 export default {
     name: 'ApplicationSection',
@@ -23,8 +23,8 @@ export default {
                 return this.$store.getters['groups/currentItemOrNew'];
             }
         },
-        application () {
-            return this.group.isVcep() ? VcepApplication : GcepApplication;
+        application() {
+            return getApplicationForGroup(this.group);
         },
         section () {
             return this.application.getSection(this.id);

@@ -10,7 +10,7 @@
         />
 
         <dictionary-row label="Type" v-else>
-            {{typeDisplayName}}
+            {{ this.group?.type?.display_name }}
         </dictionary-row>
 
         <transition name="slide-fade-down" mode="out-in">
@@ -125,7 +125,7 @@ export default {
             },
             set (value) {
                 try {
-                    this.$store.commit('groups/addItem', value);
+                    this.$store.commit("groups/addItem", value);
                 } catch (e) {
                     this.newGroup = value;
                 }
@@ -139,17 +139,6 @@ export default {
         },
         canSetType() {
             return this.hasPermission('groups-manage') && !this.group.id
-        },
-        typeDisplayName () {
-            if (!this.group.type) {
-                return "🐇🥚";
-            }
-            if (this.group.type.name) {
-                return (this.group.type.id < 3)
-                    ? this.group.type.name.toUpperCase()
-                    : this.group.expert_panel.type.name.toUpperCase();
-            }
-            return null;
         },
         affiliationIdPlaceholder () {
             return 50000

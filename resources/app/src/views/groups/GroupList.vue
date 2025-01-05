@@ -22,7 +22,12 @@
                     >
                         <template v-slot:cell-displayStatus="{item}">
                             <badge class="text-xs" :color="item.statusColor">
-                                {{item.displayStatus}}<span v-if="item.status.id == 1 && item.isEp()">&nbsp;-&nbsp;{{item.expert_panel.currentStepAbbr}}</span>
+                                {{ item.displayStatus
+                                }}<span v-if="item.status.id == 1 && item.is_ep"
+                                    >&nbsp;-&nbsp;{{
+                                        item.expert_panel.currentStepAbbr
+                                    }}</span
+                                >
                             </badge>
                         </template>
                         <template v-slot:cell-coordinators="{value}">
@@ -132,12 +137,12 @@ export default {
                 {
                     label: 'VCEPs',
                     typeId: 4,
-                    filter: g => g.isVcep(),
+                    filter: (g) => g.is_vcep_or_scvcep,
                 },
                 {
                     label: 'GCEPs',
                     typeId: 3,
-                    filter: g => g.isGcep()
+                    filter: (g) => g.is_gcep,
                 },
 {
                     label: 'CDWGs',
