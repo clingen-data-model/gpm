@@ -3,7 +3,7 @@ import ApplicationGcep from '@/components/expert_panels/ApplicationGcep.vue';
 import ApplicationVcep from '@/components/expert_panels/ApplicationVcep.vue';
 import ApplicationMenu from '@/components/layout/ApplicationMenu.vue';
 import Group from '@/domain/group';
-import {VcepApplication,  GcepApplication} from '@/domain'
+import { getApplicationForGroup } from "@/composables/use_application.js";
 
 export default {
     name: 'GroupApplication',
@@ -47,12 +47,12 @@ export default {
         },
     },
     computed: {
-        applicationComponent () {
-            if (this.group && this.group.isVcep()) {
+        applicationComponent() {
+            if (this.group?.is_vcep_or_scvcep) {
                 return ApplicationVcep;
             }
 
-            if (this.group && this.group.isGcep()) {
+            if (this.group?.is_gcep) {
                 return ApplicationGcep;
             }
 
@@ -62,9 +62,9 @@ export default {
             const group = this.$store.getters['groups/currentItem'] || new Group();
             return group || new Group();
         },
-        application () {
-            return this.group.isVcep() ? VcepApplication : GcepApplication;
-        }
+        application() {
+            return getApplicationForGroup(this.group);
+        },
     },
     methods: {
         hideModal () {

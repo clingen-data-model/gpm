@@ -36,18 +36,6 @@ describe('application entity', () => {
         expect(app.isCompleted).to.equal(true);
     });
 
-    it('it knows if it is for a gcep or a vcep', () => {
-        const gcep = new Application({
-            expert_panel_type_id: 1,
-        });
-        expect(gcep.isGcep).to.equal(true)
-
-        const vcep = new Application({
-            expert_panel_type_id: 2,
-        });
-        expect(vcep.isVcep).to.equal(true)
-    })
-
     it('it supports adding of additional attributes after instantiation', () => {
         const app = new Application();
         app.setAttribute('working_name', 'tester')

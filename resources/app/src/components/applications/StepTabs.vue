@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="application.isGcep">
+        <div v-if="application.is_gcep">
             <step-one @stepApproved="handleApproved" @updated="handleUpdated"></step-one>
         </div>
             <tabs-container
@@ -21,7 +21,6 @@
                 <step-four @stepApproved="handleApproved" @updated="handleUpdated"></step-four>
             </tab-item>
         </tabs-container>
-
     </div>
 </template>
 <script>

@@ -1,12 +1,15 @@
 <template>
     <div class="application-step" :id="id">
         <div class="header flex justify-between items-center" v-if="title">
-            <h2 :class="{'text-gray-400': disabled}">
-                {{title}}
+            <h2 :class="{ 'text-gray-400': disabled }">
+                {{ title }}
                 <div class="inline" v-if="disabled">
                     <popover arrow hover>
                         <template #content>
-                            <small class="text-sm" v-html="lockedContent"></small>
+                            <small
+                                class="text-sm"
+                                v-html="lockedContent"
+                            ></small>
                         </template>
                         <icon-lock class="inline" />
                     </popover>
@@ -15,8 +18,15 @@
             <div class="inline" v-if="approved">
                 <popover hover arrow>
                     <template #content>
-                        Make changes from the <router-link :to="{name: 'GroupDetail', parmas:{uuid: group.uuid}}">group's detail screen</router-link>
-                        <br><small>Changes may require re-approval.</small>
+                        Make changes from the
+                        <router-link
+                            :to="{
+                                name: 'GroupDetail',
+                                parmas: { uuid: group.uuid },
+                            }"
+                            >group's detail screen</router-link
+                        >
+                        <br /><small>Changes may require re-approval.</small>
                     </template>
                     <badge color="green">Approved</badge>
                 </popover>
@@ -28,15 +38,21 @@
             <div class="step-contents">
                 <slot></slot>
             </div>
-            <application-submit-button v-if="showSubmitButton" class="border-t" :step="step" />
-            <div class="z-20 absolute top-0 bottom-0 left-0 right-0 bg-white bg-opacity-50" v-if="disabled || approved" />
+            <application-submit-button
+                v-if="showSubmitButton"
+                class="border-t"
+                :step="step"
+            />
+            <div
+                class="z-20 absolute top-0 bottom-0 left-0 right-0 bg-white bg-opacity-50"
+                v-if="disabled || approved"
+            />
         </div>
-
     </div>
 </template>
 <script>
 import ApplicationSubmitButton from '@/components/expert_panels/ApplicationSubmitButton.vue'
-import {GcepApplication, VcepApplication} from '@/domain'
+import { getApplicationForGroup } from "@/composables/use_application.js";
 
 export default {
     name: 'ApplicationStep',
@@ -68,8 +84,8 @@ export default {
         group () {
             return this.$store.getters['groups/currentItemOrNew'];
         },
-        application () {
-            return this.group.isVcep() ? VcepApplication : GcepApplication;
+        application() {
+            return getApplicationForGroup(this.group);
         },
         step () {
             return this.application.getStep(this.id);

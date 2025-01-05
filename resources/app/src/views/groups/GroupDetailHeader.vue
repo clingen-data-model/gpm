@@ -17,7 +17,7 @@
                 </div>
                 <note v-if="hasRole('super-user')" class="font-normal mt-2">
                     group.id: {{group.id}}
-                    <span v-if="group.isEp()"> | expertPanel.id: {{group.expert_panel.id}}</span>
+                    <span v-if="group.is_ep"> | expertPanel.id: {{group.expert_panel.id}}</span>
                 </note>
             </div>
             <button 

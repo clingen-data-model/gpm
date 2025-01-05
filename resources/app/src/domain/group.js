@@ -118,17 +118,10 @@ class Group extends Entity {
         return this.expert_panel.isApplying
     }
 
-    get hasChildren () {
-        return this.children && this.children.length > 0
+    get hasChildren() {
+        return this.children && this.children.length > 0;
     }
 
-    get is_vcep () {
-        return this.group_type_id == configs.groups.types.vcep.id;
-    }
-
-    get is_gcep () {
-        return this.group_type_id == configs.groups.types.gcep.id;
-    }
 
     addMembers (members) {
         members.forEach(m => {

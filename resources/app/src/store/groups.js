@@ -320,8 +320,10 @@ export const actions = {
     },
 
     getSpecifications({ commit }, group) {
-        if (!group.isVcep()) {
-            throw new Error('Can not retreive specfications. Only VCEPS have specifications.');
+        if (!group.is_vcep_or_scvcep) {
+            throw new Error(
+                "Can not retreive specfications. Only VCEPS have specifications."
+            );
         }
 
         return api.get(`${baseUrl}/${group.uuid}/specifications`)

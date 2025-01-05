@@ -169,14 +169,6 @@ class ExpertPanel extends Entity
         return false;
     }
 
-    get isGcep() {
-        return this.expert_panel_type_id == 1;
-    }
-
-    get isVcep() {
-        return this.expert_panel_type_id == 2;
-    }
-
     get steps() {
         if (this.expert_panel_type_id == 1) {
             return [1];

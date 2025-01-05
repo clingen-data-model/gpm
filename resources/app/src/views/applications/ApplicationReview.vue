@@ -32,10 +32,10 @@
         return null;
     })
 
-    const screenTitle = computed(() => {
-        if (group.value.isGcep()) {
-            return group.value.displayName;
-        }
+const screenTitle = computed(() => {
+    if (group.value.is_gcep) {
+        return group.value.displayName;
+    }
 
         return `${group.value.displayName} - ${group.value.expert_panel.currentStepName}`
     })
