@@ -76,7 +76,9 @@
                     </div>
                     <transition name="fade-down">
                         <div
-                            v-if="newMember.hasRole('biocurator') && group.isVcep()"
+                            v-if="
+                                newMember.hasRole('biocurator') && group.is_vcep
+                            "
                             class="border-t mt-2 pt-2 pl-2"
                         >
                             <h4>Training</h4>

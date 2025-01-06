@@ -6,7 +6,11 @@
             type="date" 
             ref="logdate"
         ></input-row>
-        <StepInput :errors="errors.step" v-if="group.isVcep()" v-model="newEntry.step"/>
+        <StepInput
+            :errors="errors.step"
+            v-if="group.is_vcep"
+            v-model="newEntry.step"
+        />
         <input-row label="Entry" :errors="errors.entry">
             <RichTextEditor v-model="newEntry.entry" />
         </input-row>
