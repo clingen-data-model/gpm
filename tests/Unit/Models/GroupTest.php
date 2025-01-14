@@ -15,25 +15,67 @@ use function Psy\debug;
  */
 class GroupTest extends TestCase
 {
-  /**
-   * @test
-   */
-  public function it_knows_whether_it_is_an_expert_panel():void
-  {
-    $wg = Group::factory()->wg()->make();
-    assertFalse($wg->isEp);
+    private Group $wg;
+    private Group $vcep;
+    private Group $gcep;
+    private Group $scvcep;
 
-    $cdwg = Group::factory()->cdwg()->make();
-    assertFalse($cdwg->isEp);
+    public function setup(): void
+    {
+        parent::setup();
+        $this->wg = Group::factory()->wg()->make();
+        $this->vcep = Group::factory()->vcep()->make();
+        $this->gcep = Group::factory()->gcep()->make();
 
-    $gcep = Group::factory()->gcep()->make();
-    assertTrue($gcep->isEp);
+        $this->scvcep = Group::factory()->scvcep()->make();
+        $this->assertTrue(true);
+    }
 
-    $vcep = Group::factory()->vcep()->make();
-    assertTrue($vcep->isEp);
+    /**
+     * @test
+     */
+    public function it_knows_if_it_is_an_expert_panel():void
+    {
+        $nonEpGroupType = GroupType::whereNull('curation_product')->firstOrFail();
+        $this->assertFalse(Group::factory()->make(['group_type_id' => $nonEpGroupType->id])->isEp);
 
-    $scvcep = Group::factory()->gcep()->make();
-    assertTrue($scvcep->isEp);
-  }
+        $epGroupType = GroupType::whereNotNull('curation_product')->firstOrFail();       
+        $this->assertTrue(Group::factory()->make(['group_type_id' => $epGroupType->id])->isEp);
+    }
   
+    /**
+     * @test
+     */
+    public function it_knows_if_it_is_a_vcep():void
+    {
+      $this->assertTrue($this->vcep->isVcep);
+  
+      $this->assertFalse($this->wg->isVcep);
+      $this->assertFalse($this->gcep->isVcep);
+      $this->assertFalse($this->scvcep->isVcep);
+    }
+  
+    /**
+     * @test
+     */
+    public function it_knows_if_it_curates_variants():void
+    {
+      $this->assertTrue($this->scvcep->curatesVariants);
+      $this->assertTrue($this->vcep->curatesVariants);
+  
+      $this->assertFalse($this->wg->curatesVariants);
+      $this->assertFalse($this->gcep->curatesVariants);  
+    }
+  
+    /**
+     * @test
+     */
+    public function it_knows_if_it_is_a_somatic_cancer():void
+    {
+      $this->assertTrue($this->scvcep->isSomaticCancer);
+  
+      $this->assertFalse($this->vcep->isSomaticCancer);
+      $this->assertFalse($this->wg->isSomaticCancer);
+      $this->assertFalse($this->gcep->isSomaticCancer);  
+    }
 }

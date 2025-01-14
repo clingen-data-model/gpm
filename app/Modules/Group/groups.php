@@ -1,5 +1,7 @@
 <?php
 
+use App\Modules\Group\Enums\CurationProduct;
+
 return [
     'types' => [
         'wg' => [
@@ -9,6 +11,7 @@ return [
             'display_name' => 'Working Group',
             'description' => 'A working group that is not a Clinical Domain Working Group',
             'can_be_parent' => true,
+            'curation_product' => null,
         ],
         'cdwg' => [
             'id' => 2,
@@ -17,6 +20,7 @@ return [
             'display_name' => 'Clinical Domain Working Group',
             'description' => 'A Clinical Domain Working Group that oversees Expert Panels.',
             'can_be_parent' => true,
+            'curation_product' => null,
         ],
         'gcep' => [
             'id' => 3,
@@ -25,6 +29,7 @@ return [
             'display_name' => 'GCEP',
             'description' => 'A Gene curation expert panel',
             'can_be_parent' => false,
+            'curation_product' => CurationProduct::Gene,
         ],
         'vcep' => [
             'id' => 4,
@@ -33,6 +38,7 @@ return [
             'fullname' => 'Variant Curation Expert Panel',
             'description' => 'A Variant curation expert panel',
             'can_be_parent' => false,
+            'curation_product' => CurationProduct::Variant,
         ],
         'scvcep' => [
             'id' => 5,
@@ -41,6 +47,8 @@ return [
             'display_name' => 'SCVCEP',
             'description' => 'A Somatic cancer variant curation expert panel',
             'can_be_parent' => false,
+            'curation_product' => CurationProduct::Variant,
+            'is_somatic_cancer' => true
         ],
     ],
     'statuses' => [
