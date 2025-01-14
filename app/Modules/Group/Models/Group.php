@@ -2,16 +2,16 @@
 
 namespace App\Modules\Group\Models;
 
-use App\Models\Contracts\HasComments as ContractsHasComments;
 use App\Models\Traits\HasUuid;
 use App\Models\Contracts\HasNotes;
+use App\Models\Traits\HasComments;
 use App\Models\Contracts\HasMembers;
 use Database\Factories\GroupFactory;
 use App\Tasks\Contracts\TaskAssignee;
 use App\Models\Contracts\HasDocuments;
 use App\Models\Contracts\HasLogEntries;
 use App\Models\Contracts\RecordsEvents;
-use App\Models\Traits\HasComments;
+use App\Modules\ExpertPanel\Models\Coi;
 use App\Modules\Group\Models\GroupType;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\Group\Models\GroupStatus;
@@ -27,6 +27,8 @@ use App\Tasks\Models\TaskAssignee as TaskAssigneeTrait;
 use App\Models\Traits\HasDocuments as HasDocumentsTrait;
 use App\Models\Traits\RecordsEvents as RecordsEventsTrait;
 use App\Models\Traits\HasLogEntries as HasLogEntriesTraits;
+use App\Models\Contracts\HasComments as ContractsHasComments;
+use App\Modules\Group\Enums\CurationProduct;
 use App\Modules\Group\Models\Traits\HasMembers as HasMembersTrait;
 use App\Modules\Group\Models\Traits\HasSubmissions as HasSubmissionsTrait;
 
@@ -124,7 +126,6 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     public function type(): BelongsTo
     {
         return $this->belongsTo(GroupType::class, 'group_type_id');
-        // return $this->groupType();
     }
 
     /**
@@ -198,7 +199,9 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
     public function scopeTypeExpertPanel($query)
     {
-        return $query->whereIn('group_type_id', [config('groups.types.gcep.id'), config('groups.types.vcep.id')] );
+        return $query->whereHas('type', function ($q) {
+            $q->whereNotNull('curation_product');
+        });
     }
 
     public function scopeVcep($query)
@@ -209,6 +212,13 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     public function scopeGcep($query)
     {
         return $query->ofType(config('groups.types.gcep.id'));
+    }
+
+    public function scopeCurationProduct($query, CurationProduct $product)
+    {
+        return $query->whereHas('type', function ($q) use ($product) {
+            $q->where('curation_product', $product);
+        });
     }
 
     public function getCoiUrlAttribute()
@@ -244,7 +254,17 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
     public function getIsVcepOrScvcepAttribute(): bool
     {
-        return $this->isVcep || $this->isScvcep;
+        return $this->getCuratesVariantPathogenicity;
+    }
+
+    public function getCuratesVariantsAttribute(): bool
+    {
+        return $this->type->curation_product == CurationProduct::Variant;
+    }
+
+    public function getIsSomaticCancerAttribute(): bool
+    {
+        return $this->type->is_somatic_cancer;
     }
 
 

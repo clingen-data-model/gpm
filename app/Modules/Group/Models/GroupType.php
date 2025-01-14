@@ -2,6 +2,7 @@
 
 namespace App\Modules\Group\Models;
 
+use App\Modules\Group\Enums\CurationProduct;
 use Illuminate\Database\Eloquent\Model;
 use Database\Factories\GroupTypeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -25,7 +26,9 @@ class GroupType extends Model
         'name',
         'fullname',
         'display_name',
-        'can_be_parent'
+        'can_be_parent',
+        'curation_product',
+        'is_somatic_cancer',
     ];
 
     /**
@@ -36,6 +39,8 @@ class GroupType extends Model
     protected $casts = [
         'id' => 'integer',
         'can_be_parent' => 'boolean',
+        'is_somatic_cancer' => 'boolean',
+        'curation_product' => CurationProduct::class,
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
