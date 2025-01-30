@@ -39,9 +39,8 @@ abstract class GroupMemberEvent extends GroupEvent implements PublishableEvent
      */
     public function shouldPublish(): bool
     {
-        // FIXME: allow WG events to be published
-        return parent::shouldPublish()
-            && $this->group->expertPanel->definitionIsApproved;
+        // FIXME: rethink when refactoring "expert panel" predicate. Should probably have separate "should publish" predicate
+        return parent::shouldPublish() && (($this->expertPanel === null) || $this->expertPanel->isApproved);
     }
 
 }
