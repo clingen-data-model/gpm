@@ -2,15 +2,18 @@
 
 namespace App\Modules\Group\Events;
 
+use App\Modules\Group\Events\Traits\IsPublishableExpertPanelEvent;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use App\Modules\Group\Models\Group;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 
-class ScopeDescriptionUpdated extends GroupEvent
+// TODO: should probably extend ExpertPanelEvent, since only EPs have scope descriptions.
+// or else, descriptions should be added to other groups...
+class ScopeDescriptionUpdated extends GroupEvent implements PublishableExpertPanelEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels, IsPublishableExpertPanelEvent;
 
     /**
      * Create a new event instance.
