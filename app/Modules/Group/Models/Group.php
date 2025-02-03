@@ -284,4 +284,30 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     {
         return $this->belongsTo(Group::class, 'parent_id', 'id');
     }
+
+    public function representationForDataExchange(): array {
+        $item = [
+            'id' => $this->uuid,
+            'name' => $this->name,
+            'status' => $this->groupStatus->name,
+            'type' => $this->type->name,
+        ];
+        if ($this->parent != null) {
+            $item['parent_group'] = $this->parent->representationForDataExchange();
+        }
+        if ($this->isEp) {
+            $item['ep_id'] = $this->expertPanel->uuid;
+            $item['affiliation_id'] = $this->expertPanel->affiliation_id;
+            $item['scope_description'] = $this->expertPanel->scope_description;
+            $item['short_name'] = $this->expertPanel->short_base_name;
+            // TODO: not sure about these fields
+            // $item['long_base_name'] = $this->expertPanel->long_base_name;
+            // $item['hypothesis_group'] = $this->expertPanel->hypothesis_group;
+            // $item['membership_description'] = $this->expertPanel->membership_description;
+            if ($this->fullType->name === 'vcep') {
+                $item['cspec_url'] = $this->expertPanel->affiliation_id;
+            }
+        }
+        return $item;
+    }
 }
