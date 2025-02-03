@@ -46,15 +46,6 @@ class ExpertPanelAttributesUpdated extends GroupEvent implements PublishableExpe
     }
 
     /**
-     * For PublishableEvent interface that is applied to many sub-classes
-     */
-    public function shouldPublish(): bool
-    {
-        // FIXME: rethink when refactoring "expert panel" predicate. Should probably have separate "should publish" predicate
-        return parent::shouldPublish() && (($this->expertPanel === null) || $this->expertPanel->isApproved);
-    }
-
-    /**
      * Get the channels the event should broadcast on.
      *
      * @return \Illuminate\Broadcasting\Channel|array

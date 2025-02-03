@@ -40,7 +40,8 @@ abstract class GroupMemberEvent extends GroupEvent implements PublishableEvent
     public function shouldPublish(): bool
     {
         // FIXME: rethink when refactoring "expert panel" predicate. Should probably have separate "should publish" predicate
-        return parent::shouldPublish() && (($this->expertPanel === null) || $this->expertPanel->isApproved);
+        // right now, this doesn't really override anything, but preserving for future handling of private groups (CGSP-800)
+        return parent::shouldPublish();
     }
 
 }
