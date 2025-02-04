@@ -123,6 +123,8 @@ class AssignRoleToMemberTest extends TestCase
             ]
         );
 
+        $this->groupMember = $this->groupMember->fresh();
+
         $this->assertDatabaseHas('activity_log', [
             'subject_type' => Group::class,
             'subject_id' => $this->groupMember->group->id,

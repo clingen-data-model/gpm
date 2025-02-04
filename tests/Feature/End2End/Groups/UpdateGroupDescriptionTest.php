@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
-class UpdateScopeDescriptionTest extends TestCase
+class UpdateGroupDescriptionTest extends TestCase
 {
     use FastRefreshDatabase;
     
@@ -30,7 +30,7 @@ class UpdateScopeDescriptionTest extends TestCase
     {
         $unprivileged = User::factory()->create();
         Sanctum::actingAs($unprivileged);
-        $this->json('PUT', $this->url, ['scope_description' => 'this is a scope description'])
+        $this->json('PUT', $this->url, ['description' => 'this is a scope description'])
             ->assertStatus(403);
     }
 
@@ -43,7 +43,7 @@ class UpdateScopeDescriptionTest extends TestCase
         $this->json('PUT', $this->url, [])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'scope_description' => ['This field is required.']
+                'description' => ['This field is required.']
             ]);
     }
 
@@ -54,7 +54,7 @@ class UpdateScopeDescriptionTest extends TestCase
     {
         Sanctum::actingAs($this->user);
         $description = 'I am a description of the scope.  I can be greater than 255 characters.I am a description of the scope.  I can be greater than 255 characters.I am a description of the scope.  I can be greater than 255 characters.I am a description of the scope.  I can be greater than 255 characters.';
-        $response = $this->json('PUT', $this->url, ['scope_description' => $description]);
+        $response = $this->json('PUT', $this->url, ['description' => $description]);
         $response->assertStatus(200);
         $response->assertJsonFragment([
             'uuid' => $this->expertPanel->group->uuid
@@ -74,35 +74,17 @@ class UpdateScopeDescriptionTest extends TestCase
     {
         $description = 'Test description';
         Sanctum::actingAs($this->user);
-        $response = $this->json('PUT', $this->url, ['scope_description' => $description]);
+        $response = $this->json('PUT', $this->url, ['description' => $description]);
 
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('activity_log', [
             'subject_type' => Group::class,
             'subject_id' => $this->expertPanel->group_id,
-            'activity_type' => 'scope-description-updated',
-            'description' => 'Scope description updated.',
-            'properties->scope_description' => $description,
+            'activity_type' => 'group-description-updated',
+            'description' => 'Group description updated.',
+            'properties->description' => $description,
         ]);
     }
     
-    /**
-     * @test
-     */
-    public function throws_validation_error_if_group_is_not_an_expert_panel()
-    {
-        $this->expertPanel->group->update(['group_type_id' => config('groups.types.wg.id')]);
-
-        // dd($this->expertPanel->group->toArray());
-
-        Sanctum::actingAs($this->user);
-        $response = $this->json('PUT', $this->url, ['scope_description' => 'test test test']);
-
-        $response->assertStatus(422);
-
-        $response->assertJsonFragment([
-            'scope_description' => ['A description of scope can only be set for expert panels.']
-        ]);
-    }
 }
