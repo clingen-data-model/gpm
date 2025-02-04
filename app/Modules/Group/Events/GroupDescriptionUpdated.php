@@ -26,12 +26,12 @@ class GroupDescriptionUpdated extends GroupEvent implements PublishableEvent
 
     public function getLogEntry():string
     {
-        return 'Scope description updated.';
+        return 'Group description updated.';
     }
 
     public function getProperties():array
     {
-        return ['scope_description' => $this->description];
+        return ['description' => $this->description];
     }
 
     /**
