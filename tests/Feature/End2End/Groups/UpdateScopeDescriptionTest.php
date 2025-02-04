@@ -8,11 +8,11 @@ use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class UpdateScopeDescriptionTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     
     public function setup():void
     {

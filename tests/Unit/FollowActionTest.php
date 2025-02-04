@@ -6,11 +6,11 @@ use Tests\TestCase;
 use App\Models\FollowAction;
 use Tests\Dummies\TestEvent;
 use Tests\Dummies\TestFollower;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class FollowActionTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     /**
      * @test

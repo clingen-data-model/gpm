@@ -7,14 +7,14 @@ use App\Models\Expertise;
 use Illuminate\Testing\TestResponse;
 use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 /**
  * @group expertises
  */
 class DeleteExpertiseTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

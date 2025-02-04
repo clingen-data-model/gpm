@@ -6,13 +6,13 @@ use Tests\TestCase;
 use App\Models\Document;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
 use Carbon\Carbon;
 
 class ApplicationDocumentAddTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\NextAction;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Database\Factories\NextActionAssigneeFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use Database\Seeders\NextActionAssigneesTableSeeder;
 use App\Modules\ExpertPanel\Models\NextActionAssignee;
 
@@ -22,7 +22,7 @@ use App\Modules\ExpertPanel\Models\NextActionAssignee;
  */
 class AddNextActionTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

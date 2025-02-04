@@ -21,14 +21,14 @@ use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Events\StepApproved;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Database\Seeders\NextActionTypesTableSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use Database\Seeders\NextActionAssigneesTableSeeder;
 use App\Modules\ExpertPanel\Notifications\ApplicationStepApprovedNotification;
 
 class ApplicationApprovalTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     private $person, $expertPanel, $user;
 

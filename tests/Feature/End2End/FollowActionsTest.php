@@ -11,11 +11,11 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Group\Events\GroupNameUpdated;
 use App\Modules\Group\Actions\GroupStatusUpdate;
 use App\Modules\Group\Events\GroupStatusUpdated;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class FollowActionsTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

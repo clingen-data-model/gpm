@@ -10,7 +10,7 @@ use App\Modules\Person\Models\Person;
 use App\Modules\Group\Actions\MemberAdd;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Group\Actions\MemberAssignRole;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 /**
  * @group groups
@@ -18,7 +18,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
  */
 class RemoveRoleFromMemberTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use SetsUpGroupPersonAndMember;
 
     public function setup():void

@@ -10,7 +10,7 @@ use App\Modules\Person\Models\Person;
 use App\Modules\Group\Actions\MemberAdd;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Group\Actions\MemberAssignRole;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 
 /**
@@ -18,7 +18,7 @@ use App\Modules\Group\Actions\MemberGrantPermissions;
  */
 class IsGroupMemberTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     
     public function setup():void
     {

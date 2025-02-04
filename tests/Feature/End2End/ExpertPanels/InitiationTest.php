@@ -6,12 +6,12 @@ use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class InitiationTest extends TestCase
 {
     use WithFaker;
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

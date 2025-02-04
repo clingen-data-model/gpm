@@ -16,7 +16,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Mail\GeneAddedToVcepMail;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 /**
  * @group groups
@@ -26,7 +26,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
  */
 class AddGenesToVcepTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use SeedsHgncGenesAndDiseases;
 
     public function setup():void

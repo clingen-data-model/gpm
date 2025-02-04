@@ -7,7 +7,7 @@ use App\Modules\User\Models\User;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -15,7 +15,7 @@ use Ramsey\Uuid\Uuid;
  */
 class PersonEndpointTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

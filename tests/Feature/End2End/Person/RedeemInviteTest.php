@@ -8,11 +8,11 @@ use App\Modules\User\Models\User;
 use App\Modules\Person\Models\Invite;
 use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class RedeemInviteTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     const URL = '/api/people/invites';
     public function setup():void

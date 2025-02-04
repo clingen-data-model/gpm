@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Modules\Group\Actions\JudgementCreate;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Database\Seeders\NextActionTypesTableSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use App\Modules\Group\Actions\ApplicationSubmitStep;
 use Database\Seeders\NextActionAssigneesTableSeeder;
@@ -23,7 +23,7 @@ use App\Modules\Group\Actions\SubmissionApprovalRemeindersCreate;
 
 class SubmissionApprovalRemindersCreateTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

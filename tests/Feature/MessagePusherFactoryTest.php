@@ -6,7 +6,7 @@ use Tests\TestCase;
 use App\DataExchange\Kafka\KafkaProducer;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\DataExchange\MessagePushers\MessageLogger;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\DataExchange\MessagePushers\DisabledPusher;
 use App\DataExchange\MessagePushers\MessagePusherFactory;
 

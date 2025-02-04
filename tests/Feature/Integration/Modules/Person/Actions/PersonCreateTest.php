@@ -6,14 +6,14 @@ use App\Modules\Person\Actions\PersonCreate;
 use Tests\TestCase;
 use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use Tests\Feature\End2End\Person\TestEventPublished;
 
 class PersonCreateTest extends TestCase
 {
     use WithFaker;
     use TestEventPublished;
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     /**
      * @test

@@ -12,7 +12,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Actions\ExpertPanelAffiliationIdUpdate;
 use App\Modules\Group\Actions\ExpertPanelNameUpdate;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
 
 /**
@@ -20,7 +20,7 @@ use Tests\Traits\SeedsHgncGenesAndDiseases;
  */
 class PublishApplicationEventsTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use SeedsHgncGenesAndDiseases;
 
     protected $user, $expertPanel, $group;
@@ -121,7 +121,7 @@ class PublishApplicationEventsTest extends TestCase
             $this->assertDatabaseHas('stream_messages', [
                 'topic' => config('dx.topics.outgoing.gpm-general-events'),
                 'message->event_type' => 'ep_info_updated',
-                'message->data->expert_panel->affiliation_id' => '12345',
+                'message->data->group->affiliation_id' => '12345',
                 // 'sent_at' => null,
             ]);
      }
@@ -137,7 +137,7 @@ class PublishApplicationEventsTest extends TestCase
         $this->assertDatabaseHas('stream_messages', [
             'topic' => config('dx.topics.outgoing.gpm-general-events'),
             'message->event_type' => 'ep_info_updated',
-            'message->data->expert_panel->name' => 'new name GCEP',
+            'message->data->group->name' => 'new name',
             // 'sent_at' => null,
         ]);
     }

@@ -9,12 +9,12 @@ use App\Modules\Group\Models\Submission;
 use Database\Seeders\CommentTypesSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
 
 abstract class CommentTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     protected $user, $expertPanel;
 

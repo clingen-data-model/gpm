@@ -5,7 +5,7 @@ namespace Tests\Unit\Modules\Service;
 use Tests\TestCase;
 use Illuminate\Support\Carbon;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\ExpertPanel\Service\StepManagerFactory;
 use App\Modules\ExpertPanel\Service\Steps\VcepDraftStepManager;
 use App\Modules\ExpertPanel\Service\Steps\VcepPilotStepManager;
@@ -16,7 +16,7 @@ use App\Modules\ExpertPanel\Exceptions\UnexpectedCurrentStepException;
 
 class StepManagerFactoryTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

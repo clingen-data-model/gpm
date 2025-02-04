@@ -10,7 +10,7 @@ use App\Modules\Person\Models\Person;
 use App\Modules\Group\Actions\MemberAdd;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use Tests\Feature\End2End\Groups\Members\SetsUpGroupPersonAndMember;
 
 /**
@@ -19,7 +19,7 @@ use Tests\Feature\End2End\Groups\Members\SetsUpGroupPersonAndMember;
  */
 class GrantMemberPermissionTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use SetsUpGroupPersonAndMember;
     
     public function setup():void

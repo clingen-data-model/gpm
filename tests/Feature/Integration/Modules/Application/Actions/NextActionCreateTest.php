@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\ExpertPanel\Events\NextActionAdded;
 use Database\Seeders\NextActionAssigneesTableSeeder;
 
@@ -18,7 +18,7 @@ use Database\Seeders\NextActionAssigneesTableSeeder;
  */
 class NextActionCreateTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

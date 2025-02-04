@@ -7,7 +7,7 @@ use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Carbon;
 use App\Modules\ExpertPanel\Models\NextAction;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use Database\Seeders\NextActionAssigneesTableSeeder;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
 
@@ -18,7 +18,7 @@ use App\Modules\ExpertPanel\Actions\NextActionCreate;
  */
 class CompleteNextActionTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

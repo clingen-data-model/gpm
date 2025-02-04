@@ -9,11 +9,11 @@ use Illuminate\Support\Carbon;
 use App\Events\RecordableEvent;
 use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class RecordEventTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     private $event, $listener;
 

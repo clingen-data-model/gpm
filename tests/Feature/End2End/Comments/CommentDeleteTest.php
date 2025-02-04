@@ -9,7 +9,7 @@ use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Submission;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\Group\Notifications\CommentActivityNotification;
 use Tests\Feature\End2End\Comments\TestsCommentActivityNotificationSent;
 

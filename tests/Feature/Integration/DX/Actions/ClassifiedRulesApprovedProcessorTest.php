@@ -7,13 +7,13 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\DataExchange\Models\IncomingStreamMessage;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\DataExchange\Exceptions\DataSynchronizationException;
 use App\DataExchange\Actions\ClassifiedRulesApprovedProcessor;
 
 class ClassifiedRulesApprovedProcessorTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use WithFaker;
 
     private $expertPanel;

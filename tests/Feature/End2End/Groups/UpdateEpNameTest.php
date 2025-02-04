@@ -4,14 +4,14 @@ namespace Tests\Feature\End2End\Groups;
 
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class UpdateEpNameTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use WithFaker;
 
     public function setup():void

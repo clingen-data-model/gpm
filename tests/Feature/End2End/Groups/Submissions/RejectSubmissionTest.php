@@ -15,7 +15,7 @@ use App\Modules\ExpertPanel\Models\NextAction;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Database\Seeders\NextActionTypesTableSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use Database\Seeders\NextActionAssigneesTableSeeder;
 use App\Modules\ExpertPanel\Models\NextActionAssignee;
@@ -23,7 +23,7 @@ use App\Modules\Group\Events\ApplicationRevisionsRequested;
 
 class RejectSubmissionTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     const NOTE = 'This is a note about the don\'t-call-it-a-rejection.';
 

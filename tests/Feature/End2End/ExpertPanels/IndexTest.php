@@ -11,11 +11,11 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class IndexTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use WithFaker;
 
     const URL = '/api/applications';

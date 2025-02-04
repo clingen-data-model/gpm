@@ -12,12 +12,12 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Database\Seeders\SpecificationStatusSeeder;
 use App\Modules\ExpertPanel\Models\Specification;
 use App\DataExchange\Models\IncomingStreamMessage;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\DataExchange\Actions\CspecDataSyncProcessor;
 
 class CspecDataSyncProcessorTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     protected IncomingStreamMessage $message;
     protected ExpertPanel $expertPanel;

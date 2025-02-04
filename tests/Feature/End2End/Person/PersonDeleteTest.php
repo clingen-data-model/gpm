@@ -10,11 +10,11 @@ use App\Modules\Person\Models\Person;
 use App\Modules\Group\Actions\MemberAdd;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class PersonDeleteTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use TestEventPublished;
 
     public function setup():void

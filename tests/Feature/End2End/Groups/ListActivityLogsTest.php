@@ -5,7 +5,7 @@ namespace Tests\Feature\End2End\Groups;
 use App\Models\Activity;
 use App\Modules\Group\Models\Group;
 use App\Modules\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
@@ -16,7 +16,7 @@ use Tests\TestCase;
  */
 class ListActivityLogsTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

@@ -13,11 +13,11 @@ use App\Modules\Person\Actions\PermissionAdd;
 use App\Modules\Person\Actions\PermissionRemove;
 use App\Modules\Person\Events\InviteRedeemed;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class PermissionRemoveTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

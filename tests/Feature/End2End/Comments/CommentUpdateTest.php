@@ -9,12 +9,12 @@ use App\Modules\Group\Models\Submission;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use Tests\Feature\End2End\Comments\CommentTest;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\Group\Notifications\CommentActivityNotification;
 
 class CommentUpdateTest extends CommentTest
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

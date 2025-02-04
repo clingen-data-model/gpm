@@ -12,13 +12,13 @@ use Database\Seeders\CommentTypesSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use App\Modules\Group\Notifications\CommentActivityNotification;
 
 class CommentCreateTest extends CommentTest
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     protected $expertPanel, $user;
 

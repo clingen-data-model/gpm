@@ -13,7 +13,7 @@ use App\Modules\Group\Models\SubmissionStatus;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Notifications\ApprovalDigestNotification;
 use App\Actions\SendSubmissionDigestNotifications;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\Group\Notifications\ApprovalReminder;
 use App\Notifications\UserDefinedDatabaseNotification;
 use App\Modules\Group\Notifications\CommentActivityNotification;
@@ -21,7 +21,7 @@ use App\Modules\Group\Notifications\JudgementActivityNotification;
 
 class SendSubmissionDigestNotificationsTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

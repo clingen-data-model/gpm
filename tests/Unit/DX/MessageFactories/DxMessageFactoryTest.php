@@ -23,7 +23,7 @@ use App\Modules\Group\Events\MemberRoleRemoved;
 use App\Modules\ExpertPanel\Events\StepApproved;
 use App\Modules\Group\Events\MemberRoleAssigned;
 use App\Modules\Group\Events\GeneRemovedApproved;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\Group\Events\MemberPermissionRevoked;
 use App\Modules\Group\Events\MemberPermissionsGranted;
 use App\DataExchange\MessageFactories\DxMessageFactory;
@@ -33,7 +33,7 @@ use App\DataExchange\MessageFactories\DxMessageFactory;
  */
 class DxMessageFactoryTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     private ExpertPanel $expertPanel;
     private DxMessageFactory $factory;
 

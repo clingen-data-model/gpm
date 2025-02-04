@@ -7,13 +7,13 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\ExpertPanel\Actions\ExpertPanelUpdateAttributes;
 use App\Modules\ExpertPanel\Events\ExpertPanelAttributesUpdated;
 
 class ExpertPanelUpdateAttributesTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

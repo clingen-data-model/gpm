@@ -12,14 +12,14 @@ use App\Modules\Group\Models\GroupMember;
 use App\Modules\Group\Actions\MemberRetire;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\CoiReminderNotification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class CoiReminderTest extends TestCase
 {
     private $group;
     private $user1;
     private $membership1;
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

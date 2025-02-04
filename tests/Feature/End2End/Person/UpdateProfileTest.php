@@ -16,7 +16,7 @@ use App\Modules\Group\Actions\MemberAdd;
 use App\Modules\Person\Models\Institution;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Group\Actions\MemberAssignRole;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 use Tests\Feature\End2End\Person\TestEventPublished;
 
@@ -27,7 +27,7 @@ use Tests\Feature\End2End\Person\TestEventPublished;
  */
 class UpdateProfileTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use WithFaker;
 
     private $institution;

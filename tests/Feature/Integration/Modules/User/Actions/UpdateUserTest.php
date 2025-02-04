@@ -9,11 +9,11 @@ use Illuminate\Support\Facades\Bus;
 use App\Modules\User\Jobs\UpdateUser;
 use App\Modules\User\Actions\UserUpdate;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class UpdateUserTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

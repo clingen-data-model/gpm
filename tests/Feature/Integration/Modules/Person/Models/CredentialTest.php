@@ -6,7 +6,7 @@ use Tests\TestCase;
 use App\Models\Credential;
 use App\ControlledVocabularies\Synonym;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\ControlledVocabularies\HasSynonymInterface;
 
 /**
@@ -14,7 +14,7 @@ use App\ControlledVocabularies\HasSynonymInterface;
  */
 class CredentialTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     /**
      * @test

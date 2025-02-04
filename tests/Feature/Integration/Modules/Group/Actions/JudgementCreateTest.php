@@ -13,11 +13,11 @@ use App\Modules\Group\Actions\JudgementCreate;
 use App\Modules\Group\Events\JudgementCreated;
 use App\Modules\Group\Models\SubmissionStatus;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class JudgementCreateTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     private $expertPanel, $person, $submission;
 

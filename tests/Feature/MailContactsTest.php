@@ -12,12 +12,12 @@ use App\Modules\Group\Models\GroupMember;
 use App\Modules\Group\Actions\ContactsMail;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Group\Actions\MemberAssignRole;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use Tests\Feature\End2End\Groups\Members\SetsUpGroupPersonAndMember;
 
 class MailContactsTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use SetsUpGroupPersonAndMember;
 
     private $addMember, $assignRole, $groupMember;
