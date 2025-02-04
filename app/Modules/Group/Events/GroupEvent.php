@@ -62,7 +62,7 @@ abstract class GroupEvent extends RecordableEvent
      */
     public function shouldPublish(): bool
     {
-        return !$this->group->isEp || $this->group->expertPanel->isApproved;
+        return !$this->group->isEp || $this->group->expertPanel->definitionIsApproved;
     }
 
     abstract public function getLogEntry() :string;
