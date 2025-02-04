@@ -66,7 +66,8 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         'group_type_id',
         'group_status_id',
         'parent_id',
-        'coi_code'
+        'coi_code',
+        'description',
     ];
 
     /**

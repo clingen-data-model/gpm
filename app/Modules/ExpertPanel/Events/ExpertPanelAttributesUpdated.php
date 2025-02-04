@@ -22,6 +22,7 @@ class ExpertPanelAttributesUpdated extends GroupEvent implements PublishableExpe
      */
     public function __construct(public ExpertPanel $expertPanel, public array $attributes)
     {
+        $this->group = $expertPanel->group;
         //
     }
 

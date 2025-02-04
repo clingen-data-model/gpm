@@ -5,30 +5,25 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Auth;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Modules\Group\Http\Resources\GroupResource;
-use App\Modules\Group\Events\ScopeDescriptionUpdated;
+use App\Modules\Group\Events\GroupDescriptionUpdated;
 
-class ScopeDescriptionUpdate
+class GroupDescriptionUpdate
 {
     use AsAction;
 
     public function handle(Group $group, ?string $description): Group
     {
-        if (!$group->isExpertPanel) {
-            throw ValidationException::withMessages(['scope_description' => ['A description of scope can only be set for expert panels.']]);
-        }
-
-        if ($group->expertPanel->scope_description == $description) {
+        if ($group->description == $description) {
             return $group;
         }
 
-        $group->expertPanel->update([
-            'scope_description' => $description
+        $group->update([
+            'description' => $description
         ]);
 
-        event(new ScopeDescriptionUpdated($group, $description));
+        event(new GroupDescriptionUpdated($group, $description));
 
         return $group;
     }
@@ -39,7 +34,7 @@ class ScopeDescriptionUpdate
         if (Auth()->user()->cannot('updateApplicationAttribute', $group)) {
             throw new AuthorizationException('You do not have permission to update this Expert Panel.');
         }
-        $group = $this->handle($group, $request->scope_description);
+        $group = $this->handle($group, $request->description);
         $group->load('expertPanel', 'members', 'members.person');
 
         return new GroupResource($group);
@@ -48,7 +43,7 @@ class ScopeDescriptionUpdate
     public function rules(): array
     {
         return [
-            'scope_description' => 'required|max:66535'
+            'description' => 'required|max:66535'
         ];
     }
 

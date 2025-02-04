@@ -46,7 +46,7 @@ class NextActionUpdate
         DB::transaction(fn () => $nextAction->save());
         $nextAction->update($data);
 
-        event(new NextActionUpdated(application: $expertPanel, nextAction: $nextAction, oldData: $oldData));
+        event(new NextActionUpdated(expertPanel: $expertPanel, nextAction: $nextAction, oldData: $oldData));
 
         return $nextAction->load('assignee');
     }

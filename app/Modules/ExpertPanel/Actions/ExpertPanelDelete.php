@@ -15,6 +15,6 @@ class ExpertPanelDelete
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
         $expertPanel->delete();
 
-        event(new ExpertPanelDeleted(application: $expertPanel));
+        event(new ExpertPanelDeleted(expertPanel: $expertPanel));
     }
 }

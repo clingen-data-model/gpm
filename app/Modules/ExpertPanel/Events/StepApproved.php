@@ -76,7 +76,7 @@ class StepApproved extends ExpertPanelEvent implements PublishableExpertPanelEve
                                     })
                                     ->toArray();
 
-            $message['scope']['statement'] = $this->group->expertPanel->scope_description;
+            $message['scope']['statement'] = $this->group->description;
             $message['scope']['genes'] = $this->group->expertPanel->genes
                                             ->map(function ($gene) {
                                                 return $this->mapGeneForMessage($gene);

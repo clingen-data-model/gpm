@@ -19,7 +19,7 @@ class NextActionComplete
         $nextAction->save();
         $expertPanel->touch();
 
-        Event::dispatch(new NextActionCompleted(application: $expertPanel, nextAction: $nextAction));
+        Event::dispatch(new NextActionCompleted(expertPanel: $expertPanel, nextAction: $nextAction));
 
         return $nextAction;
     }

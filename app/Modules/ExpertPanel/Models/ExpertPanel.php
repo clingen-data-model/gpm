@@ -57,7 +57,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'date_completed',
         'hypothesis_group',
         'membership_description',
-        'scope_description',
         'nhgri_attestation_date',
         'preprint_attestation_date',
         'curation_review_protocol_id',
@@ -135,6 +134,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'has_approved_draft',
         'has_approved_pilot',
         'sustained_curation_is_approved',
+        'scope_description',
     ];
 
     public static function booted()
@@ -468,6 +468,10 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     }
 
 
+    public function getScopeDescriptionAttribute()
+    {
+        return $this->group->description;
+    }
 
 
     // Factory support
