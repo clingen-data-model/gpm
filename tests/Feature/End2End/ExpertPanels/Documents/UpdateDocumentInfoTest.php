@@ -8,7 +8,7 @@ use App\Models\Document;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 
 /**
@@ -16,7 +16,7 @@ use Laravel\Sanctum\Sanctum;
  */
 class UpdateDocumentInfoTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

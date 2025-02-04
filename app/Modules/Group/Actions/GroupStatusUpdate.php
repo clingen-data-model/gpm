@@ -34,7 +34,7 @@ class GroupStatusUpdate
     public function asListener(ApplicationCompleted $event)
     {
         $activeStatus = GroupStatus::find(config('groups.statuses.active.id'));
-        $this->handle($event->application->group, $activeStatus);
+        $this->handle($event->expertPanel->group, $activeStatus);
     }
 
     public function asController(ActionRequest $request, Group $group)

@@ -6,11 +6,11 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Schema;
 use App\DataExchange\Models\StreamMessage;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class ReorderStreamMessagesTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     private $tenDaysAgo;
 

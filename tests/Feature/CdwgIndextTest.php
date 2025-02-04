@@ -7,11 +7,11 @@ use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use Database\Seeders\GroupTypeSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class CdwgIndextTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     
     public function setup():void
     {

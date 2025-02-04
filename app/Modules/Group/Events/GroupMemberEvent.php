@@ -2,12 +2,13 @@
 
 namespace App\Modules\Group\Events;
 
-use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
+use App\Modules\Group\Events\Traits\IsPublishableGroupEvent;
 use App\Modules\Group\Models\GroupMember;
+use App\Events\PublishableEvent;
 
-abstract class GroupMemberEvent extends GroupEvent implements PublishableApplicationEvent
+abstract class GroupMemberEvent extends GroupEvent implements PublishableEvent
 {
-    use IsPublishableApplicationEvent {
+    use IsPublishableGroupEvent {
         getPublishableMessage as protected getBaseMessage;
     }
 
@@ -38,8 +39,9 @@ abstract class GroupMemberEvent extends GroupEvent implements PublishableApplica
      */
     public function shouldPublish(): bool
     {
-        return parent::shouldPublish()
-            && $this->group->expertPanel->definitionIsApproved;
+        // FIXME: rethink when refactoring "expert panel" predicate. Should probably have separate "should publish" predicate
+        // right now, this doesn't really override anything, but preserving for future handling of private groups (CGSP-800)
+        return parent::shouldPublish();
     }
 
 }

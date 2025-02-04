@@ -5,12 +5,12 @@ namespace Tests\Feature\End2End\Groups;
 use Tests\TestCase;
 use Illuminate\Support\Str;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 
 class CreateGroupTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

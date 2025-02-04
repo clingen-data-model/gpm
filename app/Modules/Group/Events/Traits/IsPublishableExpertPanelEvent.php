@@ -2,32 +2,9 @@
 
 namespace App\Modules\Group\Events\Traits;
 
-use Illuminate\Support\Str;
-use Illuminate\Support\Carbon;
-
-trait IsPublishableApplicationEvent
+trait IsPublishableExpertPanelEvent
 {
-    public function getLogDate(): Carbon
-    {
-        return Carbon::now();
-    }
-
-    public function getEventType(): string
-    {
-        return Str::snake(self::class);
-    }
-
-    public function getPublishableMessage(): array
-    {
-        return [
-            'expert_panel' => [
-                'id' => $this->group->uuid,
-                'name' => $this->group->displayName,
-                'type' => $this->group->fullType->name,
-                'affiliation_id' => $this->group->expertPanel->affiliation_id
-            ],
-        ];
-    }
+    use IsPublishableGroupEvent;
 
     public function mapGeneForMessage($gene): array
     {

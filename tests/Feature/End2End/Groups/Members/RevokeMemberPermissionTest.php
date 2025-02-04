@@ -7,7 +7,7 @@ use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Group\Models\Group;
 
@@ -17,7 +17,7 @@ use App\Modules\Group\Models\Group;
  */
 class RevokeMemberPermissionTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use SetsUpGroupPersonAndMember;
 
     public function setup():void

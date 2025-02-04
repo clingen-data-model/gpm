@@ -7,11 +7,11 @@ use Laravel\Sanctum\Sanctum;
 use Illuminate\Testing\TestResponse;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class CoiResponseStoreTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use WithFaker;
 
     private $member, $user;

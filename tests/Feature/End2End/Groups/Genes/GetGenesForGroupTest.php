@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Actions\GenesAdd;
 use App\Modules\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
 
@@ -19,7 +19,7 @@ use Tests\Traits\SeedsHgncGenesAndDiseases;
  */
 class GetGenesForGroupTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use SeedsHgncGenesAndDiseases;
 
     public function setup():void

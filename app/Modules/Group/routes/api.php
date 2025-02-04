@@ -41,7 +41,7 @@ use App\Modules\Group\Actions\ApplicationActivityGet;
 use App\Modules\Group\Actions\ApplicationSaveChanges;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Group\Actions\MemberRevokePermission;
-use App\Modules\Group\Actions\ScopeDescriptionUpdate;
+use App\Modules\Group\Actions\GroupDescriptionUpdate;
 use App\Modules\ExpertPanel\Actions\SpecificationsGet;
 use App\Modules\Group\Actions\AttestationReanalysisStore;
 use App\Modules\Group\Actions\ApplicationSubmissionReject;
@@ -118,6 +118,8 @@ Route::group([
 
         Route::post('/dev/fake-pilot-approved', DevFakePilotApproved::class);
 
+        Route::post('/description', GroupDescriptionUpdate::class);
+
         // DOCUMENTS
         Route::group(['prefix' => '/documents'], function () {
             Route::get('/', [GroupRelationsController::class, 'documents']);
@@ -130,7 +132,7 @@ Route::group([
             Route::put('/curation-review-protocols', CurationReviewProtocolUpdate::class);
             Route::put('/membership-description', MembershipDescriptionUpdate::class);
             Route::put('/name', ExpertPanelNameUpdate::class);
-            Route::put('/scope-description', ScopeDescriptionUpdate::class);
+            Route::put('/scope-description', GroupDescriptionUpdate::class);
             Route::put('/affiliation-id', ExpertPanelAffiliationIdUpdate::class);
             Route::put('/sustained-curation-reviews', SustainedCurationReviewComplete::class);
 

@@ -21,7 +21,7 @@ class ApplicationCompleted extends ExpertPanelEvent
      *
      * @return void
      */
-    public function __construct(public ExpertPanel  $application)
+    public function __construct(public ExpertPanel  $expertPanel)
     {
         
     }
@@ -33,12 +33,12 @@ class ApplicationCompleted extends ExpertPanelEvent
 
     public function getLogDate():Carbon
     {
-        return $this->application->date_completed;
+        return $this->expertPanel->date_completed;
     }
 
     public function getProperties():array
     {
-        return ['date_completed' => $this->application->date_completed];
+        return ['date_completed' => $this->expertPanel->date_completed];
     }
     
 

@@ -7,14 +7,14 @@ use App\Models\Credential;
 use Database\Seeders\CredentialSeeder;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 /**
  * @group credentials
  */
 class SearchCredentialsTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

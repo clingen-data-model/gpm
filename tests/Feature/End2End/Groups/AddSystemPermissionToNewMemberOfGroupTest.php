@@ -12,12 +12,12 @@ use App\Modules\Group\Events\MemberAdded;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Person\Actions\PermissionAdd;
 use App\Modules\Person\Events\InviteRedeemed;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\Group\Actions\MemberAddSystemPermission;
 
 class AddSystemPermissionToNewMemberOfGroupTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

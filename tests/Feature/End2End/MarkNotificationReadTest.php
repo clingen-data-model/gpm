@@ -9,11 +9,11 @@ use App\Modules\Person\Models\Person;
 use Tests\Stubs\TestDatabaseNotification;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class MarkNotificationReadTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     
     public function setup():void
     {

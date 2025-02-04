@@ -11,7 +11,7 @@ use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
 use App\Modules\Group\Actions\MemberAdd;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 /**
  * @group groups
@@ -19,7 +19,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
  */
 class RemoveMemberTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use SetsUpGroupPersonAndMember;
 
     public function setup():void

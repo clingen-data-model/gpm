@@ -14,7 +14,7 @@ use App\Modules\Group\Actions\MemberAdd;
 use Tests\CreatesDocumentUploadRequestData;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
 
 /**
@@ -22,7 +22,7 @@ use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
  */
 class DownloadTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use CreatesDocumentUploadRequestData;
 
     public function setup():void

@@ -13,11 +13,11 @@ use App\Modules\Person\Models\Invite;
 use App\Modules\Person\Models\Person;
 use App\Modules\Group\Actions\MemberAdd;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class PersonMergeTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     private $user, $group1, $group2, $person1, $person2;
 

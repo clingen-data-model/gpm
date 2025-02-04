@@ -12,7 +12,7 @@ use App\Modules\Group\Events\MemberAdded;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Person\Actions\PermissionAdd;
 use App\Modules\Person\Events\InviteRedeemed;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\Group\Actions\MemberAddSystemPermission;
 use App\Modules\Group\Actions\MemberRemove;
 use App\Modules\Group\Actions\MemberRemoveSystemPermission;
@@ -23,7 +23,7 @@ use Carbon\Carbon;
 
 class RemoveSystemPermissionFromRemovedOrRetiredGroupMemberTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

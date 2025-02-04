@@ -10,14 +10,14 @@ use App\DataExchange\Actions\DxConsume;
 use App\DataExchange\Contracts\MessageStream;
 use Lorisleiva\Actions\Decorators\JobDecorator;
 use App\DataExchange\Contracts\MessageProcessor;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 /**
  * @group dx
  */
 class DxConsumeTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     protected array $messages;
 

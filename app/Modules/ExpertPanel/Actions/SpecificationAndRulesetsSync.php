@@ -39,7 +39,7 @@ class SpecificationAndRulesetsSync
         }
 
         event(new SpecificationStatusUpdated(
-            application: $expertPanel,
+            expertPanel: $expertPanel,
             specification: $specification,
         ));
 

@@ -4,13 +4,13 @@ namespace Tests\Feature\Integration\DX\Actions;
 
 use App\DataExchange\Actions\IncomingMessageStore;
 use App\DataExchange\DxMessage;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class IncomingMessageStoreTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     /**
      * @test

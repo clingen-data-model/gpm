@@ -10,11 +10,11 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Models\Specification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class GetSpecificationsTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     private ExpertPanel $expertPanel;
     private Collection $specifications;

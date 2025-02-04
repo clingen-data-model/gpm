@@ -12,11 +12,11 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Person\Actions\PermissionAdd;
 use App\Modules\Person\Events\InviteRedeemed;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class PermissionAddTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

@@ -6,7 +6,7 @@ use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\Group\Notifications\JudgementActivityNotification;
 
 class JudgementDeleteTest extends JudgementTest

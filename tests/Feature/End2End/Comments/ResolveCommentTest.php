@@ -14,11 +14,11 @@ use App\Modules\Group\Models\Submission;
 use App\Modules\Group\Notifications\CommentActivityNotification;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class ResolveCommentTest extends CommentTest
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

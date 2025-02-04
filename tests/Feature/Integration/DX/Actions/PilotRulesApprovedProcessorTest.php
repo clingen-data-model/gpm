@@ -9,13 +9,13 @@ use Database\Seeders\TaskTypeSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\DataExchange\Models\IncomingStreamMessage;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\DataExchange\Actions\PilotRulesApprovedProcessor;
 use App\DataExchange\Exceptions\DataSynchronizationException;
 
 class PilotRulesApprovedProcessorTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use WithFaker;
 
     private $expertPanel;

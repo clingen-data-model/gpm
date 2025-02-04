@@ -28,7 +28,7 @@ class StepApprovalUpdate
 
             Event::dispatch(
                 new StepDateApprovedUpdated(
-                    application: $expertPanel,
+                    expertPanel: $expertPanel,
                     step: $step,
                     dateApproved: $dateApproved
                 )

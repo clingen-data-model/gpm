@@ -7,14 +7,14 @@ use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 /**
  * @group people
  */
 class ListPeopleTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     const URL = '/api/people';
 

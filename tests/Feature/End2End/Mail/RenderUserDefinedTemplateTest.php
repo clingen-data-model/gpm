@@ -6,7 +6,7 @@ use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Mail\UserDefinedMailTemplates\InitialApprovalMailTemplate;
 use App\Mail\UserDefinedMailTemplates\SpecificationDraftMailTemplate;
 use App\Mail\UserDefinedMailTemplates\SpecificationPilotMailTemplate;
@@ -15,7 +15,7 @@ use App\Modules\ExpertPanel\Notifications\ApplicationStepApprovedNotification;
 
 class RenderUserDefinedTemplateTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

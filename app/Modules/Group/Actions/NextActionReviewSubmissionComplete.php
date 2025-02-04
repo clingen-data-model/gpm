@@ -6,10 +6,7 @@ use Carbon\Carbon;
 use App\Events\Event;
 use InvalidArgumentException;
 use Lorisleiva\Actions\Concerns\AsListener;
-use App\Modules\ExpertPanel\Models\NextAction;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Doctrine\Common\Cache\Psr6\InvalidArgument;
-use App\Modules\ExpertPanel\Events\StepApproved;
 use App\Modules\ExpertPanel\Actions\NextActionComplete;
 
 class NextActionReviewSubmissionComplete
@@ -35,7 +32,7 @@ class NextActionReviewSubmissionComplete
 
     public function asListener(Event $event): void
     {
-        $expertPanel = isset($event->application) ? $event->application : null;
+        $expertPanel = $event->expertPanel??null;
         if (!$expertPanel) {
             if (isset($event->submission)) {
                 $expertPanel = $event->submission->group->expertPanel;

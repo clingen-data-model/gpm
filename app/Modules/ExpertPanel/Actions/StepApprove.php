@@ -70,7 +70,7 @@ class StepApprove
         }
 
         event(new StepApproved(
-            application: $expertPanel,
+            expertPanel: $expertPanel,
             step: $approvedStep,
             dateApproved: $dateApproved
         ));

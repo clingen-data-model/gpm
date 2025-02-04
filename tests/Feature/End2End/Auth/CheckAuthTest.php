@@ -5,11 +5,11 @@ namespace Tests\Feature\End2End\Auth;
 use Tests\TestCase;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class CheckAuthTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

@@ -23,7 +23,7 @@ use App\Modules\Group\Events\MemberRoleRemoved;
 use App\Modules\ExpertPanel\Events\StepApproved;
 use App\Modules\Group\Events\MemberRoleAssigned;
 use App\Modules\Group\Events\GeneRemovedApproved;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\Group\Events\MemberPermissionRevoked;
 use App\Modules\Group\Events\MemberPermissionsGranted;
 use App\DataExchange\MessageFactories\DxMessageFactory;
@@ -33,7 +33,9 @@ use App\DataExchange\MessageFactories\DxMessageFactory;
  */
 class DxMessageFactoryTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
+    private ExpertPanel $expertPanel;
+    private DxMessageFactory $factory;
 
     public function setup():void
     {
@@ -148,7 +150,7 @@ class DxMessageFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_a_member_retireded_event()
+    public function it_creates_a_member_retired_event()
     {
         $event = new MemberRetired($this->expertPanel->group->members->first());
 
@@ -161,7 +163,7 @@ class DxMessageFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_a_member_unretireded_event()
+    public function it_creates_a_member_unretired_event()
     {
         $event = new MemberUnretired($this->expertPanel->group->members->first());
 
@@ -232,11 +234,9 @@ class DxMessageFactoryTest extends TestCase
 
     private function assertExpertPanelInMessage($message)
     {
-        $this->assertEquals([
-            'id' => $this->expertPanel->group->uuid,
-            'name' => $this->expertPanel->group->displayName,
-            'type' => $this->expertPanel->group->fullType->name,
-            'affiliation_id' => $this->expertPanel->affiliation_id
-         ], $message['data']['expert_panel']);
+        $g = $message['data']['group'];
+        $this->assertEquals($g['id'], $this->expertPanel->group->uuid);
+        $this->assertEquals($g['name'], $this->expertPanel->group->name);
+        $this->assertEquals($g['affiliation_id'], $this->expertPanel->affiliation_id);
     }
 }

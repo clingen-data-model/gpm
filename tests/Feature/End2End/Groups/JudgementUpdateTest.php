@@ -5,12 +5,12 @@ namespace Tests\Feature\End2End\Groups;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\Group\Notifications\JudgementActivityNotification;
 
 class JudgementUpdateTest extends JudgementTest
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

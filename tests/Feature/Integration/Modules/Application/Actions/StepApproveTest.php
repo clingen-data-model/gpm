@@ -7,11 +7,11 @@ use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\StepApprove;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class StepApproveTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
         
     /**
      * @test

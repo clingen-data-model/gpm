@@ -11,12 +11,12 @@ use App\Modules\ExpertPanel\Models\Gene;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\ExpertPanel\Models\EvidenceSummary;
 
 class DeleteSummaryTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use SeedsHgncGenesAndDiseases;
 
     public function setup():void

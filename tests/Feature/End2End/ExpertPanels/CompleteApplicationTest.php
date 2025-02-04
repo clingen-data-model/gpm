@@ -9,11 +9,11 @@ use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\StepApprove;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class CompleteApplicationTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     private $user, $expertPanel;
 

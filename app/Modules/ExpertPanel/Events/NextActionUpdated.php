@@ -22,7 +22,7 @@ class NextActionUpdated extends ExpertPanelEvent
      *
      * @return void
      */
-    public function __construct(public ExpertPanel  $application, public NextAction $nextAction, public array $oldData)
+    public function __construct(public ExpertPanel  $expertPanel, public NextAction $nextAction, public array $oldData)
     {
     }
 

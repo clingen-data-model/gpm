@@ -6,7 +6,7 @@ use Tests\TestCase;
 use App\Models\Comment;
 use App\Modules\Group\Models\Group;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class CommentListTest extends CommentTest
 {

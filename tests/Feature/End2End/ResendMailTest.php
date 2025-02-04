@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\Mail;
 use Tests\Stubs\TestMailNotification;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class ResendMailTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     private $user, $mail;
 

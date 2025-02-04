@@ -12,7 +12,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Actions\LogEntryAdd;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use App\Modules\ExpertPanel\Actions\ExpertPanelCreate;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
@@ -20,7 +20,7 @@ use Database\Seeders\NextActionAssigneesTableSeeder;
 
 class ExpertPanelDetailTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

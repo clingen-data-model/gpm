@@ -16,7 +16,7 @@ use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\Group\Notifications\AddedToGroupNotification;
 
 /**
@@ -25,7 +25,7 @@ use App\Modules\Group\Notifications\AddedToGroupNotification;
  */
 class AddGroupMemberTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use SetsUpGroupPersonAndMember;
 
     public function setup():void

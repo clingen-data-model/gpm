@@ -13,7 +13,7 @@ class ExpertPanelDeleted extends ExpertPanelEvent
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public function __construct(
-        public ExpertPanel  $application
+        public ExpertPanel  $expertPanel
     ) {
     }
 

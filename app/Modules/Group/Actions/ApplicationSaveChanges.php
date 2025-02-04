@@ -14,7 +14,7 @@ class ApplicationSaveChanges
 
     public function __construct(
         private MembershipDescriptionUpdate $memberDescription,
-        private ScopeDescriptionUpdate $scopeDescription,
+        private GroupDescriptionUpdate $groupDescription,
         private CurationReviewProtocolUpdate $curationReviewProtocol,
         private AttestationGcepStore $gcepAttestation,
         private AttestationNhgriStore $nhgriAttestation,
@@ -29,7 +29,7 @@ class ApplicationSaveChanges
     public function handle(Group $group, $data): Group
     {
         $data = collect($data);
-        $group = $this->scopeDescription->handle($group, $data->get('scope_description'));
+        $group = $this->groupDescription->handle($group, $data->get('description'));
         $group = $this->curationReviewProtocol->handle($group, $data);
         if ($group->isGcep) {
             $group = $this->gcepAttestation->handle($group, $data->toArray());

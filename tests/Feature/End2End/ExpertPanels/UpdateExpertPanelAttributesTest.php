@@ -10,11 +10,11 @@ use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use Illuminate\Testing\TestResponse;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class UpdateExpertPanelAttributesTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     private $user, $cdwg, $longText;
 
@@ -194,16 +194,13 @@ class UpdateExpertPanelAttributesTest extends TestCase
         $this->assertDatabaseHas('stream_messages', [
             'topic' => config('dx.topics.outgoing.gpm-general-events'),
             'message->event_type' => 'ep_info_updated',
-            'message->schema_version' => '1.1.0',
+            'message->schema_version' => '1.9.9',
             'message->date' => Carbon::now()->format('Y-m-d H:i:s'),
-            'message->data->expert_panel->id' => $ep->group->uuid,
-            'message->data->expert_panel->name' => $ep->group->display_name,
-            'message->data->expert_panel->type' => $ep->group->type->name,
-            'message->data->expert_panel->affiliation_id' => $ep->affiliation_id,
-            'message->data->expert_panel->long_base_name' => $ep->long_base_name,
-            'message->data->expert_panel->short_base_name' => $ep->short_base_name,
-            'message->data->expert_panel->hypothesis_group' => $ep->hypothesis_group,
-            'message->data->expert_panel->membership_description' => $ep->membership_description,
+            'message->data->id' => $ep->group->uuid,
+            'message->data->name' => $ep->group->display_name,
+            'message->data->type' => $ep->group->type->name,
+            'message->data->affiliation_id' => $ep->affiliation_id,
+            'message->data->short_name' => $ep->short_base_name,
             'message->data->expert_panel->scope_description' => $ep->scope_description
         ]);
     }

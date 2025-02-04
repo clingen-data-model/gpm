@@ -13,14 +13,14 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\DataExchange\Contracts\MessageStream;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Database\Seeders\SpecificationStatusSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 /**
  * @group dx
  */
 class ConsumeCspecMessagesTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     private $vcep;
     private $consumer;

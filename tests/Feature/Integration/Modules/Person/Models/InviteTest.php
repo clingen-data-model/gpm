@@ -5,7 +5,7 @@ namespace Tests\Feature\Integration\Modules\Person\Models;
 use Tests\TestCase;
 use App\Modules\Person\Models\Invite;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 /**
  * @group groups
@@ -13,7 +13,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
  */
 class InviteTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     /**
      * @test

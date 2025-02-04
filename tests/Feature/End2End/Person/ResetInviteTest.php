@@ -7,11 +7,11 @@ use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Carbon;
 use App\Modules\Person\Models\Invite;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class ResetInviteTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

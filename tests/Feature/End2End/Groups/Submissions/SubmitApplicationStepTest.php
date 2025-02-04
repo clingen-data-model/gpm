@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Database\Seeders\NextActionTypesTableSeeder;
 use App\Mail\ApplicationStepSubmittedReceiptMail;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use Database\Seeders\NextActionAssigneesTableSeeder;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
@@ -33,7 +33,7 @@ use App\Modules\Group\Notifications\ApplicationSubmissionNotification;
  */
 class SubmitApplicationStepTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use SetsUpGroupPersonAndMember;
     
     public function setup():void

@@ -2,7 +2,6 @@
 
 namespace App\Modules\ExpertPanel\Events;
 
-use DateTime;
 use Illuminate\Queue\SerializesModels;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Events\RecordableEvent;
@@ -10,7 +9,6 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use Ramsey\Uuid\Type\Integer;
 
 /**
  * @property App\Modules\Group\Models\Group $group
@@ -19,7 +17,7 @@ abstract class ExpertPanelEvent extends RecordableEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public function __construct(public ExpertPanel  $application)
+    public function __construct(public ExpertPanel  $expertPanel)
     {
     }
 
@@ -35,7 +33,7 @@ abstract class ExpertPanelEvent extends RecordableEvent
 
     public function getSubject():Model
     {
-        return $this->application->group;
+        return $this->expertPanel->group;
     }
 
     public function getLogDate():Carbon
@@ -45,7 +43,7 @@ abstract class ExpertPanelEvent extends RecordableEvent
 
     public function getStep()
     {
-        return $this->application->current_step;
+        return $this->expertPanel->current_step;
     }
 
     /**
@@ -66,6 +64,6 @@ abstract class ExpertPanelEvent extends RecordableEvent
 
     public function __get($key)
     {
-        return $key == 'group' ? $this->application->group : null;
+        return $key == 'group' ? $this->expertPanel->group : null;
     }
 }

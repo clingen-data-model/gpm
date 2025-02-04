@@ -9,12 +9,12 @@ use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Invite;
 use App\Modules\Person\Models\Person;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\Group\Notifications\AddedToGroupNotification;
 
 class AddedToGroupNotificationTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     
     public function setup():void
     {

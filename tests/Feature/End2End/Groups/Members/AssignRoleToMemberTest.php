@@ -6,10 +6,8 @@ use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
-use App\Modules\Group\Actions\MemberAdd;
 use App\Modules\User\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 /**
  * @group groups
@@ -17,8 +15,15 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
  */
 class AssignRoleToMemberTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use SetsUpGroupPersonAndMember;
+
+    private User $user;
+    private Group $group;
+    private Person $person;
+    private $url;
+    private $groupMember;
+    private $roles;
     
     public function setup():void
     {
@@ -117,6 +122,8 @@ class AssignRoleToMemberTest extends TestCase
                 'role_ids' => $this->roles->pluck('id')->toArray()
             ]
         );
+
+        $this->groupMember = $this->groupMember->fresh();
 
         $this->assertDatabaseHas('activity_log', [
             'subject_type' => Group::class,

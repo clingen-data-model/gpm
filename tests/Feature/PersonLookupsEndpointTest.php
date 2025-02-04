@@ -10,11 +10,11 @@ use Database\Seeders\CountrySeeder;
 use Database\Seeders\GenderSeeder;
 use Database\Seeders\PrimaryOccupationSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class PersonLookupsEndpointTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

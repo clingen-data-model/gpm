@@ -8,11 +8,11 @@ use App\Modules\User\Models\User;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class UpdateGeneTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use SeedsHgncGenesAndDiseases;
 
     public function setup():void

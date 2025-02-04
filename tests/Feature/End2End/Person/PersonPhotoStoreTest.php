@@ -8,11 +8,11 @@ use Illuminate\Http\UploadedFile;
 use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 class PersonPhotoStoreTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use TestEventPublished;
 
     public function setup():void

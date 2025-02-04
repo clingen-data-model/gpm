@@ -50,7 +50,7 @@ class ApplicationDocumentAdd
         $this->updateOrTouchExpertPanel($expertPanel, $document);
 
         $event = new DocumentAdded(
-            application: $expertPanel,
+            expertPanel: $expertPanel,
             document: $document
         );
         Event::dispatch($event);

@@ -8,7 +8,7 @@ use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 
 /**
  * @group groups
@@ -18,7 +18,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
  */
 class RemoveGeneFromExpertPanelTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

@@ -10,7 +10,7 @@ use App\Modules\Group\Models\Judgement;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Database\Seeders\NextActionTypesTableSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use App\Modules\Group\Actions\ApplicationSubmitStep;
 use Database\Seeders\NextActionAssigneesTableSeeder;
@@ -18,7 +18,7 @@ use App\Modules\Group\Actions\JudgementCreate;
 
 abstract class JudgementTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
 
     public function setup():void
     {

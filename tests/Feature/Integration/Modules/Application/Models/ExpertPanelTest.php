@@ -8,7 +8,7 @@ use App\Modules\ExpertPanel\Models\NextAction;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use App\Modules\ExpertPanel\Events\ApplicationCompleted;
 use App\Modules\ExpertPanel\Events\ExpertPanelAttributesUpdated;
 
@@ -18,7 +18,7 @@ use App\Modules\ExpertPanel\Events\ExpertPanelAttributesUpdated;
  */
 class ExpertPanelTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     
     public function setup():void
     {

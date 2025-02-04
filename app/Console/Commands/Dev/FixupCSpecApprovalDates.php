@@ -70,7 +70,7 @@ class FixupCSpecApprovalDates extends Command
                 $expertPanel->save();
                 Event::dispatch(
                     new StepDateApprovedUpdated(
-                        application: $expertPanel,
+                        expertPanel: $expertPanel,
                         step: $step,
                         dateApproved: $dateApproved
                     )

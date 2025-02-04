@@ -9,7 +9,7 @@ use App\Modules\ExpertPanel\Models\Gene;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
 
 /**
@@ -20,7 +20,7 @@ use Tests\Traits\SeedsHgncGenesAndDiseases;
  */
 class SyncGenesToGcepTest extends TestCase
 {
-    use RefreshDatabase;
+    use FastRefreshDatabase;
     use SeedsHgncGenesAndDiseases;
 
     public function setup():void
