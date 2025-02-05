@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use App\Modules\Group\Models\Group;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Models\ExpertPanelType;
 use Database\Factories\Traits\GetsRandomConfigValue;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -28,13 +27,16 @@ class ExpertPanelFactory extends Factory
      */
     public function definition()
     {
+        $unique_id = uniqid();
         return [
             'uuid' => Uuid::uuid4()->toString(),
+            'long_base_name' => 'Test Expert Panel ' . $unique_id,
+            'short_base_name' => 'Test EP ' . $unique_id,
             'group_id' => Group::factory()
-                            ->create([
-                                'name' => 'group '.uniqid(),
-                                'group_type_id' => config('groups.types.gcep.id')
-                            ])->id,
+                ->create([
+                    'name' => 'Test Expert Panel ' . $unique_id,
+                    'group_type_id' => config('groups.types.gcep.id')
+                ])->id,
             'expert_panel_type_id' => config('groups.types.gcep.id') - 2,
             'date_initiated' => Carbon::now(),
             'current_step' => 1,
@@ -47,10 +49,10 @@ class ExpertPanelFactory extends Factory
             return [
                 'expert_panel_type_id' => config('expert_panels.types.gcep.id'),
                 'group_id' => Group::factory()
-                                ->create([
-                                    'name' => 'group '.uniqid(),
-                                    'group_type_id' => config('groups.types.gcep.id')
-                                ])->id
+                    ->create([
+                        'name' => 'group ' . uniqid(),
+                        'group_type_id' => config('groups.types.gcep.id')
+                    ])->id
             ];
         });
     }
@@ -61,10 +63,10 @@ class ExpertPanelFactory extends Factory
             return [
                 'expert_panel_type_id' => config('expert_panels.types.vcep.id'),
                 'group_id' => Group::factory()
-                                ->create([
-                                    'name' => 'group '.uniqid(),
-                                    'group_type_id' => config('groups.types.vcep.id')
-                                ])->id
+                    ->create([
+                        'name' => 'group ' . uniqid(),
+                        'group_type_id' => config('groups.types.vcep.id')
+                    ])->id
             ];
         });
     }
