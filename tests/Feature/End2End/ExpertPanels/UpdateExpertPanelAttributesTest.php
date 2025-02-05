@@ -189,22 +189,19 @@ class UpdateExpertPanelAttributesTest extends TestCase
         $ep = ExpertPanel::factory()->create(['step_1_approval_date' => Carbon::now()]);
         $this->makeRequest($ep)
             ->assertStatus(200);
-        $ep->refresh();
+        $ep = ExpertPanel::findByUuid($ep->uuid);
 
         $this->assertDatabaseHas('stream_messages', [
             'topic' => config('dx.topics.outgoing.gpm-general-events'),
             'message->event_type' => 'ep_info_updated',
             'message->schema_version' => '1.1.0',
             'message->date' => Carbon::now()->format('Y-m-d H:i:s'),
-            'message->data->expert_panel->id' => $ep->group->uuid,
-            'message->data->expert_panel->name' => $ep->group->display_name,
-            'message->data->expert_panel->type' => $ep->group->type->name,
-            'message->data->expert_panel->affiliation_id' => $ep->affiliation_id,
-            'message->data->expert_panel->long_base_name' => $ep->long_base_name,
-            'message->data->expert_panel->short_base_name' => $ep->short_base_name,
-            'message->data->expert_panel->hypothesis_group' => $ep->hypothesis_group,
-            'message->data->expert_panel->membership_description' => $ep->membership_description,
-            'message->data->expert_panel->scope_description' => $ep->scope_description
+            'message->data->group->id' => $ep->group->uuid,
+            'message->data->group->name' => $ep->group->display_name,
+            'message->data->group->type' => $ep->group->type->name,
+            'message->data->group->affiliation_id' => $ep->affiliation_id,
+            'message->data->group->scope_description' => $ep->scope_description,
+            'message->data->group->short_name' => $ep->group->short_name,
         ]);
     }
 
