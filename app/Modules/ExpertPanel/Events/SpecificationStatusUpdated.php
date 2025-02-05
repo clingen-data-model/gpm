@@ -2,33 +2,24 @@
 
 namespace App\Modules\ExpertPanel\Events;
 
-use App\Modules\Group\Models\Group;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Models\Specification;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class SpecificationStatusUpdated extends ExpertPanelEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
-    public function __construct(public ExpertPanel $application, public Specification $specification )
+    public function __construct(public ExpertPanel $application, public Specification $specification)
     {
+        parent::__construct($application);
     }
 
     public function getLogEntry(): string
     {
-        return 'Specification "'.$this->specification->name.'" status updated to "'.$this->specification->status.'"';
+        return 'Specification "' . $this->specification->name . '" status updated to "' . $this->specification->status . '"';
     }
 
     public function getProperties(): array
@@ -57,16 +48,9 @@ class SpecificationStatusUpdated extends ExpertPanelEvent
         return null;
     }
 
-
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn()
+    public function shouldPublish(): bool
     {
-        return new PrivateChannel('channel-name');
+        return false;
     }
 
 }

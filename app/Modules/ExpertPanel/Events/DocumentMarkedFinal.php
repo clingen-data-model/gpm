@@ -23,7 +23,7 @@ class DocumentMarkedFinal extends ExpertPanelEvent
      */
     public function __construct(public ExpertPanel  $application, public Document $document)
     {
-        //
+        parent::__construct($application);
     }
 
     public function getLogEntry():string
@@ -38,14 +38,9 @@ class DocumentMarkedFinal extends ExpertPanelEvent
         ];
     }
 
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn()
+    public function shouldPublish(): bool
     {
-        return new PrivateChannel('channel-name');
+        return false;
     }
+
 }
