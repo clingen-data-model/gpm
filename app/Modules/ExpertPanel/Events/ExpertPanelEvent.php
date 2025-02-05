@@ -57,7 +57,8 @@ abstract class ExpertPanelEvent extends GroupEvent
      */
     public function shouldPublish(): bool
     {
-        return $this->group->isEp;
+        return $this->application->definitionIsApproved;
+        
     }
 
     public function __get($key)

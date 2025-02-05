@@ -18,41 +18,32 @@ class DocumentAdded extends ExpertPanelEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
     public function __construct(
         public ExpertPanel $application,
         public Document $document
     ) {
-        //
+        parent::__construct($application);
     }
 
-    public function getLogEntry():string
+    public function getLogEntry(): string
     {
-        return 'Added version '.$this->document->version.' of '.$this->document->type->long_name.'.';
+        return 'Added version ' . $this->document->version . ' of ' . $this->document->type->long_name . '.';
     }
-    
+
 
     public function getProperties(): array
     {
         return ['document' => $this->document->toArray()];
     }
 
-    public function getLogDate():Carbon
+    public function getLogDate(): Carbon
     {
         return $this->document->date_received ?? Carbon::now();
     }
-    
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    // public function broadcastOn()
-    // {
-    //     return new PrivateChannel('channel-name');
-    // }
+
+    public function shouldPublish(): bool
+    {
+        return false;
+    }
+
 }

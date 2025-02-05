@@ -16,6 +16,7 @@ class ExpertPanelAffiliationIdUpdated extends GroupEvent implements PublishableA
         public Group $group,
         public $affiliationId,
     ) {
+        parent::__construct($group);
     }
 
     public function getLogEntry(): string
@@ -34,6 +35,11 @@ class ExpertPanelAffiliationIdUpdated extends GroupEvent implements PublishableA
     public function getEventType(): string
     {
         return 'ep_info_updated';
+    }
+    
+    public function shouldPublish(): bool
+    {
+        return $this->group->expertPanel->definitionIsApproved;
     }
 
 }

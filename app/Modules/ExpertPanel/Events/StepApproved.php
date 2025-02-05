@@ -16,11 +16,6 @@ class StepApproved extends ExpertPanelEvent implements PublishableApplicationEve
     use Dispatchable, InteractsWithSockets, SerializesModels;
     use IsPublishableApplicationEvent;
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
     public function __construct(public ExpertPanel  $application, public int $step, public Carbon $dateApproved)
     {
         parent::__construct($application);

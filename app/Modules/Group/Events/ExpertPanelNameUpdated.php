@@ -54,4 +54,8 @@ class ExpertPanelNameUpdated extends GroupEvent implements PublishableApplicatio
         return 'ep_info_updated';
     }
 
+    public function shouldPublish(): bool
+    {
+        return $this->group->expertPanel->definitionIsApproved;
+    }
 }

@@ -13,22 +13,22 @@ class ApplicationInitiated extends ExpertPanelEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public function __construct(
-        public ExpertPanel  $application
-    )
-    {}
+    public function __construct(public ExpertPanel $application)
+    {
+        parent::__construct($application);
+    }
 
-    public function getProperties():array
+    public function getProperties(): array
     {
         return $this->application->getAttributes();
     }
 
-    public function getLogEntry():string
+    public function getLogEntry(): string
     {
         return 'Application initiated';
     }
-    
-    public function getLogDate():Carbon
+
+    public function getLogDate(): Carbon
     {
         return $this->application->date_initiated;
     }
@@ -37,5 +37,10 @@ class ApplicationInitiated extends ExpertPanelEvent
     {
         return 1;
     }
-    
+
+    public function shouldPublish(): bool
+    {
+        return false;
+    }
+
 }
