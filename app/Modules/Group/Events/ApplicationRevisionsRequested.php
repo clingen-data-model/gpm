@@ -3,16 +3,10 @@
 namespace App\Modules\Group\Events;
 
 use App\Modules\Group\Models\Submission;
-use Illuminate\Support\Carbon;
 use App\Modules\Group\Models\Group;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class ApplicationRevisionsRequested extends GroupEvent
 {
@@ -20,11 +14,6 @@ class ApplicationRevisionsRequested extends GroupEvent
 
     public Group $group;
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
     public function __construct(public Submission $submission, public ?string $comments = null)
     {
         $this->group = $submission->group;
@@ -49,13 +38,4 @@ class ApplicationRevisionsRequested extends GroupEvent
         return $logEntry;
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn()
-    {
-        return new PrivateChannel('channel-name');
-    }
 }
