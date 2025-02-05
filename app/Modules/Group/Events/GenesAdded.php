@@ -5,20 +5,13 @@ use Illuminate\Support\Collection;
 use App\Modules\Group\Models\Group;
 use Illuminate\Queue\SerializesModels;
 use App\Modules\Group\Events\GeneEvent;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
-use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
 use Illuminate\Broadcasting\InteractsWithSockets;
 
 class GenesAdded extends GeneEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
     public function __construct(public Group $group, public Collection $genes)
     {
     }
@@ -45,16 +38,6 @@ class GenesAdded extends GeneEvent
         return $message;
     }
 
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn()
-    {
-        return new PrivateChannel('channel-name');
-    }
 
     public function __get($key)
     {

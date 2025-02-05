@@ -4,7 +4,6 @@ namespace App\Modules\Group\Events;
 
 use App\Modules\Group\Models\Group;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 
@@ -14,7 +13,7 @@ class MemberUnretired extends GroupMemberEvent
 
     public function getLogEntry(): string
     {
-        return $this->groupMember->person->name.' "un-retired" from '.$this->groupMember->group->displayName;
+        return $this->groupMember->person->name . ' "un-retired" from ' . $this->groupMember->group->displayName;
     }
 
     public function getSubject(): Group
@@ -37,13 +36,4 @@ class MemberUnretired extends GroupMemberEvent
         return 'member_unretired';
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn()
-    {
-        return new PrivateChannel('channel-name');
-    }
 }

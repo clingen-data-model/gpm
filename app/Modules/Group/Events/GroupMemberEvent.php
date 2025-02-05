@@ -5,12 +5,8 @@ namespace App\Modules\Group\Events;
 use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
 use App\Modules\Group\Models\GroupMember;
 
-abstract class GroupMemberEvent extends GroupEvent implements PublishableApplicationEvent
+abstract class GroupMemberEvent extends GroupEvent 
 {
-    use IsPublishableApplicationEvent {
-        getPublishableMessage as protected getBaseMessage;
-    }
-
     public function __construct(public GroupMember $groupMember)
     {
         $this->group = $groupMember->group;
@@ -18,7 +14,7 @@ abstract class GroupMemberEvent extends GroupEvent implements PublishableApplica
 
     public function getPublishableMessage(): array
     {
-        $message = $this->getBaseMessage();
+        $message = parent::getPublishableMessage();
 
         // NOTE: members is an array for consistency of message schema.
         $message['members'] = [[
@@ -33,13 +29,9 @@ abstract class GroupMemberEvent extends GroupEvent implements PublishableApplica
         return $message;
     }
 
-    /**
-     * For PublishableEvent interface that is applied to many sub-classes
-     */
     public function shouldPublish(): bool
     {
-        return parent::shouldPublish()
-            && $this->group->expertPanel->definitionIsApproved;
+        return parent::isPublishableGroup();
     }
 
 }

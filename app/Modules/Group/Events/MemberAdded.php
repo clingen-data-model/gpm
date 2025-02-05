@@ -37,13 +37,8 @@ class MemberAdded extends GroupMemberEvent
         return 'member_added';
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn()
+    public function shouldPublish(): bool
     {
-        return new PrivateChannel('channel-name');
+        return parent::isPublishableGroup();
     }
 }

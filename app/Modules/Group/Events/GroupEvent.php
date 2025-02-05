@@ -55,6 +55,12 @@ abstract class GroupEvent extends RecordableEvent implements PublishableEvent
         return config('dx.topics.outgoing.gpm-general-events');
     }
 
+    public function isPublishableGroup(): bool
+    {
+        // EP events are only publishable after definition is approved
+        return !$this->group->isEp || $this->group->expertPanel->definitionIsApproved;
+    }
+
     public function shouldPublish(): bool
     {
         return false;
