@@ -194,7 +194,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
         $this->assertDatabaseHas('stream_messages', [
             'topic' => config('dx.topics.outgoing.gpm-general-events'),
             'message->event_type' => 'ep_info_updated',
-            'message->schema_version' => '1.1.0',
+            'message->schema_version' => config('dx.schema_versions.gpm-general-events'),
             'message->date' => Carbon::now()->format('Y-m-d H:i:s'),
             'message->data->group->id' => $ep->group->uuid,
             'message->data->group->name' => $ep->group->display_name,
