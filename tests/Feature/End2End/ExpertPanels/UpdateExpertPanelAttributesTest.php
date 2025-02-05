@@ -197,11 +197,11 @@ class UpdateExpertPanelAttributesTest extends TestCase
             'message->schema_version' => config('dx.schema_versions.gpm-general-events'),
             'message->date' => Carbon::now()->format('Y-m-d H:i:s'),
             'message->data->group->id' => $ep->group->uuid,
-            'message->data->group->name' => $ep->group->display_name,
+            'message->data->group->name' => $ep->group->name,
             'message->data->group->type' => $ep->group->type->name,
             'message->data->group->affiliation_id' => $ep->affiliation_id,
             'message->data->group->scope_description' => $ep->scope_description,
-            'message->data->group->short_name' => $ep->group->short_name,
+            'message->data->group->short_name' => $ep->short_base_name,
         ]);
     }
 

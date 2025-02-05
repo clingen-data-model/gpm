@@ -27,11 +27,13 @@ class ExpertPanelUpdateAttributes
         if ($expertPanel->isDirty()) {
             $updatedAttributes = $expertPanel->getDirty();
             $expertPanel->save();
-            Event::dispatch(new ExpertPanelAttributesUpdated($expertPanel, $updatedAttributes));
 
-            if ($expertPanel->long_base_name) {
-                $expertPanel->group->update(['name' => $expertPanel->long_base_name]);
+            if (isset($updatedAttributes['long_base_name'])) {
+                $expertPanel->group->update(['name' => $updatedAttributes['long_base_name']]);
+                $expertPanel->group->save();
             }
+
+            Event::dispatch(new ExpertPanelAttributesUpdated($expertPanel, $updatedAttributes));
         }
 
         if ($attributes->get('cdwg_id')) {
@@ -40,6 +42,7 @@ class ExpertPanelUpdateAttributes
                 $groupAttributes['parent_id'] = $attributes['cdwg_id'];
             }
             $expertPanel->group->update($groupAttributes);
+            $expertPanel->group->save();
         }
         
         return $expertPanel;
