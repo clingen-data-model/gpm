@@ -6,12 +6,13 @@ use Illuminate\Support\Carbon;
 use App\Events\RecordableEvent;
 use App\Modules\Group\Models\Group;
 use Illuminate\Queue\SerializesModels;
+use App\Events\PublishableEvent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 
-abstract class GroupEvent extends RecordableEvent
+abstract class GroupEvent extends RecordableEvent implements PublishableEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -49,20 +50,49 @@ abstract class GroupEvent extends RecordableEvent
         return Carbon::now();
     }
 
-    /**
-     * For PublishableEvent interface that is applied to many sub-classes
-     */
     public function getTopic(): string
     {
         return config('dx.topics.outgoing.gpm-general-events');
     }
 
-    /**
-     * For PublishableEvent interface that is applied to many sub-classes
-     */
     public function shouldPublish(): bool
     {
-        return $this->group->isEp;
+        return false;
+    }
+
+    public function getEventType(): string {
+        return 'group_event';
+    }
+    
+    private function groupRepresentation(Group $g): array {
+        // FIXME: this will stack overflow if someone is foolish enough to create a circular reference
+        $item = [
+            'id' => $this->group->uuid,
+            'name' => $this->group->name,
+            'status' => $this->group->groupStatus->name,
+            'type' => $this->group->type->name,
+        ];
+        if ($this->group->parent != null) {
+            $item['parent_group'] = $this->group->parent->representationForDataExchange();
+        }
+        if ($this->group->isEp) {
+            $item['ep_id'] = $this->group->expertPanel->uuid;
+            $item['affiliation_id'] = $this->group->expertPanel->affiliation_id;
+            $item['scope_description'] = $this->group->expertPanel->scope_description;
+            $item['short_name'] = $this->group->expertPanel->short_base_name;
+            // TODO: not sure about these fields, they appear to be unused
+            // $item['long_base_name'] = $this->group->expertPanel->long_base_name;
+            // $item['hypothesis_group'] = $this->group->expertPanel->hypothesis_group;
+            // $item['membership_description'] = $this->group->expertPanel->membership_description;
+            if ($this->group->fullType->name === 'vcep') {
+                $item['cspec_url'] = $this->group->expertPanel->affiliation_id;
+            }
+        }
+        return $item;
+    }
+
+    public function getPublishableMessage(): array {
+        return ['group' => $this->groupRepresentation($this->group)];
     }
 
     abstract public function getLogEntry() :string;
@@ -74,6 +104,6 @@ abstract class GroupEvent extends RecordableEvent
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return new PrivateChannel('group-events');
     }
 }
