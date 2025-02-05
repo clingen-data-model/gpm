@@ -33,7 +33,7 @@ class GeneRemoved extends GeneEvent
 
     public function getPublishableMessage(): array
     {
-        $message = $this->getBaseMessage();
+        $message = parent::getPublishableMessage();
         $message['genes'] = [$this->mapGeneForMessage($this->gene)];
 
         return $message;
