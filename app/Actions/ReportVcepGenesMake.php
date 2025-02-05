@@ -72,7 +72,7 @@ class ReportVcepGenesMake
                     'disease' => $group->first()->disease->name,
                     'mondo_id' => $group->first()->mondo_id,
                     'VCEPs' => $group->map(function ($g) {
-                        return $g->expertPanel->full_long_base_name;
+                        return $g->expertPanel->display_name;
                     })->join(', ')
                 ];
             })

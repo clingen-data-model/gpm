@@ -110,7 +110,7 @@ export default {
                     sortable: true,
                 },
                 {
-                    name: 'full_name',
+                    name: 'display_name',
                     label: 'Name',
                     type: String,
                     sortable: true
@@ -351,7 +351,7 @@ export default {
     },
     setup() {
         const {sort, filter} = sortAndFilter({
-            field: 'full_name',
+            field: 'display_name',
             desc: false
         });
         // const showAllInfo = computedQueryParam('showAllInfo');

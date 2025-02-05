@@ -41,7 +41,7 @@ class ReportGcepGenesMake extends ReportMakeAbstract
                     'gene_symbol' => $group->first()->gene_symbol,
                     'hgnc_id' => $group->first()->hgnc_id,
                     'GCEPs' => $group->map(function ($g) {
-                        return $g->expertPanel->full_long_base_name;
+                        return $g->expertPanel->display_name;
                     })->join(', ')
                 ];
             })

@@ -125,10 +125,8 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     protected $appends = [
         // 'working_name',
         'name',
-        'full_long_base_name',
-        'full_short_base_name',
-        'full_name',
         'display_name',
+        'short_display_name',
         'is_vcep',
         'is_gcep',
         'definition_is_approved',
@@ -375,36 +373,27 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $this->group->group_type_id == config('groups.types.scvcep.id');
     }
 
+    // deprecated -- should use associated Group's name
     public function getNameAttribute()
     {
         return $this->long_base_name;
     }
 
-    public function getFullNameAttribute()
-    {
-        return $this->full_long_base_name;
-    }
-
     public function getDisplayNameAttribute()
-    {
-        return $this->getFullLongBaseNameAttribute();
-    }
-
-
-    public function getFullLongBaseNameAttribute()
     {
         return isset($this->attributes['long_base_name'])
             ? $this->addEpTypeSuffix($this->attributes['long_base_name'])
             : $this->addEpTypeSuffix('');
     }
 
-    public function getFullShortBaseNameAttribute()
+    public function getShortDisplayNameAttribute()
     {
         return isset($this->attributes['short_base_name'])
             ? $this->addEpTypeSuffix($this->attributes['short_base_name'])
             : $this->addEpTypeSuffix('');
     }
 
+    // deprecated -- should use associated Group's name
     public function setLongBaseNameAttribute($value)
     {
         $this->attributes['long_base_name'] = $this->trimEpTypeSuffix($value);

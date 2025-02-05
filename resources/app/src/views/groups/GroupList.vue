@@ -176,8 +176,8 @@ export default {
                 || group.displayName && group.displayName.match(pattern)
                 || (
                     group.expert_panel &&
-                    group.expert_panel.full_short_base_name &&
-                    group.expert_panel.full_short_base_name.match(pattern)
+                    group.expert_panel.short_display_name &&
+                    group.expert_panel.short_display_name.match(pattern)
                 )
                 || group.id == filterString.value
                 || group.status.name.match(pattern)
