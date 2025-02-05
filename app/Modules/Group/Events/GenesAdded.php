@@ -33,7 +33,7 @@ class GenesAdded extends GeneEvent
 
     public function getPublishableMessage(): array
     {
-        $message = $this->getBaseMessage();
+        $message = parent::getPublishableMessage();
         $message['genes'] = $this->genes->map(fn ($gene) => $this->mapGeneForMessage($gene))->toArray();
         return $message;
     }

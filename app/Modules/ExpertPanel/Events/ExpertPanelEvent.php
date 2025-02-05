@@ -4,21 +4,19 @@ namespace App\Modules\ExpertPanel\Events;
 
 use Illuminate\Queue\SerializesModels;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Events\RecordableEvent;
+use App\Modules\Group\Events\GroupEvent;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
-/**
- * @property App\Modules\Group\Models\Group $group
- */
-abstract class ExpertPanelEvent extends RecordableEvent
+abstract class ExpertPanelEvent extends GroupEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public function __construct(public ExpertPanel  $application)
     {
+        parent::__construct($application->group);
     }
 
     public function getLog():string

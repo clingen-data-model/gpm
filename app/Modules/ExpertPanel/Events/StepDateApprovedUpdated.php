@@ -12,9 +12,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 class StepDateApprovedUpdated extends ExpertPanelEvent implements PublishableApplicationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    use IsPublishableApplicationEvent {
-        getPublishableMessage as protected getBaseMessage;
-    }
+    use IsPublishableApplicationEvent;
 
     /**
      * Create a new event instance.
@@ -23,6 +21,7 @@ class StepDateApprovedUpdated extends ExpertPanelEvent implements PublishableApp
      */
     public function __construct(public ExpertPanel  $application, public int $step, public string $dateApproved)
     {
+        parent::__construct($application);
     }
 
     public function getLogEntry():string
@@ -38,11 +37,6 @@ class StepDateApprovedUpdated extends ExpertPanelEvent implements PublishableApp
             'new_date_approved' => $this->dateApproved,
             'old_approval_date' => $this->application->getOriginal('step_'.$this->step.'_approval_date')
         ];
-    }
-
-    public function getEventType(): string
-    {
-        return 'step_date_approved_updated';
     }
 
 }

@@ -9,9 +9,7 @@ use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
 
 abstract class GeneEvent extends GroupEvent implements GeneEventInterface, PublishableApplicationEvent
 {
-    use IsPublishableApplicationEvent {
-        getPublishableMessage as protected getBaseMessage;
-    }
+    use IsPublishableApplicationEvent;
 
     /**
      * For PublishableEvent interface that is applied to many sub-classes

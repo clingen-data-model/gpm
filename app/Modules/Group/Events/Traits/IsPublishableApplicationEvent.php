@@ -17,18 +17,6 @@ trait IsPublishableApplicationEvent
         return Str::snake(self::class);
     }
 
-    public function getPublishableMessage(): array
-    {
-        return [
-            'expert_panel' => [
-                'id' => $this->group->uuid,
-                'name' => $this->group->displayName,
-                'type' => $this->group->fullType->name,
-                'affiliation_id' => $this->group->expertPanel->affiliation_id
-            ],
-        ];
-    }
-
     public function mapGeneForMessage($gene): array
     {
         $messageGene = [
