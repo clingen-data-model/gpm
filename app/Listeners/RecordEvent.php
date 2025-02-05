@@ -5,8 +5,6 @@ namespace App\Listeners;
 use App\Models\Activity;
 use App\Events\RecordableEvent;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Modules\ExpertPanel\Events\ExpertPanelEvent;
 use App\Modules\User\Models\User;
 
