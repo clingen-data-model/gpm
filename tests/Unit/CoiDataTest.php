@@ -7,6 +7,8 @@ use App\Modules\ExpertPanel\CoiData;
 
 class CoiDataTest extends TestCase
 {
+    private CoiData $coiData;
+
     public function setup():void
     {
         parent::setup();
