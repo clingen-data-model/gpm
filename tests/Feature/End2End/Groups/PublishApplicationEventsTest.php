@@ -2,13 +2,11 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use App\DataExchange\Models\StreamMessage;
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Carbon;
 use App\Modules\Person\Models\Person;
 use App\Modules\Group\Actions\GenesAdd;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Actions\ExpertPanelAffiliationIdUpdate;
 use App\Modules\Group\Actions\ExpertPanelNameUpdate;
@@ -25,7 +23,7 @@ class PublishApplicationEventsTest extends TestCase
 
     protected $user, $expertPanel, $group;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
@@ -108,36 +106,38 @@ class PublishApplicationEventsTest extends TestCase
             'sent_at' => null,
         ]);
     }
-    
-    /**
-     * @test
-     */
-     public function it_publishes_ep_info_updated_when_affiliation_id_added():void
-     {
-            $this->approveEpDef();
-            (new ExpertPanelAffiliationIdUpdate())->handle($this->group, '12345');
-            
-    
-            $this->assertDatabaseHas('stream_messages', [
-                'topic' => config('dx.topics.outgoing.gpm-general-events'),
-                'message->event_type' => 'ep_info_updated',
-                'message->data->expert_panel->affiliation_id' => '12345',
-                // 'sent_at' => null,
-            ]);
-     }
 
     /**
      * @test
      */
-    public function it_publishes_ep_info_updated_when_name_changed():void
+    public function it_publishes_ep_info_updated_when_affiliation_id_added(): void
     {
         $this->approveEpDef();
-        (new ExpertPanelNameUpdate())->handle($this->group, 'new name', 'new name');
+        (new ExpertPanelAffiliationIdUpdate())->handle($this->group, '12345');
+
 
         $this->assertDatabaseHas('stream_messages', [
             'topic' => config('dx.topics.outgoing.gpm-general-events'),
             'message->event_type' => 'ep_info_updated',
-            'message->data->expert_panel->name' => 'new name GCEP',
+            'message->data->group->affiliation_id' => '12345',
+            // 'sent_at' => null,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_publishes_ep_info_updated_when_name_changed(): void
+    {
+        $this->approveEpDef();
+        (new ExpertPanelNameUpdate())->handle($this->group, 'new name', 'new name');
+
+        $this->group->refresh();
+
+        $this->assertDatabaseHas('stream_messages', [
+            'topic' => config('dx.topics.outgoing.gpm-general-events'),
+            'message->event_type' => 'ep_info_updated',
+            'message->data->group->name' => $this->group->name,
             // 'sent_at' => null,
         ]);
     }
@@ -145,7 +145,7 @@ class PublishApplicationEventsTest extends TestCase
     private function addPerson()
     {
         $person = Person::factory()->create();
-        $this->json('POST', '/api/groups/'.$this->group->uuid.'/members/', [
+        $this->json('POST', '/api/groups/' . $this->group->uuid . '/members/', [
             'person_id' => $person->id,
             'role_ids' => [],
             'is_contact' => 0
@@ -154,7 +154,7 @@ class PublishApplicationEventsTest extends TestCase
 
     private function addGene($genes = null)
     {
-        $genes = $this->seedGenes([['hgnc_id' => 678, 'gene_symbol'=>'BCD'], ['hgnc_id' => 12345, 'gene_symbol' => 'ABC1']]);
+        $genes = $this->seedGenes([['hgnc_id' => 678, 'gene_symbol' => 'BCD'], ['hgnc_id' => 12345, 'gene_symbol' => 'ABC1']]);
         $action = app()->make(GenesAdd::class);
         $action->handle($this->expertPanel->group, $genes->pluck('gene_symbol'));
     }
@@ -162,7 +162,7 @@ class PublishApplicationEventsTest extends TestCase
 
     private function approveEpDef()
     {
-        $this->json('POST', '/api/applications/'.$this->expertPanel->group->uuid.'/current-step/approve', [
+        $this->json('POST', '/api/applications/' . $this->expertPanel->group->uuid . '/current-step/approve', [
             'date_approved' => Carbon::now(),
             'notify_contacts' => false,
         ])->assertStatus(200);
