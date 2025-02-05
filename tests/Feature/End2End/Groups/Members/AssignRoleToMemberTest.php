@@ -5,10 +5,9 @@ namespace Tests\Feature\End2End\Groups\Members;
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\GroupMember;
 use App\Modules\Person\Models\Person;
-use App\Modules\Group\Actions\MemberAdd;
 use App\Modules\User\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
@@ -19,6 +18,13 @@ class AssignRoleToMemberTest extends TestCase
 {
     use RefreshDatabase;
     use SetsUpGroupPersonAndMember;
+
+    private Group $group;
+    private GroupMember $groupMember;
+    private Person $person;
+    private User $user;
+    private $roles;
+    private $url;
     
     public function setup():void
     {
@@ -117,6 +123,8 @@ class AssignRoleToMemberTest extends TestCase
                 'role_ids' => $this->roles->pluck('id')->toArray()
             ]
         );
+
+        $this->groupMember->refresh();
 
         $this->assertDatabaseHas('activity_log', [
             'subject_type' => Group::class,
