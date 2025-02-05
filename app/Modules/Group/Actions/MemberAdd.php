@@ -2,13 +2,10 @@
 
 namespace App\Modules\Group\Actions;
 
-use Illuminate\Http\Request;
-use App\Models\Role as ModelsRole;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Event;
 use Lorisleiva\Actions\ActionRequest;
-use Spatie\Permission\Contracts\Role;
 use App\Modules\Group\Events\MemberAdded;
 use App\Modules\Group\Models\GroupMember;
 use Lorisleiva\Actions\Concerns\AsObject;

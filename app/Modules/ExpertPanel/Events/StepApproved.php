@@ -4,16 +4,11 @@ namespace App\Modules\ExpertPanel\Events;
 
 use Exception;
 use Illuminate\Support\Carbon;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Events\PublishableApplicationEvent;
-use Illuminate\Support\Carbon as SupportCarbon;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
 
 class StepApproved extends ExpertPanelEvent implements PublishableApplicationEvent
@@ -93,14 +88,4 @@ class StepApproved extends ExpertPanelEvent implements PublishableApplicationEve
 
     }
 
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    // public function broadcastOn()
-    // {
-    //     return new PrivateChannel('channel-name');
-    // }
 }

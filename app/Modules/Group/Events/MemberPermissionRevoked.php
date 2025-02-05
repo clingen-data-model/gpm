@@ -2,17 +2,13 @@
 
 namespace App\Modules\Group\Events;
 
-use App\Events\PublishableEvent;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Broadcasting\PrivateChannel;
 use Spatie\Permission\Contracts\Permission;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class MemberPermissionRevoked extends GroupMemberEvent
 {
