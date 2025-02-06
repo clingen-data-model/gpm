@@ -2,10 +2,7 @@
 
 namespace Database\Factories;
 
-use Illuminate\Support\Str;
 use App\Modules\Group\Models\Group;
-use App\Modules\Group\Models\GroupType;
-use App\Modules\Group\Models\GroupStatus;
 use App\Modules\Group\Actions\CoiCodeMake;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Database\Factories\Traits\GetsRandomConfigValue;
@@ -34,6 +31,7 @@ class GroupFactory extends Factory
             'uuid' => $this->faker->uuid(),
             'name' => $this->faker->name(),
             'group_type_id' => config('groups.types.wg.id'),
+            'description' => $this->faker->sentence(),
             'group_status_id' => $this->getRandomConfigValue('groups.statuses')['id'],
             'coi_code' => $code
         ];
@@ -45,6 +43,7 @@ class GroupFactory extends Factory
             return [
                 'uuid' => $this->faker->uuid,
                 'name' => uniqid().' CDWG',
+                'description' => $this->faker->sentence(),
                 'group_type_id' => config('groups.types.vcep.id'),
                 'group_status_id' => config('groups.statuses.applying.id')
             ];
@@ -57,6 +56,7 @@ class GroupFactory extends Factory
             return [
                 'uuid' => $this->faker->uuid,
                 'name' => uniqid().' CDWG',
+                'description' => $this->faker->sentence(),
                 'group_type_id' => config('groups.types.gcep.id'),
                 'group_status_id' => config('groups.statuses.applying.id')
             ];
@@ -69,6 +69,7 @@ class GroupFactory extends Factory
             return [
                 'uuid' => $this->faker->uuid,
                 'name' => uniqid().' scvcep',
+                'description' => $this->faker->sentence(),
                 'group_type_id' => config('groups.types.scvcep.id'),
                 'group_status_id' => config('groups.statuses.applying.id')
             ];
@@ -82,6 +83,7 @@ class GroupFactory extends Factory
             return [
                 'uuid' => $this->faker->uuid,
                 'name' => uniqid().' CDWG',
+                'description' => $this->faker->sentence(),
                 'group_type_id' => config('groups.types.cdwg.id'),
                 'group_status_id' => config('groups.statuses.active.id')
             ];

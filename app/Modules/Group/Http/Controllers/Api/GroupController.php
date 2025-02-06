@@ -21,6 +21,7 @@ class GroupController extends Controller
                 'id',
                 'uuid',
                 'name',
+                'description',
                 'group_type_id',
                 'group_status_id',
                 'coi_code'
