@@ -30,6 +30,7 @@ use App\Modules\Group\Actions\EvidenceSummaryAdd;
 use App\Modules\Group\Actions\HandleGroupCommand;
 use App\Modules\Group\Actions\AttestationGcepStore;
 use App\Modules\Group\Actions\DevFakePilotApproved;
+use App\Modules\Group\Actions\GroupAttributesUpdate;
 use App\Http\Controllers\Api\AnnualUpdateController;
 use App\Modules\Group\Actions\ApplicationSubmitStep;
 use App\Modules\Group\Actions\AttestationNhgriStore;
@@ -83,6 +84,7 @@ Route::group([
     Route::group(['prefix' => '/{group:uuid}'], function () {
         Route::get('/', [GroupController::class, 'show']);
         Route::delete('/', GroupDelete::class);
+        Route::put('/', GroupAttributesUpdate::class);
 
         // ACTIVITY LOGS
         Route::group(['prefix' => '/activity-logs'], function () {
