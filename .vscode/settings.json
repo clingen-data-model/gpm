@@ -10,8 +10,8 @@
     "phpunit.php": "php",
     "phpunit.phpunit": "vendor/bin/phpunit",
     "phpunit.args": [
-      "-c",
-      "phpunit.xml"
+      "--configuration",
+      "/srv/app/phpunit.xml"
     ],
     "phpunit.paths": {
       "${workspaceFolder}": "/srv/app",
