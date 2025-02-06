@@ -75,6 +75,7 @@ abstract class GroupEvent extends RecordableEvent implements PublishableEvent
         $item = [
             'id' => $this->group->uuid,
             'name' => $this->group->name,
+            'description' => $this->group->description,
             'status' => $this->group->groupStatus->name,
             'type' => $this->group->type->name,
         ];
