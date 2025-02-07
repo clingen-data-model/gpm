@@ -85,7 +85,7 @@ class PersonDeleteTest extends TestCase
             ->assertStatus(200);
         $person = $this->person->fresh();
 
-        $this->assertEventPublished(config('dx.topics.outgoing.gpm-person-events'), 'deleted', $person);
+        $this->assertEventPublished(config('dx.topics.outgoing.gpm-person-events'), 'person_deleted', $person);
     }
 
 

@@ -102,7 +102,7 @@ class PublishApplicationEventsTest extends TestCase
 
         $this->assertDatabaseHas('stream_messages', [
             'topic' => config('dx.topics.outgoing.gpm-general-events'),
-            'message->event_type' => 'gene_added',
+            'message->event_type' => 'genes_added',
             'sent_at' => null,
         ]);
     }

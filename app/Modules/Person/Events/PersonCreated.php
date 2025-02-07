@@ -31,10 +31,8 @@ class PersonCreated extends PersonEvent implements PublishableEvent
 
     public function getEventType(): string
     {
-        return 'created';
+        return 'person_created';
     }
-
-
 
     /**
      * Get the channels the event should broadcast on.

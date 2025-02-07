@@ -30,9 +30,4 @@ class MemberRemoved extends GroupMemberEvent
         ];
     }
 
-    public function getEventType(): string
-    {
-        return 'member_removed';
-    }
-
 }

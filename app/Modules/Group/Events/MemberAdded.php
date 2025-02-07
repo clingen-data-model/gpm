@@ -32,11 +32,6 @@ class MemberAdded extends GroupMemberEvent
         return $this->groupMember->person->only('id', 'uuid', 'name', 'email', 'is_contact');
     }
 
-    public function getEventType(): string
-    {
-        return 'member_added';
-    }
-
     public function shouldPublish(): bool
     {
         return parent::isPublishableGroup();

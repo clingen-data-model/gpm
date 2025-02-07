@@ -12,7 +12,7 @@ use Spatie\Permission\Contracts\Permission;
 use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
 use App\Modules\Group\Http\Resources\MemberResource;
-use App\Modules\Group\Events\MemberPermissionsGranted;
+use App\Modules\Group\Events\MemberPermissionGranted;
 
 class MemberGrantPermissions
 {
@@ -31,7 +31,7 @@ class MemberGrantPermissions
 
         $groupMember->givePermissionTo($permissions);
 
-        Event::dispatch(new MemberPermissionsGranted($groupMember, $permissions));
+        Event::dispatch(new MemberPermissionGranted($groupMember, $permissions));
 
         return $groupMember;
     }
