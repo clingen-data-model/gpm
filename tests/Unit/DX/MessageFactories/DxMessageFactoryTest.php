@@ -232,6 +232,7 @@ class DxMessageFactoryTest extends TestCase
         $this->assertEquals([
             'id' => $this->expertPanel->group->uuid,
             'name' => $this->expertPanel->group->name,
+            'description' => $this->expertPanel->group->description,
             'status' => $this->expertPanel->group->groupStatus->name,
             'type' => $this->expertPanel->group->fullType->name,
             'ep_id' => $this->expertPanel->uuid,

@@ -283,6 +283,20 @@ export const actions = {
         });
     },
 
+    async descriptionUpdate({ commit, getters }, {uuid, description}) {
+
+        return await api.put(
+            `${baseUrl}/${uuid}`,
+            { description }
+        )
+        .then(response => {
+            const item = getters.getItemByUuid(uuid);
+            item.description = response.data.description;
+            commit('addItem', item)
+            return response;
+        })
+    },
+
     async membershipDescriptionUpdate({commit, getters}, {uuid, membershipDescription}) {
         return await api.put(
             `${getApplicationUrl(uuid)}/membership-description`,
