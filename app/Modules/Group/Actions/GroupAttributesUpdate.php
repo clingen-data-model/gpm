@@ -2,20 +2,33 @@
 
 namespace App\Modules\Group\Actions;
 
-use Illuminate\Support\Facades\Event;
-use Lorisleiva\Actions\Concerns\AsController;
-use Illuminate\Support\Facades\Auth;
-use Lorisleiva\Actions\ActionRequest;
-use App\Modules\Group\Models\Group;
-use App\Modules\Group\Events\GroupNameUpdated;
-use App\Modules\Group\Events\GroupStatusUpdated;
-use App\Modules\Group\Events\ParentUpdated;
-use App\Modules\Group\Models\GroupStatus;
-use App\Modules\ExpertPanel\Events\ExpertPanelAttributesUpdated;
+use App\Modules\ExpertPanel\Events\{
+    ApplicationCompleted,
+    ExpertPanelAttributesUpdated
+};
+use App\Modules\Group\Events\{
+    GroupNameUpdated,
+    GroupStatusUpdated,
+    ParentUpdated
+};
+use App\Modules\Group\Models\{
+    Group,
+    GroupStatus
+};
+use Illuminate\Support\Facades\{
+    Auth,
+    Event
+};
+use Lorisleiva\Actions\{
+    Concerns\AsController,
+    Concerns\AsListener,
+    ActionRequest
+};
 
 class GroupAttributesUpdate
 {
     use AsController;
+    use AsListener;
 
     public function handle(
         Group $group,
@@ -84,5 +97,10 @@ class GroupAttributesUpdate
     public function authorize(ActionRequest $request): bool
     {
         return Auth::user() && Auth::user()->hasPermissionTo('groups-manage');
+    }
+
+    public function asListener(ApplicationCompleted $event)
+    {
+        $this->handle($event->application->group, ['group_status_id' => config('groups.statuses.active.id')]);
     }
 }
