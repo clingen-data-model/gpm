@@ -4,12 +4,8 @@ namespace Tests\Feature\End2End\Groups\Members;
 
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Person;
-use App\Modules\Group\Actions\MemberAdd;
 use App\Modules\Group\Models\GroupMember;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\End2End\Groups\Members\SetsUpGroupPersonAndMember;
 
@@ -62,7 +58,7 @@ class GrantMemberPermissionTest extends TestCase
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('activity_log', [
-             'activity_type' => 'member-permissions-granted',
+             'activity_type' => 'member-permission-granted',
              'subject_type' => Group::class,
              'subject_id' => $this->group->id,
              'description' => $this->person->name.' granted permissions '.$this->permissions->pluck('name')->join(', ', ', and '),

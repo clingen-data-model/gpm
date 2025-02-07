@@ -307,7 +307,7 @@ class UpdateProfileTest extends TestCase
             ->assertStatus(200);
         $person = $this->person->fresh();
 
-        $this->assertEventPublished(config('dx.topics.outgoing.gpm-person-events'), 'updated', $person);
+        $this->assertEventPublished(config('dx.topics.outgoing.gpm-person-events'), 'person_updated', $person);
     }
 
 

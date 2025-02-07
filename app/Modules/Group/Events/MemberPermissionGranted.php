@@ -9,7 +9,7 @@ use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 
-class MemberPermissionsGranted extends GroupMemberEvent
+class MemberPermissionGranted extends GroupMemberEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -38,11 +38,6 @@ class MemberPermissionsGranted extends GroupMemberEvent
     public function getSubject(): Model
     {
         return $this->groupMember->group;
-    }
-
-    public function getEventType(): string
-    {
-        return 'member_permission_granted';
     }
 
 }

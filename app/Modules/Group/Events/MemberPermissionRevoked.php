@@ -37,9 +37,4 @@ class MemberPermissionRevoked extends GroupMemberEvent
         ];
     }
 
-    public function getEventType(): string
-    {
-        return 'member_permission_revoked';
-    }
-
 }

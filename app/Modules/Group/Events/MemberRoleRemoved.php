@@ -33,9 +33,4 @@ class MemberRoleRemoved extends GroupMemberEvent
         ];
     }
 
-    public function getEventType(): string
-    {
-        return 'member_role_removed';
-    }
-
 }

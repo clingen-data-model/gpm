@@ -20,7 +20,7 @@ use App\Modules\ExpertPanel\Events\StepApproved;
 use App\Modules\Group\Events\MemberRoleAssigned;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Events\MemberPermissionRevoked;
-use App\Modules\Group\Events\MemberPermissionsGranted;
+use App\Modules\Group\Events\MemberPermissionGranted;
 use App\DataExchange\MessageFactories\DxMessageFactory;
 
 /**
@@ -107,7 +107,7 @@ class DxMessageFactoryTest extends TestCase
     public function it_creates_member_permission_granted_message()
     {
         $permissions = Permission::where('name', 'application-edit')->get();
-        $event = new MemberPermissionsGranted($this->expertPanel->group->members->first(), $permissions);
+        $event = new MemberPermissionGranted($this->expertPanel->group->members->first(), $permissions);
         $message = $this->factory->makeFromEvent($event);
 
         $this->assertEquals('member_permission_granted', $message['event_type']);
@@ -175,7 +175,7 @@ class DxMessageFactoryTest extends TestCase
     {
         $event = new GenesAdded($this->expertPanel->group, collect([$this->expertPanel->genes->first()]));
         $message = $this->factory->makeFromEvent($event);
-        $this->assertEquals('gene_added', $message['event_type']);
+        $this->assertEquals('genes_added', $message['event_type']);
         $this->assertExpertPanelInMessage($message);
         $this->assertGenesInMessage([$this->expertPanel->genes->first()], $message);
     }

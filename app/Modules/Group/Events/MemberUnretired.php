@@ -30,10 +30,4 @@ class MemberUnretired extends GroupMemberEvent
         ];
     }
 
-
-    public function getEventType(): string
-    {
-        return 'member_unretired';
-    }
-
 }

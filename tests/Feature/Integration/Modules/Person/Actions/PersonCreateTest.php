@@ -35,7 +35,7 @@ class PersonCreateTest extends TestCase
             user_id: $user->id
         );
 
-        $this->assertEventPublished(config('dx.topics.outgoing.gpm-person-events'), 'created', $person);
+        $this->assertEventPublished(config('dx.topics.outgoing.gpm-person-events'), 'person_created', $person);
     }
 
 }

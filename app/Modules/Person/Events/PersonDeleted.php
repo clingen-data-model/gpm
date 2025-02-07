@@ -34,16 +34,9 @@ class PersonDeleted extends PersonEvent implements PublishableEvent
 
     public function getEventType(): string
     {
-        return 'deleted';
+        return 'person_deleted';
     }
 
-
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
     public function broadcastOn()
     {
         return new PrivateChannel('channel-name');

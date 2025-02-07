@@ -37,9 +37,8 @@ class ProfileUpdated extends PersonEvent implements PublishableEvent
 
     public function getEventType(): string
     {
-        return 'updated';
+        return 'person_updated';
     }
-
 
     /**
      * Get the channels the event should broadcast on.

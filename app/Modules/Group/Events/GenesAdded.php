@@ -26,18 +26,12 @@ class GenesAdded extends GeneEvent
         return ['genes' => $this->genes];
     }
 
-    public function getEventType(): string
-    {
-        return 'gene_added';
-    }
-
     public function getPublishableMessage(): array
     {
         $message = parent::getPublishableMessage();
         $message['genes'] = $this->genes->map(fn ($gene) => $this->mapGeneForMessage($gene))->toArray();
         return $message;
     }
-
 
     public function __get($key)
     {
