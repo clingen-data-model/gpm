@@ -33,6 +33,22 @@
       <div class="flex-grow mt-4">
         <application-summary :group="group" v-if="group.isApplying" />
         <tabs-container @tab-changed="handleTabChange">
+          <tab-item label="Summary Description">
+            <submission-wrapper
+              :visible="group.is_ep"
+              @submitted="
+                submitForm('saveDescription', 'editingDescription')
+              "
+              @canceled="cancelForm('editingDescription')"
+              :show-controls="editingDescription"
+            >
+              <group-description-form
+                ref="descriptionRef"
+                v-model:editing="editingDescription"
+                :errors="errors"
+              />
+            </submission-wrapper>
+          </tab-item>
           <tab-item label="Members">
             <member-list :group="group"></member-list>
             <submission-wrapper
@@ -311,6 +327,7 @@ import SpecificationsSection from "@/components/expert_panels/SpecificationsSect
 import EvidenceSummaries from "@/components/expert_panels/EvidenceSummaryList";
 import GcepGeneList from "@/components/expert_panels/GcepGeneList";
 import GcepOngoingPlansForm from "@/components/expert_panels/GcepOngoingPlansForm";
+import GroupDescriptionForm from "@/components/groups/GroupDescriptionForm";
 import GroupForm from "@/components/groups/GroupForm";
 import GroupDetailHeader from "./GroupDetailHeader";
 import MemberList from "@/components/groups/MemberList";
@@ -336,6 +353,7 @@ export default {
     AttestationGcep,
     AttestationNhgri,
     AttestationReanalysis,
+    GroupDescriptionForm,
     SpecificationsSection,
     GroupDocuments,
     GroupForm,
@@ -364,6 +382,7 @@ export default {
     return {
       showInfoEdit: false,
       editingExpertise: false,
+      editingDescription: false,
       editingScopeDescription: false,
       editingGenes: false,
       showConfirmDelete: false,
@@ -489,6 +508,19 @@ export default {
         }
         throw error;
       }
+    },
+    saveDescription() {
+      return this.$store
+        .dispatch("groups/descriptionUpdate", {
+          uuid: this.group.uuid,
+          description: this.group.description,
+        })
+        .then(() => {
+          this.$store.commit(
+            "pushSuccess",
+            "Description updated."
+          );
+        });
     },
     saveMembershipDescription() {
       return this.$store
