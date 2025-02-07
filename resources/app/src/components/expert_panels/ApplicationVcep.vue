@@ -13,11 +13,7 @@
             </app-section>
             <app-section v-if="group" title="Membership" id="membership">
                 <p>
-                    Expert Panels are expected to represent the diversity of expertise and backgrounds in the field and should refer to
-                    <vcep-protocol-link>Section 2.1 of the VCEP Protocol</vcep-protocol-link>
-                    and the
-                    <nih-diversity-toolkit-link />
-                    for guidance to complete the Member List below. Please list the VCEP Chair(s) and Coordinator(s) first.
+                    Expert Panels are expected to broad representation of expertise and backgrounds in the field.
                 </p>
                 <member-list :group="group" />
                 <hr>
