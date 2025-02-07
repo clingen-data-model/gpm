@@ -26,11 +26,6 @@ class GeneRemoved extends GeneEvent
         return $this->gene->toArray(0);
     }
 
-    public function getEventType(): string
-    {
-        return 'gene_removed';
-    }
-
     public function getPublishableMessage(): array
     {
         $message = parent::getPublishableMessage();

@@ -2,6 +2,7 @@
 
 namespace App\Modules\Group\Events;
 
+use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use App\Events\RecordableEvent;
 use App\Modules\Group\Models\Group;
@@ -66,10 +67,11 @@ abstract class GroupEvent extends RecordableEvent implements PublishableEvent
         return false;
     }
 
-    public function getEventType(): string {
-        return 'group_event';
+    public function getEventType(): string
+    {
+        return Str::snake((new \ReflectionClass($this))->getShortName());
     }
-    
+
     private function groupRepresentation(Group $g): array {
         // FIXME: this will stack overflow if someone is foolish enough to create a circular reference
         $item = [

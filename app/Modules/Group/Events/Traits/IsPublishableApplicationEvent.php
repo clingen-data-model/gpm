@@ -12,11 +12,6 @@ trait IsPublishableApplicationEvent
         return Carbon::now();
     }
 
-    public function getEventType(): string
-    {
-        return Str::snake(self::class);
-    }
-
     public function mapGeneForMessage($gene): array
     {
         $messageGene = [
