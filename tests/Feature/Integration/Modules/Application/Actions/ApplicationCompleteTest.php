@@ -5,7 +5,6 @@ namespace Tests\Feature\Integration\Modules\Application\Actions;
 use Tests\TestCase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Actions\ApplicationComplete;
