@@ -7,6 +7,7 @@ use App\Modules\ExpertPanel\Events\{
     ExpertPanelAttributesUpdated
 };
 use App\Modules\Group\Events\{
+    GroupDescriptionUpdated,
     GroupNameUpdated,
     GroupStatusUpdated,
     ParentUpdated
@@ -51,7 +52,9 @@ class GroupAttributesUpdate
                 event(new GroupNameUpdated(group: $group, newName: $updatedAttributes['name'], oldName: $originalAttributes['name']));
             }
 
-            // TODO: add event for description change
+            if (isset($updatedAttributes['description'])) {
+                event(new GroupDescriptionUpdated($group, $updatedAttributes['description'], $originalAttributes['description']));
+            }
 
             if (isset($updatedAttributes['group_status_id'])) {
                 event(

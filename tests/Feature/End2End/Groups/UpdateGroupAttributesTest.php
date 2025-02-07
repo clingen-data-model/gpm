@@ -46,8 +46,44 @@ class UpdateGroupAttributesTest extends TestCase
                 'name' => ['The name may not be greater than 255 characters.']
             ]);
 
+        $this->makeRequest(['group_status_id' => -1])
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                'group_status_id' => ['The selection is invalid.']
+            ]);
+
+        $this->makeRequest(['parent_id' => -1])
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                'parent_id' => ['The selection is invalid.']
+            ]);
     }
     
+    /**
+     * @test
+     */
+    public function authorized_user_can_update_group_description()
+    {
+        $oldDesc = $this->group->description;
+        $newDesc = $this->faker->sentence();
+        $this->makeRequest(['description' => $newDesc])
+            ->assertStatus(200)
+            ->assertJsonFragment([
+                'description' => $newDesc
+            ]);
+
+        $this->assertDatabaseHas('groups', [
+            'id' => $this->group->id,
+            'description' => $newDesc,
+        ]);
+
+        $this->assertLoggedActivity(
+            subject: $this->group,
+            logName: 'groups',
+            description: 'Description updated from "'.$oldDesc.'" to "'.$newDesc.'"',
+        );
+    }
+
     /**
      * @test
      */
