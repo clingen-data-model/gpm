@@ -254,7 +254,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
     public function getIsVcepOrScvcepAttribute(): bool
     {
-        return $this->getCuratesVariantPathogenicity;
+        return $this->getCuratesVariantsAttribute();
     }
 
     public function getCuratesVariantsAttribute(): bool
