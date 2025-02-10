@@ -16,4 +16,9 @@ class JudgementEvent extends AbstractEvent
     {
     }
 
+    public function shouldPublish(): bool
+    {
+        return false;
+    }
+
 }

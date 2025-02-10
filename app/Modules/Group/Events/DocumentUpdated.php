@@ -17,6 +17,10 @@ class DocumentUpdated extends GroupEvent
     {
         return 'Document '.$this->document->filename.' info updated';
     }
-    
 
+
+    public function shouldPublish(): bool
+    {
+        return false;
+    }
 }

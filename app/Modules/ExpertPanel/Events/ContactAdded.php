@@ -34,8 +34,4 @@ class ContactAdded extends ExpertPanelEvent
         ];
     }
 
-    public function shouldPublish(): bool
-    {
-        return false;
-    }
 }

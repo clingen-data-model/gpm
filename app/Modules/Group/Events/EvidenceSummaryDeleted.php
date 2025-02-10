@@ -26,4 +26,8 @@ class EvidenceSummaryDeleted extends GroupEvent
         return ['evidence_summary_id' => $this->evidenceSummary->id];
     }
 
+    public function shouldPublish(): bool
+    {
+        return false;
+    }
 }

@@ -26,4 +26,8 @@ class EvidenceSummaryUpdated extends GroupEvent
         return ['evidence_summary' => $this->evidenceSummary];
     }
 
+    public function shouldPublish(): bool
+    {
+        return false;
+    }
 }

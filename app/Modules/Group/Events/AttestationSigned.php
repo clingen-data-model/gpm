@@ -29,7 +29,7 @@ class AttestationSigned extends GroupEvent
 
         return $this->attestationName.' attestation signature removed by '.$submitterName.' on '.Carbon::now()->format('Y-m-d').'.';
     }
-    
+
     public function getProperties(): ?array
     {
         return [
@@ -49,4 +49,8 @@ class AttestationSigned extends GroupEvent
         return strtolower($this->attestationName).'-attestation-submitted';
     }
 
+    public function shouldPublish(): bool
+    {
+        return false;
+    }
 }

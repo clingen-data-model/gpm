@@ -11,11 +11,4 @@ abstract class GeneEvent extends GroupEvent implements GeneEventInterface, Publi
 {
     use IsPublishableApplicationEvent;
 
-    /**
-     * For PublishableEvent interface that is applied to many sub-classes
-     */
-    public function shouldPublish(): bool
-    {
-        return $this->group->expertPanel->definitionIsApproved;
-    }
 }
