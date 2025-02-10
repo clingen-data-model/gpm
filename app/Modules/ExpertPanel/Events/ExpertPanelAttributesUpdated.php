@@ -37,9 +37,4 @@ class ExpertPanelAttributesUpdated extends ExpertPanelEvent implements Publishab
         return 'ep_info_updated';
     }
 
-    public function shouldPublish(): bool
-    {
-        return $this->application->definitionIsApproved;
-    }
-
 }

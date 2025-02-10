@@ -5,7 +5,7 @@ namespace App\Modules\Group\Events;
 use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
 use App\Modules\Group\Models\GroupMember;
 
-abstract class GroupMemberEvent extends GroupEvent 
+abstract class GroupMemberEvent extends GroupEvent
 {
     public function __construct(public GroupMember $groupMember)
     {
@@ -27,11 +27,6 @@ abstract class GroupMemberEvent extends GroupEvent
         ]];
 
         return $message;
-    }
-
-    public function shouldPublish(): bool
-    {
-        return parent::isPublishableGroup();
     }
 
 }

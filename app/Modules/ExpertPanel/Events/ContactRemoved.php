@@ -29,9 +29,4 @@ class ContactRemoved extends ExpertPanelEvent
         ];
     }
 
-    public function shouldPublish(): bool
-    {
-        return false;
-    }
-
 }

@@ -24,4 +24,8 @@ class DocumentAdded extends GroupEvent
         ];
     }
 
+    public function shouldPublish(): bool
+    {
+        return false;
+    }
 }
