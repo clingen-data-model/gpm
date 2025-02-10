@@ -52,15 +52,6 @@ abstract class ExpertPanelEvent extends GroupEvent
         return config('dx.topics.outgoing.gpm-general-events');
     }
 
-    /**
-     * For PublishableEvent interface that is applied to many sub-classes
-     */
-    public function shouldPublish(): bool
-    {
-        return $this->application->definitionIsApproved;
-        
-    }
-
     public function __get($key)
     {
         return $key == 'group' ? $this->application->group : null;

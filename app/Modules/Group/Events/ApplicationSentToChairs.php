@@ -33,4 +33,9 @@ class ApplicationSentToChairs extends GroupEvent
 
         return $logEntry;
     }
+
+    public function shouldPublish(): bool
+    {
+        return false;
+    }
 }

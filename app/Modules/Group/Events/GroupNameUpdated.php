@@ -19,7 +19,7 @@ class GroupNameUpdated extends GroupEvent
     {
         return 'Name changed from "'.$this->oldName.'" to "'.$this->newName.'"';
     }
-    
+
     public function getProperties(): ?array
     {
         return [
@@ -28,8 +28,4 @@ class GroupNameUpdated extends GroupEvent
         ];
     }
 
-    public function shouldPublish(): bool
-    {
-        return parent::isPublishableGroup();
-    }
 }

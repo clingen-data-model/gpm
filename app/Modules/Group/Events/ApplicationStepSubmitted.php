@@ -31,4 +31,8 @@ class ApplicationStepSubmitted extends GroupEvent
         ];
     }
 
+    public function shouldPublish(): bool
+    {
+        return false;
+    }
 }
