@@ -19,5 +19,5 @@ class GroupCreated extends GroupEvent
     {
         return strtoupper($this->group->type->name).' "'.$this->group->name.'" created.';
     }
-    
+
 }
