@@ -29,9 +29,4 @@ class GroupDescriptionUpdated extends GroupEvent
         ];
     }
 
-    public function shouldPublish(): bool
-    {
-        return $this->isPublishableGroup();
-    }
-
 }
