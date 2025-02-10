@@ -27,5 +27,10 @@ class ExpertPanelDeleted extends ExpertPanelEvent
     {
         return 'Application deleted';
     }
-    
+
+    public function shouldPublish(): bool
+    {
+        // NOTE: have to special-case this because the group<->expertPanel relationship may be gone by the time this is fired
+        return $this->application->definitionIsApproved;
+    }
 }

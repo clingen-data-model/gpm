@@ -62,7 +62,7 @@ class GroupFactory extends Factory
             ];
         });
     }
-    
+
     public function scvcep()
     {
         return $this->state(function ($attributes) {

@@ -5,7 +5,7 @@ namespace Tests\Feature\End2End;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\FollowAction;
-use App\Modules\Group\Models\Group;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Models\GroupStatus;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Group\Events\GroupNameUpdated;
@@ -21,7 +21,9 @@ class FollowActionsTest extends TestCase
     {
         parent::setup();
         $this->setupForGroupTest();
-        $this->group = Group::factory()->vcep()->create(['group_status_id' => 1]);
+        $this->expertPanel = ExpertPanel::factory()->vcep()->create();
+        $this->group = $this->expertPanel->group;
+        $this->group->update(['group_status_id' => 1]);
         $this->followAction = FollowAction::create([
             'event_class' => GroupStatusUpdated::class,
             'follower' => TestFollower::class,
@@ -46,7 +48,7 @@ class FollowActionsTest extends TestCase
             'completed_at' => null
         ]);
     }
-    
+
     /**
      * @test
      */
@@ -65,7 +67,7 @@ class FollowActionsTest extends TestCase
             'completed_at' => Carbon::now()
         ]);
     }
-    
+
 }
 
 class TestFollower
@@ -80,5 +82,5 @@ class TestFollower
 
         return false;
     }
-    
+
 }
