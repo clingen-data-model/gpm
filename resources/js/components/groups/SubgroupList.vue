@@ -82,7 +82,7 @@ export default {
     padding-bottom: .5rem;
   }
   .child-group:first-child {
-    @apply rounded-t-lg
+    @apply rounded-t-lg;
   }
   .child-group:last-child {
     @apply border-b rounded-b-lg;

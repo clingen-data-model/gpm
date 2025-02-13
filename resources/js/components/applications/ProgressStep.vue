@@ -1,12 +1,12 @@
 <style lang="postcss">
     .progress-step {
-        @apply h-4 bg-green-100 border border-green-200 flex-1
+        @apply h-4 bg-green-100 border border-green-200 flex-1;
     }
     .progress-step.approved {
-        @apply bg-green-500 border-green-600
+        @apply bg-green-500 border-green-600;
     }
     .progress-step.active {
-        @apply ring-green-400 ring-2 border-green-400 border-2
+        @apply ring-green-400 ring-2 border-green-400 border-2;
     }
 </style>
 <template>

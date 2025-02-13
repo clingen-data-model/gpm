@@ -87,6 +87,6 @@
         @apply border-b pb-2;
     }
     .item-list li:last-child {
-        @apply border-none
+        @apply border-none;
     }
 </style>

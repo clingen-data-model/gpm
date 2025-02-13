@@ -95,7 +95,7 @@ export default {
 </template>
 <style scoped>
     th {
-        @apply bg-white border-0
+        @apply bg-white border-0;
     }
     th[colgroup=biocurator],
     td[colgroup=biocurator]

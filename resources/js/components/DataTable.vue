@@ -6,7 +6,7 @@
         @apply bg-white odd:bg-gray-100 border-0 hover:border-blue-300 hover:bg-blue-100
     }
     tr > th {
-        @apply text-left border border-gray-300 px-3
+        @apply text-left border border-gray-300 px-3;
     }
     tr:not(.details) > td {
         @apply text-left p-1 px-3 border align-top;
@@ -15,7 +15,7 @@
         @apply border-none p-0;
     }
     th.sorted, td.sorted  {
-        @apply bg-blue-100 hover:bg-blue-100
+        @apply bg-blue-100 hover:bg-blue-100;
     }
 </style>
 

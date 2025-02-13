@@ -117,6 +117,6 @@ export default {
 </template>
 <style lang="postcss" scoped>
     section {
-        @apply bg-white p-4 border-b mb-8
+        @apply bg-white p-4 border-b mb-8;
     }
 </style>

@@ -152,10 +152,10 @@ export default {
 
 <style>
     .dropdown {
-        @apply relative
+        @apply relative;
     }
     .dropdown.right {
-        @apply top-0 right-0 text-right
+        @apply top-0 right-0 text-right;
     }
 
     .dropdown > .dropdown-label {
@@ -179,9 +179,9 @@ export default {
         @apply border border-b-0 border-gray-300;
     }
     .dropdown-items > li:first-child {
-        @apply rounded-t
+        @apply rounded-t;
     }
     .dropdown-items > li:last-child {
-        @apply border-b rounded-b
+        @apply border-b rounded-b;
     }
 </style>

@@ -50,10 +50,10 @@ export default {
 
 <style lang="postcss" scoped>
     .section-wrapper {
-        @apply border-b border-gray-200 bg-white pt-4 px-6
+        @apply border-b border-gray-200 bg-white pt-4 px-6;
     }
     .section-wrapper .application-section:last-child {
-        @apply border-b-0
+        @apply border-b-0;
     }
 
     /* .section-wrapper:first-child {
