@@ -1,6 +1,6 @@
 <style lang="postcss" scoped>
     td[colgroup=biocurator] {
-        @apply bg-blue-50
+        @apply bg-blue-50;
     }
     tr:nth-child(odd) > td[colgroup=biocurator] {
         @apply bg-blue-100;

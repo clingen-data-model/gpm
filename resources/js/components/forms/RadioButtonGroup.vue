@@ -115,9 +115,9 @@ import {sentenceCase} from '@/string_utils.js'
     }
 
     .button-group.vertical button:first-child{
-        @apply rounded-t
+        @apply rounded-t;
     }
     .button-group.vertical button:last-child{
-        @apply rounded-b border-b rounded-r-none
+        @apply rounded-b border-b rounded-r-none;
     }
 </style>

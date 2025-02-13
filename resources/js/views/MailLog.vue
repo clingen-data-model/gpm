@@ -3,7 +3,7 @@
     @apply mb-4;
 }
 .email-body a {
-    @apply text-blue-700 underline
+    @apply text-blue-700 underline;
 }
 </style>
 <template>

@@ -90,10 +90,10 @@ import MarkdownBlock from '../MarkdownBlock.vue';
 
 <style scoped>
     .submission-log-table {
-        @apply text-sm
+        @apply text-sm;
     }
     .submission-log-table td,
     .submission-log-table th {
-        @apply border-0 border-b py-2
+        @apply border-0 border-b py-2;
     }
 </style>

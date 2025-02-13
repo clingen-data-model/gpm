@@ -1,6 +1,6 @@
 <style lang="postcss">
 .horizontal > .tabs {
-    @apply flex space-x-2
+    @apply flex space-x-2;
 }
 
 .horizontal > .tabs > .tab {
@@ -13,7 +13,7 @@
 }
 
 .horizontal > .tab-content {
-    @apply p-4 border rounded-tr-lg rounded-b-lg bg-white
+    @apply p-4 border rounded-tr-lg rounded-b-lg bg-white;
 }
 
 .vertical > .tabs {
@@ -21,7 +21,7 @@
 }
 
 .vertical > .tabs > .tab {
-    @apply border rounded px-4 py-1 bg-gray-200
+    @apply border rounded px-4 py-1 bg-gray-200;
 }
 
 .vertical>.tabs>.tab.router-link-active,

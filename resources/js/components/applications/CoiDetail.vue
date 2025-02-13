@@ -1,6 +1,6 @@
 <style lang="postcss">
     .response-data > .dictionary-row {
-        @apply pb-2 mb-1 border-b border-gray-100
+        @apply pb-2 mb-1 border-b border-gray-100;
     }
 </style>
 <template>

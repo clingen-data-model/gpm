@@ -1,15 +1,15 @@
 <style scoped>
     .green {
-        @apply bg-green-600
+        @apply bg-green-600;
     }
     .blue {
-        @apply bg-blue-500
+        @apply bg-blue-500;
     }
     .yellow {
-        @apply bg-yellow-500
+        @apply bg-yellow-500;
     }
     .red {
-        @apply bg-red-400
+        @apply bg-red-400;
     }
     .gray {
         @apply bg-gray-400;
