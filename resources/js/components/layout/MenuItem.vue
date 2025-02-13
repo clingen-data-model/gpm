@@ -8,7 +8,7 @@
         @apply px-2 py-2 cursor-pointer border-t border-b border-transparent;
     }
     .item .label:hover {
-        @apply bg-blue-50 border-blue-200
+        @apply bg-blue-50 border-blue-200;
     }
     .cheveron {
         transition: 250ms all;
@@ -19,7 +19,7 @@
     }
     .text-smaller { 
         font-size: .95em;
-    },
+    }
     .item .label.current-step {
         @apply  bg-blue-100;
     }
