@@ -98,7 +98,8 @@
                 "fullname": "Working Group",
                 "display_name": "Working Group",
                 "description": "A working group that is not a Clinical Domain Working Group",
-                "can_be_parent": true
+                "can_be_parent": true,
+                "curation_product": null
             },
             "cdwg": {
                 "id": 2,
@@ -106,7 +107,8 @@
                 "fullname": "Clinical Domain Working Group",
                 "display_name": "Clinical Domain Working Group",
                 "description": "A Clinical Domain Working Group that oversees Expert Panels.",
-                "can_be_parent": true
+                "can_be_parent": true,
+                "curation_product": null
             },
             "gcep": {
                 "id": 3,
@@ -114,7 +116,8 @@
                 "fullname": "Gene Curation Expert Panel",
                 "display_name": "GCEP",
                 "description": "A Gene curation expert panel",
-                "can_be_parent": false
+                "can_be_parent": false,
+                "curation_product": "gene_disease_validity"
             },
             "vcep": {
                 "id": 4,
@@ -122,7 +125,8 @@
                 "display_name": "VCEP",
                 "fullname": "Variant Curation Expert Panel",
                 "description": "A Variant curation expert panel",
-                "can_be_parent": false
+                "can_be_parent": false,
+                "curation_product": "variant_pathogenicity"
             },
             "scvcep": {
                 "id": 5,
@@ -130,7 +134,9 @@
                 "fullname": "Somatic Cancer Variant Curation Expert Panel",
                 "display_name": "SCVCEP",
                 "description": "A Somatic cancer variant curation expert panel",
-                "can_be_parent": false
+                "can_be_parent": false,
+                "curation_product": "variant_pathogenicity",
+                "is_somatic_cancer": true
             }
         },
         "statuses": {
