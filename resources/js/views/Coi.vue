@@ -69,7 +69,7 @@
     </div>
 </template>
 <script>
-import coiDef from '../../../surveys/coi_v2.json'
+import coiDef from '@/surveys/coi_v2.json'
 import Survey from '@/survey'
 import api from '@/http/api'
 import is_validation_error from '@/http/is_validation_error';

@@ -104,7 +104,7 @@ export default {
 </script>
 <style lang="postcss" scoped>
     ul {
-        @apply border-t-4 first:border-none
+        @apply border-t-4 first:border-none;
     }
     .menu-item {
         @apply hover:bg-blue-100 cursor-pointer border-t border-gray-300;
