@@ -36,6 +36,7 @@
 </style>
 <script>
 import {isEqual} from 'lodash'
+import { h } from 'vue';
 
 export default {
     name: 'TabsContainer',
@@ -149,11 +150,7 @@ export default {
                         tabClasses.push('active');
                     }
 
-                    return (
-                        <li class={tabClasses.join(' ')} onClick={ () => this.activateTab(idx) }>
-                            {tab.label}
-                        </li>
-                    )
+                    return h('li', {class: tabClasses.join(' '), onClick: () => this.activateTab(idx)}, tab.label)
                 })
         },
     },
@@ -173,16 +170,11 @@ export default {
             containerClass.push('flex')
         }
 
-        return (
-            <div class={containerClass.join(' ')}>
-                <ul class={tabsClass.join(' ')}>
-                    {tabList}
-                </ul>
-                <div class="tab-content">
-                    {this.$slots.default()}
-                </div>
-            </div>
-        )
+        // FIXME: should change to template rather than render function, but at least this isn't jsx
+        return h('div', {class: containerClass.join(' ')}, [
+            h('ul', {class: tabsClass.join(' ')}, tabList),
+            h('div', {class: 'tab-content'}, this.$slots.default())
+        ])
     }
 }
 </script>
