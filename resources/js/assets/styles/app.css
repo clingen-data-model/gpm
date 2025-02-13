@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 .router-link-active {
-    @apply text-gray-500 underline
+    @apply text-gray-500 underline;
 }
 
 /**
@@ -41,7 +41,7 @@ h3 {
 }
 
 hr {
-    @apply my-4
+    @apply my-4;
 }
 
 input[type=file]{
@@ -52,17 +52,17 @@ a[href]:not(.btn,.note,.custom-text) {
     @apply text-blue-500;
 }
 a[href]:not(.btn) {
-    @apply hover:underline
+    @apply hover:underline;
 }
 
 input,
 select,
 textarea {
-    @apply border border-gray-300 px-2 py-1 rounded disabled:opacity-50 disabled:cursor-not-allowed
+    @apply border border-gray-300 px-2 py-1 rounded disabled:opacity-50 disabled:cursor-not-allowed;
 }
 
 p {
-    @apply mb-2
+    @apply mb-2;
 }
 
 input.sm,
@@ -120,7 +120,7 @@ input[type="checkbox"]:checked {
 }
 input[type="radio"]:checked::before,
 input[type="checkbox"]:checked::before  {
-  transform: scale(1);
+    transform: scale(1);
 }
 
 
@@ -134,25 +134,25 @@ table {
     @apply w-full;
 }
 thead > tr {
-     @apply bg-gray-200;
+    @apply bg-gray-200;
 }
 tbody > tr {
-    @apply bg-white odd:bg-gray-100 border-0 hover:border-blue-300 hover:bg-blue-100
+    @apply bg-white odd:bg-gray-100 border-0 hover:border-blue-300 hover:bg-blue-100;
 }
 tr > th {
-    @apply text-left border border-gray-300 px-3
+    @apply text-left border border-gray-300 px-3;
 }
 tr > td {
     @apply text-left p-1 px-3 border align-top;
 }
 th.sorted, td.sorted  {
-    @apply bg-blue-100 hover:bg-blue-100
+    @apply bg-blue-100 hover:bg-blue-100;
 }
 
 
 
 .note {
-    @apply text-xs text-gray-400
+    @apply text-xs text-gray-400;
 }
 .link {
     @apply text-blue-500 hover:underline;
@@ -179,15 +179,15 @@ th.sorted, td.sorted  {
 }
 
 .btn-icon {
-    @apply px-1.5 py-1
+    @apply px-1.5 py-1;
 }
 
 .btn-icon-sm {
-    @apply px-1 py-0.5
+    @apply px-1 py-0.5;
 }
 
 .btn-icon-xs {
-    @apply px-0.5 py-0
+    @apply px-0.5 py-0;
 }
 
 .btn-xs {
@@ -246,7 +246,7 @@ th.sorted, td.sorted  {
 
 }
 .markdown a {
-    @apply text-blue-500 underline
+    @apply text-blue-500 underline;
 }
 
 .markdown p {
@@ -263,7 +263,7 @@ th.sorted, td.sorted  {
 
 .markdown ol {
     list-style: decimal;
-    @apply mb-2
+    @apply mb-2;
 }
 
 .markdown ul > li,
@@ -343,7 +343,7 @@ th.sorted, td.sorted  {
         max-width: 800px;
     }
     .application-review section:first-child {
-        @apply mt-0
+        @apply mt-0;
     }
     .application-review h2 {
         @apply mb-2 border-b pb-1;
