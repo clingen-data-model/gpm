@@ -26,7 +26,23 @@ trait SeedsHgncGenesAndDiseases
 
     private function getDb()
     {
-        return DB::connection(config('database.gt_db_connection'));
+        $conn = DB::connection(config('database.gt_db_connection'));
+        // This is an ugly hack for the fact that RefreshDatabase doesn't work with multiple connections
+        // The real fix would be to access genetracker only through an API (and to mock it appropriately)
+        if (!$conn->getSchemaBuilder()->hasTable('genes')) {
+            $conn->getSchemaBuilder()->create('genes', function($table){
+                $table->biginteger('hgnc_id');
+                $table->string('gene_symbol');
+            });
+        }
+        if (!$conn->getSchemaBuilder()->hasTable('diseases')) {
+            $conn->getSchemaBuilder()->create('diseases', function($table){
+                $table->bigIncrements('id');
+                $table->string('mondo_id');
+                $table->string('name');
+            });
+        }
+        return $conn;
     }
     
     

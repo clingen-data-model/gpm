@@ -152,7 +152,7 @@ class PublishApplicationEventsTest extends TestCase
         ]);
     }
 
-    private function addGene($genes = null)
+    private function addGene()
     {
         $genes = $this->seedGenes([['hgnc_id' => 678, 'gene_symbol'=>'BCD'], ['hgnc_id' => 12345, 'gene_symbol' => 'ABC1']]);
         $action = app()->make(GenesAdd::class);
