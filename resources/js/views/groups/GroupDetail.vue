@@ -104,7 +104,7 @@
             class="relative"
           >
             <div
-              class="bg-white bg-opacity-50 absolute top-0 left-0 right-0 bottom-0"
+              class="bg-white/50 absolute top-0 left-0 right-0 bottom-0"
               v-if="!group.expert_panel.pilotSpecificationsIsApproved && group.is_vcep_or_scvcep"
             ></div>
             <static-alert
@@ -147,7 +147,7 @@
           <tab-item label="Specifications" :visible="group.is_vcep_or_scvcep">
             <div class="relative">
               <div
-                class="bg-white bg-opacity-50 absolute top-0 left-0 right-0 bottom-0"
+                class="bg-white/50 absolute top-0 left-0 right-0 bottom-0"
                 v-if="!group.expert_panel.defIsApproved && group.is_vcep_or_scvcep"
               ></div>
               <static-alert

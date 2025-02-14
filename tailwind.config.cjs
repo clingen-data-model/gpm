@@ -1,9 +1,8 @@
 module.exports = {
-    purge: [
-        './src/**/*.{vue,js}',
-        './assets/*'
+    content: [
+        './resources/js/**/*.{vue,js}',
+        './resources/assets/*'
     ],
-    darkMode: false, // or 'media' or 'class'
     theme: {
         extend: {
             fontSize: {
@@ -62,17 +61,6 @@ module.exports = {
             'xl': '1280px',
             '2xl': '1536px',
             'print': { 'raw': 'print' }
-        },
-    },
-    variants: {
-        extend: {
-            borderStyle: ['active', 'hover', 'first', 'last'],
-            borderRadius: ['first', 'last'],
-            padding: ['active'],
-            backgroundColor: ['even', 'odd', 'active'],
-            opacity: ['disabled'],
-            cursor: ['disabled'],
-            gradientColorStops: ['active'],
         },
     },
     plugins: [],

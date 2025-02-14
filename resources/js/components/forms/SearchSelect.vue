@@ -495,10 +495,10 @@ export default {
     }
 
     .filtered-option:hover {
-        @apply bg-blue-200 bg-opacity-30;
+        @apply bg-blue-200/30;
     }
     .filtered-option.highlighted {
-        @apply bg-blue-200 bg-opacity-50;
+        @apply bg-blue-200/50;
     }
     .filtered-option.additional-option {
         @apply border-t border-gray-400 bg-white;
