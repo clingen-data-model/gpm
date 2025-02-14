@@ -1,12 +1,12 @@
 import { hasGroupPermission } from './route_guards'
 
-const MemberForm = () => import ( /* webpackChunkName: "group-detail" */ '@/components/groups/MemberForm.vue')
+const MemberForm = () => import ('@/components/groups/MemberForm.vue')
 
 export default [
     { name: 'GroupList',
         path: '/groups',
         components:  {
-            default: () => import ( /* webpackChunkName: "group-list" */ '@/views/groups/GroupList.vue')
+            default: () => import ('@/views/groups/GroupList.vue')
         },
         meta: {
             protected: true,
@@ -16,7 +16,7 @@ export default [
     { name: 'GroupDetail',
         path: '/groups/:uuid',
         components: {
-            default: () => import ( /* webpackChunkName: "group-detail" */ '@/views/groups/GroupDetail.vue')
+            default: () => import ('@/views/groups/GroupDetail.vue')
         },
         meta: {
             protected: true
@@ -59,7 +59,7 @@ export default [
     { name: 'GroupApplication',
         path: '/groups/:uuid/application',
         components: {
-            default: () => import ( /* webpackChunkName: "group-application" */ '@/views/groups/GroupApplication.vue')
+            default: () => import ('@/views/groups/GroupApplication.vue')
         },
         meta: {
             protected: true
@@ -103,7 +103,7 @@ export default [
     },
     { name: 'ReviewApplication',
         path: '/groups/:uuid/application/review',
-        component: () =>  import ( /* webpackChunkName: "application-review" */ '@/components/expert_panels/ApplicationResponse.vue'),
+        component: () =>  import ('@/components/expert_panels/ApplicationResponse.vue'),
         props: true,
         meta: {
             protected: true
@@ -112,7 +112,7 @@ export default [
     { name: 'AnnualUpdate',
         path: '/groups/:uuid/annual-update',
         components: {
-            default: () => import ( /* webpackChunkName: "annual-update" */ '@/views/AnnualUpdateForm.vue')
+            default: () => import ('@/views/AnnualUpdateForm.vue')
         },
         meta: {
             protected: true
@@ -155,7 +155,7 @@ export default [
     { name: 'SustainedCurationReview',
         path: '/groups/:uuid/sustained-curation-review',
         components: {
-            default: () => import(/* webpackchunkname: "sustained-curation-review" */ '@/views/groups/SustainedCurationReview.vue')
+            default: () => import('@/views/groups/SustainedCurationReview.vue')
         },
         meta: {
             protected: true

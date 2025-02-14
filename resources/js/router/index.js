@@ -12,7 +12,7 @@ const routes = [
     {
         name: 'Dashboard',
         path: '/',
-        component: () => import(/* webpackChunkName "dashboard" */ '@/views/Dashboard.vue'),
+        component: () => import('@/views/Dashboard.vue'),
         meta: {
             protected: true
         }
@@ -21,25 +21,25 @@ const routes = [
         name: 'ApplicationSummary',
         path: '/application-summary',
         redirect: '/application-summary/vceps',
-        component: () => import(/* webpackChunkName "applications-summary" */ '@/views/ApplicationSummary.vue'),
+        component: () => import('@/views/ApplicationSummary.vue'),
         children: [{
             name: 'GcepsSummary',
             path: "gceps",
             component: () =>
-                import( /* webpackChunkName: "application-summary" */ '@/views/SummaryGcep.vue'),
+                import('@/views/SummaryGcep.vue'),
         },
         {
             name: 'VcepsSummary',
             path: "vceps",
             component: () =>
-                import( /* webpackChunkName: "application-summary" */ '@/views/SummaryVcep.vue'),
+                import('@/views/SummaryVcep.vue'),
         },
         ]
     },
     {
         name: 'AnnualUpdatesList',
         path: '/annual-updates',
-        component: () => import(/* webpackChunkName "annual-updates" */ '@/views/AnnualUpdatesList.vue'),
+        component: () => import('@/views/AnnualUpdatesList.vue'),
         meta: {
             protected: true,
             permissions: ['annual-updates-manage']
@@ -48,7 +48,7 @@ const routes = [
     {
         name: 'AnnualUpdateDetail',
         path: '/annual-updates/:id',
-        component: () => import(/* webpackChunkName "annual-updates" */ '@/views/AnnualUpdateDetail.vue'),
+        component: () => import('@/views/AnnualUpdateDetail.vue'),
         props: true,
         meta: {
             protected: true,
@@ -99,7 +99,7 @@ const routes = [
     {
         name: 'coi',
         path: '/coi/:code',
-        component: () => import(/* webpackChunkName "coi-survey" */ '@/views/Coi.vue'),
+        component: () => import('@/views/Coi.vue'),
         props: true,
         meta: {
             protected: true
@@ -108,7 +108,7 @@ const routes = [
     {
         name: 'alt-coi',
         path: '/expert-panels/:name/coi/:code',
-        component: () => import(/* webpackChunkName "coi-survey" */ '@/views/Coi.vue'),
+        component: () => import('@/views/Coi.vue'),
         props: true,
         meta: {
             protected: true
@@ -118,12 +118,12 @@ const routes = [
         name: 'about',
         path: '/about',
         component: () =>
-            import( /* webpackChunkName: "about" */ '@/views/About.vue')
+            import('@/views/About.vue')
     },
     {
         name: 'PendingCoiList',
         path: '/onboarding/cois',
-        component: () => import( /* webpackChunkName "coi-survey" */ '@/views/PendingCoiList.vue'),
+        component: () => import('@/views/PendingCoiList.vue'),
         props: true,
         meta: {
             protected: true
@@ -133,7 +133,7 @@ const routes = [
     {
         name: 'mail-log',
         path: '/mail-log',
-        component: () => import(/* webpackChunkName "mail-log" */ '@/views/MailLog.vue'),
+        component: () => import('@/views/MailLog.vue'),
         meta: {
             protected: true
         }
@@ -141,12 +141,12 @@ const routes = [
     {
         name: 'not-found',
         path: '/:pathMatch(.*)*',
-        component: () => import(/* webpackChunkName "not-found" */ '@/views/NotFound.vue'),
+        component: () => import('@/views/NotFound.vue'),
     },
     {
         name: 'reports',
         path: '/reports',
-        component: () => import(/* webpackChunkName "reports-index" */ '@/views/Reports.vue'),
+        component: () => import('@/views/Reports.vue'),
         meta: {
             protected: true,
             permissions: ['reports-pull']

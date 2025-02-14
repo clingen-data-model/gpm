@@ -14,7 +14,7 @@ export default [
         name: 'UserList',
         path: '/users',
         components:  {
-            default: () => import ( /* webpackChunkName: "user-management" */ '@/views/users/UserList.vue'),
+            default: () => import ('@/views/users/UserList.vue'),
         },
         meta: {
             protected: true,
@@ -28,7 +28,7 @@ export default [
         name: 'UserDetail',
         path: '/users/:id',
         components: {
-            default: () => import ( /* webpackChunkName: "user-management" */ '@/views/users/UserDetail.vue')
+            default: () => import ('@/views/users/UserDetail.vue')
         },
         props: true,
         meta: {
