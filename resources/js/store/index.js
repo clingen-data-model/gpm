@@ -98,14 +98,14 @@ const countryStore = module_factory({
 
 const store = createStore({
     state: {
-        hostname: process.env.VUE_APP_URL,
+        hostname: import.meta.env.VITE_APP_URL,
         user: new User(),
         openRequests: 0,
         authenticating: true,
         authenticated: null,
         documentTypes: null,
         features: {
-            legacyCoi: process.env.VUE_APP_LEGACY_COI == 'true',
+            legacyCoi: import.meta.env.VITE_APP_LEGACY_COI == 'true',
         },
         systemInfo: {build: {}, app: { features: {}}},
     },
@@ -194,7 +194,7 @@ const store = createStore({
         expertises: ExpertiseStore,
         countries: countryStore,
     },
-    // plugins: process.env.NODE_ENV !== 'production'
+    // plugins: import.meta.env.NODE_ENV !== 'production'
     //     ? [createLogger()]
     //     : []
 })
