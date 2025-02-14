@@ -3,7 +3,7 @@
         @apply w-full;
     }
     tbody{
-        @apply bg-white odd:bg-gray-100 border-0 hover:border-blue-300 hover:bg-blue-100
+        @apply bg-white odd:bg-gray-100 border-0 hover:border-blue-300 hover:bg-blue-100;
     }
     tr > th {
         @apply text-left border border-gray-300 px-3;

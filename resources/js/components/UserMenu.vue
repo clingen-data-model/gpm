@@ -65,11 +65,13 @@
 <script>
 import {mapGetters} from 'vuex'
 import ImpersonateControl from '@/components/ImpersonateControl.vue'
+import AnnouncementControl from '@/components/alerts/AnnouncementControl.vue'
 
 export default {
     name: 'UserMenu',
     components: {
-        ImpersonateControl
+        ImpersonateControl,
+        AnnouncementControl
     },
     data() {
         return {

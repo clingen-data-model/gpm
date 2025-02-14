@@ -3,6 +3,8 @@
     import {api, queryStringFromParams} from '@/http'
     import Group from '@/domain/group'
     import AnnualUpdateAlert from '@/components/groups/AnnualUpdateAlert.vue';
+    import CoiAlert from '@/components/alerts/CoiAlert.vue';
+    import SustainedCurationReviewAlert from '@/components/alerts/SustainedCurationReviewAlert.vue';
 
     const props = defineProps({
         user: {
