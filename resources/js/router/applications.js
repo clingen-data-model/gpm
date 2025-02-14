@@ -1,21 +1,21 @@
 const ApplicationIndex = () =>
-    import ( /* webpackChunkName: "application-index" */ '@/views/ApplicationsIndex.vue')
+    import ('@/views/ApplicationsIndex.vue')
 const ApplicationDetail = () =>
-    import ( /* webpackChunkName: "application-detail" */ '@/views/applications/ApplicationDetail.vue');
+    import ('@/views/applications/ApplicationDetail.vue');
 const CreateApplicationForm = () =>
-    import ( /* webpackChunkName: "create-application-form" */ '@/components/applications/CreateApplicationForm.vue');
+    import ('@/components/applications/CreateApplicationForm.vue');
 const NextActionForm = () =>
-    import ( /* webpackChunkName: "next-action-form" */ '@/components/next_actions/NextActionForm.vue')
+    import ('@/components/next_actions/NextActionForm.vue')
 const LogEntryForm = () =>
-    import ( /* webpackChunkName: "log-entry-form" */ '@/components/log_entries/LogEntryForm.vue')
+    import ('@/components/log_entries/LogEntryForm.vue')
 const MemberForm = () =>
-    import ( /* webpackChunkName: "new-contact-form" */ '@/components/groups/MemberForm.vue')
+    import ('@/components/groups/MemberForm.vue')
 const ConfirmDeleteLogEntry = () =>
-    import ( /* webpackChunkName: "confirm-delete-log-entry" */ '@/components/log_entries/ConfirmDeleteLogEntry.vue')
+    import ('@/components/log_entries/ConfirmDeleteLogEntry.vue')
 const ConfirmDeleteNextAction = () =>
-    import ( /* webpackChunkName: "confirm-delete-log-entry" */ '@/components/next_actions/ConfirmDeleteNextAction.vue')
+    import ('@/components/next_actions/ConfirmDeleteNextAction.vue')
 const ConfirmDeleteApplication = () =>
-    import ( /* webpackChunkName: "delete-application" */ '@/components/applications/ConfirmDeleteApplication.vue')
+    import ('@/components/applications/ConfirmDeleteApplication.vue')
 
 
 export default [{
@@ -35,7 +35,7 @@ export default [{
                 path: "gceps",
                 components: {
                     default: () =>
-                        import ( /* webpackChunkName: "application-index" */ '@/views/indexes/GcepsList.vue'),
+                        import ('@/views/indexes/GcepsList.vue'),
                     modal: CreateApplicationForm,
                 },
                 meta: {
@@ -48,7 +48,7 @@ export default [{
                 path: "vceps",
                 components: {
                     default: () =>
-                        import ( /* webpackChunkName: "application-index" */ '@/views/indexes/VcepsList.vue'),
+                        import ('@/views/indexes/VcepsList.vue'),
                     modal: CreateApplicationForm,
                 },
                 meta: {
