@@ -18,9 +18,9 @@
         },
     });
 
-    const {workingCopy} = setupMirror(props, {emit});
-
     const emit = defineEmits(mirrorEmits);
+
+    const {workingCopy} = setupMirror(props, {emit});
 
     const fieldValue = computed({
         get () {
