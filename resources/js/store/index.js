@@ -1,4 +1,4 @@
-// eslint-disable-next-line
+ 
 import { createStore } from 'vuex'
 import Alerts from '@/store/alerts'
 import ApplicationStore from '@/store/applications.js'

@@ -525,7 +525,7 @@ export const actions = {
         });
     },
 
-    // eslint-disable-next-line
+     
     createAnnualUpdateForLatestWindow(context, group) {
         return api.post(`/api/groups/${group.uuid}/expert-panel/annual-updates`)
             .then(response => {
@@ -533,7 +533,7 @@ export const actions = {
             });
     },
 
-    // eslint-disable-next-line
+     
     getChildren(context, group) {
         return api.get(`/api/groups/${group.uuid}/children`)
             .then(response => {
@@ -541,7 +541,7 @@ export const actions = {
             });
     },
 
-    // eslint-disable-next-line
+     
     async approveCurrentStep({ dispatch }, { group, dateApproved, notifyContacts, subject, body, attachments }) {
         const formData = new FormData();
         formData.append('date_approved', dateApproved);

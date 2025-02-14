@@ -163,7 +163,7 @@ export default {
                 })
         },
 
-        // eslint-disable-next-line
+         
         async addLogEntry({ dispatch }, { application, logEntryData }) {
             const url = `/api/applications/${application.uuid}/log-entries`
             await api.post(url, logEntryData)
@@ -172,7 +172,7 @@ export default {
                 })
         },
 
-        // eslint-disable-next-line
+         
         async updateLogEntry({ dispatch }, { application, updatedEntry }) {
             const url = `/api/applications/${application.uuid}/log-entries/${updatedEntry.id}`;
             await api.put(url, updatedEntry)
@@ -181,7 +181,7 @@ export default {
                 })
         },
 
-        // eslint-disable-next-line
+         
         async deleteLogEntry({ dispatch }, { application, logEntry }) {
             const url = `/api/applications/${application.uuid}/log-entries/${logEntry.id}`;
             await api.delete(url)
@@ -198,7 +198,7 @@ export default {
                 })
         },
 
-        // eslint-disable-next-line
+         
         async markDocumentReviewed({ dispatch }, { application, document, dateReviewed, isFinal }) {
             await appRepo.markDocumentReviewed(application, document, dateReviewed, isFinal)
                 .then(() => {
@@ -223,7 +223,7 @@ export default {
                 });
         },
 
-        //eslint-disable-next-line
+         
         async updateDocumentInfo({ dispatch }, { application, document }) {
             return await api.put(`/api/applications/${application.uuid}/documents/${document.uuid}`, document)
                 .then(() => {
@@ -231,7 +231,7 @@ export default {
                 });
         },
 
-        //eslint-disable-next-line
+         
         async deleteDocument( { dispatch }, {application, document}) {
             return await api.delete(`/api/applications/${application.uuid}/documents/${document.uuid}`)
                 .then(() => {
@@ -239,7 +239,7 @@ export default {
                 });
         },
 
-        // eslint-disable-next-line
+         
         async approveCurrentStep({ dispatch }, { application, dateApproved, notifyContacts, subject, body, attachments }) {
             const formData = new FormData();
             formData.append('date_approved', dateApproved);
@@ -265,7 +265,7 @@ export default {
                 });
         },
 
-        // eslint-disable-next-line
+         
         async updateApprovalDate({ dispatch }, { application, dateApproved, step }) {
             await api.put(`/api/applications/${application.uuid}/approve`, {
                     date_approved: dateApproved,
@@ -276,7 +276,7 @@ export default {
                 });
         },
 
-        // eslint-disable-next-line
+         
         async addContact({ dispatch }, { application, contact }) {
             await appRepo.addContact(application, contact)
                 .then(() => {
@@ -284,7 +284,7 @@ export default {
                 })
         },
 
-        // eslint-disable-next-line
+         
         async removeContact({ dispatch }, { application, contact }) {
             await appRepo.removeContact(application, contact)
                 .then(() => {
