@@ -9,12 +9,14 @@
     "dev": "vite",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "npm run export-configs; vue-cli-service test:e2e",
-    "lint": "vue-cli-service lint",
+    "lint": "eslint resources/js",
+    "lintfix": "eslint resources/js --fix",
     "export-configs": "cd ../../ && php artisan config:export && cd -"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^36.0.1",
     "@ckeditor/ckeditor5-vue": "^4.0.1",
+    "@vue/eslint-config-prettier": "^10.2.0",
     "autoprefixer": "^10.4.7",
     "axios": "^0.27.2",
     "dompurify": "^2.3.8",
@@ -29,7 +31,6 @@
     "vuex": "^4.0.2"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.18.2",
     "@ckeditor/ckeditor5-dev-utils": "^30.3.1",
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^30.3.1",
     "@tailwindcss/postcss7-compat": "^2",
@@ -40,8 +41,8 @@
     "axios-mock-adapter": "^1.21.1",
     "chai": "^4.3.6",
     "cropperjs": "^1.5.12",
-    "eslint": "^8.18.0",
-    "eslint-plugin-vue": "^9.1.1",
+    "eslint": "^9.20.1",
+    "eslint-plugin-vue": "^9.32.0",
     "laravel-vite-plugin": "^1.2.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17",
     "vite": "^6.1.0"
