@@ -7,7 +7,6 @@ import cdwgRoutes from './cdwgs'
 import groupRoutes from './groups'
 import adminRoutes from './admin'
 import userRoutes from './users'
-import MemberForm from '@/components/groups/MemberForm.vue'
 
 const routes = [
     {
@@ -58,7 +57,7 @@ const routes = [
             {
                 name: 'AnnualUpdateAddMember',
                 path: 'members/add',
-                component: MemberForm,
+                component: () => import('@/components/groups/MemberForm.vue'),
                 meta: {
                     showModal: true,
                     protected: true,
@@ -72,7 +71,7 @@ const routes = [
             {
                 name: 'AnnualUpdateEditMember',
                 path: 'members/:memberId',
-                component: MemberForm,
+                component: () => import('@/components/groups/MemberForm.vue'),
                 meta: {
                     showModal: true,
                     protected: true,
