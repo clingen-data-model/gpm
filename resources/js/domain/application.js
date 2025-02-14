@@ -45,8 +45,9 @@ class Application extends Entity {
             return [1, 2, 3, 4];
         }
 
+        console.log(this);
         throw new Error(
-            "Unknown expert_panel_type_id found when determining applicaiton steps."
+            `Unknown expert_panel_type_id found when determining application steps. Value: ${this}`
         );
     }
 
