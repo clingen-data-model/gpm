@@ -6,6 +6,9 @@ import path from 'path'
 const routes = () => import('resources/js/router/index.js')
 
 export default defineConfig({
+    build: {
+        sourcemap: true,
+    },
     plugins: [
         vue({
             template: {
