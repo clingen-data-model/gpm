@@ -28,7 +28,7 @@
 </template>
 <script>
 import configs from '@/configs.json'
-import {setupMirror, mirrorProps, mirrorEmits} from '@/composables/setup_working_mirror'
+import { setupMirror } from '@/composables/setup_working_mirror'
 
 export default {
     name: 'GroupMembersFilter',

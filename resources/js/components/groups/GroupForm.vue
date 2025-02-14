@@ -127,6 +127,7 @@ export default {
                 try {
                     this.$store.commit("groups/addItem", value);
                 } catch (e) {
+                    console.log(`Error setting group: ${e}`);
                     this.newGroup = value;
                 }
             }
