@@ -326,7 +326,6 @@ export default {
 
             <submitter-information v-model="annualUpdate" :errors="errors" />
 
-            <transition name="slide-fade-down">
                 <!-- <div v-if="group.is_vcep || (group.is_gcep && annualUpdate.data.ep_activity == 'active') "> -->
                 <div>
                     <membership-update :version="year" v-model="annualUpdate" :errors="errors" />
@@ -407,7 +406,6 @@ export default {
                     </template>
 
                 </div>
-            </transition>
             <hr>
             <button class="btn btn-lg" @click="submit" v-if="!annualUpdate.completed_at">Submit annual update</button>
             <static-alert variant="danger mt-4" v-if="hasErrors">
