@@ -16,13 +16,10 @@
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^36.0.1",
     "@ckeditor/ckeditor5-vue": "^4.0.1",
-    "@vue/eslint-config-prettier": "^10.2.0",
-    "autoprefixer": "^10.4.7",
     "axios": "^0.27.2",
     "dompurify": "^2.3.8",
     "js-yaml": "^4.1.0",
     "marked": "^4.0.17",
-    "postcss": "^8.4.14",
     "register-service-worker": "^1.7.2",
     "uuid": "^8.3.2",
     "vue": "^3.2.37",
@@ -33,7 +30,8 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-utils": "^30.3.1",
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^30.3.1",
-    "@tailwindcss/postcss7-compat": "^2",
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "autoprefixer": "^10.4.7",
     "@testing-library/vue": "^6.6.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/compiler-sfc": "^3.2.37",
@@ -44,6 +42,8 @@
     "eslint": "^9.20.1",
     "eslint-plugin-vue": "^9.32.0",
     "laravel-vite-plugin": "^1.2.0",
+    "postcss": "^8.4.14",
+    "@tailwindcss/postcss7-compat": "^2",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17",
     "vite": "^6.1.0"
   }
