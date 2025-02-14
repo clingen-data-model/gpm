@@ -357,6 +357,7 @@
 
                 <p>An individual is considered to be from a disadvantaged background if meeting two or more of the
                     following criteria:
+                </p>
 
                     <br>
 
@@ -400,11 +401,10 @@
                 <br>
 
 
-                </p>
-
+                <p>
                 Based on the NIH definition above, do you consider yourself currently in or having come from a
                 disadvantaged background? Note: If you are not a US-based participant, please answer based on
-                similar criteria in your own country. <br>
+                similar criteria in your own country. </p>
 
                 <div v-if="!formdata.disadvantaged_opt_out">
                     <div v-for="y_n_unsure_optout in available_options.y_n_unsure_optout" :key="y_n_unsure_optout.value"
