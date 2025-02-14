@@ -5,6 +5,7 @@ export const validateCode = async (code) => {
         await api.get(`/api/people/invites/${code}`)
         return true;
     } catch(error) {
+        console.log(error);
         return false;
     }
 }

@@ -1,6 +1,7 @@
 <script setup>
-    const emits = defineEmits(['next']);
+    defineEmits(['next']);
 </script>
+
 <template>
     <div>
         <h2>Conflict of Interest Policy</h2>
@@ -50,5 +51,4 @@
     ul {
         @apply list-disc pl-6;
     }
-
 </style>
