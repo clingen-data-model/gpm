@@ -125,6 +125,7 @@ const store = createStore({
                         })
                         dispatch('getSystemInfo');
                     } catch (error) {
+                        console.log(error);
                         commit('clearCurrentUser');
                     }
             }
@@ -136,6 +137,7 @@ const store = createStore({
                         commit('setCurrentUser', response.data.data)
                     })
             } catch (error) {
+                console.log(error);
                 commit('clearCurrentUser');
             }
         },
