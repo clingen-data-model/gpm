@@ -10,9 +10,10 @@ import userRoutes from './users'
 import MemberForm from '@/components/groups/MemberForm.vue'
 
 const routes = [
-    { name: 'Dashboard',
+    {
+        name: 'Dashboard',
         path: '/',
-        component: () => import (/* webpackChunkName "dashboard" */ '@/views/Dashboard.vue'),
+        component: () => import(/* webpackChunkName "dashboard" */ '@/views/Dashboard.vue'),
         meta: {
             protected: true
         }
@@ -21,25 +22,25 @@ const routes = [
         name: 'ApplicationSummary',
         path: '/application-summary',
         redirect: '/application-summary/vceps',
-        component: () => import (/* webpackChunkName "applications-summary" */ '@/views/ApplicationSummary.vue'),
+        component: () => import(/* webpackChunkName "applications-summary" */ '@/views/ApplicationSummary.vue'),
         children: [{
-                name: 'GcepsSummary',
-                path: "gceps",
-                component: () =>
-                        import ( /* webpackChunkName: "application-summary" */ '@/views/SummaryGcep.vue'),
-            },
-            {
-                name: 'VcepsSummary',
-                path: "vceps",
-                component: () =>
-                        import ( /* webpackChunkName: "application-summary" */ '@/views/SummaryVcep.vue'),
-            },
+            name: 'GcepsSummary',
+            path: "gceps",
+            component: () =>
+                import( /* webpackChunkName: "application-summary" */ '@/views/SummaryGcep.vue'),
+        },
+        {
+            name: 'VcepsSummary',
+            path: "vceps",
+            component: () =>
+                import( /* webpackChunkName: "application-summary" */ '@/views/SummaryVcep.vue'),
+        },
         ]
     },
     {
         name: 'AnnualUpdatesList',
         path: '/annual-updates',
-        component: () => import (/* webpackChunkName "annual-updates" */ '@/views/AnnualUpdatesList.vue'),
+        component: () => import(/* webpackChunkName "annual-updates" */ '@/views/AnnualUpdatesList.vue'),
         meta: {
             protected: true,
             permissions: ['annual-updates-manage']
@@ -48,7 +49,7 @@ const routes = [
     {
         name: 'AnnualUpdateDetail',
         path: '/annual-updates/:id',
-        component: () => import (/* webpackChunkName "annual-updates" */ '@/views/AnnualUpdateDetail.vue'),
+        component: () => import(/* webpackChunkName "annual-updates" */ '@/views/AnnualUpdateDetail.vue'),
         props: true,
         meta: {
             protected: true,
@@ -99,7 +100,7 @@ const routes = [
     {
         name: 'coi',
         path: '/coi/:code',
-        component: () => import (/* webpackChunkName "coi-survey" */ '@/views/Coi.vue'),
+        component: () => import(/* webpackChunkName "coi-survey" */ '@/views/Coi.vue'),
         props: true,
         meta: {
             protected: true
@@ -108,18 +109,20 @@ const routes = [
     {
         name: 'alt-coi',
         path: '/expert-panels/:name/coi/:code',
-        component: () => import (/* webpackChunkName "coi-survey" */ '@/views/Coi.vue'),
+        component: () => import(/* webpackChunkName "coi-survey" */ '@/views/Coi.vue'),
         props: true,
         meta: {
             protected: true
         }
     },
-    { name: 'about',
+    {
+        name: 'about',
         path: '/about',
         component: () =>
-            import ( /* webpackChunkName: "about" */ '@/views/About.vue')
+            import( /* webpackChunkName: "about" */ '@/views/About.vue')
     },
-    { name: 'PendingCoiList',
+    {
+        name: 'PendingCoiList',
         path: '/onboarding/cois',
         component: () => import( /* webpackChunkName "coi-survey" */ '@/views/PendingCoiList.vue'),
         props: true,
@@ -130,7 +133,7 @@ const routes = [
     },
     {
         name: 'mail-log',
-        path:'/mail-log',
+        path: '/mail-log',
         component: () => import(/* webpackChunkName "mail-log" */ '@/views/MailLog.vue'),
         meta: {
             protected: true
@@ -139,12 +142,12 @@ const routes = [
     {
         name: 'not-found',
         path: '/:pathMatch(.*)*',
-        component: () => import (/* webpackChunkName "not-found" */ '@/views/NotFound.vue'),
+        component: () => import(/* webpackChunkName "not-found" */ '@/views/NotFound.vue'),
     },
     {
         name: 'reports',
         path: '/reports',
-        component: () => import (/* webpackChunkName "reports-index" */ '@/views/Reports.vue'),
+        component: () => import(/* webpackChunkName "reports-index" */ '@/views/Reports.vue'),
         meta: {
             protected: true,
             permissions: ['reports-pull']
@@ -154,7 +157,7 @@ const routes = [
 ]
 
 const router = createRouter({
-    history: createWebHistory(import.meta.env.BASE_URL),
+    history: createWebHistory(import.meta.env.VITE_BASE_URL || '/'),
     routes
 })
 
@@ -168,7 +171,7 @@ router.beforeEach(async (to, from, next) => {
         return;
     }
 
-    try{
+    try {
         await store.dispatch('checkAuth')
         await store.dispatch('getCurrentUser');
     } catch (error) {
@@ -176,12 +179,12 @@ router.beforeEach(async (to, from, next) => {
     }
 
     if (!to.name.includes('login') && !store.getters.isAuthed) {
-        next({name: 'login', query: { redirect: to.fullPath }});
+        next({ name: 'login', query: { redirect: to.fullPath } });
         return;
     }
 
     if (to.name == 'login' && store.getters.isAuthed) {
-        next({name: 'Dashboard'})
+        next({ name: 'Dashboard' })
         return;
     }
 
@@ -190,8 +193,8 @@ router.beforeEach(async (to, from, next) => {
             next();
             return;
         }
-        router.replace({name: 'Dashboard'})
-        store.commit('pushError', 'You don\'t have permission to access '+to.path)
+        router.replace({ name: 'Dashboard' })
+        store.commit('pushError', 'You don\'t have permission to access ' + to.path)
     }
 
     next();
@@ -219,29 +222,29 @@ router.beforeEach(async (to, from, next) => {
 
     // Check to see if the user's profile is incomplete
     if (store.getters.currentUser.profileIncomplete) {
-        router.replace({name: 'InitialProfileForm', params: {redirectTo: to}});
+        router.replace({ name: 'InitialProfileForm', params: { redirectTo: to } });
         next();
         return;
     }
 
     // Check to see if the user has pending COIs
     if (store.getters.currentUser.hasPendingCois) {
-        router.replace({name: 'PendingCoiList', params: {redirectTo: to}});
+        router.replace({ name: 'PendingCoiList', params: { redirectTo: to } });
         next();
         return;
     }
 
     // Check if the user needs to update credentials or expertise
     if (store.getters.currentUser.needsCredentials || store.getters.currentUser.needsExpertise) {
-        router.replace({name: 'MandatoryProfileUpdate', params: {redirectTo: to}});
+        router.replace({ name: 'MandatoryProfileUpdate', params: { redirectTo: to } });
         next();
         return;
     }
 
     // Check if the user needs to update profile demographics
     if (store.getters.currentUser.person.demographics_completed_date === null && !store.getters.currentUser.is_impersonating) {
-      //  console.log('redirecting to demographics form');
-        router.replace({name: 'RequiredDemographicsUpdateForm', params: {redirectTo: to}});
+        //  console.log('redirecting to demographics form');
+        router.replace({ name: 'RequiredDemographicsUpdateForm', params: { redirectTo: to } });
         next();
         return;
     }
