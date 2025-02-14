@@ -162,7 +162,7 @@
         <div class="replies ml-1">
             <ul v-if="showReplyList">
                 <li v-for="reply in replyManager.comments" :key="reply.id"
-                    class="border-l-2 mt-2 px-2 py-1 bg-gray-100 bg-opacity-50"
+                    class="border-l-2 mt-2 px-2 py-1 bg-gray-100/50"
                 >
                     <ReviewComment :comment="reply" :commentManager="replyManager" @deleted="handleReplyRemoved" />
                 </li>
@@ -172,7 +172,7 @@
                 {{comment.comments_count}}
                 {{comment.comments_count > 1 ? 'replies' : 'reply'}}
             </button>
-            <div v-show="showReplyForm" class="border-l-2 mt-2 px-2 py-1 bg-gray-100 bg-opacity-50">
+            <div v-show="showReplyForm" class="border-l-2 mt-2 px-2 py-1 bg-gray-100/50">
                 <strong>Your Reply</strong>
                 <ReviewCommentForm
                     subjectType="App\Models\Comment"
