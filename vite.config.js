@@ -20,6 +20,10 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    test: {
+        globals: true,
+        environment: "jsdom",
+    },
     resolve: {
         alias: {
             '~': path.resolve(__dirname, 'node_modules'),

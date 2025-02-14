@@ -39,6 +39,6 @@ describe('kebabCase', () => {
 
 describe('camelCase', () => {
     it('camel cases a string', () => {
-        expect(camelCase(' I am a_snek')).to.equal('IAmASnek');
+        expect(camelCase(' I am a_snek')).to.equal('iAmASnek');
     })
 })
