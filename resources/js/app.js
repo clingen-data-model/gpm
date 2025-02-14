@@ -7,24 +7,22 @@ import CKEditor from '@ckeditor/ckeditor5-vue'
 import {titleCase, camelCase, snakeCase, kebabCase, sentenceCase} from '@/string_utils'
 
 const app = createApp(App)
-const registerComponentsInContext = (context => {
-    context.keys().forEach(filePath => {
-        if (!filePath.match('.vue')) {
-            return;
-        }
-        const componentName = kebabCase(filePath.split('/').pop().split('.')[0]);
-        const comp = context(filePath)
-        app.component(componentName, comp.default);
-    });
-})
-registerComponentsInContext(require.context('@/components', false, /\.vue$/i));
-registerComponentsInContext(require.context('@/components/links'), false, /\.vue$/i);
-registerComponentsInContext(require.context('@/components/alerts'), false, /\.vue$/i);
-registerComponentsInContext(require.context('@/components/dev'), false, /\.vue$/i);
-registerComponentsInContext(require.context('@/components/forms'), false, /\.vue$/i);
-registerComponentsInContext(require.context('@/components/icons'), false, /\.vue$/i);
-registerComponentsInContext(require.context('@/components/buttons'), false, /\.vue$/i);
-registerComponentsInContext(require.context('@/components/mail'), false, /\.vue$/i);
+
+const registerComponents = (modules) => {
+    for (const path in modules) {
+        const componentName = kebabCase(path.split('/').pop().split('.')[0]);
+        app.component(componentName, modules[path].default);
+    }
+}
+
+registerComponents(import.meta.glob('@/components/*.vue', { eager: true }))
+registerComponents(import.meta.glob('@/components/links/*.vue', { eager: true }))
+registerComponents(import.meta.glob('@/components/alerts/*.vue', { eager: true }))
+registerComponents(import.meta.glob('@/components/dev/*.vue', { eager: true }))
+registerComponents(import.meta.glob('@/components/forms/*.vue', { eager: true }))
+registerComponents(import.meta.glob('@/components/icons/*.vue', { eager: true }))
+registerComponents(import.meta.glob('@/components/buttons/*.vue', { eager: true }))
+registerComponents(import.meta.glob('@/components/mail/*.vue', { eager: true }))
 
 import SubmissionWrapper from '@/components/groups/SubmissionWrapper.vue';
 app.component('submission-wrapper', SubmissionWrapper);
