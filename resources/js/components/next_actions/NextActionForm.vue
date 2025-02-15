@@ -45,7 +45,7 @@
 <script>
 import StepInput from '@/components/forms/StepInput.vue'
 import {mapGetters} from 'vuex'
-import RichTextEditor from '@/components/forms/RichTextEditor.vue'
+import HtmlEditor from '@/components/prosekit/HtmlEditor.vue'
 import {formatDate} from '@/date_utils'
 import configs from '@/configs'
 
@@ -53,7 +53,7 @@ export default {
     name: 'NextActionForm',
     components: {
         StepInput,
-        RichTextEditor
+        HtmlEditor
     },
     props: {
         id: {

@@ -1,4 +1,6 @@
-module.exports = {
+import { iconsPlugin, getIconCollections } from '@egoist/tailwindcss-icons'
+
+export default {
     content: [
         './resources/js/**/*.{vue,js}',
         './resources/assets/*'
@@ -63,5 +65,9 @@ module.exports = {
             'print': { 'raw': 'print' }
         },
     },
-    plugins: [],
+    plugins: [
+        iconsPlugin({
+            collections: getIconCollections(['lucide']),
+        }),
+    ],
 }
