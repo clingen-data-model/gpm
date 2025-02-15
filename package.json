@@ -14,14 +14,18 @@
     "export-configs": "cd ../../ && php artisan config:export && cd -"
   },
   "dependencies": {
-    "@ckeditor/ckeditor5-build-classic": "^36.0.1",
-    "@ckeditor/ckeditor5-vue": "^4.0.1",
     "axios": "^1.7.9",
     "dompurify": "^2.3.8",
     "js-yaml": "^4.1.0",
     "lodash-es": "^4.17.21",
     "marked": "^15.0.7",
+    "prosekit": "^0.11.5",
     "register-service-worker": "^1.7.2",
+    "rehype-parse": "^9.0.1",
+    "rehype-remark": "^10.0.0",
+    "remark-html": "^16.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-stringify": "^11.0.0",
     "uuid": "^11.0.5",
     "vue": "^3.2.37",
     "vue-router": "^4.0.16",
@@ -29,8 +33,8 @@
     "vuex": "^4.0.2"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-utils": "^30.3.1",
-    "@ckeditor/ckeditor5-dev-webpack-plugin": "^30.3.1",
+    "@egoist/tailwindcss-icons": "^1.9.0",
+    "@iconify-json/lucide": "^1.2.26",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/compiler-sfc": "^3.2.37",
     "@vue/eslint-config-prettier": "^10.2.0",
