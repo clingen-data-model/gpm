@@ -339,7 +339,7 @@ export default {
 </script>
 <template>
     <div>
-        <head class="flex justify-between items-end">
+        <div class="flex justify-between items-end">
             <div class="flex space-x-2 items-center">
                 <h2>Members</h2>
                 <button
@@ -398,7 +398,7 @@ export default {
 
                 </div>
             </div>
-        </head>
+        </div>
         <transition name="slide-fade-down">
         <div class="flex justify-between px-2 space-x-2 bg-blue-200 rounded-lg" v-show="showFilter">
             <div class="flex-1">
