@@ -2,10 +2,10 @@
     <div>
         <header class="flex justify-between items-center">
             <h4>Summary Description of Group</h4>
-            <edit-icon-button 
+            <EditIconButton
                 v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing"
                 @click="$emit('update:editing', true)"
-            ></edit-icon-button>
+            ></EditIconButton>
         </header>
         <div class="mt-2">
             <transition name="fade" mode="out-in">
@@ -39,6 +39,7 @@
 </template>
 <script>
 import Group from '@/domain/group'
+import EditIconButton from '@/components/buttons/EditIconButton.vue'
 
 export default {
     name: "groupDescriptionForm",
@@ -53,6 +54,9 @@ export default {
             required: false,
             default: () => ({}),
         },
+    },
+    components: {
+        EditIconButton
     },
     emits: [
         "update:editing",
