@@ -2,7 +2,7 @@
 import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm.vue'
 import EvidenceSummaries from '@/components/expert_panels/EvidenceSummaryList.vue'
 import MemberDesignationForm from '@/components/expert_panels/MemberDesignationForm.vue'
-import {debounce} from 'lodash'
+import {debounce} from 'lodash-es'
 
 export default {
     name: 'SustainedCurationReview',
@@ -78,21 +78,21 @@ export default {
         </section>
 
         <section>
-            <header>  
+            <header>
                 <h3>Example Evidence Summaries</h3>
             </header>
-            <evidence-summaries 
-                :group="group" 
-                class="pb-2 mb-4 border-b" 
+            <evidence-summaries
+                :group="group"
+                class="pb-2 mb-4 border-b"
             />
         </section>
 
         <section>
-            <header>  
+            <header>
                 <h3>Example Evidence Summaries</h3>
             </header>
-            <member-designation-form 
-                class="pb-2 mb-4 border-b" 
+            <member-designation-form
+                class="pb-2 mb-4 border-b"
             />
         </section>
 
@@ -100,15 +100,15 @@ export default {
             <header>
                 <h3>Attestion of Accuracy</h3>
             </header>
-            <checkbox 
-                label="I confirm that all of the information is is accurate and up to date." 
-                v-model="attestation" 
+            <checkbox
+                label="I confirm that all of the information is is accurate and up to date."
+                v-model="attestation"
                 class="text-md-lg"
             />
-            <button 
+            <button
                 @click="submitReview"
                 :disabled="canSubmit"
-                class="btn btn-lg blue" 
+                class="btn btn-lg blue"
             >
                 Submit
             </button>

@@ -35,7 +35,7 @@
 
 </style>
 <script>
-import {isEqual} from 'lodash'
+import {isEqual} from 'lodash-es'
 import { h } from 'vue';
 
 export default {
@@ -97,15 +97,15 @@ export default {
                 this.activateTab(idx);
             }
         },
-        
+
         activateTabFromRoute () {
-            
-            const activeTabLabel = this.activeTab.label 
-                                    ? this.activeTab.label.toLowerCase() 
+
+            const activeTabLabel = this.activeTab.label
+                                    ? this.activeTab.label.toLowerCase()
                                     : null;
 
             if (
-                activeTabLabel != this.$route.query.tab 
+                activeTabLabel != this.$route.query.tab
                 && Object.keys(this.$route.query).includes('tab')
             ) {
                 this.activateTabWithLabel(this.$route.query.tab);
@@ -132,7 +132,7 @@ export default {
             this.tabs.push(tab);
             this.setActiveIndex();
         },
-        
+
         removeTab (tab) {
             const idx = this.tabs.findIndex(i => tab ==i)
             if (idx > -1) {
@@ -159,7 +159,7 @@ export default {
     },
     render() {
         const tabList = this.renderTabs();
-        
+
         const containerClass = [];
         const tabsClass = ['tabs'];
         if (this.tabLocation == 'top') {

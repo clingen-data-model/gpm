@@ -2,7 +2,7 @@
     import {computed, h} from 'vue'
     import {setupMirror, mirrorProps, mirrorEmits} from '@/composables/setup_working_mirror'
     import { titleCase } from '@/string_utils.js'
-    import {set, get} from 'lodash'
+    import {set, get} from 'lodash-es'
     import InputRowVue from './InputRow.vue';
     import DictionaryRowVue from '../DictionaryRow.vue';
 

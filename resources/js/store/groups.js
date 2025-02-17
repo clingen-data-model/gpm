@@ -1,7 +1,7 @@
 import { v4 as uuid4 } from 'uuid';
 import Group from '@/domain/group';
 import { api, queryStringFromParams } from '@/http';
-import { clone } from 'lodash';
+import { clone } from 'lodash-es';
 
 const baseUrl = '/api/groups';
 const getApplicationUrl = (uuid) => `${baseUrl}/${uuid}/expert-panel`;
@@ -525,7 +525,7 @@ export const actions = {
         });
     },
 
-     
+
     createAnnualUpdateForLatestWindow(context, group) {
         return api.post(`/api/groups/${group.uuid}/expert-panel/annual-updates`)
             .then(response => {
@@ -533,7 +533,7 @@ export const actions = {
             });
     },
 
-     
+
     getChildren(context, group) {
         return api.get(`/api/groups/${group.uuid}/children`)
             .then(response => {
@@ -541,7 +541,7 @@ export const actions = {
             });
     },
 
-     
+
     async approveCurrentStep({ dispatch }, { group, dateApproved, notifyContacts, subject, body, attachments }) {
         const formData = new FormData();
         formData.append('date_approved', dateApproved);

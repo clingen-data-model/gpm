@@ -15,7 +15,7 @@
                     <td>
                         <input
                             :disabled="isComplete"
-                            type="text" 
+                            type="text"
                             v-model="variant.gene_symbol"
                             placeholder="HGNC gene symbol"
                             :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.gene_symbol`)}"
@@ -25,7 +25,7 @@
                     <td>
                         <input
                             :disabled="isComplete"
-                            type="number" 
+                            type="number"
                             v-model="variant.in_clinvar"
                             :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.in_clinvar`)}"
                         >
@@ -34,7 +34,7 @@
                     <td>
                         <input
                             :disabled="isComplete"
-                            type="number" 
+                            type="number"
                             v-model="variant.gci_approved"
                             :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.gci_approved`)}"
                         >
@@ -43,7 +43,7 @@
                     <td>
                         <input
                             :disabled="isComplete"
-                            type="number" 
+                            type="number"
                             v-model="variant.provisionally_approved"
                             :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.provisionally_approved`)}"
                         >
@@ -60,7 +60,7 @@
 </template>
 <script>
 import mirror from '@/composables/setup_working_mirror'
-import {clone, cloneDeep, isEqual, debounce} from 'lodash'
+import {clone, cloneDeep, isEqual, debounce} from 'lodash-es'
 
 const defaultGene = {
     gene_symbol: null,

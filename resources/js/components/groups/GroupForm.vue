@@ -92,7 +92,7 @@
     </div>
 </template>
 <script>
-import {sortBy} from 'lodash'
+import {sortBy} from 'lodash-es'
 import {isValidationError} from '@/http'
 import {api} from '@/http'
 import Group from '@/domain/group'
