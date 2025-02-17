@@ -10,9 +10,9 @@
                 <button class="link" @click="goToPreviousPage" :class="{active: currentPage === 1}">&lt;</button>
             </li>
             <li v-for="(page, idx) in displayPages" :key="idx">
-                <button 
+                <button
                     v-if="page.page !== null"
-                    class="link px-2" :class="{active: page.page === currentPage}" 
+                    class="link px-2" :class="{active: page.page === currentPage}"
                     @click="$emit('update:currentPage', page.page)"
                 >
                     {{page.label}}
@@ -26,7 +26,7 @@
     </div>
 </template>
 <script>
-import {range} from 'lodash';
+import {range} from 'lodash-es';
 
 export default {
     name: 'PaginationLinks',
@@ -49,7 +49,7 @@ export default {
     ],
     data() {
         return {
-            
+
         }
     },
     computed: {
@@ -62,9 +62,9 @@ export default {
         displayPages () {
             const displayPages = [
             ];
-            
+
             this.pages.forEach(p => {
-                if (p == 0 
+                if (p == 0
                     || p === this.pagesCount-1
                     || Math.abs(p-this.currentPage) < 2
                 ) {
@@ -79,7 +79,7 @@ export default {
                     displayPages.push({page: null, label: '...'})
                 }
             })
-            
+
             return displayPages;
         }
     },

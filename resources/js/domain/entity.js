@@ -1,4 +1,4 @@
-import {cloneDeep, isEqual} from 'lodash'
+import {cloneDeep, isEqual} from 'lodash-es'
 class Entity {
     static defaults = {
         'created_at': null,
@@ -10,7 +10,7 @@ class Entity {
         'created_at',
         'deleted_at'
     ]
-    
+
     constructor(attributes = {}) {
 
         this.attributes = {};
@@ -32,7 +32,7 @@ class Entity {
         this.original = cloneDeep(attributes);
     }
 
-    defineAttributeGettersAndSetters(attr) 
+    defineAttributeGettersAndSetters(attr)
     {
         let setter = (value) => {
             this.attributes[attr] = value
@@ -50,10 +50,10 @@ class Entity {
         }
 
         Object.defineProperty(
-            this, 
-            attr, 
-            { 
-                get: getter, 
+            this,
+            attr,
+            {
+                get: getter,
                 set: setter
             }
         );
@@ -80,7 +80,7 @@ class Entity {
     }
 
     /**
-     * 
+     *
      * TODO: dirty & original need to support nested objects.  currently this is not the case.
      */
     getOriginal() {

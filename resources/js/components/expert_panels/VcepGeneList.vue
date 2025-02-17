@@ -111,7 +111,7 @@
 <script>
 import {api} from '@/http'
 import {ref, computed, onMounted} from 'vue';
-import {debounce} from 'lodash'
+import {debounce} from 'lodash-es'
 import {useStore} from 'vuex';
 import GeneSearchSelect from '@/components/forms/GeneSearchSelect.vue'
 import DiseaseSearchSelect from '@/components/forms/DiseaseSearchSelect.vue'
