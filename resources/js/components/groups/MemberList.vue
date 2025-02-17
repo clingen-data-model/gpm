@@ -369,7 +369,6 @@ export default {
                         <a
                             :href="`mailto:${filteredEmails.join(', ')}`"
                             class="btn btn-icon"
-                            @click="initEmailWithFiltered"
                         >
                             <icon-envelope class="inline-block"  width="16" height="16"/>
                         </a>
