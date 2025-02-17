@@ -86,7 +86,7 @@
     </div>
 </template>
 <script>
-import {debounce} from 'lodash'
+import {debounce} from 'lodash-es'
 
 import {errors} from '@/forms/form_factory'
 import {isValidationError} from '@/http'

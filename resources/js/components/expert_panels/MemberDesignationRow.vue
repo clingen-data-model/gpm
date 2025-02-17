@@ -29,7 +29,7 @@
 </template>
 <script>
 import GroupMember from '@/domain/group_member'
-import {debounce} from 'lodash'
+import {debounce} from 'lodash-es'
 
 export default {
     name: 'ComponentName',
@@ -84,9 +84,9 @@ export default {
             return this.hasAnyPermission([
                         'ep-applications-manage',
                         ['application-edit', this.group]
-                    ]) 
+                    ])
                     && !this.readonly;
-        }        
+        }
     },
     watch: {
         member: {
@@ -100,7 +100,7 @@ export default {
         initWorkingCopy() {
             this.workingCopy = new GroupMember();
         },
-        
+
         syncWorkingCopy (member) {
             if (member.id) {
                 this.workingCopy = member.clone();
@@ -118,7 +118,7 @@ export default {
 
         save () {
             const promises = [];
-            
+
             promises.push(this.updateTrainingInfo());
             promises.push(this.syncRoles());
 
@@ -128,10 +128,10 @@ export default {
         updateTrainingInfo () {
             if (this.workingCopy.isDirty('training_level_1') || this.workingCopy.isDirty('training_level_2')) {
                 return this.$store.dispatch(
-                    'groups/memberUpdate', 
+                    'groups/memberUpdate',
                     {
-                        groupUuid: this.group.uuid, 
-                        memberId: this.workingCopy.id, 
+                        groupUuid: this.group.uuid,
+                        memberId: this.workingCopy.id,
                         data: {
                             training_level_1: this.workingCopy.training_level_1,
                             training_level_2: this.workingCopy.training_level_2,
@@ -144,9 +144,9 @@ export default {
         syncRoles() {
             if (this.workingCopy.isDirty('roles')) {
                 return this.$store.dispatch(
-                        'groups/memberSyncRoles', 
+                        'groups/memberSyncRoles',
                         {
-                            group: this.group, 
+                            group: this.group,
                             member: this.workingCopy
                         }
                     );

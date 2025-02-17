@@ -1,9 +1,9 @@
 <template>
     <div>
         <h1>People</h1>
-        <data-table 
+        <data-table
             :data="itemProvider"
-            :fields="fields" 
+            :fields="fields"
             class="width-full"
             :row-click-handler="goToPerson"
             row-class="cursor-pointer"
@@ -19,7 +19,7 @@
     </div>
 </template>
 <script>
-import { debounce } from 'lodash'
+import { debounce } from 'lodash-es'
 import { mapGetters } from 'vuex'
 import {api} from '@/http'
 import SortAndFilter from './../composables/router_aware_sort_and_filter';
