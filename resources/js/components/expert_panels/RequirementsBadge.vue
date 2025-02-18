@@ -13,7 +13,7 @@
     </div>
 </template>
 <script>
-import RequirementsItem from './RequirementsItem'
+import RequirementsItem from './RequirementsItem.vue'
 
 export default {
     name: 'RequirementsBadge',

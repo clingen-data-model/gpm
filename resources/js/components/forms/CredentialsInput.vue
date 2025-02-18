@@ -3,7 +3,7 @@
     import {useStore} from 'vuex'
     import {setupMirror, mirrorProps, mirrorEmits} from '@/composables/setup_working_mirror'
     import SearchSelect from '../forms/SearchSelect.vue';
-    import CredentialCreateForm from '../credentials/CredentialCreateForm'
+    import CredentialCreateForm from '../credentials/CredentialCreateForm.vue'
 
     const store = useStore();
     const props = defineProps({
