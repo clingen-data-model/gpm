@@ -76,7 +76,7 @@ export default [
     {
         name: 'RequiredDemographicsUpdateForm',
         path: '/required-demographics-update',
-        component: () => import ('@/views/RequiredDemographicsUpdateForm'),
+        component: () => import ('@/views/RequiredDemographicsUpdateForm.vue'),
         meta: {
             protected: true
         },
