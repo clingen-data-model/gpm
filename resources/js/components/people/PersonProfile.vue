@@ -102,9 +102,9 @@
 <script>
 import Person from '@/domain/person'
 
-import ProfileForm from '@/components/people/ProfileForm'
-import ProfilePicture from '@/components/people/ProfilePicture'
-import ProfilePhotoForm from '@/components/people/ProfilePhotoForm'
+import ProfileForm from '@/components/people/ProfileForm.vue'
+import ProfilePicture from '@/components/people/ProfilePicture.vue'
+import ProfilePhotoForm from '@/components/people/ProfilePhotoForm.vue'
 import CredentialsView from './CredentialsView.vue'
 import ExpertisesView from './ExpertisesView.vue'
 

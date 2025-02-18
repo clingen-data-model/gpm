@@ -9,7 +9,7 @@
 
 </template>
 <script>
-import Alert from './Alert'
+import Alert from './Alert.vue'
 export default {
     name: 'AlertViewer',
     components: {

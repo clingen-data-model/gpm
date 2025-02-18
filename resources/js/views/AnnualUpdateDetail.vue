@@ -1,6 +1,6 @@
 <script>
 import {api} from '@/http'
-import AnnualUpdateForm from '@/views/AnnualUpdateForm'
+import AnnualUpdateForm from '@/views/AnnualUpdateForm.vue'
 
 export default {
     name: 'AnnualUpdateDetail',

@@ -115,9 +115,9 @@ import MembershipList from './MembershipList.vue'
 import PersonProfile from '@/components/people/PersonProfile.vue'
 import PersonMergeForm from '@/components/people/PersonMergeForm.vue'
 import CoiList from '@/components/people/CoiList.vue'
-import ActivityLog from "@/components/log_entries/ActivityLog";
-import PersonMailLog from "@/components/people/PersonMailLog";
-import ProfilePicture from "@/components/people/ProfilePicture";
+import ActivityLog from "@/components/log_entries/ActivityLog.vue";
+import PersonMailLog from "@/components/people/PersonMailLog.vue";
+import ProfilePicture from "@/components/people/ProfilePicture.vue";
 import DemographicsForm from '@/components/people/DemographicsForm.vue';
 
 

@@ -2,7 +2,7 @@
 import { api } from "@/http";
 import { orderBy } from "lodash";
 
-import AnnualUpdateTable from "@/components/annual_updates/AnnualUpdateTable";
+import AnnualUpdateTable from "@/components/annual_updates/AnnualUpdateTable.vue";
 
 export default {
   name: "AnnualUpdatesList",

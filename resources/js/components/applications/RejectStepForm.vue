@@ -2,7 +2,7 @@
 import {mapGetters} from 'vuex';
 import {api} from '@/http';
 import isValidationError from '@/http/is_validation_error';
-import UserDefinedMailForm from '@/components/forms/UserDefinedMailForm';
+import UserDefinedMailForm from '@/components/forms/UserDefinedMailForm.vue';
 
 export default {
     components: {

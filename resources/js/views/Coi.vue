@@ -73,8 +73,8 @@ import coiDef from '../../surveys/coi_v2.json'
 import Survey from '@/survey'
 import api from '@/http/api'
 import is_validation_error from '@/http/is_validation_error';
-import CoiPolicy from '@/components/coi/CoiPolicy'
-import MarkdownBlock from '@/components/MarkdownBlock'
+import CoiPolicy from '@/components/coi/CoiPolicy.vue'
+import MarkdownBlock from '@/components/MarkdownBlock.vue'
 
 const survey = new Survey(coiDef);
 

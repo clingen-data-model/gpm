@@ -40,7 +40,7 @@
 import {mapGetters} from 'vuex'
 import api from '@/http/api';
 import isValidationError from '@/http/is_validation_error';
-import UserDefinedMailForm from '@/components/forms/UserDefinedMailForm'
+import UserDefinedMailForm from '@/components/forms/UserDefinedMailForm.vue'
 
 const templateForStep = {
     1: 'App\\Mail\\UserDefinedMailTemplates\\InitialApprovalMailTemplate',

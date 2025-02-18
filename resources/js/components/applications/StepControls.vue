@@ -3,8 +3,8 @@ import {computed} from 'vue'
 import {useStore} from 'vuex';
 import SubmissionInfo from './SubmissionInfo.vue';
 import StepApproveControl from './StepApproveControl.vue'
-import StepSendToChairsControl from './StepSendToChairsControl'
-import StepRequestRevisionsControl from './StepRequestRevisionsControl'
+import StepSendToChairsControl from './StepSendToChairsControl.vue'
+import StepRequestRevisionsControl from './StepRequestRevisionsControl.vue'
 
 const store = useStore()
 

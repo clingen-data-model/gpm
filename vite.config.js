@@ -31,9 +31,6 @@ export default defineConfig({
         alias: {
             '~': path.resolve(__dirname, 'node_modules'),
             '@': path.resolve(__dirname, 'resources/js'),
-            // '@': fileURLToPath(new URL('./resources/js', import.meta.url)),
         },
-        // FIXME: should remove this when have added .vue extension to all component references
-        extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
     }
 })
