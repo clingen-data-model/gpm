@@ -43,6 +43,8 @@
 <script>
 import Group from '@/domain/group'
 import GcepQuickGuideLink from '../links/GcepQuickGuideLink.vue';
+import VcepProtocolLink from '../links/VcepProtocolLink.vue';
+import EditIconButton from '@/components/buttons/EditIconButton.vue'
 
 export default {
     name: "scopeDescriptionForm",
@@ -83,6 +85,10 @@ export default {
             }
         }
     },
-    components: { GcepQuickGuideLink }
+    components: {
+        GcepQuickGuideLink,
+        VcepProtocolLink,
+        EditIconButton,
+    }
 }
 </script>
