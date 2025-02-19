@@ -1,6 +1,6 @@
 <script>
-import { api } from "@/http";
-import { orderBy } from "lodash";
+import { api } from '@/http';
+import { orderBy } from 'lodash-es';
 
 import AnnualUpdateTable from "@/components/annual_updates/AnnualUpdateTable.vue";
 
