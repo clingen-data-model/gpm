@@ -8,22 +8,21 @@
             ></edit-icon-button>
         </header>
         <div class="mt-4">
+            <p class="text-sm">
+            This is a description of the group's purpose, goals, and objectives
+            as intended for public display (e.g., at the clinicalgenome.org
+            site). This may be more concise than the full scope of work.
+            </p>
             <transition name="fade" mode="out-in">
-                <input-row 
-                    v-model="group.expert_panel.membership_description"
-                    label="Describe the expertise of VCEP members who regularly use the ACMG/AMP guidelines to classify variants and/or review variants during clinical laboratory case sign-out." 
-                    v-if="editing" 
-                    :errors="errors.membership_description"
-                    type="large-text"
-                    vertical
-                    @update:modelValue="emitUpdate"
-                />
-                <div v-else>
-                    <markdown-block 
-                        v-if="group.expert_panel.membership_description" 
-                        :markdown="group.expert_panel.membership_description"
+                <div v-if="editing" class="mt-2">
+                    <MarkdownEditor
+                        v-model="group.expert_panel.membership_description"
+                        @update:modelValue="emitUpdate"
                     />
-                    <p class="well" v-else>
+                </div>
+                <div v-else class="border-2 mt-8 p-2">
+                    <div v-if="group.expert_panel.membership_description" v-html="htmlDescription" />
+                    <p class="well cursor-pointer" v-else @click="showForm">
                         A description of expertise has not yet been provided.
                     </p>
                 </div>
@@ -32,6 +31,10 @@
     </div>
 </template>
 <script>
+import EditIconButton from '@/components/buttons/EditIconButton.vue'
+import { htmlFromMarkdown } from '@/markdown-utils'
+import MarkdownEditor from '@/components/prosekit/MarkdownEditor.vue'
+
 export default {
     name: 'MembershipDescriptionForm',
     props: {
@@ -45,6 +48,10 @@ export default {
             required: false,
             default: () => ({})
         }
+    },
+    components: {
+        EditIconButton,
+        MarkdownEditor
     },
     emits: [
         'update:editing',
@@ -60,7 +67,10 @@ export default {
             set (value) {
                 this.$store.commit('groups/addItem', value);
             }
-        }
+        },
+        htmlDescription: function () {
+            return htmlFromMarkdown(this.group.expert_panel.membership_description);
+        },
     },
     methods: {
         emitUpdate () {

@@ -1,24 +1,27 @@
 <script setup>
 import 'prosekit/basic/style.css'
 
-import { ref, watchPostEffect, watch } from 'vue'
+import { ref, watchPostEffect } from 'vue'
 import { createEditor, jsonFromHTML, htmlFromNode } from 'prosekit/core'
 import { defineExtension } from './extension.ts'
 import { ProseKit, useDocChange } from 'prosekit/vue'
 import ProsekitToolbar from './ProsekitToolbar.vue'
+import { watchIgnorable } from '@vueuse/core'
 
 const model = defineModel()
 
 const extension = defineExtension()
 const editor = createEditor({ extension, defaultContent: model.value || '' })
 
-useDocChange((doc) => {
-    model.value = htmlFromNode(doc)
-}, { editor })
-
-watch(model, (value, /* old */) => {
+const { ignoreUpdates: updateModelWithoutWatch } = watchIgnorable(model, (value, /* old */) => {
     editor.setContent(jsonFromHTML(value || '', { schema: editor.schema }))
 })
+
+useDocChange((doc) => {
+    updateModelWithoutWatch(() => {
+        model.value = htmlFromNode(doc)
+    })
+}, { editor })
 
 const editorRef = ref(null)
 
