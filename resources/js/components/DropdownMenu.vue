@@ -138,7 +138,7 @@ export default {
                     >
                         <ul
                             class="dropdown-items"
-                            onClick="{this.toggleMenu}"
+                            @click="toggleMenu"
                         >
                             <slot></slot>
                         </ul>
