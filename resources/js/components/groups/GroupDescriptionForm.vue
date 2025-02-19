@@ -8,27 +8,20 @@
             ></EditIconButton>
         </header>
         <div class="mt-2">
+            <p class="text-sm">
+            This is a description of the group's purpose, goals, and objectives
+            as intended for public display (e.g., at the clinicalgenome.org
+            site). This may be more concise than the full scope of work.
+            </p>
             <transition name="fade" mode="out-in">
-                <input-row 
-                    v-if="editing"
-                    v-model="group.description"
-                    :errors="errors.description"
-                    type="large-text"
-                    vertical
-                    @update:modelValue="$emit('update')"
-                >
-                    <template v-slot:label>
-                        Describe the group's purpose, goals, and objectives as
-                        intended for public display (e.g., at the clinicalgenome.org)
-                        site. This may be more concise than the full scope of work.
-                    </template>
-                </input-row>
-                <div v-else>
-                    <markdown-block 
-                        v-if="group.description" 
-                        :markdown="group.description">
-                    </markdown-block>
-                    
+                <div v-if="editing" class="mt-2">
+                    <MarkdownEditor
+                        v-model="group.description"
+                        @update:modelValue="$emit('update')"
+                    />
+                </div>
+                <div v-else class="border-2 mt-8 p-2">
+                    <div v-if="group.description" v-html="htmlDescription" />
                     <p class="well cursor-pointer" v-else @click="showForm">
                         A summary description has not yet been provided.
                     </p>
@@ -40,6 +33,8 @@
 <script>
 import Group from '@/domain/group'
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
+import { htmlFromMarkdown } from '@/markdown-utils'
+import MarkdownEditor from '@/components/prosekit/MarkdownEditor.vue'
 
 export default {
     name: "groupDescriptionForm",
@@ -56,7 +51,8 @@ export default {
         },
     },
     components: {
-        EditIconButton
+        EditIconButton,
+        MarkdownEditor
     },
     emits: [
         "update:editing",
@@ -81,7 +77,10 @@ export default {
                 groupCopy.description = value;
                 this.$emit("update:group", groupCopy);
             }
-        }
+        },
+        htmlDescription: function () {
+            return htmlFromMarkdown(this.group.description);
+        },
     },
 }
 </script>
