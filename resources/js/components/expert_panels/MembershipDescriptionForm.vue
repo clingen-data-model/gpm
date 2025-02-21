@@ -21,7 +21,7 @@
                     />
                 </div>
                 <div v-else class="border-2 mt-8 p-2">
-                    <div v-if="group.expert_panel.membership_description" v-html="htmlDescription" />
+                    <MarkdownBlock :markdown="group.expert_panel.membership_description" v-if="group.expert_panel.membership_description" />
                     <p class="well cursor-pointer" v-else @click="showForm">
                         A description of expertise has not yet been provided.
                     </p>
@@ -32,8 +32,8 @@
 </template>
 <script>
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
-import { htmlFromMarkdown } from '@/markdown-utils'
 import MarkdownEditor from '@/components/prosekit/MarkdownEditor.vue'
+import MarkdownBlock from '@/components/MarkdownBlock.vue'
 
 export default {
     name: 'MembershipDescriptionForm',
@@ -51,7 +51,8 @@ export default {
     },
     components: {
         EditIconButton,
-        MarkdownEditor
+        MarkdownEditor,
+        MarkdownBlock,
     },
     emits: [
         'update:editing',
@@ -67,9 +68,6 @@ export default {
             set (value) {
                 this.$store.commit('groups/addItem', value);
             }
-        },
-        htmlDescription: function () {
-            return htmlFromMarkdown(this.group.expert_panel.membership_description);
         },
     },
     methods: {
