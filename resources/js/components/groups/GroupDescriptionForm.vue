@@ -21,7 +21,7 @@
                     />
                 </div>
                 <div v-else class="border-2 mt-8 p-2">
-                    <div v-if="group.description" v-html="htmlDescription" />
+                    <MarkdownBlock v-if="group.description" :markdown="group.description" />
                     <p class="well cursor-pointer" v-else @click="showForm">
                         A summary description has not yet been provided.
                     </p>
@@ -33,8 +33,8 @@
 <script>
 import Group from '@/domain/group'
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
-import { htmlFromMarkdown } from '@/markdown-utils'
 import MarkdownEditor from '@/components/prosekit/MarkdownEditor.vue'
+import MarkdownBlock from '@/components/MarkdownBlock.vue'
 
 export default {
     name: "groupDescriptionForm",
@@ -52,7 +52,8 @@ export default {
     },
     components: {
         EditIconButton,
-        MarkdownEditor
+        MarkdownEditor,
+        MarkdownBlock,
     },
     emits: [
         "update:editing",
@@ -77,9 +78,6 @@ export default {
                 groupCopy.description = value;
                 this.$emit("update:group", groupCopy);
             }
-        },
-        htmlDescription: function () {
-            return htmlFromMarkdown(this.group.description);
         },
     },
 }

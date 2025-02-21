@@ -9,19 +9,20 @@ import { ProseKit, useDocChange } from 'prosekit/vue'
 import ProsekitToolbar from './ProsekitToolbar.vue'
 import { watchIgnorable } from '@vueuse/core'
 
-const model = defineModel()
-
-const extension = defineExtension()
-const editor = createEditor({ extension, defaultContent: htmlFromMarkdown(model.value || '') })
-
-const { ignoreUpdates: updateModelWithoutWatch } = watchIgnorable(model, (value, /* old */) => {
-    editor.setContent(jsonFromHTML(htmlFromMarkdown(value || ''), { schema: editor.schema }))
+const props = defineProps({
+    modelValue: {
+        type: String,
+        required: true,
+    },
 })
 
+const emit = defineEmits(['update:modelValue'])
+
+const extension = defineExtension()
+const editor = createEditor({ extension, defaultContent: htmlFromMarkdown(props.modelValue || '') })
+
 useDocChange((doc) => {
-    updateModelWithoutWatch(() => {
-        model.value = markdownFromHTML(htmlFromNode(doc))
-    })
+    emit('update:modelValue', markdownFromHTML(editor.getDocHTML()))
 }, { editor })
 
 const editorRef = ref(null)
