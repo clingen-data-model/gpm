@@ -1,25 +1,21 @@
 <template>
     <div class="markdown" v-html="rendered"></div>
 </template>
-<script>
-import { marked } from 'marked';
+<script setup>
+import { htmlFromMarkdown } from '@/markdown-utils';
 import purify from 'dompurify';
-export default {
-    name: 'MarkdownBlock',
-    props: {
-        markdown: {
-            required: true,
-        }
-    },
-    computed: {
-        rendered () {
-            if (!this.markdown) return null;
+import { computed, defineProps } from 'vue';
 
-            return purify.sanitize(marked.parse(this.markdown));
-        }
-    },
-    methods: {
-
+const props = defineProps({
+    markdown: {
+        type: String,
+        required: false,
     }
-}
+});
+
+const rendered = computed(() => {
+    if (!props.markdown) return null;
+
+    return purify.sanitize(htmlFromMarkdown(props.markdown));
+});
 </script>

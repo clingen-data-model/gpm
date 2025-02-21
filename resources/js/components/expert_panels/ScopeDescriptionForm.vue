@@ -24,7 +24,7 @@
                     />
                 </div>
                 <div v-else class="border-2 mt-8 p-2">
-                    <div v-if="group.expert_panel.scope_description" v-html="htmlDescription" />
+                    <MarkdownBlock v-if="group.expert_panel.scope_description" :markdown="group.expert_panel.scope_description" />
                     <p class="well cursor-pointer" v-else @click="showForm">
                         A description of expertise has not yet been provided.
                     </p>
@@ -38,8 +38,8 @@ import Group from '@/domain/group'
 import GcepQuickGuideLink from '../links/GcepQuickGuideLink.vue';
 import VcepProtocolLink from '../links/VcepProtocolLink.vue';
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
-import { htmlFromMarkdown } from '@/markdown-utils'
 import MarkdownEditor from '@/components/prosekit/MarkdownEditor.vue'
+import MarkdownBlock from '@/components/MarkdownBlock.vue'
 
 export default {
     name: "scopeDescriptionForm",
@@ -54,10 +54,6 @@ export default {
             required: false,
             default: () => ({}),
         },
-    },
-    components: {
-        EditIconButton,
-        MarkdownEditor
     },
     emits: [
         "update:editing",
@@ -83,15 +79,13 @@ export default {
                 this.$emit("update:group", groupCopy);
             }
         },
-        htmlDescription: function () {
-            return htmlFromMarkdown(this.group.expert_panel.scope_description);
-        },
     },
     components: {
         GcepQuickGuideLink,
         VcepProtocolLink,
         EditIconButton,
         MarkdownEditor,
+        MarkdownBlock,
     }
 }
 </script>
