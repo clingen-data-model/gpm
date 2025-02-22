@@ -28,6 +28,45 @@ const editor = useEditor<EditorExtension>({ update: true })
             <div class='i-lucide-italic h-5 w-5' />
         </Button>
 
+        <Button :pressed="editor.marks.underline.isActive()" :disabled="!editor.commands.toggleUnderline.canExec()"
+            @click="() => editor.commands.toggleUnderline()">
+            <div class='i-lucide-underline h-5 w-5' />
+        </Button>
+
+        <Button :pressed="editor.nodes.horizontalRule.isActive()" :disabled="!editor.commands.insertHorizontalRule.canExec()"
+            @click="() => editor.commands.insertHorizontalRule()">
+            <div class='i-lucide-minus h-5 w-5' />
+        </Button>
+
+        <Button :pressed="editor.nodes.list.isActive({ kind: 'bullet' })"
+            :disabled="!editor.commands.toggleList.canExec({ kind: 'bullet' })"
+            @click="() => editor.commands.toggleList({ kind: 'bullet' })">
+            <div class='i-lucide-list h-5 w-5' />
+        </Button>
+
+        <Button :pressed="editor.nodes.list.isActive({ kind: 'ordered' })"
+            :disabled="!editor.commands.toggleList.canExec({ kind: 'ordered' })"
+            @click="() => editor.commands.toggleList({ kind: 'ordered' })">
+            <div class='i-lucide-list-ordered h-5 w-5' />
+        </Button>
+
+        <Button :pressed="editor.nodes.blockquote.isActive()" :disabled="!editor.commands.toggleBlockquote.canExec()"
+            @click="() => editor.commands.toggleBlockquote()">
+            <div class='i-lucide-quote h-5 w-5' />
+        </Button>
+
+        <Button :pressed="false"
+            :disabled="!editor.commands.indentList.canExec()"
+            @click="() => editor.commands.indentList()">
+            <div class='i-lucide-indent-increase h-5 w-5' />
+        </Button>
+
+        <Button :pressed="false"
+            :disabled="!editor.commands.dedentList.canExec()"
+            @click="() => editor.commands.dedentList()">
+            <div class='i-lucide-indent-decrease h-5 w-5' />
+        </Button>
+
         <Button :pressed="editor.nodes.heading.isActive({ level: 1 })"
             :disabled="!editor.commands.toggleHeading.canExec({ level: 1 })"
             @click="() => editor.commands.toggleHeading({ level: 1 })">
