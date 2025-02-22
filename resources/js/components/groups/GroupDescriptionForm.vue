@@ -15,10 +15,9 @@
             </p>
             <transition name="fade" mode="out-in">
                 <div v-if="editing" class="mt-2">
-                    <MarkdownEditor
-                        v-model="group.description"
-                        @update:modelValue="$emit('update')"
-                    />
+                    <MilkdownProvider>
+                        <RichTextEditor v-model="group.description" :htmlFormat=false @update:modelValue="$emit('update')"/>
+                    </MilkdownProvider>
                 </div>
                 <div v-else class="border-2 mt-8 p-2">
                     <MarkdownBlock v-if="group.description" :markdown="group.description" />
@@ -33,8 +32,12 @@
 <script>
 import Group from '@/domain/group'
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
-import MarkdownEditor from '@/components/prosekit/MarkdownEditor.vue'
 import MarkdownBlock from '@/components/MarkdownBlock.vue'
+import RichTextEditor from '@/components/forms/RichTextEditor.vue'
+import { MilkdownProvider } from '@milkdown/vue';
+
+import "@milkdown/crepe/theme/common/style.css"
+import "@milkdown/crepe/theme/frame.css"
 
 export default {
     name: "groupDescriptionForm",
@@ -52,7 +55,8 @@ export default {
     },
     components: {
         EditIconButton,
-        MarkdownEditor,
+        MilkdownProvider,
+        RichTextEditor,
         MarkdownBlock,
     },
     emits: [
