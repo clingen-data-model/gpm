@@ -18,7 +18,8 @@
             </p>
             <transition name="fade" mode="out-in">
                 <div v-if="editing" class="mt-2">
-                    <MarkdownEditor
+                    <RichTextEditor
+                        :markdownFormat="true"
                         v-model="group.expert_panel.scope_description"
                         @update:modelValue="$emit('update')"
                     />
@@ -38,7 +39,7 @@ import Group from '@/domain/group'
 import GcepQuickGuideLink from '../links/GcepQuickGuideLink.vue';
 import VcepProtocolLink from '../links/VcepProtocolLink.vue';
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
-import MarkdownEditor from '@/components/prosekit/MarkdownEditor.vue'
+import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
 import MarkdownBlock from '@/components/MarkdownBlock.vue'
 
 export default {
@@ -84,7 +85,7 @@ export default {
         GcepQuickGuideLink,
         VcepProtocolLink,
         EditIconButton,
-        MarkdownEditor,
+        RichTextEditor,
         MarkdownBlock,
     }
 }
