@@ -4,7 +4,7 @@
 <script setup>
 import { htmlFromMarkdown } from '@/markdown-utils';
 import purify from 'dompurify';
-import { computed, defineProps } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps({
     markdown: {
