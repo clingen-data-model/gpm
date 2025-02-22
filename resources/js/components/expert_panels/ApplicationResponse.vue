@@ -1,5 +1,5 @@
 <script setup>
-import {computed, provide, ref, watch, defineProps} from 'vue'
+import {computed, provide, ref, watch} from 'vue'
 import {useStore} from 'vuex'
 import DefinitionReview from '@/components/expert_panels/DefinitionReview.vue'
 import SustainedCurationReview from '@/components/expert_panels/SustainedCurationReview.vue'
