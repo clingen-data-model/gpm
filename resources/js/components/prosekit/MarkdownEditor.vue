@@ -2,7 +2,7 @@
 import 'prosekit/basic/style.css'
 
 import { ref, watchPostEffect } from 'vue'
-import { createEditor, jsonFromHTML, htmlFromNode } from 'prosekit/core'
+import { createEditor } from 'prosekit/core'
 import { defineExtension } from './extension.ts'
 import { markdownFromHTML, htmlFromMarkdown } from '@/markdown-utils'
 import { ProseKit, useDocChange } from 'prosekit/vue'
@@ -21,7 +21,7 @@ const emit = defineEmits(['update:modelValue'])
 const extension = defineExtension()
 const editor = createEditor({ extension, defaultContent: htmlFromMarkdown(props.modelValue || '') })
 
-useDocChange((doc) => {
+useDocChange((/* doc */) => {
     emit('update:modelValue', markdownFromHTML(editor.getDocHTML()))
 }, { editor })
 
