@@ -2,26 +2,35 @@
 import 'prosekit/basic/style.css'
 
 import { ref, watchPostEffect } from 'vue'
-import { createEditor, jsonFromHTML, htmlFromNode } from 'prosekit/core'
+import { createEditor } from 'prosekit/core'
 import { defineExtension } from './extension.ts'
+import { markdownFromHTML, htmlFromMarkdown } from '@/markdown-utils'
 import { ProseKit, useDocChange } from 'prosekit/vue'
 import ProsekitToolbar from './ProsekitToolbar.vue'
 import ProsekitInlineMenu from './ProsekitInlineMenu.vue'
-import { watchIgnorable } from '@vueuse/core'
 
-const model = defineModel()
-
-const extension = defineExtension()
-const editor = createEditor({ extension, defaultContent: model.value || '' })
-
-const { ignoreUpdates: updateModelWithoutWatch } = watchIgnorable(model, (value, /* old */) => {
-    editor.setContent(jsonFromHTML(value || '', { schema: editor.schema }))
+const props = defineProps({
+    modelValue: {
+        type: String,
+        required: true,
+    },
+    markdownFormat: {
+        type: Boolean,
+        default: false,
+    },
 })
 
-useDocChange((doc) => {
-    updateModelWithoutWatch(() => {
-        model.value = htmlFromNode(doc)
-    })
+const emit = defineEmits(['update:modelValue'])
+
+const extension = defineExtension()
+
+// eslint-disable-next-line vue/no-setup-props-destructure
+const initialContent = props.markdownFormat ? htmlFromMarkdown(props.modelValue || '') : props.modelValue
+const editor = createEditor({ extension, defaultContent: initialContent })
+
+useDocChange((/* doc */) => {
+    const newContent = props.markdownFormat ? markdownFromHTML(editor.getDocHTML()) : editor.getDocHTML()
+    emit('update:modelValue', newContent)
 }, { editor })
 
 const editorRef = ref(null)

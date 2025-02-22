@@ -15,7 +15,8 @@
             </p>
             <transition name="fade" mode="out-in">
                 <div v-if="editing" class="mt-2">
-                    <MarkdownEditor
+                    <RichTextEditor
+                        :markdownFormat="true"
                         v-model="group.description"
                         @update:modelValue="$emit('update')"
                     />
@@ -33,7 +34,7 @@
 <script>
 import Group from '@/domain/group'
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
-import MarkdownEditor from '@/components/prosekit/MarkdownEditor.vue'
+import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
 import MarkdownBlock from '@/components/MarkdownBlock.vue'
 
 export default {
@@ -52,7 +53,7 @@ export default {
     },
     components: {
         EditIconButton,
-        MarkdownEditor,
+        RichTextEditor,
         MarkdownBlock,
     },
     emits: [

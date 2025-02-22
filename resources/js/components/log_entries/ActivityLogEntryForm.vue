@@ -8,7 +8,7 @@
         ></input-row>
         <StepInput :errors="errors.step" v-if="group.isVcep()" v-model="newEntry.step"/>
         <input-row label="Entry" :errors="errors.entry">
-            <HtmlEditor v-model="newEntry.entry" />
+            <RichTextEditor v-model="newEntry.entry" />
         </input-row>
         <button-row>
             <button class="btn" @click="cancel">Cancel</button>
@@ -19,7 +19,7 @@
 <script setup>
     import { ref, watch, computed } from 'vue'
     import {useStore} from 'vuex'
-    import HtmlEditor from '@/components/prosekit/HtmlEditor.vue'
+    import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
     import StepInput from '@/components/forms/StepInput.vue'
     import {saveEntry, updateEntry, fetchEntries} from '@/adapters/log_entry_repository'
 

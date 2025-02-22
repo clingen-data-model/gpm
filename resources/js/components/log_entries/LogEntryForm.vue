@@ -3,7 +3,7 @@
         <input-row label="Log Date" v-model="newEntry.log_date" :errors="errors.log_date" type="date" ref="logdate"></input-row>
         <step-input v-model="newEntry.step" v-if="application.expert_panel_type_id == 2" :errors="errors.step"/>
         <input-row label="Entry" :errors="errors.entry">
-            <HtmlEditor v-model="newEntry.entry" />
+            <RichTextEditor v-model="newEntry.entry" />
         </input-row>
         <button-row>
             <button class="btn" @click="cancel">Cancel</button>
@@ -15,14 +15,14 @@
 import {mapGetters} from 'vuex'
 import { formatDate } from '@/date_utils'
 import StepInput from '@/components/forms/StepInput.vue'
-import HtmlEditor from '@/components/prosekit/HtmlEditor.vue'
+import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
 import {logEntries, saveEntry, updateEntry} from '@/adapters/log_entry_repository'
 
 export default {
     name: 'LogEntryForm',
     components: {
         StepInput,
-        HtmlEditor
+        RichTextEditor
     },
     props: {
         id: {

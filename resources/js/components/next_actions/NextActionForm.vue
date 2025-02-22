@@ -7,7 +7,7 @@
         <input-row label="Target" Date="" :errors="errors.target_date" type="date" v-model="newAction.target_date"></input-row>
 
         <input-row label="Entry" :errors="errors.entry">
-            <HtmlEditor v-model="newAction.entry" />
+            <RichTextEditor v-model="newAction.entry" />
         </input-row>
 
         <input-row label="Assigned To" :errors="assignmentErrors">
@@ -45,7 +45,7 @@
 <script>
 import StepInput from '@/components/forms/StepInput.vue'
 import {mapGetters} from 'vuex'
-import HtmlEditor from '@/components/prosekit/HtmlEditor.vue'
+import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
 import {formatDate} from '@/date_utils'
 import configs from '@/configs'
 
@@ -53,7 +53,7 @@ export default {
     name: 'NextActionForm',
     components: {
         StepInput,
-        HtmlEditor
+        RichTextEditor
     },
     props: {
         id: {
