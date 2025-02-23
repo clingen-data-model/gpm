@@ -87,6 +87,20 @@ export default {
             }
         });
 
+        const getGenes = async () => {
+            if (!group.value.uuid) {
+                return;
+            }
+            loading.value = true;
+            try {
+                await store.dispatch('groups/getGenes', group.value);
+                genesAsText.value = group.value.expert_panel.genes.map(g => g.gene_symbol).join(", ");
+            } catch (error) {
+                store.commit('pushError', error.response.data);
+            }
+            loading.value = false;
+            
+        }
         const hideForm = () => {
             context.emit('update:editing', false);
             errors.value = {};
@@ -106,20 +120,6 @@ export default {
                 ? group.value.expertPanel.genes.join(', ')
                 : null
         };
-        const getGenes = async () => {
-            if (!group.value.uuid) {
-                return;
-            }
-            loading.value = true;
-            try {
-                await store.dispatch('groups/getGenes', group.value);
-                genesAsText.value = group.value.expert_panel.genes.map(g => g.gene_symbol).join(", ");
-            } catch (error) {
-                store.commit('pushError', error.response.data);
-            }
-            loading.value = false;
-            
-        }
         const save = async () => {
             const genes = genesAsText.value 
                             ? genesAsText.value

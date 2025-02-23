@@ -16,13 +16,13 @@ import MarkdownBlock from '../MarkdownBlock.vue';
         }
     })
 
-    const stepHasBeenSubmitted = computed(() => {
-        return submissions.value && submissions.value.length > 0;
-    });
-
     const submissions = computed(() => {
         return props.group.expert_panel.submissionsForStep(props.step);
     })
+
+    const stepHasBeenSubmitted = computed(() => {
+        return submissions.value && submissions.value.length > 0;
+    });
 
     // const firstSubmission = computed(() => {
     //     if (!submissions.value) return null

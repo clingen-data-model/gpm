@@ -6,8 +6,8 @@ import {
 } from 'prosekit/vue/tooltip'
 
 defineProps<{
-  pressed?: Boolean
-  disabled?: Boolean
+  pressed?: boolean
+  disabled?: boolean
   tooltip?: string
 }>()
 

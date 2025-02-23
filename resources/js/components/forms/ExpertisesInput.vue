@@ -18,6 +18,7 @@
                                 .then(rsp => rsp.data);
     }
 
+    const searchText = ref('');
     const searchExpertises = async(keyword, options) => {
         searchText.value = keyword
         return options.filter(o => {
@@ -32,7 +33,6 @@
         getExpertises();
     });
 
-    const searchText = ref('');
 </script>
 
 <template>

@@ -54,7 +54,7 @@ export default {
             this.showResendDialog = true;
         },
         cleanupResend () {
-            this.currentEmail = {},
+            this.currentEmail = {}
             this.showResendDialog = false;
             this.$store.dispatch('people/getMail', this.person);
         },

@@ -30,6 +30,8 @@
         }
     });
 
+    const formDef = formDefFactory();
+
     onMounted(() => {
         if (props.comment) {
             formDef.currentItem.value = props.comment
@@ -37,8 +39,6 @@
     })
 
     const emits = defineEmits(['saved', 'canceled']);
-
-    const formDef = formDefFactory();
 
     const fields = computed(() => {
         const fields = [...formDef.fields.value];
@@ -68,8 +68,8 @@
     }
 
     const create = () => {
-        newComment.value.subject_type = props.subjectType,
-        newComment.value.subject_id = props.subjectId || group.value.id,
+        newComment.value.subject_type = props.subjectType
+        newComment.value.subject_id = props.subjectId || group.value.id
         newComment.value.metadata = {
             section: props.section,
             // This metadata is necessary to ensure reply comments are included in notifications.

@@ -22,6 +22,7 @@
         return store.getters['credentials/items'];
     });
 
+    const searchText = ref('');
     const searchCredentials = async(keyword, options) => {
         searchText.value = keyword
         return options.filter(o => {
@@ -51,7 +52,6 @@
         showCreateForm.value = false;
     }
 
-    const searchText = ref('');
 </script>
 
 <template>
