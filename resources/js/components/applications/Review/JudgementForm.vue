@@ -40,6 +40,14 @@
         }
     }, {immediate: true});
 
+    const clearJudgementData = () => {
+        if (props.modelValue) {
+            syncJudgement(props.modelValue);
+            return;
+        }
+        judgement.value = {}
+    }
+    
     const createJudgement = async () => {
         return  api.post(
             `/api/groups/${group.value.uuid}/application/judgements`,
@@ -79,14 +87,6 @@
     const cancelJudgement = () => {
         clearJudgementData()
         emits('canceled')
-    }
-
-    const clearJudgementData = () => {
-        if (props.modelValue) {
-            syncJudgement(props.modelValue);
-            return;
-        }
-        judgement.value = {}
     }
 </script>
 

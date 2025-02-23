@@ -65,18 +65,6 @@
         return true;
     }
 
-    const renderChildren = () => {
-        if (props.field.type == 'dictionary-row') {
-            return [h(DictionaryRowVue, {innerHTML: fieldValue.value, label: getFieldLabel(props.field), class: props.field.class})]
-        }
-        if (props.field.type == 'component') {
-            return [renderComponent()]
-        }
-
-
-        return [renderInputRow()];
-    }
-
     const renderInputRow = (defaultSlotFunction = null) => {
         const options = {
             label: getFieldLabel(props.field),
@@ -107,6 +95,18 @@
         return renderInputRow(renderComponent)
     }
 
+    const renderChildren = () => {
+        if (props.field.type == 'dictionary-row') {
+            return [h(DictionaryRowVue, {innerHTML: fieldValue.value, label: getFieldLabel(props.field), class: props.field.class})]
+        }
+        if (props.field.type == 'component') {
+            return [renderComponent()]
+        }
+
+
+        return [renderInputRow()];
+    }
+    
     const render = () => {
         const children = renderChildren()
         const container = h('div', {class: ''}, evalShow(props.field) ? children : []);

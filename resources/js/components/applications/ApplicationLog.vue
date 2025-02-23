@@ -127,9 +127,7 @@ export default {
     },
     methods: {
         async getLogEntries() {
-            async () => {
-                await fetchEntries();
-            }    
+            await fetchEntries();
         },
         editLogEntry(entry) {
             this.editingEntry = true;
