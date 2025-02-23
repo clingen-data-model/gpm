@@ -1,6 +1,6 @@
 <script setup>
-    import { ref, computed, inject } from 'vue'
     import ReviewComment from '@/components/expert_panels/ReviewComment.vue'
+    import { computed, inject, ref } from 'vue'
     import ReviewCommentForm from './ReviewCommentForm.vue'
 
     const commentManager = inject('commentManager')

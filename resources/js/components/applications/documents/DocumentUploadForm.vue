@@ -25,9 +25,9 @@
     </form-container>
 </template>
 <script>
-import {formatDate} from '../../../date_utils'
-import {isValidationError} from '@/http';
 import configs from '@/configs.json'
+import {isValidationError} from '@/http';
+import {formatDate} from '../../../date_utils'
 
 const documentsTypes = configs.documentsTypes;
 

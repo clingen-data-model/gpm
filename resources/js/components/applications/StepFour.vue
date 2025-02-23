@@ -14,12 +14,12 @@
     </base-step>
 </template>
 <script>
-import {mapGetters} from 'vuex'
 import BaseStep from '@/components/applications/BaseStep.vue'
 // import EvidenceSummaryList from '@/components/expert_panels/EvidenceSummaryList.vue'
 // import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm.vue'
 // import MemberDesignationForm from '@/components/expert_panels/MemberDesignationForm.vue';
 import SustainedCurationReview from '@/components/expert_panels/SustainedCurationReview.vue'
+import {mapGetters} from 'vuex'
 
 export default {
     name: 'StepFour',

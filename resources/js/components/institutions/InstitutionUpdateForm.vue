@@ -6,7 +6,7 @@
 </template>
 <script>
 import {setupMirror} from '@/composables/setup_working_mirror'
-import {fields, getCountries, countries, updateInstitution} from '@/forms/institution_form'
+import {countries, fields, getCountries, updateInstitution} from '@/forms/institution_form'
 import {isValidationError} from '@/http'
 
 export default {

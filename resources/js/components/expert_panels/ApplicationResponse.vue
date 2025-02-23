@@ -1,9 +1,9 @@
 <script setup>
+import DefinitionReview from '@/components/expert_panels/DefinitionReview.vue'
+import SpecificationsSection from '@/components/expert_panels/SpecificationsSection.vue'
+import SustainedCurationReview from '@/components/expert_panels/SustainedCurationReview.vue'
 import {computed, provide, ref, watch} from 'vue'
 import {useStore} from 'vuex'
-import DefinitionReview from '@/components/expert_panels/DefinitionReview.vue'
-import SustainedCurationReview from '@/components/expert_panels/SustainedCurationReview.vue'
-import SpecificationsSection from '@/components/expert_panels/SpecificationsSection.vue'
 import commentManagerFactory from '../../composables/comment_manager'
 
 const props = defineProps({

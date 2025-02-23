@@ -105,8 +105,8 @@
 </template>
 <script>
 import {api} from '@/http'
-import DocumentUploadForm from './DocumentUploadForm.vue'
 import DocumentEditForm from './DocumentEditForm.vue'
+import DocumentUploadForm from './DocumentUploadForm.vue'
 
 export default {
     name: 'DocumentList',

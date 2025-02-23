@@ -1,5 +1,5 @@
-import Application from '@/domain/application'
 import appRepo from '@/adapters/application_repository';
+import Application from '@/domain/application'
 import {api, queryStringFromParams} from '@/http';
 import { v4 as uuid4 } from 'uuid';
 

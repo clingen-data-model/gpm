@@ -66,9 +66,9 @@
     </div>
 </template>
 <script>
-import {formatDate} from '../../../date_utils'
-import {isValidationError} from '@/http';
 import config from '@/configs.json'
+import {isValidationError} from '@/http';
+import {formatDate} from '../../../date_utils'
 
 const documentsTypes = config.documentsTypes;
 

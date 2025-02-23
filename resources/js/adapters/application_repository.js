@@ -1,7 +1,7 @@
-import queryStringFromParams from '../http/query_string_from_params'
+import axios from '@/http/api'
 import { v4 as uuid4 } from 'uuid';
 
-import axios from '@/http/api'
+import queryStringFromParams from '../http/query_string_from_params'
 
 const baseUrl = '/api/applications';
 
@@ -90,16 +90,16 @@ async function removeContact(application, contact) {
 }
 
 export { 
+    addContact, 
+    addDocument, 
     all, 
-    find, 
-    initiate, 
     approveCurrentStep,
-    // addNextAction, 
-    updateEpAttributes, 
-    addDocument,
+    find, 
+    initiate,
     markDocumentReviewed,
-    addContact,
-    removeContact
+    removeContact,
+    // addNextAction, 
+    updateEpAttributes
 }
 
 export default { 

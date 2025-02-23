@@ -1,6 +1,6 @@
 <script setup>
     import {api} from '@/http'
-    import {ref, onMounted} from 'vue'
+    import {onMounted, ref} from 'vue'
 
     const summaryData = ref([]);
     const reports = ref([

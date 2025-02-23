@@ -1,5 +1,5 @@
-import Entity from './entity'
 import configs from '@/configs'
+import Entity from './entity'
 
 const stepNumberToName = {1: 'Definition', 2: 'Draft', 3: 'Pilot', 4: 'Sustained Curation'}
 const {submissions} = configs;

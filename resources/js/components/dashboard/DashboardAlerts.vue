@@ -1,10 +1,10 @@
 <script setup>
-    import {computed, ref, onMounted} from 'vue'
-    import {api, queryStringFromParams} from '@/http'
-    import Group from '@/domain/group'
-    import AnnualUpdateAlert from '@/components/groups/AnnualUpdateAlert.vue';
     import CoiAlert from '@/components/alerts/CoiAlert.vue';
     import SustainedCurationReviewAlert from '@/components/alerts/SustainedCurationReviewAlert.vue';
+    import AnnualUpdateAlert from '@/components/groups/AnnualUpdateAlert.vue';
+    import Group from '@/domain/group'
+    import {api, queryStringFromParams} from '@/http'
+    import {computed, onMounted, ref} from 'vue'
 
     const props = defineProps({
         user: {

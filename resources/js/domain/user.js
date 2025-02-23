@@ -1,6 +1,6 @@
 import Entity from '@/domain/entity';
-import Person from '@/domain/person';
 import GroupMember from '@/domain/group_member';
+import Person from '@/domain/person';
 import { arrayContains } from '@/utils';
 class User extends Entity {
     static defaults = {

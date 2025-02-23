@@ -106,19 +106,19 @@
     </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
-import { formatDateTime as formatDate } from '@/date_utils'
-import { logEntries, fetchEntries } from "@/adapters/log_entry_repository";
+import { fetchEntries, logEntries } from "@/adapters/log_entry_repository";
+import ActivityLog from "@/components/log_entries/ActivityLog.vue";
+import CoiList from '@/components/people/CoiList.vue'
 
+import DemographicsForm from '@/components/people/DemographicsForm.vue';
+import PersonMailLog from "@/components/people/PersonMailLog.vue";
+import PersonMergeForm from '@/components/people/PersonMergeForm.vue'
+import PersonProfile from '@/components/people/PersonProfile.vue'
+import ProfilePicture from "@/components/people/ProfilePicture.vue";
+import { formatDateTime as formatDate } from '@/date_utils'
+import { mapGetters } from 'vuex'
 import TabsContainer from '../TabsContainer.vue'
 import MembershipList from './MembershipList.vue'
-import PersonProfile from '@/components/people/PersonProfile.vue'
-import PersonMergeForm from '@/components/people/PersonMergeForm.vue'
-import CoiList from '@/components/people/CoiList.vue'
-import ActivityLog from "@/components/log_entries/ActivityLog.vue";
-import PersonMailLog from "@/components/people/PersonMailLog.vue";
-import ProfilePicture from "@/components/people/ProfilePicture.vue";
-import DemographicsForm from '@/components/people/DemographicsForm.vue';
 
 
 export default {

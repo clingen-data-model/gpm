@@ -1,5 +1,5 @@
 <script setup>
-    import { computed, onMounted, inject } from 'vue';
+    import { computed, inject, onMounted } from 'vue';
     import formDefFactory from '../../forms/comment_form.js';
 
     const group = inject('group');

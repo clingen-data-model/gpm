@@ -60,7 +60,7 @@
 </template>
 <script>
 import mirror from '@/composables/setup_working_mirror'
-import {clone, cloneDeep, isEqual, debounce} from 'lodash-es'
+import {clone, cloneDeep, debounce, isEqual} from 'lodash-es'
 
 const defaultGene = {
     gene_symbol: null,

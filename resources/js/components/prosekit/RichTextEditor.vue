@@ -1,13 +1,13 @@
 <script setup>
-import 'prosekit/basic/style.css'
+import { htmlFromMarkdown, markdownFromHTML } from '@/markdown-utils'
 
-import { ref, watchPostEffect } from 'vue'
 import { createEditor } from 'prosekit/core'
-import { defineExtension } from './extension.ts'
-import { markdownFromHTML, htmlFromMarkdown } from '@/markdown-utils'
 import { ProseKit, useDocChange } from 'prosekit/vue'
-import ProsekitToolbar from './ProsekitToolbar.vue'
+import { ref, watchPostEffect } from 'vue'
+import { defineExtension } from './extension.ts'
 import ProsekitInlineMenu from './ProsekitInlineMenu.vue'
+import ProsekitToolbar from './ProsekitToolbar.vue'
+import 'prosekit/basic/style.css'
 
 const props = defineProps({
     modelValue: {
@@ -24,7 +24,7 @@ const emit = defineEmits(['update:modelValue'])
 
 const extension = defineExtension()
 
-// eslint-disable-next-line vue/no-setup-props-destructure
+ 
 const initialContent = props.markdownFormat ? htmlFromMarkdown(props.modelValue || '') : props.modelValue
 const editor = createEditor({ extension, defaultContent: initialContent })
 

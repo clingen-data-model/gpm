@@ -1,9 +1,9 @@
 <script>
-import { api } from '@/http'
-import sortAndFilter from '@/composables/router_aware_sort_and_filter'
-import MemberPreview from '@/components/groups/MemberPreview.vue'
 import CoiDetail from '@/components/applications/CoiDetail.vue'
+import MemberPreview from '@/components/groups/MemberPreview.vue'
+import sortAndFilter from '@/composables/router_aware_sort_and_filter'
 import configs from '@/configs.json'
+import { api } from '@/http'
 // import GroupMembersFilter from '@/components/groups/GroupMembersFilter.vue'
 
 export default {

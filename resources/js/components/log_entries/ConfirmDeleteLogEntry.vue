@@ -28,9 +28,9 @@
     </div>
 </template>
 <script>
-import {mapGetters} from 'vuex'
+import {deleteEntry, logEntries} from '@/adapters/log_entry_repository'
 import {isValidationError} from '@/http'
-import {logEntries, deleteEntry} from '@/adapters/log_entry_repository'
+import {mapGetters} from 'vuex'
 
 export default {
     name: 'ConfirmDeleteLogEntry',

@@ -1,6 +1,6 @@
 <script setup>
-import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 import DemographicsForm from '../components/people/DemographicsForm.vue';
 
 const store = useStore();

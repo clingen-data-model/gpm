@@ -37,8 +37,8 @@
     </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 import sortAndFilter from '@/composables/router_aware_sort_and_filter'
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'SummaryVceps',

@@ -1,9 +1,9 @@
 <script setup>
-    import {computed, ref, onMounted } from 'vue'
+    import {mirrorEmits, mirrorProps, setupMirror} from '@/composables/setup_working_mirror'
+    import {computed, onMounted, ref } from 'vue'
     import {useStore} from 'vuex'
-    import {setupMirror, mirrorProps, mirrorEmits} from '@/composables/setup_working_mirror'
-    import SearchSelect from '../forms/SearchSelect.vue';
     import CredentialCreateForm from '../credentials/CredentialCreateForm.vue'
+    import SearchSelect from '../forms/SearchSelect.vue';
 
     const store = useStore();
     const props = defineProps({

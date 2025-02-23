@@ -36,8 +36,8 @@
     </div>
 </template>
 <script>
-import api from '@/http/api';
 import EvidenceSummaryForm from '@/components/expert_panels/EvidenceSummaryForm.vue';
+import api from '@/http/api';
 export default {
   components: { EvidenceSummaryForm },
     name: 'EvidenceSummary',

@@ -1,7 +1,7 @@
-import { v4 as uuid4 } from 'uuid';
 import Group from '@/domain/group';
 import { api, queryStringFromParams } from '@/http';
 import { clone } from 'lodash-es';
+import { v4 as uuid4 } from 'uuid';
 
 const baseUrl = '/api/groups';
 const getApplicationUrl = (uuid) => `${baseUrl}/${uuid}/expert-panel`;

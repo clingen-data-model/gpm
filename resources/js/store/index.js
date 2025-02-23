@@ -1,17 +1,17 @@
  
-import { createStore } from 'vuex'
+import User from '@/domain/user'
+import axios from '@/http/api'
+import isAuthError from '@/http/is_auth_error'
 import Alerts from '@/store/alerts'
 import ApplicationStore from '@/store/applications.js'
 import CdwgStore from '@/store/cdwgs.js'
 import COIStore from '@/store/coi_store.js'
-import GroupStore from '@/store/groups.js'
-import PeopleStore from '@/store/people.js'
 import CredentialStore from '@/store/credentials.js'
 import ExpertiseStore from '@/store/expertises.js'
-import axios from '@/http/api'
-import isAuthError from '@/http/is_auth_error'
+import GroupStore from '@/store/groups.js'
 import module_factory from '@/store/module_factory';
-import User from '@/domain/user'
+import PeopleStore from '@/store/people.js'
+import { createStore } from 'vuex'
 // import router from '../router'
 
 

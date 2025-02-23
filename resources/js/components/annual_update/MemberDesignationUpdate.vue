@@ -23,9 +23,9 @@
     </application-section>
 </template>
 <script>
+import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
 import MemberDesignationForm from '@/components/expert_panels/MemberDesignationForm.vue'
 import mirror from '@/composables/setup_working_mirror'
-import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
 
 export default {
     name: 'MemberDesignationUpdate',

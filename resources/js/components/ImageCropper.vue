@@ -47,10 +47,10 @@
     </div>
 </template>
 <script setup>
-import 'cropperjs/dist/cropper.css'
-import { debounce } from 'lodash-es'
 import Cropper from 'cropperjs';
-import { ref, onMounted, watch, onUnmounted } from 'vue';
+import { debounce } from 'lodash-es'
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import 'cropperjs/dist/cropper.css'
 
 const props = defineProps({
     imageSrc: String

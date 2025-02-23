@@ -1,29 +1,29 @@
 <script>
-import { debounce } from 'lodash-es'
-import { api, isValidationError } from '@/http'
-
-// Common Components
-import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
-import SubmitterInformation from '@/components/annual_update/SubmitterInformation.vue'
-import GoalsForm from '@/components/annual_update/GoalsForm.vue'
 import FundingForm from '@/components/annual_update/FundingForm.vue'
+import GcepOngoingPlansUpdateForm from '@/components/annual_update/GcepOngoingPlansUpdateForm.vue'
+
+import GcepRereviewForm from '@/components/annual_update/GcepRereviewForm.vue'
+// GCEP Components
+import GciGtUse from '@/components/annual_update/GciGtUse.vue'
+import GeneCurationTotals from '@/components/annual_update/GeneCurationTotals.vue'
+import GoalsForm from '@/components/annual_update/GoalsForm.vue'
 import MemberDesignationUpdate from '@/components/annual_update/MemberDesignationUpdate.vue'
 import MembershipUpdate from '@/components/annual_update/MembershipUpdate.vue'
 
-// GCEP Components
-import GciGtUse from '@/components/annual_update/GciGtUse.vue'
-import GcepRereviewForm from '@/components/annual_update/GcepRereviewForm.vue'
-import GcepOngoingPlansUpdateForm from '@/components/annual_update/GcepOngoingPlansUpdateForm.vue'
-import GeneCurationTotals from '@/components/annual_update/GeneCurationTotals.vue'
+import SpecificationProgress from '@/components/annual_update/SpecificationProgress.vue'
+import SubmitterInformation from '@/components/annual_update/SubmitterInformation.vue'
+// import VcepPlansForSpecifications from '@/components/annual_update/VcepPlansForSpecifications.vue'
+// import VcepTotals from '@/components/annual_update/VcepTotals.vue'
+import VariantReanalysis from '@/components/annual_update/VariantReanalysis.vue'
+import VcepOngoingPlansUpdateForm from '@/components/annual_update/VcepOngoingPlansUpdateForm.vue'
 
 // VCEP Components
 // import VariantCurationWorkflow from '@/components/annual_update/VariantCurationWorkflow.vue'
 import VciUse from '@/components/annual_update/VciUse.vue'
-import VcepOngoingPlansUpdateForm from '@/components/annual_update/VcepOngoingPlansUpdateForm.vue'
-// import VcepPlansForSpecifications from '@/components/annual_update/VcepPlansForSpecifications.vue'
-// import VcepTotals from '@/components/annual_update/VcepTotals.vue'
-import VariantReanalysis from '@/components/annual_update/VariantReanalysis.vue'
-import SpecificationProgress from '@/components/annual_update/SpecificationProgress.vue'
+// Common Components
+import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
+import { api, isValidationError } from '@/http'
+import { debounce } from 'lodash-es'
 
 export default {
     name: 'AnnualUpdateForm',

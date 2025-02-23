@@ -1,9 +1,9 @@
 <script setup>
-    import {useStore} from 'vuex';
-    import { computed} from 'vue'
-    import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
     import ReviewMembership from '@/components/expert_panels/ReviewMembership.vue'
+    import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
     import { formatDate } from '@/date_utils'
+    import { computed} from 'vue'
+    import {useStore} from 'vuex';
 
     const store = useStore();
     const group = computed(() => store.getters['groups/currentItemOrNew'])

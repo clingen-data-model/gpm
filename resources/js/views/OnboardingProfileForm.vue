@@ -1,6 +1,6 @@
 <script setup>
-    import {useStore} from 'vuex'
     import {useRouter} from 'vue-router'
+    import {useStore} from 'vuex'
     import ProfileForm from '../components/people/ProfileForm.vue';
 
     const store = useStore();

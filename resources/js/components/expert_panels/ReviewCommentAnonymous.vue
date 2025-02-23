@@ -1,6 +1,6 @@
 <script setup>
-    import {ref} from 'vue'
     import commentManagerFactory from '@/composables/comment_manager.js'
+    import {ref} from 'vue'
 
     const props = defineProps({
         comment: {

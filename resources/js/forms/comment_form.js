@@ -1,7 +1,7 @@
-import {ref} from 'vue'
-import BaseEntityForm from "./base_entity_form.js";
 import commentRepository from '@/repositories/comment_repository.js'
 import typeRepository from '@/repositories/comment_type_repository.js'
+import {ref} from 'vue'
+import BaseEntityForm from "./base_entity_form.js";
 
 export const commentTypes = ref([]);
 export const getCommentTypes = async () => {

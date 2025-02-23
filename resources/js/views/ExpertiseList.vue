@@ -52,9 +52,9 @@
     </div>
 </template>
 <script>
-import sortAndFilter from '@/composables/router_aware_sort_and_filter';
-import ExpertiseUpdateForm from '@/components/expertises/ExpertiseUpdateForm.vue'
 import ExpertiseCreateForm from '@/components/expertises/ExpertiseCreateForm.vue'
+import ExpertiseUpdateForm from '@/components/expertises/ExpertiseUpdateForm.vue'
+import sortAndFilter from '@/composables/router_aware_sort_and_filter';
 
 export default {
     name: 'CredentialList',

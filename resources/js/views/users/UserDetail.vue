@@ -56,9 +56,9 @@
     </div>
 </template>
 <script>
+import configs from '@/configs'
 import User from '@/domain/user'
 import {api} from '@/http'
-import configs from '@/configs'
 
 export default {
     name: 'UserDetail',

@@ -2,8 +2,8 @@
 import ApplicationGcep from '@/components/expert_panels/ApplicationGcep.vue';
 import ApplicationVcep from '@/components/expert_panels/ApplicationVcep.vue';
 import ApplicationMenu from '@/components/layout/ApplicationMenu.vue';
-import Group from '@/domain/group';
 import { getApplicationForGroup } from "@/composables/use_application.js";
+import Group from '@/domain/group';
 
 export default {
     name: 'GroupApplication',

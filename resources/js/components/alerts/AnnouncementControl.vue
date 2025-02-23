@@ -22,7 +22,7 @@
     </div>
 </template>
 <script>
-import {announcement, validationErrors, saveAnnouncement, cancelAnnouncement, fields} from '@/forms/announcement_form'
+import {announcement, cancelAnnouncement, fields, saveAnnouncement, validationErrors} from '@/forms/announcement_form'
 export default {
     name: 'AnnouncementControl',
     data() {

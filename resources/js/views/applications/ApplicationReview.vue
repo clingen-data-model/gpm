@@ -1,11 +1,11 @@
 <script setup>
+    import {hasPermission} from '@/auth_utils.js'
+    import ChairApproverControls from '@/components/applications/Review/ChairApproverControls.vue';
+    import DefinitionReview from '@/components/expert_panels/DefinitionReview.vue';
+    import SustainedCurationReview from '@/components/expert_panels/SustainedCurationReview.vue';
+    import ScreenTemplate from '@/components/ScreenTemplate.vue';
     import {computed} from 'vue';
     import {useStore} from 'vuex';
-    import {hasPermission} from '@/auth_utils.js'
-    import ScreenTemplate from '@/components/ScreenTemplate.vue';
-    import DefinitionReview from '@/components/expert_panels/DefinitionReview.vue';
-    import ChairApproverControls from '@/components/applications/Review/ChairApproverControls.vue';
-    import SustainedCurationReview from '@/components/expert_panels/SustainedCurationReview.vue';
 
     const store = useStore();
     const emits = defineEmits(['deleted', 'saved']);

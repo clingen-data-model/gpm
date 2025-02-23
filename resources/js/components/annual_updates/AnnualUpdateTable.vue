@@ -27,8 +27,8 @@
     </div>
 </template>
 <script>
-import {api} from '@/http'
 import setupRouterSortAndFilter from '@/composables/router_aware_sort_and_filter'
+import {api} from '@/http'
 
 export default {
     name: 'AnnualUpdateTeable',

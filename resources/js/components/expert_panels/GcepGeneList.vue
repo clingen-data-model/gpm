@@ -27,11 +27,11 @@
     </div>
 </template>
 <script>
-import {ref, watch, computed, onMounted} from 'vue';
-import {useStore} from 'vuex';
 import formFactory from '@/forms/form_factory'
-import is_validation_error from '@/http/is_validation_error'
 import api from '@/http/api'
+import is_validation_error from '@/http/is_validation_error'
+import {computed, onMounted, ref, watch} from 'vue';
+import {useStore} from 'vuex';
 
 export default {
     name: 'GcepGeneList',

@@ -1,9 +1,9 @@
+import {camelCase, kebabCase, sentenceCase, snakeCase, titleCase} from '@/string_utils'
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-import store from './store'
 
-import {titleCase, camelCase, snakeCase, kebabCase, sentenceCase} from '@/string_utils'
+import store from './store'
 
 const app = createApp(App)
 
@@ -52,9 +52,9 @@ import GroupBreadcrumbs from '@/components/groups/GroupBreadcrumbs.vue'
 app.component('group-breadcrumbs', GroupBreadcrumbs);
 
 
-import {formatDate, formatDateTime, formatTime, addDays, yearAgo} from '@/date_utils'
+import {coordinatesPerson, hasAnyPermission, hasPermission, hasRole, userCan, userInGroup, userIsPerson} from '@/auth_utils'
 
-import {userCan, hasPermission, hasAnyPermission, hasRole, userIsPerson, userInGroup, coordinatesPerson} from '@/auth_utils'
+import {addDays, formatDate, formatDateTime, formatTime, yearAgo} from '@/date_utils'
 
 import objectUid from '@/object_uid'
 

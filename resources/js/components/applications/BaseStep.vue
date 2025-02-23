@@ -1,10 +1,10 @@
 <script>
-import { mapGetters } from 'vuex'
-import { formatDate } from '@/date_utils'
 import ApplicationLog from '@/components/applications/ApplicationLog.vue'
 import StepControls from '@/components/applications/StepControls.vue'
 import RemoveButton from '@/components/buttons/RemoveButton.vue'
+import { formatDate } from '@/date_utils'
 import is_validation_error from '@/http/is_validation_error'
+import { mapGetters } from 'vuex'
 
 export default {
     components: {

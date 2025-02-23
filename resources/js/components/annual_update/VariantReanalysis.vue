@@ -19,8 +19,8 @@
     </application-section>
 </template>
 <script>
-import mirror from '@/composables/setup_working_mirror'
 import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
+import mirror from '@/composables/setup_working_mirror'
 
 export default {
     name: 'VariantReanalysis',

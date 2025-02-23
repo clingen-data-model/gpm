@@ -24,8 +24,8 @@
     </form-container>
 </template>
 <script>
-import { mapState } from 'vuex';
 import { isValidationError } from '@/http';
+import { mapState } from 'vuex';
 
 export default {
     props: {

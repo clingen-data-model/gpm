@@ -17,9 +17,9 @@
     </div>
 </template>
 <script>
+import sortAndFilterSetup from '@/composables/router_aware_sort_and_filter'
 import {api} from '@/http'
 import {debounce} from 'lodash-es'
-import sortAndFilterSetup from '@/composables/router_aware_sort_and_filter'
 
 export default {
     name: 'ComponentName',

@@ -12,11 +12,11 @@
     </form-container>
 </template>
 <script>
-import {mapGetters} from 'vuex'
-import { formatDate } from '@/date_utils'
+import {logEntries, saveEntry, updateEntry} from '@/adapters/log_entry_repository'
 import StepInput from '@/components/forms/StepInput.vue'
 import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
-import {logEntries, saveEntry, updateEntry} from '@/adapters/log_entry_repository'
+import { formatDate } from '@/date_utils'
+import {mapGetters} from 'vuex'
 
 export default {
     name: 'LogEntryForm',

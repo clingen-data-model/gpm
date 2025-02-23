@@ -1,6 +1,6 @@
 <script>
-import { isValidationError } from '@/http';
 import SearchSelect from '@/components/forms/SearchSelect.vue'
+import { isValidationError } from '@/http';
 
 export default {
     name: 'CredentialMergeForm',

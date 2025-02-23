@@ -29,10 +29,10 @@
     </div>
 </template>
 <script>
-import {ref, computed} from 'vue';
+import { deleteEntry, fetchEntries } from '@/adapters/log_entry_repository'
 import { formatDate } from '@/date_utils';
 import is_validation_error from '@/http/is_validation_error';
-import { fetchEntries, deleteEntry } from '@/adapters/log_entry_repository'
+import {computed, ref} from 'vue';
 
 
 export default {

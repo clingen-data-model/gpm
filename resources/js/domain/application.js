@@ -1,5 +1,5 @@
-import Entity from './entity'
 import configs from '@/configs'
+import Entity from './entity'
 
 class Application extends Entity {
     static dates = [

@@ -1,29 +1,29 @@
-import Group from './group';
-import Person from './person';
-import ExpertPanel from './expert_panel';
-import GroupMember from './group_member';
-import User from './user'
-import requirements from './ep_requirements';
 import {
+    ApplicationDefinition, 
+    applicationDefinitionFactory, 
     ApplicationSection, 
     ApplicationStep, 
-    ApplicationDefinition, 
-    GcepApplication, 
-    VcepApplication,
-    applicationDefinitionFactory
+    GcepApplication,
+    VcepApplication
 } from './application_definitions'
+import requirements from './ep_requirements';
+import ExpertPanel from './expert_panel';
+import Group from './group';
+import GroupMember from './group_member';
+import Person from './person';
+import User from './user'
 
 export {
-    Group,
-    ExpertPanel,
-    Person,
-    GroupMember,
-    User,
-    requirements,
-    ApplicationSection, 
-    ApplicationStep, 
     ApplicationDefinition,
     applicationDefinitionFactory,
+    ApplicationSection,
+    ApplicationStep,
+    ExpertPanel,
     GcepApplication,
+    Group, 
+    GroupMember, 
+    Person,
+    requirements,
+    User,
     VcepApplication,
 }

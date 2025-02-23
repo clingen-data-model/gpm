@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { EditorState } from 'prosekit/pm/state'
+import type { EditorExtension } from './extension'
 import { useEditor } from 'prosekit/vue'
 import { InlinePopover } from 'prosekit/vue/inline-popover'
-import { ref } from 'vue'
 
+import { ref } from 'vue'
 import Button from './ProsekitButton.vue'
-import type { EditorExtension } from './extension'
 
 const editor = useEditor<EditorExtension>({ update: true })
 const linkMenuOpen = ref(false)

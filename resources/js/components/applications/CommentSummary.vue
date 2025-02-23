@@ -1,6 +1,6 @@
 <script setup>
-    import {computed} from 'vue';
     import ReviewCommentAnonymous from '@/components/expert_panels/ReviewCommentAnonymous.vue'
+    import {computed} from 'vue';
 
     const props = defineProps({
         comments: {

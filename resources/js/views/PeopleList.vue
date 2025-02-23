@@ -19,11 +19,11 @@
     </div>
 </template>
 <script>
+import {currentPage, getPageItems, pageSize} from '@/composables/pagination'
+import {api} from '@/http'
 import { debounce } from 'lodash-es'
 import { mapGetters } from 'vuex'
-import {api} from '@/http'
 import SortAndFilter from './../composables/router_aware_sort_and_filter';
-import {pageSize, currentPage, getPageItems} from '@/composables/pagination'
 
 const fields = [
                 {
