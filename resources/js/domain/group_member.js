@@ -9,11 +9,11 @@ const matchRole = (role) => {
     let matchedRole = role;
     if (typeof matchedRole == 'string') {
         matchedRole = Object.values(groupRoles)
-                        .find(r => r.name == role);
+                        .find(r => r.name === role);
     }
     if (typeof matchedRole == 'number') {
         matchedRole = Object.values(groupRoles)
-                        .find(r => r.id == role);
+                        .find(r => r.id === role);
     }
 
     if (typeof matchedRole != 'object' || !matchedRole || !Object.values(groupRoles).includes(matchedRole)) {
@@ -137,7 +137,7 @@ class GroupMember extends Entity {
     get hasLegacyExpertise () {
         return this.legacy_expertise !== null
         && typeof this.legacy_expertise !== 'undefined'
-        && this.legacy_expertise != ''
+        && this.legacy_expertise !== ''
     }
 
     get hasAnyExpertise () {
@@ -175,7 +175,7 @@ class GroupMember extends Entity {
     removeRole (role) {
         if (this.hasRole(role)) {
             const matchedRole = matchRole(role);
-            const roleIdx = this.roles.findIndex(r => r.id == matchedRole.id);
+            const roleIdx = this.roles.findIndex(r => r.id === matchedRole.id);
             this.roles.splice(roleIdx, 1);
         }
     }

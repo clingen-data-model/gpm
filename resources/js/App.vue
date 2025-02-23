@@ -117,7 +117,7 @@ export default {
   },
   watch: {
     isAuthed () {
-      if (this.$route.meta && this.$route.meta.protected && this.isAuthed == false && this.$route.name != 'login') {
+      if (this.$route.meta && this.$route.meta.protected && this.isAuthed === false && this.$route.name !== 'login') {
         this.$router.push({name: 'login'});
       }
     }

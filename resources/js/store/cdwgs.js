@@ -11,7 +11,7 @@ export default {
     },
     mutations: {
         addItem (state, item) {
-            const idx = state.items.findIndex(i => i.id == item.id);
+            const idx = state.items.findIndex(i => i.id === item.id);
             if (idx > -1) {
                 state.items.splice(idx, 1, item)
                 return;

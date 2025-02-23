@@ -92,7 +92,7 @@ export default {
             const normalized = routeLabel.toLowerCase();
             const idx = this.tabs
                 .map(t => t.label.toLowerCase())
-                .findIndex(label => label == normalized);
+                .findIndex(label => label === normalized);
             if (idx > 0) {
                 this.activateTab(idx);
             }
@@ -105,7 +105,7 @@ export default {
                                     : null;
 
             if (
-                activeTabLabel != this.$route.query.tab
+                activeTabLabel !== this.$route.query.tab
                 && Object.keys(this.$route.query).includes('tab')
             ) {
                 this.activateTabWithLabel(this.$route.query.tab);
@@ -134,7 +134,7 @@ export default {
         },
 
         removeTab (tab) {
-            const idx = this.tabs.findIndex(i => tab ==i)
+            const idx = this.tabs.findIndex(i => tab ===i)
             if (idx > -1) {
                 this.tabs.splice(idx, 1);
             }
@@ -162,10 +162,10 @@ export default {
 
         const containerClass = [];
         const tabsClass = ['tabs'];
-        if (this.tabLocation == 'top') {
+        if (this.tabLocation === 'top') {
             containerClass.push('horizontal')
         }
-        if (this.tabLocation == 'right') {
+        if (this.tabLocation === 'right') {
             containerClass.push('vertical')
             containerClass.push('flex')
         }

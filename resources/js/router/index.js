@@ -183,7 +183,7 @@ router.beforeEach(async (to, from, next) => {
         return;
     }
 
-    if (to.name == 'login' && store.getters.isAuthed) {
+    if (to.name === 'login' && store.getters.isAuthed) {
         next({ name: 'Dashboard' })
         return;
     }
@@ -208,13 +208,13 @@ router.beforeEach(async (to, from, next) => {
         next();
         return;
     }
-    if (to.name == 'MandatoryProfileUpdate'
-        || to.name == 'RequiredDemographicsUpdateForm'
-        || to.name == 'RedeemInvite'
-        || to.name == 'InviteWithCode'
-        || to.name == 'InitialProfileForm'
-        || to.name == 'PendingCoiList'
-        || to.name == 'coi'
+    if (to.name === 'MandatoryProfileUpdate'
+        || to.name === 'RequiredDemographicsUpdateForm'
+        || to.name === 'RedeemInvite'
+        || to.name === 'InviteWithCode'
+        || to.name === 'InitialProfileForm'
+        || to.name === 'PendingCoiList'
+        || to.name === 'coi'
     ) {
         next();
         return;

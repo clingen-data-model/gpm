@@ -64,17 +64,17 @@ export default {
             return classes.join(' ');
         },
         isCurrentStep () {
-            return this.application.current_step == this.step
+            return this.application.current_step === this.step
         },
         isApproved () {
             return this.application.stepIsApproved(this.step);
         },
         isFirstStep () {
-            return this.step == 1;
+            return this.step === 1;
         },
         isLastStep () {
             const lastStep = Math.max(...this.application.steps);
-            return this.step == lastStep;
+            return this.step === lastStep;
         }
     },
     methods: {

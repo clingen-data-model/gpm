@@ -8,12 +8,12 @@ export const checkPermissionAndPersonOwnership = async (to) => {
 
 
     // if we don't have a currentItem in people store, get the person by the uuid
-    if (!store.getters['people/currentItem'] || store.getters['people/currentItem'].uuid != to.params.uuid) {
+    if (!store.getters['people/currentItem'] || store.getters['people/currentItem'].uuid !== to.params.uuid) {
         await store.dispatch('people/getPerson', {uuid: to.params.uuid})
     }
 
     // check that user is the same user associated with the person
-    if (store.getters['people/currentItem'].user_id == store.getters.currentUser.id) {
+    if (store.getters['people/currentItem'].user_id === store.getters.currentUser.id) {
         return true;
     }
 
@@ -30,7 +30,7 @@ export const hasGroupPermission = async (to, permission) => {
         return true;
     }
 
-    if (!store.getters['groups/currentItem'] || store.getters['groups/currentItem'].uuid != to.params.uuid) {
+    if (!store.getters['groups/currentItem'] || store.getters['groups/currentItem'].uuid !== to.params.uuid) {
         await store.dispatch('groups/findAndSetCurrent', to.params.uuid);
     }
 
