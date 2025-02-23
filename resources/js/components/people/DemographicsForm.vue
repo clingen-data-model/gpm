@@ -525,11 +525,10 @@
 </template>
 
 <script>
-const baseUrl = "/api/people";
-
 import axios from "axios";
-
 import { mapGetters } from "vuex";
+
+const baseUrl = "/api/people";
 
 var items = [];
 

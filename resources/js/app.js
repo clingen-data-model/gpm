@@ -1,9 +1,10 @@
+/* eslint import/first: 0 */
+
+import {camelCase, kebabCase, sentenceCase, snakeCase, titleCase} from '@/string_utils'
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-
-import {titleCase, camelCase, snakeCase, kebabCase, sentenceCase} from '@/string_utils'
 
 const app = createApp(App)
 
