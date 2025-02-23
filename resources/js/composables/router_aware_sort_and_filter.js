@@ -5,6 +5,7 @@ export default function (defaultSort = null) {
     const router = useRouter()
     const route = useRoute()
     if (!defaultSort){
+        // eslint-disable-next-line no-console
         console.log('Warning: defaultSort is deprecated.  Please provide a sort object: {field: "fieldname", desc: boolean}')
         defaultSort = (defaultSort) ? defaultSort : {field: 'name', desc: false}
     }

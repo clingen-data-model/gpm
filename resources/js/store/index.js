@@ -125,6 +125,7 @@ const store = createStore({
                         })
                         dispatch('getSystemInfo');
                     } catch (error) {
+                        // eslint-disable-next-line no-console
                         console.log(error);
                         commit('clearCurrentUser');
                     }
@@ -137,6 +138,7 @@ const store = createStore({
                         commit('setCurrentUser', response.data.data)
                     })
             } catch (error) {
+                // eslint-disable-next-line no-console
                 console.log(error);
                 commit('clearCurrentUser');
             }
@@ -157,6 +159,7 @@ const store = createStore({
                     });
             } catch (error) {
                 if (isAuthError(error)) {
+                    // eslint-disable-next-line no-alert
                     alert('You cannot log out because you are not logged in');
                 }
             }

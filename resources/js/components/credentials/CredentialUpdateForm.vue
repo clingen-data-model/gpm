@@ -30,10 +30,12 @@ export default {
         async save () {
             try {
                 this.initErrors();
+                // eslint-disable-next-line no-console
                 console.log('save!');
                 const newCred = await this.$store.dispatch('credentials/update', this.workingCopy)
                                     .then(rsp => rsp.data);
 
+                // eslint-disable-next-line no-console
                 console.log(newCred)
                 this.$emit('update:modelValue', newCred);
                 this.$emit('saved', newCred)

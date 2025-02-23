@@ -43,6 +43,7 @@ export default {
     },
     methods: {
         async getAnnualUpdate () {
+            // eslint-disable-next-line no-console
             console.log(`AnnualUpdateDetail.getAnnualUpdate: ${this.id}`)
             this.annualReview = await api.get(`/api/annual-updates/${this.id}`)
                 .then(response => {

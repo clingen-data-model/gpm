@@ -174,6 +174,7 @@ router.beforeEach(async (to, from, next) => {
         await store.dispatch('checkAuth')
         await store.dispatch('getCurrentUser');
     } catch (error) {
+        // eslint-disable-next-line no-console
         console.log(error);
     }
 

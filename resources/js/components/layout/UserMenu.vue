@@ -78,6 +78,7 @@ export default {
                         this.$router.push('/login')
                     })
             } catch (error) {
+                // eslint-disable-next-line no-alert
                 alert(error)
             }
         }

@@ -118,11 +118,13 @@ export default {
                 const response = await api.put(`/api/people/invites/${invite.code}/reset`);
                 const idx = this.invites.findIndex(i => i.id == invite.id);
                 if (idx == -1) {
+                    // eslint-disable-next-line no-alert
                     alert('what??')
                 }
                 this.invites[idx] = response.data;
             } catch (error) {
                 if (isValidationError(error)) {
+                    // eslint-disable-next-line no-alert
                     alert('Problem resetting invite!');
                     return;
                 }

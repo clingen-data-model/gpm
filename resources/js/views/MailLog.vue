@@ -149,6 +149,7 @@ export default {
                 setTotalItems(pageResponse.total);
                 return pageResponse.data;
             } catch (error) {
+                // eslint-disable-next-line no-alert
                 alert(error);
             }
         },

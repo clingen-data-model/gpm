@@ -45,6 +45,7 @@ class Application extends Entity {
             return [1, 2, 3, 4];
         }
 
+        // eslint-disable-next-line no-console
         console.log(this);
         throw new Error(
             `Unknown expert_panel_type_id found when determining application steps. Value: ${this}`

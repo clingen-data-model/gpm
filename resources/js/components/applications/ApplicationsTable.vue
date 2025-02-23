@@ -340,6 +340,7 @@ export default {
         },
         goToApplication (item) {
             if (item.deleted_at) {
+                // eslint-disable-next-line no-alert
                 alert ('The application for '+item.name+' has been deleted.  Details cannot be viewed.');
                 return;
             }

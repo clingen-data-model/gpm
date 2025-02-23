@@ -31,7 +31,10 @@
     const getLatestSubmission = () => {
         api.get(`/api/groups/${group.value.uuid}/application/latest-submission`)
             .then(rsp => latestSubmission.value = rsp.data)
-            .catch(error => console.log(error));
+            .catch(error => {
+                // eslint-disable-next-line no-console
+                console.log(error)
+            });
     }
     const getGroup = async () => {
         loading.value = true;

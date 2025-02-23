@@ -55,6 +55,7 @@ export default {
                 this.saveAnnouncement();
                 this.showForm = false;
             } catch (error) {
+                // eslint-disable-next-line no-alert
                 alert(error.message)
             }
         }

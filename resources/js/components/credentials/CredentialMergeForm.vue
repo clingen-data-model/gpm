@@ -51,6 +51,7 @@ export default {
             this.selectedObsolete = value;
         },
         async commitMerge () {
+            // eslint-disable-next-line no-console
             console.log('committing merge', this.selectedAuthority, this.selectedObsolete)
             if (!this.selectedAuthority || !this.selectedObsolete) {
                 return;
