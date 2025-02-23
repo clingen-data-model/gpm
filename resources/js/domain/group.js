@@ -143,7 +143,6 @@ class Group extends Entity {
         const idx = this.members.findIndex(m => m.id === member.id);
         if (idx > -1) {
             this.members.splice(idx, 1);
-            return;
         }
     }
 

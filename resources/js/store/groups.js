@@ -521,7 +521,6 @@ export const actions = {
         api.get(`/api/groups/${group.uuid}/expert-panel/annual-updates`, {headers: {'X-Ignore-Missing': 1} })
         .then(response => {
             group.expert_panel.annualUpdate = response.data
-            return;
         });
     },
 

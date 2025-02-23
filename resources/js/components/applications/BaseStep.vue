@@ -98,7 +98,6 @@ export default {
             } catch (error) {
                 if (is_validation_error(error)) {
                     this.errors = error.response.data.errors;
-                    return;
                 }
             }
         }

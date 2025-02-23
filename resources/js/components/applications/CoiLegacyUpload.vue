@@ -52,7 +52,7 @@ export default {
     methods: {
         async save() {
             try {
-                const data = this.assembleFormData(this.$refs['fileInput'], this.newCoi);
+                const data = this.assembleFormData(this.$refs.fileInput, this.newCoi);
 
                 await this.$store.dispatch('storeLegacyCoi', {application: this.application, coiData: data})
                 this.clearForm();

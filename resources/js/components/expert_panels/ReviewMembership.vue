@@ -96,7 +96,7 @@
 
     const counts = computed(() => {
         const counts = {};
-        counts['Total'] = tableRows.value.length;
+        counts.Total = tableRows.value.length;
         // eslint-disable-next-line no-console
         console.log(tableRows.value);
         Object.keys(role_priorities).forEach(r => counts[r] = 0);

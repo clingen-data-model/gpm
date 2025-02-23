@@ -79,7 +79,6 @@ export const actions = {
                     commit('setLastFetch', new Date())
                 })
             });
-        return;
     },
 
     async getPeopleSinceLastFetch({ commit, state }, params=null) 

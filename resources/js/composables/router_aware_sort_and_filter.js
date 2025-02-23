@@ -7,7 +7,7 @@ export default function (defaultSort = null) {
     if (!defaultSort){
         // eslint-disable-next-line no-console
         console.log('Warning: defaultSort is deprecated.  Please provide a sort object: {field: "fieldname", desc: boolean}')
-        defaultSort = (defaultSort) ? defaultSort : {field: 'name', desc: false}
+        defaultSort = defaultSort || {field: 'name', desc: false}
     }
     
     const sort = computed({

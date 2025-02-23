@@ -108,6 +108,7 @@ export default {
                                     if (this.$refs[key] && this.$refs[key].save) {
                                         return this.$refs[key].save();
                                     }
+                                    return null;
                                 });
             promises.push(this.saveUpdates());
 
@@ -135,7 +136,6 @@ export default {
             if (this.applicationIsDirty()) {
                 await this.save();
                 this.$emit('autosaved');
-                return;
             }
         },
         applicationIsDirty () {

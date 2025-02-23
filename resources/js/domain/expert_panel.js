@@ -99,10 +99,10 @@ class ExpertPanel extends Entity
     }
 
     get nhgriSigned () {
-        return Boolean(this.attributes['nhgri_attestation_date']);
+        return Boolean(this.attributes.nhgri_attestation_date);
     }
     set nhgriSigned (value) {
-        this.attributes['nhgri_attestation_date'] = value ? new Date() : null;
+        this.attributes.nhgri_attestation_date = value ? new Date() : null;
     }
 
     get approvedDraftSpecifications () {

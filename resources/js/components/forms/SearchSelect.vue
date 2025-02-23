@@ -277,7 +277,6 @@ export default {
             }
             this.cursorPosition--;
             this.scrollToHighlightedOption();
-            return;
         },
         moveDown() {
             this.log('moveDown')
@@ -290,7 +289,6 @@ export default {
             }
             this.cursorPosition++;
             this.scrollToHighlightedOption();
-            return;
         },
         handleKeyEvent(evt) {
             this.log('handleKeyEvent')

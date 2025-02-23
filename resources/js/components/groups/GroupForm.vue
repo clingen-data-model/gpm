@@ -263,7 +263,9 @@ export default {
         },
 
         isDirty (attribute) {
-            return this.group[attribute] !== this.group[attribute]
+            // eslint-disable-next-line no-console
+            console.log('Not sure isDirty is supposed to be called here...')
+            return this.group.isDirty(attribute)
         },
 
         saveParent () {

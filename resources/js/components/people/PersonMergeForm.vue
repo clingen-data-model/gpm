@@ -84,7 +84,6 @@ export default {
             } catch (error) {
                 if (isValidationError(error)) {
                     this.errors = error.response.data.errors;
-                    return;
                 }
             }
         },
