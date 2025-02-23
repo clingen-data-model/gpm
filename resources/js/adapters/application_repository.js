@@ -18,7 +18,7 @@ async function all(params) {
 }
 
 async function find(uuid, params) {
-    const data = await axios.get(baseUrl + '/' + uuid+queryStringFromParams(params))
+    const data = await axios.get(`${baseUrl}/${uuid}${queryStringFromParams(params)}`)
             .then(response => {
                 return response.data.data
             })

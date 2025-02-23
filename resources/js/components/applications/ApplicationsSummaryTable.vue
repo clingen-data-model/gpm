@@ -159,8 +159,8 @@ export default {
         },
         showCompleted: {
             set(value) {
-                let currentQuery = this.$route.query;
-                let currentPath = this.$route.path;
+                const currentQuery = this.$route.query;
+                const currentPath = this.$route.path;
                 
                 let updatedQuery = {...currentQuery};
 

@@ -109,7 +109,7 @@ export const actions = {
     },
 
     getPerson({commit}, {uuid, params}) {
-        return api.get(`${baseUrl}/${uuid}`+queryStringFromParams(params))
+        return api.get(`${baseUrl}/${uuid}${queryStringFromParams(params)}`)
             .then(response => {
                 commit('addItem', response.data.data)
                 commit('setCurrentItemIndex', response.data.data)
