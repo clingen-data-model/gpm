@@ -400,12 +400,12 @@ export default {
             const coefficient = this.realSort.desc ? -1 : 1;
 
             let aVal = Date.parse(this.resolveSortAttribute(a, this.sortField));
-            if (isNaN(parseFloat(aVal))) {
+            if (Number.isNaN(Number.parseFloat(aVal))) {
                 aVal = 0;
             }
 
             let bVal = Date.parse(this.resolveSortAttribute(b, this.sortField));
-            if (isNaN(parseFloat(bVal))) {
+            if (Number.isNaN(Number.parseFloat(bVal))) {
                 bVal = 0;
             }
 

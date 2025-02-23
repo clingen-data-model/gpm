@@ -966,7 +966,7 @@ export default {
 
         checkValidity() {
             const items = { ...this.formdata };
-            const isValidIndex = (value) => typeof value === "number" && !isNaN(value);
+            const isValidIndex = (value) => typeof value === "number" && !Number.isNaN(value);
             const isCountryValid = (country, countryOther, countryOptOut) =>
             (
                 (typeof countryOther === "string" && countryOther.trim() !== "") ||

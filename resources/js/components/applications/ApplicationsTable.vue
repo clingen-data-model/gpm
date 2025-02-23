@@ -287,7 +287,7 @@ export default {
                 this.$router.replace({path: currentPath, query: updatedQuery})
             },
             get() {
-                return Boolean(parseInt(this.$route.query['show-completed']))
+                return Boolean(Number.parseInt(this.$route.query['show-completed']))
             },
             immediate: true
         },

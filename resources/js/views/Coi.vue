@@ -175,7 +175,7 @@ export default {
                 return true;
             }
             if (Array.isArray(question.show.value)) {
-                return question.show.value.indexOf(this.response[question.show.name]) > -1;
+                return question.show.value.includes(this.response[question.show.name]);
             }
             return (this.response[question.show.name] == question.show.value);
         },

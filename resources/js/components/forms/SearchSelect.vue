@@ -303,11 +303,11 @@ export default {
                     this.moveUp();
                 }
 
-                if (['Enter'].indexOf(evt.key) > -1) {
+                if (['Enter'].includes(evt.key)) {
                     evt.preventDefault();
                     this.setSelection(this.filteredOptions[this.cursorPosition])
                 }
-                if (['Tab'].indexOf(evt.key) > -1) {
+                if (['Tab'].includes(evt.key)) {
                     // evt.preventDefault();
                     this.setSelection(this.filteredOptions[this.cursorPosition])
                 }

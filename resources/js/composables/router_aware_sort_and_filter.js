@@ -15,7 +15,7 @@ export default function (defaultSort = null) {
             if (Object.keys(route.query).includes('sort-field')) {
                 return {
                     field: route.query['sort-field'],
-                    desc: Boolean(parseInt(route.query['sort-desc']))
+                    desc: Boolean(Number.parseInt(route.query['sort-desc']))
                 }
             }
             return defaultSort;

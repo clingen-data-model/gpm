@@ -18,22 +18,22 @@ class CommentTypeRepository extends BaseRepository
     
     // eslint-disable-next-line unused-imports/no-unused-vars
     find (id) {
-        throw Error('CommentTypeRepository.find not implemented');
+        throw new Error('CommentTypeRepository.find not implemented');
     }
 
     // eslint-disable-next-line unused-imports/no-unused-vars
     save (data) {
-        throw Error('CommentTypeRepository.save not implemented');
+        throw new Error('CommentTypeRepository.save not implemented');
     }
 
     // eslint-disable-next-line unused-imports/no-unused-vars
     update (id) {
-        throw Error('CommentTypeRepository.update not implemented');
+        throw new Error('CommentTypeRepository.update not implemented');
     }
 
     // eslint-disable-next-line unused-imports/no-unused-vars
     destroy (id) {
-        throw Error('CommentTypeRepository.destroy not implemented');
+        throw new Error('CommentTypeRepository.destroy not implemented');
     }
 }
 
