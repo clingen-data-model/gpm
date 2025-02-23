@@ -145,7 +145,7 @@ export default {
                         const [g, geneIdx] = key.split('.')
                         if (g == 'genes') {
                             if (geneIdx) {
-                                return `Gene #${(parseInt(geneIdx)+1)}, "${genes[geneIdx]}" wasn't found in our records.  Please confirm it is currently an approved HGNC gene symbol.`
+                                return `Gene #${(Number.parseInt(geneIdx)+1)}, "${genes[geneIdx]}" wasn't found in our records.  Please confirm it is currently an approved HGNC gene symbol.`
                             }
                             return messages[key];
                         }

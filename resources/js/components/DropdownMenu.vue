@@ -63,7 +63,7 @@ export default {
             const labelWidth = this.$refs.menuButton.offsetWidth;
             const labelHeight = this.$refs.menuButton.offsetHeight;
             const rect = this.$el.getBoundingClientRect();
-            this.menuX = rect.left + scrollLeft - parseFloat(getComputedStyle(document.documentElement).fontSize)*12 + labelWidth;
+            this.menuX = rect.left + scrollLeft - Number.parseFloat(getComputedStyle(document.documentElement).fontSize)*12 + labelWidth;
             this.menuY = rect.top + scrollTop + labelHeight - 14;
         }
     },

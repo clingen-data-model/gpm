@@ -91,7 +91,7 @@ export default {
             this.newEntry = {
                 id: entry.id,
                 log_date: formatDate(new Date(Date.parse((entry.created_at)))),
-                step: parseInt(entry.step),
+                step: Number.parseInt(entry.step),
                 entry: entry.description
             }
         },
