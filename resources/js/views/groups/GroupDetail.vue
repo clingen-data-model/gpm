@@ -564,7 +564,7 @@ export default {
       });
     },
     handleTabChange(tabName) {
-      if (tabName == "Log" && hasPermission("groups-manage")) {
+      if (tabName === "Log" && hasPermission("groups-manage")) {
         this.getLogEntries();
       }
     },
@@ -581,7 +581,7 @@ export default {
         await api.post(`/api/groups/${this.uuid}/dev/fake-pilot-approved`);
         this.$store.dispatch("groups/getPendingTasks", this.group);
       } catch (e) {
-        if (e.response.status == 418) {
+        if (e.response.status === 418) {
           this.$store.commit("pushError", e.response.data);
         }
       }

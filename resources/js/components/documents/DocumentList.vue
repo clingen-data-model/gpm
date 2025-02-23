@@ -197,7 +197,7 @@ export default {
             }
             if (this.filterType) {                                
                 documents = documents.filter(doc => {
-                    return doc.document_type_id == this.filterType
+                    return doc.document_type_id === this.filterType
                 })
             }
             return documents

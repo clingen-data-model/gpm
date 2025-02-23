@@ -87,7 +87,7 @@ export default {
             if (this.hasPermission('people-manage')) {
                 return true;
             }
-            if (this.currentUser.id == person.user_id) {
+            if (this.currentUser.id === person.user_id) {
                 return true;
             }
 

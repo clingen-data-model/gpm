@@ -107,7 +107,7 @@ export default {
 
             if (this.completedFilter != null) {
                 result = result.filter(i => {
-                    if (this.completedFilter == 1) {
+                    if (this.completedFilter === 1) {
                         return i.completed_at !== null;
                     }
                     return i.completed_at == null;

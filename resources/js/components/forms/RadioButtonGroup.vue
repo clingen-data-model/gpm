@@ -29,7 +29,7 @@ import {sentenceCase} from '@/string_utils.js'
         emits('change', item)
     }
 
-    const isSelected = (opt) => JSON.stringify(opt) == JSON.stringify(props.modelValue);
+    const isSelected = (opt) => JSON.stringify(opt) === JSON.stringify(props.modelValue);
 
     const resolveLabel = (option) => {
         if (typeof option == 'object') {

@@ -132,7 +132,7 @@ export default {
                                         || (item.country && item.country.name.match(pattern)))
         },
         currentIndex () {
-            return this.items.findIndex(i => i.id == this.currentItem.id);
+            return this.items.findIndex(i => i.id === this.currentItem.id);
         }
     },
     methods: {

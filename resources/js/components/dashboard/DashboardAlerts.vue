@@ -23,7 +23,7 @@
     });
 
     const getSustainedCurationReviewTasks = async () => {
-        if (coordinatingGroups.value.length == 0) {
+        if (coordinatingGroups.value.length === 0) {
             return;
         }
 

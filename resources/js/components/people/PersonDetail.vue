@@ -183,7 +183,7 @@ export default {
         },
         sortedMailLog() {
             return [...this.person.mailLog].sort((a, b) => {
-                if (a.created_at == b.created_at) {
+                if (a.created_at === b.created_at) {
                     return 0;
                 }
                 return (Date.parse(a.created_at) > Date.parse(b.created_at))

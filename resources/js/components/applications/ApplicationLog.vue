@@ -94,7 +94,7 @@ export default {
     },
     computed: {
         fields () {
-            if (this.group.group_type_id == 4 && !fields.map(f => f.name).includes('step')) {
+            if (this.group.group_type_id === 4 && !fields.map(f => f.name).includes('step')) {
                 fields.splice(2, 0, {
                     name: 'step',
                     sortable: true,
@@ -108,7 +108,7 @@ export default {
         },
         filteredLogEntries() {
             if(this.logEntries && this.step) {
-                return this.logEntries.filter(entry => entry.step == this.step);
+                return this.logEntries.filter(entry => entry.step === this.step);
             }
 
             if (this.logEntries) {

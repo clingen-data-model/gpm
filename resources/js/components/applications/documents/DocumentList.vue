@@ -161,22 +161,22 @@ export default {
         filteredFields () {
             const clonedFields = [...this.fields]
             if (!this.showVersion) {
-                const kdx = clonedFields.findIndex(f => f && f.name == 'version')
+                const kdx = clonedFields.findIndex(f => f && f.name === 'version')
                 clonedFields.splice(kdx, 1)
 
-                const jdx = clonedFields.findIndex(f => f && f.name == 'is_final')
+                const jdx = clonedFields.findIndex(f => f && f.name === 'is_final')
                 clonedFields.splice(jdx, 1)
             }
 
             if (!this.getsReviewed) {
-                const idx = clonedFields.findIndex(f => f && f.name == 'date_reviewed')
+                const idx = clonedFields.findIndex(f => f && f.name === 'date_reviewed')
                 clonedFields.splice(idx, 1)
             }
             return clonedFields
         },
         filteredDocuments() {
             if (this.application.documents) {
-                return this.application.documents.filter(d =>  d.document_type_id == this.documentTypeId)
+                return this.application.documents.filter(d =>  d.document_type_id === this.documentTypeId)
             }
             return [];
         },

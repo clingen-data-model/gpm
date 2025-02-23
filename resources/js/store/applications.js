@@ -25,10 +25,10 @@ export default {
             return state.requests.length > 0;
         },
         gceps: state => {
-            return state.items.filter(app => app.expert_panel_type_id == 1);
+            return state.items.filter(app => app.expert_panel_type_id === 1);
         },
         vceps: state => {
-            return state.items.filter(app => app.expert_panel_type_id == 2);
+            return state.items.filter(app => app.expert_panel_type_id === 2);
         },
         currentItem: state => {
             if (state.currentItemIdx === null) {
@@ -38,13 +38,13 @@ export default {
             return state.items[state.currentItemIdx]
         },
         getApplicationByUuid: (state) => (uuid) => {
-            return state.items.find(app => app.uuid == uuid);
+            return state.items.find(app => app.uuid === uuid);
         },
     },
     mutations: {
         addApplication(state, application) {
             const appModel = new Application(application)
-            const idx = state.items.findIndex(item => item.uuid == application.uuid);
+            const idx = state.items.findIndex(item => item.uuid === application.uuid);
             if (idx > -1) {
                 state.items.splice(idx, 1, appModel)
                 return;
@@ -62,11 +62,11 @@ export default {
             state.lastParams = params;
         },
         setCurrentItemIndex(state, application) {
-            const idx = state.items.findIndex(i => i.uuid == application.uuid);
+            const idx = state.items.findIndex(i => i.uuid === application.uuid);
             state.currentItemIdx = idx;
         },
         removeItem(state, item) {
-            const idx = state.items.findIndex(i => i.uuid == item.uuid);
+            const idx = state.items.findIndex(i => i.uuid === item.uuid);
             state.items.splice(idx, 1);           
         },
         clearCurrentItemIdx(state) {
@@ -135,7 +135,7 @@ export default {
 
             return await api.put(`${baseUrl}/${application.uuid}/next-actions/${updatedAction.id}`, updatedAction)
                 .then(response => {
-                    const naIdx = application.nextActions.findIndex(na => na.id == response.data.id)
+                    const naIdx = application.nextActions.findIndex(na => na.id === response.data.id)
                     application.nextActions[naIdx] = response.data;
                     return response;
                 });
@@ -147,7 +147,7 @@ export default {
            const url = `/api/applications/${application.uuid}/next-actions/${nextAction.id}`
             await api.delete(url)
                 .then(response => {
-                    const naIdx = application.nextActions.findIndex(na => na.id == nextAction.id)
+                    const naIdx = application.nextActions.findIndex(na => na.id === nextAction.id)
                     application.nextActions.splice(naIdx, 1);
                     return response;
                 });
@@ -157,7 +157,7 @@ export default {
             const url = `/api/applications/${application.uuid}/next-actions/${nextAction.uuid}/complete`;
             await api.post(url, { date_completed: dateCompleted })
                 .then(response => {
-                    const naIdx = application.nextActions.findIndex(na => na.id == response.data.id)
+                    const naIdx = application.nextActions.findIndex(na => na.id === response.data.id)
                     application.nextActions[naIdx] = response.data;
                     return response;
                 })
@@ -210,7 +210,7 @@ export default {
         async markDocumentVersionFinal({ dispatch }, { application, document }) {
             await api.post(`/api/applications/${application.uuid}/documents/${document.uuid}/final`)
                 .then(response => {
-                    const oldFinalIdx = application.documents.findIndex(d => d.metadata.is_final == 1);
+                    const oldFinalIdx = application.documents.findIndex(d => d.metadata.is_final === 1);
                     const oldFinal = application.documents[oldFinalIdx];
                     if (oldFinal) {
                         oldFinal.metadata.is_final = 0;
@@ -218,12 +218,11 @@ export default {
                         application.documents[oldFinalIdx] = oldFinal;
                     }
 
-                    const docIdx = application.documents.findIndex(d => d.id == response.data.id);
+                    const docIdx = application.documents.findIndex(d => d.id === response.data.id);
                     application.documents[docIdx] = response.data;
                 });
         },
 
-         
         async updateDocumentInfo({ dispatch }, { application, document }) {
             return await api.put(`/api/applications/${application.uuid}/documents/${document.uuid}`, document)
                 .then(() => {
@@ -231,7 +230,6 @@ export default {
                 });
         },
 
-         
         async deleteDocument( { dispatch }, {application, document}) {
             return await api.delete(`/api/applications/${application.uuid}/documents/${document.uuid}`)
                 .then(() => {
@@ -239,7 +237,6 @@ export default {
                 });
         },
 
-         
         async approveCurrentStep({ dispatch }, { application, dateApproved, notifyContacts, subject, body, attachments }) {
             const formData = new FormData();
             formData.append('date_approved', dateApproved);

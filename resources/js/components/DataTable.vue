@@ -200,7 +200,7 @@ export default {
                 }
 
                 this.realSort = {
-                    field: this.fields.find(i => i.name == this.sort.field),
+                    field: this.fields.find(i => i.name === this.sort.field),
                     desc: this.sort.desc
                 }
                 this.resetCurrentPage();
@@ -290,7 +290,7 @@ export default {
                 return sorted;
             }
 
-            if (sortType == Date) {
+            if (sortType === Date) {
                 return data.sort(this.dateSort)
             }
 
@@ -310,7 +310,7 @@ export default {
                     .filter(item => this.filterFunction(item, this.filterTerm.trim()));
         },
         findFieldByName(name) {
-            return this.fields.find(i => i.name == name)
+            return this.fields.find(i => i.name === name)
         },
         getAttributeValue (item, attr) {
             if (attr && typeof attr != 'undefined' && attr.includes('.')) {
@@ -333,7 +333,7 @@ export default {
 
             const value = this.getAttributeValue(item, field.name);
 
-            if (field.type == Date) {
+            if (field.type === Date) {
                 return (value) ? formatDate(value) : null;
             }
             return value;
@@ -358,7 +358,7 @@ export default {
                 desc: !this.realSort.desc
             }
 
-            if (oldField.name != field.name) {
+            if (oldField.name !== field.name) {
                 newSort.desc = false
             }
 
@@ -383,12 +383,12 @@ export default {
             }
 
             // Normalize strings
-            if (this.realSort.field.type == String || (typeof aVal == 'string' && typeof bVal == 'string')) {
+            if (this.realSort.field.type === String || (typeof aVal == 'string' && typeof bVal == 'string')) {
                 aVal = aVal ? aVal.toLowerCase() : aVal;
                 bVal = bVal ? bVal.toLowerCase() : bVal;
             }
 
-            if (aVal == bVal) {
+            if (aVal === bVal) {
                 if (a.id > b.id) {
                     return 1*coefficient;
                 }
@@ -448,8 +448,8 @@ export default {
             if (field.sortable) {
                 classes.push('cursor-pointer underline hover:bg-gray-300');
             }
-            if (field.colspan == 1) {
-                if (this.realSort.field == field) {
+            if (field.colspan === 1) {
+                if (this.realSort.field === field) {
                     classes.push(field)
                 }
             }

@@ -116,7 +116,7 @@ export default {
                 if (this.docTypeIsArray) {
                     return this.documentTypeId.includes(d.document_type_id)
                 }
-                return d.document_type_id == this.documentTypeId
+                return d.document_type_id === this.documentTypeId
             })
         },
         docTypeIsArray () {

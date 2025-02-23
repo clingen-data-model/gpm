@@ -77,7 +77,7 @@ export default {
         },
         selectedInstitution: {
             get () {
-                return this.institutions.find(i => i.id == this.modelValue)
+                return this.institutions.find(i => i.id === this.modelValue)
             },
             set (value) {
                 if (value) {

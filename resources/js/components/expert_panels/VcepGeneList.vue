@@ -163,7 +163,7 @@ export default {
         const orderedGenes = computed(() => {
             const sortedGenes = [...genes.value];
             sortedGenes.sort((a,b) => {
-                if (a.gene_symbol == b.gene_symbol) {
+                if (a.gene_symbol === b.gene_symbol) {
                     return 0;
                 }
                 return (a.gene_symbol > b.gene_symbol) ? 1 : -1;

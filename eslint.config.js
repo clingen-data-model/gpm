@@ -46,7 +46,6 @@ export default antfu(
             'vue/custom-event-name-casing': 'off',
             'jsonc/no-useless-escape': 'off',
             'array-callback-return': 'off',
-            'eqeqeq': 'off',
             'no-unneeded-ternary': 'off',
             'no-sequences': 'off',
             'no-undef': 'off',

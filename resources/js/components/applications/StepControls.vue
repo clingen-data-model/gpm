@@ -28,7 +28,7 @@ const showSendToChairsControl = computed(() => {
     }
     const latestSubmission = group.value.expert_panel.latestPendingSubmissionForStep(props.step);
     return latestSubmission
-        && latestSubmission.submission_status_id == 1;
+        && latestSubmission.submission_status_id === 1;
 })
 
 </script>

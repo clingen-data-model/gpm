@@ -105,7 +105,7 @@ const store = createStore({
         authenticated: null,
         documentTypes: null,
         features: {
-            legacyCoi: import.meta.env.VITE_APP_LEGACY_COI == 'true',
+            legacyCoi: import.meta.env.VITE_APP_LEGACY_COI === 'true',
         },
         systemInfo: {build: {}, app: { features: {}}},
     },
@@ -171,7 +171,7 @@ const store = createStore({
                         commit('setAuthenticated', true)
                     })
                     .catch(error => {
-                        if (error.response.status && error.response.status == 401) {
+                        if (error.response.status && error.response.status === 401) {
                             commit('setAuthenticated', false)
                         }
                     })

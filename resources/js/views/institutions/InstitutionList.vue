@@ -139,7 +139,7 @@ export default {
             })
         },
         currentIndex () {
-            return this.items.findIndex(i => i.id == this.currentItem.id);
+            return this.items.findIndex(i => i.id === this.currentItem.id);
         }
     },
     methods: {

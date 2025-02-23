@@ -74,7 +74,7 @@ export default {
                 return null;
             }
             if (this.logEntries) {
-                return this.logEntries.find(i => i.id == this.id);
+                return this.logEntries.find(i => i.id === this.id);
             }
         },
         initNewEntry () {
@@ -109,7 +109,7 @@ export default {
                 this.initNewEntry();
                 this.$emit('saved');
             } catch (error) {
-                if (error.response && error.response.status == 422 && error.response.data.errors) {
+                if (error.response && error.response.status === 422 && error.response.data.errors) {
                     this.errors = error.response.data.errors
                     return;
                 }

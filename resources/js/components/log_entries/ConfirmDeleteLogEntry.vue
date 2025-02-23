@@ -53,7 +53,7 @@ export default {
             return this.group.expert_panel;
         },
         logEntry () {
-            const logEntry = this.logEntries.find(entry => entry.id == this.id);
+            const logEntry = this.logEntries.find(entry => entry.id === this.id);
             return logEntry || {};
         },
         logDate () {

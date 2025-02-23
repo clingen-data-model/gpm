@@ -58,7 +58,7 @@ export default {
             return Boolean(this.newDocument.date_reviewed)
         },
         documentType () {
-            if (this.documentTypes.length == 0) {
+            if (this.documentTypes.length === 0) {
                 return {};
             }
             // return this.documentTypes. 

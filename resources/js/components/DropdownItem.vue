@@ -8,7 +8,7 @@ export default {
     },
     computed: {
         parentIsValid() {
-            return this.$parent.$options.name == 'DropdownMenu'
+            return this.$parent.$options.name === 'DropdownMenu'
         }
     },
     mounted() {

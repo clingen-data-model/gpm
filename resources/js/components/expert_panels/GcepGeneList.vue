@@ -143,7 +143,7 @@ export default {
                     }
                     const geneMessages = Object.keys(messages).map(key => {
                         const [g, geneIdx] = key.split('.')
-                        if (g == 'genes') {
+                        if (g === 'genes') {
                             if (geneIdx) {
                                 return `Gene #${(Number.parseInt(geneIdx)+1)}, "${genes[geneIdx]}" wasn't found in our records.  Please confirm it is currently an approved HGNC gene symbol.`
                             }
@@ -159,7 +159,7 @@ export default {
 
 
         watch(() => store.getters['groups/currentItem'], (to, from) => {
-            if (to.id && (!from || to.id != from.id)) {
+            if (to.id && (!from || to.id !== from.id)) {
                 // syncGenesAsText();
                 getGenes();
             }
