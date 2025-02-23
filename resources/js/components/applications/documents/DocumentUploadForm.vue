@@ -86,7 +86,7 @@ export default {
     methods: {
         async save() {
             try {
-                let data = new FormData();
+                const data = new FormData();
                 Object.keys(this.newDocument)
                     .forEach(key => {
                         const val = this.newDocument[key]

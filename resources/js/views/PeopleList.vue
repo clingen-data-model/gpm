@@ -78,7 +78,7 @@ export default {
     },
     methods: {
         goToPerson (person) {
-            this.$router.push('/people/'+person.uuid)
+            this.$router.push(`/people/${person.uuid}`)
         },
         goToEditPerson (person) {
             this.$router.push(`/people/${person.uuid}/edit`)

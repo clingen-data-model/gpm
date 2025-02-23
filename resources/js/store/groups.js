@@ -80,7 +80,7 @@ export const mutations = {
     addMemberToGroup(state, member) {
         const group = getters.getItemById(state)(member.group_id);
         if (!group) {
-            throw new Error('could not find group with id '+member.group_id+' in items.');
+            throw new Error(`could not find group with id ${member.group_id} in items.`);
         }
         group.addMember(member);
     },
@@ -88,7 +88,7 @@ export const mutations = {
     removeMember(state, member) {
         const group = getters.getItemById(state)(member.group_id);
         if (!group) {
-            throw new Error('could not find group with id '+member.group_id+' in items.');
+            throw new Error(`could not find group with id ${member.group_id} in items.`);
         }
         group.removeMember(member);
     },
@@ -550,7 +550,7 @@ export const actions = {
         formData.append('body', body);
 
         Array.from(attachments).forEach((file, idx) => {
-            formData.append('attachments[' + idx + ']', file);
+            formData.append(`attachments[${  idx  }]`, file);
         });
 
         const url = `/api/applications/${group.uuid}/current-step/approve`

@@ -248,8 +248,8 @@ export default {
     },
     setup () {
         const store = useStore();
-        let group = computed(() => store.getters['groups/currentItemOrNew'] || {});
-        let people = computed(() => store.getters['people/all'] || {});
+        const group = computed(() => store.getters['groups/currentItemOrNew'] || {});
+        const people = computed(() => store.getters['people/all'] || {});
         const roles = groups.roles;
         const permissions = groups.permissions;
 

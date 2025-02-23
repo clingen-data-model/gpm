@@ -318,8 +318,8 @@ export default {
         },
         scrollToHighlightedOption () {
             this.log('scrollToHighlightedOption')
-            if (!inView(document.getElementById('option-'+this.cursorPosition))) {
-                document.getElementById('option-'+this.cursorPosition).scrollIntoView();
+            if (!inView(document.getElementById(`option-${this.cursorPosition}`))) {
+                document.getElementById(`option-${this.cursorPosition}`).scrollIntoView();
             }
 
         },

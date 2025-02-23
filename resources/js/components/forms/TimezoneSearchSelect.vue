@@ -131,7 +131,7 @@ export default {
                 return;
             }
 
-            const newValue = this.region+'/'+this.city.replace(' ', '_');
+            const newValue = `${this.region}/${this.city.replace(' ', '_')}`;
             if (!this.timezones.indexOf(newValue)) {
                 return;
             }

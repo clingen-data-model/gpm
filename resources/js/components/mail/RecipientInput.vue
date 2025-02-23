@@ -27,9 +27,9 @@ export default {
                 }
                 return this.modelValue.map(i => i.address).join("\n")
             },
-             set (value) {
-                 this.debounceInput(value);
-             }
+            set (value) {
+                this.debounceInput(value);
+            }
         }
 
     },
@@ -37,7 +37,7 @@ export default {
     },
     created () {
         this.debounceInput = debounce((value) => {
-            const pattern = new RegExp(/[\n,;]/);
+            const pattern = /[\n,;]/;
             const newRecipients = value.split(pattern)
                                     .map(i => ({name: null, address: i.trim()}))
                                     .filter(i => {

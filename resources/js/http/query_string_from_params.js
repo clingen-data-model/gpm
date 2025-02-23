@@ -1,25 +1,25 @@
 const queryStringFromParams = function(params = {}, paginate) {
     let parsedParams = params;
     if (Object.keys(params).includes('filter')) {
-        let { filter, ...rest } = params;
+        const { filter, ...rest } = params;
         parsedParams = {...filter, ...rest };
     }
 
-    let queryStringParts = [];
+    const queryStringParts = [];
     if (paginate) {
-        queryStringParts.push('page=' + (parsedParams.currentPage ? parsedParams.currentPage : 1))
+        queryStringParts.push(`page=${  parsedParams.currentPage ? parsedParams.currentPage : 1}`)
     }
 
     delete(parsedParams.currentPage)
 
-    for (let param in parsedParams) {
+    for (const param in parsedParams) {
         if (parsedParams[param] === null || parsedParams[param] === undefined) {
             continue;
         }
 
         if (Array.isArray(parsedParams[param])) {
             parsedParams[param].forEach(val => {
-                queryStringParts.push(encodeURIComponent(param) + '[]=' + encodeURIComponent(val));
+                queryStringParts.push(`${encodeURIComponent(param)  }[]=${  encodeURIComponent(val)}`);
             })
         } else if (typeof parsedParams[param] === 'object' && parsedParams !== null) {
             Object.keys(parsedParams[param])
@@ -34,12 +34,12 @@ const queryStringFromParams = function(params = {}, paginate) {
                     }
                 })
         } else {
-            queryStringParts.push(encodeURIComponent(param) + '=' + encodeURIComponent(parsedParams[param]));
+            queryStringParts.push(`${encodeURIComponent(param)  }=${  encodeURIComponent(parsedParams[param])}`);
         }
 
     }
     if (queryStringParts.length > 0) {
-        return '?' + queryStringParts.join('&');
+        return `?${  queryStringParts.join('&')}`;
     }
 
     return '';

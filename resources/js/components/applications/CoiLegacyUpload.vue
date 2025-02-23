@@ -81,7 +81,7 @@ export default {
     },
     setup() {
         const assembleFormData = (fileInput, otherData) => {
-            let data = new FormData();
+            const data = new FormData();
             Object.keys(otherData)
                 .forEach(key => {
                     const val = otherData[key]

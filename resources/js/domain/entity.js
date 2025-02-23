@@ -19,7 +19,7 @@ class Entity {
         this.original = {};
         this.setOriginal(this.attributes);
 
-        for (let attr in this.attributes) {
+        for (const attr in this.attributes) {
             this.defineAttributeGettersAndSetters(attr)
         }
     }

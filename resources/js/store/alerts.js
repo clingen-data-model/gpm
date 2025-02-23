@@ -11,7 +11,7 @@ export class Alert {
     constructor(message, type='info') {
         this.message = message;
         if (Alert.types.findIndex(t => t == type) == -1)  {
-            throw new Error('Unknown alert type: '+type)
+            throw new Error(`Unknown alert type: ${type}`)
         }
         this.type = type
         this.uuid = uuid4()
