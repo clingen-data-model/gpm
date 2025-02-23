@@ -80,7 +80,7 @@ class User extends Entity {
     hasAnyPermission (permissions)
     {
         if (!Array.isArray(permissions)) {
-            throw new Error('user.hasAnyArray expected array got '+(typeof permissions));
+            throw new TypeError('user.hasAnyArray expected array got '+(typeof permissions));
         }
 
         return permissions.map(p => {

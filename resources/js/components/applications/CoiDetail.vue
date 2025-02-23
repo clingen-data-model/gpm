@@ -76,7 +76,7 @@
                     {{getQuestionValue(response.independent_efforts.response)}}
 
                     <dictionary-row :label="response.independent_efforts_details.question" :vertical="true"
-                        v-if="[1,2].indexOf(response.independent_efforts.response) > -1"
+                        v-if="[1,2].includes(response.independent_efforts.response)"
                         class="pb-1 mb-1 ml-4 border-none"
                         label-class="font-bold"
                     >
@@ -92,7 +92,7 @@
                     {{getQuestionValue(response.coi.response)}}
 
                     <dictionary-row :label="response.coi_details.question" :vertical="true"
-                        v-if="[1,2].indexOf(response.coi.response) > -1"
+                        v-if="[1,2].includes(response.coi.response)"
                         class="pb-1 mb-1 ml-4"
                         label-class="font-bold"
                     >
