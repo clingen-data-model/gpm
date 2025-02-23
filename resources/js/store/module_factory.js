@@ -63,7 +63,7 @@ export default function (config = {}) {
                 const items = await api.get(config.baseUrl)
                     .then(response => response.data);
 
-                    for(let i in items) {
+                    for(const i in items) {
                         commit('addItem', items[i])
                     }
 

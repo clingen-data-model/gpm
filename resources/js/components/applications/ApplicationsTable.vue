@@ -273,8 +273,8 @@ export default {
         },
         showCompleted: {
             set(value) {
-                let currentQuery = this.$route.query;
-                let currentPath = this.$route.path;
+                const currentQuery = this.$route.query;
+                const currentPath = this.$route.path;
 
                 let updatedQuery = {...currentQuery};
 
@@ -341,7 +341,7 @@ export default {
         goToApplication (item) {
             if (item.deleted_at) {
                 // eslint-disable-next-line no-alert
-                alert ('The application for '+item.name+' has been deleted.  Details cannot be viewed.');
+                alert (`The application for ${item.name} has been deleted.  Details cannot be viewed.`);
                 return;
             }
             this.$router.push({name: 'ApplicationDetail', params: {uuid: item.group.uuid}})

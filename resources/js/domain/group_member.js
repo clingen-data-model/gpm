@@ -212,7 +212,7 @@ class GroupMember extends Entity {
             return r.name.toLowerCase()
         })
 
-        for (let i in configs.groups.rolePermissions) {
+        for (const i in configs.groups.rolePermissions) {
             if (!memberRoleSlugs.includes(i)) {
                 continue;
             }

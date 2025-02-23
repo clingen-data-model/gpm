@@ -16,10 +16,10 @@ import {computed} from 'vue';
             return '';
         }
         if (props.summary.authors.length == 1) {
-            return props.summary.authors[0].name+'. ';
+            return `${props.summary.authors[0].name}. `;
         }
 
-        return props.summary.authors.map(a => a.name)[0]+` et al. `;
+        return `${props.summary.authors.map(a => a.name)[0]} et al. `;
     })
 
     const titleString = computed(() => {
@@ -27,14 +27,14 @@ import {computed} from 'vue';
             return '';
         }
         if (props.summary.title.length > 25) {
-            return props.summary.title.substring(0, 50)+'... ';
+            return `${props.summary.title.substring(0, 50)}... `;
         }
 
-        return props.summary.title+'. ';
+        return `${props.summary.title}. `;
     })
 
     const sourceString = computed(() => {
-        return props.summary.source+'. ';
+        return `${props.summary.source}. `;
     })
 </script>
 

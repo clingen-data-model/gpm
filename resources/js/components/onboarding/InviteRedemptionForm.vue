@@ -47,8 +47,8 @@ export default {
     setup(props, context) {
 
         const {invite} = toRefs(props);
-        let inviteCode = ref(null);
-        let errors = ref([]);
+        const inviteCode = ref(null);
+        const errors = ref([]);
 
         const syncCode = () => {
             inviteCode.value = props.invite.code

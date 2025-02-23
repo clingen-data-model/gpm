@@ -175,7 +175,7 @@ export default {
                 sortable: true
             }
 
-            let fields = [...coiFields];
+            const fields = [...coiFields];
 
             if (hasPermission('people-manage')) {
                 return  [idField, ...fields, actionField];

@@ -118,7 +118,7 @@ export default {
                 sort: {field: 'name', dir: 'asc'},
                 select: ['name', 'abbreviation', 'id', 'url']
             }
-            api.get('/api/people/institutions'+queryStringFromParams(query))
+            api.get(`/api/people/institutions${queryStringFromParams(query)}`)
                 .then(response => {
                     this.institutions = response.data
                 })

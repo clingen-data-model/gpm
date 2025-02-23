@@ -946,7 +946,7 @@ export default {
                         } else {
                             this.error = error.message;
                             // eslint-disable-next-line no-alert
-                            alert("There was a error trying to submit the form: " + error.message);
+                            alert(`There was a error trying to submit the form: ${  error.message}`);
                         }
                     } else if (error.request) {
                         // The request was made but no response was received
@@ -963,7 +963,7 @@ export default {
             } else {
                 // Notify user to fill all required sections
                 // eslint-disable-next-line no-alert
-                alert("Please fill these required sections: " + sections_with_errors.join(", ") + ".");
+                alert(`Please fill these required sections: ${  sections_with_errors.join(", ")  }.`);
             }
             // }
         },

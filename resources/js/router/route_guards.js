@@ -49,7 +49,7 @@ export const hasPermission = (to, permission) => {
         return true;
     }
 
-    store.commit('pushError', 'You don\'t have permission to access '+to.path)
+    store.commit('pushError', `You don't have permission to access ${to.path}`)
     return false;
 }
 
@@ -57,7 +57,7 @@ export const hasAnyPermission = (to, permissions) => {
     if (store.getters.currentUser.hasAnyPermission(permissions)) {
         return true;
     }
-    store.commit('pushError', 'You don\'t have permission to access '+to.path)
+    store.commit('pushError', `You don't have permission to access ${to.path}`)
 
     return false;
 }

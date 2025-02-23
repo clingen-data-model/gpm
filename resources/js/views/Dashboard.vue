@@ -61,7 +61,7 @@ const groupFields = ref([
         sortable: true,
         resolveValue: (item) => {
             if (item.status.id == configs.groups.statuses['applying'].id) {
-                return item.status.name + ' - ' + item.expert_panel.currentStepName;
+                return `${item.status.name  } - ${  item.expert_panel.currentStepName}`;
             }
             return item.status.name;
         },

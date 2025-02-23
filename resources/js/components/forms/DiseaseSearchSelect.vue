@@ -52,7 +52,7 @@ export default {
     },
     methods: {
         async search (searchText) {
-            return await api.get('/api/diseases/search?query_string='+searchText)
+            return await api.get(`/api/diseases/search?query_string=${searchText}`)
                 .then(response => {
                     return response.data;
                 });

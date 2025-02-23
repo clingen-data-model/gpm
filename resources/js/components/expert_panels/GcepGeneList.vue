@@ -199,7 +199,7 @@ export default {
         const save = async () => {
             const genes = genesAsText.value 
                             ? genesAsText.value
-                                .split(new RegExp(/[, \n]/))
+                                .split(/[, \n]/)
                                 .filter(i => i !== '')
                             : [];
 

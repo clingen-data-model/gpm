@@ -2,7 +2,7 @@ import {api} from '@/http';
 
 export const impersonate = (userId) => {
     sessionStorage.clear();
-    window.location.href = '/impersonate/take/'+userId;
+    window.location.href = `/impersonate/take/${userId}`;
 }
 
 export const search = (searchString) => {

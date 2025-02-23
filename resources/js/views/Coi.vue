@@ -108,7 +108,7 @@ export default {
             return this.groupName !== null;
         },
         coiTitle() {
-            return survey.name+' for '+this.groupName;
+            return `${survey.name} for ${this.groupName}`;
         },
         membership () {
             return this.$store.getters

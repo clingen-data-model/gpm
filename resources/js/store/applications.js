@@ -248,7 +248,7 @@ export default {
             formData.append('body', body);
 
             Array.from(attachments).forEach((file, idx) => {
-                formData.append('attachments[' + idx + ']', file);
+                formData.append(`attachments[${  idx  }]`, file);
             });
 
             const url = `/api/applications/${application.uuid}/current-step/approve`

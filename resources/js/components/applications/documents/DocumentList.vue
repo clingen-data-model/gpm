@@ -159,7 +159,7 @@ export default {
         },
         
         filteredFields () {
-            let clonedFields = [...this.fields]
+            const clonedFields = [...this.fields]
             if (!this.showVersion) {
                 const kdx = clonedFields.findIndex(f => f && f.name == 'version')
                 clonedFields.splice(kdx, 1)

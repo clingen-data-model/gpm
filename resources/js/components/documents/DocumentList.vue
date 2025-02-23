@@ -188,7 +188,7 @@ export default {
         filteredDocuments () {
             let documents = [...this.documents];
             if (this.keyword) {
-                const rx = new RegExp('.*'+this.keyword+'.*', 'i');
+                const rx = new RegExp(`.*${this.keyword}.*`, 'i');
                 documents = documents.filter(doc => {
                     return doc.filename.match(rx)
                         || (doc.notes && doc.notes.match(rx))

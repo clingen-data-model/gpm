@@ -35,8 +35,8 @@ export default function (defaultSort = null) {
     
     const filter = computed({
         set(value) {
-            let currentQuery = route.query;
-            let currentPath = route.path;
+            const currentQuery = route.query;
+            const currentPath = route.path;
     
             let updatedQuery = {...currentQuery};
     

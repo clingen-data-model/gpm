@@ -50,10 +50,10 @@ export default {
     },
     setup (props, context) {
         const store = useStore();
-        let errors = ref({});
-        let email = ref(null);
-        let password = ref(null);
-        let password_confirmation = ref(null);
+        const errors = ref({});
+        const email = ref(null);
+        const password = ref(null);
+        const password_confirmation = ref(null);
 
         const createAccount = async () => {
             try {

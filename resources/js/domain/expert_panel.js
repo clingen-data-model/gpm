@@ -219,8 +219,8 @@ class ExpertPanel extends Entity
 
     get pendingActionsByAssignee() {
         const naAssignees = Object.values(configs.nextActions.assignees).map(na => na.id);
-        let groups = {};
-        for (let i in naAssignees) {
+        const groups = {};
+        for (const i in naAssignees) {
             const item = naAssignees[i];
             groups[item] = [];
         }
