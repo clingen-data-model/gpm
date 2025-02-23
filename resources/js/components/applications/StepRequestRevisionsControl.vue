@@ -19,12 +19,12 @@
         showRejectForm.value = true;
         rejectsubmissionform.value.getEmailTemplate()
     };
+    const hideRejectForm = () => {
+        showRejectForm.value = false;
+    };
     const handleRejected = () => {
         hideRejectForm();
         emits('revisionsRequested');
-    };
-    const hideRejectForm = () => {
-        showRejectForm.value = false;
     };
 
 </script>

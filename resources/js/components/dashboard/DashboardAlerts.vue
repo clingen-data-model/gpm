@@ -14,6 +14,14 @@
     })
     const sustainedCurationReviews = ref([]);
 
+    const coordinatingGroups = computed(() => {
+        return props.user.memberships
+                .filter(m => m.hasPermission('annual-update-manage'))
+                .map(m => m.group)
+                .filter(g => g !== null)
+                .map(group => new Group(group))
+    });
+
     const getSustainedCurationReviewTasks = async () => {
         if (coordinatingGroups.value.length == 0) {
             return;
@@ -40,15 +48,6 @@
                                                 return uniqueTasks;
                                             });
     }
-
-    const coordinatingGroups = computed(() => {
-        return props.user.memberships
-                .filter(m => m.hasPermission('annual-update-manage'))
-                .map(m => m.group)
-                .filter(g => g !== null)
-                .map(group => new Group(group))
-    });
-
 
     onMounted (() => {
         getSustainedCurationReviewTasks();

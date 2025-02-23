@@ -161,7 +161,7 @@ export default {
             this.showResendDialog = true;
         },
         cleanupResend () {
-            this.currentEmail = {},
+            this.currentEmail = {}
             this.showResendDialog = false;
             this.$refs.dataTable.getItems()
         }

@@ -21,8 +21,7 @@
             case 'internal comment':
                 return 'gray'
             default:
-                null
-                break;
+                return null
         }
     }
 

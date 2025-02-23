@@ -25,13 +25,13 @@
         showApproveForm.value = true;
     };
 
+    const hideApproveForm = () => {
+        showApproveForm.value = false;
+    };
+
     const handleApproved = () => {
             hideApproveForm();
             emits('stepApproved');
-    };
-
-    const hideApproveForm = () => {
-        showApproveForm.value = false;
     };
 
 </script>
