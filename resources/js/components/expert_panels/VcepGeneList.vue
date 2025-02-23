@@ -204,16 +204,6 @@ export default {
             showConfirmRemove.value = true;
         }
 
-        const remove = async (gene) => {
-            try {
-                await api.delete(`/api/groups/${group.value.uuid}/expert-panel/genes/${gene.id}`)
-                await getGenes();
-                cancelRemove();
-            } catch (error) {
-                store.commit('pushError', error.response.data);
-            }
-        }
-
         const cancelRemove = () => {
             selectedGene.value = {gene: {}, disease: {}};
             showConfirmRemove.value = false;
@@ -234,6 +224,16 @@ export default {
                 store.commit('pushError', error.response.data);
             }
             loading.value = false;
+        }
+
+        const remove = async (gene) => {
+            try {
+                await api.delete(`/api/groups/${group.value.uuid}/expert-panel/genes/${gene.id}`)
+                await getGenes();
+                cancelRemove();
+            } catch (error) {
+                store.commit('pushError', error.response.data);
+            }
         }
 
         const save = async () => {

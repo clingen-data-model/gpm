@@ -40,8 +40,7 @@
             case 'internal comment':
                 return 'gray'
             default:
-                null
-                break;
+                break
         }
     }
 
@@ -73,19 +72,20 @@
     }
 
     const showReplyList = ref(false);
-    const toggleReplies = async () => {
-        if (!showReplyList.value) {
-            showReplies();
-        }
-        showReplyList.value = !showReplyList.value;
-    }
-
+    
     const showReplies = () => {
         replyManager.value.getComments()
             .then(rsp => {
                 showReplyList.value = true;
                 return rsp;
             });
+    }
+
+    const toggleReplies = async () => {
+        if (!showReplyList.value) {
+            showReplies();
+        }
+        showReplyList.value = !showReplyList.value;
     }
 
     const showReplyForm = ref(false);
