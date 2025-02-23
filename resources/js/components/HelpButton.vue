@@ -43,8 +43,8 @@
   </div>
 </template>
 <script>
-import { api } from "@/http";
 import configs from "@/configs";
+import { api } from "@/http";
 
 const feedback = configs.feedback;
 

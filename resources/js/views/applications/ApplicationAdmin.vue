@@ -1,10 +1,10 @@
 <script>
-import { mapGetters } from 'vuex'
 import ApplicationLog from '@/components/applications/ApplicationLog.vue'
-import NextActions from '@/components/next_actions/NextActions.vue'
+import BasicInfoData from '@/components/applications/BasicInfoData.vue'
 import ProgressChart from '@/components/applications/ProgressChart.vue'
 import StepTabs from '@/components/applications/StepTabs.vue'
-import BasicInfoData from '@/components/applications/BasicInfoData.vue'
+import NextActions from '@/components/next_actions/NextActions.vue'
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'ApplicationDetail',

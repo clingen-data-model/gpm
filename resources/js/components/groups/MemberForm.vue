@@ -180,14 +180,14 @@
     </teleport>
 </template>
 <script>
+import MemberSuggestions from '@/components/groups/MemberSuggestions.vue'
+import config from '@/configs'
+import {Person} from '@/domain'
+import GroupMember from '@/domain/group_member'
+import {api, isValidationError} from '@/http'
 import {debounce} from 'lodash-es'
 import {computed} from 'vue'
 import {useStore} from 'vuex'
-import {api, isValidationError} from '@/http'
-import {Person} from '@/domain'
-import GroupMember from '@/domain/group_member'
-import MemberSuggestions from '@/components/groups/MemberSuggestions.vue'
-import config from '@/configs'
 import CredentialsView from '../people/CredentialsView.vue'
 import ExpertisesView from '../people/ExpertisesView.vue'
 import ProfileForm from '../people/ProfileForm.vue'

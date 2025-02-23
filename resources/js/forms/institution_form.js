@@ -1,5 +1,5 @@
-import {ref, computed} from 'vue';
 import {api} from '@/http';
+import {computed, ref} from 'vue';
 export const countries = ref([]);
 
 export const fields = computed(() => [

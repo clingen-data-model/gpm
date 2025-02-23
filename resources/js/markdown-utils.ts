@@ -1,9 +1,9 @@
 import rehypeParse from 'rehype-parse'
 import rehypeRemark from 'rehype-remark'
+import rehypeSanitize from 'rehype-sanitize'
 import remarkHtml from 'remark-html'
 import remarkParse from 'remark-parse'
 import remarkStringify from 'remark-stringify'
-import rehypeSanitize from 'rehype-sanitize'
 import { unified } from 'unified'
 
 export function markdownFromHTML(html: string): string {

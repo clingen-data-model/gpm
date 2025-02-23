@@ -1,19 +1,19 @@
 <script setup>
-import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
-import { ref, computed, onMounted, watch } from 'vue'
-import { upperCase } from 'lodash-es'
+import { hasAnyPermission, hasPermission } from '@/auth_utils.js'
+import DashboardAlerts from '@/components/dashboard/DashboardAlerts.vue'
 import CoiList from '@/components/people/CoiList.vue'
 import PersonProfile from '@/components/people/PersonProfile.vue'
-import Person from "@/domain/person"
-import Group from "@/domain/group"
 import configs from '@/configs'
+import Group from "@/domain/group"
+import Person from "@/domain/person"
+import { featureIsEnabled } from '@/utils.js'
+import { upperCase } from 'lodash-es'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 import ApplicationActivity from '../components/dashboard/ApplicationActivity.vue';
-import DashboardAlerts from '@/components/dashboard/DashboardAlerts.vue'
 import NotificationList from '../components/NotificationList.vue'
 import DemographicsForm from '../components/people/DemographicsForm.vue';
-import { featureIsEnabled } from '@/utils.js'
-import { hasAnyPermission, hasPermission } from '@/auth_utils.js'
 
 const store = useStore();
 const router = useRouter();

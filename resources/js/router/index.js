@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store from '../store/index'
+import adminRoutes from './admin'
 import applicationRoutes from './applications'
-import peopleRoutes from './people'
 import authRoutes from './auth'
 import cdwgRoutes from './cdwgs'
 import groupRoutes from './groups'
-import adminRoutes from './admin'
+import peopleRoutes from './people'
 import userRoutes from './users'
 
 const routes = [

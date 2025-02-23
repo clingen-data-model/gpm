@@ -1,7 +1,7 @@
 <script>
-import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm.vue'
 import EvidenceSummaries from '@/components/expert_panels/EvidenceSummaryList.vue'
 import MemberDesignationForm from '@/components/expert_panels/MemberDesignationForm.vue'
+import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm.vue'
 import {debounce} from 'lodash-es'
 
 export default {

@@ -17,11 +17,11 @@
     </form-container>
 </template>
 <script setup>
-    import { ref, watch, computed } from 'vue'
-    import {useStore} from 'vuex'
-    import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
+    import {fetchEntries, saveEntry, updateEntry} from '@/adapters/log_entry_repository'
     import StepInput from '@/components/forms/StepInput.vue'
-    import {saveEntry, updateEntry, fetchEntries} from '@/adapters/log_entry_repository'
+    import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
+    import { computed, ref, watch } from 'vue'
+    import {useStore} from 'vuex'
 
     const props = defineProps({
         logEntry: {

@@ -34,9 +34,9 @@ const addDays = (date, days) => {
 }
 
 export { 
+    addDays, 
     formatDate, 
     formatDateTime, 
-    formatTime, 
+    formatTime,
     yearAgo,
-    addDays,
 }

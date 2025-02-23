@@ -1,7 +1,7 @@
 <script setup>
-    import {ref, onMounted } from 'vue'
+    import {mirrorEmits, mirrorProps, setupMirror} from '@/composables/setup_working_mirror'
     import {api} from '@/http'
-    import {setupMirror, mirrorProps, mirrorEmits} from '@/composables/setup_working_mirror'
+    import {onMounted, ref } from 'vue'
     import SearchSelect from '../forms/SearchSelect.vue';
 
     const props = defineProps({

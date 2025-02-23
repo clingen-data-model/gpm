@@ -1,7 +1,7 @@
 <script setup>
-    import {ref, inject, useAttrs} from 'vue'
-    import CommentSummary from './CommentSummary.vue';
     import {api} from '@/http';
+    import {inject, ref, useAttrs} from 'vue'
+    import CommentSummary from './CommentSummary.vue';
 
     const attrs = useAttrs();
     const props = defineProps({

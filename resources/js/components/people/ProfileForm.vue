@@ -1,15 +1,15 @@
 <script setup>
-    import {useStore} from 'vuex'
-    import {ref, computed, watch, onMounted} from 'vue'
+    import ProfilePhotoForm from '@/components/people/ProfilePhotoForm.vue';
     import Person from '@/domain/person'
     import isValidationError from '@/http/is_validation_error'
-    import ProfilePhotoForm from '@/components/people/ProfilePhotoForm.vue';
+    import {computed, onMounted, ref, watch} from 'vue'
+    import {useStore} from 'vuex'
     import { hasPermission, userIsPerson } from '../../auth_utils';
-    import InstitutionSearchSelect from '../forms/InstitutionSearchSelect.vue';
     import AddressInput from '../forms/AddressInput.vue';
-    import TimezoneSearchSelect from '../forms/TimezoneSearchSelect.vue';
     import CredentialsInput from '../forms/CredentialsInput.vue';
     import ExpertisesInput from '../forms/ExpertisesInput.vue';
+    import InstitutionSearchSelect from '../forms/InstitutionSearchSelect.vue';
+    import TimezoneSearchSelect from '../forms/TimezoneSearchSelect.vue';
 
     const store = useStore();
     const props = defineProps({

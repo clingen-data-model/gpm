@@ -1,9 +1,9 @@
 <script setup>
-    import {ref, computed, inject, watch} from 'vue';
-    import {useStore} from 'vuex';
     import {api} from '@/http'
-    import CommentSummary from '../CommentSummary.vue';
     import {isValidationError} from '@/http';
+    import {computed, inject, ref, watch} from 'vue';
+    import {useStore} from 'vuex';
+    import CommentSummary from '../CommentSummary.vue';
 
     const props = defineProps({
         modelValue: {

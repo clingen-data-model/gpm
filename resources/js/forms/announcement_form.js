@@ -1,5 +1,5 @@
-import {ref} from 'vue';
 import {api, isValidationError} from '@/http';
+import {ref} from 'vue';
 
 export const announcement = ref({type: 'info', message: null});
 export const validationErrors = ref({});

@@ -86,23 +86,23 @@
     </div>
 </template>
 <script>
-import {debounce} from 'lodash-es'
-
-import {errors} from '@/forms/form_factory'
-import {isValidationError} from '@/http'
 import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
+
 import ApplicationStep from '@/components/expert_panels/ApplicationStep.vue'
 import AttestationNhgri from '@/components/expert_panels/AttestationNhgri.vue'
 import AttestationReanalysis from '@/components/expert_panels/AttestationReanalysis.vue'
-import SpecificationsSection from '@/components/expert_panels/SpecificationsSection.vue'
 import EvidenceSummaryList from '@/components/expert_panels/EvidenceSummaryList.vue'
-import GroupForm from '@/components/groups/GroupForm.vue'
 import MemberDesignationForm from '@/components/expert_panels/MemberDesignationForm.vue';
-import MemberList from '@/components/groups/MemberList.vue';
 import MembershipDescriptionForm from '@/components/expert_panels/MembershipDescriptionForm.vue';
 import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm.vue';
+import SpecificationsSection from '@/components/expert_panels/SpecificationsSection.vue'
 import VcepGeneList from '@/components/expert_panels/VcepGeneList.vue';
 import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm.vue';
+import GroupForm from '@/components/groups/GroupForm.vue'
+import MemberList from '@/components/groups/MemberList.vue';
+import {errors} from '@/forms/form_factory'
+import {isValidationError} from '@/http'
+import {debounce} from 'lodash-es'
 
 export default {
     name: 'ApplicationVcep',

@@ -46,9 +46,9 @@
 </template>
 <script>
 import { formatDate } from '../../../date_utils'
-import DocumentEditForm from './DocumentEditForm'
-import RemoveButton from '../../buttons/RemoveButton'
 import is_validation_error from '../../../http/is_validation_error'
+import RemoveButton from '../../buttons/RemoveButton'
+import DocumentEditForm from './DocumentEditForm'
 
 export default {
     components: {

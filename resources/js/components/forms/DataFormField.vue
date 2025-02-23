@@ -1,10 +1,10 @@
 <script setup>
-    import {computed, h} from 'vue'
-    import {setupMirror, mirrorProps, mirrorEmits} from '@/composables/setup_working_mirror'
+    import {mirrorEmits, mirrorProps, setupMirror} from '@/composables/setup_working_mirror'
     import { titleCase } from '@/string_utils.js'
-    import {set, get} from 'lodash-es'
-    import InputRowVue from './InputRow.vue';
+    import {get, set} from 'lodash-es'
+    import {computed, h} from 'vue'
     import DictionaryRowVue from '../DictionaryRow.vue';
+    import InputRowVue from './InputRow.vue';
 
     const props = defineProps({
         ...mirrorProps,

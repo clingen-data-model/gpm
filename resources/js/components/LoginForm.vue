@@ -32,8 +32,8 @@
 </template>
 
 <script>
-import is_validation_error from '@/http/is_validation_error'
 import isAuthError from '@/http/is_auth_error'
+import is_validation_error from '@/http/is_validation_error'
 
 export default {
     props: {

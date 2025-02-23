@@ -527,11 +527,11 @@
 <script>
 const baseUrl = "/api/people";
 
+import Person from "@/domain/person";
+
 import axios from "axios";
 
 import { mapGetters } from "vuex";
-
-import Person from "@/domain/person";
 console.log(Person);
 
 var items = [];

@@ -1,7 +1,7 @@
 <script setup>
+    import {isValidationError} from '@/http';
     import {ref, watch} from 'vue';
     import {useStore} from 'vuex';
-    import {isValidationError} from '@/http';
 
     const store = useStore();
     const props = defineProps({

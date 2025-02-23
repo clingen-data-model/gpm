@@ -24,11 +24,11 @@
     </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
-import StepOne from '@/components/applications/StepOne.vue'
-import StepTwo from '@/components/applications/StepTwo.vue'
-import StepThree from '@/components/applications/StepThree.vue'
 import StepFour from '@/components/applications/StepFour.vue'
+import StepOne from '@/components/applications/StepOne.vue'
+import StepThree from '@/components/applications/StepThree.vue'
+import StepTwo from '@/components/applications/StepTwo.vue'
+import { mapGetters } from 'vuex'
 
 export default {
     components: {

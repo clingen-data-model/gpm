@@ -63,9 +63,9 @@
     </div>
 </template>
 <script>
-import {mapGetters} from 'vuex'
-import ImpersonateControl from '@/components/ImpersonateControl.vue'
 import AnnouncementControl from '@/components/alerts/AnnouncementControl.vue'
+import ImpersonateControl from '@/components/ImpersonateControl.vue'
+import {mapGetters} from 'vuex'
 
 export default {
     name: 'UserMenu',

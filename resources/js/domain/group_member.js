@@ -1,7 +1,7 @@
-import Entity from './entity'
-import Person from './person'
 import configs from '@/configs.json'
 import { arrayContains } from '@/utils';
+import Entity from './entity'
+import Person from './person'
 
 const groupRoles = configs.groups.roles;
 

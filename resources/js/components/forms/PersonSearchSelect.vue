@@ -26,8 +26,8 @@
     </div>
 </template>
 <script>
-import {api} from '@/http'
 import SearchSelect from '@/components/forms/SearchSelect.vue'
+import {api} from '@/http'
 
 export default {
     name: 'PersonSearchSelect',

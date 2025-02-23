@@ -1,8 +1,8 @@
 <script setup>
-    import {computed} from 'vue'
-    import {formatDate} from '@/date_utils.js'
     import {judgementColor} from '@/composables/judgement_utils.js'
+    import {formatDate} from '@/date_utils.js'
     import { featureIsEnabled } from '@/utils.js';
+    import {computed} from 'vue'
 import MarkdownBlock from '../MarkdownBlock.vue';
 
     const props = defineProps({

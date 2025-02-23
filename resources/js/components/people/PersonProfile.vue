@@ -100,11 +100,11 @@
     </div>
 </template>
 <script>
-import Person from '@/domain/person'
-
 import ProfileForm from '@/components/people/ProfileForm.vue'
-import ProfilePicture from '@/components/people/ProfilePicture.vue'
+
 import ProfilePhotoForm from '@/components/people/ProfilePhotoForm.vue'
+import ProfilePicture from '@/components/people/ProfilePicture.vue'
+import Person from '@/domain/person'
 import CredentialsView from './CredentialsView.vue'
 import ExpertisesView from './ExpertisesView.vue'
 

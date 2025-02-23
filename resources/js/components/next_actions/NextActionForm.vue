@@ -44,10 +44,10 @@
 </template>
 <script>
 import StepInput from '@/components/forms/StepInput.vue'
-import {mapGetters} from 'vuex'
 import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
-import {formatDate} from '@/date_utils'
 import configs from '@/configs'
+import {formatDate} from '@/date_utils'
+import {mapGetters} from 'vuex'
 
 export default {
     name: 'NextActionForm',

@@ -1,5 +1,5 @@
-import BaseRepository from './base_repository.js'
 import {api} from '@/http'
+import BaseRepository from './base_repository.js'
 
 
 const commentRepository = (new BaseRepository('/api/comments'));

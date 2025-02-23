@@ -32,10 +32,10 @@
     </div>
 </template>
 <script>
-import Group from '@/domain/group'
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
-import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
 import MarkdownBlock from '@/components/MarkdownBlock.vue'
+import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
+import Group from '@/domain/group'
 
 export default {
     name: "groupDescriptionForm",

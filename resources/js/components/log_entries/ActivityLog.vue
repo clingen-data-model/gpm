@@ -47,11 +47,11 @@
     </div>
 </template>
 <script>
-import { ref, computed } from 'vue'
+import ActivityLogDeleteConfirmation from '@/components/log_entries/ActivityLogDeleteConfirmation.vue'
 
 import LogEntryForm from '@/components/log_entries/ActivityLogEntryForm.vue'
-import ActivityLogDeleteConfirmation from '@/components/log_entries/ActivityLogDeleteConfirmation.vue'
 import {formatDate, formatTime} from '@/date_utils'
+import { computed, ref } from 'vue'
 
 const fields = [
     {

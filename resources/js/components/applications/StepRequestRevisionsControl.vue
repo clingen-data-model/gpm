@@ -1,7 +1,7 @@
 <script setup>
-    import {ref, useAttrs} from 'vue'
-
     import RejectStepForm from '@/components/applications/RejectStepForm.vue'
+
+    import {ref, useAttrs} from 'vue'
 
     const attrs = useAttrs();
     // eslint-disable-next-line

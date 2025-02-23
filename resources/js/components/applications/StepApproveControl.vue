@@ -1,6 +1,6 @@
 <script setup>
-    import { ref, computed, useAttrs } from 'vue';
     import ApproveStepForm from '@/components/applications/ApproveStepForm.vue'
+    import { computed, ref, useAttrs } from 'vue';
 
     const attrs = useAttrs();
     const props = defineProps({

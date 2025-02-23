@@ -312,37 +312,37 @@
   </div>
 </template>
 <script>
-import { ref, computed, onMounted, watch } from "vue";
-import { useStore } from "vuex";
-
-import { logEntries, fetchEntries } from "@/adapters/log_entry_repository";
+import { fetchEntries, logEntries } from "@/adapters/log_entry_repository";
 import { hasPermission } from "@/auth_utils";
 
-import ActivityLog from "@/components/log_entries/ActivityLog.vue";
-import ApplicationSummary from "@/components/groups/ApplicationSummary.vue";
+import SustainedCurationReviewAlert from "@/components/alerts/SustainedCurationReviewAlert.vue";
+import ProgressChart from "@/components/applications/ProgressChart.vue";
+
+import StepTabs from "@/components/applications/StepTabs.vue";
 import AttestationGcep from "@/components/expert_panels/AttestationGcep.vue";
 import AttestationNhgri from "@/components/expert_panels/AttestationNhgri.vue";
 import AttestationReanalysis from "@/components/expert_panels/AttestationReanalysis.vue";
-import SpecificationsSection from "@/components/expert_panels/SpecificationsSection.vue";
 import EvidenceSummaries from "@/components/expert_panels/EvidenceSummaryList.vue";
 import GcepGeneList from "@/components/expert_panels/GcepGeneList.vue";
 import GcepOngoingPlansForm from "@/components/expert_panels/GcepOngoingPlansForm.vue";
-import GroupDescriptionForm from "@/components/groups/GroupDescriptionForm.vue";
-import GroupForm from "@/components/groups/GroupForm.vue";
-import GroupDetailHeader from "./GroupDetailHeader.vue";
-import MemberList from "@/components/groups/MemberList.vue";
 import MembershipDescriptionForm from "@/components/expert_panels/MembershipDescriptionForm.vue";
 import ScopeDescriptionForm from "@/components/expert_panels/ScopeDescriptionForm.vue";
+import SpecificationsSection from "@/components/expert_panels/SpecificationsSection.vue";
 import VcepGeneList from "@/components/expert_panels/VcepGeneList.vue";
 import VcepOngoingPlansForm from "@/components/expert_panels/VcepOngoingPlansForm.vue";
-import GroupDocuments from "./GroupDocuments.vue";
 import AnnualUpdateAlert from "@/components/groups/AnnualUpdateAlert.vue";
-import StepTabs from "@/components/applications/StepTabs.vue";
-import ProgressChart from "@/components/applications/ProgressChart.vue";
-import SustainedCurationReviewAlert from "@/components/alerts/SustainedCurationReviewAlert.vue";
+import ApplicationSummary from "@/components/groups/ApplicationSummary.vue";
+import GroupDescriptionForm from "@/components/groups/GroupDescriptionForm.vue";
+import GroupForm from "@/components/groups/GroupForm.vue";
+import MemberList from "@/components/groups/MemberList.vue";
 import SubgroupList from '@/components/groups/SubgroupList.vue'
-
+import ActivityLog from "@/components/log_entries/ActivityLog.vue";
+import { computed, onMounted, ref, watch } from "vue";
+import { useStore } from "vuex";
 import { api, isValidationError } from "../../http";
+import GroupDetailHeader from "./GroupDetailHeader.vue";
+
+import GroupDocuments from "./GroupDocuments.vue";
 
 export default {
   name: "GroupDetail",

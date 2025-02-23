@@ -40,9 +40,9 @@
     </div>
 </template>
 <script>
-import {api, queryStringFromParams} from '@/http'
 import SearchSelect from '@/components/forms/SearchSelect.vue'
 import InstitutionForm from '@/components/institutions/InstitutionCreateForm.vue'
+import {api, queryStringFromParams} from '@/http'
 
 export default {
     name: 'InstitutionSearchSelect',

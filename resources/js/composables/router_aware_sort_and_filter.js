@@ -1,5 +1,5 @@
-import { useRouter, useRoute } from 'vue-router'
 import {computed} from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 export default function (defaultSort = null) {
     const router = useRouter()

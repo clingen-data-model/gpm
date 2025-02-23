@@ -17,9 +17,9 @@
     </base-step>
 </template>
 <script>
-import {mapGetters} from 'vuex'
 import BaseStep from '@/components/applications/BaseStep.vue'
 import SpecificationsSection from '@/components/expert_panels/SpecificationsSection.vue'
+import {mapGetters} from 'vuex'
 
 export default {
     name: 'StepTwo',

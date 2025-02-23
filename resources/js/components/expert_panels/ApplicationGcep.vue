@@ -50,20 +50,20 @@
     </div>
 </template>
 <script>
-import {debounce} from 'lodash-es'
-
-import {errors} from '@/forms/form_factory'
-import {isValidationError} from '@/http'
-
 import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
+
 import ApplicationStep from '@/components/expert_panels/ApplicationStep.vue'
 import AttestationGcep from '@/components/expert_panels/AttestationGcep.vue'
+
 import AttestationNhgri from '@/components/expert_panels/AttestationNhgri.vue'
 import GcepGeneList from '@/components/expert_panels/GcepGeneList.vue';
+import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm.vue';
+import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm.vue';
 import GroupForm from '@/components/groups/GroupForm.vue'
 import MemberList from '@/components/groups/MemberList.vue';
-import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm.vue';
-import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm.vue';
+import {errors} from '@/forms/form_factory'
+import {isValidationError} from '@/http'
+import {debounce} from 'lodash-es'
 
 export default {
     name: 'ApplicationGcep',

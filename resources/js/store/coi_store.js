@@ -1,6 +1,6 @@
-import store from '.'
 import application_repository from '@/adapters/application_repository'
 import api from '@/http/api'
+import store from '.'
 
 export default {
     state: {},

@@ -25,9 +25,9 @@
     </div>
 </template>
 <script>
-import OnboardingSteps from '@/components/onboarding/OnboardingSteps.vue'
-import InviteRedemptionForm from '@/components/onboarding/InviteRedemptionForm.vue'
 import AccountCreationForm from '@/components/onboarding/AccountCreationForm.vue'
+import InviteRedemptionForm from '@/components/onboarding/InviteRedemptionForm.vue'
+import OnboardingSteps from '@/components/onboarding/OnboardingSteps.vue'
 import Person from '@/domain/person'
 
 const stepComponents = [

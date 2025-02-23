@@ -37,10 +37,10 @@
     </form-container>
 </template>
 <script>
-import {mapGetters} from 'vuex'
+import UserDefinedMailForm from '@/components/forms/UserDefinedMailForm.vue'
 import api from '@/http/api';
 import isValidationError from '@/http/is_validation_error';
-import UserDefinedMailForm from '@/components/forms/UserDefinedMailForm.vue'
+import {mapGetters} from 'vuex'
 
 const templateForStep = {
     1: 'App\\Mail\\UserDefinedMailTemplates\\InitialApprovalMailTemplate',

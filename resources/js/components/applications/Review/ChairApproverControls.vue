@@ -1,10 +1,10 @@
 <script setup>
-    import { ref, computed, inject } from 'vue'
+    import {judgementColor} from '@/composables/judgement_utils.js'
+    import { computed, inject, ref } from 'vue'
     import { useStore } from 'vuex'
     import CommentSummary from '../CommentSummary.vue';
-    import JudgementForm from './JudgementForm.vue';
     import JudgementDetail from './JudgementDetail.vue';
-    import {judgementColor} from '@/composables/judgement_utils.js'
+    import JudgementForm from './JudgementForm.vue';
 
     const commentManager = inject('commentManager');
     const latestSubmission = inject('latestSubmission')

@@ -86,10 +86,10 @@
     </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
-import { formatDate } from '@/date_utils'
 import sortAndFilter from '@/composables/router_aware_sort_and_filter'
 import configs from '@/configs'
+import { formatDate } from '@/date_utils'
+import { mapGetters } from 'vuex'
 
 export default {
     components: {

@@ -60,10 +60,10 @@
     </div>
 </template>
 <script>
-import sortAndFilter from '@/composables/router_aware_sort_and_filter';
 import CredentialUpdateForm from '@/components/credentials/CredentialUpdateForm.vue'
-import CredentialsApprovalForm from '../components/credentials/CredentialsApprovalForm.vue';
+import sortAndFilter from '@/composables/router_aware_sort_and_filter';
 import CredentialMergeForm from '../components/credentials/CredentialMergeForm.vue';
+import CredentialsApprovalForm from '../components/credentials/CredentialsApprovalForm.vue';
 
 export default {
     name: 'CredentialList',

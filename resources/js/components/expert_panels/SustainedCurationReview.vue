@@ -1,8 +1,8 @@
 <script setup>
     import EvidenceSummaryList from '@/components/expert_panels/EvidenceSummaryList.vue'
+    import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
     import {computed, watch } from 'vue'
     import {useStore} from 'vuex'
-    import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
 
     const store = useStore();
     const group = computed(() => store.getters['groups/currentItemOrNew'])

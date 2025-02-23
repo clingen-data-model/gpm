@@ -16,9 +16,9 @@
     </div>
 </template>
 <script>
-import {mapGetters} from 'vuex'
 import BaseStep from '@/components/applications/BaseStep.vue'
 import DefinitionReview from '@/components/expert_panels/DefinitionReview.vue'
+import {mapGetters} from 'vuex'
 
 export default {
     name: 'StepOne',

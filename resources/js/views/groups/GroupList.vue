@@ -56,11 +56,11 @@
     </div>
 </template>
 <script>
-import {useStore} from 'vuex'
-import {useRouter} from 'vue-router'
-import {computed, ref} from 'vue'
 import GroupForm from '@/components/groups/GroupForm.vue'
 import SubmissionWrapper from '@/components/groups/SubmissionWrapper.vue'
+import {computed, ref} from 'vue'
+import {useRouter} from 'vue-router'
+import {useStore} from 'vuex'
 
 export default {
     name: 'ComponentName',

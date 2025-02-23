@@ -16,8 +16,8 @@
     </div>
 </template>
 <script>
-import CspecSummary from '@/components/expert_panels/CspecSummary.vue'
 import ApplicationUploadForm from '@/components/applications/documents/ApplicationUploadForm.vue'
+import CspecSummary from '@/components/expert_panels/CspecSummary.vue'
 
 export default {
     name: 'SpecificationsSection',

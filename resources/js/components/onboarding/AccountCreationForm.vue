@@ -31,11 +31,11 @@
     </div>
 </template>
 <script>
-import {ref, onMounted} from 'vue'
+import LoginForm from '@/components/LoginForm.vue'
 import {redeemInvite, redeemInviteForExistingUser} from '@/domain/onboarding_service'
 import isValidationError from '@/http/is_validation_error'
+import {onMounted, ref} from 'vue'
 import { useStore } from 'vuex'
-import LoginForm from '@/components/LoginForm.vue'
 
 export default {
     name: 'AccountCreationForm',

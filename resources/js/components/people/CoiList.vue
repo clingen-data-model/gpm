@@ -97,11 +97,11 @@
     </div>
 </template>
 <script>
-import {ref, computed} from 'vue';
+import {hasPermission, userIsPerson} from '@/auth_utils.js'
 import CoiDetail from '@/components/applications/CoiDetail.vue';
 import Person from '@/domain/person'
 import {kebabCase} from '@/string_utils.js'
-import {hasPermission, userIsPerson} from '@/auth_utils.js'
+import {computed, ref} from 'vue';
 
 export default {
     name: 'CoiList',

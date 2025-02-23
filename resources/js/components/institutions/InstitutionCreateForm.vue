@@ -5,7 +5,7 @@
     </div>
 </template>
 <script>
-import {fields, getCountries, countries, createInstitution} from '@/forms/institution_form'
+import {countries, createInstitution, fields, getCountries} from '@/forms/institution_form'
 import {isValidationError} from '@/http'
 
 export default {

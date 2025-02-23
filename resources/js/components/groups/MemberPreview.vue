@@ -67,12 +67,12 @@
     </div>
 </template>
 <script>
-import GroupMember from '@/domain/group_member';
-import Group from '@/domain/group';
 import ProfilePicture from '@/components/people/ProfilePicture.vue'
+import {formatDate} from '@/date_utils'
+import Group from '@/domain/group';
+import GroupMember from '@/domain/group_member';
 import CredentialsView from '../people/CredentialsView.vue';
 import ExpertisesView from '../people/ExpertisesView.vue'
-import {formatDate} from '@/date_utils'
 
 
 

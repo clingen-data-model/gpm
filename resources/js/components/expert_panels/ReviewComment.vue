@@ -1,12 +1,12 @@
 <script setup>
-    import {ref, computed, onMounted} from 'vue'
-    import {useStore} from 'vuex'
-    import ReviewCommentForm from './ReviewCommentForm.vue'
+    import commentManagerFactory from '@/composables/comment_manager.js'
     import commentFormFactory from '@/forms/comment_form.js'
+    import {computed, onMounted, ref} from 'vue'
+    import {useStore} from 'vuex'
+    import {hasPermission} from '../../auth_utils';
     import commentRepository from '../../repositories/comment_repository';
     import DropdownItem from '../DropdownItem.vue';
-    import commentManagerFactory from '@/composables/comment_manager.js'
-    import {hasPermission} from '../../auth_utils';
+    import ReviewCommentForm from './ReviewCommentForm.vue'
 
     const store = useStore();
 

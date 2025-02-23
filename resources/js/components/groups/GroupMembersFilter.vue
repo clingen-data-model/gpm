@@ -27,8 +27,8 @@
     </div>
 </template>
 <script>
-import configs from '@/configs.json'
 import { setupMirror } from '@/composables/setup_working_mirror'
+import configs from '@/configs.json'
 
 export default {
     name: 'GroupMembersFilter',

@@ -41,9 +41,9 @@
 
 </template>
 <script>
-import mirror from '@/composables/setup_working_mirror'
 import AppSection from '@/components/expert_panels/ApplicationSection.vue'
 import MemberList from '@/components/groups/MemberList.vue'
+import mirror from '@/composables/setup_working_mirror'
 
 export default {
     name: 'MembershipUpdate',

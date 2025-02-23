@@ -1,7 +1,7 @@
 <script setup>
-    import {ref, onMounted} from 'vue';
     import NotificationItem from '@/components/NotificationItem.vue'
     import {api} from '@/http'
+    import {onMounted, ref} from 'vue';
 
     const props = defineProps({
         user: {

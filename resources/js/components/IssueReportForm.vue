@@ -71,8 +71,8 @@
   </div>
 </template>
 <script>
-import { api, isValidationError } from "@/http";
 import configs from "@/configs";
+import { api, isValidationError } from "@/http";
 
 const feedback = configs.feedback;
 

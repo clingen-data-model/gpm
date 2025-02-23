@@ -1,10 +1,10 @@
 <script setup>
 import {computed} from 'vue'
 import {useStore} from 'vuex';
-import SubmissionInfo from './SubmissionInfo.vue';
 import StepApproveControl from './StepApproveControl.vue'
-import StepSendToChairsControl from './StepSendToChairsControl.vue'
 import StepRequestRevisionsControl from './StepRequestRevisionsControl.vue'
+import StepSendToChairsControl from './StepSendToChairsControl.vue'
+import SubmissionInfo from './SubmissionInfo.vue';
 
 const store = useStore()
 

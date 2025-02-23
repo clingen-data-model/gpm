@@ -1,5 +1,5 @@
-import {api, queryStringFromParams} from '@/http';
 import Person from '@/domain/person'
+import {api, queryStringFromParams} from '@/http';
 
 const baseUrl = '/api/people';
 

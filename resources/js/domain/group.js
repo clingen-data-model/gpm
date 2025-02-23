@@ -1,7 +1,7 @@
-import Entity from '@/domain/entity'
-import GroupMember from '@/domain/group_member'
-import ExpertPanel from '@/domain/expert_panel'
 import configs from '@/configs.json'
+import Entity from '@/domain/entity'
+import ExpertPanel from '@/domain/expert_panel'
+import GroupMember from '@/domain/group_member'
 
 class Group extends Entity {
     static dates = [

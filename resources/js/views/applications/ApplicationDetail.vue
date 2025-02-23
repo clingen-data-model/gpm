@@ -1,11 +1,11 @@
 <script setup>
-    import {computed, onMounted, provide, ref, shallowRef, watch} from 'vue';
-    import {useStore} from 'vuex';
     import {hasPermission} from '@/auth_utils.js';
-    import ApplicationAdmin from './ApplicationAdmin.vue'
-    import ApplicationReview from './ApplicationReview.vue'
     import commentManagerFactory from '@/composables/comment_manager.js'
     import {api} from '@/http';
+    import {computed, onMounted, provide, ref, shallowRef, watch} from 'vue';
+    import {useStore} from 'vuex';
+    import ApplicationAdmin from './ApplicationAdmin.vue'
+    import ApplicationReview from './ApplicationReview.vue'
 
     const commentManager = ref(commentManagerFactory('App\\Modules\\Group\\Models\\Group', 0));
     provide('commentManager', commentManager)

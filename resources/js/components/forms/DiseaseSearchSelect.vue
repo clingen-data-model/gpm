@@ -22,8 +22,8 @@
     </search-select>
 </template>
 <script>
-import api from '@/http/api'
 import SearchSelect from '@/components/forms/SearchSelect.vue'
+import api from '@/http/api'
 
 export default {
     name: 'DiseaseSearchSelect',

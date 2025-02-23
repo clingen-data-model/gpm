@@ -35,12 +35,12 @@
     </div>
 </template>
 <script>
+import EditIconButton from '@/components/buttons/EditIconButton.vue'
+import MarkdownBlock from '@/components/MarkdownBlock.vue'
+import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
 import Group from '@/domain/group'
 import GcepQuickGuideLink from '../links/GcepQuickGuideLink.vue';
 import VcepProtocolLink from '../links/VcepProtocolLink.vue';
-import EditIconButton from '@/components/buttons/EditIconButton.vue'
-import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
-import MarkdownBlock from '@/components/MarkdownBlock.vue'
 
 export default {
     name: "scopeDescriptionForm",

@@ -55,10 +55,10 @@
     </div>
 </template>
 <script>
-import CompleteNextActionForm from '@/components/next_actions/CompleteNextActionForm.vue'
-import {mapGetters} from 'vuex'
 import CheckmarkButton from '@/components/buttons/CheckmarkIconButton.vue'
 import TrashIconButton from '@/components/buttons/TrashIconButton.vue'
+import CompleteNextActionForm from '@/components/next_actions/CompleteNextActionForm.vue'
+import {mapGetters} from 'vuex'
 
 export default {
     name: 'NextActions',

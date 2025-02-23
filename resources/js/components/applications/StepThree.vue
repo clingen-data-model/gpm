@@ -14,9 +14,9 @@
     </base-step>
 </template>
 <script>
-import {mapGetters} from 'vuex'
-import {formatDate} from '@/date_utils'
 import BaseStep from '@/components/applications/BaseStep.vue'
+import {formatDate} from '@/date_utils'
+import {mapGetters} from 'vuex'
 import SpecificationsSection from '../expert_panels/SpecificationsSection.vue'
 
 export default {

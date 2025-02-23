@@ -58,8 +58,8 @@
     </form-container>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 import { formatDate } from '@/date_utils'
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'CreateApplicationForm',

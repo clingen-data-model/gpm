@@ -1,10 +1,10 @@
 <script setup>
-    import {judgementColor} from '@/composables/judgement_utils.js'
-    import {ref, onMounted} from 'vue'
-    import {useRouter} from 'vue-router'
-    import {api} from '@/http'
     import {hasPermission} from '@/auth_utils';
+    import {judgementColor} from '@/composables/judgement_utils.js'
+    import {api} from '@/http'
     import { featureIsEnabled } from '@/utils.js';
+    import {onMounted, ref} from 'vue'
+    import {useRouter} from 'vue-router'
 
     const router = useRouter();
 

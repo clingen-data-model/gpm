@@ -92,12 +92,12 @@
     </div>
 </template>
 <script>
-import {sortBy} from 'lodash-es'
+import configs from '@/configs'
+import Group from '@/domain/group'
+import formFactory from '@/forms/form_factory'
 import {isValidationError} from '@/http'
 import {api} from '@/http'
-import Group from '@/domain/group'
-import configs from '@/configs'
-import formFactory from '@/forms/form_factory'
+import {sortBy} from 'lodash-es'
 
 export default {
     name: 'GroupForm',

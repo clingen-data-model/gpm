@@ -33,8 +33,8 @@
 </template>
 <script>
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
-import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
 import MarkdownBlock from '@/components/MarkdownBlock.vue'
+import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
 
 export default {
     name: 'MembershipDescriptionForm',

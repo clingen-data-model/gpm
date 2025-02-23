@@ -1,10 +1,10 @@
 <script setup>
-    import {computed, inject, ref} from 'vue'
-    import {useStore} from 'vuex'
+    import {judgementColor} from '@/composables/judgement_utils.js'
     import { api } from '@/http'
     import { titleCase } from '@/string_utils.js';
+    import {computed, inject, ref} from 'vue'
+    import {useStore} from 'vuex'
     import JudgementForm from './JudgementForm.vue';
-    import {judgementColor} from '@/composables/judgement_utils.js'
 
     const emits = defineEmits(['deleted']);
     const store = useStore();

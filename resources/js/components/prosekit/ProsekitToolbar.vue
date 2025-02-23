@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useEditor } from 'prosekit/vue'
-
-import Button from './ProsekitButton.vue'
 import type { EditorExtension } from './extension'
+
+import { useEditor } from 'prosekit/vue'
+import Button from './ProsekitButton.vue'
 
 const editor = useEditor<EditorExtension>({ update: true })
 </script>
