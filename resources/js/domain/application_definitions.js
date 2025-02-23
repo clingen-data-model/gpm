@@ -104,10 +104,10 @@ export class ApplicationDefinition extends RequirementEvaluator{
     }
 
     getStep(stepIdentifier) {
-        if (isNaN(stepIdentifier)) {
+        if (Number.isNaN(stepIdentifier)) {
             const step = this.steps.find(step => step.name == stepIdentifier);
             if (!step) {
-                throw Error(`Step with name ${stepIdentifier} not found.`);
+                throw new Error(`Step with name ${stepIdentifier} not found.`);
             }
             return step;
         }

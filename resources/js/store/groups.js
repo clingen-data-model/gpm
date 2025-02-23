@@ -46,7 +46,7 @@ export const getters = {
 export const mutations = {
     addItem (state, item) {
         if (!item.id) {
-            throw new Error(404)
+            throw new Error('404: group item id is required')
         }
         const group = Object.prototype.hasOwnProperty.call(item, 'attributes')
                         ? item : new Group(item);

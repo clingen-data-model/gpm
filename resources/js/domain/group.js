@@ -152,7 +152,7 @@ class Group extends Entity {
         if (member) {
             return member;
         }
-        throw Error(`Member with id ${memberId} not found in group.`);
+        throw new Error(`Member with id ${memberId} not found in group.`);
     }
 
     findMembersWithRole(role) {

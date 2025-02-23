@@ -14,7 +14,7 @@ export default {
     mutations: {
         addItem (state, item) {
             if (!item.id) {
-                throw new Error(404)
+                throw new Error('404: no id in expertise item')
             }
             const idx = state.items.findIndex(i => i.id == item.id);
             if (idx > -1) {
