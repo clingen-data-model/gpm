@@ -1,5 +1,5 @@
 <script setup>
-    // eslint-disable-next-line
+    // eslint-disable-next-line unused-imports/no-unused-vars
     const props = defineProps({
         breadcrumbs: {
             type: Array,

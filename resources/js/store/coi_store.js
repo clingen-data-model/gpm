@@ -6,13 +6,13 @@ export default {
     state: {},
     mutations: {},
     actions: {
-        // eslint-disable-next-line
+        // eslint-disable-next-line unused-imports/no-unused-vars
         async storeCoi ({commit}, {code, groupMemberId, coiData}) {
             const data = {...coiData, ...{group_member_id: groupMemberId}};
             await api.post(`/api/coi/${code}`, data);
         },
 
-        // eslint-disable-next-line
+        // eslint-disable-next-line unused-imports/no-unused-vars
         async storeLegacyCoi ({commit}, {application, coiData}) {
             await application_repository.addDocument(application, coiData)
                 .then(async document => {

@@ -14,7 +14,7 @@ const props = defineProps({
 });
 const store = useStore();
 
-// eslint-disable-next-line
+// eslint-disable-next-line unused-imports/no-unused-vars
 const commentManager = ref(commentManagerFactory('App\\Modules\\Group\\Models\\Group', 0));
 provide('commentManager', null)
 

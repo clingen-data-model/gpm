@@ -324,7 +324,7 @@ export const actions = {
         })
     },
 
-    // eslint-disable-next-line
+    // eslint-disable-next-line unused-imports/no-unused-vars
     async curationReviewProtocolUpdate({ commit }, {uuid, expertPanel}) {
         if (expertPanel.curation_review_protocol_id != 100) {
             expertPanel.curation_review_protocol_other = null;
@@ -367,7 +367,7 @@ export const actions = {
             })
     },
 
-    // eslint-disable-next-line
+    // eslint-disable-next-line unused-imports/no-unused-vars
     saveApplicationData ({commit}, group) {
         // delete group b/c it's not needed for the request and interferes
         // with laravel's route-model binding.
@@ -451,7 +451,7 @@ export const actions = {
                 });
     },
 
-    // eslint-disable-next-line
+    // eslint-disable-next-line unused-imports/no-unused-vars
     async updateDocument({ commit }, { group, document }) {
         return api.put(`/api/groups/${group.uuid}/documents/${document.uuid}`, document)
             .then((response) => {
@@ -461,7 +461,7 @@ export const actions = {
             });
     },
 
-    // eslint-disable-next-line
+    // eslint-disable-next-line unused-imports/no-unused-vars
     async deleteDocument( { commit }, {group, document}) {
         await api.delete(`/api/applications/${group.expert_panel.uuid}/documents/${document.uuid}`)
             .then(response => {
@@ -472,7 +472,7 @@ export const actions = {
     },
 
 
-    // eslint-disable-next-line
+    // eslint-disable-next-line unused-imports/no-unused-vars
     async addLogEntry({ dispatch }, { group, logEntryData }) {
         const url = `/api/groups/${group.uuid}/log-entries`
         await api.post(url, logEntryData)
@@ -506,7 +506,7 @@ export const actions = {
                 });
     },
 
-    // eslint-disable-next-line
+    // eslint-disable-next-line unused-imports/no-unused-vars
     async updateApprovalDate({ commit }, { group, dateApproved, step }) {
         return api.put(`/api/applications/${group.expert_panel.uuid}/approve`, {
                 date_approved: dateApproved,

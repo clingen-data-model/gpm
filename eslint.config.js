@@ -12,7 +12,6 @@ export default antfu(
     {
         files: ['resources/js/**/*.{js,ts,vue,json}'],
         rules: {
-            'eslint-comments/no-unlimited-disable': 'off',
             'vue/html-indent': 'off',
             'vue/attributes-order': 'off',
             'vue/max-attributes-per-line': 'off',
