@@ -150,14 +150,14 @@ class ExpertPanel extends Entity
     }
 
     get hasPendingSubmissionForCurrentStep () {
-        return this.hasPendingSubmission && this.pendingSubmission.type.name == this.currentStepName;
+        return this.hasPendingSubmission && this.pendingSubmission.type.name === this.currentStepName;
     }
 
     get hasCompletedSubmission () {
         return this.submissions
                 .filter(sub => {
-                    return sub.submission_status_id == submissions.statuses.approved.id
-                        && this.pendingSubmission.type.name == this.currentStepName
+                    return sub.submission_status_id === submissions.statuses.approved.id
+                        && this.pendingSubmission.type.name === this.currentStepName
                 })
     }
 
@@ -170,10 +170,10 @@ class ExpertPanel extends Entity
     }
 
     get steps() {
-        if (this.expert_panel_type_id == 1) {
+        if (this.expert_panel_type_id === 1) {
             return [1];
         }
-        if (this.expert_panel_type_id == 2 || this.expert_panel_type_id === null) {
+        if (this.expert_panel_type_id === 2 || this.expert_panel_type_id === null) {
             return [1, 2, 3, 4];
         }
 
@@ -245,18 +245,18 @@ class ExpertPanel extends Entity
     }
 
     hasPendingSubmissionForStep(stepName) {
-        return this.hasPendingSubmission && this.pendingSubmission.type.name == stepName;
+        return this.hasPendingSubmission && this.pendingSubmission.type.name === stepName;
     }
 
     hasPendingSubmissionForStepNumber(step) {
-        return this.hasPendingSubmission && this.pendingSubmission.type.name == stepNumberToName[step];
+        return this.hasPendingSubmission && this.pendingSubmission.type.name === stepNumberToName[step];
     }
 
     latestPendingSubmissionForStep(step) {
         const stepName = (typeof step == 'number') ? stepNumberToName[step] : step;
         const stepSubmissions = this.submissions.filter(s => s.type.name = stepName);
 
-        if (stepSubmissions.length == 0) {
+        if (stepSubmissions.length === 0) {
             return null;
         }
 
@@ -264,7 +264,7 @@ class ExpertPanel extends Entity
     }
 
     stepHasBeenSubmitted(step) {
-        return this.submissions.some(s => s.type.name == stepNumberToName[step])
+        return this.submissions.some(s => s.type.name === stepNumberToName[step])
     }
 
     isWaitingOnCdwgOc() {
@@ -310,9 +310,9 @@ class ExpertPanel extends Entity
 
     firstDocumentOfType(docTypeId) {
         const typeDocs = this.documents
-            .filter(d => d.document_type_id == docTypeId)
+            .filter(d => d.document_type_id === docTypeId)
             .sort((a, b) => {
-                if (a.date_reviewed == b.date_reviewed) {
+                if (a.date_reviewed === b.date_reviewed) {
                     return (a.version > b.version) ? 1 : -1;
                 }
 
@@ -324,9 +324,9 @@ class ExpertPanel extends Entity
 
     finalDocumentOfType(docTypeId) {
         const typeDocs = this.documents
-            .filter(d => d.document_type_id == docTypeId)
+            .filter(d => d.document_type_id === docTypeId)
             .sort((a, b) => {
-                if (a.date_reviewed == b.date_reviewed) {
+                if (a.date_reviewed === b.date_reviewed) {
                     return (a.version > b.version) ? 1 : -1;
                 }
 

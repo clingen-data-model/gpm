@@ -38,9 +38,9 @@ import MarkdownBlock from '../MarkdownBlock.vue';
         if (!submissions.value)  return [];
 
         if (
-            submissions.value.length == 1
-            || latestSubmission.value.submission_status_id == 3
-            || latestSubmission.value.submission_status_id == 2
+            submissions.value.length === 1
+            || latestSubmission.value.submission_status_id === 3
+            || latestSubmission.value.submission_status_id === 2
         ) {
             return latestSubmission.value.judgements;
         }

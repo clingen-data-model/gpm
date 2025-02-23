@@ -64,7 +64,7 @@ export default {
             ];
 
             this.pages.forEach(p => {
-                if (p == 0
+                if (p === 0
                     || p === this.pagesCount-1
                     || Math.abs(p-this.currentPage) < 2
                 ) {

@@ -91,7 +91,7 @@ export default {
             return Boolean(menuItem.sections);
         },
         isCurrentStep(menuItem) {
-            if (this.isStep(menuItem) && this.application.getStep(this.group.expert_panel.current_step) == menuItem) {
+            if (this.isStep(menuItem) && this.application.getStep(this.group.expert_panel.current_step) === menuItem) {
                 return true;
             }
             return false;

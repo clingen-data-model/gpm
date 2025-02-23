@@ -139,7 +139,7 @@ export default {
             if (this.membership && this.membership.cois.length > 0) {
                 const lastResponse = {...this.membership.cois[this.membership.cois.length -1]};
 
-                const v2ResponseData = (lastResponse.version == '1.0.0')
+                const v2ResponseData = (lastResponse.version === '1.0.0')
                     ? this.transformV1Response(lastResponse.data)
                     : {...lastResponse.data};
 
@@ -156,14 +156,14 @@ export default {
                 work_fee_lab: lastResponse.work_fee_lab,
                 contributions_to_gd_in_group: lastResponse.contributions_to_gd_in_ep,
                 contributions_to_genes: lastResponse.contributions_to_genes,
-                coi: (lastResponse.independent_efforts == 0 && lastResponse.coi == 0) ? 0 : 1,
+                coi: (lastResponse.independent_efforts === 0 && lastResponse.coi === 0) ? 0 : 1,
                 coi_details: [
                                 lastResponse.independent_efforts_details,
                                 lastResponse.coi_details
                             ].join(";\n")
             }
 
-            if ((lastResponse.independent_efforts == 2 || lastResponse.coi == 2)) {
+            if ((lastResponse.independent_efforts === 2 || lastResponse.coi === 2)) {
                 v2Response.coi = 2;
             }
 
@@ -177,7 +177,7 @@ export default {
             if (Array.isArray(question.show.value)) {
                 return question.show.value.includes(this.response[question.show.name]);
             }
-            return (this.response[question.show.name] == question.show.value);
+            return (this.response[question.show.name] === question.show.value);
         },
         verifyCode() {
             this.verifying = true;

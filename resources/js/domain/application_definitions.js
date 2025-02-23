@@ -50,7 +50,7 @@ export class ApplicationStep extends RequirementEvaluator{
                 sctn.name,
                 {
                     get: () => {
-                        return this.sections.find((sct => sct.name == sctn.name));
+                        return this.sections.find((sct => sct.name === sctn.name));
                     }
                 }
             );
@@ -88,7 +88,7 @@ export class ApplicationDefinition extends RequirementEvaluator{
                 step.name,
                 {
                     get: () => {
-                        return this.steps.find(st => st.name == step.name)
+                        return this.steps.find(st => st.name === step.name)
                     }
                 }
             );
@@ -105,7 +105,7 @@ export class ApplicationDefinition extends RequirementEvaluator{
 
     getStep(stepIdentifier) {
         if (Number.isNaN(stepIdentifier)) {
-            const step = this.steps.find(step => step.name == stepIdentifier);
+            const step = this.steps.find(step => step.name === stepIdentifier);
             if (!step) {
                 throw new Error(`Step with name ${stepIdentifier} not found.`);
             }
@@ -115,7 +115,7 @@ export class ApplicationDefinition extends RequirementEvaluator{
     }
 
     getSection(sectionName) {
-        return this.sections.find(sct => sct.name == sectionName);
+        return this.sections.find(sct => sct.name === sectionName);
     }
 
     getCurrentStep(group) {

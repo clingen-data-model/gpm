@@ -59,14 +59,14 @@ class User extends Entity {
 
     hasNoRole()
     {
-        return this.roles.length == 0;
+        return this.roles.length === 0;
     }
 
     hasGroupRole(role, group) {
         if (!group) {
             return false;
         }
-        const membership = this.memberships.find(m => m.group_id == group.id);
+        const membership = this.memberships.find(m => m.group_id === group.id);
         if (membership && membership.hasRole(role)) {
             return true;
         }
@@ -74,7 +74,7 @@ class User extends Entity {
     }
 
     hasRoleForAnyGroup(role, groups) {
-       return groups.some(g => this.hasGroupRole(role, g));
+        return groups.some(g => this.hasGroupRole(role, g));
     }
 
     hasAnyPermission (permissions)
@@ -118,7 +118,7 @@ class User extends Entity {
         if (!group) {
             return false;
         }
-        let membership = this.memberships.find(m => m.group_id == group.id);
+        let membership = this.memberships.find(m => m.group_id === group.id);
         if (!(membership instanceof GroupMember)) {
             membership = new GroupMember(membership)
         }

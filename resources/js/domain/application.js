@@ -38,7 +38,7 @@ class Application extends Entity {
     }
 
     get steps() {
-        if (this.is_gcep == 1) {
+        if (this.is_gcep === 1) {
             return [1];
         }
         if (this.is_vcep_or_scvcep) {
@@ -114,9 +114,9 @@ class Application extends Entity {
 
     firstDocumentOfType(docTypeId) {
         const typeDocs = this.documents
-            .filter((d) => d.document_type_id == docTypeId)
+            .filter((d) => d.document_type_id === docTypeId)
             .sort((a, b) => {
-                if (a.date_reviewed == b.date_reviewed) {
+                if (a.date_reviewed === b.date_reviewed) {
                     return a.version > b.version ? 1 : -1;
                 }
 
@@ -128,9 +128,9 @@ class Application extends Entity {
 
     finalDocumentOfType(docTypeId) {
         const typeDocs = this.documents
-            .filter((d) => d.document_type_id == docTypeId)
+            .filter((d) => d.document_type_id === docTypeId)
             .sort((a, b) => {
-                if (a.date_reviewed == b.date_reviewed) {
+                if (a.date_reviewed === b.date_reviewed) {
                     return a.version > b.version ? 1 : -1;
                 }
 

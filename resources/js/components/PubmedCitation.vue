@@ -12,10 +12,10 @@ import {computed} from 'vue';
         if (!props.summary.authors) {
             return '';
         }
-        if (props.summary.authors.length == 0) {
+        if (props.summary.authors.length === 0) {
             return '';
         }
-        if (props.summary.authors.length == 1) {
+        if (props.summary.authors.length === 1) {
             return `${props.summary.authors[0].name}. `;
         }
 

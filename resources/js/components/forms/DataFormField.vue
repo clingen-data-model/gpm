@@ -96,10 +96,10 @@
     }
 
     const renderChildren = () => {
-        if (props.field.type == 'dictionary-row') {
+        if (props.field.type === 'dictionary-row') {
             return [h(DictionaryRowVue, {innerHTML: fieldValue.value, label: getFieldLabel(props.field), class: props.field.class})]
         }
-        if (props.field.type == 'component') {
+        if (props.field.type === 'component') {
             return [renderComponent()]
         }
 

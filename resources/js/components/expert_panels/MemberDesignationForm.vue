@@ -30,7 +30,7 @@ export default {
         group: {
             immediate: true,
             async handler (to, from) {
-                if ((to.id && (!from || to.id != from.id))) {
+                if ((to.id && (!from || to.id !== from.id))) {
                     this.$store.dispatch('groups/getMembers', this.group);
                 }
             }
