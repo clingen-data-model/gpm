@@ -531,9 +531,6 @@ import axios from "axios";
 
 import { mapGetters } from "vuex";
 
-import Person from "@/domain/person";
-console.log(Person);
-
 var items = [];
 
 const available_options = {
@@ -857,6 +854,7 @@ export default {
 
             } catch (error) {
                 console.error('Error fetching user data', error);
+                // eslint-disable-next-line no-alert
                 alert("There was an error retrieving the user data.");
                 //this.error = error; // You might want an 'error' data property
             }
@@ -929,6 +927,7 @@ export default {
                     );
                     //console.log(response.data);
                     if (response.status === 200) {
+                        // eslint-disable-next-line no-alert
                         alert("Form was submitted succesfully!");
                     }
                     this.$emit("saved");
@@ -939,26 +938,32 @@ export default {
 
                         if (error.response.status === 404) {
                             this.error = "Resource not found";
+                            // eslint-disable-next-line no-alert
                             alert("The resource wasn't found.");
                         } else if (error.response.status === 500) {
                             this.error = "Server error";
+                            // eslint-disable-next-line no-alert
                             alert("There was an internal server error.");
                         } else {
                             this.error = error.message;
+                            // eslint-disable-next-line no-alert
                             alert("There was a error trying to submit the form: " + error.message);
                         }
                     } else if (error.request) {
                         // The request was made but no response was received
                         this.error = "Network error";
+                        // eslint-disable-next-line no-alert
                         alert("There was a network error.");
                     } else {
                         // Something happened in setting up the request that triggered an Error
                         this.error = "Error in request setup";
+                        // eslint-disable-next-line no-alert
                         alert("There was an error in the request configuration.");
                     }
                 }
             } else {
                 // Notify user to fill all required sections
+                // eslint-disable-next-line no-alert
                 alert("Please fill these required sections: " + sections_with_errors.join(", ") + ".");
             }
             // }
@@ -1071,17 +1076,21 @@ export default {
                 if (error.response) {
                     if (error.response.status === 404) {
                         this.error = "Resource not found";
+                        // eslint-disable-next-line no-alert
                         alert("The resource wasn't found.");
                     } else if (error.response.status === 500) {
                         this.error = "Server error";
+                        // eslint-disable-next-line no-alert
                         alert("There was an internal server error.");
                     }
                 } else if (error.request) {
                     // The request was made but no response was received
                     this.error = "Network error";
+                    // eslint-disable-next-line no-alert
                     alert("There was a network error.");
                 } else {
                     // Something happened in setting up the request that triggered an Error
+                    // eslint-disable-next-line no-alert
                     alert("There was an error in the request configuration.");
                     this.error = "Error in request setup";
                 }

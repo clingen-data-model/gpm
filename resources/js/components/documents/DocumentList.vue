@@ -218,6 +218,7 @@ export default {
             if (this.documentUpdater) {
                 this.documentUpdater(data)
             } else {
+                // eslint-disable-next-line no-alert
                 alert('we need a default document upload function');
             }
             this.$emit('updated');
@@ -236,6 +237,7 @@ export default {
             if (this.documentDeleter) {
                 this.documentDeleter(this.activeDocument);
             } else {
+                // eslint-disable-next-line no-alert
                 alert('we need to add a default document deleter.');
             }
             this.showDeleteConfirmation = false;
@@ -249,6 +251,7 @@ export default {
             if (this.documentCreator) {
                 this.documentCreator(data)
             } else {
+                // eslint-disable-next-line no-alert
                 alert('we need a default document upload function');
             }
 

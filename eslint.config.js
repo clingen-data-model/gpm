@@ -60,8 +60,6 @@ export default antfu(
             'import/no-duplicates': 'off',
             'prefer-spread': 'off',
             'object-shorthand': 'off',
-            'no-alert': 'off',
-            'no-console': 'off',
             'no-useless-return': 'off',
             'dot-notation': 'off',
             'prefer-regex-literals': 'off',
