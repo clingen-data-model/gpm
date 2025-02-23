@@ -114,7 +114,7 @@ export default {
                 });
         },
 
-        // eslint-disable-next-line
+        // eslint-disable-next-line unused-imports/no-unused-vars
         async addNextAction({ commit }, { application, nextActionData }) {
             if (!nextActionData.uuid) {
                 nextActionData.uuid = uuid4();
@@ -127,7 +127,7 @@ export default {
                 })
         },
 
-        // eslint-disable-next-line
+        // eslint-disable-next-line unused-imports/no-unused-vars
         async updateNextAction({ dispatch }, { application, updatedAction }) {
             if (!updatedAction.uuid) {
                 updatedAction.uuid = uuid4();
@@ -142,7 +142,7 @@ export default {
         
         },
 
-        // eslint-disable-next-line
+        // eslint-disable-next-line unused-imports/no-unused-vars
         async deleteNextAction({ dispatch }, {application, nextAction}) {
            const url = `/api/applications/${application.uuid}/next-actions/${nextAction.id}`
             await api.delete(url)
@@ -151,8 +151,8 @@ export default {
                     application.nextActions.splice(naIdx, 1);
                     return response;
                 });
-    },
-        // eslint-disable-next-line
+        },
+        // eslint-disable-next-line unused-imports/no-unused-vars
         async completeNextAction({ dispatch }, { application, nextAction, dateCompleted }) {
             const url = `/api/applications/${application.uuid}/next-actions/${nextAction.uuid}/complete`;
             await api.post(url, { date_completed: dateCompleted })
@@ -206,7 +206,7 @@ export default {
                 })
         },
 
-        // eslint-disable-next-line
+        // eslint-disable-next-line unused-imports/no-unused-vars
         async markDocumentVersionFinal({ dispatch }, { application, document }) {
             await api.post(`/api/applications/${application.uuid}/documents/${document.uuid}/final`)
                 .then(response => {

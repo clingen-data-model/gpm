@@ -4,7 +4,7 @@
     import RejectStepForm from '@/components/applications/RejectStepForm.vue'
 
     const attrs = useAttrs();
-    // eslint-disable-next-line
+    // eslint-disable-next-line unused-imports/no-unused-vars
     const props = defineProps({
         group: {
             type: Object,
