@@ -92,7 +92,7 @@ export default {
                     )
                     .then(response => {
                         this.email = response.data;
-                        this.email['files'] = [];
+                        this.email.files = [];
                     })
             }
         }
@@ -123,7 +123,6 @@ export default {
             } catch (e) {
                 if (isValidationError(e)) {
                     this.errors = e.response.data.errors
-                    return;
                 }
             }
         }

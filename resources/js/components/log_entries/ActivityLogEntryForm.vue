@@ -89,7 +89,6 @@
         } catch (error) {
             if (error.response && error.response.status === 422 && error.response.data.errors) {
                 errors.value = error.response.data.errors
-                return;
             }
         }
     };

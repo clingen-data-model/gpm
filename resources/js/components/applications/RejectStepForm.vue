@@ -86,7 +86,7 @@ export default {
                 {params: {templateClass: 'App\\Mail\\UserDefinedMailTemplates\\ApplicationRevisionRequestTemplate'}})
                 .then(response => {
                     this.email = response.data;
-                    this.email['files'] = [];
+                    this.email.files = [];
                 })
 
         }

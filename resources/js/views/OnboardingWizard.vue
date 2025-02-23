@@ -120,7 +120,6 @@ export default {
             if (this.invite.id) {
                 if (this.$store.state.user.id) {
                     this.currentStepIndex = 3
-                    return
                 }
             }
         }
