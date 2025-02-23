@@ -530,7 +530,7 @@ import { mapGetters } from "vuex";
 
 const baseUrl = "/api/people";
 
-var items = [];
+const items = [];
 
 const available_options = {
     // TODO: get from database...

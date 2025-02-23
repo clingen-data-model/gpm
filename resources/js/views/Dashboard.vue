@@ -18,7 +18,7 @@ import DemographicsForm from '../components/people/DemographicsForm.vue';
 const store = useStore();
 const router = useRouter();
 const user = computed(() => {
-    return store.getters['currentUser']
+    return store.getters.currentUser
 });
 const personFromStore = computed(() => {
     return store.getters['people/currentItem'] || new Person();
@@ -60,7 +60,7 @@ const groupFields = ref([
         label: 'Status',
         sortable: true,
         resolveValue: (item) => {
-            if (item.status.id === configs.groups.statuses['applying'].id) {
+            if (item.status.id === configs.groups.statuses.applying.id) {
                 return `${item.status.name  } - ${  item.expert_panel.currentStepName}`;
             }
             return item.status.name;

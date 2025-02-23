@@ -70,13 +70,15 @@ export default {
         mailData: {
             immediate: true,
             handler (to) {
-                this.workingCopy = to ? to : {};
+                this.workingCopy = to || {};
                 this.showCc = false;
-                if (this.workingCopy.cc !== null && this.workingCopy.cc !== []) {
+                // eslint-disable-next-line eqeqeq
+                if (this.workingCopy.cc !== null && this.workingCopy.cc != []) {
                     this.showCc = true;
                 }
                 this.showBcc = false;
-                if (this.workingCopy.bcc !== null && this.workingCopy.bcc !== []) {
+                // eslint-disable-next-line eqeqeq
+                if (this.workingCopy.bcc !== null && this.workingCopy.bcc != []) {
                     this.showBcc = true;
                 }
             }

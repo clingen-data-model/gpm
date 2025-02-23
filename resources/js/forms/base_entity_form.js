@@ -55,7 +55,6 @@ class BaseEntityForm {
         this.clearErrors()
         if (!this.currentItem.value.id) {
             this.clearCurrentItem()
-            return;
         }
     }
     

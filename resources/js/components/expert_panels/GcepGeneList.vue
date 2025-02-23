@@ -149,6 +149,7 @@ export default {
                             }
                             return messages[key];
                         }
+                        return `Gene validation error: ${key}`;
                     });
                     errors.value = {
                         genes: geneMessages
