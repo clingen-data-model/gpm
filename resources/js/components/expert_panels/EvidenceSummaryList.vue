@@ -100,6 +100,7 @@ export default {
             try {
                 this.summaries = await this.$store.dispatch('groups/getEvidenceSummaries', this.group)
             } catch (error) {
+                // eslint-disable-next-line no-console
                 console.log(error);
             }
             this.loading = false;

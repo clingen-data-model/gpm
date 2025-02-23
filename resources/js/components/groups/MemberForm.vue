@@ -296,6 +296,7 @@ export default {
                 }
             } catch (error) {
                 if (this.group.isPersisted()) {
+                    // eslint-disable-next-line no-alert
                     alert(error);
                 }
             }

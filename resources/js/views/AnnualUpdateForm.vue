@@ -237,11 +237,13 @@ export default {
             }
         },
         async getAnnualUpdate () {
+            // eslint-disable-next-line no-console
             console.log('AnnualUpdateForm.getAnnualUpdate', this.$route.params.id)
             let url = `/api/groups/${this.group.uuid}/expert-panel/annual-updates`;
             if (this.id) {
                 url += `/${this.id}`
             }
+            // eslint-disable-next-line no-console
             console.log(url);
             this.annualUpdate = await api.get(url)
                 .then(response => {

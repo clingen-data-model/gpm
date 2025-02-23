@@ -119,6 +119,7 @@ export default {
                     this.editDateReceived = false;
             } catch (error) {
                 if (is_validation_error(error)) {
+                    // eslint-disable-next-line no-console
                     console.info('saveDateReceived errors: ', error.response.data.errors)
                 }
             }
@@ -140,6 +141,7 @@ export default {
                     this.editDateReviewed = false;
             } catch (error) {
                 if (is_validation_error(error)) {
+                    // eslint-disable-next-line no-console
                     console.info('saveDateReviewd errors: ', error.response.data.errors)
                 }
             }

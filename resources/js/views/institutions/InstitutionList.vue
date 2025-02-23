@@ -196,7 +196,8 @@ export default {
             }
 
             if (this.currentItem.people_count > 0) {
-                alert('You cannot delete an institution because it is in use.  Pelaes edit the institution or merge it into another.')
+                // eslint-disable-next-line no-alert
+                alert('You cannot delete an institution because it is in use.  Please edit the institution or merge it into another.')
             }
             await deleteInstitution(this.currentItem);
             this.items.splice(this.currentIndex, 1);

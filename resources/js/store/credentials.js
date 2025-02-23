@@ -52,6 +52,7 @@ export default {
         update ({commit}, updatedItem) {
             return api.put(`${baseUrl}/${updatedItem.id}`, updatedItem)
                 .then(rsp => {
+                    // eslint-disable-next-line no-console
                     console.log({rsp});
                     commit('addItem', rsp.data);
                     return rsp;
