@@ -45,7 +45,6 @@ export default antfu(
             'vue/component-options-name-casing': 'off',
             'vue/no-multi-spaces': 'off',
             'vue/custom-event-name-casing': 'off',
-            'unused-imports/no-unused-imports': 'off',
             'jsonc/no-useless-escape': 'off',
             'unicorn/prefer-number-properties': 'off',
             'unicorn/prefer-includes': 'off',
