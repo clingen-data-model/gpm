@@ -14,78 +14,6 @@ import module_factory from '@/store/module_factory';
 import User from '@/domain/user'
 // import router from '../router'
 
-
-axios.interceptors.request.use((config) => {
-    store.commit('addRequest');
-    return config
-}, (error) => {
-    store.commit('removeRequest');
-    return Promise.reject(error)
-});
-
-axios.interceptors.response.use(
-    response => {
-        store.commit('removeRequest');
-        return response
-    },
-    error => {
-        store.commit('removeRequest');
-        switch (error.response.status) {
-            case 401:
-                store.commit('setAuthenticated', false)
-                return error;
-            case 403:
-                if (error.response.data.includes('The request to access this resource was rejected.')) {
-                    const matches = error.response.data.match(/Reference this support identifier:\s*(\d+)/)
-                    const supportId = matches[1] || null;
-                    store.commit('pushError', `There is a Network Firewall issue.  Please contact support GPM Support ASAP at "gpm_support@clinicalgenome.org", providing details on your network connection and the following support ID: ${supportId}`)
-                } else {
-                    store.commit('pushError', 'You do not have permission to complete that action.  If you think this is an error please contact support at gpm_support@clinicalgenome.org')
-                }
-                return error;
-            case 404:
-                if (error.config.headers['X-Ignore-Missing'] !== 1) {
-                    store.commit('pushError', 'We couldn\'t find something you\'re looking for.');
-                }
-                return error;
-//             case 422:
-//                 store.commit('pushError', 'There was a problem with your submission');
-//                 break
-            case 500:
-                store.commit('pushError', 'We\'ve encountered a problem trying to complete your request.  Support has been notified and we will be in touch.');
-                return error;
-        }
-        return Promise.reject(error);
-    }
-);
-
-export const mutations = {
-    addRequest(state) {
-        state.openRequests++;
-    },
-    removeRequest(state) {
-        state.openRequests--;
-    },
-    setCurrentUser(state, user) {
-        state.user = new User(user)
-        store.commit('setAuthenticated', true)
-    },
-    clearCurrentUser(state) {
-        state.user = new User();
-        store.commit('setAuthenticated', false)
-    },
-    setAuthenticated(state, authVal) {
-        state.authenticated = authVal
-    },
-    startAuthenticating(state) {
-        state.authenticating = true;
-    },
-    stopAuthenticating(state) {
-        state.authenticating = false;
-    },
-};
-
-
 const docTypeStore = module_factory({
     baseUrl: '/api/document-types',
     namespace: 'doctypes'
@@ -114,7 +42,31 @@ const store = createStore({
         authed: (state) => state.authenticated,
         isAuthed: (state) => state.authenticated,
     },
-    mutations: mutations,
+    mutations: {
+        addRequest(state) {
+            state.openRequests++;
+        },
+        removeRequest(state) {
+            state.openRequests--;
+        },
+        setCurrentUser(state, user) {
+            state.user = new User(user)
+            store.commit('setAuthenticated', true)
+        },
+        clearCurrentUser(state) {
+            state.user = new User();
+            store.commit('setAuthenticated', false)
+        },
+        setAuthenticated(state, authVal) {
+            state.authenticated = authVal
+        },
+        startAuthenticating(state) {
+            state.authenticating = true;
+        },
+        stopAuthenticating(state) {
+            state.authenticating = false;
+        },
+    },
     actions: {
         async getCurrentUser({commit, dispatch, state}) {
             if (!state.authenticated || state.user.id === null) {
@@ -203,4 +155,49 @@ const store = createStore({
     //     ? [createLogger()]
     //     : []
 })
+
+axios.interceptors.request.use((config) => {
+    store.commit('addRequest');
+    return config
+}, (error) => {
+    store.commit('removeRequest');
+    return Promise.reject(error)
+});
+
+axios.interceptors.response.use(
+    response => {
+        store.commit('removeRequest');
+        return response
+    },
+    error => {
+        store.commit('removeRequest');
+        switch (error.response.status) {
+            case 401:
+                store.commit('setAuthenticated', false)
+                return error;
+            case 403:
+                if (error.response.data.includes('The request to access this resource was rejected.')) {
+                    const matches = error.response.data.match(/Reference this support identifier:\s*(\d+)/)
+                    const supportId = matches[1] || null;
+                    store.commit('pushError', `There is a Network Firewall issue.  Please contact support GPM Support ASAP at "gpm_support@clinicalgenome.org", providing details on your network connection and the following support ID: ${supportId}`)
+                } else {
+                    store.commit('pushError', 'You do not have permission to complete that action.  If you think this is an error please contact support at gpm_support@clinicalgenome.org')
+                }
+                return error;
+            case 404:
+                if (error.config.headers['X-Ignore-Missing'] !== 1) {
+                    store.commit('pushError', 'We couldn\'t find something you\'re looking for.');
+                }
+                return error;
+//             case 422:
+//                 store.commit('pushError', 'There was a problem with your submission');
+//                 break
+            case 500:
+                store.commit('pushError', 'We\'ve encountered a problem trying to complete your request.  Support has been notified and we will be in touch.');
+                return error;
+        }
+        return Promise.reject(error);
+    }
+);
+
 export default store

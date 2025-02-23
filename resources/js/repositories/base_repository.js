@@ -33,6 +33,8 @@ export default class BaseRepository {
         }
 
         if (Array.isArray(item)) {
+            // ignoring lint because I cannot be bothered to change the backend data
+            // eslint-disable-next-line new-cap
             return item.map(i => new this.options.entityClass(i))
         }
         return item;

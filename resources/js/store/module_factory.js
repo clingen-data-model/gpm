@@ -27,6 +27,8 @@ export default function (config = {}) {
             currentItem: state => {
                 if (state.currentItemIdx === null) {
                     if (config.modelClass) {
+                        // ignoring lint because I cannot be bothered to change the backend data
+                        // eslint-disable-next-line new-cap
                         return new config.modelClass()
                     }
                     return {};
@@ -38,6 +40,8 @@ export default function (config = {}) {
         mutations: {
             addItem(state, item) {
                 if (config.modelClass) {
+                    // ignoring lint because I cannot be bothered to change the backend data
+                    // eslint-disable-next-line new-cap
                     item = new config.modelClass(item)
                 }
 
