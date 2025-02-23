@@ -200,6 +200,7 @@ export default {
         },
         confirmNewFinal(item) {
                 const confirmMessage = `There is already a version of this document marked as final.  Only one version can be marked as final.  Do you want to mark this version (version ${item.version}) as final instead of ${this.finalVersion.version}`
+                // eslint-disable-next-line no-alert
                 return confirm(confirmMessage);
         },
         markFinal(item) {
@@ -235,6 +236,7 @@ export default {
                 this.$emit('updated');
             } catch (err) {
                 if (is_validation_error(err)) {
+                    // eslint-disable-next-line no-alert
                     alert(err);
                 }
             }

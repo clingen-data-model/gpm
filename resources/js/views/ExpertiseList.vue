@@ -150,6 +150,7 @@ export default {
             }
 
             if (this.currentItem.people_count > 0) {
+                // eslint-disable-next-line no-alert
                 alert('You cannot delete this expertise because it is in use.  Please edit the expertise or remove it from all people using it.')
             }
             try {

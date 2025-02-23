@@ -98,6 +98,7 @@ export default {
             try{
                 this.$store.dispatch('logout')
             } catch (error) {
+                // eslint-disable-next-line no-alert
                 alert(error)
             }
         }

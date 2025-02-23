@@ -186,6 +186,7 @@ export default {
             }
 
             if (this.currentItem.people_count > 0) {
+                // eslint-disable-next-line no-alert
                 alert('You cannot delete an credential because it is in use.  Please edit the credential or merge it into another.')
             }
             await this.$store.dispatch('credentials/delete', this.currentItem)

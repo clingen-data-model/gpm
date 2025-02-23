@@ -89,6 +89,7 @@ export default {
     },
     beforeRouteLeave() {
         if (this.$refs.application.applicationIsDirty()) {
+            // eslint-disable-next-line no-alert
             const confirm = window.confirm('You have unsaved changes. If you continue your changes may be lost.');
 
             if (!confirm) {

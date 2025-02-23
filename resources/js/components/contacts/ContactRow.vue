@@ -84,6 +84,7 @@ export default {
                 this.$emit('done');
             } catch (error) {
                 if (is_validation_error(error)) {
+                    // eslint-disable-next-line no-alert
                     alert(error.response.data.errors)
                     return;
                 }

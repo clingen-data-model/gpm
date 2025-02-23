@@ -337,6 +337,7 @@ export default {
 
         log (input) {
             if (this.debug) {
+                // eslint-disable-next-line no-console
                 console.log(input)
             }
         }
