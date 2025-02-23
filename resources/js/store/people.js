@@ -70,20 +70,16 @@ export const actions = {
     async all({ dispatch }, params) {
         dispatch('getAll', {params})
     },
-    //eslint-disable-next-line
-    async getAll({ commit }, {params, fresh = false}) {
-        // if (fresh || state.lastFetch === null) {
-            commit('setLastParams', params);
-            await api.get(baseUrl+queryStringFromParams(params))
-                .then(response => {
-                    response.data.data.forEach(item => {
-                        commit('addItem', item)
-                        commit('setLastFetch', new Date())
-                    })
-                });
-            return;
-        // }
-        // dispatch('getPeopleSinceLastFetch', params);
+    async getAll({ commit }, {params}) {
+        commit('setLastParams', params);
+        await api.get(baseUrl+queryStringFromParams(params))
+            .then(response => {
+                response.data.data.forEach(item => {
+                    commit('addItem', item)
+                    commit('setLastFetch', new Date())
+                })
+            });
+        return;
     },
 
     async getPeopleSinceLastFetch({ commit, state }, params=null) 
@@ -136,7 +132,7 @@ export const actions = {
             })
     },
 
-    // eslint-disable-next-line
+    // eslint-disable-next-line unused-imports/no-unused-vars
     getMail ({commit}, person) {
         if(person.uuid == null) {
             return false;
