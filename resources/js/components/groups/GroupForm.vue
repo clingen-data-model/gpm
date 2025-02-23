@@ -95,8 +95,7 @@
 import configs from '@/configs'
 import Group from '@/domain/group'
 import formFactory from '@/forms/form_factory'
-import {isValidationError} from '@/http'
-import {api} from '@/http'
+import { api, isValidationError } from '@/http'
 import {sortBy} from 'lodash-es'
 
 export default {

@@ -1,3 +1,5 @@
+/* eslint import/first: 0 */
+
 import {camelCase, kebabCase, sentenceCase, snakeCase, titleCase} from '@/string_utils'
 import { createApp } from 'vue'
 import App from './App.vue'
