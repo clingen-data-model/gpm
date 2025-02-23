@@ -33,7 +33,7 @@ export default {
             return this.group.expert_panel;
         },
         submissionText () {
-            return 'Request Revisions'+(this.notifyContacts ? ' and notify' : '')
+            return `Request Revisions${this.notifyContacts ? ' and notify' : ''}`
         }
     },
     watch: {

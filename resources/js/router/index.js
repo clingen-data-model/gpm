@@ -194,7 +194,7 @@ router.beforeEach(async (to, from, next) => {
             return;
         }
         router.replace({ name: 'Dashboard' })
-        store.commit('pushError', 'You don\'t have permission to access ' + to.path)
+        store.commit('pushError', `You don't have permission to access ${to.path}`)
     }
 
     next();

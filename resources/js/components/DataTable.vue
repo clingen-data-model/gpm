@@ -418,7 +418,7 @@ export default {
         defaultFilter(item, term) {
             const lowerTerm = term.toLowerCase();
 
-            for (let f in this.fields) {
+            for (const f in this.fields) {
                 let itemAttr = this.resolveDisplayAttribute(item, this.fields[f]);
                 if (itemAttr === null || typeof itemAttr === 'undefined') {
                     continue;

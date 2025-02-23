@@ -14,7 +14,7 @@ export const mirrorEmits = [
 
 export const setupMirror = (props, context) => {
     const workingCopy = ref({});
-    watch(() => props.modelValue, function (to) {
+    watch(() => props.modelValue, (to) => {
         if (typeof props.modelValue.clone == 'function') {
             const clone = props.modelValue.clone();
             workingCopy.value = clone;
@@ -24,7 +24,7 @@ export const setupMirror = (props, context) => {
         }
     }, {immediate: true, deep: true});
 
-    watch(() => workingCopy, function (to) {
+    watch(() => workingCopy, (to) => {
         if (!isEqual(to.value, props.modelValue)) {
             context.emit('update:modelValue', to.value);
         }

@@ -73,7 +73,7 @@ export default {
             return this.step == 1;
         },
         isLastStep () {
-            const lastStep = Math.max.apply(Math, this.application.steps);
+            const lastStep = Math.max(...this.application.steps);
             return this.step == lastStep;
         }
     },

@@ -40,8 +40,8 @@ export default {
             return `text-${this.size}`
         },
         padding () {
-            let x = 'px-2';
-            let y = 'py-1';
+            const x = 'px-2';
+            const y = 'py-1';
 
             if (this.size == 'xxs') {
                 return `${x} py-0.5`
