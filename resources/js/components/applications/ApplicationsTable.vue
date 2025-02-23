@@ -194,7 +194,7 @@ export default {
                     },
                     {
                         name: 'step_1_received_date',
-                        label: this.epTypeId == 2 ? 'Step 1 Received' : 'Application Received',
+                        label: this.epTypeId === 2 ? 'Step 1 Received' : 'Application Received',
                         type: Date,
                         sortable: true,
                         class: ['min-w-28'],
@@ -203,7 +203,7 @@ export default {
                     },
                     {
                         name: 'step_1_approval_date',
-                        label: this.epTypeId == 2 ? 'Step 1 Approved' : 'Application Approved',
+                        label: this.epTypeId === 2 ? 'Step 1 Approved' : 'Application Approved',
                         type: Date,
                         sortable: true,
                         class: ['min-w-28'],
@@ -252,7 +252,7 @@ export default {
         }),
         filteredData() {
             let applications = this.applications
-                .filter(item => !this.epTypeId || item.expert_panel_type_id == this.epTypeId)
+                .filter(item => !this.epTypeId || item.expert_panel_type_id === this.epTypeId)
                 .filter(item => {
                     if (!this.showCompleted) {
                         return item.date_completed == null;
@@ -292,8 +292,8 @@ export default {
             immediate: true
         },
         selectedFields() {
-            if (this.showAllInfo == 1) {
-                const stepsToShow = this.epTypeId == 2 ? [1,2,3,4] : [1]
+            if (this.showAllInfo === 1) {
+                const stepsToShow = this.epTypeId === 2 ? [1,2,3,4] : [1]
                 const allInfoFields = this.allInfoFields.filter(field => stepsToShow.includes(field.step))
                 return [...this.fields, ...allInfoFields]
             }

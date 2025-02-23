@@ -125,7 +125,7 @@ export default {
             this.$emit('summaries-added');
         },
         handleDeleted (summary) {
-            const idx = this.summaries.findIndex(s => s.id == summary.id);
+            const idx = this.summaries.findIndex(s => s.id === summary.id);
             if (idx > -1) {
                 this.summaries.splice(idx, 1);
             }
@@ -135,7 +135,7 @@ export default {
             this.clearNewSummaries();
         },
         mergeSummary(summary) {
-            const idx = this.summaries.findIndex(s => s.id == summary.id);
+            const idx = this.summaries.findIndex(s => s.id === summary.id);
             if (idx > -1) {
                 this.summaries.splice(idx, 1, summary);
                 return;

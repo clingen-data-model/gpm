@@ -64,7 +64,7 @@ export default {
             if (!this.application.next_actions) {
                 return {};
             }
-            const next_action = this.application.next_actions.find(na => na.id == this.id);
+            const next_action = this.application.next_actions.find(na => na.id === this.id);
             return next_action || {};
         },
         flattenedErrors () {

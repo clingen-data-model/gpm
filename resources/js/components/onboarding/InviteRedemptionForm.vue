@@ -69,7 +69,7 @@ export default {
                 const invite = await fetchInvite(inviteCode.value);
                 context.emit('codeverified', invite);
             } catch (error) {
-                if (error.response.status == 404) {
+                if (error.response.status === 404) {
                     errors.value = ['The code you entered is not valid'];
                     return;
                 }

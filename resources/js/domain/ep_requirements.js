@@ -16,7 +16,7 @@ const isEmpty = (val) => {
         case 'object':
             if (val === null) return true;
 
-            if (val.constructor.name == 'Date') return !(val);
+            if (val.constructor.name === 'Date') return !(val);
 
             return (Object.keys(val).length === 0);
         case 'array':
@@ -111,7 +111,7 @@ export const memberExpertise = new Requirement (
                 .filter(m => {
                     return !m.hasAnyExpertise
                 })
-                .length == 0
+                .length === 0
 )
 
 export default {

@@ -64,14 +64,14 @@ class Person extends Entity {
     }
 
     get primaryOccupationName () {
-        if (this.primary_occupation_id == 100) {
+        if (this.primary_occupation_id === 100) {
             return this.primary_occupation_other;
         }
         return this.primary_occupation ? this.primary_occupation.name : null
     }
 
     get raceName () {
-        if (this.race_id == 100) {
+        if (this.race_id === 100) {
             return this.race_other || 'Other';
         }
         return this.race ? this.race.name : null
@@ -82,7 +82,7 @@ class Person extends Entity {
     }
 
     get genderName () {
-        if (this.gender_id == 100) {
+        if (this.gender_id === 100) {
             return this.gender_other || 'Not specified.';
         }
         return this.gender ? this.gender.name : null
@@ -125,7 +125,7 @@ class Person extends Entity {
     }
 
     get needsCredentials () {
-        return !this.credentials || this.credentials.length == 0
+        return !this.credentials || this.credentials.length === 0
     }
 
     get hasExpertise () {

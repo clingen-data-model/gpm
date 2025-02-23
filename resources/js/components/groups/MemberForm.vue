@@ -237,10 +237,10 @@ export default {
                     .filter(i => i);
         },
         needsCredentials () {
-            return !this.newMember.person.credentials || this.newMember.person.credentials.length == 0;
+            return !this.newMember.person.credentials || this.newMember.person.credentials.length === 0;
         },
         needsExpertise () {
-            return !this.newMember.person.expertises || this.newMember.person.expertises.length == 0
+            return !this.newMember.person.expertises || this.newMember.person.expertises.length === 0
         },
         roleRequiresNotification () {
             return this.newMember.hasRole('coordinator') || this.newMember.hasRole('grant-liaison');

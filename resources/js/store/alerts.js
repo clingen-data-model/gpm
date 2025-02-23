@@ -10,7 +10,7 @@ export class Alert {
 
     constructor(message, type='info') {
         this.message = message;
-        if (Alert.types.findIndex(t => t == type) == -1)  {
+        if (Alert.types.findIndex(t => t === type) === -1)  {
             throw new Error(`Unknown alert type: ${type}`)
         }
         this.type = type
@@ -25,10 +25,10 @@ export default {
         timeouts: [],
     },
     getters: {
-        info: state => state.alerts.filter(a => a.type == 'info'),
-        success: state => state.alerts.filter(a => a.type == 'success'),
-        warning: state => state.alerts.filter(a => a.type == 'warning'),
-        error: state => state.alerts.filter(a => a.type == 'error'),
+        info: state => state.alerts.filter(a => a.type === 'info'),
+        success: state => state.alerts.filter(a => a.type === 'success'),
+        warning: state => state.alerts.filter(a => a.type === 'warning'),
+        error: state => state.alerts.filter(a => a.type === 'error'),
     },
     mutations: {
         pushAlert(state, {message, type}) {
@@ -48,7 +48,7 @@ export default {
             state.alerts.push(new Alert(message, 'warning'));
         },
         removeAlert(state, uuid) {
-            const idx = state.alerts.findIndex(a => a.uuid == uuid);
+            const idx = state.alerts.findIndex(a => a.uuid === uuid);
             if (idx < 0) {
                 return;
             }

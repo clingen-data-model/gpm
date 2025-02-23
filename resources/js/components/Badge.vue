@@ -43,7 +43,7 @@ export default {
             const x = 'px-2';
             const y = 'py-1';
 
-            if (this.size == 'xxs') {
+            if (this.size === 'xxs') {
                 return `${x} py-0.5`
             }
 

@@ -130,7 +130,7 @@ class Group extends Entity {
     }
 
     addMember(member) {
-        const idx = this.members.findIndex(m => m && m.id == member.id);
+        const idx = this.members.findIndex(m => m && m.id === member.id);
         if (idx > -1) {
             this.members.splice(idx, 1, new GroupMember({...member}))
             return;
@@ -148,7 +148,7 @@ class Group extends Entity {
     }
 
     findMember(memberId) {
-        const member = this.members.find(m => m.id == memberId);
+        const member = this.members.find(m => m.id === memberId);
         if (member) {
             return member;
         }
@@ -200,7 +200,7 @@ class Group extends Entity {
     }
 
     documentsOfType(docTypeId) {
-        return this.documents.filter(d =>  d.document_type_id == docTypeId)
+        return this.documents.filter(d =>  d.document_type_id === docTypeId)
     }
 
     hasDocumentsOfType(docTypeId) {

@@ -11,6 +11,6 @@ export const userInGroup = (group) => {
             .includes(group.id)
 };
 export const userIsPerson = (person) => {
-    return store.state.user.id == person.user_id;
+    return store.state.user.id === person.user_id;
 }
 export const coordinatesPerson = (person)  => store.state.user.coordinatesPerson(person);

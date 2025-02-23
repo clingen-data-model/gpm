@@ -56,7 +56,7 @@ export default {
     },
     methods: {
         isCurrentStep(item) {
-            return item.name == this.application.getCurrentStep(this.group).name
+            return item.name === this.application.getCurrentStep(this.group).name
         }
     }
 }

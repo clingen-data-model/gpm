@@ -65,7 +65,7 @@ export default {
             return this.group.expert_panel;
         },
         emailCced () {
-            return this.application.current_step == 1 || this.application.current_step == 4
+            return this.application.current_step === 1 || this.application.current_step === 4
         },
         ccAddresses () {
             return this.modelValue.cc.map(c => c.address).join(', ')

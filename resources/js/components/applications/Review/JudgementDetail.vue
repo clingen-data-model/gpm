@@ -14,7 +14,7 @@
     const userJudgement = computed({
         get() {
             if (latestSubmission.value && latestSubmission.value.judgements) {
-                return latestSubmission.value.judgements.find(j => j.person_id == user.value.person.id)
+                return latestSubmission.value.judgements.find(j => j.person_id === user.value.person.id)
             }
 
             return null;

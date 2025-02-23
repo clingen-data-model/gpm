@@ -42,7 +42,7 @@
     })
 
     const renderElement = ({field}) => {
-        if (field.type == 'raw-component') {
+        if (field.type === 'raw-component') {
             return h(
                 field.component.component, 
                 field.component.options, 

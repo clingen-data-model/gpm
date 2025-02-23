@@ -156,7 +156,7 @@ export default {
 
         },
         currentUserIsUser () {
-            return this.$store.getters.currentUser.id == this.user.id;
+            return this.$store.getters.currentUser.id === this.user.id;
         }
     },
     watch: {

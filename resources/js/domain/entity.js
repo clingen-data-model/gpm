@@ -93,7 +93,7 @@ class Entity {
 
     isDirty (attribute = null) {
         if (attribute) {
-            return this.original[attribute] != this.attributes[attribute];
+            return this.original[attribute] !== this.attributes[attribute];
         }
         return Object.keys(this.original).some(key => {
             return !isEqual(this.original[key], this.attributes[key]);

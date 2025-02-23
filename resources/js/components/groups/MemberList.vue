@@ -65,7 +65,7 @@ export default {
                         const aComp = a.roles.map(r => r.name).join(',');
                         const bComp = b.roles.map(r => r.name).join(',');
 
-                        if (aComp == bComp) {
+                        if (aComp === bComp) {
                             return 0;
                         }
 
@@ -127,10 +127,10 @@ export default {
         fieldsForGroupType () {
             const fields = [...this.tableFields];
             if (!this.group.has_coi_requirement) {
-                fields.splice(fields.findIndex(f => f.name == 'coi_last_completed'), 1);
+                fields.splice(fields.findIndex(f => f.name === 'coi_last_completed'), 1);
             }
             if (!this.group.isEp()) {
-                fields.splice(fields.findIndex(f => f.name == 'requirements'), 1);
+                fields.splice(fields.findIndex(f => f.name === 'requirements'), 1);
             }
             return fields;
         },
@@ -163,7 +163,7 @@ export default {
         group: {
             immediate: true,
             handler (to, from) {
-                if ((to.id && (!from || to.id != from.id))) {
+                if ((to.id && (!from || to.id !== from.id))) {
                     this.$store.dispatch('groups/getMembers', this.group);
                 }
             }

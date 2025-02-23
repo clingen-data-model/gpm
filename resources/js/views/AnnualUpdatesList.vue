@@ -25,10 +25,10 @@ export default {
       return this.sortedWindows[0] || {};
     },
     gcepReviews() {
-      return this.items.filter((i) => i.expert_panel.expert_panel_type_id == 1);
+      return this.items.filter((i) => i.expert_panel.expert_panel_type_id === 1);
     },
     vcepReviews() {
-      return this.items.filter((i) => i.expert_panel.expert_panel_type_id == 2);
+      return this.items.filter((i) => i.expert_panel.expert_panel_type_id === 2);
     },
     selectedYear() {
         return this.selectedWindow ? this.selectedWindow.for_year : this.latestWindow.for_year

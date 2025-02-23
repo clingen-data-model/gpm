@@ -116,8 +116,8 @@ export default {
         async resetInvite (invite) {
             try {
                 const response = await api.put(`/api/people/invites/${invite.code}/reset`);
-                const idx = this.invites.findIndex(i => i.id == invite.id);
-                if (idx == -1) {
+                const idx = this.invites.findIndex(i => i.id === invite.id);
+                if (idx === -1) {
                     // eslint-disable-next-line no-alert
                     alert('what??')
                 }

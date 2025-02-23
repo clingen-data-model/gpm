@@ -9,7 +9,7 @@
     const expertPanel = computed(() => group.value.expert_panel)
 
     watch(() => group.value, (to, from) => {
-        if ((to.id && (!from || to.id != from.id))) {
+        if ((to.id && (!from || to.id !== from.id))) {
             store.dispatch('groups/getEvidenceSummaries', group.value);
         }
     });

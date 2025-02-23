@@ -283,7 +283,7 @@ export default {
 		};
 
         watch(() => store.getters['groups/currentItem'], (to, from) => {
-            if (to.id && (!from || to.id != from.id)) {
+            if (to.id && (!from || to.id !== from.id)) {
                 // syncGenesAsText();
                 getGenes();
             }

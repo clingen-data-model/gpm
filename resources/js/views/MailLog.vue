@@ -77,10 +77,10 @@ export default {
                     type: Array,
                     resolveValue(item) {
                         const emails = Object.keys(item.to);
-                        if (emails.length == 0) {
+                        if (emails.length === 0) {
                             return '';
                         }
-                        if (emails.length == 1) {
+                        if (emails.length === 1) {
                             return emails[0];
                         }
                         return emails.join('; ');

@@ -13,9 +13,9 @@ export const state = () => ({
 export const getters = {
     people: state => state.items,
     all: state => state.items,
-    personWithUuid: (state) => (uuid) => state.items.find(i => i.uuid == uuid),
-    getPersonWithUuid: (state) => (uuid) => state.items.find(i => i.uuid == uuid),
-    indexForPersonWithUuid: (state) => (uuid) => state.items.findIndex(i => i.uuid == uuid),
+    personWithUuid: (state) => (uuid) => state.items.find(i => i.uuid === uuid),
+    getPersonWithUuid: (state) => (uuid) => state.items.find(i => i.uuid === uuid),
+    indexForPersonWithUuid: (state) => (uuid) => state.items.findIndex(i => i.uuid === uuid),
     currentItem: state => {
         if (typeof state.currentItemIdx == 'undefined' || state.currentItemIdx == null || state.currentItemIdx < 0) {
             return new Person();
@@ -32,7 +32,7 @@ export const mutations = {
             person = new Person(itemData);
         }
 
-        const idx = state.items.findIndex(item => item.uuid == itemData.uuid);
+        const idx = state.items.findIndex(item => item.uuid === itemData.uuid);
         if (idx > -1) {
             state.items.splice(idx, 1, person)
             return;
@@ -56,7 +56,7 @@ export const mutations = {
         state.lastParams = params;
     },
     setCurrentItemIndex(state, item) {
-        const idx = state.items.findIndex(i => i.uuid == item.uuid);
+        const idx = state.items.findIndex(i => i.uuid === item.uuid);
         if (idx > -1) {
             state.currentItemIdx = idx;
         }

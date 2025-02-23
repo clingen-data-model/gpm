@@ -45,7 +45,7 @@
     const handleNewCredential = async (cred) => {
         showCreateForm.value = false;
         credentials.value = [...credentials.value, cred]
-        workingCopy.value.push(credentials.value.find(c => c.id == cred.id));
+        workingCopy.value.push(credentials.value.find(c => c.id === cred.id));
     }
 
     const cancelNewCredential = () => {

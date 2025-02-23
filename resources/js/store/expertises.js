@@ -16,7 +16,7 @@ export default {
             if (!item.id) {
                 throw new Error('404: no id in expertise item')
             }
-            const idx = state.items.findIndex(i => i.id == item.id);
+            const idx = state.items.findIndex(i => i.id === item.id);
             if (idx > -1) {
                 state.items.splice(idx, 1, item)
                 return;
@@ -29,7 +29,7 @@ export default {
         },
 
         removeItem(state, item) {
-            const idx = state.items.findIndex(i => i.id == item.id);
+            const idx = state.items.findIndex(i => i.id === item.id);
             state.items.splice(idx, 1);
         },
 

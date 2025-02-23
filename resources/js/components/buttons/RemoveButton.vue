@@ -31,19 +31,19 @@ export default {
     },
     computed: {
         dimension () {
-            if (this.size == 'xs') {
+            if (this.size === 'xs') {
                 return 8
             }
-            if (this.size == 'sm') {
+            if (this.size === 'sm') {
                 return 10
             }
-            if (this.size == 'md') {
+            if (this.size === 'md') {
                 return 12
             }
-            if (this.size == 'lg') {
+            if (this.size === 'lg') {
                 return 14
             }
-            if (this.size == 'xl') {
+            if (this.size === 'xl') {
                 return 18
             }
             return 10

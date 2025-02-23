@@ -153,7 +153,7 @@ export default {
                 return null;
             }
             if (this.application.next_actions) {
-                return this.application.next_actions.find(i => i.id == this.id);
+                return this.application.next_actions.find(i => i.id === this.id);
             }
         },
         syncAction (action) {
@@ -196,7 +196,7 @@ export default {
                     this.clearForm();
                 }
             } catch (error) {
-                if (error.response && error.response.status == 422 && error.response.data.errors) {
+                if (error.response && error.response.status === 422 && error.response.data.errors) {
                     this.errors = error.response.data.errors
                     return;
                 }

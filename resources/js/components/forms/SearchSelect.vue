@@ -238,22 +238,22 @@ export default {
         },
         startKeydownTimer(evt) {
             this.log('startKeydwonTimer')
-            if (evt.key == this.currentKey) {
+            if (evt.key === this.currentKey) {
                 return;
             }
             this.cancelKeydownTimer(evt);
-            if (evt.key == 'ArrowUp') {
+            if (evt.key === 'ArrowUp') {
                 this.keydownTimer = setInterval(() => {this.moveUp()}, 100);
                 this.currentKey = 'ArrowUp';
             }
-            if (evt.key == 'ArrowDown') {
+            if (evt.key === 'ArrowDown') {
                 this.keydownTimer = setInterval(() => {this.moveDown()}, 100);
                 this.currentKey = 'ArrowDown';
             }
         },
         handleKeyDown (evt) {
             this.log('handleKeyDown')
-            if (evt.key == 'Tab') {
+            if (evt.key === 'Tab') {
                 this.handleKeyEvent(evt);
                 return;
             }
@@ -296,10 +296,10 @@ export default {
             this.log('handleKeyEvent')
             this.cancelKeydownTimer(evt);
             if (this.showingOptions) {
-                if (evt.key == 'ArrowDown') {
+                if (evt.key === 'ArrowDown') {
                     this.moveDown();
                 }
-                if (evt.key == 'ArrowUp') {
+                if (evt.key === 'ArrowUp') {
                     this.moveUp();
                 }
 
@@ -311,7 +311,7 @@ export default {
                     // evt.preventDefault();
                     this.setSelection(this.filteredOptions[this.cursorPosition])
                 }
-                if (evt.key == 'Escape') {
+                if (evt.key === 'Escape') {
                     this.clearOptions();
                 }
             }
@@ -344,7 +344,7 @@ export default {
     },
     created() {
         this.search = debounce( async (searchText, options) => {
-            if (searchText == '' || searchText === null || typeof searchText == 'undefined') {
+            if (searchText === '' || searchText === null || typeof searchText == 'undefined') {
                 if (this.showOptionsOnFocus) {
                     this.filteredOptions = [...options];
                     return;

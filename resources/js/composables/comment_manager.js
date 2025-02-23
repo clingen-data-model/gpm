@@ -11,13 +11,13 @@ export default (subjectType, subjectId) => {
     const comments = ref([]);
 
     const openComments = computed(() => comments.value.filter(c => !c.is_resolved))
-    const openRequirements = computed(() => openComments.value.filter(c =>  c.comment_type_id == types.requirement));
-    const openSuggestions = computed(() => openComments.value.filter(c =>  c.comment_type_id == types.suggestion));
+    const openRequirements = computed(() => openComments.value.filter(c =>  c.comment_type_id === types.requirement));
+    const openSuggestions = computed(() => openComments.value.filter(c =>  c.comment_type_id === types.suggestion));
     const commentsForEp = computed(() => [...openRequirements.value, ...openSuggestions.value])
-    const openInternal = computed(() => openComments.value.filter(c => c.comment_type_id == types.internal));
+    const openInternal = computed(() => openComments.value.filter(c => c.comment_type_id === types.internal));
 
     const findCommentIndex = (comment) => {
-        return comments.value.findIndex(c => c.id == comment.id)
+        return comments.value.findIndex(c => c.id === comment.id)
     }
 
     const getComments = async () => {

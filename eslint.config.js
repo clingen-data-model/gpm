@@ -49,7 +49,6 @@ export default antfu(
             'perfectionist/sort-named-imports': 'off',
             'perfectionist/sort-named-exports': 'off',
             'array-callback-return': 'off',
-            'eqeqeq': 'off',
             'no-unneeded-ternary': 'off',
             'no-sequences': 'off',
             'no-undef': 'off',

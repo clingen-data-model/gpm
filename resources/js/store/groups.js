@@ -17,13 +17,13 @@ export const getters = {
         return state.requests.length > 0;
     },
     eps: state => {
-        return state.items.filter(item => item.group_type_id == 3);
+        return state.items.filter(item => item.group_type_id === 3);
     },
     cdwgs: state => {
-        return state.items.filter(item => item.group_type_id == 2);
+        return state.items.filter(item => item.group_type_id === 2);
     },
     wgs: state => {
-        return state.items.filter(item => item.group_type_id == 1);
+        return state.items.filter(item => item.group_type_id === 1);
     },
     currentItem: state => {
         const item = state.items[state.currentItemIdx]
@@ -34,11 +34,11 @@ export const getters = {
         return item;
     },
     getItemByUuid: (state) => (uuid) => {
-        const item = state.items.find(i => i.uuid == uuid);
+        const item = state.items.find(i => i.uuid === uuid);
         return item;
     },
     getItemById: (state) => (id) => {
-        const item = state.items.find(i => i.id == id);
+        const item = state.items.find(i => i.id === id);
         return item;
     }
 };
@@ -50,7 +50,7 @@ export const mutations = {
         }
         const group = Object.prototype.hasOwnProperty.call(item, 'attributes')
                         ? item : new Group(item);
-        const idx = state.items.findIndex(i => i.id == item.id);
+        const idx = state.items.findIndex(i => i.id === item.id);
         if (idx > -1) {
             state.items.splice(idx, 1, group)
             return;
@@ -60,12 +60,12 @@ export const mutations = {
     },
 
     setCurrentItemIndex(state, item) {
-        const idx = state.items.findIndex(i => i.uuid == item.uuid);
+        const idx = state.items.findIndex(i => i.uuid === item.uuid);
         state.currentItemIdx = idx;
     },
 
     removeItem(state, item) {
-        const idx = state.items.findIndex(i => i.uuid == item.uuid);
+        const idx = state.items.findIndex(i => i.uuid === item.uuid);
         state.items.splice(idx, 1);
     },
 
@@ -96,7 +96,7 @@ export const mutations = {
     setCurrentItemIndexByUuid(state, groupUuid) {
         if (state.items.length > 0) {
             const currentItemIndex = state.items.findIndex(i => {
-                return i.uuid == groupUuid
+                return i.uuid === groupUuid
             });
             if (currentItemIndex > -1) {
                 state.currentItemIdx = currentItemIndex;
@@ -326,7 +326,7 @@ export const actions = {
 
     // eslint-disable-next-line unused-imports/no-unused-vars
     async curationReviewProtocolUpdate({ commit }, {uuid, expertPanel}) {
-        if (expertPanel.curation_review_protocol_id != 100) {
+        if (expertPanel.curation_review_protocol_id !== 100) {
             expertPanel.curation_review_protocol_other = null;
         }
 
@@ -455,7 +455,7 @@ export const actions = {
     async updateDocument({ commit }, { group, document }) {
         return api.put(`/api/groups/${group.uuid}/documents/${document.uuid}`, document)
             .then((response) => {
-                const idx = group.documents.findIndex(doc => doc.id == document.id);
+                const idx = group.documents.findIndex(doc => doc.id === document.id);
                 group.documents[idx] = response.data;
                 return response;
             });

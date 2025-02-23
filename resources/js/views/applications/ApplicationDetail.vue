@@ -51,7 +51,7 @@
     watch(
         () => props.uuid,
         async (to, from) => {
-            if ((to && (!from || to != from))) {
+            if ((to && (!from || to !== from))) {
                 await getGroup();
                 commentManager.value = commentManagerFactory('App\\Modules\\Group\\Models\\Group', group.value.id)
                 commentManager.value.getComments();

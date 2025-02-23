@@ -19,7 +19,7 @@ export default {
     },
     computed: {
         parentIsValid() {
-            return this.$parent.$options.name == 'TabsContainer'
+            return this.$parent.$options.name === 'TabsContainer'
         }
     },
     methods: {

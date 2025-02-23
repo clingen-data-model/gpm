@@ -52,7 +52,7 @@ export default {
     computed: {
         regionCities () {
             return this.cities.filter(c => {
-                return c.region == this.region;
+                return c.region === this.region;
             })
         }
     },
@@ -82,11 +82,11 @@ export default {
                 }
 
                 let updated = false;
-                if (region != this.region) {
+                if (region !== this.region) {
                     this.region = region;
                     updated = true
                 }
-                if (city != this.city) {
+                if (city !== this.city) {
                     this.city = city;
                     updated = true
                 }
@@ -106,7 +106,7 @@ export default {
             return this.cities
                 .filter(c => {
                     if (this.region) {
-                        return c.region == this.region;
+                        return c.region === this.region;
                     }
                     return true;
                 })
@@ -123,7 +123,7 @@ export default {
             this.regions = [...(new Set(this.regions))];
         },
         emitUpdate () {
-            if (this.region == 'UTC') {
+            if (this.region === 'UTC') {
                 this.$emit('update:modelValue', this.region);
             }
 
@@ -141,7 +141,7 @@ export default {
     mounted () {
         api.get('/api/people/lookups/timezones')
             .then(response => {
-                this.timezones = response.data.data.filter(tz => tz != 'UTC')
+                this.timezones = response.data.data.filter(tz => tz !== 'UTC')
                 this.setRegionsAndCities(this.timezones);
             })
     }

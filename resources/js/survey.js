@@ -28,7 +28,7 @@ class YesNoQuestion extends Question {
 }
 
 function makeQuestion(questionDef) {
-    if (questionDef.type == 'yes-no') {
+    if (questionDef.type === 'yes-no') {
         return new YesNoQuestion(questionDef);
     }
 
@@ -53,7 +53,7 @@ class Survey {
     getResponseTemplate() {
         const rsp = {};
         this.questions
-            .filter(q => q.type == 'content')
+            .filter(q => q.type === 'content')
             .forEach(q => {
                 rsp[q.name] = null
             });

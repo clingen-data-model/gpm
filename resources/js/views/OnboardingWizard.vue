@@ -96,14 +96,14 @@ export default {
         },
         goBack () {
             this.animationDirection = 'fade';
-            if (this.currentStepIdx == 0) {
+            if (this.currentStepIdx === 0) {
                 return;
             }
             this.currentStepIdx -= 1;
         },
         goForward() {
             this.animationDirection = 'fade';
-            if (this.currentStepIdx == stepComponents.length-1) {
+            if (this.currentStepIdx === stepComponents.length-1) {
                 this.$router.push({name: 'Dashboard'})
                 return;
             }

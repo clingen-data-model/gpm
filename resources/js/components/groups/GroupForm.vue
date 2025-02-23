@@ -263,7 +263,7 @@ export default {
         },
 
         isDirty (attribute) {
-            return this.group[attribute] != this.group[attribute]
+            return this.group[attribute] !== this.group[attribute]
         },
 
         saveParent () {
@@ -307,7 +307,7 @@ export default {
             this.parents = await api.get(`/api/groups`, {params})
                         .then(response => {
                             return response.data
-                                .filter(group => group.id != this.group.id)
+                                .filter(group => group.id !== this.group.id)
                                 .map(g => new Group(g))
                         });
         },

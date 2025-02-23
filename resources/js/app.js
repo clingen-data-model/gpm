@@ -91,7 +91,7 @@ app.use(store)
         mounted () {
             if (this.id) {
                 if (this.$route.hash) {
-                    if (this.$route.hash.substr(1) == this.id) {
+                    if (this.$route.hash.substr(1) === this.id) {
                         location.href = '#';
                         location.href = this.$route.hash;
                     }

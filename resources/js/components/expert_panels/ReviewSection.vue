@@ -26,7 +26,7 @@
         }
         return commentManager.value.comments.filter(c => {
             if (c.metadata) {
-                return c.metadata.section == props.name
+                return c.metadata.section === props.name
             }
             return false
         })
@@ -36,10 +36,10 @@
         if (!commentManager) {
             return null;
         }
-        if (sectionComments.value.find(c => c.type.name == 'required revision')) {
+        if (sectionComments.value.find(c => c.type.name === 'required revision')) {
             return 'yellow'
         }
-        if (sectionComments.value.find(c => c.type.name == 'suggestion')) {
+        if (sectionComments.value.find(c => c.type.name === 'suggestion')) {
             return 'blue'
         }
         return 'gray'

@@ -22,7 +22,7 @@ export default function (config = {}) {
                 return state.items
             },
             getItemById: (state) => (id) => {
-                return state.items.find(item => item.id == id);
+                return state.items.find(item => item.id === id);
             },
             currentItem: state => {
                 if (state.currentItemIdx === null) {
@@ -41,7 +41,7 @@ export default function (config = {}) {
                     item = new config.modelClass(item)
                 }
 
-                const idx = state.items.findIndex(i => i.id == item.id);
+                const idx = state.items.findIndex(i => i.id === item.id);
                 if (idx > -1) {
                     state.items.splice(idx, 1, item)
                     return;
@@ -53,7 +53,7 @@ export default function (config = {}) {
                 state.items = [];
             },
             setCurrentItemIndex(state, item) {
-                const idx = state.items.findIndex(i => i.uuid == item.uuid);
+                const idx = state.items.findIndex(i => i.uuid === item.uuid);
                 state.currentItemIdx = idx;
             },
             ...config.mutations

@@ -77,7 +77,7 @@ export default {
             return Boolean(this.newDocument.date_reviewed)
         },
         documentType () {
-            if (Object.values(this.docTypes).length == 0) {
+            if (Object.values(this.docTypes).length === 0) {
                 return {};
             }
             return Object.values(this.docTypes).find(dt => dt.id = this.documentTypeId)
