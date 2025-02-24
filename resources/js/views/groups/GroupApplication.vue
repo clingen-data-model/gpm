@@ -28,7 +28,7 @@ export default {
         }
     },
     watch: {
-        $route: function () {
+        $route () {
             this.showModal = this.$route.meta.showModal
                                 ? Boolean(this.$route.meta.showModal)
                                 : false;
@@ -36,7 +36,7 @@ export default {
 
         uuid: {
             immediate: true,
-            handler: async function (to) {
+            async handler (to) {
                 await this.$store.dispatch('groups/find', to)
                     .then(() => {
                         this.$store.commit('groups/setCurrentItemIndexByUuid', this.uuid)

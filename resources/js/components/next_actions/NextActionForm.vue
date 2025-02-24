@@ -111,7 +111,7 @@ export default {
     watch: {
         id: {
             immediate: true,
-            handler: function() {
+            handler() {
                 const action = this.findAction();
                 if (action) {
                     this.syncAction(action)
@@ -120,7 +120,7 @@ export default {
         },
         application: {
             immediate: true,
-            handler: function () {
+            handler () {
                 const action = this.findAction();
                 if (action) {
                     this.syncAction(action);

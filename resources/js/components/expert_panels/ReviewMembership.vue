@@ -78,7 +78,7 @@
                 institution: m.person.institution?.name,
                 legacy_credentials: m.person.legacy_credentials,
                 legacy_expertise: m.legacy_expertise,
-                roles: roles,
+                roles,
                 role_priority: Math.min(...roles.map(rolePriority)),
                 active: m.isActive,
                 person: m.person

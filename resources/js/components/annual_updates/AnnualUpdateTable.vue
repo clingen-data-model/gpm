@@ -77,10 +77,10 @@ export default {
     },
     computed: {
         completedFilter: {
-            get: function () {
+            get () {
                 return this.$route.query.completed || null;
             },
-            set: function (value) {
+            set (value) {
                 const currentQuery = this.$route.query;
                 const currentPath = this.$route.path;
         

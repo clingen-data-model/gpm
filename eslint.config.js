@@ -48,7 +48,6 @@ export default antfu(
             'perfectionist/sort-imports': 'off',
             'perfectionist/sort-named-imports': 'off',
             'perfectionist/sort-named-exports': 'off',
-            'object-shorthand': 'off',
         }
     },
 )

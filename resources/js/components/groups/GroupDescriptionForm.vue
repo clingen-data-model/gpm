@@ -71,10 +71,10 @@ export default {
             }
         },
         description: {
-            get: function () {
+            get () {
                 return this.group.description;
             },
-            set: function (value) {
+            set (value) {
                 const groupCopy = this.group.clone();
                 groupCopy.description = value;
                 this.$emit("update:group", groupCopy);

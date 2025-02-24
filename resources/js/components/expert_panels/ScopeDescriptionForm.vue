@@ -71,10 +71,10 @@ export default {
             }
         },
         scopeDescription: {
-            get: function () {
+            get () {
                 return this.group.expert_panel.scope_description;
             },
-            set: function (value) {
+            set (value) {
                 const groupCopy = this.group.clone();
                 groupCopy.expert_panel.scope_description = value;
                 this.$emit("update:group", groupCopy);
