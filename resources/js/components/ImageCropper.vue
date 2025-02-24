@@ -83,7 +83,7 @@ onUnmounted(() => {
                 </button>
             </div>
             <popper arrow hover>
-                <template v-slot:content>
+                <template #content>
                     <div class="w-80"></div>
                     <h4>Tips on cropping images:</h4>
                     <ul class="list-disc pl-6 text-xs">

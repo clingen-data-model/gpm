@@ -27,7 +27,7 @@ export default {
         <div class="flex justify-between">
             <h2 class="mb-4">Subgroups</h2>
             <dropdown-menu hide-cheveron orientation="right">
-                <template v-slot:label>
+                <template #label>
                     <button class="btn btn-icon"><icon-download width="16" height="16" /></button>
                 </template>
                 <dropdown-item class="text-right font-bold">Downloads:</dropdown-item>
@@ -44,7 +44,7 @@ export default {
         <ul>
           <li class="child-group" v-for="childGroup in group.children" :key="childGroup.id">
             <popover hover arrow placement="left" class="block w-full">
-              <template v-slot:content>
+              <template #content>
                 <div class="text-xs">
                   <dictionary-row label="Status" label-class="font-bold" label-width="8em">{{childGroup.status.name}}</dictionary-row>
                   <dictionary-row v-if="childGroup.chairs.length > 0"

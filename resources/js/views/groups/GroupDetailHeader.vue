@@ -60,7 +60,7 @@ export default {
             </button>
         </h1>
         <dictionary-row label="Chairs:">
-            <template v-slot:label><strong>Chairs:</strong></template>
+            <template #label><strong>Chairs:</strong></template>
             <div v-if="group.chairs.length > 0">
                 {{group.chairs.map(c => c.person.name).join(', ')}}
             </div>
@@ -69,7 +69,7 @@ export default {
             </div>
         </dictionary-row>
         <dictionary-row label="Coordinators:">
-            <template v-slot:label><strong>Coordinators:</strong></template>
+            <template #label><strong>Coordinators:</strong></template>
             <div v-if="group.coordinators.length > 0">
                 {{group.coordinators.map(c => c.person.name).join(', ')}}
             </div>

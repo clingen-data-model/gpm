@@ -97,7 +97,7 @@
         </div>
         <hr>
         <input-row :errors="errors.decision" vertical>
-            <template v-slot:label>
+            <template #label>
                 <h3>How should we proceed?</h3>
             </template>
             <radio-button-group

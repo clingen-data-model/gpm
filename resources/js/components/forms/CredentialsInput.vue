@@ -63,7 +63,7 @@
         showOptionsWhenEmpty
         :searchFunction="searchCredentials"
     >
-        <template v-slot:fixedBottomOption>
+        <template #fixedBottomOption>
             <div class="text-sm">
                 Don't see your credential? <button class="link" @click="initNewCredential">Create a new one.</button>
             </div>

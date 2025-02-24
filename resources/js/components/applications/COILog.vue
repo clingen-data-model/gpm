@@ -104,7 +104,7 @@ export default {
                 :fields="fields"
                 :data="application.cois"
             >
-                <template v-slot:cell-id="{item}">
+                <template #cell-id="{item}">
                     <button class="btn btn-xs" @click="showResponse(item)">view</button> 
                 </template>
             </data-table>

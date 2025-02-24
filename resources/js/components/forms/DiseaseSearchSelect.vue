@@ -44,13 +44,13 @@ export default {
         style="z-index: 2"
         placeholder="MonDO ID or name"
     >
-        <template v-slot:selection-label="{selection}">
+        <template #selection-label="{selection}">
             <div v-if="typeof selection == 'object'">
                 {{selection.mondo_id}} - {{selection.name}}
             </div>
             <div v-else>{{selection}}</div>
         </template>
-        <template v-slot:option="{option}">
+        <template #option="{option}">
             <div v-if="typeof option == 'object'">
                 {{option.mondo_id}} - {{option.name}}
             </div>
