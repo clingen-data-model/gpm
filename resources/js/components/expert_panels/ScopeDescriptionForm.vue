@@ -2,18 +2,18 @@
     <div>
         <header class="flex justify-between items-center">
             <h4>Description of Scope</h4>
-            <edit-icon-button 
+            <EditIconButton 
                 v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing"
                 @click="$emit('update:editing', true)"
-            ></edit-icon-button>
+            ></EditIconButton>
         </header>
         <div class="mt-2">
             <p class="text-sm">
                 Describe the scope of work of the Expert Panel including
                 the disease area(s), genes being addressed, and any
                 specific rational for choosing the condition(s). See the
-                <vcep-protocol-link v-if="group.is_vcep_or_scvcep" />
-                <gcep-quick-guide-link v-if="group.is_gcep" /> for more
+                <VcepProtocolLink v-if="group.is_vcep_or_scvcep" />
+                <GcepQuickGuideLink v-if="group.is_gcep" /> for more
                 information.
             </p>
             <transition name="fade" mode="out-in">
@@ -43,7 +43,7 @@ import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
 import MarkdownBlock from '@/components/MarkdownBlock.vue'
 
 export default {
-    name: "scopeDescriptionForm",
+    name: "ScopeDescriptionForm",
     props: {
         editing: {
             type: Boolean,

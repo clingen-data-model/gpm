@@ -55,21 +55,21 @@
 </script>
 <template>
     <div>
-        <sustained-curation-review-alert
+        <SustainedCurationReviewAlert
             v-for="task in sustainedCurationReviews"
             :key="task.id"
             :group="task.assignee"
             class="mb-2"
         />
 
-        <annual-update-alert
+        <AnnualUpdateAlert
             v-for="group in coordinatingGroups" :key="group.id"
             :group="group"
             :show-group-name="true"
             class="mb-2"
         />
 
-        <coi-alert
+        <CoiAlert
             v-for="membership in user.person.membershipsWithPendingCois"
             :key="membership.id"
             :membership="membership"

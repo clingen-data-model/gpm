@@ -25,18 +25,18 @@
             <template v-slot:cell-action="{item}">
                 <div class="flex space-x-1">
                     <edit-icon-button @click="$router.push({name: 'EditNextAction', params: {uuid: application.uuid, id: item.id}})"></edit-icon-button>
-                    <trash-icon-button @click="initiateDelete(item)"></trash-icon-button>
+                    <TrashIconButton @click="initiateDelete(item)"></TrashIconButton>
                     <icon-checkmark 
                         width="20" 
                         height="20"
                         :class="{'text-green-500': Boolean(item.date_completed), 'text-gray-300': !Boolean(item.date_completed)}"
                         v-if="Boolean(item.date_completed)"
                     />
-                    <checkmark-button
+                    <CheckmarkButton
                         v-else
                         @click.prevent="startCompleting(item)"
                         title="Mark complete"
-                    ></checkmark-button>
+                    ></CheckmarkButton>
                 </div>
             </template>
         </data-table>
@@ -45,11 +45,11 @@
         </div>
 
         <modal-dialog v-model="showCreateModal" title="Complete next action">
-            <complete-next-action-form 
+            <CompleteNextActionForm 
                 :next-action="selectedNextAction"
                 @canceled="showCreateModal = false"
                 @completed="handleCompleted"
-            ></complete-next-action-form>
+            ></CompleteNextActionForm>
         </modal-dialog>
 
     </div>

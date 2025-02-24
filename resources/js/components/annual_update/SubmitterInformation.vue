@@ -7,7 +7,7 @@
     }
 </style>
 <template>
-    <application-section title="Submitter Information">
+    <ApplicationSection title="Submitter Information">
         <dictionary-row label="Expert Panel">{{workingCopy.expert_panel.display_name}}</dictionary-row>
         <dictionary-row label="Affilation ID">{{workingCopy.expert_panel.affiliation_id}}</dictionary-row>
 
@@ -63,7 +63,7 @@
             </p>
         </transition>
 
-    </application-section>
+    </ApplicationSection>
 </template>
 <style lang="postcss" scoped>
     .input-row .label-container label {

@@ -116,7 +116,7 @@ export default {
         </static-alert>
 
         <transition name="slide-fade-down">
-            <user-defined-mail-form v-model="email" v-show="notifyContacts"/>
+            <UserDefinedMailForm v-model="email" v-show="notifyContacts"/>
         </transition>
 
         <button-row @canceled="cancel" @submitted="save" :submit-text="submissionText" />

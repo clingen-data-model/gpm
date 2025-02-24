@@ -97,11 +97,11 @@ export default {
     <tabs-container>
       <tab-item label="VCEPS">
         <div v-if="loading">Loading&hellip;</div>
-        <annual-update-table v-else :items="vcepReviews" />
+        <AnnualUpdateTable v-else :items="vcepReviews" />
       </tab-item>
       <tab-item label="GCEPS">
         <div v-if="loading">Loading&hellip;</div>
-        <annual-update-table v-else :items="gcepReviews" />
+        <AnnualUpdateTable v-else :items="gcepReviews" />
       </tab-item>
     </tabs-container>
   </div>

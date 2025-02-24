@@ -3,7 +3,7 @@
         <h2 class="mb-2">
             Application Summary
             <span v-if="applicationStarted && group.is_vcep_or_scvcep">
-                - {{this.currentMenuItem.title}}
+                - {{currentMenuItem.title}}
             </span>
         </h2>
         <!-- <ul class="px-8" v-if="applicationStarted"> -->
@@ -14,7 +14,7 @@
                         {{item.title}}
                     </div>
                     <div>
-                        <requirements-badge :section="item" v-if="!isStep(item)" />
+                        <RequirementsBadge :section="item" v-if="!isStep(item)" />
                         <icon-lock v-if="(isStep(item) && item.isDisabled(group))" class="inline text-gray-400" :height="14" :width="14"/>
 
                         <div v-if="isStep(item) && item.isComplete(group)">
@@ -26,7 +26,7 @@
                     <ul>
                         <li v-for="(section, sectionIdx) in item.sections" :key="sectionIdx" class="pb-2 flex justify-between my-2">
                             <div>{{section.title}}</div>
-                            <requirements-badge :section="section" />
+                            <RequirementsBadge :section="section" />
                         </li>
                     </ul>
                 </div>

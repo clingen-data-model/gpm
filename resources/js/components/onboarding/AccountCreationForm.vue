@@ -5,7 +5,7 @@
             <static-alert>
                 It looks like you've already activated you account.  Please login to continue.
             </static-alert>
-            <login-form @authenticated="redeemForExistingUser"></login-form>
+            <LoginForm @authenticated="redeemForExistingUser"></LoginForm>
         </div>
         <div v-else>
             <p class="text-lg">Create your account</p>

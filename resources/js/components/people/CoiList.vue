@@ -49,7 +49,7 @@
                                 v-if="userIsPerson(person)"
                                 :to="{
                                     name: 'alt-coi',
-                                    params: {code: item.group.coi_code, name: this.kebabCase(item.group.name)}
+                                    params: {code: item.group.coi_code, name: kebabCase(item.group.name)}
                                 }"
                                 class="btn btn-xs"
                             >Update COI</router-link>
@@ -76,7 +76,7 @@
                                 v-if="userIsPerson(person)"
                                 :to="{
                                     name: 'alt-coi',
-                                    params: {code: item.group.coi_code, name: this.kebabCase(item.group.name)}
+                                    params: {code: item.group.coi_code, name: kebabCase(item.group.name)}
                                 }"
                                 class="btn btn-xs"
                             >Update COI</router-link>
@@ -91,7 +91,7 @@
         <div class="well" v-else>You are not required to complete conflict of interest disclsoures.</div>
         <teleport to="body">
             <modal-dialog v-model="showResponseDialog" size="xl">
-                <coi-detail :coi="currentCoi" :group="currentGroup" v-if="currentCoi"></coi-detail>
+                <CoiDetail :coi="currentCoi" :group="currentGroup" v-if="currentCoi"></CoiDetail>
             </modal-dialog>
         </teleport>
     </div>

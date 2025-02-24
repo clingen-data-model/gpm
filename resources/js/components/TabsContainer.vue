@@ -84,7 +84,7 @@ export default {
             this.tabs.forEach(t => t.active = false)
             this.tabs[idx].active = true
             this.$emit('update:modelValue', idx);
-            this.$emit('tab-changed', this.tabs[idx].label);
+            this.$emit('tabChanged', this.tabs[idx].label);
             this.updateRouteQuery(this.tabs[idx].label);
         },
 
@@ -155,7 +155,7 @@ export default {
         },
     },
     mounted () {
-        this.$emit('tab-changed', this.activeTab.label);
+        this.$emit('tabChanged', this.activeTab.label);
     },
     render() {
         const tabList = this.renderTabs();
