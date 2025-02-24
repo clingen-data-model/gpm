@@ -1,5 +1,5 @@
 <template>
-    <search-select 
+    <SearchSelect 
         v-model="selectedGene" 
         :search-function="search" 
         style="z-index: 2" 
@@ -20,7 +20,7 @@
                 {{option}}
             </div>
         </template>
-    </search-select>
+    </SearchSelect>
 
 </template>
 <script>

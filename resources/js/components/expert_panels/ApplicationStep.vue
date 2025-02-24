@@ -38,7 +38,7 @@
             <div class="step-contents">
                 <slot></slot>
             </div>
-            <application-submit-button
+            <ApplicationSubmitButton
                 v-if="showSubmitButton"
                 class="border-t"
                 :step="step"

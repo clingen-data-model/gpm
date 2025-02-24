@@ -39,7 +39,7 @@
                 title="Evidence Summaries"
                 name="evidence-summaries"
             >
-                <evidence-summary-list :readonly="true" />
+                <EvidenceSummaryList :readonly="true" />
             </ReviewSection>
 
             <ReviewSection v-if="expertPanel.has_approved_pilot"

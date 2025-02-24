@@ -511,7 +511,7 @@ export default {
                 </template>
 
                 <template v-slot:detail="{item}">
-                    <member-preview :member="item" :group="group"></member-preview>
+                    <MemberPreview :member="item" :group="group"></MemberPreview>
                 </template>
             </data-table>
             <div v-else class="well">
@@ -537,7 +537,7 @@ export default {
                 <button-row @submit="removeMember" @cancel="cancelRemove" submit-text="Remove Member"></button-row>
             </modal-dialog>
             <modal-dialog v-model="showCoiDetail" size="xl">
-                <coi-detail :coi="coi" v-if="coi" :group="group"></coi-detail>
+                <CoiDetail :coi="coi" v-if="coi" :group="group"></CoiDetail>
             </modal-dialog>
             <!-- <modal-dialog size="xxl" v-model="showCoiReport" :title="`COI Report for ${group.displayName}`">
                 <coi-report :group="group"></coi-report>

@@ -17,7 +17,7 @@
             <div v-show="editDateReceived">
                 <date-input v-model="newDateReceived" class="inline-block"></date-input>
                 <button class="btn btn-sm blue" @click="saveDateReceived">Save</button>
-                <remove-button class="ml-1" @click="editDateReceived = false"></remove-button>
+                <RemoveButton class="ml-1" @click="editDateReceived = false"></RemoveButton>
             </div>
         </dictionary-row>
 
@@ -34,12 +34,12 @@
         </dictionary-row> -->
 
         <modal-dialog v-model="showEditForm">
-            <document-edit-form
+            <DocumentEditForm
                 :document="finalDocument"
                 :application="application"
                 @canceled="showEditForm = false"
                 @saved="showEditForm = false"
-            ></document-edit-form>
+            ></DocumentEditForm>
         </modal-dialog>
 
     </div>

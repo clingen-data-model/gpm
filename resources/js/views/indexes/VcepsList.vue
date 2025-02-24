@@ -1,6 +1,6 @@
 <template>
     <div>
-        <applications-table :ep-type-id="2"></applications-table>
+        <ApplicationsTable :ep-type-id="2"></ApplicationsTable>
     </div>
 </template>
 <script>

@@ -96,28 +96,28 @@ export default {
             </template>
 
             <div class="md:flex md:space-x-4">
-                <basic-info-data class="w-1/2 screen-block"></basic-info-data>
-                <next-actions v-if="application.next_actions"
+                <BasicInfoData class="w-1/2 screen-block"></BasicInfoData>
+                <NextActions v-if="application.next_actions"
                     :next-actions="application.next_actions"
                     class="w-1/2 space-y-2 md:px-4 md:py-2 bg-white border-b border-gray-200 "
                 />
             </div>
 
-            <progress-chart
+            <ProgressChart
                 :application="application"
                 class="py-4 screen-block"
             />
 
             <tabs-container>
                 <tab-item label="Application">
-                    <step-tabs :application="application"
+                    <StepTabs :application="application"
                         @updated="$emit('updated')"
                         @approved="$emit('updated')"
                     />
                 </tab-item>
 
                 <tab-item label="Application Log">
-                    <application-log :uuid="application.uuid"></application-log>
+                    <ApplicationLog :uuid="application.uuid"></ApplicationLog>
                 </tab-item>
 
                 <tab-item label="Advanced">

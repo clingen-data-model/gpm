@@ -45,7 +45,7 @@ export default {
     components: {
     },
     props: {
-        expert_panel_type_id: {
+        expertPanelTypeId: {
             type: Number,
             default: null
         }

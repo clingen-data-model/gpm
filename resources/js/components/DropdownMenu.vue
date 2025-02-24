@@ -125,16 +125,16 @@ export default {
                 <span v-show="!hideCheveron">
                     <icon-cheveron-down />
                 </span>
-                <slot name="label">{{this.label}}</slot>
+                <slot name="label">{{label}}</slot>
             </div>
-            <teleport to="body">
-                <transition name="slide-fade-down">
+            <Teleport to="body">
+                <Transition name="slide-fade-down">
                     <div
                         v-show="menuOpen"
-                        v-click-outside="{exclude: ['menuButton'], handler: this.handleOutsideClick}"
+                        v-click-outside="{exclude: ['menuButton'], handler: handleOutsideClick}"
                         ref="dropdownMenu"
                         class="dropdown-items-container z-50"
-                        :style="{top: `${menuY}px`, left: `${this.menuX}px`}"
+                        :style="{top: `${menuY}px`, left: `${menuX}px`}"
                     >
                         <ul
                             class="dropdown-items"
@@ -143,8 +143,8 @@ export default {
                             <slot></slot>
                         </ul>
                     </div>
-                </transition>
-            </teleport>
+                </Transition>
+            </Teleport>
         </div>
     </div>
 

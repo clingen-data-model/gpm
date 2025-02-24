@@ -28,21 +28,21 @@
             </template>
         </data-table>
         <modal-dialog v-model="editingEntry" title="Edit log entry">
-            <log-entry-form 
+            <LogEntryForm 
                 :log-entry="selectedEntry" 
                 :api-url="apiUrl"
                 @saved="closeEntryForm"
                 @canceled="closeEntryForm"
-            ></log-entry-form>
+            ></LogEntryForm>
         </modal-dialog>
 
         <modal-dialog v-model="showDeleteConfirmation" title="Delete this log entry?">
-            <activity-log-delete-confirmation 
+            <ActivityLogDeleteConfirmation 
                 :logEntry="selectedEntry" 
                 :api-url="apiUrl"
                 @canceled="closeDeleteConfirmation"
                 @deleted="closeDeleteConfirmation"
-            ></activity-log-delete-confirmation>
+            ></ActivityLogDeleteConfirmation>
         </modal-dialog>
     </div>
 </template>

@@ -1,5 +1,5 @@
 <template>
-    <application-section title="Variant Re-review">
+    <ApplicationSection title="Variant Re-review">
         <p>
             Variant Curation Expert Panels are expected to keep their variant interpretations up-to-date and to expedite the re-review of variants that have a conflicting assertion submitted to ClinVar after the Expert Panel submission (guidelines for recuration timeline provided in the <a href="https://clinicalgenome.org/docs/clingen-variant-curation-expert-panel-vcep-protocol/">VCEP protocol</a>).  <br>
             <br>
@@ -16,7 +16,7 @@
                 </input-row>
             </li>
         </ul>
-    </application-section>
+    </ApplicationSection>
 </template>
 <script>
 import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'

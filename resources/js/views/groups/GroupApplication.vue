@@ -123,7 +123,7 @@ export default {
             </div>
         </header>
         <div class="md:flex">
-            <application-menu
+            <ApplicationMenu
                 class="mt-4"
                 :application="application"
                 :is-collapsed="!showApplicationToc"
@@ -145,7 +145,7 @@ export default {
                         <div v-else>Last saved at {{formatTime(lastSavedAt)}}</div>
                     </div>
                 </template>
-            </application-menu>
+            </ApplicationMenu>
             <div class=" flex-1">
                 <section id="body" class="px-4" v-remaining-height>
                     <static-alert
@@ -174,7 +174,7 @@ export default {
             </div>
         </div>
         <teleport to="body">
-            <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="this.$route.meta.title">
+            <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="$route.meta.title">
                 <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
             </modal-dialog>
         </teleport>

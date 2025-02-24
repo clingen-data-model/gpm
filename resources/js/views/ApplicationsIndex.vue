@@ -15,11 +15,11 @@
 
 
       <modal-dialog v-model="showModal" size='md' @closed="$refs.initiateform.initForm()">
-        <create-application-form name="modal" 
+        <CreateApplicationForm name="modal" 
           @canceled="showModal = false" 
           @saved="handleApplicationInitiated" 
           ref="initiateform"
-        ></create-application-form>
+        ></CreateApplicationForm>
       </modal-dialog>
   </div>
 </template>

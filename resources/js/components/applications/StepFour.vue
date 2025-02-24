@@ -1,5 +1,5 @@
 <template>
-    <base-step
+    <BaseStep
         :step="4"
         :document-type="5"
         document-name="Sustained Curation"
@@ -9,9 +9,9 @@
         @updated="$emit('updated')"
     >
         <template v-slot:sections>
-            <sustained-curation-review />
+            <SustainedCurationReview />
         </template>
-    </base-step>
+    </BaseStep>
 </template>
 <script>
 import BaseStep from '@/components/applications/BaseStep.vue'

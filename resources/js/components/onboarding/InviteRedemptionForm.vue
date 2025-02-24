@@ -9,7 +9,7 @@
             placeholder="XXXXXXXXXX" 
             class="w-full"
         >
-        <input-errors :errors="errors"></input-errors>
+        <InputErrors :errors="errors"></InputErrors>
         <button 
             class="btn blue btn-lg block mt-2 w-full" 
             @click="checkInvite"

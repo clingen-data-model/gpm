@@ -7,7 +7,7 @@
             - {{contact.phone}}
         </span>
         &nbsp;
-        <remove-button size="xs" @click="confirmRemove"></remove-button>        
+        <RemoveButton size="xs" @click="confirmRemove"></RemoveButton>        
 
         <modal-dialog v-model="showRemoveConfirmation" title="Confirm Contact Removal">
             <p class="mb-2">

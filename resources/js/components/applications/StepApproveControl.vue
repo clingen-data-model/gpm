@@ -50,7 +50,7 @@
 
         <teleport to="body">
             <modal-dialog v-model="showApproveForm" size="xl" @closed="$refs.approvestepform.clearForm()">
-                <approve-step-form
+                <ApproveStepForm
                     ref="approvestepform"
                     @saved="handleApproved"
                     @canceled="hideApproveForm"
