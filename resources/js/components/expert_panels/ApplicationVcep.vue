@@ -1,90 +1,3 @@
-<template>
-    <div>
-        <ApplicationStep
-            id="definition"
-            title="Group Definition"
-            :disabled="group.expert_panel.hasPendingSubmission"
-        >
-            <AppSection title="Basic Information" id="basicInfo">
-                <GroupForm
-                    :group="group" ref="groupForm"
-                    @update="handleUpdate"
-                />
-            </AppSection>
-            <AppSection v-if="group" title="Membership" id="membership">
-                <p>
-                    Expert Panels are expected to broad representation of expertise and backgrounds in the field.
-                </p>
-                <MemberList :group="group" />
-                <hr>
-                <MembershipDescriptionForm :editing="true" @update="handleUpdate"/>
-            </AppSection>
-            <AppSection title="Scope of Work" id="scope">
-                <VcepGeneList :group="group" ref="geneList" @update="handleUpdate"/>
-                <hr>
-                <ScopeDescriptionForm @update="handleUpdate"/>
-            </AppSection>
-            <AppSection title="Reanalysis & Discrepancy Resolution" id="reanalysis">
-                <AttestationReanalysis @update="handleUpdate"></AttestationReanalysis>
-            </AppSection>
-            <AppSection title="NHGRI Data Availability" id="nhgri">
-                <AttestationNhgri @update="handleUpdate"></AttestationNhgri>
-            </AppSection>
-        </ApplicationStep>
-
-        <!-- <application-step
-            id="specifications-development"
-            title="Specifications Development"
-            :disabled="group.expert_panel.current_step < 2 || group.expert_panel.hasPendingSubmission"
-            :no-submit="true"
-        >
-            <app-section>
-                <cspec-summary></cspec-summary>
-            </app-section>
-        </application-step>
-        -->
-
-        <ApplicationStep
-            id="draft-specifications"
-            title="Draft Specifications"
-            :disabled="group.expert_panel.current_step < 2  || group.expert_panel.hasPendingSubmission"
-            :no-submit="true"
-        >
-            <AppSection>
-                <SpecificationsSection :doc-type-id="2" :step="2"/>
-            </AppSection>
-        </ApplicationStep>
-
-        <ApplicationStep
-            id="pilot-specifications"
-            title="Pilot Specifications"
-            :disabled="group.expert_panel.current_step < 3  || group.expert_panel.hasPendingSubmission"
-            :no-submit="true"
-        >
-            <AppSection>
-                <SpecificationsSection :doc-type-id="[3,4,7]" :step="3" />
-            </AppSection>
-        </ApplicationStep>
-
-        <ApplicationStep
-            id="sustained-curation"
-            title="Sustained Curation"
-            :disabled="group.expert_panel.current_step < 4 || group.expert_panel.hasPendingSubmission"
-        >
-            <AppSection title="Plans for Ongoing Review and Reanalysis and Discrepancy Resolution" id="curationReviewProcess">
-                <VcepOngoingPlansForm @update="handleUpdate"/>
-            </AppSection>
-
-            <AppSection title="Example Evidence Summaries" id="evidenceSummaries">
-                <EvidenceSummaryList />
-            </AppSection>
-
-            <AppSection title="Member Designation" id="designations">
-                <MemberDesignationForm ref="designationForm" />
-            </AppSection>
-        </ApplicationStep>
-    </div>
-</template>
 <script>
 import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
 
@@ -201,3 +114,90 @@ export default {
     },
 }
 </script>
+<template>
+    <div>
+        <ApplicationStep
+            id="definition"
+            title="Group Definition"
+            :disabled="group.expert_panel.hasPendingSubmission"
+        >
+            <AppSection title="Basic Information" id="basicInfo">
+                <GroupForm
+                    :group="group" ref="groupForm"
+                    @update="handleUpdate"
+                />
+            </AppSection>
+            <AppSection v-if="group" title="Membership" id="membership">
+                <p>
+                    Expert Panels are expected to broad representation of expertise and backgrounds in the field.
+                </p>
+                <MemberList :group="group" />
+                <hr>
+                <MembershipDescriptionForm :editing="true" @update="handleUpdate"/>
+            </AppSection>
+            <AppSection title="Scope of Work" id="scope">
+                <VcepGeneList :group="group" ref="geneList" @update="handleUpdate"/>
+                <hr>
+                <ScopeDescriptionForm @update="handleUpdate"/>
+            </AppSection>
+            <AppSection title="Reanalysis & Discrepancy Resolution" id="reanalysis">
+                <AttestationReanalysis @update="handleUpdate"></AttestationReanalysis>
+            </AppSection>
+            <AppSection title="NHGRI Data Availability" id="nhgri">
+                <AttestationNhgri @update="handleUpdate"></AttestationNhgri>
+            </AppSection>
+        </ApplicationStep>
+
+        <!-- <application-step
+            id="specifications-development"
+            title="Specifications Development"
+            :disabled="group.expert_panel.current_step < 2 || group.expert_panel.hasPendingSubmission"
+            :no-submit="true"
+        >
+            <app-section>
+                <cspec-summary></cspec-summary>
+            </app-section>
+        </application-step>
+        -->
+
+        <ApplicationStep
+            id="draft-specifications"
+            title="Draft Specifications"
+            :disabled="group.expert_panel.current_step < 2  || group.expert_panel.hasPendingSubmission"
+            :no-submit="true"
+        >
+            <AppSection>
+                <SpecificationsSection :doc-type-id="2" :step="2"/>
+            </AppSection>
+        </ApplicationStep>
+
+        <ApplicationStep
+            id="pilot-specifications"
+            title="Pilot Specifications"
+            :disabled="group.expert_panel.current_step < 3  || group.expert_panel.hasPendingSubmission"
+            :no-submit="true"
+        >
+            <AppSection>
+                <SpecificationsSection :doc-type-id="[3,4,7]" :step="3" />
+            </AppSection>
+        </ApplicationStep>
+
+        <ApplicationStep
+            id="sustained-curation"
+            title="Sustained Curation"
+            :disabled="group.expert_panel.current_step < 4 || group.expert_panel.hasPendingSubmission"
+        >
+            <AppSection title="Plans for Ongoing Review and Reanalysis and Discrepancy Resolution" id="curationReviewProcess">
+                <VcepOngoingPlansForm @update="handleUpdate"/>
+            </AppSection>
+
+            <AppSection title="Example Evidence Summaries" id="evidenceSummaries">
+                <EvidenceSummaryList />
+            </AppSection>
+
+            <AppSection title="Member Designation" id="designations">
+                <MemberDesignationForm ref="designationForm" />
+            </AppSection>
+        </ApplicationStep>
+    </div>
+</template>

@@ -1,9 +1,3 @@
-<template>
-    <div>
-        <data-form :fields="filteredFields" :errors="errors" v-model="inst" />
-        <button-row submit-text="Save" @submitted="save" @cancel="cancel" />
-    </div>
-</template>
 <script>
 import {countries, createInstitution, fields, getCountries} from '@/forms/institution_form'
 import {isValidationError} from '@/http'
@@ -78,3 +72,9 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <data-form :fields="filteredFields" :errors="errors" v-model="inst" />
+        <button-row submit-text="Save" @submitted="save" @cancel="cancel" />
+    </div>
+</template>

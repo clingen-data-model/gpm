@@ -1,12 +1,3 @@
-<template>
-    <div
-        class="flex justify-between rounded px-3 py-2 my-2 alert-item shadow-lg" 
-        :class="`alert-${alert.type}`"
-        >
-        {{alert.message}}
-        <button @click="clearAlertAndTimer" class="hover:underline">x</button>
-    </div>
-</template>
 <script>
 import {Alert} from '@/store/alerts'
 export default {
@@ -60,6 +51,15 @@ export default {
     }
 }
 </script>
+<template>
+    <div
+        class="flex justify-between rounded px-3 py-2 my-2 alert-item shadow-lg" 
+        :class="`alert-${alert.type}`"
+        >
+        {{alert.message}}
+        <button @click="clearAlertAndTimer" class="hover:underline">x</button>
+    </div>
+</template>
 <style lang="postcss">
   .alert-info {
       @apply bg-blue-200 text-blue-800 border-blue-300 border;

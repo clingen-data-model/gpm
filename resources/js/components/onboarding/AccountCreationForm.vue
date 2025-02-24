@@ -1,35 +1,3 @@
-<template>
-    <div>
-        <pre></pre>
-        <div v-if="invite.person.user_id">
-            <static-alert>
-                It looks like you've already activated you account.  Please login to continue.
-            </static-alert>
-            <LoginForm @authenticated="redeemForExistingUser"></LoginForm>
-        </div>
-        <div v-else>
-            <p class="text-lg">Create your account</p>
-            <input-row label="Email" 
-                v-model="email" 
-                :errors="errors.email" 
-                label-width-class="w-24"
-            ></input-row>
-            <input-row label="Password" 
-                v-model="password" type="password" 
-                :errors="errors.password" 
-                label-width-class="w-24"
-            ></input-row>
-            <input-row label="Confirm Password" 
-                v-model="password_confirmation" type="password" 
-                :errors="errors.password" 
-                label-width-class="w-24"
-            ></input-row>
-            <div class="flex flex-row-reverse">
-                <button class="btn blue" @click="createAccount">Next</button>
-            </div>
-        </div>
-    </div>
-</template>
 <script>
 import LoginForm from '@/components/LoginForm.vue'
 import {redeemInvite, redeemInviteForExistingUser} from '@/domain/onboarding_service'
@@ -95,3 +63,35 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <pre></pre>
+        <div v-if="invite.person.user_id">
+            <static-alert>
+                It looks like you've already activated you account.  Please login to continue.
+            </static-alert>
+            <LoginForm @authenticated="redeemForExistingUser"></LoginForm>
+        </div>
+        <div v-else>
+            <p class="text-lg">Create your account</p>
+            <input-row label="Email" 
+                v-model="email" 
+                :errors="errors.email" 
+                label-width-class="w-24"
+            ></input-row>
+            <input-row label="Password" 
+                v-model="password" type="password" 
+                :errors="errors.password" 
+                label-width-class="w-24"
+            ></input-row>
+            <input-row label="Confirm Password" 
+                v-model="password_confirmation" type="password" 
+                :errors="errors.password" 
+                label-width-class="w-24"
+            ></input-row>
+            <div class="flex flex-row-reverse">
+                <button class="btn blue" @click="createAccount">Next</button>
+            </div>
+        </div>
+    </div>
+</template>

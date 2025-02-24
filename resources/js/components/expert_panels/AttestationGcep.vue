@@ -1,3 +1,85 @@
+<script>
+import {api, isValidationError} from '@/http'
+
+export default {
+    name: 'AttestationGcep',
+    props: {
+        disabled: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
+    },
+    emits: [
+        'update'
+    ],
+    data() {
+        return {
+            errors: {},
+            gci_training: false
+        }
+    },
+    computed: {
+        group: {
+            get () {
+                return this.$store.getters['groups/currentItemOrNew'];
+            },
+            set (value) {
+                this.$store.commit('groups/addItem', value)
+            }
+        },
+        gciTrainingErrors () {
+            const trainingErrors = this.errors.gci_training || [];
+            const dateErrors = this.errors.gci_training_date || [];
+            return [...trainingErrors, ...dateErrors];
+        },
+        gci_training_comp () {
+            return Boolean(this.group.expert_panel.gci_training_date)
+        }
+    },
+    watch: {
+        group: {
+            immediate: true,
+            handler (to) {
+                this.gci_training = Boolean(to.expert_panel.gci_training_date)
+            }
+        },
+    },
+    methods: {
+        async save () {
+            try {
+                this.errors = {};
+                await api.post(`/api/groups/${this.group.uuid}/application/attestations/gcep`,
+                this.group.expert_panel.attributes)
+            } catch (error) {
+                if (isValidationError(error)) {
+                    this.errors = error.response.data.errors;
+                }
+            }
+        },
+        emitUpdate () {
+            this.$emit('update');
+        },
+        checkCompleteness () {
+            if (this.group.expert_panel.utilize_gt
+                && this.group.expert_panel.utilize_gci
+                && this.group.expert_panel.curations_publicly_available
+                && this.group.expert_panel.pub_policy_reviewed
+                && this.group.expert_panel.draft_manuscripts
+                && this.group.expert_panel.recuration_process_review
+                && this.group.expert_panel.biocurator_training
+                && this.group.expert_panel.gci_training_date !== null
+                && this.group.expert_panel.biocurator_mailing_list
+                && this.group.expert_panel.gcep_attestation_date === null
+            ) {
+                this.group.expert_panel.gcep_attestation_date = new Date();
+                return;
+            }
+            this.group.expert_panel.gcep_attestation_date = null;
+        }
+    },
+}
+</script>
 <template>
     <div>
         <p>
@@ -94,85 +176,3 @@
         </ul>
     </div>
 </template>
-<script>
-import {api, isValidationError} from '@/http'
-
-export default {
-    name: 'AttestationGcep',
-    props: {
-        disabled: {
-            type: Boolean,
-            required: false,
-            default: false
-        }
-    },
-    emits: [
-        'update'
-    ],
-    data() {
-        return {
-            errors: {},
-            gci_training: false
-        }
-    },
-    computed: {
-        group: {
-            get () {
-                return this.$store.getters['groups/currentItemOrNew'];
-            },
-            set (value) {
-                this.$store.commit('groups/addItem', value)
-            }
-        },
-        gciTrainingErrors () {
-            const trainingErrors = this.errors.gci_training || [];
-            const dateErrors = this.errors.gci_training_date || [];
-            return [...trainingErrors, ...dateErrors];
-        },
-        gci_training_comp () {
-            return Boolean(this.group.expert_panel.gci_training_date)
-        }
-    },
-    watch: {
-        group: {
-            immediate: true,
-            handler (to) {
-                this.gci_training = Boolean(to.expert_panel.gci_training_date)
-            }
-        },
-    },
-    methods: {
-        async save () {
-            try {
-                this.errors = {};
-                await api.post(`/api/groups/${this.group.uuid}/application/attestations/gcep`,
-                this.group.expert_panel.attributes)
-            } catch (error) {
-                if (isValidationError(error)) {
-                    this.errors = error.response.data.errors;
-                }
-            }
-        },
-        emitUpdate () {
-            this.$emit('update');
-        },
-        checkCompleteness () {
-            if (this.group.expert_panel.utilize_gt
-                && this.group.expert_panel.utilize_gci
-                && this.group.expert_panel.curations_publicly_available
-                && this.group.expert_panel.pub_policy_reviewed
-                && this.group.expert_panel.draft_manuscripts
-                && this.group.expert_panel.recuration_process_review
-                && this.group.expert_panel.biocurator_training
-                && this.group.expert_panel.gci_training_date !== null
-                && this.group.expert_panel.biocurator_mailing_list
-                && this.group.expert_panel.gcep_attestation_date === null
-            ) {
-                this.group.expert_panel.gcep_attestation_date = new Date();
-                return;
-            }
-            this.group.expert_panel.gcep_attestation_date = null;
-        }
-    },
-}
-</script>

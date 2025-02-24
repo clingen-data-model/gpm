@@ -1,3 +1,55 @@
+<script>
+import SearchSelect from '@/components/forms/SearchSelect.vue';
+import {mapGetters} from 'vuex';
+import {impersonate, search} from '../domain/impersonate_service';
+
+export default {
+    components: {
+        SearchSelect
+    },
+    data() {
+        return {
+            selectedUser: null,
+            showSelector: false,
+            showProgress: false,
+            clearingImpersonate: false
+        }
+    },
+    computed: {
+        ...mapGetters({
+            user: 'currentUser'
+        }),
+        canImpersonate () {
+            return this.$store.getters.currentUser.hasRole('super-user')
+                || this.$store.getters.currentUser.hasRole('super-admin')
+                || this.$store.getters.currentUser.hasRole('admin');
+        },
+        progressMessage () {
+            if (this.clearingImpersonate) {
+                return 'Clearing impersonation.';
+            }
+            return `Impersonating ${this.selectedUser.name}`;
+        }
+    },
+    methods: {
+        impersonateSelected() {
+            if (this.selectedUser) {
+                this.$emit('impersonated');
+                this.showProgress = true;
+                impersonate(this.selectedUser.id)
+            }
+            
+        },
+        async search (keyword) {
+            return await search(keyword);
+        },
+        cancelImpersonate () {
+            this.selectedUser = null;
+            this.showSelector = !this.showSelector;
+        }
+    }
+}
+</script>
 <template>
     <div>
         <div v-if="canImpersonate || user.is_impersonating">
@@ -61,55 +113,3 @@
         </div>
     </div>
 </template>
-<script>
-import SearchSelect from '@/components/forms/SearchSelect.vue';
-import {mapGetters} from 'vuex';
-import {impersonate, search} from '../domain/impersonate_service';
-
-export default {
-    components: {
-        SearchSelect
-    },
-    data() {
-        return {
-            selectedUser: null,
-            showSelector: false,
-            showProgress: false,
-            clearingImpersonate: false
-        }
-    },
-    computed: {
-        ...mapGetters({
-            user: 'currentUser'
-        }),
-        canImpersonate () {
-            return this.$store.getters.currentUser.hasRole('super-user')
-                || this.$store.getters.currentUser.hasRole('super-admin')
-                || this.$store.getters.currentUser.hasRole('admin');
-        },
-        progressMessage () {
-            if (this.clearingImpersonate) {
-                return 'Clearing impersonation.';
-            }
-            return `Impersonating ${this.selectedUser.name}`;
-        }
-    },
-    methods: {
-        impersonateSelected() {
-            if (this.selectedUser) {
-                this.$emit('impersonated');
-                this.showProgress = true;
-                impersonate(this.selectedUser.id)
-            }
-            
-        },
-        async search (keyword) {
-            return await search(keyword);
-        },
-        cancelImpersonate () {
-            this.selectedUser = null;
-            this.showSelector = !this.showSelector;
-        }
-    }
-}
-</script>

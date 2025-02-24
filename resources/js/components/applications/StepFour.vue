@@ -1,18 +1,3 @@
-<template>
-    <BaseStep
-        :step="4"
-        :document-type="5"
-        document-name="Sustained Curation"
-        :document-gets-reviewed="true"
-        approve-button-label="Approve Sustained Curation"
-        title="Sustained Curation"
-        @updated="$emit('updated')"
-    >
-        <template v-slot:sections>
-            <SustainedCurationReview />
-        </template>
-    </BaseStep>
-</template>
 <script>
 import BaseStep from '@/components/applications/BaseStep.vue'
 // import EvidenceSummaryList from '@/components/expert_panels/EvidenceSummaryList.vue'
@@ -52,3 +37,18 @@ export default {
     }
 }
 </script>
+<template>
+    <BaseStep
+        :step="4"
+        :document-type="5"
+        document-name="Sustained Curation"
+        :document-gets-reviewed="true"
+        approve-button-label="Approve Sustained Curation"
+        title="Sustained Curation"
+        @updated="$emit('updated')"
+    >
+        <template v-slot:sections>
+            <SustainedCurationReview />
+        </template>
+    </BaseStep>
+</template>

@@ -1,24 +1,3 @@
-<template>
-    <label class="mb-2 flex items-start cursor-pointer">
-        <div class="mt-1">
-            <slot name="input">
-                <input 
-                    type="checkbox" 
-                    v-model="val" 
-                    :value="value"
-                    :id="checkboxId"
-                    v-bind="$attrs"
-                    @change="propagateChange"
-                >
-            </slot>
-        </div>
-        <div>
-            <slot>
-                {{label}}
-            </slot>
-        </div>
-    </label>
-</template>
 <script>
 export default {
     name: 'Checkbox',
@@ -59,3 +38,24 @@ export default {
     }
 }
 </script>
+<template>
+    <label class="mb-2 flex items-start cursor-pointer">
+        <div class="mt-1">
+            <slot name="input">
+                <input 
+                    type="checkbox" 
+                    v-model="val" 
+                    :value="value"
+                    :id="checkboxId"
+                    v-bind="$attrs"
+                    @change="propagateChange"
+                >
+            </slot>
+        </div>
+        <div>
+            <slot>
+                {{label}}
+            </slot>
+        </div>
+    </label>
+</template>

@@ -1,20 +1,3 @@
-<style lang="postcss">
-    .btn-delete {
-       @apply cursor-pointer inline-block p-0.5 rounded-full border border-red-500 text-red-500 align-text-top outline-none;
-    }
-    .btn-delete:active, .btn-delete:focus {
-        @apply outline-none;
-    }
-    .btn-delete:active{
-        @apply border-red-900 text-red-900 bg-gray-100 outline-none;
-        transform: scale(.95)
-    }
-</style>
-<template>
-    <button class="btn-delete" @click="confirmRemove">
-        <icon-close :height="dimension" :width="dimension"></icon-close>
-    </button>
-</template>
 <script>
 
 export default {
@@ -54,3 +37,20 @@ export default {
     }
 }
 </script>
+<template>
+    <button class="btn-delete" @click="confirmRemove">
+        <icon-close :height="dimension" :width="dimension"></icon-close>
+    </button>
+</template>
+<style lang="postcss">
+    .btn-delete {
+       @apply cursor-pointer inline-block p-0.5 rounded-full border border-red-500 text-red-500 align-text-top outline-none;
+    }
+    .btn-delete:active, .btn-delete:focus {
+        @apply outline-none;
+    }
+    .btn-delete:active{
+        @apply border-red-900 text-red-900 bg-gray-100 outline-none;
+        transform: scale(.95)
+    }
+</style>

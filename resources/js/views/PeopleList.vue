@@ -1,23 +1,3 @@
-<template>
-    <div>
-        <h1>People</h1>
-        <data-table
-            :data="itemProvider"
-            :fields="fields"
-            class="width-full"
-            :row-click-handler="goToPerson"
-            row-class="cursor-pointer"
-            v-model:sort="sort"
-            :page-size="20"
-            paginated
-            ref="dataTable"
-        >
-            <template v-slot:header>
-                <label class="block mb-2" for="filter-input">Filter:&nbsp;<input type="text" v-model="filter" placeholder="filter"></label>
-            </template>
-        </data-table>
-    </div>
-</template>
 <script>
 import {currentPage, getPageItems, pageSize} from '@/composables/pagination'
 import {api} from '@/http'
@@ -123,3 +103,23 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <h1>People</h1>
+        <data-table
+            :data="itemProvider"
+            :fields="fields"
+            class="width-full"
+            :row-click-handler="goToPerson"
+            row-class="cursor-pointer"
+            v-model:sort="sort"
+            :page-size="20"
+            paginated
+            ref="dataTable"
+        >
+            <template v-slot:header>
+                <label class="block mb-2" for="filter-input">Filter:&nbsp;<input type="text" v-model="filter" placeholder="filter"></label>
+            </template>
+        </data-table>
+    </div>
+</template>

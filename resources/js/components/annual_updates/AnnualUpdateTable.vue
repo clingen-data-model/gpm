@@ -1,31 +1,3 @@
-<template>
-    <div>
-        <div class="flex mb-2 items-end justify-between">
-            <div class="flex space-x-4 items-end">
-                <input 
-                    v-model="filter" 
-                    placeholder="EP name, submitter name"
-                    class="w-60"
-                >
-                <select v-model="completedFilter" class="flex radio-group">
-                    <option :value="null">Any</option>
-                    <option :value="2">Only Pending</option>
-                    <option :value="1">Only Completed</option>
-                </select>
-            </div>
-            <button class="btn btn-xs" @click="exportData">Export Data</button>
-        </div>
-
-        <data-table :data="filteredItems" :fields="fields" v-model:sort="sort">
-            <template v-slot:cell-action="{item}">
-                <router-link :to="{name: 'AnnualUpdateDetail', params: {id: item.id}}">
-                    view
-                </router-link>
-            </template>
-        </data-table>
-
-    </div>
-</template>
 <script>
 import setupRouterSortAndFilter from '@/composables/router_aware_sort_and_filter'
 import {api} from '@/http'
@@ -144,3 +116,31 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <div class="flex mb-2 items-end justify-between">
+            <div class="flex space-x-4 items-end">
+                <input 
+                    v-model="filter" 
+                    placeholder="EP name, submitter name"
+                    class="w-60"
+                >
+                <select v-model="completedFilter" class="flex radio-group">
+                    <option :value="null">Any</option>
+                    <option :value="2">Only Pending</option>
+                    <option :value="1">Only Completed</option>
+                </select>
+            </div>
+            <button class="btn btn-xs" @click="exportData">Export Data</button>
+        </div>
+
+        <data-table :data="filteredItems" :fields="fields" v-model:sort="sort">
+            <template v-slot:cell-action="{item}">
+                <router-link :to="{name: 'AnnualUpdateDetail', params: {id: item.id}}">
+                    view
+                </router-link>
+            </template>
+        </data-table>
+
+    </div>
+</template>

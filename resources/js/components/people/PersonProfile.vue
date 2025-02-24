@@ -1,3 +1,56 @@
+<script>
+import ProfileForm from '@/components/people/ProfileForm.vue'
+
+import ProfilePhotoForm from '@/components/people/ProfilePhotoForm.vue'
+import ProfilePicture from '@/components/people/ProfilePicture.vue'
+import Person from '@/domain/person'
+import CredentialsView from './CredentialsView.vue'
+import ExpertisesView from './ExpertisesView.vue'
+
+export default {
+    name: 'PersonProfile',
+    components: {
+        ProfileForm,
+        ProfilePicture,
+        ProfilePhotoForm,
+        CredentialsView,
+        ExpertisesView
+    },
+    props: {
+        person: {
+            type: Person,
+            required: true,
+        }
+    },
+    data () {
+        return {
+            showEditForm: false
+        }
+    },
+    computed: {
+        formDialogTitle () {
+            const name = (this.userIsPerson(this.person)) ? 'your' : `${this.person.name}'s`;
+            return `Edit ${name} information.`
+        },
+        profilePhotoComponent () {
+            if (this.hasPermission('people-manage') || this.userIsPerson(this.person)) {
+                return ProfilePhotoForm;
+            }
+
+            return ProfilePicture;
+        }
+    },
+    methods: {
+        editPerson () {
+            this.$store.commit('people/setCurrentItemIndex', this.person);
+            this.showEditForm = true;
+        },
+        hideEditForm () {
+            this.showEditForm = false;
+        }
+    }
+}
+</script>
 <template>
     <div>
 
@@ -99,56 +152,3 @@
         </teleport>
     </div>
 </template>
-<script>
-import ProfileForm from '@/components/people/ProfileForm.vue'
-
-import ProfilePhotoForm from '@/components/people/ProfilePhotoForm.vue'
-import ProfilePicture from '@/components/people/ProfilePicture.vue'
-import Person from '@/domain/person'
-import CredentialsView from './CredentialsView.vue'
-import ExpertisesView from './ExpertisesView.vue'
-
-export default {
-    name: 'PersonProfile',
-    components: {
-        ProfileForm,
-        ProfilePicture,
-        ProfilePhotoForm,
-        CredentialsView,
-        ExpertisesView
-    },
-    props: {
-        person: {
-            type: Person,
-            required: true,
-        }
-    },
-    data () {
-        return {
-            showEditForm: false
-        }
-    },
-    computed: {
-        formDialogTitle () {
-            const name = (this.userIsPerson(this.person)) ? 'your' : `${this.person.name}'s`;
-            return `Edit ${name} information.`
-        },
-        profilePhotoComponent () {
-            if (this.hasPermission('people-manage') || this.userIsPerson(this.person)) {
-                return ProfilePhotoForm;
-            }
-
-            return ProfilePicture;
-        }
-    },
-    methods: {
-        editPerson () {
-            this.$store.commit('people/setCurrentItemIndex', this.person);
-            this.showEditForm = true;
-        },
-        hideEditForm () {
-            this.showEditForm = false;
-        }
-    }
-}
-</script>

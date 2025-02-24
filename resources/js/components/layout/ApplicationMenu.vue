@@ -1,31 +1,3 @@
-<style lang="postcss" scoped>
-  .app-menu {
-    transition: all .75s ease-out;
-    width: 25%;
-    white-space: nowrap;
-  }
-  .app-menu.collapsed {
-    transition: all .75s ease;
-    width: 0px;
-  }
-</style>
-<template>
-    <div 
-        :class="{collapsed: isCollapsed}"
-        class="app-menu overflow-y-auto relative"
-    >
-        <ul class="menu-items">
-            <li v-for="(item, idx) in application.steps" :key="idx">
-                <MenuItem :item="item" class="block" :is-current-step="isCurrentStep(item)"></MenuItem>
-            </li>
-        </ul>
-        <div class="">
-            <slot name="footer">
-
-            </slot>
-        </div>
-    </div>
-</template>
 <script>
 import MenuItem from '@/components/layout/MenuItem.vue'
 
@@ -61,3 +33,31 @@ export default {
     }
 }
 </script>
+<template>
+    <div 
+        :class="{collapsed: isCollapsed}"
+        class="app-menu overflow-y-auto relative"
+    >
+        <ul class="menu-items">
+            <li v-for="(item, idx) in application.steps" :key="idx">
+                <MenuItem :item="item" class="block" :is-current-step="isCurrentStep(item)"></MenuItem>
+            </li>
+        </ul>
+        <div class="">
+            <slot name="footer">
+
+            </slot>
+        </div>
+    </div>
+</template>
+<style lang="postcss" scoped>
+  .app-menu {
+    transition: all .75s ease-out;
+    width: 25%;
+    white-space: nowrap;
+  }
+  .app-menu.collapsed {
+    transition: all .75s ease;
+    width: 0px;
+  }
+</style>

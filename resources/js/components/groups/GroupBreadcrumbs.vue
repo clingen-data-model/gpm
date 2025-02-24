@@ -1,6 +1,3 @@
-<template>
-    <breadcrumbs :items="items"></breadcrumbs>
-</template>
 <script>
 import {Group} from '@/domain'
 
@@ -33,3 +30,6 @@ export default {
     }
 }
 </script>
+<template>
+    <breadcrumbs :items="items"></breadcrumbs>
+</template>

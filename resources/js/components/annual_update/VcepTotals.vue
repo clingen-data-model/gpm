@@ -1,63 +1,3 @@
-<template>
-    <input-row label="" :errors="errors.variant_counts" vertical>
-        <table>
-            <thead>
-                <tr>
-                    <th>Gene</th>
-                    <th>In ClinVar</th>
-                    <th>Approved in VCI<br><small>(Not in ClinVar)</small></th>
-                    <th>Provisionally approved</th>
-                    <th v-if="!isComplete"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(variant, idx) in variantCounts" :key="variant.gene">
-                    <td>
-                        <input
-                            :disabled="isComplete"
-                            type="text"
-                            v-model="variant.gene_symbol"
-                            placeholder="HGNC gene symbol"
-                            :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.gene_symbol`)}"
-                        >
-                        <input-errors :errors="errors[`variant_counts.${idx}.gene_symbol`] || []"></input-errors>
-                    </td>
-                    <td>
-                        <input
-                            :disabled="isComplete"
-                            type="number"
-                            v-model="variant.in_clinvar"
-                            :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.in_clinvar`)}"
-                        >
-                        <input-errors :errors="errors[`variant_counts.${idx}.in_clinvar`] || []"></input-errors>
-                    </td>
-                    <td>
-                        <input
-                            :disabled="isComplete"
-                            type="number"
-                            v-model="variant.gci_approved"
-                            :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.gci_approved`)}"
-                        >
-                        <input-errors :errors="errors[`variant_counts.${idx}.gci_approved`] || []"></input-errors>
-                    </td>
-                    <td>
-                        <input
-                            :disabled="isComplete"
-                            type="number"
-                            v-model="variant.provisionally_approved"
-                            :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.provisionally_approved`)}"
-                        >
-                        <input-errors :errors="errors[`variant_counts.${idx}.provisionally_approved`] || []"></input-errors>
-                    </td>
-                    <th v-if="!isComplete">
-                        <trash-icon-button @click="removeGeneAtIndex(idx)"></trash-icon-button>
-                    </th>
-                </tr>
-            </tbody>
-        </table>
-        <button class="btn btn-xs" @click="addGene" v-if="!isComplete">AddGene</button>
-    </input-row>
-</template>
 <script>
 import mirror from '@/composables/setup_working_mirror'
 import {clone, cloneDeep, debounce, isEqual} from 'lodash-es'
@@ -140,3 +80,63 @@ export default {
     },
 }
 </script>
+<template>
+    <input-row label="" :errors="errors.variant_counts" vertical>
+        <table>
+            <thead>
+                <tr>
+                    <th>Gene</th>
+                    <th>In ClinVar</th>
+                    <th>Approved in VCI<br><small>(Not in ClinVar)</small></th>
+                    <th>Provisionally approved</th>
+                    <th v-if="!isComplete"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(variant, idx) in variantCounts" :key="variant.gene">
+                    <td>
+                        <input
+                            :disabled="isComplete"
+                            type="text"
+                            v-model="variant.gene_symbol"
+                            placeholder="HGNC gene symbol"
+                            :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.gene_symbol`)}"
+                        >
+                        <input-errors :errors="errors[`variant_counts.${idx}.gene_symbol`] || []"></input-errors>
+                    </td>
+                    <td>
+                        <input
+                            :disabled="isComplete"
+                            type="number"
+                            v-model="variant.in_clinvar"
+                            :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.in_clinvar`)}"
+                        >
+                        <input-errors :errors="errors[`variant_counts.${idx}.in_clinvar`] || []"></input-errors>
+                    </td>
+                    <td>
+                        <input
+                            :disabled="isComplete"
+                            type="number"
+                            v-model="variant.gci_approved"
+                            :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.gci_approved`)}"
+                        >
+                        <input-errors :errors="errors[`variant_counts.${idx}.gci_approved`] || []"></input-errors>
+                    </td>
+                    <td>
+                        <input
+                            :disabled="isComplete"
+                            type="number"
+                            v-model="variant.provisionally_approved"
+                            :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.provisionally_approved`)}"
+                        >
+                        <input-errors :errors="errors[`variant_counts.${idx}.provisionally_approved`] || []"></input-errors>
+                    </td>
+                    <th v-if="!isComplete">
+                        <trash-icon-button @click="removeGeneAtIndex(idx)"></trash-icon-button>
+                    </th>
+                </tr>
+            </tbody>
+        </table>
+        <button class="btn btn-xs" @click="addGene" v-if="!isComplete">AddGene</button>
+    </input-row>
+</template>

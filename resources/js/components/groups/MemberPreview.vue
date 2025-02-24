@@ -1,3 +1,40 @@
+<script>
+import ProfilePicture from '@/components/people/ProfilePicture.vue'
+import {formatDate} from '@/date_utils'
+import Group from '@/domain/group';
+import GroupMember from '@/domain/group_member';
+import CredentialsView from '../people/CredentialsView.vue';
+import ExpertisesView from '../people/ExpertisesView.vue'
+
+
+
+export default {
+    name: 'MemberPreview',
+    components: {
+        ProfilePicture,
+        CredentialsView,
+        ExpertisesView
+    },
+    props: {
+        member: {
+            type: GroupMember,
+            required: true
+        },
+        group: {
+            type: Group,
+            required: true
+        }
+    },
+    emits: [
+        'edit',
+    ],
+    setup () {
+        return {
+            formatDate
+        }
+    }
+}
+</script>
 <template>
     <div class="px-8 py-4 inset">
 
@@ -66,40 +103,3 @@
         </router-link>
     </div>
 </template>
-<script>
-import ProfilePicture from '@/components/people/ProfilePicture.vue'
-import {formatDate} from '@/date_utils'
-import Group from '@/domain/group';
-import GroupMember from '@/domain/group_member';
-import CredentialsView from '../people/CredentialsView.vue';
-import ExpertisesView from '../people/ExpertisesView.vue'
-
-
-
-export default {
-    name: 'MemberPreview',
-    components: {
-        ProfilePicture,
-        CredentialsView,
-        ExpertisesView
-    },
-    props: {
-        member: {
-            type: GroupMember,
-            required: true
-        },
-        group: {
-            type: Group,
-            required: true
-        }
-    },
-    emits: [
-        'edit',
-    ],
-    setup () {
-        return {
-            formatDate
-        }
-    }
-}
-</script>

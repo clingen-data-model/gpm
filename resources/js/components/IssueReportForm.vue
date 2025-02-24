@@ -1,3 +1,72 @@
+<script>
+import configs from "@/configs";
+import { api, isValidationError } from "@/http";
+
+const feedback = configs.feedback;
+
+export default {
+  name: "ComponentName",
+  props: {},
+  data() {
+    return {
+      showReportIssue: false,
+      errors: {},
+      url: null,
+      type: "Bug",
+      severity: "15555",
+      description: "What I expected:\n\nSteps to reproduce:\n",
+      summary: null,
+      saving: false
+    };
+  },
+  computed: {
+    severities() {
+      return feedback.severities;
+    },
+  },
+  methods: {
+    initReportIssue() {
+      this.showReportIssue = true;
+      this.initForm();
+    },
+    initForm() {
+      this.severity = null;
+      this.description = "What I expected:\n\n\nSteps to reproduce:\n\n\nAdditional information:\n\n";
+      this.summary = null;
+      this.url = this.$route.path;
+
+      this.errors = {};
+      this.saving = false;
+    },
+    async submitIssue() {
+      try {
+        this.saving = true;
+        await api.post("/api/feedback", {
+          url: this.url,
+          type: this.type,
+          severity: this.severity,
+          description: this.description,
+          summary: this.summary,
+        });
+        this.saving = false;
+        this.$store.commit("pushSuccess", "Your problem has been reported.");
+        this.showReportIssue = false;
+      } catch (error) {
+        if (isValidationError(error)) {
+          this.errors = error.response.data.errors;
+          this.saving = false;
+          return;
+        }
+        throw error;
+      }
+    },
+    cancelSubmission() {
+      this.initForm();
+      this.showReportIssue = false;
+    },
+  },
+};
+</script>
 <template>
   <div v-if="$store.getters.isAuthed">
     <popover hover arrow placement="left">
@@ -70,72 +139,3 @@
     </teleport>
   </div>
 </template>
-<script>
-import configs from "@/configs";
-import { api, isValidationError } from "@/http";
-
-const feedback = configs.feedback;
-
-export default {
-  name: "ComponentName",
-  props: {},
-  data() {
-    return {
-      showReportIssue: false,
-      errors: {},
-      url: null,
-      type: "Bug",
-      severity: "15555",
-      description: "What I expected:\n\nSteps to reproduce:\n",
-      summary: null,
-      saving: false
-    };
-  },
-  computed: {
-    severities() {
-      return feedback.severities;
-    },
-  },
-  methods: {
-    initReportIssue() {
-      this.showReportIssue = true;
-      this.initForm();
-    },
-    initForm() {
-      this.severity = null;
-      this.description = "What I expected:\n\n\nSteps to reproduce:\n\n\nAdditional information:\n\n";
-      this.summary = null;
-      this.url = this.$route.path;
-
-      this.errors = {};
-      this.saving = false;
-    },
-    async submitIssue() {
-      try {
-        this.saving = true;
-        await api.post("/api/feedback", {
-          url: this.url,
-          type: this.type,
-          severity: this.severity,
-          description: this.description,
-          summary: this.summary,
-        });
-        this.saving = false;
-        this.$store.commit("pushSuccess", "Your problem has been reported.");
-        this.showReportIssue = false;
-      } catch (error) {
-        if (isValidationError(error)) {
-          this.errors = error.response.data.errors;
-          this.saving = false;
-          return;
-        }
-        throw error;
-      }
-    },
-    cancelSubmission() {
-      this.initForm();
-      this.showReportIssue = false;
-    },
-  },
-};
-</script>

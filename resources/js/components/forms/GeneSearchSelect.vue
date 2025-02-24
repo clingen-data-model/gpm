@@ -1,28 +1,3 @@
-<template>
-    <SearchSelect 
-        v-model="selectedGene" 
-        :search-function="search" 
-        style="z-index: 2" 
-        placeholder="HGNC ID or Gene Symbol"
-        keyOptionsBy="id"
-    >
-        <template v-slot:selection-label="{selection}">
-            <div v-if="typeof selection == 'object'">
-                {{selection.gene_symbol}}
-            </div>
-            <div v-else>{{selection}}</div>
-        </template>
-        <template v-slot:option="{option}">
-            <div v-if="typeof option == 'object'">
-                {{option.gene_symbol}}
-            </div>
-            <div v-else>
-                {{option}}
-            </div>
-        </template>
-    </SearchSelect>
-
-</template>
 <script>
 import SearchSelect from '@/components/forms/SearchSelect.vue'
 import api from '@/http/api'
@@ -57,3 +32,28 @@ export default {
     }
 }
 </script>
+<template>
+    <SearchSelect 
+        v-model="selectedGene" 
+        :search-function="search" 
+        style="z-index: 2" 
+        placeholder="HGNC ID or Gene Symbol"
+        keyOptionsBy="id"
+    >
+        <template v-slot:selection-label="{selection}">
+            <div v-if="typeof selection == 'object'">
+                {{selection.gene_symbol}}
+            </div>
+            <div v-else>{{selection}}</div>
+        </template>
+        <template v-slot:option="{option}">
+            <div v-if="typeof option == 'object'">
+                {{option.gene_symbol}}
+            </div>
+            <div v-else>
+                {{option}}
+            </div>
+        </template>
+    </SearchSelect>
+
+</template>

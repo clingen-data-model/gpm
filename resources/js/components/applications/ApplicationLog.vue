@@ -1,42 +1,3 @@
-<style lang="postcss">
-    .links-blue a {
-        @apply text-blue-500;
-    }
-</style>
-<template>
-    <div>
-        <div class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200" v-if="!hasLogEntries">
-            {{noResultsMessage}}
-        </div>
-        <data-table :fields="fields" :data="filteredLogEntries" v-model:sort="sort" v-else>
-            <template v-slot:cell-id="{item}">
-                <div class="flex space-x-1">
-                    <router-link :to="{name: 'EditLogEntry', params:{id: item.id}}" class="btn btn-xs inline-block">
-                        <icon-edit width="12"></icon-edit>
-                    </router-link>
-                    <router-link 
-                        :to="{name: 'ConfirmDeleteLogEntry', params:{id: item.id}}" 
-                        v-if="item.activity_type === null"
-                        class="btn btn-xs inline-block"
-                    >
-                        <icon-trash width="12"></icon-trash>
-                    </router-link>
-                </div>
-            </template>
-            <template v-slot:cell-description="{item}">
-                <div v-html="item.description" class="links-blue"></div>
-            </template>
-            <!-- <template v-slot:cell-step="{item}">
-                <pre>
-                    {{item}} 
-                </pre>
-            </template> -->
-        </data-table>
-        <modal-dialog v-model="editingEntry" title="Edit log entry">
-            <LogEntryForm></LogEntryForm>
-        </modal-dialog>
-    </div>
-</template>
 <script>
 import {fetchEntries, logEntries} from '@/adapters/log_entry_repository';
 import LogEntryForm from '@/components/log_entries/LogEntryForm.vue'
@@ -162,3 +123,42 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <div class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200" v-if="!hasLogEntries">
+            {{noResultsMessage}}
+        </div>
+        <data-table :fields="fields" :data="filteredLogEntries" v-model:sort="sort" v-else>
+            <template v-slot:cell-id="{item}">
+                <div class="flex space-x-1">
+                    <router-link :to="{name: 'EditLogEntry', params:{id: item.id}}" class="btn btn-xs inline-block">
+                        <icon-edit width="12"></icon-edit>
+                    </router-link>
+                    <router-link 
+                        :to="{name: 'ConfirmDeleteLogEntry', params:{id: item.id}}" 
+                        v-if="item.activity_type === null"
+                        class="btn btn-xs inline-block"
+                    >
+                        <icon-trash width="12"></icon-trash>
+                    </router-link>
+                </div>
+            </template>
+            <template v-slot:cell-description="{item}">
+                <div v-html="item.description" class="links-blue"></div>
+            </template>
+            <!-- <template v-slot:cell-step="{item}">
+                <pre>
+                    {{item}} 
+                </pre>
+            </template> -->
+        </data-table>
+        <modal-dialog v-model="editingEntry" title="Edit log entry">
+            <LogEntryForm></LogEntryForm>
+        </modal-dialog>
+    </div>
+</template>
+<style lang="postcss">
+    .links-blue a {
+        @apply text-blue-500;
+    }
+</style>

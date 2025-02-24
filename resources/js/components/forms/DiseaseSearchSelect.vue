@@ -1,26 +1,3 @@
-<template>
-    <SearchSelect 
-        v-model="selectedDisease" 
-        :search-function="search"
-        style="z-index: 2"
-        placeholder="MonDO ID or name"
-    >
-        <template v-slot:selection-label="{selection}">
-            <div v-if="typeof selection == 'object'">
-                {{selection.mondo_id}} - {{selection.name}}
-            </div>
-            <div v-else>{{selection}}</div>
-        </template>
-        <template v-slot:option="{option}">
-            <div v-if="typeof option == 'object'">
-                {{option.mondo_id}} - {{option.name}}
-            </div>
-            <div v-else>
-                {{option}}
-            </div>
-        </template>
-    </SearchSelect>
-</template>
 <script>
 import SearchSelect from '@/components/forms/SearchSelect.vue'
 import api from '@/http/api'
@@ -60,3 +37,26 @@ export default {
     }
 }
 </script>
+<template>
+    <SearchSelect 
+        v-model="selectedDisease" 
+        :search-function="search"
+        style="z-index: 2"
+        placeholder="MonDO ID or name"
+    >
+        <template v-slot:selection-label="{selection}">
+            <div v-if="typeof selection == 'object'">
+                {{selection.mondo_id}} - {{selection.name}}
+            </div>
+            <div v-else>{{selection}}</div>
+        </template>
+        <template v-slot:option="{option}">
+            <div v-if="typeof option == 'object'">
+                {{option.mondo_id}} - {{option.name}}
+            </div>
+            <div v-else>
+                {{option}}
+            </div>
+        </template>
+    </SearchSelect>
+</template>

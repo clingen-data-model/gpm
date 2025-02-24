@@ -1,90 +1,3 @@
-<template>
-    <div>
-        <div class="sm:flex justify-between">
-            <div class="mb-1 sm:flex space-x-2">
-                <label class="block">
-                    Filter:
-                    <input type="text" class="sm" v-model="filter" placeholder="filter">
-                </label>
-                <label class="block">
-                    Waiting on:
-                    <select v-model="waitingOn" class="sm">
-                        <option :value="null">Any</option>
-                        <option v-for="i in assignees" :key="i.id"
-                            :value="i.id"
-                        >
-                            {{i.name}}
-                        </option>
-                    </select>
-                </label>
-                <checkbox
-                    v-model="showCompleted"
-                    label="Show completed"
-                />
-                <!-- <checkbox
-                    v-model="showDeleted"
-                    label="Show Deleted"
-                /> -->
-            </div>
-            <div>
-                <button class="btn btn-xs" :class="{blue: showAllInfo == 0}" @click="showAllInfo = 0">Summary</button>
-                <button class="btn btn-xs" :class="{blue: showAllInfo == 1}" @click="showAllInfo = 1">All Info</button>
-            </div>
-        </div>
-        <data-table
-            :data="filteredData"
-            :fields="selectedFields"
-            :filter-term="filter"
-            :row-click-handler="goToApplication"
-            row-class="cursor-pointer"
-            v-model:sort="sort"
-            :style="remainingHeight"
-            class="overflow-auto"
-            ref="table"
-        >
-            <template v-slot:cell-contacts="{item}">
-                <ul>
-                    <li v-for="c in item.group.members" :key="c.id">
-                        <small><a :href="`mailto:${c.person.email}`" class="text-blue-500">{{c.person.name}}</a></small>
-                    </li>
-                </ul>
-            </template>
-            <template v-slot:cell-latest_log_entry="{item}">
-                <popper hover arrow placement="right">
-                    <template v-slot:content>
-                        <div  v-html="item.group.latest_log_entry.description"></div>
-                    </template>
-                    {{formatDate(item.group.latest_log_entry.created_at)}}
-                </popper>
-            </template>
-            <template v-slot:cell-next_actions="{item}">
-                <popper hover arrow placement="left">
-                    <template v-slot:content>
-                        <div
-                            v-for="assignee in assignees.filter(i => item.pendingActionsByAssignee[i.id].length > 0)"
-                            :key="assignee.id"
-                            class="whitespace-normal max-w-80"
-                        >
-                            <h4>{{assignee.short_name}}:</h4>
-                            <ul class="list-disc pl-6 text-sm">
-                                <li v-for="action in item.pendingActionsByAssignee[assignee.id]" :key="action.id" v-html="action.entry" class="w-76 whitespace-normal">
-                                </li>
-                            </ul>
-                        </div>
-                    </template>
-                    <div v-for="assignee in assignees.filter(i => item.pendingActionsByAssignee[i.id].length > 0)" :key="assignee.id">
-                        <span>
-                            {{assignee.short_name}}:
-                            <strong>
-                                {{item.pendingActionsByAssignee[assignee.id].length}}
-                            </strong>
-                        </span>
-                    </div>
-                </popper>
-            </template>
-        </data-table>
-    </div>
-</template>
 <script>
 import sortAndFilter from '@/composables/router_aware_sort_and_filter'
 import configs from '@/configs'
@@ -365,3 +278,90 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <div class="sm:flex justify-between">
+            <div class="mb-1 sm:flex space-x-2">
+                <label class="block">
+                    Filter:
+                    <input type="text" class="sm" v-model="filter" placeholder="filter">
+                </label>
+                <label class="block">
+                    Waiting on:
+                    <select v-model="waitingOn" class="sm">
+                        <option :value="null">Any</option>
+                        <option v-for="i in assignees" :key="i.id"
+                            :value="i.id"
+                        >
+                            {{i.name}}
+                        </option>
+                    </select>
+                </label>
+                <checkbox
+                    v-model="showCompleted"
+                    label="Show completed"
+                />
+                <!-- <checkbox
+                    v-model="showDeleted"
+                    label="Show Deleted"
+                /> -->
+            </div>
+            <div>
+                <button class="btn btn-xs" :class="{blue: showAllInfo == 0}" @click="showAllInfo = 0">Summary</button>
+                <button class="btn btn-xs" :class="{blue: showAllInfo == 1}" @click="showAllInfo = 1">All Info</button>
+            </div>
+        </div>
+        <data-table
+            :data="filteredData"
+            :fields="selectedFields"
+            :filter-term="filter"
+            :row-click-handler="goToApplication"
+            row-class="cursor-pointer"
+            v-model:sort="sort"
+            :style="remainingHeight"
+            class="overflow-auto"
+            ref="table"
+        >
+            <template v-slot:cell-contacts="{item}">
+                <ul>
+                    <li v-for="c in item.group.members" :key="c.id">
+                        <small><a :href="`mailto:${c.person.email}`" class="text-blue-500">{{c.person.name}}</a></small>
+                    </li>
+                </ul>
+            </template>
+            <template v-slot:cell-latest_log_entry="{item}">
+                <popper hover arrow placement="right">
+                    <template v-slot:content>
+                        <div  v-html="item.group.latest_log_entry.description"></div>
+                    </template>
+                    {{formatDate(item.group.latest_log_entry.created_at)}}
+                </popper>
+            </template>
+            <template v-slot:cell-next_actions="{item}">
+                <popper hover arrow placement="left">
+                    <template v-slot:content>
+                        <div
+                            v-for="assignee in assignees.filter(i => item.pendingActionsByAssignee[i.id].length > 0)"
+                            :key="assignee.id"
+                            class="whitespace-normal max-w-80"
+                        >
+                            <h4>{{assignee.short_name}}:</h4>
+                            <ul class="list-disc pl-6 text-sm">
+                                <li v-for="action in item.pendingActionsByAssignee[assignee.id]" :key="action.id" v-html="action.entry" class="w-76 whitespace-normal">
+                                </li>
+                            </ul>
+                        </div>
+                    </template>
+                    <div v-for="assignee in assignees.filter(i => item.pendingActionsByAssignee[i.id].length > 0)" :key="assignee.id">
+                        <span>
+                            {{assignee.short_name}}:
+                            <strong>
+                                {{item.pendingActionsByAssignee[assignee.id].length}}
+                            </strong>
+                        </span>
+                    </div>
+                </popper>
+            </template>
+        </data-table>
+    </div>
+</template>

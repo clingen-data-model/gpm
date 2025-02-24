@@ -1,184 +1,3 @@
-<template>
-    <div>
-        <div class="flex">
-            <div class="flex-1">
-                <div v-if="!newMember.id && !newMember.person_id">
-                    <input-row label="Name"
-                        :errors="nameErrors"
-                    >
-                        <div class="flex space-x-2">
-                            <input type="text"
-                                v-model="newMember.person.first_name"
-                                placeholder="First"
-                                class="block w-1/2"
-                                @input="debounceSuggestions"
-                            >
-                            <input type="text"
-                                v-model="newMember.person.last_name"
-                                placeholder="Last"
-                                class="block w-1/2"
-                                @input="debounceSuggestions"
-                                :errors="errors.last_name"
-                            >
-                        </div>
-                    </input-row>
-                    <input-row label="Email"
-                        v-model="newMember.person.email"
-                        placeholder="example@example.com"
-                        input-class="w-full"
-                        @input="debounceSuggestions"
-                        :errors="errors.email"
-                    ></input-row>
-                </div>
-                <div v-if="newMember.id || newMember.person_id">
-                    <dictionary-row label="Name">
-                        {{newMember.person.name}}
-                    </dictionary-row>
-                    <dictionary-row label="Email">{{newMember.person.email}}</dictionary-row>
-                    <dictionary-row label="Institution">{{newMember.person.institution ? newMember.person.institution.name : '--'}}</dictionary-row>
-                    <dictionary-row label="Credentials">
-                        <CredentialsView :person="newMember.person" />
-                    </dictionary-row>
-                    <dictionary-row label="Expertise">
-                        <ExpertisesView :person="newMember.person" :legacy-expertise="newMember.legacy_expertise" />
-                    </dictionary-row>
-                    <static-alert v-if="!newMember.id">
-                        Adding existing person, {{newMember.person.name}}, as a group member.
-                    </static-alert>
-                    <dictionary-row label="" class="text-sm"  v-if="newMember.id">
-                        <popover content="As a coordinator you can edit some attributes of a group member's profile including name, email, institution, and credentials." hover arrow>
-                            <button @click="showProfileForm=true" class="link text-sm">
-                                Edit profile attributes
-                            </button>
-                        </popover>
-                    </dictionary-row>
-                    <note v-if="!newMember.id">
-                        You can edit the member's profile attributes from here once you've added them to your group.
-                    </note>
-
-                </div>
-
-
-
-                <input-row label="Notes" :errors="errors.notes">
-                    <textarea rows="5" v-model="newMember.notes" class="w-full"></textarea>
-                </input-row>
-
-                <dictionary-row label="">
-                    <checkbox @update:modelValue="$event => newMember.is_contact = $event" :modelValue="roleRequiresNotification || newMember.is_contact" :disabled="roleRequiresNotification" label="Receives notifications about this group" />
-
-                </dictionary-row>
-
-                <div class="border-t mt-4 pt-2">
-                    <h3>Group Roles</h3>
-                    <div class="flex flex-col h-24 flex-wrap">
-                        <checkbox v-for="role in roles" :key="role.id" v-model="newMember.roles" :value="role" :label="titleCase(role.name)" @input="handleRoleChange" />
-                    </div>
-                    <transition name="fade-down">
-                        <div
-                            v-if="newMember.hasRole('biocurator') && group.isVcep()"
-                            class="border-t mt-2 pt-2 pl-2"
-                        >
-                            <h4>Training</h4>
-                            <checkbox
-                                v-for="num in [1, 2]" :key="num"
-                                v-model="newMember[`training_level_${num}`]"
-                                :value="1"
-                                :label="`Level ${num}`"
-                            />
-                        </div>
-                    </transition>
-                </div>
-                <collapsible class="border-t mt-4 pt-2 mb-2">
-                    <template v-slot:title>
-                        <h3 class="flex justify-between w-full items-center">
-                            Group Permissions
-                            <badge
-                                v-if="newMember.permissions.length > 0"
-                                color="gray"
-                            >{{newMember.permissions.length}}</badge>
-                        </h3>
-                    </template>
-                    <div class="flex flex-col h-24 flex-wrap">
-                        <checkbox
-                            v-for="permission in permissions"
-                            :key="permission.id"
-                            v-model="newMember.permissions"
-                            :value="permission"
-                            :disabled="newMember.hasPermissionThroughRole(permission)"
-                            :checked="newMember.hasPermissionThroughRole(permission)"
-                            :id="`permission-${permission.id}`"
-                            :title="newMember.hasPermissionThroughRole(permission) ? `granted with role` : `grant permission`"
-                            :label="permission.display_name"
-                        />
-                    </div>
-                    <div class="px-2 py-1 bg-gray-100 border relative text-xs">
-                        <div class="flex space-x-2">
-                        <strong>Legend: </strong>
-                            <checkbox label="Not granted" />
-                            <checkbox :value="1" v-model="legendValues" label="Granted" />
-                            <checkbox :value="2" v-model="legendValues" disabled label="Granted w/ role" />
-                        </div>
-                        <div class="absolute top-0 left-0 w-full h-full bg-pink-500 opacity-0">&nbsp;</div>
-                    </div>
-                </collapsible>
-
-            </div>
-            <transition name="slide-fade">
-                <div v-if="suggestedPeople.length > 0 && newMember.person_id === null"
-                    class="pt-2 border-l pl-2  ml-2 flex-1"
-                >
-                    <h5 class="font-bold border-b mb-1 pb-1">Matching people</h5>
-                    <MemberSuggestions
-                        :suggestions="suggestedPeople"
-                        @selected="useExistingPerson"
-                    ></MemberSuggestions>
-                </div>
-            </transition>
-
-        </div>
-        <div>
-            <!-- <div class="border-t-2 p-2 mt-4 bg-gray-100" v-if="!newMember.id">
-                <label class="text-xs">
-                    Add another member:
-                    &nbsp;
-                    <label><input type="radio" v-model="addAnother" :value="true">&nbsp;Yes</label>
-                    <label><input type="radio" v-model="addAnother" :value="false">&nbsp;No</label>
-                </label>
-            </div> -->
-            <button-row
-                @submit="saveAndExit"
-                @cancel="cancel"
-                submit-text="Save"
-                style="margin-top: 0"
-            >
-                <template v-slot:extra-buttons>
-                    <button class="btn blue" @click="saveAndEditProfile" v-if="!newMember.id">Save and edit profle</button>
-                </template>
-            </button-row>
-        </div>
-    </div>
-
-    <teleport to='body'>
-        <modal-dialog v-model="showProfileForm" title="Edit Member Profile">
-            <div v-if="needsCredentials || needsExpertise" class="mb-2 p-2 alert alert-warning">
-                We need updated <strong v-if="needsCredentials">credentials</strong>
-                <span v-if="needsExpertise && needsCredentials">and</span>
-                <strong v-if="needsExpertise">expertise</strong> information for this member.
-                <div v-if="needsCredentials && newMember.person.legacy_credentials">
-                    <strong>Legacy Credentials Data:</strong> {{newMember.person.legacy_credentials}}
-                </div>
-                <div v-if="needsExpertise && newMember.legacy_expertise">
-                    <strong>Legacy Expertise Data:</strong> {{newMember.legacy_expertise}}
-                </div>
-            </div>
-            <ProfileForm v-if="newMember.person" :person="newMember.person"
-                @saved="handleProfileUpdate"
-                @canceled="showProfileForm = false"
-            />
-        </modal-dialog>
-    </teleport>
-</template>
 <script>
 import MemberSuggestions from '@/components/groups/MemberSuggestions.vue'
 import config from '@/configs'
@@ -498,6 +317,187 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <div class="flex">
+            <div class="flex-1">
+                <div v-if="!newMember.id && !newMember.person_id">
+                    <input-row label="Name"
+                        :errors="nameErrors"
+                    >
+                        <div class="flex space-x-2">
+                            <input type="text"
+                                v-model="newMember.person.first_name"
+                                placeholder="First"
+                                class="block w-1/2"
+                                @input="debounceSuggestions"
+                            >
+                            <input type="text"
+                                v-model="newMember.person.last_name"
+                                placeholder="Last"
+                                class="block w-1/2"
+                                @input="debounceSuggestions"
+                                :errors="errors.last_name"
+                            >
+                        </div>
+                    </input-row>
+                    <input-row label="Email"
+                        v-model="newMember.person.email"
+                        placeholder="example@example.com"
+                        input-class="w-full"
+                        @input="debounceSuggestions"
+                        :errors="errors.email"
+                    ></input-row>
+                </div>
+                <div v-if="newMember.id || newMember.person_id">
+                    <dictionary-row label="Name">
+                        {{newMember.person.name}}
+                    </dictionary-row>
+                    <dictionary-row label="Email">{{newMember.person.email}}</dictionary-row>
+                    <dictionary-row label="Institution">{{newMember.person.institution ? newMember.person.institution.name : '--'}}</dictionary-row>
+                    <dictionary-row label="Credentials">
+                        <CredentialsView :person="newMember.person" />
+                    </dictionary-row>
+                    <dictionary-row label="Expertise">
+                        <ExpertisesView :person="newMember.person" :legacy-expertise="newMember.legacy_expertise" />
+                    </dictionary-row>
+                    <static-alert v-if="!newMember.id">
+                        Adding existing person, {{newMember.person.name}}, as a group member.
+                    </static-alert>
+                    <dictionary-row label="" class="text-sm"  v-if="newMember.id">
+                        <popover content="As a coordinator you can edit some attributes of a group member's profile including name, email, institution, and credentials." hover arrow>
+                            <button @click="showProfileForm=true" class="link text-sm">
+                                Edit profile attributes
+                            </button>
+                        </popover>
+                    </dictionary-row>
+                    <note v-if="!newMember.id">
+                        You can edit the member's profile attributes from here once you've added them to your group.
+                    </note>
+
+                </div>
+
+
+
+                <input-row label="Notes" :errors="errors.notes">
+                    <textarea rows="5" v-model="newMember.notes" class="w-full"></textarea>
+                </input-row>
+
+                <dictionary-row label="">
+                    <checkbox @update:modelValue="$event => newMember.is_contact = $event" :modelValue="roleRequiresNotification || newMember.is_contact" :disabled="roleRequiresNotification" label="Receives notifications about this group" />
+
+                </dictionary-row>
+
+                <div class="border-t mt-4 pt-2">
+                    <h3>Group Roles</h3>
+                    <div class="flex flex-col h-24 flex-wrap">
+                        <checkbox v-for="role in roles" :key="role.id" v-model="newMember.roles" :value="role" :label="titleCase(role.name)" @input="handleRoleChange" />
+                    </div>
+                    <transition name="fade-down">
+                        <div
+                            v-if="newMember.hasRole('biocurator') && group.isVcep()"
+                            class="border-t mt-2 pt-2 pl-2"
+                        >
+                            <h4>Training</h4>
+                            <checkbox
+                                v-for="num in [1, 2]" :key="num"
+                                v-model="newMember[`training_level_${num}`]"
+                                :value="1"
+                                :label="`Level ${num}`"
+                            />
+                        </div>
+                    </transition>
+                </div>
+                <collapsible class="border-t mt-4 pt-2 mb-2">
+                    <template v-slot:title>
+                        <h3 class="flex justify-between w-full items-center">
+                            Group Permissions
+                            <badge
+                                v-if="newMember.permissions.length > 0"
+                                color="gray"
+                            >{{newMember.permissions.length}}</badge>
+                        </h3>
+                    </template>
+                    <div class="flex flex-col h-24 flex-wrap">
+                        <checkbox
+                            v-for="permission in permissions"
+                            :key="permission.id"
+                            v-model="newMember.permissions"
+                            :value="permission"
+                            :disabled="newMember.hasPermissionThroughRole(permission)"
+                            :checked="newMember.hasPermissionThroughRole(permission)"
+                            :id="`permission-${permission.id}`"
+                            :title="newMember.hasPermissionThroughRole(permission) ? `granted with role` : `grant permission`"
+                            :label="permission.display_name"
+                        />
+                    </div>
+                    <div class="px-2 py-1 bg-gray-100 border relative text-xs">
+                        <div class="flex space-x-2">
+                        <strong>Legend: </strong>
+                            <checkbox label="Not granted" />
+                            <checkbox :value="1" v-model="legendValues" label="Granted" />
+                            <checkbox :value="2" v-model="legendValues" disabled label="Granted w/ role" />
+                        </div>
+                        <div class="absolute top-0 left-0 w-full h-full bg-pink-500 opacity-0">&nbsp;</div>
+                    </div>
+                </collapsible>
+
+            </div>
+            <transition name="slide-fade">
+                <div v-if="suggestedPeople.length > 0 && newMember.person_id === null"
+                    class="pt-2 border-l pl-2  ml-2 flex-1"
+                >
+                    <h5 class="font-bold border-b mb-1 pb-1">Matching people</h5>
+                    <MemberSuggestions
+                        :suggestions="suggestedPeople"
+                        @selected="useExistingPerson"
+                    ></MemberSuggestions>
+                </div>
+            </transition>
+
+        </div>
+        <div>
+            <!-- <div class="border-t-2 p-2 mt-4 bg-gray-100" v-if="!newMember.id">
+                <label class="text-xs">
+                    Add another member:
+                    &nbsp;
+                    <label><input type="radio" v-model="addAnother" :value="true">&nbsp;Yes</label>
+                    <label><input type="radio" v-model="addAnother" :value="false">&nbsp;No</label>
+                </label>
+            </div> -->
+            <button-row
+                @submit="saveAndExit"
+                @cancel="cancel"
+                submit-text="Save"
+                style="margin-top: 0"
+            >
+                <template v-slot:extra-buttons>
+                    <button class="btn blue" @click="saveAndEditProfile" v-if="!newMember.id">Save and edit profle</button>
+                </template>
+            </button-row>
+        </div>
+    </div>
+
+    <teleport to='body'>
+        <modal-dialog v-model="showProfileForm" title="Edit Member Profile">
+            <div v-if="needsCredentials || needsExpertise" class="mb-2 p-2 alert alert-warning">
+                We need updated <strong v-if="needsCredentials">credentials</strong>
+                <span v-if="needsExpertise && needsCredentials">and</span>
+                <strong v-if="needsExpertise">expertise</strong> information for this member.
+                <div v-if="needsCredentials && newMember.person.legacy_credentials">
+                    <strong>Legacy Credentials Data:</strong> {{newMember.person.legacy_credentials}}
+                </div>
+                <div v-if="needsExpertise && newMember.legacy_expertise">
+                    <strong>Legacy Expertise Data:</strong> {{newMember.legacy_expertise}}
+                </div>
+            </div>
+            <ProfileForm v-if="newMember.person" :person="newMember.person"
+                @saved="handleProfileUpdate"
+                @canceled="showProfileForm = false"
+            />
+        </modal-dialog>
+    </teleport>
+</template>
 <style lang="postcss" scoped>
     input:disabled {
         opacity: 1

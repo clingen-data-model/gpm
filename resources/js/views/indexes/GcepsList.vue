@@ -1,8 +1,3 @@
-<template>
-    <div>
-        <ApplicationsTable :ep-type-id="1"></ApplicationsTable>
-    </div>
-</template>
 <script>
 import ApplicationsTable from '@/components/applications/ApplicationsTable.vue'
 
@@ -19,3 +14,8 @@ export default {
     },
 }
 </script>
+<template>
+    <div>
+        <ApplicationsTable :ep-type-id="1"></ApplicationsTable>
+    </div>
+</template>

@@ -1,21 +1,3 @@
-<template>
-    <form-container class="log-entry-form" ref="form-container">
-        <input-row label="Log Date" 
-            v-model="newEntry.log_date" 
-            :errors="errors.log_date" 
-            type="date" 
-            ref="logdate"
-        ></input-row>
-        <StepInput :errors="errors.step" v-if="group.isVcep()" v-model="newEntry.step"/>
-        <input-row label="Entry" :errors="errors.entry">
-            <RichTextEditor v-model="newEntry.entry" />
-        </input-row>
-        <button-row>
-            <button class="btn" @click="cancel">Cancel</button>
-            <button class="btn blue" @click="save">Save</button>
-        </button-row>
-    </form-container>
-</template>
 <script setup>
     import {fetchEntries, saveEntry, updateEntry} from '@/adapters/log_entry_repository'
     import StepInput from '@/components/forms/StepInput.vue'
@@ -106,3 +88,21 @@
         {immediate: true}
     );
 </script>
+<template>
+    <form-container class="log-entry-form" ref="form-container">
+        <input-row label="Log Date" 
+            v-model="newEntry.log_date" 
+            :errors="errors.log_date" 
+            type="date" 
+            ref="logdate"
+        ></input-row>
+        <StepInput :errors="errors.step" v-if="group.isVcep()" v-model="newEntry.step"/>
+        <input-row label="Entry" :errors="errors.entry">
+            <RichTextEditor v-model="newEntry.entry" />
+        </input-row>
+        <button-row>
+            <button class="btn" @click="cancel">Cancel</button>
+            <button class="btn blue" @click="save">Save</button>
+        </button-row>
+    </form-container>
+</template>

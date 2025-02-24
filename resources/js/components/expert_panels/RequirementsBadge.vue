@@ -1,17 +1,3 @@
-<template>
-    <div v-if="hasRequirements">
-        <popover arrow hover>
-            <template v-slot:content>
-                <div>
-                    <RequirementsItem  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
-                </div>
-            </template>
-            <badge :color="badgeColor" class="cursor-pointer">
-                {{badgeText}}
-            </badge>
-        </popover>
-    </div>
-</template>
 <script>
 import RequirementsItem from './RequirementsItem.vue'
 
@@ -59,3 +45,17 @@ export default {
     }
 }
 </script>
+<template>
+    <div v-if="hasRequirements">
+        <popover arrow hover>
+            <template v-slot:content>
+                <div>
+                    <RequirementsItem  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
+                </div>
+            </template>
+            <badge :color="badgeColor" class="cursor-pointer">
+                {{badgeText}}
+            </badge>
+        </popover>
+    </div>
+</template>

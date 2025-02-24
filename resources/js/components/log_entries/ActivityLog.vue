@@ -1,51 +1,3 @@
-<style lang="postcss">
-    .links-blue a {
-        @apply text-blue-500;
-    }
-</style>
-<template>
-    <div>
-        <div class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200" v-if="!hasLogEntries">
-            No log entries to display
-        </div>
-        <data-table :fields="fields" :data="logEntries" v-model:sort="sort" v-else>
-            <template v-slot:cell-id="{item}">
-                <div class="flex space-x-1" v-if="hasPermission('groups-manage')">
-                    <button class="btn btn-xs inline-block"  @click="editLogEntry(item)">
-                        <icon-edit width="12"></icon-edit>
-                    </button>
-                    <button 
-                        @click="confirmDelete(item)"
-                        v-if="item.activity_type === null"
-                        class="btn btn-xs inline-block"
-                    >
-                        <icon-trash width="12"></icon-trash>
-                    </button>
-                </div>
-            </template>
-            <template v-slot:cell-description="{item}">
-                <div v-html="item.description" class="links-blue"></div>
-            </template>
-        </data-table>
-        <modal-dialog v-model="editingEntry" title="Edit log entry">
-            <LogEntryForm 
-                :log-entry="selectedEntry" 
-                :api-url="apiUrl"
-                @saved="closeEntryForm"
-                @canceled="closeEntryForm"
-            ></LogEntryForm>
-        </modal-dialog>
-
-        <modal-dialog v-model="showDeleteConfirmation" title="Delete this log entry?">
-            <ActivityLogDeleteConfirmation 
-                :logEntry="selectedEntry" 
-                :api-url="apiUrl"
-                @canceled="closeDeleteConfirmation"
-                @deleted="closeDeleteConfirmation"
-            ></ActivityLogDeleteConfirmation>
-        </modal-dialog>
-    </div>
-</template>
 <script>
 import ActivityLogDeleteConfirmation from '@/components/log_entries/ActivityLogDeleteConfirmation.vue'
 
@@ -161,3 +113,51 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <div class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200" v-if="!hasLogEntries">
+            No log entries to display
+        </div>
+        <data-table :fields="fields" :data="logEntries" v-model:sort="sort" v-else>
+            <template v-slot:cell-id="{item}">
+                <div class="flex space-x-1" v-if="hasPermission('groups-manage')">
+                    <button class="btn btn-xs inline-block"  @click="editLogEntry(item)">
+                        <icon-edit width="12"></icon-edit>
+                    </button>
+                    <button 
+                        @click="confirmDelete(item)"
+                        v-if="item.activity_type === null"
+                        class="btn btn-xs inline-block"
+                    >
+                        <icon-trash width="12"></icon-trash>
+                    </button>
+                </div>
+            </template>
+            <template v-slot:cell-description="{item}">
+                <div v-html="item.description" class="links-blue"></div>
+            </template>
+        </data-table>
+        <modal-dialog v-model="editingEntry" title="Edit log entry">
+            <LogEntryForm 
+                :log-entry="selectedEntry" 
+                :api-url="apiUrl"
+                @saved="closeEntryForm"
+                @canceled="closeEntryForm"
+            ></LogEntryForm>
+        </modal-dialog>
+
+        <modal-dialog v-model="showDeleteConfirmation" title="Delete this log entry?">
+            <ActivityLogDeleteConfirmation 
+                :logEntry="selectedEntry" 
+                :api-url="apiUrl"
+                @canceled="closeDeleteConfirmation"
+                @deleted="closeDeleteConfirmation"
+            ></ActivityLogDeleteConfirmation>
+        </modal-dialog>
+    </div>
+</template>
+<style lang="postcss">
+    .links-blue a {
+        @apply text-blue-500;
+    }
+</style>
