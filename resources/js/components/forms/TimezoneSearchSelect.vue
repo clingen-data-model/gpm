@@ -10,7 +10,7 @@
         </div>
         <div>
             <label for="city-search-select" class="block text-xs">City:</label>
-            <select id="city-search-select" v-model="city" :disabled="!this.region">
+            <select id="city-search-select" v-model="city" :disabled="!region">
                 <option value="null">Select...</option>
                 <option  v-for="{name} in regionCities" :key="name" :value="name">{{name}}</option>
             </select>

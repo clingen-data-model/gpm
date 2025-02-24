@@ -34,7 +34,7 @@
         <teleport to="body">
             <modal-dialog v-model="showInfoEdit" @closed="showInfoEdit = false" title="Edit Group Info" size="md">
                 <submission-wrapper @submitted="$refs.infoForm.save()" @canceled="$refs.infoForm.cancel()">
-                    <group-form 
+                    <GroupForm 
                         ref="infoForm"
                         @canceled="showInfoEdit = false"
                         @saved="showInfoEdit = false"

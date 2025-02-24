@@ -4,14 +4,14 @@
             <transition-group name="slide-fade-down">
                 <li class="my-4 flex" v-for="(summary, idx) in group.expert_panel.evidence_summaries" :key="idx">
                     <div class="text-lg pr-4">{{idx+1}}</div>
-                    <evidence-summary
+                    <EvidenceSummary
                         :summary="summary"
                         :group="group"
                         @saved="handleSavedSummary"
                         @deleted="handleDeleted"
                         class="flex-1"
                         :readonly="readonly"
-                    ></evidence-summary>
+                    ></EvidenceSummary>
                 </li>
             </transition-group>
         </ul>
@@ -20,13 +20,13 @@
         <ul v-show="adding">
             <li class="my-4 flex" v-for="(newSummary, idx) in newSummaries" :key="idx">
                 <div class="text-lg pr-4">{{(idx+1+summaries.length)}}</div>
-                <evidence-summary-form
+                <EvidenceSummaryForm
                     class="flex-1"
                     :group="group"
                     :summary="newSummary"
                     @saved="handleSavedSummary"
                     @canceled="cancelAdd"
-                ></evidence-summary-form>
+                ></EvidenceSummaryForm>
             </li>
         </ul>
         <div v-show="!adding && canEdit">
@@ -45,7 +45,7 @@ export default {
         EvidenceSummaryForm
     },
     emits: [
-        'summaries-added'
+        'summariesAdded'
     ],
     props: {
         readonly: {
@@ -122,7 +122,7 @@ export default {
         handleSavedSummary() {
             this.getEvidenceSummaries();
             this.clearNewSummaries();
-            this.$emit('summaries-added');
+            this.$emit('summariesAdded');
         },
         handleDeleted (summary) {
             const idx = this.summaries.findIndex(s => s.id === summary.id);

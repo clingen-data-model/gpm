@@ -32,7 +32,7 @@ export default {
 </script>
 
 <template>
-    <application-section title="Plans for rule specification of additional genes">
+    <ApplicationSection title="Plans for rule specification of additional genes">
         <input-row
             :disabled="isComplete"
             v-model="workingCopy.data.specification_plans"
@@ -52,5 +52,5 @@ export default {
             vertical
             class="ml-4"
         />
-    </application-section>
+    </ApplicationSection>
 </template>

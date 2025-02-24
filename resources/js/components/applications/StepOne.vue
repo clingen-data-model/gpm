@@ -1,18 +1,18 @@
 <template>
     <div class="application-review">
-        <base-step 
+        <BaseStep 
             :step="1" 
             document-name="Scope and Membership Application" 
             title="Scope and Membership" 
             :document-type="1" 
             :document-gets-reviewed="true"
             approve-button-label="Approve Scope and Membership"
-            @updated="this.$emit('updated')"
+            @updated="$emit('updated')"
         >
             <template v-slot:sections>
-                <definition-review />
+                <DefinitionReview />
             </template>
-        </base-step>
+        </BaseStep>
     </div>
 </template>
 <script>

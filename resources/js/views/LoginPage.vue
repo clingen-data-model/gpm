@@ -1,7 +1,7 @@
 <template>
     <div>
         <card title="Login" class="md:w-1/2 mx-auto">
-            <login-form @authenticated="redirect"></login-form>
+            <LoginForm @authenticated="redirect"></LoginForm>
         </card>
     </div>
 </template>

@@ -2,9 +2,9 @@
     <div>
         <div class="flex justify-between">
             <h2>Conflict of Interest</h2>
-            <coi-legacy-upload :application="application"
+            <CoiLegacyUpload :application="application"
                 v-if="$store.state.features.legacyCoi"
-            ></coi-legacy-upload>
+            ></CoiLegacyUpload>
         </div>
         <div class="my-2 flex justify-between">
             <icon-refresh 
@@ -26,7 +26,7 @@
                 </template>
             </data-table>
             <modal-dialog v-model="showResponseDialog" size="xl">
-                <coi-detail :coi="currentCoi" v-if="currentCoi"></coi-detail>
+                <CoiDetail :coi="currentCoi" v-if="currentCoi"></CoiDetail>
             </modal-dialog>
         </div>
     </div>

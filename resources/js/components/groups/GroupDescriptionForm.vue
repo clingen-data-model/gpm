@@ -38,7 +38,7 @@ import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
 import MarkdownBlock from '@/components/MarkdownBlock.vue'
 
 export default {
-    name: "groupDescriptionForm",
+    name: "GroupDescriptionForm",
     props: {
         editing: {
             type: Boolean,

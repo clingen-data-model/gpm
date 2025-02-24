@@ -6,7 +6,7 @@
                 ref="menuButton" 
                 @click.stop="toggleMenu"
             >
-                <chevron-down></chevron-down>
+                <ChevronDown></ChevronDown>
                 {{user.name}}
             </div>
             <transition name="slide-fade-down">            

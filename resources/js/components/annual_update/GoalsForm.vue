@@ -60,7 +60,7 @@
 import mirror from '@/composables/setup_working_mirror'
 
 export default {
-    name: 'goalsForm',
+    name: 'GoalsForm',
     props: {
         ...mirror.props,
         errors: {

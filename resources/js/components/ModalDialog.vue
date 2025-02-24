@@ -27,7 +27,7 @@
             <section class="overflow-auto px-4 pb-2 pt-2" ref="panelbody">
                 <slot name="default"></slot>
             </section>
-            <div class="footer px-4 py-2" v-if="this.$slots.footer">
+            <div class="footer px-4 py-2" v-if="$slots.footer">
                 <slot name="footer"></slot>
             </div>
         </div>

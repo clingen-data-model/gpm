@@ -27,7 +27,7 @@
                         </li>
                         <li class="menu-item">
                             <div class="py-4 mx-2">
-                            <impersonate-control/>
+                            <ImpersonateControl/>
                             </div>
                         </li>
                     </ul>
@@ -50,7 +50,7 @@
                             <router-link :to="{name: 'mail-log'}" @click="showMenu = false">Mail log</router-link>
                         </li>
                         <li class="menu-item" v-if="hasPermission('announcements-manage')">
-                            <announcement-control />
+                            <AnnouncementControl />
                         </li>
                         <li class="menu-item" v-if="hasPermission('logs-view')">
                             <a href="/dev/logs" class="p-3 block">System Log</a>

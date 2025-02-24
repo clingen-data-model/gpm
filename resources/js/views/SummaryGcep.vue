@@ -1,6 +1,6 @@
 <template>
     <div>
-        <applications-summary-table :ep-type-id="1"></applications-summary-table>
+        <ApplicationsSummaryTable :expertPanelTypeId="1"></ApplicationsSummaryTable>
     </div>
 </template>
 <script>

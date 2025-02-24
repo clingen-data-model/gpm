@@ -1,5 +1,5 @@
 <template>
-    <search-select 
+    <SearchSelect 
         v-model="selectedDisease" 
         :search-function="search"
         style="z-index: 2"
@@ -19,7 +19,7 @@
                 {{option}}
             </div>
         </template>
-    </search-select>
+    </SearchSelect>
 </template>
 <script>
 import api from '@/http/api'

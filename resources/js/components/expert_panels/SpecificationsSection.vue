@@ -1,12 +1,12 @@
 <template>
     <div>
-        <cspec-summary v-if="cspecSummaryEnabled" :readonly="readonly" />
+        <CspecSummary v-if="cspecSummaryEnabled" :readonly="readonly" />
 
         <collapsible class="mt-4">
             <template v-slot:title>
                 <h3>Legacy document-based specifications</h3>
             </template>
-            <application-upload-form
+            <ApplicationUploadForm
                 :document-type-id="docTypeId"
                 :show-notes="false"
                 v-if="specificationUpload"

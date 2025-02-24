@@ -60,7 +60,7 @@
                 <!-- Country of Birth Dropdown -->
 
                 <label for="birth_country">Country of Birth: </label>
-                <div v-if="!this.formdata.birth_country_opt_out">
+                <div v-if="!formdata.birth_country_opt_out">
                     <select id="birth_country" name="birth_country" v-model="formdata.birth_country"
                         v-bind:disabled="!editModeActive">
                         <option value="">Select country</option>
@@ -71,7 +71,7 @@
 
                 </div>
 
-                <div v-if="!this.formdata.birth_country_opt_out" style="display: flex;">
+                <div v-if="!formdata.birth_country_opt_out" style="display: flex;">
                     <label>Other: </label>
                     <input class="w3-input" type="text" id="birth_country_other" v-model="formdata.birth_country_other"
                         v-bind:disabled="!editModeActive">
@@ -200,7 +200,7 @@
 
 
                 <label for="specialty">Please select the year that you were born.</label>
-                <div v-if="!this.formdata.birth_year_opt_out">
+                <div v-if="!formdata.birth_year_opt_out">
 
                     <span style="color: red !important; display: inline; float: none;"></span>
 

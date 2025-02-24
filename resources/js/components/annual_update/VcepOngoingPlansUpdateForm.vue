@@ -1,6 +1,6 @@
 <template>
-    <application-section title="Sustained Variant Curation">
-        <vcep-ongoing-plans-form 
+    <ApplicationSection title="Sustained Variant Curation">
+        <VcepOngoingPlansForm 
             v-model="workingCopy"
             :errors="errors"
             @update="$emit('updated')"
@@ -44,7 +44,7 @@
             v-model="workingCopy.data.changes_to_call_frequency_details"
             :disabled="isComplete"
         />
-    </application-section>
+    </ApplicationSection>
 </template>
 <script>
 import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm.vue'
