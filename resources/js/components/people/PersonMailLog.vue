@@ -35,7 +35,7 @@ export default {
 </script>
 <template>
     <div>
-        <div v-if="mail.length == 0" class="well">
+        <div v-if="mail.length === 0" class="well">
             {{ person.first_name }} has not received any mail via the GPM.
         </div>
         <div class="w-3/4 my-4 p-4 border" v-for="email in mail" :key="email.id">

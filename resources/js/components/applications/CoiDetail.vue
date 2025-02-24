@@ -82,13 +82,13 @@ export default {
                 </dictionary-row>
 
                 <dictionary-row
-                    v-if="version == '1.0.0'"
+                    v-if="version === '1.0.0'"
                     :label="response.contributions_to_gd_in_ep.question" :vertical="true"
                     label-class="font-bold"
                 >
                     {{ getQuestionValue(response.contributions_to_gd_in_ep.response) }}
                     <dictionary-row :label="response.contributions_to_genes.question" :vertical="true"
-                        v-if="response.contributions_to_gd_in_ep.response == 1"
+                        v-if="response.contributions_to_gd_in_ep.response === 1"
                         class="pb-1 mb-1 ml-4"
                         label-class="font-bold"
                     >
@@ -97,13 +97,13 @@ export default {
                 </dictionary-row>
 
                 <dictionary-row
-                    v-if="version == '2.0.0'"
+                    v-if="version === '2.0.0'"
                     :label="response.contributions_to_gd_in_group.question" :vertical="true"
                     label-class="font-bold"
                 >
                     {{ getQuestionValue(response.contributions_to_gd_in_group.response) }}
                     <dictionary-row :label="response.contributions_to_genes.question" :vertical="true"
-                        v-if="response.contributions_to_gd_in_group.response == 1"
+                        v-if="response.contributions_to_gd_in_group.response === 1"
                         class="pb-1 mb-1 ml-4"
                         label-class="font-bold"
                     >
@@ -112,7 +112,7 @@ export default {
                 </dictionary-row>
 
                 <dictionary-row
-                    v-if="version == '1.0.0'"
+                    v-if="version === '1.0.0'"
                     :label="response.independent_efforts.question"
                     :vertical="true"
                     label-class="font-bold"

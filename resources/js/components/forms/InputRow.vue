@@ -137,7 +137,7 @@ export default {
             <div class="flex-grow flex flex-col space-y-3">
                 <slot>
                     <date-input
-                        v-if="type == 'date'"
+                        v-if="type === 'date'"
                         :modelValue="modelValue"
                         @update:modelValue="emitValue"
                         :disabled="disabled"
@@ -148,7 +148,7 @@ export default {
                         :class="inputClass"
                     ></date-input>
                     <textarea
-                        v-else-if="type == 'large-text'"
+                        v-else-if="type === 'large-text'"
                         :value="modelValue"
                         @input="$emit('update:modelValue', $event.target.value)"
                         :disabled="disabled"
@@ -162,7 +162,7 @@ export default {
                         :placeholder="placeholder"
                     ></textarea>
                     <div
-                        v-else-if="type == 'radio-group'"
+                        v-else-if="type === 'radio-group'"
                         class="radio-group"
                         :class="{'ml-4': vertical}"
                     >
@@ -177,7 +177,7 @@ export default {
                             :readonly="$attrs.readonly"
                         />
                     </div>
-                    <select v-else-if="type=='select'"
+                    <select v-else-if="type === 'select'"
                         :value="modelValue"
                         @input="$emit('update:modelValue', $event.target.value)"
                         v-bind="$attrs.disabled"

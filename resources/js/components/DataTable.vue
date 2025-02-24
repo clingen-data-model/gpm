@@ -423,13 +423,13 @@ export default {
                                 <div>
                                     <div v-if="field.sortable">
                                         <icon-cheveron-up icon-color="#ccc"
-                                            v-if="realSort.field.name != field.name"
+                                            v-if="realSort.field.name !== field.name"
                                         ></icon-cheveron-up>
                                         <icon-cheveron-up icon-color="#333"
-                                            v-if="realSort.field.name == field.name && !realSort.desc"
+                                            v-if="realSort.field.name === field.name && !realSort.desc"
                                         ></icon-cheveron-up>
                                         <icon-cheveron-down icon-color="#333"
-                                            v-if="realSort.field.name == field.name && realSort.desc"
+                                            v-if="realSort.field.name === field.name && realSort.desc"
                                         ></icon-cheveron-down>
                                     </div>
                                 </div>

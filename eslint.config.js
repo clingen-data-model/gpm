@@ -25,7 +25,6 @@ export default antfu(
             'vue/html-closing-bracket-newline': 'off',
             'vue/space-infix-ops': 'off',
             'vue/require-explicit-emits': 'off',
-            'vue/eqeqeq': 'off',
             'vue/attribute-hyphenation': 'off',
             'vue/define-macros-order': 'off',
             'vue/order-in-components': 'off',

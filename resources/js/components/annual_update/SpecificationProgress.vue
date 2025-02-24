@@ -39,7 +39,7 @@ export default {
 
         <transition name="slide-fade-down">
             <input-row
-                v-if="workingCopy.data.specifications_for_new_gene == 'yes'"
+                v-if="workingCopy.data.specifications_for_new_gene === 'yes'"
                 label="What are your plans?"
                 v-model="workingCopy.data.specifications_for_new_gene_details"
                 :errors="errors.specifications_for_new_gene_details"
@@ -61,7 +61,7 @@ export default {
 
         <transition name="slide-fade-down">
             <input-row
-                v-if="workingCopy.data.submit_clinvar == 'no'"
+                v-if="workingCopy.data.submit_clinvar === 'no'"
                 label="Please indicate issues and/or concerns with publishing."
                 v-model="workingCopy.data.vcep_publishing_issues"
                 :errors="errors.submit_clinvar"

@@ -44,7 +44,7 @@ export default {
         />
         <input-row
             :disabled="isComplete"
-            v-if="workingCopy.data.specification_plans == 'yes'"
+            v-if="workingCopy.data.specification_plans === 'yes'"
             v-model="workingCopy.data.specification_plans_details" 
             :errors="errors.specification_plans_details" 
             type="large-text" 

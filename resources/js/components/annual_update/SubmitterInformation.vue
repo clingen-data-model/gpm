@@ -62,7 +62,7 @@ export default {
             <span class="csv-item"
                 v-for="coordinator in coordinators" :key="coordinator.id"
             >{{ coordinator.person.name }}</span>
-            <span v-if="coordinators.length == 0" class="text-red-600">No coordinators on file for this expert panel.</span>
+            <span v-if="coordinators.length === 0" class="text-red-600">No coordinators on file for this expert panel.</span>
         </dictionary-row>
 
         <input-row
@@ -85,7 +85,7 @@ export default {
         />
 
         <transition name="slide-fade-down">
-            <input-row v-if="workingCopy.data.ep_activity == 'inactive'"
+            <input-row v-if="workingCopy.data.ep_activity === 'inactive'"
                 label="Have you submitted an Inactive GCEP form to the CDWG Oversight Committee?"
                 v-model="workingCopy.data.submitted_inactive_form"
                 type="radio-group"
@@ -96,7 +96,7 @@ export default {
         </transition>
 
         <transition name="slide-fade-down">
-            <p v-if="workingCopy.data.submitted_inactive_form == 'no'" class="ml-4 alert-warning p-2 rounded-lg">
+            <p v-if="workingCopy.data.submitted_inactive_form === 'no'" class="ml-4 alert-warning p-2 rounded-lg">
                 You must complete and submit the <a href="https://docs.google.com/document/d/13m4xeuh-GDHbYciQYHu1CiE_6HI-Xz_6_-yp8q2Ybp4/edit?usp=sharing" target="inacive-form">ClinGen Inactive GCEP Form</a>
             </p>
         </transition>

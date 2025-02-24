@@ -63,7 +63,7 @@ export default {
                 :errors="errors.cochair_commitment_details"
                 vertical
                 class="ml-4"
-                v-if="workingCopy.data.cochair_commitment == 'yes'"
+                v-if="workingCopy.data.cochair_commitment === 'yes'"
                 :disabled="isComplete"
             />
         </transition>

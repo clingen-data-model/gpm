@@ -50,7 +50,7 @@ export default {
 
         <input-row
             :disabled="isComplete"
-            v-if="workingCopy.data.applied_for_funding == 'yes'"
+            v-if="workingCopy.data.applied_for_funding === 'yes'"
             label="Funding Type" :errors="errors.funding"
             class="ml-4"
             type="select"
@@ -60,7 +60,7 @@ export default {
 
         <input-row
             :disabled="isComplete"
-            v-if="workingCopy.data.funding == 'Other'"
+            v-if="workingCopy.data.funding === 'Other'"
             type="large-text"
             v-model="workingCopy.data.funding_other_details"
             :errors="errors.funding_other_details"
@@ -73,7 +73,7 @@ export default {
             :disabled="isComplete"
             v-model="workingCopy.data.funding_thoughts"
             type="large-text"
-            v-if="workingCopy.data.applied_for_funding == 'no'"
+            v-if="workingCopy.data.applied_for_funding === 'no'"
             label="Please describe any thoughts, ideas, or plans for soliciting funding or personnel (in addition to any existing funding/support you may have)."
             :errors="errors.funding_thoughts"
             vertical

@@ -50,7 +50,7 @@ export default {
         />
         <input-row 
             :disabled="isComplete"
-            v-if="workingCopy.data.ongoing_plans_updated == 'yes'" 
+            v-if="workingCopy.data.ongoing_plans_updated === 'yes'" 
             class="ml-4" 
             label="Please explain" 
             :errors="errors.ongoing_plans_update_details" 
