@@ -108,9 +108,9 @@ export default {
                     <transition :name="animationDirection" mode="out-in">
                         <component
                             :is="currentStepComponent"
-                            v-bind:invite="invite"
-                            v-bind:person="invite.person"
-                            v-bind:code="invite.coi_code"
+                            :invite="invite"
+                            :person="invite.person"
+                            :code="invite.coi_code"
                             ref="stepForm"
                             @codeverified="handleCodeVerified"
                             @ok="goForward"

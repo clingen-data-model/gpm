@@ -77,10 +77,10 @@ export default {
                         :search-function="search"
                         placeholder="search by name, email, or numeric id"
                     >
-                        <template v-slot:selection-label="{selection}">
+                        <template #selection-label="{selection}">
                             {{selection.name}} ({{selection.email}})
                         </template>
-                        <template v-slot:option="{option}">
+                        <template #option="{option}">
                             {{option.name}} ({{option.email}})
                         </template>
                     </SearchSelect>

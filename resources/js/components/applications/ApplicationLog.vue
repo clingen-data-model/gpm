@@ -129,7 +129,7 @@ export default {
             {{noResultsMessage}}
         </div>
         <data-table :fields="fields" :data="filteredLogEntries" v-model:sort="sort" v-else>
-            <template v-slot:cell-id="{item}">
+            <template #cell-id="{item}">
                 <div class="flex space-x-1">
                     <router-link :to="{name: 'EditLogEntry', params:{id: item.id}}" class="btn btn-xs inline-block">
                         <icon-edit width="12"></icon-edit>
@@ -143,7 +143,7 @@ export default {
                     </router-link>
                 </div>
             </template>
-            <template v-slot:cell-description="{item}">
+            <template #cell-description="{item}">
                 <div v-html="item.description" class="links-blue"></div>
             </template>
             <!-- <template v-slot:cell-step="{item}">

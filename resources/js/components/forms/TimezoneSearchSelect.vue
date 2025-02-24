@@ -136,7 +136,7 @@ export default {
             </select>
             &nbsp;
             <popover arrow trigger="hover">
-                <template v-slot:content>
+                <template #content>
                     <div class="w-80">
                         <p>The best way to get your timezone right is to tell us which city has the same “timezone” you do.  For example, if you’re located in Atlanta, Georgia, USA you should choose, North America/New York as your “Timezone”.</p>
                         <p>See the <faq-link hash="#heading=h.9kox4w1eoeul" /> for more details.</p>

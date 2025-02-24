@@ -168,7 +168,7 @@ export default {
                     v-model:sort="coiSort"
                     class="my-2"
                 >
-                    <template v-slot:cell-actions="{item}">
+                    <template #cell-actions="{item}">
                         <div v-if="item.coi_last_completed">
                             <button
                                 class="btn btn-xs"
@@ -197,7 +197,7 @@ export default {
                     v-model:sort="coiSort"
                     class="my-2"
                 >
-                    <template v-slot:cell-actions="{item}">
+                    <template #cell-actions="{item}">
                         <div v-if="item.coi_last_completed">
                             <button
                                 class="btn btn-xs"

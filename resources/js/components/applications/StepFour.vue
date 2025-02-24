@@ -47,7 +47,7 @@ export default {
         title="Sustained Curation"
         @updated="$emit('updated')"
     >
-        <template v-slot:sections>
+        <template #sections>
             <SustainedCurationReview />
         </template>
     </BaseStep>

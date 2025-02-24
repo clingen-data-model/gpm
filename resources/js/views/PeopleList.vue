@@ -117,7 +117,7 @@ export default {
             paginated
             ref="dataTable"
         >
-            <template v-slot:header>
+            <template #header>
                 <label class="block mb-2" for="filter-input">Filter:&nbsp;<input type="text" v-model="filter" placeholder="filter"></label>
             </template>
         </data-table>

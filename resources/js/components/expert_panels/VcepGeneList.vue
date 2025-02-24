@@ -253,7 +253,7 @@ export default {
                                                 class="relative"
                                                 v-if="!gene.toDelete"
                                             >
-                                                <template v-slot:label>
+                                                <template #label>
                                                     <button class="btn btn-xs">&hellip;</button>
                                                 </template>
                                                 <dropdown-item @click="edit(gene)">Edit</dropdown-item>

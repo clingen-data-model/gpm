@@ -375,7 +375,7 @@ export default {
                     </popper>
 
                     <dropdown-menu hide-cheveron orientation="right">
-                        <template v-slot:label>
+                        <template #label>
                             <button class="btn btn-icon"><icon-download width="16" height="16" /></button>
                         </template>
                         <dropdown-item class="text-right font-bold">Downloads:</dropdown-item>
@@ -434,16 +434,16 @@ export default {
                 @rowClick="goToMember"
                 v-if="group.members.length > 0"
             >
-                <template v-slot:cell-id="{item}">
+                <template #cell-id="{item}">
                     <button @click.stop="toggleItemDetails(item)" class="w-9 align-center block -mx-3">
                         <icon-cheveron-right v-if="!item.showDetails" class="m-auto cursor-pointer" />
                         <icon-cheveron-down v-if="item.showDetails" class="m-auto cursor-pointer" />
                     </button>
                 </template>
-                <template v-slot:cell-roles="{value}">
+                <template #cell-roles="{value}">
                     {{titleCase(value.map(i => i.name).join(', '))}}
                 </template>
-                <template v-slot:cell-coi_last_completed="{item}">
+                <template #cell-coi_last_completed="{item}">
                     <div class="flex space-x-2">
                         <span v-if="item.coi_last_completed">{{formatDate(item.coi_last_completed)}}</span>
                         <button class="link cursor-pointer" v-if="item.latest_coi_id" @click.stop="viewCoi(item.latest_coi_id)">
@@ -455,14 +455,14 @@ export default {
                         />
                     </div>
                 </template>
-                <template v-slot:cell-actions="{item}">
+                <template #cell-actions="{item}">
                     <div class="flex space-x-2 items-center">
                         <dropdown-menu
                             :hide-cheveron="true"
                             class="relative block"
                             v-if="hasAnyMemberPermission() && !readonly"
                         >
-                            <template v-slot:label>
+                            <template #label>
                                 <button class="btn btn-xs">&hellip;</button>
                             </template>
                             <dropdown-item
@@ -493,12 +493,12 @@ export default {
                     </div>
                 </template>
 
-                <template v-slot:cell-requirements="{item}">
+                <template #cell-requirements="{item}">
                     <popover hover arrow placement="top">
                         <icon-checkmark v-if="requirementsMet(item)" :width="12" :height="12" class="text-green-600"/>
                         <icon-exclamation v-else :width="12" :height="12" class="text-red-700"/>
 
-                        <template v-slot:content>
+                        <template #content>
                             <ul>
                                 <li v-for="req, k in getRequirements(item)" :key="k">
                                     <icon-checkmark v-if="req.met" :width="12" :height="12" class="inline-block text-green-600"/>
@@ -510,7 +510,7 @@ export default {
                     </popover>
                 </template>
 
-                <template v-slot:detail="{item}">
+                <template #detail="{item}">
                     <MemberPreview :member="item" :group="group"></MemberPreview>
                 </template>
             </data-table>

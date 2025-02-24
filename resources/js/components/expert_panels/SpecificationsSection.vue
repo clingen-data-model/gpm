@@ -40,7 +40,7 @@ export default {
         <CspecSummary v-if="cspecSummaryEnabled" :readonly="readonly" />
 
         <collapsible class="mt-4">
-            <template v-slot:title>
+            <template #title>
                 <h3>Legacy document-based specifications</h3>
             </template>
             <ApplicationUploadForm

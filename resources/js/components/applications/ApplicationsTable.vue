@@ -322,24 +322,24 @@ export default {
             class="overflow-auto"
             ref="table"
         >
-            <template v-slot:cell-contacts="{item}">
+            <template #cell-contacts="{item}">
                 <ul>
                     <li v-for="c in item.group.members" :key="c.id">
                         <small><a :href="`mailto:${c.person.email}`" class="text-blue-500">{{c.person.name}}</a></small>
                     </li>
                 </ul>
             </template>
-            <template v-slot:cell-latest_log_entry="{item}">
+            <template #cell-latest_log_entry="{item}">
                 <popper hover arrow placement="right">
-                    <template v-slot:content>
+                    <template #content>
                         <div  v-html="item.group.latest_log_entry.description"></div>
                     </template>
                     {{formatDate(item.group.latest_log_entry.created_at)}}
                 </popper>
             </template>
-            <template v-slot:cell-next_actions="{item}">
+            <template #cell-next_actions="{item}">
                 <popper hover arrow placement="left">
-                    <template v-slot:content>
+                    <template #content>
                         <div
                             v-for="assignee in assignees.filter(i => item.pendingActionsByAssignee[i.id].length > 0)"
                             :key="assignee.id"
