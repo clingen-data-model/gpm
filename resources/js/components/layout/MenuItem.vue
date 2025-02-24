@@ -106,7 +106,7 @@ export default {
     watch: {
         isCurrentStep: {
             immediate: true,
-            handler: function (to) {
+            handler (to) {
                 if (this.collapsible) {
                     this.collapsed = true;
                 }

@@ -66,7 +66,7 @@ export default {
     watch: {
         group: {
             immediate: true,
-            handler: function () {
+            handler () {
                 if (this.group && this.group.id) {
                     this.getGroupGenes();
                 }
@@ -74,7 +74,7 @@ export default {
         },
         summary: {
             immediate: true,
-            handler: function () {
+            handler () {
                 this.summaryClone = {...this.summary}
             }
         }

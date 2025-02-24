@@ -510,7 +510,7 @@ export const actions = {
     async updateApprovalDate({ commit }, { group, dateApproved, step }) {
         return api.put(`/api/applications/${group.expert_panel.uuid}/approve`, {
                 date_approved: dateApproved,
-                step: step
+                step
             })
             .then(() => {
                 group.expert_panel.updateApprovalDate(dateApproved, step);
@@ -575,7 +575,7 @@ export default {
         items: [],
         currentItemIdx: null,
     }),
-    getters: getters,
-    mutations: mutations,
-    actions: actions
+    getters,
+    mutations,
+    actions
 }

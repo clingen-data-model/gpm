@@ -92,8 +92,8 @@ export default {
     },
     data() {
         return {
-            coiDef: coiDef,
-            survey: survey,
+            coiDef,
+            survey,
             response: survey.getResponseTemplate(),
             errors: {},
             groupName: null,

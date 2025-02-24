@@ -50,7 +50,7 @@ const fields = [
 export default {
     data() {
         return {
-            fields: fields
+            fields
         }
     },
     computed: {
@@ -101,7 +101,7 @@ export default {
                 'sort[dir]': sort.desc ? 'DESC' : 'ASC',
                 'where[filterString]': this.filter
             }
-            const pageResponse = await api.get(`/api/people`, {params: params})
+            const pageResponse = await api.get(`/api/people`, {params})
                 .then(rsp => rsp.data);
             setTotalItems(pageResponse.meta.total);
             return pageResponse.data;

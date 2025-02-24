@@ -181,7 +181,7 @@ export default {
     },
     watch: {
         annualUpdate: {
-            handler: function () {
+            handler () {
                 this.debounceSave();
             },
             deep: true
