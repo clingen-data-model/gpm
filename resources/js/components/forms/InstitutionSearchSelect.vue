@@ -101,12 +101,12 @@ export default {
             :options="institutions"
             showOptionsWhenEmpty
         >
-            <template v-slot:selection-label="{selection}">
+            <template #selection-label="{selection}">
                 <div>
                     {{selection.name}} <span v-if="selection.abbreviation">({{selection.abbreviation}})</span>
                 </div>
             </template>
-            <template v-slot:option="{option}">
+            <template #option="{option}">
                 <div v-if="typeof option == 'object'">
                     {{option.name}} <span v-if="option.abbreviation">({{option.abbreviation}})</span>
                 </div>
@@ -114,7 +114,7 @@ export default {
                     {{option}}
                 </div>
             </template>
-            <template v-slot:fixedBottomOption  v-if="allowAdd">
+            <template #fixedBottomOption  v-if="allowAdd">
                 <button class="font-bold link cursor-pointer" @click="initAddNew">Add your institution</button>
             </template>
         </SearchSelect>

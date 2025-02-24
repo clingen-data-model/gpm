@@ -409,7 +409,7 @@ export default {
                     </transition>
                 </div>
                 <collapsible class="border-t mt-4 pt-2 mb-2">
-                    <template v-slot:title>
+                    <template #title>
                         <h3 class="flex justify-between w-full items-center">
                             Group Permissions
                             <badge
@@ -471,7 +471,7 @@ export default {
                 submit-text="Save"
                 style="margin-top: 0"
             >
-                <template v-slot:extra-buttons>
+                <template #extra-buttons>
                     <button class="btn blue" @click="saveAndEditProfile" v-if="!newMember.id">Save and edit profle</button>
                 </template>
             </button-row>
