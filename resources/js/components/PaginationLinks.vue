@@ -89,7 +89,7 @@ export default {
                 <span v-else>&hellip;</span>
             </li>
             <li>
-                <button class="link" @click="goToNextPage" :class="{active: currentPage == pagesCount}">&gt;</button>
+                <button class="link" @click="goToNextPage" :class="{active: currentPage === pagesCount}">&gt;</button>
             </li>
         </ul>
     </div>

@@ -176,7 +176,7 @@ export default {
                         <template #cell-displayStatus="{item}">
                             <badge class="text-xs" :color="item.statusColor">
                                 {{ item.displayStatus
-                                }}<span v-if="item.status.id == 1 && item.is_ep"
+                                }}<span v-if="item.status.id === 1 && item.is_ep"
                                     >&nbsp;-&nbsp;{{
                                         item.expert_panel.currentStepAbbr
                                     }}</span
@@ -184,7 +184,7 @@ export default {
                             </badge>
                         </template>
                         <template #cell-coordinators="{value}">
-                            <div v-if="value.length == 0"></div>
+                            <div v-if="value.length === 0"></div>
                             <span v-for="(coordinator, idx) in value" :key="coordinator.id">
                                 <span v-if="idx > 0">, </span>
                                 <router-link

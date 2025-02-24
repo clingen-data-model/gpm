@@ -225,7 +225,7 @@ export default {
                     </tr>
                 </thead>
                 <transition name="fade" mode="out-in">
-                    <tbody v-if="genes.length == 0">
+                    <tbody v-if="genes.length === 0">
                         <tr>
                             <td colspan="4">
                                 <div class="p-2 text-center font-bold">

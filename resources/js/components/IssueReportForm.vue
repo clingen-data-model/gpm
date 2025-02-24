@@ -105,7 +105,7 @@ export default {
           </select>
         </input-row>
         <input-row
-          v-if="type == 'Bug'"
+          v-if="type === 'Bug'"
           label="Severity"
           :errors="errors.severity"
         >

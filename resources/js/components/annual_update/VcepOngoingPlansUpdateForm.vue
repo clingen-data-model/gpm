@@ -47,7 +47,7 @@ export default {
             :disabled="isComplete"
         />
         <input-row 
-            v-if="workingCopy.data.ongoing_plans_updated == 'yes'" 
+            v-if="workingCopy.data.ongoing_plans_updated === 'yes'" 
             class="ml-4" 
             label="Please explain" 
             :errors="errors.ongoing_plans_update_details" 
@@ -67,7 +67,7 @@ export default {
         />
 
         <input-row 
-            v-if="workingCopy.data.changes_to_call_frequency == 'yes'" 
+            v-if="workingCopy.data.changes_to_call_frequency === 'yes'" 
             class="ml-4" 
             label="Please explain" 
             :errors="errors.changes_to_call_frequency_details" 

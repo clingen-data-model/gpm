@@ -1050,7 +1050,7 @@ export default {
                             </label>
                         </div>
                         <div class="dropdown-container"
-                            v-if="occupation.value == 'non genetics physician' && formdata.occupations?.includes('non genetics physician')">
+                            v-if="occupation.value === 'non genetics physician' && formdata.occupations?.includes('non genetics physician')">
                             <label for="specialty">If you indicated “Medical non-genetics physician”, please select your
                                 specialty.</label>
                             <!-- TODO: check with invested parties: should this be multi-select/checkbox? -->

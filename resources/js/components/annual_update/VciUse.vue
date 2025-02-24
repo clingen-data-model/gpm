@@ -37,7 +37,7 @@ export default {
         />
         <transition name="slide-fade-down">            
             <input-row 
-                v-if="workingCopy.data.vci_use == 'no'" 
+                v-if="workingCopy.data.vci_use === 'no'" 
                 v-model="workingCopy.data.vci_use_details"
                 type="large-text"
                 :errors="errors.vci_use_details" 

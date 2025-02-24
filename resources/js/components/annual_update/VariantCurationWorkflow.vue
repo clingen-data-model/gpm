@@ -45,7 +45,7 @@ export default {
         <transition name="slide-fade-down">
             <input-row 
                 :disabled="isComplete"
-                v-show="workingCopy.data.variant_workflow_changes == 'yes'"
+                v-show="workingCopy.data.variant_workflow_changes === 'yes'"
                 v-model="workingCopy.data.variant_workflow_changes_details"
                 type="large-text"
                 label="Please explain"

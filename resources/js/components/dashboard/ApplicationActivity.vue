@@ -79,7 +79,7 @@
 <template>
     <div>
         <h2>Application activity</h2>
-        <div v-if="groups.length == 0" class="alert bg-gray-100 p-2 text-gray-400">
+        <div v-if="groups.length === 0" class="alert bg-gray-100 p-2 text-gray-400">
             No application activity.
         </div>
         <data-table v-else
@@ -129,7 +129,7 @@
 
                     <div>
                         <popper hover arrow v-if="featureIsEnabled('chair-review')">
-                            <badge v-if="hasPermission('ep-applications-manage') && item.submission.status.name == 'Under Chair Review'" :color="item.submission.judgements.length == 3 ? 'green' : 'gray' ">
+                            <badge v-if="hasPermission('ep-applications-manage') && item.submission.status.name === 'Under Chair Review'" :color="item.submission.judgements.length === 3 ? 'green' : 'gray' ">
                                 {{ item.submission.judgements.length }}/3
                             </badge>
 

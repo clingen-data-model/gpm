@@ -35,7 +35,7 @@
                 class="mb-1 flex-grow-0"
             />
         </div>
-        <div v-if="comments.length == 0">
+        <div v-if="comments.length === 0">
             No comments
         </div>
     </div>

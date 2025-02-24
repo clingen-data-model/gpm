@@ -55,7 +55,7 @@ export default {
             <tabs-container
                 tab-location="right"
                 v-model="activeIndex"
-                v-if="application.expert_panel_type_id == 2"
+                v-if="application.expert_panel_type_id === 2"
             >
             <tab-item label="Group Definition">
                 <StepOne @stepApproved="handleApproved" @updated="handleUpdated"></StepOne>

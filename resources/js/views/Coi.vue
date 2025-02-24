@@ -169,7 +169,7 @@ export default {
                     :class="question.class"
                 >
                     <transition name="slide-fade-down">
-                        <div v-if="question.type == 'content'">
+                        <div v-if="question.type === 'content'">
                             <MarkdownBlock
                                 :markdown="question.content"
                             />
@@ -182,13 +182,13 @@ export default {
                             v-show="showQuestion(question)"
                         >
 
-                            <textarea v-if="question.type == 'text'"
+                            <textarea v-if="question.type === 'text'"
                                 class="w-full h-24"
                                 v-model="response[question.name]"
                                 :name="question.name"
                             ></textarea>
 
-                            <div v-if="question.type == 'multiple-choice'">
+                            <div v-if="question.type === 'multiple-choice'">
                                 <label v-for="option in question.options" :key="option.value" class="mb-1">
                                     <input type="radio"
                                         :value="option.value"
@@ -201,7 +201,7 @@ export default {
 
                             <input
                                 type="text"
-                                v-if="question.type == 'string'"
+                                v-if="question.type === 'string'"
                                 v-model="response[question.name]"
                                 :name="question.name"
                             >

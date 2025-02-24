@@ -79,7 +79,7 @@ export default {
                         <transition name="slide-fade-down">
                             <input-row 
                                 class="flex-1 mt-0"
-                                v-if="group.expert_panel.curation_review_protocol_id == 100"
+                                v-if="group.expert_panel.curation_review_protocol_id === 100"
                                 label-width-class="w-0"
                                 v-model="group.expert_panel.curation_review_protocol_other"
                                 :errors="errors.curation_review_protocol_other"

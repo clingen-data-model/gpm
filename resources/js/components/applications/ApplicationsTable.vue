@@ -307,8 +307,8 @@ export default {
                 /> -->
             </div>
             <div>
-                <button class="btn btn-xs" :class="{blue: showAllInfo == 0}" @click="showAllInfo = 0">Summary</button>
-                <button class="btn btn-xs" :class="{blue: showAllInfo == 1}" @click="showAllInfo = 1">All Info</button>
+                <button class="btn btn-xs" :class="{blue: showAllInfo === 0}" @click="showAllInfo = 0">Summary</button>
+                <button class="btn btn-xs" :class="{blue: showAllInfo === 1}" @click="showAllInfo = 1">All Info</button>
             </div>
         </div>
         <data-table

@@ -70,7 +70,7 @@
             <dictionary-row label="Selected protocol" label-class="w-48 font-bold">
                 <div class="flex-none">
                     {{ expertPanel.curation_review_protocol ? titleCase(expertPanel.curation_review_protocol.full_name) : null }}
-                    <p v-if="expertPanel.curation_review_protocol_id == 100" class="mt-1">
+                    <p v-if="expertPanel.curation_review_protocol_id === 100" class="mt-1">
                         <em>Details:</em> {{ expertPanel.curation_review_protocol_other }}
                     </p>
                 </div>

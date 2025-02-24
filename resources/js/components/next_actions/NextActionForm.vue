@@ -169,7 +169,7 @@ export default {
     <form-container>
         <input-row label="Creation Date" :errors="errors.date_created" type="date" v-model="newAction.date_created"></input-row>
 
-        <StepInput v-model="newAction.step" :errors="errors.step" v-if="application.expert_panel_type_id == 2"></StepInput>
+        <StepInput v-model="newAction.step" :errors="errors.step" v-if="application.expert_panel_type_id === 2"></StepInput>
 
         <input-row label="Target" Date="" :errors="errors.target_date" type="date" v-model="newAction.target_date"></input-row>
 
