@@ -46,7 +46,7 @@ export default {
             placeholder="First Last, Email"
             vertical
         >
-            <template v-slot:label>
+            <template #label>
                 The GCEP recuration designee(s) is designated to monitor for recuration updates, on a yearly basis, according to the <gcep-recuration-process-link />. Please list the name(s) of your GCEP recuration designee(s).
             </template>
         </input-row>

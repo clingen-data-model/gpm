@@ -197,7 +197,7 @@ export default {
                     <refresh-button :loading="logsLoading" @click="getLogEntries" />
                 </div>
                 <ActivityLog :log-entries="logEntries" :api-url="`/api/people/${person.uuid}/activity-logs`"
-                    v-bind:log-updated="getLogEntries"></ActivityLog>
+                    :log-updated="getLogEntries"></ActivityLog>
             </tab-item>
 
             <tab-item label="Admin" :visible="hasPermission('people-manage')">

@@ -48,7 +48,7 @@ export default {
 <template>
     <div v-if="hasRequirements">
         <popover arrow hover>
-            <template v-slot:content>
+            <template #content>
                 <div>
                     <RequirementsItem  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
                 </div>

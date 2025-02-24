@@ -41,7 +41,7 @@ export default {
         <ul class="px-6">
             <li>
                 <input-row :disabled="isComplete" vertical type="large-text" :errors="errors.rereview_discrepencies_progress" v-model="workingCopy.data.rereview_discrepencies_progress" placeholder="Progress...">
-                    <template v-slot:label>
+                    <template #label>
                         Are you receiving and/or using the VCEP Variant Tracker reports to aid in the recuration work? Please describe below.
                     </template>
                 </input-row>

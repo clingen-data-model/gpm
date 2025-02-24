@@ -39,7 +39,7 @@ export default {
             vertical
             :disabled="isComplete"
         >
-            <template v-slot:label>
+            <template #label>
                 Describe the Expert Panel’s plans and goals for the next year, for example, finishing curations, working on manuscript, etc.
                 <div v-if="workingCopy.is_vcep">
                     Please include:

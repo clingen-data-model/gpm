@@ -120,10 +120,10 @@ export default {
             paginated
             ref="dataTable"
         >
-            <template v-slot:header>
+            <template #header>
                 <input type="text" v-model="searchTerm" placeholder="filter by name or email" class="mb-2">
             </template>
-            <template v-slot:cell-reset="{item}">
+            <template #cell-reset="{item}">
                 <button class="btn btn-xs" @click="confirmReset(item)" v-if="item.redeemed_at">
                     Reset
                 </button>
