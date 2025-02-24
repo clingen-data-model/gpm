@@ -189,7 +189,7 @@ export default {
     watch: {
         sort: {
             immediate: true,
-            handler: function() {
+            handler() {
                 if (!this.sort) {
                     this.realSort = {
                         field: this.fields[0],
@@ -213,7 +213,7 @@ export default {
         data: {
             immediate: true,
             deep: true,
-            handler: function () {
+            handler () {
                 if (this.resetPageOnDataChange) {
                     this.resetCurrentPage();
                 }

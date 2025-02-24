@@ -402,10 +402,10 @@ export default {
     const showModal = ref(false);
 
     const group = computed({
-      get: function () {
+      get () {
         return store.getters["groups/currentItemOrNew"];
       },
-      set: function (value) {
+      set (value) {
         store.commit("groups/addItem", value);
       },
     });

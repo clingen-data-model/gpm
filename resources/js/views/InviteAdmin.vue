@@ -108,7 +108,7 @@ export default {
                 'sort[dir]': sort.desc ? 'DESC' : 'ASC',
                 'where[keyword]': this.searchTerm
             }
-            const pageResponse = await api.get(`/api/people/invites`, {params: params})
+            const pageResponse = await api.get(`/api/people/invites`, {params})
                 .then(rsp => rsp.data);
             setTotalItems(pageResponse.meta.total);
             return pageResponse.data;

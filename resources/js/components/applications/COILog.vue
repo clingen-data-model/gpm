@@ -58,7 +58,7 @@ export default {
                     label: 'Name',
                     type: String,
                     sortable: true,
-                    resolveValue: function (item) {
+                    resolveValue (item) {
                         return `${item.data.first_name} ${item.data.last_name}`
                     }
                 },

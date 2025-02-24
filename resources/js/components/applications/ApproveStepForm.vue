@@ -80,7 +80,7 @@ export default {
         },
     },
     watch: {
-        notifyContacts: function (to) {
+        notifyContacts (to) {
             if (to) {
                 api.get(
                         `/api/email-drafts/groups/${this.group.uuid}`,

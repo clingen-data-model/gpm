@@ -140,11 +140,11 @@ export default {
         }
     },
     watch: {
-        searchText: function () {
+        searchText () {
             this.search(this.searchText, this.options);
             this.$emit('searchTextUpdated', this.searchText);
         },
-        filteredOptions: function () {
+        filteredOptions () {
             this.cursorPosition = 0;
         },
         modelValue: {

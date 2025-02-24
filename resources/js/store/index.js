@@ -97,7 +97,7 @@ const store = createStore({
         },
         async login({commit}, {email, password}) {
             await axios.get('/sanctum/csrf-cookie')
-            await axios.post('/api/login', {email: email, password: password})
+            await axios.post('/api/login', {email, password})
                 .then(() => {
                     commit('setAuthenticated', true);
                     store.dispatch('getCurrentUser', true);

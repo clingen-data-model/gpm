@@ -151,7 +151,7 @@ export default {
     watch: {
         uuid: {
             immediate: true,
-            handler: async function () {
+            async handler () {
                 await this.$store.dispatch('people/getPerson', { uuid: this.uuid });
                 if (this.coordinatesPerson(this.person)) {
                     this.getLogEntries();
@@ -226,7 +226,7 @@ export default {
     },
     setup() {
         return {
-            formatDate: formatDate,
+            formatDate,
             logEntries,
             fetchEntries
         }

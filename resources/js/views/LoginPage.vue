@@ -19,7 +19,7 @@ export default {
         ...mapGetters(['isAuthed'])
     },
     watch: {
-        isAuthed: function () {
+        isAuthed () {
             this.redirectIfAuthed();
         }
     },

@@ -77,7 +77,7 @@ export default {
     watch: {
         nextAction: {
             immediate: true,
-            handler: function () {
+            handler () {
                 if (!this.nextAction.id) {
                     this.$router.go(-1);
                 }

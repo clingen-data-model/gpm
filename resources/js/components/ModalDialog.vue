@@ -123,7 +123,7 @@ export default {
         }
     },
     watch: {
-        isVisible: async function (to) {
+        async isVisible (to) {
             document.body.style.overflow = "auto"
             if (to) {
                 await nextTick();

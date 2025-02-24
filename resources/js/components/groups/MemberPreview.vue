@@ -98,7 +98,7 @@ export default {
     ],
     setup () {
         return {
-            formatDate: formatDate
+            formatDate
         }
     }
 }

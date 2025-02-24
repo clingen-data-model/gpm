@@ -39,7 +39,7 @@ export default {
     watch: {
         notifyContacts: {
             immediate: true,
-            handler: function (to) {
+            handler (to) {
                 if (to) {
                     this.getEmailTemplate();
                 }

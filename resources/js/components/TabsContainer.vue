@@ -67,12 +67,12 @@ export default {
         }
     },
     watch: {
-        modelValue: function (newValue) {
+        modelValue (newValue) {
             this.activateTab(newValue)
         },
         '$route.query': {
             immediate: true,
-            handler: function (to, from) {
+            handler (to, from) {
                 if (!isEqual(to, from)) {
                     this.activateTabFromRoute();
                 }

@@ -87,7 +87,7 @@ export default {
     watch: {
         group: {
             immediate: true,
-            handler: function () {
+            handler () {
                 if (this.group && this.group.id) {
                     this.getEvidenceSummaries();
                 }

@@ -280,7 +280,7 @@ export default {
                 'where[email]': this.newMember.email,
                 with: ['memberships']
             }
-            this.suggestedPeople = await api.get(`/api/people`, {params: params})
+            this.suggestedPeople = await api.get(`/api/people`, {params})
                 .then(rsp => rsp.data.data.map(p => {
                     p.alreadyMember = this.isAlreadyMember(p);
                     return new Person(p);

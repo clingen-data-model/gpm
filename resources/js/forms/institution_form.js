@@ -56,7 +56,7 @@ export const getInstitution = (id) => {
 }
 
 export const getAllInstitutions = (params) => {
-    return api.get(`/api/institutions`, {params: params})
+    return api.get(`/api/institutions`, {params})
         .then (response => response.data);
 }
 

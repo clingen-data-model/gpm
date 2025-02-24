@@ -134,10 +134,10 @@ export default {
     },
     computed: {
         group: {
-            get: function () {
+            get () {
                 return this.$store.getters['groups/currentItemOrNew'];
             },
-            set: function (value) {
+            set (value) {
                 this.$store.commit('groups/addItem', value);
             }
         },

@@ -52,7 +52,7 @@
         return h(
             DataFormField, 
             {
-                field: field, 
+                field, 
                 modelValue: workingCopy.value, 
                 'onUpdate:modelValue': (value) => {
                     emits('update:modelValue', value)
@@ -70,7 +70,7 @@
                 extraSlot = h(
                     field.extraSlot, 
                     {
-                        field: field, 
+                        field, 
                         modelValue: workingCopy.value, 
                         'onUpdate:modelValue': (value) => {
                             emits('update:modelValue', value)

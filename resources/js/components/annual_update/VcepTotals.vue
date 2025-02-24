@@ -104,7 +104,7 @@ export default {
         },
         variantCounts: {
             deep: true,
-            handler: function (to) {
+            handler (to) {
                 if (!isEqual(to, this.modelValue.variant_counts)) {
                     this.debounceSyncModel();
                 }

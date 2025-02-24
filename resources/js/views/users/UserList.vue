@@ -116,7 +116,7 @@ export default {
                 'with': ['roles', 'permissions'],
                 paginated: true
             }
-            const pageResponse = await api.get('/api/users', {params: params})
+            const pageResponse = await api.get('/api/users', {params})
                                 .then(response => response.data);
             setTotalItems(pageResponse.meta.total);
             return pageResponse.data;
