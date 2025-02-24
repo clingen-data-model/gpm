@@ -27,6 +27,9 @@ export default {
             default: true
         }
     },
+    emits: [
+      'updated',
+    ],
     data() {
         return {
             showDeleteConfirmation: false,

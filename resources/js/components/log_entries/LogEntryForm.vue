@@ -17,6 +17,10 @@ export default {
             default: null
         }
     },
+    emits: [
+        'canceled',
+        'saved',
+    ],
     setup () {
         return {
             logEntries
