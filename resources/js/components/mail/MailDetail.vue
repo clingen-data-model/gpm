@@ -7,6 +7,9 @@ export default {
             required: true
         }
     },
+    emits: [
+      'resend',
+    ],
     data() {
         return {
             

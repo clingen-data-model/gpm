@@ -18,6 +18,13 @@ const props = defineProps({
     }
 });
 
+const emit = defineEmits([
+  'updated',
+  'stepApproved',
+  'sentToChairs',
+  'revisionsRequested',
+])
+
 const store = useStore()
 
 const group = computed(() => store.getters['groups/currentItemOrNew'])
@@ -41,7 +48,7 @@ const showSendToChairsControl = computed(() => {
         class="flex-1"
         :group="group"
         :step="step"
-        @step-approved="() => {$emit('stepApproved'); $emit('updated')}"
+        @step-approved="() => {emit('stepApproved'); emit('updated')}"
       >
         {{ approveLabel }}
       </StepApproveControl>
@@ -50,14 +57,14 @@ const showSendToChairsControl = computed(() => {
         v-if="showSendToChairsControl"
         class="flex-1"
         :group="group"
-        @sent-to-chairs="() => {$emit('sentToChairs'); $emit('updated'); }"
+        @sent-to-chairs="() => {emit('sentToChairs'); emit('updated'); }"
       />
 
       <StepRequestRevisionsControl
         v-if="group.expert_panel.hasPendingSubmissionForCurrentStep"
         class="flex-1"
         :group="group"
-        @revisions-requested="() => {$emit('revisionsRequested'); $emit('updated')}"
+        @revisions-requested="() => {emit('revisionsRequested'); emit('updated')}"
       />
     </div>
   </div>

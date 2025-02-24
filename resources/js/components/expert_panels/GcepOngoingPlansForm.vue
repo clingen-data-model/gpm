@@ -13,6 +13,9 @@ export default {
             default: false
         }
     },
+    emits: [
+      'update',
+    ],
     computed: {
         group: {
             get () {

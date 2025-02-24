@@ -9,6 +9,10 @@ export default {
             required: false
         }
     },
+    emits: [
+      'sent',
+      'canceled',
+    ],
     data() {
         return {
             workingCopy: {},

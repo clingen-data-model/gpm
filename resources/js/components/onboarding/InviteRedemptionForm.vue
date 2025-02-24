@@ -19,6 +19,9 @@ export default {
             default: () => ({})
         }
     },
+    emits: [
+        'codeverified',
+    ],
     setup(props, context) {
 
         const {invite} = toRefs(props);

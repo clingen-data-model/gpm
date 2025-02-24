@@ -12,6 +12,9 @@ export default {
             default: false
         }
     },
+    emits: [
+      'updated',
+    ],
     computed: {
         group: {
             get() {

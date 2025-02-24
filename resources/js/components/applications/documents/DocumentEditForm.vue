@@ -15,7 +15,8 @@ export default {
     emits: [
         'triggermarkreviewed',
         'updated',
-        'saved'
+        'canceled',
+        'saved',
     ],
     data() {
         return {

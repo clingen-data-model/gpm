@@ -16,6 +16,9 @@ export default {
             required: true
         }
     },
+    emits: [
+      'saved',
+    ],
     setup (props, context) {
         const store = useStore();
         const errors = ref({});

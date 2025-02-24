@@ -18,6 +18,9 @@ export default {
             default: true
         }
     },
+    emits: [
+      'update:modelValue',
+    ],
     data() {
         return {
             institutions: [],

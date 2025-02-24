@@ -98,7 +98,7 @@ export default {
         cancelSubmission () {
             this.showSubmissionConfirmation = false;
             this.notes = null;
-            this.$emit('cancelled');
+            this.$emit('canceled');
         },
     }
 }
@@ -154,7 +154,7 @@ export default {
           <input-row label="" :errors="errors.notes" vertical>
             <textarea v-model="notes" rows="5" class="w-full" />
           </input-row>
-          <button-row @submitted="confirmSubmission" @cancelled="cancelSubmission" />
+          <button-row @submitted="confirmSubmission" @canceled="cancelSubmission" />
         </modal-dialog>
       </transition>
     </teleport>

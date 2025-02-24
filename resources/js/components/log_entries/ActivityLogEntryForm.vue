@@ -21,7 +21,7 @@
                 type: String
             }
     });
-    const emits = defineEmits(['saved'])
+    const emits = defineEmits(['saved', 'canceled'])
     const store = useStore();
 
     // DATA

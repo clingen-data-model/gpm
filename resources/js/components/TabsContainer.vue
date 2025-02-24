@@ -18,7 +18,7 @@ export default {
     },
     emits: [
         'update:modelValue',
-        'tab-changed'
+        'tabChanged'
     ],
     data() {
         return {

@@ -7,6 +7,9 @@ export default {
     components: {
         SearchSelect
     },
+    emits: [
+      'impersonated',
+    ],
     data() {
         return {
             selectedUser: null,

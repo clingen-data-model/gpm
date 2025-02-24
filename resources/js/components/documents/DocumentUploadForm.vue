@@ -9,6 +9,10 @@ export default {
             required: true
         }
     },
+    emits: [
+        'saved',
+        'canceled',
+    ],
     data() {
         return {
             newDocument: {

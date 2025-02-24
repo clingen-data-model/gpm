@@ -9,6 +9,9 @@ export default {
             default: () => []
         }
     },
+    emits: [
+        'update:modelValue',
+    ],
     data() {
         return {
             newRecipients: []
