@@ -262,7 +262,7 @@ export default {
           placeholder="Long base name"
           :errors="errors.long_base_name"
           input-class="w-full"
-          @update:modelValue="emitUpdate"
+          @update:model-value="emitUpdate"
         />
         <input-row
           v-model="group.expert_panel.short_base_name"
@@ -270,7 +270,7 @@ export default {
           placeholder="Short base name"
           :errors="errors.short_base_name"
           input-class="w-full"
-          @update:modelValue="emitUpdate"
+          @update:model-value="emitUpdate"
         />
         <div v-if="hasAnyPermission(['groups-manage'])">
           <input-row
@@ -279,7 +279,7 @@ export default {
             :placeholder="affiliationIdPlaceholder"
             :errors="errors.affiliation_id"
             input-class="w-full"
-            @update:modelValue="emitUpdate"
+            @update:model-value="emitUpdate"
           >
             <template #label>
               Affiliation ID
@@ -299,7 +299,7 @@ export default {
           label="Name"
           input-class="w-full"
           :errors="errors.name"
-          @update:modelValue="emitUpdate"
+          @update:model-value="emitUpdate"
         />
       </div>
     </transition>
@@ -309,7 +309,7 @@ export default {
         type="select"
         :options="statusOptions"
         :errors="errors.group_status_id"
-        @update:modelValue="emitUpdate"
+        @update:model-value="emitUpdate"
       >
         <template #label>
           Status:
@@ -322,7 +322,7 @@ export default {
         type="select"
         :options="parentOptions"
         :errors="errors.parent_id"
-        @update:modelValue="emitUpdate"
+        @update:model-value="emitUpdate"
       >
         <template #label>
           Parent group:

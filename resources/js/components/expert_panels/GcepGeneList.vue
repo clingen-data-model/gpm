@@ -177,7 +177,7 @@ export default {
         :errors="errors.genes"
         placeholder="ABC, DEF1, BEAN"
         vertical
-        @update:modelValue="$emit('geneschanged'); $emit('update')"
+        @update:model-value="$emit('geneschanged'); $emit('update')"
       />
     </div>
     <div v-else>
