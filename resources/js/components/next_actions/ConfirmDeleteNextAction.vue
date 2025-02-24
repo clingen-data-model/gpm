@@ -99,7 +99,7 @@ export default {
 
     <div>This can not be undone. Are you sure you want to continue?</div>
         
-    <button-row submitText="Delete Log Entry" @canceled="$router.go(-1)" @submitted="commitDelete" />
+    <button-row submit-text="Delete Log Entry" @canceled="$router.go(-1)" @submitted="commitDelete" />
   </div>
 </template>
 <style lang="postcss" scope>

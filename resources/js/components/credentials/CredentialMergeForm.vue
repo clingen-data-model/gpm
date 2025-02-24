@@ -101,8 +101,8 @@ export default {
       <SearchSelect
         v-model="selectedObsolete"
         :options="credentials"
-        :showOptionsOnFocus="true"
-        keyBy="id"
+        :show-options-on-focus="true"
+        key-by="id"
       />
     </input-row>
     <input-row label="Into" :errors="errors.authority_id" vertical>
@@ -114,8 +114,8 @@ export default {
       <SearchSelect
         v-model="selectedAuthority"
         :options="credentials"
-        :showOptionsOnFocus="true"
-        keyBy="id"
+        :show-options-on-focus="true"
+        key-by="id"
       />
     </input-row>
     <button-row submit-text="Merge" @submitted="commitMerge" @canceled="cancelMerge" />

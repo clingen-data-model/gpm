@@ -86,8 +86,8 @@
   <div :id="formId" class="data-form">
     <div v-for="field in fields" :key="field.name">
       <div :class="wrapperClass">
-        <renderElement :field="field" :modelValue="workingCopy" />
-        <renderExtra :field="field" :modelValue="workingCopy" />
+        <renderElement :field="field" :model-value="workingCopy" />
+        <renderExtra :field="field" :model-value="workingCopy" />
       </div>
     </div>
   </div>

@@ -22,7 +22,7 @@
       title="Plans for Ongoing Review and Discrepancy Resolution"
       name="discrepency-review"
     >
-      <dictionary-row label="Selected protocol" labelWidthClass="w-48 font-bold">
+      <dictionary-row label="Selected protocol" label-width-class="w-48 font-bold">
         <div class="w-full">
           {{ expertPanel.curation_review_protocol ? titleCase(expertPanel.curation_review_protocol.full_name) : null }}
           <p v-if="expertPanel.curation_review_protocol_id === 100" class="mt-1">
@@ -30,7 +30,7 @@
           </p>
         </div>
       </dictionary-row>
-      <dictionary-row label="Notes" labelWidthClass="w-48 font-bold">
+      <dictionary-row label="Notes" label-width-class="w-48 font-bold">
         <markdown-block :markdown="expertPanel.curation_review_process_notes" />
       </dictionary-row>
     </ReviewSection>
@@ -48,13 +48,13 @@
       title="Core Approval Member, Trained Biocurator, and Biocurator Trainer Designation"
       name="member-designation"
     >
-      <dictionary-row label="Core Approval Members" labelWidthClass="w-48 font-bold">
+      <dictionary-row label="Core Approval Members" label-width-class="w-48 font-bold">
         {{ group.coreApprovalMembers.map(m => m.person.name).join(', ') }}
       </dictionary-row>
-      <dictionary-row label="Biocurator Trainers" labelWidthClass="w-48 font-bold">
+      <dictionary-row label="Biocurator Trainers" label-width-class="w-48 font-bold">
         {{ group.biocuratorTrainers.map(m => m.person.name).join(', ') }}
       </dictionary-row>
-      <dictionary-row label="Trained Biocurators" labelWidthClass="w-48 font-bold">
+      <dictionary-row label="Trained Biocurators" label-width-class="w-48 font-bold">
         {{ group.trainedBiocurators.map(m => m.person.name).join(', ') }}
       </dictionary-row>
     </ReviewSection>

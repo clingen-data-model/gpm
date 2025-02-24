@@ -171,7 +171,7 @@ export default {
 
     <StepInput v-if="application.expert_panel_type_id === 2" v-model="newAction.step" :errors="errors.step" />
 
-    <input-row v-model="newAction.target_date" label="Target" Date="" :errors="errors.target_date" type="date" />
+    <input-row v-model="newAction.target_date" label="Target Date" :errors="errors.target_date" type="date" />
 
     <input-row label="Entry" :errors="errors.entry">
       <RichTextEditor v-model="newAction.entry" />

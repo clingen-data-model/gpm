@@ -148,7 +148,7 @@ export default {
 
     <modal-dialog v-model="showDeleteConfirmation" title="Delete this log entry?">
       <ActivityLogDeleteConfirmation 
-        :logEntry="selectedEntry" 
+        :log-entry="selectedEntry" 
         :api-url="apiUrl"
         @canceled="closeDeleteConfirmation"
         @deleted="closeDeleteConfirmation"

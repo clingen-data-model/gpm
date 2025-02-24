@@ -154,7 +154,7 @@ export default {
       <modal-dialog v-model="showForm" title="Upload a new profile photo">
         <ImageCropper :image-src="srcPath" @cropped="setCroppedImageBlob" />
 
-        <input-row hideLabel :errors="errors.profile_photo">
+        <input-row hide-label :errors="errors.profile_photo">
           <input ref="fileInput" type="file" @change="setFile">
         </input-row>
 

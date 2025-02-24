@@ -13,7 +13,6 @@ export default antfu(
         files: ['resources/js/**/*.{js,ts,vue,json}'],
         rules: {
             'vue/require-explicit-emits': 'off',
-            'vue/attribute-hyphenation': 'off',
             'jsonc/no-useless-escape': 'off',
         }
     },

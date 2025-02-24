@@ -24,8 +24,8 @@
     <card title="Please fill out your profile">
       <ProfileForm
         :person="store.getters.currentUser.person"
-        :allowCancel="false"
-        :showTitle="false"
+        :allow-cancel="false"
+        :show-title="false"
         @saved="handleSave"
       />
     </card>

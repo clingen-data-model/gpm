@@ -39,7 +39,7 @@
   <div>
     <div class="border-bottom pb-2 rounded-lg mb-4 w-3/4">
       <h2>Please review your profile</h2>
-      <collapsible v-model="showMoreInfo" :showCheveron="false">
+      <collapsible v-model="showMoreInfo" :show-cheveron="false">
         <template #title>
           We've changed the way we collect information about your credentials and expertise.  Please help us out by updating this information.
         </template>
@@ -70,7 +70,7 @@
     </div>
     <ProfileForm
       :person="store.getters.currentUser.person"
-      :showTitle="false"
+      :show-title="false"
       @saved="handleSaved"
     />
   </div>

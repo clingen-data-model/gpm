@@ -95,10 +95,10 @@ export default {
       :search-function="search"
       style="z-index: 2"
       placeholder="Institution name or abbreviation"
-      keyOptionsBy="id"
-      showOptionsOnFocus
+      key-options-by="id"
+      show-options-on-focus
       :options="institutions"
-      showOptionsWhenEmpty
+      show-options-when-empty
       @update:model-value="searchText = null"
     >
       <template #selection-label="{selection}">
