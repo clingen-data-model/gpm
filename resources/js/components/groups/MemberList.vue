@@ -343,13 +343,12 @@ export default {
             <div class="flex space-x-2 items-center">
                 <h2>Members</h2>
                 <button
-                    ref="filterToggleButton"
                     class="px-3 py-2 rounded-t transition-color"
                     :class="{'rounded-b': !showFilter, 'bg-blue-200': showFilter}"
                     @click="toggleFilter"
                     v-if="group.members.length > 0"
                 >
-                    <icon-filter  width="16" height="16" />
+                    <icon-filter width="16" height="16" />
                 </button>
             </div>
             <div class="flex space-x-2 items-center pb-0.5">
@@ -370,7 +369,7 @@ export default {
                             :href="`mailto:${filteredEmails.join(', ')}`"
                             class="btn btn-icon"
                         >
-                            <icon-envelope class="inline-block"  width="16" height="16"/>
+                            <icon-envelope class="inline-block" width="16" height="16"/>
                         </a>
                     </popper>
 
@@ -383,7 +382,7 @@ export default {
                             <a :href="`/api/report/groups/${group.uuid}/coi-report`">COI Report</a>
                             <note class="inline"> (PDF)</note>
                         </dropdown-item>
-                        <dropdown-item  class="text-right" v-if="showMemberReportButton">
+                        <dropdown-item class="text-right" v-if="showMemberReportButton">
                             <popper class="text-center text-sm p-1" :content="`Export will include ${filteredMembers.length} members currently listed.`" hover arrow>
                             <a :href="exportUrl">Member Export</a>
                             <note class="inline"> (CSV)</note>
@@ -410,7 +409,7 @@ export default {
                             :key="role.id"
                             :value="role.id"
                         >
-                            {{role.name}}
+                            {{ role.name }}
                         </option>
                     </select>
                 </input-row>
@@ -441,11 +440,11 @@ export default {
                     </button>
                 </template>
                 <template #cell-roles="{value}">
-                    {{titleCase(value.map(i => i.name).join(', '))}}
+                    {{ titleCase(value.map(i => i.name).join(', ')) }}
                 </template>
                 <template #cell-coi_last_completed="{item}">
                     <div class="flex space-x-2">
-                        <span v-if="item.coi_last_completed">{{formatDate(item.coi_last_completed)}}</span>
+                        <span v-if="item.coi_last_completed">{{ formatDate(item.coi_last_completed) }}</span>
                         <button class="link cursor-pointer" v-if="item.latest_coi_id" @click.stop="viewCoi(item.latest_coi_id)">
                             <icon-view />
                         </button>
@@ -503,7 +502,7 @@ export default {
                                 <li v-for="req, k in getRequirements(item)" :key="k">
                                     <icon-checkmark v-if="req.met" :width="12" :height="12" class="inline-block text-green-600"/>
                                     <icon-exclamation v-else :width="12" :height="12" class="inline-block text-red-700"/>
-                                    {{req.label}}
+                                    {{ req.label }}
                                 </li>
                             </ul>
                         </template>
@@ -521,18 +520,18 @@ export default {
         <teleport to='body'>
             <modal-dialog v-model="showConfirmRetire" size="xs" :title="`Retire ${selectedMemberName}?`">
                 <p class="text-lg">
-                    Are you sure you want to retire {{selectedMemberName}} from this group?
+                    Are you sure you want to retire {{ selectedMemberName }} from this group?
                 </p>
                 <button-row @submit="retireMember" @cancel="cancelRetire" submit-text="Retire Member"></button-row>
             </modal-dialog>
             <modal-dialog v-model="showConfirmUnretire" size="xs" :title="`Retire ${selectedMemberName}?`">
                 <p class="text-lg">
-                    Are you sure you want to un-retire {{selectedMemberName}}?
+                    Are you sure you want to un-retire {{ selectedMemberName }}?
                 </p>
                 <button-row @submit="unretireMember" @cancel="cancelUnretire" submit-text="Un-retire Member"></button-row>
             </modal-dialog>
             <modal-dialog v-model="showConfirmRemove" size="xs" :title="`Remove ${selectedMemberName}?`">
-                <p class="text-lg"> Are you sure you want to remove {{selectedMemberName}} from this group?</p>
+                <p class="text-lg"> Are you sure you want to remove {{ selectedMemberName }} from this group?</p>
                 <p><strong>This cannot be undone.</strong></p>
                 <button-row @submit="removeMember" @cancel="cancelRemove" submit-text="Remove Member"></button-row>
             </modal-dialog>

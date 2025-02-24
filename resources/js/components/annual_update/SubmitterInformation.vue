@@ -46,8 +46,8 @@ export default {
 </script>
 <template>
     <ApplicationSection title="Submitter Information">
-        <dictionary-row label="Expert Panel">{{workingCopy.expert_panel.display_name}}</dictionary-row>
-        <dictionary-row label="Affilation ID">{{workingCopy.expert_panel.affiliation_id}}</dictionary-row>
+        <dictionary-row label="Expert Panel">{{ workingCopy.expert_panel.display_name }}</dictionary-row>
+        <dictionary-row label="Affilation ID">{{ workingCopy.expert_panel.affiliation_id }}</dictionary-row>
 
         <input-row
             label="Submitting member"
@@ -61,7 +61,7 @@ export default {
         <dictionary-row label="EP Coordinator(s)">
             <span class="csv-item"
                 v-for="coordinator in coordinators" :key="coordinator.id"
-            >{{coordinator.person.name}}</span>
+            >{{ coordinator.person.name }}</span>
             <span v-if="coordinators.length == 0" class="text-red-600">No coordinators on file for this expert panel.</span>
         </dictionary-row>
 

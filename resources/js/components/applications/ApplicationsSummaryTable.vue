@@ -224,12 +224,11 @@ export default {
             v-model:sort="sort"
             :style="remainingHeight"
             class="overflow-auto text-xs"
-            ref="table"
         >
             <template #cell-contacts="{item}">
                 <ul>
                     <li v-for="member in item.group.contacts" :key="member.id">
-                        <small><a :href="`mailto:${member.person.email}`" class="text-blue-500">{{member.person.name}}</a></small>
+                        <small><a :href="`mailto:${member.person.email}`" class="text-blue-500">{{ member.person.name }}</a></small>
                     </li>
                 </ul>
             </template>

@@ -74,7 +74,7 @@ export default {
         <blockquote>
             <div v-html="logEntry.description"></div>
         </blockquote>
-        <div class="ml-4 mt-2 mb-4 text-gray-700 text-sm" v-if="logEntry.causer">Logged by {{logEntry.causer.name}}, {{logDate}}</div>
+        <div class="ml-4 mt-2 mb-4 text-gray-700 text-sm" v-if="logEntry.causer">Logged by {{ logEntry.causer.name }}, {{ logDate }}</div>
         </div>
 
         <div>This can not be undone. Are you sure you want to continue?</div>
@@ -82,7 +82,7 @@ export default {
         <div v-if="flattenedErrors.length > 0" class="bg-red-200 text-red-900 rounded p-2 my-2">
             <ul>
                 <li v-for="(err,idx) in flattenedErrors" :key="idx">
-                    {{err}}
+                    {{ err }}
                 </li>
             </ul> 
         </div>

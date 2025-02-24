@@ -50,11 +50,11 @@ export default {
         <popover arrow hover>
             <template #content>
                 <div>
-                    <RequirementsItem  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
+                    <RequirementsItem v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
                 </div>
             </template>
             <badge :color="badgeColor" class="cursor-pointer">
-                {{badgeText}}
+                {{ badgeText }}
             </badge>
         </popover>
     </div>

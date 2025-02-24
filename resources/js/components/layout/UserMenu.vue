@@ -51,11 +51,10 @@ export default {
         <div v-show="isAuthed">
             <div class="flex flex-row-reverse align-middle -mb-3 pb-3 pr-2 relative z-20 cursor-pointer"
                 :class="{'w-48': menuOpen}"
-                ref="menuButton" 
                 @click.stop="toggleMenu"
             >
                 <ChevronDown></ChevronDown>
-                {{user.name}}
+                {{ user.name }}
             </div>
             <transition name="slide-fade-down">            
                 <div 

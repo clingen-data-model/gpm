@@ -331,7 +331,6 @@ export default {
               :show-controls="editingDescription"
             >
               <GroupDescriptionForm
-                ref="descriptionRef"
                 v-model:editing="editingDescription"
                 :errors="errors"
               />
@@ -346,7 +345,6 @@ export default {
               :show-controls="editingExpertise"
             >
               <MembershipDescriptionForm
-                ref="membershipDescriptionFormRef"
                 class="mt-8"
                 v-model:editing="editingExpertise"
                 :errors="errors"
@@ -381,7 +379,6 @@ export default {
               :show-controls="editingScopeDescription"
             >
               <ScopeDescriptionForm
-                ref="scopeDescriptionRef"
                 v-model:editing="editingScopeDescription"
                 :errors="errors"
               />
@@ -414,7 +411,6 @@ export default {
               "
             >
               <component
-                ref="ongoingPlansForm"
                 :is="ongoingPlansFormComponent"
                 :errors="errors"
                 :readonly="!group.expert_panel.pilotSpecificationsIsApproved"
@@ -519,7 +515,7 @@ export default {
                   :href="`/annual-updates/${group.expert_panel.annualUpdate.id}`"
                   target="annual update"
                 >
-                  View Annual Update for {{group.expert_panel.annualUpdate.window.for_year}}
+                  View Annual Update for {{ group.expert_panel.annualUpdate.window.for_year }}
                 </a>
             </section>
             <section class="border my-4 p-4 bg-red-100 border-red-200 rounded">

@@ -63,18 +63,18 @@ export default {
 </script>
 <template>
     <div>
-        {{contact.name}}
+        {{ contact.name }}
         -
-        <a class="text-blue-500 underline" :href="`mailto:${contact.email}`">{{contact.email}}</a>
+        <a class="text-blue-500 underline" :href="`mailto:${contact.email}`">{{ contact.email }}</a>
         <span v-if="contact.phone">
-            - {{contact.phone}}
+            - {{ contact.phone }}
         </span>
         &nbsp;
         <RemoveButton size="xs" @click="confirmRemove"></RemoveButton>        
 
         <modal-dialog v-model="showRemoveConfirmation" title="Confirm Contact Removal">
             <p class="mb-2">
-                You are about to remove <strong>{{contact.name}}</strong> as a contact for this application.
+                You are about to remove <strong>{{ contact.name }}</strong> as a contact for this application.
                 Do you want to continue?
             </p>
 

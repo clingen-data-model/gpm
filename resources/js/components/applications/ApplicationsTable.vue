@@ -293,7 +293,7 @@ export default {
                         <option v-for="i in assignees" :key="i.id"
                             :value="i.id"
                         >
-                            {{i.name}}
+                            {{ i.name }}
                         </option>
                     </select>
                 </label>
@@ -320,21 +320,20 @@ export default {
             v-model:sort="sort"
             :style="remainingHeight"
             class="overflow-auto"
-            ref="table"
         >
             <template #cell-contacts="{item}">
                 <ul>
                     <li v-for="c in item.group.members" :key="c.id">
-                        <small><a :href="`mailto:${c.person.email}`" class="text-blue-500">{{c.person.name}}</a></small>
+                        <small><a :href="`mailto:${c.person.email}`" class="text-blue-500">{{ c.person.name }}</a></small>
                     </li>
                 </ul>
             </template>
             <template #cell-latest_log_entry="{item}">
                 <popper hover arrow placement="right">
                     <template #content>
-                        <div  v-html="item.group.latest_log_entry.description"></div>
+                        <div v-html="item.group.latest_log_entry.description"></div>
                     </template>
-                    {{formatDate(item.group.latest_log_entry.created_at)}}
+                    {{ formatDate(item.group.latest_log_entry.created_at) }}
                 </popper>
             </template>
             <template #cell-next_actions="{item}">
@@ -345,7 +344,7 @@ export default {
                             :key="assignee.id"
                             class="whitespace-normal max-w-80"
                         >
-                            <h4>{{assignee.short_name}}:</h4>
+                            <h4>{{ assignee.short_name }}:</h4>
                             <ul class="list-disc pl-6 text-sm">
                                 <li v-for="action in item.pendingActionsByAssignee[assignee.id]" :key="action.id" v-html="action.entry" class="w-76 whitespace-normal">
                                 </li>
@@ -354,9 +353,9 @@ export default {
                     </template>
                     <div v-for="assignee in assignees.filter(i => item.pendingActionsByAssignee[i.id].length > 0)" :key="assignee.id">
                         <span>
-                            {{assignee.short_name}}:
+                            {{ assignee.short_name }}:
                             <strong>
-                                {{item.pendingActionsByAssignee[assignee.id].length}}
+                                {{ item.pendingActionsByAssignee[assignee.id].length }}
                             </strong>
                         </span>
                     </div>

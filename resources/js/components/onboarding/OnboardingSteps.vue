@@ -18,7 +18,7 @@ export default {
 <template>
   <div>
     <p class="text-lg text-center font-bold">
-        Hi {{invite.first_name}}.
+        Hi {{ invite.first_name }}.
         <br>
         You've been invited to join ClinGen
         <span v-if="invite.inviter">

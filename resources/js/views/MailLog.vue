@@ -141,9 +141,9 @@ export default {
                 <ul>
                     <li v-for="recipient in item.to" :key="recipient.address">
                         <span v-if="recipient.name">
-                            {{recipient.name}} -
+                            {{ recipient.name }} -
                         </span>
-                        {{recipient.address}}
+                        {{ recipient.address }}
                     </li>
                 </ul>
             </template>

@@ -46,7 +46,7 @@
             <div>
                 <h3>Comments for the Expert Panel</h3>
                 <div class="mb-2">
-                    <CommentSummary  v-if="hasCommentsForEp"
+                    <CommentSummary v-if="hasCommentsForEp"
                         :comments="commentManager.commentsForEp"
                     />
                     <div v-else class="note">None</div>
@@ -66,15 +66,15 @@
             <div v-if="latestSubmission.notes_for_chairs">
                 <h3>Other notes from the Core Group</h3>
                 <p>
-                    {{latestSubmission.notes_for_chairs}}
+                    {{ latestSubmission.notes_for_chairs }}
                 </p>
             </div>
             <div v-if="otherJudgements.length > 0">
                 <h3>Other Approver's Judgements:</h3>
                 <ul>
                     <li v-for="j in otherJudgements" :key="j.id" class="mt-2 ml-2">
-                        <div class="text-lg">{{j.person.name}}: <badge :color="judgementColor(j)">{{titleCase(j.decision)}}</badge></div>
-                        <p v-if="j.notes" class="ml-2 text-sm"><strong>Notes for EP: </strong>{{j.notes}}</p>
+                        <div class="text-lg">{{ j.person.name }}: <badge :color="judgementColor(j)">{{ titleCase(j.decision) }}</badge></div>
+                        <p v-if="j.notes" class="ml-2 text-sm"><strong>Notes for EP: </strong>{{ j.notes }}</p>
                     </li>
                 </ul>
             </div>

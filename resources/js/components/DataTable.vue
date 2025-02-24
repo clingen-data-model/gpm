@@ -417,7 +417,7 @@ export default {
                             <div class="py-1 flex justify-between place-items-center">
                                 <div>
                                     <slot :name="`header-${field.name}`" :item="{field}">
-                                        {{getFieldLabel(field)}}
+                                        {{ getFieldLabel(field) }}
                                     </slot>
                                 </div>
                                 <div>
@@ -446,7 +446,7 @@ export default {
                             :class="getCellClass(field)"
                         >
                             <slot :name="getSlotName(field)" :item="item" :field="field" :value="resolveDisplayAttribute(item, field)">
-                                {{resolveDisplayAttribute(item, field)}}
+                                {{ resolveDisplayAttribute(item, field) }}
                             </slot>
                         </td>
                     </tr>
