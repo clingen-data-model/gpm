@@ -11,6 +11,10 @@ export default {
             required: true
         }
     },
+    emits: [
+      'completed',
+      'canceled',
+    ],
     data() {
         return {
             showModal: false,
