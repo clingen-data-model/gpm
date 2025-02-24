@@ -38,16 +38,16 @@ export default {
 <template>
     <ApplicationSection title="Member Designation">
         <MemberDesignationForm
+            ref="memberDesignationForm"
             v-model="workingCopy"
             :errors="errors"
-            @updated="$emit('updated')"
-            ref="memberDesignationForm"
             :readonly="isComplete"
+            @updated="$emit('updated')"
         />
         <hr>
-        <input-row vertical 
+        <input-row v-model="workingCopy.data.member_designation_changed" 
+            vertical
             label="Does this represent a change from previous years?"
-            v-model="workingCopy.data.member_designation_changed"
             :errors="errors.member_designation_changed"
             type="radio-group"
             :options="[

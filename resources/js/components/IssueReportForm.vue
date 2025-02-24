@@ -91,7 +91,7 @@ export default {
             </button>
     </popover>
     <teleport to="body">
-      <modal-dialog title="Report a problem" v-model="showReportIssue">
+      <modal-dialog v-model="showReportIssue" title="Report a problem">
         <input-row
           v-model="url"
           label="URL"
@@ -109,8 +109,8 @@ export default {
           label="Severity"
           :errors="errors.severity"
         >
-          <select name="" id="" v-model="severity">
-            <option :value="sv.id" v-for="sv in severities" :key="sv.id">
+          <select id="" v-model="severity" name="">
+            <option v-for="sv in severities" :key="sv.id" :value="sv.id">
               {{ sv.name }}
             </option>
           </select>
@@ -130,9 +130,9 @@ export default {
           ></textarea>
         </input-row>
         <button-row
+          v-if="!saving"
           @submitted="submitIssue"
           @canceled="cancelSubmission"
-          v-if="!saving"
         ></button-row>
         <div v-if="saving" class="pt-2 mt-2 border-t text-gray-500">Saving&hellip;</div>
       </modal-dialog>

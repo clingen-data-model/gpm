@@ -6,8 +6,6 @@ import StepRequestRevisionsControl from './StepRequestRevisionsControl.vue'
 import StepSendToChairsControl from './StepSendToChairsControl.vue'
 import SubmissionInfo from './SubmissionInfo.vue';
 
-const store = useStore()
-
 const props = defineProps({
     step: {
         type: Number,
@@ -19,6 +17,8 @@ const props = defineProps({
         default: 'Approve'
     }
 });
+
+const store = useStore()
 
 const group = computed(() => store.getters['groups/currentItemOrNew'])
 

@@ -67,6 +67,9 @@ export default {
             return (this.docTypeIsArray) ? null : this.documentTypeId;
         }
     },
+    mounted() {
+        this.$store.dispatch('groups/getDocuments', this.group);
+    },
     methods: {
         async save() {
             try {
@@ -131,9 +134,6 @@ export default {
         resetActiveDocument () {
             this.activeDocument = {type: {}}
         }
-    },
-    mounted() {
-        this.$store.dispatch('groups/getDocuments', this.group);
     }
 }
 </script>
@@ -160,7 +160,7 @@ export default {
                         <dropdown-menu hideCheveron>
                             <template #label> <button class="btn btn-xs">&hellip;</button></template>
                             <dropdown-item @click="initDownload(doc)">Download</dropdown-item>
-                            <dropdown-item @click="initDelete(doc)" v-if="hasAnyPermission(['ep-applications-manage', ['application-edit', group]])">Delete</dropdown-item>
+                            <dropdown-item v-if="hasAnyPermission(['ep-applications-manage', ['application-edit', group]])" @click="initDelete(doc)">Delete</dropdown-item>
                         </dropdown-menu>
                     </td>
                 </tr>
@@ -168,15 +168,15 @@ export default {
         </table>
 
         <div v-if="!readonly">
-            <input-row label="Document type"
+            <input-row v-if="docTypeIsArray"
+                v-model="newDocument.document_type_id"
+                label="Document type"
                 type="select"
                 :options="filteredTypes"
-                v-if="docTypeIsArray"
-                v-model="newDocument.document_type_id"
             />
 
             <input-row label="Document" :errors="errors.file">
-                <input type="file" ref="fileInput">
+                <input ref="fileInput" type="file">
             </input-row>
             <button class="btn blue" @click="save">Upload</button>
         </div>

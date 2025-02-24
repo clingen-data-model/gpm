@@ -76,7 +76,7 @@ export default {
     <div>
         <ul class="flex pagination-control">
             <li>
-                <button class="link" @click="goToPreviousPage" :class="{active: currentPage === 1}">&lt;</button>
+                <button class="link" :class="{active: currentPage === 1}" @click="goToPreviousPage">&lt;</button>
             </li>
             <li v-for="(page, idx) in displayPages" :key="idx">
                 <button
@@ -89,7 +89,7 @@ export default {
                 <span v-else>&hellip;</span>
             </li>
             <li>
-                <button class="link" @click="goToNextPage" :class="{active: currentPage === pagesCount}">&gt;</button>
+                <button class="link" :class="{active: currentPage === pagesCount}" @click="goToNextPage">&gt;</button>
             </li>
         </ul>
     </div>

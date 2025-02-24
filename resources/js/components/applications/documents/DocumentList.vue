@@ -174,10 +174,10 @@ export default {
 <template>
     <div>
         <data-table 
+            v-if="filteredDocuments.length > 0" 
             :fields="filteredFields" 
-            :data="filteredDocuments" 
+            :data="filteredDocuments"
             :sort="{field: filteredFields[0].name, desc: true}"
-            v-if="filteredDocuments.length > 0"
         >
 
             <template #cell-notes="{value}">
@@ -186,13 +186,13 @@ export default {
             <template #cell-is_final="{item}">
                 <icon-checkmark 
                     v-if="!item.is_final" 
-                    @click="markFinal(item)" 
-                    title="Mark this the final version."
+                    title="Mark this the final version." 
                     class="text-gray-300 cursor-pointer inline"
+                    @click="markFinal(item)"
                 ></icon-checkmark>
                 <icon-checkmark 
-                    class="text-green-600 inline" 
-                    v-if="item.is_final"
+                    v-if="item.is_final" 
+                    class="text-green-600 inline"
                     title="This is the final document"
                 ></icon-checkmark>
             </template>

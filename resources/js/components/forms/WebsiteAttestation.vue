@@ -17,15 +17,15 @@ export default {
     emits: [
         ...mirror.emits
     ],
-    computed: {
-        isComplete () {
-            return Boolean(this.modelValue.completed_at)
-        }
-    },
     setup(props, context) {
         const {workingCopy} = mirror.setup(props, context);
         return {
             workingCopy
+        }
+    },
+    computed: {
+        isComplete () {
+            return Boolean(this.modelValue.completed_at)
         }
     }
 }
@@ -39,8 +39,8 @@ export default {
                     </p>
                 </template>
                 <checkbox 
-                    label="I attest that the information on the webpage is up-to-date and accurate." 
-                    v-model="workingCopy.data.website_attestation"
+                    v-model="workingCopy.data.website_attestation" 
+                    label="I attest that the information on the webpage is up-to-date and accurate."
                     :disabled="isComplete"
                 />
             </input-row>

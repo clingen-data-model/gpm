@@ -51,16 +51,16 @@ export default {
             <button v-if="showCancel"
                 class="btn"
                 :class="[`btn-${size}`]"
-                @click="cancel"
                 :disabled="$attrs.disabled"
+                @click="cancel"
             >
                 {{ cancelText }}
             </button>
             <button
                 class="btn"
                 :class="[submitVariant, `btn-${size}`]"
-                @click="submit"
                 :disabled="$attrs.disabled"
+                @click="submit"
             >
                 {{ submitText }}
             </button>

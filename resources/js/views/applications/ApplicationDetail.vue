@@ -7,18 +7,16 @@
     import ApplicationAdmin from './ApplicationAdmin.vue'
     import ApplicationReview from './ApplicationReview.vue'
 
-    const commentManager = ref(commentManagerFactory('App\\Modules\\Group\\Models\\Group', 0));
-    provide('commentManager', commentManager)
-
-    const store = useStore();
-
     const props = defineProps({
         uuid: {
             type: String,
             requird: true
         }
     })
+    const commentManager = ref(commentManagerFactory('App\\Modules\\Group\\Models\\Group', 0));
+    provide('commentManager', commentManager)
 
+    const store = useStore();
 
     const loading = ref(false);
     const group = computed(() => store.getters['groups/currentItemOrNew'])

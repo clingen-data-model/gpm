@@ -43,6 +43,9 @@ export default {
             }
         }
     },
+    mounted () {
+        this.$emit('tabChanged', this.activeTab.label);
+    },
     methods: {
         activateTab (idx) {
             this.tabs.forEach(t => t.active = false)
@@ -117,9 +120,6 @@ export default {
                     return h('li', {class: tabClasses.join(' '), onClick: () => this.activateTab(idx)}, tab.label)
                 })
         },
-    },
-    mounted () {
-        this.$emit('tabChanged', this.activeTab.label);
     },
     render() {
         const tabList = this.renderTabs();

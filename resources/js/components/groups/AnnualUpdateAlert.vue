@@ -66,7 +66,7 @@ export default {
 }
 </script>
 <template>
-    <static-alert :variant="variant" v-if="isPending && annualReview.id">
+    <static-alert v-if="isPending && annualReview.id" :variant="variant">
         <div class="flex space-x-2 items-center mb-3">
             <icon-review height="30" width="30"></icon-review>
             <div>
@@ -76,9 +76,9 @@ export default {
                     an <strong>annual update for {{ window.for_year }}</strong> due on <strong>{{ formatDate(window.end) }}</strong>.
                 </p>
                 <router-link 
-                    class="btn font-bold" 
+                    v-if="group.uuid" 
+                    class="btn font-bold"
                     :to="{name: 'AnnualUpdate', params: {uuid: group.uuid}}"
-                    v-if="group.uuid"
                 >
                     Complete the Annual Update
                 </router-link>

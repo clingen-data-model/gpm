@@ -13,6 +13,19 @@ export default {
             default: null
         }
     },
+    setup() {
+        const {sort, filter} = sortAndFilter({
+            field: 'full_name',
+            desc: false
+        });
+        // const showAllInfo = computedQueryParam('showAllInfo');
+
+        return {
+            sort,
+            filter,
+            // showAllInfo
+        }
+    },
     data() {
         return {
             fields: [
@@ -234,6 +247,9 @@ export default {
             return Object.values(configs.nextActions.assignees);
         }
     },
+    mounted () {
+        this.getApplications()
+    },
     methods: {
 
         getApplications () {
@@ -260,22 +276,6 @@ export default {
             this.$router.push({name: 'ApplicationDetail', params: {uuid: item.group.uuid}})
         },
     },
-    mounted () {
-        this.getApplications()
-    },
-    setup() {
-        const {sort, filter} = sortAndFilter({
-            field: 'full_name',
-            desc: false
-        });
-        // const showAllInfo = computedQueryParam('showAllInfo');
-
-        return {
-            sort,
-            filter,
-            // showAllInfo
-        }
-    }
 }
 </script>
 <template>
@@ -284,7 +284,7 @@ export default {
             <div class="mb-1 sm:flex space-x-2">
                 <label class="block">
                     Filter:
-                    <input type="text" class="sm" v-model="filter" placeholder="filter">
+                    <input v-model="filter" type="text" class="sm" placeholder="filter">
                 </label>
                 <label class="block">
                     Waiting on:
@@ -312,12 +312,12 @@ export default {
             </div>
         </div>
         <data-table
+            v-model:sort="sort"
             :data="filteredData"
             :fields="selectedFields"
             :filter-term="filter"
             :row-click-handler="goToApplication"
             row-class="cursor-pointer"
-            v-model:sort="sort"
             :style="remainingHeight"
             class="overflow-auto"
         >
@@ -346,7 +346,7 @@ export default {
                         >
                             <h4>{{ assignee.short_name }}:</h4>
                             <ul class="list-disc pl-6 text-sm">
-                                <li v-for="action in item.pendingActionsByAssignee[assignee.id]" :key="action.id" v-html="action.entry" class="w-76 whitespace-normal">
+                                <li v-for="action in item.pendingActionsByAssignee[assignee.id]" :key="action.id" class="w-76 whitespace-normal" v-html="action.entry">
                                 </li>
                             </ul>
                         </div>

@@ -45,12 +45,12 @@
                 <div>
                     <markdown-block :markdown="comment.content" class="text-sm" />
                     <div class="replies ml-1">
-                        <ul class="" v-if="showReplyList">
+                        <ul v-if="showReplyList" class="">
                             <li v-for="reply in replyManager.comments" :key="reply.id" class="border-l-2 mt-2 px-2 py-1">
                                 <ReviewCommentAnonymous :comment="reply" :commentManager="replyManager" @deleted="handleReplyRemoved" />
                             </li>
                         </ul>
-                        <button class="link text-sm" v-if="comment.comments_count > 0" @click="toggleReplies">
+                        <button v-if="comment.comments_count > 0" class="link text-sm" @click="toggleReplies">
                             {{ showReplyList ? 'Hide' : 'Show' }}
                             {{ comment.comments_count }}
                             {{ comment.comments_count > 1 ? 'replies' : 'reply' }}

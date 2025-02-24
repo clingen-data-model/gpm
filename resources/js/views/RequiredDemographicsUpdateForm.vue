@@ -3,15 +3,14 @@ import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import DemographicsForm from '../components/people/DemographicsForm.vue';
 
-const store = useStore();
-const router = useRouter();
-
 const props = defineProps({
     redirectTo: {
         type: Object,
         default: () => ({ name: 'Dashboard' })
     }
 })
+const store = useStore();
+const router = useRouter();
 
 const handleSave = async () => {
     try {

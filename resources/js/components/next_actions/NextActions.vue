@@ -106,14 +106,14 @@ export default {
         <div class="flex justify-between">
             <h3>Next Actions</h3>
             <label>
-                <input type="checkbox" v-model="showCompleted">
+                <input v-model="showCompleted" type="checkbox">
                 Show completed
             </label>
         </div>
         <data-table 
-            :fields="fields" 
-            :data="filteredNextActions" v-model:sort="tableSort"  
-            v-if="filteredNextActions.length > 0"
+            v-if="filteredNextActions.length > 0" 
+            v-model:sort="tableSort" :fields="fields"  
+            :data="filteredNextActions"
         >
             <template #cell-entry="{item}">
                 <div v-html="item.entry"></div>
@@ -129,15 +129,15 @@ export default {
                     <edit-icon-button @click="$router.push({name: 'EditNextAction', params: {uuid: application.uuid, id: item.id}})"></edit-icon-button>
                     <TrashIconButton @click="initiateDelete(item)"></TrashIconButton>
                     <icon-checkmark 
-                        width="20" 
+                        v-if="Boolean(item.date_completed)" 
+                        width="20"
                         height="20"
                         :class="{'text-green-500': Boolean(item.date_completed), 'text-gray-300': !Boolean(item.date_completed)}"
-                        v-if="Boolean(item.date_completed)"
                     />
                     <CheckmarkButton
                         v-else
-                        @click.prevent="startCompleting(item)"
                         title="Mark complete"
+                        @click.prevent="startCompleting(item)"
                     ></CheckmarkButton>
                 </div>
             </template>

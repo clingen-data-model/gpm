@@ -2,7 +2,6 @@
     import ApproveStepForm from '@/components/applications/ApproveStepForm.vue'
     import { computed, ref, useAttrs } from 'vue';
 
-    const attrs = useAttrs();
     const props = defineProps({
         group: {
             type: Object,
@@ -14,7 +13,7 @@
         }
     });
     const emits = defineEmits(['stepApproved']);
-
+    const attrs = useAttrs();
     const showApproveForm = ref(false);
     const isCurrentStep = computed(() => props.step === props.group.expert_panel.current_step)
     const buttonTitle = computed(() => isCurrentStep.value

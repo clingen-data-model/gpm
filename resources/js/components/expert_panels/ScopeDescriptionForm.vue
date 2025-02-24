@@ -8,6 +8,13 @@ import VcepProtocolLink from '../links/VcepProtocolLink.vue';
 
 export default {
     name: "ScopeDescriptionForm",
+    components: {
+        GcepQuickGuideLink,
+        VcepProtocolLink,
+        EditIconButton,
+        RichTextEditor,
+        MarkdownBlock,
+    },
     props: {
         editing: {
             type: Boolean,
@@ -44,13 +51,6 @@ export default {
                 this.$emit("update:group", groupCopy);
             }
         },
-    },
-    components: {
-        GcepQuickGuideLink,
-        VcepProtocolLink,
-        EditIconButton,
-        RichTextEditor,
-        MarkdownBlock,
     }
 }
 </script>
@@ -75,14 +75,14 @@ export default {
             <transition name="fade" mode="out-in">
                 <div v-if="editing" class="mt-2">
                     <RichTextEditor
-                        :markdownFormat="true"
                         v-model="group.expert_panel.scope_description"
+                        :markdownFormat="true"
                         @update:modelValue="$emit('update')"
                     />
                 </div>
                 <div v-else class="border-2 mt-8 p-2">
                     <MarkdownBlock v-if="group.expert_panel.scope_description" :markdown="group.expert_panel.scope_description" />
-                    <p class="well cursor-pointer" v-else @click="showForm">
+                    <p v-else class="well cursor-pointer" @click="showForm">
                         A description of expertise has not yet been provided.
                     </p>
                 </div>

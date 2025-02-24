@@ -195,6 +195,18 @@ export default {
                                 : false;
         }
     },
+    created () {
+        this.debounceSave = debounce(async () => this.save(), this.throttle);
+
+        this.saveOngoingPlans = debounce(() => {
+            const {uuid, expert_panel: expertPanel} = this.group;
+            return this.$store.dispatch('groups/curationReviewProtocolUpdate', {uuid, expertPanel});
+        }, 2000);
+    },
+    async mounted () {
+        await this.$store.dispatch('groups/findAndSetCurrent', this.uuid);
+        await this.getAnnualUpdate();
+    },
     methods: {
         async submit () {
             this.saving = true;
@@ -258,24 +270,12 @@ export default {
                 throw error
             }
         }
-    },
-    created () {
-        this.debounceSave = debounce(async () => this.save(), this.throttle);
-
-        this.saveOngoingPlans = debounce(() => {
-            const {uuid, expert_panel: expertPanel} = this.group;
-            return this.$store.dispatch('groups/curationReviewProtocolUpdate', {uuid, expertPanel});
-        }, 2000);
-    },
-    async mounted () {
-        await this.$store.dispatch('groups/findAndSetCurrent', this.uuid);
-        await this.getAnnualUpdate();
     }
 }
 </script>
 <template>
     <div class="annual-update relative">
-        <static-alert :variant="dueDateAlertVariant" class="mb-4" v-if="!annualUpdate.completed_at">
+        <static-alert v-if="!annualUpdate.completed_at" :variant="dueDateAlertVariant" class="mb-4">
             This annual update for {{ window.for_year }} is due on {{ formatDate(window.end) }}
         </static-alert>
         <static-alert v-if="showLastYearLink" class="mb-4">
@@ -372,14 +372,14 @@ export default {
 
                 </div>
             <hr>
-            <button class="btn btn-lg" @click="submit" v-if="!annualUpdate.completed_at">Submit annual update</button>
-            <static-alert variant="danger mt-4" v-if="hasErrors">
+            <button v-if="!annualUpdate.completed_at" class="btn btn-lg" @click="submit">Submit annual update</button>
+            <static-alert v-if="hasErrors" variant="danger mt-4">
                 There are problems with your annual update that must be corrected before you can submit.
                 <br>
                 Please see items highlighted in red above.
             </static-alert>
 
-            <static-alert variant="success" v-if="annualUpdate.completed_at">
+            <static-alert v-if="annualUpdate.completed_at" variant="success">
                 Thank you for submitting your annual update.
             </static-alert>
 
@@ -387,7 +387,7 @@ export default {
         <br>
 
         <teleport to='body'>
-            <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="$route.meta.title">
+            <modal-dialog v-model="showModal" :title="$route.meta.title" @closed="handleModalClosed">
                 <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
             </modal-dialog>
         </teleport>

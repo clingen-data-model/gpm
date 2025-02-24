@@ -11,8 +11,8 @@ export default {
 </script>
 <template>
     <div class="flex space-x-2">
-        <icon-checkmark class="text-green-600" v-if="requirement.isMet"></icon-checkmark>
-        <icon-exclamation class="text-yellow-400" v-else></icon-exclamation>
+        <icon-checkmark v-if="requirement.isMet" class="text-green-600"></icon-checkmark>
+        <icon-exclamation v-else class="text-yellow-400"></icon-exclamation>
         <div>{{ requirement.label }}</div>
     </div>
 </template>

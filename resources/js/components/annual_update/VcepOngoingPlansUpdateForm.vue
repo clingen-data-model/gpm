@@ -16,16 +16,16 @@ export default {
             required: true
         },
     },
-    computed: {
-        isComplete () {
-            return Boolean(this.modelValue.completed_at);
-        }
-    },
     emits: [ ...mirror.emits, 'updated'],
     setup(props, context) {
         const {workingCopy} = mirror.setup(props, context);
         return {
             workingCopy
+        }
+    },
+    computed: {
+        isComplete () {
+            return Boolean(this.modelValue.completed_at);
         }
     }
 }
@@ -35,45 +35,45 @@ export default {
         <VcepOngoingPlansForm 
             v-model="workingCopy"
             :errors="errors"
-            @update="$emit('updated')"
             :readonly="isComplete"
+            @update="$emit('updated')"
         />
-        <input-row vertical 
+        <input-row v-model="workingCopy.data.ongoing_plans_updated" 
+            vertical
             label="Does this current review method represent a change from previous years?"
             :errors="errors.ongoing_plans_updated"
             type="radio-group"
-            v-model="workingCopy.data.ongoing_plans_updated"
             :options="[{value:'yes'},{value:'no'}]"
             :disabled="isComplete"
         />
         <input-row 
             v-if="workingCopy.data.ongoing_plans_updated === 'yes'" 
+            v-model="workingCopy.data.ongoing_plans_update_details" 
             class="ml-4" 
             label="Please explain" 
-            :errors="errors.ongoing_plans_update_details" 
+            :errors="errors.ongoing_plans_update_details"
             vertical
             type="large-text"
-            v-model="workingCopy.data.ongoing_plans_update_details"
             :disabled="isComplete"
         />
 
-        <input-row vertical
+        <input-row v-model="workingCopy.data.changes_to_call_frequency"
+            vertical
             :disabled="isComplete"
             label="Have there been any changes to your VCEP’s workflow or meeting/call frequency in the last year?"
             type="radio-group"
-            v-model="workingCopy.data.changes_to_call_frequency"
             :errors="errors.changes_to_call_frequency"
             :options="[{value: 'yes'},{value: 'no'}]" 
         />
 
         <input-row 
             v-if="workingCopy.data.changes_to_call_frequency === 'yes'" 
+            v-model="workingCopy.data.changes_to_call_frequency_details" 
             class="ml-4" 
             label="Please explain" 
-            :errors="errors.changes_to_call_frequency_details" 
+            :errors="errors.changes_to_call_frequency_details"
             vertical
             type="large-text"
-            v-model="workingCopy.data.changes_to_call_frequency_details"
             :disabled="isComplete"
         />
     </ApplicationSection>

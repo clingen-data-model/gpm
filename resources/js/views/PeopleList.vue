@@ -28,6 +28,14 @@ const fields = [
             ];
 
 export default {
+    setup() {
+        const {sort, filter} = SortAndFilter();
+
+        return {
+            sort, filter,
+            pageSize, currentPage, getPageItems
+        }
+    },
     data() {
         return {
             fields
@@ -55,6 +63,12 @@ export default {
                 }
             }
         }
+    },
+    created() {
+        if (this.triggerSearch) {
+            this.triggerSearch();
+        }
+        this.triggerSearch = debounce(() => this.$refs.dataTable.getItems(), 500)
     },
     methods: {
         goToPerson (person) {
@@ -87,38 +101,24 @@ export default {
             return pageResponse.data;
         }
     },
-    created() {
-        if (this.triggerSearch) {
-            this.triggerSearch();
-        }
-        this.triggerSearch = debounce(() => this.$refs.dataTable.getItems(), 500)
-    },
-    setup() {
-        const {sort, filter} = SortAndFilter();
-
-        return {
-            sort, filter,
-            pageSize, currentPage, getPageItems
-        }
-    }
 }
 </script>
 <template>
     <div>
         <h1>People</h1>
         <data-table
+            ref="dataTable"
+            v-model:sort="sort"
             :data="itemProvider"
             :fields="fields"
             class="width-full"
             :row-click-handler="goToPerson"
             row-class="cursor-pointer"
-            v-model:sort="sort"
             :page-size="20"
             paginated
-            ref="dataTable"
         >
             <template #header>
-                <label class="block mb-2" for="filter-input">Filter:&nbsp;<input type="text" v-model="filter" placeholder="filter"></label>
+                <label class="block mb-2" for="filter-input">Filter:&nbsp;<input v-model="filter" type="text" placeholder="filter"></label>
             </template>
         </data-table>
     </div>

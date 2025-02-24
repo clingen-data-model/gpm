@@ -41,6 +41,9 @@ export default {
         },
 
     },
+    async mounted () {
+        await this.getAnnualUpdate();
+    },
     methods: {
         async getAnnualUpdate () {
             // eslint-disable-next-line no-console
@@ -50,9 +53,6 @@ export default {
                     return response.data;
                 });
         },
-    },
-    async mounted () {
-        await this.getAnnualUpdate();
     }
 }
 </script>
@@ -60,8 +60,8 @@ export default {
     <div>
         <AnnualUpdateForm
             v-if="annualReview.expert_panel.group.uuid"
-            :uuid="annualReview.expert_panel.group.uuid"
             :id="id"
+            :uuid="annualReview.expert_panel.group.uuid"
         />
     </div>
 </template>

@@ -54,8 +54,8 @@ export default {
             <transition name="slide-fade-down">
                 <div
                     v-show="menuOpen"
-                    v-click-outside="{exclude: ['menuButton'], handler: handleOutsideClick}"
                     ref="dropdownMenu"
+                    v-click-outside="{exclude: ['menuButton'], handler: handleOutsideClick}"
                     class="absolute right-0 top-0 pt-11 bg-white border w-48 z-10 shadow"
                 >
                     <ul>
@@ -63,7 +63,7 @@ export default {
                             <router-link :to="{name: 'Dashboard'}" @click="showMenu = false">Dashboard</router-link>
                         </li>
                         <li class="menu-item">
-                            <button @click="logout" v-if="!user.is_impersonating">
+                            <button v-if="!user.is_impersonating" @click="logout">
                                 Log out
                             </button>
                         </li>
@@ -74,27 +74,27 @@ export default {
                         </li>
                     </ul>
                     <ul>
-                        <li class="menu-item" v-if="hasPermission('invites-view')">
+                        <li v-if="hasPermission('invites-view')" class="menu-item">
                             <router-link :to="{name: 'InviteAdmin'}">
                                 Invites
                             </router-link>
                         </li>
-                        <li class="menu-item" v-if="hasPermission('people-manage')">
+                        <li v-if="hasPermission('people-manage')" class="menu-item">
                             <a href="/admin/institutions">Institutions</a>
                         </li>
-                        <li class="menu-item" v-if="hasPermission('people-manage')">
+                        <li v-if="hasPermission('people-manage')" class="menu-item">
                             <a href="/admin/credentials">Credentials</a>
                         </li>
-                        <li class="menu-item" v-if="hasPermission('people-manage')">
+                        <li v-if="hasPermission('people-manage')" class="menu-item">
                             <a href="/admin/expertises">Expertises</a>
                         </li>
-                        <li class="menu-item" v-if="hasPermission('mail-log-view')">
+                        <li v-if="hasPermission('mail-log-view')" class="menu-item">
                             <router-link :to="{name: 'mail-log'}" @click="showMenu = false">Mail log</router-link>
                         </li>
-                        <li class="menu-item" v-if="hasPermission('announcements-manage')">
+                        <li v-if="hasPermission('announcements-manage')" class="menu-item">
                             <AnnouncementControl />
                         </li>
-                        <li class="menu-item" v-if="hasPermission('logs-view')">
+                        <li v-if="hasPermission('logs-view')" class="menu-item">
                             <a href="/dev/logs" class="p-3 block">System Log</a>
                         </li>
                     </ul>

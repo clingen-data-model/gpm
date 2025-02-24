@@ -26,7 +26,7 @@ export default {
 <template>
   <div class="home">
 
-    <button @click="showModal = true" class="btn blue">Initiate Application</button>
+    <button class="btn blue" @click="showModal = true">Initiate Application</button>
 
     <div class="mb-2 mt-4">
       <div class="tabs">
@@ -40,10 +40,10 @@ export default {
 
 
       <modal-dialog v-model="showModal" size='md' @closed="$refs.initiateform.initForm()">
-        <CreateApplicationForm name="modal" 
+        <CreateApplicationForm ref="initiateform" 
+          name="modal" 
           @canceled="showModal = false" 
-          @saved="handleApplicationInitiated" 
-          ref="initiateform"
+          @saved="handleApplicationInitiated"
         ></CreateApplicationForm>
       </modal-dialog>
   </div>

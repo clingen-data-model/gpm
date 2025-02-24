@@ -7,9 +7,8 @@
     import {computed} from 'vue';
     import {useStore} from 'vuex';
 
-    const store = useStore();
     const emits = defineEmits(['deleted', 'saved']);
-
+    const store = useStore();
     const group = computed(() => store.getters['groups/currentItemOrNew'])
     const expertPanel = computed(() => group.value.expert_panel);
 

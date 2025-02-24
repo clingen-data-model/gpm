@@ -85,7 +85,7 @@ export default {
             <template #label>
                 Merge <note class="inline-block">(Obsolete institution that will be deleted)</note>
             </template>
-            <institution-search-select :model-value="obsoleteIds" @update:modelValue="handleObsoleteUpdate" :allow-add="false"></institution-search-select>
+            <institution-search-select :model-value="obsoleteIds" :allow-add="false" @update:modelValue="handleObsoleteUpdate"></institution-search-select>
             
         </input-row>
         <input-row label="Into" :errors="errors.authority_id" vertical>

@@ -6,14 +6,14 @@
     import {onMounted, ref} from 'vue'
     import {useRouter} from 'vue-router'
 
-    const router = useRouter();
-
     const props = defineProps({
         user: {
             type: Object,
             required: true
         }
     });
+
+    const router = useRouter();
 
     const fields = [
         {
@@ -83,12 +83,12 @@
             No application activity.
         </div>
         <data-table v-else
+            v-model:sort="sort"
             :data="groups"
             :fields="fields"
-            v-model:sort="sort"
             class="text-sm"
-            @rowClick="goToApplication"
             row-class="cursor-pointer"
+            @rowClick="goToApplication"
         >
             <template #cell-actions="{item}">
                 <div class="flex space-x-2">
@@ -128,7 +128,7 @@
                     </router-link>
 
                     <div>
-                        <popper hover arrow v-if="featureIsEnabled('chair-review')">
+                        <popper v-if="featureIsEnabled('chair-review')" hover arrow>
                             <badge v-if="hasPermission('ep-applications-manage') && item.submission.status.name === 'Under Chair Review'" :color="item.submission.judgements.length === 3 ? 'green' : 'gray' ">
                                 {{ item.submission.judgements.length }}/3
                             </badge>

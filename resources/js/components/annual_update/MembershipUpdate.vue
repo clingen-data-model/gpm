@@ -19,18 +19,18 @@ export default {
     emits: [
         ...mirror.emits
     ],
+    setup(props, context) {
+        const {workingCopy} = mirror.setup(props, context);
+        return {
+            workingCopy
+        }
+    },
     computed: {
         group () {
             return this.$store.getters['groups/currentItemOrNew'];
         },
         isComplete () {
             return Boolean(this.modelValue.completed_at)
-        }
-    },
-    setup(props, context) {
-        const {workingCopy} = mirror.setup(props, context);
-        return {
-            workingCopy
         }
     }
 }
@@ -49,11 +49,11 @@ export default {
                     />
 
                     <input-row
+                        v-model="workingCopy.data.membership_attestation"
                         vertical
                         label="Please attest that your membership is up to date"
                         :errors="errors.membership_attestation"
                         type="radio-group"
-                        v-model="workingCopy.data.membership_attestation"
                         :options="[
                             {value: 'I have reviewed and made the appropriate updates to membership as needed.'},
                             {value: 'I have reviewed and there are no changes needed.'}
@@ -62,11 +62,11 @@ export default {
                     />
 
                     <input-row
+                        v-model="workingCopy.data.expert_panels_change"
                         vertical
                         label="Has the Expert Panel chair changed over the last year?"
                         :errors="errors.expert_panels_change"
                         type="radio-group"
-                        v-model="workingCopy.data.expert_panels_change"
                         :options="[
                             {value: 'Yes'},
                             {value: 'No'}

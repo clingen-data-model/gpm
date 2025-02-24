@@ -5,6 +5,10 @@ import is_validation_error from '@/http/is_validation_error'
 export default {
     props: {
     },
+    emits: [
+        'authenticated',
+        'authenticationFailed'
+    ],
     data() {
         return {
             email: null,
@@ -12,10 +16,6 @@ export default {
             errors: {}
         }
     },
-    emits: [
-        'authenticated',
-        'authenticationFailed'
-    ],
     computed: {
 
     },
@@ -74,7 +74,7 @@ export default {
 
         <!-- Left-align the Log In button -->
         <button-row class="mt-4">
-            <button class="btn blue w-auto px-4" @click="authenticate" name="login-button">Log in</button>
+            <button class="btn blue w-auto px-4" name="login-button" @click="authenticate">Log in</button>
         </button-row>
     </form-container>
 </template>

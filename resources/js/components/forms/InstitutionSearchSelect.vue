@@ -48,6 +48,9 @@ export default {
             }
         }
     },
+    mounted () {
+        this.getInstitutions()
+    },
     methods: {
         search (searchText) {
             // if (!searchText || searchText.length < 1) {
@@ -82,9 +85,6 @@ export default {
                     this.institutions = response.data
                 })
         }
-    },
-    mounted () {
-        this.getInstitutions()
     }
 }
 </script>
@@ -95,11 +95,11 @@ export default {
             :search-function="search"
             style="z-index: 2"
             placeholder="Institution name or abbreviation"
-            @update:modelValue="searchText = null"
             keyOptionsBy="id"
             showOptionsOnFocus
             :options="institutions"
             showOptionsWhenEmpty
+            @update:modelValue="searchText = null"
         >
             <template #selection-label="{selection}">
                 <div>
@@ -114,12 +114,12 @@ export default {
                     {{ option }}
                 </div>
             </template>
-            <template #fixedBottomOption v-if="allowAdd">
+            <template v-if="allowAdd" #fixedBottomOption>
                 <button class="font-bold link cursor-pointer" @click="initAddNew">Add your institution</button>
             </template>
         </SearchSelect>
         <teleport to='body'>
-            <modal-dialog title="Add an institution" v-model="showAddForm">
+            <modal-dialog v-model="showAddForm" title="Add an institution">
                 <InstitutionForm
                     :name="formName"
                     @saved="useNewInstitution"

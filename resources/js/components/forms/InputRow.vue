@@ -129,8 +129,8 @@ export default {
         class="input-row my-3"
     >
         <div :class="{'sm:flex': !vertical}">
-            <div class="flex-none label-container flex-shrink" :class="labelContainerClass" v-show="showLabel">
-                <slot name="label" v-if="hasLabel">
+            <div v-show="showLabel" class="flex-none label-container flex-shrink" :class="labelContainerClass">
+                <slot v-if="hasLabel" name="label">
                     <label :class="resolvedLabelClass">{{ label }}{{ colon }}</label>
                 </slot>
             </div>
@@ -138,28 +138,28 @@ export default {
                 <slot>
                     <date-input
                         v-if="type === 'date'"
+                        ref="input"
                         :modelValue="modelValue"
-                        @update:modelValue="emitValue"
                         :disabled="disabled"
                         :readonly="$attrs.readonly"
-                        @change="$emit('change', modelValue)"
-                        ref="input"
                         :name="name"
                         :class="inputClass"
+                        @update:modelValue="emitValue"
+                        @change="$emit('change', modelValue)"
                     ></date-input>
                     <textarea
                         v-else-if="type === 'large-text'"
+                        ref="input"
                         :value="modelValue"
-                        @input="$emit('update:modelValue', $event.target.value)"
                         :disabled="disabled"
                         :readonly="$attrs.readonly"
-                        @change="$emit('change', modelValue)"
-                        ref="input"
                         :name="name"
                         :class="inputClass"
                         class="w-full"
                         rows="5"
                         :placeholder="placeholder"
+                        @input="$emit('update:modelValue', $event.target.value)"
+                        @change="$emit('change', modelValue)"
                     ></textarea>
                     <div
                         v-else-if="type === 'radio-group'"
@@ -170,19 +170,19 @@ export default {
                             v-for="option in options"
                             :key="option.value"
                             :modelValue="modelValue"
-                            @update:modelValue="emitValue"
                             :label="option.label || sentenceCase(option.value)"
                             :value="option.value"
                             :disabled="disabled"
                             :readonly="$attrs.readonly"
+                            @update:modelValue="emitValue"
                         />
                     </div>
                     <select v-else-if="type === 'select'"
                         :value="modelValue"
-                        @input="$emit('update:modelValue', $event.target.value)"
                         v-bind="$attrs.disabled"
                         :disabled="disabled"
                         :readonly="$attrs.readonly"
+                        @input="$emit('update:modelValue', $event.target.value)"
                     >
                         <option value="">Select&hellip;</option>
                         <template v-for="option in options" :key="option.value">
@@ -195,16 +195,16 @@ export default {
                     </select>
                     <input
                         v-else
+                        ref="input"
                         :type="type"
                         :value="modelValue"
-                        @input="$emit('update:modelValue', $event.target.value)"
                         :placeholder="placeholder"
                         :disabled="disabled"
                         :readonly="$attrs.readonly"
-                        @change="$emit('change', $event.target.value)"
-                        ref="input"
                         :class="inputClass"
                         :name="name"
+                        @input="$emit('update:modelValue', $event.target.value)"
+                        @change="$emit('change', $event.target.value)"
                     >
                 </slot>
                 <slot name="after-input"></slot>

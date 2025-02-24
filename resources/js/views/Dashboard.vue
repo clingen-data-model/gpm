@@ -121,13 +121,13 @@ const navigateToGroup = (item) => {
 
         <DashboardAlerts :user="user" />
 
-        <ApplicationActivity :user="user" v-if="showApplicationActivity" class="screen-block" />
+        <ApplicationActivity v-if="showApplicationActivity" :user="user" class="screen-block" />
 
         <tabs-container class="mt-8">
             <tab-item label="Your Groups">
-                <div class="well" v-if="!groups.length">You are not assigned to any groups.</div>
-                <data-table v-else :data="groups" :fields="groupFields" v-model:sort="groupSort"
-                    @rowClick="navigateToGroup" row-class="cursor-pointer">
+                <div v-if="!groups.length" class="well">You are not assigned to any groups.</div>
+                <data-table v-else v-model:sort="groupSort" :data="groups" :fields="groupFields"
+                    row-class="cursor-pointer" @rowClick="navigateToGroup">
                     <template #cell-status_name="{ value }">
                         <badge :color="groupBadgeColor(value)">{{ value }}</badge>
                     </template>
