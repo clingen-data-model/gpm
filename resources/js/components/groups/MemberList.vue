@@ -438,7 +438,7 @@ export default {
         :data="filteredMembers"
         :detailRows="true"
         :row-class="(item) => `cursor-pointer${ item.isRetired ? ' retired-member' : ''}`"
-        @rowClick="goToMember"
+        @row-click="goToMember"
       >
         <template #cell-id="{item}">
           <button class="w-9 align-center block -mx-3" @click.stop="toggleItemDetails(item)">

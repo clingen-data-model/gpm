@@ -391,7 +391,7 @@ export default {
         </input-row>
 
         <dictionary-row label="">
-          <checkbox :modelValue="roleRequiresNotification || newMember.is_contact" :disabled="roleRequiresNotification" label="Receives notifications about this group" @update:modelValue="$event => newMember.is_contact = $event" />
+          <checkbox :modelValue="roleRequiresNotification || newMember.is_contact" :disabled="roleRequiresNotification" label="Receives notifications about this group" @update:model-value="$event => newMember.is_contact = $event" />
         </dictionary-row>
 
         <div class="border-t mt-4 pt-2">

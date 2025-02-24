@@ -89,7 +89,7 @@
       :fields="fields"
       class="text-sm"
       row-class="cursor-pointer"
-      @rowClick="goToApplication"
+      @row-click="goToApplication"
     >
       <template #cell-actions="{item}">
         <div class="flex space-x-2">
