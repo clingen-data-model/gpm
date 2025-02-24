@@ -90,7 +90,7 @@
             @rowClick="goToApplication"
             row-class="cursor-pointer"
         >
-            <template v-slot:cell-actions="{item}">
+            <template #cell-actions="{item}">
                 <div class="flex space-x-2">
                     <div v-if="hasMadeJudgementOn(item)">
                         <popper hover arrow placement="right">
@@ -98,7 +98,7 @@
                                 <icon-checkmark class="text-white inline-block" width="12" height="12"></icon-checkmark>
                             </badge>
 
-                            <template v-slot:content>
+                            <template #content>
                                 <div>
                                     <h3 class="mb-2">Your Decision</h3>
                                     <badge class="inline-block" :color="judgementColor(judgementFor(item))" size="xs">
@@ -133,7 +133,7 @@
                                 {{item.submission.judgements.length}}/3
                             </badge>
 
-                            <template v-slot:content>
+                            <template #content>
                                 <h3>Decisions:</h3>
                                 <table style="max-width: 350px" class="text-sm">
                                     <tr v-for="j in item.submission.judgements" :key="j.id">

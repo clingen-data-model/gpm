@@ -33,7 +33,7 @@ export default {
 <template>
     <ApplicationSection title="Webpage Updates">
             <input-row :errors="errors.website_attestation" vertical>
-                <template v-slot:label>
+                <template #label>
                     <p>
                         Please review your ClinGen EP webpage, including description, membership, and relevant documentation, including publications. See the <coordinator-resource-link /> for instructions on how to update web pages.
                     </p>

@@ -66,7 +66,7 @@
                 This cannot be undone.
                 Are you sure you want to continue?
 
-                <template v-slot:footer>
+                <template #footer>
                     <button-row submit-text="Yes, Delete" @submitted="deleteJudgement" @canceled="showDeleteDialog = false"></button-row>
                 </template>
             </modal-dialog>

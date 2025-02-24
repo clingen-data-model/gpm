@@ -81,14 +81,14 @@ export default {
             <strong>Warning!!</strong> There are currently no contacts connected to this application!
         </static-alert >
         <ScreenTemplate :title="group.displayName" :breadcrumbs="breadcrumbs">
-            <template v-slot:header-dev>
+            <template #header-dev>
                 <note>
                     Group ID: {{group.id}}
                     |
                     Expert Panel ID: {{group.expert_panel.id}}
                 </note>
             </template>
-            <template v-slot:header-right>
+            <template #header-right>
                 <div class="flex space-x-2">
                     <router-link :to="{name: 'NextAction'}" class="btn btn-sm">Add Next Action</router-link>
                     <router-link :to="{name: 'LogEntry'}" class="btn btn-sm">Add Log Entry</router-link>

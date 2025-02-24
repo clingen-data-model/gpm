@@ -119,7 +119,7 @@ export default {
             No log entries to display
         </div>
         <data-table :fields="fields" :data="logEntries" v-model:sort="sort" v-else>
-            <template v-slot:cell-id="{item}">
+            <template #cell-id="{item}">
                 <div class="flex space-x-1" v-if="hasPermission('groups-manage')">
                     <button class="btn btn-xs inline-block"  @click="editLogEntry(item)">
                         <icon-edit width="12"></icon-edit>
@@ -133,7 +133,7 @@ export default {
                     </button>
                 </div>
             </template>
-            <template v-slot:cell-description="{item}">
+            <template #cell-description="{item}">
                 <div v-html="item.description" class="links-blue"></div>
             </template>
         </data-table>

@@ -41,7 +41,7 @@
         <div class="border-bottom pb-2 rounded-lg mb-4 w-3/4">
             <h2>Please review your profile</h2>
             <collapsible v-model="showMoreInfo" :showCheveron="false">
-                <template v-slot:title>
+                <template #title>
                     We've changed the way we collect information about your credentials and expertise.  Please help us out by updating this information.
                 </template>
                 <p>

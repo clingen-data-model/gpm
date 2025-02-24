@@ -135,7 +135,7 @@ export default {
             ref="dataTable"
             paginated
         >
-            <template v-slot:header>
+            <template #header>
                 <div>Filter: &nbsp;<input type="text" v-model="filter" placeholder="name, email"></div>
             </template>
         </data-table>

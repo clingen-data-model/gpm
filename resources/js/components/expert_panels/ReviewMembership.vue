@@ -121,13 +121,13 @@
             v-model:sort="tableSort"
             class="text-xs"
         >
-            <template v-slot:cell-roles="{item}">
+            <template #cell-roles="{item}">
                 <span>{{ item.roles.map(r => r.display_name).join(', ') }}</span>
             </template>
-            <template v-slot:cell-legacy_credentials="{item}">
+            <template #cell-legacy_credentials="{item}">
                 <CredentialsView :person="item.person" />
             </template>
-            <template v-slot:cell-legacy_expertise="{item}">
+            <template #cell-legacy_expertise="{item}">
                 <ExpertisesView :person="item.person" :legacyExpertise="item.legacy_expertise" />
             </template>
         </data-table>

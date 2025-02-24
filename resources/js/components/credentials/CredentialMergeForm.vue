@@ -92,7 +92,7 @@ export default {
             </ol>
         </p>
         <input-row label="Merge" vertical>
-            <template v-slot:label>
+            <template #label>
                 Merge <note class="inline-block">(Obsolete credential that will be deleted)</note>
             </template>
 
@@ -104,7 +104,7 @@ export default {
             />
         </input-row>
         <input-row label="Into" :errors="errors.authority_id" vertical>
-            <template v-slot:label>Into <note class="inline">(Authoritative credential)</note></template>
+            <template #label>Into <note class="inline">(Authoritative credential)</note></template>
             <SearchSelect
                 v-model="selectedAuthority"
                 :options="credentials"

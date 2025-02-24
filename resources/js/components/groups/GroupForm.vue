@@ -281,7 +281,7 @@ export default {
                         input-class="w-full"
                         @update:modelValue="emitUpdate"
                     >
-                        <template v-slot:label>
+                        <template #label>
                             Affiliation ID
                             <note>admin-only</note>
                         </template>
@@ -311,7 +311,7 @@ export default {
                 :errors="errors.group_status_id"
                 @update:modelValue="emitUpdate"
             >
-                <template v-slot:label>
+                <template #label>
                     Status:
                     <note>admin-only</note>
                 </template>
@@ -324,7 +324,7 @@ export default {
                 :errors="errors.parent_id"
                 @update:modelValue="emitUpdate"
             >
-                <template v-slot:label>
+                <template #label>
                     Parent group:
                     <note>admin-only</note>
                 </template>

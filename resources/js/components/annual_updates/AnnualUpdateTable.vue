@@ -135,7 +135,7 @@ export default {
         </div>
 
         <data-table :data="filteredItems" :fields="fields" v-model:sort="sort">
-            <template v-slot:cell-action="{item}">
+            <template #cell-action="{item}">
                 <router-link :to="{name: 'AnnualUpdateDetail', params: {id: item.id}}">
                     view
                 </router-link>

@@ -107,7 +107,7 @@ export default {
     <div>
         <div v-if="!group.expert_panel.hasPendingSubmission" class="p-4">
             <popover hover arrow>
-                <template v-slot:content>
+                <template #content>
                     <div>
                         <RequirementsItem  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
                     </div>

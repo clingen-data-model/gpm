@@ -194,7 +194,7 @@ export default {
             v-model:sort="sort"
             :detailRows="true"
         >
-            <template v-slot:cell-cheveron="{item}">
+            <template #cell-cheveron="{item}">
                 <button 
                     v-if="item.metadata"
                     @click.stop="toggleItemDetails(item)" 
@@ -211,7 +211,7 @@ export default {
                     <em v-if="item.is_final"> FINAL</em>
                 </span>
             </template>
-            <template v-slot:cell-actions="{item}">
+            <template #cell-actions="{item}">
                 <dropdown-menu hideCheveron>
                     <template #label> <button class="btn btn-xs">&hellip;</button></template>
                     <dropdown-item @click="initDownload(item)">Download</dropdown-item>
@@ -219,7 +219,7 @@ export default {
                     <dropdown-item @click="initDelete(item)" v-if="canManage">Delete</dropdown-item>
                 </dropdown-menu>
             </template>
-            <template v-slot:detail="{item}">
+            <template #detail="{item}">
                 <div class="px-4 pb-4 border">
                     <object-dictionary :obj="item.metadata" />
                     <div class="flex space-x-2 pt-2 border-t" v-if="canManage">                    

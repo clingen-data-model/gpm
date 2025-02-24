@@ -180,10 +180,10 @@ export default {
             v-if="filteredDocuments.length > 0"
         >
 
-            <template v-slot:cell-notes="{value}">
+            <template #cell-notes="{value}">
                 <truncate-expander :value="value" :truncate-length="50"></truncate-expander>
             </template>
-            <template v-slot:cell-is_final="{item}">
+            <template #cell-is_final="{item}">
                 <icon-checkmark 
                     v-if="!item.is_final" 
                     @click="markFinal(item)" 
@@ -197,7 +197,7 @@ export default {
                 ></icon-checkmark>
             </template>
 
-            <template v-slot:cell-id="{item}">
+            <template #cell-id="{item}">
                 <div class="flex space-x-1">
 
                 <button class="btn btn-xs" @click="downloadDocument(item)">

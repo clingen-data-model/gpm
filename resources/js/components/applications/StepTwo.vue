@@ -41,7 +41,7 @@ export default {
         title="Draft ACMG Guideline Specifications"
         @updated="$emit('updated')"
     >
-        <template v-slot:sections>
+        <template #sections>
             <div class="application-section screen-block">
                 <h2>Draft Specifications</h2>
                 <SpecificationsSection :doc-type-id="2" />

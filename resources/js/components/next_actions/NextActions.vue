@@ -115,16 +115,16 @@ export default {
             :data="filteredNextActions" v-model:sort="tableSort"  
             v-if="filteredNextActions.length > 0"
         >
-            <template v-slot:cell-entry="{item}">
+            <template #cell-entry="{item}">
                 <div  v-html="item.entry"></div>
             </template>
-            <template v-slot:cell-assigned_to="{item}">
+            <template #cell-assigned_to="{item}">
                 <div class="flex">
                     {{item.assignee ? item.assignee.name : '??'}}&nbsp;
                     <span v-if="item.assigned_to_name"> - {{item.assigned_to_name}}</span> 
                 </div>
             </template>
-            <template v-slot:cell-action="{item}">
+            <template #cell-action="{item}">
                 <div class="flex space-x-1">
                     <edit-icon-button @click="$router.push({name: 'EditNextAction', params: {uuid: application.uuid, id: item.id}})"></edit-icon-button>
                     <TrashIconButton @click="initiateDelete(item)"></TrashIconButton>

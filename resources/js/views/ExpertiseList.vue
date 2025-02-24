@@ -136,15 +136,15 @@ export default {
             v-model:sort="sort"
             :reset-page-on-data-change="false"
         >
-            <template v-slot:header>
+            <template #header>
                 <label>
                     Filter:
                     <input type="text" v-model="filter">
                 </label>
             </template>
-            <template v-slot:cell-actions="{item}">
+            <template #cell-actions="{item}">
                 <dropdown-menu hide-cheveron>
-                    <template v-slot:label>
+                    <template #label>
                         <button class="btn btn-xs">&hellip;</button>
                     </template>
                     <dropdown-item @click="edit(item)">Edit</dropdown-item>

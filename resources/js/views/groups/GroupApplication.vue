@@ -128,7 +128,7 @@ export default {
                 :application="application"
                 :is-collapsed="!showApplicationToc"
             >
-                <template v-slot:footer>
+                <template #footer>
                     <div class="my-4 p-4 text-sm flex items-start space-x-4 bg-gray-200 rounded-lg">
                         <icon-question height="48" width="48" class="text-blue-700"/>
                         <div>

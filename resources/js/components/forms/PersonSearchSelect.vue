@@ -72,12 +72,12 @@ export default {
             placeholder="Person name or email"
             @update:modelValue="searchText = null"
         >
-            <template v-slot:selection-label="{selection}">
+            <template #selection-label="{selection}">
                 <div>
                     {{selection.first_name}} {{selection.last_name}} &lt;{{selection.email}}&gt;
                 </div>
             </template>
-            <template v-slot:option="{option}">
+            <template #option="{option}">
                 <div v-if="typeof option == 'object'">
                     {{option.name}} &lt;{{option.email}}&gt;
                 </div>

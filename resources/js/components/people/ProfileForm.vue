@@ -128,12 +128,12 @@
 
         <input-row
             :errors="errors.credential_ids">
-            <template v-slot:label>
+            <template #label>
                 Credentials
                 <div>
                     <popover hover arrow>
                         <div class="text-xs cursor-pointer text-blue-600">What is this?</div>
-                        <template v-slot:content>
+                        <template #content>
                             <div style="max-width: 500px">
                                 <h4>What do you mean by credentials?</h4>
                                 <p>
@@ -155,12 +155,12 @@
 
         <input-row
             :errors="errors.expertise_ids">
-            <template v-slot:label>
+            <template #label>
                 Area of Expertise
                 <div>
                     <popover hover arrow>
                         <div class="text-xs cursor-pointer text-blue-600">What is this?</div>
-                        <template v-slot:content>
+                        <template #content>
                             <div style="max-width: 500px">
                                 <h4>What do you mean by <em>Area of Expertise</em>?</h4>
                                 <p>

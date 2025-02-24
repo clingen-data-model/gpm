@@ -173,7 +173,7 @@ export default {
                         v-remaining-height
                         row-class="cursor-pointer active:bg-blue-100"
                     >
-                        <template v-slot:cell-displayStatus="{item}">
+                        <template #cell-displayStatus="{item}">
                             <badge class="text-xs" :color="item.statusColor">
                                 {{ item.displayStatus
                                 }}<span v-if="item.status.id == 1 && item.is_ep"
@@ -183,7 +183,7 @@ export default {
                                 >
                             </badge>
                         </template>
-                        <template v-slot:cell-coordinators="{value}">
+                        <template #cell-coordinators="{value}">
                             <div v-if="value.length == 0"></div>
                             <span v-for="(coordinator, idx) in value" :key="coordinator.id">
                                 <span v-if="idx > 0">, </span>

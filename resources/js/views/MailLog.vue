@@ -134,10 +134,10 @@ export default {
             paginated
             ref="dataTable"
         >
-            <template v-slot:header>
+            <template #header>
                 <div class="mb-2">Filter: <input type="text" v-model="filter"></div>
             </template>
-            <template v-slot:cell-to="{item}">
+            <template #cell-to="{item}">
                 <ul>
                     <li v-for="recipient in item.to" :key="recipient.address">
                         <span v-if="recipient.name">
@@ -147,7 +147,7 @@ export default {
                     </li>
                 </ul>
             </template>
-            <template v-slot:cell-actions="{item}">
+            <template #cell-actions="{item}">
                 <div>
                     <button class="btn btn-xs" @click.stop="initResend(item)" v-if="hasPermission('people-manage')">Resend</button>
                 </div>

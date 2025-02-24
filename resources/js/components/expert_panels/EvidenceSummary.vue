@@ -74,7 +74,7 @@ export default {
                 <header class="flex justify-between">
                     <h4>{{summary.gene.gene_symbol}} - {{summary.variant}}</h4>
                     <dropdown-menu :hide-cheveron="true" class="relative" v-if="canEdit">
-                        <template v-slot:label>
+                        <template #label>
                             <button class="btn btn-xs">&hellip;</button>
                         </template>
                         <dropdown-item @click="edit()">Edit</dropdown-item>

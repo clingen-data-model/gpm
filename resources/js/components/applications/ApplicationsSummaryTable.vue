@@ -226,17 +226,17 @@ export default {
             class="overflow-auto text-xs"
             ref="table"
         >
-            <template v-slot:cell-contacts="{item}">
+            <template #cell-contacts="{item}">
                 <ul>
                     <li v-for="member in item.group.contacts" :key="member.id">
                         <small><a :href="`mailto:${member.person.email}`" class="text-blue-500">{{member.person.name}}</a></small>
                     </li>
                 </ul>
             </template>
-            <template v-slot:cell-latest_log_entry_description="{value}">
+            <template #cell-latest_log_entry_description="{value}">
                 <div v-html="value"></div>
             </template>
-            <template v-slot:cell-latest_pending_next_action_entry="{value}">
+            <template #cell-latest_pending_next_action_entry="{value}">
                 <div v-html="value"></div>
             </template>
         </data-table>

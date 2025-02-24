@@ -63,13 +63,13 @@
                     label="Additional notes for chairs"
                     labelClass="font-bold"
                 >
-                    <template v-slot:after-input>
+                    <template #after-input>
                         <note>This is not intended for additional comments about the applicaiton. This is intended for notes about process, timeing, etc.  To add comments related to the content of the application click 'Cancel' and add notes alongside the application.</note>
                     </template>
                 </input-row>
 
                 
-                <template v-slot:footer>
+                <template #footer>
                     <button-row @submitted="sendToChairs" @canceled="cancel" submit-text="Send to Chairs"></button-row>
                 </template>
             </modal-dialog>

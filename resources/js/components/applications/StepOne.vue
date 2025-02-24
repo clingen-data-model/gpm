@@ -37,7 +37,7 @@ export default {
             approve-button-label="Approve Scope and Membership"
             @updated="$emit('updated')"
         >
-            <template v-slot:sections>
+            <template #sections>
                 <DefinitionReview />
             </template>
         </BaseStep>

@@ -70,7 +70,7 @@ export default {
 <template>
   <div v-if="$store.getters.isAuthed">
     <popover hover arrow placement="left">
-        <template v-slot:content>
+        <template #content>
             <div class="whitespace-no-wrap w-28 text-xs">Report a problem</div>
         </template>
             <button

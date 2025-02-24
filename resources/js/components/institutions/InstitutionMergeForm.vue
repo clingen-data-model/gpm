@@ -82,14 +82,14 @@ export default {
             </ol>
         </p>
         <input-row label="Merge" vertical>
-            <template v-slot:label>
+            <template #label>
                 Merge <note class="inline-block">(Obsolete institution that will be deleted)</note>
             </template>
             <institution-search-select :model-value="obsoleteIds" @update:modelValue="handleObsoleteUpdate" :allow-add="false"></institution-search-select>
             
         </input-row>
         <input-row label="Into" :errors="errors.authority_id" vertical>
-            <template v-slot:label>Into <note class="inline">(Authoritative institution)</note></template>
+            <template #label>Into <note class="inline">(Authoritative institution)</note></template>
             <institution-search-select v-model="authorityId" :allow-add="false"></institution-search-select>
         </input-row>
         <button-row submit-text="Merge" @submitted="commitMerge" @canceled="cancelMerge" />

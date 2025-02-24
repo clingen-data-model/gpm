@@ -485,7 +485,7 @@ export default {
             <ActivityLog
               :log-entries="logEntries"
               :api-url="`/api/groups/${group.uuid}/activity-logs`"
-              v-bind:log-updated="getLogEntries"
+              :log-updated="getLogEntries"
             ></ActivityLog>
             <button class="btn btn-xs mt-1" @click="getLogEntries">Refresh</button>
           </tab-item>
