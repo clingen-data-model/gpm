@@ -18,7 +18,7 @@ export default {
 }
 </script>
 <template>
-    <button class="btn btn-xs">
-        <icon-checkmark width="12" height="16"></icon-checkmark>
-    </button>
+  <button class="btn btn-xs">
+    <icon-checkmark width="12" height="16" />
+  </button>
 </template>

@@ -38,25 +38,27 @@ export default {
 }
 </script>
 <template>
-    <SearchSelect 
-        v-model="selectedDisease" 
-        :search-function="search"
-        style="z-index: 2"
-        placeholder="MonDO ID or name"
-    >
-        <template #selection-label="{selection}">
-            <div v-if="typeof selection == 'object'">
-                {{ selection.mondo_id }} - {{ selection.name }}
-            </div>
-            <div v-else>{{ selection }}</div>
-        </template>
-        <template #option="{option}">
-            <div v-if="typeof option == 'object'">
-                {{ option.mondo_id }} - {{ option.name }}
-            </div>
-            <div v-else>
-                {{ option }}
-            </div>
-        </template>
-    </SearchSelect>
+  <SearchSelect 
+    v-model="selectedDisease" 
+    :search-function="search"
+    style="z-index: 2"
+    placeholder="MonDO ID or name"
+  >
+    <template #selection-label="{selection}">
+      <div v-if="typeof selection == 'object'">
+        {{ selection.mondo_id }} - {{ selection.name }}
+      </div>
+      <div v-else>
+        {{ selection }}
+      </div>
+    </template>
+    <template #option="{option}">
+      <div v-if="typeof option == 'object'">
+        {{ option.mondo_id }} - {{ option.name }}
+      </div>
+      <div v-else>
+        {{ option }}
+      </div>
+    </template>
+  </SearchSelect>
 </template>

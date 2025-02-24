@@ -88,27 +88,33 @@ export default {
 }
 </script>
 <template>
-    <form-container>
-        <input-row label="Document" :errors="errors.file">
-            <input ref="fileInput" type="file">
-        </input-row>
+  <form-container>
+    <input-row label="Document" :errors="errors.file">
+      <input ref="fileInput" type="file">
+    </input-row>
 
-        <input-row label="Type" :errors="errors.document_type_id">
-            <select v-model="newDocument.document_type_id">
-                <option :value="null">Select...</option>
-                <option v-for="type in documentTypes" :key="type.id" :value="type.id">
-                    {{ type.long_name }}
-                </option>
-            </select>
-        </input-row>
+    <input-row label="Type" :errors="errors.document_type_id">
+      <select v-model="newDocument.document_type_id">
+        <option :value="null">
+          Select...
+        </option>
+        <option v-for="type in documentTypes" :key="type.id" :value="type.id">
+          {{ type.long_name }}
+        </option>
+      </select>
+    </input-row>
 
-        <input-row :errors="errors.notes" label="Notes">
-            <textarea v-model="newDocument.notes" name="notes" cols="30" rows="10"></textarea>
-        </input-row>
+    <input-row :errors="errors.notes" label="Notes">
+      <textarea v-model="newDocument.notes" name="notes" cols="30" rows="10" />
+    </input-row>
         
-        <button-row>
-            <button class="btn white" @click="cancel">Cancel</button>
-            <button class="btn blue" @click="save">Save</button>
-        </button-row>
-    </form-container>
+    <button-row>
+      <button class="btn white" @click="cancel">
+        Cancel
+      </button>
+      <button class="btn blue" @click="save">
+        Save
+      </button>
+    </button-row>
+  </form-container>
 </template>

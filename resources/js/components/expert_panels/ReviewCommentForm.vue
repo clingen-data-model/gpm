@@ -107,8 +107,8 @@
     }
 </script>
 <template>
-    <div>
-        <data-form v-model="newComment" :fields="fields" :errors="errors"></data-form>
-        <button-row size="xs" submit-text="Save" @submitted="save" @canceled="cancel"></button-row>
-    </div>
+  <div>
+    <data-form v-model="newComment" :fields="fields" :errors="errors" />
+    <button-row size="xs" submit-text="Save" @submitted="save" @canceled="cancel" />
+  </div>
 </template>

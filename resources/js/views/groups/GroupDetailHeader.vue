@@ -30,52 +30,58 @@ export default {
 }
 </script>
 <template>
-    <header>
-        <group-breadcrumbs />
-        <h1 class="flex justify-between items-start">
-            <div>
-                {{ group.displayName }} <badge :color="group.statusColor" class="text-xs">{{ group.status ? group.status.name : 'loading...' }}</badge>
-                <div class="text-sm text-gray-800 mt-1 font-normal">
-                    <span v-if="group.isEp() && showShortName">Short Name: <strong>{{ group.expert_panel.full_short_base_name || '--' }}</strong>
-                    |
-                    </span>
-                    <span v-if="group.isEp()">
-                        Affiliation ID: <strong>{{ group.expert_panel.affiliation_id || '--' }}</strong>
-                    </span>
-                    <span v-if="group.parent_id">
-                    | Part of the <router-link :to="{name: 'GroupDetail', params: {uuid: group.parent.uuid}}">{{ group.parent.name }}</router-link>
-                    </span>
-                </div>
-                <note v-if="hasRole('super-user')" class="font-normal mt-2">
-                    group.id: {{ group.id }}
-                    <span v-if="group.is_ep"> | expertPanel.id: {{ group.expert_panel.id }}</span>
-                </note>
-            </div>
-            <button 
-                v-if="hasAnyPermission(['groups-manage', ['info-edit', group]])" 
-                class="btn btn-xs"
-                @click="$emit('showEdit')" 
-            >
-                Edit Group Info
-            </button>
-        </h1>
-        <dictionary-row label="Chairs:">
-            <template #label><strong>Chairs:</strong></template>
-            <div v-if="group.chairs.length > 0">
-                {{ group.chairs.map(c => c.person.name).join(', ') }}
-            </div>
-            <div v-else class="text-gray-500">
-                None assigned
-            </div>
-        </dictionary-row>
-        <dictionary-row label="Coordinators:">
-            <template #label><strong>Coordinators:</strong></template>
-            <div v-if="group.coordinators.length > 0">
-                {{ group.coordinators.map(c => c.person.name).join(', ') }}
-            </div>
-            <div v-else class="text-gray-500">
-                None assigned
-            </div>
-        </dictionary-row>
-    </header>
+  <header>
+    <group-breadcrumbs />
+    <h1 class="flex justify-between items-start">
+      <div>
+        {{ group.displayName }} <badge :color="group.statusColor" class="text-xs">
+          {{ group.status ? group.status.name : 'loading...' }}
+        </badge>
+        <div class="text-sm text-gray-800 mt-1 font-normal">
+          <span v-if="group.isEp() && showShortName">Short Name: <strong>{{ group.expert_panel.full_short_base_name || '--' }}</strong>
+            |
+          </span>
+          <span v-if="group.isEp()">
+            Affiliation ID: <strong>{{ group.expert_panel.affiliation_id || '--' }}</strong>
+          </span>
+          <span v-if="group.parent_id">
+            | Part of the <router-link :to="{name: 'GroupDetail', params: {uuid: group.parent.uuid}}">{{ group.parent.name }}</router-link>
+          </span>
+        </div>
+        <note v-if="hasRole('super-user')" class="font-normal mt-2">
+          group.id: {{ group.id }}
+          <span v-if="group.is_ep"> | expertPanel.id: {{ group.expert_panel.id }}</span>
+        </note>
+      </div>
+      <button 
+        v-if="hasAnyPermission(['groups-manage', ['info-edit', group]])" 
+        class="btn btn-xs"
+        @click="$emit('showEdit')" 
+      >
+        Edit Group Info
+      </button>
+    </h1>
+    <dictionary-row label="Chairs:">
+      <template #label>
+        <strong>Chairs:</strong>
+      </template>
+      <div v-if="group.chairs.length > 0">
+        {{ group.chairs.map(c => c.person.name).join(', ') }}
+      </div>
+      <div v-else class="text-gray-500">
+        None assigned
+      </div>
+    </dictionary-row>
+    <dictionary-row label="Coordinators:">
+      <template #label>
+        <strong>Coordinators:</strong>
+      </template>
+      <div v-if="group.coordinators.length > 0">
+        {{ group.coordinators.map(c => c.person.name).join(', ') }}
+      </div>
+      <div v-else class="text-gray-500">
+        None assigned
+      </div>
+    </dictionary-row>
+  </header>
 </template>

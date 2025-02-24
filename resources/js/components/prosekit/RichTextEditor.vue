@@ -42,15 +42,18 @@ watchPostEffect((onCleanup) => {
 </script>
 
 <template>
-    <ProseKit :editor="editor">
+  <ProseKit :editor="editor">
+    <div
+      class="box-border h-full w-full min-h-36 overflow-y-hidden overflow-x-hidden rounded-md border border-solid border-gray-200 shadow flex flex-col bg-white"
+    >
+      <ProsekitToolbar />
+      <ProsekitInlineMenu />
+      <div class="relative w-full flex-1 box-border overflow-y-scroll">
         <div
-            class='box-border h-full w-full min-h-36 overflow-y-hidden overflow-x-hidden rounded-md border border-solid border-gray-200 shadow flex flex-col bg-white'>
-            <ProsekitToolbar />
-            <ProsekitInlineMenu />
-            <div class='relative w-full flex-1 box-border overflow-y-scroll'>
-                <div ref="editorRef"
-                    class='ProseMirror box-border min-h-full px-4 py-4 outline-none outline-0 [&_span[data-mention="user"]]:text-blue-500 [&_span[data-mention="tag"]]:text-violet-500' />
-            </div>
-        </div>
-    </ProseKit>
+          ref="editorRef"
+          class="ProseMirror box-border min-h-full px-4 py-4 outline-none outline-0 [&_span[data-mention=&quot;user&quot;]]:text-blue-500 [&_span[data-mention=&quot;tag&quot;]]:text-violet-500"
+        />
+      </div>
+    </div>
+  </ProseKit>
 </template>

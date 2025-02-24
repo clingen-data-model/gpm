@@ -203,39 +203,39 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <div class="flex justify-between">
-            <div class="mb-1 flex space-x-2">
-                <label>Filter: <input v-model="filter" type="text" class="sm" placeholder="filter"></label>
-                <checkbox 
-                    v-model="showCompleted"
-                    label="Show completed"
-                />
-            </div>
-        </div>
-        <data-table 
-            v-model:sort="sort" 
-            :data="filteredData" 
-            :fields="selectedFields" 
-            :filter-term="filter"
-            :row-click-handler="goToApplication"
-            row-class="cursor-pointer"
-            :style="remainingHeight"
-            class="overflow-auto text-xs"
-        >
-            <template #cell-contacts="{item}">
-                <ul>
-                    <li v-for="member in item.group.contacts" :key="member.id">
-                        <small><a :href="`mailto:${member.person.email}`" class="text-blue-500">{{ member.person.name }}</a></small>
-                    </li>
-                </ul>
-            </template>
-            <template #cell-latest_log_entry_description="{value}">
-                <div v-html="value"></div>
-            </template>
-            <template #cell-latest_pending_next_action_entry="{value}">
-                <div v-html="value"></div>
-            </template>
-        </data-table>
+  <div>
+    <div class="flex justify-between">
+      <div class="mb-1 flex space-x-2">
+        <label>Filter: <input v-model="filter" type="text" class="sm" placeholder="filter"></label>
+        <checkbox 
+          v-model="showCompleted"
+          label="Show completed"
+        />
+      </div>
     </div>
+    <data-table 
+      v-model:sort="sort" 
+      :data="filteredData" 
+      :fields="selectedFields" 
+      :filter-term="filter"
+      :row-click-handler="goToApplication"
+      row-class="cursor-pointer"
+      :style="remainingHeight"
+      class="overflow-auto text-xs"
+    >
+      <template #cell-contacts="{item}">
+        <ul>
+          <li v-for="member in item.group.contacts" :key="member.id">
+            <small><a :href="`mailto:${member.person.email}`" class="text-blue-500">{{ member.person.name }}</a></small>
+          </li>
+        </ul>
+      </template>
+      <template #cell-latest_log_entry_description="{value}">
+        <div v-html="value" />
+      </template>
+      <template #cell-latest_pending_next_action_entry="{value}">
+        <div v-html="value" />
+      </template>
+    </data-table>
+  </div>
 </template>

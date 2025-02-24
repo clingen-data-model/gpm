@@ -34,21 +34,19 @@ export default {
 }
 </script>
 <template>
-    <div 
-        :class="{collapsed: isCollapsed}"
-        class="app-menu overflow-y-auto relative"
-    >
-        <ul class="menu-items">
-            <li v-for="(item, idx) in application.steps" :key="idx">
-                <MenuItem :item="item" class="block" :is-current-step="isCurrentStep(item)"></MenuItem>
-            </li>
-        </ul>
-        <div class="">
-            <slot name="footer">
-
-            </slot>
-        </div>
+  <div 
+    :class="{collapsed: isCollapsed}"
+    class="app-menu overflow-y-auto relative"
+  >
+    <ul class="menu-items">
+      <li v-for="(item, idx) in application.steps" :key="idx">
+        <MenuItem :item="item" class="block" :is-current-step="isCurrentStep(item)" />
+      </li>
+    </ul>
+    <div class="">
+      <slot name="footer" />
     </div>
+  </div>
 </template>
 <style lang="postcss" scoped>
   .app-menu {

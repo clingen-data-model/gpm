@@ -70,11 +70,14 @@
     })
 </script>
 <template>
-    <component :is="applicationView"
-        :loading="loading"
-        @updated="getGroup"
-        @saved="getLatestSubmission"
-        @deleted="getLatestSubmission"
-    />
-    <div v-show="loading">Loading&hellip;</div>
+  <component
+    :is="applicationView"
+    :loading="loading"
+    @updated="getGroup"
+    @saved="getLatestSubmission"
+    @deleted="getLatestSubmission"
+  />
+  <div v-show="loading">
+    Loading&hellip;
+  </div>
 </template>

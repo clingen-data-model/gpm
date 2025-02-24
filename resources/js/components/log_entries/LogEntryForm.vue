@@ -113,15 +113,19 @@ export default {
 }
 </script>
 <template>
-    <form-container class="log-entry-form">
-        <input-row v-model="newEntry.log_date" label="Log Date" :errors="errors.log_date" type="date"></input-row>
-        <StepInput v-if="application.expert_panel_type_id === 2" v-model="newEntry.step" :errors="errors.step"/>
-        <input-row label="Entry" :errors="errors.entry">
-            <RichTextEditor v-model="newEntry.entry" />
-        </input-row>
-        <button-row>
-            <button class="btn" @click="cancel">Cancel</button>
-            <button class="btn blue" @click="save">Save</button>
-        </button-row>
-    </form-container>
+  <form-container class="log-entry-form">
+    <input-row v-model="newEntry.log_date" label="Log Date" :errors="errors.log_date" type="date" />
+    <StepInput v-if="application.expert_panel_type_id === 2" v-model="newEntry.step" :errors="errors.step" />
+    <input-row label="Entry" :errors="errors.entry">
+      <RichTextEditor v-model="newEntry.entry" />
+    </input-row>
+    <button-row>
+      <button class="btn" @click="cancel">
+        Cancel
+      </button>
+      <button class="btn blue" @click="save">
+        Save
+      </button>
+    </button-row>
+  </form-container>
 </template>

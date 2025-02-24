@@ -53,27 +53,29 @@
 </script>
 
 <template>
-    <SearchSelect
-        v-model="workingCopy"
-        :options="credentials"
-        :multiple="multiple"
-        showOptionsOnFocus
-        showOptionsWhenEmpty
-        :searchFunction="searchCredentials"
-    >
-        <template #fixedBottomOption>
-            <div class="text-sm">
-                Don't see your credential? <button class="link" @click="initNewCredential">Create a new one.</button>
-            </div>
-        </template>
-    </SearchSelect>
-    <teleport to='body'>
-        <modal-dialog v-model="showCreateForm" title="Add a new credential">
-            <CredentialCreateForm
-                :starterString="searchText"
-                @saved="handleNewCredential"
-                @canceled="cancelNewCredential"
-            />
-        </modal-dialog>
-    </teleport>
+  <SearchSelect
+    v-model="workingCopy"
+    :options="credentials"
+    :multiple="multiple"
+    showOptionsOnFocus
+    showOptionsWhenEmpty
+    :searchFunction="searchCredentials"
+  >
+    <template #fixedBottomOption>
+      <div class="text-sm">
+        Don't see your credential? <button class="link" @click="initNewCredential">
+          Create a new one.
+        </button>
+      </div>
+    </template>
+  </SearchSelect>
+  <teleport to="body">
+    <modal-dialog v-model="showCreateForm" title="Add a new credential">
+      <CredentialCreateForm
+        :starterString="searchText"
+        @saved="handleNewCredential"
+        @canceled="cancelNewCredential"
+      />
+    </modal-dialog>
+  </teleport>
 </template>

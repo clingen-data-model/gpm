@@ -27,15 +27,23 @@ export default {
 }
 </script>
 <template>
-    <div>
-        Are you sure you want to approve this institution?
-        <dictionary-row label="Name">
-            {{ modelValue.name }}
-        </dictionary-row>
-        <dictionary-row label="Abbreviation">{{ modelValue.abbreviation || '--' }}</dictionary-row>
-        <dictionary-row label="URL">{{ modelValue.url || '--' }}</dictionary-row>
-        <dictionary-row label="Country">{{ modelValue.country ? modelValue.country.name : '--' }}</dictionary-row>
-        <dictionary-row label="Reportable">{{ modelValue.reportable ? 'Yes' : 'No' }}</dictionary-row>
-        <button-row submit-text="Approve" @submitted="approve" @cancel="cancelApproval" />
-    </div>
+  <div>
+    Are you sure you want to approve this institution?
+    <dictionary-row label="Name">
+      {{ modelValue.name }}
+    </dictionary-row>
+    <dictionary-row label="Abbreviation">
+      {{ modelValue.abbreviation || '--' }}
+    </dictionary-row>
+    <dictionary-row label="URL">
+      {{ modelValue.url || '--' }}
+    </dictionary-row>
+    <dictionary-row label="Country">
+      {{ modelValue.country ? modelValue.country.name : '--' }}
+    </dictionary-row>
+    <dictionary-row label="Reportable">
+      {{ modelValue.reportable ? 'Yes' : 'No' }}
+    </dictionary-row>
+    <button-row submit-text="Approve" @submitted="approve" @cancel="cancelApproval" />
+  </div>
 </template>

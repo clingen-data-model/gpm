@@ -21,9 +21,9 @@ export default {
 }
 </script>
 <template>
-    <div class="border p-2 rounded text-md-lg" :class="variant">
-        <slot></slot>
-    </div>
+  <div class="border p-2 rounded text-md-lg" :class="variant">
+    <slot />
+  </div>
 </template>
 <style lang="postcss" scoped>
     .danger {

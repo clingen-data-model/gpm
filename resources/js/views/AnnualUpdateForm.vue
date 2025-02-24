@@ -274,124 +274,125 @@ export default {
 }
 </script>
 <template>
-    <div class="annual-update relative">
-        <static-alert v-if="!annualUpdate.completed_at" :variant="dueDateAlertVariant" class="mb-4">
-            This annual update for {{ window.for_year }} is due on {{ formatDate(window.end) }}
-        </static-alert>
-        <static-alert v-if="showLastYearLink" class="mb-4">
-            Refer to <a :href="`/annual-updates/${expertPanel.previous_year_annual_update.id}`" class="font-bold" target="ann-up-responses">your responses from last year</a>.
-        </static-alert>
-        <group-breadcrumbs :group="group" />
+  <div class="annual-update relative">
+    <static-alert v-if="!annualUpdate.completed_at" :variant="dueDateAlertVariant" class="mb-4">
+      This annual update for {{ window.for_year }} is due on {{ formatDate(window.end) }}
+    </static-alert>
+    <static-alert v-if="showLastYearLink" class="mb-4">
+      Refer to <a :href="`/annual-updates/${expertPanel.previous_year_annual_update.id}`" class="font-bold" target="ann-up-responses">your responses from last year</a>.
+    </static-alert>
+    <group-breadcrumbs :group="group" />
 
-        <h1>
-            {{ group.displayName }} - Annual Update for {{ year }}
-            <note class="font-normal">
-                Group ID: {{ group.id }}
-                |
-                ExpertPanel ID: {{ group.expert_panel.id }}
-                |
-                AnnualUpdate ID: {{ annualUpdate.id }}
-                |
-                Last Saved: {{ formatDateTime(lastSaved) }}
-            </note>
-        </h1>
+    <h1>
+      {{ group.displayName }} - Annual Update for {{ year }}
+      <note class="font-normal">
+        Group ID: {{ group.id }}
+        |
+        ExpertPanel ID: {{ group.expert_panel.id }}
+        |
+        AnnualUpdate ID: {{ annualUpdate.id }}
+        |
+        Last Saved: {{ formatDateTime(lastSaved) }}
+      </note>
+    </h1>
 
-        <static-alert v-if="annualUpdate.completed_at" variant="success" class="mb-4">
-            Your annual update was submitted on {{ formatDate(annualUpdate.completed_at) }}
-        </static-alert>
+    <static-alert v-if="annualUpdate.completed_at" variant="success" class="mb-4">
+      Your annual update was submitted on {{ formatDate(annualUpdate.completed_at) }}
+    </static-alert>
 
-            <SubmitterInformation v-model="annualUpdate" :errors="errors" />
+    <SubmitterInformation v-model="annualUpdate" :errors="errors" />
 
-                <!-- <div v-if="group.is_vcep || (group.is_gcep && annualUpdate.data.ep_activity == 'active') "> -->
-                <div>
-                    <MembershipUpdate v-model="annualUpdate" :errors="errors" />
+    <!-- <div v-if="group.is_vcep || (group.is_gcep && annualUpdate.data.ep_activity == 'active') "> -->
+    <div>
+      <MembershipUpdate v-model="annualUpdate" :errors="errors" />
 
-                    <template v-if="expertPanel.is_gcep">
-                        <AppSection title="Use of GCI and GeneTracker Systems">
-                            <GciGtUse v-model="annualUpdate" :errors="errors" />
-                        </AppSection>
+      <template v-if="expertPanel.is_gcep">
+        <AppSection title="Use of GCI and GeneTracker Systems">
+          <GciGtUse v-model="annualUpdate" :errors="errors" />
+        </AppSection>
 
-                        <AppSection title="Summary of total numbers of genes curated">
-                            <GeneCurationTotals v-model="annualUpdate" :errors="errors" />
-                        </AppSection>
+        <AppSection title="Summary of total numbers of genes curated">
+          <GeneCurationTotals v-model="annualUpdate" :errors="errors" />
+        </AppSection>
 
-                        <AppSection title="Changes to plans for ongoing curation">
-                            <GcepOngoingPlansUpdateForm v-model="annualUpdate" :errors="errors" @updated="saveOngoingPlans"></GcepOngoingPlansUpdateForm>
-                        </AppSection>
+        <AppSection title="Changes to plans for ongoing curation">
+          <GcepOngoingPlansUpdateForm v-model="annualUpdate" :errors="errors" @updated="saveOngoingPlans" />
+        </AppSection>
 
-                        <AppSection title="Gene Re-curation/Re-review">
-                            <GcepRereviewForm v-model="annualUpdate" :errors="errors"></GcepRereviewForm>
-                        </AppSection>
-                    </template>
+        <AppSection title="Gene Re-curation/Re-review">
+          <GcepRereviewForm v-model="annualUpdate" :errors="errors" />
+        </AppSection>
+      </template>
 
-                    <AppSection v-if="expertPanel.is_vcep" title="Use of Variant Curation Interface (VCI)">
-                        <VciUse v-model="annualUpdate" :errors="errors"></VciUse>
-                    </AppSection>
+      <AppSection v-if="expertPanel.is_vcep" title="Use of Variant Curation Interface (VCI)">
+        <VciUse v-model="annualUpdate" :errors="errors" />
+      </AppSection>
 
-                    <AppSection title="Goals for next year">
-                        <GoalsForm v-model="annualUpdate" :errors="errors" />
-                    </AppSection>
+      <AppSection title="Goals for next year">
+        <GoalsForm v-model="annualUpdate" :errors="errors" />
+      </AppSection>
 
-                    <AppSection title="Additional Funding">
-                        <FundingForm v-model="annualUpdate" :errors="errors" />
-                    </AppSection>
+      <AppSection title="Additional Funding">
+        <FundingForm v-model="annualUpdate" :errors="errors" />
+      </AppSection>
 
-                    <website-attestation v-model="annualUpdate" :errors="errors" />
+      <website-attestation v-model="annualUpdate" :errors="errors" />
 
-                    <template
-                        v-if="expertPanel.is_vcep && expertPanel.has_approved_draft">
-                        <!-- <dev-component>Begin questions for specifcation-ed VCEPS</dev-component> -->
-                        <AppSection title="Progress on Rule Specification">
-                            <SpecificationProgress v-model="annualUpdate" :errors="errors" />
-                        </AppSection>
+      <template
+        v-if="expertPanel.is_vcep && expertPanel.has_approved_draft"
+      >
+        <!-- <dev-component>Begin questions for specifcation-ed VCEPS</dev-component> -->
+        <AppSection title="Progress on Rule Specification">
+          <SpecificationProgress v-model="annualUpdate" :errors="errors" />
+        </AppSection>
+      </template>
 
-                    </template>
+      <template v-if="expertPanel.is_vcep && expertPanel.sustained_curation_is_approved">
+        <!-- <dev-component>Begin Questions for sustained curation</dev-component> -->
 
-                    <template v-if="expertPanel.is_vcep && expertPanel.sustained_curation_is_approved">
-                        <!-- <dev-component>Begin Questions for sustained curation</dev-component> -->
+        <!-- <variant-curation-workflow v-model="annualUpdate" :errors="errors" /> -->
 
-                        <!-- <variant-curation-workflow v-model="annualUpdate" :errors="errors" /> -->
+        <VariantReanalysis v-model="annualUpdate" :errors="errors" />
 
-                        <VariantReanalysis v-model="annualUpdate" :errors="errors" />
+        <VcepOngoingPlansUpdateForm v-model="annualUpdate" :errors="errors" @updated="saveOngoingPlans" />
 
-                        <VcepOngoingPlansUpdateForm v-model="annualUpdate" :errors="errors" @updated="saveOngoingPlans"/>
+        <MemberDesignationUpdate
+          v-model="annualUpdate"
+          :errors="errors"
+          @updated="debounceSave"
+        />
 
-                        <MemberDesignationUpdate
-                            v-model="annualUpdate"
-                            :errors="errors"
-                            @updated="debounceSave"
-                        />
-
-                        <!-- <vcep-plans-for-specifications
+        <!-- <vcep-plans-for-specifications
                             v-model="annualUpdate"
                             :errors="errors"
                         /> -->
 
-                        <!-- <dev-component>End Questions for sustained curation</dev-component> -->
-                    </template>
-
-                </div>
-            <hr>
-            <button v-if="!annualUpdate.completed_at" class="btn btn-lg" @click="submit">Submit annual update</button>
-            <static-alert v-if="hasErrors" variant="danger mt-4">
-                There are problems with your annual update that must be corrected before you can submit.
-                <br>
-                Please see items highlighted in red above.
-            </static-alert>
-
-            <static-alert v-if="annualUpdate.completed_at" variant="success">
-                Thank you for submitting your annual update.
-            </static-alert>
-
-        <br>
-        <br>
-
-        <teleport to='body'>
-            <modal-dialog v-model="showModal" :title="$route.meta.title" @closed="handleModalClosed">
-                <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
-            </modal-dialog>
-        </teleport>
+        <!-- <dev-component>End Questions for sustained curation</dev-component> -->
+      </template>
     </div>
+    <hr>
+    <button v-if="!annualUpdate.completed_at" class="btn btn-lg" @click="submit">
+      Submit annual update
+    </button>
+    <static-alert v-if="hasErrors" variant="danger mt-4">
+      There are problems with your annual update that must be corrected before you can submit.
+      <br>
+      Please see items highlighted in red above.
+    </static-alert>
+
+    <static-alert v-if="annualUpdate.completed_at" variant="success">
+      Thank you for submitting your annual update.
+    </static-alert>
+
+    <br>
+    <br>
+
+    <teleport to="body">
+      <modal-dialog v-model="showModal" :title="$route.meta.title" @closed="handleModalClosed">
+        <router-view ref="modalView" @saved="hideModal" @canceled="hideModal" />
+      </modal-dialog>
+    </teleport>
+  </div>
 </template>
 <style lang="postcss">
     .annual-update .input-row .label-container{

@@ -54,27 +54,26 @@
     })
 </script>
 <template>
-    <div>
-        <SustainedCurationReviewAlert
-            v-for="task in sustainedCurationReviews"
-            :key="task.id"
-            :group="task.assignee"
-            class="mb-2"
-        />
+  <div>
+    <SustainedCurationReviewAlert
+      v-for="task in sustainedCurationReviews"
+      :key="task.id"
+      :group="task.assignee"
+      class="mb-2"
+    />
 
-        <AnnualUpdateAlert
-            v-for="group in coordinatingGroups" :key="group.id"
-            :group="group"
-            :show-group-name="true"
-            class="mb-2"
-        />
+    <AnnualUpdateAlert
+      v-for="group in coordinatingGroups" :key="group.id"
+      :group="group"
+      :show-group-name="true"
+      class="mb-2"
+    />
 
-        <CoiAlert
-            v-for="membership in user.person.membershipsWithPendingCois"
-            :key="membership.id"
-            :membership="membership"
-            class="mb-2"
-        />
-
-    </div>
+    <CoiAlert
+      v-for="membership in user.person.membershipsWithPendingCois"
+      :key="membership.id"
+      :membership="membership"
+      class="mb-2"
+    />
+  </div>
 </template>

@@ -53,8 +53,8 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <input-row v-model="workingCopy.name" label="Name" :errors="errors.name" />
-        <button-row submit-text="Save" @submitted="save" @cancel="cancel" />
-    </div>
+  <div>
+    <input-row v-model="workingCopy.name" label="Name" :errors="errors.name" />
+    <button-row submit-text="Save" @submitted="save" @cancel="cancel" />
+  </div>
 </template>

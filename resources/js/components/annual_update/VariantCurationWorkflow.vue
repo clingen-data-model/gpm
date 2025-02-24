@@ -32,27 +32,27 @@ export default {
 
 </script>
 <template>
-    <ApplicationSection title="Changes to plans for variant curation workflow">
-        <input-row 
-            v-model="workingCopy.data.variant_workflow_changes"
-            :disabled="isComplete"
-            type="radio-group"
-            label="Has the Expert Panel made any changes to its workflow?"
-            :errors="errors.variant_workflow_changes"
-            :options="[{value: 'yes'},{value: 'no' }]"
-            vertical
-        ></input-row>
-        <transition name="slide-fade-down">
-            <input-row 
-                v-show="workingCopy.data.variant_workflow_changes === 'yes'"
-                v-model="workingCopy.data.variant_workflow_changes_details"
-                :disabled="isComplete"
-                type="large-text"
-                label="Please explain"
-                :errors="errors.variant_workflow_changes_details"
-                vertical
-                class="ml-4"
-            />
-        </transition>
-    </ApplicationSection>
+  <ApplicationSection title="Changes to plans for variant curation workflow">
+    <input-row 
+      v-model="workingCopy.data.variant_workflow_changes"
+      :disabled="isComplete"
+      type="radio-group"
+      label="Has the Expert Panel made any changes to its workflow?"
+      :errors="errors.variant_workflow_changes"
+      :options="[{value: 'yes'},{value: 'no' }]"
+      vertical
+    />
+    <transition name="slide-fade-down">
+      <input-row 
+        v-show="workingCopy.data.variant_workflow_changes === 'yes'"
+        v-model="workingCopy.data.variant_workflow_changes_details"
+        :disabled="isComplete"
+        type="large-text"
+        label="Please explain"
+        :errors="errors.variant_workflow_changes_details"
+        vertical
+        class="ml-4"
+      />
+    </transition>
+  </ApplicationSection>
 </template>
