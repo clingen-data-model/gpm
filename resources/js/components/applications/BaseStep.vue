@@ -115,12 +115,12 @@ export default {
             <div class="flex justify-between text-lg font-bold pb-2 mb-2 border-b">
                 <div class="flex space-x-2">
                     <h2>
-                        {{title}}
+                        {{ title }}
                     </h2>
                     <div v-if="dateApproved">
                         <div class="flex space-x-1" v-if="!editApprovalDate">
                             <div class="text-white bg-green-600 rounded-xl px-2">
-                                Approved: {{dateApproved}}
+                                Approved: {{ dateApproved }}
                             </div>
                             <edit-icon-button class="text-black" @click="initEditApprovalDate"></edit-icon-button>
                         </div>
@@ -150,7 +150,7 @@ export default {
 
         <slot name="log">
             <div class="mb-6 mt-4 border-t pt-4">
-                <h3 class="mb-2">Step {{step}} Progress Log</h3>
+                <h3 class="mb-2">Step {{ step }} Progress Log</h3>
                 <ApplicationLog :step="step"></ApplicationLog>
             </div>
         </slot>

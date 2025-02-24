@@ -181,9 +181,9 @@ export default {
             />
         </div>
         <div v-else>
-            <p v-if="genesAsText" style="text-indent: 1rem;">{{genesAsText}}</p>
+            <p v-if="genesAsText" style="text-indent: 1rem;">{{ genesAsText }}</p>
             <div class="well cursor-pointer" v-else @click="showForm">
-                {{ loading ? `Loading...` : `No genes have been added to the gene list.`}}
+                {{ loading ? `Loading...` : `No genes have been added to the gene list.` }}
             </div>
         </div>
     </div>

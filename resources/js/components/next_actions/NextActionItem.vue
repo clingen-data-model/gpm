@@ -24,8 +24,8 @@ export default {
     <div class="md:flex">
         <div v-html="nextAction.entry" class="flex"></div>
         <div>
-            <span v-if="nextAction.assigned_to_name">{{nextAction.assigned_to_name}} from the </span>
-            {{nextAction.assigned_to}}
+            <span v-if="nextAction.assigned_to_name">{{ nextAction.assigned_to_name }} from the </span>
+            {{ nextAction.assigned_to }}
         </div>
         <button 
             class="btn btn-xs block flex-initial self-center" 

@@ -115,7 +115,7 @@ export default {
         <ul v-if="summaries.length > 0">
             <transition-group name="slide-fade-down">
                 <li class="my-4 flex" v-for="(summary, idx) in group.expert_panel.evidence_summaries" :key="idx">
-                    <div class="text-lg pr-4">{{idx+1}}</div>
+                    <div class="text-lg pr-4">{{ idx+1 }}</div>
                     <EvidenceSummary
                         :summary="summary"
                         :group="group"
@@ -131,7 +131,7 @@ export default {
         <div class="well text-center" :class="{'cursor-pointer': !readonly}" v-else @click="startNewSummary">No example evidence summaries have been added.</div>
         <ul v-show="adding">
             <li class="my-4 flex" v-for="(newSummary, idx) in newSummaries" :key="idx">
-                <div class="text-lg pr-4">{{(idx+1+summaries.length)}}</div>
+                <div class="text-lg pr-4">{{ (idx+1+summaries.length) }}</div>
                 <EvidenceSummaryForm
                     class="flex-1"
                     :group="group"

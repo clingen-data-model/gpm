@@ -60,7 +60,7 @@ import {sentenceCase} from '@/string_utils.js'
             @click="selectItem(option)"
         >
             <div class="inline-block"><input type="radio" :checked="isSelected(option)"></div>
-            &nbsp;<slot :option="option">{{resolveLabel(option)}}</slot>
+            &nbsp;<slot :option="option">{{ resolveLabel(option) }}</slot>
         </button>
     </div>
 </template>

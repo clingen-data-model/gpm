@@ -54,7 +54,7 @@ export default {
                 @click="cancel"
                 :disabled="$attrs.disabled"
             >
-                {{cancelText}}
+                {{ cancelText }}
             </button>
             <button
                 class="btn"
@@ -62,7 +62,7 @@ export default {
                 @click="submit"
                 :disabled="$attrs.disabled"
             >
-                {{submitText}}
+                {{ submitText }}
             </button>
             <slot name="extra-buttons"></slot>
         </slot>

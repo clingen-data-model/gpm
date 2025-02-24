@@ -25,7 +25,7 @@ export default {
         <h4>TODO</h4>
         <ul>
             <li v-for="(item, idx) in items" :key="idx" class="list-decimal ml-6">
-                {{item}}
+                {{ item }}
             </li>
         </ul>
     </dev-component>

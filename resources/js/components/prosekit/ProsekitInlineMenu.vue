@@ -71,7 +71,7 @@ function handleLinkUpdate(href?: string) {
         </Button>
     </InlinePopover>
 
-    <InlinePopover :placement="'bottom'" :default-open="false" :open="linkMenuOpen" data-testid="inline-menu-link"
+    <InlinePopover placement="bottom" :default-open="false" :open="linkMenuOpen" data-testid="inline-menu-link"
         class='z-10 box-border border border-zinc-200 bg-white shadow-lg [&:not([data-state])]:hidden relative flex flex-col w-xs rounded-lg p-4 gap-y-2 items-stretch'
         @open-change="setLinkMenuOpen">
         <form v-if="linkMenuOpen" @submit.prevent="

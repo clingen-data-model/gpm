@@ -89,12 +89,11 @@
     );
 </script>
 <template>
-    <form-container class="log-entry-form" ref="form-container">
+    <form-container class="log-entry-form">
         <input-row label="Log Date" 
             v-model="newEntry.log_date" 
             :errors="errors.log_date" 
             type="date" 
-            ref="logdate"
         ></input-row>
         <StepInput :errors="errors.step" v-if="group.isVcep()" v-model="newEntry.step"/>
         <input-row label="Entry" :errors="errors.entry">

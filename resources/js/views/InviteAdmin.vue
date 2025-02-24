@@ -132,7 +132,7 @@ export default {
 
         <teleport to="body">
             <modal-dialog title="Reset Invite" v-model="showConfirmation">
-                <p>You are about to reset the invite for {{resettingInvite.first_name}} {{resettingInvite.last_name}}.</p>
+                <p>You are about to reset the invite for {{ resettingInvite.first_name }} {{ resettingInvite.last_name }}.</p>
                 <p>This cannot be undone.</p>
                 <p>Do you want to reset the invite?</p>
                 <button-row submit-text="Reset Invite" @submitted="resetInvite(resettingInvite)"></button-row>

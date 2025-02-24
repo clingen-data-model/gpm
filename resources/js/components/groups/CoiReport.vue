@@ -84,28 +84,28 @@ export default {
             </thead>
             <tbody>
                 <tr v-for="response in cois" :key="response.id">
-                    <td>{{response.data.first_name}} {{response.data.last_name}}</td>
-                    <td>{{resolveResponse(response.response_document.work_fee_lab)}}</td>
+                    <td>{{ response.data.first_name }} {{ response.data.last_name }}</td>
+                    <td>{{ resolveResponse(response.response_document.work_fee_lab) }}</td>
                     <td>
-                        {{resolveResponse(response.response_document.contributions_to_gd_in_ep)}}
+                        {{ resolveResponse(response.response_document.contributions_to_gd_in_ep) }}
                         <span v-if="resolveResponse(response.response_document.contributions_to_genes)">
-                            - Genes: {{response.response_document.contributions_to_genes.response}}
+                            - Genes: {{ response.response_document.contributions_to_genes.response }}
                         </span>
                     </td>
                     <td>
-                        {{resolveResponse(response.response_document.independent_efforts)}}
+                        {{ resolveResponse(response.response_document.independent_efforts) }}
                         <span v-if="response.response_document.independent_efforts.response > 0">
-                            - {{response.response_document.independent_efforts_details.response}}
+                            - {{ response.response_document.independent_efforts_details.response }}
                         </span>
                     </td>
                     <td>
-                        {{resolveResponse(response.response_document.coi)}}
+                        {{ resolveResponse(response.response_document.coi) }}
                         <span v-if="response.response_document.coi.response > 0">
-                            - {{response.response_document.coi_details.response}}
+                            - {{ response.response_document.coi_details.response }}
                         </span>
                     </td>
                     <td>
-                        {{formatDate(response.completed_at)}}
+                        {{ formatDate(response.completed_at) }}
                     </td>
                 </tr>
             </tbody>

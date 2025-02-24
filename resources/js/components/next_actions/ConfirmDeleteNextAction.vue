@@ -80,7 +80,7 @@ export default {
         <h2>You are about to delete the following next action:</h2>
         <div class="border-y py-2" v-if="nextAction">
             <div class="ml-4 my-3 text-sm">
-                Created on: <strong>{{formatDate(nextAction.created_at)}}</strong>
+                Created on: <strong>{{ formatDate(nextAction.created_at) }}</strong>
             </div>
             <blockquote class="mb-4">
                 <div v-html="nextAction.entry"></div>
@@ -88,12 +88,12 @@ export default {
             <div class="ml-4 my-1 text-sm" v-if="nextAction.assignee">
                 Assigned to: 
                 <strong>
-                    <span v-if="nextAction.assigned_to_name">{{nextAction.assigned_to_name}} in </span> 
-                    {{nextAction.assignee.name}}
+                    <span v-if="nextAction.assigned_to_name">{{ nextAction.assigned_to_name }} in </span> 
+                    {{ nextAction.assignee.name }}
                 </strong>
             </div>
             <div class="ml-4 mt-1 mb-4 text-sm" v-if="nextAction.target_date">
-                Target Date: <strong>{{formatDate(nextAction.target_date)}}</strong>
+                Target Date: <strong>{{ formatDate(nextAction.target_date) }}</strong>
             </div>
         </div>
 
