@@ -128,7 +128,7 @@
         <CredentialsView :person="item.person" />
       </template>
       <template #cell-legacy_expertise="{item}">
-        <ExpertisesView :person="item.person" :legacyExpertise="item.legacy_expertise" />
+        <ExpertisesView :person="item.person" :legacy-expertise="item.legacy_expertise" />
       </template>
     </data-table>
   </div>

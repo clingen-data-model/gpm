@@ -89,7 +89,7 @@ export default {
       </ul> 
     </div>
         
-    <button-row submitText="Delete Log Entry" @canceled="$router.go(-1)" @submitted="deleteEntry" />
+    <button-row submit-text="Delete Log Entry" @canceled="$router.go(-1)" @submitted="deleteEntry" />
   </div>
 </template>
 <style lang="postcss" scope>

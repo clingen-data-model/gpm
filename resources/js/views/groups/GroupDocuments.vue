@@ -65,10 +65,10 @@ export default {
   <div>
     <DocumentList
       :documents="displayDocuments"
-      :documentUpdater="updateDocument"
-      :documentCreator="createDocument"
-      :documentDeleter="deleteDocument"
-      :canManage="canManageDocuments"
+      :document-updater="updateDocument"
+      :document-creator="createDocument"
+      :document-deleter="deleteDocument"
+      :can-manage="canManageDocuments"
     />
   </div>
 </template>

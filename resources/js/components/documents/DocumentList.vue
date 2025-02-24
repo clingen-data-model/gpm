@@ -194,7 +194,7 @@ export default {
       v-model:sort="sort" 
       :fields="fields" 
       :data="filteredDocuments"
-      :detailRows="true"
+      :detail-rows="true"
     >
       <template #cell-cheveron="{item}">
         <button 
@@ -214,7 +214,7 @@ export default {
         </span>
       </template>
       <template #cell-actions="{item}">
-        <dropdown-menu hideCheveron>
+        <dropdown-menu hide-cheveron>
           <template #label>
             <button class="btn btn-xs">
               &hellip;
