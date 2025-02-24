@@ -45,7 +45,6 @@ export default antfu(
             'vue/no-multi-spaces': 'off',
             'vue/custom-event-name-casing': 'off',
             'jsonc/no-useless-escape': 'off',
-            'object-shorthand': 'off',
         }
     },
 )

@@ -51,7 +51,7 @@ export default {
     watch: {
         id: {
             immediate: true,
-            handler: function() {
+            handler() {
                 const entry = this.findEntry();
                 if (entry) {
                     this.syncEntry(entry)
@@ -60,7 +60,7 @@ export default {
         },
         application: {
             immediate: true,
-            handler: function () {
+            handler () {
                 const entry = this.findEntry();
                 if (entry) {
                     this.syncEntry(entry);

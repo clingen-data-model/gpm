@@ -136,7 +136,7 @@ export default {
     watch: {
         group: {
             immediate: true,
-            handler: function (to) {
+            handler (to) {
                 this.gci_training = Boolean(to.expert_panel.gci_training_date)
             }
         },

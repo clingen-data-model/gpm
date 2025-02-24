@@ -84,7 +84,7 @@ export default {
     watch: {
         code: {
             immediate: true,
-            handler: function (to) {
+            handler (to) {
                 this.invite.code = to
             }
         },

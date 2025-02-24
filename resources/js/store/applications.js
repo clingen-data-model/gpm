@@ -266,7 +266,7 @@ export default {
         async updateApprovalDate({ dispatch }, { application, dateApproved, step }) {
             await api.put(`/api/applications/${application.uuid}/approve`, {
                     date_approved: dateApproved,
-                    step: step
+                    step
                 })
                 .then(() => {
                     dispatch('getApplication', application.uuid)

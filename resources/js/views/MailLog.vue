@@ -117,7 +117,7 @@ export default {
     watch: {
         filter: {
             immediate: true,
-            handler: function () {
+            handler () {
                 if (this.triggerSearch) {
                     this.triggerSearch();
                 }
@@ -126,7 +126,7 @@ export default {
         sort: {
             deep: true,
             immediate: true,
-            handler: function () {
+            handler () {
                 if (this.triggerSearch) {
                     this.triggerSearch();
                 }
@@ -143,7 +143,7 @@ export default {
                     'sort[dir]': sort.desc ? 'DESC' : 'ASC',
                     'where[filterString]': this.filter
                 }
-                const pageResponse = await api.get(`/api/mail-log`, {params: params})
+                const pageResponse = await api.get(`/api/mail-log`, {params})
                     .then(rsp => rsp.data);
 
                 setTotalItems(pageResponse.total);

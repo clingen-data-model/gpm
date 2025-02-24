@@ -118,7 +118,7 @@ export default {
             timezones.forEach(tz => {
                 const [region, ...city] = tz.split('/');
                 this.regions.push(region);
-                this.cities.push({region: region, name: city.join('/').replace('_', ' ')});
+                this.cities.push({region, name: city.join('/').replace('_', ' ')});
             })
             this.regions = [...(new Set(this.regions))];
         },
