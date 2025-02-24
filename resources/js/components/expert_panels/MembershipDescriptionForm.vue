@@ -5,6 +5,11 @@ import MarkdownBlock from '@/components/MarkdownBlock.vue'
 
 export default {
     name: 'MembershipDescriptionForm',
+    components: {
+        EditIconButton,
+        RichTextEditor,
+        MarkdownBlock,
+    },
     props: {
         editing: {
             type: Boolean,
@@ -16,11 +21,6 @@ export default {
             required: false,
             default: () => ({})
         }
-    },
-    components: {
-        EditIconButton,
-        RichTextEditor,
-        MarkdownBlock,
     },
     emits: [
         'update:editing',
@@ -63,14 +63,14 @@ export default {
             <transition name="fade" mode="out-in">
                 <div v-if="editing" class="mt-2">
                     <RichTextEditor
-                        :markdownFormat="true"
                         v-model="group.expert_panel.membership_description"
+                        :markdownFormat="true"
                         @update:modelValue="emitUpdate"
                     />
                 </div>
                 <div v-else class="border-2 mt-8 p-2">
-                    <MarkdownBlock :markdown="group.expert_panel.membership_description" v-if="group.expert_panel.membership_description" />
-                    <p class="well cursor-pointer" v-else @click="showForm">
+                    <MarkdownBlock v-if="group.expert_panel.membership_description" :markdown="group.expert_panel.membership_description" />
+                    <p v-else class="well cursor-pointer" @click="showForm">
                         A description of expertise has not yet been provided.
                     </p>
                 </div>

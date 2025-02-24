@@ -19,11 +19,6 @@ export default {
             default: () => ({})
         }
     },
-    data() {
-        return {
-
-        }
-    },
     setup(props, context) {
 
         const {invite} = toRefs(props);
@@ -67,10 +62,13 @@ export default {
         }
    
     },
+    data() {
+        return {
+
+        }
+    },
     computed: {
 
-    },
-    methods: {
     },
     mounted() {
         this.syncCode();
@@ -80,6 +78,8 @@ export default {
             this.$store.commit('pushError', 'You can\'t redeem an invite b/c you\'re already logged in.');
             this.$router.replace({name: 'Dashboard'})
         }
+    },
+    methods: {
     }
 }
 </script>
@@ -88,9 +88,9 @@ export default {
         <label for="invite-code-input" class="text-lg block">
             Enter your registration code:
         </label>
-        <input type="text"
-            id="invite-code-input"
-            v-model="inviteCode" 
+        <input id="invite-code-input"
+            v-model="inviteCode"
+            type="text" 
             placeholder="XXXXXXXXXX" 
             class="w-full"
         >

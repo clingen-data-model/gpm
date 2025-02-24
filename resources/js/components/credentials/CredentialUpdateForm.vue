@@ -15,6 +15,13 @@ export default {
         'saved',
         'canceled'
     ],
+    setup(props, context) {
+        const {workingCopy} = setupMirror(props, context)
+
+        return {
+            workingCopy
+        }
+    },
     data() {
         return {
             errors: {}
@@ -47,18 +54,11 @@ export default {
             this.errors = {};
         }
     },
-    setup(props, context) {
-        const {workingCopy} = setupMirror(props, context)
-
-        return {
-            workingCopy
-        }
-    },
 }
 </script>
 <template>
     <div>
-        <input-row label="Name" v-model="workingCopy.name" :errors="errors.name" />
+        <input-row v-model="workingCopy.name" label="Name" :errors="errors.name" />
         <button-row submit-text="Save" @submitted="save" @cancel="cancel" />
     </div>
 </template>

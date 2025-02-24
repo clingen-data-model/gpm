@@ -4,14 +4,13 @@
     import {useStore} from 'vuex'
     import {useRouter} from 'vue-router'
 
-    const store = useStore();
-    const router = useRouter();
-
     const props = defineProps({
         redirectTo: {
             type: Object
         }
     })
+    const store = useStore();
+    const router = useRouter();
 
     const user = computed(() => store.getters.currentUser || {person: {memberships: []}})
     const legacyExpertise = computed(() => {

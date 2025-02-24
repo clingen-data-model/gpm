@@ -15,6 +15,13 @@ export default {
         },
     },
     emits: [ ...mirror.emits, ],
+    setup(props, context) {
+        const {workingCopy} = mirror.setup(props, context);
+
+        return {
+            workingCopy
+        }
+    },
     data () {
         return {
             grants: ['Broad/Geisinger', 'Stanford/Baylor', 'UNC', 'Unsure'],
@@ -34,13 +41,6 @@ export default {
         isComplete () {
             return Boolean(this.modelValue.completed_at);
         }
-    },
-    setup(props, context) {
-        const {workingCopy} = mirror.setup(props, context);
-
-        return {
-            workingCopy
-        }
     }
 }
 </script>
@@ -50,8 +50,8 @@ export default {
         <dictionary-row label="Affilation ID">{{ workingCopy.expert_panel.affiliation_id }}</dictionary-row>
 
         <input-row
-            label="Submitting member"
             v-model="workingCopy.submitter_id"
+            label="Submitting member"
             type="select"
             :options="members.map(m => ({value: m.id, label:m.person.name}))"
             :errors="errors.submitter_id"
@@ -59,15 +59,15 @@ export default {
         />
 
         <dictionary-row label="EP Coordinator(s)">
-            <span class="csv-item"
-                v-for="coordinator in coordinators" :key="coordinator.id"
+            <span v-for="coordinator in coordinators"
+                :key="coordinator.id" class="csv-item"
             >{{ coordinator.person.name }}</span>
             <span v-if="coordinators.length === 0" class="text-red-600">No coordinators on file for this expert panel.</span>
         </dictionary-row>
 
         <input-row
-            label="Liaising ClinGen grant"
             v-model="workingCopy.data.grant"
+            label="Liaising ClinGen grant"
             type="select"
             :options="grants.map(g => ({value: g, label: g}))"
             :errors="errors.grant"
@@ -75,8 +75,8 @@ export default {
         />
 
         <input-row v-if="workingCopy.expert_panel.is_gcep"
-            label="What is the current activity status of the EP?"
             v-model="workingCopy.data.ep_activity"
+            label="What is the current activity status of the EP?"
             type="radio-group"
             :options="activityOptions"
             vertical
@@ -86,8 +86,8 @@ export default {
 
         <transition name="slide-fade-down">
             <input-row v-if="workingCopy.data.ep_activity === 'inactive'"
-                label="Have you submitted an Inactive GCEP form to the CDWG Oversight Committee?"
                 v-model="workingCopy.data.submitted_inactive_form"
+                label="Have you submitted an Inactive GCEP form to the CDWG Oversight Committee?"
                 type="radio-group"
                 :options="[{value: 'yes'}, {value: 'no'}]"
                 :disabled="isComplete"

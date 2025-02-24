@@ -12,6 +12,15 @@ export default {
         'saved',
         'update'
     ],
+    setup (props, context) {
+        const {errors, submitFormData, resetErrors} = formFactory(props, context)
+
+        return {
+            errors,
+            submitFormData,
+            resetErrors
+        }
+    },
     data() {
         return {
             groupTypes: configs.groups.types,
@@ -71,6 +80,10 @@ export default {
 
             return sortBy(options, 'label');
         }
+    },
+    beforeMount() {
+        this.getParentOptions();
+        this.$store.dispatch('cdwgs/getAll');
     },
     methods: {
         async save() {
@@ -223,19 +236,6 @@ export default {
         emitUpdate () {
             this.$emit('update');
         }
-    },
-    beforeMount() {
-        this.getParentOptions();
-        this.$store.dispatch('cdwgs/getAll');
-    },
-    setup (props, context) {
-        const {errors, submitFormData, resetErrors} = formFactory(props, context)
-
-        return {
-            errors,
-            submitFormData,
-            resetErrors
-        }
     }
 }
 </script>
@@ -250,32 +250,32 @@ export default {
             label="Type"
         />
 
-        <dictionary-row label="Type" v-else>
+        <dictionary-row v-else label="Type">
             {{ group?.type?.display_name }}
         </dictionary-row>
 
         <transition name="slide-fade-down" mode="out-in">
             <div v-if="group.group_type_id > 2 && group.expert_panel">
                 <input-row
-                    label="Long Base Name"
                     v-model="group.expert_panel.long_base_name"
-                    @update:modelValue="emitUpdate"
+                    label="Long Base Name"
                     placeholder="Long base name"
                     :errors="errors.long_base_name"
                     input-class="w-full"
+                    @update:modelValue="emitUpdate"
                 />
                 <input-row
-                    label="Short Base Name"
                     v-model="group.expert_panel.short_base_name"
-                    @update:modelValue="emitUpdate"
+                    label="Short Base Name"
                     placeholder="Short base name"
                     :errors="errors.short_base_name"
                     input-class="w-full"
+                    @update:modelValue="emitUpdate"
                 />
                 <div v-if="hasAnyPermission(['groups-manage'])">
                     <input-row
-                        label="Affiliation ID"
                         v-model="group.expert_panel.affiliation_id"
+                        label="Affiliation ID"
                         :placeholder="affiliationIdPlaceholder"
                         :errors="errors.affiliation_id"
                         input-class="w-full"
@@ -287,7 +287,7 @@ export default {
                         </template>
                     </input-row>
                 </div>
-                <dictionary-row label="Affiliation ID" v-else>
+                <dictionary-row v-else label="Affiliation ID">
                     <span v-if="group.expert_panel.affiliation_id">{{ group.expert_panel.affiliation_id }}</span>
                     <span v-else class="text-gray-400">{{ 'Not yet assigend' }}</span>
                 </dictionary-row>

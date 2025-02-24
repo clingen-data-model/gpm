@@ -6,10 +6,9 @@
     import JudgementDetail from './JudgementDetail.vue';
     import {judgementColor} from '@/composables/judgement_utils.js'
 
+    const emits = defineEmits(['deleted', 'saved'])
     const commentManager = inject('commentManager');
     const latestSubmission = inject('latestSubmission')
-
-    const emits = defineEmits(['deleted', 'saved'])
 
     const store = useStore();
     // const group = computed(() => store.getters['groups/currentItemOrNew'])

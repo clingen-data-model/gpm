@@ -17,6 +17,11 @@ export default {
             default: null
         }
     },
+    setup () {
+        return {
+            logEntries
+        }
+    },
     data() {
         return {
             newEntry: {
@@ -54,6 +59,9 @@ export default {
                 }
             }
         }
+    },
+    mounted() {
+        this.$el.querySelectorAll('input')[0].focus();
     },
     methods: {
         findEntry () {
@@ -102,20 +110,12 @@ export default {
             }
         },
     },
-    mounted() {
-        this.$el.querySelectorAll('input')[0].focus();
-    },
-    setup () {
-        return {
-            logEntries
-        }
-    }
 }
 </script>
 <template>
     <form-container class="log-entry-form">
-        <input-row label="Log Date" v-model="newEntry.log_date" :errors="errors.log_date" type="date"></input-row>
-        <StepInput v-model="newEntry.step" v-if="application.expert_panel_type_id === 2" :errors="errors.step"/>
+        <input-row v-model="newEntry.log_date" label="Log Date" :errors="errors.log_date" type="date"></input-row>
+        <StepInput v-if="application.expert_panel_type_id === 2" v-model="newEntry.step" :errors="errors.step"/>
         <input-row label="Entry" :errors="errors.entry">
             <RichTextEditor v-model="newEntry.entry" />
         </input-row>

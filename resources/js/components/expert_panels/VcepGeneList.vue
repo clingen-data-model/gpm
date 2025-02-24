@@ -26,14 +26,6 @@ export default {
         'canceled',
         'editing'
     ],
-    computed: {
-        selectedGeneSymbol () {
-            return this.selectedGene && this.selectedGene.gene ?  this.selectedGene.gene.gene_symbol : 'Unknown Gene Symbols'
-        },
-        selectedDiseaseName () {
-            return this.selectedGene && this.selectedGene.disease ?  this.selectedGene.disease.name : 'Unknown Disease Name'
-        }
-    },
     setup(props, context) {
         const store = useStore();
 
@@ -203,6 +195,14 @@ export default {
             cancelRemove,
             selectedGene,
         }
+    },
+    computed: {
+        selectedGeneSymbol () {
+            return this.selectedGene && this.selectedGene.gene ?  this.selectedGene.gene.gene_symbol : 'Unknown Gene Symbols'
+        },
+        selectedDiseaseName () {
+            return this.selectedGene && this.selectedGene.disease ?  this.selectedGene.disease.name : 'Unknown Disease Name'
+        }
     }
 }
 </script>
@@ -212,7 +212,7 @@ export default {
             <h4>Gene/Disease List</h4>
         </header>
         <div class="my-2">
-            <table class="border-none" v-if="genes">
+            <table v-if="genes" class="border-none">
                 <thead>
                     <tr>
                         <th style="min-width: 10rem">HGNC Symbol</th>
@@ -249,9 +249,9 @@ export default {
                                     >
                                         <div v-if="!gene.edit">
                                             <dropdown-menu
+                                                v-if="!gene.toDelete"
                                                 :hide-cheveron="true"
                                                 class="relative"
-                                                v-if="!gene.toDelete"
                                             >
                                                 <template #label>
                                                     <button class="btn btn-xs">&hellip;</button>

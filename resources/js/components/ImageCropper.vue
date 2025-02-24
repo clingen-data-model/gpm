@@ -108,7 +108,7 @@ onUnmounted(() => {
         </div>
         <div class="flex space-x-4">
             <div class="border w-3/4" style="max-height: 400px">
-                <img :src="imageSrc" style="max-width: 100%" ref="imageEl">
+                <img ref="imageEl" :src="imageSrc" style="max-width: 100%">
             </div>
             <div>
                 <h4>Preview</h4>

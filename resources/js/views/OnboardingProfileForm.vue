@@ -3,15 +3,14 @@
     import {useRouter} from 'vue-router'
     import ProfileForm from '../components/people/ProfileForm.vue';
 
-    const store = useStore();
-    const router = useRouter();
-
     const props = defineProps({
         redirectTo: {
             type: Object,
             default: () => ({name: 'Dashboard'})
         }
     })
+    const store = useStore();
+    const router = useRouter();
 
     const handleSave = async () => {
         await store.dispatch('forceGetCurrentUser');

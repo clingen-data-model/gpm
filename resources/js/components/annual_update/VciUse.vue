@@ -11,15 +11,15 @@ export default {
         },
     },
     emits: [ ...mirror.emits ],
-    computed: {
-        isComplete () {
-            return Boolean(this.modelValue.completed_at)
-        }
-    },
     setup(props, context) {
         const {workingCopy} = mirror.setup(props, context);
         return {
             workingCopy
+        }
+    },
+    computed: {
+        isComplete () {
+            return Boolean(this.modelValue.completed_at)
         }
     }
 }

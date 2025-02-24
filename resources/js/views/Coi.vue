@@ -64,6 +64,10 @@ export default {
             }
         }
     },
+    async mounted() {
+        this.verifyCode();
+        await this.$store.dispatch('getCurrentUser')
+    },
     methods: {
         initResponseValues() {
             if (this.membership && this.membership.cois.length > 0) {
@@ -142,23 +146,19 @@ export default {
             }
             this.saving = false;
         },
-    },
-    async mounted() {
-        this.verifyCode();
-        await this.$store.dispatch('getCurrentUser')
     }
 }
 </script>
 <template>
     <div>
-        <card :title="verifying ? `Loading COI Form` : `COI Form not found`" v-if="!codeIsValid">
+        <card v-if="!codeIsValid" :title="verifying ? `Loading COI Form` : `COI Form not found`">
             <div v-if="!verifying">We couldn't find this COI.</div>
         </card>
-        <card title="There's a problem" v-if="!groupMemberId">
+        <card v-if="!groupMemberId" title="There's a problem">
             We can't seem to find your membership for this group id.  Please try refreshing.
         </card>
 
-        <card :title="coiTitle" class="mx-auto relative" style="max-width:800px" v-else-if="codeIsValid">
+        <card v-else-if="codeIsValid" :title="coiTitle" class="mx-auto relative" style="max-width:800px">
             <CoiPolicy />
             <hr>
             <h2>COI</h2>
@@ -176,33 +176,33 @@ export default {
                         </div>
                         <input-row
                             v-else
+                            v-show="showQuestion(question)"
                             :label="question.question_text"
                             :errors="errors[question.name]"
                             :vertical="true"
-                            v-show="showQuestion(question)"
                         >
 
                             <textarea v-if="question.type === 'text'"
-                                class="w-full h-24"
                                 v-model="response[question.name]"
+                                class="w-full h-24"
                                 :name="question.name"
                             ></textarea>
 
                             <div v-if="question.type === 'multiple-choice'">
                                 <label v-for="option in question.options" :key="option.value" class="mb-1">
-                                    <input type="radio"
+                                    <input v-model="response[question.name]"
+                                        type="radio"
                                         :value="option.value"
                                         :name="question.name"
-                                        v-model="response[question.name]"
                                     >
                                     <div>{{ option.label }}</div>
                                 </label>
                             </div>
 
                             <input
-                                type="text"
                                 v-if="question.type === 'string'"
                                 v-model="response[question.name]"
+                                type="text"
                                 :name="question.name"
                             >
                         </input-row>

@@ -62,7 +62,7 @@ export default {
         <blockquote>
             <div v-html="logEntry.description"></div>
         </blockquote>
-        <div class="ml-4 mt-2 mb-4 text-gray-700 text-sm" v-if="logEntry.causer">Logged by {{ logEntry.causer.name }}, {{ logDate }}</div>
+        <div v-if="logEntry.causer" class="ml-4 mt-2 mb-4 text-gray-700 text-sm">Logged by {{ logEntry.causer.name }}, {{ logDate }}</div>
         </div>
 
         <div>This can not be undone. Are you sure you want to continue?</div>
@@ -75,7 +75,7 @@ export default {
             </ul> 
         </div>
         
-        <button-row @canceled="$emit('canceled')" @submitted="deleteLogEntry" submitText="Delete Log Entry"></button-row>
+        <button-row submitText="Delete Log Entry" @canceled="$emit('canceled')" @submitted="deleteLogEntry"></button-row>
     </div>
 </template>
 <style lang="postcss" scope>

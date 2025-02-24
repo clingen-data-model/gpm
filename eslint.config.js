@@ -13,7 +13,6 @@ export default antfu(
         files: ['resources/js/**/*.{js,ts,vue,json}'],
         rules: {
             'vue/html-indent': 'off',
-            'vue/attributes-order': 'off',
             'vue/max-attributes-per-line': 'off',
             'vue/singleline-html-element-content-newline': 'off',
             'vue/multiline-html-element-content-newline': 'off',
@@ -26,8 +25,6 @@ export default antfu(
             'vue/space-infix-ops': 'off',
             'vue/require-explicit-emits': 'off',
             'vue/attribute-hyphenation': 'off',
-            'vue/define-macros-order': 'off',
-            'vue/order-in-components': 'off',
             'jsonc/no-useless-escape': 'off',
             'perfectionist/sort-imports': 'off',
             'perfectionist/sort-named-imports': 'off',

@@ -15,15 +15,15 @@ export default {
         },
     },
     emits: [ ...mirror.emits ],
-    computed: {
-        isComplete () {
-            return Boolean(this.modelValue.completed_at)
-        }
-    },
     setup(props, context) {
         const {workingCopy} = mirror.setup(props, context);
         return {
             workingCopy
+        }
+    },
+    computed: {
+        isComplete () {
+            return Boolean(this.modelValue.completed_at)
         }
     }
 }
@@ -39,7 +39,7 @@ export default {
 
         <ul class="list-decimal px-6">
             <li>
-                <input-row :disabled="isComplete" vertical type="large-text" :errors="errors.rereview_discrepencies_progress" v-model="workingCopy.data.rereview_discrepencies_progress" placeholder="Progress...">
+                <input-row v-model="workingCopy.data.rereview_discrepencies_progress" :disabled="isComplete" vertical type="large-text" :errors="errors.rereview_discrepencies_progress" placeholder="Progress...">
                     <template #label>
                         Are you receiving and/or using the VCEP Variant Tracker reports to aid in the recuration work? Please describe below.
                     </template>

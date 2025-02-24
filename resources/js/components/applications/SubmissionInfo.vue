@@ -54,14 +54,14 @@ import MarkdownBlock from '../MarkdownBlock.vue';
 <template>
     <div v-if="step === group.expert_panel.current_step">
         <static-alert
+            v-if="stepHasBeenSubmitted"
             class="mb-4 border-blue-700"
             variant="bland"
-            v-if="stepHasBeenSubmitted"
         >
             <div v-if="!latestSubmission.sent_to_chairs_at">
                 <strong>Submitted</strong> by {{ latestSubmission.submitter ? latestSubmission.submitter.name : '' }} on
                 <strong>{{ formatDate(latestSubmission.created_at) }}</strong>
-                <MarkdownBlock class="ml-4" v-if="latestSubmission.notes" :markdown="latestSubmission.notes" />
+                <MarkdownBlock v-if="latestSubmission.notes" class="ml-4" :markdown="latestSubmission.notes" />
             </div>
             <div v-if="latestSubmission.submission_status_id === 3">
                 <strong>Sent to chairs</strong> on <strong>{{ formatDate(latestSubmission.sent_to_chairs_at) }}</strong>.
@@ -72,7 +72,7 @@ import MarkdownBlock from '../MarkdownBlock.vue';
             <div v-if="featureIsEnabled('chair_review') && (latestSubmission.submission_status_id === 3)">
                 <hr class="my-1">
                 <strong>Latest Chair Decisions:</strong>
-                <ul class="list-disc pl-6" v-if="latestJudgements && latestJudgements.length > 0">
+                <ul v-if="latestJudgements && latestJudgements.length > 0" class="list-disc pl-6">
                     <li v-for="judgement in latestJudgements" :key="judgement.id">
                         <strong>{{ judgement.person.name }}:</strong>
                         &nbsp;

@@ -1,13 +1,13 @@
 <script>
 export default {
+    name: 'NotificationIcon',
     props: {
         iconName: {
             type: String,
             required: false,
             default: 'Notification'
         }
-    },
-    name: 'NotificationIcon'
+    }
 }
 </script>
 <template>

@@ -11,15 +11,15 @@ export default {
         },
     },
     emits: [ ...mirror.emits ],
-    computed: {
-        isComplete () {
-            return Boolean(this.modelValue.completed_at)
-        }
-    },
     setup(props, context) {
         const {workingCopy} = mirror.setup(props, context);
         return {
             workingCopy
+        }
+    },
+    computed: {
+        isComplete () {
+            return Boolean(this.modelValue.completed_at)
         }
     }
 }
@@ -47,8 +47,8 @@ export default {
         </input-row>
 
         <input-row
-            label="Do you anticipate changes to your expert panel leadership (e.g. chair, coordinator), in the next year?"
             v-model="workingCopy.data.cochair_commitment"
+            label="Do you anticipate changes to your expert panel leadership (e.g. chair, coordinator), in the next year?"
             type="radio-group"
             :errors="errors.cochair_commitment"
             :options="[{value: 'yes'}, {value: 'no'}]"
@@ -57,13 +57,13 @@ export default {
         />
         <transition name="slide-fade-down">
             <input-row
-                label="Please explain"
+                v-if="workingCopy.data.cochair_commitment === 'yes'"
                 v-model="workingCopy.data.cochair_commitment_details"
+                label="Please explain"
                 type="large-text"
                 :errors="errors.cochair_commitment_details"
                 vertical
                 class="ml-4"
-                v-if="workingCopy.data.cochair_commitment === 'yes'"
                 :disabled="isComplete"
             />
         </transition>

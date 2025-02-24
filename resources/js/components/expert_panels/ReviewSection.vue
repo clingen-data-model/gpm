@@ -3,8 +3,6 @@
     import ReviewComment from '@/components/expert_panels/ReviewComment.vue'
     import ReviewCommentForm from './ReviewCommentForm.vue'
 
-    const commentManager = inject('commentManager')
-
     const props = defineProps({
         title: {
             type: String || null,
@@ -16,6 +14,7 @@
         },
     });
 
+    const commentManager = inject('commentManager')
 
     const showCommentForm = ref(false);
 
@@ -51,7 +50,7 @@
         <div class="overflow-x-auto flex-grow" :class="{'lg:w-3/5': showComments}">
             <header class="flex justify-between items-start space-x-4">
                 <h2 class="flex-grow" :class="{'lg:w-3/5': !showComments}">{{ title }}</h2>
-                <div class="flex justify-between items-center lg:w-2/5 px-2 py-1 pb-0 bg-gray-100 rounded-lg" v-show="!showComments" v-if="commentManager">
+                <div v-show="!showComments" v-if="commentManager" class="flex justify-between items-center lg:w-2/5 px-2 py-1 pb-0 bg-gray-100 rounded-lg">
                     <h3>
                         <icon-cheveron-right class="inline cursor-pointer" @click="showComments = true"/>
                         Comments
@@ -67,7 +66,7 @@
             </div>
         </div>
 
-        <div class="lg:w-2/5 p-2 bg-gray-100 rounded-lg mb-2" v-show="showComments && commentManager">
+        <div v-show="showComments && commentManager" class="lg:w-2/5 p-2 bg-gray-100 rounded-lg mb-2">
             <div class="flex justify-between items-center">
                 <h3>
                     <icon-cheveron-down class="inline cursor-pointer" @click="showComments = false" />

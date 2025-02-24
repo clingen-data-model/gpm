@@ -67,6 +67,11 @@ export default {
             }
         }
     },
+    created () {
+        this.debounceSave = debounce(() => {
+            this.save();
+        }, 1000)
+    },
     methods: {
         initWorkingCopy() {
             this.workingCopy = new GroupMember();
@@ -126,11 +131,6 @@ export default {
         emitUpdated () {
             this.$emit('updated', this.workingCopy)
         }
-    },
-    created () {
-        this.debounceSave = debounce(() => {
-            this.save();
-        }, 1000)
     }
 }
 </script>
@@ -139,19 +139,19 @@ export default {
         <td>{{ workingCopy.person.first_name }}</td>
         <td>{{ workingCopy.person.last_name }}</td>
         <td colgroup="biocurator">
-            <input type="checkbox" v-model="biocurator" :disabled="!canEdit" @input="debounceSave">
+            <input v-model="biocurator" type="checkbox" :disabled="!canEdit" @input="debounceSave">
         </td>
         <td colgroup="biocurator">
-            <input type="checkbox" v-model="workingCopy.training_level_1" :disabled="!canEdit" @input="debounceSave">
+            <input v-model="workingCopy.training_level_1" type="checkbox" :disabled="!canEdit" @input="debounceSave">
         </td>
         <td colgroup="biocurator">
-            <input type="checkbox" v-model="workingCopy.training_level_2" :disabled="!canEdit" @input="debounceSave">
+            <input v-model="workingCopy.training_level_2" type="checkbox" :disabled="!canEdit" @input="debounceSave">
         </td>
         <td>
-            <input type="checkbox" v-model="biocuratorTrainer" :disabled="!canEdit" @input="debounceSave">
+            <input v-model="biocuratorTrainer" type="checkbox" :disabled="!canEdit" @input="debounceSave">
         </td>
         <td>
-            <input type="checkbox" v-model="coreApprovalMember" :disabled="!canEdit" @input="debounceSave">
+            <input v-model="coreApprovalMember" type="checkbox" :disabled="!canEdit" @input="debounceSave">
         </td>
     </tr>
 </template>

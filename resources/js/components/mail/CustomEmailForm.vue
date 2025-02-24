@@ -93,7 +93,7 @@ export default {
             <recipient-input v-model="workingCopy.to" />
         </input-row>
         <input-row label="Cc" :errors="errors.ccErrors">
-            <recipient-input v-model="workingCopy.cc" v-show="showCc" />
+            <recipient-input v-show="showCc" v-model="workingCopy.cc" />
 
             <div v-if="workingCopy.cc && workingCopy.cc.length > 0 && !showCc">
                 <truncate-expander :value="workingCopy.cc.map(i => i.address).join(', ')" :truncate-length="100"></truncate-expander>
@@ -104,13 +104,13 @@ export default {
             </button>
         </input-row>
         <input-row label="Bcc" :errors="bccErrors">
-            <recipient-input v-model="workingCopy.bcc" v-show="showBcc" />
+            <recipient-input v-show="showBcc" v-model="workingCopy.bcc" />
             <button class="btn btn-xs" @click="showBcc = !showBcc">
                 {{ showBcc ? 'Hide Bcc' : 'Show Bcc' }}
             </button>
         </input-row>
         <input-row label="Subject" :errors="errors.subject">
-            <input type="text" v-model="workingCopy.subject" class="w-full">
+            <input v-model="workingCopy.subject" type="text" class="w-full">
         </input-row>
         
         <input-row label="Body" :errors="errors.body">

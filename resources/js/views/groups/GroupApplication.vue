@@ -12,6 +12,16 @@ export default {
         ApplicationVcep,
         ApplicationMenu,
     },
+    beforeRouteLeave() {
+        if (this.$refs.application.applicationIsDirty()) {
+            // eslint-disable-next-line no-alert
+            const confirm = window.confirm('You have unsaved changes. If you continue your changes may be lost.');
+
+            if (!confirm) {
+                return false;
+            }
+        }
+    },
     props: {
         uuid: {
             type: String,
@@ -26,25 +36,6 @@ export default {
             lastSavedAt: new Date(),
             saving: false
         }
-    },
-    watch: {
-        $route () {
-            this.showModal = this.$route.meta.showModal
-                                ? Boolean(this.$route.meta.showModal)
-                                : false;
-        },
-
-        uuid: {
-            immediate: true,
-            async handler (to) {
-                await this.$store.dispatch('groups/find', to)
-                    .then(() => {
-                        this.$store.commit('groups/setCurrentItemIndexByUuid', this.uuid)
-                    });
-                await this.$store.dispatch('groups/getSubmissions', this.group);
-
-            }
-        },
     },
     computed: {
         applicationComponent() {
@@ -66,6 +57,28 @@ export default {
             return getApplicationForGroup(this.group);
         },
     },
+    watch: {
+        $route () {
+            this.showModal = this.$route.meta.showModal
+                                ? Boolean(this.$route.meta.showModal)
+                                : false;
+        },
+
+        uuid: {
+            immediate: true,
+            async handler (to) {
+                await this.$store.dispatch('groups/find', to)
+                    .then(() => {
+                        this.$store.commit('groups/setCurrentItemIndexByUuid', this.uuid)
+                    });
+                await this.$store.dispatch('groups/getSubmissions', this.group);
+
+            }
+        },
+    },
+    beforeUnmount() {
+        this.$store.commit('groups/clearCurrentItem')
+    },
     methods: {
         hideModal () {
             this.$router.replace({name: 'GroupApplication', params: {uuid: this.uuid}});
@@ -83,19 +96,6 @@ export default {
             this.saving = false;
             this.lastSavedAt = new Date();
         },
-    },
-    beforeUnmount() {
-        this.$store.commit('groups/clearCurrentItem')
-    },
-    beforeRouteLeave() {
-        if (this.$refs.application.applicationIsDirty()) {
-            // eslint-disable-next-line no-alert
-            const confirm = window.confirm('You have unsaved changes. If you continue your changes may be lost.');
-
-            if (!confirm) {
-                return false;
-            }
-        }
     }
 }
 </script>
@@ -116,8 +116,8 @@ export default {
 
                     <button
                         v-if="!group.expert_panel.hasPendingSubmission"
-                        @click="$refs.application.save"
                         class="btn btn-sm"
+                        @click="$refs.application.save"
                     >Save</button>
                 </h1>
             </div>
@@ -147,7 +147,7 @@ export default {
                 </template>
             </ApplicationMenu>
             <div class=" flex-1">
-                <section id="body" class="px-4" v-remaining-height>
+                <section id="body" v-remaining-height class="px-4">
                     <static-alert
                         v-if="group.expert_panel.hasPendingSubmission"
                         class="relative mt-4 px-4 z-50"
@@ -174,7 +174,7 @@ export default {
             </div>
         </div>
         <teleport to="body">
-            <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="$route.meta.title">
+            <modal-dialog v-model="showModal" :title="$route.meta.title" @closed="handleModalClosed">
                 <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
             </modal-dialog>
         </teleport>

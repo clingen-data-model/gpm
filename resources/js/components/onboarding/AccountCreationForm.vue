@@ -74,18 +74,18 @@ export default {
         </div>
         <div v-else>
             <p class="text-lg">Create your account</p>
-            <input-row label="Email" 
-                v-model="email" 
+            <input-row v-model="email" 
+                label="Email" 
                 :errors="errors.email" 
                 label-width-class="w-24"
             ></input-row>
-            <input-row label="Password" 
-                v-model="password" type="password" 
+            <input-row v-model="password" 
+                label="Password" type="password" 
                 :errors="errors.password" 
                 label-width-class="w-24"
             ></input-row>
-            <input-row label="Confirm Password" 
-                v-model="password_confirmation" type="password" 
+            <input-row v-model="password_confirmation" 
+                label="Confirm Password" type="password" 
                 :errors="errors.password" 
                 label-width-class="w-24"
             ></input-row>

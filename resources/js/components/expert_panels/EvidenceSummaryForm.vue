@@ -90,25 +90,25 @@ export default {
                 <select v-model="summaryClone.gene_id">
                     <option :value="null">Select...</option>
                     <option v-for="gene in groupGenes" 
-                        :value="gene.id"
                         :key="gene.id"
+                        :value="gene.id"
                     >{{ gene.gene_symbol }}</option>
                 </select>
             </input-row>
             <input-row 
-                class="mt-0 mb-0" 
                 v-model="summaryClone.variant" 
+                class="mt-0 mb-0" 
                 :vertical="true" 
                 label="Variant" 
                 :errors="errors.variant"
             />
         </div>
         <input-row class="mt-0 mb-0" label="Summary" :vertical="true" :errors="errors.summary">
-            <textarea rows="5" class="w-full" v-model="summaryClone.summary"></textarea>
+            <textarea v-model="summaryClone.summary" rows="5" class="w-full"></textarea>
         </input-row>
         <input-row 
-            class="mt-0" 
             v-model="summaryClone.vci_url" 
+            class="mt-0" 
             label="VCI URL" 
             :vertical="true" 
             input-class="w-full" 

@@ -10,6 +10,14 @@ export default {
             required: true
         }
     },
+    setup() {
+        const {sort, filter} = setupRouterSortAndFilter({field: 'expert_panel.display_name', desc: false});
+
+        return {
+            sort,
+            filter
+        }
+    },
     data() {
         return {
             fields: [
@@ -105,14 +113,6 @@ export default {
                     document.body.removeChild(a);
                 });
         }
-    },
-    setup() {
-        const {sort, filter} = setupRouterSortAndFilter({field: 'expert_panel.display_name', desc: false});
-
-        return {
-            sort,
-            filter
-        }
     }
 }
 </script>
@@ -134,7 +134,7 @@ export default {
             <button class="btn btn-xs" @click="exportData">Export Data</button>
         </div>
 
-        <data-table :data="filteredItems" :fields="fields" v-model:sort="sort">
+        <data-table v-model:sort="sort" :data="filteredItems" :fields="fields">
             <template #cell-action="{item}">
                 <router-link :to="{name: 'AnnualUpdateDetail', params: {id: item.id}}">
                     view
