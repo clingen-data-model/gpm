@@ -12,7 +12,6 @@ export default antfu(
     {
         files: ['resources/js/**/*.{js,ts,vue,json}'],
         rules: {
-            'vue/require-explicit-emits': 'off',
             'jsonc/no-useless-escape': 'off',
             'perfectionist/sort-imports': 'off',
             'perfectionist/sort-named-imports': 'off',

@@ -23,6 +23,7 @@ export default {
     },
     emits: [
         'saved',
+        'canceled',
     ],
     data() {
         return {

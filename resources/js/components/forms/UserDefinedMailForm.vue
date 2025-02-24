@@ -7,6 +7,9 @@ export default {
             default: () => ({})
         }
     },
+    emits: [
+      'update:email',
+    ],
     data() {
         return {
 
