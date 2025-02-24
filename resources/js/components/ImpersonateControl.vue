@@ -20,7 +20,7 @@
                     v-model="showSelector"
                     @ok="impersonateSelected"
                 >
-                    <search-select 
+                    <SearchSelect 
                         v-model="selectedUser"
                         :search-function="search"
                         placeholder="search by name, email, or numeric id"
@@ -31,7 +31,7 @@
                         <template v-slot:option="{option}">
                             {{option.name}} ({{option.email}})
                         </template>
-                    </search-select>
+                    </SearchSelect>
 
                     <button-row 
                         @submit-text="search"

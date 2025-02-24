@@ -19,13 +19,13 @@
                     View in the VCI
                 </a>
             </div>
-            <evidence-summary-form 
+            <EvidenceSummaryForm 
                 v-else 
                 :summary="summary" 
                 :group="group"
                 @saved="handleSaved"
                 @canceled="cancelEdit"
-            ></evidence-summary-form>
+            ></EvidenceSummaryForm>
         </transition>
         <teleport to="body">
             <modal-dialog v-model="showDeleteConfirm" title="You are about to delete an example evidence summary.">

@@ -19,7 +19,7 @@
                 </keep-alive>
             </div>
             <p>
-                <router-link class="block link pt-2" :to="{name: 'login'}" v-if="!this.$store.getters.isAuthed">&lt; Log In</router-link>
+                <router-link class="block link pt-2" :to="{name: 'login'}" v-if="!$store.getters.isAuthed">&lt; Log In</router-link>
             </p>
         </div>
     </div>

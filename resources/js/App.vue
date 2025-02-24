@@ -46,7 +46,7 @@
           </span>
         </div>
         <a href="mailto:gpm_support@clinicalgenome.org?subject=New ExpertPanel Request" class="btn btn-xs mr-4">Request a new group</a>
-        <user-menu></user-menu>
+        <UserMenu></UserMenu>
       </div>
     </header>
 
@@ -60,11 +60,11 @@
     </div>
 
 
-    <alert-viewer></alert-viewer>
+    <AlertViewer></AlertViewer>
 
     <div class="fixed right-0 top-20 space-y-2">
       <help-button />
-      <issue-report-form class="print:hidden" />
+      <IssueReportForm class="print:hidden" />
     </div>
 
     <teleport to="body">

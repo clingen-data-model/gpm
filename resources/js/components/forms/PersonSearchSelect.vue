@@ -1,6 +1,6 @@
 <template>
     <div>
-        <search-select
+        <SearchSelect
             v-model="selectedPerson"
             :multiple="multiple"
             :disabled="disabled"
@@ -22,7 +22,7 @@
                     {{option}}
                 </div>
             </template>
-        </search-select>
+        </SearchSelect>
     </div>
 </template>
 <script>

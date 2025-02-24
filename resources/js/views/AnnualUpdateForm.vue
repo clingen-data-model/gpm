@@ -30,7 +30,7 @@ import SpecificationProgress from '@/components/annual_update/SpecificationProgr
 export default {
     name: 'AnnualUpdateForm',
     components: {
-        'app-section': ApplicationSection,
+        AppSection: ApplicationSection,
         SubmitterInformation,
         GciGtUse,
         // SystemIssues,
@@ -326,59 +326,59 @@ export default {
             Your annual update was submitted on {{formatDate(annualUpdate.completed_at)}}
         </static-alert>
 
-            <submitter-information v-model="annualUpdate" :errors="errors" />
+            <SubmitterInformation v-model="annualUpdate" :errors="errors" />
 
                 <!-- <div v-if="group.is_vcep || (group.is_gcep && annualUpdate.data.ep_activity == 'active') "> -->
                 <div>
-                    <membership-update :version="year" v-model="annualUpdate" :errors="errors" />
+                    <MembershipUpdate :version="year" v-model="annualUpdate" :errors="errors" />
 
                     <template v-if="expertPanel.is_gcep">
-                        <app-section title="Use of GCI and GeneTracker Systems">
-                            <gci-gt-use v-model="annualUpdate" :errors="errors" />
-                        </app-section>
+                        <AppSection title="Use of GCI and GeneTracker Systems">
+                            <GciGtUse v-model="annualUpdate" :errors="errors" />
+                        </AppSection>
 
                         <div>
-                            <app-section v-if="year < 2024" title="Summary of total numbers of genes curated">
-                                <gene-curation-totals v-model="annualUpdate" :errors="errors" />
-                            </app-section>
-                            <app-section v-else title="Progress in gene curation">
-                                <gene-curation-progress v-model="annualUpdate" :errors="errors" />
-                            </app-section>
+                            <AppSection v-if="year < 2024" title="Summary of total numbers of genes curated">
+                                <GeneCurationTotals v-model="annualUpdate" :errors="errors" />
+                            </AppSection>
+                            <AppSection v-else title="Progress in gene curation">
+                                <GeneCurationProgress v-model="annualUpdate" :errors="errors" />
+                            </AppSection>
                         </div>
 
-                        <app-section title="Changes to plans for ongoing curation">
-                            <gcep-ongoing-plans-update-form v-model="annualUpdate" :errors="errors" @updated="saveOngoingPlans"></gcep-ongoing-plans-update-form>
-                        </app-section>
+                        <AppSection title="Changes to plans for ongoing curation">
+                            <GcepOngoingPlansUpdateForm v-model="annualUpdate" :errors="errors" @updated="saveOngoingPlans"></GcepOngoingPlansUpdateForm>
+                        </AppSection>
 
-                        <app-section title="Gene Re-curation/Re-review">
-                            <gcep-rereview-form v-model="annualUpdate" :errors="errors"></gcep-rereview-form>
-                        </app-section>
+                        <AppSection title="Gene Re-curation/Re-review">
+                            <GcepRereviewForm v-model="annualUpdate" :errors="errors"></GcepRereviewForm>
+                        </AppSection>
                     </template>
 
-                    <app-section v-if="expertPanel.is_vcep && year < 2024" title="Use of Variant Curation Interface (VCI)">
-                        <vci-use v-model="annualUpdate" :errors="errors"></vci-use>
-                    </app-section>
+                    <AppSection v-if="expertPanel.is_vcep && year < 2024" title="Use of Variant Curation Interface (VCI)">
+                        <VciUse v-model="annualUpdate" :errors="errors"></VciUse>
+                    </AppSection>
 
-                    <app-section title="Goals for next year">
-                        <goals-form :version="year" v-model="annualUpdate" :errors="errors" />
-                    </app-section>
+                    <AppSection title="Goals for next year">
+                        <GoalsForm :version="year" v-model="annualUpdate" :errors="errors" />
+                    </AppSection>
 
-                    <app-section v-if="year < 2024" title="Additional Funding">
-                        <funding-form v-model="annualUpdate" :errors="errors" />
-                    </app-section>
+                    <AppSection v-if="year < 2024" title="Additional Funding">
+                        <FundingForm v-model="annualUpdate" :errors="errors" />
+                    </AppSection>
 
-                    <app-section v-if="year >= 2024" title="External Funding">
-                        <external-funding-form v-model="annualUpdate" :errors="errors" />
-                    </app-section>
+                    <AppSection v-if="year >= 2024" title="External Funding">
+                        <ExternalFundingForm v-model="annualUpdate" :errors="errors" />
+                    </AppSection>
 
                     <website-attestation v-if="year < 2024" v-model="annualUpdate" :errors="errors" />
 
                     <template
                         v-if="expertPanel.is_vcep && expertPanel.has_approved_draft">
                         <!-- <dev-component>Begin questions for specifcation-ed VCEPS</dev-component> -->
-                        <app-section title="Progress on Rule Specification">
-                            <specification-progress v-model="annualUpdate" :errors="errors" />
-                        </app-section>
+                        <AppSection title="Progress on Rule Specification">
+                            <SpecificationProgress v-model="annualUpdate" :errors="errors" />
+                        </AppSection>
 
                     </template>
 
@@ -387,11 +387,11 @@ export default {
 
                         <!-- <variant-curation-workflow v-model="annualUpdate" :errors="errors" /> -->
 
-                        <variant-reanalysis v-model="annualUpdate" :errors="errors" />
+                        <VariantReanalysis v-model="annualUpdate" :errors="errors" />
 
-                        <vcep-ongoing-plans-update-form v-model="annualUpdate" :errors="errors"  @updated="saveOngoingPlans"/>
+                        <VcepOngoingPlansUpdateForm v-model="annualUpdate" :errors="errors"  @updated="saveOngoingPlans"/>
 
-                        <member-designation-update
+                        <MemberDesignationUpdate
                             :version="year"
                             v-model="annualUpdate"
                             :errors="errors"
@@ -424,7 +424,7 @@ export default {
         <br>
 
         <teleport to='body'>
-            <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="this.$route.meta.title">
+            <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="$route.meta.title">
                 <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
             </modal-dialog>
         </teleport>

@@ -6,28 +6,28 @@
             </div>
         </slot>
         <div v-if="application.stepIsApproved(step) && showVersion">
-            <final-document-view
+            <FinalDocumentView
                 :application="application"
                 :document-type-id="documentTypeId"
                 :step="step"
             >
-            </final-document-view>
+            </FinalDocumentView>
         </div>
 
         <div v-else>
-            <document-list 
+            <DocumentList 
                 :application="application"
                 :document-type-id="documentTypeId"
                 :show-version="showVersion"
                 @updated="$emit('updated')"
-            ></document-list>
+            ></DocumentList>
             
             <button class="btn mb-2 btn-sm" @click="showUploadForm = true">
                 Upload a new {{showVersion ? `version`: 'document'}}
             </button>
         </div>
         <modal-dialog v-model="showUploadForm" @closed="$refs.uploadform.clearForm()">
-            <document-upload-form 
+            <DocumentUploadForm 
                 :application="application" 
                 :document-type-id="documentTypeId" 
                 :step="step"
@@ -35,7 +35,7 @@
                 @saved="handleSaved" 
                 ref="uploadform"
             >
-            </document-upload-form>
+            </DocumentUploadForm>
         </modal-dialog>
     </div>
 </template>

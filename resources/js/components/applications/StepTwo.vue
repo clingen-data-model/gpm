@@ -1,5 +1,5 @@
 <template>
-    <base-step
+    <BaseStep
         :step="2"
         :document-type="2"
         document-name="Draft Specifications"
@@ -11,10 +11,10 @@
         <template v-slot:sections>
             <div class="application-section screen-block">
                 <h2>Draft Specifications</h2>
-                <specifications-section :doc-type-id="2" />
+                <SpecificationsSection :doc-type-id="2" />
             </div>
         </template>
-    </base-step>
+    </BaseStep>
 </template>
 <script>
 import {mapGetters} from 'vuex'

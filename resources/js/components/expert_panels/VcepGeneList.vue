@@ -62,13 +62,13 @@
                                 <template v-else>
                                     <td>
                                         <input-row label="" :errors="errors.hgnc_id" :vertical="true">
-                                            <gene-search-select v-model="gene.gene"></gene-search-select>
+                                            <GeneSearchSelect v-model="gene.gene"></GeneSearchSelect>
                                         </input-row>
                                     </td>
                                     <!-- <td colspan="2"> -->
                                     <td>
                                         <input-row label="" :errors="errors.mondo_id" :vertical="true">
-                                            <disease-search-select v-model="gene.disease"></disease-search-select>
+                                            <DiseaseSearchSelect v-model="gene.disease"></DiseaseSearchSelect>
                                         </input-row>
                                     </td>
                                     <td>
@@ -85,12 +85,12 @@
                         <tr>
                             <td>
                                 <input-row label="" :errors="errors[`genes.0.hgnc_id`]" :vertical="true">
-                                    <gene-search-select v-model="newGene.gene" @update:modelValue="debounceSave" />
+                                    <GeneSearchSelect v-model="newGene.gene" @update:modelValue="debounceSave" />
                                 </input-row>
                             </td>
                             <td colspan="4">
                                 <input-row label="" :errors="errors[`diseases.0.hgnc_id`]" :vertical="true">
-                                    <disease-search-select v-model="newGene.disease" @update:modelValue="debounceSave" />
+                                    <DiseaseSearchSelect v-model="newGene.disease" @update:modelValue="debounceSave" />
                                 </input-row>
                             </td>
                         </tr>

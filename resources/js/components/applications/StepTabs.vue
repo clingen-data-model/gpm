@@ -1,24 +1,24 @@
 <template>
     <div>
         <div v-if="application.is_gcep">
-            <step-one @stepApproved="handleApproved" @updated="handleUpdated"></step-one>
+            <StepOne @stepApproved="handleApproved" @updated="handleUpdated"></StepOne>
         </div>
             <tabs-container
                 tab-location="right"
                 v-model="activeIndex"
-                v-if="this.application.expert_panel_type_id == 2"
+                v-if="application.expert_panel_type_id == 2"
             >
             <tab-item label="Group Definition">
-                <step-one @stepApproved="handleApproved" @updated="handleUpdated"></step-one>
+                <StepOne @stepApproved="handleApproved" @updated="handleUpdated"></StepOne>
             </tab-item>
             <tab-item label="Draft Specifications">
-                <step-two @stepApproved="handleApproved" @updated="handleUpdated"></step-two>
+                <StepTwo @stepApproved="handleApproved" @updated="handleUpdated"></StepTwo>
             </tab-item>
             <tab-item label="Pilot Specfications">
-                <step-three @stepApproved="handleApproved" @updated="handleUpdated"></step-three>
+                <StepThree @stepApproved="handleApproved" @updated="handleUpdated"></StepThree>
             </tab-item>
             <tab-item label="Sustained Curation">
-                <step-four @stepApproved="handleApproved" @updated="handleUpdated"></step-four>
+                <StepFour @stepApproved="handleApproved" @updated="handleUpdated"></StepFour>
             </tab-item>
         </tabs-container>
     </div>

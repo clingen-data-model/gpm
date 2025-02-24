@@ -108,7 +108,7 @@ export default {
 <template>
     <div class="overflow-x-auto">
         <div class="mb-6">
-            <step-controls v-if="!application.stepIsApproved(step)"
+            <StepControls v-if="!application.stepIsApproved(step)"
                 :step="step"
                 @updated="handleUpdated"
             />
@@ -127,7 +127,7 @@ export default {
                         <div class="flex space-x-1" v-else>
                             <date-input v-model="newApprovalDate"></date-input>
                             <button class="btn blue" @click="updateApprovalDate">Save</button>
-                            <remove-button @click="editApprovalDate = false"></remove-button>
+                            <RemoveButton @click="editApprovalDate = false"></RemoveButton>
                         </div>
                     </div>
                 </div>
@@ -151,7 +151,7 @@ export default {
         <slot name="log">
             <div class="mb-6 mt-4 border-t pt-4">
                 <h3 class="mb-2">Step {{step}} Progress Log</h3>
-                <application-log :step="step"></application-log>
+                <ApplicationLog :step="step"></ApplicationLog>
             </div>
         </slot>
     </div>

@@ -71,7 +71,7 @@ export default {
             <header>
                 <h3>Plans for Ongoing Review and Reanalysis and Discrepancy Resolution</h3>
             </header>
-            <vcep-ongoing-plans-form
+            <VcepOngoingPlansForm
                 @update="saveOngoingPlans"
                 :errors="errors"
             />
@@ -81,7 +81,7 @@ export default {
             <header>
                 <h3>Example Evidence Summaries</h3>
             </header>
-            <evidence-summaries
+            <EvidenceSummaries
                 :group="group"
                 class="pb-2 mb-4 border-b"
             />
@@ -91,7 +91,7 @@ export default {
             <header>
                 <h3>Example Evidence Summaries</h3>
             </header>
-            <member-designation-form
+            <MemberDesignationForm
                 class="pb-2 mb-4 border-b"
             />
         </section>

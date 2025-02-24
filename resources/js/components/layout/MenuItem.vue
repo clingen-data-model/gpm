@@ -44,7 +44,7 @@
             </header>
             <transition name="slide-fade-down">
                 <ul 
-                    v-if="this.item.sections && hasManySections" 
+                    v-if="item.sections && hasManySections" 
                     :class="{'ml-4 text-smaller': item.title}" v-show="!collapsed"
                 >
                     <li v-for="(section, idx) in item.sections" :key="idx">

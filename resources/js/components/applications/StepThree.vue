@@ -1,5 +1,5 @@
 <template>
-    <base-step
+    <BaseStep
         :step="3"
         approve-button-label="Approve Pilot and Specifications"
         title="Pilot ACMG Guideline Specificiations"
@@ -8,10 +8,10 @@
         <template v-slot:sections>
             <div class="application-section screen-block">
                 <h2>Pilot Specifications</h2>
-                <specifications-section :doc-type-id="[3,4,7]" />
+                <SpecificationsSection :doc-type-id="[3,4,7]" />
             </div>
         </template>
-    </base-step>
+    </BaseStep>
 </template>
 <script>
 import {mapGetters} from 'vuex'

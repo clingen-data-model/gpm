@@ -22,7 +22,7 @@
         </static-alert>
         
         <transition name="slide-fade-down">
-            <user-defined-mail-form v-model="email" v-show="notifyContacts"/>
+            <UserDefinedMailForm v-model="email" v-show="notifyContacts"/>
         </transition>
 
         <button-row>

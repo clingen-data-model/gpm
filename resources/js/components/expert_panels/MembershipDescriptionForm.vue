@@ -2,10 +2,10 @@
     <div>
         <header class="flex justify-between items-center">
             <h4>Description of Expertise</h4>
-            <edit-icon-button 
+            <EditIconButton 
                 v-if="hasAnyPermission(['groups-manage'], ['edit-info', group]) && !editing"
                 @click="$emit('update:editing', true)"
-            ></edit-icon-button>
+            ></EditIconButton>
         </header>
         <div class="mt-4">
             <p class="text-sm">

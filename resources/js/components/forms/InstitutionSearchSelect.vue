@@ -1,6 +1,6 @@
 <template>
     <div>
-        <search-select
+        <SearchSelect
             v-model="selectedInstitution"
             :search-function="search"
             style="z-index: 2"
@@ -27,10 +27,10 @@
             <template v-slot:fixedBottomOption  v-if="allowAdd">
                 <button class="font-bold link cursor-pointer" @click="initAddNew">Add your institution</button>
             </template>
-        </search-select>
+        </SearchSelect>
         <teleport to='body'>
             <modal-dialog title="Add an institution" v-model="showAddForm">
-                <institution-form
+                <InstitutionForm
                     :name="formName"
                     @saved="useNewInstitution"
                     @canceled="cancelNewInstitution"

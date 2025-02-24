@@ -1,5 +1,5 @@
 <template>
-    <application-section title="Changes to plans for variant curation workflow">
+    <ApplicationSection title="Changes to plans for variant curation workflow">
         <input-row 
             :disabled="isComplete"
             v-model="workingCopy.data.variant_workflow_changes"
@@ -21,7 +21,7 @@
                 class="ml-4"
             />
         </transition>
-    </application-section>
+    </ApplicationSection>
 </template>
 <script>
 import mirror from '@/composables/setup_working_mirror'

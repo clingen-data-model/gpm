@@ -5,7 +5,7 @@
             label="Working Name"
             :errors="errors.working_name"
             type="text"
-            v-model="this.app.working_name"
+            v-model="app.working_name"
             placeholder="A recognizable name"
         ></input-row>
         

@@ -76,7 +76,7 @@ export default {
                 </tr>
             </thead>
             <tbody>
-                <member-designation-row
+                <MemberDesignationRow
                     :member="member"
                     v-for="member in group.activeMembers"
                     :key="member.id"

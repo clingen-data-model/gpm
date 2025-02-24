@@ -4,7 +4,7 @@
             Groups
             <button v-if="hasPermission('groups-manage')" class="btn btn-xs" @click="startCreateGroup">Create a group</button>
         </h1>
-        <tabs-container @tab-changed="getGroupsForType">
+        <tabs-container @tabChanged="getGroupsForType">
             <tab-item v-for="def in tabDefinitions" :label="def.label" :key="def.label">
                 <div class="text-center w-full" v-if="loading">Loading...</div>
                 <div v-else>
@@ -49,9 +49,9 @@
         </tabs-container>
 
         <modal-dialog v-model="showCreateForm" title="Create a New Group" size="sm">
-            <submission-wrapper @submitted="$refs.groupForm.save()" @canceled="$refs.groupForm.cancel()">
-                <group-form ref='groupForm' @canceled="showCreateForm=false" @saved="showCreateForm = false" />
-            </submission-wrapper>
+            <SubmissionWrapper @submitted="$refs.groupForm.save()" @canceled="$refs.groupForm.cancel()">
+                <GroupForm ref='groupForm' @canceled="showCreateForm=false" @saved="showCreateForm = false" />
+            </SubmissionWrapper>
         </modal-dialog>
     </div>
 </template>

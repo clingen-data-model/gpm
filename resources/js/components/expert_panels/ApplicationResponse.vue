@@ -55,7 +55,7 @@ const print = () => {
                     <icon-printer class="inline-block"></icon-printer>
                 </button>
             </h1>
-            <definition-review></definition-review>
+            <DefinitionReview></DefinitionReview>
         </div>
         <div class="step-break">
             End of Group Definition Application.
@@ -66,7 +66,7 @@ const print = () => {
                 {{group.displayName}} - Specifications and Pilot
             </h1>
             <section v-if="group.expert_panel.definition_is_approved" class="print:hidden" >
-                <specifications-section :doc-type-id="[3,4,7]" :readonly="true" />
+                <SpecificationsSection :doc-type-id="[3,4,7]" :readonly="true" />
             </section>
         </div>
 
@@ -79,7 +79,7 @@ const print = () => {
                 {{group.displayName}} - Sustained Curation
             </h1>
 
-            <sustained-curation-review />
+            <SustainedCurationReview />
         </div>
     </div>
 </template>

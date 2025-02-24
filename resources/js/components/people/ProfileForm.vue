@@ -104,7 +104,7 @@
         <h3 v-if="showTitle">Profile</h3>
         <div class="float-right" v-if="(hasPermission('people-manage') || userIsPerson(person))"
         >
-            <profile-photo-form :person="person" style="width: 100px; height: 100px;" />
+            <ProfilePhotoForm :person="person" style="width: 100px; height: 100px;" />
         </div>
 
         <input-row label="First Name"

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <annual-update-alert
+    <AnnualUpdateAlert
       :group="group"
       v-if="
         hasAnyPermission([
@@ -11,7 +11,7 @@
       class="mb-2"
     />
 
-    <sustained-curation-review-alert
+    <SustainedCurationReviewAlert
       v-if="
         needsToReviewSustainedCuration &&
         hasAnyPermission([
@@ -23,16 +23,16 @@
       class="mb-2"
     />
 
-    <group-detail-header
+    <GroupDetailHeader
       :group="group"
       @showEdit="showEdit"
-    ></group-detail-header>
+    ></GroupDetailHeader>
 
 
     <div class="flex space-x-4">
       <div class="flex-grow mt-4">
-        <application-summary :group="group" v-if="group.isApplying" />
-        <tabs-container @tab-changed="handleTabChange">
+        <ApplicationSummary :group="group" v-if="group.isApplying" />
+        <tabs-container @tabChanged="handleTabChange">
           <tab-item label="Summary Description">
             <submission-wrapper
               :visible="group.is_ep"
@@ -42,7 +42,7 @@
               @canceled="cancelForm('editingDescription')"
               :show-controls="editingDescription"
             >
-              <group-description-form
+              <GroupDescriptionForm
                 ref="descriptionRef"
                 v-model:editing="editingDescription"
                 :errors="errors"
@@ -50,14 +50,14 @@
             </submission-wrapper>
           </tab-item>
           <tab-item label="Members">
-            <member-list :group="group"></member-list>
+            <MemberList :group="group"></MemberList>
             <submission-wrapper
                             v-if="group.is_vcep_or_scvcep"
                             @submitted="submitForm('saveMembershipDescription', 'editingExpertise')"
               @canceled="cancelForm('editingExpertise')"
               :show-controls="editingExpertise"
             >
-              <membership-description-form
+              <MembershipDescriptionForm
                 ref="membershipDescriptionFormRef"
                 class="mt-8"
                 v-model:editing="editingExpertise"
@@ -92,7 +92,7 @@
               @canceled="cancelForm('editingScopeDescription')"
               :show-controls="editingScopeDescription"
             >
-              <scope-description-form
+              <ScopeDescriptionForm
                 ref="scopeDescriptionRef"
                 v-model:editing="editingScopeDescription"
                 :errors="errors"
@@ -136,7 +136,7 @@
               <header>
                 <h3>Example Evidence Summaries</h3>
               </header>
-              <evidence-summaries
+              <EvidenceSummaries
                 :group="group"
                 :readonly="!group.expert_panel.pilotSpecificationsIsApproved"
                 class="pb-2 mb-4 border-b"
@@ -158,7 +158,7 @@
                 has been approved.
               </static-alert>
               <div>
-                <specifications-section
+                <SpecificationsSection
                   :doc-type-id="group.expert_panel.draftSpecApproved ? [2,3,4,7] : 2"
                   :step="group.expert_panel.draftSpecApproved ? 3 : 2"
                 />
@@ -168,7 +168,7 @@
           </tab-item>
 
           <tab-item label="Documents" v-if="userInGroup(group) || hasPermission('groups-manage')">
-            <group-documents></group-documents>
+            <GroupDocuments></GroupDocuments>
             <note>Documents are only available to members of this group.</note>
           </tab-item>
 
@@ -177,39 +177,39 @@
               >The attestations below are read only. Attestations can only be
               completed during the application process.</note
             >
-            <attestation-gcep
+            <AttestationGcep
               class="pb-2 mb-4 border-b"
               v-if="group.is_gcep"
               :disabled="true"
             />
 
             <h3>Reanalysis &amp; Discrepancy Resolution</h3>
-            <attestation-reanalysis
+            <AttestationReanalysis
               class="pb-2 mb-4 border-b"
               v-if="group.is_vcep_or_scvcep"
               :disabled="true"
             />
             <h3>NHGRI Data Availability</h3>
-            <attestation-nhgri class="pb-2 mb-4 border-b" :disabled="true" />
+            <AttestationNhgri class="pb-2 mb-4 border-b" :disabled="true" />
           </tab-item>
 
           <tab-item label="Log" :visible="hasPermission('groups-manage') || userInGroup(group)">
-            <activity-log
+            <ActivityLog
               :log-entries="logEntries"
               :api-url="`/api/groups/${group.uuid}/activity-logs`"
               v-bind:log-updated="getLogEntries"
-            ></activity-log>
+            ></ActivityLog>
             <button class="btn btn-xs mt-1" @click="getLogEntries">Refresh</button>
           </tab-item>
 
           <tab-item label="Admin" :visible="hasPermission('groups-manage')">
             <div v-if="group.isApplying && group.is_ep">
               <h2 class="pb-2 border-b mb-4">Application</h2>
-              <progress-chart
+              <ProgressChart
                 :application="group.expert_panel"
                 class="pb-4 border-b border-gray-300 mb-6"
-              ></progress-chart>
-              <step-tabs
+              ></ProgressChart>
+              <StepTabs
                 :application="group.expert_panel"
                 @stepApproved="getGroup"
                 v-if="group.is_ep"
@@ -228,10 +228,10 @@
                 </button>
                 <a
                   v-else-if="group.expert_panel.annualUpdate"
-                  :href="`/annual-updates/${this.group.expert_panel.annualUpdate.id}`"
+                  :href="`/annual-updates/${group.expert_panel.annualUpdate.id}`"
                   target="annual update"
                 >
-                  View Annual Update for {{this.group.expert_panel.annualUpdate.window.for_year}}
+                  View Annual Update for {{group.expert_panel.annualUpdate.window.for_year}}
                 </a>
             </section>
             <section class="border my-4 p-4 bg-red-100 border-red-200 rounded">
@@ -260,7 +260,7 @@
         </tabs-container>
       </div>
       <div class="md:w-1/5 lg:w-1/4" v-if="group.hasChildren">
-        <subgroup-list />
+        <SubgroupList />
       </div>
 
     </div>
@@ -269,7 +269,7 @@
       <modal-dialog
         v-model="showModal"
         @closed="handleModalClosed"
-        :title="this.$route.meta.title"
+        :title="$route.meta.title"
       >
         <router-view
           ref="modalView"
@@ -287,7 +287,7 @@
           @submitted="$refs.infoForm.save()"
           @canceled="$refs.infoForm.cancel()"
         >
-          <group-form
+          <GroupForm
             ref="infoForm"
             @canceled="showInfoEdit = false"
             @saved="showInfoEdit = false"

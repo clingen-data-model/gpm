@@ -33,7 +33,7 @@
             </template> -->
         </data-table>
         <modal-dialog v-model="editingEntry" title="Edit log entry">
-            <log-entry-form></log-entry-form>
+            <LogEntryForm></LogEntryForm>
         </modal-dialog>
     </div>
 </template>

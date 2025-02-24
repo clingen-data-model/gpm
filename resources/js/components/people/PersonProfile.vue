@@ -94,7 +94,7 @@
 
         <teleport to="body">
             <modal-dialog v-model="showEditForm" :title="formDialogTitle">
-                <profile-form :person="person" @saved="hideEditForm" @canceled="hideEditForm"> </profile-form>
+                <ProfileForm :person="person" @saved="hideEditForm" @canceled="hideEditForm"> </ProfileForm>
             </modal-dialog>
         </teleport>
     </div>

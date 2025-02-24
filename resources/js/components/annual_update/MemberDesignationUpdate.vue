@@ -1,6 +1,6 @@
 <template>
-    <application-section title="Member Designation">
-        <member-designation-form
+    <ApplicationSection title="Member Designation">
+        <MemberDesignationForm
             v-model="workingCopy"
             :errors="errors"
             @updated="$emit('updated')"
@@ -22,7 +22,7 @@
             :disabled="isComplete"
         >
         </input-row>
-    </application-section>
+    </ApplicationSection>
 </template>
 <script>
 import MemberDesignationForm from '@/components/expert_panels/MemberDesignationForm.vue'

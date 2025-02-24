@@ -37,7 +37,7 @@
                     <dictionary-row label="Email">{{newMember.person.email}}</dictionary-row>
                     <dictionary-row label="Institution">{{newMember.person.institution ? newMember.person.institution.name : '--'}}</dictionary-row>
                     <dictionary-row label="Credentials">
-                        <credentials-view :person="newMember.person" />
+                        <CredentialsView :person="newMember.person" />
                     </dictionary-row>
                     <dictionary-row label="Expertise">
                         <ExpertisesView :person="newMember.person" :legacy-expertise="newMember.legacy_expertise" />
@@ -129,10 +129,10 @@
                     class="pt-2 border-l pl-2  ml-2 flex-1"
                 >
                     <h5 class="font-bold border-b mb-1 pb-1">Matching people</h5>
-                    <member-suggestions
+                    <MemberSuggestions
                         :suggestions="suggestedPeople"
                         @selected="useExistingPerson"
-                    ></member-suggestions>
+                    ></MemberSuggestions>
                 </div>
             </transition>
 

@@ -2,7 +2,7 @@
     <div class="fixed right-4 top-8 w-64" style="z-index: 100">
       <ul>
         <transition-group name="slide-fade" tag="li">
-          <alert v-for="alert in $store.state.alerts.alerts" :key="alert.uuid" :alert="alert"></alert>
+          <Alert v-for="alert in $store.state.alerts.alerts" :key="alert.uuid" :alert="alert"></Alert>
         </transition-group>
       </ul>
     </div>

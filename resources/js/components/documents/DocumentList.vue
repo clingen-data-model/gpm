@@ -68,16 +68,16 @@
 
         <teleport to="body">
             <modal-dialog v-model="showEditForm" :title="`Update ${activeDocument.filename}`">
-                <document-edit-form 
+                <DocumentEditForm 
                     :document="activeDocument"
-                    :save-function="this.commitUpdate"
+                    :save-function="commitUpdate"
                     @saved="$emit('updated')"
                 />
             </modal-dialog>
 
             <modal-dialog v-model="showUploadForm" title="Upload a new document">
-                <document-upload-form 
-                    :save-function="this.commitCreate" 
+                <DocumentUploadForm 
+                    :save-function="commitCreate" 
                     @saved="$emit('updated')"
                 />
             </modal-dialog>

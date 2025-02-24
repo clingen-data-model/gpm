@@ -138,15 +138,15 @@ const navigateToGroup = (item) => {
             </tab-item>
 
             <tab-item label="Your Info">
-                <person-profile :person="personFromStore"></person-profile>
+                <PersonProfile :person="personFromStore"></PersonProfile>
             </tab-item>
 
             <tab-item label="COIs">
-                <coi-list :person="user.person"></coi-list>
+                <CoiList :person="user.person"></CoiList>
             </tab-item>
 
             <tab-item label="Demographics">
-                <demographics-form :uuid="user.person.uuid"></demographics-form>
+                <DemographicsForm :uuid="user.person.uuid"></DemographicsForm>
 
             </tab-item>
 

@@ -128,9 +128,9 @@
                     </div>
                     <div class="flex space-x-2">
                         <dropdown-menu hideCheveron v-if="canEdit">
-                            <dropdown-item @click="showEditForm = true">Edit</dropdown-item>
-                            <dropdown-item @click="toggleResolution">{{comment.is_resolved ? 'Mark unresolved' : 'Resolve'}}</dropdown-item>
-                            <dropdown-item @click="initDelete">Delete</dropdown-item>
+                            <DropdownItem @click="showEditForm = true">Edit</DropdownItem>
+                            <DropdownItem @click="toggleResolution">{{comment.is_resolved ? 'Mark unresolved' : 'Resolve'}}</DropdownItem>
+                            <DropdownItem @click="initDelete">Delete</DropdownItem>
                         </dropdown-menu>
                     </div>
                 </div>

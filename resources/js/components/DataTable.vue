@@ -47,7 +47,7 @@
                             <div class="py-1 flex justify-between place-items-center">
                                 <div>
                                     <slot :name="`header-${field.name}`" :item="{field}">
-                                        {{this.getFieldLabel(field)}}
+                                        {{getFieldLabel(field)}}
                                     </slot>
                                 </div>
                                 <div>

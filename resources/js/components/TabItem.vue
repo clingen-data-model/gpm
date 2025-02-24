@@ -37,7 +37,7 @@ export default {
 </script>
 <template>
     <keep-alive>
-        <section v-if="this.active && this.visible">
+        <section v-if="active && visible">
             <slot></slot>
         </section>
     </keep-alive>

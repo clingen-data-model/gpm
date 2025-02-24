@@ -4,7 +4,7 @@
             <popover hover arrow>
                 <template v-slot:content>
                     <div>
-                        <requirements-item  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
+                        <RequirementsItem  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
                     </div>
                 </template>
                 <div>

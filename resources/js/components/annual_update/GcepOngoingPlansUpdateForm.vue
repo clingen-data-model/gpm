@@ -1,6 +1,6 @@
 <template>
     <div>
-        <gcep-ongoing-plans-form 
+        <GcepOngoingPlansForm 
             v-model="workingCopy"
             :errors="errors"
             @updated="$emit('updated')"

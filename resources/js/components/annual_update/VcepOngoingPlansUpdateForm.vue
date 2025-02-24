@@ -1,8 +1,8 @@
 <template>
-    <application-section title="Sustained Variant Curation">
+    <ApplicationSection title="Sustained Variant Curation">
         <p>Please review and update the following information previously provided regarding your
             implementation of sustained variant curation.</p>
-        <vcep-ongoing-plans-form
+        <VcepOngoingPlansForm
             class="ml-4 border-l-4 pl-4"
             v-model="workingCopy"
             :errors="errors"
@@ -57,10 +57,10 @@
         >
             <template v-slot:label>
                 If you are having any difficulty adhering to any policies of
-                the&nbsp;<vcep-protocol-link/>, please describe here:
+                the&nbsp;<VcepProtocolLink/>, please describe here:
             </template>
         </input-row>
-    </application-section>
+    </ApplicationSection>
 </template>
 <script>
 import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm.vue'

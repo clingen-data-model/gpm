@@ -45,7 +45,7 @@
                 size="xl"
                 @closed="$refs.rejectsubmissionform.clearForm()"
             >
-                <reject-step-form
+                <RejectStepForm
                     ref="rejectsubmissionform"
                     @saved="handleRejected"
                     @canceled="hideRejectForm"

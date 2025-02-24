@@ -3,7 +3,7 @@
         <header class="pb-4">
             <div class="flex space-x-4">
 
-                <profile-picture :person="person" style="width: 155px" class="rounded-lg" />
+                <ProfilePicture :person="person" style="width: 155px" class="rounded-lg" />
 
                 <div class="flex-1">
                     <router-link class="note" to="/people">People</router-link>
@@ -27,23 +27,23 @@
                 </div>
             </div>
         </header>
-        <tabs-container>
+        <TabsContainer>
             <tab-item label="groups">
                 <h2>Groups</h2>
-                <membership-list :person="person"></membership-list>
+                <MembershipList :person="person"></MembershipList>
             </tab-item>
             <tab-item label="Info">
                 <h2>Profile</h2>
-                <person-profile :person="person"></person-profile>
+                <PersonProfile :person="person"></PersonProfile>
             </tab-item>
 
             <tab-item label="Demographics" :visible="(hasRole('super-admin') || userIsPerson(person))">
-                <demographics-form :person="person"></demographics-form>
+                <DemographicsForm :person="person"></DemographicsForm>
 
             </tab-item>
 
             <tab-item label="Conflict of Interest">
-                <coi-list :person="person"></coi-list>
+                <CoiList :person="person"></CoiList>
             </tab-item>
             <!-- <tab-item label="Documents">
                 docs
@@ -57,7 +57,7 @@
                     <h2>Mail sent to {{ person.first_name }}</h2>
                     <refresh-button :loading="mailLoading" @click="getMailLog" />
                 </header>
-                <person-mail-log :person="person" :mail="sortedMailLog"></person-mail-log>
+                <PersonMailLog :person="person" :mail="sortedMailLog"></PersonMailLog>
             </tab-item>
 
             <tab-item label="Log" :visible="hasPermission('people-manage') || coordinatesPerson(person)">
@@ -65,8 +65,8 @@
                     <h2>Log Entries</h2>
                     <refresh-button :loading="logsLoading" @click="getLogEntries" />
                 </div>
-                <activity-log :log-entries="logEntries" :api-url="`/api/people/${person.uuid}/activity-logs`"
-                    v-bind:log-updated="getLogEntries"></activity-log>
+                <ActivityLog :log-entries="logEntries" :api-url="`/api/people/${person.uuid}/activity-logs`"
+                    v-bind:log-updated="getLogEntries"></ActivityLog>
             </tab-item>
 
             <tab-item label="Admin" :visible="hasPermission('people-manage')">
@@ -79,7 +79,7 @@
                 </section>
             </tab-item>
 
-        </tabs-container>
+        </TabsContainer>
 
         <teleport to="body">
             <modal-dialog v-model="showModal" :title="$route.meta.title">
@@ -99,8 +99,8 @@
                     submit-variant="red" />
             </modal-dialog>
             <modal-dialog :title="`Merge ${person.name} into another person`" v-model="showMergeForm">
-                <person-merge-form :obsolete="person" @saved="handleMerged"
-                    @canceled="handleMergeCanceled"></person-merge-form>
+                <PersonMergeForm :obsolete="person" @saved="handleMerged"
+                    @canceled="handleMergeCanceled"></PersonMergeForm>
             </modal-dialog>
         </teleport>
     </div>

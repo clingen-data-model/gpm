@@ -39,7 +39,7 @@ export default {
                 <slot name="title">
                     <h2>{{title}}</h2>
                 </slot>
-                <requirements-badge v-if="id" :section="section" :group="group"></requirements-badge>
+                <RequirementsBadge v-if="id" :section="section" :group="group"></RequirementsBadge>
             </header>
             <div>
                 <slot></slot>

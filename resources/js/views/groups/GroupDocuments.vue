@@ -1,12 +1,12 @@
 <template>
     <div>
-        <document-list :documents="displayDocuments"
+        <DocumentList :documents="displayDocuments"
             :documentUpdater="updateDocument"
             :documentCreator="createDocument"
             :documentDeleter="deleteDocument"
             :canManage="canManageDocuments"
         >
-        </document-list>
+        </DocumentList>
     </div>
 </template>
 <script>

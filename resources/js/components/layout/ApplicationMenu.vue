@@ -16,7 +16,7 @@
     >
         <ul class="menu-items">
             <li v-for="(item, idx) in application.steps" :key="idx">
-                <menu-item :item="item" class="block" :is-current-step="isCurrentStep(item)"></menu-item>
+                <MenuItem :item="item" class="block" :is-current-step="isCurrentStep(item)"></MenuItem>
             </li>
         </ul>
         <div class="">

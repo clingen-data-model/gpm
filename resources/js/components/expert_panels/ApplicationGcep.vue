@@ -1,19 +1,19 @@
 <template>
     <div class="relative">
-        <application-step id="definition" :disabled="group.expert_panel.hasPendingSubmission">
-            <app-section title="Basic Information" id="basicInfo">
-                <group-form
+        <ApplicationStep id="definition" :disabled="group.expert_panel.hasPendingSubmission">
+            <AppSection title="Basic Information" id="basicInfo">
+                <GroupForm
                     :group="group" ref="groupForm"
                     @update="handleUpdate"
                 />
-            </app-section>
-            <app-section v-if="group" title="Membership" id="membership">
+            </AppSection>
+            <AppSection v-if="group" title="Membership" id="membership">
                 <p>
                     Expert Panels are expected to have broad representation of expertise in the field, including all major areas of expertise (clinical, diagnostic laboratory, and basic research).  Membership should include representation from three or more institutions and will encompass disease/gene expert members as well as biocurators. Biocurators do not have to be gene/disease experts and will be primarily responsible for assembling the available evidence for subsequent expert member review. For role, suggested examples include: primary biocurator, expert reviewer, etc.
                 </p>
-                <member-list :group="group" />
-            </app-section>
-            <app-section title="Scope of Work" id="scope">
+                <MemberList :group="group" />
+            </AppSection>
+            <AppSection title="Scope of Work" id="scope">
                 <p>
                     It is expected that the expert panel will utilize
                     <lumping-and-splitting-link />
@@ -23,7 +23,7 @@
                     <website-link />.
                 </p>
 
-                <gcep-gene-list
+                <GcepGeneList
                     :group="group"
                     ref="geneList"
                     @geneschanged="genesChanged = true"
@@ -32,21 +32,21 @@
 
                 <hr>
 
-                <scope-description-form @update="handleUpdate" />
-            </app-section>
+                <ScopeDescriptionForm @update="handleUpdate" />
+            </AppSection>
 
-            <app-section title="Attestations" id="attestations">
-                <attestation-gcep @update="handleUpdate" />
-            </app-section>
+            <AppSection title="Attestations" id="attestations">
+                <AttestationGcep @update="handleUpdate" />
+            </AppSection>
 
-            <app-section id="curationReviewProcess" title="Plans for Ongoing Gene Review and Reanalysis and Discrepancy Resolution">
-                <gcep-ongoing-plans-form @update="handleUpdate" />
-            </app-section>
+            <AppSection id="curationReviewProcess" title="Plans for Ongoing Gene Review and Reanalysis and Discrepancy Resolution">
+                <GcepOngoingPlansForm @update="handleUpdate" />
+            </AppSection>
 
-            <app-section title="NHGRI Data Availability" id="nhgri">
-                <attestation-nhgri @update="handleUpdate" />
-            </app-section>
-        </application-step>
+            <AppSection title="NHGRI Data Availability" id="nhgri">
+                <AttestationNhgri @update="handleUpdate" />
+            </AppSection>
+        </ApplicationStep>
     </div>
 </template>
 <script>
@@ -68,7 +68,7 @@ import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansFor
 export default {
     name: 'ApplicationGcep',
     components: {
-        'app-section': ApplicationSection,
+        AppSection: ApplicationSection,
         ApplicationStep,
         AttestationGcep,
         AttestationNhgri,

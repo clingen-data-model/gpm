@@ -1,5 +1,5 @@
 <template>
-    <application-section title="Webpage Updates">
+    <ApplicationSection title="Webpage Updates">
             <input-row :errors="errors.website_attestation" vertical>
                 <template v-slot:label>
                     <p>
@@ -12,7 +12,7 @@
                     :disabled="isComplete"
                 />
             </input-row>
-    </application-section>
+    </ApplicationSection>
 </template>
 <script>
 import mirror from '@/composables/setup_working_mirror'

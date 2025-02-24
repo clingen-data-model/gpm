@@ -33,7 +33,7 @@
                 <button class="btn btn-xs" @click="openEditForm(item)">
                     <icon-edit width="12" height="16"></icon-edit>
                 </button>
-                <trash-button @click="initDelete(item)"></trash-button>
+                <TrashButton @click="initDelete(item)"></TrashButton>
                 </div>
             </template>
         </data-table>
@@ -41,7 +41,7 @@
         <div v-else class="px-2 py-1 border bg-gray-100 rounded">No documents uploaded</div>
 
         <modal-dialog v-model="showEditForm">
-            <document-edit-form
+            <DocumentEditForm
                 :document="activeDocument"
                 :application="application"
                 @canceled="showEditForm = false"

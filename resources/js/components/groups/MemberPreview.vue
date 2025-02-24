@@ -7,7 +7,7 @@
 
         <div class="md:flex flex-wrap space-x-4 text-sm">
             <div>
-                <profile-picture :person="member.person" style="width: 100px; height: 100px;" class="rounded" />
+                <ProfilePicture :person="member.person" style="width: 100px; height: 100px;" class="rounded" />
                 <note>member id: {{member.id}}</note>
             </div>
             <div class="flex-1 md:flex flex-wrap">
@@ -61,7 +61,7 @@
             </div>
         </div>
         <router-link class="link"
-            :to="{name: 'PersonDetail', params: {uuid: this.member.person.uuid}}">
+            :to="{name: 'PersonDetail', params: {uuid: member.person.uuid}}">
             View profile
         </router-link>
     </div>

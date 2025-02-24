@@ -30,13 +30,13 @@
         </data-table>
         <teleport to="body">
             <modal-dialog v-model="showApproveDialog" :title="`Approve ${currentItem.name}`">
-                <institution-approval-form v-model="currentItem" @saved="handleSaved" @canceled="handleCancel" />
+                <InstitutionApprovalForm v-model="currentItem" @saved="handleSaved" @canceled="handleCancel" />
             </modal-dialog>
             <modal-dialog v-model="showEditDialog" :title="`Edit ${currentItem.name}`">
-                <institution-update-form v-model="currentItem" @saved="handleSaved" @canceled="handleCancel" />
+                <InstitutionUpdateForm v-model="currentItem" @saved="handleSaved" @canceled="handleCancel" />
             </modal-dialog>
             <modal-dialog v-model="showMergeDialog" title="Merge Institutions">
-                <institution-merge-form :obsoletes="[currentItem]" @saved="handleMerge" @canceled="showMergeDialog = false" />
+                <InstitutionMergeForm :obsoletes="[currentItem]" @saved="handleMerge" @canceled="showMergeDialog = false" />
             </modal-dialog>
             <modal-dialog v-model="showDeleteConfirmation" title="Delete Institution" size="sm">
                 <div v-if="currentItem.people_count > 0">

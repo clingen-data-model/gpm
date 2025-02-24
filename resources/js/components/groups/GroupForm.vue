@@ -10,7 +10,7 @@
         />
 
         <dictionary-row label="Type" v-else>
-            {{ this.group?.type?.display_name }}
+            {{ group?.type?.display_name }}
         </dictionary-row>
 
         <transition name="slide-fade-down" mode="out-in">

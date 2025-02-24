@@ -1,10 +1,10 @@
 <template>
     <div>
-        <profile-form :person="person"
+        <ProfileForm :person="person"
             v-model="person"
             @saved="goBack()"
             @canceled="goBack()"
-        ></profile-form>
+        ></ProfileForm>
     </div>
 </template>
 <script>
