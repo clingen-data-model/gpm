@@ -17,6 +17,9 @@ export default {
             required: true
         }
     },
+    emits: [
+      'completed',
+    ],
     data() {
         return {
             tableSort: {
