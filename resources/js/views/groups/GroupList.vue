@@ -152,59 +152,61 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <h1 class="flex justify-between items-center">
-            Groups
-            <button v-if="hasPermission('groups-manage')" class="btn btn-xs" @click="startCreateGroup">Create a group</button>
-        </h1>
-        <tabs-container @tabChanged="getGroupsForType">
-            <tab-item v-for="def in tabDefinitions" :key="def.label" :label="def.label">
-                <div v-if="loading" class="text-center w-full">Loading...</div>
-                <div v-else>
-                    <div class="mb-2">
-                        Filter: <input v-model="filterString" type="text" placeholder="name,id,status,coordinator name">
-                    </div>
-                    <data-table
+  <div>
+    <h1 class="flex justify-between items-center">
+      Groups
+      <button v-if="hasPermission('groups-manage')" class="btn btn-xs" @click="startCreateGroup">
+        Create a group
+      </button>
+    </h1>
+    <tabs-container @tabChanged="getGroupsForType">
+      <tab-item v-for="def in tabDefinitions" :key="def.label" :label="def.label">
+        <div v-if="loading" class="text-center w-full">
+          Loading...
+        </div>
+        <div v-else>
+          <div class="mb-2">
+            Filter: <input v-model="filterString" type="text" placeholder="name,id,status,coordinator name">
+          </div>
+          <data-table
 
-                        v-model:sort="sort"
-                        v-remaining-height
-                        :data="filteredGroups.filter(def.filter)"
-                        :fields="fields"
-                        :row-click-handler="goToGroup"
-                        row-class="cursor-pointer active:bg-blue-100"
-                    >
-                        <template #cell-displayStatus="{item}">
-                            <badge class="text-xs" :color="item.statusColor">
-                                {{ item.displayStatus
-                                }}<span v-if="item.status.id === 1 && item.is_ep"
-                                    >&nbsp;-&nbsp;{{
-                                        item.expert_panel.currentStepAbbr
-                                    }}</span
-                                >
-                            </badge>
-                        </template>
-                        <template #cell-coordinators="{value}">
-                            <div v-if="value.length === 0"></div>
-                            <span v-for="(coordinator, idx) in value" :key="coordinator.id">
-                                <span v-if="idx > 0">, </span>
-                                <router-link
-                                    :to="{name: 'PersonDetail', params: {uuid: coordinator.person.uuid}}"
-                                    class="link"
-                                    @click.stop
-                                >
-                                    {{ coordinator.person.name }}
-                                </router-link>
-                            </span>
-                        </template>
-                    </data-table>
-                </div>
-            </tab-item>
-        </tabs-container>
+            v-model:sort="sort"
+            v-remaining-height
+            :data="filteredGroups.filter(def.filter)"
+            :fields="fields"
+            :row-click-handler="goToGroup"
+            row-class="cursor-pointer active:bg-blue-100"
+          >
+            <template #cell-displayStatus="{item}">
+              <badge class="text-xs" :color="item.statusColor">
+                {{ item.displayStatus
+                }}<span v-if="item.status.id === 1 && item.is_ep">&nbsp;-&nbsp;{{
+                  item.expert_panel.currentStepAbbr
+                }}</span>
+              </badge>
+            </template>
+            <template #cell-coordinators="{value}">
+              <div v-if="value.length === 0" />
+              <span v-for="(coordinator, idx) in value" :key="coordinator.id">
+                <span v-if="idx > 0">, </span>
+                <router-link
+                  :to="{name: 'PersonDetail', params: {uuid: coordinator.person.uuid}}"
+                  class="link"
+                  @click.stop
+                >
+                  {{ coordinator.person.name }}
+                </router-link>
+              </span>
+            </template>
+          </data-table>
+        </div>
+      </tab-item>
+    </tabs-container>
 
-        <modal-dialog v-model="showCreateForm" title="Create a New Group" size="sm">
-            <SubmissionWrapper @submitted="$refs.groupForm.save()" @canceled="$refs.groupForm.cancel()">
-                <GroupForm ref='groupForm' @canceled="showCreateForm=false" @saved="showCreateForm = false" />
-            </SubmissionWrapper>
-        </modal-dialog>
-    </div>
+    <modal-dialog v-model="showCreateForm" title="Create a New Group" size="sm">
+      <SubmissionWrapper @submitted="$refs.groupForm.save()" @canceled="$refs.groupForm.cancel()">
+        <GroupForm ref="groupForm" @canceled="showCreateForm = false" @saved="showCreateForm = false" />
+      </SubmissionWrapper>
+    </modal-dialog>
+  </div>
 </template>

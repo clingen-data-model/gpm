@@ -26,15 +26,15 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <slot></slot>
-        <transition name="fade-slide-down">
-            <button-row 
-                v-show="showControls"
-                submit-text="Save" 
-                @submitted="$emit('submitted')"
-                @canceled="$emit('canceled')"
-            />
-        </transition>
-    </div>
+  <div>
+    <slot />
+    <transition name="fade-slide-down">
+      <button-row 
+        v-show="showControls"
+        submit-text="Save" 
+        @submitted="$emit('submitted')"
+        @canceled="$emit('canceled')"
+      />
+    </transition>
+  </div>
 </template>

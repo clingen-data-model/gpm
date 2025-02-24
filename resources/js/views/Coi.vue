@@ -150,72 +150,77 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <card v-if="!codeIsValid" :title="verifying ? `Loading COI Form` : `COI Form not found`">
-            <div v-if="!verifying">We couldn't find this COI.</div>
-        </card>
-        <card v-if="!groupMemberId" title="There's a problem">
-            We can't seem to find your membership for this group id.  Please try refreshing.
-        </card>
+  <div>
+    <card v-if="!codeIsValid" :title="verifying ? `Loading COI Form` : `COI Form not found`">
+      <div v-if="!verifying">
+        We couldn't find this COI.
+      </div>
+    </card>
+    <card v-if="!groupMemberId" title="There's a problem">
+      We can't seem to find your membership for this group id.  Please try refreshing.
+    </card>
 
-        <card v-else-if="codeIsValid" :title="coiTitle" class="mx-auto relative" style="max-width:800px">
-            <CoiPolicy />
-            <hr>
-            <h2>COI</h2>
-            <div class="relative">
-                <div
-                    v-for="question in survey.questions"
-                    :key="question.name"
-                    :class="question.class"
-                >
-                    <transition name="slide-fade-down">
-                        <div v-if="question.type === 'content'">
-                            <MarkdownBlock
-                                :markdown="question.content"
-                            />
-                        </div>
-                        <input-row
-                            v-else
-                            v-show="showQuestion(question)"
-                            :label="question.question_text"
-                            :errors="errors[question.name]"
-                            :vertical="true"
-                        >
-
-                            <textarea v-if="question.type === 'text'"
-                                v-model="response[question.name]"
-                                class="w-full h-24"
-                                :name="question.name"
-                            ></textarea>
-
-                            <div v-if="question.type === 'multiple-choice'">
-                                <label v-for="option in question.options" :key="option.value" class="mb-1">
-                                    <input v-model="response[question.name]"
-                                        type="radio"
-                                        :value="option.value"
-                                        :name="question.name"
-                                    >
-                                    <div>{{ option.label }}</div>
-                                </label>
-                            </div>
-
-                            <input
-                                v-if="question.type === 'string'"
-                                v-model="response[question.name]"
-                                type="text"
-                                :name="question.name"
-                            >
-                        </input-row>
-                    </transition>
-                </div>
-                <button-row :show-cancel="false" @submitClicked="storeResponse()">
-                    <slot v-if="saving">
-                         Saving...
-                    </slot>
-                </button-row>
+    <card v-else-if="codeIsValid" :title="coiTitle" class="mx-auto relative" style="max-width:800px">
+      <CoiPolicy />
+      <hr>
+      <h2>COI</h2>
+      <div class="relative">
+        <div
+          v-for="question in survey.questions"
+          :key="question.name"
+          :class="question.class"
+        >
+          <transition name="slide-fade-down">
+            <div v-if="question.type === 'content'">
+              <MarkdownBlock
+                :markdown="question.content"
+              />
             </div>
-        </card>
+            <input-row
+              v-else
+              v-show="showQuestion(question)"
+              :label="question.question_text"
+              :errors="errors[question.name]"
+              :vertical="true"
+            >
+              <textarea
+                v-if="question.type === 'text'"
+                v-model="response[question.name]"
+                class="w-full h-24"
+                :name="question.name"
+              />
 
-        <note class="container">GroupMemberId: {{ groupMemberId }}</note>
-    </div>
+              <div v-if="question.type === 'multiple-choice'">
+                <label v-for="option in question.options" :key="option.value" class="mb-1">
+                  <input
+                    v-model="response[question.name]"
+                    type="radio"
+                    :value="option.value"
+                    :name="question.name"
+                  >
+                  <div>{{ option.label }}</div>
+                </label>
+              </div>
+
+              <input
+                v-if="question.type === 'string'"
+                v-model="response[question.name]"
+                type="text"
+                :name="question.name"
+              >
+            </input-row>
+          </transition>
+        </div>
+        <button-row :show-cancel="false" @submitClicked="storeResponse()">
+          <slot v-if="saving">
+            Saving...
+          </slot>
+        </button-row>
+      </div>
+    </card>
+
+    <note class="container">
+      GroupMemberId: {{ groupMemberId }}
+    </note>
+  </div>
 </template>

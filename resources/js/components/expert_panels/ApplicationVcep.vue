@@ -115,40 +115,40 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <ApplicationStep
-            id="definition"
-            title="Group Definition"
-            :disabled="group.expert_panel.hasPendingSubmission"
-        >
-            <AppSection id="basicInfo" title="Basic Information">
-                <GroupForm
-                    ref="groupForm" :group="group"
-                    @update="handleUpdate"
-                />
-            </AppSection>
-            <AppSection v-if="group" id="membership" title="Membership">
-                <p>
-                    Expert Panels are expected to broad representation of expertise and backgrounds in the field.
-                </p>
-                <MemberList :group="group" />
-                <hr>
-                <MembershipDescriptionForm :editing="true" @update="handleUpdate"/>
-            </AppSection>
-            <AppSection id="scope" title="Scope of Work">
-                <VcepGeneList ref="geneList" :group="group" @update="handleUpdate"/>
-                <hr>
-                <ScopeDescriptionForm @update="handleUpdate"/>
-            </AppSection>
-            <AppSection id="reanalysis" title="Reanalysis & Discrepancy Resolution">
-                <AttestationReanalysis @update="handleUpdate"></AttestationReanalysis>
-            </AppSection>
-            <AppSection id="nhgri" title="NHGRI Data Availability">
-                <AttestationNhgri @update="handleUpdate"></AttestationNhgri>
-            </AppSection>
-        </ApplicationStep>
+  <div>
+    <ApplicationStep
+      id="definition"
+      title="Group Definition"
+      :disabled="group.expert_panel.hasPendingSubmission"
+    >
+      <AppSection id="basicInfo" title="Basic Information">
+        <GroupForm
+          ref="groupForm" :group="group"
+          @update="handleUpdate"
+        />
+      </AppSection>
+      <AppSection v-if="group" id="membership" title="Membership">
+        <p>
+          Expert Panels are expected to broad representation of expertise and backgrounds in the field.
+        </p>
+        <MemberList :group="group" />
+        <hr>
+        <MembershipDescriptionForm :editing="true" @update="handleUpdate" />
+      </AppSection>
+      <AppSection id="scope" title="Scope of Work">
+        <VcepGeneList ref="geneList" :group="group" @update="handleUpdate" />
+        <hr>
+        <ScopeDescriptionForm @update="handleUpdate" />
+      </AppSection>
+      <AppSection id="reanalysis" title="Reanalysis & Discrepancy Resolution">
+        <AttestationReanalysis @update="handleUpdate" />
+      </AppSection>
+      <AppSection id="nhgri" title="NHGRI Data Availability">
+        <AttestationNhgri @update="handleUpdate" />
+      </AppSection>
+    </ApplicationStep>
 
-        <!-- <application-step
+    <!-- <application-step
             id="specifications-development"
             title="Specifications Development"
             :disabled="group.expert_panel.current_step < 2 || group.expert_panel.hasPendingSubmission"
@@ -160,44 +160,44 @@ export default {
         </application-step>
         -->
 
-        <ApplicationStep
-            id="draft-specifications"
-            title="Draft Specifications"
-            :disabled="group.expert_panel.current_step < 2 || group.expert_panel.hasPendingSubmission"
-            :no-submit="true"
-        >
-            <AppSection>
-                <SpecificationsSection :doc-type-id="2" :step="2"/>
-            </AppSection>
-        </ApplicationStep>
+    <ApplicationStep
+      id="draft-specifications"
+      title="Draft Specifications"
+      :disabled="group.expert_panel.current_step < 2 || group.expert_panel.hasPendingSubmission"
+      :no-submit="true"
+    >
+      <AppSection>
+        <SpecificationsSection :doc-type-id="2" :step="2" />
+      </AppSection>
+    </ApplicationStep>
 
-        <ApplicationStep
-            id="pilot-specifications"
-            title="Pilot Specifications"
-            :disabled="group.expert_panel.current_step < 3 || group.expert_panel.hasPendingSubmission"
-            :no-submit="true"
-        >
-            <AppSection>
-                <SpecificationsSection :doc-type-id="[3,4,7]" :step="3" />
-            </AppSection>
-        </ApplicationStep>
+    <ApplicationStep
+      id="pilot-specifications"
+      title="Pilot Specifications"
+      :disabled="group.expert_panel.current_step < 3 || group.expert_panel.hasPendingSubmission"
+      :no-submit="true"
+    >
+      <AppSection>
+        <SpecificationsSection :doc-type-id="[3,4,7]" :step="3" />
+      </AppSection>
+    </ApplicationStep>
 
-        <ApplicationStep
-            id="sustained-curation"
-            title="Sustained Curation"
-            :disabled="group.expert_panel.current_step < 4 || group.expert_panel.hasPendingSubmission"
-        >
-            <AppSection id="curationReviewProcess" title="Plans for Ongoing Review and Reanalysis and Discrepancy Resolution">
-                <VcepOngoingPlansForm @update="handleUpdate"/>
-            </AppSection>
+    <ApplicationStep
+      id="sustained-curation"
+      title="Sustained Curation"
+      :disabled="group.expert_panel.current_step < 4 || group.expert_panel.hasPendingSubmission"
+    >
+      <AppSection id="curationReviewProcess" title="Plans for Ongoing Review and Reanalysis and Discrepancy Resolution">
+        <VcepOngoingPlansForm @update="handleUpdate" />
+      </AppSection>
 
-            <AppSection id="evidenceSummaries" title="Example Evidence Summaries">
-                <EvidenceSummaryList />
-            </AppSection>
+      <AppSection id="evidenceSummaries" title="Example Evidence Summaries">
+        <EvidenceSummaryList />
+      </AppSection>
 
-            <AppSection id="designations" title="Member Designation">
-                <MemberDesignationForm ref="designationForm" />
-            </AppSection>
-        </ApplicationStep>
-    </div>
+      <AppSection id="designations" title="Member Designation">
+        <MemberDesignationForm ref="designationForm" />
+      </AppSection>
+    </ApplicationStep>
+  </div>
 </template>

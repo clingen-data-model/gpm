@@ -39,7 +39,7 @@ import {computed} from 'vue';
 </script>
 
 <template>
-    <span v-if="summary">
-        {{ authorString }}{{ titleString }}<em>{{ sourceString }}</em>{{ summary.pubdate }}
-    </span>
+  <span v-if="summary">
+    {{ authorString }}{{ titleString }}<em>{{ sourceString }}</em>{{ summary.pubdate }}
+  </span>
 </template>

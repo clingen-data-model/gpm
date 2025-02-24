@@ -124,20 +124,20 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <h1>Users</h1>
-        <data-table
-            ref="dataTable"
-            v-model:sort="sort"
-            :fields="fields"
-            :data="getUsers"
-            row-class="cursor-pointer"
-            paginated
-            @rowClick="goToUser"
-        >
-            <template #header>
-                <div>Filter: &nbsp;<input v-model="filter" type="text" placeholder="name, email"></div>
-            </template>
-        </data-table>
-    </div>
+  <div>
+    <h1>Users</h1>
+    <data-table
+      ref="dataTable"
+      v-model:sort="sort"
+      :fields="fields"
+      :data="getUsers"
+      row-class="cursor-pointer"
+      paginated
+      @rowClick="goToUser"
+    >
+      <template #header>
+        <div>Filter: &nbsp;<input v-model="filter" type="text" placeholder="name, email"></div>
+      </template>
+    </data-table>
+  </div>
 </template>

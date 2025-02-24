@@ -84,22 +84,23 @@ export default {
 }
 </script>
 <template>
-    <div class="w-64 mx-auto">
-        <label for="invite-code-input" class="text-lg block">
-            Enter your registration code:
-        </label>
-        <input id="invite-code-input"
-            v-model="inviteCode"
-            type="text" 
-            placeholder="XXXXXXXXXX" 
-            class="w-full"
-        >
-        <InputErrors :errors="errors"></InputErrors>
-        <button 
-            class="btn blue btn-lg block mt-2 w-full" 
-            @click="checkInvite"
-        >
-            Submit
-        </button>
-    </div>
+  <div class="w-64 mx-auto">
+    <label for="invite-code-input" class="text-lg block">
+      Enter your registration code:
+    </label>
+    <input
+      id="invite-code-input"
+      v-model="inviteCode"
+      type="text" 
+      placeholder="XXXXXXXXXX" 
+      class="w-full"
+    >
+    <InputErrors :errors="errors" />
+    <button 
+      class="btn blue btn-lg block mt-2 w-full" 
+      @click="checkInvite"
+    >
+      Submit
+    </button>
+  </div>
 </template>

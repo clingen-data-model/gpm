@@ -109,48 +109,51 @@ const navigateToGroup = (item) => {
 }
 </script>
 <template>
-    <div>
-        <h1>
-            Dashboard
-            <div class="note font-normal">
-                User ID: {{ user.id }} | Person ID: {{ user.person ? user.person.id : 'no person!!' }}
-            </div>
-        </h1>
+  <div>
+    <h1>
+      Dashboard
+      <div class="note font-normal">
+        User ID: {{ user.id }} | Person ID: {{ user.person ? user.person.id : 'no person!!' }}
+      </div>
+    </h1>
 
-        <NotificationList :user="user" />
+    <NotificationList :user="user" />
 
-        <DashboardAlerts :user="user" />
+    <DashboardAlerts :user="user" />
 
-        <ApplicationActivity v-if="showApplicationActivity" :user="user" class="screen-block" />
+    <ApplicationActivity v-if="showApplicationActivity" :user="user" class="screen-block" />
 
-        <tabs-container class="mt-8">
-            <tab-item label="Your Groups">
-                <div v-if="!groups.length" class="well">You are not assigned to any groups.</div>
-                <data-table v-else v-model:sort="groupSort" :data="groups" :fields="groupFields"
-                    row-class="cursor-pointer" @rowClick="navigateToGroup">
-                    <template #cell-status_name="{ value }">
-                        <badge :color="groupBadgeColor(value)">{{ value }}</badge>
-                    </template>
-                    <template #cell-displayName="{ item }">
-                        {{ item.name }} {{ item.type.name.toUpperCase() }}
-                    </template>
-                </data-table>
-            </tab-item>
+    <tabs-container class="mt-8">
+      <tab-item label="Your Groups">
+        <div v-if="!groups.length" class="well">
+          You are not assigned to any groups.
+        </div>
+        <data-table
+          v-else v-model:sort="groupSort" :data="groups" :fields="groupFields"
+          row-class="cursor-pointer" @rowClick="navigateToGroup"
+        >
+          <template #cell-status_name="{ value }">
+            <badge :color="groupBadgeColor(value)">
+              {{ value }}
+            </badge>
+          </template>
+          <template #cell-displayName="{ item }">
+            {{ item.name }} {{ item.type.name.toUpperCase() }}
+          </template>
+        </data-table>
+      </tab-item>
 
-            <tab-item label="Your Info">
-                <PersonProfile :person="personFromStore"></PersonProfile>
-            </tab-item>
+      <tab-item label="Your Info">
+        <PersonProfile :person="personFromStore" />
+      </tab-item>
 
-            <tab-item label="COIs">
-                <CoiList :person="user.person"></CoiList>
-            </tab-item>
+      <tab-item label="COIs">
+        <CoiList :person="user.person" />
+      </tab-item>
 
-            <tab-item label="Demographics">
-                <DemographicsForm :uuid="user.person.uuid"></DemographicsForm>
-
-            </tab-item>
-
-
-        </tabs-container>
-    </div>
+      <tab-item label="Demographics">
+        <DemographicsForm :uuid="user.person.uuid" />
+      </tab-item>
+    </tabs-container>
+  </div>
 </template>

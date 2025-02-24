@@ -36,13 +36,12 @@
 </script>
 
 <template>
-    <SearchSelect
-        v-model="workingCopy"
-        :options="expertises"
-        multiple
-        showOptionsOnFocus
-        showOptionsWhenEmpty
-        :searchFunction="searchExpertises"
-    >
-    </SearchSelect>
+  <SearchSelect
+    v-model="workingCopy"
+    :options="expertises"
+    multiple
+    showOptionsOnFocus
+    showOptionsWhenEmpty
+    :searchFunction="searchExpertises"
+  />
 </template>

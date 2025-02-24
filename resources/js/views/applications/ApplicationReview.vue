@@ -41,12 +41,12 @@ const screenTitle = computed(() => {
 
 </script>
 <template>
-    <ScreenTemplate :title="screenTitle" :breadcrumbs="breadcrumbs">
-        <ChairApproverControls
-            v-if="hasPermission('ep-applications-approve')"
-            @deleted="emits('deleted')"
-            @saved="emits('deleted')"
-        />
-        <component :is="stepReviewComponent" />
-    </ScreenTemplate>
+  <ScreenTemplate :title="screenTitle" :breadcrumbs="breadcrumbs">
+    <ChairApproverControls
+      v-if="hasPermission('ep-applications-approve')"
+      @deleted="emits('deleted')"
+      @saved="emits('deleted')"
+    />
+    <component :is="stepReviewComponent" />
+  </ScreenTemplate>
 </template>

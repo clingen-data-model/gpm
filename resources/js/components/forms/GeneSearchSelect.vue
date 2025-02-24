@@ -33,27 +33,28 @@ export default {
 }
 </script>
 <template>
-    <SearchSelect 
-        v-model="selectedGene" 
-        :search-function="search" 
-        style="z-index: 2" 
-        placeholder="HGNC ID or Gene Symbol"
-        keyOptionsBy="id"
-    >
-        <template #selection-label="{selection}">
-            <div v-if="typeof selection == 'object'">
-                {{ selection.gene_symbol }}
-            </div>
-            <div v-else>{{ selection }}</div>
-        </template>
-        <template #option="{option}">
-            <div v-if="typeof option == 'object'">
-                {{ option.gene_symbol }}
-            </div>
-            <div v-else>
-                {{ option }}
-            </div>
-        </template>
-    </SearchSelect>
-
+  <SearchSelect 
+    v-model="selectedGene" 
+    :search-function="search" 
+    style="z-index: 2" 
+    placeholder="HGNC ID or Gene Symbol"
+    keyOptionsBy="id"
+  >
+    <template #selection-label="{selection}">
+      <div v-if="typeof selection == 'object'">
+        {{ selection.gene_symbol }}
+      </div>
+      <div v-else>
+        {{ selection }}
+      </div>
+    </template>
+    <template #option="{option}">
+      <div v-if="typeof option == 'object'">
+        {{ option.gene_symbol }}
+      </div>
+      <div v-else>
+        {{ option }}
+      </div>
+    </template>
+  </SearchSelect>
 </template>

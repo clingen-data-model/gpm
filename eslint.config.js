@@ -12,17 +12,7 @@ export default antfu(
     {
         files: ['resources/js/**/*.{js,ts,vue,json}'],
         rules: {
-            'vue/html-indent': 'off',
-            'vue/max-attributes-per-line': 'off',
-            'vue/singleline-html-element-content-newline': 'off',
-            'vue/multiline-html-element-content-newline': 'off',
             'vue/v-on-event-hyphenation': 'off',
-            'vue/first-attribute-linebreak': 'off',
-            'vue/html-self-closing': 'off',
-            'vue/html-quotes': 'off',
-            'vue/html-closing-bracket-spacing': 'off',
-            'vue/html-closing-bracket-newline': 'off',
-            'vue/space-infix-ops': 'off',
             'vue/require-explicit-emits': 'off',
             'vue/attribute-hyphenation': 'off',
             'jsonc/no-useless-escape': 'off',

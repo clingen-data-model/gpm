@@ -36,26 +36,26 @@ export default {
 }
 </script>
 <template>
-    <ApplicationSection title="Member Designation">
-        <MemberDesignationForm
-            ref="memberDesignationForm"
-            v-model="workingCopy"
-            :errors="errors"
-            :readonly="isComplete"
-            @updated="$emit('updated')"
-        />
-        <hr>
-        <input-row v-model="workingCopy.data.member_designation_changed" 
-            vertical
-            label="Does this represent a change from previous years?"
-            :errors="errors.member_designation_changed"
-            type="radio-group"
-            :options="[
-                {value: 'yes', label: 'Yes'},
-                {value: 'no', label: 'No'}
-            ]"
-            :disabled="isComplete"
-        >
-        </input-row>
-    </ApplicationSection>
+  <ApplicationSection title="Member Designation">
+    <MemberDesignationForm
+      ref="memberDesignationForm"
+      v-model="workingCopy"
+      :errors="errors"
+      :readonly="isComplete"
+      @updated="$emit('updated')"
+    />
+    <hr>
+    <input-row
+      v-model="workingCopy.data.member_designation_changed" 
+      vertical
+      label="Does this represent a change from previous years?"
+      :errors="errors.member_designation_changed"
+      type="radio-group"
+      :options="[
+        {value: 'yes', label: 'Yes'},
+        {value: 'no', label: 'No'}
+      ]"
+      :disabled="isComplete"
+    />
+  </ApplicationSection>
 </template>

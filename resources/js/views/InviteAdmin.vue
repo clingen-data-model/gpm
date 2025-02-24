@@ -108,36 +108,35 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <note>Admin</note>
-        <h1>Invites</h1>
-        <data-table
-            ref="dataTable"
-            v-model:sort="tableSort"
-            v-remaining-height
-            :data="itemProvider"
-            :fields="fields"
-            class="text-sm"
-            paginated
-        >
-            <template #header>
-                <input v-model="searchTerm" type="text" placeholder="filter by name or email" class="mb-2">
-            </template>
-            <template #cell-reset="{item}">
-                <button v-if="item.redeemed_at" class="btn btn-xs" @click="confirmReset(item)">
-                    Reset
-                </button>
-            </template>
-        </data-table>
+  <div>
+    <note>Admin</note>
+    <h1>Invites</h1>
+    <data-table
+      ref="dataTable"
+      v-model:sort="tableSort"
+      v-remaining-height
+      :data="itemProvider"
+      :fields="fields"
+      class="text-sm"
+      paginated
+    >
+      <template #header>
+        <input v-model="searchTerm" type="text" placeholder="filter by name or email" class="mb-2">
+      </template>
+      <template #cell-reset="{item}">
+        <button v-if="item.redeemed_at" class="btn btn-xs" @click="confirmReset(item)">
+          Reset
+        </button>
+      </template>
+    </data-table>
 
-        <teleport to="body">
-            <modal-dialog v-model="showConfirmation" title="Reset Invite">
-                <p>You are about to reset the invite for {{ resettingInvite.first_name }} {{ resettingInvite.last_name }}.</p>
-                <p>This cannot be undone.</p>
-                <p>Do you want to reset the invite?</p>
-                <button-row submit-text="Reset Invite" @submitted="resetInvite(resettingInvite)"></button-row>
-
-            </modal-dialog>
-        </teleport>
-    </div>
+    <teleport to="body">
+      <modal-dialog v-model="showConfirmation" title="Reset Invite">
+        <p>You are about to reset the invite for {{ resettingInvite.first_name }} {{ resettingInvite.last_name }}.</p>
+        <p>This cannot be undone.</p>
+        <p>Do you want to reset the invite?</p>
+        <button-row submit-text="Reset Invite" @submitted="resetInvite(resettingInvite)" />
+      </modal-dialog>
+    </teleport>
+  </div>
 </template>

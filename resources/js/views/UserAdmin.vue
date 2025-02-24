@@ -18,5 +18,5 @@ export default {
 }
 </script>
 <template>
-    <div>User ADMIN</div>
+  <div>User ADMIN</div>
 </template>
