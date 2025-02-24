@@ -1,47 +1,3 @@
-<template>
-    <form-container>
-        <input-row label="Creation Date" :errors="errors.date_created" type="date" v-model="newAction.date_created"></input-row>
-
-        <StepInput v-model="newAction.step" :errors="errors.step" v-if="application.expert_panel_type_id == 2"></StepInput>
-
-        <input-row label="Target" Date="" :errors="errors.target_date" type="date" v-model="newAction.target_date"></input-row>
-
-        <input-row label="Entry" :errors="errors.entry">
-            <RichTextEditor v-model="newAction.entry" />
-        </input-row>
-
-        <input-row label="Assigned To" :errors="assignmentErrors">
-            <select id="" v-model="newAction.assigned_to">
-                <option :value="null">Select...</option>
-                <option v-for="i in assignees" :key="i.id"
-                    :value="i.id"
-                >
-                    {{i.name}}
-                </option>
-            </select>
-            &nbsp;&nbsp;
-            <input type="text" label="Name" v-model="newAction.assigned_to_name" placeholder="Name (optional)">
-        </input-row>
-
-        <div class="ml-4">
-        </div>
-
-        <checkbox  
-            v-model="completed" 
-            label="This is already completed"
-            class="ml-36"
-        />
-
-        <input-row label="Date Completed" :errors="errors.date_completed" class="ml-36" v-if="completed">
-            <input type="date" v-model="newAction.date_completed">
-        </input-row>
-
-        <button-row>
-            <button class="btn" @click="cancel">Cancel</button>
-            <button class="btn blue" @click="save">Save</button>
-        </button-row>
-    </form-container>
-</template>
 <script>
 import StepInput from '@/components/forms/StepInput.vue'
 import {mapGetters} from 'vuex'
@@ -209,3 +165,47 @@ export default {
     }
 }
 </script>
+<template>
+    <form-container>
+        <input-row label="Creation Date" :errors="errors.date_created" type="date" v-model="newAction.date_created"></input-row>
+
+        <StepInput v-model="newAction.step" :errors="errors.step" v-if="application.expert_panel_type_id == 2"></StepInput>
+
+        <input-row label="Target" Date="" :errors="errors.target_date" type="date" v-model="newAction.target_date"></input-row>
+
+        <input-row label="Entry" :errors="errors.entry">
+            <RichTextEditor v-model="newAction.entry" />
+        </input-row>
+
+        <input-row label="Assigned To" :errors="assignmentErrors">
+            <select id="" v-model="newAction.assigned_to">
+                <option :value="null">Select...</option>
+                <option v-for="i in assignees" :key="i.id"
+                    :value="i.id"
+                >
+                    {{i.name}}
+                </option>
+            </select>
+            &nbsp;&nbsp;
+            <input type="text" label="Name" v-model="newAction.assigned_to_name" placeholder="Name (optional)">
+        </input-row>
+
+        <div class="ml-4">
+        </div>
+
+        <checkbox  
+            v-model="completed" 
+            label="This is already completed"
+            class="ml-36"
+        />
+
+        <input-row label="Date Completed" :errors="errors.date_completed" class="ml-36" v-if="completed">
+            <input type="date" v-model="newAction.date_completed">
+        </input-row>
+
+        <button-row>
+            <button class="btn" @click="cancel">Cancel</button>
+            <button class="btn blue" @click="save">Save</button>
+        </button-row>
+    </form-container>
+</template>

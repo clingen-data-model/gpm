@@ -1,37 +1,3 @@
-<template>
-    <div>
-        <div class="flex justify-between">
-            <h2>Conflict of Interest</h2>
-            <CoiLegacyUpload :application="application"
-                v-if="$store.state.features.legacyCoi"
-            ></CoiLegacyUpload>
-        </div>
-        <div class="my-2 flex justify-between">
-            <icon-refresh 
-                :height="14" :width="14" 
-                :class="{'animate-spin': refreshing}"
-                @click="refresh"
-            ></icon-refresh>
-        </div>
-        <div v-if="!hasCois" class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200">
-            No Conflict of interest surveys completed
-        </div>
-        <div v-if="hasCois">
-            <data-table
-                :fields="fields"
-                :data="application.cois"
-            >
-                <template v-slot:cell-id="{item}">
-                    <button class="btn btn-xs" @click="showResponse(item)">view</button> 
-                </template>
-            </data-table>
-            <modal-dialog v-model="showResponseDialog" size="xl">
-                <CoiDetail :coi="currentCoi" v-if="currentCoi"></CoiDetail>
-            </modal-dialog>
-        </div>
-    </div>
-
-</template>
 <script>
 
 import CoiDetail from '@/components/applications/CoiDetail.vue';
@@ -115,3 +81,37 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <div class="flex justify-between">
+            <h2>Conflict of Interest</h2>
+            <CoiLegacyUpload :application="application"
+                v-if="$store.state.features.legacyCoi"
+            ></CoiLegacyUpload>
+        </div>
+        <div class="my-2 flex justify-between">
+            <icon-refresh 
+                :height="14" :width="14" 
+                :class="{'animate-spin': refreshing}"
+                @click="refresh"
+            ></icon-refresh>
+        </div>
+        <div v-if="!hasCois" class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200">
+            No Conflict of interest surveys completed
+        </div>
+        <div v-if="hasCois">
+            <data-table
+                :fields="fields"
+                :data="application.cois"
+            >
+                <template v-slot:cell-id="{item}">
+                    <button class="btn btn-xs" @click="showResponse(item)">view</button> 
+                </template>
+            </data-table>
+            <modal-dialog v-model="showResponseDialog" size="xl">
+                <CoiDetail :coi="currentCoi" v-if="currentCoi"></CoiDetail>
+            </modal-dialog>
+        </div>
+    </div>
+
+</template>

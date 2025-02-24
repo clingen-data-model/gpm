@@ -1,9 +1,3 @@
-<template>
-    <div>
-        <data-form :fields="fields" :errors="errors" v-model="workingCopy" />
-        <button-row submit-text="Save" @submitted="save" @cancel="cancel" />
-    </div>
-</template>
 <script>
 import {setupMirror} from '@/composables/setup_working_mirror'
 import {fields, getCountries, countries, updateInstitution} from '@/forms/institution_form'
@@ -64,3 +58,9 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <data-form :fields="fields" :errors="errors" v-model="workingCopy" />
+        <button-row submit-text="Save" @submitted="save" @cancel="cancel" />
+    </div>
+</template>

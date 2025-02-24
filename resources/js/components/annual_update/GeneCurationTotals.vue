@@ -1,3 +1,32 @@
+<script>
+import mirror from '@/composables/setup_working_mirror'
+
+export default {
+    name: 'GeneCurationTotals',
+    props: {
+        ...mirror.props,
+        errors: {
+            type: Object,
+            required: true
+        },
+    },
+    emits: [  ...mirror.emits ],
+    computed: {
+        lastYear () {
+            return (new Date()).getFullYear()-1;
+        },
+        isComplete () {
+            return Boolean(this.modelValue.completed_at);
+        }
+    },
+    setup(props, context) {
+        const {workingCopy} = mirror.setup(props, context);
+        return {
+            workingCopy
+        }
+    }
+}
+</script>
 <template>
     <div>
 
@@ -54,32 +83,3 @@
         
     </div>
 </template>
-<script>
-import mirror from '@/composables/setup_working_mirror'
-
-export default {
-    name: 'GeneCurationTotals',
-    props: {
-        ...mirror.props,
-        errors: {
-            type: Object,
-            required: true
-        },
-    },
-    emits: [  ...mirror.emits ],
-    computed: {
-        lastYear () {
-            return (new Date()).getFullYear()-1;
-        },
-        isComplete () {
-            return Boolean(this.modelValue.completed_at);
-        }
-    },
-    setup(props, context) {
-        const {workingCopy} = mirror.setup(props, context);
-        return {
-            workingCopy
-        }
-    }
-}
-</script>

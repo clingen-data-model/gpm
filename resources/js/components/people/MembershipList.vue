@@ -1,14 +1,3 @@
-<template>
-    <div>
-        <data-table 
-            :fields="fields" 
-            :data="memberships" 
-            v-model:sort="sort"
-            :rowClickHandler="goToGroup"
-            :row-class="() => 'cursor-pointer'"
-        ></data-table>
-    </div>
-</template>
 <script>
 import {Group} from '@/domain'
 
@@ -96,3 +85,14 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <data-table 
+            :fields="fields" 
+            :data="memberships" 
+            v-model:sort="sort"
+            :rowClickHandler="goToGroup"
+            :row-class="() => 'cursor-pointer'"
+        ></data-table>
+    </div>
+</template>

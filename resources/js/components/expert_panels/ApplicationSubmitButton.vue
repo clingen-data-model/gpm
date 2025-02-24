@@ -1,56 +1,3 @@
-<template>
-    <div>
-        <div v-if="!group.expert_panel.hasPendingSubmission" class="p-4">
-            <popover hover arrow>
-                <template v-slot:content>
-                    <div>
-                        <RequirementsItem  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
-                    </div>
-                </template>
-                <div>
-                    <div class="relative">
-                        <button class="btn btn-xl" @click="initSubmission">
-                            Submit for Approval
-                        </button>
-                        <!-- Add mask above button if requirements are unmet b/c vue3-popover doesn't respond to disabled components. -->
-                        <div v-if="!meetsRequirements" class="bg-white opacity-50 absolute top-0 bottom-0 left-0 right-0"></div>
-                    </div>
-                    <dev-component v-if="hasRole('super-user')">
-                        <button @click="bypassRequirements">Bypass Requirements</button>
-                    </dev-component>
-                </div>
-            </popover>
-        </div>
-        <teleport to="body">
-            <transition name="fade">
-                <modal-dialog v-model="showSubmissionConfirmation" title="Submit your application">
-                    <p class="text-lg">
-                        You are about to submit your {{submissionName}} application.
-                    </p>
-                    <static-alert class="text-md" variant="info">
-                        Before submitting, please note:
-                        <ol class="list-decimal pl-6">
-                            <li>
-                                Typical response times are between one and two weeks.
-                            </li>
-                            <li>
-                                Questions, revisions, and other comments will be conveyed via email.
-                            </li>
-                            <li>
-                                Once submitted you will not be able to update your application until the submission has been processed.
-                            </li>
-                        </ol>
-                    </static-alert>
-                    <div class="mt-4 text-lg">Optional notes for reviewers:</div>
-                    <input-row label="" :errors="errors.notes" vertical>
-                        <textarea v-model="notes" rows="5" class="w-full"></textarea>
-                    </input-row>
-                    <button-row @submitted="confirmSubmission" @cancelled="cancelSubmission"></button-row>
-                </modal-dialog>
-            </transition>
-        </teleport>
-    </div>
-</template>
 <script>
 import RequirementsItem from '@/components/expert_panels/RequirementsItem.vue'
 import {isValidationError} from '@/http'
@@ -156,3 +103,56 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <div v-if="!group.expert_panel.hasPendingSubmission" class="p-4">
+            <popover hover arrow>
+                <template v-slot:content>
+                    <div>
+                        <RequirementsItem  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
+                    </div>
+                </template>
+                <div>
+                    <div class="relative">
+                        <button class="btn btn-xl" @click="initSubmission">
+                            Submit for Approval
+                        </button>
+                        <!-- Add mask above button if requirements are unmet b/c vue3-popover doesn't respond to disabled components. -->
+                        <div v-if="!meetsRequirements" class="bg-white opacity-50 absolute top-0 bottom-0 left-0 right-0"></div>
+                    </div>
+                    <dev-component v-if="hasRole('super-user')">
+                        <button @click="bypassRequirements">Bypass Requirements</button>
+                    </dev-component>
+                </div>
+            </popover>
+        </div>
+        <teleport to="body">
+            <transition name="fade">
+                <modal-dialog v-model="showSubmissionConfirmation" title="Submit your application">
+                    <p class="text-lg">
+                        You are about to submit your {{submissionName}} application.
+                    </p>
+                    <static-alert class="text-md" variant="info">
+                        Before submitting, please note:
+                        <ol class="list-decimal pl-6">
+                            <li>
+                                Typical response times are between one and two weeks.
+                            </li>
+                            <li>
+                                Questions, revisions, and other comments will be conveyed via email.
+                            </li>
+                            <li>
+                                Once submitted you will not be able to update your application until the submission has been processed.
+                            </li>
+                        </ol>
+                    </static-alert>
+                    <div class="mt-4 text-lg">Optional notes for reviewers:</div>
+                    <input-row label="" :errors="errors.notes" vertical>
+                        <textarea v-model="notes" rows="5" class="w-full"></textarea>
+                    </input-row>
+                    <button-row @submitted="confirmSubmission" @cancelled="cancelSubmission"></button-row>
+                </modal-dialog>
+            </transition>
+        </teleport>
+    </div>
+</template>

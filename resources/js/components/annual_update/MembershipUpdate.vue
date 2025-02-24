@@ -1,3 +1,40 @@
+<script>
+import mirror from '@/composables/setup_working_mirror'
+import AppSection from '@/components/expert_panels/ApplicationSection.vue'
+import MemberList from '@/components/groups/MemberList.vue'
+
+export default {
+    name: 'MembershipUpdate',
+    components: {
+        AppSection,
+        MemberList,
+    },
+    props: {
+        ...mirror.props,
+        errors: {
+            type: Object,
+            required: true
+        },
+    },
+    emits: [
+        ...mirror.emits
+    ],
+    computed: {
+        group () {
+            return this.$store.getters['groups/currentItemOrNew'];
+        },
+        isComplete () {
+            return Boolean(this.modelValue.completed_at)
+        }
+    },
+    setup(props, context) {
+        const {workingCopy} = mirror.setup(props, context);
+        return {
+            workingCopy
+        }
+    }
+}
+</script>
 <template>
                 <AppSection title="Membership">
                     <p>
@@ -40,40 +77,3 @@
                 </AppSection>
 
 </template>
-<script>
-import mirror from '@/composables/setup_working_mirror'
-import AppSection from '@/components/expert_panels/ApplicationSection.vue'
-import MemberList from '@/components/groups/MemberList.vue'
-
-export default {
-    name: 'MembershipUpdate',
-    components: {
-        AppSection,
-        MemberList,
-    },
-    props: {
-        ...mirror.props,
-        errors: {
-            type: Object,
-            required: true
-        },
-    },
-    emits: [
-        ...mirror.emits
-    ],
-    computed: {
-        group () {
-            return this.$store.getters['groups/currentItemOrNew'];
-        },
-        isComplete () {
-            return Boolean(this.modelValue.completed_at)
-        }
-    },
-    setup(props, context) {
-        const {workingCopy} = mirror.setup(props, context);
-        return {
-            workingCopy
-        }
-    }
-}
-</script>

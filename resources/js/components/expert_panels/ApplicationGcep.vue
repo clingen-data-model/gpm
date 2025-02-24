@@ -1,54 +1,3 @@
-<template>
-    <div class="relative">
-        <ApplicationStep id="definition" :disabled="group.expert_panel.hasPendingSubmission">
-            <AppSection title="Basic Information" id="basicInfo">
-                <GroupForm
-                    :group="group" ref="groupForm"
-                    @update="handleUpdate"
-                />
-            </AppSection>
-            <AppSection v-if="group" title="Membership" id="membership">
-                <p>
-                    Expert Panels are expected to have broad representation of expertise in the field, including all major areas of expertise (clinical, diagnostic laboratory, and basic research).  Membership should include representation from three or more institutions and will encompass disease/gene expert members as well as biocurators. Biocurators do not have to be gene/disease experts and will be primarily responsible for assembling the available evidence for subsequent expert member review. For role, suggested examples include: primary biocurator, expert reviewer, etc.
-                </p>
-                <MemberList :group="group" />
-            </AppSection>
-            <AppSection title="Scope of Work" id="scope">
-                <p>
-                    It is expected that the expert panel will utilize
-                    <lumping-and-splitting-link />
-                    during pre-curation and should use the
-                    <gene-tracker-link />
-                    to enter their precuration information. Focus should be on the canonical disease, and splitting into multiple phenotypes should be avoided. The precurations will be published to
-                    <website-link />.
-                </p>
-
-                <GcepGeneList
-                    :group="group"
-                    ref="geneList"
-                    @geneschanged="genesChanged = true"
-                    @update="handleUpdate"
-                />
-
-                <hr>
-
-                <ScopeDescriptionForm @update="handleUpdate" />
-            </AppSection>
-
-            <AppSection title="Attestations" id="attestations">
-                <AttestationGcep @update="handleUpdate" />
-            </AppSection>
-
-            <AppSection id="curationReviewProcess" title="Plans for Ongoing Gene Review and Reanalysis and Discrepancy Resolution">
-                <GcepOngoingPlansForm @update="handleUpdate" />
-            </AppSection>
-
-            <AppSection title="NHGRI Data Availability" id="nhgri">
-                <AttestationNhgri @update="handleUpdate" />
-            </AppSection>
-        </ApplicationStep>
-    </div>
-</template>
 <script>
 import {debounce} from 'lodash-es'
 
@@ -158,3 +107,54 @@ export default {
     },
 }
 </script>
+<template>
+    <div class="relative">
+        <ApplicationStep id="definition" :disabled="group.expert_panel.hasPendingSubmission">
+            <AppSection title="Basic Information" id="basicInfo">
+                <GroupForm
+                    :group="group" ref="groupForm"
+                    @update="handleUpdate"
+                />
+            </AppSection>
+            <AppSection v-if="group" title="Membership" id="membership">
+                <p>
+                    Expert Panels are expected to have broad representation of expertise in the field, including all major areas of expertise (clinical, diagnostic laboratory, and basic research).  Membership should include representation from three or more institutions and will encompass disease/gene expert members as well as biocurators. Biocurators do not have to be gene/disease experts and will be primarily responsible for assembling the available evidence for subsequent expert member review. For role, suggested examples include: primary biocurator, expert reviewer, etc.
+                </p>
+                <MemberList :group="group" />
+            </AppSection>
+            <AppSection title="Scope of Work" id="scope">
+                <p>
+                    It is expected that the expert panel will utilize
+                    <lumping-and-splitting-link />
+                    during pre-curation and should use the
+                    <gene-tracker-link />
+                    to enter their precuration information. Focus should be on the canonical disease, and splitting into multiple phenotypes should be avoided. The precurations will be published to
+                    <website-link />.
+                </p>
+
+                <GcepGeneList
+                    :group="group"
+                    ref="geneList"
+                    @geneschanged="genesChanged = true"
+                    @update="handleUpdate"
+                />
+
+                <hr>
+
+                <ScopeDescriptionForm @update="handleUpdate" />
+            </AppSection>
+
+            <AppSection title="Attestations" id="attestations">
+                <AttestationGcep @update="handleUpdate" />
+            </AppSection>
+
+            <AppSection id="curationReviewProcess" title="Plans for Ongoing Gene Review and Reanalysis and Discrepancy Resolution">
+                <GcepOngoingPlansForm @update="handleUpdate" />
+            </AppSection>
+
+            <AppSection title="NHGRI Data Availability" id="nhgri">
+                <AttestationNhgri @update="handleUpdate" />
+            </AppSection>
+        </ApplicationStep>
+    </div>
+</template>

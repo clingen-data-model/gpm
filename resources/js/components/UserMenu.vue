@@ -1,3 +1,46 @@
+<script>
+import {mapGetters} from 'vuex'
+import ImpersonateControl from '@/components/ImpersonateControl.vue'
+import AnnouncementControl from '@/components/alerts/AnnouncementControl.vue'
+
+export default {
+    name: 'UserMenu',
+    components: {
+        ImpersonateControl,
+        AnnouncementControl
+    },
+    data() {
+        return {
+            menuOpen: false
+        }
+    },
+    computed: {
+        ...mapGetters({
+            user: 'currentUser',
+            isAuthed: 'isAuthed'
+        })
+    },
+    methods: {
+        handleOutsideClick() {
+            this.menuOpen = false;
+        },
+        toggleMenu () {
+            this.menuOpen = !this.menuOpen
+            if (this.menuOpen) {
+                this.$refs.dropdownMenu.focus()
+            }
+        },
+        logout () {
+            try{
+                this.$store.dispatch('logout')
+            } catch (error) {
+                // eslint-disable-next-line no-alert
+                alert(error)
+            }
+        }
+    }
+}
+</script>
 <template>
     <div class="relative -top-3 right-0 text-right" style="z-index: 500">
         <div v-show="isAuthed">
@@ -62,49 +105,6 @@
         </div>
     </div>
 </template>
-<script>
-import {mapGetters} from 'vuex'
-import ImpersonateControl from '@/components/ImpersonateControl.vue'
-import AnnouncementControl from '@/components/alerts/AnnouncementControl.vue'
-
-export default {
-    name: 'UserMenu',
-    components: {
-        ImpersonateControl,
-        AnnouncementControl
-    },
-    data() {
-        return {
-            menuOpen: false
-        }
-    },
-    computed: {
-        ...mapGetters({
-            user: 'currentUser',
-            isAuthed: 'isAuthed'
-        })
-    },
-    methods: {
-        handleOutsideClick() {
-            this.menuOpen = false;
-        },
-        toggleMenu () {
-            this.menuOpen = !this.menuOpen
-            if (this.menuOpen) {
-                this.$refs.dropdownMenu.focus()
-            }
-        },
-        logout () {
-            try{
-                this.$store.dispatch('logout')
-            } catch (error) {
-                // eslint-disable-next-line no-alert
-                alert(error)
-            }
-        }
-    }
-}
-</script>
 <style lang="postcss" scoped>
     ul {
         @apply border-t-4 first:border-none;

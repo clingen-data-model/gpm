@@ -1,56 +1,3 @@
-<template>
-    <div>
-        <div class="flex justify-between items-center">
-            <h1>Expertises</h1>
-            <button class="btn btn-sm" @click="showCreateDialog = true">Add Expertise</button>
-        </div>
-        <data-table
-            paginated
-            :data="filteredItems"
-            :fields="fields"
-            v-model:sort="sort"
-            :reset-page-on-data-change="false"
-        >
-            <template v-slot:header>
-                <label>
-                    Filter:
-                    <input type="text" v-model="filter">
-                </label>
-            </template>
-            <template v-slot:cell-actions="{item}">
-                <dropdown-menu hide-cheveron>
-                    <template v-slot:label>
-                        <button class="btn btn-xs">&hellip;</button>
-                    </template>
-                    <dropdown-item @click="edit(item)">Edit</dropdown-item>
-                    <dropdown-item @click="initDelete(item)">Delete</dropdown-item>
-                </dropdown-menu>
-            </template>
-        </data-table>
-        <teleport to="body">
-            <modal-dialog v-model="showEditDialog" :title="`Edit ${currentItem.name}`">
-                <ExpertiseUpdateForm v-model="currentItem" @saved="handleSaved" @canceled="handleCancel" />
-            </modal-dialog>
-            <modal-dialog v-model="showDeleteConfirmation" title="Delete Expertise" size="sm">
-                <div v-if="currentItem.people_count > 0">
-                    <p>You cannot delete an expertise people are using.</p>
-                    <p>Either edit this this expertise or remove all people that have claimed it as an expertise.</p>
-                </div>
-                <div v-else>
-                    You are about to delete the {{currentItem.name}}
-                    <button-row
-                        submit-text="Delete"
-                        @submitted="deleteItem"
-                        @canceled="showDeleteConfirmation = false"
-                    ></button-row>
-                </div>
-            </modal-dialog>
-            <modal-dialog v-model="showCreateDialog" title="Add a New Expertise.">
-                <ExpertiseCreateForm @saved="handleSaved" @canceled="handleCancel"/>
-            </modal-dialog>
-        </teleport>
-    </div>
-</template>
 <script>
 import sortAndFilter from '@/composables/router_aware_sort_and_filter';
 import ExpertiseUpdateForm from '@/components/expertises/ExpertiseUpdateForm.vue'
@@ -176,3 +123,56 @@ export default {
     },
 }
 </script>
+<template>
+    <div>
+        <div class="flex justify-between items-center">
+            <h1>Expertises</h1>
+            <button class="btn btn-sm" @click="showCreateDialog = true">Add Expertise</button>
+        </div>
+        <data-table
+            paginated
+            :data="filteredItems"
+            :fields="fields"
+            v-model:sort="sort"
+            :reset-page-on-data-change="false"
+        >
+            <template v-slot:header>
+                <label>
+                    Filter:
+                    <input type="text" v-model="filter">
+                </label>
+            </template>
+            <template v-slot:cell-actions="{item}">
+                <dropdown-menu hide-cheveron>
+                    <template v-slot:label>
+                        <button class="btn btn-xs">&hellip;</button>
+                    </template>
+                    <dropdown-item @click="edit(item)">Edit</dropdown-item>
+                    <dropdown-item @click="initDelete(item)">Delete</dropdown-item>
+                </dropdown-menu>
+            </template>
+        </data-table>
+        <teleport to="body">
+            <modal-dialog v-model="showEditDialog" :title="`Edit ${currentItem.name}`">
+                <ExpertiseUpdateForm v-model="currentItem" @saved="handleSaved" @canceled="handleCancel" />
+            </modal-dialog>
+            <modal-dialog v-model="showDeleteConfirmation" title="Delete Expertise" size="sm">
+                <div v-if="currentItem.people_count > 0">
+                    <p>You cannot delete an expertise people are using.</p>
+                    <p>Either edit this this expertise or remove all people that have claimed it as an expertise.</p>
+                </div>
+                <div v-else>
+                    You are about to delete the {{currentItem.name}}
+                    <button-row
+                        submit-text="Delete"
+                        @submitted="deleteItem"
+                        @canceled="showDeleteConfirmation = false"
+                    ></button-row>
+                </div>
+            </modal-dialog>
+            <modal-dialog v-model="showCreateDialog" title="Add a New Expertise.">
+                <ExpertiseCreateForm @saved="handleSaved" @canceled="handleCancel"/>
+            </modal-dialog>
+        </teleport>
+    </div>
+</template>

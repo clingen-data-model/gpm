@@ -1,26 +1,3 @@
-<template>
-    <div :class="{ 'cursor-wait': saving }">
-        <div class="border border-gray-200 rounded-lg">
-            <img :src="srcPath" :alt="altText" class="rounded-t-lg w-full" @click="initUpload">
-            <button @click="initUpload" class="border border-t-0 bg-gray-200 block w-full">
-                Edit
-            </button>
-        </div>
-
-        <teleport to='body'>
-            <modal-dialog v-model="showForm" title="Upload a new profile photo">
-                <ImageCropper :image-src="srcPath" @cropped="setCroppedImageBlob" />
-
-                <input-row hideLabel :errors="errors.profile_photo">
-                    <input type="file" @change="setFile" ref="fileInput">
-                </input-row>
-
-                <button-row submit-text="Save" @submitted="saveCropped" @canceled="cancelCropped" v-if="!saving" />
-                <div v-else>Saving...</div>
-            </modal-dialog>
-        </teleport>
-    </div>
-</template>
 <script>
 import ImageCropper from '@/components/ImageCropper.vue'
 import { api, isValidationError } from '@/http'
@@ -164,3 +141,26 @@ export default {
     }
 }
 </script>
+<template>
+    <div :class="{ 'cursor-wait': saving }">
+        <div class="border border-gray-200 rounded-lg">
+            <img :src="srcPath" :alt="altText" class="rounded-t-lg w-full" @click="initUpload">
+            <button @click="initUpload" class="border border-t-0 bg-gray-200 block w-full">
+                Edit
+            </button>
+        </div>
+
+        <teleport to='body'>
+            <modal-dialog v-model="showForm" title="Upload a new profile photo">
+                <ImageCropper :image-src="srcPath" @cropped="setCroppedImageBlob" />
+
+                <input-row hideLabel :errors="errors.profile_photo">
+                    <input type="file" @change="setFile" ref="fileInput">
+                </input-row>
+
+                <button-row submit-text="Save" @submitted="saveCropped" @canceled="cancelCropped" v-if="!saving" />
+                <div v-else>Saving...</div>
+            </modal-dialog>
+        </teleport>
+    </div>
+</template>

@@ -1,3 +1,8 @@
+<script>
+export default {
+    name: 'TrainingMaterialsLink',
+}
+</script>
 <template>
     <a 
         href="https://clinicalgenome.org/docs/?doc-type=training-materials#list_documentation_table"
@@ -8,8 +13,3 @@
         </slot>
     </a>
 </template>
-<script>
-export default {
-    name: 'TrainingMaterialsLink',
-}
-</script>

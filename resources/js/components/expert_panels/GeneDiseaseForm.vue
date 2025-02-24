@@ -1,14 +1,3 @@
-<template>
-    <div>
-        <input-row label="HGNC Symbol" :errors="errors.hgncId">
-            <input type="text" v-model="hgncId">
-        </input-row>
-        <input-row label="Disease" :errors="errors.mondo_id">
-            <input type="text" v-model="mondoId">
-        </input-row>
-        <button-row @submit="save" @cancel="cancel" submit-text="Save"></button-row>
-    </div>
-</template>
 <script>
 import is_validation_error from '../../http/is_validation_error'
 export default {
@@ -58,3 +47,14 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <input-row label="HGNC Symbol" :errors="errors.hgncId">
+            <input type="text" v-model="hgncId">
+        </input-row>
+        <input-row label="Disease" :errors="errors.mondo_id">
+            <input type="text" v-model="mondoId">
+        </input-row>
+        <button-row @submit="save" @cancel="cancel" submit-text="Save"></button-row>
+    </div>
+</template>

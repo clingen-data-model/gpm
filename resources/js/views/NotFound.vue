@@ -1,6 +1,3 @@
-<template>
-    <div>404 - Not found!</div>
-</template>
 <script>
 export default {
     props: {
@@ -19,3 +16,6 @@ export default {
     }
 }
 </script>
+<template>
+    <div>404 - Not found!</div>
+</template>
