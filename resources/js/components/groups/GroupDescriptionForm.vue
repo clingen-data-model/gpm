@@ -2,14 +2,13 @@
 import Group from '@/domain/group'
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
 import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
-import MarkdownBlock from '@/components/MarkdownBlock.vue'
+import DOMPurify from 'dompurify';
 
 export default {
     name: "GroupDescriptionForm",
     components: {
         EditIconButton,
         RichTextEditor,
-        MarkdownBlock,
     },
     props: {
         editing: {
@@ -37,16 +36,9 @@ export default {
                 this.$store.commit("groups/addItem", value);
             }
         },
-        description: {
-            get () {
-                return this.group.description;
-            },
-            set (value) {
-                const groupCopy = this.group.clone();
-                groupCopy.description = value;
-                this.$emit("update:group", groupCopy);
-            }
-        },
+        sanitizedDescription() {
+            return DOMPurify.sanitize(this.group.description);
+        }
     },
 }
 </script>
@@ -69,12 +61,11 @@ export default {
         <div v-if="editing" class="mt-2">
           <RichTextEditor
             v-model="group.description"
-            :markdown-format="true"
             @update:model-value="$emit('update')"
           />
         </div>
         <div v-else class="border-2 mt-8 p-2">
-          <MarkdownBlock v-if="group.description" :markdown="group.description" />
+          <div v-if="group.description" v-html="sanitizedDescription" />
           <p v-else class="well cursor-pointer" @click="showForm">
             A summary description has not yet been provided.
           </p>
