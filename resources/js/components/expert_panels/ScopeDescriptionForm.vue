@@ -4,7 +4,7 @@ import GcepQuickGuideLink from '../links/GcepQuickGuideLink.vue';
 import VcepProtocolLink from '../links/VcepProtocolLink.vue';
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
 import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
-import MarkdownBlock from '@/components/MarkdownBlock.vue'
+import DOMPurify from 'dompurify';
 
 export default {
     name: "ScopeDescriptionForm",
@@ -13,7 +13,6 @@ export default {
         VcepProtocolLink,
         EditIconButton,
         RichTextEditor,
-        MarkdownBlock,
     },
     props: {
         editing: {
@@ -41,15 +40,8 @@ export default {
                 this.$store.commit("groups/addItem", value);
             }
         },
-        scopeDescription: {
-            get () {
-                return this.group.expert_panel.scope_description;
-            },
-            set (value) {
-                const groupCopy = this.group.clone();
-                groupCopy.expert_panel.scope_description = value;
-                this.$emit("update:group", groupCopy);
-            }
+        sanitizedScopeDescription() {
+            return DOMPurify.sanitize(this.group.expert_panel.scope_description);
         },
     }
 }
@@ -76,12 +68,11 @@ export default {
         <div v-if="editing" class="mt-2">
           <RichTextEditor
             v-model="group.expert_panel.scope_description"
-            :markdown-format="true"
             @update:model-value="$emit('update')"
           />
         </div>
         <div v-else class="border-2 mt-8 p-2">
-          <MarkdownBlock v-if="group.expert_panel.scope_description" :markdown="group.expert_panel.scope_description" />
+          <div v-if="group.expert_panel.scope_description" v-html="sanitizedScopeDescription" />
           <p v-else class="well cursor-pointer" @click="showForm">
             A description of expertise has not yet been provided.
           </p>
