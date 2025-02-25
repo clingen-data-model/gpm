@@ -4,8 +4,6 @@ import { mapGetters } from "vuex";
 
 const baseUrl = "/api/people";
 
-const items = [];
-
 const available_options = {
     // TODO: get from database...
     states: [
@@ -399,7 +397,7 @@ export default {
             const sections_with_errors = this.checkValidity();
             //  console.log(items);
             if (sections_with_errors.length === 0) {
-                items = { ...this.formdata, demographics_version: 2 };
+                const items = { ...this.formdata, demographics_version: 2 };
 
                 // do not submit values for fields that are opted out
                 if (items.birth_country_opt_out === true) {
