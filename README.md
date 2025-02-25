@@ -98,9 +98,15 @@ on each others' toes by trying to open the same port. Your options for getting t
 
 ## Frontend (this section needs to be re-worked since the frontend is run by default in the container)
 
-To work on the front end client you will need:
-* node
-* npm
+[Vue.js](https://vuejs.org) is used as the primary frontend framework. Source is under `resources/js`.
+
+For now, the "bundled" javascript code is being checked in to the repo, so you should be able to run
+things without additional frontend initialization steps. For frontend development, though, you would
+need to install the dependencies (`npm i`) then either run `npm run dev` to start a development server
+(which is set up to communicate with the `localhost:8013` backend) or call `npm run build` to generate
+the bundled javascript.
+
+The frontend testing setup is currently broken as of Feb 2025 with the transition to vite.
 
 ## Backend Architecture
 
