@@ -61,14 +61,10 @@ export default {
                 return null;
             }
             const d = new Date(date);
-            const month = `${  d.getMonth() + 1}`;
-            const day = `${  d.getDate()}`;
+            // old-fashioned zero-padding
+            const month = `0${(d.getMonth() + 1)}`.slice(-2);
+            const day = `0${d.getDate()}`.slice(-2);
             const year = d.getFullYear();
-
-            if (month.length < 2) 
-                month = `0${  month}`;
-            if (day.length < 2) 
-                day = `0${  day}`;
 
             return [year, month, day].join('-');
         },
