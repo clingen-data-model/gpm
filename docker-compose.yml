@@ -44,6 +44,8 @@ services:
         environment:
             HOME: /srv/app
             DB_HOST: ${DOCKER_NAME:-gpm}-db
+            PRODUCTION_MODE: ${PRODUCTION_MODE:-false}
+            APP_DO_INIT: "true"
             REDIS_HOST: ${DOCKER_NAME:-gpm}-redis
             SANCTUM_STATEFUL_DOMAINS: localhost:${APP_PORT:-8013},127.0.0.1:${APP_PORT:-8013}
             XDEBUG_MODE: ${XDEBUG_MODE:-debug,develop}
