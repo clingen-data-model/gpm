@@ -1,15 +1,22 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -euox pipefail
 IFS=$'\n\t'
 
-env=${CONTAINER_ENV:-production}
+PRODUCTION_MODE=${PRODUCTION_MODE:-true}
 
 cd /srv/app
 
+DEV_OPTION=''
+
+if [[ "$PRODUCTION_MODE" == "true" ]]; then
+    echo "Running in production mode, will not install dev dependencies."
+    DEV_OPTION='--no-dev'
+fi
+
 if [[ -n ${APP_DO_INIT-} || ! -d vendor ]]; then
     echo "Running composer install..."
-    composer install --no-interaction --no-plugins --no-scripts --prefer-dist --no-dev 
+    composer install --no-interaction --no-plugins --no-scripts --prefer-dist $DEV_OPTION
     composer dump-autoload
 fi
 
@@ -24,7 +31,7 @@ if [[ ${APP_KEY:-invalid} != base64* ]]; then
     grep APP_KEY=base64 .env >/dev/null || php artisan key:generate -q
 fi
 
-if [[ $env != "local" ]]; then
+if [[ "$PRODUCTION_MODE" == "true" ]]; then
     echo "Caching configuration..."
     php artisan config:cache
     php artisan route:cache
@@ -32,10 +39,13 @@ if [[ $env != "local" ]]; then
     php artisan event:cache
     php artisan clear-compiled
     php artisan notify:deployed
+else
+    echo "Clearing configuration cache..."
+    php artisan config:clear
+    php artisan route:clear
+    php artisan view:clear
+    php artisan event:clear
+    php artisan clear-compiled
 fi
 
-# FIXME: should be using php-fpm behind nginx at some point
-#php artisan serve -vvv --host 0.0.0.0 --port "${APP_PORT:-8013}"
-
 php-fpm${PHP_VERSION} -F -O
-
