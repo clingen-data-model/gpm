@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CdwgController;
 use App\Http\Controllers\Api\RolesController;
-use App\Http\Controllers\Api\PeopleController;
 use App\Http\Controllers\Api\MailLogController;
 use App\Http\Controllers\Api\MailDraftController;
 use App\Http\Controllers\Api\GeneLookupController;
@@ -29,6 +28,7 @@ use App\Http\Controllers\Api\DiseaseLookupController;
 use App\Http\Controllers\Api\DocumentationController;
 use App\Http\Controllers\ImpersonateSearchController;
 use App\Modules\User\Http\Controllers\CurrentUserController;
+
 
 /*
 |--------------------------------------------------------------------------
