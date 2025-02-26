@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\AnnualUpdate;
+use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Route;
 use App\Modules\Group\Actions\GenesAdd;
 use App\Modules\Group\Actions\MemberAdd;
@@ -47,6 +47,7 @@ use App\Modules\ExpertPanel\Actions\SpecificationsGet;
 use App\Modules\Group\Actions\AttestationReanalysisStore;
 use App\Modules\Group\Actions\ApplicationSubmissionReject;
 use App\Modules\Group\Actions\MembershipDescriptionUpdate;
+use App\Modules\Group\Http\Resources\GroupExternalResource;
 use App\Modules\Group\Actions\CurationReviewProtocolUpdate;
 use App\Modules\Group\Http\Controllers\Api\GroupController;
 use App\Modules\Group\Actions\ExpertPanelAffiliationIdUpdate;
@@ -57,6 +58,9 @@ use App\Modules\Group\Http\Controllers\Api\GroupRelationsController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\SimpleCoiController;
 use App\Modules\Group\Http\Controllers\Api\EvidenceSummaryController;
 use App\Modules\Group\Http\Controllers\Api\GroupSubmissionsController;
+
+
+
 
 Route::group([
     'prefix' => 'api',
@@ -78,6 +82,10 @@ Route::group([
 ], function () {
     Route::get('/', [GroupController::class, 'index']);
     Route::post('/', GroupCreate::class);
+
+    Route::get('/website_summary/{uuid}', function (String $uuid) {
+        return new GroupExternalResource(Group::findByUuidOrFail($uuid));
+    });
 
     Route::get('/applications', ApplicationActivityGet::class);
 
