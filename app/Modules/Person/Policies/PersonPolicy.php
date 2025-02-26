@@ -25,7 +25,7 @@ class PersonPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Modules\User\Models\User  $user
-     * @param  \App\Models\Person  $person
+     * @param  \App\Modules\Person\Models\Person  $person
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function view(User $user, Person $person)
@@ -48,7 +48,7 @@ class PersonPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\Modules\User\Models\User  $user
-     * @param  \App\Models\Person  $person
+     * @param  \App\Modules\Person\Models\Person  $person
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function update(User $user, Person $person)
@@ -88,7 +88,7 @@ class PersonPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\Modules\User\Models\User  $user
-     * @param  \App\Models\Person  $person
+     * @param  \App\Modules\Person\Models\Person  $person
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function delete(User $user, Person $person)
@@ -100,7 +100,7 @@ class PersonPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\Modules\User\Models\User  $user
-     * @param  \App\Models\Person  $person
+     * @param  \App\Modules\Person\Models\Person  $person
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function restore(User $user, Person $person)
@@ -112,7 +112,7 @@ class PersonPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Modules\User\Models\User  $user
-     * @param  \App\Models\Person  $person
+     * @param  \App\Modules\Person\Models\Person  $person
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function forceDelete(User $user, Person $person)
