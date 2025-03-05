@@ -24,7 +24,7 @@ export default {
             get () {
                 return this.$store.getters['groups/currentItemOrNew'];
             },
-            set (value) {                
+            set (value) {
                 this.$store.commit('groups/addItem', value);
             }
         },
@@ -38,7 +38,7 @@ export default {
                 } else {
                     this.group.expert_panel.nhgri_attestation_date = null;
                 }
-                this.$emit('update');                
+                this.$emit('update');
             }
         },
         checkboxLabel () {
@@ -66,8 +66,8 @@ export default {
 </script>
 <template>
   <div>
-    <p v-if="group.isVcep()">
-      Curated variants and genes are expected to be approved and posted for the community as soon as possible as described in Section 2.4 of the <vcep-protocol-link />. 
+    <p v-if="group.is_vcep">
+      Curated variants and genes are expected to be approved and posted for the community as soon as possible as described in Section 2.4 of the <vcep-protocol-link />.
       Note that upon approval, a VCEP must finalize their set of variants for upload to the ClinGen Evidence Repository within 30 days.
     </p>
     <p v-if="group.is_gcep">
@@ -76,10 +76,10 @@ export default {
 
     <p class="my-4">
       <input-row label="" :vertical="true">
-        <checkbox 
-          id="nhgri-checkbox" 
-          v-model="attestation" 
-          :disabled="disabled" 
+        <checkbox
+          id="nhgri-checkbox"
+          v-model="attestation"
+          :disabled="disabled"
           :label="checkboxLabel"
         />
       </input-row>

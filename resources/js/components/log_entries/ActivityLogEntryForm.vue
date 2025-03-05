@@ -96,7 +96,7 @@
       :errors="errors.log_date"
       type="date"
     />
-    <StepInput v-if="group.isVcep()" v-model="newEntry.step" :errors="errors.step" />
+    <StepInput v-if="group.is_vcep" v-model="newEntry.step" :errors="errors.step" />
     <input-row label="Entry" :errors="errors.entry">
       <RichTextEditor v-model="newEntry.entry" />
     </input-row>
