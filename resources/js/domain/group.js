@@ -190,14 +190,6 @@ class Group extends Entity {
         return this.attributes.group_type_id === configs.groups.types.cdwg.id;
     }
 
-    isVcep() {
-        return this.is_vcep;
-    }
-
-    isGcep() {
-        return this.is_gcep;
-    }
-
     documentsOfType(docTypeId) {
         return this.documents.filter(d =>  d.document_type_id === docTypeId)
     }
