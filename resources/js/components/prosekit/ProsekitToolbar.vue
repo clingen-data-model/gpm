@@ -64,13 +64,6 @@ const editor = useEditor<EditorExtension>({ update: true })
     </Button>
 
     <Button
-      :pressed="editor.nodes.blockquote.isActive()" :disabled="!editor.commands.toggleBlockquote.canExec()"
-      @click="() => editor.commands.toggleBlockquote()"
-    >
-      <div class="i-lucide-quote h-5 w-5" />
-    </Button>
-
-    <Button
       :pressed="false"
       :disabled="!editor.commands.indentList.canExec()"
       @click="() => editor.commands.indentList()"
@@ -84,6 +77,13 @@ const editor = useEditor<EditorExtension>({ update: true })
       @click="() => editor.commands.dedentList()"
     >
       <div class="i-lucide-indent-decrease h-5 w-5" />
+    </Button>
+
+    <Button
+      :pressed="editor.nodes.blockquote.isActive()" :disabled="!editor.commands.toggleBlockquote.canExec()"
+      @click="() => editor.commands.toggleBlockquote()"
+    >
+      <div class="i-lucide-quote h-5 w-5" />
     </Button>
 
     <Button
