@@ -25,7 +25,10 @@ const emit = defineEmits(['update:modelValue'])
 
 const extension = defineExtension()
 
-const initialContent = props.markdownFormat ? htmlFromMarkdown(props.modelValue || '') : DOMPurify.sanitize(props.modelValue)
+const formatValue = (value) => {
+    return props.markdownFormat ? markdownFromHTML(value) : DOMPurify.sanitize(value)
+}
+const initialContent = formatValue(props.modelValue)
 const editor = createEditor({ extension, defaultContent: initialContent })
 
 useDocChange((/* doc */) => {
@@ -38,6 +41,13 @@ const editorRef = ref(null)
 watchPostEffect((onCleanup) => {
     editor.mount(editorRef.value)
     onCleanup(() => editor.unmount())
+})
+
+watchPostEffect(() => {
+    const newContent = formatValue(props.modelValue)
+    if (editor.getDocHTML() !== newContent) {
+        editor.setContent(newContent)
+    }
 })
 </script>
 

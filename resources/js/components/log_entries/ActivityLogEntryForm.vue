@@ -87,6 +87,7 @@
         },
         {immediate: true}
     );
+
 </script>
 <template>
   <form-container class="log-entry-form">
