@@ -2,6 +2,7 @@
 import RequirementsItem from '@/components/expert_panels/RequirementsItem.vue'
 import {isValidationError} from '@/http'
 import configs from '@/configs'
+import DevComponent from '@/components/dev/DevComponent.vue'
 
 const {submissions} = configs;
 
@@ -9,6 +10,7 @@ export default {
     name: 'ApplicationSubmitButton',
     components: {
         RequirementsItem,
+        DevComponent,
     },
     props: {
         disabled: {
@@ -120,11 +122,11 @@ export default {
             <!-- Add mask above button if requirements are unmet b/c vue3-popover doesn't respond to disabled components. -->
             <div v-if="!meetsRequirements" class="bg-white opacity-50 absolute top-0 bottom-0 left-0 right-0" />
           </div>
-          <dev-component v-if="hasRole('super-user')">
+          <DevComponent v-if="hasRole('super-user')">
             <button @click="bypassRequirements">
               Bypass Requirements
             </button>
-          </dev-component>
+          </DevComponent>
         </div>
       </popover>
     </div>

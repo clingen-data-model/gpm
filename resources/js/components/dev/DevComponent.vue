@@ -1,12 +1,12 @@
 <script>
 export default {
-    name: 'ComponentName',
+    name: 'DevComponent',
     props: {
-        
+
     },
     data() {
         return {
-            
+
         }
     },
     computed: {

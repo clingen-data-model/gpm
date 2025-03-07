@@ -1,8 +1,14 @@
 <script>
 import { api, isValidationError } from '@/http';
+import RecipientInput from './RecipientInput.vue';
+import RichTextEditor from '@/components/prosekit/RichTextEditor.vue';
 
 export default {
     name: 'CustomEmailForm',
+    components: {
+      RecipientInput,
+      RichTextEditor,
+    },
     props: {
         mailData: {
             type: Object,
@@ -94,10 +100,10 @@ export default {
 <template>
   <div>
     <input-row label="To" :errors="toErrors">
-      <recipient-input v-model="workingCopy.to" />
+      <RecipientInput v-model="workingCopy.to" />
     </input-row>
     <input-row label="Cc" :errors="errors.ccErrors">
-      <recipient-input v-show="showCc" v-model="workingCopy.cc" />
+      <RecipientInput v-show="showCc" v-model="workingCopy.cc" />
 
       <div v-if="workingCopy.cc && workingCopy.cc.length > 0 && !showCc">
         <truncate-expander :value="workingCopy.cc.map(i => i.address).join(', ')" :truncate-length="100" />
@@ -108,7 +114,7 @@ export default {
       </button>
     </input-row>
     <input-row label="Bcc" :errors="bccErrors">
-      <recipient-input v-show="showBcc" v-model="workingCopy.bcc" />
+      <RecipientInput v-show="showBcc" v-model="workingCopy.bcc" />
       <button class="btn btn-xs" @click="showBcc = !showBcc">
         {{ showBcc ? 'Hide Bcc' : 'Show Bcc' }}
       </button>
@@ -118,7 +124,7 @@ export default {
     </input-row>
 
     <input-row label="Body" :errors="errors.body">
-      <rich-text-editor v-model="workingCopy.body" />
+      <RichTextEditor v-model="workingCopy.body" />
     </input-row>
 
     <input-row label="Attachments" :errors="errors.attachments">
