@@ -17,7 +17,6 @@ const registerComponents = (modules) => {
 
 /*
 registerComponents(import.meta.glob('@/components/*.vue', { eager: true }))
-registerComponents(import.meta.glob('@/components/links/*.vue', { eager: true }))
 registerComponents(import.meta.glob('@/components/alerts/*.vue', { eager: true }))
 registerComponents(import.meta.glob('@/components/dev/*.vue', { eager: true }))
 registerComponents(import.meta.glob('@/components/buttons/*.vue', { eager: true }))
@@ -27,7 +26,9 @@ registerComponents(import.meta.glob('@/components/mail/*.vue', { eager: true }))
 // Really common components
 registerComponents(import.meta.glob('@/components/*.vue', { eager: true }))
 registerComponents(import.meta.glob('@/components/forms/*.vue', { eager: true }))
+registerComponents(import.meta.glob('@/components/buttons/*.vue', { eager: true }))
 registerComponents(import.meta.glob('@/components/icons/*.vue', { eager: true }))
+registerComponents(import.meta.glob('@/components/links/*.vue', { eager: true }))
 
 import StaticAlert from './components/alerts/StaticAlert.vue'
 app.component('static-alert', StaticAlert)
@@ -37,9 +38,6 @@ app.component('submission-wrapper', SubmissionWrapper);
 
 import ScreenTemplate from '@/components/ScreenTemplate.vue';
 app.component('ScreenTemplate', ScreenTemplate);
-
-import FaqLink from '@/components/links/FaqLink.vue'
-app.component('faq-link', FaqLink)
 
 import ClickOutside from './directives/click_outside'
 app.directive('click-outside', ClickOutside)
