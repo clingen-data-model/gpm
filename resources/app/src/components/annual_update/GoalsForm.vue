@@ -20,7 +20,7 @@
         </input-row>
 
         <input-row
-            label="Do you anticipate changes to your expert panel leadership (e.g. chair, coordinator), in the next year?"
+            label="Do you anticipate changes to your expert panel leadership (e.g. chair, coordinator, core approval member), in the next year?"
             v-model="workingCopy.data.cochair_commitment"
             type="radio-group"
             :errors="errors.cochair_commitment"
