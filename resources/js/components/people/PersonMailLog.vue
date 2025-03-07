@@ -1,6 +1,10 @@
 <script>
+import CustomEmailForm from '@/components/mail/CustomEmailForm.vue';
 export default {
-    name: 'ComponentName',
+    name: 'PersonMailLog',
+    components: {
+      CustomEmailForm,
+    },
     props: {
         person: {
             type: Object,
@@ -63,7 +67,7 @@ export default {
     </div>
     <teleport to="body">
       <modal-dialog v-model="showResendDialog" title="Resend Email">
-        <custom-email-form :mail-data="currentEmail" @sent="cleanupResend" @canceled="cleanupResend" />
+        <CustomEmailForm :mail-data="currentEmail" @sent="cleanupResend" @canceled="cleanupResend" />
       </modal-dialog>
     </teleport>
   </div>
