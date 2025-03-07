@@ -244,6 +244,18 @@ export default {
                 .then(response => {
                     const mergedData = {...this.annualUpdate.data, ...response.data.data}
                     const reviewData = response.data;
+                    if (this.year === 2024) {
+                        // clear a few fields that are no longer used or where the meaning has changed
+                        delete mergedData.expert_panels_change;
+                        delete mergedData.vci_use;
+                        delete mergedData.vci_use_details;
+                        delete mergedData.member_designation_changed;
+                        delete mergedData.applied_for_funding;
+                        delete mergedData.funding;
+                        delete mergedData.funding_other_details;
+                        delete mergedData.funding_thoughts;
+                        mergedData.funding = mergedData.funding_other_details;
+                    }
                     reviewData.data = mergedData;
                     return reviewData;
                 });
