@@ -71,9 +71,9 @@ class AnnualUpdateSave
             // GcepRereviewForm (GCEP)
             'recuration_begun',
             'recuration_designees',
-            // VciUse (VCEP)
-            'vci_use',
-            'vci_use_details',
+            // VciUse (VCEP) // obsolete 2024
+            'vci_use', // obsolete 2024
+            'vci_use_details', // obsolete 2024
             // GoalsForm
             'goals',
             'cochair_commitment',

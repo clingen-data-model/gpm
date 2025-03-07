@@ -182,8 +182,8 @@ class AnnualUpdate extends Model
             $result = array_merge(
                 $result,
                 [
-                    'vci_use' => $this->getDataOrNull('vci_use'),
-                    'vci_use_details' => $this->getDataOrNull('vci_use_details'),
+                    // 'vci_use' => $this->getDataOrNull('vci_use'), // obsolete 2024
+                    // 'vci_use_details' => $this->getDataOrNull('vci_use_details'), // obsolete 2024
                     'cochair_commitment' => $this->getDataOrNull('cochair_commitment'),
                     'cochair_commitment_details' => $this->getDataOrNull('cochair_commitment_details'),
                     'sepcification_progress' => $this->getDataOrNull('sepcification_progress'),

@@ -323,7 +323,7 @@ export default {
                         </app-section>
                     </template>
 
-                    <app-section v-if="expertPanel.is_vcep" title="Use of Variant Curation Interface (VCI)">
+                    <app-section v-if="expertPanel.is_vcep && year < 2024" title="Use of Variant Curation Interface (VCI)">
                         <vci-use v-model="annualUpdate" :errors="errors"></vci-use>
                     </app-section>
 

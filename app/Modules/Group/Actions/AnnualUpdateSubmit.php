@@ -109,7 +109,7 @@ class AnnualUpdateSubmit
         }
         if ($annualReview->expertPanel->group->isVcep) {
             $requirements = array_merge($requirements, [
-                'vci_use' => 'required|in:yes,no',
+                'vci_use' => 'nullable|in:yes,no', // no longer used starting with 2024 annual update
                 'vci_use_details' => 'required_if:vci_use,no',
             ]);
 
