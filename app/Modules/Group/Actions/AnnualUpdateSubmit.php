@@ -75,10 +75,15 @@ class AnnualUpdateSubmit
             'goals' => 'exclude_if:ep_activity,inactive|required',
             'cochair_commitment' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
             'cochair_commitment_details' => 'exclude_if:ep_activity,inactive',
-            'applied_for_funding' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
-            'funding' => 'exclude_if:ep_activity,inactive|required_if:applied_for_funding,yes',
-            'funding_other_details' => 'exclude_if:ep_activity,inactive|required_if:funding,other',
-            'funding_thoughts' => 'exclude_if:ep_activity,inactive|required_if:applied_for_funding,no',
+            'applied_for_funding' => 'exclude_if:ep_activity,inactive|nullable|in:yes,no', // obsolete 2024
+            'funding' => 'exclude_if:ep_activity,inactive|required_if:current_external_funding,yes', // obsolete 2024
+            'funding_other_details' => 'exclude_if:ep_activity,inactive|required_if:funding,other', // obsolete 2024
+            'funding_thoughts' => 'exclude_if:ep_activity,inactive|required_if:applied_for_funding,no', // obsolete 2024
+            'external_funding' => 'exclude_if:ep_activity,inactive|required|in:yes,no', // new 2024
+            'external_funding_type' => 'exclude_if:ep_activity,inactive|required_if:external_funding,yes', // new 2024
+            'external_funding_other_details' => 'exclude_if:ep_activity,inactive|required_if:external_funding_type,other', // new 2024
+            'funding_plans' => 'exclude_if:ep_activity,inactive|required|in:yes,no', // new 2024
+            'funding_plans_details' => 'exclude_if:ep_activity,inactive|required_if:funding_plans,yes', // new 2024
             'website_attestation' => 'exclude_if:ep_activity,inactive|nullable|accepted', // obsolete 2024
             'expert_panels_change' => 'exclude_if:ep_activity,inactive|nullable', // obsolete 2024
 

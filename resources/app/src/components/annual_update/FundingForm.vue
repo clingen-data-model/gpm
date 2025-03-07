@@ -44,7 +44,11 @@
 
     </div>
 </template>
+
 <script>
+// NOTE: this is obsolete as of the 2024 annual update!
+// keeping it in for now to be able to view old data
+
 import mirror from '@/composables/setup_working_mirror'
 
 export default {

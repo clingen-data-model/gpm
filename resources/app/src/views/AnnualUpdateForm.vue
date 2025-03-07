@@ -7,6 +7,7 @@ import ApplicationSection from '@/components/expert_panels/ApplicationSection.vu
 import SubmitterInformation from '@/components/annual_update/SubmitterInformation.vue'
 import GoalsForm from '@/components/annual_update/GoalsForm.vue'
 import FundingForm from '@/components/annual_update/FundingForm.vue'
+import ExternalFundingForm from '@/components/annual_update/ExternalFundingForm.vue'
 import MemberDesignationUpdate from '@/components/annual_update/MemberDesignationUpdate.vue'
 import MembershipUpdate from '@/components/annual_update/MembershipUpdate.vue'
 
@@ -37,6 +38,7 @@ export default {
         GcepRereviewForm,
         GoalsForm,
         FundingForm,
+        ExternalFundingForm,
         GcepOngoingPlansUpdateForm,
         VciUse,
         SpecificationProgress,
@@ -106,11 +108,17 @@ export default {
                     cochair_commitment: null,
                     cochair_commitment_details: null,
                     long_term_chairs: null,
-                    // FundingForm
+                    // FundingForm // obsolete 2024
                     applied_for_funding: null,
                     funding: null,
                     funding_other_details: null,
                     funding_thoughts: null,
+                    // ExternalFundingForm // new 2024
+                    external_funding: null,
+                    external_funding_type: null,
+                    external_funding_other_details: null,
+                    funding_plans: null,
+                    funding_plans_details: null,
                     // WebsiteAttestation
                     website_attestation: null,
                     // SpecificationProgress (VCEP with approved draft)
@@ -331,8 +339,12 @@ export default {
                         <goals-form v-model="annualUpdate" :errors="errors" />
                     </app-section>
 
-                    <app-section title="Additional Funding">
+                    <app-section v-if="year < 2024" title="Additional Funding">
                         <funding-form v-model="annualUpdate" :errors="errors" />
+                    </app-section>
+
+                    <app-section v-if="year >= 2024" title="External Funding">
+                        <external-funding-form v-model="annualUpdate" :errors="errors" />
                     </app-section>
 
                     <website-attestation v-if="year < 2024" v-model="annualUpdate" :errors="errors" />

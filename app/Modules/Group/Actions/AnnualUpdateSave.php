@@ -80,10 +80,16 @@ class AnnualUpdateSave
             'cochair_commitment_details',
             'long_term_chairs',
             // FundingForm
-            'applied_for_funding',
-            'funding',
-            'funding_other_details',
-            'funding_thoughts',
+            'applied_for_funding', // obsolete 2024
+            'funding', // obsolete 2024
+            'funding_other_details', // obsolete 2024
+            'funding_thoughts', // obsolete 2024
+            // ExternalFundingForm
+            'external_funding', // new 2024
+            'external_funding_type', // new 2024
+            'external_funding_other_details', // new 2024
+            'funding_plans', // new 2024
+            'funding_plans_details', // new 2024
             // WebsiteAttestation
             'website_attestation',
             // SpecificationProgress (VCEP with approved draft)
