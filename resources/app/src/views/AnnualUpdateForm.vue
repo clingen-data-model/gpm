@@ -303,7 +303,7 @@ export default {
             <transition name="slide-fade-down">
                 <!-- <div v-if="group.is_vcep || (group.is_gcep && annualUpdate.data.ep_activity == 'active') "> -->
                 <div>
-                    <membership-update v-model="annualUpdate" :errors="errors" />
+                    <membership-update :version="year" v-model="annualUpdate" :errors="errors" />
 
                     <template v-if="expertPanel.is_gcep">
                         <app-section title="Use of GCI and GeneTracker Systems">

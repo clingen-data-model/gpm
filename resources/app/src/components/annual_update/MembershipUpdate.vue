@@ -26,6 +26,7 @@
 
                     <input-row
                         vertical
+                        v-if="version < 2024"
                         label="Has the Expert Panel chair changed over the last year?"
                         :errors="errors.expert_panels_change"
                         type="radio-group"
@@ -36,7 +37,7 @@
                         ]"
                         :disabled="isComplete"
                     />
-                    
+
                 </app-section>
 
 </template>
@@ -57,6 +58,11 @@ export default {
             type: Object,
             required: true
         },
+        version: {
+            type: Number,
+            required: false,
+            default: 0,
+        }
     },
     emits: [
         ...mirror.emits

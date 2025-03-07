@@ -145,7 +145,7 @@ class AnnualUpdate extends Model
                 'goals' => $this->getDataOrNull('goals'),
                 'cochair_commitment' => $this->getDataOrNull('cochair_commitment'),
                 'cochair_commitment_details' => $this->getDataOrNull('cochair_commitment_details'),
-                'expert_panels_change' => $this->getDataOrNull('expert_panels_change'),
+                'expert_panels_change' => $this->getDataOrNull('expert_panels_change'), // obsolete 2024
                 'long_term_chairs' => $this->getLongTermChairsString(),
         ];
 

@@ -51,7 +51,7 @@ class AnnualUpdateSave
             'submitted_inactive_form',
             // MembershipUpdate
             'membership_attestation',
-            'expert_panels_change',
+            'expert_panels_change', // obsolete 2024
             // GciGtUse (GCEP)
             'gci_use',
             'gci_use_details',
