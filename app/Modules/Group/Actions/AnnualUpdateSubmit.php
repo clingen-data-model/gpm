@@ -135,7 +135,7 @@ class AnnualUpdateSubmit
                   //  'rereview_lp_and_vus_progress' => 'required',
                   //  'rereview_lb_progress' => 'required',
                     'system_discrepancies' => 'required',
-                    'member_designation_changed' => 'required|in:yes,no',
+                    'member_designation_changed' => 'nullable|in:yes,no', // obsolete 2024
                     // 'specification_plans' => 'required|in:yes,no',
                     // 'specification_plans_details' => 'required_if:specification_plans,yes',
 

@@ -356,6 +356,7 @@ export default {
                         <vcep-ongoing-plans-update-form v-model="annualUpdate" :errors="errors"  @updated="saveOngoingPlans"/>
 
                         <member-designation-update
+                            :version="year"
                             v-model="annualUpdate"
                             :errors="errors"
                             @updated="debounceSave"

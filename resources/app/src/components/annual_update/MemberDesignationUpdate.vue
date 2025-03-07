@@ -8,7 +8,9 @@
             :readonly="isComplete"
         />
         <hr>
-        <input-row vertical 
+        <input-row
+            v-if="version < 2024"
+            vertical
             label="Does this represent a change from previous years?"
             v-model="workingCopy.data.member_designation_changed"
             :errors="errors.member_designation_changed"
@@ -38,6 +40,11 @@ export default {
         errors: {
             type: Object,
             required: true
+        },
+        version: {
+            type: Number,
+            required: false,
+            default: 0,
         },
     },
     emits: [ ...mirror.emits, 'updated' ],
