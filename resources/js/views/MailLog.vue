@@ -4,7 +4,14 @@ import {debounce} from 'lodash-es'
 import {formatDateTime} from '@/date_utils'
 import sortAndFilter from '../composables/router_aware_sort_and_filter'
 
+import CustomEmailForm from '@/components/mail/CustomEmailForm.vue'
+import MailDetail from '@/components/mail/MailDetail.vue'
+
 export default {
+    components: {
+        CustomEmailForm,
+        MailDetail,
+    },
     props: {
 
     },
@@ -160,10 +167,10 @@ export default {
 
     <teleport to="body">
       <modal-dialog v-model="showDetail">
-        <mail-detail v-if="hasPermission('people-manage')" :mail="currentEmail" @resend="initResend(currentEmail)" />
+        <MailDetail v-if="hasPermission('people-manage')" :mail="currentEmail" @resend="initResend(currentEmail)" />
       </modal-dialog>
       <modal-dialog v-model="showResendDialog" title="Resend Email">
-        <custom-email-form :mail-data="currentEmail" @sent="cleanupResend" @canceled="cleanupResend" />
+        <CustomEmailForm :mail-data="currentEmail" @sent="cleanupResend" @canceled="cleanupResend" />
       </modal-dialog>
     </teleport>
   </div>

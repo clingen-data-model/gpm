@@ -1,6 +1,11 @@
 <script>
+import RichTextEditor from '@/components/prosekit/RichTextEditor.vue';
+
 export default {
     name: 'ComponentName',
+    components: {
+        RichTextEditor,
+    },
     props: {
         modelValue: {
             type: Object,
@@ -84,7 +89,7 @@ export default {
       <input v-model="workingEmail.subject" type="text" class="w-full">
     </input-row>
     <input-row label="Body">
-      <rich-text-editor v-model="workingEmail.body" />
+      <RichTextEditor v-model="workingEmail.body" />
     </input-row>
     <input-row label="Attachments">
       <input ref="attachmentsField" type="file" multiple @change="handleAttachments">
