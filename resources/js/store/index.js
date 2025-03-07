@@ -1,4 +1,4 @@
- 
+
 import { createStore } from 'vuex'
 import Alerts from '@/store/alerts'
 import ApplicationStore from '@/store/applications.js'
@@ -185,7 +185,7 @@ axios.interceptors.response.use(
                 }
                 return error;
             case 404:
-                if (error.config.headers['X-Ignore-Missing'] !== 1) {
+                if (error.config.headers['X-Ignore-Missing'] !== '1') {
                     store.commit('pushError', 'We couldn\'t find something you\'re looking for.');
                 }
                 return error;
