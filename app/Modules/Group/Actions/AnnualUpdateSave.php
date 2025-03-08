@@ -105,6 +105,7 @@ class AnnualUpdateSave
             'ongoing_plans_update_details',
             'changes_to_call_frequency',
             'changes_to_call_frequency_details',
+            'difficulty_adhering_to_vcep_policies',
             // MemberDesignationUpdate (VCEP with sustained curation)
             'member_designation_changed',
         ];

@@ -212,6 +212,7 @@ class AnnualUpdate extends Model
                     'vcep_publishing_issues' => $this->getDataOrNull('vcep_publishing_issues'),
                     'rereview_discrepancies_progress' => $this->getDataOrNull('rereview_discrepancies_progress'),
                     'changes_to_call_frequency' => $this->getDataOrNull('changes_to_call_frequency'),
+                    'difficulty_adhering_to_vcep_policies' => $this->getDataOrNull('difficulty_adhering_to_vcep_policies'), // new 2024
                     // 'member_designation_changed'  => $this->getDataOrNull('member_designation_changed'), // obsolete 2024
                 ],
             );

@@ -25,7 +25,7 @@
                 @update:modelValue="$emit('update')"
             />
         </div>
-        <p class="text-sm mb-0">For all variants approved by either of the processes described above, a summary of approved variants should be sent to ensure that any members absent from a call have an opportunity to review each variant. The summary should be emailed to the full VCEP after the call and should summarize decisions that were made and invite feedback within a week.</p>
+        <p class="text-sm mb-0">Note: For all variants approved by either of the processes described above, a summary of approved variants should be sent to ensure that any members absent from a call have an opportunity to review each variant. The summary should be emailed to the full VCEP after the call and should summarize decisions that were made and invite feedback within a week.</p>
 
         <input-row v-if="canEdit"
             v-model="group.expert_panel.curation_review_process_notes"

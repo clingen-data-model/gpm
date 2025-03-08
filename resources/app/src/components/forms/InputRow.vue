@@ -5,8 +5,8 @@
     >
         <div :class="{'sm:flex': !vertical}">
             <div class="flex-none label-container flex-shrink" :class="labelContainerClass" v-show="showLabel">
-                <slot name="label" v-if="hasLabel">
-                    <label :class="resolvedLabelClass">{{label}}{{colon}}</label>
+                <slot name="label" v-if="hasLabel" :class="resolvedLabelClass">
+                    <label>{{label}}{{colon}}</label>
                 </slot>
             </div>
             <div class="flex-grow flex flex-col space-y-3">

@@ -134,6 +134,7 @@ export default {
                     ongoing_plans_update_details: null,
                     changes_to_call_frequency: null,
                     changes_to_call_frequency_details: null,
+                    difficulty_adhering_to_vcep_policies: null,
                     // MemberDesignationUpdate (VCEP with sustained curation)
                     member_designation_changed: null,
                 }

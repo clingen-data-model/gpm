@@ -146,6 +146,7 @@ class AnnualUpdateSubmit
 
                     'changes_to_call_frequency' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
                     'changes_to_call_frequency_details' => 'exclude_if:ep_activity,inactive|required_if:changes_to_call_frequency,yes',
+                    'difficulty_adhering_to_vcep_policies' => 'exclude_if:ep_activity,inactive|nullable', // new 2024
                     'specifications_for_new_gene' => 'required|in:yes,no',
                     'specifications_for_new_gene_details' => 'required_if:specifications_for_new_gene,yes',
                 ]);
