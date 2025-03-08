@@ -1,9 +1,9 @@
 <template>
     <div>
         <div class="mb-4">
-            <input-row 
-                v-model="group.expert_panel.meeting_frequency" 
-                label="Meeting/call frequency" 
+            <input-row
+                v-model="group.expert_panel.meeting_frequency"
+                label="Meeting/call frequency"
                 :errors="errors.meeting_frequency"
                 placeholder="Once per week"
                 label-width-class="w-44"
@@ -11,16 +11,16 @@
                 @update:modelValue="$emit('update')"
             >
             </input-row>
-            <input-row 
+            <input-row
                 v-model="group.expert_panel.curation_review_protocol_id"
                 :options="[
                     {value: 1, label: 'Process #1: Biocurator review followed by VCEP discussion'},
                     {value: 2, label: 'Process #2: Paired biocurator/expert review followed by expedited VCEP approval'}
                 ]"
                 type="radio-group"
-                :errors="errors.curation_review_protocol_id" 
-                :disabeld="!canEdit"
-                label="VCEP Standardized Review Process" 
+                :errors="errors.curation_review_protocol_id"
+                :disabled="!canEdit"
+                label="VCEP Standardized Review Process"
                 vertical
                 @update:modelValue="$emit('update')"
             />
@@ -30,8 +30,8 @@
         <input-row v-if="canEdit"
             v-model="group.expert_panel.curation_review_process_notes"
             type="large-text"
-            label="Curation and Review Process Notes" 
-            :vertical="true" 
+            label="Curation and Review Process Notes"
+            :vertical="true"
             label-class="font-bold"
             @update:modelValue="$emit('update')"
         />
@@ -68,7 +68,7 @@ export default {
         group: {
             get () {
                 return this.$store.getters['groups/currentItemOrNew'];
-            }, 
+            },
             set (value) {
                 this.$store.commit('groups/addItem', value)
             }
@@ -83,4 +83,4 @@ export default {
     }
 }
 
-</script> 
+</script>
