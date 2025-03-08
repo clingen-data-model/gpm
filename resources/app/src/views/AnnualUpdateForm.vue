@@ -335,7 +335,7 @@ export default {
                         <funding-form v-model="annualUpdate" :errors="errors" />
                     </app-section>
 
-                    <website-attestation v-model="annualUpdate" :errors="errors" />
+                    <website-attestation v-if="year < 2024" v-model="annualUpdate" :errors="errors" />
 
                     <template
                         v-if="expertPanel.is_vcep && expertPanel.has_approved_draft">

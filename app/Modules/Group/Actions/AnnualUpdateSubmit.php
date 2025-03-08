@@ -79,7 +79,7 @@ class AnnualUpdateSubmit
             'funding' => 'exclude_if:ep_activity,inactive|required_if:applied_for_funding,yes',
             'funding_other_details' => 'exclude_if:ep_activity,inactive|required_if:funding,other',
             'funding_thoughts' => 'exclude_if:ep_activity,inactive|required_if:applied_for_funding,no',
-            'website_attestation' => 'exclude_if:ep_activity,inactive|accepted',
+            'website_attestation' => 'exclude_if:ep_activity,inactive|nullable|accepted', // obsolete 2024
             'expert_panels_change' => 'exclude_if:ep_activity,inactive|nullable', // obsolete 2024
 
         ];
