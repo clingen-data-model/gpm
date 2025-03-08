@@ -60,8 +60,8 @@ class AnnualUpdateSave
             'gt_precuration_info',
             'gt_precuration_info_details',
             // GeneCurationTotals (GCEP)
-            'published_count',
-            'approved_unpublished_count',
+            'published_count', // obsolete 2024
+            'approved_unpublished_count', // obsolete 2024
             'in_progress_count',
             'publishing_issues',
             // GcepOngoingPlansUpdateForm (GCEP)

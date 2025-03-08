@@ -84,7 +84,7 @@ class AnnualUpdateSubmit
             'external_funding_other_details' => 'exclude_if:ep_activity,inactive|required_if:external_funding_type,other', // new 2024
             'funding_plans' => 'exclude_if:ep_activity,inactive|required|in:yes,no', // new 2024
             'funding_plans_details' => 'exclude_if:ep_activity,inactive|required_if:funding_plans,yes', // new 2024
-            'website_attestation' => 'exclude_if:ep_activity,inactive|nullable|accepted', // obsolete 2024
+            'website_attestation' => 'exclude_if:ep_activity,inactive|nullable', // obsolete 2024
             'expert_panels_change' => 'exclude_if:ep_activity,inactive|nullable', // obsolete 2024
 
         ];
@@ -100,8 +100,8 @@ class AnnualUpdateSubmit
                     'gt_gene_list_details' => 'exclude_if:ep_activity,inactive|required_if:gt_gene_list,no',
                     'gt_precuration_info' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
                     'gt_precuration_info_details' => 'exclude_if:ep_activity,inactive|required_if:gt_precuration_info,no',
-                    'published_count' => 'exclude_if:ep_activity,inactive|required|numeric',
-                    'approved_unpublished_count' => 'exclude_if:ep_activity,inactive|required|numeric',
+                    'published_count' => 'exclude_if:ep_activity,inactive|nullable|numeric', // obsolete 2024
+                    'approved_unpublished_count' => 'exclude_if:ep_activity,inactive|nullable|numeric', // obsolete 2024
                     'in_progress_count' => 'exclude_if:ep_activity,inactive|required|numeric',
                     'recuration_begun' => 'exclude_if:ep_activity,inactive|required|in:yes,no',
                     'recuration_designees' => 'exclude_if:ep_activity,inactive|required',

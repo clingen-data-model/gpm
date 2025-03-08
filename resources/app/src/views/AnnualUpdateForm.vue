@@ -16,6 +16,7 @@ import GciGtUse from '@/components/annual_update/GciGtUse.vue'
 import GcepRereviewForm from '@/components/annual_update/GcepRereviewForm.vue'
 import GcepOngoingPlansUpdateForm from '@/components/annual_update/GcepOngoingPlansUpdateForm.vue'
 import GeneCurationTotals from '@/components/annual_update/GeneCurationTotals.vue'
+import GeneCurationProgress from '@/components/annual_update/GeneCurationProgress.vue'
 
 // VCEP Components
 // import VariantCurationWorkflow from '@/components/annual_update/VariantCurationWorkflow.vue'
@@ -34,6 +35,7 @@ export default {
         GciGtUse,
         // SystemIssues,
         GeneCurationTotals,
+        GeneCurationProgress,
         VcepOngoingPlansUpdateForm,
         GcepRereviewForm,
         GoalsForm,
@@ -255,6 +257,8 @@ export default {
                         delete mergedData.funding;
                         delete mergedData.funding_other_details;
                         delete mergedData.funding_thoughts;
+                        delete mergedData.published_count;
+                        delete mergedData.approved_unpublished_count;
                         mergedData.funding = mergedData.funding_other_details;
                     }
                     reviewData.data = mergedData;
@@ -331,9 +335,14 @@ export default {
                             <gci-gt-use v-model="annualUpdate" :errors="errors" />
                         </app-section>
 
-                        <app-section title="Summary of total numbers of genes curated">
-                            <gene-curation-totals v-model="annualUpdate" :errors="errors" />
-                        </app-section>
+                        <div>
+                            <app-section v-if="year < 2024" title="Summary of total numbers of genes curated">
+                                <gene-curation-totals v-model="annualUpdate" :errors="errors" />
+                            </app-section>
+                            <app-section v-else title="Progress in gene curation">
+                                <gene-curation-progress v-model="annualUpdate" :errors="errors" />
+                            </app-section>
+                        </div>
 
                         <app-section title="Changes to plans for ongoing curation">
                             <gcep-ongoing-plans-update-form v-model="annualUpdate" :errors="errors" @updated="saveOngoingPlans"></gcep-ongoing-plans-update-form>

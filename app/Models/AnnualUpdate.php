@@ -166,8 +166,8 @@ class AnnualUpdate extends Model
                     'gt_gene_list_details' => $this->getDataOrNull('gt_gene_list_details'),
                     'gt_precuration_info' => $this->getDataOrNull('gt_precuration_info'),
                     'gt_precuration_info_details' => $this->getDataOrNull('gt_precuration_info_details'),
-                    'published_count' => $this->getDataOrNull('published_count'),
-                    'approved_unpublished_count' => $this->getDataOrNull('approved_unpublished_count'),
+                    'published_count' => $this->getDataOrNull('published_count'), // obsolete 2024
+                    'approved_unpublished_count' => $this->getDataOrNull('approved_unpublished_count'), // obsolete 2024
                     'in_progress_count' => $this->getDataOrNull('in_progress_count'),
                     'recuration_begun' => $this->getDataOrNull('recuration_begun'),
                     'recuration_designees' => $this->getDataOrNull('recuration_designees'),
