@@ -24,7 +24,6 @@ export default antfu(
             'vue/html-closing-bracket-spacing': 'off',
             'vue/html-closing-bracket-newline': 'off',
             'vue/space-infix-ops': 'off',
-            'vue/no-unused-refs': 'off',
             'vue/require-explicit-emits': 'off',
             'vue/eqeqeq': 'off',
             'vue/attribute-hyphenation': 'off',

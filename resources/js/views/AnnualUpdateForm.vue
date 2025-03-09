@@ -396,7 +396,6 @@ export default {
                             v-model="annualUpdate"
                             :errors="errors"
                             @updated="debounceSave"
-                            ref="memberDesignationUpdate"
                         />
 
                         <!-- <vcep-plans-for-specifications

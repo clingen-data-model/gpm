@@ -5,7 +5,7 @@ export default {
         ChevronDown
     },
     props: {
-        
+
     },
     data() {
         return {
@@ -51,18 +51,17 @@ export default {
         <div v-show="isAuthed">
             <div class="flex flex-row-reverse align-middle -mb-3 pb-3 pr-2 relative z-20 cursor-pointer"
                 :class="{'w-48': menuOpen}"
-                ref="menuButton" 
                 @click.stop="toggleMenu"
             >
                 <ChevronDown></ChevronDown>
                 {{ user.name }}
             </div>
-            <transition name="slide-fade-down">            
-                <div 
-                    v-show="menuOpen" 
+            <transition name="slide-fade-down">
+                <div
+                    v-show="menuOpen"
                     v-click-outside="{exclude: ['menuButton'], handler: handleOutsideClick}"
                     ref="dropdownMenu"
-                    class="absolute right-0 -top-3 pt-11 bg-white border w-48 z-10 shadow" 
+                    class="absolute right-0 -top-3 pt-11 bg-white border w-48 z-10 shadow"
                 >
                     <ul>
                         <!-- <li class="hover:bg-blue-100 cursor-pointer border-b border-t">

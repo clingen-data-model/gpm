@@ -331,7 +331,6 @@ export default {
               :show-controls="editingDescription"
             >
               <GroupDescriptionForm
-                ref="descriptionRef"
                 v-model:editing="editingDescription"
                 :errors="errors"
               />
@@ -346,7 +345,6 @@ export default {
               :show-controls="editingExpertise"
             >
               <MembershipDescriptionForm
-                ref="membershipDescriptionFormRef"
                 class="mt-8"
                 v-model:editing="editingExpertise"
                 :errors="errors"
@@ -381,7 +379,6 @@ export default {
               :show-controls="editingScopeDescription"
             >
               <ScopeDescriptionForm
-                ref="scopeDescriptionRef"
                 v-model:editing="editingScopeDescription"
                 :errors="errors"
               />
@@ -414,7 +411,6 @@ export default {
               "
             >
               <component
-                ref="ongoingPlansForm"
                 :is="ongoingPlansFormComponent"
                 :errors="errors"
                 :readonly="!group.expert_panel.pilotSpecificationsIsApproved"

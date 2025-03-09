@@ -320,7 +320,6 @@ export default {
             v-model:sort="sort"
             :style="remainingHeight"
             class="overflow-auto"
-            ref="table"
         >
             <template #cell-contacts="{item}">
                 <ul>
