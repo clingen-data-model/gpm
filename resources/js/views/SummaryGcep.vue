@@ -9,7 +9,7 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <ApplicationsSummaryTable :expertPanelTypeId="1"></ApplicationsSummaryTable>
-    </div>
+  <div>
+    <ApplicationsSummaryTable :expertPanelTypeId="1" />
+  </div>
 </template>

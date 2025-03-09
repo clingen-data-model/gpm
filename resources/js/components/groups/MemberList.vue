@@ -338,211 +338,229 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <div class="flex justify-between items-end">
-            <div class="flex space-x-2 items-center">
-                <h2>Members</h2>
-                <button
-                    v-if="group.members.length > 0"
-                    class="px-3 py-2 rounded-t transition-color"
-                    :class="{'rounded-b': !showFilter, 'bg-blue-200': showFilter}"
-                    @click="toggleFilter"
-                >
-                    <icon-filter width="16" height="16" />
-                </button>
-            </div>
-            <div class="flex space-x-2 items-center pb-0.5">
-                <div v-if="showAddMemberButton">
-                    <popper content="Add a member" hover arrow>
-                        <router-link
-                            class="btn btn-icon"
-                            :to="append($route.path, 'members/add')"
-                        >
-                            <icon-add class="inline-block"/>
-                        </router-link>
-                    </popper>
-                </div>
-
-                <div v-if="showCoordinatorActions" class="flex space-x-2 items-center">
-                    <popper :content="`Email ${filteredMembers.length} listed members`" hover arrow>
-                        <a
-                            :href="`mailto:${filteredEmails.join(', ')}`"
-                            class="btn btn-icon"
-                        >
-                            <icon-envelope class="inline-block" width="16" height="16"/>
-                        </a>
-                    </popper>
-
-                    <dropdown-menu hide-cheveron orientation="right">
-                        <template #label>
-                            <button class="btn btn-icon"><icon-download width="16" height="16" /></button>
-                        </template>
-                        <dropdown-item class="text-right font-bold">Downloads:</dropdown-item>
-                        <dropdown-item class="text-right">
-                            <a :href="`/api/report/groups/${group.uuid}/coi-report`">COI Report</a>
-                            <note class="inline"> (PDF)</note>
-                        </dropdown-item>
-                        <dropdown-item v-if="showMemberReportButton" class="text-right">
-                            <popper class="text-center text-sm p-1" :content="`Export will include ${filteredMembers.length} members currently listed.`" hover arrow>
-                            <a :href="exportUrl">Member Export</a>
-                            <note class="inline"> (CSV)</note>
-                            </popper>
-                        </dropdown-item>
-                    </dropdown-menu>
-
-                    <div v-if="group.isEp() && showCoordinatorActions">
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        <transition name="slide-fade-down">
-        <div v-show="showFilter" class="flex justify-between px-2 space-x-2 bg-blue-200 rounded-lg">
-            <div class="flex-1">
-                <input-row v-model="filters.keyword" label="Keyword" type="text" label-width-class="w-20" />
-                <input-row label="Role" label-width-class="w-20">
-                    <select v-model="filters.roleId">
-                        <option :value="null">Select&hellip;</option>
-                        <option
-                            v-for="role in roles"
-                            :key="role.id"
-                            :value="role.id"
-                        >
-                            {{ role.name }}
-                        </option>
-                    </select>
-                </input-row>
-            </div>
-            <div class="flex-1 py-2">
-                <checkbox v-model="filters.needsCoi" class="block" label="Needs COI" />
-                <!-- <checkbox class="block" label="Needs Training" v-model="filters.needsTraining" /> -->
-            </div>
-            <div class="flex-1 py-2">
-                <checkbox v-model="filters.hideAlumns" class="block" label="Hide Retired/Alumni" />
-            </div>
-        </div>
-        </transition>
-        <div class="mt-3 py-2 w-full overflow-x-auto">
-            <data-table
-                v-if="group.members.length > 0"
-                v-model:sort="sort"
-                :fields="fieldsForGroupType"
-                :data="filteredMembers"
-                :detailRows="true"
-                :row-class="(item) => `cursor-pointer${ item.isRetired ? ' retired-member' : ''}`"
-                @rowClick="goToMember"
+  <div>
+    <div class="flex justify-between items-end">
+      <div class="flex space-x-2 items-center">
+        <h2>Members</h2>
+        <button
+          v-if="group.members.length > 0"
+          class="px-3 py-2 rounded-t transition-color"
+          :class="{'rounded-b': !showFilter, 'bg-blue-200': showFilter}"
+          @click="toggleFilter"
+        >
+          <icon-filter width="16" height="16" />
+        </button>
+      </div>
+      <div class="flex space-x-2 items-center pb-0.5">
+        <div v-if="showAddMemberButton">
+          <popper content="Add a member" hover arrow>
+            <router-link
+              class="btn btn-icon"
+              :to="append($route.path, 'members/add')"
             >
-                <template #cell-id="{item}">
-                    <button class="w-9 align-center block -mx-3" @click.stop="toggleItemDetails(item)">
-                        <icon-cheveron-right v-if="!item.showDetails" class="m-auto cursor-pointer" />
-                        <icon-cheveron-down v-if="item.showDetails" class="m-auto cursor-pointer" />
-                    </button>
-                </template>
-                <template #cell-roles="{value}">
-                    {{ titleCase(value.map(i => i.name).join(', ')) }}
-                </template>
-                <template #cell-coi_last_completed="{item}">
-                    <div class="flex space-x-2">
-                        <span v-if="item.coi_last_completed">{{ formatDate(item.coi_last_completed) }}</span>
-                        <button v-if="item.latest_coi_id" class="link cursor-pointer" @click.stop="viewCoi(item.latest_coi_id)">
-                            <icon-view />
-                        </button>
-                        <icon-exclamation
-                            v-if="!item.coi_last_completed === null || (item.coi_last_completed < yearAgo())"
-                            :class="getCoiDateStyle(item)"
-                        />
-                    </div>
-                </template>
-                <template #cell-actions="{item}">
-                    <div class="flex space-x-2 items-center">
-                        <dropdown-menu
-                            v-if="hasAnyMemberPermission() && !readonly"
-                            :hide-cheveron="true"
-                            class="relative block"
-                        >
-                            <template #label>
-                                <button class="btn btn-xs">&hellip;</button>
-                            </template>
-                            <dropdown-item
-                                v-if="hasAnyPermission([['members-update', group], 'groups-manage'])"
-                            >
-                                <div @click="editMember(item)">Update membership</div>
-                            </dropdown-item>
-                            <dropdown-item
-                                v-show="!item.isRetired && hasAnyPermission([['members-retire', group], 'groups-manage'])"
-                            >
-                                <div @click="confirmRetireMember(item)">Retire from group</div>
-                            </dropdown-item>
-                            <dropdown-item
-                                v-show="item.isRetired && hasAnyPermission([['members-remove', group], 'groups-manage'])"
-                            >
-                                <div @click="confirmUnretire(item)">Unretire from group</div>
-                            </dropdown-item>
-                            <dropdown-item
-                            >
-                                <div @click="confirmRemoveMember(item)">Remove from group</div>
-                            </dropdown-item>
-                        </dropdown-menu>
-                        <div>
-                            <popover hover arrow content="Receives notifications about this group." placement="top">
-                                <icon-notification v-if="item.is_contact" :width="12" :height="12" icon-name="Is a group contact" @click.stop=""/>
-                            </popover>
-                        </div>
-                    </div>
-                </template>
-
-                <template #cell-requirements="{item}">
-                    <popover hover arrow placement="top">
-                        <icon-checkmark v-if="requirementsMet(item)" :width="12" :height="12" class="text-green-600"/>
-                        <icon-exclamation v-else :width="12" :height="12" class="text-red-700"/>
-
-                        <template #content>
-                            <ul>
-                                <li v-for="req, k in getRequirements(item)" :key="k">
-                                    <icon-checkmark v-if="req.met" :width="12" :height="12" class="inline-block text-green-600"/>
-                                    <icon-exclamation v-else :width="12" :height="12" class="inline-block text-red-700"/>
-                                    {{ req.label }}
-                                </li>
-                            </ul>
-                        </template>
-                    </popover>
-                </template>
-
-                <template #detail="{item}">
-                    <MemberPreview :member="item" :group="group"></MemberPreview>
-                </template>
-            </data-table>
-            <div v-else class="well">
-                This group does not yet have any members.
-            </div>
+              <icon-add class="inline-block" />
+            </router-link>
+          </popper>
         </div>
-        <teleport to='body'>
-            <modal-dialog v-model="showConfirmRetire" size="xs" :title="`Retire ${selectedMemberName}?`">
-                <p class="text-lg">
-                    Are you sure you want to retire {{ selectedMemberName }} from this group?
-                </p>
-                <button-row submit-text="Retire Member" @submit="retireMember" @cancel="cancelRetire"></button-row>
-            </modal-dialog>
-            <modal-dialog v-model="showConfirmUnretire" size="xs" :title="`Retire ${selectedMemberName}?`">
-                <p class="text-lg">
-                    Are you sure you want to un-retire {{ selectedMemberName }}?
-                </p>
-                <button-row submit-text="Un-retire Member" @submit="unretireMember" @cancel="cancelUnretire"></button-row>
-            </modal-dialog>
-            <modal-dialog v-model="showConfirmRemove" size="xs" :title="`Remove ${selectedMemberName}?`">
-                <p class="text-lg"> Are you sure you want to remove {{ selectedMemberName }} from this group?</p>
-                <p><strong>This cannot be undone.</strong></p>
-                <button-row submit-text="Remove Member" @submit="removeMember" @cancel="cancelRemove"></button-row>
-            </modal-dialog>
-            <modal-dialog v-model="showCoiDetail" size="xl">
-                <CoiDetail v-if="coi" :coi="coi" :group="group"></CoiDetail>
-            </modal-dialog>
-            <!-- <modal-dialog size="xxl" v-model="showCoiReport" :title="`COI Report for ${group.displayName}`">
+
+        <div v-if="showCoordinatorActions" class="flex space-x-2 items-center">
+          <popper :content="`Email ${filteredMembers.length} listed members`" hover arrow>
+            <a
+              :href="`mailto:${filteredEmails.join(', ')}`"
+              class="btn btn-icon"
+            >
+              <icon-envelope class="inline-block" width="16" height="16" />
+            </a>
+          </popper>
+
+          <dropdown-menu hide-cheveron orientation="right">
+            <template #label>
+              <button class="btn btn-icon">
+                <icon-download width="16" height="16" />
+              </button>
+            </template>
+            <dropdown-item class="text-right font-bold">
+              Downloads:
+            </dropdown-item>
+            <dropdown-item class="text-right">
+              <a :href="`/api/report/groups/${group.uuid}/coi-report`">COI Report</a>
+              <note class="inline">
+                (PDF)
+              </note>
+            </dropdown-item>
+            <dropdown-item v-if="showMemberReportButton" class="text-right">
+              <popper class="text-center text-sm p-1" :content="`Export will include ${filteredMembers.length} members currently listed.`" hover arrow>
+                <a :href="exportUrl">Member Export</a>
+                <note class="inline">
+                  (CSV)
+                </note>
+              </popper>
+            </dropdown-item>
+          </dropdown-menu>
+
+          <div v-if="group.isEp() && showCoordinatorActions" />
+        </div>
+      </div>
+    </div>
+    <transition name="slide-fade-down">
+      <div v-show="showFilter" class="flex justify-between px-2 space-x-2 bg-blue-200 rounded-lg">
+        <div class="flex-1">
+          <input-row v-model="filters.keyword" label="Keyword" type="text" label-width-class="w-20" />
+          <input-row label="Role" label-width-class="w-20">
+            <select v-model="filters.roleId">
+              <option :value="null">
+                Select&hellip;
+              </option>
+              <option
+                v-for="role in roles"
+                :key="role.id"
+                :value="role.id"
+              >
+                {{ role.name }}
+              </option>
+            </select>
+          </input-row>
+        </div>
+        <div class="flex-1 py-2">
+          <checkbox v-model="filters.needsCoi" class="block" label="Needs COI" />
+          <!-- <checkbox class="block" label="Needs Training" v-model="filters.needsTraining" /> -->
+        </div>
+        <div class="flex-1 py-2">
+          <checkbox v-model="filters.hideAlumns" class="block" label="Hide Retired/Alumni" />
+        </div>
+      </div>
+    </transition>
+    <div class="mt-3 py-2 w-full overflow-x-auto">
+      <data-table
+        v-if="group.members.length > 0"
+        v-model:sort="sort"
+        :fields="fieldsForGroupType"
+        :data="filteredMembers"
+        :detailRows="true"
+        :row-class="(item) => `cursor-pointer${ item.isRetired ? ' retired-member' : ''}`"
+        @rowClick="goToMember"
+      >
+        <template #cell-id="{item}">
+          <button class="w-9 align-center block -mx-3" @click.stop="toggleItemDetails(item)">
+            <icon-cheveron-right v-if="!item.showDetails" class="m-auto cursor-pointer" />
+            <icon-cheveron-down v-if="item.showDetails" class="m-auto cursor-pointer" />
+          </button>
+        </template>
+        <template #cell-roles="{value}">
+          {{ titleCase(value.map(i => i.name).join(', ')) }}
+        </template>
+        <template #cell-coi_last_completed="{item}">
+          <div class="flex space-x-2">
+            <span v-if="item.coi_last_completed">{{ formatDate(item.coi_last_completed) }}</span>
+            <button v-if="item.latest_coi_id" class="link cursor-pointer" @click.stop="viewCoi(item.latest_coi_id)">
+              <icon-view />
+            </button>
+            <icon-exclamation
+              v-if="!item.coi_last_completed === null || (item.coi_last_completed < yearAgo())"
+              :class="getCoiDateStyle(item)"
+            />
+          </div>
+        </template>
+        <template #cell-actions="{item}">
+          <div class="flex space-x-2 items-center">
+            <dropdown-menu
+              v-if="hasAnyMemberPermission() && !readonly"
+              :hide-cheveron="true"
+              class="relative block"
+            >
+              <template #label>
+                <button class="btn btn-xs">
+                  &hellip;
+                </button>
+              </template>
+              <dropdown-item
+                v-if="hasAnyPermission([['members-update', group], 'groups-manage'])"
+              >
+                <div @click="editMember(item)">
+                  Update membership
+                </div>
+              </dropdown-item>
+              <dropdown-item
+                v-show="!item.isRetired && hasAnyPermission([['members-retire', group], 'groups-manage'])"
+              >
+                <div @click="confirmRetireMember(item)">
+                  Retire from group
+                </div>
+              </dropdown-item>
+              <dropdown-item
+                v-show="item.isRetired && hasAnyPermission([['members-remove', group], 'groups-manage'])"
+              >
+                <div @click="confirmUnretire(item)">
+                  Unretire from group
+                </div>
+              </dropdown-item>
+              <dropdown-item>
+                <div @click="confirmRemoveMember(item)">
+                  Remove from group
+                </div>
+              </dropdown-item>
+            </dropdown-menu>
+            <div>
+              <popover hover arrow content="Receives notifications about this group." placement="top">
+                <icon-notification v-if="item.is_contact" :width="12" :height="12" icon-name="Is a group contact" @click.stop="" />
+              </popover>
+            </div>
+          </div>
+        </template>
+
+        <template #cell-requirements="{item}">
+          <popover hover arrow placement="top">
+            <icon-checkmark v-if="requirementsMet(item)" :width="12" :height="12" class="text-green-600" />
+            <icon-exclamation v-else :width="12" :height="12" class="text-red-700" />
+
+            <template #content>
+              <ul>
+                <li v-for="req, k in getRequirements(item)" :key="k">
+                  <icon-checkmark v-if="req.met" :width="12" :height="12" class="inline-block text-green-600" />
+                  <icon-exclamation v-else :width="12" :height="12" class="inline-block text-red-700" />
+                  {{ req.label }}
+                </li>
+              </ul>
+            </template>
+          </popover>
+        </template>
+
+        <template #detail="{item}">
+          <MemberPreview :member="item" :group="group" />
+        </template>
+      </data-table>
+      <div v-else class="well">
+        This group does not yet have any members.
+      </div>
+    </div>
+    <teleport to="body">
+      <modal-dialog v-model="showConfirmRetire" size="xs" :title="`Retire ${selectedMemberName}?`">
+        <p class="text-lg">
+          Are you sure you want to retire {{ selectedMemberName }} from this group?
+        </p>
+        <button-row submit-text="Retire Member" @submit="retireMember" @cancel="cancelRetire" />
+      </modal-dialog>
+      <modal-dialog v-model="showConfirmUnretire" size="xs" :title="`Retire ${selectedMemberName}?`">
+        <p class="text-lg">
+          Are you sure you want to un-retire {{ selectedMemberName }}?
+        </p>
+        <button-row submit-text="Un-retire Member" @submit="unretireMember" @cancel="cancelUnretire" />
+      </modal-dialog>
+      <modal-dialog v-model="showConfirmRemove" size="xs" :title="`Remove ${selectedMemberName}?`">
+        <p class="text-lg">
+          Are you sure you want to remove {{ selectedMemberName }} from this group?
+        </p>
+        <p><strong>This cannot be undone.</strong></p>
+        <button-row submit-text="Remove Member" @submit="removeMember" @cancel="cancelRemove" />
+      </modal-dialog>
+      <modal-dialog v-model="showCoiDetail" size="xl">
+        <CoiDetail v-if="coi" :coi="coi" :group="group" />
+      </modal-dialog>
+      <!-- <modal-dialog size="xxl" v-model="showCoiReport" :title="`COI Report for ${group.displayName}`">
                 <coi-report :group="group"></coi-report>
             </modal-dialog> -->
-        </teleport>
-    </div>
+    </teleport>
+  </div>
 </template>
 <style>
     .inset {

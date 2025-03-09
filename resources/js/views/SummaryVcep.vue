@@ -9,7 +9,7 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <ApplicationsSummaryTable :ep-type-id="2"></ApplicationsSummaryTable>
-    </div>
+  <div>
+    <ApplicationsSummaryTable :ep-type-id="2" />
+  </div>
 </template>

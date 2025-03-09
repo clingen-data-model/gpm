@@ -162,59 +162,69 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <h1>Institutions</h1>
-        <data-table
-            v-model:sort="sort"
-            paginated
-            :data="filteredItems"
-            :fields="fields"
-            :reset-page-on-data-change="false"
-        >
-            <template #header>
-                <label>
-                    Filter:
-                    <input v-model="filter" type="text">
-                </label>
-            </template>
-            <template #cell-actions="{item}">
-                <dropdown-menu hide-cheveron>
-                    <template #label>
-                        <button class="btn btn-xs">&hellip;</button>
-                    </template>
+  <div>
+    <h1>Institutions</h1>
+    <data-table
+      v-model:sort="sort"
+      paginated
+      :data="filteredItems"
+      :fields="fields"
+      :reset-page-on-data-change="false"
+    >
+      <template #header>
+        <label>
+          Filter:
+          <input v-model="filter" type="text">
+        </label>
+      </template>
+      <template #cell-actions="{item}">
+        <dropdown-menu hide-cheveron>
+          <template #label>
+            <button class="btn btn-xs">
+              &hellip;
+            </button>
+          </template>
 
 
-                    <dropdown-item @click="edit(item)">Edit</dropdown-item>
-                    <dropdown-item @click="initApprove(item)">Approve</dropdown-item>
-                    <dropdown-item @click="initMerge(item)">Merge into another</dropdown-item>
-                    <dropdown-item @click="initDelete(item)">Delete</dropdown-item>
-                </dropdown-menu>
-            </template>
-        </data-table>
-        <teleport to="body">
-            <modal-dialog v-model="showApproveDialog" :title="`Approve ${currentItem.name}`">
-                <InstitutionApprovalForm v-model="currentItem" @saved="handleSaved" @canceled="handleCancel" />
-            </modal-dialog>
-            <modal-dialog v-model="showEditDialog" :title="`Edit ${currentItem.name}`">
-                <InstitutionUpdateForm v-model="currentItem" @saved="handleSaved" @canceled="handleCancel" />
-            </modal-dialog>
-            <modal-dialog v-model="showMergeDialog" title="Merge Institutions">
-                <InstitutionMergeForm :obsoletes="[currentItem]" @saved="handleMerge" @canceled="showMergeDialog = false" />
-            </modal-dialog>
-            <modal-dialog v-model="showDeleteConfirmation" title="Delete Institution" size="sm">
-                <div v-if="currentItem.people_count > 0">
-                    <p>You cannot delete an institution people are using.</p>
-                    <p>Either edit this this institution or merge it into another.</p>
-                </div>
-                <div v-else>
-                    You are about to delete the {{ currentItem.name }}
-                    <button-row
-                        submit-text="Delete"
-                        @submitted="deleteItem"
-                        @canceled="showDeleteConfirmation = false"
-                    ></button-row>
-                </div>
-            </modal-dialog>
-        </teleport>
-    </div>
+          <dropdown-item @click="edit(item)">
+            Edit
+          </dropdown-item>
+          <dropdown-item @click="initApprove(item)">
+            Approve
+          </dropdown-item>
+          <dropdown-item @click="initMerge(item)">
+            Merge into another
+          </dropdown-item>
+          <dropdown-item @click="initDelete(item)">
+            Delete
+          </dropdown-item>
+        </dropdown-menu>
+      </template>
+    </data-table>
+    <teleport to="body">
+      <modal-dialog v-model="showApproveDialog" :title="`Approve ${currentItem.name}`">
+        <InstitutionApprovalForm v-model="currentItem" @saved="handleSaved" @canceled="handleCancel" />
+      </modal-dialog>
+      <modal-dialog v-model="showEditDialog" :title="`Edit ${currentItem.name}`">
+        <InstitutionUpdateForm v-model="currentItem" @saved="handleSaved" @canceled="handleCancel" />
+      </modal-dialog>
+      <modal-dialog v-model="showMergeDialog" title="Merge Institutions">
+        <InstitutionMergeForm :obsoletes="[currentItem]" @saved="handleMerge" @canceled="showMergeDialog = false" />
+      </modal-dialog>
+      <modal-dialog v-model="showDeleteConfirmation" title="Delete Institution" size="sm">
+        <div v-if="currentItem.people_count > 0">
+          <p>You cannot delete an institution people are using.</p>
+          <p>Either edit this this institution or merge it into another.</p>
+        </div>
+        <div v-else>
+          You are about to delete the {{ currentItem.name }}
+          <button-row
+            submit-text="Delete"
+            @submitted="deleteItem"
+            @canceled="showDeleteConfirmation = false"
+          />
+        </div>
+      </modal-dialog>
+    </teleport>
+  </div>
 </template>

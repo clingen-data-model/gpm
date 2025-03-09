@@ -18,5 +18,5 @@ export default {
 }
 </script>
 <template>
-    <stand-in>Conflict of Interest (COI) and Competing Activities Management</stand-in>
+  <stand-in>Conflict of Interest (COI) and Competing Activities Management</stand-in>
 </template>

@@ -46,25 +46,26 @@ export default {
 }
 </script>
 <template>
-    <div class="border-t pt-3 mb-1 mt-3 flex space-x-3">
-        <slot>
-            <button v-if="showCancel"
-                class="btn"
-                :class="[`btn-${size}`]"
-                :disabled="$attrs.disabled"
-                @click="cancel"
-            >
-                {{ cancelText }}
-            </button>
-            <button
-                class="btn"
-                :class="[submitVariant, `btn-${size}`]"
-                :disabled="$attrs.disabled"
-                @click="submit"
-            >
-                {{ submitText }}
-            </button>
-            <slot name="extra-buttons"></slot>
-        </slot>
-    </div>
+  <div class="border-t pt-3 mb-1 mt-3 flex space-x-3">
+    <slot>
+      <button
+        v-if="showCancel"
+        class="btn"
+        :class="[`btn-${size}`]"
+        :disabled="$attrs.disabled"
+        @click="cancel"
+      >
+        {{ cancelText }}
+      </button>
+      <button
+        class="btn"
+        :class="[submitVariant, `btn-${size}`]"
+        :disabled="$attrs.disabled"
+        @click="submit"
+      >
+        {{ submitText }}
+      </button>
+      <slot name="extra-buttons" />
+    </slot>
+  </div>
 </template>

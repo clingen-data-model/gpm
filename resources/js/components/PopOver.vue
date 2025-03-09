@@ -9,10 +9,10 @@ export default {
 }
 </script>
 <template>
-    <Popper v-bind="$attrs" class="popover">
-        <slot />
-        <template #content="props">
-            <slot name="content" v-bind="props"></slot>
-        </template>
-    </Popper>
+  <Popper v-bind="$attrs" class="popover">
+    <slot />
+    <template #content="props">
+      <slot name="content" v-bind="props" />
+    </template>
+  </Popper>
 </template>

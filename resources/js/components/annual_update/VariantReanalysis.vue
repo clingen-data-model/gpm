@@ -30,22 +30,21 @@ export default {
 </script>
 
 <template>
-    <ApplicationSection title="Variant Re-review">
-        <p>
-            Variant Curation Expert Panels are expected to keep their variant interpretations up-to-date and to expedite the re-review of variants that have a conflicting assertion submitted to ClinVar after the Expert Panel submission (guidelines for recuration timeline provided in the <a href="https://clinicalgenome.org/docs/clingen-variant-curation-expert-panel-vcep-protocol/">VCEP protocol</a>).  <br>
-            <br>
-            Please answer the following question concerning recuration:
+  <ApplicationSection title="Variant Re-review">
+    <p>
+      Variant Curation Expert Panels are expected to keep their variant interpretations up-to-date and to expedite the re-review of variants that have a conflicting assertion submitted to ClinVar after the Expert Panel submission (guidelines for recuration timeline provided in the <a href="https://clinicalgenome.org/docs/clingen-variant-curation-expert-panel-vcep-protocol/">VCEP protocol</a>).  <br>
+      <br>
+      Please answer the following question concerning recuration:
+    </p>
 
-        </p>
-
-        <ul class="px-6">
-            <li>
-                <input-row v-model="workingCopy.data.rereview_discrepencies_progress" :disabled="isComplete" vertical type="large-text" :errors="errors.rereview_discrepencies_progress" placeholder="Progress...">
-                    <template #label>
-                        Are you receiving and/or using the VCEP Variant Tracker reports to aid in the recuration work? Please describe below.
-                    </template>
-                </input-row>
-            </li>
-        </ul>
-    </ApplicationSection>
+    <ul class="px-6">
+      <li>
+        <input-row v-model="workingCopy.data.rereview_discrepencies_progress" :disabled="isComplete" vertical type="large-text" :errors="errors.rereview_discrepencies_progress" placeholder="Progress...">
+          <template #label>
+            Are you receiving and/or using the VCEP Variant Tracker reports to aid in the recuration work? Please describe below.
+          </template>
+        </input-row>
+      </li>
+    </ul>
+  </ApplicationSection>
 </template>

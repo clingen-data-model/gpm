@@ -114,47 +114,47 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <div v-if="!hasLogEntries" class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200">
-            No log entries to display
-        </div>
-        <data-table v-else v-model:sort="sort" :fields="fields" :data="logEntries">
-            <template #cell-id="{item}">
-                <div v-if="hasPermission('groups-manage')" class="flex space-x-1">
-                    <button class="btn btn-xs inline-block" @click="editLogEntry(item)">
-                        <icon-edit width="12"></icon-edit>
-                    </button>
-                    <button 
-                        v-if="item.activity_type === null"
-                        class="btn btn-xs inline-block"
-                        @click="confirmDelete(item)"
-                    >
-                        <icon-trash width="12"></icon-trash>
-                    </button>
-                </div>
-            </template>
-            <template #cell-description="{item}">
-                <div class="links-blue" v-html="item.description"></div>
-            </template>
-        </data-table>
-        <modal-dialog v-model="editingEntry" title="Edit log entry">
-            <LogEntryForm 
-                :log-entry="selectedEntry" 
-                :api-url="apiUrl"
-                @saved="closeEntryForm"
-                @canceled="closeEntryForm"
-            ></LogEntryForm>
-        </modal-dialog>
-
-        <modal-dialog v-model="showDeleteConfirmation" title="Delete this log entry?">
-            <ActivityLogDeleteConfirmation 
-                :logEntry="selectedEntry" 
-                :api-url="apiUrl"
-                @canceled="closeDeleteConfirmation"
-                @deleted="closeDeleteConfirmation"
-            ></ActivityLogDeleteConfirmation>
-        </modal-dialog>
+  <div>
+    <div v-if="!hasLogEntries" class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200">
+      No log entries to display
     </div>
+    <data-table v-else v-model:sort="sort" :fields="fields" :data="logEntries">
+      <template #cell-id="{item}">
+        <div v-if="hasPermission('groups-manage')" class="flex space-x-1">
+          <button class="btn btn-xs inline-block" @click="editLogEntry(item)">
+            <icon-edit width="12" />
+          </button>
+          <button 
+            v-if="item.activity_type === null"
+            class="btn btn-xs inline-block"
+            @click="confirmDelete(item)"
+          >
+            <icon-trash width="12" />
+          </button>
+        </div>
+      </template>
+      <template #cell-description="{item}">
+        <div class="links-blue" v-html="item.description" />
+      </template>
+    </data-table>
+    <modal-dialog v-model="editingEntry" title="Edit log entry">
+      <LogEntryForm 
+        :log-entry="selectedEntry" 
+        :api-url="apiUrl"
+        @saved="closeEntryForm"
+        @canceled="closeEntryForm"
+      />
+    </modal-dialog>
+
+    <modal-dialog v-model="showDeleteConfirmation" title="Delete this log entry?">
+      <ActivityLogDeleteConfirmation 
+        :logEntry="selectedEntry" 
+        :api-url="apiUrl"
+        @canceled="closeDeleteConfirmation"
+        @deleted="closeDeleteConfirmation"
+      />
+    </modal-dialog>
+  </div>
 </template>
 <style lang="postcss">
     .links-blue a {

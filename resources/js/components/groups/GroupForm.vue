@@ -240,95 +240,95 @@ export default {
 }
 </script>
 <template>
-    <div>
+  <div>
+    <input-row
+      v-if="canSetType"
+      v-model="group.group_type_id"
+      :errors="errors.group_type_id"
+      type="select"
+      :options="typeOptions"
+      label="Type"
+    />
+
+    <dictionary-row v-else label="Type">
+      {{ group?.type?.display_name }}
+    </dictionary-row>
+
+    <transition name="slide-fade-down" mode="out-in">
+      <div v-if="group.group_type_id > 2 && group.expert_panel">
         <input-row
-            v-if="canSetType"
-            v-model="group.group_type_id"
-            :errors="errors.group_type_id"
-            type="select"
-            :options="typeOptions"
-            label="Type"
+          v-model="group.expert_panel.long_base_name"
+          label="Long Base Name"
+          placeholder="Long base name"
+          :errors="errors.long_base_name"
+          input-class="w-full"
+          @update:modelValue="emitUpdate"
         />
-
-        <dictionary-row v-else label="Type">
-            {{ group?.type?.display_name }}
-        </dictionary-row>
-
-        <transition name="slide-fade-down" mode="out-in">
-            <div v-if="group.group_type_id > 2 && group.expert_panel">
-                <input-row
-                    v-model="group.expert_panel.long_base_name"
-                    label="Long Base Name"
-                    placeholder="Long base name"
-                    :errors="errors.long_base_name"
-                    input-class="w-full"
-                    @update:modelValue="emitUpdate"
-                />
-                <input-row
-                    v-model="group.expert_panel.short_base_name"
-                    label="Short Base Name"
-                    placeholder="Short base name"
-                    :errors="errors.short_base_name"
-                    input-class="w-full"
-                    @update:modelValue="emitUpdate"
-                />
-                <div v-if="hasAnyPermission(['groups-manage'])">
-                    <input-row
-                        v-model="group.expert_panel.affiliation_id"
-                        label="Affiliation ID"
-                        :placeholder="affiliationIdPlaceholder"
-                        :errors="errors.affiliation_id"
-                        input-class="w-full"
-                        @update:modelValue="emitUpdate"
-                    >
-                        <template #label>
-                            Affiliation ID
-                            <note>admin-only</note>
-                        </template>
-                    </input-row>
-                </div>
-                <dictionary-row v-else label="Affiliation ID">
-                    <span v-if="group.expert_panel.affiliation_id">{{ group.expert_panel.affiliation_id }}</span>
-                    <span v-else class="text-gray-400">{{ 'Not yet assigend' }}</span>
-                </dictionary-row>
-            </div>
-            <div v-else>
-                <input-row
-                    v-model="group.name"
-                    placeholder="Name"
-                    label="Name"
-                    input-class="w-full"
-                    :errors="errors.name"
-                    @update:modelValue="emitUpdate"
-                />
-            </div>
-        </transition>
-        <div v-if="hasPermission('groups-manage')">
-            <input-row
-                v-model="group.group_status_id"
-                type="select"
-                :options="statusOptions"
-                :errors="errors.group_status_id"
-                @update:modelValue="emitUpdate"
-            >
-                <template #label>
-                    Status:
-                    <note>admin-only</note>
-                </template>
-            </input-row>
-
-            <input-row
-                v-model="group.parent_id"
-                type="select"
-                :options="parentOptions"
-                :errors="errors.parent_id"
-                @update:modelValue="emitUpdate"
-            >
-                <template #label>
-                    Parent group:
-                    <note>admin-only</note>
-                </template>
-            </input-row>
+        <input-row
+          v-model="group.expert_panel.short_base_name"
+          label="Short Base Name"
+          placeholder="Short base name"
+          :errors="errors.short_base_name"
+          input-class="w-full"
+          @update:modelValue="emitUpdate"
+        />
+        <div v-if="hasAnyPermission(['groups-manage'])">
+          <input-row
+            v-model="group.expert_panel.affiliation_id"
+            label="Affiliation ID"
+            :placeholder="affiliationIdPlaceholder"
+            :errors="errors.affiliation_id"
+            input-class="w-full"
+            @update:modelValue="emitUpdate"
+          >
+            <template #label>
+              Affiliation ID
+              <note>admin-only</note>
+            </template>
+          </input-row>
         </div>
+        <dictionary-row v-else label="Affiliation ID">
+          <span v-if="group.expert_panel.affiliation_id">{{ group.expert_panel.affiliation_id }}</span>
+          <span v-else class="text-gray-400">{{ 'Not yet assigend' }}</span>
+        </dictionary-row>
+      </div>
+      <div v-else>
+        <input-row
+          v-model="group.name"
+          placeholder="Name"
+          label="Name"
+          input-class="w-full"
+          :errors="errors.name"
+          @update:modelValue="emitUpdate"
+        />
+      </div>
+    </transition>
+    <div v-if="hasPermission('groups-manage')">
+      <input-row
+        v-model="group.group_status_id"
+        type="select"
+        :options="statusOptions"
+        :errors="errors.group_status_id"
+        @update:modelValue="emitUpdate"
+      >
+        <template #label>
+          Status:
+          <note>admin-only</note>
+        </template>
+      </input-row>
+
+      <input-row
+        v-model="group.parent_id"
+        type="select"
+        :options="parentOptions"
+        :errors="errors.parent_id"
+        @update:modelValue="emitUpdate"
+      >
+        <template #label>
+          Parent group:
+          <note>admin-only</note>
+        </template>
+      </input-row>
     </div>
+  </div>
 </template>

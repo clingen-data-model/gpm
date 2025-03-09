@@ -4,7 +4,7 @@ export default {
 }
 </script>
 <template>
-    <a target="gene-tracker" href="https://gene-tracker.clinicalgenome.org">
-        <slot>Gene Tracker</slot>
-    </a>
+  <a target="gene-tracker" href="https://gene-tracker.clinicalgenome.org">
+    <slot>Gene Tracker</slot>
+  </a>
 </template>

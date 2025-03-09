@@ -32,25 +32,25 @@ export default {
 </script>
 
 <template>
-    <ApplicationSection title="Plans for rule specification of additional genes">
-        <input-row
-            v-model="workingCopy.data.specification_plans"
-            :disabled="isComplete"
-            :errors="errors.specification_plans"
-            label="Are you planning to start the rule specification process for a new gene in the coming year?"
-            type="radio-group"
-            :options="[{value: 'yes', label: 'Yes'}, {value: 'no', label: 'No'}]"
-            vertical
-        />
-        <input-row
-            v-if="workingCopy.data.specification_plans == 'yes'"
-            v-model="workingCopy.data.specification_plans_details"
-            :disabled="isComplete" 
-            :errors="errors.specification_plans_details" 
-            type="large-text" 
-            label="What are your plans?" 
-            vertical
-            class="ml-4"
-        />
-    </ApplicationSection>
+  <ApplicationSection title="Plans for rule specification of additional genes">
+    <input-row
+      v-model="workingCopy.data.specification_plans"
+      :disabled="isComplete"
+      :errors="errors.specification_plans"
+      label="Are you planning to start the rule specification process for a new gene in the coming year?"
+      type="radio-group"
+      :options="[{value: 'yes', label: 'Yes'}, {value: 'no', label: 'No'}]"
+      vertical
+    />
+    <input-row
+      v-if="workingCopy.data.specification_plans == 'yes'"
+      v-model="workingCopy.data.specification_plans_details"
+      :disabled="isComplete" 
+      :errors="errors.specification_plans_details" 
+      type="large-text" 
+      label="What are your plans?" 
+      vertical
+      class="ml-4"
+    />
+  </ApplicationSection>
 </template>

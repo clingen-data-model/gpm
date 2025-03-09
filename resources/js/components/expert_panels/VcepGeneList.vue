@@ -207,112 +207,126 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <header class="flex justify-between items-center">
-            <h4>Gene/Disease List</h4>
-        </header>
-        <div class="my-2">
-            <table v-if="genes" class="border-none">
-                <thead>
-                    <tr>
-                        <th style="min-width: 10rem">HGNC Symbol</th>
-                        <th style="min-width: 15rem">Disease</th>
-                        <!-- <th style="max-width: 9rem">Date Approved</th> -->
-                        <th
-                            v-if="canEdit"
-                            style="width: 5rem"
-                        ></th>
-                    </tr>
-                </thead>
-                <transition name="fade" mode="out-in">
-                    <tbody v-if="genes.length == 0">
-                        <tr>
-                            <td colspan="4">
-                                <div class="p-2 text-center font-bold">
-                                    <span v-if="loading">Loading...</span>
-                                    <div v-else>
-                                        <p>There are no gene/disease pairs in the gene list.</p>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tbody v-else>
-                        <!-- <transition-group name="slide-fade-down"> -->
-                            <tr v-for="gene in orderedGenes" :key="gene.id">
-                                <template v-if="!gene.edit">
-                                    <td>{{ gene.gene_symbol }}</td>
-                                    <td>{{ gene.disease_name }}</td>
-                                    <!-- <td>{{formatDate(gene.date_approved)}}</td> -->
-                                    <td
-                                        v-if="canEdit"
-                                    >
-                                        <div v-if="!gene.edit">
-                                            <dropdown-menu
-                                                v-if="!gene.toDelete"
-                                                :hide-cheveron="true"
-                                                class="relative"
-                                            >
-                                                <template #label>
-                                                    <button class="btn btn-xs">&hellip;</button>
-                                                </template>
-                                                <dropdown-item @click="edit(gene)">Edit</dropdown-item>
-                                                <dropdown-item @click="confirmRemove(gene)">Remove</dropdown-item>
-                                            </dropdown-menu>
+  <div>
+    <header class="flex justify-between items-center">
+      <h4>Gene/Disease List</h4>
+    </header>
+    <div class="my-2">
+      <table v-if="genes" class="border-none">
+        <thead>
+          <tr>
+            <th style="min-width: 10rem">
+              HGNC Symbol
+            </th>
+            <th style="min-width: 15rem">
+              Disease
+            </th>
+            <!-- <th style="max-width: 9rem">Date Approved</th> -->
+            <th
+              v-if="canEdit"
+              style="width: 5rem"
+            />
+          </tr>
+        </thead>
+        <transition name="fade" mode="out-in">
+          <tbody v-if="genes.length == 0">
+            <tr>
+              <td colspan="4">
+                <div class="p-2 text-center font-bold">
+                  <span v-if="loading">Loading...</span>
+                  <div v-else>
+                    <p>There are no gene/disease pairs in the gene list.</p>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+          <tbody v-else>
+            <!-- <transition-group name="slide-fade-down"> -->
+            <tr v-for="gene in orderedGenes" :key="gene.id">
+              <template v-if="!gene.edit">
+                <td>{{ gene.gene_symbol }}</td>
+                <td>{{ gene.disease_name }}</td>
+                <!-- <td>{{formatDate(gene.date_approved)}}</td> -->
+                <td
+                  v-if="canEdit"
+                >
+                  <div v-if="!gene.edit">
+                    <dropdown-menu
+                      v-if="!gene.toDelete"
+                      :hide-cheveron="true"
+                      class="relative"
+                    >
+                      <template #label>
+                        <button class="btn btn-xs">
+                          &hellip;
+                        </button>
+                      </template>
+                      <dropdown-item @click="edit(gene)">
+                        Edit
+                      </dropdown-item>
+                      <dropdown-item @click="confirmRemove(gene)">
+                        Remove
+                      </dropdown-item>
+                    </dropdown-menu>
 
-                                            <!-- <div v-if="gene.toDelete">
+                    <!-- <div v-if="gene.toDelete">
                                                 <note>set for deletion in {{gene.removeCountdown}} seconds.</note>
                                                 <button @click="cancelPendingRemove(gene)" class="btn btn-xs">Cancel</button>
                                             </div> -->
-                                        </div>
-                                    </td>
-                                </template>
-                                <template v-else>
-                                    <td>
-                                        <input-row label="" :errors="errors.hgnc_id" :vertical="true">
-                                            <GeneSearchSelect v-model="gene.gene"></GeneSearchSelect>
-                                        </input-row>
-                                    </td>
-                                    <!-- <td colspan="2"> -->
-                                    <td>
-                                        <input-row label="" :errors="errors.mondo_id" :vertical="true">
-                                            <DiseaseSearchSelect v-model="gene.disease"></DiseaseSearchSelect>
-                                        </input-row>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-xs" @click="updateCancel(gene)">Cancel</button>
-                                        <button class="btn blue btn-xs" @click="updateGene(gene)">Save</button>
-                                    </td>
-                                </template>
-                            </tr>
-                        <!-- </transition-group> -->
-                    </tbody>
-                </transition>
+                  </div>
+                </td>
+              </template>
+              <template v-else>
+                <td>
+                  <input-row label="" :errors="errors.hgnc_id" :vertical="true">
+                    <GeneSearchSelect v-model="gene.gene" />
+                  </input-row>
+                </td>
+                <!-- <td colspan="2"> -->
+                <td>
+                  <input-row label="" :errors="errors.mondo_id" :vertical="true">
+                    <DiseaseSearchSelect v-model="gene.disease" />
+                  </input-row>
+                </td>
+                <td>
+                  <button class="btn btn-xs" @click="updateCancel(gene)">
+                    Cancel
+                  </button>
+                  <button class="btn blue btn-xs" @click="updateGene(gene)">
+                    Save
+                  </button>
+                </td>
+              </template>
+            </tr>
+            <!-- </transition-group> -->
+          </tbody>
+        </transition>
 
-                <tbody v-if="canEdit">
-                        <tr>
-                            <td>
-                                <input-row label="" :errors="errors[`genes.0.hgnc_id`]" :vertical="true">
-                                    <GeneSearchSelect v-model="newGene.gene" @update:modelValue="debounceSave" />
-                                </input-row>
-                            </td>
-                            <td colspan="4">
-                                <input-row label="" :errors="errors[`diseases.0.hgnc_id`]" :vertical="true">
-                                    <DiseaseSearchSelect v-model="newGene.disease" @update:modelValue="debounceSave" />
-                                </input-row>
-                            </td>
-                        </tr>
-                </tbody>
-            </table>
-        </div>
-        <modal-dialog v-model="showConfirmRemove" title="Confirm gene/disease pair delete.">
-            <p>You are about to delete the gene/disease pair {{ selectedGene.gene_symbol }}/{{ selectedGene.disease_name }}.  Are you sure you want to continue?</p>
-            <button-row
-                submit-text="Yes, delete it."
-                cancel-text="No, cancel"
-                @submitted="remove(selectedGene)"
-                @canceled="cancelRemove"
-            ></button-row>
-        </modal-dialog>
+        <tbody v-if="canEdit">
+          <tr>
+            <td>
+              <input-row label="" :errors="errors[`genes.0.hgnc_id`]" :vertical="true">
+                <GeneSearchSelect v-model="newGene.gene" @update:modelValue="debounceSave" />
+              </input-row>
+            </td>
+            <td colspan="4">
+              <input-row label="" :errors="errors[`diseases.0.hgnc_id`]" :vertical="true">
+                <DiseaseSearchSelect v-model="newGene.disease" @update:modelValue="debounceSave" />
+              </input-row>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+    <modal-dialog v-model="showConfirmRemove" title="Confirm gene/disease pair delete.">
+      <p>You are about to delete the gene/disease pair {{ selectedGene.gene_symbol }}/{{ selectedGene.disease_name }}.  Are you sure you want to continue?</p>
+      <button-row
+        submit-text="Yes, delete it."
+        cancel-text="No, cancel"
+        @submitted="remove(selectedGene)"
+        @canceled="cancelRemove"
+      />
+    </modal-dialog>
+  </div>
 </template>
