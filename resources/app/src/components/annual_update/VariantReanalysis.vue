@@ -4,10 +4,10 @@
             Variant Curation Expert Panels are expected to keep their variant interpretations up-to-date and to expedite the re-review of variants that have a conflicting assertion submitted to ClinVar after the Expert Panel submission (guidelines for recuration timeline provided in the <a href="https://clinicalgenome.org/docs/clingen-variant-curation-expert-panel-vcep-protocol/">VCEP protocol</a>).  <br>
             <br>
             Please answer the following question concerning recuration:
-            
+
         </p>
 
-        <ul class="list-decimal px-6">
+        <ul class="px-6">
             <li>
                 <input-row :disabled="isComplete" vertical type="large-text" :errors="errors.rereview_discrepencies_progress" v-model="workingCopy.data.rereview_discrepencies_progress" placeholder="Progress...">
                     <template v-slot:label>
