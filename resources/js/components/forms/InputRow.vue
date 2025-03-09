@@ -144,7 +144,7 @@ export default {
             :readonly="$attrs.readonly"
             :name="name"
             :class="inputClass"
-            @update:modelValue="emitValue"
+            @update:model-value="emitValue"
             @change="$emit('change', modelValue)"
           />
           <textarea
@@ -174,7 +174,7 @@ export default {
               :value="option.value"
               :disabled="disabled"
               :readonly="$attrs.readonly"
-              @update:modelValue="emitValue"
+              @update:model-value="emitValue"
             />
           </div>
           <select

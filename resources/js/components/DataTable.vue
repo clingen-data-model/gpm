@@ -399,7 +399,7 @@ export default {
         :current-page="currentPage"
         :total-items="totalItems"
         :page-size="pageSize"
-        @update:currentPage="updateCurrentPage"
+        @update:current-page="updateCurrentPage"
       />
     </header>
 

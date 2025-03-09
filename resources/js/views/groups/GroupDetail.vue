@@ -313,14 +313,14 @@ export default {
 
     <GroupDetailHeader
       :group="group"
-      @showEdit="showEdit"
+      @show-edit="showEdit"
     />
 
 
     <div class="flex space-x-4">
       <div class="flex-grow mt-4">
         <ApplicationSummary v-if="group.isApplying" :group="group" />
-        <tabs-container @tabChanged="handleTabChange">
+        <tabs-container @tab-changed="handleTabChange">
           <tab-item label="Summary Description">
             <submission-wrapper
               :visible="group.is_ep"
@@ -500,7 +500,7 @@ export default {
               <StepTabs
                 v-if="group.is_ep"
                 :application="group.expert_panel"
-                @stepApproved="getGroup"
+                @step-approved="getGroup"
               />
               <hr>
             </div>

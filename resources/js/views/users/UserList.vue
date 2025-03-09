@@ -133,7 +133,7 @@ export default {
       :data="getUsers"
       row-class="cursor-pointer"
       paginated
-      @rowClick="goToUser"
+      @row-click="goToUser"
     >
       <template #header>
         <div>Filter: &nbsp;<input v-model="filter" type="text" placeholder="name, email"></div>

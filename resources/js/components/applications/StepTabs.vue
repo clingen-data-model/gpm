@@ -50,7 +50,7 @@ export default {
 <template>
   <div>
     <div v-if="application.is_gcep">
-      <StepOne @stepApproved="handleApproved" @updated="handleUpdated" />
+      <StepOne @step-approved="handleApproved" @updated="handleUpdated" />
     </div>
     <tabs-container
       v-if="application.expert_panel_type_id == 2"
@@ -58,16 +58,16 @@ export default {
       tab-location="right"
     >
       <tab-item label="Group Definition">
-        <StepOne @stepApproved="handleApproved" @updated="handleUpdated" />
+        <StepOne @step-approved="handleApproved" @updated="handleUpdated" />
       </tab-item>
       <tab-item label="Draft Specifications">
-        <StepTwo @stepApproved="handleApproved" @updated="handleUpdated" />
+        <StepTwo @step-approved="handleApproved" @updated="handleUpdated" />
       </tab-item>
       <tab-item label="Pilot Specfications">
-        <StepThree @stepApproved="handleApproved" @updated="handleUpdated" />
+        <StepThree @step-approved="handleApproved" @updated="handleUpdated" />
       </tab-item>
       <tab-item label="Sustained Curation">
-        <StepFour @stepApproved="handleApproved" @updated="handleUpdated" />
+        <StepFour @step-approved="handleApproved" @updated="handleUpdated" />
       </tab-item>
     </tabs-container>
   </div>

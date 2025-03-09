@@ -52,7 +52,7 @@ export default {
         placeholder="Once per week"
         label-width-class="w-44"
         :disabled="!canEdit"
-        @update:modelValue="$emit('update')"
+        @update:model-value="$emit('update')"
       />
       <input-row
         v-model="group.expert_panel.curation_review_protocol_id"
@@ -65,7 +65,7 @@ export default {
         :disabled="!canEdit"
         label="VCEP Standardized Review Process"
         vertical
-        @update:modelValue="$emit('update')"
+        @update:model-value="$emit('update')"
       />
     </div>
     <p class="text-sm mb-0">
@@ -79,7 +79,7 @@ export default {
       label="Curation and Review Process Notes"
       :vertical="true"
       label-class="font-bold"
-      @update:modelValue="$emit('update')"
+      @update:model-value="$emit('update')"
     />
     <blockquote v-else>
       {{ group.expert_panel.curation_review_process_notes }}

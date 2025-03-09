@@ -130,7 +130,7 @@ const navigateToGroup = (item) => {
         </div>
         <data-table
           v-else v-model:sort="groupSort" :data="groups" :fields="groupFields"
-          row-class="cursor-pointer" @rowClick="navigateToGroup"
+          row-class="cursor-pointer" @row-click="navigateToGroup"
         >
           <template #cell-status_name="{ value }">
             <badge :color="groupBadgeColor(value)">

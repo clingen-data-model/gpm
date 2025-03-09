@@ -41,7 +41,7 @@ const showSendToChairsControl = computed(() => {
         class="flex-1"
         :group="group"
         :step="step"
-        @stepApproved="() => {$emit('stepApproved'); $emit('updated')}"
+        @step-approved="() => {$emit('stepApproved'); $emit('updated')}"
       >
         {{ approveLabel }}
       </StepApproveControl>
@@ -50,14 +50,14 @@ const showSendToChairsControl = computed(() => {
         v-if="showSendToChairsControl"
         class="flex-1"
         :group="group"
-        @sentToChairs="() => {$emit('sentToChairs'); $emit('updated'); }"
+        @sent-to-chairs="() => {$emit('sentToChairs'); $emit('updated'); }"
       />
 
       <StepRequestRevisionsControl
         v-if="group.expert_panel.hasPendingSubmissionForCurrentStep"
         class="flex-1"
         :group="group"
-        @revisionsRequested="() => {$emit('revisionsRequested'); $emit('updated')}"
+        @revisions-requested="() => {$emit('revisionsRequested'); $emit('updated')}"
       />
     </div>
   </div>

@@ -88,7 +88,7 @@ export default {
                 label-width-class="w-0"
                 :errors="errors.curation_review_protocol_other"
                 type="large-text"
-                @update:modelValue="$emit('update')"
+                @update:model-value="$emit('update')"
               />
             </transition>
           </div>

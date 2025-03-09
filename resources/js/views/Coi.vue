@@ -211,7 +211,7 @@ export default {
             </input-row>
           </transition>
         </div>
-        <button-row :show-cancel="false" @submitClicked="storeResponse()">
+        <button-row :show-cancel="false" @submit-clicked="storeResponse()">
           <slot v-if="saving">
             Saving...
           </slot>

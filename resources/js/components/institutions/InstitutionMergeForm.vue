@@ -87,7 +87,7 @@ export default {
           (Obsolete institution that will be deleted)
         </note>
       </template>
-      <institution-search-select :model-value="obsoleteIds" :allow-add="false" @update:modelValue="handleObsoleteUpdate" />
+      <institution-search-select :model-value="obsoleteIds" :allow-add="false" @update:model-value="handleObsoleteUpdate" />
     </input-row>
     <input-row label="Into" :errors="errors.authority_id" vertical>
       <template #label>

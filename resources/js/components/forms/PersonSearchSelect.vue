@@ -70,7 +70,7 @@ export default {
       :search-function="search"
       style="z-index: 2"
       placeholder="Person name or email"
-      @update:modelValue="searchText = null"
+      @update:model-value="searchText = null"
     >
       <template #selection-label="{selection}">
         <div>

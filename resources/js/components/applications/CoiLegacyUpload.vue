@@ -96,7 +96,7 @@ export default {
       <input-row label="COI File" :errors="errors.file">
         <input ref="fileInput" type="file">
       </input-row>
-      <button-row submit-text="Save" @submitClicked="save" @cancelClicked="cancel" />
+      <button-row submit-text="Save" @submit-clicked="save" @cancel-clicked="cancel" />
     </modal-dialog>
   </div>
 </template>
