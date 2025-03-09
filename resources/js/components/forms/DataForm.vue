@@ -83,13 +83,12 @@
     
 </script>
 <template>
-    
-    <div class="data-form" :id="formId">
-        <div v-for="field in fields" :key="field.name">
-            <div :class="wrapperClass">
-                <renderElement :field="field" :modelValue="workingCopy" />
-                <renderExtra :field="field" :modelValue="workingCopy" />
-            </div>
-        </div>
+  <div :id="formId" class="data-form">
+    <div v-for="field in fields" :key="field.name">
+      <div :class="wrapperClass">
+        <renderElement :field="field" :modelValue="workingCopy" />
+        <renderExtra :field="field" :modelValue="workingCopy" />
+      </div>
     </div>
+  </div>
 </template>

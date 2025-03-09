@@ -51,29 +51,33 @@
 </script>
 
 <template>
-    <div>
-        <h1>Reports</h1>
-        <div class="flex space-x-4">
-            <ul class="item-list space-y-2 bg-gray-100 p-4 w-1/4" v-remaining-height>
-                <li v-for="rpt in reports" :key="rpt.url">
-                    <download-link :url="rpt.url" :title="`Download ${rpt.name} Report`">{{ rpt.name }}</download-link>
-                </li>
-            </ul>
-            <div class="border-left pl-4 flex-grow">
-                <h2 class="mb-2">Summary Report</h2>
-                <table>
-                    <tr v-for="row in summaryData" :key="row[0]">
-                        <th>
-                            {{ row[0] }}
-                        </th>
-                        <td class="text-right">
-                            {{ row[1] }}
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
+  <div>
+    <h1>Reports</h1>
+    <div class="flex space-x-4">
+      <ul v-remaining-height class="item-list space-y-2 bg-gray-100 p-4 w-1/4">
+        <li v-for="rpt in reports" :key="rpt.url">
+          <download-link :url="rpt.url" :title="`Download ${rpt.name} Report`">
+            {{ rpt.name }}
+          </download-link>
+        </li>
+      </ul>
+      <div class="border-left pl-4 flex-grow">
+        <h2 class="mb-2">
+          Summary Report
+        </h2>
+        <table>
+          <tr v-for="row in summaryData" :key="row[0]">
+            <th>
+              {{ row[0] }}
+            </th>
+            <td class="text-right">
+              {{ row[1] }}
+            </td>
+          </tr>
+        </table>
+      </div>
     </div>
+  </div>
 </template>
 
 <style lang="postcss" scoped>

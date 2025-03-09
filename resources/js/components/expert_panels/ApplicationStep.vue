@@ -62,56 +62,61 @@ export default {
 }
 </script>
 <template>
-    <div class="application-step" :id="id">
-        <div class="header flex justify-between items-center" v-if="title">
-            <h2 :class="{ 'text-gray-400': disabled }">
-                {{ title }}
-                <div class="inline" v-if="disabled">
-                    <popover arrow hover>
-                        <template #content>
-                            <small
-                                class="text-sm"
-                                v-html="lockedContent"
-                            ></small>
-                        </template>
-                        <icon-lock class="inline" />
-                    </popover>
-                </div>
-            </h2>
-            <div class="inline" v-if="approved">
-                <popover hover arrow>
-                    <template #content>
-                        Make changes from the
-                        <router-link
-                            :to="{
-                                name: 'GroupDetail',
-                                parmas: { uuid: group.uuid },
-                            }"
-                            >group's detail screen</router-link
-                        >
-                        <br /><small>Changes may require re-approval.</small>
-                    </template>
-                    <badge color="green">Approved</badge>
-                </popover>
-            </div>
-            <badge v-if="underReview" color="yellow">Under Review</badge>
+  <div :id="id" class="application-step">
+    <div v-if="title" class="header flex justify-between items-center">
+      <h2 :class="{ 'text-gray-400': disabled }">
+        {{ title }}
+        <div v-if="disabled" class="inline">
+          <popover arrow hover>
+            <template #content>
+              <small
+                class="text-sm"
+                v-html="lockedContent"
+              />
+            </template>
+            <icon-lock class="inline" />
+          </popover>
         </div>
-
-        <div class="relative">
-            <div class="step-contents">
-                <slot></slot>
-            </div>
-            <ApplicationSubmitButton
-                v-if="showSubmitButton"
-                class="border-t"
-                :step="step"
-            />
-            <div
-                class="z-20 absolute top-0 bottom-0 left-0 right-0 bg-white/50"
-                v-if="disabled || approved"
-            />
-        </div>
+      </h2>
+      <div v-if="approved" class="inline">
+        <popover hover arrow>
+          <template #content>
+            Make changes from the
+            <router-link
+              :to="{
+                name: 'GroupDetail',
+                parmas: { uuid: group.uuid },
+              }"
+            >
+              group's detail screen
+            </router-link>
+            <br><small>Changes may require re-approval.</small>
+          </template>
+          <badge color="green">
+            Approved
+          </badge>
+        </popover>
+      </div>
+      <badge v-if="underReview" color="yellow">
+        Under Review
+      </badge>
     </div>
+
+    <div class="relative">
+      <div class="step-contents">
+        <slot />
+      </div>
+      <ApplicationSubmitButton
+        v-if="showSubmitButton"
+        class="border-t"
+        :step="step"
+      />
+      <div
+        v-if="disabled || approved"
+        class="z-20 absolute top-0 bottom-0 left-0 right-0 bg-white/50"
+      />
+    </div>
+  </div>
 </template>
 <style lang="postcss" scoped>
     .application-step {

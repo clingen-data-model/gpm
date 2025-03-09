@@ -53,21 +53,24 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <dictionary-row label="Action">
-            <div v-html="nextAction.entry"></div>
-        </dictionary-row>
-        <object-dictionary 
-            :obj="nextAction"
-            :show="['date_created', 'step', 'target_date']"
-            :dates="['target_date', 'date_created']"
-        ></object-dictionary>
+  <div>
+    <dictionary-row label="Action">
+      <div v-html="nextAction.entry" />
+    </dictionary-row>
+    <object-dictionary 
+      :obj="nextAction"
+      :show="['date_created', 'step', 'target_date']"
+      :dates="['target_date', 'date_created']"
+    />
 
-        <input-row label="Date Completed" v-model="dateCompleted" type="date" :errors="errors.date_completed"></input-row>
+    <input-row v-model="dateCompleted" label="Date Completed" type="date" :errors="errors.date_completed" />
         
-        <button-row>
-            <button class="btn white" @click="cancel">Cancel</button
-            ><button class="btn blue" @click="markComplete">Mark Complete</button>
-        </button-row>
-    </div>
+    <button-row>
+      <button class="btn white" @click="cancel">
+        Cancel
+      </button><button class="btn blue" @click="markComplete">
+        Mark Complete
+      </button>
+    </button-row>
+  </div>
 </template>

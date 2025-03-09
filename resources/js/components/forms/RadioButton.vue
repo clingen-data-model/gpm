@@ -33,21 +33,21 @@ export default {
 }
 </script>
 <template>
-    <label class="mb-2">
-        <slot name="input">
-            <input 
-                type="radio"
-                v-model="val" 
-                :id="radioId" 
-                class="mt-1" 
-                :disabled="$attrs.disabled" 
-                :value="value"
-                >
-        </slot>
-        <div>
-            <slot>
-                {{ label }}
-            </slot>
-        </div>
-    </label>
+  <label class="mb-2">
+    <slot name="input">
+      <input 
+        :id="radioId"
+        v-model="val" 
+        type="radio" 
+        class="mt-1" 
+        :disabled="$attrs.disabled" 
+        :value="value"
+      >
+    </slot>
+    <div>
+      <slot>
+        {{ label }}
+      </slot>
+    </div>
+  </label>
 </template>

@@ -15,6 +15,9 @@ export default {
             this.redirectIfAuthed();
         }
     },
+    mounted() {
+        this.redirectIfAuthed();
+    },
     methods: {
         redirect() {
             let route = { name: 'Dashboard' };
@@ -31,17 +34,14 @@ export default {
                 this.redirect();
             }
         }
-    },
-    mounted() {
-        this.redirectIfAuthed();
     }
 };
 </script>
 
 <template>
-    <div>
-        <card title="Login" class="md:w-1/2 mx-auto">
-            <LoginForm @authenticated="redirect"></LoginForm>
-        </card>
-    </div>
+  <div>
+    <card title="Login" class="md:w-1/2 mx-auto">
+      <LoginForm @authenticated="redirect" />
+    </card>
+  </div>
 </template>

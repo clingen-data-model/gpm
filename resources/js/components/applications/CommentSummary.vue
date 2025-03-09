@@ -23,20 +23,23 @@
 </script>
 
 <template>
-    <div>
-        <div v-for="(sectionComments, section) in commentsBySection" :key="section"
-            class="md:flex md:space-x-4 mt-3 ml-2"
-        >
-            <h4 class="md:w-1/5 flex-shrink-0">{{ titleCase(section) }}</h4>
-            <ReviewCommentAnonymous
-                v-for="comment in sectionComments"
-                :key="comment.id"
-                :comment="comment"
-                class="mb-1 flex-grow-0"
-            />
-        </div>
-        <div v-if="comments.length == 0">
-            No comments
-        </div>
+  <div>
+    <div
+      v-for="(sectionComments, section) in commentsBySection" :key="section"
+      class="md:flex md:space-x-4 mt-3 ml-2"
+    >
+      <h4 class="md:w-1/5 flex-shrink-0">
+        {{ titleCase(section) }}
+      </h4>
+      <ReviewCommentAnonymous
+        v-for="comment in sectionComments"
+        :key="comment.id"
+        :comment="comment"
+        class="mb-1 flex-grow-0"
+      />
     </div>
+    <div v-if="comments.length == 0">
+      No comments
+    </div>
+  </div>
 </template>

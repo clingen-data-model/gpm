@@ -40,33 +40,6 @@ export default {
             this.positionMenu();
         }
     },
-    methods: {
-        addItem (item) {
-            this.menuItems.push(item)
-        },
-        handleOutsideClick() {
-            this.menuOpen = false;
-        },
-        toggleMenu (event) {
-            event.stopPropagation();
-            this.menuOpen = !this.menuOpen
-            if (this.menuOpen) {
-                this.$refs.dropdownMenu.focus()
-            }
-        },
-        renderItems () {
-            return this.menuItems.map(i => i.render());
-        },
-        positionMenu () {
-            const scrollLeft = window.pageXOffset || this.$refs.menuButton.scrollLeft;
-            const scrollTop = window.pageYOffset || this.$refs.menuButton.scrollTop;
-            const labelWidth = this.$refs.menuButton.offsetWidth;
-            const labelHeight = this.$refs.menuButton.offsetHeight;
-            const rect = this.$el.getBoundingClientRect();
-            this.menuX = rect.left + scrollLeft - Number.parseFloat(getComputedStyle(document.documentElement).fontSize)*12 + labelWidth;
-            this.menuY = rect.top + scrollTop + labelHeight - 14;
-        }
-    },
     // render () {
     //     const containerClass = [];
     //     return (
@@ -111,43 +84,72 @@ export default {
                     this.toggleMenu(event)
                 });
             })
+    },
+    methods: {
+        addItem (item) {
+            this.menuItems.push(item)
+        },
+        handleOutsideClick() {
+            this.menuOpen = false;
+        },
+        toggleMenu (event) {
+            event.stopPropagation();
+            this.menuOpen = !this.menuOpen
+            if (this.menuOpen) {
+                this.$refs.dropdownMenu.focus()
+            }
+        },
+        renderItems () {
+            return this.menuItems.map(i => i.render());
+        },
+        positionMenu () {
+            const scrollLeft = window.pageXOffset || this.$refs.menuButton.scrollLeft;
+            const scrollTop = window.pageYOffset || this.$refs.menuButton.scrollTop;
+            const labelWidth = this.$refs.menuButton.offsetWidth;
+            const labelHeight = this.$refs.menuButton.offsetHeight;
+            const rect = this.$el.getBoundingClientRect();
+            this.menuX = rect.left + scrollLeft - Number.parseFloat(getComputedStyle(document.documentElement).fontSize)*12 + labelWidth;
+            this.menuY = rect.top + scrollTop + labelHeight - 14;
+        }
     }
 }
 </script>
 
 <template>
-    <div>
-        <div class="dropdown" :class="orientation">
-            <div class="dropdown-label"
-                ref="menuButton"
-                @click.stop="toggleMenu"
+  <div>
+    <div class="dropdown" :class="orientation">
+      <div
+        ref="menuButton"
+        class="dropdown-label"
+        @click.stop="toggleMenu"
+      >
+        <span v-show="!hideCheveron">
+          <icon-cheveron-down />
+        </span>
+        <slot name="label">
+          {{ label }}
+        </slot>
+      </div>
+      <Teleport to="body">
+        <Transition name="slide-fade-down">
+          <div
+            v-show="menuOpen"
+            ref="dropdownMenu"
+            v-click-outside="{exclude: ['menuButton'], handler: handleOutsideClick}"
+            class="dropdown-items-container z-50"
+            :style="{top: `${menuY}px`, left: `${menuX}px`}"
+          >
+            <ul
+              class="dropdown-items"
+              @click="toggleMenu"
             >
-                <span v-show="!hideCheveron">
-                    <icon-cheveron-down />
-                </span>
-                <slot name="label">{{ label }}</slot>
-            </div>
-            <Teleport to="body">
-                <Transition name="slide-fade-down">
-                    <div
-                        v-show="menuOpen"
-                        v-click-outside="{exclude: ['menuButton'], handler: handleOutsideClick}"
-                        ref="dropdownMenu"
-                        class="dropdown-items-container z-50"
-                        :style="{top: `${menuY}px`, left: `${menuX}px`}"
-                    >
-                        <ul
-                            class="dropdown-items"
-                            @click="toggleMenu"
-                        >
-                            <slot></slot>
-                        </ul>
-                    </div>
-                </Transition>
-            </Teleport>
-        </div>
+              <slot />
+            </ul>
+          </div>
+        </Transition>
+      </Teleport>
     </div>
-
+  </div>
 </template>
 
 <style>

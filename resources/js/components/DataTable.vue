@@ -7,12 +7,6 @@ import {titleCase} from '@/string_utils'
  */
 export default {
     name: 'DataTable',
-    emits: [
-        'rowClick',
-        'update:sort',
-        'sort',
-        'sorted'
-    ],
     props: {
         data: {
             required: false,
@@ -79,6 +73,12 @@ export default {
             default: true
         }
     },
+    emits: [
+        'rowClick',
+        'update:sort',
+        'sort',
+        'sorted'
+    ],
     data() {
         return {
             realSort: {
@@ -88,6 +88,26 @@ export default {
             resolvedItems: [],
             currentPage: 1,
             totalItems: 0
+        }
+    },
+    computed: {
+        shouldPaginate () {
+            return this.paginated;
+        },
+        dataIsFunction () {
+            return typeof this.data == 'function'
+        },
+        filterFunction () {
+            return this.filter ? this.filter : this.defaultFilter;
+        },
+        sortField() {
+            return this.realSort.field;
+        },
+        sortFieldName() {
+            if (this.realSort.field.sortName) {
+                return this.realSort.field.sortName
+            }
+            return this.realSort.field.Name;
         }
     },
     watch: {
@@ -129,26 +149,6 @@ export default {
             handler () {
                 this.getItems();
             }
-        }
-    },
-    computed: {
-        shouldPaginate () {
-            return this.paginated;
-        },
-        dataIsFunction () {
-            return typeof this.data == 'function'
-        },
-        filterFunction () {
-            return this.filter ? this.filter : this.defaultFilter;
-        },
-        sortField() {
-            return this.realSort.field;
-        },
-        sortFieldName() {
-            if (this.realSort.field.sortName) {
-                return this.realSort.field.sortName
-            }
-            return this.realSort.field.Name;
         }
     },
     methods: {
@@ -390,79 +390,83 @@ export default {
 </script>
 
 <template>
-    <div>
-<!-- <pre>{ currentPage: {{currentPage}} }</pre> -->
-        <header class="flex justify-between mb-2 items-center">
-            <slot name="header"></slot>
-            <pagination-links
-                :current-page="currentPage"
-                :total-items="totalItems"
-                :page-size="pageSize"
-                @update:currentPage="updateCurrentPage"
-                v-if="shouldPaginate"
-            />
-        </header>
+  <div>
+    <!-- <pre>{ currentPage: {{currentPage}} }</pre> -->
+    <header class="flex justify-between mb-2 items-center">
+      <slot name="header" />
+      <pagination-links
+        v-if="shouldPaginate"
+        :current-page="currentPage"
+        :total-items="totalItems"
+        :page-size="pageSize"
+        @update:currentPage="updateCurrentPage"
+      />
+    </header>
 
-        <div class="shadow-inner bg-gray-50">
-            <table class="border-none">
-                <thead>
-                    <slot name="thead">
-                    <tr class="bg-gray-200">
-                        <th v-for="field in fields.filter(f => !f.hideHeader)" :key="field.name"
-                            :title="field.sortable ? `Click to sort` : ``"
-                            :class="getHeaderClass(field)"
-                            @click="field.sortable && updateSort(field)"
-                            :colspan="(field.colspan ? field.colspan : 1)"
-                        >
-                            <div class="py-1 flex justify-between place-items-center">
-                                <div>
-                                    <slot :name="`header-${field.name}`" :item="{field}">
-                                        {{ getFieldLabel(field) }}
-                                    </slot>
-                                </div>
-                                <div>
-                                    <div v-if="field.sortable">
-                                        <icon-cheveron-up icon-color="#ccc"
-                                            v-if="realSort.field.name != field.name"
-                                        ></icon-cheveron-up>
-                                        <icon-cheveron-up icon-color="#333"
-                                            v-if="realSort.field.name == field.name && !realSort.desc"
-                                        ></icon-cheveron-up>
-                                        <icon-cheveron-down icon-color="#333"
-                                            v-if="realSort.field.name == field.name && realSort.desc"
-                                        ></icon-cheveron-down>
-                                    </div>
-                                </div>
-                            </div>
-                        </th>
-                    </tr>
+    <div class="shadow-inner bg-gray-50">
+      <table class="border-none">
+        <thead>
+          <slot name="thead">
+            <tr class="bg-gray-200">
+              <th
+                v-for="field in fields.filter(f => !f.hideHeader)" :key="field.name"
+                :title="field.sortable ? `Click to sort` : ``"
+                :class="getHeaderClass(field)"
+                :colspan="(field.colspan ? field.colspan : 1)"
+                @click="field.sortable && updateSort(field)"
+              >
+                <div class="py-1 flex justify-between place-items-center">
+                  <div>
+                    <slot :name="`header-${field.name}`" :item="{field}">
+                      {{ getFieldLabel(field) }}
                     </slot>
-                </thead>
-                <tbody v-for="item in resolvedItems" :key="item.uuid">
-                    <tr :class="resolveRowClass(item)" @click="handleRowClick(item)">
-                        <td
-                            v-for="field in fields"
-                            :key="field.name"
-                            :class="getCellClass(field)"
-                        >
-                            <slot :name="getSlotName(field)" :item="item" :field="field" :value="resolveDisplayAttribute(item, field)">
-                                {{ resolveDisplayAttribute(item, field) }}
-                            </slot>
-                        </td>
-                    </tr>
-                    <transition name="fade-slide-down">
-                        <tr class="details" :class="resolveRowClass(item)" v-if="detailRows && item.showDetails">
-                            <td :colspan="fields.length">
-                                <slot name="detail" :item="item">
-                                    <object-dictionary :obj="item"></object-dictionary>
-                                </slot>
-                            </td>
-                        </tr>
-                    </transition>
-                </tbody>
-            </table>
-        </div>
+                  </div>
+                  <div>
+                    <div v-if="field.sortable">
+                      <icon-cheveron-up
+                        v-if="realSort.field.name != field.name"
+                        icon-color="#ccc"
+                      />
+                      <icon-cheveron-up
+                        v-if="realSort.field.name == field.name && !realSort.desc"
+                        icon-color="#333"
+                      />
+                      <icon-cheveron-down
+                        v-if="realSort.field.name == field.name && realSort.desc"
+                        icon-color="#333"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </th>
+            </tr>
+          </slot>
+        </thead>
+        <tbody v-for="item in resolvedItems" :key="item.uuid">
+          <tr :class="resolveRowClass(item)" @click="handleRowClick(item)">
+            <td
+              v-for="field in fields"
+              :key="field.name"
+              :class="getCellClass(field)"
+            >
+              <slot :name="getSlotName(field)" :item="item" :field="field" :value="resolveDisplayAttribute(item, field)">
+                {{ resolveDisplayAttribute(item, field) }}
+              </slot>
+            </td>
+          </tr>
+          <transition name="fade-slide-down">
+            <tr v-if="detailRows && item.showDetails" class="details" :class="resolveRowClass(item)">
+              <td :colspan="fields.length">
+                <slot name="detail" :item="item">
+                  <object-dictionary :obj="item" />
+                </slot>
+              </td>
+            </tr>
+          </transition>
+        </tbody>
+      </table>
     </div>
+  </div>
 </template>
 <style scoped>
     table {

@@ -33,11 +33,12 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <ProfileForm :person="person"
-            v-model="person"
-            @saved="goBack()"
-            @canceled="goBack()"
-        ></ProfileForm>
-    </div>
+  <div>
+    <ProfileForm
+      v-model="person"
+      :person="person"
+      @saved="goBack()"
+      @canceled="goBack()"
+    />
+  </div>
 </template>

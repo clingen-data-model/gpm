@@ -12,6 +12,16 @@ export default {
         ApplicationVcep,
         ApplicationMenu,
     },
+    beforeRouteLeave() {
+        if (this.$refs.application.applicationIsDirty()) {
+            // eslint-disable-next-line no-alert
+            const confirm = window.confirm('You have unsaved changes. If you continue your changes may be lost.');
+
+            if (!confirm) {
+                return false;
+            }
+        }
+    },
     props: {
         uuid: {
             type: String,
@@ -26,25 +36,6 @@ export default {
             lastSavedAt: new Date(),
             saving: false
         }
-    },
-    watch: {
-        $route () {
-            this.showModal = this.$route.meta.showModal
-                                ? Boolean(this.$route.meta.showModal)
-                                : false;
-        },
-
-        uuid: {
-            immediate: true,
-            async handler (to) {
-                await this.$store.dispatch('groups/find', to)
-                    .then(() => {
-                        this.$store.commit('groups/setCurrentItemIndexByUuid', this.uuid)
-                    });
-                await this.$store.dispatch('groups/getSubmissions', this.group);
-
-            }
-        },
     },
     computed: {
         applicationComponent() {
@@ -66,6 +57,28 @@ export default {
             return getApplicationForGroup(this.group);
         },
     },
+    watch: {
+        $route () {
+            this.showModal = this.$route.meta.showModal
+                                ? Boolean(this.$route.meta.showModal)
+                                : false;
+        },
+
+        uuid: {
+            immediate: true,
+            async handler (to) {
+                await this.$store.dispatch('groups/find', to)
+                    .then(() => {
+                        this.$store.commit('groups/setCurrentItemIndexByUuid', this.uuid)
+                    });
+                await this.$store.dispatch('groups/getSubmissions', this.group);
+
+            }
+        },
+    },
+    beforeUnmount() {
+        this.$store.commit('groups/clearCurrentItem')
+    },
     methods: {
         hideModal () {
             this.$router.replace({name: 'GroupApplication', params: {uuid: this.uuid}});
@@ -83,102 +96,99 @@ export default {
             this.saving = false;
             this.lastSavedAt = new Date();
         },
-    },
-    beforeUnmount() {
-        this.$store.commit('groups/clearCurrentItem')
-    },
-    beforeRouteLeave() {
-        if (this.$refs.application.applicationIsDirty()) {
-            // eslint-disable-next-line no-alert
-            const confirm = window.confirm('You have unsaved changes. If you continue your changes may be lost.');
-
-            if (!confirm) {
-                return false;
-            }
-        }
     }
 }
 </script>
 <template>
-    <div>
-        <header class="flex items-center pb-2 border-b z-20">
-            <div class="flex-1">
-                <group-breadcrumbs :group="group" />
-                <h1 class="border-b-0 flex justify-between items-start mb-0">
-                    <div>
-                        {{ group.displayName }} - Application
-                        <span v-if="hasPermission('groups-manage')">
-                            <note class="inline">group: {{ group.id }}</note>
-                            <span class="note">&nbsp;|&nbsp;</span>
-                            <note class="inline">expert_panel: {{ group.expert_panel.id }}</note>
-                        </span>
-                    </div>
+  <div>
+    <header class="flex items-center pb-2 border-b z-20">
+      <div class="flex-1">
+        <group-breadcrumbs :group="group" />
+        <h1 class="border-b-0 flex justify-between items-start mb-0">
+          <div>
+            {{ group.displayName }} - Application
+            <span v-if="hasPermission('groups-manage')">
+              <note class="inline">group: {{ group.id }}</note>
+              <span class="note">&nbsp;|&nbsp;</span>
+              <note class="inline">expert_panel: {{ group.expert_panel.id }}</note>
+            </span>
+          </div>
 
-                    <button
-                        v-if="!group.expert_panel.hasPendingSubmission"
-                        @click="$refs.application.save"
-                        class="btn btn-sm"
-                    >Save</button>
-                </h1>
+          <button
+            v-if="!group.expert_panel.hasPendingSubmission"
+            class="btn btn-sm"
+            @click="$refs.application.save"
+          >
+            Save
+          </button>
+        </h1>
+      </div>
+    </header>
+    <div class="md:flex">
+      <ApplicationMenu
+        class="mt-4"
+        :application="application"
+        :is-collapsed="!showApplicationToc"
+      >
+        <template #footer>
+          <div class="my-4 p-4 text-sm flex items-start space-x-4 bg-gray-200 rounded-lg">
+            <icon-question height="48" width="48" class="text-blue-700" />
+            <div>
+              <h3 style="line-height: 1">
+                Have Questions?
+              </h3>
+              <div style="font-size: 1rem; line-height:2">
+                Read the
+                <gcep-quick-guide-link v-if="group.group_type_id == 3" />
+                <vcep-protocol-link v-if="group.group_type_id == 4" />
+              </div>
             </div>
-        </header>
-        <div class="md:flex">
-            <ApplicationMenu
-                class="mt-4"
-                :application="application"
-                :is-collapsed="!showApplicationToc"
-            >
-                <template #footer>
-                    <div class="my-4 p-4 text-sm flex items-start space-x-4 bg-gray-200 rounded-lg">
-                        <icon-question height="48" width="48" class="text-blue-700"/>
-                        <div>
-                            <h3 style="line-height: 1">Have Questions?</h3>
-                            <div style="font-size: 1rem; line-height:2">
-                                Read the
-                                <gcep-quick-guide-link v-if="group.group_type_id == 3" />
-                                <vcep-protocol-link v-if="group.group_type_id == 4" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-sm bottom-0">
-                        <div v-if="saving">Saving...</div>
-                        <div v-else>Last saved at {{ formatTime(lastSavedAt) }}</div>
-                    </div>
-                </template>
-            </ApplicationMenu>
-            <div class=" flex-1">
-                <section id="body" class="px-4" v-remaining-height>
-                    <static-alert
-                        v-if="group.expert_panel.hasPendingSubmission"
-                        class="relative mt-4 px-4 z-50"
-                        variant="success"
-                    >
-                        <p class="text-lg">Your application was submitted on {{ formatDate(group.expert_panel.pendingSubmission.created_at) }}.</p>
-                        <p>You cannot update your application while waiting approval.</p>
-                        <p>The approval committee will respond soon.</p>
-                        <p>
-                            Please contact
-                            <a href="mailto:cdwg_oversightcommittee@clinicalgenome.org">
-                                the ClinGen CDWG Oversight Committee
-                            </a>
-                            if you have any questions.
-                        </p>
-                    </static-alert>
-                    <component
-                        :is="applicationComponent"
-                        ref="application"
-                        @saved="updateLastSavedAt"
-                        @saving="saving = true"
-                    ></component>
-                </section>
+          </div>
+          <div class="text-sm bottom-0">
+            <div v-if="saving">
+              Saving...
             </div>
-        </div>
-        <teleport to="body">
-            <modal-dialog v-model="showModal" @closed="handleModalClosed" :title="$route.meta.title">
-                <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
-            </modal-dialog>
-        </teleport>
+            <div v-else>
+              Last saved at {{ formatTime(lastSavedAt) }}
+            </div>
+          </div>
+        </template>
+      </ApplicationMenu>
+      <div class=" flex-1">
+        <section id="body" v-remaining-height class="px-4">
+          <static-alert
+            v-if="group.expert_panel.hasPendingSubmission"
+            class="relative mt-4 px-4 z-50"
+            variant="success"
+          >
+            <p class="text-lg">
+              Your application was submitted on {{ formatDate(group.expert_panel.pendingSubmission.created_at) }}.
+            </p>
+            <p>You cannot update your application while waiting approval.</p>
+            <p>The approval committee will respond soon.</p>
+            <p>
+              Please contact
+              <a href="mailto:cdwg_oversightcommittee@clinicalgenome.org">
+                the ClinGen CDWG Oversight Committee
+              </a>
+              if you have any questions.
+            </p>
+          </static-alert>
+          <component
+            :is="applicationComponent"
+            ref="application"
+            @saved="updateLastSavedAt"
+            @saving="saving = true"
+          />
+        </section>
+      </div>
     </div>
+    <teleport to="body">
+      <modal-dialog v-model="showModal" :title="$route.meta.title" @closed="handleModalClosed">
+        <router-view ref="modalView" @saved="hideModal" @canceled="hideModal" />
+      </modal-dialog>
+    </teleport>
+  </div>
 </template>
 <style scoped>
     .application-content {

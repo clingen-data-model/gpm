@@ -70,11 +70,13 @@ export default {
 <template>
   <div v-if="$store.getters.isAuthed">
     <popover hover arrow placement="left">
-        <template #content>
-            <div class="whitespace-no-wrap w-28 text-xs">Report a problem</div>
-        </template>
-            <button
-                class="
+      <template #content>
+        <div class="whitespace-no-wrap w-28 text-xs">
+          Report a problem
+        </div>
+      </template>
+      <button
+        class="
                     text-white
                     bg-red-600
                     border border-red-700 border-r-0
@@ -85,13 +87,13 @@ export default {
                     shadow-lg
                     print:hidden
                 "
-                @click="initReportIssue"
-            >
-                <icon-bug />
-            </button>
+        @click="initReportIssue"
+      >
+        <icon-bug />
+      </button>
     </popover>
     <teleport to="body">
-      <modal-dialog title="Report a problem" v-model="showReportIssue">
+      <modal-dialog v-model="showReportIssue" title="Report a problem">
         <input-row
           v-model="url"
           label="URL"
@@ -100,8 +102,12 @@ export default {
         />
         <input-row label="Type">
           <select v-model="type" class="w-full">
-            <option value="Bug">Bug</option>
-            <option value="Task">Enhancement</option>
+            <option value="Bug">
+              Bug
+            </option>
+            <option value="Task">
+              Enhancement
+            </option>
           </select>
         </input-row>
         <input-row
@@ -109,8 +115,8 @@ export default {
           label="Severity"
           :errors="errors.severity"
         >
-          <select name="" id="" v-model="severity">
-            <option :value="sv.id" v-for="sv in severities" :key="sv.id">
+          <select id="" v-model="severity" name="">
+            <option v-for="sv in severities" :key="sv.id" :value="sv.id">
               {{ sv.name }}
             </option>
           </select>
@@ -127,14 +133,16 @@ export default {
             class="w-full"
             rows="10"
             placeholder="Please tell us what you expected to happen, and what actually happened, and the steps we should take to reproduce the problem."
-          ></textarea>
+          />
         </input-row>
         <button-row
+          v-if="!saving"
           @submitted="submitIssue"
           @canceled="cancelSubmission"
-          v-if="!saving"
-        ></button-row>
-        <div v-if="saving" class="pt-2 mt-2 border-t text-gray-500">Saving&hellip;</div>
+        />
+        <div v-if="saving" class="pt-2 mt-2 border-t text-gray-500">
+          Saving&hellip;
+        </div>
       </modal-dialog>
     </teleport>
   </div>

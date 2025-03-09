@@ -16,6 +16,12 @@ export default {
             }
         }
     },
+    mounted() {
+        this.visibilityInterval = setInterval(this.checkVisibility, 100);
+    },
+    unmounted() {
+        clearInterval(this.visibilityInterval);
+    },
     methods: {
         checkVisibility() {
             this.visibility = this.$el && (this.$el.offsetWidth > 0 || this.$el.offsetHeight > 0);
@@ -23,17 +29,11 @@ export default {
         focusFirstInput() {
             this.$el.querySelectorAll("input, textarea, select")[0].focus()
         }
-    },
-    mounted() {
-        this.visibilityInterval = setInterval(this.checkVisibility, 100);
-    },
-    unmounted() {
-        clearInterval(this.visibilityInterval);
     }
 }
 </script>
 <template>
-    <div>
-        <slot></slot>
-    </div>
+  <div>
+    <slot />
+  </div>
 </template>   

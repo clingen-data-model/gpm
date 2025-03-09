@@ -14,6 +14,23 @@ export default {
         'canceled',
         'done'
     ],
+    setup() {
+        const assembleFormData = (fileInput, otherData) => {
+            const data = new FormData();
+            Object.keys(otherData)
+                .forEach(key => {
+                    const val = otherData[key]
+                    if (val == null) return;
+                    data.append(key, val);
+                })
+            data.append('file', fileInput.files[0]);
+            data.append('document_type_id', 6);
+            return data;
+        }
+
+        return {assembleFormData}
+
+    },
     data() {
         return {
             showModal: false,
@@ -66,35 +83,20 @@ export default {
             };
             this.errors = {}
         }
-    },
-    setup() {
-        const assembleFormData = (fileInput, otherData) => {
-            const data = new FormData();
-            Object.keys(otherData)
-                .forEach(key => {
-                    const val = otherData[key]
-                    if (val == null) return;
-                    data.append(key, val);
-                })
-            data.append('file', fileInput.files[0]);
-            data.append('document_type_id', 6);
-            return data;
-        }
-
-        return {assembleFormData}
-
     }
 }
 </script>
 <template>
-    <div>
-        <button class="btn btn-xs" @click="showModal = true">Upload COI file</button>
-        <modal-dialog v-model="showModal">
-            <h2>Upload a legacy COI file</h2>
-            <input-row label="COI File" :errors="errors.file">
-                <input type="file" ref="fileInput">
-            </input-row>
-            <button-row @submitClicked="save" @cancelClicked="cancel" submit-text="Save"></button-row>
-        </modal-dialog>
-    </div>
+  <div>
+    <button class="btn btn-xs" @click="showModal = true">
+      Upload COI file
+    </button>
+    <modal-dialog v-model="showModal">
+      <h2>Upload a legacy COI file</h2>
+      <input-row label="COI File" :errors="errors.file">
+        <input ref="fileInput" type="file">
+      </input-row>
+      <button-row submit-text="Save" @submitClicked="save" @cancelClicked="cancel" />
+    </modal-dialog>
+  </div>
 </template>

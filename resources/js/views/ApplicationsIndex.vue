@@ -25,27 +25,33 @@ export default {
 
 <template>
   <div class="home">
-
-    <button @click="showModal = true" class="btn blue">Initiate Application</button>
+    <button class="btn blue" @click="showModal = true">
+      Initiate Application
+    </button>
 
     <div class="mb-2 mt-4">
       <div class="tabs">
-        <router-link :to="{name: 'vceps'}" class="tab">VCEPS</router-link>
-        <router-link :to="{name: 'gceps'}" class="tab">GCEPS</router-link>
+        <router-link :to="{name: 'vceps'}" class="tab">
+          VCEPS
+        </router-link>
+        <router-link :to="{name: 'gceps'}" class="tab">
+          GCEPS
+        </router-link>
       </div>
       <div class="p-4 border rounded-tr-lg rounded-b-lg bg-white">
-        <router-view></router-view>
+        <router-view />
       </div>
     </div>
 
 
-      <modal-dialog v-model="showModal" size='md' @closed="$refs.initiateform.initForm()">
-        <CreateApplicationForm name="modal" 
-          @canceled="showModal = false" 
-          @saved="handleApplicationInitiated" 
-          ref="initiateform"
-        ></CreateApplicationForm>
-      </modal-dialog>
+    <modal-dialog v-model="showModal" size="md" @closed="$refs.initiateform.initForm()">
+      <CreateApplicationForm
+        ref="initiateform" 
+        name="modal" 
+        @canceled="showModal = false" 
+        @saved="handleApplicationInitiated"
+      />
+    </modal-dialog>
   </div>
 </template>
 

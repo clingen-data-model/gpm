@@ -35,6 +35,9 @@ export default {
             }
         }
     },
+    mounted () {
+        this.$store.dispatch('doctypes/getItems');
+    },
     methods: {
         cancel() {
             this.docProxy = {};
@@ -51,30 +54,31 @@ export default {
                 throw error
             }
         }
-    },
-    mounted () {
-        this.$store.dispatch('doctypes/getItems');
     }
 }
 </script>
 <template>
-    <form-container>        
-        <dictionary-row label="File">
-            {{ document.filename }}
-        </dictionary-row>
-        <input-row label="Type" :errors="errors.document_type_id">
-            <select v-model="docProxy.document_type_id">
-                <option :value="type.id" v-for="type in documentTypes" :key="type.id">
-                    {{ type.long_name }}
-                </option>
-            </select>
-        </input-row>
-        <input-row :errors="errors.notes" label="Notes">
-            <textarea name="notes" v-model="docProxy.notes" cols="30" rows="10"></textarea>
-        </input-row>
-        <button-row>
-            <button class="btn" @click="cancel">Cancel</button>
-            <button class="btn blue" @click="save">Save</button>
-        </button-row>
-    </form-container>
+  <form-container>        
+    <dictionary-row label="File">
+      {{ document.filename }}
+    </dictionary-row>
+    <input-row label="Type" :errors="errors.document_type_id">
+      <select v-model="docProxy.document_type_id">
+        <option v-for="type in documentTypes" :key="type.id" :value="type.id">
+          {{ type.long_name }}
+        </option>
+      </select>
+    </input-row>
+    <input-row :errors="errors.notes" label="Notes">
+      <textarea v-model="docProxy.notes" name="notes" cols="30" rows="10" />
+    </input-row>
+    <button-row>
+      <button class="btn" @click="cancel">
+        Cancel
+      </button>
+      <button class="btn blue" @click="save">
+        Save
+      </button>
+    </button-row>
+  </form-container>
 </template>

@@ -88,40 +88,42 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <input-row label="To" :errors="toErrors">
-            <recipient-input v-model="workingCopy.to" />
-        </input-row>
-        <input-row label="Cc" :errors="errors.ccErrors">
-            <recipient-input v-model="workingCopy.cc" v-show="showCc" />
+  <div>
+    <input-row label="To" :errors="toErrors">
+      <recipient-input v-model="workingCopy.to" />
+    </input-row>
+    <input-row label="Cc" :errors="errors.ccErrors">
+      <recipient-input v-show="showCc" v-model="workingCopy.cc" />
 
-            <div v-if="workingCopy.cc && workingCopy.cc.length > 0 && !showCc">
-                <truncate-expander :value="workingCopy.cc.map(i => i.address).join(', ')" :truncate-length="100"></truncate-expander>
-            </div>
+      <div v-if="workingCopy.cc && workingCopy.cc.length > 0 && !showCc">
+        <truncate-expander :value="workingCopy.cc.map(i => i.address).join(', ')" :truncate-length="100" />
+      </div>
 
-            <button class="btn btn-xs" @click="showCc = !showCc">
-                {{ showCc ? 'Hide Cc' : 'Show Cc' }}
-            </button>
-        </input-row>
-        <input-row label="Bcc" :errors="bccErrors">
-            <recipient-input v-model="workingCopy.bcc" v-show="showBcc" />
-            <button class="btn btn-xs" @click="showBcc = !showBcc">
-                {{ showBcc ? 'Hide Bcc' : 'Show Bcc' }}
-            </button>
-        </input-row>
-        <input-row label="Subject" :errors="errors.subject">
-            <input type="text" v-model="workingCopy.subject" class="w-full">
-        </input-row>
+      <button class="btn btn-xs" @click="showCc = !showCc">
+        {{ showCc ? 'Hide Cc' : 'Show Cc' }}
+      </button>
+    </input-row>
+    <input-row label="Bcc" :errors="bccErrors">
+      <recipient-input v-show="showBcc" v-model="workingCopy.bcc" />
+      <button class="btn btn-xs" @click="showBcc = !showBcc">
+        {{ showBcc ? 'Hide Bcc' : 'Show Bcc' }}
+      </button>
+    </input-row>
+    <input-row label="Subject" :errors="errors.subject">
+      <input v-model="workingCopy.subject" type="text" class="w-full">
+    </input-row>
 
-        <input-row label="Body" :errors="errors.body">
-            <rich-text-editor v-model="workingCopy.body"></rich-text-editor>
-        </input-row>
+    <input-row label="Body" :errors="errors.body">
+      <rich-text-editor v-model="workingCopy.body" />
+    </input-row>
 
-        <input-row label="Attachments" :errors="errors.attachments">
-            <input type="file" multiple>
-            <note class="mt-2">Please note that if you are "Resending" an email, any attachments on the original email must be re-added.</note>
-        </input-row>
+    <input-row label="Attachments" :errors="errors.attachments">
+      <input type="file" multiple>
+      <note class="mt-2">
+        Please note that if you are "Resending" an email, any attachments on the original email must be re-added.
+      </note>
+    </input-row>
 
-        <button-row submit-text="Send" @submitted="sendMail" @cancel="$emit('canceled')"></button-row>
-    </div>
+    <button-row submit-text="Send" @submitted="sendMail" @cancel="$emit('canceled')" />
+  </div>
 </template>

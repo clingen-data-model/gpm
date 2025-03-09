@@ -8,7 +8,7 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <ApplicationsTable :ep-type-id="2"></ApplicationsTable>
-    </div>
+  <div>
+    <ApplicationsTable :ep-type-id="2" />
+  </div>
 </template>

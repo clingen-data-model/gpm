@@ -53,22 +53,22 @@ export default {
 }
 </script>
 <template>
-    <div class="dictionary-row" :class="{'flex': !vertical}">
-        <div 
-            :class="fullLabelClass"
-            class="flex-shrink-0" 
-        >
-            <slot name="label" v-if="label">
-                <label :class="fullLabelClass">{{ label }}{{ colon }}</label>
-            </slot>
-        </div>
-        <div>
-            <slot>
-            </slot>
-        </div>
-        <div class="hidden w-36">&nbsp;</div>
+  <div class="dictionary-row" :class="{'flex': !vertical}">
+    <div 
+      :class="fullLabelClass"
+      class="flex-shrink-0" 
+    >
+      <slot v-if="label" name="label">
+        <label :class="fullLabelClass">{{ label }}{{ colon }}</label>
+      </slot>
     </div>
-
+    <div>
+      <slot />
+    </div>
+    <div class="hidden w-36">
+&nbsp;
+    </div>
+  </div>
 </template>
 <style lang="postcss" scoped>
     .dictionary-row {

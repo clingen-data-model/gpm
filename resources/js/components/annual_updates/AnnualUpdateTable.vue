@@ -10,6 +10,14 @@ export default {
             required: true
         }
     },
+    setup() {
+        const {sort, filter} = setupRouterSortAndFilter({field: 'expert_panel.display_name', desc: false});
+
+        return {
+            sort,
+            filter
+        }
+    },
     data() {
         return {
             fields: [
@@ -105,42 +113,41 @@ export default {
                     document.body.removeChild(a);
                 });
         }
-    },
-    setup() {
-        const {sort, filter} = setupRouterSortAndFilter({field: 'expert_panel.display_name', desc: false});
-
-        return {
-            sort,
-            filter
-        }
     }
 }
 </script>
 <template>
-    <div>
-        <div class="flex mb-2 items-end justify-between">
-            <div class="flex space-x-4 items-end">
-                <input 
-                    v-model="filter" 
-                    placeholder="EP name, submitter name"
-                    class="w-60"
-                >
-                <select v-model="completedFilter" class="flex radio-group">
-                    <option :value="null">Any</option>
-                    <option :value="2">Only Pending</option>
-                    <option :value="1">Only Completed</option>
-                </select>
-            </div>
-            <button class="btn btn-xs" @click="exportData">Export Data</button>
-        </div>
-
-        <data-table :data="filteredItems" :fields="fields" v-model:sort="sort">
-            <template #cell-action="{item}">
-                <router-link :to="{name: 'AnnualUpdateDetail', params: {id: item.id}}">
-                    view
-                </router-link>
-            </template>
-        </data-table>
-
+  <div>
+    <div class="flex mb-2 items-end justify-between">
+      <div class="flex space-x-4 items-end">
+        <input 
+          v-model="filter" 
+          placeholder="EP name, submitter name"
+          class="w-60"
+        >
+        <select v-model="completedFilter" class="flex radio-group">
+          <option :value="null">
+            Any
+          </option>
+          <option :value="2">
+            Only Pending
+          </option>
+          <option :value="1">
+            Only Completed
+          </option>
+        </select>
+      </div>
+      <button class="btn btn-xs" @click="exportData">
+        Export Data
+      </button>
     </div>
+
+    <data-table v-model:sort="sort" :data="filteredItems" :fields="fields">
+      <template #cell-action="{item}">
+        <router-link :to="{name: 'AnnualUpdateDetail', params: {id: item.id}}">
+          view
+        </router-link>
+      </template>
+    </data-table>
+  </div>
 </template>

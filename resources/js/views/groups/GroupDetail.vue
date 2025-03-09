@@ -65,25 +65,6 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      showInfoEdit: false,
-      editingExpertise: false,
-      editingDescription: false,
-      editingScopeDescription: false,
-      editingGenes: false,
-      showConfirmDelete: false,
-      ongoingPlansErrors: {},
-      errors: {},
-    };
-  },
-  computed: {
-    showCreateAnnualUpdateButton () {
-      return this.hasPermission('annual-updates-manage')
-        && this.group.expert_panel
-        && !this.group.expert_panel.annualUpdate;
-    }
-  },
   setup(props) {
     const store = useStore();
     const showModal = ref(false);
@@ -153,12 +134,38 @@ export default {
       getGroup,
     };
   },
+  data() {
+    return {
+      showInfoEdit: false,
+      editingExpertise: false,
+      editingDescription: false,
+      editingScopeDescription: false,
+      editingGenes: false,
+      showConfirmDelete: false,
+      ongoingPlansErrors: {},
+      errors: {},
+    };
+  },
+  computed: {
+    showCreateAnnualUpdateButton () {
+      return this.hasPermission('annual-updates-manage')
+        && this.group.expert_panel
+        && !this.group.expert_panel.annualUpdate;
+    }
+  },
   watch: {
     $route() {
       this.showModal = this.$route.meta.showModal
         ? Boolean(this.$route.meta.showModal)
         : false;
     },
+  },
+  mounted() {
+    this.showModal = Boolean(this.$route.meta.showModal);
+    this.showConfirmDelete = false;
+  },
+  beforeUnmount() {
+    this.$store.commit("groups/clearCurrentItem");
   },
   methods: {
     hideModal() {
@@ -277,35 +284,28 @@ export default {
       this.$store.dispatch('groups/createAnnualUpdateForLatestWindow', this.group);
     }
   },
-  mounted() {
-    this.showModal = Boolean(this.$route.meta.showModal);
-    this.showConfirmDelete = false;
-  },
-  beforeUnmount() {
-    this.$store.commit("groups/clearCurrentItem");
-  },
 };
 </script>
 <template>
   <div>
     <AnnualUpdateAlert
-      :group="group"
       v-if="
         hasAnyPermission([
           'annual-updates-mange',
           ['annual-update-manage', group],
         ])
       "
+      :group="group"
       class="mb-2"
     />
 
     <SustainedCurationReviewAlert
       v-if="
         needsToReviewSustainedCuration &&
-        hasAnyPermission([
-          'ep-applications-manage',
-          ['application-edit', group],
-        ])
+          hasAnyPermission([
+            'ep-applications-manage',
+            ['application-edit', group],
+          ])
       "
       :group="group"
       class="mb-2"
@@ -314,21 +314,21 @@ export default {
     <GroupDetailHeader
       :group="group"
       @showEdit="showEdit"
-    ></GroupDetailHeader>
+    />
 
 
     <div class="flex space-x-4">
       <div class="flex-grow mt-4">
-        <ApplicationSummary :group="group" v-if="group.isApplying" />
+        <ApplicationSummary v-if="group.isApplying" :group="group" />
         <tabs-container @tabChanged="handleTabChange">
           <tab-item label="Summary Description">
             <submission-wrapper
               :visible="group.is_ep"
+              :show-controls="editingDescription"
               @submitted="
                 submitForm('saveDescription', 'editingDescription')
               "
               @canceled="cancelForm('editingDescription')"
-              :show-controls="editingDescription"
             >
               <GroupDescriptionForm
                 v-model:editing="editingDescription"
@@ -337,16 +337,16 @@ export default {
             </submission-wrapper>
           </tab-item>
           <tab-item label="Members">
-            <MemberList :group="group"></MemberList>
+            <MemberList :group="group" />
             <submission-wrapper
-                            v-if="group.is_vcep_or_scvcep"
-                            @submitted="submitForm('saveMembershipDescription', 'editingExpertise')"
-              @canceled="cancelForm('editingExpertise')"
+              v-if="group.is_vcep_or_scvcep"
               :show-controls="editingExpertise"
+              @submitted="submitForm('saveMembershipDescription', 'editingExpertise')"
+              @canceled="cancelForm('editingExpertise')"
             >
               <MembershipDescriptionForm
-                class="mt-8"
                 v-model:editing="editingExpertise"
+                class="mt-8"
                 :errors="errors"
               />
             </submission-wrapper>
@@ -359,24 +359,24 @@ export default {
             </h3>
             <submission-wrapper
               v-if="group.is_ep"
+              :show-controls="editingGenes"
               @submitted="$refs.groupGeneListRef.save()"
               @canceled="$refs.groupGeneListRef.cancel()"
-              :show-controls="editingGenes"
             >
               <component
-                ref="groupGeneListRef"
                 :is="groupGeneList"
+                ref="groupGeneListRef"
                 v-model:editing="editingGenes"
               />
             </submission-wrapper>
-            <br />
+            <br>
             <submission-wrapper
               :visible="group.is_ep"
+              :show-controls="editingScopeDescription"
               @submitted="
                 submitForm('saveScopeDescription', 'editingScopeDescription')
               "
               @canceled="cancelForm('editingScopeDescription')"
-              :show-controls="editingScopeDescription"
             >
               <ScopeDescriptionForm
                 v-model:editing="editingScopeDescription"
@@ -385,23 +385,22 @@ export default {
             </submission-wrapper>
           </tab-item>
 
-          <tab-item label="Sustained Curation" :visible="group.is_ep"
+          <tab-item
+            label="Sustained Curation" :visible="group.is_ep"
             class="relative"
           >
             <div
+              v-if="!group.expert_panel.pilotSpecificationsIsApproved && group.is_vcep_or_scvcep"
               class="bg-white/50 absolute top-0 left-0 right-0 bottom-0"
-              v-if="!group.expert_panel.pilotSpecificationsIsApproved && group.is_vcep_or_scvcep"
-            ></div>
+            />
             <static-alert
-              variant="info"
               v-if="!group.expert_panel.pilotSpecificationsIsApproved && group.is_vcep_or_scvcep"
+              variant="info"
             >
               You can complete these sections after your first Specifications Pilot
               has been approved.
             </static-alert>
             <submission-wrapper
-              @submitted="submitForm('saveOngoingPlansForm')"
-              @canceled="cancelForm()"
               class="pb-4"
               :showControls="
                 hasAnyPermission([
@@ -409,6 +408,8 @@ export default {
                   ['application-edit', group],
                 ]) && group.expert_panel.pilotSpecificationsIsApproved
               "
+              @submitted="submitForm('saveOngoingPlansForm')"
+              @canceled="cancelForm()"
             >
               <component
                 :is="ongoingPlansFormComponent"
@@ -431,12 +432,12 @@ export default {
           <tab-item label="Specifications" :visible="group.is_vcep_or_scvcep">
             <div class="relative">
               <div
+                v-if="!group.expert_panel.defIsApproved && group.is_vcep_or_scvcep"
                 class="bg-white/50 absolute top-0 left-0 right-0 bottom-0"
-                v-if="!group.expert_panel.defIsApproved && group.is_vcep_or_scvcep"
-              ></div>
+              />
               <static-alert
-                variant="info"
                 v-if="!group.expert_panel.defIsApproved && group.is_vcep_or_scvcep"
+                variant="info"
               >
                 You can complete these sections after your Group Definition
                 has been approved.
@@ -446,31 +447,30 @@ export default {
                   :doc-type-id="group.expert_panel.draftSpecApproved ? [2,3,4,7] : 2"
                   :step="group.expert_panel.draftSpecApproved ? 3 : 2"
                 />
-            </div>
-
+              </div>
             </div>
           </tab-item>
 
-          <tab-item label="Documents" v-if="userInGroup(group) || hasPermission('groups-manage')">
-            <GroupDocuments></GroupDocuments>
+          <tab-item v-if="userInGroup(group) || hasPermission('groups-manage')" label="Documents">
+            <GroupDocuments />
             <note>Documents are only available to members of this group.</note>
           </tab-item>
 
           <tab-item label="Attestations" :visible="group.is_ep">
-            <note
-              >The attestations below are read only. Attestations can only be
-              completed during the application process.</note
-            >
+            <note>
+              The attestations below are read only. Attestations can only be
+              completed during the application process.
+            </note>
             <AttestationGcep
-              class="pb-2 mb-4 border-b"
               v-if="group.is_gcep"
+              class="pb-2 mb-4 border-b"
               :disabled="true"
             />
 
             <h3>Reanalysis &amp; Discrepancy Resolution</h3>
             <AttestationReanalysis
-              class="pb-2 mb-4 border-b"
               v-if="group.is_vcep_or_scvcep"
+              class="pb-2 mb-4 border-b"
               :disabled="true"
             />
             <h3>NHGRI Data Availability</h3>
@@ -482,59 +482,68 @@ export default {
               :log-entries="logEntries"
               :api-url="`/api/groups/${group.uuid}/activity-logs`"
               :log-updated="getLogEntries"
-            ></ActivityLog>
-            <button class="btn btn-xs mt-1" @click="getLogEntries">Refresh</button>
+            />
+            <button class="btn btn-xs mt-1" @click="getLogEntries">
+              Refresh
+            </button>
           </tab-item>
 
           <tab-item label="Admin" :visible="hasPermission('groups-manage')">
             <div v-if="group.isApplying && group.is_ep">
-              <h2 class="pb-2 border-b mb-4">Application</h2>
+              <h2 class="pb-2 border-b mb-4">
+                Application
+              </h2>
               <ProgressChart
                 :application="group.expert_panel"
                 class="pb-4 border-b border-gray-300 mb-6"
-              ></ProgressChart>
+              />
               <StepTabs
+                v-if="group.is_ep"
                 :application="group.expert_panel"
                 @stepApproved="getGroup"
-                v-if="group.is_ep"
               />
-              <hr />
+              <hr>
             </div>
             <section
-              class="border my-4 p-4 rounded"
               v-if="group.is_ep"
+              class="border my-4 p-4 rounded"
             >
-              <h2 class="mb-4">Annual Update</h2>
-                <button v-if="showCreateAnnualUpdateButton"
-                  class="btn" @click="createAnnualUpdateForLatestWindow"
-                >
-                  Create Annual Update for latest window.
-                </button>
-                <a
-                  v-else-if="group.expert_panel.annualUpdate"
-                  :href="`/annual-updates/${group.expert_panel.annualUpdate.id}`"
-                  target="annual update"
-                >
-                  View Annual Update for {{ group.expert_panel.annualUpdate.window.for_year }}
-                </a>
+              <h2 class="mb-4">
+                Annual Update
+              </h2>
+              <button
+                v-if="showCreateAnnualUpdateButton"
+                class="btn" @click="createAnnualUpdateForLatestWindow"
+              >
+                Create Annual Update for latest window.
+              </button>
+              <a
+                v-else-if="group.expert_panel.annualUpdate"
+                :href="`/annual-updates/${group.expert_panel.annualUpdate.id}`"
+                target="annual update"
+              >
+                View Annual Update for {{ group.expert_panel.annualUpdate.window.for_year }}
+              </a>
             </section>
             <section class="border my-4 p-4 bg-red-100 border-red-200 rounded">
               <h2 class="mb-4 text-red-800">
                 Here be dragons. Proceed with caution.
               </h2>
-              <button class="btn btn red" @click="initDelete">Delete Group</button>
+              <button class="btn btn red" @click="initDelete">
+                Delete Group
+              </button>
             </section>
             <section
-              class="border my-4 p-4 rounded"
               v-if="$store.state.systemInfo.env !== 'production'"
+              class="border my-4 p-4 rounded"
             >
               <h2 class="mb-4">
                 Dev tools
                 <span class="text-gray-500"> - don't use if you don't know.</span>
               </h2>
               <button
-                class="btn"
                 v-if="group.is_vcep_or_scvcep && group.expert_panel.has_approved_pilot"
+                class="btn"
                 @click="fakeCspecPilotApproved"
               >
                 Fake a Pilot Approved Message
@@ -543,29 +552,28 @@ export default {
           </tab-item>
         </tabs-container>
       </div>
-      <div class="md:w-1/5 lg:w-1/4" v-if="group.hasChildren">
+      <div v-if="group.hasChildren" class="md:w-1/5 lg:w-1/4">
         <SubgroupList />
       </div>
-
     </div>
 
     <teleport to="body">
       <modal-dialog
         v-model="showModal"
-        @closed="handleModalClosed"
         :title="$route.meta.title"
+        @closed="handleModalClosed"
       >
         <router-view
           ref="modalView"
           @saved="hideModal"
           @canceled="hideModal"
-        ></router-view>
+        />
       </modal-dialog>
       <modal-dialog
         v-model="showInfoEdit"
-        @closed="showInfoEdit = false"
         title="Edit Group Info"
         size="sm"
+        @closed="showInfoEdit = false"
       >
         <submission-wrapper
           @submitted="$refs.infoForm.save()"
@@ -590,7 +598,7 @@ export default {
           submit-text="Delete this group."
           @submitted="deleteGroup"
           @canceled="showConfirmDelete = false"
-        ></button-row>
+        />
       </modal-dialog>
     </teleport>
   </div>

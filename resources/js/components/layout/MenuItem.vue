@@ -76,38 +76,39 @@ export default {
 }
 </script>
 <template>
-    <div class="item">
-        <div
-            v-if="isStep"
+  <div class="item">
+    <div
+      v-if="isStep"
+    >
+      <header
+        v-if="item.title"
+        class="flex justify-between label"
+        :class="{open: !collapsed, 'current-step': isCurrentStep}"
+        @click="toggleContents"
+      >
+        <div class="font-bold">
+          {{ item.title }}
+          <icon-cheveron-right v-if="hasManySections" class="cheveron inline -mt-1" />
+        </div>
+        <badge v-if="item.isComplete(group)" color="green">
+          <icon-checkmark width="12" height="12" />
+        </badge>
+      </header>
+      <transition name="slide-fade-down">
+        <ul 
+          v-if="item.sections && hasManySections" 
+          v-show="!collapsed" :class="{'ml-4 text-smaller': item.title}"
         >
-            <header v-if="item.title"
-                class="flex justify-between label"
-                :class="{open: !collapsed, 'current-step': isCurrentStep}"
-                @click="toggleContents"
-            >
-                <div class="font-bold">
-                    {{ item.title }}
-                    <icon-cheveron-right class="cheveron inline -mt-1" v-if="hasManySections" />
-                </div>
-                <badge v-if="item.isComplete(group)" color="green">
-                    <icon-checkmark width="12" height="12"></icon-checkmark>
-                </badge>
-            </header>
-            <transition name="slide-fade-down">
-                <ul 
-                    v-if="item.sections && hasManySections" 
-                    :class="{'ml-4 text-smaller': item.title}" v-show="!collapsed"
-                >
-                    <li v-for="(section, idx) in item.sections" :key="idx">
-                        <menu-item :item="section"></menu-item>
-                    </li>
-                </ul>
-            </transition>
-        </div>
-        <div v-else class="label" @click="goToItem()">
-            {{ item.title }}
-        </div>
+          <li v-for="(section, idx) in item.sections" :key="idx">
+            <menu-item :item="section" />
+          </li>
+        </ul>
+      </transition>
     </div>
+    <div v-else class="label" @click="goToItem()">
+      {{ item.title }}
+    </div>
+  </div>
 </template>
 <style scoped>
     li a {

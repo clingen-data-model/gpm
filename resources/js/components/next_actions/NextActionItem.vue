@@ -21,17 +21,17 @@ export default {
 }
 </script>
 <template>
-    <div class="md:flex">
-        <div v-html="nextAction.entry" class="flex"></div>
-        <div>
-            <span v-if="nextAction.assigned_to_name">{{ nextAction.assigned_to_name }} from the </span>
-            {{ nextAction.assigned_to }}
-        </div>
-        <button 
-            class="btn btn-xs block flex-initial self-center" 
-        >
-            <!-- @click="showModal = true" -->
-            Mark completed
-        </button>
+  <div class="md:flex">
+    <div class="flex" v-html="nextAction.entry" />
+    <div>
+      <span v-if="nextAction.assigned_to_name">{{ nextAction.assigned_to_name }} from the </span>
+      {{ nextAction.assigned_to }}
     </div>
+    <button 
+      class="btn btn-xs block flex-initial self-center" 
+    >
+      <!-- @click="showModal = true" -->
+      Mark completed
+    </button>
+  </div>
 </template>

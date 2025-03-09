@@ -17,7 +17,7 @@ export default {
 }
 </script>
 <template>
-    <li class="menu-item hover:bg-blue-100 cursor-pointer">
-        <slot></slot>
-    </li>
+  <li class="menu-item hover:bg-blue-100 cursor-pointer">
+    <slot />
+  </li>
 </template>

@@ -7,18 +7,16 @@
     import commentManagerFactory from '@/composables/comment_manager.js'
     import {api} from '@/http';
 
-    const commentManager = ref(commentManagerFactory('App\\Modules\\Group\\Models\\Group', 0));
-    provide('commentManager', commentManager)
-
-    const store = useStore();
-
     const props = defineProps({
         uuid: {
             type: String,
             requird: true
         }
     })
+    const commentManager = ref(commentManagerFactory('App\\Modules\\Group\\Models\\Group', 0));
+    provide('commentManager', commentManager)
 
+    const store = useStore();
 
     const loading = ref(false);
     const group = computed(() => store.getters['groups/currentItemOrNew'])
@@ -72,11 +70,14 @@
     })
 </script>
 <template>
-    <component :is="applicationView"
-        :loading="loading"
-        @updated="getGroup"
-        @saved="getLatestSubmission"
-        @deleted="getLatestSubmission"
-    />
-    <div v-show="loading">Loading&hellip;</div>
+  <component
+    :is="applicationView"
+    :loading="loading"
+    @updated="getGroup"
+    @saved="getLatestSubmission"
+    @deleted="getLatestSubmission"
+  />
+  <div v-show="loading">
+    Loading&hellip;
+  </div>
 </template>

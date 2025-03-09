@@ -59,6 +59,8 @@ export default {
             }
         }
     },
+    mounted() {
+    },
     methods: {
         clearForm() {
             this.dateApproved = null;
@@ -88,47 +90,47 @@ export default {
                 }
             }
         }
-    },
-    mounted() {
     }
 
 }
 </script>
 <template>
-    <form-container>
-        <h2>Approve Step {{ application.current_step }}</h2>
+  <form-container>
+    <h2>Approve Step {{ application.current_step }}</h2>
 
-        <input-row v-model="dateApproved" type="date" :errors="errors.date_approved" label="Date Approved"></input-row>
+    <input-row v-model="dateApproved" type="date" :errors="errors.date_approved" label="Date Approved" />
 
-        <dictionary-row label="">
-            <div>
-                <label class="text-sm">
-                    <input type="checkbox" v-model="notifyContacts" :value="true"> 
-                    <div>Send notification email to contacts</div>
-                </label>
-            </div>
-        </dictionary-row>
-        <static-alert
-            v-if="!application.hasPendingSubmissionForCurrentStep"
-            variant="warning"
-        >
-            The expert panel has not yet submitted the application for approval.  
-            <br>
-            You can approve this application but be aware that it is not part of the "normal" application workflow.
-        </static-alert>
+    <dictionary-row label="">
+      <div>
+        <label class="text-sm">
+          <input v-model="notifyContacts" type="checkbox" :value="true"> 
+          <div>Send notification email to contacts</div>
+        </label>
+      </div>
+    </dictionary-row>
+    <static-alert
+      v-if="!application.hasPendingSubmissionForCurrentStep"
+      variant="warning"
+    >
+      The expert panel has not yet submitted the application for approval.  
+      <br>
+      You can approve this application but be aware that it is not part of the "normal" application workflow.
+    </static-alert>
         
-        <transition name="slide-fade-down">
-            <UserDefinedMailForm v-model="email" v-show="notifyContacts"/>
-        </transition>
+    <transition name="slide-fade-down">
+      <UserDefinedMailForm v-show="notifyContacts" v-model="email" />
+    </transition>
 
-        <button-row>
-            <button class="btn" @click="cancel">Cancel</button>
-            <button class="btn blue" @click="save">
-                Approve step {{ application.current_step }}
-                <span v-if="notifyContacts">
-                    and notify
-                </span>
-            </button>
-        </button-row>
-    </form-container>
+    <button-row>
+      <button class="btn" @click="cancel">
+        Cancel
+      </button>
+      <button class="btn blue" @click="save">
+        Approve step {{ application.current_step }}
+        <span v-if="notifyContacts">
+          and notify
+        </span>
+      </button>
+    </button-row>
+  </form-container>
 </template>

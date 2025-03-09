@@ -21,11 +21,6 @@ export default {
             default: false
         }
     },
-    computed: {
-        canEdit () {
-            return this.hasAnyPermission(['groups-manage', ['application-edit', this.group]]);
-        }
-    },
     emits: [
         'saved',
         'canceled',
@@ -33,15 +28,6 @@ export default {
         'geneschanged',
         'update'
     ],
-    methods: {
-        showForm () {
-            if (this.canEdit) {
-                this.resetErrors();
-                this.$emit('update:editing', true);
-            }
-        }
-
-    },
     setup(props, context) {
         const store = useStore();
 
@@ -157,34 +143,50 @@ export default {
             syncGenesAsText,
             save,
         }
+    },
+    computed: {
+        canEdit () {
+            return this.hasAnyPermission(['groups-manage', ['application-edit', this.group]]);
+        }
+    },
+    methods: {
+        showForm () {
+            if (this.canEdit) {
+                this.resetErrors();
+                this.$emit('update:editing', true);
+            }
+        }
+
     }
 }
 </script>
 <template>
-    <div>
-        <h4 class="flex justify-between mb-2">
-            Gene List
-            <edit-icon-button 
-                v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing && !readonly"
-                @click="showForm"
-            ></edit-icon-button>
-        </h4>
-        <div v-if="editing">
-            <input-row 
-                v-model="genesAsText"
-                type="large-text"
-                label="List the gene symbols for the genes the Expert Panel plans to curate.  Separate genes by commas, spaces, or new lines."
-                :errors="errors.genes"
-                @update:modelValue="$emit('geneschanged'); $emit('update')"
-                placeholder="ABC, DEF1, BEAN"
-                vertical
-            />
-        </div>
-        <div v-else>
-            <p v-if="genesAsText" style="text-indent: 1rem;">{{ genesAsText }}</p>
-            <div class="well cursor-pointer" v-else @click="showForm">
-                {{ loading ? `Loading...` : `No genes have been added to the gene list.` }}
-            </div>
-        </div>
+  <div>
+    <h4 class="flex justify-between mb-2">
+      Gene List
+      <edit-icon-button 
+        v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing && !readonly"
+        @click="showForm"
+      />
+    </h4>
+    <div v-if="editing">
+      <input-row 
+        v-model="genesAsText"
+        type="large-text"
+        label="List the gene symbols for the genes the Expert Panel plans to curate.  Separate genes by commas, spaces, or new lines."
+        :errors="errors.genes"
+        placeholder="ABC, DEF1, BEAN"
+        vertical
+        @update:modelValue="$emit('geneschanged'); $emit('update')"
+      />
     </div>
+    <div v-else>
+      <p v-if="genesAsText" style="text-indent: 1rem;">
+        {{ genesAsText }}
+      </p>
+      <div v-else class="well cursor-pointer" @click="showForm">
+        {{ loading ? `Loading...` : `No genes have been added to the gene list.` }}
+      </div>
+    </div>
+  </div>
 </template>

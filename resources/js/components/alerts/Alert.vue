@@ -23,6 +23,10 @@ export default {
     computed: {
 
     },
+    mounted() {
+        this.startTimer();
+        this.countdown = this.timeout;
+    },
     methods: {
         startTimer () {
             this.interval = setInterval( () => this.countdown -= 1, 1000)
@@ -44,21 +48,19 @@ export default {
             this.clearTimer();
             this.clearAlert();
         }
-    },
-    mounted() {
-        this.startTimer();
-        this.countdown = this.timeout;
     }
 }
 </script>
 <template>
-    <div
-        class="flex justify-between rounded px-3 py-2 my-2 alert-item shadow-lg" 
-        :class="`alert-${alert.type}`"
-        >
-        {{ alert.message }}
-        <button @click="clearAlertAndTimer" class="hover:underline">x</button>
-    </div>
+  <div
+    class="flex justify-between rounded px-3 py-2 my-2 alert-item shadow-lg" 
+    :class="`alert-${alert.type}`"
+  >
+    {{ alert.message }}
+    <button class="hover:underline" @click="clearAlertAndTimer">
+      x
+    </button>
+  </div>
 </template>
 <style lang="postcss">
   .alert-info {

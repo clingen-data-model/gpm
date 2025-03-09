@@ -52,40 +52,44 @@ import MarkdownBlock from '../MarkdownBlock.vue';
 </script>
 
 <template>
-    <div v-if="step == group.expert_panel.current_step">
-        <static-alert
-            class="mb-4 border-blue-700"
-            variant="bland"
-            v-if="stepHasBeenSubmitted"
-        >
-            <div v-if="!latestSubmission.sent_to_chairs_at">
-                <strong>Submitted</strong> by {{ latestSubmission.submitter ? latestSubmission.submitter.name : '' }} on
-                <strong>{{ formatDate(latestSubmission.created_at) }}</strong>
-                <MarkdownBlock class="ml-4" v-if="latestSubmission.notes" :markdown="latestSubmission.notes" />
-            </div>
-            <div v-if="latestSubmission.submission_status_id == 3">
-                <strong>Sent to chairs</strong> on <strong>{{ formatDate(latestSubmission.sent_to_chairs_at) }}</strong>.
-            </div>
-            <div v-if="latestSubmission.submission_status_id == 2">
-                <strong>{{ formatDate(latestSubmission.updated_at) }}</strong> - Revisions Requested.
-            </div>
-            <div v-if="featureIsEnabled('chair_review') && (latestSubmission.submission_status_id == 3)">
-                <hr class="my-1">
-                <strong>Latest Chair Decisions:</strong>
-                <ul class="list-disc pl-6" v-if="latestJudgements && latestJudgements.length > 0">
-                    <li v-for="judgement in latestJudgements" :key="judgement.id">
-                        <strong>{{ judgement.person.name }}:</strong>
+  <div v-if="step == group.expert_panel.current_step">
+    <static-alert
+      v-if="stepHasBeenSubmitted"
+      class="mb-4 border-blue-700"
+      variant="bland"
+    >
+      <div v-if="!latestSubmission.sent_to_chairs_at">
+        <strong>Submitted</strong> by {{ latestSubmission.submitter ? latestSubmission.submitter.name : '' }} on
+        <strong>{{ formatDate(latestSubmission.created_at) }}</strong>
+        <MarkdownBlock v-if="latestSubmission.notes" class="ml-4" :markdown="latestSubmission.notes" />
+      </div>
+      <div v-if="latestSubmission.submission_status_id == 3">
+        <strong>Sent to chairs</strong> on <strong>{{ formatDate(latestSubmission.sent_to_chairs_at) }}</strong>.
+      </div>
+      <div v-if="latestSubmission.submission_status_id == 2">
+        <strong>{{ formatDate(latestSubmission.updated_at) }}</strong> - Revisions Requested.
+      </div>
+      <div v-if="featureIsEnabled('chair_review') && (latestSubmission.submission_status_id == 3)">
+        <hr class="my-1">
+        <strong>Latest Chair Decisions:</strong>
+        <ul v-if="latestJudgements && latestJudgements.length > 0" class="list-disc pl-6">
+          <li v-for="judgement in latestJudgements" :key="judgement.id">
+            <strong>{{ judgement.person.name }}:</strong>
                         &nbsp;
-                        <badge :color="judgementColor(judgement)">{{ judgement.decision }}</badge>
-                        <div v-if="judgement.notes" class="text-sm"><strong>Notes:</strong> {{ judgement.notes }}</div>
-                    </li>
-                </ul>
-                <div v-else class="ml-4 text-gray-500">
-                    Awaiting decisions...
-                </div>
+            <badge :color="judgementColor(judgement)">
+              {{ judgement.decision }}
+            </badge>
+            <div v-if="judgement.notes" class="text-sm">
+              <strong>Notes:</strong> {{ judgement.notes }}
             </div>
-        </static-alert>
-    </div>
+          </li>
+        </ul>
+        <div v-else class="ml-4 text-gray-500">
+          Awaiting decisions...
+        </div>
+      </div>
+    </static-alert>
+  </div>
 </template>
 
 <style scoped>

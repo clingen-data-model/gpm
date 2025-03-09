@@ -172,75 +172,73 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <data-table 
-            :fields="filteredFields" 
-            :data="filteredDocuments" 
-            :sort="{field: filteredFields[0].name, desc: true}"
-            v-if="filteredDocuments.length > 0"
-        >
+  <div>
+    <data-table 
+      v-if="filteredDocuments.length > 0" 
+      :fields="filteredFields" 
+      :data="filteredDocuments"
+      :sort="{field: filteredFields[0].name, desc: true}"
+    >
+      <template #cell-notes="{value}">
+        <truncate-expander :value="value" :truncate-length="50" />
+      </template>
+      <template #cell-is_final="{item}">
+        <icon-checkmark 
+          v-if="!item.is_final" 
+          title="Mark this the final version." 
+          class="text-gray-300 cursor-pointer inline"
+          @click="markFinal(item)"
+        />
+        <icon-checkmark 
+          v-if="item.is_final" 
+          class="text-green-600 inline"
+          title="This is the final document"
+        />
+      </template>
 
-            <template #cell-notes="{value}">
-                <truncate-expander :value="value" :truncate-length="50"></truncate-expander>
-            </template>
-            <template #cell-is_final="{item}">
-                <icon-checkmark 
-                    v-if="!item.is_final" 
-                    @click="markFinal(item)" 
-                    title="Mark this the final version."
-                    class="text-gray-300 cursor-pointer inline"
-                ></icon-checkmark>
-                <icon-checkmark 
-                    class="text-green-600 inline" 
-                    v-if="item.is_final"
-                    title="This is the final document"
-                ></icon-checkmark>
-            </template>
+      <template #cell-id="{item}">
+        <div class="flex space-x-1">
+          <button class="btn btn-xs" @click="downloadDocument(item)">
+            <icon-download width="12" height="16" />
+          </button>
+          <button class="btn btn-xs" @click="openEditForm(item)">
+            <icon-edit width="12" height="16" />
+          </button>
+          <TrashButton @click="initDelete(item)" />
+        </div>
+      </template>
+    </data-table>
 
-            <template #cell-id="{item}">
-                <div class="flex space-x-1">
-
-                <button class="btn btn-xs" @click="downloadDocument(item)">
-                    <icon-download width="12" height="16"></icon-download>
-                </button>
-                <button class="btn btn-xs" @click="openEditForm(item)">
-                    <icon-edit width="12" height="16"></icon-edit>
-                </button>
-                <TrashButton @click="initDelete(item)"></TrashButton>
-                </div>
-            </template>
-        </data-table>
-
-        <div v-else class="px-2 py-1 border bg-gray-100 rounded">No documents uploaded</div>
-
-        <modal-dialog v-model="showEditForm">
-            <DocumentEditForm
-                :document="activeDocument"
-                :application="application"
-                @canceled="showEditForm = false"
-                @saved="handleDocumentEdited"
-                @triggermarkreviewed="showMarkReviewed"
-            />
-        </modal-dialog>
-
-        <modal-dialog 
-            v-model="showDeleteConfirmation" 
-            :title="`You are about to delete ${activeDocument.type.long_name}, v${activeDocument.version}`"
-        >
-            <div v-if="activeDocument">
-                <p v-if="activeDocument.is_final" class="mb-3">
-                    This version has been tagged as the final version of the document.
-                </p>
-                <p>Are you sure you want to continue?</p>
-
-                <button-row 
-                    submit-text="Delete Document" 
-                    @canceled="cancelDelete" 
-                    @submitted="commitDelete"
-                >
-                </button-row>
-            </div>
-        </modal-dialog>
-
+    <div v-else class="px-2 py-1 border bg-gray-100 rounded">
+      No documents uploaded
     </div>
+
+    <modal-dialog v-model="showEditForm">
+      <DocumentEditForm
+        :document="activeDocument"
+        :application="application"
+        @canceled="showEditForm = false"
+        @saved="handleDocumentEdited"
+        @triggermarkreviewed="showMarkReviewed"
+      />
+    </modal-dialog>
+
+    <modal-dialog 
+      v-model="showDeleteConfirmation" 
+      :title="`You are about to delete ${activeDocument.type.long_name}, v${activeDocument.version}`"
+    >
+      <div v-if="activeDocument">
+        <p v-if="activeDocument.is_final" class="mb-3">
+          This version has been tagged as the final version of the document.
+        </p>
+        <p>Are you sure you want to continue?</p>
+
+        <button-row 
+          submit-text="Delete Document" 
+          @canceled="cancelDelete" 
+          @submitted="commitDelete"
+        />
+      </div>
+    </modal-dialog>
+  </div>
 </template>

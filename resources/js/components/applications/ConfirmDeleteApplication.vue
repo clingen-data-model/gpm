@@ -35,19 +35,21 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <h2 class="block-title">Are you sure you want to delete this application?</h2>
-        <p>
-            You are about to delete the application for <strong class="underline">{{ application.name }}</strong>.
-        </p>
-        <p>This action cannot be undone.</p> 
-        <p>Are you sure you want to continue?</p>
+  <div>
+    <h2 class="block-title">
+      Are you sure you want to delete this application?
+    </h2>
+    <p>
+      You are about to delete the application for <strong class="underline">{{ application.name }}</strong>.
+    </p>
+    <p>This action cannot be undone.</p> 
+    <p>Are you sure you want to continue?</p>
 
-        <button-row 
-            @submitted="commitDelete" 
-            @canceled="cancelDelete" 
-            submit-text="Delete Application" 
-            submit-variant="red"
-        ></button-row>
-    </div>
+    <button-row 
+      submit-text="Delete Application" 
+      submit-variant="red" 
+      @submitted="commitDelete" 
+      @canceled="cancelDelete"
+    />
+  </div>
 </template>

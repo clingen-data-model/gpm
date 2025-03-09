@@ -38,9 +38,9 @@ export default {
 }
 </script>
 <template>
-    <button class="btn-delete" @click="confirmRemove">
-        <icon-close :height="dimension" :width="dimension"></icon-close>
-    </button>
+  <button class="btn-delete" @click="confirmRemove">
+    <icon-close :height="dimension" :width="dimension" />
+  </button>
 </template>
 <style lang="postcss">
     .btn-delete {

@@ -55,6 +55,9 @@ export default {
             return [{label: this.group.displayName, route: {name: 'GroupDetail', params: {uuid: this.group.uuid}}}];
         }
     },
+    mounted() {
+        this.showModal = Boolean(this.$route.meta.showModal)
+    },
     methods: {
         hideModal () {
             this.$router.replace({name: 'ApplicationDetail', params: {uuid: this.group.uuid}});
@@ -68,75 +71,79 @@ export default {
                 this.$refs.modalView.clearForm();
             }
         },
-    },
-    mounted() {
-        this.showModal = Boolean(this.$route.meta.showModal)
     }
 }
 </script>
 
 <template>
-    <div>
-        <static-alert variant="danger" v-if="!loading && !group.hasContacts" class="mb-4">
-            <strong>Warning!!</strong> There are currently no contacts connected to this application!
-        </static-alert >
-        <ScreenTemplate :title="group.displayName" :breadcrumbs="breadcrumbs">
-            <template #header-dev>
-                <note>
-                    Group ID: {{ group.id }}
-                    |
-                    Expert Panel ID: {{ group.expert_panel.id }}
-                </note>
-            </template>
-            <template #header-right>
-                <div class="flex space-x-2">
-                    <router-link :to="{name: 'NextAction'}" class="btn btn-sm">Add Next Action</router-link>
-                    <router-link :to="{name: 'LogEntry'}" class="btn btn-sm">Add Log Entry</router-link>
-                </div>
-            </template>
+  <div>
+    <static-alert v-if="!loading && !group.hasContacts" variant="danger" class="mb-4">
+      <strong>Warning!!</strong> There are currently no contacts connected to this application!
+    </static-alert>
+    <ScreenTemplate :title="group.displayName" :breadcrumbs="breadcrumbs">
+      <template #header-dev>
+        <note>
+          Group ID: {{ group.id }}
+          |
+          Expert Panel ID: {{ group.expert_panel.id }}
+        </note>
+      </template>
+      <template #header-right>
+        <div class="flex space-x-2">
+          <router-link :to="{name: 'NextAction'}" class="btn btn-sm">
+            Add Next Action
+          </router-link>
+          <router-link :to="{name: 'LogEntry'}" class="btn btn-sm">
+            Add Log Entry
+          </router-link>
+        </div>
+      </template>
 
-            <div class="md:flex md:space-x-4">
-                <BasicInfoData class="w-1/2 screen-block"></BasicInfoData>
-                <NextActions v-if="application.next_actions"
-                    :next-actions="application.next_actions"
-                    class="w-1/2 space-y-2 md:px-4 md:py-2 bg-white border-b border-gray-200 "
-                />
-            </div>
+      <div class="md:flex md:space-x-4">
+        <BasicInfoData class="w-1/2 screen-block" />
+        <NextActions
+          v-if="application.next_actions"
+          :next-actions="application.next_actions"
+          class="w-1/2 space-y-2 md:px-4 md:py-2 bg-white border-b border-gray-200 "
+        />
+      </div>
 
-            <ProgressChart
-                :application="application"
-                class="py-4 screen-block"
-            />
+      <ProgressChart
+        :application="application"
+        class="py-4 screen-block"
+      />
 
-            <tabs-container>
-                <tab-item label="Application">
-                    <StepTabs :application="application"
-                        @updated="$emit('updated')"
-                        @approved="$emit('updated')"
-                    />
-                </tab-item>
+      <tabs-container>
+        <tab-item label="Application">
+          <StepTabs
+            :application="application"
+            @updated="$emit('updated')"
+            @approved="$emit('updated')"
+          />
+        </tab-item>
 
-                <tab-item label="Application Log">
-                    <ApplicationLog :uuid="application.uuid"></ApplicationLog>
-                </tab-item>
+        <tab-item label="Application Log">
+          <ApplicationLog :uuid="application.uuid" />
+        </tab-item>
 
-                <tab-item label="Advanced">
-                    <h2 class="block-title">Advanced actions and controls</h2>
-                    <router-link :to="{name: 'ConfirmDeleteApplication'}" class="btn red">
-                        Delete Application and all associated information.
-                    </router-link>
-                </tab-item>
-            </tabs-container>
-        </ScreenTemplate>
-        <teleport to="body">
-            <modal-dialog
-                v-model="showModal"
-                @closed="handleModalClosed"
-                :title="$route.meta.title"
-            >
-                <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
-            </modal-dialog>
-        </teleport>
-
-    </div>
+        <tab-item label="Advanced">
+          <h2 class="block-title">
+            Advanced actions and controls
+          </h2>
+          <router-link :to="{name: 'ConfirmDeleteApplication'}" class="btn red">
+            Delete Application and all associated information.
+          </router-link>
+        </tab-item>
+      </tabs-container>
+    </ScreenTemplate>
+    <teleport to="body">
+      <modal-dialog
+        v-model="showModal"
+        :title="$route.meta.title"
+        @closed="handleModalClosed"
+      >
+        <router-view ref="modalView" @saved="hideModal" @canceled="hideModal" />
+      </modal-dialog>
+    </teleport>
+  </div>
 </template>

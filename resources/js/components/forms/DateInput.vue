@@ -33,6 +33,10 @@ export default {
             },
         } 
     },
+    mounted() {
+        // normalize date to be start of day and account for user timezone.
+        this.accountForTimezone(this.formatDate(this.modelValue))
+    },
     methods: {
         handleInput (event) {
             const value = event.target.valueAsDate;
@@ -73,23 +77,19 @@ export default {
                 this.$refs.input.focus();
             });
         }
-    },
-    mounted() {
-        // normalize date to be start of day and account for user timezone.
-        this.accountForTimezone(this.formatDate(this.modelValue))
     }
 }
 </script>
 <template>
-    <div>
-        <input 
-            ref="input"
-            type="date"
-            class="date-input"
-            :value="date" 
-            @input="handleInput"
-            @change="$emit('change')"
-            :disabled="disabled"
-        >
-    </div>
+  <div>
+    <input 
+      ref="input"
+      type="date"
+      class="date-input"
+      :value="date" 
+      :disabled="disabled"
+      @input="handleInput"
+      @change="$emit('change')"
+    >
+  </div>
 </template>

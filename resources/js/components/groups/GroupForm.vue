@@ -12,6 +12,15 @@ export default {
         'saved',
         'update'
     ],
+    setup (props, context) {
+        const {errors, submitFormData, resetErrors} = formFactory(props, context)
+
+        return {
+            errors,
+            submitFormData,
+            resetErrors
+        }
+    },
     data() {
         return {
             groupTypes: configs.groups.types,
@@ -71,6 +80,10 @@ export default {
 
             return sortBy(options, 'label');
         }
+    },
+    beforeMount() {
+        this.getParentOptions();
+        this.$store.dispatch('cdwgs/getAll');
     },
     methods: {
         async save() {
@@ -223,112 +236,99 @@ export default {
         emitUpdate () {
             this.$emit('update');
         }
-    },
-    beforeMount() {
-        this.getParentOptions();
-        this.$store.dispatch('cdwgs/getAll');
-    },
-    setup (props, context) {
-        const {errors, submitFormData, resetErrors} = formFactory(props, context)
-
-        return {
-            errors,
-            submitFormData,
-            resetErrors
-        }
     }
 }
 </script>
 <template>
-    <div>
+  <div>
+    <input-row
+      v-if="canSetType"
+      v-model="group.group_type_id"
+      :errors="errors.group_type_id"
+      type="select"
+      :options="typeOptions"
+      label="Type"
+    />
+
+    <dictionary-row v-else label="Type">
+      {{ group?.type?.display_name }}
+    </dictionary-row>
+
+    <transition name="slide-fade-down" mode="out-in">
+      <div v-if="group.group_type_id > 2 && group.expert_panel">
         <input-row
-            v-if="canSetType"
-            v-model="group.group_type_id"
-            :errors="errors.group_type_id"
-            type="select"
-            :options="typeOptions"
-            label="Type"
+          v-model="group.expert_panel.long_base_name"
+          label="Long Base Name"
+          placeholder="Long base name"
+          :errors="errors.long_base_name"
+          input-class="w-full"
+          @update:modelValue="emitUpdate"
         />
-
-        <dictionary-row label="Type" v-else>
-            {{ group?.type?.display_name }}
-        </dictionary-row>
-
-        <transition name="slide-fade-down" mode="out-in">
-            <div v-if="group.group_type_id > 2 && group.expert_panel">
-                <input-row
-                    label="Long Base Name"
-                    v-model="group.expert_panel.long_base_name"
-                    @update:modelValue="emitUpdate"
-                    placeholder="Long base name"
-                    :errors="errors.long_base_name"
-                    input-class="w-full"
-                />
-                <input-row
-                    label="Short Base Name"
-                    v-model="group.expert_panel.short_base_name"
-                    @update:modelValue="emitUpdate"
-                    placeholder="Short base name"
-                    :errors="errors.short_base_name"
-                    input-class="w-full"
-                />
-                <div v-if="hasAnyPermission(['groups-manage'])">
-                    <input-row
-                        label="Affiliation ID"
-                        v-model="group.expert_panel.affiliation_id"
-                        :placeholder="affiliationIdPlaceholder"
-                        :errors="errors.affiliation_id"
-                        input-class="w-full"
-                        @update:modelValue="emitUpdate"
-                    >
-                        <template #label>
-                            Affiliation ID
-                            <note>admin-only</note>
-                        </template>
-                    </input-row>
-                </div>
-                <dictionary-row label="Affiliation ID" v-else>
-                    <span v-if="group.expert_panel.affiliation_id">{{ group.expert_panel.affiliation_id }}</span>
-                    <span v-else class="text-gray-400">{{ 'Not yet assigend' }}</span>
-                </dictionary-row>
-            </div>
-            <div v-else>
-                <input-row
-                    v-model="group.name"
-                    placeholder="Name"
-                    label="Name"
-                    input-class="w-full"
-                    :errors="errors.name"
-                    @update:modelValue="emitUpdate"
-                />
-            </div>
-        </transition>
-        <div v-if="hasPermission('groups-manage')">
-            <input-row
-                v-model="group.group_status_id"
-                type="select"
-                :options="statusOptions"
-                :errors="errors.group_status_id"
-                @update:modelValue="emitUpdate"
-            >
-                <template #label>
-                    Status:
-                    <note>admin-only</note>
-                </template>
-            </input-row>
-
-            <input-row
-                v-model="group.parent_id"
-                type="select"
-                :options="parentOptions"
-                :errors="errors.parent_id"
-                @update:modelValue="emitUpdate"
-            >
-                <template #label>
-                    Parent group:
-                    <note>admin-only</note>
-                </template>
-            </input-row>
+        <input-row
+          v-model="group.expert_panel.short_base_name"
+          label="Short Base Name"
+          placeholder="Short base name"
+          :errors="errors.short_base_name"
+          input-class="w-full"
+          @update:modelValue="emitUpdate"
+        />
+        <div v-if="hasAnyPermission(['groups-manage'])">
+          <input-row
+            v-model="group.expert_panel.affiliation_id"
+            label="Affiliation ID"
+            :placeholder="affiliationIdPlaceholder"
+            :errors="errors.affiliation_id"
+            input-class="w-full"
+            @update:modelValue="emitUpdate"
+          >
+            <template #label>
+              Affiliation ID
+              <note>admin-only</note>
+            </template>
+          </input-row>
         </div>
+        <dictionary-row v-else label="Affiliation ID">
+          <span v-if="group.expert_panel.affiliation_id">{{ group.expert_panel.affiliation_id }}</span>
+          <span v-else class="text-gray-400">{{ 'Not yet assigend' }}</span>
+        </dictionary-row>
+      </div>
+      <div v-else>
+        <input-row
+          v-model="group.name"
+          placeholder="Name"
+          label="Name"
+          input-class="w-full"
+          :errors="errors.name"
+          @update:modelValue="emitUpdate"
+        />
+      </div>
+    </transition>
+    <div v-if="hasPermission('groups-manage')">
+      <input-row
+        v-model="group.group_status_id"
+        type="select"
+        :options="statusOptions"
+        :errors="errors.group_status_id"
+        @update:modelValue="emitUpdate"
+      >
+        <template #label>
+          Status:
+          <note>admin-only</note>
+        </template>
+      </input-row>
+
+      <input-row
+        v-model="group.parent_id"
+        type="select"
+        :options="parentOptions"
+        :errors="errors.parent_id"
+        @update:modelValue="emitUpdate"
+      >
+        <template #label>
+          Parent group:
+          <note>admin-only</note>
+        </template>
+      </input-row>
     </div>
+  </div>
 </template>

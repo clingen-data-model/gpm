@@ -3,15 +3,14 @@ import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import DemographicsForm from '../components/people/DemographicsForm.vue';
 
-const store = useStore();
-const router = useRouter();
-
 const props = defineProps({
     redirectTo: {
         type: Object,
         default: () => ({ name: 'Dashboard' })
     }
 })
+const store = useStore();
+const router = useRouter();
 
 const handleSave = async () => {
     try {
@@ -28,9 +27,9 @@ const handleSave = async () => {
 
 </script>
 <template>
-    <div>
-        <card title="Please fill out your demographic profile information">
-            <DemographicsForm :uuid="store.getters.currentUser.person.uuid" :startInEditMode="true" @saved="handleSave" />
-        </card>
-    </div>
+  <div>
+    <card title="Please fill out your demographic profile information">
+      <DemographicsForm :uuid="store.getters.currentUser.person.uuid" :startInEditMode="true" @saved="handleSave" />
+    </card>
+  </div>
 </template>

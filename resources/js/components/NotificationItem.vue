@@ -3,13 +3,13 @@ import {api} from '@/http'
 
 export default {
     name: 'NotificationItem',
-    emits: ['removed'],
     props: {
         notification: {
             required: true,
             type: Object
         }
     },
+    emits: ['removed'],
     data() {
         return {
             
@@ -31,17 +31,17 @@ export default {
 }
 </script>
 <template>
-    <static-alert :variant="variant">
-        <div class="flex items-center justify-between px-4">
-            <div class="">
-                <markdown-block v-if="notification.data.markdown" :markdown="notification.data.message" />
-                <div class="font-bold" v-else>
-                    {{ notification.data.message }}
-                </div>
-            </div>
-            <button @click="markRead" class="block">
-                <icon-close></icon-close>
-            </button>
+  <static-alert :variant="variant">
+    <div class="flex items-center justify-between px-4">
+      <div class="">
+        <markdown-block v-if="notification.data.markdown" :markdown="notification.data.message" />
+        <div v-else class="font-bold">
+          {{ notification.data.message }}
         </div>
-    </static-alert>
+      </div>
+      <button class="block" @click="markRead">
+        <icon-close />
+      </button>
+    </div>
+  </static-alert>
 </template>

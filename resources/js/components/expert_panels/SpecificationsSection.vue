@@ -4,6 +4,10 @@ import ApplicationUploadForm from '@/components/applications/documents/Applicati
 
 export default {
     name: 'SpecificationsSection',
+    components: {
+        CspecSummary,
+        ApplicationUploadForm
+    },
     props: {
         docTypeId: {
             required: true,
@@ -13,10 +17,6 @@ export default {
             type: Boolean,
             default: false
         }
-    },
-    components: {
-        CspecSummary,
-        ApplicationUploadForm
     },
     data() {
         return {
@@ -36,19 +36,19 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <CspecSummary v-if="cspecSummaryEnabled" :readonly="readonly" />
+  <div>
+    <CspecSummary v-if="cspecSummaryEnabled" :readonly="readonly" />
 
-        <collapsible class="mt-4">
-            <template #title>
-                <h3>Legacy document-based specifications</h3>
-            </template>
-            <ApplicationUploadForm
-                :document-type-id="docTypeId"
-                :show-notes="false"
-                v-if="specificationUpload"
-                :readonly="readonly"
-            />
-        </collapsible>
-    </div>
+    <collapsible class="mt-4">
+      <template #title>
+        <h3>Legacy document-based specifications</h3>
+      </template>
+      <ApplicationUploadForm
+        v-if="specificationUpload"
+        :document-type-id="docTypeId"
+        :show-notes="false"
+        :readonly="readonly"
+      />
+    </collapsible>
+  </div>
 </template>

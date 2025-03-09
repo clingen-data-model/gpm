@@ -52,103 +52,121 @@ export default {
 }
 </script>
 <template>
-    <div>
+  <div>
+    <edit-icon-button
+      v-if="userIsPerson(person) || hasPermission('people-manage')"
+      class="btn btn-sm float-right"
+      @click="editPerson"
+    >
+      Edit Info
+    </edit-icon-button>
 
-        <edit-icon-button
-            class="btn btn-sm float-right"
-            @click="editPerson"
-            v-if="userIsPerson(person) || hasPermission('people-manage')"
+    <div class="flex space-x-4">
+      <div>
+        <component :is="profilePhotoComponent" :person="person" style="width: 120px" />
+      </div>
+      <div>
+        <dictionary-row
+          v-for="key in ['name', 'email']" :key="key"
+          class="pb-2"
+          label-class="w-40"
+          :label="titleCase(key)"
         >
-            Edit Info
-        </edit-icon-button>
+          {{ person[key] }}
+        </dictionary-row>
 
-        <div class="flex space-x-4">
-            <div>
-                <component :is="profilePhotoComponent" :person="person" style="width: 120px"/>
-            </div>
-            <div>
-                <dictionary-row class="pb-2" label-class="w-40"
-                    v-for="key in ['name', 'email']"
-                    :key="key"
-                    :label="titleCase(key)"
-                >
-                    {{ person[key] }}
-                </dictionary-row>
+        <section class="mt-4 border-t pt-4">
+          <h3>Profile</h3>
+          <div>
+            <dictionary-row class="pb-2" label-class="w-40" label="Institution">
+              {{ person.institutionName }}
+            </dictionary-row>
+            <dictionary-row class="pb-2" label-class="w-40" label="Credentials">
+              <CredentialsView :person="person" />
+            </dictionary-row>
+            <dictionary-row class="pb-2" label-class="w-40" label="Expertise">
+              <ExpertisesView :person="person" />
+            </dictionary-row>
+            <dictionary-row class="pb-2" label-class="w-40" label="Biography">
+              {{ person.biography }}
+            </dictionary-row>
+          </div>
+        </section>
 
-                <section class="mt-4 border-t pt-4">
-                    <h3>Profile</h3>
-                    <div>
-                        <dictionary-row class="pb-2" label-class="w-40" label="Institution">{{ person.institutionName }}</dictionary-row>
-                        <dictionary-row class="pb-2" label-class="w-40" label="Credentials">
-                            <CredentialsView :person="person"></CredentialsView>
-                        </dictionary-row>
-                        <dictionary-row class="pb-2" label-class="w-40" label="Expertise">
-                            <ExpertisesView :person="person" />
-                        </dictionary-row>
-                        <dictionary-row class="pb-2" label-class="w-40" label="Biography">{{ person.biography }}</dictionary-row>
-                    </div>
-                </section>
+        <section class="mt-4 border-t pt-4">
+          <div v-if="userIsPerson(person) || hasRole('super-admin') || hasRole('admin')">
+            <dictionary-row class="pb-2" label-class="w-40" label="Phone">
+              {{ person.phone }}
+            </dictionary-row>
+            <dictionary-row class="pb-2" label-class="w-40" label="Address">
+              <div>
+                <div v-if="person.street1">
+                  {{ person.street1 }}
+                </div>
+                <div v-if="person.street2">
+                  {{ person.street2 }}
+                </div>
+                <div>
+                  <span v-if="person.city">{{ person.city }},</span> <span v-if="person.state">{{ person.state }}</span> <span v-if="person.zip">{{ person.zip }}</span>
+                </div>
+              </div>
+            </dictionary-row>
+          </div>
+          <dictionary-row class="pb-2" label-class="w-40" label="Country">
+            {{ person.country ? person.country.name : '' }}
+          </dictionary-row>
+          <dictionary-row class="pb-2" label-class="w-40" label="Timezone">
+            {{ person.timezone }}
+          </dictionary-row>
+        </section>
 
-                <section class="mt-4 border-t pt-4">
-                    <div v-if="userIsPerson(person) || hasRole('super-admin') || hasRole('admin')">
-                        <dictionary-row class="pb-2" label-class="w-40" label="Phone">{{ person.phone }}</dictionary-row>
-                        <dictionary-row class="pb-2" label-class="w-40" label="Address">
-                            <div>
-                                <div v-if="person.street1">{{ person.street1 }}</div>
-                                <div v-if="person.street2">{{ person.street2 }}</div>
-                                <div>
-                                    <span v-if="person.city">{{ person.city }},</span> <span v-if="person.state">{{ person.state }}</span> <span v-if="person.zip">{{ person.zip }}</span>
-                                </div>
-                            </div>
-                        </dictionary-row>
-                    </div>
-                    <dictionary-row class="pb-2" label-class="w-40" label="Country">
-                        {{ person.country ? person.country.name : '' }}
-                    </dictionary-row>
-                    <dictionary-row class="pb-2" label-class="w-40" label="Timezone">
-                        {{ person.timezone }}
-                    </dictionary-row>
-                </section>
+        <section v-if="hasPermission('people-manage')" class="mt-4 border-t pt-4">
+          <h3>Metadata</h3>
+          <dictionary-row class="pb-2" label-class="w-40" label="Uuid">
+            {{ person.uuid }}
+          </dictionary-row>
+          <dictionary-row class="pb-2" label-class="w-40" label="Numeric ID">
+            {{ person.id }}
+          </dictionary-row>
 
-                <section class="mt-4 border-t pt-4" v-if="hasPermission('people-manage')">
-                    <h3>Metadata</h3>
-                    <dictionary-row class="pb-2" label-class="w-40" label="Uuid">{{ person.uuid }}</dictionary-row>
-                    <dictionary-row class="pb-2" label-class="w-40" label="Numeric ID">{{ person.id }}</dictionary-row>
-
-                    <dictionary-row class="pb-2" label-class="w-40" label="User ID">{{ person.user_id || 'Account not activated.' }}</dictionary-row>
-                    <dictionary-row class="pb-2" label-class="w-40" v-if="person.invite" label="Invite Code">
-                        {{ person.invite.code }}
+          <dictionary-row class="pb-2" label-class="w-40" label="User ID">
+            {{ person.user_id || 'Account not activated.' }}
+          </dictionary-row>
+          <dictionary-row v-if="person.invite" class="pb-2" label-class="w-40" label="Invite Code">
+            {{ person.invite.code }}
                         &nbsp;
-                        <span v-if="person.invite.redeemed_at"> redeemed on {{ formatDate(person.invite.redeemed_at) }}</span>
-                    </dictionary-row>
+            <span v-if="person.invite.redeemed_at"> redeemed on {{ formatDate(person.invite.redeemed_at) }}</span>
+          </dictionary-row>
 
-                    <dictionary-row class="pb-2" label-class="w-40"
-                        v-for="key in ['created_at', 'updated_at']"
-                        :key="key"
-                        :label="key"
-                    >
-                        {{ formatDate(person[key]) }}
-                    </dictionary-row>
+          <dictionary-row
+            v-for="key in ['created_at', 'updated_at']" :key="key"
+            class="pb-2"
+            label-class="w-40"
+            :label="key"
+          >
+            {{ formatDate(person[key]) }}
+          </dictionary-row>
 
-                    <div v-if="hasPermission('people-manage') || userIsPerson(person)"
-                        class="pt-4 border-t mt-4"
-                    >
-                        <button
-                            class="btn btn-sm"
-                            @click="editPerson"
-                        >
-                            Edit Info
-                        </button>
-                    </div>
-                </section>
-            </div>
-        </div>
-
-
-        <teleport to="body">
-            <modal-dialog v-model="showEditForm" :title="formDialogTitle">
-                <ProfileForm :person="person" @saved="hideEditForm" @canceled="hideEditForm"> </ProfileForm>
-            </modal-dialog>
-        </teleport>
+          <div
+            v-if="hasPermission('people-manage') || userIsPerson(person)"
+            class="pt-4 border-t mt-4"
+          >
+            <button
+              class="btn btn-sm"
+              @click="editPerson"
+            >
+              Edit Info
+            </button>
+          </div>
+        </section>
+      </div>
     </div>
+
+
+    <teleport to="body">
+      <modal-dialog v-model="showEditForm" :title="formDialogTitle">
+        <ProfileForm :person="person" @saved="hideEditForm" @canceled="hideEditForm" />
+      </modal-dialog>
+    </teleport>
+  </div>
 </template>

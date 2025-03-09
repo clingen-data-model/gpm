@@ -2,8 +2,6 @@
     import { computed, onMounted, inject } from 'vue';
     import formDefFactory from '../../forms/comment_form.js';
 
-    const group = inject('group');
-
     const props = defineProps({
         commentManager: {
             type: Object,
@@ -30,6 +28,10 @@
         }
     });
 
+    const emits = defineEmits(['saved', 'canceled']);
+
+    const group = inject('group');
+
     const formDef = formDefFactory();
 
     onMounted(() => {
@@ -37,8 +39,6 @@
             formDef.currentItem.value = props.comment
         }
     })
-
-    const emits = defineEmits(['saved', 'canceled']);
 
     const fields = computed(() => {
         const fields = [...formDef.fields.value];
@@ -107,8 +107,8 @@
     }
 </script>
 <template>
-    <div>
-        <data-form :fields="fields" v-model="newComment" :errors="errors"></data-form>
-        <button-row size="xs" submit-text="Save" @submitted="save" @canceled="cancel"></button-row>
-    </div>
+  <div>
+    <data-form v-model="newComment" :fields="fields" :errors="errors" />
+    <button-row size="xs" submit-text="Save" @submitted="save" @canceled="cancel" />
+  </div>
 </template>

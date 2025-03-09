@@ -53,16 +53,21 @@ import {sentenceCase} from '@/string_utils.js'
 </script>
 
 <template>
-    <div class="button-group" :class="{'vertical': vertical}">
-        <button v-for="(option, idx) in options"
-            :key="idx"
-            :class="resolveButtonClass(option)"
-            @click="selectItem(option)"
-        >
-            <div class="inline-block"><input type="radio" :checked="isSelected(option)"></div>
-            &nbsp;<slot :option="option">{{ resolveLabel(option) }}</slot>
-        </button>
-    </div>
+  <div class="button-group" :class="{'vertical': vertical}">
+    <button
+      v-for="(option, idx) in options"
+      :key="idx"
+      :class="resolveButtonClass(option)"
+      @click="selectItem(option)"
+    >
+      <div class="inline-block">
+        <input type="radio" :checked="isSelected(option)">
+      </div>
+      &nbsp;<slot :option="option">
+        {{ resolveLabel(option) }}
+      </slot>
+    </button>
+  </div>
 </template>
 
 <style>

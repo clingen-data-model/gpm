@@ -17,6 +17,13 @@ export default {
     emits: [
         ...mirror.emits
     ],
+    setup(props, context) {
+        const {workingCopy} = mirror.setup(props, context);
+
+        return {
+            workingCopy
+        }
+    },
     computed: {
         addressErrors () {
             const addressErrors = [];
@@ -27,28 +34,21 @@ export default {
             });
             return addressErrors;
         },
-    },
-    setup(props, context) {
-        const {workingCopy} = mirror.setup(props, context);
-
-        return {
-            workingCopy
-        }
     }
 }
 </script>
 <template>
-    <div class="w-full space-y-1">
-        <input type="text" v-model="workingCopy.street1" placeholder="street 1" class="w-full">
-        <InputErrors class="text-xs" :errors="errors.street1 || []"></InputErrors>
-        <input type="text" v-model="workingCopy.street2" placeholder="street 2" class="w-full">
-        <InputErrors class="text-xs" :errors="errors.street2 || []"></InputErrors>
+  <div class="w-full space-y-1">
+    <input v-model="workingCopy.street1" type="text" placeholder="street 1" class="w-full">
+    <InputErrors class="text-xs" :errors="errors.street1 || []" />
+    <input v-model="workingCopy.street2" type="text" placeholder="street 2" class="w-full">
+    <InputErrors class="text-xs" :errors="errors.street2 || []" />
 
-        <div class="flex space-x-1">
-            <input type="text" v-model="workingCopy.city" placeholder="City" class="w-1/3 shrink">
-            <input type="text" v-model="workingCopy.state" placeholder="State" class="w-1/3 shrink">
-            <input type="text" v-model="workingCopy.zip" placeholder="Postal Code" class="w-1/3 shrink">
-        </div>
-        <InputErrors class="text-xs" :errors="addressErrors"></InputErrors>
+    <div class="flex space-x-1">
+      <input v-model="workingCopy.city" type="text" placeholder="City" class="w-1/3 shrink">
+      <input v-model="workingCopy.state" type="text" placeholder="State" class="w-1/3 shrink">
+      <input v-model="workingCopy.zip" type="text" placeholder="Postal Code" class="w-1/3 shrink">
     </div>
+    <InputErrors class="text-xs" :errors="addressErrors" />
+  </div>
 </template>

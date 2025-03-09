@@ -39,37 +39,43 @@
 </script>
 
 <template>
-    <div v-if="userJudgement">
-        <h3>
-            Your Decision:
-            <badge :color="badgeVariant" size="lg">{{ titleCase(userJudgement.decision) }}</badge>
-        </h3>
-        <div class="mt-2" v-if="userJudgement.notes">
-            <p><strong>Notes: </strong>{{ userJudgement.notes }}</p>
-        </div>
-        <div class="flex space-x-2">
-            <button class="btn btn-xs" @click="initUpdate">Change Decision</button>
-            <button class="btn btn-xs" @click="initDelete">Cancel Decision</button>
-        </div>
-
-        <teleport to='body'>
-            <modal-dialog v-model="showJudgementDialog" title="Update Your Decision">
-                <JudgementForm
-                    v-model="userJudgement"
-                    @saved="showJudgementDialog = false"
-                    @canceled="showJudgementDialog = false"
-                />
-            </modal-dialog>
-
-            <modal-dialog v-model="showDeleteDialog" title="Delete your decision for this applicaiton">
-                You are about to delete your decision for this applicaiton.
-                This cannot be undone.
-                Are you sure you want to continue?
-
-                <template #footer>
-                    <button-row submit-text="Yes, Delete" @submitted="deleteJudgement" @canceled="showDeleteDialog = false"></button-row>
-                </template>
-            </modal-dialog>
-        </teleport>
+  <div v-if="userJudgement">
+    <h3>
+      Your Decision:
+      <badge :color="badgeVariant" size="lg">
+        {{ titleCase(userJudgement.decision) }}
+      </badge>
+    </h3>
+    <div v-if="userJudgement.notes" class="mt-2">
+      <p><strong>Notes: </strong>{{ userJudgement.notes }}</p>
     </div>
+    <div class="flex space-x-2">
+      <button class="btn btn-xs" @click="initUpdate">
+        Change Decision
+      </button>
+      <button class="btn btn-xs" @click="initDelete">
+        Cancel Decision
+      </button>
+    </div>
+
+    <teleport to="body">
+      <modal-dialog v-model="showJudgementDialog" title="Update Your Decision">
+        <JudgementForm
+          v-model="userJudgement"
+          @saved="showJudgementDialog = false"
+          @canceled="showJudgementDialog = false"
+        />
+      </modal-dialog>
+
+      <modal-dialog v-model="showDeleteDialog" title="Delete your decision for this applicaiton">
+        You are about to delete your decision for this applicaiton.
+        This cannot be undone.
+        Are you sure you want to continue?
+
+        <template #footer>
+          <button-row submit-text="Yes, Delete" @submitted="deleteJudgement" @canceled="showDeleteDialog = false" />
+        </template>
+      </modal-dialog>
+    </teleport>
+  </div>
 </template>

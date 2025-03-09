@@ -11,7 +11,6 @@
     import CredentialsInput from '../forms/CredentialsInput.vue';
     import ExpertisesInput from '../forms/ExpertisesInput.vue';
 
-    const store = useStore();
     const props = defineProps({
                     person: {
                         type: Object,
@@ -30,12 +29,11 @@
                         default: 'Save'
                     }
                 });
-
     const emits = defineEmits([
                         'saved',
                         'canceled'
                     ]);
-
+    const store = useStore();
     const errors = ref({});
     const profile = ref({});
     const saving = ref(false);
@@ -100,118 +98,136 @@
 </script>
 
 <template>
-    <div>
-        <h3 v-if="showTitle">Profile</h3>
-        <div class="float-right" v-if="(hasPermission('people-manage') || userIsPerson(person))"
-        >
-            <ProfilePhotoForm :person="person" style="width: 100px; height: 100px;" />
-        </div>
-
-        <input-row label="First Name"
-            v-model="profile.first_name"
-            :errors="errors.first_name"
-        />
-
-        <input-row label="Last Name"
-            v-model="profile.last_name"
-            :errors="errors.last_name"
-        />
-        <input-row label="Email"
-            v-model="profile.email"
-            :errors="errors.email"
-        />
-
-        <input-row label="Institution"
-        :errors="errors.institution_id">
-            <InstitutionSearchSelect v-model="profile.institution_id" />
-        </input-row>
-
-        <input-row
-            :errors="errors.credential_ids">
-            <template #label>
-                Credentials
-                <div>
-                    <popover hover arrow>
-                        <div class="text-xs cursor-pointer text-blue-600">What is this?</div>
-                        <template #content>
-                            <div style="max-width: 500px">
-                                <h4>What do you mean by credentials?</h4>
-                                <p>
-                                    Credentials are any degrees or professional certifications you have earned.  Typically, these will be the acronyms you list after your name on your CV.
-                                </p>
-                                <p>
-                                    We recommend choosing one or more options already in the list of credentials, but if you do not see yours feel free to add it.
-                                </p>
-                                <p>
-                                    Please do not include current job titles or specific.  If you would like to add that information to your profile please do so in the biography field below.
-                                </p>
-                            </div>
-                        </template>
-                    </popover>
-                </div>
-            </template>
-            <CredentialsInput v-model="profile.credentials"></CredentialsInput>
-        </input-row>
-
-        <input-row
-            :errors="errors.expertise_ids">
-            <template #label>
-                Area of Expertise
-                <div>
-                    <popover hover arrow>
-                        <div class="text-xs cursor-pointer text-blue-600">What is this?</div>
-                        <template #content>
-                            <div style="max-width: 500px">
-                                <h4>What do you mean by <em>Area of Expertise</em>?</h4>
-                                <p>
-                                    We use this information to determine if the make up of gene and variant expert panels includes the breadth of expertise needed to do it's work.
-                                </p>
-                                <p>
-                                    Please choose the option from list that best describes your area of expertise. If you don't feel any of these options fit, select 'None'.
-                                </p>
-                            </div>
-                        </template>
-                    </popover>
-                </div>
-            </template>
-            <ExpertisesInput v-model="profile.expertises" />
-        </input-row>
-
-
-        <input-row v-if="canEditAllFields" label="Biography"
-            v-model="profile.biography"
-            :errors="errors.biography"
-            type="large-text"
-        />
-
-        <input-row label="Address" v-if="canEditAllFields">
-            <AddressInput v-model="profile" :errors="errors" />
-        </input-row>
-
-        <input-row v-if="canEditAllFields" label="Country"
-            v-model="profile.country_id"
-            type="select"
-            :options="countries"
-            :errors="errors.country_id"
-        />
-
-        <input-row v-if="canEditAllFields" label="Phone"
-            v-model="profile.phone"
-            :errors="errors.phone"
-        />
-
-        <input-row v-if="canEditAllFields" label="Timezone" :errors="errors.timezone">
-            <TimezoneSearchSelect v-model="profile.timezone"></TimezoneSearchSelect>
-        </input-row>
-
-        <hr class="my-4">
-
-        <div v-if="saving" class="mb-2">Saving...</div>
-        <button-row v-if="!saving"
-            @submitted="save"
-            @canceled="cancel()"
-            :submit-text="saveButtonText"
-            :show-cancel="allowCancel"
-        />
+  <div>
+    <h3 v-if="showTitle">
+      Profile
+    </h3>
+    <div v-if="(hasPermission('people-manage') || userIsPerson(person))" class="float-right">
+      <ProfilePhotoForm :person="person" style="width: 100px; height: 100px;" />
     </div>
+
+    <input-row
+      v-model="profile.first_name"
+      label="First Name"
+      :errors="errors.first_name"
+    />
+
+    <input-row
+      v-model="profile.last_name"
+      label="Last Name"
+      :errors="errors.last_name"
+    />
+    <input-row
+      v-model="profile.email"
+      label="Email"
+      :errors="errors.email"
+    />
+
+    <input-row
+      label="Institution"
+      :errors="errors.institution_id"
+    >
+      <InstitutionSearchSelect v-model="profile.institution_id" />
+    </input-row>
+
+    <input-row
+      :errors="errors.credential_ids"
+    >
+      <template #label>
+        Credentials
+        <div>
+          <popover hover arrow>
+            <div class="text-xs cursor-pointer text-blue-600">
+              What is this?
+            </div>
+            <template #content>
+              <div style="max-width: 500px">
+                <h4>What do you mean by credentials?</h4>
+                <p>
+                  Credentials are any degrees or professional certifications you have earned.  Typically, these will be the acronyms you list after your name on your CV.
+                </p>
+                <p>
+                  We recommend choosing one or more options already in the list of credentials, but if you do not see yours feel free to add it.
+                </p>
+                <p>
+                  Please do not include current job titles or specific.  If you would like to add that information to your profile please do so in the biography field below.
+                </p>
+              </div>
+            </template>
+          </popover>
+        </div>
+      </template>
+      <CredentialsInput v-model="profile.credentials" />
+    </input-row>
+
+    <input-row
+      :errors="errors.expertise_ids"
+    >
+      <template #label>
+        Area of Expertise
+        <div>
+          <popover hover arrow>
+            <div class="text-xs cursor-pointer text-blue-600">
+              What is this?
+            </div>
+            <template #content>
+              <div style="max-width: 500px">
+                <h4>What do you mean by <em>Area of Expertise</em>?</h4>
+                <p>
+                  We use this information to determine if the make up of gene and variant expert panels includes the breadth of expertise needed to do it's work.
+                </p>
+                <p>
+                  Please choose the option from list that best describes your area of expertise. If you don't feel any of these options fit, select 'None'.
+                </p>
+              </div>
+            </template>
+          </popover>
+        </div>
+      </template>
+      <ExpertisesInput v-model="profile.expertises" />
+    </input-row>
+
+
+    <input-row
+      v-if="canEditAllFields" v-model="profile.biography"
+      label="Biography"
+      :errors="errors.biography"
+      type="large-text"
+    />
+
+    <input-row v-if="canEditAllFields" label="Address">
+      <AddressInput v-model="profile" :errors="errors" />
+    </input-row>
+
+    <input-row
+      v-if="canEditAllFields" v-model="profile.country_id"
+      label="Country"
+      type="select"
+      :options="countries"
+      :errors="errors.country_id"
+    />
+
+    <input-row
+      v-if="canEditAllFields" v-model="profile.phone"
+      label="Phone"
+      :errors="errors.phone"
+    />
+
+    <input-row v-if="canEditAllFields" label="Timezone" :errors="errors.timezone">
+      <TimezoneSearchSelect v-model="profile.timezone" />
+    </input-row>
+
+    <hr class="my-4">
+
+    <div v-if="saving" class="mb-2">
+      Saving...
+    </div>
+    <button-row
+      v-if="!saving"
+      :submit-text="saveButtonText"
+      :show-cancel="allowCancel"
+      @submitted="save"
+      @canceled="cancel()"
+    />
+  </div>
 </template>

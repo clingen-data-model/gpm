@@ -7,9 +7,8 @@
     import ChairApproverControls from '@/components/applications/Review/ChairApproverControls.vue';
     import SustainedCurationReview from '@/components/expert_panels/SustainedCurationReview.vue';
 
-    const store = useStore();
     const emits = defineEmits(['deleted', 'saved']);
-
+    const store = useStore();
     const group = computed(() => store.getters['groups/currentItemOrNew'])
     const expertPanel = computed(() => group.value.expert_panel);
 
@@ -42,12 +41,12 @@ const screenTitle = computed(() => {
 
 </script>
 <template>
-    <ScreenTemplate :title="screenTitle" :breadcrumbs="breadcrumbs">
-        <ChairApproverControls
-            v-if="hasPermission('ep-applications-approve')"
-            @deleted="emits('deleted')"
-            @saved="emits('deleted')"
-        />
-        <component :is="stepReviewComponent" />
-    </ScreenTemplate>
+  <ScreenTemplate :title="screenTitle" :breadcrumbs="breadcrumbs">
+    <ChairApproverControls
+      v-if="hasPermission('ep-applications-approve')"
+      @deleted="emits('deleted')"
+      @saved="emits('deleted')"
+    />
+    <component :is="stepReviewComponent" />
+  </ScreenTemplate>
 </template>

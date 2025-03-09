@@ -158,6 +158,24 @@ export default {
             immediate: true
         }
     },
+    created() {
+        this.search = debounce( async (searchText, options) => {
+            if (searchText === '' || searchText === null || typeof searchText == 'undefined') {
+                if (this.showOptionsOnFocus) {
+                    this.filteredOptions = [...options];
+                    return;
+                }
+                return [];
+            }
+
+            if (!this.searchFunction)  {
+                this.filteredOptions = this.defaultSearchFunction(searchText, options);
+                return;
+            }
+
+            this.filteredOptions = await this.searchFunction(searchText, options);
+        }, this.throttle);
+    },
     methods: {
         handleInputFocus () {
             this.hasFocus = true;
@@ -340,83 +358,70 @@ export default {
             }
         }
     },
-    created() {
-        this.search = debounce( async (searchText, options) => {
-            if (searchText === '' || searchText === null || typeof searchText == 'undefined') {
-                if (this.showOptionsOnFocus) {
-                    this.filteredOptions = [...options];
-                    return;
-                }
-                return [];
-            }
-
-            if (!this.searchFunction)  {
-                this.filteredOptions = this.defaultSearchFunction(searchText, options);
-                return;
-            }
-
-            this.filteredOptions = await this.searchFunction(searchText, options);
-        }, this.throttle);
-    },
 }
 </script>
 <template>
-    <div class="search-select-component">
-        <div class="search-select-container bg-white">
-            <div v-if="hasSelection">
-                <div
-                    v-for="currSelection, idx in selections" :key="idx"
-                    class="selection" :class="{'disabled': disabled }"
-                >
-                    <label>
-                        <slot name="selection-label" :selection="currSelection">
-                            {{ resolveDefaultOptionLabel(selection) }}
-                        </slot>
-                    </label>
-                    <div
-                        @click="removeSelection(idx)"
-                        :disabled="disabled"
-                        class="remove-btn"
-                    >x</div>
-                </div>
-            </div>
-            <input
-                v-show="showInput"
-                type="text"
-                v-model="searchText"
-                ref="input"
-                class="input"
-                @keydown="handleKeyDown"
-                @keyup="handleKeyEvent"
-                @focus="handleInputFocus"
-                @blur="handleInputBlur"
-                :placeholder="placeholder"
-                :disabled="disabled"
-                id="search-select-input"
-            >
+  <div class="search-select-component">
+    <div class="search-select-container bg-white">
+      <div v-if="hasSelection">
+        <div
+          v-for="currSelection, idx in selections" :key="idx"
+          class="selection" :class="{'disabled': disabled }"
+        >
+          <label>
+            <slot name="selection-label" :selection="currSelection">
+              {{ resolveDefaultOptionLabel(selection) }}
+            </slot>
+          </label>
+          <div
+            :disabled="disabled"
+            class="remove-btn"
+            @click="removeSelection(idx)"
+          >
+            x
+          </div>
         </div>
-        <div v-show="showingOptions" class="result-container">
-            <div>
-                <ul class="option-list" :style="`max-height: ${optionsListHeight}px`">
-                    <li v-for="(opt, idx) in filteredUniqueOptions"
-                        :key="idx"
-                        class="filtered-option"
-                        :class="{highlighted: (idx === cursorPosition)}"
-                        :id="`option-${idx}`"
-                        @click="setSelection(opt)"
-                    >
-                        <slot :option="opt" :index="idx" name="option">{{ resolveDefaultOptionLabel(opt) }}</slot>
-                    </li>
-                    <li v-if="$slots.additionalOption" class="filtered-option additional-option">
-                        <slot name="additionalOption"></slot>
-                    </li>
-                </ul>
-                <div v-if="$slots.fixedBottomOption" class="bg-white p-2 border">
-                    <slot name="fixedBottomOption"></slot>
-                </div>
-            </div>
-        </div>
+      </div>
+      <input
+        v-show="showInput"
+        id="search-select-input"
+        ref="input"
+        v-model="searchText"
+        type="text"
+        class="input"
+        :placeholder="placeholder"
+        :disabled="disabled"
+        @keydown="handleKeyDown"
+        @keyup="handleKeyEvent"
+        @focus="handleInputFocus"
+        @blur="handleInputBlur"
+      >
     </div>
+    <div v-show="showingOptions" class="result-container">
+      <div>
+        <ul class="option-list" :style="`max-height: ${optionsListHeight}px`">
+          <li
+            v-for="(opt, idx) in filteredUniqueOptions"
+            :id="`option-${idx}`"
+            :key="idx"
+            class="filtered-option"
+            :class="{highlighted: (idx === cursorPosition)}"
+            @click="setSelection(opt)"
+          >
+            <slot :option="opt" :index="idx" name="option">
+              {{ resolveDefaultOptionLabel(opt) }}
+            </slot>
+          </li>
+          <li v-if="$slots.additionalOption" class="filtered-option additional-option">
+            <slot name="additionalOption" />
+          </li>
+        </ul>
+        <div v-if="$slots.fixedBottomOption" class="bg-white p-2 border">
+          <slot name="fixedBottomOption" />
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 <style scoped>
     .search-select-component {

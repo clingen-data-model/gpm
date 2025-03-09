@@ -28,8 +28,6 @@ export default {
         }
 
     },
-    methods: {
-    },
     created () {
         this.debounceInput = debounce((value) => {
             const pattern = /[\n,;]/;
@@ -40,11 +38,13 @@ export default {
                                     });
             this.$emit('update:modelValue', newRecipients)
         }, 1000)
+    },
+    methods: {
     }
 }
 </script>
 <template>
-    <div>
-        <textarea rows="5" class="w-full" v-model="recipientsString"></textarea>
-    </div>
+  <div>
+    <textarea v-model="recipientsString" rows="5" class="w-full" />
+  </div>
 </template>

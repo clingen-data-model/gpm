@@ -101,29 +101,31 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <div class="flex justify-center">
-            <div class="onboarding-container" :style="`width: ${currentStepWidth}`">
-                <keep-alive>
-                    <transition :name="animationDirection" mode="out-in">
-                        <component
-                            :is="currentStepComponent"
-                            :invite="invite"
-                            :person="invite.person"
-                            :code="invite.coi_code"
-                            @codeverified="handleCodeVerified"
-                            @ok="goForward"
-                            @saved="goForward"
-                            @back="goBack"
-                        ></component>
-                    </transition>
-                </keep-alive>
-            </div>
-            <p>
-                <router-link class="block link pt-2" :to="{name: 'login'}" v-if="!$store.getters.isAuthed">&lt; Log In</router-link>
-            </p>
-        </div>
+  <div>
+    <div class="flex justify-center">
+      <div class="onboarding-container" :style="`width: ${currentStepWidth}`">
+        <keep-alive>
+          <transition :name="animationDirection" mode="out-in">
+            <component
+              :is="currentStepComponent"
+              :invite="invite"
+              :person="invite.person"
+              :code="invite.coi_code"
+              @codeverified="handleCodeVerified"
+              @ok="goForward"
+              @saved="goForward"
+              @back="goBack"
+            />
+          </transition>
+        </keep-alive>
+      </div>
+      <p>
+        <router-link v-if="!$store.getters.isAuthed" class="block link pt-2" :to="{name: 'login'}">
+          &lt; Log In
+        </router-link>
+      </p>
     </div>
+  </div>
 </template>
 <style scoped>
     .onboarding-container {
