@@ -42,33 +42,33 @@ export default {
             </dropdown-menu>
         </div>
         <ul>
-          <li class="child-group" v-for="group in group.children" :key="group.id">
+          <li class="child-group" v-for="childGroup in group.children" :key="childGroup.id">
             <popover hover arrow placement="left" class="block w-full">
               <template v-slot:content>
                 <div class="text-xs">
-                  <dictionary-row label="Status" label-class="font-bold" label-width="8em">{{group.status.name}}</dictionary-row>
-                  <dictionary-row v-if="group.chairs.length > 0"
+                  <dictionary-row label="Status" label-class="font-bold" label-width="8em">{{childGroup.status.name}}</dictionary-row>
+                  <dictionary-row v-if="childGroup.chairs.length > 0"
                       label="Chairs"
                       label-class="font-bold"
                       label-width="8em"
                       class="my-1"
                   >
-                    {{group.coordinators.map(c => c.person.name).join(', ')}}
+                    {{childGroup.coordinators.map(c => c.person.name).join(', ')}}
                   </dictionary-row>
-                  <dictionary-row v-if="group.coordinators.length > 0"
+                  <dictionary-row v-if="childGroup.coordinators.length > 0"
                       label="Coordinators"
                       label-class="font-bold"
                       label-width="8em"
                   >
-                    {{group.coordinators.map(c => c.person.name).join(', ')}}
+                    {{childGroup.coordinators.map(c => c.person.name).join(', ')}}
                   </dictionary-row>
                   <dictionary-row label="# Members" label-width="8em" label-class="font-bold">
-                    {{group.members_count}}
+                    {{childGroup.members_count}}
                   </dictionary-row>
                 </div>
               </template>
-              <router-link :to="{name: 'GroupDetail', params: {uuid: group.uuid}}" class="block w-full">
-                {{group.name}}
+              <router-link :to="{name: 'GroupDetail', params: {uuid: childGroup.uuid}}" class="block w-full">
+                {{childGroup.name}}
               </router-link>
             </popover>
           </li>

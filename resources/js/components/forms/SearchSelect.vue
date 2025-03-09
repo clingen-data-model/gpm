@@ -365,11 +365,11 @@ export default {
         <div class="search-select-container bg-white">
             <div v-if="hasSelection">
                 <div
-                    v-for="selection, idx in selections" :key="idx"
+                    v-for="currSelection, idx in selections" :key="idx"
                     class="selection" :class="{'disabled': disabled }"
                 >
                     <label>
-                        <slot name="selection-label" :selection="selection">
+                        <slot name="selection-label" :selection="currSelection">
                             {{resolveDefaultOptionLabel(selection)}}
                         </slot>
                     </label>
