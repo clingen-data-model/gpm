@@ -47,7 +47,7 @@
           <div class="replies ml-1">
             <ul v-if="showReplyList" class="">
               <li v-for="reply in replyManager.comments" :key="reply.id" class="border-l-2 mt-2 px-2 py-1">
-                <ReviewCommentAnonymous :comment="reply" :commentManager="replyManager" @deleted="handleReplyRemoved" />
+                <ReviewCommentAnonymous :comment="reply" :comment-manager="replyManager" @deleted="handleReplyRemoved" />
               </li>
             </ul>
             <button v-if="comment.comments_count > 0" class="link text-sm" @click="toggleReplies">

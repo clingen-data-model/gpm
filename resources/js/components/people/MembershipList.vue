@@ -91,7 +91,7 @@ export default {
       v-model:sort="sort" 
       :fields="fields" 
       :data="memberships"
-      :rowClickHandler="goToGroup"
+      :row-click-handler="goToGroup"
       :row-class="() => 'cursor-pointer'"
     />
   </div>

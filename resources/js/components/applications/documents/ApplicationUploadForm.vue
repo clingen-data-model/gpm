@@ -161,7 +161,7 @@ export default {
           </td>
           <td>{{ formatDate(doc.created_at) }}</td>
           <td>
-            <dropdown-menu hideCheveron>
+            <dropdown-menu hide-cheveron>
               <template #label>
                 <button class="btn btn-xs">
                   &hellip;

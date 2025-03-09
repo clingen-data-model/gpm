@@ -186,7 +186,7 @@ export default {
           <li v-for="permission in availableSystemPermissions" :key="permission.id" class="w-1/3 h-12">
             <checkbox
               v-if="checkedRolePermissionIds.includes(permission.id)"
-              :modelValue="true" :disabled="true" :label="permission.display_name"
+              :model-value="true" :disabled="true" :label="permission.display_name"
             />
             <checkbox
               v-else
@@ -201,8 +201,8 @@ export default {
           <div class="flex space-x-2">
             <strong>Legend: </strong>
             <checkbox label="Not granted" />
-            <checkbox :value="1" :modelValue="true" label="Granted" />
-            <checkbox :value="2" :modelValue="true" disabled label="Granted w/ role" />
+            <checkbox :value="1" :model-value="true" label="Granted" />
+            <checkbox :value="2" :model-value="true" disabled label="Granted w/ role" />
           </div>
           <div class="absolute top-0 left-0 w-full h-full bg-pink-500 opacity-0">
 &nbsp;

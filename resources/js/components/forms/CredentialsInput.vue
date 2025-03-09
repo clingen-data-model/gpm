@@ -57,9 +57,9 @@
     v-model="workingCopy"
     :options="credentials"
     :multiple="multiple"
-    showOptionsOnFocus
-    showOptionsWhenEmpty
-    :searchFunction="searchCredentials"
+    show-options-on-focus
+    show-options-when-empty
+    :search-function="searchCredentials"
   >
     <template #fixedBottomOption>
       <div class="text-sm">
@@ -72,7 +72,7 @@
   <teleport to="body">
     <modal-dialog v-model="showCreateForm" title="Add a new credential">
       <CredentialCreateForm
-        :starterString="searchText"
+        :starter-string="searchText"
         @saved="handleNewCredential"
         @canceled="cancelNewCredential"
       />

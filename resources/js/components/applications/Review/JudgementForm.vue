@@ -103,7 +103,7 @@
       <radio-button-group
         v-model="judgement.decision"
         :options="judgementOptions"
-        labelAttribute="label"
+        label-attribute="label"
         size="lg"
         vertical
       />

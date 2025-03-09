@@ -38,7 +38,7 @@ export default {
     :search-function="search" 
     style="z-index: 2" 
     placeholder="HGNC ID or Gene Symbol"
-    keyOptionsBy="id"
+    key-options-by="id"
   >
     <template #selection-label="{selection}">
       <div v-if="typeof selection == 'object'">

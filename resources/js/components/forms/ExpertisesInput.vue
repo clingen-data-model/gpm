@@ -40,8 +40,8 @@
     v-model="workingCopy"
     :options="expertises"
     multiple
-    showOptionsOnFocus
-    showOptionsWhenEmpty
-    :searchFunction="searchExpertises"
+    show-options-on-focus
+    show-options-when-empty
+    :search-function="searchExpertises"
   />
 </template>

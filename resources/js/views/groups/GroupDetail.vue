@@ -402,7 +402,7 @@ export default {
             </static-alert>
             <submission-wrapper
               class="pb-4"
-              :showControls="
+              :show-controls="
                 hasAnyPermission([
                   'ep-applications-manage',
                   ['application-edit', group],

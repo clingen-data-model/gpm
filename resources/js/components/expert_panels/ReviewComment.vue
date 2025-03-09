@@ -128,7 +128,7 @@
             </popper>
           </div>
           <div class="flex space-x-2">
-            <dropdown-menu v-if="canEdit" hideCheveron>
+            <dropdown-menu v-if="canEdit" hide-cheveron>
               <DropdownItem @click="showEditForm = true">
                 Edit
               </DropdownItem>
@@ -153,7 +153,7 @@
           <button-row
             size="xs"
             submit-text="Yes, delete"
-            submitVariant="red"
+            submit-variant="red"
             @submitted="deleteComment"
             @canceled="showConfirmDelete = false"
           />
@@ -162,7 +162,7 @@
       <ReviewCommentForm
         v-else
         :comment="comment"
-        :commentManager="commentManager"
+        :comment-manager="commentManager"
         @canceled="showEditForm = false"
         @saved="showEditForm = false"
       />
@@ -175,7 +175,7 @@
           v-for="reply in replyManager.comments" :key="reply.id"
           class="border-l-2 mt-2 px-2 py-1 bg-gray-100/50"
         >
-          <ReviewComment :comment="reply" :commentManager="replyManager" @deleted="handleReplyRemoved" />
+          <ReviewComment :comment="reply" :comment-manager="replyManager" @deleted="handleReplyRemoved" />
         </li>
       </ul>
       <button v-if="comment.comments_count > 0" class="link text-sm" @click="toggleReplies">
@@ -186,10 +186,10 @@
       <div v-show="showReplyForm" class="border-l-2 mt-2 px-2 py-1 bg-gray-100/50">
         <strong>Your Reply</strong>
         <ReviewCommentForm
-          subjectType="App\Models\Comment"
-          :subjectId="comment.id"
-          :onlyInternal="true"
-          :commentManager="replyManager"
+          subject-type="App\Models\Comment"
+          :subject-id="comment.id"
+          :only-internal="true"
+          :comment-manager="replyManager"
           @saved="handleNewReply"
           @canceled="showReplyForm = false"
         />

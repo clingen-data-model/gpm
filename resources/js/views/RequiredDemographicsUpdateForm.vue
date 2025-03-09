@@ -29,7 +29,7 @@ const handleSave = async () => {
 <template>
   <div>
     <card title="Please fill out your demographic profile information">
-      <DemographicsForm :uuid="store.getters.currentUser.person.uuid" :startInEditMode="true" @saved="handleSave" />
+      <DemographicsForm :uuid="store.getters.currentUser.person.uuid" :start-in-edit-mode="true" @saved="handleSave" />
     </card>
   </div>
 </template>

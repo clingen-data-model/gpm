@@ -60,7 +60,7 @@
           vertical 
           type="large-text"
           label="Additional notes for chairs"
-          labelClass="font-bold"
+          label-class="font-bold"
         >
           <template #after-input>
             <note>This is not intended for additional comments about the applicaiton. This is intended for notes about process, timeing, etc.  To add comments related to the content of the application click 'Cancel' and add notes alongside the application.</note>

@@ -39,7 +39,7 @@ export default {
       label="Curations not entered in the GCI (e.g., reviewed on calls but data not entered in the ClinGen systems)"
       type="number"
       :errors="errors.in_progress_count"
-      labelWidthClass="w-80"
+      label-width-class="w-80"
       input-class="w-16"
     />
 
@@ -49,7 +49,7 @@ export default {
       label="Please describe if there are any issues with the publishing of curations."
       type="large-text"
       :errors="errors.publishing_issues"
-      labelWidthClass="w-80"
+      label-width-class="w-80"
       input-class="w-120"
     />
   </div>

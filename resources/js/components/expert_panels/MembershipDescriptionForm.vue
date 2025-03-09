@@ -64,7 +64,7 @@ export default {
         <div v-if="editing" class="mt-2">
           <RichTextEditor
             v-model="group.expert_panel.membership_description"
-            :markdownFormat="true"
+            :markdown-format="true"
             @update:model-value="emitUpdate"
           />
         </div>

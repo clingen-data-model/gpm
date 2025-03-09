@@ -58,7 +58,7 @@ export default {
             <CredentialsView :person="member.person" />
           </dictionary-row>
           <dictionary-row label="Expertise">
-            <ExpertisesView :person="member.person" :legacyExpertise="member.legacy_expertise" />
+            <ExpertisesView :person="member.person" :legacy-expertise="member.legacy_expertise" />
           </dictionary-row>
           <object-dictionary
             :obj="member"
