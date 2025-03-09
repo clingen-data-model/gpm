@@ -12,7 +12,6 @@ export default antfu(
     {
         files: ['resources/js/**/*.{js,ts,vue,json}'],
         rules: {
-            'vue/v-on-event-hyphenation': 'off',
             'vue/require-explicit-emits': 'off',
             'vue/eqeqeq': 'off',
             'vue/attribute-hyphenation': 'off',
