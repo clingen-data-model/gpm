@@ -56,7 +56,7 @@ export default {
     <div>
         <slot name="title">
             <div class="md:flex justify-between">
-                <h3>{{title}} Documents</h3>
+                <h3>{{ title }} Documents</h3>
             </div>
         </slot>
         <div v-if="application.stepIsApproved(step) && showVersion">
@@ -77,7 +77,7 @@ export default {
             ></DocumentList>
             
             <button class="btn mb-2 btn-sm" @click="showUploadForm = true">
-                Upload a new {{showVersion ? `version`: 'document'}}
+                Upload a new {{ showVersion ? `version`: 'document' }}
             </button>
         </div>
         <modal-dialog v-model="showUploadForm" @closed="$refs.uploadform.clearForm()">

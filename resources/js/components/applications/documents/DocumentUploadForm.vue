@@ -111,7 +111,7 @@ export default {
 </script>
 <template>
     <form-container>
-        <h2 class="pb-2 border-b mb-4">Upload {{titleCase(documentType.long_name)}}</h2>
+        <h2 class="pb-2 border-b mb-4">Upload {{ titleCase(documentType.long_name) }}</h2>
 
         <input-row label="Document" :errors="errors.file">
             <input type="file" ref="fileInput">

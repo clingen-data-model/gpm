@@ -63,7 +63,7 @@ export default {
             :dates="['target_date', 'date_created']"
         ></object-dictionary>
 
-        <input-row  label="Date Completed" v-model="dateCompleted" type="date" :errors="errors.date_completed"></input-row>
+        <input-row label="Date Completed" v-model="dateCompleted" type="date" :errors="errors.date_completed"></input-row>
         
         <button-row>
             <button class="btn white" @click="cancel">Cancel</button

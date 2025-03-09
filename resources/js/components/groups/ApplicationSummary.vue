@@ -63,7 +63,7 @@ export default {
         <h2 class="mb-2">
             Application Summary
             <span v-if="applicationStarted && group.is_vcep_or_scvcep">
-                - {{currentMenuItem.title}}
+                - {{ currentMenuItem.title }}
             </span>
         </h2>
         <!-- <ul class="px-8" v-if="applicationStarted"> -->
@@ -71,7 +71,7 @@ export default {
             <li v-for="(item, itemIdx) in menu" :key="itemIdx" class="py-1 flex justify-between border-b border-gray-300 my-2">
                 <div class="flex justify-between" :class="{'w-full': !isStep(item)}">
                     <div class="w-56 text-lg" :class="{'text-gray-400': (isStep(item) && item.isDisabled(group))}">
-                        {{item.title}}
+                        {{ item.title }}
                     </div>
                     <div>
                         <RequirementsBadge :section="item" v-if="!isStep(item)" />
@@ -85,7 +85,7 @@ export default {
                 <div v-if="isCurrentStep(item)" class="flex-1">
                     <ul>
                         <li v-for="(section, sectionIdx) in item.sections" :key="sectionIdx" class="pb-2 flex justify-between my-2">
-                            <div>{{section.title}}</div>
+                            <div>{{ section.title }}</div>
                             <RequirementsBadge :section="section" />
                         </li>
                     </ul>

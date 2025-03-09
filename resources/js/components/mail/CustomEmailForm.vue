@@ -100,21 +100,21 @@ export default {
             </div>
 
             <button class="btn btn-xs" @click="showCc = !showCc">
-                {{showCc ? 'Hide Cc' : 'Show Cc'}}
+                {{ showCc ? 'Hide Cc' : 'Show Cc' }}
             </button>
         </input-row>
         <input-row label="Bcc" :errors="bccErrors">
             <recipient-input v-model="workingCopy.bcc" v-show="showBcc" />
             <button class="btn btn-xs" @click="showBcc = !showBcc">
-                {{showBcc ? 'Hide Bcc' : 'Show Bcc'}}
+                {{ showBcc ? 'Hide Bcc' : 'Show Bcc' }}
             </button>
         </input-row>
-        <input-row label="Subject"  :errors="errors.subject">
+        <input-row label="Subject" :errors="errors.subject">
             <input type="text" v-model="workingCopy.subject" class="w-full">
         </input-row>
         
         <input-row label="Body" :errors="errors.body">
-            <rich-text-editor  v-model="workingCopy.body"></rich-text-editor>
+            <rich-text-editor v-model="workingCopy.body"></rich-text-editor>
         </input-row>
 
         <input-row label="Attachments" :errors="errors.attachments">

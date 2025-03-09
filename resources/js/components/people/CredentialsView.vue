@@ -31,7 +31,7 @@
 
 <template>
     <span>
-        {{displayCredentials}}
+        {{ displayCredentials }}
         <note v-if="!hasCredentials && hasLegacyCredentials">(Legacy data)</note>
     </span>
 </template>

@@ -92,7 +92,7 @@ export default {
                     <option v-for="gene in groupGenes" 
                         :value="gene.id"
                         :key="gene.id"
-                    >{{gene.gene_symbol}}</option>
+                    >{{ gene.gene_symbol }}</option>
                 </select>
             </input-row>
             <input-row 

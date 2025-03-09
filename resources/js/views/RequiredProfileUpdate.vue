@@ -53,18 +53,18 @@
                 </p>
             </collapsible>
             <button class="link text-sm" @click="showMoreInfo = !showMoreInfo">
-                {{showMoreInfo ? 'Show Less' : 'More Info' }}
+                {{ showMoreInfo ? 'Show Less' : 'More Info' }}
             </button>
             <br>
             <div v-if="user.needsCredentials && user.person.legacy_credentials">
                 <strong>Your old credential info:</strong><br>
-                {{user.person.legacy_credentials}}
+                {{ user.person.legacy_credentials }}
             </div>
             <div v-if="user.needsExpertise && legacyExpertise.length > 0">
                 <strong>Your old experise info:</strong>
                 <ul class="list-disc pl-6">
                     <li v-for="(m) in legacyExpertise" :key="m.groupName">
-                        <strong>{{m.groupName}}:</strong> {{m.legacyExpertise}}
+                        <strong>{{ m.groupName }}:</strong> {{ m.legacyExpertise }}
                     </li>
                 </ul>
             </div>

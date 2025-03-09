@@ -370,7 +370,7 @@ export default {
                 >
                     <label>
                         <slot name="selection-label" :selection="currSelection">
-                            {{resolveDefaultOptionLabel(selection)}}
+                            {{ resolveDefaultOptionLabel(selection) }}
                         </slot>
                     </label>
                     <div
@@ -405,7 +405,7 @@ export default {
                         :id="`option-${idx}`"
                         @click="setSelection(opt)"
                     >
-                        <slot :option="opt" :index="idx" name="option">{{resolveDefaultOptionLabel(opt)}}</slot>
+                        <slot :option="opt" :index="idx" name="option">{{ resolveDefaultOptionLabel(opt) }}</slot>
                     </li>
                     <li v-if="$slots.additionalOption" class="filtered-option additional-option">
                         <slot name="additionalOption"></slot>

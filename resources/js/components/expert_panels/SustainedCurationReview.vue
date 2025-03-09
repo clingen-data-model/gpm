@@ -24,9 +24,9 @@
             >
                 <dictionary-row label="Selected protocol" labelWidthClass="w-48 font-bold">
                     <div class="w-full">
-                        {{expertPanel.curation_review_protocol ? titleCase(expertPanel.curation_review_protocol.full_name) : null}}
+                        {{ expertPanel.curation_review_protocol ? titleCase(expertPanel.curation_review_protocol.full_name) : null }}
                         <p v-if="expertPanel.curation_review_protocol_id == 100" class="mt-1">
-                            <em>Details:</em> {{expertPanel.curation_review_protocol_other}}
+                            <em>Details:</em> {{ expertPanel.curation_review_protocol_other }}
                         </p>
                     </div>
                 </dictionary-row>
@@ -47,13 +47,13 @@
                 name="member-designation"
             >
                 <dictionary-row label="Core Approval Members" labelWidthClass="w-48 font-bold">
-                    {{group.coreApprovalMembers.map(m => m.person.name).join(', ')}}
+                    {{ group.coreApprovalMembers.map(m => m.person.name).join(', ') }}
                 </dictionary-row>
                 <dictionary-row label="Biocurator Trainers" labelWidthClass="w-48 font-bold">
-                    {{group.biocuratorTrainers.map(m => m.person.name).join(', ')}}
+                    {{ group.biocuratorTrainers.map(m => m.person.name).join(', ') }}
                 </dictionary-row>
                 <dictionary-row label="Trained Biocurators" labelWidthClass="w-48 font-bold">
-                    {{group.trainedBiocurators.map(m => m.person.name).join(', ')}}
+                    {{ group.trainedBiocurators.map(m => m.person.name).join(', ') }}
                 </dictionary-row>
             </ReviewSection>
 

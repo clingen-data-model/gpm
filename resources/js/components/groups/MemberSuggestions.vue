@@ -26,7 +26,7 @@ export default {
                 :class="{'text-gray-500': suggestion.alreadyMember}"
             >
                 <slot>
-                    {{suggestion.name}} 
+                    {{ suggestion.name }} 
                     <div v-if="suggestion.alreadyMember">Already a member</div>
                     <button 
                         v-else
