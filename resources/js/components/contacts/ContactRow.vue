@@ -70,7 +70,7 @@ export default {
             - {{contact.phone}}
         </span>
         &nbsp;
-        <RemoveButton size="xs" @click="confirmRemove"></RemoveButton>        
+        <RemoveButton size="xs" @click="confirmRemove"></RemoveButton>
 
         <modal-dialog v-model="showRemoveConfirmation" title="Confirm Contact Removal">
             <p class="mb-2">
@@ -79,11 +79,11 @@ export default {
             </p>
 
             <small class="text-gray-500">NOTE: This will not delete the person's record in this system.</small>
-            
+
 
             <ul class="bg-red-200 bg-text-900 border-red-900 p-2" v-if="errors">
-                <li v-for="(errors, field) in errors" :key="field">
-                    {{field}}: {{errors.join(', ')}}
+                <li v-for="(fieldErrors, field) in errors" :key="field">
+                    {{field}}: {{fieldErrors.join(', ')}}
                 </li>
             </ul>
 

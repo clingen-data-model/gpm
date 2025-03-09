@@ -30,7 +30,6 @@ export default antfu(
             'vue/v-slot-style': 'off',
             'vue/no-useless-v-bind': 'off',
             'vue/eqeqeq': 'off',
-            'vue/no-template-shadow': 'off',
             'vue/attribute-hyphenation': 'off',
             'vue/define-macros-order': 'off',
             'vue/v-bind-style': 'off',
